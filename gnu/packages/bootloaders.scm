@@ -982,6 +982,37 @@ to Novena upstream, does not load u-boot.img from the first partition.")
                 (lambda* (#:key inputs #:allow-other-keys)
                   (setenv "BL31"
                           (search-input-file inputs "/bl31.elf"))))
+              (add-after 'unpack 'patch-config
+                (lambda _
+                  (substitute* "configs/rockpro64-rk3399_defconfig"
+                    (("CONFIG_USB=y") "\
+CONFIG_USB=y
+CONFIG_AHCI=y
+CONFIG_AHCI_PCI=y
+CONFIG_SATA=y
+CONFIG_SATA_SIL=y
+CONFIG_SCSI=y
+CONFIG_SCSI_AHCI=y
+CONFIG_DM_SCSI=y
+"))
+                  (substitute* "include/config_distro_bootcmd.h"
+                    (("\"scsi_need_init=false")
+                     "\"setenv scsi_need_init false")
+                    (("#define BOOTENV_SET_SCSI_NEED_INIT \"scsi_need_init=;")
+                     "#define BOOTENV_SET_SCSI_NEED_INIT \"setenv scsi_need_init;"))
+                  (substitute* "include/configs/rockchip-common.h"
+                    (("#define BOOT_TARGET_DEVICES\\(func\\)")
+                     "
+#if CONFIG_IS_ENABLED(CMD_SCSI)
+       #define BOOT_TARGET_SCSI(func) func(SCSI, scsi, 0)
+#else
+       #define BOOT_TARGET_SCSI(func)
+#endif
+#define BOOT_TARGET_DEVICES(func)")
+                    (("BOOT_TARGET_NVME\\(func\\) \\\\")
+                     "\
+BOOT_TARGET_NVME(func) \\
+       BOOT_TARGET_SCSI(func) \\"))))
               ;; Phases do not succeed on the bl31 ELF.
               (delete 'strip)
               (delete 'validate-runpath)))))
