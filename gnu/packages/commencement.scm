@@ -41,6 +41,7 @@
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
@@ -631,7 +632,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
     ;; if 'allowed-references' were per-output.
     (arguments
      `(#:allowed-references
-       ,(cons* `(,gcc-boot0 "lib") (kernel-headers-boot0)
+       ,(cons* (gexp-input gcc-boot0 "lib") (kernel-headers-boot0)
                static-bash-for-glibc
                (package-outputs glibc-final-with-bootstrap-bash))
 
