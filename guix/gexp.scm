@@ -725,12 +725,7 @@ references; otherwise, return only non-native references."
       (($ <gexp-input> (? gexp? exp))
        (append (gexp-outputs exp) result))
       (($ <gexp-input> (lst ...) output native?)
-       ;; XXX: Automatically convert LST.
-       (add-reference-output (map (match-lambda
-                                   ((? gexp-input? x) x)
-                                   (x (%gexp-input x "out" native?)))
-                                  lst)
-                             result))
+       (add-reference-output lst result))
       ((lst ...)
        (fold-right add-reference-output result lst))
       (_
@@ -807,6 +802,17 @@ environment."
                          (identifier-syntax modules)))
     body ...))
 
+(define (ensure-input-list lst native?)
+  "Make sure LST is a list of <gexp-input> objects.  If LST is not a list (for
+instance, it could be a gexp), return it."
+  (if (pair? lst)
+      (map (lambda (x)
+             (if (gexp-input? x)
+                 x
+                 (%gexp-input x "out" native?)))
+           lst)
+      lst))
+
 (define-syntax gexp
   (lambda (s)
     (define (collect-escapes exp)
@@ -836,8 +842,8 @@ environment."
     (define (escape->ref exp)
       ;; Turn 'ungexp' form EXP into a "reference".
       (syntax-case exp (ungexp ungexp-splicing
-                        ungexp-native ungexp-native-splicing
-                        output)
+                               ungexp-native ungexp-native-splicing
+                               output)
         ((ungexp output)
          #'(gexp-output "out"))
         ((ungexp output name)
@@ -847,13 +853,15 @@ environment."
         ((ungexp drv-or-pkg out)
          #'(%gexp-input drv-or-pkg out #f))
         ((ungexp-splicing lst)
-         #'(%gexp-input lst "out" #f))
+         #'(%gexp-input (ensure-input-list lst #f)
+                        "out" #f))
         ((ungexp-native thing)
          #'(%gexp-input thing "out" #t))
         ((ungexp-native drv-or-pkg out)
          #'(%gexp-input drv-or-pkg out #t))
         ((ungexp-native-splicing lst)
-         #'(%gexp-input lst "out" #t))))
+         #'(%gexp-input (ensure-input-list lst #t)
+                        "out" #t))))
 
     (define (substitute-ungexp exp substs)
       ;; Given EXP, an 'ungexp' or 'ungexp-native' form, substitute it with
@@ -881,7 +889,7 @@ environment."
       ;; Return a variant of EXP where all the cars of SUBSTS have been
       ;; replaced by the corresponding cdr.
       (syntax-case exp (ungexp ungexp-native
-                        ungexp-splicing ungexp-native-splicing)
+                               ungexp-splicing ungexp-native-splicing)
         ((ungexp _ ...)
          (substitute-ungexp exp substs))
         ((ungexp-native _ ...)
@@ -946,7 +954,7 @@ system, imported, and appears under FINAL-PATH in the resulting store path."
                     ((final-path store-path)
                      (mkdir-p (dirname final-path))
                      (symlink store-path final-path)))
-                   '(ungexp files)))))
+                   '((ungexp-native-splicing files))))))
 
     ;; TODO: Pass FILES as an environment variable so that BUILD remains
     ;; exactly the same regardless of FILES: less disk space, and fewer
@@ -1053,7 +1061,7 @@ of name/gexp-input tuples, and OUTPUTS, a list of strings."
           (define %build-inputs
             (map (lambda (tuple)
                    (apply cons tuple))
-                 '(ungexp inputs)))
+                 '((ungexp-splicing inputs))))
           (define %outputs
             (list (ungexp-splicing
                    (map (lambda (name)
