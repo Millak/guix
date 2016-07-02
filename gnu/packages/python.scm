@@ -6076,13 +6076,10 @@ library.")
         (base32
          "08cm8d4228fj0qnrysy3qv1a6022zr3dcs25amd14lgxil6vvx26"))))
     (build-system python-build-system)
+    (arguments
+     '(#:tests? #f)) ; Tests are not included in the PyPi release.
     (inputs
-      `(("python-setuptools" ,python-setuptools)
-        ("python-virtualenv" ,python-virtualenv)
-        ;; Tests
-        ("python-mock" ,python-mock)
-        ("python-pytest" ,python-pytest)
-        ("python-scripttest" ,python-scripttest)))
+      `(("python-setuptools" ,python-setuptools)))
     (home-page "https://pip.pypa.io/")
     (synopsis
       "Package manager for Python software")
