@@ -1612,14 +1612,14 @@ supports coverage of subprocesses.")
 (define-public python-pytest-runner
   (package
     (name "python-pytest-runner")
-    (version "2.6.2")
+    (version "2.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-runner" version))
        (sha256
         (base32
-         "1nwcqx0l3fv52kv8526wy8ypzghbq96c96di318d98d3wh7a8xg7"))))
+         "0p0dd3878sjnk59sk17jl6n0j9is9160mi33smgzhld5vbnlvi0y"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
