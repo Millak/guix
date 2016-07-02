@@ -2485,14 +2485,9 @@ object.")
          "1p732accxwqfjbdna39k8w8lp9gyw91vr4kzkhm8mgfxikqqxg5a"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-        (replace 'check
-         (lambda _ (zero? (system* "py.test")))))))
+     `(#:tests? #f)) ; Tests are not included in the PyPi release.
     (inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)))
+     `(("python-setuptools" ,python-setuptools)))
     (home-page "https://virtualenv.pypa.io/")
     (synopsis "Virtual Python environment builder")
     (description
