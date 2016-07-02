@@ -1712,9 +1712,10 @@ result back.")
         (base32
          "0f4w84k8ck82syys7yg9maz93mqzc8p5ymis941x034v44jzq74m"))))
     (build-system python-build-system)
+    (arguments
+      '(#:tests? #f)) ; Tests are not included in the PyPi release.
     (inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-pytest" ,python-pytest)))
+     `(("python-setuptools" ,python-setuptools)))
     (home-page "http://pythonpaste.org/scripttest/")
     (synopsis "Python library to test command-line scripts")
     (description "Scripttest is a Python helper library for testing
