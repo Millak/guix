@@ -1547,16 +1547,14 @@ code introspection, and logging.")
 (define-public python-pytest
   (package
     (name "python-pytest")
-    (version "2.7.3")
+    (version "2.9.2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://pypi.python.org/packages/source/p/pytest/pytest-"
-             version ".tar.gz"))
+       (uri (pypi-uri "pytest" version))
        (sha256
         (base32
-         "1z4yi986f9n0p8qmzmn21m21m8j1x78hk3505f89baqm6pdw7afm"))
+         "1n6igbc1b138wx1q5gca4pqw1j6nsyicfxds5n0b5989kaxqmh8j"))
        (modules '((guix build utils)))
        (snippet
         ;; One of the tests involves the /usr directory, so it fails.
