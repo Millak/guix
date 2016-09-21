@@ -6,8 +6,11 @@
 ;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015 Alex Vong <alexvong1995@gmail.com>
+;;; Copyright © 2015, 2016 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2016 Kei Kebreau <kei@openmailbox.org>
+;;; Copyright © 2016 Dmitry Nikolaev <cameltheman@gmail.com>
+;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,11 +29,14 @@
 
 (define-module (gnu packages video)
   #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix svn-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
@@ -42,12 +48,15 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -88,8 +97,8 @@
     (version "1.4rc5")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/aa-project/"
-                                  name "-" version ".tar.gz"))
+              (uri (string-append "mirror://sourceforge/aa-project/aa-lib/"
+                                  version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
                 "1vkh19gb76agvh4h87ysbrgy82hrw88lnsvhynjf4vng629dmpgv"))))
@@ -99,7 +108,7 @@
     (inputs
      `(("ncurses" ,ncurses)))
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
          (replace 'configure
                   (lambda* (#:key build inputs outputs #:allow-other-keys)
@@ -111,6 +120,12 @@
                       (zero? (system* "./configure"
                                       (string-append "--prefix=" out)
                                       (string-append "--build=" build)
+                                      ;; The ancient config.guess is unable to
+                                      ;; guess the host triplet on mips64el.
+                                      ,@(if (string=? "mips64el-linux"
+                                                      (%current-system))
+                                            '("--host=mips64el-unknown-linux-gnu")
+                                            '())
                                       (string-append "--with-ncurses="
                                                      ncurses)))))))))
     (home-page "http://aa-project.sourceforge.net/aalib/")
@@ -211,7 +226,18 @@ television and DVD.  It is also known as AC-3.")
                            ;; package to avoid a circular dependency (the x264
                            ;; program depends on ffmpeg and ffmpeg depends on
                            ;; libx264).
-                           "--disable-cli")))
+                           "--disable-cli"
+
+                           ;; On MIPS, we must pass "--disable-asm" or else
+                           ;; configure fails after printing: "You specified a
+                           ;; pre-MSA CPU in your CFLAGS. If you really want
+                           ;; to run on such a CPU, configure with
+                           ;; --disable-asm."
+                           ,@(if (string-prefix? "mips"
+                                                 (or (%current-target-system)
+                                                     (%current-system)))
+                                 '("--disable-asm")
+                                 '()))))
     (home-page "http://www.videolan.org/developers/x264.html")
     (synopsis "H.264 video coding library")
     (description "libx264 is an advanced encoding library for creating
@@ -268,6 +294,7 @@ ASS/SSA (Advanced Substation Alpha/SubStation Alpha) subtitle format.")
     (inputs
      `(("freeglut" ,freeglut)
        ("ftgl" ,ftgl)
+       ("imlib2" ,imlib2)
        ("libx11" ,libx11)
        ("mesa" ,mesa)
        ("ncurses" ,ncurses)
@@ -306,7 +333,8 @@ streams.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://sourceforge/libdv/libdv-" version ".tar.gz"))
+                    "mirror://sourceforge/" name "/" name "/"
+                    version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
                 "1fl96f2xh2slkv1i1ix7kqk576a0ak1d33cylm0mbhm96d0761d3"))))
@@ -325,7 +353,7 @@ SMPTE 314M.")
 (define-public libva
   (package
     (name "libva")
-    (version "1.6.1")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
@@ -333,7 +361,7 @@ SMPTE 314M.")
              "https://www.freedesktop.org/software/vaapi/releases/libva/libva-"
              version".tar.bz2"))
        (sha256
-        (base32 "0bjfb5s8dk3lql843l91ffxzlq47isqks5sj19cxh7j3nhzw58kz"))))
+        (base32 "0py9igf4kicj7ji22bjawkpd6my013qpg0s4ir2np9l1rk5vr2d6"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -364,7 +392,7 @@ SMPTE 314M.")
        #:make-flags
        (list (string-append "dummy_drv_video_ladir="
                             (assoc-ref %outputs "out") "/lib/dri"))))
-    (home-page "http://www.freedesktop.org/wiki/Software/vaapi/")
+    (home-page "https://www.freedesktop.org/wiki/Software/vaapi/")
     (synopsis "Video acceleration library")
     (description "The main motivation for VA-API (Video Acceleration API) is
 to enable hardware accelerated video decode/encode at various
@@ -375,14 +403,14 @@ standards (MPEG-2, MPEG-4 ASP/H.263, MPEG-4 AVC/H.264, and VC-1/VMW3).")
 (define-public ffmpeg
   (package
     (name "ffmpeg")
-    (version "3.1.1")
+    (version "3.1.3")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1nris3flwqd4v4b65yrrv9aqhsab7cb9lfp4wpxz6bi0m3r13g3i"))))
+               "08l8290gipm632dhrqndnphdpkc5ncqc1j3hxdx46r1a3q3mqmzq"))))
     (build-system gnu-build-system)
     (inputs
      `(("fontconfig" ,fontconfig)
@@ -541,14 +569,14 @@ audio/video codec library.")
 (define-public ffmpeg-2.8
   (package
     (inherit ffmpeg)
-    (version "2.8.7")
+    (version "2.8.8")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0z0mcj2q3ysp9qdn1ks03g5sn2zxyr06vxs4al0m4b5b3in8mglp"))))
+               "1691bmq8j56rcys09xwvzjq16z25m8vczj5a50gdn7ydm9qjykpr"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg)
        ((#:configure-flags flags)
@@ -591,6 +619,7 @@ audio/video codec library.")
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("gnutls" ,gnutls)
+       ("liba52" ,liba52)
        ("libcddb" ,libcddb)
        ("libgcrypt" ,libgcrypt)
        ("libkate" ,libkate)
@@ -602,6 +631,7 @@ audio/video codec library.")
        ("libvorbis" ,libvorbis)
        ("libtheora" ,libtheora)
        ("libxext" ,libxext)
+       ("libxi" ,libxi)
        ("libxinerama" ,libxinerama)
        ("libxml2" ,libxml2)
        ("libxpm" ,libxpm)
@@ -611,7 +641,8 @@ audio/video codec library.")
        ("perl" ,perl)
        ("pulseaudio" ,pulseaudio)
        ("python" ,python-wrapper)
-       ("qtbase" ,qtbase)
+       ("qt" ,qt) ; FIXME: reenable modular qt after update - requires building
+       ;("qtbase" ,qtbase) with -std=gnu++11.
        ;("qtx11extras" ,qtx11extras)
        ("sdl" ,sdl)
        ("sdl-image" ,sdl-image)
@@ -619,7 +650,11 @@ audio/video codec library.")
        ("xcb-util-keysyms" ,xcb-util-keysyms)))
     (arguments
      `(#:configure-flags
-       `("--disable-a52" ; FIXME: reenable once available
+       `(;; Gross workaround for <https://trac.videolan.org/vlc/ticket/16907>.
+         ;; In our case, this led to a test failure:
+         ;;   test_libvlc_equalizer: libvlc/equalizer.c:122: test_equalizer: Assertion `isnan(libvlc_audio_equalizer_get_amp_at_index (equalizer, u_bands))' failed.
+         "ac_cv_c_fast_math=no"
+
          ,(string-append "LDFLAGS=-Wl,-rpath -Wl,"
                          (assoc-ref %build-inputs "ffmpeg")
                          "/lib"))                 ;needed for the tests
@@ -757,7 +792,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.18.0")
+    (version "0.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -765,7 +800,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     ".tar.gz"))
               (sha256
                (base32
-                "0az0zqb2rakak51zsvfqzj9a8jiqpvc61jxap8hjdkkb9y6n6mmn"))
+                "0mibhjg5skcwcfpg6dx7yi2gj14xawnq2jzmcfwq9knmvv9cjvpy"))
               (file-name (string-append name "-" version ".tar.gz"))))
     (build-system waf-build-system)
     (native-inputs
@@ -801,15 +836,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
        ("mpg123" ,mpg123)
        ("pulseaudio" ,pulseaudio)
        ("rsound" ,rsound)
-       ("vapoursynth" ,vapoursynth)
-       ("waf" ,(origin
-                 (method url-fetch)
-                 ;; Keep this in sync with the version in the bootstrap.py
-                 ;; script of the source tarball.
-                 (uri "http://www.freehackers.org/~tnagy/release/waf-1.8.12")
-                 (sha256
-                  (base32
-                   "12y9c352zwliw0zk9jm2lhynsjcf5jy0k1qch1c1av8hnbm2pgq1"))))
+       ("waf" ,python-waf)
        ("youtube-dl" ,youtube-dl)
        ("zlib" ,zlib)))
     (arguments
@@ -833,7 +860,7 @@ projects while introducing many more.")
 (define-public gnome-mpv
   (package
     (name "gnome-mpv")
-    (version "0.9")
+    (version "0.10")
     (source
      (origin
        (method url-fetch)
@@ -842,7 +869,7 @@ projects while introducing many more.")
                            ".tar.xz"))
        (sha256
         (base32
-         "06pgxl6f3kkgxv8nlmyl7gy3pg55sqf8vgr8m6426mlpm4p3qdn0"))))
+         "10zizf926a82c753a80bi49rb5c4yqjyd6zin4xgmggspfxngncj"))))
     (native-inputs
      `(("intltool" ,intltool)
        ("pkg-config" ,pkg-config)))
@@ -861,7 +888,7 @@ access to mpv's powerful playback capabilities.")
 (define-public libvpx
   (package
     (name "libvpx")
-    (version "1.5.0")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://storage.googleapis.com/"
@@ -869,7 +896,7 @@ access to mpv's powerful playback capabilities.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "15v7qw0ydyxn08ksb6lxn1l51pxgpwgshdwd3275yrr5hs86fv9h"))
+                "1basd6dda5di9p7jhc0f4f52wzm9c3hsravqspw6ibpcn5gbpbyh"))
               (patches (search-patches "libvpx-CVE-2016-2818.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -899,7 +926,7 @@ access to mpv's powerful playback capabilities.")
 (define-public youtube-dl
   (package
     (name "youtube-dl")
-    (version "2016.06.14")
+    (version "2016.09.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://youtube-dl.org/downloads/"
@@ -907,7 +934,7 @@ access to mpv's powerful playback capabilities.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0fmvpqipc1xwagvk7ih4slmv1xz1rb6s8wpndhypwvrq4pnnm9ns"))))
+                "0dfbb1lnpq3if7i5xvq8n6rvlgni3ryc8cw4bcrg1glmca3v1pkc"))))
     (build-system python-build-system)
     (home-page "https://youtube-dl.org")
     (arguments
@@ -950,11 +977,27 @@ YouTube.com and a few more sites.")
                (base32
                 "1q1whviqv5sr9nr372h31zwid1rvbfbx3z4lzr8lnj25xha6cdm6"))))
     (build-system gnu-build-system)
-    (arguments `(#:configure-flags '("--disable-bdjava")))
+    (arguments
+     `(#:configure-flags '("--disable-bdjava")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'fix-dlopen-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((libaacs (assoc-ref inputs "libaacs"))
+                   (libbdplus (assoc-ref inputs "libbdplus")))
+               (substitute* "src/libbluray/disc/aacs.c"
+                 (("\"libaacs\"")
+                  (string-append "\"" libaacs "/lib/libaacs\"")))
+               (substitute* "src/libbluray/disc/bdplus.c"
+                 (("\"libbdplus\"")
+                  (string-append "\"" libbdplus "/lib/libbdplus\"")))
+               #t))))))
     (native-inputs `(("pkg-config" ,pkg-config)))
     (inputs
      `(("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
+       ("libaacs" ,libaacs)
+       ("libbdplus" ,libbdplus)
        ("libxml2" ,libxml2)))
     (home-page "https://www.videolan.org/developers/libbluray.html")
     (synopsis "Blu-Ray Disc playback library")
@@ -1092,8 +1135,8 @@ for use with HTML5 video.")
     (source (origin
              (method url-fetch)
              (uri (string-append
-                   "mirror://sourceforge/avidemux/avidemux_"
-                   version ".tar.gz"))
+                   "mirror://sourceforge/" name "/" name "/" version "/"
+                   name "_" version ".tar.gz"))
              (sha256
               (base32
                "0nz52yih8sff53inndkh2dba759xjzsh4b8xjww419lcpk0qp6kn"))
@@ -1118,8 +1161,9 @@ for use with HTML5 video.")
        ("perl" ,perl)
        ("pulseaudio" ,pulseaudio)
        ("python" ,python-wrapper)
-       ("qtbase" ,qtbase)
-       ("qttools" ,qttools)
+       ("qt" ,qt) ; FIXME: reenable modular qt after update - requires building
+       ;("qtbase" ,qtbase) with -std=gnu++11.
+       ;("qttools" ,qttools)
        ("sdl" ,sdl)
        ("sqlite" ,sqlite)
        ("yasm" ,yasm)
@@ -1208,7 +1252,7 @@ capabilities.")
 (define-public vapoursynth
   (package
     (name "vapoursynth")
-    (version "32")
+    (version "33.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1217,7 +1261,7 @@ capabilities.")
               (file-name (string-append name "-" version))
               (sha256
                (base32
-                "1j08whj946v2kkpgxsfhpca8xf0ax9iqzn73wvwjx319p9j0ymp9"))))
+                "1504jaw4yqdlyls0bz9f90rvqq7cy1jvmrnhdvwnmdfbpikqwi4c"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -1245,6 +1289,8 @@ capabilities.")
 manipulation.  It aims to be a modern rewrite of Avisynth, supporting
 multithreading, generalized colorspaces, per frame properties, and videos with
 format changes.")
+    ;; src/core/cpufeatures only allows x86, ARM or PPC
+    (supported-systems (delete "mips64el-linux" %supported-systems))
     ;; As seen from the source files.
     (license license:lgpl2.1+)))
 
@@ -1373,7 +1419,8 @@ tools, XML authoring components, and an extensible plug-in based API.")
      '(#:configure-flags
        (list (string-append "--with-udevdir="
                             (assoc-ref %outputs "out")
-                            "/lib/udev"))))
+                            "/lib/udev")
+             "CXXFLAGS=-std=gnu++11")))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
@@ -1393,7 +1440,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "0.15.1")
+    (version "0.15.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/jp9000/obs-studio"
@@ -1401,9 +1448,23 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "18fycg7xlj2i89wdb9c5js0bnl964s1lpmnvmfyj11zi9k061wsg"))))
+                "11bqk0jpp8fp24j0rkjgrv3fdi3xnjyk4wq55j803cg84mn4zsp0"))))
     (build-system cmake-build-system)
-    (arguments '(#:tests? #f)) ; no tests
+    (arguments
+     `(#:tests? #f ; no tests
+       ,@(if (any (cute string-prefix? <> (or (%current-target-system)
+                                              (%current-system)))
+                  '("arm" "mips"))
+           '(#:phases
+             (modify-phases %standard-phases
+             (add-after 'unpack 'remove-architecture-specific-instructions
+               ;; non-Intel platforms fail to build with the architecture
+               ;; specific compiler flags included by default.
+               (lambda _
+                 (substitute* "libobs/CMakeLists.txt"
+                              (("if\\(NOT MSVC\\)") "if(MSVC)"))
+                 #t))))
+           '())))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
@@ -1499,6 +1560,7 @@ implementation.")
               ("libxfixes" ,libxfixes)
               ("libxdamage" ,libxdamage)
               ("libxext" ,libxext)
+              ("alsa-lib" ,alsa-lib)
               ("libvorbis" ,libvorbis)
               ("libtheora" ,libtheora)))
     (home-page "http://recordmydesktop.sourceforge.net/")
@@ -1508,3 +1570,82 @@ implementation.")
 your graphical desktop and encodes it as a video.  This is a useful tool for
 making @dfn{screencasts}.")
     (license license:gpl2+)))
+
+(define-public libsmpeg
+  (package
+    (name "libsmpeg")
+    (version "0.4.5")
+    (source (origin
+              (method svn-fetch)
+              (uri (svn-reference
+                    (url "svn://svn.icculus.org/smpeg/trunk/")
+                    (revision 401))) ; last revision before smpeg2 (for SDL 2.0)
+              (sha256
+               (base32
+                "18yfkr70lr1x1hc8snn2ldnbzdcc7b64xmkqrfk8w59gpg7sl1xn"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'autogen.sh
+                    (lambda _
+                      (zero? (system* "sh" "autogen.sh")))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)))
+    (inputs
+     `(("sdl" ,sdl2)))
+    (home-page "http://icculus.org/smpeg/")
+    (synopsis "SDL MPEG decoding library")
+    (description
+     "SMPEG (SDL MPEG Player Library) is a free MPEG1 video player library
+with sound support.  Video playback is based on the ubiquitous Berkeley MPEG
+player, mpeg_play v2.2.  Audio is played through a slightly modified mpegsound
+library, part of splay v0.8.2.  SMPEG supports MPEG audio (MP3), MPEG-1 video,
+and MPEG system streams.")
+    (license (list license:expat
+                   license:lgpl2.1
+                   license:lgpl2.1+
+                   license:gpl2))))
+
+(define-public libbdplus
+  (package
+    (name "libbdplus")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "ftp://ftp.videolan.org/pub/videolan/libbdplus/"
+                           version "/" name "-" version ".tar.bz2"))
+       (sha256
+        (base32 "02n87lysqn4kg2qk7d1ffrp96c44zkdlxdj0n16hbgrlrpiwlcd6"))))
+    (inputs
+     `(("libgcrypt" ,libgcrypt)))
+    (build-system gnu-build-system)
+    (home-page "http://www.videolan.org/developers/libbdplus.html")
+    (synopsis "Library for decrypting certain Blu-Ray discs")
+    (description "libbdplus is a library which implements the BD+ System
+specifications.")
+    (license license:lgpl2.1+)))
+
+(define-public libaacs
+  (package
+    (name "libaacs")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "ftp://ftp.videolan.org/pub/videolan/libaacs/"
+                           version "/" name "-" version ".tar.bz2"))
+       (sha256
+        (base32 "1s5v075hnbs57995r6lljm79wgrip3gnyf55a0y7bja75jh49hwm"))))
+    (inputs
+     `(("libgcrypt" ,libgcrypt)))
+    (native-inputs
+     `(("bison" ,bison)
+       ("flex" ,flex)))
+    (build-system gnu-build-system)
+    (home-page "http://www.videolan.org/developers/libaacs.html")
+    (synopsis "Library for decrypting certain Blu-Ray discs")
+    (description "libaacs is a library which implements the Advanced Access
+Content System specification.")
+    (license license:lgpl2.1+)))

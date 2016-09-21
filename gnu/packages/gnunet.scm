@@ -50,6 +50,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xiph)
+  #:use-module (gnu packages backup)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -81,17 +82,12 @@
    ;; FIXME:
    ;; The following dependencies are all optional, but should be
    ;; available for maximum coverage:
-   ;; * libarchive
-   ;; * libgif (giflib)
-   ;; * libgtk+ >= 3.0.0 (may probably drop glib then as a propagated input of
-   ;;                     gtk)
-   ;; * libgsf
    ;; * libmagic (file)
-   ;; * libmpeg2
-   ;; * libmp4v2
-   ;; * librpm
-   ;; * libsmf
-   ;; * libtidy
+   ;; * libmp4v2        ; package it
+   ;; * librpm          ; package it
+   ;; * libsmf          ; package it
+   ;; * libtidy         ; package it
+   ;; * libgif (giflib) ; investigate failure
    (inputs
     `(("exiv2" ,exiv2)
       ("flac" ,flac)
@@ -100,14 +96,23 @@
       ("glib" ,glib)
       ("gstreamer" ,gstreamer)
       ("gst-plugins-base" ,gst-plugins-base)
+      ("gtk+" ,gtk+)
+      ("libarchive" ,libarchive)
+      ("libgsf" ,libgsf)
       ("libjpeg" ,libjpeg)
+      ("libltdl" ,libltdl)
+      ("libmpeg2" ,libmpeg2)
       ("libogg" ,libogg)
       ("libtiff" ,libtiff)
-      ("libltdl" ,libltdl)
       ("libvorbis" ,libvorbis)
       ("zlib" ,zlib)))
    (native-inputs
-      `(("pkg-config" ,pkg-config)))
+    `(("pkg-config" ,pkg-config)))
+   (arguments
+    `(#:configure-flags
+      (list (string-append "--with-ltdl="
+                           (assoc-ref %build-inputs "libltdl")))
+      #:parallel-tests? #f))
    (synopsis "Library to extract meta-data from media files")
    (description
     "GNU libextractor is a library for extracting metadata from files.  It
@@ -121,14 +126,14 @@ tool to extract metadata from a file and print the results.")
 (define-public libmicrohttpd
   (package
    (name "libmicrohttpd")
-   (version "0.9.50")
+   (version "0.9.51")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/libmicrohttpd/libmicrohttpd-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "1mzbqr6sqisppz88mh73bbh5sw57g8l87qvhcjdx5pmbd183idni"))))
+              "1ir3ga328zkyynznnw71dj64wsaz7pmbhl82lqp1y1hrl85vn01h"))))
    (build-system gnu-build-system)
    (inputs
     `(("curl" ,curl)
@@ -153,7 +158,7 @@ and support for SSL3 and TLS.")
 (define-public gnurl
   (package
    (name "gnurl")
-   (version "7.48.0")
+   (version "7.50.3")
    (source (origin
             (method url-fetch)
             (uri (let ((version-with-underscores
@@ -162,7 +167,7 @@ and support for SSL3 and TLS.")
                                   name "-" version-with-underscores ".tar.bz2")))
             (sha256
              (base32
-              "14gch4rdibrc8qs4mijsczxvl45dsclf234g17dk6c8nc2s4bm0a"))))
+              "07ij9mj60kpfrmi0436k14b1d1idsj79nk4w5h3bia69arzp2cnk"))))
    (build-system gnu-build-system)
    (inputs `(("gnutls" ,gnutls)
              ("libidn" ,libidn)
@@ -183,22 +188,22 @@ and support for SSL3 and TLS.")
                           "--disable-ldap" "--disable-rtsp" "--disable-dict"
                           "--disable-telnet" "--disable-tftp" "--disable-pop3"
                           "--disable-imap" "--disable-smtp" "--disable-gopher"
-                          "--disable-file" "--disable-ftp")
-     #:test-target "test"
-     #:parallel-tests? #f
-     ;; We have to patch runtests.pl in tests/ directory
-     #:phases
-      (alist-cons-before
-       'check 'patch-runtests
-       (lambda _
-         (substitute* "tests/runtests.pl"
-                      (("/bin/sh") (which "sh"))))
-       %standard-phases)))
+                          "--disable-file" "--disable-ftp" "--disable-smb")
+      #:test-target "test"
+      #:parallel-tests? #f
+      #:phases
+      ;; We have to patch runtests.pl in tests/ directory
+      (modify-phases %standard-phases
+        (add-before 'check 'patch-runtests
+          (lambda _
+            (substitute* "tests/runtests.pl"
+              (("/bin/sh") (which "sh")))
+            #t)))))
    (synopsis "Microfork of cURL with support for the HTTP/HTTPS/GnuTLS subset of cURL")
    (description
     "Gnurl is a microfork of cURL, a command line tool for transferring data
 with URL syntax.  While cURL supports many crypto backends, libgnurl only
-supports HTTPS, HTTPS and GnuTLS.")
+supports HTTP, HTTPS and GnuTLS.")
    (license (license:non-copyleft "file://COPYING"
                                   "See COPYING in the distribution."))
    (home-page "https://gnunet.org/gnurl")))
@@ -242,29 +247,25 @@ supports HTTPS, HTTPS and GnuTLS.")
       ;; test_gnunet_service_arm fails; reported upstream
       #:tests? #f
       #:phases
+      (modify-phases %standard-phases
         ;; swap check and install phases and set paths to installed binaries
-        (alist-cons-before
-         'check 'set-path-for-check
-         (lambda* (#:key outputs #:allow-other-keys)
-          (let ((out (assoc-ref outputs "out")))
-           (setenv "GNUNET_PREFIX" (string-append out "/lib"))
-           (setenv "PATH" (string-append (getenv "PATH") ":" out "/bin"))))
-         (alist-cons-after
-          'install 'check
-          (assoc-ref %standard-phases 'check)
-          (alist-delete
-           'check
-           %standard-phases)))))
+        (add-before 'check 'set-path-for-check
+          (lambda* (#:key outputs #:allow-other-keys)
+           (let ((out (assoc-ref outputs "out")))
+             (setenv "GNUNET_PREFIX" (string-append out "/lib"))
+             (setenv "PATH" (string-append (getenv "PATH") ":" out "/bin")))
+           #t))
+        (add-after 'install 'check
+          (assoc-ref %standard-phases 'check))
+        (delete 'check))))
    (synopsis "Secure, decentralized, peer-to-peer networking framework")
    (description
-    "GNUnet is a framework for secure peer-to-peer networking that does not
-use any centralized or otherwise trusted services.  Our high-level goal is to
-provide a strong free software foundation for a global network that provides
-security and privacy.  GNUnet started with an idea for anonymous
-censorship-resistant file-sharing, but has grown to incorporate other
-applications as well as many generic building blocks for secure networking
-applications.  In particular, GNUnet now includes the GNU Name System, a
-privacy-preserving, decentralized public key infrastructure.")
+     "GNUnet is a framework for secure peer-to-peer networking.  The
+high-level goal is to provide a strong foundation of free software for a
+global, distributed network that provides security and privacy.  GNUnet in
+that sense aims to replace the current internet protocol stack.  Along with
+an application for secure publication of files, it has grown to include all
+kinds of basic applications for the foundation of a GNU internet.")
    (license license:gpl3+)
    (home-page "https://gnunet.org/")))
 
@@ -298,7 +299,7 @@ privacy-preserving, decentralized public key infrastructure.")
        "This package provides Guile bindings to the client libraries of various
 GNUnet services, including the @dfn{identity} and @dfn{file sharing}
 services.")
-      (home-page "http://gnu.org/software/guix")
+      (home-page "https://gnu.org/software/guix")
       (license license:gpl3+))))
 
 ;; FIXME: "gnunet-setup" segfaults under certain conditions and "gnunet-gtk"
@@ -317,15 +318,18 @@ services.")
                 "1p38k1s6a2fmcfc9a7cf1zrdycm9h06kqdyand4s3k500nj6mb4g"))))
     (arguments
      `(#:configure-flags
-       (list "--without-libunique"
-             "--with-qrencode")))
+       (list "--with-libunique"
+             "--with-qrencode"
+             (string-append "--with-gnunet="
+                            (assoc-ref %build-inputs "gnunet")))))
     (inputs
      `(("gnunet" ,gnunet)
        ("libgcrypt" ,libgcrypt)
        ("gtk+" ,gtk+)
        ("libextractor" ,libextractor)
        ("glade3" ,glade3)
-       ("qrencode" ,qrencode)))
+       ("qrencode" ,qrencode)
+       ("libunique" ,libunique)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("libglade" ,libglade)))

@@ -3,8 +3,9 @@
 ;;; Copyright © 2014 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,12 +23,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages messaging)
-  #:use-module ((guix licenses)
-                #:select (gpl3+ gpl2+ gpl2 lgpl2.1 lgpl2.0+ bsd-2 non-copyleft
-                          asl2.0))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system python)
@@ -35,6 +35,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
@@ -44,7 +45,9 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages ncurses)
@@ -58,7 +61,12 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages icu4c))
+  #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages xiph)
+  #:use-module (gnu packages audio)
+  #:use-module (gnu packages fontutils))
 
 (define-public libotr
   (package
@@ -89,7 +97,7 @@ correspondent is assured the messages he sees are authentic and
 unmodified.  (4) Perfect forward secrecy: If you lose control of your private
 keys, no previous conversation is compromised.")
     (home-page "https://otr.cypherpunks.ca/")
-    (license (list lgpl2.1 gpl2))))
+    (license (list license:lgpl2.1 license:gpl2))))
 
 ;; These patches together fix https://github.com/bitlbee/bitlbee/pull/55, are
 ;; already upstream, and should be unnecessary when the next bitlbee comes
@@ -153,19 +161,19 @@ Google Talk), MSN Messenger, Yahoo!  Messenger, AIM and ICQ, and the Twitter
 microblogging network (plus all other Twitter API compatible services like
 identi.ca and status.net).")
     (home-page "http://www.bitlbee.org/")
-    (license (list gpl2+ bsd-2))))
+    (license (list license:gpl2+ license:bsd-2))))
 
 (define-public hexchat
   (package
     (name "hexchat")
-    (version "2.12.0")
+    (version "2.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dl.hexchat.net/hexchat/hexchat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "17fncwza5r80z9r6j1lrh7h375hp4w6pay08zgnfc3qca6bjy1y2"))))
+                "0svwz9ldrry1sn35jywgpacjj1cf3xl3k74ynwn8rjvxs73b00aj"))))
     (build-system gnu-build-system)
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("intltool" ,intltool)))
@@ -177,17 +185,20 @@ identi.ca and status.net).")
               ("libcanberra" ,libcanberra)
               ("libnotify" ,libnotify)
               ("openssl" ,openssl)
-              ("perl-xml-parser" ,perl-xml-parser) ;for addons
-              ("python-2" ,python-2)))             ;for addons
+
+              ;; Bindings for add-on scripts.
+              ("luajit" ,luajit)
+              ("perl-xml-parser" ,perl-xml-parser)
+              ("python-2" ,python-2)))
     (synopsis "Graphical IRC Client")
     (description
-     "HexChat lets you connect to multiple IRC networks at once.  The main window
-shows the list of currently connected networks and their channels, the current
-conversation and the list of users.  It uses colors to differentiate between
-users and to highlight messages.  It checks spelling using available
+     "HexChat lets you connect to multiple IRC networks at once.  The main
+window shows the list of currently connected networks and their channels, the
+current conversation and the list of users.  It uses colors to differentiate
+between users and to highlight messages.  It checks spelling using available
 dictionaries.  HexChat can be extended with multiple addons.")
     (home-page "http://hexchat.net/")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public ngircd
   (package
@@ -207,8 +218,9 @@ dictionaries.  HexChat can be extended with multiple addons.")
     (native-inputs `(("procps" ,procps)
                      ("expect" ,expect)
                      ("inetutils" ,inetutils)))
-    ;; XXX Add libident, libwrap.
+    ;; XXX Add libident.
     (inputs `(("zlib" ,zlib)
+              ("libwrap" ,tcp-wrappers)
               ("gnutls" ,gnutls)
               ,@(if (string-suffix? "-linux"
                                     (or (%current-target-system)
@@ -217,7 +229,7 @@ dictionaries.  HexChat can be extended with multiple addons.")
                     '())))
     (arguments
      `(#:configure-flags
-       '("--with-gnutls" "--with-iconv" "--enable-ipv6"
+       '("--with-gnutls" "--with-iconv" "--enable-ipv6" "--with-tcp-wrappers"
          ,@(if (string-suffix? "-linux"
                                (or (%current-target-system)
                                    (%current-system)))
@@ -252,12 +264,12 @@ dictionaries.  HexChat can be extended with multiple addons.")
      "ngIRCd is a lightweight Internet Relay Chat server for small or private
 networks.  It is easy to configure, can cope with dynamic IP addresses, and
 supports IPv6, SSL-protected connections as well as PAM for authentication.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public pidgin
   (package
     (name "pidgin")
-    (version "2.10.11")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
@@ -265,7 +277,7 @@ supports IPv6, SSL-protected connections as well as PAM for authentication.")
                            version "/" name "-" version ".tar.bz2"))
        (sha256
         (base32
-         "01s0q30qrjlzj7kkz6f8lvrwsdd55a9yjh2xjjwyyxzw849j3bpj"))
+         "0crkggjj6y07v1kdwil9vw532b0vrs6p33nmlvdkpnl60m2169pp"))
        (patches (search-patches "pidgin-add-search-path.patch"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
@@ -326,14 +338,14 @@ supports IPv6, SSL-protected connections as well as PAM for authentication.")
 chat protocols.")
     (license
      (list
-      gpl2+    ; Most of the code
-      lgpl2.1  ; GG protocol plugin (libpurple/protocols/gg/lib)
-      lgpl2.0+ ; OSCAR protocol plugin (libpurple/protocols/oscar)
+      license:gpl2+    ; Most of the code
+      license:lgpl2.1  ; GG protocol plugin (libpurple/protocols/gg/lib)
+      license:lgpl2.0+ ; OSCAR protocol plugin (libpurple/protocols/oscar)
       ;; The following licenses cover the zephyr protocol plugin:
-      (non-copyleft
+      (license:non-copyleft
        "file://libpurple/protocols/zephyr/mit-copyright.h"
        "See libpurple/protocols/zephyr/mit-copyright.h in the distribution.")
-      (non-copyleft
+      (license:non-copyleft
        "file://libpurple/protocols/zephyr/mit-sipb-copyright.h"
        "See libpurple/protocols/zephyr/mit-sipb-copyright.h in the distribution.")))))
 
@@ -373,7 +385,7 @@ you.  However, during a conversation, your correspondent is assured the
 messages he sees are authentic and unmodified.  (4) Perfect forward secrecy:
 If you lose control of your private keys, no previous conversation is
 compromised.")
-    (license gpl2)))
+    (license license:gpl2)))
 
 (define-public znc
   (package
@@ -407,7 +419,7 @@ compromised.")
 client from the actual IRC server, and also from selected channels.  Multiple
 clients from different locations can connect to a single ZNC account
 simultaneously and therefore appear under the same nickname on IRC.")
-    (license asl2.0)))
+    (license license:asl2.0)))
 
 (define-public python-nbxmpp
   (package
@@ -430,7 +442,7 @@ simultaneously and therefore appear under the same nickname on IRC.")
      "The goal of this python library is to provide a way for Python
 applications to use Jabber/XMPP networks in a non-blocking way.  This library
 was initially a fork of xmpppy, but is using non-blocking sockets.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public python2-nbxmpp
   (package-with-python2 python-nbxmpp))
@@ -490,6 +502,261 @@ Among its features are: a tabbed chat window and single window modes; support
 for group chat (with Multi-User Chat protocol), invitation, chat to group chat
 transformation; audio and video conferences; file transfer; TLS, GPG and
 end-to-end encryption support; XML console.")
-    (license gpl3+)))
+    (license license:gpl3+)))
+
+(define-public prosody
+  (package
+    (name "prosody")
+    (version "0.9.10")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://prosody.im/downloads/source/"
+                                  "prosody-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0bv6s5c0iizz015hh1lxlwlw1iwvisywajm2rcrbdfyrskzfwdj8"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no "check" target
+       #:configure-flags (list "--no-example-certs")
+       #:modules ((ice-9 match)
+                  (srfi srfi-1)
+                  (guix build gnu-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-configure-script
+           (lambda _
+             ;; The configure script aborts when it encounters unexpected
+             ;; arguments.  Make it more tolerant.
+             (substitute* "configure"
+               (("exit 1") ""))
+             #t))
+         (add-after 'install 'wrap-programs
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; Make sure all executables in "bin" find the required Lua
+             ;; modules at runtime.
+             (let* ((out   (assoc-ref outputs "out"))
+                    (bin   (string-append out "/bin/"))
+                    (deps  (delete #f (map (match-lambda
+                                             ((label . directory)
+                                              (if (string-prefix? "lua" label)
+                                                  directory #f)))
+                                           inputs)))
+                    (path  (string-join
+                            (map (lambda (path)
+                                   (string-append path "/share/lua/5.1/?.lua;"
+                                                  path "/share/lua/5.1/?/?.lua"))
+                                 (cons out deps))
+                            ";"))
+                    (cpath (string-join
+                            (map (lambda (path)
+                                   (string-append path "/lib/lua/5.1/?.so;"
+                                                  path "/lib/lua/5.1/?/?.so"))
+                                 (cons out deps))
+                            ";")))
+               (for-each (lambda (file)
+                           (wrap-program file
+                             `("LUA_PATH"  ";" = (,path))
+                             `("LUA_CPATH" ";" = (,cpath))))
+                         (find-files bin ".*"))
+               #t))))))
+    (inputs
+     `(("libidn" ,libidn)
+       ("openssl" ,openssl)
+       ("lua" ,lua-5.1)
+       ("lua5.1-expat" ,lua5.1-expat)
+       ("lua5.1-socket" ,lua5.1-socket)
+       ("lua5.1-filesystem" ,lua5.1-filesystem)
+       ("lua5.1-sec" ,lua5.1-sec)))
+    (home-page "https://prosody.im/")
+    (synopsis "Jabber (XMPP) server")
+    (description "Prosody is a modern XMPP communication server.  It aims to
+be easy to set up and configure, and efficient with system resources.
+Additionally, for developers it aims to be easy to extend and give a flexible
+system on which to rapidly develop added functionality, or prototype new
+protocols.")
+    (license license:x11)))
+
+(define-public libtoxcore
+  (let ((revision "1")
+        (commit "755f084e8720b349026c85afbad58954cb7ff1d4"))
+    (package
+      (name "libtoxcore")
+      (version (string-append "0.0.0" "-"
+                              revision "."(string-take commit 7)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/irungentoo/toxcore.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "0ap1gvlyihnfivv235dbrgsxsiiz70bhlmlr5gn1027w3h5kqz8w"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("libtool" ,libtool)
+         ;; TODO: Add when test suite is capable of passing.
+         ;; ("check" ,check)
+         ("pkg-config" ,pkg-config)))
+      (inputs
+       `(("libsodium" ,libsodium)
+         ("opus" ,opus)
+         ("libvpx" ,libvpx)))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'autoconf
+             (lambda _
+               (zero? (system* "autoreconf" "-vfi")))))
+         #:tests? #f)) ; FIXME: Testsuite fails, reasons unspecific.
+      (synopsis "Library for the Tox encrypted messenger protocol")
+      (description
+       "C library implementation of the Tox encrypted messenger protocol.")
+      (license license:gpl3+)
+      (home-page "https://tox.chat"))))
+
+(define-public utox
+  (package
+   (name "utox")
+   (version "0.9.8")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (string-append "https://github.com/GrayHatter/uTox/archive/v"
+                         version ".tar.gz"))
+     (file-name (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32
+       "13hfqbwzcgvfbvf9yjm62aqsvxnpqppb50c88sys43m7022yqcsy"))))
+   (build-system gnu-build-system)
+   (arguments
+    '(#:make-flags (list (string-append "PREFIX=" %output)
+                         "CC=gcc")
+      #:tests? #f ; No tests
+      #:phases
+      (modify-phases %standard-phases
+        ;; No configure script
+        (delete 'configure))))
+   (inputs
+    `(("dbus" ,dbus)
+      ("filteraudio" ,filteraudio)
+      ("fontconfig" ,fontconfig)
+      ("freetype" ,freetype)
+      ("libsodium" ,libsodium)
+      ("libtoxcore" ,libtoxcore)
+      ("libvpx" ,libvpx)
+      ("libx11" ,libx11)
+      ("libxext" ,libxext)
+      ("libxrender" ,libxrender)
+      ("openal" ,openal)
+      ("v4l-utils" ,v4l-utils)))
+   (native-inputs
+    `(("pkg-config" ,pkg-config)))
+   (synopsis "Lightweight Tox client")
+   (description "A  lightweight Tox client.  Tox is a distributed and secure
+instant messenger with audio and video chat capabilities.")
+   (home-page "http://utox.org/")
+   (license license:gpl3)))
+
+(define-public pybitmessage
+  (package
+    (name "pybitmessage")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/Bitmessage/"
+                           "PyBitmessage/archive/v" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1ffj7raxpp277kphj98190fxrwfx16vmbspk7k3azg3bh5f5idnf"))))
+    (inputs
+     `(("python" ,python-2)
+       ("python:tk" ,python-2 "tk")
+       ("openssl" ,openssl)
+       ("sqlite" ,sqlite)
+       ("qt" ,qt-4)
+       ("python2-pyqt-4" ,python2-pyqt-4)
+       ("python2-sip" ,python2-sip)
+       ("python2-pysqlite" ,python2-pysqlite)
+       ("python2-pyopenssl" ,python2-pyopenssl)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:imported-modules ((guix build python-build-system)
+                           ,@%gnu-build-system-modules)
+       #:make-flags (list (string-append "PREFIX="
+                                         (assoc-ref %outputs "out")))
+       #:tests? #f ; no test target
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'fix-makefile
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("mkdir -p \\$\\{DESTDIR\\}/usr") "")
+               (("/usr/local") "")
+               (("/usr") "")
+               (("#!/bin/sh") (string-append "#!" (which "bash")))
+               (("python2") (which "python"))
+               (("/opt/openssl-compat-bitcoin/lib/")
+                (string-append (assoc-ref inputs "openssl") "/lib/")))
+             #t))
+         (add-after 'unpack 'fix-unmatched-python-shebangs
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/bitmessagemain.py"
+               (("#!/usr/bin/env python2.7")
+                (string-append "#!" (which "python"))))
+             (substitute* "src/bitmessagecli.py"
+               (("#!/usr/bin/env python2.7.x")
+                (string-append "#!" (which "python"))))
+             #t))
+         (add-after 'unpack 'fix-depends
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/depends.py"
+               (("libcrypto.so")
+                (string-append (assoc-ref inputs "openssl")
+                               "/lib/libcrypto.so")))
+             #t))
+         (add-after 'unpack 'fix-local-files-in-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "src/proofofwork.py"
+               (("bitmsghash.so")
+                (string-append (assoc-ref outputs "out")
+                               "/lib/bitmsghash.so")))
+             #t))
+         (add-after 'unpack 'fix-pyelliptic
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/pyelliptic/openssl.py"
+               (("libcrypto.so")
+                (string-append (assoc-ref inputs "openssl")
+                               "/lib/libcrypto.so"))
+               (("libssl.so")
+                (string-append (assoc-ref inputs "openssl")
+                               "/lib/libssl.so")))
+             #t))
+         ;; XXX: Make does not build and install bitmsghash, do it
+         ;; and place it in /lib.
+         (add-before 'build 'build-and-install-bitmsghash
+           (lambda* (#:key outputs #:allow-other-keys)
+             (chdir "src/bitmsghash")
+             (system* "make")
+             (chdir "../..")
+             (install-file "src/bitmsghash/bitmsghash.so"
+                           (string-append (assoc-ref outputs "out") "/lib"))
+             #t))
+         (add-after 'install 'wrap
+           (@@ (guix build python-build-system) wrap)))))
+    (license license:expat)
+    (description
+     "Distributed and trustless peer-to-peer communications protocol
+for sending encrypted messages to one person or many subscribers.")
+    (synopsis "Distributed peer-to-peer communication")
+    (home-page "https://bitmessage.org/")))
 
 ;;; messaging.scm ends here

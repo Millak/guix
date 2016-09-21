@@ -26,6 +26,8 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
@@ -40,6 +42,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages photo)
@@ -47,14 +50,13 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xorg))
 
 (define-public efl
   (package
     (name "efl")
-    (version "1.17.2")
+    (version "1.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -62,7 +64,7 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "1dpq5flygrjg931nzsr2ra8icqffzrzbs1lnrzarbpsbmgq3zacs"))))
+                "08njx6wd505as1vn0yp4mnmf6mb2v28jsipxxx4zhf78v18d2sqc"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -70,14 +72,17 @@
      `(("alsa-lib" ,alsa-lib)
        ("compositeproto" ,compositeproto)
        ("curl" ,curl)
+       ("ghostscript" ,ghostscript)
        ("giflib" ,giflib)
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
-       ("harfbuzz" ,harfbuzz)
        ("libexif" ,libexif)
        ("libjpeg" ,libjpeg)
+       ("libraw" ,libraw)
        ("librsvg" ,librsvg)
+       ("libspectre" ,libspectre)
        ("libtiff" ,libtiff)
+       ("libwebp" ,libwebp)
        ("libx11" ,libx11)
        ("libxcomposite" ,libxcomposite)
        ("libxcursor" ,libxcursor)
@@ -90,10 +95,12 @@
        ("libxrandr" ,libxrandr)
        ("libxscrnsaver" ,libxscrnsaver)
        ("libxtst" ,libxtst)
+       ("lz4" ,lz4)
        ("mesa" ,mesa)
+       ("openjpeg" ,openjpeg-1)
+       ("poppler" ,poppler)
        ("printproto" ,printproto)
        ("scrnsaverproto" ,scrnsaverproto)
-       ("valgrind" ,valgrind)
        ("xextproto" ,xextproto)
        ("xinput" ,xinput)
        ("xpr" ,xpr)
@@ -102,29 +109,30 @@
      ;; All these inputs are in package config files in section
      ;; Require.private.
      `(("bullet" ,bullet) ; ephysics.pc
-       ("dbus" ,dbus) ; eldbus.pc
+       ("dbus" ,dbus) ; eldbus.pc, elementary.pc, elocation.pc, ethumb_client.pc
        ("eudev" ,eudev) ; eeze.pc
-       ("fontconfig" ,fontconfig) ; evas.pc
-       ("freetype" ,freetype) ; evas.pc
-       ("fribidi" ,fribidi) ; evas.pc
-       ("glib" ,glib) ; ecore.pc
+       ("fontconfig" ,fontconfig) ; evas.pc, evas-cxx.pc
+       ("freetype" ,freetype) ; evas.pc, evas-cxx.pc
+       ("fribidi" ,fribidi) ; evas.pc, evas-cxx.pc
+       ("glib" ,glib) ; ecore.pc, ecore-cxx.pc
+       ("harfbuzz" ,harfbuzz) ; evas.pc, evas-cxx.pc
+       ("luajit" ,luajit) ; elua.pc, evas.pc, evas-cxx.pc
        ("libpng" ,libpng) ; evas.pc, evas-cxx.pc
        ("libsndfile" ,libsndfile) ; ecore-audio.pc, ecore-audio-cxx.pc
-       ("luajit" ,luajit) ; evas.pc, edje.pc
-       ("openssl" ,openssl) ; eet.pc, ecore-con.pc
+       ("openssl" ,openssl) ; ecore-con.pc, eet.pc, eet-cxx.pc, emile.pc
        ("pulseaudio" ,pulseaudio) ; ecore-audio.pc, ecore-audio-cxx.pc
        ("util-linux" ,util-linux) ; eeze.pc
-       ("zlib" ,zlib))) ; eet.pc
+       ("zlib" ,zlib))) ; eet.pc, eet-cxx.pc, emile.pc
     (arguments
-     `(#:configure-flags '("--disable-silent-rules")
-       #:phases
-       (alist-cons-before
-        'configure 'patch-config-files
-        (lambda _
-          (substitute* "po/Makefile.in.in"
-            (("/bin/sh") (which "bash"))))
-        %standard-phases)))
-    (home-page "http://www.enlightenment.org")
+     `(#:configure-flags '("--disable-silent-rules"
+                           "--enable-liblz4"
+                           "--enable-xinput22"
+                           "--enable-image-loader-webp"
+                           "--enable-multisense"
+                           "--with-opengl=es"
+                           "--enable-egl"
+                           "--enable-harfbuzz")))
+    (home-page "https://www.enlightenment.org")
     (synopsis "Enlightenment Foundation Libraries")
     (description
      "Enlightenment Foundation Libraries is a set of libraries developed
@@ -133,90 +141,6 @@ graphics rendering, UI layout and themes, interaction with OS, access to
 removable devices or support for multimedia.")
     ;; Different parts are under different licenses.
     (license (list license:bsd-2 license:lgpl2.1 license:zlib))))
-
-(define-public elementary
-  (package
-    (name "elementary")
-    (version "1.17.1")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://download.enlightenment.org/rel/libs/"
-                              "elementary/elementary-" version ".tar.xz"))
-              (sha256
-               (base32
-                "149xjq4z71l44w1kd8zks9b2g0wjc9656w46hzd27b58afj1dqc5"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (propagated-inputs
-     `(("efl" ,efl))) ; elementary.pc, elementary-cxx.pc
-    (home-page "http://www.enlightenment.org")
-    (synopsis "Widget library of Enlightenment world")
-    (description
-     "Elementary is a widget library/toolkit, part of the Enlightenment
-Foundation  Libraries.  It is build upon Edje and Evas libraries and uses
-full capabilities of EFL.")
-    (license license:lgpl2.1)))
-
-(define-public evas-generic-loaders
-  (package
-    (name "evas-generic-loaders")
-    (version "1.17.0")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append
-                "https://download.enlightenment.org/rel/libs/"
-                "evas_generic_loaders/evas_generic_loaders-"
-                version ".tar.xz"))
-              (sha256
-               (base32
-                "0ynq1nx0bfgg19p4vki1fap36yyip53zaxpzncx2slr6jcx1kxf2"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (inputs
-     `(("efl" ,efl)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("librsvg" ,librsvg)
-       ("libspectre" ,libspectre)
-       ("poppler" ,poppler)))
-    (home-page "http://www.enlightenment.org")
-    (synopsis "Plugins for integration of various file types into Evas")
-    (description
-     "Evas-generic-loaders is a collection of interfaces to outside libraries
-and applications allowing to natively open pictures, documents and media
-files in Evas (EFL canvas library).")
-    (license license:gpl2+)))
-
-(define-public emotion-generic-players
-  (package
-    (name "emotion-generic-players")
-    (version "1.17.0")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://download.enlightenment.org/rel/libs/"
-                              "emotion_generic_players/emotion_generic_players"
-                              "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "03kaql95mk0c5j50v3c5i5lmlr3gz7xlh8p8q87xz8zf9j5h1pp7"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (inputs
-     `(("efl" ,efl)
-       ("vlc" ,vlc)))
-    (home-page "http://www.enlightenment.org")
-    (synopsis "Plugins for integrating media players in EFL based applications")
-    (description
-     "Emotion-generic-players is a collection of interfaces to outside libraries
-and applications allowing to natively play video files through Emotion.
-The only supported now is VLC.")
-    (license license:bsd-2)))
 
 (define-public terminology
   (package
@@ -234,9 +158,8 @@ The only supported now is VLC.")
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("efl" ,efl)
-       ("elementary" ,elementary)))
-    (home-page "http://www.enlightenment.org")
+     `(("efl" ,efl)))
+    (home-page "https://www.enlightenment.org")
     (synopsis "Powerful terminal emulator based on EFL")
     (description
      "Terminology is fast and feature rich terminal emulator.  It is solely
@@ -248,21 +171,21 @@ contents and more.")
 (define-public rage
   (package
     (name "rage")
-    (version "0.1.4")
+    (version "0.2.1")
     (source (origin
               (method url-fetch)
               (uri
                (string-append
                 "https://download.enlightenment.org/rel/apps/rage/rage-"
-                version ".tar.gz"))
+                version ".tar.xz"))
               (sha256
-               (base32 "10j3n8crk16jzqz2hn5djx6vms5f6x83qyiaphhqx94h9dgv2mgg"))))
+               (base32
+                "06kbgcnbhl9clhdl7k983m4d0n6ggsl4qvizzi1nrp8c7np87fix"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("efl" ,efl)
-       ("elementary" ,elementary)))
+     `(("efl" ,efl)))
     (home-page "https://www.enlightenment.org/about-rage")
     (synopsis "Video and audio player based on EFL")
     (description
@@ -273,7 +196,7 @@ Libraries with some extra bells and whistles.")
 (define-public enlightenment
   (package
     (name "enlightenment")
-    (version "0.21.0")
+    (version "0.21.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -281,25 +204,22 @@ Libraries with some extra bells and whistles.")
                               name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0p85dmk9ysbf9y7vlc92z7495mh9l860xj3s8pspy9mscv3dnwg9"))))
+                "0fi5dxrprnvhnn2y51gnfpsjj44snriqi20k20a73vhaqxfn8xx8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-mount-eeze")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("gettext" ,gnu-gettext)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("dbus" ,dbus)
+       ("efl" ,efl)
        ("freetype" ,freetype)
-       ("gettext" ,gnu-gettext)
        ("libxcb" ,libxcb)
        ("libxext" ,libxext)
        ("linux-pam" ,linux-pam)
        ("xcb-util-keysyms" ,xcb-util-keysyms)))
-    (propagated-inputs
-     ;; both these inputs are present in pkgconfig file in Require section
-     `(("efl" ,efl) ; enlightenment.pc
-       ("elementary" ,elementary))) ; enlightenment.pc
     (home-page "https://www.enlightenment.org")
     (synopsis "Lightweight desktop environment")
     (description
@@ -312,14 +232,14 @@ embedded systems.")
 (define-public python-efl
   (package
     (name "python-efl")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "python-efl" version))
         (sha256
          (base32
-          "1ihay90agl2jx12m7jj8j1cspd7vsak1w7q95rhb6r2srkq0ppxk"))))
+          "0x49rb7mx7ysjp23m919r2rx8qnl4xackhl9s9x2697m7cs77n1r"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -338,7 +258,6 @@ embedded systems.")
        ("python-cython" ,python-cython)))
     (inputs
      `(("efl" ,efl)
-       ("elementary" ,elementary)
        ("python-dbus" ,python-dbus)))
     (home-page "https://www.enlightenment.org/")
     (synopsis "Python bindings for EFL")
@@ -349,3 +268,33 @@ Libraries stack (eo, evas, ecore, edje, emotion, ethumb and elementary).")
 
 (define-public python2-efl
   (package-with-python2 python-efl))
+
+(define-public edi
+  (package
+    (name "edi")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://github.com/ajwillia-ms/edi/releases/"
+                            "download/v" version "/edi-" version ".tar.bz2"))
+        (sha256
+         (base32
+          "0qczz5psryxasphg5km95845h510237rf0k1dy8f0dad52ii90j1"))))
+    (build-system gnu-build-system)
+    (arguments '(#:configure-flags '("--with-tests=coverage")))
+    (native-inputs
+     `(("check" ,check)
+       ("lcov" ,lcov)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("clang" ,clang)
+       ("efl" ,efl)))
+    (home-page "https://www.enlightenment.org/about-edi")
+    (synopsis "Development environment for Enlightenment")
+    (description "EDI is a development environment designed for and built using
+the EFL.  It's aim is to create a new, native development environment for Linux
+that tries to lower the barrier to getting involved in Enlightenment development
+and in creating applications based on the Enlightenment Foundation Library suite.")
+    (license (list license:public-domain ; data/extra/skeleton
+                   license:gpl2))))      ; edi

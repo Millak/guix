@@ -3,6 +3,8 @@
 ;;; Copyright © 2015, 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Kei Kebreau <kei@openmailbox.org>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
+;;; Copyright © 2016 Stefan Reichoer <stefan@xsteve.at>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +27,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build utils)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
   #:use-module (gnu packages base)
@@ -33,7 +36,8 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages python)
+  #:use-module (srfi srfi-26))
 
 (define-public libical
   (package
@@ -80,42 +84,16 @@ data units.")
 (define-public khal
   (package
     (name "khal")
-    (version "0.7.0")
+    (version "0.8.3")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "khal" version))
              (sha256
               (base32
-               "00llxj7cv31mjsx0j6zxmyi9s1q20yvfkn025xcy8cv1ylfwic66"))
-             (modules '((guix build utils)))
-             ;; Patch broken path in 'doc' Makefile.
-             ;; Patch sent upstream: https://github.com/geier/khal/pull/307
-             (snippet
-               '(substitute* "doc/source/Makefile"
-                 (("../../../khal/khal/settings/khal.spec")
-                  "../../khal/settings/khal.spec" )))))
+               "1qryqs5d8jsl7j22pjjfkfdi4m8m3nn3n44b890pq85xkw599ihy"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-        (add-after 'unpack 'disable-tests
-          (lambda _
-            ;; Bug reported for test_only_update_old_event:
-            ;; https://github.com/geier/khal/issues/309
-            (substitute* "tests/khalendar_test.py"
-                         (("test_only_update_old_event")
-                           "disabled_only_update_old_event"))
-
-            ;; Bug reported for test_dt_two_tz:
-            ;; https://github.com/pimutils/khal/issues/382
-            (substitute* "tests/event_test.py"
-                         (("test_dt_two_tz")
-                           "disabled_dt_two_tz"))
-            ;; Another timezone / DST issue:
-            ;; https://github.com/pimutils/khal/issues/146
-            (substitute* "tests/event_test.py"
-                         (("test_raw_dt")
-                           "disabled_raw_dt"))))
-
         ;; Building the manpage requires khal to be installed.
         (add-after 'install 'manpage
           (lambda* (#:key outputs #:allow-other-keys)
@@ -136,9 +114,11 @@ data units.")
             (zero? (system* "py.test" "tests")))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)
+       ("python-pytest-cov" ,python-pytest-cov)
        ("python-setuptools-scm" ,python-setuptools-scm)
        ;; Required for tests
        ("tzdata" ,tzdata)
+       ("python-freezegun" ,python-freezegun)
        ;; Required to build manpage
        ("python-sphinxcontrib-newsfeed" ,python-sphinxcontrib-newsfeed)
        ("python-sphinx" ,python-sphinx)))
@@ -157,3 +137,53 @@ data units.")
 able to synchronize with CalDAV servers through vdirsyncer.")
     (home-page "http://lostpackets.de/khal/")
     (license expat)))
+
+(define-public remind
+  (package
+    (name "remind")
+    (version "3.1.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.roaringpenguin.com/files/download/"
+                           "remind-"
+                           (string-join (map (cut string-pad <> 2 #\0)
+                                             (string-split version #\.))
+                                        ".")
+                           ".tar.gz"))
+       (sha256
+        (base32
+         "1hcfcxz5fjzl7606prlb7dgls5kr8z3wb51h48s6qm8ang0b9nla"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f))  ;no "check" target
+    (home-page "http://www.roaringpenguin.com/products/remind/")
+    (synopsis "Sophisticated calendar and alarm program")
+    (description
+     "Remind allows you to remind yourself of upcoming events and appointments.
+Each reminder or alarm can consist of a message sent to standard output, or a
+program to be executed.  It also features: sophisticated date calculation,
+moon phases, sunrise/sunset, Hebrew calendar, alarms, PostScript output and
+proper handling of holidays.")
+    (license gpl2)))
+
+(define-public libhdate
+  (package
+    (name "libhdate")
+    (version "1.6.02")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://sourceforge/libhdate/libhdate/libhdate-"
+                            version "/" name "-" version ".tar.bz2"))
+        (sha256
+         (base32
+          "0qkpq412p78znw8gckwcx3l0wcss9s0dgw1pvjb1ih2pxf6hm4rw"))))
+    (build-system gnu-build-system)
+    (home-page "http://libhdate.sourceforge.net/")
+    (synopsis "Library to use Hebrew dates")
+    (description "LibHdate is a small library for the Hebrew calendar and times
+of day, written in C, and including bindings for C++, pascal, perl, php, python,
+and ruby.  It includes two illustrative command-line programs, @code{hcal} and
+@code{hdate}, and some snippets and scripts written in the binding languages.")
+    (license gpl3+)))

@@ -10,6 +10,8 @@
 ;;; Coypright © 2016 ng0 <ng0@we.make.ritual.n0.is>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
+;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
+;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,15 +92,7 @@
                         "-Dinstallstyle=lib/perl5"
                         "-Duseshrplib"
                         (string-append "-Dlocincpth=" libc "/include")
-                        (string-append "-Dloclibpth=" libc "/lib")
-
-                        ;; Force the library search path to contain only libc
-                        ;; because it is recorded in Config.pm and
-                        ;; Config_heavy.pl; we don't want to keep a reference
-                        ;; to everything that's in $LIBRARY_PATH at build
-                        ;; time (Binutils, bzip2, file, etc.)
-                        (string-append "-Dlibpth=" libc "/lib")
-                        (string-append "-Dplibpth=" libc "/lib"))))))
+                        (string-append "-Dloclibpth=" libc "/lib"))))))
 
          (add-before
           'strip 'make-shared-objects-writable
@@ -109,7 +103,34 @@
                    (lib (string-append out "/lib")))
               (for-each (lambda (dso)
                           (chmod dso #o755))
-                        (find-files lib "\\.so$"))))))))
+                        (find-files lib "\\.so$")))))
+
+         (add-after 'install 'remove-extra-references
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out     (assoc-ref outputs "out"))
+                    (libc    (assoc-ref inputs "libc"))
+                    (config1 (car (find-files (string-append out "/lib/perl5")
+                                              "^Config_heavy\\.pl$")))
+                    (config2 (find-files (string-append out "/lib/perl5")
+                                         "^Config\\.pm$")))
+               ;; Force the library search path to contain only libc because
+               ;; it is recorded in Config.pm and Config_heavy.pl; we don't
+               ;; want to keep a reference to everything that's in
+               ;; $LIBRARY_PATH at build time (GCC, Binutils, bzip2, file,
+               ;; etc.)
+               (substitute* config1
+                 (("^incpth=.*$")
+                  (string-append "incpth='" libc "/include'\n"))
+                 (("^(libpth|plibpth|libspath)=.*$" _ variable)
+                  (string-append variable "='" libc "/lib'\n")))
+
+               (for-each (lambda (file)
+                           (substitute* config2
+                             (("libpth => .*$")
+                              (string-append "libpth => '" libc
+                                             "/lib',\n"))))
+                         config2)
+               #t))))))
     (native-search-paths (list (search-path-specification
                                 (variable "PERL5LIB")
                                 (files '("lib/perl5/site_perl")))))
@@ -222,6 +243,27 @@ configuration files and parsing command line arguments.")
     (description "The Archive::Zip module allows a Perl program to create,
 manipulate, read, and write Zip archive files.")
     (home-page "http://search.cpan.org/~phred/Archive-Zip-1.37/lib/Archive/Zip.pm")
+    (license (package-license perl))))
+
+(define-public perl-array-utils
+  (package
+    (name "perl-array-utils")
+    (version "0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/Z/ZM/ZMIJ/Array/Array-Utils-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0w1pwvnjdpb0n6k07zbknxwx6v7y75p4jxrs594pjhwvrmzippc9"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/Array-Utils")
+    (synopsis "Small utils for array manipulation")
+    (description "@code{Array::Utils} is a small pure-perl module containing
+list manipulation routines.")
     (license (package-license perl))))
 
 (define-public perl-base
@@ -362,7 +404,7 @@ in web applications to store data locally to save repeated and redundant
 expensive calls to remote machines or databases.  People have also been known
 to use Cache::Cache for its straightforward interface in sharing data between
 runs of an application or invocations of a CGI-style script or simply as an
-easy to use abstraction of the filesystem or shared memory.")
+easy to use abstraction of the file system or shared memory.")
     (license (package-license perl))))
 
 (define-public perl-cache-fastmmap
@@ -657,6 +699,27 @@ subclasses and can be overridden.")
     (synopsis "Class for easy date and time manipulation")
     (description "This module provides a general-purpose date and datetime
 type for perl.")
+    (license (package-license perl))))
+
+(define-public perl-class-errorhandler
+  (package
+    (name "perl-class-errorhandler")
+    (version "0.04")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/T/TO/TOKUHIROM/"
+                                  "Class-ErrorHandler-" version ".tar.gz"))
+              (sha256
+               (base32
+                "00j5f0z4riyq7i95jww291dpmbn0hmmvkcbrh7p0p8lpqz7jsb9l"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/Class-ErrorHandler")
+    (synopsis "Base class for error handling")
+    (description
+     "@code{Class::ErrorHandler} provides an error-handling mechanism that is generic
+enough to be used as the base class for a variety of OO classes.  Subclasses inherit
+its two error-handling methods, error and errstr, to communicate error messages back
+to the calling program.")
     (license (package-license perl))))
 
 (define-public perl-class-factory-util
@@ -1730,6 +1793,53 @@ to create DateTime objects, with some custom tweaks to smooth out the rough
 edges (mainly concerning timezone detection and selection).")
     (license (package-license perl))))
 
+(define-public perl-datetime-format-mail
+  (package
+    (name "perl-datetime-format-mail")
+    (version "0.403")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/B/BO/BOOK/"
+                                  "DateTime-Format-Mail-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1c7wapbi9g9p2za52l3skhh31vg4da5kx2yfqzsqyf3p8iff7y4d"))))
+    (build-system perl-build-system)
+    (inputs
+     `(("perl-datetime" ,perl-datetime)
+       ("perl-params-validate" ,perl-params-validate)))
+    (home-page "http://search.cpan.org/dist/DateTime-Format-Mail")
+    (synopsis "Convert between DateTime and RFC2822/822 formats")
+    (description "RFCs 2822 and 822 specify date formats to be used by email.
+This module parses and emits such dates.")
+    (license (package-license perl))))
+
+(define-public perl-datetime-format-w3cdtf
+  (package
+    (name "perl-datetime-format-w3cdtf")
+    (version "0.06")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/G/GW/GWILLIAMS/"
+                                  "DateTime-Format-W3CDTF-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ymxizwd2zfx8b4bmrmv4k439qwfwf2522jrvn4hlay5v6z459dr"))))
+    (build-system perl-build-system)
+    (inputs
+     `(("perl-datetime" ,perl-datetime)))
+    (native-inputs
+     `(("perl-test-pod" ,perl-test-pod)
+       ("perl-test-pod-coverage" ,perl-test-pod-coverage)))
+    (home-page "http://search.cpan.org/dist/DateTime-Format-W3CDTF")
+    (synopsis "Parse and format W3CDTF datetime strings")
+    (description
+     "This module understands the W3CDTF date/time format, an ISO 8601 profile,
+defined at https://www.w3.org/TR/NOTE-datetime.  This format is the native date
+format of RSS 1.0.  It can be used to parse these formats in order to create
+the appropriate objects.")
+    (license (package-license perl))))
+
 (define-public perl-devel-caller
   (package
     (name "perl-devel-caller")
@@ -1911,7 +2021,7 @@ each stack frame.")
 (define-public perl-devel-symdump
   (package
     (name "perl-devel-symdump")
-    (version "2.14")
+    (version "2.17")
     (source
      (origin
        (method url-fetch)
@@ -1919,7 +2029,7 @@ each stack frame.")
                            "Devel-Symdump-" version ".tar.gz"))
        (sha256
         (base32
-         "1phyyxgxsymgzbjd524zlaavvay6vjw34af5zn9153qffqign54v"))))
+         "0qkfjk7bm7jwn9d9qaldg298zvkqh2f19fgvfh5j1rp66mwzql1c"))))
     (build-system perl-build-system)
     (home-page "http://search.cpan.org/dist/Devel-Symdump")
     (synopsis "Dump symbol names or the symbol table")
@@ -1984,6 +2094,29 @@ SHA-1 message digest algorithm for use by Perl programs.")
     (synopsis "Declare version conflicts for your dist")
     (description "This module allows you to specify conflicting versions of
 modules separately and deal with them after the module is done installing.")
+    (license (package-license perl))))
+
+(define-public perl-env-path
+  (package
+    (name "perl-env-path")
+    (version "0.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DS/DSB/Env-Path-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "1qhmj15a66h90pjl2dgnxsb9jj3b1r5mpvnr87cafcl8g69z0jr4"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/Env-Path")
+    (synopsis "Advanced operations on path variables")
+    (description "@code{Env::Path} presents an object-oriented interface to
+path variables, defined as that subclass of environment variables which name
+an ordered list of file system elements separated by a platform-standard
+separator.")
     (license (package-license perl))))
 
 (define-public perl-error
@@ -2261,6 +2394,29 @@ types Perl-related files, or replicating search queries run on a distribution
 in various parts of the CPAN ecosystem.")
     (license (package-license perl))))
 
+(define-public perl-file-grep
+  (package
+    (name "perl-file-grep")
+    (version "0.02")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MN/MNEYLON/File-Grep-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0cjnz3ak7s3x3y3q48xb9ka2q9d7xvch58vy80hqa9xn9qkiabj6"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/File-Grep")
+    (synopsis "Matches patterns in a series of files")
+    (description "@code{File::Grep} provides similar functionality as perl's
+builtin @code{grep}, @code{map}, and @code{foreach} commands, but iterating
+over a passed filelist instead of arrays.  While trivial, this module can
+provide a quick dropin when such functionality is needed.")
+    (license (package-license perl))))
+
 (define-public perl-file-homedir
   (package
     (name "perl-file-homedir")
@@ -2284,6 +2440,28 @@ in various parts of the CPAN ecosystem.")
 are \"owned\" by a user (typically your user) and to solve the various issues
 that arise trying to find them consistently across a wide variety of
 platforms.")
+    (license (package-license perl))))
+
+(define-public perl-file-path
+  (package
+    (name "perl-file-path")
+    (version "2.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/R/RI/RICHE/File-Path-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0znihrlcnlpa0ziml0hkq9s59p1bjd2a6khgx2accdf16w6imxmv"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/File-Path")
+    (synopsis "Create or remove directory trees")
+    (description "This module provide a convenient way to create directories
+of arbitrary depth and to delete an entire directory subtree from the
+file system.")
     (license (package-license perl))))
 
 (define-public perl-file-list
@@ -2401,6 +2579,29 @@ allows you to locate these files after installation.")
     (description "File::Slurp provides subroutines to read or write entire
 files with a simple call.  It also has a subroutine for reading the list of
 file names in a directory.")
+    (license (package-license perl))))
+
+(define-public perl-file-slurper
+  (package
+    (name "perl-file-slurper")
+    (version "0.008")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/L/LE/LEONT/File-Slurper-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0cyjspspms6zyjcqz9v18dbs574g085h2jzjh41xvsrc1qa8bxhh"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+     `(("perl-perlio-utf8_strict" ,perl-perlio-utf8_strict)))
+    (home-page "http://search.cpan.org/dist/File-Slurper")
+    (synopsis "Simple, sane and efficient module to slurp a file")
+    (description "This module provides functions for fast and correct file
+slurping and spewing.  All functions are optionally exported.")
     (license (package-license perl))))
 
 (define-public perl-file-slurp-tiny
@@ -2529,6 +2730,27 @@ usage (help) messages, data validation, and a few other useful features.")
 vaguely inspired by John Ousterhout's Tk_ParseArgv.")
     (home-page (string-append "http://search.cpan.org/~gward/"
                               "Getopt-Tabular-" version))
+    (license (package-license perl))))
+
+(define-public perl-graph
+  (package
+    (name "perl-graph")
+    (version "0.9704")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/J/JH/JHI/Graph-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "099a1gca0wj5zs0cffncjqp2mjrdlk9i6325ks89ml72gfq8wpij"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/Graph")
+    (synopsis "Graph data structures and algorithms")
+    (description "This is @code{Graph}, a Perl module for dealing with graphs,
+the abstract data structures.")
     (license (package-license perl))))
 
 (define-public perl-guard
@@ -2937,6 +3159,85 @@ either uses the first module it finds or throws an error.")
     (synopsis "JSON serialising/deserialising for Perl")
     (description "This module converts Perl data structures to JSON and vice
 versa.")
+    (license (package-license perl))))
+
+(define-public perl-log-any
+  (package
+    (name "perl-log-any")
+    (version "1.040")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/D/DA/DAGOLDEN/Log-Any-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "0r1q7cclgwl24gzdnjzvd8y0r7j17dngjk492x35w198zhdj2ncp"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/Log-Any")
+    (synopsis "Bringing loggers and listeners together")
+    (description "@code{Log::Any} provides a standard log production API for
+modules.  @code{Log::Any::Adapter} allows applications to choose the mechanism
+for log consumption, whether screen, file or another logging mechanism like
+@code{Log::Dispatch} or @code{Log::Log4perl}.
+
+A CPAN module uses @code{Log::Any} to get a log producer object.  An
+application, in turn, may choose one or more logging mechanisms via
+@code{Log::Any::Adapter}, or none at all.
+
+@code{Log::Any} has a very tiny footprint and no dependencies beyond Perl
+itself, which makes it appropriate for even small CPAN modules to use.  It
+defaults to 'null' logging activity, so a module can safely log without
+worrying about whether the application has chosen (or will ever choose) a
+logging mechanism.")
+    (license (package-license perl))))
+
+(define-public perl-log-any-adapter-log4perl
+  (package
+    (name "perl-log-any-adapter-log4perl")
+    (version "0.08")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DA/DAGOLDEN/Log-Any-Adapter-Log4perl-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0xf4fnrsznvg0hf36q481124ja1hp3lybki1xjgnk82z9990jmxn"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+     `(("perl-log-any" ,perl-log-any)
+       ("perl-log-log4perl" ,perl-log-log4perl)))
+    (home-page
+     "http://search.cpan.org/dist/Log-Any-Adapter-Log4perl")
+    (synopsis "Log::Any adapter for Log::Log4perl")
+    (description "@code{Log::Any::Adapter::Log4perl} provides a
+@code{Log::Any} adapter using @code{Log::Log4perl} for logging.")
+    (license (package-license perl))))
+
+(define-public perl-log-log4perl
+  (package
+    (name "perl-log-log4perl")
+    (version "1.47")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MS/MSCHILLI/Log-Log4perl-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0vxraq9navx5mgf8y8g6l5rbl3dv2ml8bishka5m69hj07nxs0ch"))))
+    (build-system perl-build-system)
+    (home-page
+     "http://search.cpan.org/dist/Log-Log4perl")
+    (synopsis "Log4j implementation for Perl")
+    (description "@code{Log::Log4perl} lets you remote-control and fine-tune
+the logging behaviour of your system from the outside.  It implements the
+widely popular (Java-based) Log4j logging package in pure Perl.")
     (license (package-license perl))))
 
 (define-public perl-log-report-optional
@@ -4065,6 +4366,28 @@ cycle.  Functions called in the package itself will still be bound by their
 name, but they won't show up as methods on your class or instances.")
     (license (package-license perl))))
 
+(define-public perl-net-statsd
+  (package
+   (name "perl-net-statsd")
+   (version "0.12")
+   (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+            "mirror://cpan/authors/id/C/CO/COSIMO/Net-Statsd-"
+            version
+            ".tar.gz"))
+      (sha256
+       (base32
+        "0p2nhrwamic2fyj094y583q088ixv9gbb82c3invqrd17mh57r33"))))
+   (build-system perl-build-system)
+   (home-page
+    "http://search.cpan.org/dist/Net-Statsd")
+   (synopsis "Perl client for Etsy's statsd daemon")
+   (description "This module implement a UDP client for the statsd statistics
+collector daemon in use at Etsy.com.")
+   (license (package-license perl))))
+
 (define-public perl-number-compare
   (package
     (name "perl-number-compare")
@@ -4333,6 +4656,31 @@ up inheritance from those modules at the same time.")
     (description "Path::Class is a module for manipulation of file and
 directory specifications in a cross-platform manner.")
     (license (package-license perl))))
+
+(define-public perl-path-tiny
+  (package
+    (name "perl-path-tiny")
+    (version "0.096")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/D/DA/DAGOLDEN/"
+                                  "Path-Tiny-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08dmr6ijjg3dp7h9dxix0nmad0fw16c6qzs4qc0hdz500gd64sr2"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:tests? #f)) ; Tests require additional test modules to be packaged
+    ;; (native-inputs
+    ;;  `(("perl-test-failwarnings" ,perl-test-failwarnings)
+    ;;    ("perl-test-mockrandom" ,perl-test-mockrandom)))
+    (inputs
+     `(("perl-unicode-utf8" ,perl-unicode-utf8)))
+    (home-page "http://search.cpan.org/dist/Path-Tiny")
+    (synopsis "File path utility")
+    (description "This module provides a small, fast utility for working
+with file paths.")
+    (license asl2.0)))
 
 (define-public perl-perlio-utf8_strict
   (package
@@ -5353,6 +5701,31 @@ Test::Exception.  It does much less, but should allow greater flexibility in
 testing exception-throwing code with about the same amount of typing.")
     (license (package-license perl))))
 
+(define-public perl-test-files
+  (package
+    (name "perl-test-files")
+    (version "0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/P/PH/PHILCROW/Test-Files-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "1zn33yigznq7i1jr4yjr4lxvc6bn7znkbqdzj7slhc146pqapkln"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+     `(("perl-algorithm-diff" ,perl-algorithm-diff)
+       ("perl-text-diff" ,perl-text-diff)))
+    (home-page "http://search.cpan.org/dist/Test-Files")
+    (synopsis "Ease software testing with files and directories")
+    (description "This library provides functions to enable testing of files
+and directories.  For instance, the @code{file_ok} helper can test whether the
+contents of a file is equal to a particular string.")
+    (license (package-license perl))))
+
 (define-public perl-test-harness
   (package
     (name "perl-test-harness")
@@ -5421,6 +5794,29 @@ detect any leaked SVs in given blocks.")
     (description "This module provides some drop-in replacements for the
 string comparison functions of Test::More, but which are more suitable when
 you test against long strings.")
+    (license (package-license perl))))
+
+(define-public perl-test-manifest
+  (package
+    (name "perl-test-manifest")
+    (version "2.02")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/B/BD/BDFOY/"
+                                  "Test-Manifest-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15ik52l9macrrfizf4y6wj71d4lx7w590h2dfajnkmbxmz786iq6"))))
+    (build-system perl-build-system)
+    (native-inputs
+     `(("perl-test-pod" ,perl-test-pod)
+       ("perl-test-pod-coverage" ,perl-test-pod-coverage)))
+    (home-page "http://search.cpan.org/dist/Test-Manifest")
+    (synopsis "Interact with a t/test_manifest file")
+    (description "@code{Test::Manifest} overrides the default test file order.  Instead of
+running all of the t/*.t files in ASCII-betical order, it looks in the t/test_manifest
+file to find out which tests you want to run and the order in which you want to run them.
+It constructs the right value for the build system to do the right thing.")
     (license (package-license perl))))
 
 (define-public perl-test-mockobject
@@ -5713,7 +6109,7 @@ a minimum of effort.")
      `(("perl-test-tester" ,perl-test-tester)
        ("perl-data-dump" ,perl-data-dump)))
     (home-page "http://search.cpan.org/dist/Test-Trap")
-    (synopsis "Trap exit codes, exceptions, output, etc.")
+    (synopsis "Trap exit codes, exceptions, output, and so on")
     (description "This module is primarily (but not exclusively) for use in
 test scripts: A block eval configurable and extensible but by default trapping
 STDOUT, STDERR, warnings, exceptions, would-be exit codes, and return values
@@ -5952,7 +6348,7 @@ generally slower on larger files.")
     (home-page "http://search.cpan.org/dist/Text-Glob")
     (synopsis "Match globbing patterns against text")
     (description "Text::Glob implements glob(3) style matching that can be
-used to match against text, rather than fetching names from a filesystem.  If
+used to match against text, rather than fetching names from a file system.  If
 you want to do full file globbing use the File::Glob module instead.")
     (license (package-license perl))))
 
@@ -6075,8 +6471,8 @@ as exceptions to standard program flow.")
     (version "20160302")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/perltidy/Perl-Tidy-"
-                                  version ".tar.gz"))
+              (uri (string-append "mirror://sourceforge/perltidy/" version
+                                  "/Perl-Tidy-" version ".tar.gz"))
               (sha256
                (base32
                 "19yw63yh5s3pq7k3nkw6nsamg5b8vvwyhgbizslgxg0mqgc4xl3d"))))
@@ -6354,6 +6750,30 @@ described in Unicode Standard Annex #14.  The @code{East_Asian_Width} property
 defined by Annex #11 is used to determine breaking positions.")
     (license (package-license perl))))
 
+(define-public perl-unicode-utf8
+  (package
+    (name "perl-unicode-utf8")
+    (version "0.60")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/C/CH/CHANSEN/"
+                                  "Unicode-UTF8-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1g3fp47slsk7wbz3189kpg342lfs7lpsy570jxnx7s9v59dg5k7n"))))
+    (build-system perl-build-system)
+    (native-inputs
+     `(("perl-test-fatal" ,perl-test-fatal)
+       ("perl-test-leaktrace" ,perl-test-leaktrace)
+       ("perl-variable-magic" ,perl-variable-magic)
+       ("perl-test-pod" ,perl-test-pod)))
+    (home-page "http://search.cpan.org/dist/Unicode-UTF8")
+    (synopsis "Encoding and decoding of UTF-8 encoding form")
+    (description
+     "This module provides functions to encode and decode UTF-8 encoding form
+as specified by Unicode and ISO/IEC 10646:2011.")
+    (license (package-license perl))))
+
 (define-public perl-universal-can
   (package
     (name "perl-universal-can")
@@ -6416,6 +6836,33 @@ it.  With this module, you can add your own magic to any variable without
 having to write a single line of XS.")
     (license (package-license perl))))
 
+(define-public perl-xml-writer
+  (package
+    (name "perl-xml-writer")
+    (version "0.625")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/J/JO/JOSEPHW/XML-Writer-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "1gjzs570i67ywbv967g8ylb5sg59clwmyrl2yix3jl70dhn55070"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/XML-Writer")
+    (synopsis "Easily generate well-formed, namespace-aware XML")
+    (description "@code{XML::Writer} is a simple Perl module for writing XML
+documents: it takes care of constructing markup and escaping data correctly.
+By default, it also performs a significant amount of well-formedness checking
+on the output to make certain (for example) that start and end tags match,
+that there is exactly one document element, and that there are not duplicate
+attribute names.")
+    ;; Redistribution and use in source and compiled forms, with or without
+    ;; modification, are permitted under any circumstances.  No warranty.
+    (license public-domain)))
+
 (define-public perl-yaml
   (package
     (name "perl-yaml")
@@ -6460,6 +6907,27 @@ on the YAML 1.0 specification.")
     (description "YAML::Tiny is a perl class for reading and writing
 YAML-style files, written with as little code as possible, reducing load time
 and memory overhead.")
+    (license (package-license perl))))
+
+(define-public perl-parse-yapp
+  (package
+    (name "perl-parse-yapp")
+    (version "1.05")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/F/FD/FDESAR/Parse-Yapp-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0azjqqf4m7nkfgmmj4q77vy9sdgg01wn8xxv40bq3pis93xnr2i2"))))
+    (build-system perl-build-system)
+    (home-page "http://search.cpan.org/dist/Parse-Yapp")
+    (synopsis "Generate and use LALR parsers")
+    (description "This package compiles yacc-like @dfn{Look Ahead LR} (LALR)
+grammars to generate Perl object oriented parser modules.")
     (license (package-license perl))))
 
 
@@ -6630,3 +7098,115 @@ such that being individual extensions would be wasteful.")
     (license (package-license perl))))
 
 ;;; END: Core module overrides
+
+(define-public perl-file-find-object
+ (package
+  (name "perl-file-find-object")
+  (version "v0.2.13")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/File-Find-Object-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "0gf13b76b824s73r5rp00v8xrd6dnb5yi5jjavfc394scqv6ldh4"))))
+  (build-system perl-build-system)
+  (native-inputs
+    `(("perl-module-build" ,perl-module-build)))
+  (inputs
+    `(("perl-class-xsaccessor" ,perl-class-xsaccessor)))
+  (home-page
+    "http://search.cpan.org/dist/File-Find-Object")
+  (synopsis
+    "Object-oriented File::Find replacement in Perl")
+  (description "File::Find::Object is an object-oriented
+File::Find replacement in Perl.")
+  (license artistic2.0)))
+
+(define-public perl-file-find-object-rule
+ (package
+  (name "perl-file-find-object-rule")
+  (version "0.0305")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/File-Find-Object-Rule-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "0hs4n3w99q4ylkhg3qhzcwkxqn7zblfj1zjdgl06ca30afkk4cv6"))))
+  (build-system perl-build-system)
+  (native-inputs
+    `(("perl-module-build" ,perl-module-build)))
+  (inputs
+    `(("perl-class-xsaccessor" ,perl-class-xsaccessor)
+      ("perl-file-find-object" ,perl-file-find-object)
+      ("perl-number-compare" ,perl-number-compare)
+      ("perl-text-glob" ,perl-text-glob)))
+  (home-page
+    "http://search.cpan.org/dist/File-Find-Object-Rule")
+  (synopsis
+    "Alternative interface to File::Find::Object")
+  (description "File::Find::Object::Rule is an alternative Perl
+interface to File::Find::Object.")
+  (license (package-license perl))))
+
+(define-public perl-test-trailingspace
+ (package
+  (name "perl-test-trailingspace")
+  (version "0.0300")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-TrailingSpace-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "01slmrcjfq38mpdg3hlb7lnnbgsqbn26958y3hzx0zwrif40pigr"))))
+  (build-system perl-build-system)
+  (native-inputs
+    `(("perl-module-build" ,perl-module-build)
+      ("perl-file-find-object" ,perl-file-find-object)
+      ("perl-class-xsaccessor" ,perl-class-xsaccessor)))
+  (inputs
+    `(("perl-file-find-object-rule" ,perl-file-find-object-rule)
+      ("perl-text-glob" ,perl-text-glob)
+      ("perl-number-compare" ,perl-number-compare)))
+  (home-page
+    "http://search.cpan.org/dist/Test-TrailingSpace")
+  (synopsis
+    "Test for trailing space in Perl source files")
+  (description "Test::TrailingSpace tests for trailing spaces
+in Perl source files.")
+  (license x11)))
+
+(define-public perl-encode-detect
+ (package
+  (name "perl-encode-detect")
+  (version "1.01")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/J/JG/JGMYERS/Encode-Detect-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "1wdv9ffgs4xyfh5dnh09dqkmmlbf5m1hxgdgb3qy6v6vlwx8jkc3"))))
+  (build-system perl-build-system)
+  (inputs
+    `(("perl-module-build" ,perl-module-build)))
+  (home-page
+    "http://search.cpan.org/dist/Encode-Detect")
+  (synopsis
+    "Perl Encode::Encoding subclass that detects the encoding of data")
+  (description "Encode::Detect detects the encoding of data for Perl.")
+  (license mpl1.1)))

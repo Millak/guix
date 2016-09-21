@@ -6,6 +6,7 @@
 ;;; Copyright © 2016 Jessica Tallon <tsyesika@tsyesika.se>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
+;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
@@ -53,8 +55,8 @@
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/pwgen/pwgen-"
-                           version ".tar.gz"))
+       (uri (string-append "mirror://sourceforge/pwgen/pwgen/" version
+                           "/pwgen-" version ".tar.gz"))
        (sha256
         (base32 "0mhmw700kkh238fzivcwnwi94bj9f3h36yfh3k3j2v19b0zmjx7b"))))
     (build-system gnu-build-system)
@@ -158,6 +160,7 @@ and vice versa.")
               (uri (string-append "https://github.com/cracklib/cracklib/"
                                   "releases/download/" name "-" version "/"
                                   name "-" version ".tar.gz"))
+              (patches (search-patches "cracklib-CVE-2016-6318.patch"))
               (sha256
                (base32
                 "0hrkb0prf7n92w6rxgq0ilzkk6rkhpys2cfqkrbzswp27na7dkqp"))))
@@ -266,27 +269,26 @@ any X11 window.")
      '(#:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         (add-after
-          ;; The script requires 'getopt' at run-time, and this allows
-          ;; the user to not install the providing package 'util-linux'
-          ;; in their profile.
-          'unpack 'patch-path
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((getopt (string-append (assoc-ref inputs "getopt")
-                                         "/bin/getopt")))
-              (substitute* "src/password-store.sh"
-                (("GETOPT=\"getopt\"")
-                 (string-append "GETOPT=\"" getopt "\"")))
-              #t))))
+         (add-after 'install 'wrap-path
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (path (map (lambda (pkg)
+                                (string-append (assoc-ref inputs pkg) "/bin"))
+                              '("coreutils" "getopt" "git" "gnupg" "pwgen"
+                                "sed" "tree" "which" "xclip"))))
+               (wrap-program (string-append out "/bin/pass")
+                 `("PATH" ":" prefix (,(string-join path ":"))))))))
        #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output))
        #:test-target "test"))
-    (native-inputs `(("getopt" ,util-linux))) ; getopt for the tests
-    (inputs `(("gnupg" ,gnupg)
-              ("pwgen" ,pwgen)
-              ("xclip" ,xclip)
-              ("git" ,git)
-              ("tree" ,tree)
-              ("which" ,which)))
+    (inputs
+     `(("getopt" ,util-linux)
+       ("git" ,git)
+       ("gnupg" ,gnupg)
+       ("pwgen" ,pwgen)
+       ("sed" ,sed)
+       ("tree" ,tree)
+       ("which" ,which)
+       ("xclip" ,xclip)))
     (home-page "http://www.passwordstore.org/")
     (synopsis "Encrypted password manager")
     (description "Password-store is a password manager which uses GnuPG to
@@ -332,3 +334,38 @@ through the pass command.")
     (description "Argon2 provides a key derivation function that was declared
 winner of the 2015 Password Hashing Competition.")
     (license license:cc0)))
+
+(define-public python-bcrypt
+  (package
+    (name "python-bcrypt")
+    (version "3.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "bcrypt" version))
+        (sha256
+         (base32
+          "1giy0dvd8gvq6flxh44np1v2nqwsji5qsnrz038mgwzgp7c20j75"))))
+        (build-system python-build-system)
+    (native-inputs
+     `(("python-pycparser" ,python-pycparser)
+       ("python-pytest" ,python-pytest)))
+    (inputs
+     `(("python-cffi" ,python-cffi)
+       ("python-six" ,python-six)))
+    (home-page "https://github.com/pyca/bcrypt/")
+    (synopsis
+     "Modern password hashing library")
+    (description
+     "Bcrypt is a Python module which provides a password hashing method based
+on the Blowfish password hashing algorithm, as described in
+@url{http://static.usenix.org/events/usenix99/provos.html,\"A Future-Adaptable
+Password Scheme\"} by Niels Provos and David Mazieres.")
+    (license license:asl2.0)))
+
+(define-public python2-bcrypt
+  (let ((bcrypt (package-with-python2 python-bcrypt)))
+    (package (inherit bcrypt)
+      (native-inputs
+       `(("python2-setuptools" ,python2-setuptools)
+         ,@(package-native-inputs bcrypt))))))

@@ -275,43 +275,43 @@ without modification.")
 (define-public bash-completion
   (package
     (name "bash-completion")
-    (version "2.1")
+    (version "2.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://bash-completion.alioth.debian.org/files/"
-                    "bash-completion-" version ".tar.bz2"))
+                    "https://github.com/scop/" name "/releases/download/"
+                    version "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kxf8s5bw7y50x0ksb77d3kv0dwadixhybl818w27y6mlw26hq1b"))
+                "1sg82nmsr00ig37skln2qvmi8mgbxgdvycm3ygzs8gbz66pq3q5j"))
               (patches
                (search-patches "bash-completion-directories.patch"))))
     (build-system gnu-build-system)
     (native-inputs `(("util-linux" ,util-linux)))
     (arguments
-     `(#:phases (alist-cons-after
-                 'install 'remove-redundant-completions
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   ;; Util-linux comes with a bunch of completion files for
-                   ;; its own commands which are more sophisticated and
-                   ;; up-to-date than those of bash-completion.  Remove those
-                   ;; from bash-completion.
-                   (let* ((out         (assoc-ref outputs "out"))
-                          (util-linux  (assoc-ref inputs "util-linux"))
-                          (completions (string-append out
-                                                      "/share/bash-completion"
-                                                      "/completions"))
-                          (already     (find-files
-                                        (string-append
-                                         util-linux
-                                         "/etc/bash_completion.d"))))
-                     (with-directory-excursion completions
-                       (for-each (lambda (file)
-                                   (when (file-exists? file)
-                                     (delete-file file)))
-                                 (map basename already)))
-                     #t))
-                 %standard-phases)))
+     `(#:phases (modify-phases %standard-phases
+                  (add-after
+                   'install 'remove-redundant-completions
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     ;; Util-linux comes with a bunch of completion files for
+                     ;; its own commands which are more sophisticated and
+                     ;; up-to-date than those of bash-completion.  Remove those
+                     ;; from bash-completion.
+                     (let* ((out         (assoc-ref outputs "out"))
+                            (util-linux  (assoc-ref inputs "util-linux"))
+                            (completions (string-append out
+                                                        "/share/bash-completion"
+                                                        "/completions"))
+                            (already     (find-files
+                                          (string-append
+                                           util-linux
+                                           "/etc/bash_completion.d"))))
+                       (with-directory-excursion completions
+                         (for-each (lambda (file)
+                                     (when (file-exists? file)
+                                       (delete-file file)))
+                                   (map basename already)))
+                       #t))))))
     (synopsis "Bash completions for common commands")
     (description
      "This package provides extensions that allow Bash to provide adapted

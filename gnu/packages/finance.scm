@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;;
@@ -46,7 +46,7 @@
 (define-public bitcoin-core
   (package
     (name "bitcoin-core")
-    (version "0.12.1")
+    (version "0.13.0")
     (source (origin
              (method url-fetch)
              (uri
@@ -54,20 +54,20 @@
                              version "/bitcoin-" version ".tar.gz"))
              (sha256
               (base32
-               "16g1cnasy24275kxrs0cg48nbx1dk54xvxm1pdsvk7y30mn3pz08"))))
+               "1nhw2s8p1hg6715l6kc1c7psqhkzfwhfrrgiar17zccvd14p0z8c"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("python" ,python-2) ; for the tests
+       ("python" ,python) ; for the tests
        ("util-linux" ,util-linux))) ; provides the hexdump command for tests
     (inputs
-     `(("bdb" ,bdb)
+     `(("bdb" ,bdb-5.3) ; with 6.2.23, there is an error: ambiguous overload
        ("boost" ,boost)
        ("libevent" ,libevent)
        ("miniupnpc" ,miniupnpc)
        ("openssl" ,openssl)
        ("protobuf" ,protobuf)
-       ("qt" ,qt)))
+       ("qtbase" ,qtbase)))
     (arguments
      `(#:configure-flags
         (list

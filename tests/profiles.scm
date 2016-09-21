@@ -187,6 +187,9 @@
       (and (null? remove) (null? install) (null? downgrade)
            (equal? (list (cons guile-2.0.9 guile-2.0.9)) upgrade)))))
 
+(test-assert "manifest-transaction-null?"
+  (manifest-transaction-null? (manifest-transaction)))
+
 (test-assertm "profile-derivation"
   (mlet* %store-monad
       ((entry ->   (package->manifest-entry %bootstrap-guile))
@@ -206,6 +209,16 @@
        (drv        (profile-derivation (manifest (list entry))
                                        #:hooks '())))
     (return (derivation-inputs drv))))
+
+(test-assert "package->manifest-entry defaults to \"out\""
+  (let ((outputs (package-outputs packages:glibc)))
+    (equal? (manifest-entry-output
+             (package->manifest-entry (package
+                                        (inherit packages:glibc)
+                                        (outputs (reverse outputs)))))
+            (manifest-entry-output
+             (package->manifest-entry packages:glibc))
+            "out")))
 
 (test-assertm "profile-manifest, search-paths"
   (mlet* %store-monad

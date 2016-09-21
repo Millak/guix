@@ -5,6 +5,7 @@
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,7 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20160522")
+    (version "20160822")
     (source
      (origin
       (method url-fetch)
@@ -52,9 +53,33 @@
                           version ".tar.bz2"))
       (sha256
        (base32
-        "03r07ksxw5xx946x9s26ivifgldr8bc9bz6da4wfrd0dx4546xyy"))))
+        "1qdb7889w7v5amd0z4qg3v4hia0wj5vjly9qvm5lm5nlxg8bfrwq"))))
     (build-system gnu-build-system)
-    (inputs `(("perl" ,perl)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-bin-sh
+           (lambda _
+             (for-each
+              (lambda (file)
+                (substitute* file
+                  ;; Patch hard coded '/bin/sh' in the lin ending in:
+                  ;; $Global::shell = $ENV{'PARALLEL_SHELL'} ||
+                  ;;  parent_shell($$) || $ENV{'SHELL'} || "/bin/sh";
+                  (("/bin/sh\\\";\n$") (string-append (which "sh") "\";\n"))
+                  ;; Patch call to 'ps' and 'perl' commands.
+                  ((" ps ") (string-append " " (which "ps") " "))
+                  ((" perl -") (string-append " " (which "perl") " -"))))
+              (list "src/parallel" "src/sem"))))
+         (add-after 'install 'post-install-test
+           (lambda* (#:key outputs #:allow-other-keys)
+             (zero? (system* (string-append
+                              (assoc-ref outputs "out") "/bin/parallel")
+                             "echo"
+                             ":::" "1" "2" "3")))))))
+    (inputs
+     `(("perl" ,perl)
+       ("procps" ,procps)))
     (home-page "http://www.gnu.org/software/parallel/")
     (synopsis "Build and execute command lines in parallel")
     (description

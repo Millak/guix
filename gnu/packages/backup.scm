@@ -28,6 +28,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
@@ -99,6 +100,42 @@ uses GnuPG to encrypt and/or sign these archives, they will be safe from
 spying and/or modification by the server.")
     (license license:gpl2+)))
 
+(define-public par2cmdline
+  (package
+    (name "par2cmdline")
+    (version "0.6.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/Parchive/par2cmdline/archive/v"
+                                  version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ykfb7ar0x0flfdgf6i8xphyv5b93dalbjj2jb6hx7sdjax33n1g"))
+              ;; This test merely needs a file to test recovery on, but
+              ;; /dev/random is essentially /dev/urandom plus minimum entropy
+              ;; locking, making the test hang indefinitely. This change is
+              ;; already upstream: remove on upgrade to future 0.6.15.
+              ;; https://github.com/Parchive/par2cmdline/commit/27723a678f780da82c79b98592592009c779a4fb
+              (modules '((guix build utils)))
+              (snippet
+               '(substitute* "tests/test20" (("if=/dev/random") "if=/dev/urandom")))))
+    (native-inputs
+     `(("automake" ,automake)
+       ("autoconf" ,autoconf)))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'autoreconf
+           (lambda _ (zero? (system* "autoreconf" "-vfi")))))))
+    (synopsis "File verification and repair tool")
+    (description "Par2cmdline is a tool for generating RAID-like PAR2 recovery
+files using Reed-Solomon coding.  PAR2 files can be stored along side backups
+or distributed files for recovering from bitrot.")
+    (home-page "https://github.com/Parchive/par2cmdline")
+    (license license:gpl3+)))
+
 (define-public hdup
   (package
     (name "hdup")
@@ -106,8 +143,7 @@ spying and/or modification by the server.")
     (source
      (origin
       (method url-fetch)
-      ;; Source tarballs are not versioned
-      (uri "http://archive.miek.nl/projects/hdup2/hdup.tar.bz2")
+      (uri "https://fossies.org/linux/privat/old/hdup-2.0.14.tar.bz2")
       (sha256
        (base32
         "02bnczg01cyhajmm4rhbnc0ja0dd9ikv9fwv28asxh1rlx9yr0b7"))))
@@ -136,8 +172,7 @@ backups (called chunks) to allow easy burning to CD/DVD.")
 (define-public libarchive
   (package
     (name "libarchive")
-    (replacement libarchive/fixed)
-    (version "3.1.2")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
@@ -145,12 +180,7 @@ backups (called chunks) to allow easy burning to CD/DVD.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0pixqnrcf35dnqgv0lp7qlcw7k13620qkhgxr288v7p4iz6ym1zb"))
-       (patches
-        (search-patches "libarchive-mtree-filename-length-fix.patch"
-                        "libarchive-fix-lzo-test-case.patch"
-                        "libarchive-CVE-2013-0211.patch"
-                        "libarchive-bsdtar-test.patch"))))
+         "1lngng84k1kkljl74q0cdqc3s82vn2kimfm02dgm4d6m7x71mvkj"))))
     (build-system gnu-build-system)
     ;; TODO: Add -L/path/to/nettle in libarchive.pc.
     (inputs
@@ -181,7 +211,10 @@ backups (called chunks) to allow easy burning to CD/DVD.")
                 (zero? (system* "./libarchive_test" "^test_*_disk*"))
                 (zero? (system* "./bsdcpio_test" "^test_owner_parse"))
                 (zero? (system* "./bsdtar_test"))))
-         %standard-phases))))
+         %standard-phases))
+       ;; libarchive/test/test_write_format_gnutar_filenames.c needs to be
+       ;; compiled with C99 or C11 or a gnu variant.
+       #:configure-flags '("CFLAGS=-O2 -g -std=c99")))
     (home-page "http://libarchive.org/")
     (synopsis "Multi-format archive and compression library")
     (description
@@ -193,14 +226,6 @@ serially iterate through the archive, writers serially add things to the
 archive.  In particular, note that there is currently no built-in support for
 random access nor for in-place modification.")
     (license license:bsd-2)))
-
-(define libarchive/fixed
-  (package
-    (inherit libarchive)
-    (source (origin
-              (inherit (package-source libarchive))
-              (patches (cons (search-patch "libarchive-CVE-2016-1541.patch")
-                             (origin-patches (package-source libarchive))))))))
 
 (define-public rdup
   (package
@@ -418,17 +443,17 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.0.3")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                     "https://pypi.python.org/packages/"
-                     "c9/c6/1efc338724b054d4d264dfeadfcba11cefa6c3c50f474cec91b8f0c21d3a"
-                     "/borgbackup-" version ".tar.gz"))
-
+              (uri (pypi-uri "borgbackup" version))
               (sha256
                (base32
-                "0kzr0xa00yjfxx27aipli67qg5ffj52yrnqhpf3sdy6k5wzwaybs"))))
+                "1l9iw55w5x51yxl3q89cf6avg80lajxvc8qz584hrsmnk6i56cr0"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each
+                  delete-file (find-files "borg" "^(c|h|p).*\\.c$")))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -452,7 +477,8 @@ detection, and lossless compression.")
                    (install-file "docs/_build/man/borg.1" man)
                    #t))))))))
     (native-inputs
-     `(("python-setuptools-scm" ,python-setuptools-scm)
+     `(("python-cython" ,python-cython)
+       ("python-setuptools-scm" ,python-setuptools-scm)
        ;; For generating the documentation.
        ("python-sphinx" ,python-sphinx)
        ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)))

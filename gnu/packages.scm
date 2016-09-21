@@ -200,7 +200,8 @@ same package twice."
    (fold2 (lambda (module result seen)
             (fold2 (lambda (var result seen)
                      (if (and (package? var)
-                              (not (vhash-assq var seen)))
+                              (not (vhash-assq var seen))
+                              (not (hidden-package? var)))
                          (values (proc var result)
                                  (vhash-consq var #t seen))
                          (values result seen)))
@@ -304,8 +305,15 @@ return its return value."
      (when fallback?
        (warning (_ "deprecated NAME-VERSION syntax; \
 use NAME@VERSION instead~%")))
-     pkg)
-    (_
+
+     (match (package-superseded pkg)
+       ((? package? new)
+        (info (_ "package '~a' has been superseded by '~a'~%")
+              (package-name pkg) (package-name new))
+        new)
+       (#f
+        pkg)))
+    (x
      (if version
          (leave (_ "~A: package not found for version ~a~%") name version)
          (if (not fallback?)

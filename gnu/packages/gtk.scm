@@ -12,6 +12,7 @@
 ;;; Copyright © 2016 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Kei Kebreau <kei@openmailbox.org>
 ;;; Copyright © 2016 Patrick Hetu <patrick.hetu@auf.org>
+;;; Coypright © 2016 ng0 <ng0@we.make.ritual.n0.is>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,6 +148,19 @@ antialiased text rendering.  All drawing operations can be transformed by any
 affine transformation (scale, rotation, shear, etc.).")
    (license license:lgpl2.1) ; or Mozilla Public License 1.1
    (home-page "http://cairographics.org/")))
+
+(define-public cairo-xcb
+  (package
+    (inherit cairo)
+    (name "cairo-xcb")
+    (inputs
+     `(("mesa" ,mesa)
+       ,@(package-inputs cairo)))
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       '("--enable-xlib-xcb" "--enable-gl" "--enable-egl")))
+    (synopsis "2D graphics library (with X11 support)")))
 
 (define-public harfbuzz
   (package
@@ -562,6 +576,7 @@ is part of the GNOME accessibility project.")
              (base32
               "0l6aqk86aw5w132ygy6hv6nlxvd1h6xg7c85qbm60p6mnv1ww58d"))
             (patches (search-patches "gtk2-respect-GUIX_GTK2_PATH.patch"
+                                     "gtk2-respect-GUIX_GTK2_IM_MODULE_FILE.patch"
                                      "gtk2-theme-paths.patch"))))
    (build-system gnu-build-system)
    (outputs '("out" "doc"))
@@ -623,7 +638,8 @@ application suites.")
             (sha256
              (base32
               "157nh9gg0p2avw765hrnkvr8lsh2w811397yxgjv6q5j4fzz6d1q"))
-            (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"))))
+            (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
+                                     "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
    (propagated-inputs
     `(("at-spi2-atk" ,at-spi2-atk)
       ("atk" ,atk)
@@ -657,20 +673,18 @@ application suites.")
       #:configure-flags (list (string-append "--with-html-dir="
                                              (assoc-ref %outputs "doc")
                                              "/share/gtk-doc/html"))
-      #:phases
-      (alist-cons-before
-       'configure 'pre-configure
-       (lambda _
-         ;; Disable most tests, failing in the chroot with the message:
-         ;; D-Bus library appears to be incorrectly set up; failed to read
-         ;; machine uuid: Failed to open "/etc/machine-id": No such file or
-         ;; directory.
-         ;; See the manual page for dbus-uuidgen to correct this issue.
-         (substitute* "testsuite/Makefile.in"
-           (("SUBDIRS = gdk gtk a11y css reftests")
-            "SUBDIRS = gdk"))
-         #t)
-       %standard-phases)))
+      #:phases (modify-phases %standard-phases
+        (add-before 'configure 'pre-configure
+          (lambda _
+            ;; Disable most tests, failing in the chroot with the message:
+            ;; D-Bus library appears to be incorrectly set up; failed to read
+            ;; machine uuid: Failed to open "/etc/machine-id": No such file or
+            ;; directory.
+            ;; See the manual page for dbus-uuidgen to correct this issue.
+            (substitute* "testsuite/Makefile.in"
+              (("SUBDIRS = gdk gtk a11y css reftests")
+               "SUBDIRS = gdk"))
+            #t)))))
    (native-search-paths
     (list (search-path-specification
            (variable "GUIX_GTK3_PATH")
@@ -1153,7 +1167,7 @@ write GNOME applications.")
 (define-public girara
   (package
     (name "girara")
-    (version "0.2.4")
+    (version "0.2.6")
     (source (origin
               (method url-fetch)
               (uri
@@ -1161,7 +1175,7 @@ write GNOME applications.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "0pnfdsg435b5vc4x8l9pgm77aj7ram1q0bzrp9g4a3bh1r64xq1f"))))
+                "03wsxj27hvcbs3x96nah7j3paclifwlfag8kdph4kldl48srp9pb"))))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gettext" ,gnu-gettext)))
     (inputs `(("gtk+" ,gtk+)
@@ -1189,7 +1203,7 @@ information.")
 (define-public gtk-doc
   (package
     (name "gtk-doc")
-    (version "1.24")
+    (version "1.25")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1197,10 +1211,11 @@ information.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "12xmmcnq4138dlbhmqa45wqza8dky4lf856sp80h6xjwl2g7a85l"))))
+                "0hpxcij9xx9ny3gs9p0iz4r8zslw8wqymbyababiyl7603a6x90y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:parallel-tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-before
              'configure 'fix-docbook
@@ -1328,4 +1343,30 @@ glass artworks done by Venicians glass blowers.")
     (description
      "GtkSpell provides word-processor-style highlighting and replacement of
 misspelled words in a GtkTextView widget.")
+    (license license:gpl2+)))
+
+(define-public clipit
+  (package
+    (name "clipit")
+    (version "1.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/downloads/ClipIt/clipit-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0jrwn8qfgb15rwspdp1p8hb1nc0ngmpvgr87d4k3lhlvqg2cfqva"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("intltool" ,intltool)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("gtk+" ,gtk+-2)))
+    (home-page "https://github.com/CristianHenzel/ClipIt")
+    (synopsis "Lightweight GTK+ clipboard manager")
+    (description
+     "ClipIt is a clipboard manager with features such as a history, search
+thereof, global hotkeys and clipboard item actions.  It was forked from
+Parcellite and adds bugfixes and features.")
     (license license:gpl2+)))

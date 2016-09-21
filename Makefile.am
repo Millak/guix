@@ -41,6 +41,7 @@ MODULES =					\
   guix/combinators.scm				\
   guix/utils.scm				\
   guix/sets.scm					\
+  guix/modules.scm				\
   guix/download.scm				\
   guix/git-download.scm				\
   guix/hg-download.scm				\
@@ -57,6 +58,7 @@ MODULES =					\
   guix/licenses.scm				\
   guix/graph.scm				\
   guix/cve.scm					\
+  guix/zlib.scm					\
   guix/build-system.scm				\
   guix/build-system/ant.scm			\
   guix/build-system/cmake.scm			\
@@ -101,10 +103,12 @@ MODULES =					\
   guix/build/rpath.scm				\
   guix/build/cvs.scm				\
   guix/build/svn.scm				\
+  guix/build/syscalls.scm                       \
   guix/build/gremlin.scm			\
   guix/build/emacs-utils.scm			\
   guix/build/graft.scm				\
   guix/build/bournish.scm			\
+  guix/build/qt-utils.scm			\
   guix/search-paths.scm				\
   guix/packages.scm				\
   guix/import/utils.scm				\
@@ -157,13 +161,6 @@ MODULES +=					\
 
 endif
 
-if BUILD_SYSCALLS_MODULE
-
-MODULES +=					\
-  guix/build/syscalls.scm
-
-endif
-
 if BUILD_DAEMON_OFFLOAD
 
 MODULES +=					\
@@ -176,8 +173,8 @@ dist_noinst_DATA = guix/tests.scm
 
 # Linux-Libre configurations.
 KCONFIGS =					\
-  gnu/packages/linux-libre-4.6-i686.conf	\
-  gnu/packages/linux-libre-4.6-x86_64.conf	\
+  gnu/packages/linux-libre-4.7-i686.conf	\
+  gnu/packages/linux-libre-4.7-x86_64.conf	\
   gnu/packages/linux-libre-4.4-i686.conf	\
   gnu/packages/linux-libre-4.4-x86_64.conf	\
   gnu/packages/linux-libre-4.1-i686.conf	\
@@ -226,6 +223,7 @@ SCM_TESTS =					\
   tests/pk-crypto.scm				\
   tests/pki.scm					\
   tests/sets.scm				\
+  tests/modules.scm				\
   tests/gnu-maintenance.scm			\
   tests/substitute.scm				\
   tests/builders.scm				\
@@ -258,6 +256,7 @@ SCM_TESTS =					\
   tests/graph.scm				\
   tests/challenge.scm				\
   tests/cve.scm					\
+  tests/zlib.scm				\
   tests/file-systems.scm			\
   tests/system.scm				\
   tests/services.scm				\
@@ -345,6 +344,9 @@ dist_pkgdata_DATA = hydra.gnu.org.pub
 # Bash completion file.
 dist_bashcompletion_DATA = etc/completion/bash/guix
 
+# Zsh completion file.
+dist_zshcompletion_DATA = etc/completion/zsh/_guix
+
 EXTRA_DIST =						\
   HACKING						\
   ROADMAP						\
@@ -383,13 +385,6 @@ EXTRA_DIST +=					\
 
 endif !BUILD_DAEMON_OFFLOAD
 
-if !BUILD_SYSCALLS_MODULE
-
-EXTRA_DIST +=					\
-  guix/build/syscalls.scm
-
-endif !BUILD_SYSCALLS_MODULE
-
 
 CLEANFILES =					\
   $(GOBJECTS)					\
@@ -400,11 +395,13 @@ CLEANFILES =					\
 # there that are newer than the local .scm files (for instance because the
 # user ran 'make install' recently).  When that happens, we end up loading
 # those previously-installed .go files, which may be stale, thereby breaking
-# the whole thing.
+# the whole thing.  Likewise, set 'XDG_CACHE_HOME' to avoid loading possibly
+# stale files from ~/.cache/guile/ccache.
 %.go: make-go ; @:
 make-go: $(MODULES) guix/config.scm guix/tests.scm
 	$(AM_V_at)echo "Compiling Scheme modules..." ;			\
 	unset GUILE_LOAD_COMPILED_PATH ;				\
+	XDG_CACHE_HOME=/nowhere						\
 	host=$(host) srcdir="$(top_srcdir)"				\
 	$(top_builddir)/pre-inst-env					\
 	$(GUILE) -L "$(top_builddir)" -L "$(top_srcdir)"		\

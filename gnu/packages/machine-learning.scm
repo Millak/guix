@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Marius Bakke <mbakke@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,12 +33,15 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public libsvm
   (package
@@ -199,6 +203,36 @@ additional Python bindings implementing a wide range of types of @dfn{Hidden
 Markov Models} (HMM) and algorithms: discrete, continous emissions, basic
 training, HMM clustering, HMM mixtures.")
       (license license:lgpl2.0+))))
+
+(define-public mcl
+  (package
+    (name "mcl")
+    (version "14.137")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://micans.org/mcl/src/mcl-"
+                    (string-replace-substring version "." "-")
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "15xlax3z31lsn62vlg94hkm75nm40q4679amnfg13jm8m2bnhy5m"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list "--enable-blast")))
+    (inputs
+     `(("perl" ,perl)))
+    (home-page "http://micans.org/mcl/")
+    (synopsis "Clustering algorithm for graphs")
+    (description
+     "The MCL algorithm is short for the @dfn{Markov Cluster Algorithm}, a
+fast and scalable unsupervised cluster algorithm for graphs (also known as
+networks) based on simulation of (stochastic) flow in graphs.")
+    ;; In the LICENCE file and web page it says "The software is licensed
+    ;; under the GNU General Public License, version 3.", but in several of
+    ;; the source code files it suggests GPL3 or later.
+    ;; http://listserver.ebi.ac.uk/pipermail/mcl-users/2016/000376.html
+    (license license:gpl3)))
 
 (define-public randomjungle
   (package
@@ -436,3 +470,85 @@ geometric models.")
      "This package provides functions for feed-forward neural networks with a
 single hidden layer, and for multinomial log-linear models.")
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public dlib
+  (package
+    (name "dlib")
+    (version "19.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://dlib.net/files/dlib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0p2pvcdalc6jhb6r99ybvjd9x74sclr0ngswdg9j2xl5pj7knbr4"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Delete ~13MB of bundled dependencies.
+                  (delete-file-recursively "dlib/external")
+                  (delete-file-recursively "docs/dlib/external")))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-asserts
+           (lambda _
+             ;; config.h recommends explicitly enabling or disabling asserts
+             ;; when building as a shared library. By default neither is set.
+             (substitute* "dlib/config.h"
+               (("^//#define DLIB_DISABLE_ASSERTS") "#define DLIB_DISABLE_ASSERTS"))
+             #t))
+         (add-after 'disable-asserts 'disable-failing-tests
+           (lambda _
+             ;; One test times out on MIPS, so we need to disable it.
+             ;; The rest is known to fail on non-x86_64 platforms in the current release.
+             ;; Some have been fixed in git; this list should be readjusted next update.
+             (let* ((system ,(or (%current-target-system)
+                                 (%current-system)))
+                    (disabled-tests (cond
+                                     ((string-prefix? "mips64" system)
+                                      '("object_detector" ; timeout
+                                        "data_io"))
+                                     ((string-prefix? "armhf" system)
+                                      '("learning_to_track" "max_cost_assignment"))
+                                     ((string-prefix? "i686" system)
+                                      '("optimization" "matrix2" "mpc"))
+                                     (else '()))))
+               ;; The following test fails due a bug in openblas < 0.2.18.
+               (append! disabled-tests '("empirical_map"))
+               (for-each
+                (lambda (test)
+                  (substitute* "dlib/test/makefile"
+                    (((string-append "SRC \\+= " test "\\.cpp")) "")) #t)
+                disabled-tests))))
+         (replace 'check
+           (lambda _
+             ;; No test target, so we build and run the unit tests here.
+             (let ((test-dir (string-append "../dlib-" ,version "/dlib/test")))
+               (with-directory-excursion test-dir
+                 (setenv "CXXFLAGS" "-std=gnu++11")
+                 (and (zero? (system* "make" "-j" (number->string (parallel-job-count))))
+                      (zero? (system* "./dtest" "--runall")))))))
+         (add-after 'install 'delete-static-library
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file (string-append (assoc-ref outputs "out") "/lib/libdlib.a")))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("giflib" ,giflib)
+       ("lapack" ,lapack)
+       ("libjpeg" ,libjpeg)
+       ("libpng" ,libpng)
+       ("libx11" ,libx11)
+       ("openblas" ,openblas)
+       ("zlib" ,zlib)))
+    (synopsis
+     "Toolkit for making machine learning and data analysis applications in C++")
+    (description
+     "Dlib is a modern C++ toolkit containing machine learning algorithms and
+tools.  It is used in both industry and academia in a wide range of domains
+including robotics, embedded devices, mobile phones, and large high performance
+computing environments.")
+    (home-page "http://dlib.net")
+    (license license:boost1.0)))

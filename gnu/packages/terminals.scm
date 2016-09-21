@@ -1,6 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mckinley Olsen <mck.olsen@gmail.com>
+;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2016 David Craven <david@craven.ch>
+;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,19 +24,28 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages gnome))
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages docbook)
+  #:use-module (srfi srfi-26))
 
 (define-public tilda
   (package
@@ -121,3 +133,129 @@ insert mode and command mode where keybindings have different functions.")
 
     ;; Files under util/ are under the Expat license; the rest is LGPLv2+.
     (license license:lgpl2.0+)))
+
+(define-public asciinema
+  (package
+    (name "asciinema")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://pypi.python.org/packages/06/96/93947d9be78aebb7985014fdf"
+             "4d84896dd0f62514d922ee03f5bb55a21fb/asciinema-" version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "1crdm9zfdbjflvz1gsqvy5zsbgwdfkj34z69kg6h5by70rrs1hdc"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch-exec-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((ncurses (assoc-ref inputs "ncurses")))
+               (substitute* "asciinema/recorder.py"
+                 (("'tput'")
+                  (string-append "'" ncurses "/bin/tput'"))))
+             #t)))))
+    (inputs `(("ncurses" ,ncurses)
+              ("python-setuptools" ,python-setuptools)))
+    (home-page "https://asciinema.org")
+    (synopsis "Terminal session recorder")
+    (description
+     "Use asciinema to record and share your terminal sessions, the right way.
+Forget screen recording apps and blurry video.  Enjoy a lightweight, purely
+text-based approach to terminal recording.")
+    (license license:gpl3)))
+
+(define-public libtsm
+  (package
+    (name "libtsm")
+    (version "3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://freedesktop.org/software/kmscon/releases/"
+                    "libtsm-" version ".tar.xz"))
+              (sha256
+               (base32
+                "01ygwrsxfii0pngfikgqsb4fxp8n1bbs47l7hck81h9b9bc1ah8i"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("libxkbcommon" ,libxkbcommon)))
+    (synopsis "Xterm state machine library")
+    (description "TSM is a state machine for DEC VT100-VT520 compatible
+terminal emulators.  It tries to support all common standards while keeping
+compatibility to existing emulators like xterm, gnome-terminal, konsole, etc.")
+    (home-page "https://www.freedesktop.org/wiki/Software/libtsm")
+    ;; Hash table implementation is lgpl2.1+ licensed.
+    ;; The wcwidth implementation in external/wcwidth.{h,c} uses a license
+    ;; derived from ISC.
+    ;; UCS-4 to UTF-8 encoding is copied from "terminology" which is released
+    ;; under the bsd 2 license.
+    (license (list license:expat license:lgpl2.1+ license:isc license:bsd-2))))
+
+(define-public kmscon
+  (package
+    (name "kmscon")
+    (version "8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://freedesktop.org/software/kmscon/releases/"
+                    "kmscon-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0axfwrp3c8f4gb67ap2sqnkn75idpiw09s35wwn6kgagvhf1rc0a"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Use elogind instead of systemd.
+               '(begin
+                  (substitute* "configure"
+                    (("libsystemd-daemon libsystemd-login")
+                     "libelogind"))
+                  (substitute* "src/uterm_systemd.c"
+                    (("#include <systemd/sd-login.h>")
+                     "#include <elogind/sd-login.h>")
+                    ;; We don't have this header.
+                    (("#include <systemd/sd-daemon\\.h>")
+                     "")
+                    ;; Replace the call to 'sd_booted' by the truth value.
+                    (("sd_booted\\(\\)")
+                     "1"))))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("libxslt" ,libxslt)                       ;to build the man page
+       ("libxml2" ,libxml2)                       ;for XML_CATALOG_FILES
+       ("docbook-xsl" ,docbook-xsl)))
+    (inputs
+     `(("libdrm" ,libdrm)
+       ("libtsm" ,libtsm)
+       ("libxkbcommon" ,libxkbcommon)
+       ("logind" ,elogind)
+       ("mesa" ,mesa)
+       ("pango" ,pango)
+       ("udev" ,eudev)))
+    (synopsis "Linux KMS-based terminal emulator")
+    (description "Kmscon is a terminal emulator based on Linux's @dfn{kernel
+mode setting} (KMS).  It can replace the in-kernel virtual terminal (VT)
+implementation with a user-space console.  Compared to the Linux console,
+kmscon provides enhanced features including XKB-compatible internationalized
+keyboard support, UTF-8 input/font support, hardware-accelerated rendering,
+multi-seat support, a replacement for @command{mingetty}, and more.")
+    (home-page "https://www.freedesktop.org/wiki/Software/kmscon")
+    ;; Hash table implementation is lgpl2.1+ licensed.
+    ;; The wcwidth implementation in external/wcwidth.{h,c} uses a license
+    ;; derived from ISC.
+    ;; UCS-4 to UTF-8 encoding is copied from "terminology" which is released
+    ;; under the bsd 2 license.
+    ;; Unifont-Font is from http://unifoundry.com/unifont.html and licensed
+    ;; under the terms of the GNU GPL.
+    (license (list license:expat license:lgpl2.1+ license:bsd-2
+                   license:gpl2+))
+    (supported-systems (filter (cut string-suffix? "-linux" <>)
+                               %supported-systems))))

@@ -223,6 +223,7 @@ fonts to/from the WOFF2 format.")
 (define-public fontconfig
   (package
    (name "fontconfig")
+   (replacement fontconfig/fixed)
    (version "2.11.94")
    (source (origin
             (method url-fetch)
@@ -245,10 +246,10 @@ fonts to/from the WOFF2 format.")
                            (assoc-ref %build-inputs "gs-fonts")
                            "/share/fonts")
 
-            ;; register fonts from user profile
-            ;; TODO: Add /run/current-system/profile/share/fonts and remove
-            ;; the skeleton that works around it from 'default-skeletons'.
-            "--with-add-fonts=~/.guix-profile/share/fonts"
+            ;; Register fonts from user and system profiles.
+            (string-append "--with-add-fonts="
+                           "~/.guix-profile/share/fonts,"
+                           "/run/current-system/profile/share/fonts")
 
             ;; python is not actually needed
             "PYTHON=false")
@@ -274,6 +275,13 @@ high quality, anti-aliased and subpixel rendered text on a display.")
    (license (license:non-copyleft "file://COPYING"
                        "See COPYING in the distribution."))
    (home-page "http://www.freedesktop.org/wiki/Software/fontconfig")))
+
+(define fontconfig/fixed
+  (package
+    (inherit fontconfig)
+    (source (origin
+              (inherit (package-source fontconfig))
+              (patches (search-patches "fontconfig-CVE-2016-5384.patch"))))))
 
 (define-public t1lib
   (package
@@ -397,8 +405,8 @@ and returns a sequence of positioned glyphids from the font.")
     (source
      (origin
       (method url-fetch)
-      (uri (string-append "mirror://sourceforge/potrace/potrace-"
-                          version ".tar.gz"))
+      (uri (string-append "mirror://sourceforge/potrace/" version
+                          "/potrace-" version ".tar.gz"))
       (sha256
        (base32
         "115p2vgyq7p2mf4nidk2x3aa341nvv2v8ml056vbji36df5l6lk2"))))

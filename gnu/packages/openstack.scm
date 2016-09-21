@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,7 +20,9 @@
 
 (define-module (gnu packages openstack)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module ((guix licenses)
@@ -56,7 +59,7 @@
         ("python-testscenarios" ,python-testscenarios)
         ("python-testtools" ,python-testtools)))
     (home-page "https://wiki.openstack.org/wiki/Security/Projects/Bandit")
-    (synopsis "Security oriented static analyser for python code.")
+    (synopsis "Security oriented static analyser for python code")
     (description
       "Bandit is a tool designed to find common security issues in Python code.
 To do this Bandit processes each file, builds an AST from it, and runs
@@ -237,31 +240,42 @@ tested on Python version 3.2, 2.7 and 2.6.")
 (define-public python-requests-mock
   (package
     (name "python-requests-mock")
-    (version "0.7.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "requests-mock" version))
        (sha256
         (base32
-         "0s6mrpiv2w0km39qvl1pq2d56xblnm57p369qdp5j1a55ncica7f"))))
+         "0gcjjwsckhqixyffflc54i59x41jnbb37bli077vabii1bjmkin6"))))
     (build-system python-build-system)
     (propagated-inputs
-      `(("python-requests" ,python-requests)
-        ("python-six" ,python-six)))
+     `(("python-requests" ,python-requests)
+       ("python-six" ,python-six)))
     (inputs
-      `(("python-mock" ,python-mock)
-        ("python-pbr" ,python-pbr)
-        ("python-setuptools" ,python-setuptools)))
+     `(("python-pbr" ,python-pbr)))
+    (native-inputs
+     `(("python-discover" ,python-discover)
+       ("python-fixtures" ,python-fixtures)
+       ("python-mock" ,python-mock)
+       ("python-sphinx" ,python-sphinx)
+       ("python-testrepository" ,python-testrepository)
+       ("python-testtools" ,python-testtools)))
     (home-page "https://requests-mock.readthedocs.org/")
     (synopsis "Mock out responses from the requests package")
     (description
       "This module provides a building block to stub out the HTTP requests
 portions of your testing code.")
-    (license asl2.0)))
+    (license asl2.0)
+    (properties `((python2-variant . ,(delay python2-requests-mock))))))
 
 (define-public python2-requests-mock
-  (package-with-python2 python-requests-mock))
+  (let ((base (package-with-python2
+                (strip-python2-variant python-requests-mock))))
+    (package (inherit base)
+      (native-inputs
+       `(("python2-setuptools" ,python2-setuptools)
+         ,@(package-native-inputs base))))))
 
 (define-public python-stevedore
   (package
@@ -770,3 +784,49 @@ permanence.")
          ("python2-oslosphinx" ,python2-oslosphinx)
          ,@(fold alist-delete (package-native-inputs swiftclient)
             '("python-keystoneclient" "python-oslosphinx")))))))
+
+(define-public python-git-review
+  (package
+    (name "python-git-review")
+    (version "1.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "git-review" version))
+       (sha256
+        (base32
+         "07d1jn9ryff5j5ic6qj5pbk10m1ccmpllj0wyalrcms1q9yhlzh8"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:tests? #f ; tests require a running Gerrit server
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (git (assoc-ref inputs "git"))
+                    (openssh (assoc-ref inputs "openssh")))
+               (wrap-program (string-append out "/bin/git-review")
+                 `("PATH" ":" prefix
+                   ,(map (lambda (dir)
+                           (string-append dir "/bin"))
+                         (list git openssh))))))))))
+    (native-inputs
+     `(("python-pbr" ,python-pbr)))
+    (inputs
+     `(("python-requests" ,python-requests)
+       ("git" ,git)
+       ("openssh" ,openssh)))
+    (home-page "http://docs.openstack.org/infra/git-review/")
+    (synopsis "Command-line tool for Gerrit")
+    (description
+     "Git-review is a command-line tool that helps submitting Git branches to
+Gerrit for review, or fetching existing ones.")
+    (license asl2.0)))
+
+(define-public python2-git-review
+  (let ((base (package-with-python2 (strip-python2-variant python-git-review))))
+    (package (inherit base)
+             (native-inputs
+              `(("python2-setuptools" ,python2-setuptools)
+                ,@(package-native-inputs base))))))

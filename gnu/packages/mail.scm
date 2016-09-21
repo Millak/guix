@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014 Sou Bunnbu <iyzsong@gmail.com>
@@ -15,6 +15,10 @@
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
+;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2016 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,18 +74,22 @@
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages networking)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses)
                 #:select (gpl2 gpl2+ gpl3 gpl3+ lgpl2.1 lgpl2.1+ lgpl3+
-                           non-copyleft (expat . license:expat)))
+                           non-copyleft (expat . license:expat) bsd-3
+                           public-domain))
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system trivial))
 
 (define-public mailutils
   (package
@@ -179,14 +187,14 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "1.6.1")
+    (version "1.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "ftp://ftp.mutt.org/pub/mutt/mutt-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "087dz1y9qhl4ikhsnnb4xmyvs82w6kx480w8zj130wdiqvn6rclq"))
+               "0idkamdiwj9fgqaz1vzkfg78cnmkzp74skv0ibw2xjfq6ds9hghx"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -202,6 +210,7 @@ aliasing facilities to work just as they would on normal mail.")
                            "--enable-pop"
                            "--enable-gpgme"
                            "--enable-hcache" ; for header caching
+                           "--enable-sidebar"
                            "--with-ssl"
                            "--with-sasl"
                            ;; so that mutt does not check whether the path
@@ -240,14 +249,14 @@ operating systems.")
           'unpack 'patch-paths-in-tests
           (lambda _
             ;; The test programs run several programs using 'system' with
-            ;; hard-coded paths.  Here we patch them all.  We also change "gpg"
-            ;; to "gpg2".  We use ISO-8859-1 here because test-iconv.c contains
+            ;; hard-coded paths.  Here we patch them all.
+            ;; We use ISO-8859-1 here because test-iconv.c contains
             ;; raw byte sequences in several different encodings.
             (with-fluids ((%default-port-encoding #f))
               (substitute* (find-files "tests" "\\.c$")
                 (("(system *\\(\")(/[^ ]*)" all pre prog-path)
                  (let* ((base (basename prog-path))
-                        (prog (which (if (string=? base "gpg") "gpg2" base))))
+                        (prog (which base)))
                    (string-append pre
                                   (or prog (error "not found: " base))))))))))))
     (home-page "http://spruce.sourceforge.net/gmime/")
@@ -293,7 +302,7 @@ and corrections.  It is based on a Bayesian filter.")
 (define-public offlineimap
   (package
     (name "offlineimap")
-    (version "6.7.0.1")
+    (version "7.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/OfflineIMAP/offlineimap/"
@@ -301,10 +310,10 @@ and corrections.  It is based on a Bayesian filter.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1ys26v2w3vws08acjs7w5irjgahdxyad00pmj7fhcx91hbvizs80"))))
+                "1msg0v5i3v4mvjm2c5alzz91dk5y20h4xdr60lcz3507fv80407m"))))
     (build-system python-build-system)
-    (native-inputs `(("python" ,python-2)))
-    (inputs `(("python2-pysqlite" ,python2-pysqlite)))
+    (inputs `(("python2-pysqlite" ,python2-pysqlite)
+              ("python2-six" ,python2-six)))
     (arguments
      ;; The setup.py script expects python-2.
      `(#:python ,python-2
@@ -404,7 +413,9 @@ attachments, create new maildirs, and so on.")
     (version "0.3.7")
     (source (origin
               (method url-fetch)
-              ; v0.3.7 not on PyPi yet, so use github instead
+              ;; package author intends on distributing via github rather
+              ;; than pypi:
+              ;; https://github.com/pazz/alot/issues/877#issuecomment-230173331
               (uri (string-append "https://github.com/pazz/alot/archive/"
                                   version ".tar.gz"))
               (file-name (string-append "alot-" version ".tar.gz"))
@@ -414,8 +425,8 @@ attachments, create new maildirs, and so on.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; no tests
-       ; python 3 is unsupported, more info:
-       ; https://github.com/pazz/alot/blob/0.3.7/docs/source/faq.rst
+       ;; python 3 is unsupported, more info:
+       ;; https://github.com/pazz/alot/blob/0.3.7/docs/source/faq.rst
        #:python ,python-2))
     (inputs
      `(("python2-magic" ,python2-magic)
@@ -435,18 +446,18 @@ attachments, create new maildirs, and so on.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.21")
+    (version "0.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1cr53rbpkcy3pvrmhbg2gq7sjpwb0c8xd7a4zhzxbiv8s7z8yvyh"))))
+                "0jwpda3q023dn3sp41n8648951i7iagfv8zzpriv7hpkjivlafg7"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ;; FIXME: 662 tests; 168 fail and 99 are skipped
-                   ;; with perl input: 50 fail and 99 are skipped
+     '(#:tests? #f ; FIXME: 694 tests; 170 fail and 100 are skipped
+                   ; with perl input: 50 fail and 100 are skipped
        #:phases (modify-phases %standard-phases
                   (replace 'configure
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -457,14 +468,14 @@ attachments, create new maildirs, and so on.")
                         (zero? (system* "./configure"
                                         (string-append "--prefix=" out)))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("bash-completion" ,bash-completion)
+       ("emacs" ,emacs-minimal)
+       ("pkg-config" ,pkg-config)
        ("python" ,python-2)
        ("python-docutils" ,python2-docutils)
-       ("python-sphinx" ,python2-sphinx)
-       ("bash-completion" ,bash-completion)))
+       ("python-sphinx" ,python2-sphinx)))
     (inputs
-     `(("emacs" ,emacs)
-       ("glib" ,glib)
+     `(("glib" ,glib)
        ("gmime" ,gmime)
        ("talloc" ,talloc)
        ("xapian" ,xapian)
@@ -517,39 +528,40 @@ ing, and tagging large collections of email messages.")
 useful for email address completion.")
     (license license:expat)))
 
-(define-public python2-notmuch
+(define-public python-notmuch
   (package
-    (name "python2-notmuch")
-    (version "0.15.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://pypi.python.org/packages/source/n/notmuch/notmuch-"
-                    version
-                    ".tar.gz"))
-              (sha256
-               (base32
-                "18g8701ibr153ngsz258kgcd42wqnbf9ifpqig1bijy6b0zx9xn5"))))
+    (name "python-notmuch")
+    (version "0.22.1")
+    ;; Notmuch python bindings are now unavailable on pypi.  The
+    ;; bindings are distributed via the notmuch release tarball.
+    (source (package-source notmuch))
     (build-system python-build-system)
     (inputs `(("notmuch" ,notmuch)))
     (arguments
-     `(#:python ,python-2
-       #:phases (modify-phases %standard-phases
-                  (add-before
-                   'build 'set-libnotmuch-file-name
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((notmuch (assoc-ref inputs "notmuch")))
-                       (substitute* "notmuch/globals.py"
-                         (("libnotmuch\\.so\\.[0-9]")
-                          (string-append notmuch "/lib/libnotmuch.so.4")))
-                       #t))))
-       #:tests? #f))                              ;no "test" target
+     `(#:tests? #f  ; no "test" target
+       #:phases
+       (modify-phases %standard-phases
+         ;; This python package lives in a subdirectory of the notmuch source
+         ;; tree, so chdir into it before building.
+         (add-after 'unpack 'enter-python-dir
+           (lambda _ (chdir "bindings/python") #t))
+         ;; Make sure the correct notmuch shared library gets loaded.
+         (add-before 'build 'set-libnotmuch-file-name
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((notmuch (assoc-ref inputs "notmuch")))
+               (substitute* "notmuch/globals.py"
+                 (("libnotmuch\\.so\\.")
+                  (string-append notmuch "/lib/libnotmuch.so.")))
+               #t))))))
     (home-page "http://notmuchmail.org/")
     (synopsis "Python bindings of the Notmuch mail indexing library")
     (description
      "This package provides Python bindings to use the Notmuch mail indexing
 and search library.")
     (license gpl3+)))
+
+(define-public python2-notmuch
+  (package-with-python2 python-notmuch))
 
 (define-public getmail
   (package
@@ -604,12 +616,12 @@ useful features.")
        ("expat" ,expat)
        ("zlib" ,zlib)))
     (arguments
-      '(#:phases (alist-cons-after
-                  'unpack 'autogen
-                  (lambda _
-                    (setenv "NOCONFIGURE" "true")
-                    (zero? (system* "sh" "autogen.sh")))
-                  %standard-phases)
+      '(#:phases
+        (modify-phases %standard-phases
+          (add-after 'unpack 'autogen
+            (lambda _
+              (setenv "NOCONFIGURE" "true")
+              (zero? (system* "sh" "autogen.sh")))))
         #:configure-flags
         '("--disable-static" "--disable-db")))
     (home-page "http://www.etpan.org/libetpan.html")
@@ -624,7 +636,7 @@ MailCore 2.")
 (define-public claws-mail
   (package
     (name "claws-mail")
-    (version "3.13.2")
+    (version "3.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -632,7 +644,7 @@ MailCore 2.")
                     ".tar.xz"))
               (sha256
                (base32
-                "1l8ankx0qpq1ix1an8viphcf11ksh53jsrm1xjmq8cjbh5910wva"))))
+                "0nfchgga3ir91s8rky0a0vnz8cgj2f6h716wh3cmb466a01xfss6"))))
     (build-system gnu-build-system)
     (native-inputs `(("pkg-config" ,pkg-config)))
     (inputs `(("bogofilter" ,bogofilter)
@@ -678,14 +690,15 @@ which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.6.4")
+    (version "1.6.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/msmtp/msmtp-" version ".tar.xz"))
-       (sha256 (base32
-                "1kfihblm769s4hv8iah5mqynqd6hfwlyz5rcg2v423a4llic0jcv"))))
+       (uri (string-append "mirror://sourceforge/msmtp/msmtp/" version
+                           "/msmtp-" version ".tar.xz"))
+       (sha256
+        (base32
+         "01jh9ba49bih8zsh40myw6qq1ll210q1vw0jg865vrn7jc3dd83n"))))
     (build-system gnu-build-system)
     (inputs
      `(("libidn" ,libidn)
@@ -741,12 +754,12 @@ delivery.")
        ("gzip" ,gzip)
        ("bzip2" ,bzip2)
        ("xz" ,xz)
-       ("pcre" ,pcre)
        ("perl" ,perl)
        ("libxt" ,libxt)
        ("libxaw" ,libxaw)))
     (native-inputs
-     `(("perl" ,perl)))
+     `(("pcre" ,pcre "bin")
+       ("perl" ,perl)))
     (arguments
      '(#:phases
        (alist-replace
@@ -811,7 +824,7 @@ facilities for checking incoming mail.")
 (define-public dovecot
   (package
     (name "dovecot")
-    (version "2.2.19")
+    (version "2.2.25")
     (source
      (origin
        (method url-fetch)
@@ -819,7 +832,7 @@ facilities for checking incoming mail.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.gz"))
        (sha256 (base32
-                "17sf5aancad4pg1vx1606k99389wg76blpqzmnmxlz4hklzix7km"))))
+                "0rwn5wc5b8j9fzqcjggdgpzmb77myrf4ra294z1gg5v3hhng7nfq"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -1201,11 +1214,10 @@ deliver it in various ways.")
                       #t)))
        #:tests? #f)) ;; There are no tests indicating a successful
     ;; build.  Some tests of basic locking mechanisms provided by the
-    ;; filesystem are performed during 'make install'.  However, these
+    ;; file system are performed during 'make install'.  However, these
     ;; are performed before the actual build process.
     (build-system gnu-build-system)
-    (inputs `(("glibc" ,glibc)
-              ("exim" ,exim)))
+    (inputs `(("exim" ,exim)))
     (home-page "http://www.procmail.org/")
     (synopsis "Versatile mail delivery agent (MDA)")
     (description "Procmail is a mail delivery agent (MDA) featuring support
@@ -1260,3 +1272,224 @@ synchronizing with a remote address book, @command{vdirsyncer} is recommended.
 Khard can also be used from within the email client @command{mutt}.")
     (home-page "https://github.com/scheibler/khard")
     (license gpl3+)))
+
+(define-public perl-mail-spf
+ (package
+  (name "perl-mail-spf")
+  (version "v2.9.0")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/J/JM/JMEHNLE/mail-spf/Mail-SPF-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "0qk1rfgfm5drj4iyniiabrasrpqv570vzhgz66lwgb67y4amkjv1"))))
+  (build-system perl-build-system)
+  (native-inputs
+    `(("perl-module-build" ,perl-module-build)
+      ("perl-net-dns-resolver-programmable"
+       ,perl-net-dns-resolver-programmable)))
+  (arguments
+   `(#:phases (modify-phases %standard-phases
+       (add-before 'configure 'modify-Build.PL
+         (lambda* (#:key outputs #:allow-other-keys)
+           (substitute* "Build.PL"
+             (("'/usr/sbin'") (string-append "'"
+                                             (assoc-ref outputs "out")
+                                             "/sbin'")))
+             #t)))))
+  (inputs
+    `(("perl-error" ,perl-error)
+      ("perl-net-dns" ,perl-net-dns)
+      ("perl-netaddr-ip" ,perl-netaddr-ip)
+      ("perl-uri" ,perl-uri)))
+  (home-page
+    "http://search.cpan.org/dist/Mail-SPF")
+  (synopsis
+    "Perl implementation of Sender Policy Framework")
+  (description "Mail::SPF is the Sender Policy Framework implemented
+in Perl.")
+  (license bsd-3)))
+
+(define-public mb2md
+  (package
+    (name "mb2md")
+    (version "3.20")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://batleth.sapienti-sat.org/projects/mb2md/mb2md-"
+                    version ".pl.gz"))
+              (sha256
+               (base32
+                "0bvkky3c90738h3skd2f1b2yy5xzhl25cbh9w2dy97rs86ssjidg"))))
+    (build-system trivial-build-system)
+    (arguments
+     '(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((source (assoc-ref %build-inputs "source"))
+                (out (assoc-ref %outputs "out"))
+                (bin (string-append out "/bin"))
+                (perl (assoc-ref %build-inputs "perl"))
+                (gzip (assoc-ref %build-inputs "gzip"))
+                (perl-timedate (assoc-ref %build-inputs "perl-timedate"))
+                (perl5lib (string-append perl-timedate "/lib/perl5/site_perl")))
+           (mkdir-p bin)
+           (with-directory-excursion bin
+             (copy-file source "mb2md.gz")
+             (system* (string-append gzip "/bin/gzip") "-d" "mb2md.gz")
+             (substitute* "mb2md"
+               (("#!/usr/bin/perl")
+                (string-append "#!/usr/bin/perl -I " perl5lib)))
+             (patch-shebang "mb2md" (list (string-append perl "/bin")))
+             (chmod "mb2md" #o555))
+           #t))))
+    (native-inputs `(("gzip", gzip)))
+    (inputs `(("perl" ,perl)
+              ("perl-timedate" ,perl-timedate)))
+    (home-page "http://batleth.sapienti-sat.org/projects/mb2md/")
+    (synopsis "Mbox to maildir converter")
+    (description
+     "Mb2md is a Perl script that takes one or more mbox format files and
+converts them to maildir format directories.")
+    (license public-domain)))
+
+(define-public mpop
+  (package
+    (name "mpop")
+    (version "1.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://downloads.sourceforge.net/mpop/mpop-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "0n0ij258kn8lfa6nyr6l6plc4hf1wvyf1hkwicvdbjqdqrgjnq81"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("gnutls" ,gnutls)
+       ("libidn" ,libidn)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (arguments
+     `(#:configure-flags (list "--with-tls=gnutls")))
+    (home-page "http://mpop.sourceforge.net/")
+    (synopsis "POP3 mail client")
+    (description "mpop is a small and fast POP3 client suitable as a
+fetchmail replacement.
+
+mpop supports multiple accounts, header based mail filtering, delivery
+to mbox files, maildir folders or a Mail Delivery Agent (MDA),
+TLS/SSL, several authentication methods, Internationalized Domain
+Names (IDN) and SOCKS proxies.")
+    (license gpl3+)))
+
+(define-public mhonarc
+  (package
+    (name "mhonarc")
+    (version "2.6.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/EH/EHOOD/MHonArc-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "0ll3v93yji334zqp6xfzfxc0127pmjcznmai1l5q6dzawrs2igzq"))))
+    (build-system perl-build-system)
+    (home-page "https://www.mhonarc.org/")
+    (synopsis "Create HTML archives of mail/news messages")
+    (description
+     "MHonArc is a Perl mail-to-HTML converter.  MHonArc
+provides HTML mail archiving with index, mail thread linking,
+etc; plus other capabilities including support for MIME and
+powerful user customization features.")
+    (license gpl2+)))
+
+
+(define-public sendmail
+  (package
+    (name "sendmail")
+    (version "8.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "ftp://ftp.sendmail.org/pub/sendmail/sendmail."
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "0fdl9ndmspqspdlmghzxlaqk56j3yajk52d7jxcg21b7sxglpy94"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'replace-/bin/sh
+           (lambda _
+             (substitute*
+                 (append
+                  (list "smrsh/smrsh.c" "sendmail/conf.c" "contrib/mailprio"
+                        "contrib/mmuegel" "devtools/bin/configure.sh")
+                  (find-files "." ".*\\.m4")
+                  (find-files "." ".*\\.cf"))
+               (("/bin/sh") (which "bash")))
+
+             (substitute* "devtools/bin/Build"
+               (("SHELL=/bin/sh") (string-append "SHELL=" (which "bash"))))
+             #t))
+         (replace 'configure
+           (lambda _
+
+             ;; Render harmless any attempts to chown or chgrp
+             (substitute* "devtools/bin/install.sh"
+               (("owner=\\$2") "owner=''")
+               (("group=\\$2") "group=''"))
+
+             (with-output-to-file "devtools/Site/site.config.m4"
+               (lambda ()
+                 (format #t "
+define(`confCC', `gcc')
+define(`confOPTIMIZE', `-g -O2')
+define(`confLIBS', `-lresolv')
+define(`confINSTALL', `~a/devtools/bin/install.sh')
+define(`confDEPEND_TYPE', `CC-M')
+define(`confINST_DEP', `')
+" (getcwd))))))
+         (replace 'build
+           (lambda _
+             (and (zero? (system* "sh" "Build"))
+                  (with-directory-excursion "cf/cf"
+                    (begin
+                      (copy-file "generic-linux.mc" "sendmail.mc")
+                      (zero? (system* "sh" "Build" "sendmail.cf")))))))
+         (add-before 'install 'pre-install
+           (lambda _
+             (let ((out (assoc-ref %outputs "out")))
+               (mkdir-p (string-append out "/usr/bin"))
+               (mkdir-p (string-append out "/usr/sbin"))
+               (mkdir-p (string-append out "/etc/mail"))
+               (setenv "DESTDIR" out)
+               (with-directory-excursion "cf/cf"
+                 (zero? (system* "sh" "Build" "install-cf")))))))
+       ;; There is no make check.  There are some post installation tests, but those
+       ;; require root privileges
+       #:tests? #f))
+    (inputs
+     `(("m4" ,m4)
+       ("perl" ,perl)))
+    (home-page "http://sendmail.org")
+    (synopsis
+     "Highly configurable Mail Transfer Agent (MTA)")
+    (description
+     "Sendmail is a mail transfer agent (MTA) originally developed by Eric
+Allman.  It is highly configurable and supports many delivery methods and many
+transfer protocols.")
+    (license (non-copyleft "file://LICENSE"
+                           "See LICENSE in the distribution."))))
+

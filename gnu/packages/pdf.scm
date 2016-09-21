@@ -4,6 +4,9 @@
 ;;; Copyright © 2014, 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
+;;; Coypright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Coypright © 2016 Marius Bakke <mbakke@fastmail.com>
+;;; Coypright © 2016 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,13 +27,18 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages djvu)
@@ -48,6 +56,8 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages tls)
   #:use-module (srfi srfi-1))
 
@@ -88,7 +98,10 @@
     `(#:tests? #f ; no test data provided with the tarball
       #:configure-flags
       '("--enable-xpdf-headers" ; to install header files
-        "--enable-zlib")
+        "--enable-zlib"
+
+        ;; Saves 8 MiB of .a files.
+        "--disable-static")
       #:phases
       (alist-cons-before
        'configure 'setenv
@@ -114,8 +127,12 @@
 (define-public poppler-qt5
   (package (inherit poppler)
    (name "poppler-qt5")
-   (inputs `(("qt" ,qt)
+   (inputs `(("qtbase" ,qtbase)
              ,@(package-inputs poppler)))
+   (arguments
+    (substitute-keyword-arguments (package-arguments poppler)
+     ((#:configure-flags flags)
+       `(cons "CXXFLAGS=-std=gnu++11" ,flags))))
    (synopsis "Qt5 frontend for the Poppler PDF rendering library")))
 
 (define-public python-poppler-qt4
@@ -246,7 +263,7 @@ reading and editing of existing PDF files.")
 (define-public zathura-cb
   (package
     (name "zathura-cb")
-    (version "0.1.4")
+    (version "0.1.5")
     (source (origin
               (method url-fetch)
               (uri
@@ -254,7 +271,7 @@ reading and editing of existing PDF files.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "09ln4fpjxmhcq6cw1ka7mdkmca36gyd4gzrynbw3waz0ri0b277j"))))
+                "1zbazysdjwwnzw01qlnzyixwmsi8rqskc76mp81qcr3rpl96jprp"))))
     (native-inputs `(("pkg-config" ,pkg-config)))
     (propagated-inputs `(("girara" ,girara)))
     (inputs `(("libarchive" ,libarchive)
@@ -277,7 +294,7 @@ using libarchive.")
 (define-public zathura-ps
   (package
     (name "zathura-ps")
-    (version "0.2.2")
+    (version "0.2.3")
     (source (origin
               (method url-fetch)
               (uri
@@ -285,7 +302,7 @@ using libarchive.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "1a6ps5v1wk18qvslbkjln6w8wfzzr6fi13ls96vbdc03vdhn4m76"))))
+                "18wsfy8pqficdgj8wy2aws7j4fy8z78157rhqk17mj5f295zgvm9"))))
     (native-inputs `(("pkg-config" ,pkg-config)))
     (propagated-inputs `(("girara" ,girara)))
     (inputs `(("libspectre" ,libspectre)
@@ -308,7 +325,7 @@ using libspectre.")
 (define-public zathura-djvu
   (package
     (name "zathura-djvu")
-    (version "0.2.4")
+    (version "0.2.5")
     (source (origin
               (method url-fetch)
               (uri
@@ -316,7 +333,7 @@ using libspectre.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "1g1lafmrjbx0xv7fljdmyqxx0k334sq4q6jy4a0q5xfrgz0bh45c"))))
+                "03cw54d2fipvbrnbqy0xccqkx6s77dyhyymx479aj5ryy4513dq8"))))
     (native-inputs `(("pkg-config" ,pkg-config)))
     (propagated-inputs `(("girara" ,girara)))
     (inputs
@@ -340,7 +357,7 @@ using the DjVuLibre library.")
 (define-public zathura-pdf-poppler
   (package
     (name "zathura-pdf-poppler")
-    (version "0.2.5")
+    (version "0.2.6")
     (source (origin
               (method url-fetch)
               (uri
@@ -348,7 +365,7 @@ using the DjVuLibre library.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "1b0chsds8iwjm4g629p6a67nb6wgra65pw2vvngd7g35dmcjgcv0"))))
+                "1maqiv7yv8d8hymlffa688c5z71v85kbzmx2j88i8z349xx0rsyi"))))
     (native-inputs `(("pkg-config" ,pkg-config)))
     (propagated-inputs `(("girara" ,girara)))
     (inputs
@@ -373,7 +390,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.3.3")
+    (version "0.3.6")
     (source (origin
               (method url-fetch)
               (uri
@@ -381,7 +398,7 @@ by using the poppler rendering engine.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "1rywx09qn6ap5hb1z31wxby4lzdrqdbldm51pjk1ifflr37xwirk"))
+                "0fyb5hak0knqvg90rmdavwcmilhnrwgg1s5ykx9wd3skbpi8nsh8"))
               (patches (search-patches
                         "zathura-plugindir-environment-variable.patch"))))
     (native-inputs `(("pkg-config" ,pkg-config)
@@ -415,8 +432,8 @@ interaction.")
     (version "0.9.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/podofo/podofo-"
-                                  version ".tar.gz"))
+              (uri (string-append "mirror://sourceforge/podofo/podofo/" version
+                                  "/podofo-" version ".tar.gz"))
               (sha256
                (base32
                 "1n12lbq9x15vqn7dc0hsccp56l5jdff1xrhvlfqlbklxx0qiw9pc"))))
@@ -455,27 +472,42 @@ extracting content or merging files.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.8")
+    (version "1.9a")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "http://mupdf.com/downloads/archive/"
                             name "-" version "-source.tar.gz"))
         (sha256
-          (base32 "01n26cy41lc2fjri63s4js23ixxb4nd37aafry3hz4i4id6wd8x2"))
+         (base32
+          "1k64pdapyj8a336jw3j61fhn0rp4q6az7d0dqp9r5n3d9rgwa5c0"))
+        (patches (search-patches "mupdf-build-with-openjpeg-2.1.patch"
+                                 "mupdf-CVE-2016-6265.patch"
+                                 "mupdf-CVE-2016-6525.patch"))
         (modules '((guix build utils)))
         (snippet
-            ;; Don't build the bundled-in third party libraries.
-            '(delete-file-recursively "thirdparty"))))
+            ;; Delete all the bundled libraries except for mujs, which is
+            ;; developed by the same team as mupdf and has no releases.
+            ;; TODO Package mujs and don't use the bundled copy.
+            '(for-each delete-file-recursively
+                       '("thirdparty/curl"
+                         "thirdparty/freetype"
+                         "thirdparty/glfw"
+                         "thirdparty/harfbuzz"
+                         "thirdparty/jbig2dec"
+                         "thirdparty/jpeg"
+                         "thirdparty/openjpeg"
+                         "thirdparty/zlib")))))
     (build-system gnu-build-system)
     (inputs
       `(("curl" ,curl)
         ("freetype" ,freetype)
+        ("harfbuzz" ,harfbuzz)
         ("jbig2dec" ,jbig2dec)
         ("libjpeg" ,libjpeg)
         ("libx11" ,libx11)
         ("libxext" ,libxext)
-        ("openjpeg" ,openjpeg-2.0)
+        ("openjpeg" ,openjpeg)
         ("openssl" ,openssl)
         ("zlib" ,zlib)))
     (native-inputs
@@ -506,30 +538,41 @@ and examining the file structure (pdfshow).")
    (version "5.1.3")
    (source (origin
             (method url-fetch)
-            (uri (string-append "mirror://sourceforge/qpdf/qpdf-"
-                                version ".tar.gz"))
+            (uri (string-append "mirror://sourceforge/qpdf/qpdf/" version
+                                "/qpdf-" version ".tar.gz"))
             (sha256 (base32
-                     "1lq1v7xghvl6p4hgrwbps3a13ad6lh4ib3myimb83hxgsgd4n5nm"))))
+                     "1lq1v7xghvl6p4hgrwbps3a13ad6lh4ib3myimb83hxgsgd4n5nm"))
+            (modules '((guix build utils)))
+            (snippet
+             ;; Replace shebang with the bi-lingual shell/Perl trick to remove
+             ;; dependency on Perl.
+             '(substitute* "qpdf/fix-qdf"
+                (("#!/usr/bin/env perl")
+                 "\
+eval '(exit $?0)' && eval 'exec perl -wS \"$0\" ${1+\"$@\"}'
+  & eval 'exec perl -wS \"$0\" $argv:q'
+    if 0;\n")))))
    (build-system gnu-build-system)
    (arguments
-      '(#:phases (alist-cons-before
-                  'configure 'patch-paths
-                  (lambda _
-                    (substitute* "make/libtool.mk"
-                      (("SHELL=/bin/bash")
-                       (string-append "SHELL=" (which "bash"))))
-                    (substitute* (append
-                                  '("qtest/bin/qtest-driver")
-                                  (find-files "." "\\.test"))
-                      (("/usr/bin/env") (which "env"))))
-                  %standard-phases)))
+    `(#:disallowed-references (,perl)
+      #:phases (alist-cons-before
+                'configure 'patch-paths
+                (lambda _
+                  (substitute* "make/libtool.mk"
+                    (("SHELL=/bin/bash")
+                     (string-append "SHELL=" (which "bash"))))
+                  (substitute* (append
+                                '("qtest/bin/qtest-driver")
+                                (find-files "." "\\.test"))
+                    (("/usr/bin/env") (which "env"))))
+                %standard-phases)))
    (native-inputs
-    `(("pkg-config" ,pkg-config)))
+    `(("pkg-config" ,pkg-config)
+      ("perl" ,perl)))
    (propagated-inputs
     `(("pcre" ,pcre)))
    (inputs
-    `(("zlib" ,zlib)
-      ("perl" ,perl)))
+    `(("zlib" ,zlib)))
    (synopsis "Command-line tools and library for transforming PDF files")
    (description
     "QPDF is a command-line program that does structural, content-preserving
@@ -547,8 +590,8 @@ program capable of converting PDF into other formats.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/xournal/xournal-"
-                           version ".tar.gz"))
+       (uri (string-append "mirror://sourceforge/xournal/xournal/" version
+                           "/xournal-" version ".tar.gz"))
        (sha256
         (base32
          "0c7gjcqhygiyp0ypaipdaxgkbivg6q45vhsj8v5jsi9nh6iqff13"))))
@@ -567,3 +610,89 @@ program capable of converting PDF into other formats.")
      "Xournal is an application for notetaking, sketching, keeping a journal
 using a stylus.")
     (license license:gpl2+)))
+
+(define-public python-reportlab
+  (package
+    (name "python-reportlab")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "reportlab" version))
+              (sha256
+               (base32
+                "0rz2pg04wnzjjm2f5a8ik9v8s54mv4xrjhv5liqjijqv6awh12gl"))))
+    (build-system python-build-system)
+    (arguments
+     ;; Prevent creation of the egg. Without this flag, various artifacts
+     ;; from the build inputs end up in the final python3 output. It also
+     ;; works around https://debbugs.gnu.org/cgi/bugreport.cgi?bug=20765 .
+     `(#:configure-flags '("--single-version-externally-managed" "--root=/")))
+    (propagated-inputs
+     `(("python-pillow" ,python-pillow)))
+    (home-page "http://www.reportlab.com")
+    (synopsis "Python library for generating PDFs and graphics")
+    (description "This is the ReportLab PDF Toolkit.  It allows rapid creation
+of rich PDF documents, and also creation of charts in a variety of bitmap and
+vector formats.")
+    (license license:bsd-3)
+    (properties `((python2-variant . ,(delay python2-reportlab))))))
+
+(define-public python2-reportlab
+  (package
+    (inherit (package-with-python2
+              (strip-python2-variant python-reportlab)))
+    (native-inputs `(("python2-pip" ,python2-pip)))))
+
+(define-public impressive
+  (package
+    (name "impressive")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://sourceforge/impressive/Impressive/"
+                    version "/Impressive-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0b3rmy6acp2vmf5nill3aknxvr9a5aawk1vnphkah61anxp62gsr"))))
+    (build-system python-build-system)
+
+    ;; TODO: Add dependency on pdftk.
+    (inputs `(("python-pygame" ,python-pygame)
+              ("python2-pillow" ,python2-pillow)
+              ("sdl" ,sdl)
+              ("xpdf" ,xpdf)))
+
+    (arguments
+     `(#:python ,python-2
+       #:phases (modify-phases %standard-phases
+                  (delete 'build)
+                  (delete 'configure)
+                  (delete 'check)
+                  (replace 'install
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      ;; There's no 'setup.py' so install things manually.
+                      (let* ((out  (assoc-ref outputs "out"))
+                             (bin  (string-append out "/bin"))
+                             (man1 (string-append out "/share/man/man1"))
+                             (sdl  (assoc-ref inputs "sdl"))
+                             (xpdf (assoc-ref inputs "xpdf")))
+                        (mkdir-p bin)
+                        (copy-file "impressive.py"
+                                   (string-append bin "/impressive"))
+                        (wrap-program (string-append bin "/impressive")
+                          `("LIBRARY_PATH" ":" prefix ;for ctypes
+                            (,(string-append sdl "/lib")))
+                          `("PATH" ":" prefix     ;for pdftoppm
+                            (,(string-append xpdf "/bin"))))
+                        (mkdir-p man1)
+                        (install-file "impressive.1" man1)
+                        #t))))))
+    (home-page "http://impressive.sourceforge.net")
+    (synopsis "PDF presentation tool with visual effects")
+    (description
+     "Impressive is a tool to display PDF files that provides visual effects
+such as smooth alpha-blended slide transitions.  It provides additional tools
+such as zooming, highlighting an area of the screen, and a tool to navigate
+the PDF pages.")
+    (license license:gpl2)))

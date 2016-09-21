@@ -4,6 +4,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,15 +103,15 @@ interface to the Tk widget system.")
 (define-public ecl
   (package
     (name "ecl")
-    (version "15.2.21")
+    (version "16.1.2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/ecls/ecls/"
-                           (version-major+minor version)
-                           "/ecl-" version ".tgz"))
+       (uri (string-append
+             "https://common-lisp.net/project/ecl/static/files/release/"
+             name "-" version ".tgz"))
        (sha256
-        (base32 "05di23v977byf67rq5bdshw8lqbby1ycbscdcl1vca0z6r1s204j"))))
+        (base32 "16ab8qs3awvdxy8xs8jy82v8r04x4wr70l9l2j45vgag18d2nj1d"))))
     (build-system gnu-build-system)
     ;; src/configure uses 'which' to confirm the existence of 'gzip'.
     (native-inputs `(("which" ,which)))
@@ -119,30 +120,38 @@ interface to the Tk widget system.")
               ("libgc" ,libgc)
               ("libffi" ,libffi)))
     (arguments
-     '(;; During 'make check', ECL fails to initialize with "protocol not
-       ;; supported", presumably because /etc/protocols is missing in the
-       ;; build environment.  See <http://sourceforge.net/p/ecls/bugs/300/>.
-       ;;
-       ;; Should the test suite be re-enabled, it might be necessary to add
-       ;; '#:parallel-tests #f'.  See the same bug report as above.
-       ;;
-       ;; The following might also be necessary, due to 'make check' assuming
-       ;; ECL is installed.  See <http://sourceforge.net/p/ecls/bugs/299/>.
-       ;;
-       ;; #:phases
-       ;; (let* ((check-phase (assq-ref %standard-phases 'check))
-       ;;        (rearranged-phases
-       ;;         (alist-cons-after 'install 'check check-phase
-       ;;                           (alist-delete 'check %standard-phases))))
-       ;;   (alist-cons-before
-       ;;    'check 'pre-check
-       ;;    (lambda* (#:key outputs #:allow-other-keys)
-       ;;      (substitute* '("build/tests/Makefile")
-       ;;        (("ECL=ecl")
-       ;;         (string-append
-       ;;          "ECL=" (assoc-ref outputs "out") "/bin/ecl"))))
-       ;;    rearranged-phases))
-       #:tests? #f))
+     '(#:tests? #t
+       #:make-flags `(,(string-append "ECL="
+                                      (assoc-ref %outputs "out")
+                                      "/bin/ecl"))
+       #:parallel-tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'check)
+         (add-after 'install 'wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((ecl (assoc-ref outputs "out"))
+                    (input-path (lambda (lib path)
+                                  (string-append
+                                   (assoc-ref inputs lib) path)))
+                    (libraries '("gmp" "libatomic-ops" "libgc" "libffi" "libc"))
+                    (binaries  '("gcc" "ld-wrapper" "binutils"))
+                    (library-directories
+                     (map (lambda (lib) (input-path lib "/lib"))
+                          libraries)))
+
+               (wrap-program (string-append ecl "/bin/ecl")
+                 `("PATH" prefix
+                   ,(map (lambda (binary)
+                           (input-path binary "/bin"))
+                         binaries))
+                 `("CPATH" suffix
+                   ,(map (lambda (lib)
+                           (input-path lib "/include"))
+                         `("kernel-headers" ,@libraries)))
+                 `("LIBRARY_PATH" suffix ,library-directories)
+                 `("LD_LIBRARY_PATH" suffix ,library-directories)))))
+         (add-after 'wrap 'check (assoc-ref %standard-phases 'check)))))
     (home-page "http://ecls.sourceforge.net/")
     (synopsis "Embeddable Common Lisp")
     (description "ECL is an implementation of the Common Lisp language as
@@ -209,14 +218,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "1.2.8")
+    (version "1.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "0ab9lw056yf6y0rjmx3iirn5n59pmssqxf00fbmpyl6qsnpaja1d"))))
+        (base32 "0fjdqnb2rsm2vi9794ywp27jr239ddvzc4xfr0dk49jd4v7p2kc5"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     ;; Bootstrap with CLISP.
@@ -243,7 +252,11 @@ an interpreter, a compiler, a debugger, and much more.")
                ;; occurs in some .sh files too (which contain Lisp code).  Use
                ;; ISO-8859-1 because some of the files are ISO-8859-1 encoded.
                (with-fluids ((%default-port-encoding #f))
-                 (substitute* (find-files "." "\\.(lisp|sh)$")
+                 ;; The removed file is utf-16-be encoded, which gives substitute*
+                 ;; trouble. It does not contain references to the listed programs.
+                 (substitute* (delete
+                               "./tests/data/compile-file-pos-utf16be.lisp"
+                               (find-files "." "\\.(lisp|sh)$"))
                    (("\"/bin/sh\"") (quoted-path bash "/bin/sh"))
                    (("\"/usr/bin/env\"") (quoted-path coreutils "/usr/bin/env"))
                    (("\"/bin/cat\"") (quoted-path coreutils "/bin/cat"))
@@ -315,7 +328,7 @@ statistical profiler, a code coverage tool, and many other extensions.")
 (define-public ccl
   (package
     (name "ccl")
-    (version "1.10")
+    (version "1.11")
     (source #f)
     (build-system gnu-build-system)
     ;; CCL consists of a "lisp kernel" and "heap image", both of which are
@@ -328,7 +341,8 @@ statistical profiler, a code coverage tool, and many other extensions.")
         ,(origin
            (method url-fetch)
            (uri (string-append
-                 "ftp://ftp.clozure.com/pub/release/1.10/ccl-" version "-"
+                 "ftp://ftp.clozure.com/pub/release/" version
+                 "/ccl-" version "-"
                  (match (%current-system)
                    ((or "i686-linux" "x86_64-linux") "linuxx86")
                    ("armhf-linux" "linuxarm")
@@ -340,9 +354,9 @@ statistical profiler, a code coverage tool, and many other extensions.")
             (base32
              (match (%current-system)
                ((or "i686-linux" "x86_64-linux")
-                "0mr653q5px05lr11z2mk551m5g47b4wq96vbfibpp0qlc9jp58lc")
+                "0w3dmj7q9kqyra3yrf1lxclnjz151yvf5s5q8ayllvmvqbl8bs08")
                ("armhf-linux"
-                "1py02irpmi2qz5rq3h33wfv6impf15z8i2rign6hvhlqn7s99wwh")
+                "1x487aaz2rqcb6k301sy2p39a1m4qdhg6z9p9fb76ssipqgr38b4")
                (_ ""))))))))
     (native-inputs
      `(("m4" ,m4)
@@ -439,7 +453,7 @@ interface.")
                 (uri (git-reference
                       (url "https://github.com/blakemcbride/LISPF4.git")
                       (commit commit)))
-                (file-name (string-append name "-" version))
+                (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
                   "18k8kfn30za637y4bfbm9x3vv4psa3q8f7bi9h4h0qlb8rz8m92c"))))
@@ -449,14 +463,12 @@ interface.")
       (arguments
        `(#:make-flags
          '("-f" "Makefile.unx" "CC=gcc")
-         ;; no check phase
-         #:tests? #f
+         #:tests? #f ; No 'check phase
          #:phases
          (modify-phases %standard-phases
            (delete 'configure)
-           (replace
-            'install
-            (lambda* (#:key outputs inputs #:allow-other-keys)
+           (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
                      (bin (string-append out "/bin"))
                      (doc (string-append (assoc-ref outputs "doc")
@@ -473,3 +485,56 @@ in the early 80's.  It was converted to C by Blake McBride and supports much of
 the InterLisp Standard.")
       (home-page "https://github.com/blakemcbride/LISPF4.git")
       (license license:expat))))
+
+(define-public femtolisp
+  (let ((commit "68c5b1225572ecf2c52baf62f928063e5a30511b")
+        (revision "1"))
+    (package
+      (name "femtolisp")
+      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/JeffBezanson/femtolisp.git")
+                      (commit commit)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "04rnwllxnl86zw8c6pwxznn49bvkvh0f1lfliy085vjzvlq3rgja"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags '("CC=gcc")
+         #:tests? #f ; No make check
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure) ; No configure script
+           ;; We have to remove the 'test phase because it requires
+           ;; the flisp binary to be present. Instead we run
+           ;; bootstrap.sh after the 'install phase.
+           (add-before 'build 'patch-makefile
+             (lambda _
+               (substitute* "Makefile"
+                 (("default: release test") "default: release"))
+               #t))
+           (replace 'install ; Makefile has no 'install phase
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin")))
+                (install-file "flisp" bin)
+                #t)))
+           ;; The flisp binary is now available, run bootstrap to
+           ;; generate flisp.boot and afterwards runs make test.
+           (add-after 'install 'bootstrap-gen-and-test
+             (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin")))
+                (and
+                 (zero? (system* "./bootstrap.sh"))
+                 (install-file "flisp.boot" bin))))))))
+      (synopsis "Scheme-like lisp implementation")
+      (description
+       "@code{femtolisp} is a scheme-like lisp implementation with a
+simple, elegant Scheme dialect.  It is a lisp-1 with lexical scope.
+The core is 12 builtin special forms and 33 builtin functions.")
+      (home-page "https://github.com/JeffBezanson/femtolisp")
+      (license license:bsd-3))))

@@ -7,6 +7,7 @@
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,8 +35,10 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages perl)
@@ -47,7 +50,7 @@
 (define-public libtasn1
   (package
     (name "libtasn1")
-    (version "4.7")
+    (version "4.8")
     (source
      (origin
       (method url-fetch)
@@ -55,7 +58,7 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "1j8iixynchziw1y39lnibyl5h81m4p78w3i4f28q2vgwjgf801x4"))))
+        "04y5m29pqmvkfdbppmsdifyx89v8xclxzklpfc7a1fkr9p4jz07s"))))
     (build-system gnu-build-system)
     (native-inputs `(("perl" ,perl)))
     (home-page "http://www.gnu.org/software/libtasn1/")
@@ -65,21 +68,34 @@
 for transmitting machine-neutral encodings of data objects in computer
 networking, allowing for formal validation of data according to some
 specifications.")
-    (replacement libtasn1/fixed)
     (license license:lgpl2.0+)))
 
-(define libtasn1/fixed                            ;for CVE-2016-4008
+(define-public asn1c
   (package
-    (inherit libtasn1)
-    (source
-     (let ((version "4.8"))
-       (origin
-         (method url-fetch)
-         (uri (string-append "mirror://gnu/libtasn1/libtasn1-"
-                             version ".tar.gz"))
-         (sha256
-          (base32
-           "04y5m29pqmvkfdbppmsdifyx89v8xclxzklpfc7a1fkr9p4jz07s")))))))
+    (name "asn1c")
+    (version "0.9.27")
+    (source (origin
+      (method url-fetch)
+      (uri (string-append "https://lionet.info/soft/asn1c-"
+                          version ".tar.gz"))
+      (sha256
+       (base32
+        "17nvn2kzvlryasr9dzqg6gs27b9lvqpval0k31pb64bjqbhn8pq2"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("perl" ,perl)))
+    (home-page "https://lionet.info/asn1c")
+    (synopsis "ASN.1 to C compiler")
+    (description "The ASN.1 to C compiler takes ASN.1 module
+files and generates C++ compatible C source code.  That code can be
+used to serialize the native C structures into compact and unambiguous
+BER/XER/PER-based data files, and deserialize the files back.
+
+Various ASN.1 based formats are widely used in the industry, such as to encode
+the X.509 certificates employed in the HTTPS handshake, to exchange control
+data between mobile phones and cellular networks, to car-to-car communication
+in intelligent transportation networks.")
+    (license license:bsd-2)))
 
 (define-public p11-kit
   (package
@@ -122,7 +138,8 @@ living in the same process.")
 (define-public gnutls
   (package
     (name "gnutls")
-    (version "3.4.7")
+    (replacement gnutls-3.5.4)
+    (version "3.5.2")
     (source (origin
              (method url-fetch)
              (uri
@@ -133,7 +150,7 @@ living in the same process.")
                              "/gnutls-" version ".tar.xz"))
              (sha256
               (base32
-               "0nifi3mr5jhz608pidkp8cjs4vwfj1m2qczsjrgpnp99615rxgn1"))))
+               "10l5pv7qc5c850aamih3pdkbqpc4v2a6g164dzd7c7fjpxffji9b"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -144,7 +161,7 @@ living in the same process.")
              ;; the location of the system-wide trust store.  Instead it has a
              ;; configure-time option.  Unless specified, its configure script
              ;; attempts to auto-detect the location by looking for common
-             ;; places in the filesystem, none of which are present in our
+             ;; places in the file system, none of which are present in our
              ;; chroot build environment.  If not found, then no default trust
              ;; store is used, so each program has to provide its own
              ;; fallback, and users have to configure each program
@@ -172,7 +189,8 @@ living in the same process.")
                "debug"
                "doc"))                            ;4.1 MiB of man pages
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("net-tools" ,net-tools)
+       ("pkg-config" ,pkg-config)
        ("which" ,which)))
     (inputs
      `(("guile" ,guile-2.0)
@@ -183,7 +201,7 @@ living in the same process.")
        ("libidn" ,libidn)
        ("nettle" ,nettle)
        ("zlib" ,zlib)))
-    (home-page "http://www.gnu.org/software/gnutls/")
+    (home-page "https://www.gnu.org/software/gnutls/")
     (synopsis "Transport layer security library")
     (description
      "GnuTLS is a secure communications library implementing the SSL, TLS
@@ -194,11 +212,24 @@ required structures.")
     (properties '((ftp-server . "ftp.gnutls.org")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
+(define gnutls-3.5.4
+  (package
+    (inherit gnutls)
+    (source
+      (let ((version "3.5.4"))
+        (origin
+          (method url-fetch)
+          (uri (string-append "mirror://gnupg/gnutls/v"
+                              (version-major+minor version)
+                              "/gnutls-" version ".tar.xz"))
+          (sha256
+           (base32
+            "1sx8p7v452s9m854r2c5pvcd1k15a3caiv5h35fhrxz0691h2f2f")))))))
+
 (define-public openssl
   (package
    (name "openssl")
-   (version "1.0.2g")
-   (replacement openssl/fixed)
+   (version "1.0.2h")
    (source (origin
              (method url-fetch)
              (uri (list (string-append "ftp://ftp.openssl.org/source/"
@@ -208,15 +239,25 @@ required structures.")
                                        "/" name "-" version ".tar.gz")))
              (sha256
               (base32
-               "0cxajjayi859czi545ddafi24m9nwsnjsw4q82zrmqvwj2rv315p"))
+               "06996ds1rk8xhnyb5y273a7xkcxhggp4bq1g02rab55d7bjhfh0x"))
              (patches (search-patches "openssl-runpath.patch"
-                                      "openssl-c-rehash-in.patch"))))
+                                      "openssl-c-rehash-in.patch"
+                                      "openssl-CVE-2016-2177.patch"
+                                      "openssl-CVE-2016-2178.patch"))))
    (build-system gnu-build-system)
+   (outputs '("out"
+              "doc"                               ;1.5MiB of man3 pages
+              "static"))                          ;6MiB of .a files
    (native-inputs `(("perl" ,perl)))
    (arguments
-    `(#:parallel-build? #f
+    `(#:disallowed-references (,perl)
+      #:parallel-build? #f
       #:parallel-tests? #f
       #:test-target "test"
+
+      ;; Changes to OpenSSL sometimes cause Perl to "sneak in" to the closure,
+      ;; so we explicitly disallow it here.
+      #:disallowed-references ,(list (canonical-package perl))
       #:phases
       (modify-phases %standard-phases
         (add-before
@@ -263,6 +304,33 @@ required structures.")
                        (find-files (string-append out "/lib")
                                    "\\.so"))
              #t)))
+        (add-after 'install 'move-static-libraries
+          (lambda* (#:key outputs #:allow-other-keys)
+            ;; Move static libraries to the "static" output.
+            (let* ((out    (assoc-ref outputs "out"))
+                   (lib    (string-append out "/lib"))
+                   (static (assoc-ref outputs "static"))
+                   (slib   (string-append static "/lib")))
+              (mkdir-p slib)
+              (for-each (lambda (file)
+                          (install-file file slib)
+                          (delete-file file))
+                        (find-files lib "\\.a$"))
+              #t)))
+        (add-after 'install 'move-man3-pages
+          (lambda* (#:key outputs #:allow-other-keys)
+            ;; Move section 3 man pages to "doc".
+            (let* ((out    (assoc-ref outputs "out"))
+                   (man3   (string-append out "/share/man/man3"))
+                   (doc    (assoc-ref outputs "doc"))
+                   (target (string-append doc "/share/man/man3")))
+              (mkdir-p target)
+              (for-each (lambda (file)
+                          (rename-file file
+                                       (string-append target "/"
+                                                      (basename file))))
+                        (find-files man3))
+              #t)))
         (add-before
          'patch-source-shebangs 'patch-tests
          (lambda* (#:key inputs native-inputs #:allow-other-keys)
@@ -299,31 +367,45 @@ required structures.")
    (license license:openssl)
    (home-page "http://www.openssl.org/")))
 
-(define openssl/fixed
+(define-public openssl-next
   (package
     (inherit openssl)
-    (source
-     (let ((name "openssl")
-           (version "1.0.2h"))
-       (origin
-         (method url-fetch)
-         (uri (list (string-append "ftp://ftp.openssl.org/source/"
-                                   name "-" version ".tar.gz")
-                    (string-append "ftp://ftp.openssl.org/source/old/"
-                                   (string-trim-right version char-set:letter)
-                                   "/" name "-" version ".tar.gz")))
-         (sha256
-          (base32
-           "06996ds1rk8xhnyb5y273a7xkcxhggp4bq1g02rab55d7bjhfh0x"))
-         (patches (search-patches "openssl-runpath.patch"
-                                  "openssl-c-rehash-in.patch"
-                                  "openssl-CVE-2016-2177.patch"
-                                  "openssl-CVE-2016-2178.patch")))))))
+    (name "openssl")
+    (version "1.1.0")
+    (source (origin
+             (method url-fetch)
+             (uri (list (string-append "ftp://ftp.openssl.org/source/"
+                                       name "-" version ".tar.gz")
+                        (string-append "ftp://ftp.openssl.org/source/old/"
+                                       (string-trim-right version char-set:letter)
+                                       "/" name "-" version ".tar.gz")))
+              (patches (search-patches "openssl-1.1.0-c-rehash-in.patch"))
+              (sha256
+               (base32
+                "10lcpmnxap9nw8ymdglys93cgkwd1lf1rz4fhq5whwhlmkwrzipm"))))
+    (outputs '("out"
+               "doc"        ;1.3MiB of man3 pages
+               "static"))   ; 5.5MiB of .a files
+    (arguments
+     (substitute-keyword-arguments (package-arguments openssl)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'patch-tests)          ; These two phases are not needed by
+           (delete 'patch-Makefile.org)   ; OpenSSL 1.1.0.
+
+           (add-after 'configure 'patch-runpath
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
+                 (substitute* "Makefile.shared"
+                   (("\\$\\$\\{SHAREDCMD\\} \\$\\$\\{SHAREDFLAGS\\}")
+                    (string-append "$${SHAREDCMD} $${SHAREDFLAGS}"
+                                   " -Wl,-rpath," lib)))
+                 #t)))))))))
 
 (define-public libressl
   (package
     (name "libressl")
-    (version "2.3.6")
+    (version "2.4.2")
     (source
      (origin
       (method url-fetch)
@@ -332,7 +414,7 @@ required structures.")
              version ".tar.gz"))
       (sha256
        (base32
-        "1yipsp1ici207nbminbf1knh252kzvqg036v0xpx0fw1wrwlg2im"))))
+        "1qyrcyzrrn6r9cqvm66ib72qyr65q4hrdyiq1vb24a6nwmwdg1sz"))))
     (build-system gnu-build-system)
     (native-search-paths
       ;; FIXME: These two variables must designate a single file or directory
@@ -473,7 +555,7 @@ security, and applying best practice development processes.")
        ("python2-psutil" ,python2-psutil)
        ("python2-requests" ,python2-requests)
        ("python2-pytz" ,python2-pytz)))
-    (synopsis "Let's Encrypt client")
+    (synopsis "Let's Encrypt client by the Electronic Frontier Foundation")
     (description "Tool to automatically receive and install X.509 certificates
 to enable TLS on servers.  The client will interoperate with the Let’s Encrypt CA which
 will be issuing browser-trusted certificates for free.")
@@ -482,7 +564,8 @@ will be issuing browser-trusted certificates for free.")
 
 (define-public letsencrypt
   (package (inherit certbot)
-    (name "letsencrypt")))
+    (name "letsencrypt")
+    (properties `((superseded . ,certbot)))))
 
 (define-public perl-net-ssleay
   (package
@@ -527,3 +610,126 @@ finally access to the SSL api of the SSLeay/OpenSSL package so you can write
 servers or clients for more complicated applications.")
     (license (package-license perl))
     (home-page "http://search.cpan.org/~mikem/Net-SSLeay-1.66/")))
+
+(define-public perl-crypt-openssl-rsa
+ (package
+  (name "perl-crypt-openssl-rsa")
+  (version "0.28")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/P/PE/PERLER/Crypt-OpenSSL-RSA-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "1gnpvv09b2gpifwdzc5jnhama3d1a4c39lzj9hcaicsb8rvzjmsk"))))
+  (build-system perl-build-system)
+  (inputs
+    `(("perl-crypt-openssl-bignum" ,perl-crypt-openssl-bignum)
+      ("perl-crypt-openssl-random" ,perl-crypt-openssl-random)
+      ("openssl" ,openssl)))
+  (arguments perl-crypt-arguments)
+  (home-page
+    "http://search.cpan.org/dist/Crypt-OpenSSL-RSA")
+  (synopsis
+    "RSA encoding and decoding, using the openSSL libraries")
+  (description "Crypt::OpenSSL::RSA does RSA encoding and decoding (using the
+OpenSSL libraries).")
+  (license (package-license perl))))
+
+(define perl-crypt-arguments
+   `(#:phases (modify-phases %standard-phases
+      (add-before 'configure 'patch-Makefile.PL
+        (lambda* (#:key inputs #:allow-other-keys)
+          (substitute* "Makefile.PL"
+            (("'LIBS'.*=>.*") (string-append "'LIBS' => ['-L"
+                                             (assoc-ref inputs "openssl")
+                                             "/lib -lcrypto'],")))
+          #t)))))
+
+(define-public perl-crypt-openssl-bignum
+ (package
+  (name "perl-crypt-openssl-bignum")
+  (version "0.06")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/K/KM/KMX/Crypt-OpenSSL-Bignum-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "05yzrdglrrzp191krf77zrwfkmzrfwrsrx1vyskbj94522lszk67"))))
+  (build-system perl-build-system)
+  (inputs `(("openssl" ,openssl)))
+  (arguments perl-crypt-arguments)
+  (home-page
+    "http://search.cpan.org/dist/Crypt-OpenSSL-Bignum")
+  (synopsis
+    "OpenSSL's multiprecision integer arithmetic in Perl")
+  (description "Crypt::OpenSSL::Bignum provides multiprecision integer
+arithmetic in Perl.")
+  ;; At your option either gpl1+ or the Artistic License
+  (license (package-license perl))))
+
+(define-public perl-crypt-openssl-random
+ (package
+  (name "perl-crypt-openssl-random")
+  (version "0.11")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (string-append
+             "mirror://cpan/authors/id/R/RU/RURBAN/Crypt-OpenSSL-Random-"
+             version
+             ".tar.gz"))
+      (sha256
+        (base32
+          "0yjcabkibrkafywvdkmd1xpi6br48skyk3l15ni176wvlg38335v"))))
+  (build-system perl-build-system)
+  (inputs `(("openssl" ,openssl)))
+  (arguments perl-crypt-arguments)
+  (home-page
+    "http://search.cpan.org/dist/Crypt-OpenSSL-Random")
+  (synopsis
+    "OpenSSL/LibreSSL pseudo-random number generator access")
+  (description "Crypt::OpenSSL::Random is a OpenSSL/LibreSSL pseudo-random
+number generator")
+  (license (package-license perl))))
+
+(define-public acme-client
+  (package
+    (name "acme-client")
+    (version "0.1.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://kristaps.bsd.lv/" name "/"
+                                  "snapshots/" name "-portable-"
+                                  version ".tgz"))
+              (sha256
+               (base32
+                "09pipyfk448gxqr7ci56gsq5la8wlydv7wwn9wk0zgjxmlh7h6fb"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ; no test suite
+       #:make-flags
+       (list "CC=gcc"
+             (string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)))) ; no './configure' script
+    (inputs
+     `(("libbsd" ,libbsd)
+       ("libressl" ,libressl)))
+    (synopsis "Let's Encrypt client by the OpenBSD project")
+    (description "acme-client is a Let's Encrypt client implemented in C.  It
+uses a modular design, and attempts to secure itself by dropping privileges and
+operating in a chroot where possible.  acme-client is developed on OpenBSD and
+then ported to the GNU / Linux environment.")
+    (home-page "https://kristaps.bsd.lv/acme-client/")
+    ;; acme-client is distributed under the ISC license, but the files 'jsmn.h'
+    ;; and 'jsmn.c' are distributed under the Expat license.
+    (license (list license:isc license:expat))))

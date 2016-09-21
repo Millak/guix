@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -27,7 +27,10 @@
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (ice-9 match)
-  #:export (nginx-service))
+  #:export (nginx-configuration
+            nginx-configuration?
+            nginx-service
+            nginx-service-type))
 
 ;;; Commentary:
 ;;;
@@ -64,7 +67,7 @@
          (system? #t)
          (comment "nginx server user")
          (home-directory "/var/empty")
-         (shell #~(string-append #$shadow "/sbin/nologin")))))
+         (shell (file-append shadow "/sbin/nologin")))))
 
 (define nginx-activation
   (match-lambda
@@ -77,13 +80,13 @@
          (format #t "creating nginx run directory '~a'~%" #$run-directory)
          (mkdir-p #$run-directory)
          ;; Check configuration file syntax.
-         (system* (string-append #$nginx "/bin/nginx")
+         (system* (string-append #$nginx "/sbin/nginx")
                   "-c" #$config-file "-t")))))
 
 (define nginx-shepherd-service
   (match-lambda
     (($ <nginx-configuration> nginx log-directory run-directory config-file)
-     (let* ((nginx-binary #~(string-append #$nginx "/sbin/nginx"))
+     (let* ((nginx-binary (file-append nginx "/sbin/nginx"))
             (nginx-action
              (lambda args
                #~(lambda _

@@ -4,7 +4,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2013, 2015 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015 Mathieu Lirzin <mthl@openmailbox.org>
+;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Alexander I.Grafov <grafov@gmail.com>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
@@ -13,6 +13,8 @@
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
+;;; Copyright © 2016 Marius Bakke <mbakke@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,7 +49,8 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
-  #:use-module (gnu packages gnome)               ;for libgudev
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
@@ -64,14 +67,14 @@
 (define-public arandr
   (package
     (name "arandr")
-    (version "0.1.8")
+    (version "0.1.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://christian.amsuess.com/tools/" name
                                   "/files/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0d574mbmhaqmh7kivaryj2hpghz6xkvic9ah43s1hf385y7c33kd"))))
+                "1i3f1agixxbfy4kxikb2b241p7c2lg73cl9wqfvlwz3q6zf5faxv"))))
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2     ;incompatible with python 3
@@ -108,7 +111,8 @@ program.")
       (origin
         (method url-fetch)
         (uri (string-append
-              "mirror://sourceforge/" name "/" name "-" version ".tar.gz"))
+              "mirror://sourceforge/" name "/" name "/" version "/"
+              name "-" version ".tar.gz"))
         (sha256
           (base32
            "0ibcf46rldnv0r424qcnai1fa5iq3lm5q5rdd7snsi5sb78gmixp"))))
@@ -127,14 +131,14 @@ avoiding password prompts when X11 forwarding has already been setup.")
 (define-public libxkbcommon
   (package
     (name "libxkbcommon")
-    (version "0.5.0")
+    (version "0.6.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "http://xkbcommon.org/download/" name "-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "176ii5dn2wh74q48sd8ac37ljlvgvp5f506glr96z6ibfhj7igch"))))
+               "0q47xa1szlxwgvwmhv4b7xwawnykz1hnc431d84nj8dlh2q8f22v"))))
     (build-system gnu-build-system)
     (inputs
      `(("libx11" ,libx11)
@@ -180,14 +184,14 @@ X11 (yet).")
     (arguments
      '(#:tests? #f ; Test suite requires a lot of black magic
        #:phases
-       (alist-replace 'configure
-                      (lambda* (#:key outputs #:allow-other-keys #:rest args)
-                        (setenv "PREFIX" (assoc-ref outputs "out"))
-                        (setenv "LDFLAGS" (string-append "-Wl,-rpath="
-                                               (assoc-ref
-                                                %outputs "out") "/lib"))
-                        (setenv "CC" "gcc"))
-                      %standard-phases)))
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys #:rest args)
+             (setenv "PREFIX" (assoc-ref outputs "out"))
+             (setenv "LDFLAGS"
+                     (string-append "-Wl,-rpath="
+                                    (assoc-ref %outputs "out") "/lib"))
+             (setenv "CC" "gcc"))))))
     (native-inputs `(("perl" ,perl))) ; for pod2man
     (inputs `(("libx11" ,libx11)
               ("libxext" ,libxext)
@@ -262,7 +266,7 @@ rasterisation.")
 (define-public libdrm
   (package
     (name "libdrm")
-    (version "2.4.65")
+    (version "2.4.67")
     (source
       (origin
         (method url-fetch)
@@ -272,7 +276,7 @@ rasterisation.")
                ".tar.bz2"))
         (sha256
           (base32
-            "1i4n7mz49l0j4kr0dg9n1j3hlc786ncqgj0v5fci1mz7pp40m5ki"))
+            "1gnf206zs8dwszvkv4z2hbvh23045z0q29kms127bqrv27hp2nzf"))
         (patches (search-patches "libdrm-symbol-check.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -297,7 +301,7 @@ and Matrox.")
 (define-public mtdev
   (package
     (name "mtdev")
-    (version "1.1.3")
+    (version "1.1.5")
     (source
       (origin
         (method url-fetch)
@@ -305,8 +309,8 @@ and Matrox.")
                "http://bitmath.org/code/mtdev/mtdev-"
                version ".tar.bz2"))
         (sha256
-          (base32
-            "159ndzwfpw0xr8mw4lhl47w9c2krshlfrscs7k6n186vknv2hk3d"))))
+         (base32
+          "0zxs7shzgbalkvlaiibi25bd902rbmkv9n1lww6q8j3ri9qdaxv6"))))
     (build-system gnu-build-system)
     (home-page "http://bitmath.org/code/mtdev/")
     (synopsis "Multitouch protocol translation library")
@@ -512,21 +516,20 @@ include cursor in the resulting image.")
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
-       #:phases (alist-delete
-                 'configure
-                 (alist-replace
-                  'install
-                  (lambda* (#:key inputs outputs #:allow-other-keys)
-                    (let* ((out  (assoc-ref outputs "out"))
-                           (bin  (string-append out "/bin"))
-                           (man1 (string-append out "/share/man/man1")))
-                      (mkdir-p bin)
-                      (mkdir-p man1)
-                      (zero?
-                       (system* "make" "install" "install.man"
-                                (string-append "BINDIR=" bin)
-                                (string-append "MANDIR=" man1)))))
-                  %standard-phases))))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bin  (string-append out "/bin"))
+                    (man1 (string-append out "/share/man/man1")))
+               (mkdir-p bin)
+               (mkdir-p man1)
+               (zero?
+                 (system* "make" "install" "install.man"
+                          (string-append "BINDIR=" bin)
+                          (string-append "MANDIR=" man1)))))))))
     (inputs `(("libx11" ,libx11)))
     (home-page "http://ftp.x.org/contrib/utilities/")
     (synopsis "Hide idle mouse cursor")
@@ -584,8 +587,8 @@ X Window System.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://sourceforge/libxosd/xosd-"
-                    version ".tar.gz"))
+                    "mirror://sourceforge/libxosd/libxosd/xosd-" version "/"
+                    name "-" version ".tar.gz"))
               (sha256
                (base32
                 "025m7ha89q29swkc7s38knnbn8ysl24g2h5s7imfxflm91psj7sg"))))
@@ -639,7 +642,7 @@ Guile will work for XBindKeys.")
 (define-public sxhkd
   (package
     (name "sxhkd")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
        (file-name (string-append name "-" version ".tar.gz"))
@@ -649,7 +652,7 @@ Guile will work for XBindKeys.")
              version ".tar.gz"))
        (sha256
         (base32
-         "04s3y2bq9502gw72jj3y2zsh96yj3qg2av3zsa8ahd2farvrysg6"))))
+         "15grmzpxz5fqlbfg2slj7gb7r6nzkvjmflmbkqx7mlby9pm6wdkj"))))
     (build-system gnu-build-system)
     (inputs
      `(("asciidoc" ,asciidoc)
@@ -849,7 +852,7 @@ color temperature should be set to match the lamps in your room.")
 (define-public xscreensaver
   (package
     (name "xscreensaver")
-    (version "5.34")
+    (version "5.35")
     (source
      (origin
        (method url-fetch)
@@ -858,7 +861,7 @@ color temperature should be set to match the lamps in your room.")
                        version ".tar.gz"))
        (sha256
         (base32
-         "09sy5v8bn62hiq4ib3jyvp8lipqcvn3rdsj74q25qgklpv27xzvg"))))
+         "08kbb0ry7ih436ab4i5g6lnhaaz13zkcdmbdibrn4j5gm5qq8v0y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f  ; no check target
@@ -912,10 +915,32 @@ demos.  It also acts as a nice screen locker.")
                "http://metadata.ftp-master.debian.org/changelogs/"
                "/main/x/xscreensaver/xscreensaver_5.34-2_copyright")))))
 
+(define-public xdpyprobe
+  (package
+    (name "xdpyprobe")
+    (version "0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/alezost/" name
+                                  "/releases/download/v" version
+                                  "/" name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1h09wd2qcg08rj5hcakvdh9q01hkrj8vxly94ax3ch2x06lm0zq8"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("libx11" ,libx11)))
+    (home-page "https://github.com/alezost/xdpyprobe")
+    (synopsis "Probe X server for connectivity")
+    (description
+     "Xdpyprobe is a tiny C program whose only purpose is to probe a
+connectivity of the X server running on a particular @code{DISPLAY}.")
+    (license license:gpl3+)))
+
 (define-public rofi
   (package
     (name "rofi")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/DaveDavenport/rofi/"
@@ -923,17 +948,17 @@ demos.  It also acts as a nice screen locker.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "1l8vl0mh7i0b1ycifqpg6392f5i4qxlv003m126skfk6fnlfq8hn"))))
+                "0xxx0xpxhrhlhi2axq9867zqrhwqavc1qrr833k1xr0pvm5m0aqc"))))
     (build-system gnu-build-system)
     (inputs
-     `(("libx11" ,libx11)
-       ("pango" ,pango)
+     `(("pango" ,pango)
        ("cairo" ,cairo)
        ("glib" ,glib)
        ("startup-notification" ,startup-notification)
        ("libxkbcommon" ,libxkbcommon)
        ("libxcb" ,libxcb)
        ("xcb-util" ,xcb-util)
+       ("xcb-util-xrm" ,xcb-util-xrm)
        ("xcb-util-wm" ,xcb-util-wm)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -952,3 +977,88 @@ demos.  It also acts as a nice screen locker.")
 applications you regularily use and also allows you to search for an application
 by name.")
     (license license:expat)))
+
+(define-public tint2
+  (package
+    (name "tint2")
+    (version "0.12.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gitlab.com/o9000/" name
+                                  "/repository/archive.tar.gz?ref=" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0dv7zaj2ahnfclnwnwcz9arrvzxn65yy29z7fqdgifdh3jk1kl2h"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f                      ;no test target
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-installation-prefix
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("/etc") "${CMAKE_INSTALL_PREFIX}/etc")))))))
+    (inputs
+     `(("gtk+" ,gtk+-2)
+       ("imlib2" ,imlib2)
+       ("librsvg" ,librsvg)
+       ("libxcomposite" ,libxcomposite)
+       ("libxdamage" ,libxdamage)
+       ("libxft" ,libxft)
+       ("libxinerama" ,libxinerama)
+       ("libxrandr" ,libxrandr)
+       ("startup-notification" ,startup-notification)))
+    (native-inputs
+     `(("gettext" ,gnu-gettext)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://gitlab.com/o9000/tint2")
+    (synopsis "Lightweight task bar")
+    (description
+     "Tint2 is a simple task bar made for modern X window managers.  It was
+specifically made for Openbox but it should also work with other window
+managers (GNOME, KDE, XFCE etc.).
+
+The taskbar includes transparency and color settings for the font, icons,
+border, and background.  It also supports multihead setups, customized mouse
+actions, a built-in clock, a battery monitor and a system tray.")
+    (license license:gpl2)))
+
+(define-public xcb-util-xrm
+  (package
+    (name "xcb-util-xrm")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/Airblader/xcb-util-xrm/releases"
+                    "/download/v" version "/xcb-util-xrm-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1h5vxwpd37dqfw9yj1l4zd9c5dj30r3g0szgysr6kd7xrqgaq04l"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Drop bundled m4.
+               '(delete-file-recursively "m4"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("m4" ,m4)
+       ("libx11" ,libx11))) ; for tests
+    (inputs
+     `(("libxcb" ,libxcb)
+       ("xcb-util" ,xcb-util)))
+    (home-page "https://github.com/Airblader/xcb-util-xrm")
+    (synopsis "XCB utility functions for the X resource manager")
+    (description
+     "The XCB util module provides a number of libraries which sit on
+top of libxcb, the core X protocol library, and some of the extension
+libraries.  These experimental libraries provide convenience functions
+and interfaces which make the raw X protocol more usable.  Some of the
+libraries also provide client-side code which is not strictly part of
+the X protocol but which has traditionally been provided by Xlib.
+
+XCB util-xrm module provides the following libraries:
+
+- xrm: utility functions for the X resource manager.")
+    (license license:x11)))

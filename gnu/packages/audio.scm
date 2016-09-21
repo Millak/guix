@@ -5,6 +5,8 @@
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +41,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -62,6 +65,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -75,14 +79,16 @@
     (version "2.1.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/alsamodular/ams-"
-                                  version ".tar.bz2"))
+              (uri (string-append "mirror://sourceforge/alsamodular/alsamodular"
+                                  "/" version "/ams-" version ".tar.bz2"))
               (sha256
                (base32
                 "1azbrhpfk4nnybr7kgmc7w6al6xnzppg853vas8gmkh185kk11l0"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-qt5")
+     `(#:configure-flags
+       '("--enable-qt5"
+         "CXXFLAGS=-std=gnu++11")
        #:phases
        (modify-phases %standard-phases
          ;; Insert an extra space between linker flags.
@@ -172,7 +178,7 @@ streams from live audio.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "4.7")
+    (version "5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -186,14 +192,15 @@ streams from live audio.")
                     "libs/ardour/revision.cc"
                   (lambda (port)
                     (format port "#include \"ardour/revision.h\"
-namespace ARDOUR { const char* revision = \"4.7-219-g0e36f8e\" ; }"))))
+namespace ARDOUR { const char* revision = \"5.3\" ; }"))))
               (sha256
                (base32
-                "149gswphz77m3pkzsn2nqbm6yvcfa3fva560bcvjzlgb73f64q5l"))
+                "0xdyc3syxg4drg7rafadhlrn6nycg169ay6q5xhga19kcwy6qmqm"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
-     `(#:configure-flags '("--cxx11") ; required by gtkmm
+     `(#:configure-flags '("--cxx11"          ; required by gtkmm
+                           "--no-phone-home") ; don't contact ardour.org
        #:phases
        (modify-phases %standard-phases
          (add-after
@@ -231,12 +238,14 @@ namespace ARDOUR { const char* revision = \"4.7-219-g0e36f8e\" ; }"))))
        ("sratom" ,sratom)
        ("suil" ,suil)
        ("lilv" ,lilv)
+       ("readline" ,readline)
        ("redland" ,redland)
        ("rubberband" ,rubberband)
        ("taglib" ,taglib)
        ("python-rdflib" ,python-rdflib)))
     (native-inputs
      `(("perl" ,perl)
+       ("cppunit" ,cppunit)
        ("pkg-config" ,pkg-config)))
     (home-page "http://ardour.org")
     (synopsis "Digital audio workstation")
@@ -766,8 +775,8 @@ also play midifiles using a Soundfont.")
     (version "2.7")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/faac/faad2-" version ".zip"))
+              (uri (string-append "mirror://sourceforge/faac/faad2-src/faad2-"
+                                  version "/faad2-" version ".zip"))
               (sha256
                (base32
                 "16f3l16c00sg0wkrkm3vzv0gy3g97x309vw788igs0cap2x1ak3z"))))
@@ -868,7 +877,7 @@ patches that can be used with softsynths such as Timidity and WildMidi.")
     (source (origin
              (method url-fetch)
              (uri (string-append
-                   "mirror://sourceforge/guitarix/guitarix2-"
+                   "mirror://sourceforge/guitarix/guitarix/guitarix2-"
                    version ".tar.xz"))
              (sha256
               (base32
@@ -1230,8 +1239,8 @@ connections between them.")
     (version "3.1.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/bs2b/libbs2b-" version ".tar.lzma"))
+              (uri (string-append "mirror://sourceforge/bs2b/libbs2b/" version
+                                  "/libbs2b-" version ".tar.lzma"))
               (sha256
                (base32
                 "1mcc4gjkmphczjybnsrip3gq1f974knzys7x49bv197xk3fn8wdr"))))
@@ -1253,10 +1262,8 @@ essential distortions.")
     (version "0.28")
     (source (origin
              (method url-fetch)
-             (uri (string-append
-                   "mirror://sourceforge/liblo/liblo-"
-                   version
-                   ".tar.gz"))
+             (uri (string-append "mirror://sourceforge/liblo/liblo/" version
+                                 "/liblo-" version ".tar.gz"))
              (sha256
               (base32
                "02drgnpirvl2ihvzgsmn02agr5sj3vipzzw9vma56qlkgfvak56s"))))
@@ -1303,7 +1310,7 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
 (define-public lilv
   (package
     (name "lilv")
-    (version "0.20.0")
+    (version "0.22.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "http://download.drobilla.net/lilv-"
@@ -1311,7 +1318,7 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
                                  ".tar.bz2"))
              (sha256
               (base32
-               "0aj2plkx56iar8vzjbq2l7hi7sp0ml99m0h44rgwai2x4vqkk2j2"))))
+               "1d3ss7vv8drf1c5340lyd0gv736n2qy7sxji2nh1rw9y48hr69yd"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f ; no check target
@@ -1462,7 +1469,7 @@ lv2-c++-tools.")
 (define-public openal
   (package
     (name "openal")
-    (version "1.15.1")
+    (version "1.17.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1470,7 +1477,7 @@ lv2-c++-tools.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0mmhdqiyb3c9dzvxspm8h2v8jibhi8pfjxnf6m0wn744y1ia2a8f"))))
+                "051k5fy8pk4fd9ha3qaqcv08xwbks09xl5qs4ijqq2qz5xaghhd3"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f  ; no check target
@@ -1505,6 +1512,32 @@ through the EFX extension.  It also facilitates streaming audio, multi-channel
 buffers, and audio capture.")
     (home-page "http://kcat.strangesoft.net/openal.html")
     (license license:lgpl2.0+)))
+
+(define-public freealut
+  (package
+    (name "freealut")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              ;; Upstream url is unclear, many systems use Fedora, there is also
+              ;; https://github.com/vancegroup/freealut though the status of it
+              ;; (official? unofficial?) is not clear.
+              (uri (string-append
+                    "https://pkgs.fedoraproject.org/repo/pkgs/" name "/" name "-"
+                    version ".tar.gz" "/e089b28a0267faabdb6c079ee173664a/" name
+                    "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0kzlil6112x2429nw6mycmif8y6bxr2cwjcvp18vh6s7g63ymlb0"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))  ; no check target
+    (inputs
+     `(("openal" ,openal)))
+    (synopsis "Free implementation of OpenAL's ALUT standard")
+    (description "freealut is the OpenAL Utility Toolkit.")
+    (home-page "http://kcat.strangesoft.net/openal.html")
+    (license license:lgpl2.0)))
 
 (define-public patchage
   (package
@@ -1709,9 +1742,9 @@ Suil currently supports every combination of Gtk 2, Qt 4, and X11.")
     (version "2.14.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/timidity/TiMidity++-"
-                    version ".tar.bz2"))
+              (uri (string-append "mirror://sourceforge/timidity/TiMidity++"
+                                  "/TiMidity++-" version
+                                  "/TiMidity++-" version ".tar.bz2"))
               (sha256
                (base32
                 "0xk41w4qbk23z1fvqdyfblbz10mmxsllw0svxzjw5sa9y11vczzr"))))
@@ -1871,7 +1904,7 @@ encode and decode wavpack files.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://sourceforge/project/modplug-xmms/"
+                    "mirror://sourceforge/modplug-xmms/"
                     name "/" version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
@@ -1892,7 +1925,7 @@ surround and reverb.")
     (version "4.3.10")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/xmp/libxmp/"
+              (uri (string-append "mirror://sourceforge/xmp/libxmp/" version "/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
@@ -1912,7 +1945,7 @@ Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT).")
     (version "4.0.10")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/xmp/xmp/"
+              (uri (string-append "mirror://sourceforge/xmp/xmp/" version "/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
@@ -1972,8 +2005,8 @@ control functionality, or just for playing around with the sound effects.")
     (version "14.4.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/sox/sox-"
-                                  version ".tar.bz2"))
+              (uri (string-append "mirror://sourceforge/sox/sox/" version "/"
+                                  name "-" version ".tar.bz2"))
               (sha256
                (base32
                 "170lx90r1nlnb2j6lg00524iwvqy72p48vii4xc5prrh8dnrb9l1"))))
@@ -2035,8 +2068,8 @@ conversion.  It may be used, for example, to resample PCM-encoded audio.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/twolame/twolame-" version ".tar.gz"))
+       (uri (string-append "mirror://sourceforge/twolame/twolame/" version
+                           "/twolame-" version ".tar.gz"))
        (sha256
         (base32 "0ahiqqng5pidwhj1wzph4vxxgxxgcfa3gl0gywipzx2ii7s35wwq"))))
     (build-system gnu-build-system)
@@ -2102,16 +2135,21 @@ interface.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/qsynth/qsynth-" version ".tar.gz"))
+       (uri (string-append "mirror://sourceforge/qsynth/qsynth/" version
+                           "/qsynth-" version ".tar.gz"))
        (sha256
         (base32 "034p6mbwrjnxd9b6h20cidxi4ilkk3cgpjp154j0jzjs1ipf7x2h"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f)) ; no "check" phase
+     `(#:tests? #f ; no "check" phase
+       #:configure-flags
+       '("CXXFLAGS=-std=gnu++11")))
+    (native-inputs
+     `(("qttools" ,qttools)))
     (inputs
-     `(("qt" ,qt)
-       ("fluidsynth" ,fluidsynth)))
+     `(("fluidsynth" ,fluidsynth)
+       ("qtbase" ,qtbase)
+       ("qtx11extras" ,qtx11extras)))
     (home-page "http://qsynth.sourceforge.net")
     (synopsis "Graphical user interface for FluidSynth")
     (description
@@ -2423,3 +2461,58 @@ module to handle that particular file type.")
 with support for HD extensions.")
     (home-page "https://github.com/foo86/dcadec")
     (license license:lgpl2.1+)))
+
+(define-public bs1770gain
+  (package
+    (name "bs1770gain")
+    (version "0.4.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/bs1770gain/bs1770gain/"
+                           version "/bs1770gain-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0j765drdb7h3y5ipjv9sg1a0if6zh8cksbv3rdk5ppd7kxcrjnlb"))))
+    (build-system gnu-build-system)
+    (inputs `(("ffmpeg" ,ffmpeg)
+              ("sox" ,sox)))
+    (home-page "http://bs1770gain.sourceforge.net/")
+    (synopsis "Tool to adjust loudness of media files")
+    (description
+     "BS1770GAIN is a loudness scanner compliant with ITU-R BS.1770 and its
+flavors EBU R128, ATSC A/85, and ReplayGain 2.0.  It helps normalizing the
+loudness of audio and video files to the same level.")
+    (license license:gpl2+)))
+
+(define-public filteraudio
+  (let ((revision "1")
+        (commit "2fc669581e2a0ff87fba8de85861b49133306094"))
+    (package
+      (name "filteraudio")
+      (version (string-append "0.0.0-" revision "."
+                              (string-take commit 7)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/irungentoo/filter_audio.git")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32
+           "0hbb290n3wb23f2k692a6bhc23nnqmxqi9sc9j15pnya8wifw64g"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:make-flags (list (string-append "PREFIX=" %output)
+                            "CC=gcc")
+         #:tests? #f ; No tests
+         #:phases
+         (modify-phases %standard-phases
+           ;; No configure script
+           (delete 'configure))))
+      (synopsis "Lightweight audio filtering library")
+      (description "An easy to use audio filtering library made from webrtc
+code, used in @code{libtoxcore}.")
+      (home-page "https://github.com/irungentoo/filter_audio")
+      (license license:bsd-3))))

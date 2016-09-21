@@ -52,6 +52,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
+  #:use-module (rnrs bytevectors)
   #:export (guix-system
             read-operating-system))
 
@@ -236,11 +237,15 @@ BODY..., and restore them."
       (with-monad %store-monad
         (return #f)))))
 
-(define-syntax-rule (with-shepherd-error-handling body ...)
-  (warn-on-system-error
-   (guard (c ((shepherd-error? c)
-              (report-shepherd-error c)))
-     body ...)))
+(define-syntax-rule (with-shepherd-error-handling mbody ...)
+  "Catch and report Shepherd errors that arise when binding MBODY, a monadic
+expression in %STORE-MONAD."
+  (lambda (store)
+    (warn-on-system-error
+     (guard (c ((shepherd-error? c)
+                (values (report-shepherd-error c) store)))
+       (values (run-with-store store (begin mbody ...))
+               store)))))
 
 (define (report-shepherd-error error)
   "Report ERROR, a '&shepherd-error' error condition object."
@@ -271,36 +276,17 @@ on service '~a':~%")
   "Call MPROC, a monadic procedure in %STORE-MONAD, passing it the list of
 names of services to load (upgrade), and the list of names of services to
 unload."
-  (define (essential? service)
-    (memq service '(root shepherd)))
-
-  (define new-service-names
-    (map (compose first shepherd-service-provision)
-         new-services))
-
-  (let-values (((running stopped) (current-services)))
-    (if (and running stopped)
-        (let* ((to-load
-                ;; Only load services that are either new or currently stopped.
-                (remove (lambda (service)
-                          (memq (first (shepherd-service-provision service))
-                                running))
-                        new-services))
-               (to-unload
-                ;; Unload services that are (1) no longer required, or (2) are
-                ;; in TO-LOAD.
-                (remove essential?
-                        (append (remove (lambda (service)
-                                          (memq service new-service-names))
-                                        (append running stopped))
-                                (filter (lambda (service)
-                                          (memq service stopped))
-                                        (map shepherd-service-canonical-name
-                                             to-load))))))
-          (mproc to-load to-unload))
-        (with-monad %store-monad
-          (warning (_ "failed to obtain list of shepherd services~%"))
-          (return #f)))))
+  (match (current-services)
+    ((services ...)
+     (let-values (((to-unload to-load)
+                   (shepherd-service-upgrade services new-services)))
+       (mproc to-load
+              (map (compose first live-service-provision)
+                   to-unload))))
+    (#f
+     (with-monad %store-monad
+       (warning (_ "failed to obtain list of shepherd services~%"))
+       (return #f)))))
 
 (define (upgrade-shepherd-services os)
   "Upgrade the Shepherd (PID 1) by unloading obsolete services and loading new
@@ -362,7 +348,7 @@ it atomically, and then run OS's activation script."
        ;; The activation script may modify '%load-path' & co., so protect
        ;; against that.  This is necessary to ensure that
        ;; 'upgrade-shepherd-services' gets to see the right modules when it
-       ;; computes derivations with (gexp->derivation #:modules …).
+       ;; computes derivations with 'gexp->derivation'.
        (save-load-path-excursion
         (primitive-load (derivation->output-path script))))
 
@@ -393,6 +379,9 @@ it atomically, and then run OS's activation script."
                                 read-boot-parameters))
             (label            (boot-parameters-label params))
             (root             (boot-parameters-root-device params))
+            (root-device      (if (bytevector? root)
+                                  (uuid->string root)
+                                  root))
             (kernel           (boot-parameters-kernel params))
             (kernel-arguments (boot-parameters-kernel-arguments params)))
        (menu-entry
@@ -401,7 +390,7 @@ it atomically, and then run OS's activation script."
                               (seconds->string time) ")"))
         (linux kernel)
         (linux-arguments
-         (cons* (string-append "--root=" root)
+         (cons* (string-append "--root=" root-device)
                 #~(string-append "--system=" #$system)
                 #~(string-append "--load=" #$system "/boot")
                 kernel-arguments))
@@ -469,18 +458,21 @@ list of services."
                                     #:optional (profile %system-profile))
   "Display a summary of system generation NUMBER in a human-readable format."
   (unless (zero? number)
-    (let* ((generation (generation-file-name profile number))
-           (param-file (string-append generation "/parameters"))
-           (params     (call-with-input-file param-file read-boot-parameters))
-           (label      (boot-parameters-label params))
-           (root       (boot-parameters-root-device params))
-           (kernel     (boot-parameters-kernel params)))
+    (let* ((generation  (generation-file-name profile number))
+           (param-file  (string-append generation "/parameters"))
+           (params      (call-with-input-file param-file read-boot-parameters))
+           (label       (boot-parameters-label params))
+           (root        (boot-parameters-root-device params))
+           (root-device (if (bytevector? root)
+                            (uuid->string root)
+                            root))
+           (kernel      (boot-parameters-kernel params)))
       (display-generation profile number)
       (format #t (_ "  file name: ~a~%") generation)
       (format #t (_ "  canonical file name: ~a~%") (readlink* generation))
       ;; TRANSLATORS: Please preserve the two-space indentation.
       (format #t (_ "  label: ~a~%") label)
-      (format #t (_ "  root device: ~a~%") root)
+      (format #t (_ "  root device: ~a~%") root-device)
       (format #t (_ "  kernel: ~a~%") kernel))))
 
 (define* (list-generations pattern #:optional (profile %system-profile))
@@ -739,7 +731,7 @@ Build the operating system declared in FILE according to ACTION.\n"))
 
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)
-                   (alist-cons 'dry-run? #t result)))
+                   (alist-cons 'dry-run? #t (alist-cons 'graft? #f result))))
          (option '(#\s "system") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'system arg

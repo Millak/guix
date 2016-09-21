@@ -7,6 +7,7 @@
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Kei Kebreau <kei@openmailbox.org>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
+;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,11 +31,13 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
   #:use-module (guix build-system waf)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages apr)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -49,6 +52,7 @@
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages emacs)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
@@ -69,11 +73,14 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux) ; for alsa-utils
+  #:use-module (gnu packages libffi)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -260,6 +267,148 @@ many input formats and provides a customisable Vi-style user interface.")
 enable professional yet simple and intuitive pattern-based drum programming.")
     (license license:gpl2+)))
 
+(define-public extempore
+  (package
+    (name "extempore")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/digego/extempore/archive/"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1wap1mvsicrhlazikf7l8zxg37fir8bmnh9rin28m1rix730vcch"))
+              (file-name (string-append name "-" version ".tar.gz"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(;; The default target also includes ahead-of-time compilation of the
+       ;; standard libraries.  However, during the "install" phase this would
+       ;; happen *again* for unknown reasons.  Hence we only build the
+       ;; extempore executable during the build phase.
+       #:make-flags '("extempore")
+       #:configure-flags '("-DJACK=ON"
+                           ;; We want to distribute.
+                           "-DIN_TREE=OFF"
+                           ;; Don't download any dependencies.
+                           "-DBUILD_DEPS=OFF")
+       #:modules ((ice-9 match)
+                  (guix build cmake-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-directories
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Rewrite default path to runtime directory
+             (substitute* "src/Extempore.cpp"
+               (("runtimedir \\+= \"runtime\"")
+                (string-append "runtimedir = \""
+                               (assoc-ref outputs "out")
+                               "/lib/extempore/runtime\"")))
+             (substitute* "extras/extempore.el"
+               (("\\(runtime-directory \\(concat default-directory \"runtime\"\\)\\)")
+                (string-append "(runtime-directory \""
+                               (assoc-ref outputs "out")
+                               "/lib/extempore/runtime"
+                               "\")")))
+             #t))
+         (add-after 'unpack 'link-with-additional-libs
+           (lambda _
+             ;; The executable must be linked with libffi and zlib.
+             (substitute* "CMakeLists.txt"
+               (("add_dependencies\\(aot_extended extended_deps\\)") "")
+               (("target_link_libraries\\(extempore PRIVATE dl" line)
+                (string-append line " ffi z")))
+             #t))
+         ;; FIXME: AOT compilation of the nanovg bindings fail with the error:
+         ;; "Compiler Error  could not bind _nvgLinearGradient"
+         (add-after 'unpack 'disable-nanovg
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("aotcompile_lib\\(libs/external/nanovg.xtm.*") ""))
+             #t))
+         ;; FIXME: All examples that are used as tests segfault for some
+         ;; unknown reason.
+         (add-after 'unpack 'disable-broken-tests
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("extempore_add_example_as_test\\(.*") ""))
+             #t))
+         (add-after 'unpack 'hardcode-external-lib-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (use-modules (ice-9 match))
+             (for-each
+              (match-lambda
+                ((file-name lib pkg-name)
+                 (substitute* (string-append "libs/external/" file-name ".xtm")
+                   ((lib) (string-append (assoc-ref inputs pkg-name)
+                                         "/lib/" lib)))))
+              '(("assimp"    "libassimp.so"    "assimp")
+                ("portmidi"  "libportmidi.so"  "portmidi")
+                ("sndfile"   "libsndfile.so"   "libsndfile")
+                ("fft"       "libkiss_fft.so"  "kiss-fft")
+                ("stb_image" "libstb_image.so" "stb-image")
+                ("nanovg"    "libnanovg.so"    "nanovg")
+                ("glext"     "libGL.so"        "mesa")
+                ("glfw3"     "libglfw.so"      "glfw")
+                ("gl/glcore-directbind"   "libGL.so" "mesa")
+                ("gl/glcompat-directbind" "libGL.so" "mesa")))
+             #t))
+         (add-after 'unpack 'use-own-llvm
+          (lambda* (#:key inputs #:allow-other-keys)
+            (setenv "EXT_LLVM_DIR" (assoc-ref inputs "llvm"))
+            ;; Our LLVM builds shared libraries, so Extempore should use
+            ;; those.
+            (substitute* "CMakeLists.txt"
+              (("CMAKE_STATIC_LIBRARY") "CMAKE_SHARED_LIBRARY"))
+            #t))
+         (add-after 'unpack 'fix-aot-compilation
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               ;; EXT_SHARE_DIR does not exist before installation, so the
+               ;; working directory should be the source directory instead.
+               (("WORKING_DIRECTORY \\$\\{EXT_SHARE_DIR\\}")
+                "WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}")
+               ;; Extempore needs to be told where the runtime is to be found.
+               ;; While we're at it we disable automatic tuning for a specific
+               ;; CPU to make binary substitution possible.
+               (("COMMAND extempore" prefix)
+                (string-append prefix " --sharedir " (getcwd)
+                               " --mcpu=generic --attr=none")))
+             #t)))))
+    (inputs
+     `(("llvm" ,llvm-for-extempore)
+       ("libffi" ,libffi)
+       ("jack" ,jack-1)
+       ("libsndfile" ,libsndfile)
+       ("glfw" ,glfw)
+       ("apr" ,apr)
+       ("stb-image" ,stb-image-for-extempore)
+       ("kiss-fft" ,kiss-fft-for-extempore)
+       ("nanovg" ,nanovg-for-extempore)
+       ("portmidi" ,portmidi-for-extempore)
+       ("assimp" ,assimp)
+       ("alsa-lib" ,alsa-lib)
+       ("portaudio" ,portaudio)
+       ("mesa" ,mesa)
+       ("pcre" ,pcre)
+       ("zlib" ,zlib)))
+    (native-inputs
+     `(("perl" ,perl)
+       ("emacs" ,emacs-no-x)))
+    (home-page "http://benswift.me/extempore-docs/index.html")
+    (synopsis "Programming environment for live coding of multimedia")
+    (description
+     "Extempore is a programming language and runtime environment designed
+with live programming in mind.  It supports interactive programming in a REPL
+style, compiling and binding code just-in-time.  Although Extempore has its
+roots in 'live coding' of audiovisual media art, it is suitable for any task
+domain where dynamic run-time modifiability and good numerical performance are
+required.  Extempore also has strong timing and concurrency semantics, which
+are helpful when working in problem spaces where timing is important (such as
+audio and video).")
+    (license license:bsd-2)))
+
 (define-public klick
   (package
     (name "klick")
@@ -404,7 +553,7 @@ interface.  It is implemented as a frontend to @code{klick}.")
        ("font-tex-gyre" ,font-tex-gyre)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
-       ("ghostscript" ,ghostscript)
+       ("ghostscript" ,ghostscript-gs)
        ("pango" ,pango)
        ("python" ,python-2)))
     (native-inputs
@@ -694,14 +843,16 @@ Editor.  It is compatible with Power Tab Editor 1.7 and Guitar Pro.")
     (source (origin
               (method url-fetch)
               (uri
-               (string-append "mirror://sourceforge/synthv1/synthv1-"
-                              version ".tar.gz"))
+               (string-append "mirror://sourceforge/synthv1/synthv1/" version
+                              "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
                 "0h5zja78phf9705i9g54zh61iczb24iv7rxhljyms30sjgajig1y"))))
     (build-system gnu-build-system)
-    ;; There are no tests.
-    (arguments `(#:tests? #f))
+    (arguments
+     `(#:tests? #f ; There are no tests.
+       #:configure-flags
+       '("CXXFLAGS=-std=gnu++11")))
     (inputs
      `(("jack" ,jack-1)
        ("lv2" ,lv2)
@@ -903,45 +1054,85 @@ is subjective.")
 (define-public tuxguitar
   (package
     (name "tuxguitar")
-    (version "1.2")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://sourceforge/tuxguitar/TuxGuitar/TuxGuitar-"
-                    version "/tuxguitar-src-" version ".tar.gz"))
+                    version "/tuxguitar-" version "-src.tar.gz"))
               (sha256
                (base32
-                "1g1yf2gd06fzdhqb8kb8dmdcmr602s9y24f01kyl4940wimgr944"))))
-    (build-system gnu-build-system)
+                "0ldml31zvywid1w28mfd65ramyiics55fdl0ch846vm7j7nwv58j"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Delete pre-built classes
+               '(delete-file-recursively "TuxGuitar-android/bin"))))
+    (build-system ant-build-system)
     (arguments
-     `(#:make-flags (list (string-append "LDFLAGS=-Wl,-rpath="
-                                         (assoc-ref %outputs "out") "/lib")
-                          (string-append "PREFIX="
-                                         (assoc-ref %outputs "out"))
-                          (string-append "SWT_PATH="
-                                         (assoc-ref %build-inputs "java-swt")
-                                         "/share/java/swt.jar"))
-       #:tests? #f ;no "check" target
-       #:parallel-build? #f ;not supported
+     `(#:build-target "build"
+       #:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'enter-dir-and-set-flags
-          (lambda* (#:key inputs #:allow-other-keys)
-            (chdir "TuxGuitar")
-            (substitute* "GNUmakefile"
-              (("GCJFLAGS\\+=(.*)" _ rest)
-               (string-append "GCJFLAGS=-fsource=1.4 -fPIC " rest))
-              (("PROPERTIES\\?=")
-               (string-append "PROPERTIES?= -Dswt.library.path="
-                              (assoc-ref inputs "java-swt") "/lib"))
-              (("\\$\\(GCJ\\) -o") "$(GCJ) $(LDFLAGS) -o"))
-            #t)))))
+         (add-after 'unpack 'enter-dir
+           (lambda _ (chdir "TuxGuitar-lib") #t))
+         (add-after 'build 'build-editor-utils
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (chdir "..")
+             (let ((cwd (getcwd)))
+               (setenv "CLASSPATH"
+                       (string-append
+                        cwd "/TuxGuitar-lib/tuxguitar-lib.jar" ":"
+                        cwd "/TuxGuitar-editor-utils/build/jar/tuxguitar-editor-utils.jar" ":"
+                        (getenv "CLASSPATH"))))
+             (chdir "TuxGuitar-editor-utils")
+             ;; Generate default build.xml
+             ((@@ (guix build ant-build-system) default-build.xml)
+              "tuxguitar-editor-utils.jar"
+              (string-append (assoc-ref outputs "out")
+                             "/share/java"))
+             ((assoc-ref %standard-phases 'build))))
+         (add-after 'build-editor-utils 'build-application
+           (lambda _
+             (chdir "../TuxGuitar")
+             ((assoc-ref %standard-phases 'build)
+              #:build-target "build")))
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out   (assoc-ref outputs "out"))
+                    (bin   (string-append out "/bin"))
+                    (share (string-append out "/share"))
+                    (lib   (string-append share "/java"))
+                    (swt   (assoc-ref inputs "java-swt")))
+               (mkdir-p bin)
+               (mkdir-p lib)
+               ;; install all jars
+               (for-each (lambda (file)
+                           (install-file file lib))
+                         (find-files ".." "\\.jar$"))
+               ;; install all resources
+               (for-each (lambda (file)
+                           (install-file file share))
+                         (find-files "share" ".*"))
+               ;; create wrapper
+               (call-with-output-file (string-append bin "/tuxguitar")
+                 (lambda (port)
+                   (let ((classpath (string-join (append (find-files lib "\\.jar$")
+                                                         (find-files swt "\\.jar$"))
+                                                 ":")))
+                     (format
+                      port
+                      (string-append "#!/bin/sh\n"
+                                     (which "java")
+                                     " -cp " classpath
+                                     " -Dtuxguitar.home.path=" out
+                                     " -Dtuxguitar.share.path=" out "/share"
+                                     " -Dswt.library.path=" swt "/lib"
+                                     " org.herac.tuxguitar.app.TGMainSingleton"
+                                     " \"$1\" \"$2\"")))))
+               (chmod (string-append bin "/tuxguitar") #o555)
+               #t))))))
     (inputs
      `(("java-swt" ,java-swt)))
-    (native-inputs
-     `(("gcj" ,gcj)
-       ("pkg-config" ,pkg-config)))
     (home-page "http://tuxguitar.com.ar")
     (synopsis "Multitrack tablature editor and player")
     (description
@@ -1036,6 +1227,23 @@ projects.")
      "PortMidi is a library supporting real-time input and output of MIDI data
 using a system-independent interface.")
     (license license:expat)))
+
+(define-public portmidi-for-extempore
+  (package (inherit portmidi)
+    (name "portmidi-for-extempore")
+    (version "217")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/extemporelang/portmidi/"
+                                  "archive/" version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gjikwciyr8kk4y3qiv1pcq58xpgw38ql1m2gs6g0qc1s8sx4235"))))
+    (build-system cmake-build-system)
+    (arguments `(#:tests? #f)) ; no tests
+    (native-inputs '())
+    (home-page "https://github.com/extemporelang/portmidi/")))
 
 (define-public python-pyportmidi
   (package
@@ -1518,17 +1726,13 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "1.3.18")
+    (version "1.3.19")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                     "https://pypi.python.org/packages/"
-                     "14/6f/c9c79c5339ab3ecced265ca18adbf5bae3d4058bae737b6164d738fb4d2c/"
-                     name "-" version ".tar.gz"))
-              (patches (search-patches "beets-image-test-failure.patch"))
+              (uri (pypi-uri "beets" version))
               (sha256
                (base32
-                "09pgyywa5llbc36y0lrr21ywgsp8m2zx6p8ncf8hxik28knd5kld"))))
+                "1vi1dh3fr554bnm8y9pjy09hblw18v6cl2jppzwlp72afri1w93b"))))
     (build-system python-build-system)
     (arguments
      `(#:python ,python-2 ; only Python 2 is supported
@@ -1597,6 +1801,52 @@ for improved Amiga ProTracker 2/3 compatibility.")
     (home-page "http://milkytracker.org/")
     ;; 'src/milkyplay' is under Modified BSD, the rest is under GPL3 or later.
     (license (list license:bsd-3 license:gpl3+))))
+
+(define-public schismtracker
+  (package
+    (name "schismtracker")
+    (version "20160521")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/" name "/" name "/archive/"
+                    version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c6r24wm3rldm4j8cskl9xnixj3rwi3lnrhckw5gv43wpy6h4jcz"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Remove use of __DATE__ and __TIME__ for reproducibility.
+               `(substitute* "schism/version.c"
+                  (("Schism Tracker build %s %s.*$")
+                   (string-append "Schism Tracker version " ,version "\");"))))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'autoconf
+           (lambda _ (zero? (system* "autoreconf" "-vfi"))))
+         (add-before 'configure 'link-libm
+           (lambda _ (setenv "LIBS" "-lm") #t)))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("python" ,python)))
+    (inputs
+     `(("alsa-lib" ,alsa-lib) ; for asound dependency
+       ("libx11" ,libx11)
+       ("libxext" ,libxext)
+       ("sdl" ,sdl)))
+    (home-page "http://schismtracker.org")
+    (synopsis "Oldschool sample-based music composition tool")
+    (description
+     "Schism Tracker is a reimplementation of Impulse Tracker, a program used to
+create high quality music without the requirements of specialized, expensive
+equipment, and with a unique \"finger feel\" that is difficult to replicate in
+part.  The player is based on a highly modified version of the ModPlug engine,
+with a number of bugfixes and changes to improve IT playback.")
+    (license license:gpl2+)))
 
 (define-public moc
   (package

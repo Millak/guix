@@ -25,6 +25,7 @@
   #:use-module (guix records)
   #:use-module (guix derivations)                 ;imported-modules, etc.
   #:use-module (gnu services)
+  #:use-module (gnu services herd)
   #:use-module (gnu packages admin)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
@@ -47,14 +48,14 @@
             shepherd-service-stop
             shepherd-service-auto-start?
             shepherd-service-modules
-            shepherd-service-imported-modules
 
-            %default-imported-modules
             %default-modules
 
             shepherd-service-file
 
-            shepherd-service-back-edges))
+            shepherd-service-lookup-procedure
+            shepherd-service-back-edges
+            shepherd-service-upgrade))
 
 ;;; Commentary:
 ;;;
@@ -138,9 +139,7 @@ for a service that extends SHEPHERD-ROOT-SERVICE-TYPE and nothing else."
   (auto-start?   shepherd-service-auto-start?          ;Boolean
                  (default #t))
   (modules       shepherd-service-modules              ;list of module names
-                 (default %default-modules))
-  (imported-modules shepherd-service-imported-modules  ;list of module names
-                    (default %default-imported-modules)))
+                 (default %default-modules)))
 
 (define (shepherd-service-canonical-name service)
   "Return the 'canonical name' of SERVICE."
@@ -179,7 +178,7 @@ assertion failure."
                           (&message
                            (message
                             (format #f (_ "service '~a' requires '~a', \
-which is undefined")
+which is not provided by any service")
                                     (match (shepherd-service-provision service)
                                       ((head . _) head)
                                       (_          service))
@@ -203,37 +202,26 @@ stored."
 (define (shepherd-service-file service)
   "Return a file defining SERVICE."
   (gexp->file (shepherd-service-file-name service)
-              #~(begin
-                  (use-modules #$@(shepherd-service-modules service))
+              (with-imported-modules %default-imported-modules
+                #~(begin
+                    (use-modules #$@(shepherd-service-modules service))
 
-                  (make <service>
-                    #:docstring '#$(shepherd-service-documentation service)
-                    #:provides '#$(shepherd-service-provision service)
-                    #:requires '#$(shepherd-service-requirement service)
-                    #:respawn? '#$(shepherd-service-respawn? service)
-                    #:start #$(shepherd-service-start service)
-                    #:stop #$(shepherd-service-stop service)))))
+                    (make <service>
+                      #:docstring '#$(shepherd-service-documentation service)
+                      #:provides '#$(shepherd-service-provision service)
+                      #:requires '#$(shepherd-service-requirement service)
+                      #:respawn? '#$(shepherd-service-respawn? service)
+                      #:start #$(shepherd-service-start service)
+                      #:stop #$(shepherd-service-stop service))))))
 
 (define (shepherd-configuration-file services)
   "Return the shepherd configuration file for SERVICES."
-  (define modules
-    (delete-duplicates
-     (append-map shepherd-service-imported-modules services)))
-
   (assert-valid-graph services)
 
-  (mlet %store-monad ((modules  (imported-modules modules))
-                      (compiled (compiled-modules modules))
-                      (files    (mapm %store-monad
-                                      shepherd-service-file
-                                      services)))
+  (mlet %store-monad ((files (mapm %store-monad
+                                   shepherd-service-file services)))
     (define config
       #~(begin
-          (eval-when (expand load eval)
-            (set! %load-path (cons #$modules %load-path))
-            (set! %load-compiled-path
-              (cons #$compiled %load-compiled-path)))
-
           (use-modules (srfi srfi-34)
                        (system repl error-handling))
 
@@ -264,20 +252,35 @@ stored."
 
     (gexp->file "shepherd.conf" config)))
 
-(define (shepherd-service-back-edges services)
+(define* (shepherd-service-lookup-procedure services
+                                            #:optional
+                                            (provision
+                                             shepherd-service-provision))
+  "Return a procedure that, when passed a symbol, return the item among
+SERVICES that provides this symbol.  PROVISION must be a one-argument
+procedure that takes a service and returns the list of symbols it provides."
+  (let ((services (fold (lambda (service result)
+                          (fold (cut vhash-consq <> service <>)
+                                result
+                                (provision service)))
+                        vlist-null
+                        services)))
+    (lambda (name)
+      (match (vhash-assq name services)
+        ((_ . service) service)
+        (#f            #f)))))
+
+(define* (shepherd-service-back-edges services
+                                      #:key
+                                      (provision shepherd-service-provision)
+                                      (requirement shepherd-service-requirement))
   "Return a procedure that, when given a <shepherd-service> from SERVICES,
-returns the list of <shepherd-service> that depend on it."
+returns the list of <shepherd-service> that depend on it.
+
+Use PROVISION and REQUIREMENT as one-argument procedures that return the
+symbols provided/required by a service."
   (define provision->service
-    (let ((services (fold (lambda (service result)
-                            (fold (cut vhash-consq <> service <>)
-                                  result
-                                  (shepherd-service-provision service)))
-                          vlist-null
-                          services)))
-      (lambda (name)
-        (match (vhash-assq name services)
-          ((_ . service) service)
-          (#f            #f)))))
+    (shepherd-service-lookup-procedure services provision))
 
   (define edges
     (fold (lambda (service edges)
@@ -285,11 +288,59 @@ returns the list of <shepherd-service> that depend on it."
                     (vhash-consq (provision->service requirement) service
                                  edges))
                   edges
-                  (shepherd-service-requirement service)))
+                  (requirement service)))
           vlist-null
           services))
 
   (lambda (service)
     (vhash-foldq* cons '() service edges)))
+
+(define (shepherd-service-upgrade live target)
+  "Return two values: the subset of LIVE (a list of <live-service>) that needs
+to be unloaded, and the subset of TARGET (a list of <shepherd-service>) that
+needs to be loaded."
+  (define (essential? service)
+    (memq (first (live-service-provision service))
+          '(root shepherd)))
+
+  (define lookup-target
+    (shepherd-service-lookup-procedure target
+                                       shepherd-service-provision))
+
+  (define lookup-live
+    (shepherd-service-lookup-procedure live
+                                       live-service-provision))
+
+  (define (running? service)
+    (and=> (lookup-live (shepherd-service-canonical-name service))
+           live-service-running))
+
+  (define (stopped service)
+    (match (lookup-live (shepherd-service-canonical-name service))
+      (#f #f)
+      (service (and (not (live-service-running service))
+                    service))))
+
+  (define live-service-dependents
+    (shepherd-service-back-edges live
+                                 #:provision live-service-provision
+                                 #:requirement live-service-requirement))
+
+  (define (obsolete? service)
+    (match (lookup-target (first (live-service-provision service)))
+      (#f (every obsolete? (live-service-dependents service)))
+      (_  #f)))
+
+  (define to-load
+    ;; Only load services that are either new or currently stopped.
+    (remove running? target))
+
+  (define to-unload
+    ;; Unload services that are (1) no longer required, or (2) are in TO-LOAD.
+    (remove essential?
+            (append (filter obsolete? live)
+                    (filter-map stopped to-load))))
+
+  (values to-unload to-load))
 
 ;;; shepherd.scm ends here

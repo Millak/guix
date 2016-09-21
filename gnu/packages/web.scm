@@ -14,6 +14,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Copyright © 2016 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,12 +53,17 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages mit-krb5)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gperf)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages base)
   #:use-module (gnu packages perl)
@@ -85,10 +91,10 @@
               (base32
                "0n2yx3gjlpr4kgqx845fj6amnmg25r2l6a7rzab5hxnpmar985hc"))))
     (build-system gnu-build-system)
+    (native-inputs `(("pcre" ,pcre "bin")))       ;for 'pcre-config'
     (inputs `(("apr" ,apr)
               ("apr-util" ,apr-util)
               ("openssl" ,openssl)
-              ("pcre" ,pcre)
               ("perl" ,perl))) ; needed to run bin/apxs
     (arguments
      `(#:test-target "test"
@@ -283,7 +289,7 @@ parse JSON formatted strings back into the C representation of JSON objects.")
 (define-public krona-tools
   (package
    (name "krona-tools")
-   (version "2.6.1")
+   (version "2.7")
    (source (origin
              (method url-fetch)
              (uri (string-append
@@ -291,24 +297,14 @@ parse JSON formatted strings back into the C representation of JSON objects.")
                    version "/KronaTools-" version ".tar"))
              (sha256
               (base32
-               "1fj5mf6wbwz7v74n2safbw7fpw32fik19vf0wdbc2srn82i8fiwz"))))
+               "0wvgllcqscsfb4xc09y3fqhx8i38pmr4w55vjs5y79wx56n710iq"))))
    (build-system perl-build-system)
    (arguments
      `(#:phases
        (modify-phases %standard-phases
          ;; There is no configure or build steps.
          (delete 'configure)
-         (replace 'build
-           ;; Remove 'use lib' statements from scripts as PERL5LIB is set
-           ;; correctly during installation.
-           (lambda _
-             (for-each
-              (lambda (executable)
-                (display executable)(display "\n")
-                (substitute* executable
-                  (("use lib \\(`ktGetLibPath`\\);") "")))
-              (find-files "scripts/" ".*"))
-             #t))
+         (delete 'build)
          ;; Install script "install.pl" expects the build directory to remain
          ;; after installation, creating symlinks etc., so re-implement it
          ;; here.
@@ -325,7 +321,9 @@ parse JSON formatted strings back into the C representation of JSON objects.")
                     (copy-file executable (string-append bin "/kt" script))))
                 '("ClassifyBLAST"
                   "GetContigMagnitudes"
-                  "GetTaxIDFromGI"
+                  "GetLCA"
+                  "GetTaxIDFromAcc"
+                  "GetTaxInfo"
                   "ImportBLAST"
                   "ImportDiskUsage"
                   "ImportEC"
@@ -341,13 +339,11 @@ parse JSON formatted strings back into the C representation of JSON objects.")
                   "ImportTaxonomy"
                   "ImportText"
                   "ImportXML"))
-               (copy-recursively "data" (string-append perl "/../data"))
-               (copy-recursively "img" (string-append perl "/../img"))
-               (copy-recursively "taxonomy" (string-append perl "/../taxonomy"))
-               (install-file "src/krona-2.0.js" (string-append perl "/../src"))
-               (substitute* "lib/KronaTools.pm"
-                 (("`ktGetLibPath`")
-                  (string-append "\"" perl "\"")))
+               (for-each 
+                (lambda (directory)
+                  (copy-recursively directory
+                                    (string-append perl "/../" directory)))
+                (list "data" "img" "taxonomy" "src"))
                (install-file "lib/KronaTools.pm" perl))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -463,7 +459,7 @@ for efficient socket-like bidirectional reliable communication channels.")
 (define-public libpsl
   (package
     (name "libpsl")
-    (version "0.13.0")
+    (version "0.14.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/rockdaboot/libpsl/"
@@ -471,7 +467,7 @@ for efficient socket-like bidirectional reliable communication channels.")
                                   "/libpsl-" version ".tar.gz"))
               (sha256
                (base32
-                "0afn2c4s2m65xifa5sfdll0s2gyqbh2q9k9nq4nsmx1b6c2i3i7x"))))
+                "1yrfkwjw5b9y9qb4xqw7g0hk0wdscay701c1wkg8fp7lxny99iz8"))))
     (build-system gnu-build-system)
     (inputs
      `(("icu4c" ,icu4c)
@@ -590,8 +586,8 @@ unavailable.")
     (native-inputs `(("texinfo" ,texinfo)))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (alist-delete 'configure %standard-phases)
+     `(#:phases (modify-phases %standard-phases
+                  (delete 'configure))
        #:make-flags (let ((out (assoc-ref %outputs "out")))
                       (list (string-append "PREFIX=" out)
                             (string-append "LOCAL_ROOT="
@@ -636,7 +632,8 @@ of people.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://sourceforge/quvi/libquvi-scripts-" version ".tar.xz"))
+             "mirror://sourceforge/quvi/" (version-major+minor version) "/"
+             name "/" name "-" version ".tar.xz"))
        (sha256
         (base32 "0d0giry6bb57pnidymvdl7i5x9bq3ljk3g4bs294hcr5mj3cq0kw"))))
     (build-system gnu-build-system)
@@ -654,7 +651,8 @@ parse media stream properties.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://sourceforge/quvi/libquvi-" version ".tar.xz"))
+             "mirror://sourceforge/quvi/" (version-major+minor version) "/" name "/"
+             name "-" version ".tar.xz"))
        (sha256
         (base32 "00x9gbmzc5cns0gnfag0hsphcr3cb33vbbb9s7ppvvd6bxz2z1mm"))))
     (build-system gnu-build-system)
@@ -687,7 +685,8 @@ URLs and extracting their actual media files.")
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://sourceforge/quvi/quvi-" version ".tar.xz"))
+             "mirror://sourceforge/" name "/"  (version-major+minor version)
+             "/" name "/" name "-" version ".tar.xz"))
        (sha256
         (base32 "09lhl6dv5zpryasx7yjslfrcdcqlsbwapvd5lg7w6sm5x5n3k8ci"))))
     (build-system gnu-build-system)
@@ -1791,6 +1790,33 @@ by calling Encode::encode(locale => $bytes) and converted back again
 with Encode::decode(locale => $string).")
     (home-page "http://search.cpan.org/~gaas/Encode-Locale/")))
 
+(define-public perl-feed-find
+  (package
+    (name "perl-feed-find")
+    (version "0.07")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/B/BT/BTROTT/"
+                                  "Feed-Find-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sa33cm8ww55cymnl8j7b5yspi2y5xkkkgqqa4h6fs3wdqylz600"))))
+    (build-system perl-build-system)
+    (arguments
+     ;; Tests expect to query files at http://stupidfool.org/perl/feeds/
+     `(#:tests? #f))
+    (inputs
+     `(("perl-class-errorhandler" ,perl-class-errorhandler)
+       ("perl-html-parser" ,perl-html-parser)
+       ("perl-libwww" ,perl-libwww)
+       ("perl-uri" ,perl-uri)))
+    (home-page "http://search.cpan.org/dist/Feed-Find")
+    (synopsis "Syndication feed auto-discovery")
+    (description "@code{Feed::Find} implements feed auto-discovery for finding
+syndication feeds, given a URI.  It will discover the following feed formats:
+RSS 0.91, RSS 1.0, RSS 2.0, Atom.")
+    (license (package-license perl))))
+
 (define-public perl-file-listing
   (package
     (name "perl-file-listing")
@@ -2387,18 +2413,21 @@ and IPv6 sockets, intended as a replacement for IO::Socket::INET.")
 (define-public perl-io-socket-ssl
   (package
     (name "perl-io-socket-ssl")
-    (version "2.002")
+    (version "2.033")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/S/SU/SULLR/"
                                   "IO-Socket-SSL-" version ".tar.gz"))
               (sha256
                (base32
-                "1mph52lw6x5v44wf8mw00llzi8pp6k5c4jnrnrvlacrlfv260jb8"))
+                "01qggwmc97kpzx49fp4fxysrjyq8mpnx54nrb087ridj0ch3cf46"))
               (patches (search-patches
                         "perl-io-socket-ssl-openssl-1.0.2f-fix.patch"))))
     (build-system perl-build-system)
-    (propagated-inputs `(("perl-net-ssleay" ,perl-net-ssleay)))
+    (propagated-inputs
+     `(("perl-net-ssleay" ,perl-net-ssleay)
+       ;; for IDN support
+       ("perl-uri" ,perl-uri)))
     (synopsis "Nearly transparent SSL encapsulation for IO::Socket::INET")
     (description
      "IO::Socket::SSL makes using SSL/TLS much easier by wrapping the
@@ -2614,11 +2643,11 @@ or to multiple server ports.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://cpan.metacpan.org/authors/id/R/RJ/RJBS/"
+       (uri (string-append "mirror://cpan/authors/id/R/RJ/RJBS/"
                            "Net-SMTP-SSL-" version ".tar.gz"))
        (sha256
-	(base32
-	 "05y94mb1vdw32mvwb0cp2h4ggh32f8j8nwwfjb8kjwxvfkfhyp9h"))))
+        (base32
+         "05y94mb1vdw32mvwb0cp2h4ggh32f8j8nwwfjb8kjwxvfkfhyp9h"))))
     (build-system perl-build-system)
     (propagated-inputs
      `(("perl-io-socket-ssl" ,perl-io-socket-ssl)))
@@ -2917,6 +2946,31 @@ represent \"Uniform Resource Identifier references\" as specified in RFC 2396
 and updated by RFC 2732.")
     (home-page "http://search.cpan.org/dist/URI/")))
 
+(define-public perl-uri-fetch
+  (package
+    (name "perl-uri-fetch")
+    (version "0.13")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/N/NE/NEILB/"
+                                  "URI-Fetch-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rw6xiqm70s218aii9id3hf8j3pz6n22xnwd8v9m1ff2bnh63c0d"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:tests? #f)) ; Tests require internet connection to succeed
+    (inputs
+     `(("perl-class-errorhandler" ,perl-class-errorhandler)
+       ("perl-libwww" ,perl-libwww)
+       ("perl-uri" ,perl-uri)))
+    (home-page "http://search.cpan.org/dist/URI-Fetch")
+    (synopsis "Smart URI fetching/caching")
+    (description "@code{URI::Fetch} is a smart client for fetching HTTP pages,
+notably syndication feeds (RSS, Atom, and others), in an intelligent, bandwidth-
+and time-saving way.")
+    (license (package-license perl))))
+
 (define-public perl-uri-find
   (package
     (name "perl-uri-find")
@@ -2961,6 +3015,30 @@ URI::Find::Schemeless.  For a command-line interface, urifind is provided.")
     (synopsis "WebSocket support for URI package")
     (description "With this module, the URI package provides the same set of
 methods for WebSocket URIs as it does for HTTP URIs.")
+    (license (package-license perl))))
+
+(define-public perl-uri-template
+  (package
+    (name "perl-uri-template")
+    (version "0.22")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/B/BR/BRICAS/URI-Template-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "08kjjb4c0v9gqfrfnj1wkivylxl05finn11ra64dj136fhmnyrbg"))))
+    (build-system perl-build-system)
+    (inputs
+     `(("perl-uri" ,perl-uri)))
+    (native-inputs
+     `(("perl-test-pod-coverage" ,perl-test-pod-coverage)
+       ("perl-test-pod" ,perl-test-pod)
+       ("perl-json" ,perl-json)))
+    (home-page "http://search.cpan.org/dist/URI-Template")
+    (synopsis "Object for handling URI templates")
+    (description "This perl module provides a wrapper around URI templates as described in
+RFC 6570.")
     (license (package-license perl))))
 
 (define-public perl-www-curl
@@ -3015,6 +3093,34 @@ library.")
 web browsing, used for automating interaction with websites.")
     (license (package-license perl))))
 
+(define-public perl-www-opensearch
+  (package
+    (name "perl-www-opensearch")
+    (version "0.17")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/B/BR/BRICAS/"
+                                  "WWW-OpenSearch-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yxplx1q1qk2fvnzqrbk01lz26fy1lyhay51a3ky7q3jgh9p01rb"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:tests? #f)) ; Tests require further modules to be packaged
+    (inputs
+     `(("perl-data-page" ,perl-data-page)
+       ("perl-libwww" ,perl-libwww)
+       ("perl-uri" ,perl-uri)
+       ("perl-uri-template" ,perl-uri-template)
+       ("perl-xml-feed" ,perl-xml-feed)
+       ("perl-xml-libxml" ,perl-xml-libxml)))
+    (home-page "http://search.cpan.org/dist/WWW-OpenSearch")
+    (synopsis "Search A9 OpenSearch compatible engines")
+    (description
+     "@code{WWW::OpenSearch} is a module to search @url{A9's OpenSearch,
+http://opensearch.a9.com} compatible search engines.")
+    (license (package-license perl))))
+
 (define-public perl-www-robotrules
   (package
     (name "perl-www-robotrules")
@@ -3067,13 +3173,13 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
-    (version "0.9.20")
+    (version "1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jsonlite" version))
               (sha256
                (base32
-                "08b2gifd81yzj0h4k7pqp2cc2r5lwsg3sxnssi6c96rgqvl4702n"))))
+                "0bcnzzycvwwkm0lv0ka9xf55z5c1795b7c2vhmf53z73cxixsmnp"))))
     (build-system r-build-system)
     (home-page "http://arxiv.org/abs/1403.2805")
     (synopsis "Robust, high performance JSON parser and generator for R")
@@ -3136,13 +3242,13 @@ directory.")
 (define-public r-htmlwidgets
   (package
     (name "r-htmlwidgets")
-    (version "0.6")
+    (version "0.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "htmlwidgets" version))
               (sha256
                (base32
-                "1sljs7zajzj1lsrrvqv7anpma4plzs79mqwmw7b2c5d7mn9py8lw"))))
+                "1xh8aiaci5hi3r67ym7r37hm89m9vzywk292avnmaj125kq7w1d0"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-htmltools" ,r-htmltools)
@@ -3159,13 +3265,13 @@ applications.")
 (define-public r-curl
   (package
     (name "r-curl")
-    (version "0.9.7")
+    (version "1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "curl" version))
               (sha256
                (base32
-                "1p24bcaf1wbfdi1r9ibyyp0l0zp4kzs4g3srv8vikz93hycm1qa6"))))
+                "04fwasg400v8dvkcn1fcha1jzdz8lbyxi0679q7flsyrp57b3jrf"))))
     (build-system r-build-system)
     (inputs
      `(("libcurl" ,curl)))
@@ -3297,7 +3403,11 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
                                   "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0g29kyz4ykasdcrb0zmbrp2jqs9kv1wz9swx849i2d1ncknbzln4"))))
+                "0g29kyz4ykasdcrb0zmbrp2jqs9kv1wz9swx849i2d1ncknbzln4"))
+              ;; This patch has been pushed and the vulnerability will be
+              ;; fixed in the next release after 1.5.
+              ;; https://github.com/stedolan/jq/issues/995
+              (patches (search-patches "jq-CVE-2015-8863.patch"))))
     (inputs
      `(("oniguruma" ,oniguruma)))
     (native-inputs
@@ -3389,3 +3499,175 @@ playback of HTTP request/response traces.")
 can easily be invoked on a single file.  Your partner can access the file with
 tools they trust (e.g. wget).")
     (license l:gpl2+)))
+
+(define-public netsurf
+  (package
+    (name "netsurf")
+    (version "3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.netsurf-browser.org/"
+                           "netsurf/releases/source-full/netsurf-all-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1vdldzcv42wykajmw8vbql0f1yd44gbx30kywfrrh2x3064ly609"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Makefile"
+             ;; Do not clobber PKG_CONFIG_PATH from the environment
+             (("PKG_CONFIG_PATH = \\$")
+              "PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):$")
+             ;; Honor make variables
+             (("shell cc") "shell $(CC)"))))
+       (patches (search-patches "netsurf-about.patch"))))
+    (build-system glib-or-gtk-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("perl" ,perl)
+       ("perl-html-parser" ,perl-html-parser)
+       ("flex" ,flex)
+       ("bison" ,bison)))
+    (inputs
+     `(("gtk+" ,gtk+-2)
+       ("gperf" ,gperf)
+       ("curl" ,curl)
+       ("openssl" ,openssl)
+       ("libpng" ,libpng)
+       ("libjpeg" ,libjpeg)
+       ("expat" ,expat)))
+    (arguments
+     `(#:make-flags `("CC=gcc" "BUILD_CC=gcc"
+                      ,(string-append "PREFIX=" %output))
+       #:parallel-build? #f         ;parallel builds not supported
+       #:tests? #f                  ;no way to easily run from release tarball
+       #:modules ((ice-9 rdelim)
+                  (ice-9 match)
+                  (srfi srfi-1)
+                  (sxml simple)
+                  ,@%glib-or-gtk-build-system-modules)
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda _
+             (call-with-output-file "netsurf/Makefile.config"
+               (lambda (port)
+                 (format port "~
+                         NETSURF_GTK_RESOURCES := $(PREFIX)/share/netsurf/~@
+                         ")))
+             #t))
+         (add-after 'build 'adjust-welcome
+           (lambda _
+             ;; First, fix some unended tags and simple substitutions
+             (substitute* "netsurf/gtk/res/welcome.html"
+               (("<(img|input)([^>]*)>" _ tag contents)
+                (string-append "<" tag contents " />"))
+               (("Licence") "License") ;prefer GNU spelling
+               ((" open source") ", free software")
+               (("web&nbsp;site") "website")
+               ;; Prefer privacy-respecting default search engine
+               (("www.google.co.uk") "www.duckduckgo.com/html")
+               (("Google Search") "DuckDuckGo Search")
+               (("name=\"btnG\"") ""))
+             ;; Remove default links so it doesn't seem we're endorsing them
+             (with-atomic-file-replacement "netsurf/gtk/res/welcome.html"
+               (lambda (in out)
+                 ;; Leave the DOCTYPE header as is
+                 (display (read-line in 'concat) out)
+                 (sxml->xml
+                  (let rec ((sxml (xml->sxml in)))
+                    ;; We'd like to use sxml-match here, but it can't
+                    ;; match against generic tag symbols...
+                    (match sxml
+                      (`(div (@ (class "links")) . ,rest)
+                       '())
+                      ((x ...)
+                       (map rec x))
+                      (x x)))
+                  out)))
+             #t))
+         (add-after 'install 'install-more
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (desktop (string-append out "/share/applications/"
+                                            "netsurf.desktop")))
+               (mkdir-p (dirname desktop))
+               (copy-file "netsurf/gtk/res/netsurf-gtk.desktop"
+                          desktop)
+               (substitute* desktop
+                 (("netsurf-gtk") (string-append out "/bin/netsurf"))
+                 (("netsurf.png") (string-append out "/share/netsurf/"
+                                                 "netsurf.xpm")))
+               (install-file "netsurf/Docs/netsurf-gtk.1"
+                             (string-append out "/share/man/man1/"))
+               #t))))))
+    (home-page "https://www.netsurf-browser.org")
+    (synopsis "Web browser")
+    (description
+     "NetSurf is a lightweight web browser that has its own layout and
+rendering engine entirely written from scratch.  It is small and capable of
+handling many of the web standards in use today.")
+    (license l:gpl2+)))
+
+(define-public surfraw
+  (package
+    (name "surfraw")
+    (version "2.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://surfraw.alioth.debian.org/dist/"
+                                  name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1fy4ph5h9kp0jzj1m6pfylxnnmgdk0mmdppw76z9jhna4jndk5xa"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("perl" ,perl)
+       ("perl-www-opensearch" ,perl-www-opensearch)
+       ("perl-html-parser" ,perl-html-parser)
+       ("perl-libwww" ,perl-libwww)))
+    (synopsis "Unix command line interface to the www")
+    (description "Surfraw (Shell Users' Revolutionary Front Rage Against the Web)
+provides a unix command line interface to a variety of popular www search engines
+and similar services.")
+    (home-page "https://surfraw.alioth.debian.org/")
+    (license l:public-domain)))
+
+(define-public darkhttpd
+  (package
+    (name "darkhttpd")
+    (version "1.12")
+    (source
+     (origin
+       ;; The darkhttpd release tarball URL fails to download with a
+       ;; 'TLS warning alert'. Download from the darkhttpd git repo
+       ;; until the problem has been fixed upstream.
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://unix4lyfe.org/git/darkhttpd"))
+             (commit "41b68476c35270f47dcd2ddebe27cbcd87e43d41")))
+       (sha256
+        (base32
+         "0wi8dfgj4ic0fsy4dszl69xgxdxlwxz4c30vsw2i2dpnczgjm04k"))
+       (file-name (string-append name "-" version "-checkout"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags '("CC=gcc")
+       #:tests? #f ; No test suite
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "darkhttpd"
+                           (string-append (assoc-ref outputs "out")
+                                          "/bin"))
+             #t)))))
+    (synopsis "Simple static web server")
+    (description "darkhttpd is a simple static web server.  It is
+standalone and does not need inetd or ucspi-tcp.  It does not need any
+config files---you only have to specify the www root.")
+    (home-page "https://unix4lyfe.org/darkhttpd/")
+    (license l:isc)))

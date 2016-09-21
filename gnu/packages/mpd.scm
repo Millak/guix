@@ -31,6 +31,9 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages compression)
@@ -71,7 +74,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.19.14")
+    (version "0.19.19")
     (source (origin
               (method url-fetch)
               (uri
@@ -80,7 +83,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1rwr1qb9an1qylddf35xwdasyfkxghd00c29saj04l1f2c2kilig"))))
+                "07af1m2lgblyiq0gcs26zv8n22wrhrpmf49xsm338h1n87d6r1dw"))))
     (build-system gnu-build-system)
     (inputs `(("ao" ,ao)
               ("alsa-lib" ,alsa-lib)
@@ -134,7 +137,7 @@ protocol.")
 (define-public mpd-mpc
   (package
     (name "mpd-mpc")
-    (version "0.27")
+    (version "0.28")
     (source (origin
               (method url-fetch)
               (uri
@@ -143,7 +146,7 @@ protocol.")
                               "/mpc-" version ".tar.xz"))
               (sha256
                (base32
-                "0r10wsqxsi07gns6mfnicvpci0sbwwj4qa9iyr1ysrgadl5bx8j5"))))
+                "0iy5mdffkk61255f62si7p8mhyhkib70zlr1i1iimj2xr037scx4"))))
     (build-system gnu-build-system)
     (inputs `(("libmpdclient" ,libmpdclient)))
     (native-inputs `(("pkg-config" ,pkg-config)))
@@ -156,7 +159,7 @@ player daemon.")
 (define-public ncmpc
   (package
     (name "ncmpc")
-    (version "0.24")
+    (version "0.25")
     (source (origin
               (method url-fetch)
               (uri
@@ -165,7 +168,7 @@ player daemon.")
                               "/ncmpc-" version ".tar.xz"))
               (sha256
                (base32
-                "1sf3nirs3mcx0r5i7acm9bsvzqzlh730m0yjg6jcyj8ln6r7cvqf"))))
+                "196f9s0qmc4srr10n4vk3amvqy5f52y9kvgwqpkfjsnhf75qlckf"))))
     (build-system gnu-build-system)
     (inputs `(("glib" ,glib)
               ("libmpdclient" ,libmpdclient)
@@ -180,7 +183,7 @@ terminal using ncurses.")
 (define-public ncmpcpp
   (package
     (name "ncmpcpp")
-    (version "0.7.4")
+    (version "0.7.5")
     (source (origin
               (method url-fetch)
               (uri
@@ -188,7 +191,7 @@ terminal using ncurses.")
                               version ".tar.bz2"))
               (sha256
                (base32
-                "0qqy3w2vw3i9rxz0z8n0plmwwfv6gzrxip86l894l1xbvzqja16p"))))
+                "0zg084m06y7dd8ccy6aq9hx8q7qi2s5kl0br5139hrmk40q68kvy"))))
     (build-system gnu-build-system)
     (inputs `(("libmpdclient" ,libmpdclient)
               ("boost"  ,boost)
@@ -205,7 +208,7 @@ terminal using ncurses.")
     (description "Ncmpcpp is an mpd client with a UI very similar to ncmpc,
 but it provides new useful features such as support for regular expressions
 for library searches, extended song format, items filtering, the ability to
-sort playlists, and a local filesystem browser.")
+sort playlists, and a local file system browser.")
     (home-page "http://ncmpcpp.rybczak.net/")
     (license license:gpl2+)))
 
@@ -263,3 +266,52 @@ interface for the Music Player Daemon.")
     (package (inherit mpd2)
       (native-inputs `(("python2-setuptools" ,python2-setuptools)
                        ,@(package-native-inputs mpd2))))))
+
+(define-public sonata
+  (package
+    (name "sonata")
+    (version "1.7b1")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://github.com/multani/sonata/archive/v"
+                              version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07gq2nxqwxs0qyxjbay7k5j25zd386bn7wdr2dl1gk53diwnn7s0"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:modules ((guix build gnu-build-system)
+                  (guix build python-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                  (guix build utils))
+       #:imported-modules (,@%gnu-build-system-modules
+                           (guix build python-build-system)
+                           (guix build glib-or-gtk-build-system))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'glib-or-gtk-wrap
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+         (add-after 'install 'wrap-sonata
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out               (assoc-ref outputs "out"))
+                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+               (wrap-program (string-append out "/bin/sonata")
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+             #t)))))
+    (native-inputs
+     `(("gettext" ,gnu-gettext)))
+    (inputs
+     `(("python-mpd2" ,python-mpd2)
+       ("gtk+" ,gtk+)
+       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gobject-introspection" ,gobject-introspection)
+       ("adwaita-icon-theme" ,adwaita-icon-theme)
+       ("python-pygobject" ,python-pygobject)))
+    (synopsis "Elegant client for the Music Player Daemon")
+    (description "Sonata is an elegant graphical client for the Music Player
+Daemon (MPD).  It supports playlists, multiple profiles (connecting to different
+MPD servers, search and multimedia key support.")
+    (home-page "http://www.nongnu.org/sonata/")
+    (license license:gpl3+)))

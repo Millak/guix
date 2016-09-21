@@ -161,6 +161,18 @@ markup is valid return a plain-text version of DESCRIPTION, otherwise #f."
                       'description)
         #f)))
 
+  (define (check-trademarks description)
+    "Check that DESCRIPTION does not contain '™' or '®' characters.  See
+http://www.gnu.org/prep/standards/html_node/Trademarks.html."
+    (match (string-index description (char-set #\™ #\®))
+      ((and (? number?) index)
+       (emit-warning package
+                     (format #f (_ "description should not contain ~
+trademark sign '~a' at ~d")
+                             (string-ref description index) index)
+                     'description))
+      (else #t)))
+
   (define (check-proper-start description)
     (unless (or (properly-starts-sentence? description)
                 (string-prefix-ci? (package-name package) description))
@@ -191,6 +203,7 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
     (if (string? description)
         (begin
           (check-not-empty description)
+          (check-trademarks description)
           ;; Use raw description for this because Texinfo rendering
           ;; automatically fixes end of sentence space.
           (check-end-of-sentence-space description)
@@ -203,14 +216,31 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
 (define (check-inputs-should-be-native package)
   ;; Emit a warning if some inputs of PACKAGE are likely to belong to its
   ;; native inputs.
-  (let ((inputs (package-inputs package)))
+  (let ((linted package)
+        (inputs (package-inputs package))
+        (native-inputs
+          '("pkg-config"
+            "extra-cmake-modules"
+            "glib:bin"
+            "intltool"
+            "itstool"
+            "qttools")))
     (match inputs
-      (((labels packages . _) ...)
-       (when (member "pkg-config"
-                     (map package-name (filter package? packages)))
-        (emit-warning package
-                      (_ "pkg-config should probably be a native input")
-                      'inputs))))))
+      (((labels packages . outputs) ...)
+       (for-each (lambda (package output)
+                   (when (package? package)
+                     (let ((input (string-append
+                                   (package-name package)
+                                   (if (> (length output) 0)
+                                       (string-append ":" (car output))
+                                       ""))))
+                       (when (member input native-inputs)
+                         (emit-warning linted
+                                       (format #f (_ "'~a' should probably \
+be a native input")
+                                               input)
+                                       'inputs)))))
+                 packages outputs)))))
 
 (define (package-name-regexp package)
   "Return a regexp that matches PACKAGE's name as a word at the beginning of a
@@ -359,7 +389,22 @@ warning for PACKAGE mentionning the FIELD."
                 (probe-uri uri #:timeout 3)))     ;wait at most 3 seconds
     (case status
       ((http-response)
-       (or (= 200 (response-code argument))
+       (if (= 200 (response-code argument))
+           (match (response-content-length argument)
+             ((? number? length)
+              ;; As of July 2016, SourceForge returns 200 (instead of 404)
+              ;; with a small HTML page upon failure.  Attempt to detect such
+              ;; malicious behavior.
+              (or (> length 1000)
+                  (begin
+                    (emit-warning package
+                                  (format #f
+                                          (_ "URI ~a returned \
+suspiciously small file (~a bytes)")
+                                          (uri->string uri)
+                                          length))
+                    #f)))
+             (_ #t))
            (begin
              (emit-warning package
                            (format #f

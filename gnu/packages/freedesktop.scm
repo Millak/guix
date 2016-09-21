@@ -6,6 +6,7 @@
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Kei Kebreau <kei@openmailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -48,6 +50,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages polkit)
@@ -82,14 +85,14 @@ freedesktop.org project.")
 (define-public libinput
   (package
     (name "libinput")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://freedesktop.org/software/libinput/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1sn1s1bz06fa49izqkqf519sjclsvhf42i6slzx1w5hx4vxpb2lr"))))
+                "085lcxy111j8r1lwyghsc6zrysqh0vg8xip5axxsdl8r8n3i1vvn"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -99,12 +102,22 @@ freedesktop.org project.")
      `(("libevdev" ,libevdev)
        ("mtdev" ,mtdev)
        ("libwacom" ,libwacom)))
-    (home-page "http://www.freedesktop.org/wiki/Software/libinput/")
+    (home-page "https://www.freedesktop.org/wiki/Software/libinput/")
     (synopsis "Input devices handling library")
     (description
      "Libinput is a library to handle input devices for display servers and
 other applications that need to directly deal with input devices.")
     (license license:x11)))
+
+(define-public libinput-minimal
+  (package (inherit libinput)
+    (name "libinput-minimal")
+    (inputs
+     `(("libevdev" ,libevdev)
+       ("mtdev" ,mtdev)))
+    (arguments
+      `(#:configure-flags
+        '("--disable-libwacom")))))
 
 (define-public libxdg-basedir
   (package
@@ -284,6 +297,101 @@ display server running on Linux kernel modesetting and evdev input devices, an X
 application, or a wayland client itself.  The clients can be traditional
 applications, X servers (rootless or fullscreen) or other display servers.")
     (license license:x11)))
+
+(define-public wayland-protocols
+  (package
+    (name "wayland-protocols")
+    (version "1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://wayland.freedesktop.org/releases/"
+                    "wayland-protocols-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0wpm7mz7ww6nn3vrgz7a9iyk7mk6za73wnq0n54lzl8yq8irljh1"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("wayland" ,wayland)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (synopsis "Wayland protocols")
+    (description "This package contains XML definitions of the Wayland protocols.")
+    (home-page "https://wayland.freedesktop.org")
+    (license license:expat)))
+
+(define-public weston
+  (package
+    (name "weston")
+    (version "1.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://wayland.freedesktop.org/releases/"
+                    "weston-" version ".tar.xz"))
+              (sha256
+               (base32
+                "09biddxw3ar797kxf9mywjkb2iwky6my39gpp51ni846y7lqdq05"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("xorg-server" ,xorg-server)))
+    (inputs
+     `(("cairo" ,cairo-xcb)
+       ("dbus" ,dbus)
+       ("elogind" ,elogind)
+       ("libinput" ,libinput-minimal)
+       ("libunwind" ,libunwind)
+       ("libxcursor" ,libxcursor)
+       ("libxkbcommon" ,libxkbcommon)
+       ("mesa" ,mesa)
+       ("mtdev" ,mtdev)
+       ("linux-pam" ,linux-pam)
+       ("wayland" ,wayland)
+       ("wayland-protocols" ,wayland-protocols)
+       ("xorg-server-xwayland" ,xorg-server-xwayland)))
+    (arguments
+     `(#:configure-flags
+       (list "--disable-setuid-install"
+             "--enable-systemd-login"
+             (string-append "--with-xserver-path="
+                            (assoc-ref %build-inputs "xorg-server-xwayland")
+                            "/bin/Xwayland"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'use-elogind
+           (lambda _
+             ;; Use elogind instead of systemd
+             (substitute* "configure"
+               (("libsystemd-login >= 198") "libelogind"))
+             (substitute* '("src/launcher-logind.c" "src/weston-launch.c")
+               (("#include <systemd/sd-login.h>")
+                "#include <elogind/sd-login.h>"))))
+         (add-after 'configure 'patch-confdefs.h
+           (lambda _
+             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")))
+         (add-before 'check 'setup
+           (lambda _
+             (setenv "HOME" (getcwd))
+             (setenv "XDG_RUNTIME_DIR" (getcwd))
+             #t))
+         (add-before 'check 'start-xorg-server
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The test suite requires a running X server.
+             (system (string-append (assoc-ref inputs "xorg-server")
+                                    "/bin/Xvfb :1 &"))
+             (setenv "DISPLAY" ":1")
+             #t)))))
+    (home-page "https://wayland.freedesktop.org")
+    (synopsis "Reference implementation of a Wayland compositor")
+    (description "Weston is the reference implementation of a Wayland
+compositor, and a useful compositor in its own right.
+
+A Wayland compositor allows applications to render to a shared offscreen
+buffer using OpenGL ES.  The compositor then culls the hidden parts and
+composes the final output.  A Wayland compositor is essentially a
+multiplexer to the KMS/DRM Linux kernel devices.")
+    (license license:expat)))
 
 (define-public exempi
   (package
@@ -585,6 +693,65 @@ modems and setup connections with them.")
 received by the Telepathy framework.  It features pluggable backends to log
 different sorts of messages in different formats.")
     (license license:lgpl2.1+)))
+
+(define-public telepathy-idle
+  (package
+    (name "telepathy-idle")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://telepathy.freedesktop.org/releases/"
+                                  name "/" name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1argdzbif1vdmwp5vqbgkadq9ancjmgdm2ncp0qfckni715ss4rh"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("xsltproc" ,libxslt)
+       ("python" ,python-2)
+       ("python-dbus" ,python2-dbus)))
+    (propagated-inputs
+     `(("telepathy-glib" ,telepathy-glib)))
+    (home-page "http://telepathy.freedesktop.org/")
+    (synopsis "Telepathy IRC connection manager")
+    (description
+     "Idle is an IRC connection manager for the Telepathy framework.  This
+package enables usage of IRC channels and private messages in Telepathy instant
+messaging clients such as Empathy, GNOME Shell or KDE Telepathy.")
+    (license (list license:lgpl2.1 license:lgpl2.1+))))
+
+(define-public telepathy-mission-control
+  (package
+    (name "telepathy-mission-control")
+    (version "5.16.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://telepathy.freedesktop.org/releases/"
+                                  name "/" name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0zcbx69k0d3p2pjh3g7sa3q2zkd5xchxkqsmlfn3fwxaz0pmsmvi"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("dconf" ,dconf)
+       ("gtk-doc" ,gtk-doc)
+       ("libgnome-keyring" ,libgnome-keyring)
+       ("python" ,python-2)
+       ("xsltproc" ,libxslt)))
+    (propagated-inputs
+     `(("telepathy-glib" ,telepathy-glib)))
+    (home-page "https://telepathy.freedesktop.org/wiki/Components/Mission_Control/")
+    (synopsis "Telepathy real-time communication framework management daemon")
+    (description
+     "Telepathy Mission Control 5 is an account manager and channel dispatcher
+for the Telepathy framework, allowing user interfaces and other clients to
+share connections to real-time communication services without conflicting.")
+    (license license:lgpl2.1)))
 
 (define-public colord-gtk
   (package

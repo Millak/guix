@@ -3,6 +3,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,7 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages qt)
-  #:use-module ((guix licenses) #:select (bsd-3 gpl2 gpl3 lgpl2.1 lgpl2.1+ lgpl3 x11-style))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build utils)
@@ -60,7 +61,7 @@
 (define-public qt
   (package
     (name "qt")
-    (version "5.5.1")
+    (version "5.6.1-1")
     (source (origin
              (method url-fetch)
              (uri
@@ -72,7 +73,7 @@
                  version ".tar.xz"))
              (sha256
                (base32
-                 "0615cn4n3n78v48lnmapqz2jizm2pzrjwvsjlnsf4awrsiiqw0kg"))
+                 "1nrn2wivjwdxc9q03gpsi336gcl9l2axi0xjbzsha5v6akmsf26f"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -151,51 +152,62 @@
        ;; A more structural fix is needed.
        #:parallel-build? #f
        #:phases
-         (alist-replace
-          'configure
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              (substitute* '("configure" "qtbase/configure")
-                (("/bin/pwd") (which "pwd")))
-              (substitute* "qtbase/src/corelib/global/global.pri"
-                (("/bin/ls") (which "ls")))
-              ;; do not pass "--enable-fast-install", which makes the
-              ;; configure process fail
-              (zero? (system*
-                      "./configure"
-                      "-verbose"
-                      "-prefix" out
-                      "-opensource"
-                      "-confirm-license"
-                      ;; Most "-system-..." are automatic, but some use
-                      ;; the bundled copy by default.
-                      "-system-sqlite"
-                      "-system-harfbuzz"
-                      ;; explicitly link with openssl instead of dlopening it
-                      "-openssl-linked"
-                      ;; explicitly link with dbus instead of dlopening it
-                      "-dbus-linked"
-                      ;; drop special machine instructions not supported
-                      ;; on all instances of the target
-                      ,@(if (string-prefix? "x86_64"
-                                            (or (%current-target-system)
-                                                (%current-system)))
-                            '()
-                            '("-no-sse2"))
-                      "-no-sse3"
-                      "-no-ssse3"
-                      "-no-sse4.1"
-                      "-no-sse4.2"
-                      "-no-avx"
-                      "-no-avx2"
-                      "-no-mips_dsp"
-                      "-no-mips_dspr2"))))
-          %standard-phases)))
+       (modify-phases %standard-phases
+         (add-after 'configure 'patch-bin-sh
+           (lambda _
+             (substitute* '("qtbase/config.status"
+                            "qtbase/configure"
+                            "qtbase/mkspecs/features/qt_functions.prf"
+                            "qtbase/qmake/library/qmakebuiltins.cpp")
+                          (("/bin/sh") (which "sh")))
+             #t))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* '("configure" "qtbase/configure")
+                 (("/bin/pwd") (which "pwd")))
+               (substitute* "qtbase/src/corelib/global/global.pri"
+                 (("/bin/ls") (which "ls")))
+               ;; do not pass "--enable-fast-install", which makes the
+               ;; configure process fail
+               (zero? (system*
+                       "./configure"
+                       "-verbose"
+                       "-prefix" out
+                       "-opensource"
+                       "-confirm-license"
+                       ;; Do not build examples; if desired, these could go
+                       ;; into a separate output, but for the time being, we
+                       ;; prefer to save the space and build time.
+                       "-nomake" "examples"
+                       ;; Most "-system-..." are automatic, but some use
+                       ;; the bundled copy by default.
+                       "-system-sqlite"
+                       "-system-harfbuzz"
+                       ;; explicitly link with openssl instead of dlopening it
+                       "-openssl-linked"
+                       ;; explicitly link with dbus instead of dlopening it
+                       "-dbus-linked"
+                       ;; drop special machine instructions not supported
+                       ;; on all instances of the target
+                       ,@(if (string-prefix? "x86_64"
+                                             (or (%current-target-system)
+                                                 (%current-system)))
+                             '()
+                             '("-no-sse2"))
+                       "-no-sse3"
+                       "-no-ssse3"
+                       "-no-sse4.1"
+                       "-no-sse4.2"
+                       "-no-avx"
+                       "-no-avx2"
+                       "-no-mips_dsp"
+                       "-no-mips_dspr2"))))))))
     (home-page "http://qt-project.org/")
     (synopsis "Cross-platform GUI library")
     (description "Qt is a cross-platform application and UI framework for
 developers using C++ or QML, a CSS & JavaScript like language.")
-    (license lgpl2.1)
+    (license license:lgpl2.1)
 
     ;; Qt 4: 'QBasicAtomicPointer' leads to build failures on MIPS;
     ;; see <http://hydra.gnu.org/build/112828>.
@@ -302,7 +314,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtbase
   (package
     (name "qtbase")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -311,7 +323,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0fbwprlhqmdyhh2wb9122fcpq7pbil530iak482b9sy5gqs7i5ij"))
+               "0ip6xnizsn269r4s1nq9lkx8cdxkjqr1fidwrj3sa8xb7h96syry"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -393,6 +405,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  (("/bin/pwd") (which "pwd")))
                (substitute* "src/corelib/global/global.pri"
                  (("/bin/ls") (which "ls")))
+               ;; The configuration files for other Qt5 packages are searched
+               ;; through a call to "find_package" in Qt5Config.cmake, which
+               ;; disables the use of CMAKE_PREFIX_PATH via the parameter
+               ;; "NO_DEFAULT_PATH". Re-enable it so that the different
+               ;; components can be installed in different places.
+               (substitute* (find-files "." ".*\\.cmake")
+                 (("NO_DEFAULT_PATH") ""))
                ;; do not pass "--enable-fast-install", which makes the
                ;; configure process fail
                (zero? (system*
@@ -427,17 +446,58 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                        "-no-avx"
                        "-no-avx2"
                        "-no-mips_dsp"
-                       "-no-mips_dspr2"))))))))
+                       "-no-mips_dspr2")))))
+         (add-after 'install 'patch-qt_config.prf
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (qt_config.prf (string-append
+                                    out "/mkspecs/features/qt_config.prf")))
+               ;; For each Qt module, let `qmake' uses search paths in the
+               ;; module directory instead of all in QT_INSTALL_PREFIX.
+               (substitute* qt_config.prf
+                 (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
+                  "$$replace(dir, mkspecs/modules, include)")
+                 (("\\$\\$\\[QT_INSTALL_LIBS\\]")
+                  "$$replace(dir, mkspecs/modules, lib)")
+                 (("\\$\\$\\[QT_HOST_LIBS\\]")
+                  "$$replace(dir, mkspecs/modules, lib)")
+                 (("\\$\\$\\[QT_INSTALL_PLUGINS\\]")
+                  "$$replace(dir, mkspecs/modules, plugins)")
+                 (("\\$\\$\\[QT_INSTALL_LIBEXECS\\]")
+                  "$$replace(dir, mkspecs/modules, libexec)")
+                 (("\\$\\$\\[QT_INSTALL_BINS\\]")
+                  "$$replace(dir, mkspecs/modules, bin)")
+                 (("\\$\\$\\[QT_INSTALL_IMPORTS\\]")
+                  "$$replace(dir, mkspecs/modules, imports)")
+                 (("\\$\\$\\[QT_INSTALL_QML\\]")
+                  "$$replace(dir, mkspecs/modules, qml)"))
+               #t))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "QMAKEPATH")
+            (files '("")))
+           (search-path-specification
+            (variable "QML2_IMPORT_PATH")
+            (files '("qml")))
+           (search-path-specification
+            (variable "QT_PLUGIN_PATH")
+            (files '("plugins")))
+           (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))
+           (search-path-specification
+            (variable "XDG_CONFIG_DIRS")
+            (files '("etc/xdg")))))
     (home-page "https://www.qt.io/")
     (synopsis "Cross-platform GUI library")
     (description "Qt is a cross-platform application and UI framework for
 developers using C++ or QML, a CSS & JavaScript like language.")
-    (license (list lgpl2.1 lgpl3))))
+    (license (list license:lgpl2.1 license:lgpl3))))
 
 (define-public qtsvg
   (package (inherit qtbase)
     (name "qtsvg")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -446,7 +506,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1w0jvhgaiddafcms2nv8wl1klg07lncmjwm1zhdw3l6rxi9071sw"))))
+               "10fqrlqkiq83xhx79g8d2sjy7hjdnp28067z8f4byj7db81rzy51"))))
     (propagated-inputs `())
     (native-inputs `(("perl" ,perl)))
     (inputs
@@ -471,7 +531,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtimageformats
   (package (inherit qtsvg)
     (name "qtimageformats")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -480,7 +540,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1p98acvsm3azka2by1ph4gdb31qbnndrr5k5wns4xk2d760y8ifc"))))
+               "1rb27x7i2pmvsck6wax2cg31gqpzaakciy45wm5l3lcl86j48czg"))))
     (native-inputs `())
     (inputs
      `(("libmng" ,libmng)
@@ -493,7 +553,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtx11extras
   (package (inherit qtsvg)
     (name "qtx11extras")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -502,7 +562,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0yj5yg2dqkrwbgbicmk2rpqsagmi8dsffkrprpsj0fmkx4awhv5y"))))
+               "1yrkn8pqdbvbqykas3wx1vdfimhjkgx3s5jgdxib9dgmgyx6vjzw"))))
     (native-inputs `(("perl" ,perl)))
     (inputs
      `(("mesa" ,mesa)
@@ -511,7 +571,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtxmlpatterns
   (package (inherit qtsvg)
     (name "qtxmlpatterns")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -520,14 +580,14 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1966rrk7f6c55k57j33rffdjs77kk4mawrnnl8yv1ckcirxc3np1"))))
+               "02z2qxamslg6sphnaykjcjfpypq4b69pb586s43vw4fplm72m21q"))))
     (native-inputs `(("perl" ,perl)))
     (inputs `(("qtbase" ,qtbase)))))
 
 (define-public qtdeclarative
   (package (inherit qtsvg)
     (name "qtdeclarative")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -536,7 +596,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "094gx5mzqzcga97y7ihf052b6i5iv512lh7m0702m5q94nsn1pqw"))))
+               "1x7rij423g5chlfd2kix54f393vxwjvdfsn1c7sybqmfycwn5pl6"))))
     (native-inputs
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
@@ -550,7 +610,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtconnectivity
   (package (inherit qtsvg)
     (name "qtconnectivity")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -559,7 +619,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0sr6sxp0q45pacs25knr28139xdrphcjgrwlksdhdpsryfw19mzi"))))
+               "00r7lc1w3snfp2qfqmviqzv0cw16zd8m1sfpvxvpl65yqmzcli4q"))))
     (native-inputs
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
@@ -571,7 +631,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtwebsockets
   (package (inherit qtsvg)
     (name "qtwebsockets")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -580,7 +640,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1fz0x8570zxc00a22skd848svma3p2g3xyxj14jq10559jihqqil"))))
+               "0hwb2l7iwf4wf7l95dli8j3b7h0nffp56skfg1x810kzj0df26vl"))))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)))
@@ -589,7 +649,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtsensors
   (package (inherit qtsvg)
     (name "qtsensors")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -598,7 +658,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0kcrvf6vzn6g2v2m70f9r3raalzmfp48rwjlqhss3w84jfz3y04r"))))
+               "1gii6wg2xd3bkb86y5hgpmwcpl04xav030zscpl6fhscl9kcqg98"))))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)))
@@ -607,7 +667,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtmultimedia
   (package (inherit qtsvg)
     (name "qtmultimedia")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -616,7 +676,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0paffx0614ivjbf87lr9klpbqik6r1pzbc14l41np6d9jv3dqa2f"))))
+               "0ndmhiflmyr144nq8drd5njsdi282ixsm4730q5n0ji2v9dp1bh5"))))
     (native-inputs
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
@@ -631,7 +691,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtwayland
   (package (inherit qtsvg)
     (name "qtwayland")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -640,7 +700,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1fnvgpi49ilds3ah9iizxj9qhhb5rnwqd9h03bhkwf0ydywv52c4"))))
+               "04dynjcr6gxi3hcqdf688a4hkabi2l17slpcx9k0f3dxygwcgf96"))))
     (native-inputs
      `(("glib" ,glib)
        ("perl" ,perl)
@@ -662,7 +722,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtserialport
   (package (inherit qtsvg)
     (name "qtserialport")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -671,7 +731,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "135cbgghxk0c6dblmyyrw6znfb9m8sac9hhyc2dm6vq7vzy8id52"))))
+               "0rc2l14s59qskp16wqlkizfai32s41qlm7a86r3qahx28gc51qaw"))))
     (native-inputs `(("perl" ,perl)))
     (inputs
      `(("qtbase" ,qtbase)
@@ -680,7 +740,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtwebchannel
   (package (inherit qtsvg)
     (name "qtwebchannel")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -689,7 +749,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "10kys3ppjkj60fs1s335fdcpdsbxsjn6ibvm6zph9gqbncabd2l7"))))
+               "05lqfidlh1ahdd1j9y20p2037qbcq51zkdzj2m8fwhn7ghbwvd1s"))))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)
@@ -699,7 +759,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtlocation
   (package (inherit qtsvg)
     (name "qtlocation")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -708,18 +768,18 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0my4pbcxa58yzvdh65l5qx99ln03chjr5c3ml5v37wfk7nx23k69"))))
+               "0rd898gndn41jrp78203lxd94ybfv693l0qg0myag4r46ikk69vh"))))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)
-       ;("qtquickcontrols" ,qtquickcontrols)
+       ("qtquickcontrols" ,qtquickcontrols)
        ("qtserialport" ,qtserialport)))
     (inputs `(("qtbase" ,qtbase)))))
 
 (define-public qttools
   (package (inherit qtsvg)
     (name "qttools")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -728,7 +788,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0haic027a2d7p7k8xz83fbvci4a4dln34360rlwgy7hlyy5m4nip"))))
+               "004m9l7bgh7qnncbyl3d5fkggdrqx58ib21xv4hflvvarxrssibg"))))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)))
@@ -739,7 +799,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
 (define-public qtscript
   (package (inherit qtsvg)
     (name "qtscript")
-    (version "5.6.1-1")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.qt.io/official_releases/qt/"
@@ -748,36 +808,63 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1gini9483flqa9q4a4bl81bh7g5s408bycqykqhgbklmfd29y5lx"))))
+               "0040890p5ilyrmcpndz1hhp08x2ms5gw4lp4n5iax2a957yy2i4w"))))
     (native-inputs
      `(("perl" ,perl)
        ("qttools" ,qttools)))
     (inputs
      `(("qtbase" ,qtbase)))))
 
-(define-public qjson
-  (package
-    (name "qjson")
-    (version "0.8.1")
+(define-public qtquickcontrols
+  (package (inherit qtsvg)
+    (name "qtquickcontrols")
+    (version "5.7.0")
     (source (origin
              (method url-fetch)
-             (uri (string-append "https://github.com/flavio/qjson/archive/"
-                                 version ".tar.gz"))
-             (file-name (string-append name "-" version ".tar.gz"))
+             (uri (string-append "https://download.qt.io/official_releases/qt/"
+                                 (version-major+minor version) "/" version
+                                 "/submodules/" name "-opensource-src-"
+                                 version ".tar.xz"))
              (sha256
               (base32
-               "163fspi0xc705irv79qw861fmh68pjyla9vx3kqiq6xrdhb9834j"))))
-    (build-system cmake-build-system)
+               "0cpcrmz9n5b4bgmshmk093lirl9xwqb23inchnai1zqg21vrmqfq"))))
     (inputs
-     `(("qt" ,qt-4)))
-    (arguments
-     `(#:tests? #f)) ; no test target
-    (home-page "http://qjson.sourceforge.net/")
-    (synopsis "Qt-based library for handling JSON")
-    (description "QJson is a Qt-based library that maps JSON data to QVariant
-objects and vice versa.  JSON arrays are mapped to QVariantList instances,
-while JSON objects are mapped to QVariantMap.")
-    (license lgpl2.1+)))
+     `(("qtbase" ,qtbase)
+       ("qtdeclarative" ,qtdeclarative)))))
+
+(define-public qtquickcontrols2
+  (package (inherit qtsvg)
+    (name "qtquickcontrols2")
+    (version "5.7.0")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "https://download.qt.io/official_releases/qt/"
+                                 (version-major+minor version) "/" version
+                                 "/submodules/" name "-opensource-src-"
+                                 version ".tar.xz"))
+             (sha256
+              (base32
+               "0i8h933vhvx1bmniqdx0idg6vk82w9byd3dq0bb2phwjg5vv1xb3"))))
+    (inputs
+     `(("qtbase" ,qtbase)
+       ("qtdeclarative" ,qtdeclarative)))))
+
+(define-public qtgraphicaleffects
+  (package (inherit qtsvg)
+    (name "qtgraphicaleffects")
+    (version "5.7.0")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "https://download.qt.io/official_releases/qt/"
+                                 (version-major+minor version) "/" version
+                                 "/submodules/" name "-opensource-src-"
+                                 version ".tar.xz"))
+             (sha256
+              (base32
+               "1rwdjg5mk6xpadmxfq64xfp573zp5lrj9illb9105ra5wff565n8"))))
+    (inputs
+     `(("qtbase" ,qtbase)
+       ("qtdeclarative" ,qtdeclarative)))))
 
 (define-public python-sip
   (package
@@ -834,7 +921,7 @@ is then compiled to create the bindings extension module.  The SIP Python
 module provides support functions to the automatically generated code.")
     ;; There is a choice between a python like license, gpl2 and gpl3.
     ;; For compatibility with pyqt, we need gpl3.
-    (license gpl3)))
+    (license license:gpl3)))
 
 (define-public python2-sip
   (package (inherit python-sip)
@@ -899,7 +986,7 @@ module provides support functions to the automatically generated code.")
      "PyQt is a set of Python v2 and v3 bindings for the Qt application
 framework.  The bindings are implemented as a set of Python modules and
 contain over 620 classes.")
-    (license gpl3)))
+    (license license:gpl3)))
 
 (define-public python2-pyqt
   (package (inherit python-pyqt)
@@ -907,6 +994,33 @@ contain over 620 classes.")
     (native-inputs
      `(("python-sip" ,python2-sip)
        ("qtbase" ,qtbase)))
+    (inputs
+     `(("python" ,python-2)))))
+
+(define-public python-pyqt-5.5
+  (package (inherit python-pyqt)
+    (version "5.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri
+          (string-append "mirror://sourceforge/pyqt/PyQt5/"
+                         "PyQt-" version "/PyQt-gpl-"
+                         version ".tar.gz"))
+        (sha256
+         (base32
+          "056qmkv02wdcfblqdaxiswrgn4wa88sz22i1x58dpb1iniavplfd"))
+       (patches (search-patches "pyqt-configure.patch"))))
+    (native-inputs
+     `(("python-sip" ,python-sip)
+       ("qt" ,qt)))))
+
+(define-public python2-pyqt-5.5
+  (package (inherit python-pyqt-5.5)
+    (name "python2-pyqt")
+    (native-inputs
+     `(("python-sip" ,python2-sip)
+       ("qt" ,qt)))
     (inputs
      `(("python" ,python-2)))))
 
@@ -954,7 +1068,16 @@ contain over 620 classes.")
                              "--destdir" lib
                              "--sipdir" sip))))
          %standard-phases)))
-    (license (list gpl2 gpl3)))) ; choice of either license
+    (license (list license:gpl2 license:gpl3)))) ; choice of either license
+
+(define-public python2-pyqt-4
+  (package (inherit python-pyqt-4)
+           (name "python2-pyqt-4")
+           (native-inputs
+            `(("python-sip" ,python2-sip)
+              ("qt" ,qt-4)))
+           (inputs
+            `(("python" ,python-2)))))
 
 (define-public qtkeychain
   (package
@@ -969,8 +1092,10 @@ contain over 620 classes.")
         (sha256
          (base32 "0fka5q5cdzlf79igcjgbnb2smvwbwfasqawkzkbr34whispgm6lz"))))
     (build-system cmake-build-system)
+    (native-inputs
+     `(("qttools" ,qttools)))
     (inputs
-     `(("qt" ,qt)))
+     `(("qtbase" ,qtbase)))
     (arguments
      `(#:tests? #f ; No tests included
        #:phases
@@ -986,4 +1111,4 @@ contain over 620 classes.")
     (description
       "QtKeychain is a Qt library to store passwords and other secret data
 securely.  It will not store any data unencrypted unless explicitly requested.")
-    (license bsd-3)))
+    (license license:bsd-3)))

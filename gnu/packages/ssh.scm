@@ -1,8 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2012, 2013, 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2016 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,27 +22,34 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages ssh)
-  #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages gnupg)
-  #:use-module (gnu packages groff)
-  #:use-module (gnu packages elf)
-  #:use-module (gnu packages guile)
-  #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages autotools)
-  #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages perl)
-  #:use-module (gnu packages ncurses)
-  #:autoload   (gnu packages protobuf) (protobuf)
-  #:autoload   (gnu packages boost) (boost)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages tls)
   #:use-module (gnu packages)
-  #:use-module (guix packages)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:autoload   (gnu packages boost) (boost)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages elf)
+  #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gperf)
+  #:use-module (gnu packages groff)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages m4)
+  #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:autoload   (gnu packages protobuf) (protobuf)
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages xorg)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system cmake))
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages))
 
 (define-public libssh
   (package
@@ -115,7 +124,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "7.2p2")
+   (version "7.3p1")
    (source (origin
             (method url-fetch)
             (uri (let ((tail (string-append name "-" version ".tar.gz")))
@@ -126,14 +135,23 @@ a server that supports the SSH-2 protocol.")
                          (string-append "http://ftp2.fr.openbsd.org/pub/OpenBSD/OpenSSH/portable/"
                                         tail))))
             (sha256 (base32
-                     "132lh9aanb0wkisji1d6cmsxi520m8nh7c7i9wi6m1s3l38q29x7"))
-            (patches (search-patches "openssh-CVE-2015-8325.patch"))))
+                     "1k5y1wi29d47cgizbryxrhc1fbjsba2x8l5mqfa9b9nadnd9iyrz"))))
    (build-system gnu-build-system)
    (inputs `(("groff" ,groff)
              ("openssl" ,openssl)
-             ("zlib" ,zlib)))
+             ("pam" ,linux-pam)
+             ("zlib" ,zlib)
+             ("xauth" ,xauth)))                   ;for 'ssh -X' and 'ssh -Y'
    (arguments
     `(#:test-target "tests"
+      #:configure-flags '("--sysconfdir=/etc"
+
+                          ;; Default value of 'PATH' used by sshd.
+                          "--with-default-path=/run/current-system/profile/bin"
+
+                          ;; Enable PAM support in sshd.
+                          "--with-pam")
+
       #:phases
       (modify-phases %standard-phases
         (add-after 'configure 'reset-/var/empty
@@ -266,23 +284,22 @@ libssh library.")
      ;; Replace configure phase as the ./configure script does not link
      ;; CONFIG_SHELL and SHELL passed as parameters
      '(#:phases
-       (alist-replace
-        'configure
-        (lambda* (#:key outputs inputs system build target
-                        #:allow-other-keys #:rest args)
-          (let* ((configure (assoc-ref %standard-phases 'configure))
-                 (prefix (assoc-ref outputs "out"))
-                 (bash   (which "bash"))
-                 ;; Set --build and --host flags as the provided config.guess
-                 ;; is not able to detect them
-                 (flags `(,(string-append "--prefix=" prefix)
-                          ,(string-append "--build=" build)
-                          ,(string-append "--host=" (or target build)))))
-            (setenv "CONFIG_SHELL" bash)
-            (zero? (apply system* bash
-                          (string-append "." "/configure")
-                          flags))))
-        %standard-phases)))
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs inputs system build target
+                           #:allow-other-keys #:rest args)
+             (let* ((configure (assoc-ref %standard-phases 'configure))
+                    (prefix (assoc-ref outputs "out"))
+                    (bash   (which "bash"))
+                    ;; Set --build and --host flags as the provided config.guess
+                    ;; is not able to detect them
+                    (flags `(,(string-append "--prefix=" prefix)
+                             ,(string-append "--build=" build)
+                             ,(string-append "--host=" (or target build)))))
+               (setenv "CONFIG_SHELL" bash)
+               (zero? (apply system* bash
+                             (string-append "." "/configure")
+                             flags))))))))
     (home-page "http://www.agroman.net/corkscrew")
     (synopsis "Tunneling SSH through HTTP proxies")
     (description
@@ -295,26 +312,25 @@ in future and NTLM based authentication is most likey never be supported.")
 (define-public mosh
   (package
     (name "mosh")
-    (version "1.2.5")
+    (version "1.2.6")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://mosh.mit.edu/mosh-"
-                                  version ".tar.gz"))
+              (uri (string-append "https://mosh.org/mosh-" version ".tar.gz"))
               (sha256
                (base32
-                "1qsb0y882yfgwnpy6f98pi5xqm6kykdsrxzvaal37hs7szjhky0s"))))
+                "118fhpm754wpklf1blnlq5xbvrxqml6rdfs3b07wg666zkxvg0ky"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (alist-cons-after
-                 'install 'wrap
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   ;; Make sure 'mosh' can find 'mosh-client' and
-                   ;; 'mosh-server'.
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bin (string-append out "/bin")))
-                     (wrap-program (string-append bin "/mosh")
-                                   `("PATH" ":" prefix (,bin)))))
-                 %standard-phases)))
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Make sure 'mosh' can find 'mosh-client' and
+             ;; 'mosh-server'.
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (wrap-program (string-append bin "/mosh")
+                             `("PATH" ":" prefix (,bin)))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
@@ -325,7 +341,7 @@ in future and NTLM based authentication is most likey never be supported.")
        ("ncurses" ,ncurses)
        ("protobuf" ,protobuf)
        ("boost-headers" ,boost)))
-    (home-page "http://mosh.mit.edu/")
+    (home-page "https://mosh.org/")
     (synopsis "Remote shell tolerant to intermittent connectivity")
     (description
      "Remote terminal application that allows roaming, supports intermittent
@@ -337,7 +353,7 @@ especially over Wi-Fi, cellular, and long-distance links.")
 (define-public dropbear
   (package
     (name "dropbear")
-    (version "2016.73")
+    (version "2016.74")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -345,7 +361,7 @@ especially over Wi-Fi, cellular, and long-distance links.")
                     name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1mzg18jss1bsmcnn88zv7kv5yj01hzimndnd5636hfq9kgva8qaw"))))
+                "14c8f4gzixf0j9fkx68jgl85q7b05852kk0vf09gi6h0xmafl817"))))
     (build-system gnu-build-system)
     (arguments  `(#:tests? #f)) ; There is no "make check" or anything similar
     (inputs `(("zlib" ,zlib)))
@@ -355,3 +371,149 @@ client.  It runs on a variety of POSIX-based platforms.  Dropbear is
 particularly useful for embedded systems, such as wireless routers.")
     (home-page "https://matt.ucc.asn.au/dropbear/dropbear.html")
     (license (license:x11-style "" "See file LICENSE."))))
+
+(define-public liboop
+  (package
+    (name "liboop")
+    (version "1.0")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "http://download.ofb.net/liboop/liboop-"
+                          version ".tar.gz"))
+      (sha256
+       (base32
+        "0z6rlalhvfca64jpvksppc9bdhs7jwhiw4y35g5ibvh91xp3rn1l"))
+      (patches (search-patches "liboop-mips64-deplibs-fix.patch"))))
+    (build-system gnu-build-system)
+    (home-page "http://www.lysator.liu.se/liboop/")
+    (synopsis "Event loop library")
+    (description "Liboop is a low-level event loop management library for
+POSIX-based operating systems.  It supports the development of modular,
+multiplexed applications which may respond to events from several sources.  It
+replaces the \"select() loop\" and allows the registration of event handlers
+for file and network I/O, timers and signals.  Since processes use these
+mechanisms for almost all external communication, liboop can be used as the
+basis for almost any application.")
+    (license license:lgpl2.1+)))
+
+(define-public lsh
+  (package
+    (name "lsh")
+    (version "2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/lsh/lsh-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1qqjy9zfzgny0rkb27c8c7dfsylvb6n0ld8h3an2r83pmaqr9gwb"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "src/testsuite/functions.sh"
+                    (("localhost")
+                     ;; Avoid host name lookups since they don't work in
+                     ;; chroot builds.
+                     "127.0.0.1")
+                    (("set -e")
+                     ;; Make tests more verbose.
+                     "set -e\nset -x"))
+
+                  (substitute* (find-files "src/testsuite" "-test$")
+                    (("localhost") "127.0.0.1"))
+
+                  (substitute* "src/testsuite/login-auth-test"
+                    (("/bin/cat") "cat"))))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("m4" ,m4)
+       ("guile" ,guile-2.0)
+       ("gperf" ,gperf)
+       ("psmisc" ,psmisc)))                       ; for `killall'
+    (inputs
+     `(("nettle" ,nettle-2)
+       ("linux-pam" ,linux-pam)
+
+       ;; 'rl.c' uses the 'CPPFunction' type, which is no longer in
+       ;; Readline 6.3.
+       ("readline" ,readline-6.2)
+
+       ("liboop" ,liboop)
+       ("zlib" ,zlib)
+       ("gmp" ,gmp)
+
+       ;; The server (lshd) invokes xauth when X11 forwarding is requested.
+       ;; This adds 24 MiB (or 27%) to the closure of lsh.
+       ("xauth" ,xauth)))
+    (arguments
+     '(;; Skip the `configure' test that checks whether /dev/ptmx &
+       ;; co. work as expected, because it relies on impurities (for
+       ;; instance, /dev/pts may be unavailable in chroots.)
+       #:configure-flags '("lsh_cv_sys_unix98_ptys=yes")
+
+       ;; FIXME: Tests won't run in a chroot, presumably because
+       ;; /etc/profile is missing, and thus clients get an empty $PATH
+       ;; and nothing works.
+       #:tests? #f
+
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'pre-configure
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((nettle    (assoc-ref inputs "nettle"))
+                    (sexp-conv (string-append nettle "/bin/sexp-conv")))
+               ;; Make sure 'lsh' and 'lshd' pick 'sexp-conv' in the right place
+               ;; by default.
+               (substitute* "src/environ.h.in"
+                 (("^#define PATH_SEXP_CONV.*")
+                  (string-append "#define PATH_SEXP_CONV \""
+                                 sexp-conv "\"\n")))
+
+               ;; Same for the 'lsh-authorize' script.
+               (substitute* "src/lsh-authorize"
+                 (("=sexp-conv")
+                  (string-append "=" sexp-conv)))
+
+               ;; Tell lshd where 'xauth' lives.  Another option would be to
+               ;; hardcode "/run/current-system/profile/bin/xauth", thereby
+               ;; reducing the closure size, but that wouldn't work on foreign
+               ;; distros.
+               (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                 (substitute* "src/server_x11.c"
+                   (("define XAUTH_PROGRAM.*")
+                    (string-append "define XAUTH_PROGRAM \""
+                                   (assoc-ref inputs "xauth")
+                                   "/bin/xauth\"\n")))))
+
+             ;; Tests rely on $USER being set.
+             (setenv "USER" "guix"))))))
+    (home-page "http://www.lysator.liu.se/~nisse/lsh/")
+    (synopsis "GNU implementation of the Secure Shell (ssh) protocols")
+    (description
+     "GNU lsh is a free implementation of the SSH version 2 protocol.  It is
+used to create a secure line of communication between two computers,
+providing shell access to the server system from the client.  It provides
+both the server daemon and the client application, as well as tools for
+manipulating key files.")
+    (license license:gpl2+)))
+
+(define-public sshpass
+  (package
+    (name "sshpass")
+    (version "1.06")
+    (synopsis "Non-interactive password authentication with SSH")
+    (home-page "https://sourceforge.net/projects/sshpass/")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/sshpass/sshpass/"
+                           version "/sshpass-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0q7fblaczb7kwbsz0gdy9267z0sllzgmf0c7z5c9mf88wv74ycn6"))))
+    (build-system gnu-build-system)
+    (description "sshpass is a tool for non-interactivly performing password
+authentication with SSH's so-called @dfn{interactive keyboard password
+authentication}.")
+    (license license:gpl2+)))

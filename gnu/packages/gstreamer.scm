@@ -21,7 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages gstreamer)
-  #:use-module ((guix licenses) #:select (lgpl2.0+ lgpl2.1+ bsd-2 bsd-3 gpl2+))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
@@ -63,27 +63,27 @@
 (define-public orc
   (package
     (name "orc")
-    (version "0.4.25")
+    (version "0.4.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/data/src/"
                                   "orc/orc-" version ".tar.xz"))
               (sha256
                (base32
-                "1lak3hyvvb0w9avzmf0a8vayb7vqhj4m709q1czlhvgjb15dbcf1"))))
+                "0jd69ynvr3k70mlxxgbsk047l1rd63m1wkj3qdcq7644xy0gllkx"))))
     (build-system gnu-build-system)
-    (arguments `(#:phases
-                 (alist-cons-before
-                  'check 'disable-faulty-test
-                  (lambda _
-                    ;; XXX Disable the 'test-limits' and 'exec_opcodes_sys'
-                    ;; tests, which fail on some machines.  See:
-                    ;; https://bugzilla.gnome.org/show_bug.cgi?id=735273
-                    (substitute* '("testsuite/test-limits.c"
-                                   "testsuite/exec_opcodes_sys.c")
-                      (("if \\(error\\) return 1;")
-                       "if (error) return 77;")))
-                  %standard-phases)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'disable-faulty-test
+           (lambda _
+             ;; XXX Disable the 'test-limits' and 'exec_opcodes_sys'
+             ;; tests, which fail on some machines.  See:
+             ;; https://bugzilla.gnome.org/show_bug.cgi?id=735273
+             (substitute* '("testsuite/test-limits.c"
+                            "testsuite/exec_opcodes_sys.c")
+               (("if \\(error\\) return 1;")
+                "if (error) return 77;")))))))
     (home-page "http://code.entropywave.com/orc/")
     (synopsis "Oil runtime compiler")
     (description
@@ -92,12 +92,12 @@ associated tools for compiling and executing simple programs that operate on
 arrays of data.")
     ;; The source code implementing the Marsenne Twister algorithm is licensed
     ;; under the 3-clause BSD license, the rest is under 2-clause BSD license.
-    (license (list bsd-2 bsd-3))))
+    (license (list license:bsd-2 license:bsd-3))))
 
 (define-public gstreamer
   (package
     (name "gstreamer")
-    (version "1.8.0")
+    (version "1.8.2")
     (source
      (origin
       (method url-fetch)
@@ -106,7 +106,7 @@ arrays of data.")
             version ".tar.xz"))
       (sha256
        (base32
-        "1p5y9bbrhywng0prmpxv29p6jsz6vd039d49bnc98p9b45532yll"))))
+        "0hc3j684nx209p10ampvnkza3gna2yiryr7jyx701ciakh3vxglx"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -140,12 +140,12 @@ transparently.  Developers can add new codecs and filters by writing a
 simple plugin with a clean, generic interface.
 
 This package provides the core library and elements.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 (define-public gst-plugins-base
   (package
     (name "gst-plugins-base")
-    (version "1.8.0")
+    (version "1.8.2")
     (source
      (origin
       (method url-fetch)
@@ -153,13 +153,14 @@ This package provides the core library and elements.")
                           name "-" version ".tar.xz"))
       (sha256
        (base32
-        "08hmg7fp519wim1fm04r7f2q2020ssdninawqsbrqjsvs70srh5b"))))
+        "13fk751vvfrfhbm4ip28vxyvlsm4b4y0bc0pvf7fqp8azg40jwcx"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (propagated-inputs
      `(("gstreamer" ,gstreamer))) ; required by gstreamer-plugins-base-1.0.pc
     (inputs
      `(("cdparanoia" ,cdparanoia)
+       ("opus" ,opus)
        ("orc" ,orc)
        ("pango" ,pango)
        ("libogg" ,libogg)
@@ -192,13 +193,13 @@ This package provides the core library and elements.")
      "Plugins for the GStreamer multimedia library")
     (description "This package provides an essential exemplary set of plug-ins
 for the GStreamer multimedia library.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 
 (define-public gst-plugins-good
   (package
     (name "gst-plugins-good")
-    (version "1.8.0")
+    (version "1.8.2")
     (source
      (origin
       (method url-fetch)
@@ -207,7 +208,7 @@ for the GStreamer multimedia library.")
             name "-" version ".tar.xz"))
       (sha256
        (base32
-        "0kczdvqxvl8kxiy2d7czv16jp73hv9k3nykh47ckihnv8x6i6362"))))
+        "0i1rlbbx3m6ykvcdyaidsd8wa2b7nq2qmcvbrsg00yivi88ljxcd"))))
     (build-system gnu-build-system)
     (inputs
      `(("aalib" ,aalib)
@@ -258,7 +259,7 @@ for the GStreamer multimedia library.")
     (description "GStreamer Good Plug-ins is a set of plug-ins for the
 GStreamer multimedia library.  This set contains those plug-ins which the
 developers consider to have good quality code and correct functionality.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 (define-public gst-plugins-bad
   (package
@@ -323,7 +324,9 @@ developers consider to have good quality code and correct functionality.")
        ("openssl" ,openssl)
        ("opus" ,opus)
        ("orc" ,orc)
-       ("qt" ,qt)
+       ;("qtbase" ,qtbase)
+       ;("qtdeclarative" ,qtdeclarative)
+       ;("qtx11extras" ,qtx11extras)
        ("soundtouch" ,soundtouch)
        ("wayland" ,wayland)))
     (home-page "http://gstreamer.freedesktop.org/")
@@ -331,12 +334,12 @@ developers consider to have good quality code and correct functionality.")
     (description
      "GStreamer Bad Plug-ins is a set of plug-ins whose quality aren't up to
 par compared to the rest.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 (define-public gst-plugins-ugly
   (package
     (name "gst-plugins-ugly")
-    (version "1.8.0")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
@@ -344,7 +347,7 @@ par compared to the rest.")
                            name "/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "137b6kqykh5nwbmiv28nn1pc1d2x2rb2xxg382pc9pa9gpxpyrak"))))
+         "1b58s7z430cbbaw8mgy87kslbpmj3xmm66wsr7bddhcgm6i36nww"))))
     (build-system gnu-build-system)
     (inputs
      `(("gst-plugins-base" ,gst-plugins-base)
@@ -356,6 +359,7 @@ par compared to the rest.")
        ("libmpeg2" ,libmpeg2)
        ("libdvdread" ,libdvdread)
        ("libx264" ,libx264)
+       ("mpg123" ,mpg123)
        ;; TODO:
        ;; * opencore-amr (for the AMR-NB decoder and encoder and the
        ;;   AMR-WB decoder) <http://sourceforge.net/projects/opencore-amr/>
@@ -369,12 +373,12 @@ par compared to the rest.")
     (description "GStreamer Ugly Plug-ins.  This set contains those plug-ins
 which the developers consider to have good quality code but that might pose
 distribution problems in some jurisdictions, e.g. due to patent threats.")
-    (license lgpl2.0+)))
+    (license license:lgpl2.0+)))
 
 (define-public gst-libav
   (package
     (name "gst-libav")
-    (version "1.8.0")
+    (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -382,7 +386,7 @@ distribution problems in some jurisdictions, e.g. due to patent threats.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0719njp8aarhvn038pijq6dmsnli0zlg146hyfs3rsdffs4f472s"))))
+                "0yk8pxg3xi26ndj7pliqdfphy0jmqsq4dmdzy31gbd9rgficgwxm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--with-system-libav")
@@ -406,12 +410,12 @@ distribution problems in some jurisdictions, e.g. due to patent threats.")
     (description
      "This GStreamer plugin supports a large number of audio and video
 compression formats through the use of the libav library.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public python-gst
   (package
     (name "python-gst")
-    (version "1.8.0")
+    (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -419,7 +423,7 @@ compression formats through the use of the libav library.")
                     "gst-python-" version ".tar.xz"))
               (sha256
                (base32
-                "1spn49x7yaj69df6mxh9wwcs0y3abswkfpk84njs71lzqlbzyiff"))))
+                "15sdfa6lq5pswvi09vk51cs30yf8wr2rlm9myhb4q0c2jhiial2g"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX: Factorize python-sitedir with python-build-system.
@@ -446,7 +450,7 @@ compression formats through the use of the libav library.")
     (description
      "This package contains GObject Introspection overrides for Python that can
 be used by Python applications using GStreamer.")
-    (license lgpl2.1+)
+    (license license:lgpl2.1+)
     (properties `((python2-variant . ,(delay python2-gst))))))
 
 (define-public python2-gst

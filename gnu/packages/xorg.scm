@@ -8,6 +8,8 @@
 ;;; Copyright © 2015 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
+;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,12 +33,14 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -45,13 +49,13 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages spice)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages freedesktop))
+  #:use-module (gnu packages xdisorg))
 
 
 
@@ -129,6 +133,29 @@ Window system has switched to using GNU autotools as the primary build system,
 and the Imake system is now deprecated, and should not be used by new software
 projects.  Software developers are encouraged to migrate software to the GNU
 autotools system.")
+    (license license:x11)))
+
+(define-public lndir
+  (package
+    (name "lndir")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://xorg/individual/util/"
+                    "lndir-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0pdngiy8zdhsiqx2am75yfcl36l7kd7d7nl0rss8shcdvsqgmx29"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("xproto" ,xproto)))
+    (home-page "http://www.x.org")
+    (synopsis "Symlink directory into tree")
+    (description "Create a shadow directory of symbolic links to another
+directory tree.")
     (license license:x11)))
 
 (define-public bdftopcf
@@ -639,7 +666,8 @@ For example: '6x10', '9x15bold', etc.")
             "19cq7iq0pfad0nc2v28n681fdq3fcw1l1hzaq0wpkgpx7bc1zjsk"))))
     (build-system gnu-build-system)
     (inputs
-      `(("mkfontdir" ,mkfontdir)))
+      `(("mkfontdir" ,mkfontdir)
+        ("mkfontscale" ,mkfontscale)))
     (native-inputs
       `(("pkg-config" ,pkg-config)))
     (home-page "https://www.x.org/wiki/")
@@ -881,7 +909,8 @@ For example: '6x10', '9x15bold', etc.")
             "0jp3zc0qfdaqfkgzrb44vi9vi0a8ygb35wp082yz7rvvxhmg9sya"))))
     (build-system gnu-build-system)
     (inputs
-      `(("mkfontdir" ,mkfontdir)))
+      `(("mkfontdir" ,mkfontdir)
+        ("mkfontscale" ,mkfontscale)))
     (native-inputs
       `(("pkg-config" ,pkg-config)))
     (home-page "https://www.x.org/wiki/")
@@ -2357,7 +2386,7 @@ devices, thus making direct access unnecessary.")
 (define-public xf86-input-evdev
   (package
     (name "xf86-input-evdev")
-    (version "2.10.1")
+    (version "2.10.3")
     (source
       (origin
         (method url-fetch)
@@ -2367,7 +2396,7 @@ devices, thus making direct access unnecessary.")
                ".tar.bz2"))
         (sha256
           (base32
-            "05z05n39v8s2b0hwhcjb1bca7j8gc62bv9jxnibawwmjym3jp75g"))))
+            "18ijnclnylrr7vkvflalkw4bqfily3scg6baczjjgycdpsj1p8js"))))
     (build-system gnu-build-system)
     (inputs
       `(("udev" ,eudev)
@@ -2507,7 +2536,7 @@ as USB mice.")
 (define-public xf86-input-synaptics
   (package
     (name "xf86-input-synaptics")
-    (version "1.8.3")
+    (version "1.8.99.1")
     (source
       (origin
         (method url-fetch)
@@ -2517,7 +2546,7 @@ as USB mice.")
                ".tar.bz2"))
         (sha256
           (base32
-            "009zx199pilcvlaqm6fx4mg94q81d6vvl5rznmw3frzkfh6117yk"))))
+            "1apbcwn20p7sy07ghlldmqcnxag2r9sdjqmb4xxzki0hz8wm72ac"))))
     (build-system gnu-build-system)
     (inputs `(("libx11" ,libx11)
               ("libxi" ,libxi)
@@ -2619,7 +2648,7 @@ as USB mice.")
 (define-public xf86-video-ati
   (package
     (name "xf86-video-ati")
-    (version "7.6.1")
+    (version "7.7.0")
     (source
       (origin
         (method url-fetch)
@@ -2629,7 +2658,7 @@ as USB mice.")
                ".tar.bz2"))
         (sha256
           (base32
-            "0k6kw69mcarlmxlb4jlhz887jxqr94qx2pin04xcv2ysp3pdj5i5"))))
+            "1hy1n8an98mflfbdcb3q7wv59x971j7nf9zhivf90p0lgdbiqkc4"))))
     (build-system gnu-build-system)
     (inputs `(("mesa" ,mesa)
               ("xxf86driproto" ,xf86driproto)
@@ -3045,7 +3074,7 @@ graphics cards.")
 (define-public xf86-video-openchrome
   (package
     (name "xf86-video-openchrome")
-    (version "0.3.3")
+    (version "0.5.0")
     (source
       (origin
         (method url-fetch)
@@ -3054,9 +3083,8 @@ graphics cards.")
                version
                ".tar.bz2"))
         (sha256
-          (base32
-           "1v8j4i1r268n4fc5gq54zg1x50j0rhw71f3lba7411mcblg2z7p4"))
-        (patches (search-patches "xf86-video-openchrome-glibc-2.20.patch"))))
+         (base32
+          "1fsmr455lk89zl795d6b5ypyqjim40j3h2vjch52lcssjw9xdza9"))))
     (build-system gnu-build-system)
     (inputs `(("libx11" ,libx11)
               ("libxext" ,libxext)
@@ -3072,6 +3100,35 @@ graphics cards.")
      "xf86-video-openchrome is a video driver for the Xorg X server.
 This driver is intended for VIA chipsets featuring the VIA UniChrome,
 UniChrome Pro and Chrome9 integrated graphics processors.")
+    (license license:x11)))
+
+
+(define-public xf86-video-qxl
+  (package
+    (name "xf86-video-qxl")
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                "mirror://xorg/individual/driver/"
+                "xf86-video-qxl-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "018ic9ddxfnjcv2yss0mwk1gq6rmip1hrgi2wxwqkbqx1cpx4yp5"))))
+    (build-system gnu-build-system)
+    (inputs
+      `(("fontsproto" ,fontsproto)
+        ("libxfont" ,libxfont)
+        ("spice-protocol" ,spice-protocol)
+        ("xf86dgaproto" ,xf86dgaproto)
+        ("xorg-server" ,xorg-server)
+        ("xproto" ,xproto)))
+    (native-inputs
+      `(("pkg-config" ,pkg-config)))
+    (synopsis "Qxl video driver for X server")
+    (description "xf86-video-qxl is a video driver for the Xorg X server.
+This driver is intended for the spice qxl virtio device.")
+    (home-page "http://www.spice-space.org")
     (license license:x11)))
 
 
@@ -3870,6 +3927,97 @@ running on X server.")
 protocol.")
     (license license:x11)))
 
+(define-public xfontsel
+  (package
+    (name "xfontsel")
+    (version "1.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://xorg/individual/app/xfontsel-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "1grir464hy52a71r3mpm9mzvkf7nwr3vk0b1vc27pd3gp588a38p"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; By default, it tries to install XFontSel file in
+     ;; "/gnu/store/<libxt>/share/X11/app-defaults": it defines this
+     ;; directory from 'libxt' (using 'pkg-config').  To put this file
+     ;; inside output dir and to use it properly, we need to configure
+     ;; --with-appdefaultdir and to wrap 'xfontsel' binary.
+     (let ((app-defaults-dir "/share/X11/app-defaults"))
+       `(#:configure-flags
+         (list (string-append "--with-appdefaultdir="
+                              %output ,app-defaults-dir))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'install 'wrap-xfontsel
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/xfontsel")
+                   `("XAPPLRESDIR" =
+                     (,(string-append out ,app-defaults-dir)))))))))))
+    (inputs
+     `(("libx11" ,libx11)
+       ("libxaw" ,libxaw)
+       ("libxmu" ,libxmu)
+       ("libxt" ,libxt)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page "https://www.x.org/wiki/")
+    (synopsis "Browse and select X font names")
+    (description
+     "XFontSel provides a simple way to display the X11 core protocol fonts
+known to your X server, examine samples of each, and retrieve the X Logical
+Font Description (XLFD) full name for a font.")
+    (license license:x11)))
+
+(define-public xfd
+  (package
+    (name "xfd")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://xorg/individual/app/xfd-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "0n97iqqap9wyxjan2n520vh4rrf5bc0apsw2k9py94dqzci258y1"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; The same 'app-defaults' problem as with 'xfontsel' package.
+     (let ((app-defaults-dir "/share/X11/app-defaults"))
+       `(#:configure-flags
+         (list (string-append "--with-appdefaultdir="
+                              %output ,app-defaults-dir))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'install 'wrap-xfd
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/xfd")
+                   `("XAPPLRESDIR" =
+                     (,(string-append out ,app-defaults-dir)))))))))))
+    (inputs
+     `(("fontconfig" ,fontconfig)
+       ("libx11" ,libx11)
+       ("libxaw" ,libxaw)
+       ("libxft" ,libxft)
+       ("libxmu" ,libxmu)
+       ("libxrender" ,libxrender)))
+    (native-inputs
+     `(("gettext" ,gnu-gettext)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://www.x.org/wiki/")
+    (synopsis "Display all the characters in an X font")
+    (description
+     "XFD (X Font Display) package provides an utility that displays a
+window containing the name of the font being displayed, a row of command
+buttons, several lines of text for displaying character metrics, and a grid
+containing one glyph per cell.")
+    (license license:x11)))
 
 (define-public xmodmap
   (package
@@ -4282,7 +4430,30 @@ Various information is displayed depending on which options are selected.")
 formatted dump file, such as produced by xwd.")
     (license license:x11)))
 
-
+(define-public xorg-rgb
+  (package
+    (name "xorg-rgb")
+    (version "1.0.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "mirror://xorg/individual/app/rgb-"
+               version
+               ".tar.bz2"))
+        (sha256
+          (base32
+            "1c76zcjs39ljil6f6jpx1x17c8fnvwazz7zvl3vbjfcrlmm7rjmv"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("xproto" ,xproto)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (home-page "http://www.x.org/wiki/")
+    (synopsis "X color name database")
+    (description
+     "This package provides the X color name database.")
+    (license license:x11)))
 
 ;; packages of height 1 in the propagated-inputs tree
 
@@ -4539,7 +4710,17 @@ protocol and arbitrary X extension protocol.")
           (base32
             "0c3563kw9fg15dpgx4dwvl12qz6sdqdns1pxa574hc7i5m42mman"))))
     (build-system gnu-build-system)
-    (propagated-inputs
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-mkfontdir
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program (string-append (assoc-ref outputs "out")
+                                          "/bin/mkfontdir")
+               `("PATH" ":" prefix
+                 (,(string-append (assoc-ref inputs "mkfontscale")
+                                  "/bin")))))))))
+    (inputs
       `(("mkfontscale" ,mkfontscale)))
     (native-inputs
       `(("pkg-config" ,pkg-config)))
@@ -4976,6 +5157,23 @@ communicates with the user via graphical controls such as buttons and
 draggable titlebars and borders.")
     (license license:x11)))
 
+(define-public xorg-server-xwayland
+  (package
+    (inherit xorg-server)
+    (name "xorg-server-xwayland")
+    (inputs
+     `(("libepoxy" ,libepoxy)
+       ("wayland" ,wayland)
+       ,@(package-inputs xorg-server)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments xorg-server)
+       ((#:configure-flags flags)
+        `(cons* "--enable-xwayland" "--disable-xorg"
+                "--disable-docs"    "--disable-devel-docs"
+                "--disable-xvfb"    "--disable-xnest"
+                "--disable-xquartz" "--disable-xwin"
+                ,flags))))
+    (synopsis "Xorg server with wayland backend")))
 
 
 ;; packages of height 4 in the propagated-inputs tree

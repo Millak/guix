@@ -243,11 +243,6 @@ code."
 <grub-configuration> object, and where the store is available at STORE-FS, a
 <file-system> object.  OLD-ENTRIES is taken to be a list of menu entries
 corresponding to old generations of the system."
-  (define linux-image-name
-    (if (string-prefix? "mips" system)
-        "vmlinuz"
-        "bzImage"))
-
   (define all-entries
     (append entries (grub-configuration-menu-entries config)))
 
@@ -256,20 +251,22 @@ corresponding to old generations of the system."
      (($ <menu-entry> label linux arguments initrd)
       #~(format port "menuentry ~s {
   ~a
-  linux ~a/~a ~a
+  linux ~a ~a
   initrd ~a
 }~%"
                 #$label
-                #$(grub-root-search store-fs
-                                    #~(string-append #$linux "/"
-                                                     #$linux-image-name))
-                #$linux #$linux-image-name (string-join (list #$@arguments))
+                #$(grub-root-search store-fs linux)
+                #$linux (string-join (list #$@arguments))
                 #$initrd))))
 
   (mlet %store-monad ((sugar (eye-candy config store-fs system #~port)))
     (define builder
       #~(call-with-output-file #$output
           (lambda (port)
+            (format port
+                    "# This file was generated from your GuixSD configuration.  Any changes
+# will be lost upon reconfiguration.
+")
             #$sugar
             (format port "
 set default=~a

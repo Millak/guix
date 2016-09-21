@@ -69,6 +69,7 @@
             operating-system-host-name
             operating-system-hosts-file
             operating-system-kernel
+            operating-system-kernel-file
             operating-system-kernel-arguments
             operating-system-initrd
             operating-system-users
@@ -81,6 +82,8 @@
             operating-system-mapped-devices
             operating-system-file-systems
             operating-system-store-file-system
+            operating-system-user-mapped-devices
+            operating-system-boot-mapped-devices
             operating-system-activation-script
             operating-system-user-accounts
             operating-system-shepherd-service-names
@@ -176,9 +179,9 @@
 ;;; Services.
 ;;;
 
-(define (other-file-system-services os)
-  "Return file system services for the file systems of OS that are not marked
-as 'needed-for-boot'."
+(define (non-boot-file-system-service os)
+  "Return the file system service for the file systems of OS that are not
+marked as 'needed-for-boot'."
   (define file-systems
     (remove file-system-needed-for-boot?
             (operating-system-file-systems os)))
@@ -202,14 +205,16 @@ as 'needed-for-boot'."
                                   (file-system-dependencies fs))
                           eq?))))
 
-  (map (compose file-system-service add-dependencies) file-systems))
+  (service file-system-service-type
+           (map add-dependencies file-systems)))
 
 (define (mapped-device-user device file-systems)
   "Return a file system among FILE-SYSTEMS that uses DEVICE, or #f."
   (let ((target (string-append "/dev/mapper/" (mapped-device-target device))))
     (find (lambda (fs)
-            (and (eq? 'device (file-system-title fs))
-                 (string=? (file-system-device fs) target)))
+            (or (member device (file-system-dependencies fs))
+                (and (eq? 'device (file-system-title fs))
+                     (string=? (file-system-device fs) target))))
           file-systems)))
 
 (define (operating-system-user-mapped-devices os)
@@ -242,6 +247,19 @@ from the initrd."
   "Return the list of swap services for OS."
   (map swap-service (operating-system-swap-devices os)))
 
+(define* (system-linux-image-file-name #:optional (system (%current-system)))
+  "Return the basename of the kernel image file for SYSTEM."
+  ;; FIXME: Evaluate the conditional based on the actual current system.
+  (if (string-prefix? "mips" (%current-system))
+      "vmlinuz"
+      "bzImage"))
+
+(define (operating-system-kernel-file os)
+  "Return an object representing the absolute file name of the kernel image of
+OS."
+  (file-append (operating-system-kernel os)
+               "/" (system-linux-image-file-name os)))
+
 (define* (operating-system-directory-base-entries os #:key container?)
   "Return the basic entries of the 'system' directory of OS for use as the
 value of the SYSTEM-SERVICE-TYPE service."
@@ -267,11 +285,11 @@ a container or that of a \"bare metal\" system."
 
   (let* ((mappings  (device-mapping-services os))
          (root-fs   (root-file-system-service))
-         (other-fs  (other-file-system-services os))
+         (other-fs  (non-boot-file-system-service os))
          (unmount   (user-unmount-service known-fs))
          (swaps     (swap-services os))
          (procs     (user-processes-service
-                     (map service-parameters other-fs)))
+                     (service-parameters other-fs)))
          (host-name (host-name-service (operating-system-host-name os)))
          (entries   (operating-system-directory-base-entries
                      os #:container? container?)))
@@ -299,7 +317,8 @@ a container or that of a \"bare metal\" system."
                     (operating-system-setuid-programs os))
            (service profile-service-type
                     (operating-system-packages os))
-           (append other-fs mappings swaps
+           other-fs
+           (append mappings swaps
 
                    ;; Add the firmware service, unless we are building for a
                    ;; container.
@@ -405,6 +424,17 @@ GUIX_PROFILE=/run/current-system/profile \\
 # Prepend setuid programs.
 export PATH=/run/setuid-programs:$PATH
 
+# Since 'lshd' does not use pam_env, /etc/environment must be explicitly
+# loaded when someone logs in via SSH.  See <http://bugs.gnu.org/22175>.
+# We need 'PATH' to be defined here, for 'cat' and 'cut'.  Do this before
+# reading the user's 'etc/profile' to allow variables to be overridden.
+if [ -f /etc/environment -a -n \"$SSH_CLIENT\" \\
+     -a -z \"$LINUX_MODULE_DIRECTORY\" ]
+then
+  . /etc/environment
+  export `cat /etc/environment | cut -d= -f1`
+fi
+
 if [ -f \"$HOME/.guix-profile/etc/profile\" ]
 then
   # Load the user profile's settings.
@@ -414,16 +444,6 @@ else
   # At least define this one so that basic things just work
   # when the user installs their first package.
   export PATH=\"$HOME/.guix-profile/bin:$PATH\"
-fi
-
-# Since 'lshd' does not use pam_env, /etc/environment must be explicitly
-# loaded when someone logs in via SSH.  See <http://bugs.gnu.org/22175>.
-# We need 'PATH' to be defined here, for 'cat' and 'cut'.
-if [ -f /etc/environment -a -n \"$SSH_CLIENT\" \\
-     -a -z \"$LINUX_MODULE_DIRECTORY\" ]
-then
-  . /etc/environment
-  export `cat /etc/environment | cut -d= -f1`
 fi
 
 # Set the umask, notably for users logging in via 'lsh'.
@@ -452,9 +472,9 @@ then
   source /run/current-system/profile/etc/profile.d/bash_completion.sh
 fi\n")))
     (etc-service
-     `(("services" ,#~(string-append #$net-base "/etc/services"))
-       ("protocols" ,#~(string-append #$net-base "/etc/protocols"))
-       ("rpc" ,#~(string-append #$net-base "/etc/rpc"))
+     `(("services" ,(file-append net-base "/etc/services"))
+       ("protocols" ,(file-append net-base "/etc/protocols"))
+       ("rpc" ,(file-append net-base "/etc/rpc"))
        ("login.defs" ,#~#$login.defs)
        ("issue" ,#~#$issue)
        ("nsswitch.conf" ,#~#$nsswitch)
@@ -462,8 +482,8 @@ fi\n")))
        ("bashrc" ,#~#$bashrc)
        ("hosts" ,#~#$(or (operating-system-hosts-file os)
                          (default-/etc/hosts (operating-system-host-name os))))
-       ("localtime" ,#~(string-append #$tzdata "/share/zoneinfo/"
-                                      #$(operating-system-timezone os)))
+       ("localtime" ,(file-append tzdata "/share/zoneinfo/"
+                                  (operating-system-timezone os)))
        ("sudoers" ,(operating-system-sudoers-file os))))))
 
 (define %root-account
@@ -527,7 +547,7 @@ use 'plain-file' instead~%")
 @var{session-environment-service-type}, to be used in @file{/etc/environment}."
   `(("LANG" . ,(operating-system-locale os))
     ("TZ" . ,(operating-system-timezone os))
-    ("TZDIR" . ,#~(string-append #$tzdata "/share/zoneinfo"))
+    ("TZDIR" . ,(file-append tzdata "/share/zoneinfo"))
     ;; Tell 'modprobe' & co. where to look for modules.
     ("LINUX_MODULE_DIRECTORY" . "/run/booted-system/kernel/lib/modules")
     ;; These variables are honored by OpenSSL (libssl) and Git.
@@ -541,17 +561,22 @@ use 'plain-file' instead~%")
 
     ;; By default, applications that use D-Bus, such as Emacs, abort at startup
     ;; when /etc/machine-id is missing.  Make sure these warnings are non-fatal.
-    ("DBUS_FATAL_WARNINGS" . "0")))
+    ("DBUS_FATAL_WARNINGS" . "0")
+
+    ;; XXX: Normally we wouldn't need to do this, but our glibc@2.23 package
+    ;; looks things up in 'PREFIX/lib/locale' instead of
+    ;; '/run/current-system/locale' as was intended.
+    ("GUIX_LOCPATH" . "/run/current-system/locale")))
 
 (define %setuid-programs
   ;; Default set of setuid-root programs.
   (let ((shadow (@ (gnu packages admin) shadow)))
-    (list #~(string-append #$shadow "/bin/passwd")
-          #~(string-append #$shadow "/bin/su")
-          #~(string-append #$inetutils "/bin/ping")
-          #~(string-append #$inetutils "/bin/ping6")
-          #~(string-append #$sudo "/bin/sudo")
-          #~(string-append #$fuse "/bin/fusermount"))))
+    (list (file-append shadow "/bin/passwd")
+          (file-append shadow "/bin/su")
+          (file-append inetutils "/bin/ping")
+          (file-append inetutils "/bin/ping6")
+          (file-append sudo "/bin/sudo")
+          (file-append fuse "/bin/fusermount"))))
 
 (define %sudoers-specification
   ;; Default /etc/sudoers contents: 'root' and all members of the 'wheel'
@@ -635,7 +660,7 @@ hardware-related operations as necessary when booting a Linux container."
   (mlet %store-monad ((initrd (make-initrd boot-file-systems
                                            #:linux (operating-system-kernel os)
                                            #:mapped-devices mapped-devices)))
-    (return #~(string-append #$initrd "/initrd"))))
+    (return (file-append initrd "/initrd"))))
 
 (define (locale-name->definition* name)
   "Variant of 'locale-name->definition' that raises an error upon failure."
@@ -699,12 +724,13 @@ listed in OS.  The C library expects to find it under
       ((system      (operating-system-derivation os))
        (root-fs ->  (operating-system-root-file-system os))
        (store-fs -> (operating-system-store-file-system os))
-       (kernel ->   (operating-system-kernel os))
+       (label ->    (kernel->grub-label (operating-system-kernel os)))
+       (kernel ->   (operating-system-kernel-file os))
        (root-device -> (if (eq? 'uuid (file-system-title root-fs))
                            (uuid->string (file-system-device root-fs))
                            (file-system-device root-fs)))
        (entries ->  (list (menu-entry
-                           (label (kernel->grub-label kernel))
+                           (label label)
                            (linux kernel)
                            (linux-arguments
                             (cons* (string-append "--root=" root-device)
@@ -712,7 +738,7 @@ listed in OS.  The C library expects to find it under
                                    #~(string-append "--load=" #$system
                                                     "/boot")
                                    (operating-system-kernel-arguments os)))
-                           (initrd #~(string-append #$system "/initrd"))))))
+                           (initrd (file-append system "/initrd"))))))
     (grub-configuration-file (operating-system-bootloader os)
                              store-fs entries
                              #:old-entries old-entries)))
@@ -728,10 +754,11 @@ this file is the reconstruction of GRUB menu entries for old configurations."
                 #~(boot-parameters (version 0)
                                    (label #$label)
                                    (root-device #$(file-system-device root))
-                                   (kernel #$(operating-system-kernel os))
+                                   (kernel #$(operating-system-kernel-file os))
                                    (kernel-arguments
                                     #$(operating-system-kernel-arguments os))
-                                   (initrd #$initrd)))))
+                                   (initrd #$initrd))
+                #:set-load-path? #f)))
 
 
 ;;;
@@ -756,7 +783,14 @@ this file is the reconstruction of GRUB menu entries for old configurations."
      (boot-parameters
       (label label)
       (root-device root)
-      (kernel linux)
+
+      ;; In the past, we would store the directory name of the kernel instead
+      ;; of the absolute file name of its image.  Detect that and correct it.
+      (kernel (if (string=? linux (direct-store-path linux))
+                  (string-append linux "/"
+                                 (system-linux-image-file-name))
+                  linux))
+
       (kernel-arguments
        (match (assq 'kernel-arguments rest)
          ((_ args) args)

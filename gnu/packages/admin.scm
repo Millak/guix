@@ -12,6 +12,8 @@
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
+;;; Coypright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Coypright © 2016 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,7 +72,9 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages python)
   #:use-module (gnu packages man)
-  #:use-module (gnu packages autotools))
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gtk))
 
 (define-public aide
   (package
@@ -132,46 +136,6 @@ the percentage of copied data.  It can also show estimated time and throughput,
 and provides a \"top-like\" mode (monitoring).")
     (license license:gpl3+)))
 
-(define-public dmd
-  ;; Deprecated.  Kept around "just in case."
-  (let ((base-version "0.2")
-        (patch-level  "01"))
-    (package
-      (name "dmd")
-      (version (string-append base-version "." patch-level))
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "ftp://alpha.gnu.org/gnu/dmd/dmd-"
-                                    base-version ".tar.gz"))
-                (sha256
-                 (base32
-                  "10fl4k96f17gqx2fv8iw9c61ld26gsk4bbrlfqckdmiimz1k175z"))
-                (patches
-                 (list (origin
-                         ;; This patch augments 'make-fork+exec-constructor' and
-                         ;; is used by a bunch of services.
-                         (method url-fetch)
-                         (uri (string-append
-                               "http://git.savannah.gnu.org/cgit/shepherd.git/"
-                               "patch?id=d1d0ff30b3ed2b86b0a3c9bc048d2a855f8e31e6"))
-                         (sha256
-                          (base32
-                           "1lqymypixfiyb72d6bn24m06ry2q1ljnnv0qrc89pbb4z9azaa4d"))
-                         (file-name "dmd-user-group.patch"))))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:configure-flags '("--localstatedir=/var")))
-      (native-inputs `(("pkg-config" ,pkg-config)))
-      (inputs `(("guile" ,guile-2.0)))
-      (synopsis "Daemon managing daemons")
-      (description
-       "GNU DMD is a daemon-managing daemon, meaning that it manages the
-execution of system services, replacing similar functionality found in
-typical init systems.  It provides dependency-handling through a convenient
-interface and is based on GNU Guile.")
-      (license license:gpl3+)
-      (home-page "http://www.gnu.org/software/dmd/"))))
-
 (define-public shepherd
   (package
     (name "shepherd")
@@ -223,14 +187,14 @@ graphs and can export its output to different formats.")
 (define-public htop
   (package
    (name "htop")
-   (version "2.0.1")
+   (version "2.0.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "http://hisham.hm/htop/releases/"
                   version "/htop-" version ".tar.gz"))
             (sha256
              (base32
-              "0rjn9ybqx5sav7z4gn18f1q6k23nmqyb6yydfgghzdznz9nn447l"))))
+              "11zlwadm6dpkrlfvf3z3xll26yyffa7qrxd1w72y1kl0rgffk6qp"))))
    (build-system gnu-build-system)
    (inputs
     `(("ncurses" ,ncurses)))
@@ -275,7 +239,9 @@ re-executing them as necessary.")
               (base32
                "05n65k4ixl85dc6rxc51b1b732gnmm8xnqi424dy9f1nz7ppb3xy"))))
     (build-system gnu-build-system)
-    (arguments `(;; FIXME: `tftp.sh' relies on `netstat' from utils-linux,
+    (arguments `(#:configure-flags '("--localstatedir=/var")
+
+                 ;; FIXME: `tftp.sh' relies on `netstat' from utils-linux,
                  ;; which is currently missing.
                  #:tests? #f))
     (inputs `(("ncurses" ,ncurses)
@@ -346,8 +312,8 @@ login, passwd, su, groupadd, and useradd.")
     (version "1.08")
     (source (origin
              (method url-fetch)
-             (uri (string-append "mirror://sourceforge/mingetty/mingetty-"
-                                 version ".tar.gz"))
+             (uri (string-append "mirror://sourceforge/mingetty/mingetty/"
+                                 version "/mingetty-" version ".tar.gz"))
              (sha256
               (base32
                "05yxrp44ky2kg6qknk1ih0kvwkgbn9fbz77r3vci7agslh5wjm8g"))))
@@ -440,8 +406,8 @@ ONC RPC numbers.")
     (version "0.7.1")
     (source (origin
              (method url-fetch)
-             (uri (string-append "mirror://sourceforge/netcat/netcat-"
-                                 version ".tar.bz2"))
+             (uri (string-append "mirror://sourceforge/netcat/netcat/" version
+                                 "/netcat-" version ".tar.bz2"))
              (sha256
               (base32
                "1frjcdkhkpzk0f84hx6hmw5l0ynpmji8vcbaxg8h5k2svyxz0nmm"))))
@@ -705,7 +671,8 @@ by bandwidth they use.")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/clusterssh/"
-                                  "clusterssh-" version ".tar.gz"))
+                                  "1.%20ClusterSSH%20Series%203/" version
+                                  "/clusterssh-" version ".tar.gz"))
               (sha256
                (base32
                 "1bwggpvaj2al5blg1ynapviv2kpydffpzq2zkhi81najnvzc1rr7"))))
@@ -766,15 +733,34 @@ over ssh connections.")
                    "true")))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags (list (string-append "ROTT_ETCDIR="
-                                              (assoc-ref %outputs "out")
-                                              "/etc")
+     '(#:configure-flags (list "ROTT_ETCDIR=/etc/rottlog" ;rc file location
                                "--localstatedir=/var")
-       #:phases (alist-cons-after
-                 'install 'install-info
-                 (lambda _
-                   (zero? (system* "make" "install-info")))
-                 %standard-phases)))
+
+       ;; Install example config files in OUT/etc.
+       #:make-flags (list (string-append "ROTT_ETCDIR="
+                                         (assoc-ref %outputs "out")
+                                         "/etc"))
+
+       #:phases (modify-phases %standard-phases
+                  (add-after 'build 'set-packdir
+                    (lambda _
+                      ;; Set a default location for archived logs.
+                      (substitute* "rc/rc"
+                        (("packdir=\"\"")
+                         "packdir=\"/var/log\""))
+                      #t))
+                  (add-before 'install 'tweak-rc-weekly
+                    (lambda _
+                      (substitute* "rc/weekly"
+                        (("/bin/kill")
+                         (which "kill"))
+                        (("syslogd\\.pid")
+                         ;; The file is called 'syslog.pid' (no 'd').
+                         "syslog.pid"))
+                      #t))
+                  (add-after 'install 'install-info
+                    (lambda _
+                      (zero? (system* "make" "install-info")))))))
     (native-inputs `(("texinfo" ,texinfo)
                      ("util-linux" ,util-linux))) ; for 'cal'
     (home-page "http://www.gnu.org/software/rottlog/")
@@ -1020,18 +1006,18 @@ network, which causes enabled computers to power on.")
 (define-public dmidecode
   (package
     (name "dmidecode")
-    (version "2.12")
+    (version "3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://savannah/dmidecode/dmidecode-"
-                    version ".tar.bz2"))
+                    version ".tar.xz"))
               (sha256
                (base32
-                "122hgaw8mpqdfra159lfl6pyk3837giqx6vq42j64fjnbl2z6gwi"))))
+                "0iby0xfk5x3cdr0x0gxj5888jjyjhafvaq0l79civ73jjfqmphvy"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (alist-delete 'configure %standard-phases)
+     '(#:phases (modify-phases %standard-phases (delete 'configure))
        #:tests? #f                                ; no 'check' target
        #:make-flags (list (string-append "prefix="
                                          (assoc-ref %outputs "out")))))
@@ -1112,8 +1098,8 @@ system is under heavy load.")
     (version "1.2.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/detox/detox-"
-                                  version ".tar.bz2"))
+              (uri (string-append "mirror://sourceforge/detox/detox/" version
+                                  "/detox-" version ".tar.bz2"))
               (sha256
                (base32
                 "1y6vvjqsg54kl49cry73jbfhr04s7wjs779vrr9zrq6kww7dkymb"))))
@@ -1280,21 +1266,24 @@ degradation and failure.")
 (define-public fdupes
   (package
     (name "fdupes")
-    (version "1.51")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://github.com/adrianlopezroche/fdupes/archive/fdupes-"
+             "https://github.com/adrianlopezroche/fdupes/archive/v"
              version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "11j96vxl9vg3jsnxqxskrv3gad6dh7hz2zpyc8n31xzyxka1c7kn"))))
+         "1sj9pa40pbz6xdwbxfwhdhkvhdf1xc5gvggk9mdq26c41gdnyswx"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (alist-delete 'configure %standard-phases)
+     '(#:phases (modify-phases %standard-phases
+                  (delete 'configure))
        #:tests? #f ; no 'check' target
-       #:make-flags (list (string-append "PREFIX="
+       #:make-flags (list "CC=gcc"
+                          (string-append "PREFIX="
                                          (assoc-ref %outputs "out")))))
     (home-page "https://github.com/adrianlopezroche/fdupes")
     (synopsis "Identify duplicate files")
@@ -1424,7 +1413,7 @@ limits.")
 (define-public autojump
   (package
     (name "autojump")
-    (version "22.2.4")
+    (version "22.3.4")
     (source
      (origin
        (method url-fetch)
@@ -1433,7 +1422,7 @@ limits.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0xglj7nb8xczaqy2dhn78drqdwqj64rqpymxhqmmwwqzfaqassw1"))))
+         "113rcpr37ngf2xs8da41qdarq5qmj0dwx8ggqy3lhlb0kvqq7g9z"))))
     (build-system gnu-build-system)
     (native-inputs                      ;for tests
      `(("python-mock" ,python-mock)
@@ -1447,7 +1436,7 @@ limits.")
                   (replace 'check
                     (lambda _
                       (zero?
-                       (system* "python" "tests/autojump_utils_test.py"))))
+                       (system* "python" "tests/unit/autojump_utils_test.py"))))
                   (replace 'install
                     ;; The install.py script doesn't allow system installation
                     ;; into an arbitrary prefix, so do our own install.
@@ -1472,9 +1461,9 @@ limits.")
                           `("PYTHONPATH" ":" prefix (,py)))
                         #t))))))
     (home-page "https://github.com/wting/autojump")
-    (synopsis "Shell extension for filesystem navigation")
+    (synopsis "Shell extension for file system navigation")
     (description
-     "Autojump provides a faster way to navigate your filesystem, with a \"cd
+     "Autojump provides a faster way to navigate your file system, with a \"cd
 command that learns\".  It works by maintaining a database of the directories
 you use the most from the command line and allows you to \"jump\" to
 frequently used directories by typing only a small pattern.")
@@ -1683,7 +1672,7 @@ throughput (in the same interval).")
 (define-public thefuck
   (package
     (name "thefuck")
-    (version "3.9")
+    (version "3.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/nvbn/thefuck/archive/"
@@ -1691,7 +1680,7 @@ throughput (in the same interval).")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0g4s2vkpl0mqhkdkbzib07qr4xf0cq25fvhdhna52290qgd69pwf"))))
+                "04q2cn8c83f6z6wn1scla1ilrpi5ssjc64987hvmwfvwvb82bvkp"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-setuptools" ,python-setuptools)))
@@ -1737,3 +1726,69 @@ a new command using the matched rule, and runs it.")
 display your disk usage in whatever format you prefer.  It is designed to be
 highly portable.  Great for heterogenous networks.")
     (license license:zlib)))
+
+(define-public cbatticon
+  (package
+    (name "cbatticon")
+    (version "1.6.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/valr/"
+                                  name "/archive/" version ".tar.gz"))
+              (sha256
+               (base32
+                "023fvsa4q7rl98rqgwrb1shyzaybdkkbyz5sywd0s5p7ixkksxqx"))
+              (file-name (string-append name "-" version ".tar.gz"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:make-flags
+       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
+             "CC=gcc")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)))) ; no configure script
+    (inputs
+     `(("gtk+" ,gtk+)
+       ("gnu-gettext" ,gnu-gettext)
+       ("libnotify" ,libnotify)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (synopsis "Lightweight battery icon for the system tray")
+    (description "cbatticon is a lightweight battery icon that displays
+the status of your battery in the system tray.")
+    (home-page "https://github.com/valr/cbatticon")
+    (license license:gpl2+)))
+
+(define-public interrobang
+  (let ((revision "1")
+        (commit "896543735e1c99144765fdbd7b6e6b5afbd8b881"))
+    (package
+      (name "interrobang")
+      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://github.com/TrilbyWhite/interrobang")
+                      (commit commit)))
+                (file-name (string-append name "-" version))
+                (sha256
+                 (base32
+                  "1n13m70p1hfba5dy3i8hfclbr6k9q3d9dai3dg4jvhdhmxcpjzdf"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ; no tests
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)) ; no configure script
+         #:make-flags (list (string-append "PREFIX="
+                                           (assoc-ref %outputs "out")))))
+      (inputs
+       `(("libx11" ,libx11)))
+      (native-inputs
+       `(("pkg-config" ,pkg-config)))
+      (synopsis "Scriptable launcher menu")
+      (description "Interrobang is a scriptable launcher menu with a customizable
+shortcut syntax and completion options.")
+      (home-page "https://github.com/TrilbyWhite/interrobang")
+      (license license:gpl3+))))

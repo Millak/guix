@@ -207,6 +207,47 @@
                (e3 `(display ,txt)))
            (equal? `(begin ,e0 ,e1 ,e2 ,e3) (gexp->sexp* exp))))))
 
+(test-assert "file-append"
+  (let* ((drv (package-derivation %store %bootstrap-guile))
+         (fa  (file-append %bootstrap-guile "/bin/guile"))
+         (exp #~(here we go #$fa)))
+    (and (match (gexp->sexp* exp)
+           (('here 'we 'go (? string? result))
+            (string=? result
+                      (string-append (derivation->output-path drv)
+                                     "/bin/guile"))))
+         (match (gexp-inputs exp)
+           (((thing "out"))
+            (eq? thing fa))))))
+
+(test-assert "file-append, output"
+  (let* ((drv (package-derivation %store glibc))
+         (fa  (file-append glibc "/lib" "/debug"))
+         (exp #~(foo #$fa:debug)))
+    (and (match (gexp->sexp* exp)
+           (('foo (? string? result))
+            (string=? result
+                      (string-append (derivation->output-path drv "debug")
+                                     "/lib/debug"))))
+         (match (gexp-inputs exp)
+           (((thing "debug"))
+            (eq? thing fa))))))
+
+(test-assert "file-append, nested"
+  (let* ((drv   (package-derivation %store glibc))
+         (dir   (file-append glibc "/bin"))
+         (slash (file-append dir "/"))
+         (file  (file-append slash "getent"))
+         (exp   #~(foo #$file)))
+    (and (match (gexp->sexp* exp)
+           (('foo (? string? result))
+            (string=? result
+                      (string-append (derivation->output-path drv)
+                                     "/bin/getent"))))
+         (match (gexp-inputs exp)
+           (((thing "out"))
+            (eq? thing file))))))
+
 (test-assert "ungexp + ungexp-native"
   (let* ((exp    (gexp (list (ungexp-native %bootstrap-guile)
                              (ungexp coreutils)
@@ -336,6 +377,18 @@
                        (done   (built-derivations (list drv)))
                        (refs   ((store-lift references) out)))
     (return (and (equal? sexp (call-with-input-file out read))
+                 (equal? (list guile) refs)))))
+
+(test-assertm "gexp->file + file-append"
+  (mlet* %store-monad ((exp -> #~#$(file-append %bootstrap-guile
+                                                "/bin/guile"))
+                       (guile  (package-file %bootstrap-guile))
+                       (drv    (gexp->file "foo" exp))
+                       (out -> (derivation->output-path drv))
+                       (done   (built-derivations (list drv)))
+                       (refs   ((store-lift references) out)))
+    (return (and (equal? (string-append guile "/bin/guile")
+                         (call-with-input-file out read))
                  (equal? (list guile) refs)))))
 
 (test-assertm "gexp->derivation"
@@ -526,6 +579,18 @@
                             get-bytevector-all))))
                 files))))))
 
+(test-equal "gexp-modules & ungexp"
+  '((bar) (foo))
+  ((@@ (guix gexp) gexp-modules)
+   #~(foo #$(with-imported-modules '((foo)) #~+)
+          #+(with-imported-modules '((bar)) #~-))))
+
+(test-equal "gexp-modules & ungexp-splicing"
+  '((foo) (bar))
+  ((@@ (guix gexp) gexp-modules)
+   #~(foo #$@(list (with-imported-modules '((foo)) #~+)
+                   (with-imported-modules '((bar)) #~-)))))
+
 (test-assertm "gexp->derivation #:modules"
   (mlet* %store-monad
       ((build ->  #~(begin
@@ -540,31 +605,75 @@
              (s (stat (string-append p "/guile/guix/nix"))))
         (return (eq? (stat:type s) 'directory))))))
 
+(test-assertm "gexp->derivation & with-imported-modules"
+  ;; Same test as above, but using 'with-imported-modules'.
+  (mlet* %store-monad
+      ((build ->  (with-imported-modules '((guix build utils))
+                    #~(begin
+                        (use-modules (guix build utils))
+                        (mkdir-p (string-append #$output "/guile/guix/nix"))
+                        #t)))
+       (drv       (gexp->derivation "test-with-modules" build)))
+    (mbegin %store-monad
+      (built-derivations (list drv))
+      (let* ((p (derivation->output-path drv))
+             (s (stat (string-append p "/guile/guix/nix"))))
+        (return (eq? (stat:type s) 'directory))))))
+
+(test-assertm "gexp->derivation & nested with-imported-modules"
+  (mlet* %store-monad
+      ((build1 ->  (with-imported-modules '((guix build utils))
+                     #~(begin
+                         (use-modules (guix build utils))
+                         (mkdir-p (string-append #$output "/guile/guix/nix"))
+                         #t)))
+       (build2 ->  (with-imported-modules '((guix build bournish))
+                     #~(begin
+                         (use-modules (guix build bournish)
+                                      (system base compile))
+                         #+build1
+                         (call-with-output-file (string-append #$output "/b")
+                           (lambda (port)
+                             (write
+                              (read-and-compile (open-input-string "cd /foo")
+                                                #:from %bournish-language
+                                                #:to 'scheme)
+                              port))))))
+       (drv        (gexp->derivation "test-with-modules" build2)))
+    (mbegin %store-monad
+      (built-derivations (list drv))
+      (let* ((p (derivation->output-path drv))
+             (s (stat (string-append p "/guile/guix/nix")))
+             (b (string-append p "/b")))
+        (return (and (eq? (stat:type s) 'directory)
+                     (equal? '(chdir "/foo")
+                             (call-with-input-file b read))))))))
+
 (test-assertm "gexp->derivation #:references-graphs"
   (mlet* %store-monad
       ((one (text-file "one" (random-text)))
        (two (gexp->derivation "two"
                               #~(symlink #$one #$output:chbouib)))
-       (drv (gexp->derivation "ref-graphs"
-                              #~(begin
-                                  (use-modules (guix build store-copy))
-                                  (with-output-to-file #$output
-                                    (lambda ()
-                                      (write (call-with-input-file "guile"
-                                               read-reference-graph))))
-                                  (with-output-to-file #$output:one
-                                    (lambda ()
-                                      (write (call-with-input-file "one"
-                                               read-reference-graph))))
-                                  (with-output-to-file #$output:two
-                                    (lambda ()
-                                      (write (call-with-input-file "two"
-                                               read-reference-graph)))))
+       (build -> (with-imported-modules '((guix build store-copy)
+                                          (guix build utils))
+                   #~(begin
+                       (use-modules (guix build store-copy))
+                       (with-output-to-file #$output
+                         (lambda ()
+                           (write (call-with-input-file "guile"
+                                    read-reference-graph))))
+                       (with-output-to-file #$output:one
+                         (lambda ()
+                           (write (call-with-input-file "one"
+                                    read-reference-graph))))
+                       (with-output-to-file #$output:two
+                         (lambda ()
+                           (write (call-with-input-file "two"
+                                    read-reference-graph)))))))
+       (drv (gexp->derivation "ref-graphs" build
                               #:references-graphs `(("one" ,one)
                                                     ("two" ,two "chbouib")
-                                                    ("guile" ,%bootstrap-guile))
-                              #:modules '((guix build store-copy)
-                                          (guix build utils))))
+                                                    ("guile" ,%bootstrap-guile))))
        (ok? (built-derivations (list drv)))
        (guile-drv  (package->derivation %bootstrap-guile))
        (bash       (interned-file (search-bootstrap-binary "bash"
@@ -676,11 +785,11 @@
 
 (test-assertm "program-file"
   (let* ((n      (random (expt 2 50)))
-         (exp    (gexp (begin
-                         (use-modules (guix build utils))
-                         (display (ungexp n)))))
+         (exp    (with-imported-modules '((guix build utils))
+                   (gexp (begin
+                           (use-modules (guix build utils))
+                           (display (ungexp n))))))
          (file   (program-file "program" exp
-                               #:modules '((guix build utils))
                                #:guile %bootstrap-guile)))
     (mlet* %store-monad ((drv (lower-object file))
                          (out -> (derivation->output-path drv)))

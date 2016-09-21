@@ -4,6 +4,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Federico Beffa <beffa@fbengineering.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,7 +28,9 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
+  #:use-module (guix git-download)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
@@ -44,7 +47,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages ruby)
-  #:use-module (gnu packages tcsh)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages base)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
@@ -63,9 +66,9 @@
 (define texlive-texmf-src
   (origin
     (method url-fetch)
-    (uri "ftp://tug.org/historic/systems/texlive/2016/texlive-20160523-texmf.tar.xz")
+    (uri "ftp://tug.org/historic/systems/texlive/2016/texlive-20160523b-texmf.tar.xz")
     (sha256 (base32
-              "0mfp6kq1p2ys5ni9czx9xl0xh264axri25vqw37yzk8jn3py9l08"))))
+              "1dv8vgfzpczqw82hv9g7a8djhhyzywljmrarlcyy6g2qi5q51glr"))))
 
 (define texlive-bin
   (package
@@ -74,9 +77,9 @@
    (source
     (origin
      (method url-fetch)
-      (uri "ftp://tug.org/historic/systems/texlive/2016/texlive-20160523-source.tar.xz")
+      (uri "ftp://tug.org/historic/systems/texlive/2016/texlive-20160523b-source.tar.xz")
       (sha256 (base32
-               "07kb8rsw8d42wy3fj1qgqj26y92spx1lbhx6z73wwdb3msnvh4i9"))))
+               "1v91vahxlxkdra0qz3f132vvx5d9cx2jy84yl1hkch0agyj2rcx8"))))
    (build-system gnu-build-system)
    (inputs
     `(("texlive-extra-src" ,texlive-extra-src)
@@ -166,8 +169,8 @@ that are free software, including support for many languages around the
 world.
 
 This package contains the binaries.")
-   (license (license:fsf-free "http://tug.org/texlive/copying.html"))
-   (home-page "http://www.tug.org/texlive/")))
+   (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
+   (home-page "https://www.tug.org/texlive/")))
 
 (define texlive-texmf
   (package
@@ -186,6 +189,11 @@ This package contains the binaries.")
     `(#:modules ((guix build gnu-build-system)
                  (guix build utils)
                  (srfi srfi-26))
+
+      ;; This package takes 4 GiB, which we can't afford to distribute from
+      ;; our servers.
+      #:substitutable? #f
+
       #:phases
         (modify-phases (map (cut assq <> %standard-phases)
                             '(set-paths unpack patch-source-shebangs))
@@ -206,7 +214,10 @@ This package contains the binaries.")
                 ;; Register SHARE as TEXMFROOT in texmf.cnf.
                 (substitute* texmfcnf
                   (("TEXMFROOT = \\$SELFAUTOPARENT")
-                  (string-append "TEXMFROOT = " share)))
+                   (string-append "TEXMFROOT = " share))
+                  (("TEXMFLOCAL = \\$SELFAUTOGRANDPARENT/texmf-local")
+                   "TEXMFLOCAL = $SELFAUTODIR/share/texmf-local")
+                  (("!!\\$TEXMFLOCAL") "$TEXMFLOCAL"))
                 ;; Register paths in texmfcnf.lua, needed for context.
                 (substitute* (string-append texmfroot "/texmfcnf.lua")
                   (("selfautodir:") out)
@@ -230,8 +241,8 @@ that are free software, including support for many languages around the
 world.
 
 This package contains the complete tree of texmf-dist data.")
-   (license (license:fsf-free "http://tug.org/texlive/copying.html"))
-   (home-page "http://www.tug.org/texlive/")))
+   (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
+   (home-page "https://www.tug.org/texlive/")))
 
 (define-public texlive
   (package
@@ -242,6 +253,10 @@ This package contains the complete tree of texmf-dist data.")
    (inputs `(("bash" ,bash) ; for wrap-program
              ("texlive-bin" ,texlive-bin)
              ("texlive-texmf" ,texlive-texmf)))
+   (native-search-paths
+    (list (search-path-specification
+           (variable "TEXMFLOCAL")
+           (files '("share/texmf-local")))))
    (arguments
     `(#:modules ((guix build utils))
       #:builder
@@ -288,12 +303,13 @@ that are free software, including support for many languages around the
 world.
 
 This package contains the complete TeX Live distribution.")
-   (license (license:fsf-free "http://tug.org/texlive/copying.html"))
-   (home-page "http://www.tug.org/texlive/")))
+   (license (license:fsf-free "https://www.tug.org/texlive/copying.html"))
+   (home-page "https://www.tug.org/texlive/")))
 
 
 ;; texlive-texmf-minimal is a pruned, small version of the texlive tree,
-;; in particular dropping documentation and fonts.
+;; in particular dropping documentation and fonts.  It weighs in at 470 MiB
+;; instead of 4 GiB.
 (define texlive-texmf-minimal
   (package (inherit texlive-texmf)
    (name "texlive-texmf-minimal")
@@ -353,6 +369,10 @@ This package contains a small subset of the texmf-dist data.")))
    (inputs
     `(("texlive-texmf" ,texlive-texmf-minimal)
       ,@(alist-delete "texlive-texmf" (package-inputs texlive))))
+   (native-search-paths
+    (list (search-path-specification
+           (variable "TEXMFLOCAL")
+           (files '("share/texmf-local")))))
    (description
     "TeX Live provides a comprehensive TeX document production system.
 It includes all the major TeX-related programs, macro packages, and fonts
@@ -428,3 +448,44 @@ PDF documents.")
     (description "Texmaker is a program that integrates many tools needed to
 develop documents with LaTeX, in a single application.")
     (license license:gpl2+)))
+
+
+(define-public teximpatient
+  (package
+    (name "teximpatient")
+    (version "2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/" name "/" name "-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0h56w22d99dh4fgld4ssik8ggnmhmrrbnrn1lnxi1zr0miphn1sd"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'check)
+         ;; Unfortunately some mistakes have been made in packaging.
+         ;; Work around them here ...
+         (replace 'unpack
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((srcdir "teximpatient-2.4"))
+               (system* "tar" "-xzf" (assoc-ref inputs "source")
+                        (string-append "--one-top-level=" srcdir))
+               (delete-file (string-append srcdir "/book.pdf"))
+               (install-file (car
+                              (find-files
+                               (assoc-ref inputs "automake")
+                               "^install-sh$"))
+                             srcdir)
+               (chdir srcdir)))))))
+    (native-inputs
+     `(("texlive" ,texlive)
+       ("automake" ,automake)))
+    (home-page "http://www.gnu.org/software/teximpatient")
+    (synopsis "Book on TeX, plain TeX and Eplain")
+    (description "@i{TeX for the Impatient} is a ~350 page book on TeX,
+plain TeX, and Eplain, originally written by Paul Abrahams, Kathryn Hargreaves,
+and Karl Berry.")
+    (license license:fdl1.3+)))

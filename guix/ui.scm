@@ -36,7 +36,6 @@
   #:use-module ((guix build utils) #:select (mkdir-p))
   #:use-module ((guix licenses) #:select (license? license-name))
   #:use-module ((guix build syscalls) #:select (terminal-columns))
-  #:use-module (gnu system file-systems)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
@@ -83,7 +82,6 @@
             string->recutils
             package->recutils
             package-specification->name+version+output
-            specification->file-system-mapping
             string->generations
             string->duration
             matching-generations
@@ -249,7 +247,7 @@ messages."
   "Report the failure to load FILE, a user-provided Scheme file.
 ARGS is the list of arguments received by the 'throw' handler."
   (match args
-    (('system-error . _)
+    (('system-error . rest)
      (let ((err (system-error-errno args)))
        (report-error (_ "failed to load '~a': ~a~%") file (strerror err))))
     (('syntax-error proc message properties form . rest)
@@ -266,7 +264,7 @@ ARGS is the list of arguments received by the 'throw' handler."
   "Report the failure to load FILE, a user-provided Scheme file, without
 exiting.  ARGS is the list of arguments received by the 'throw' handler."
   (match args
-    (('system-error . _)
+    (('system-error . rest)
      (let ((err (system-error-errno args)))
        (warning (_ "failed to load '~a': ~a~%") file (strerror err))))
     (('syntax-error proc message properties form . rest)
@@ -411,7 +409,7 @@ interpreted."
           ("ZB"  (expt 10 21))
           ("YB"  (expt 10 24))
           (""    1)
-          (_
+          (x
            (leave (_ "unknown unit: ~a~%") unit)))))))
 
 (define (call-with-error-handling thunk)
@@ -537,7 +535,7 @@ similar."
 error."
   (match (read/eval str)
     ((? package? p) p)
-    (_
+    (x
      (leave (_ "expression ~s does not evaluate to a package~%")
             str))))
 
@@ -1126,23 +1124,6 @@ optionally contain a version number and an output name, as in these examples:
                  (package-name->name+version name)))
     (values name version sub-drv)))
 
-(define (specification->file-system-mapping spec writable?)
-  "Read the SPEC and return the corresponding <file-system-mapping>.  SPEC is
-a string of the form \"SOURCE\" or \"SOURCE=TARGET\".  The former specifies
-that SOURCE from the host should be mounted at SOURCE in the other system.
-The latter format specifies that SOURCE from the host should be mounted at
-TARGET in the other system."
-  (let ((index (string-index spec #\=)))
-    (if index
-        (file-system-mapping
-         (source (substring spec 0 index))
-         (target (substring spec (+ 1 index)))
-         (writable? writable?))
-        (file-system-mapping
-         (source spec)
-         (target spec)
-         (writable? writable?)))))
-
 
 ;;;
 ;;; Command-line option processing.
@@ -1206,7 +1187,9 @@ found."
   (let ((command-main (module-ref module
                                   (symbol-append 'guix- command))))
     (parameterize ((program-name command))
-      (apply command-main args))))
+      ;; Disable canonicalization so we don't don't stat unreasonably.
+      (with-fluids ((%file-port-name-canonicalization #f))
+        (apply command-main args)))))
 
 (define (run-guix . args)
   "Run the 'guix' command defined by command line ARGS.

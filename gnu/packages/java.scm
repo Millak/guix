@@ -30,6 +30,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages compression)
@@ -141,6 +142,147 @@ is implemented.")
               license:mpl2.0
               license:lgpl2.1+))))
 
+(define-public clojure
+  (let* ((remove-archives '(begin
+                             (for-each delete-file
+                                       (find-files "." ".*\\.(jar|zip)"))
+                             #t))
+         (submodule (lambda (prefix version hash)
+                      (origin
+                        (method url-fetch)
+                        (uri (string-append "https://github.com/clojure/"
+                                            prefix version ".tar.gz"))
+                        (sha256 (base32 hash))
+                        (modules '((guix build utils)))
+                        (snippet remove-archives)))))
+    (package
+      (name "clojure")
+      (version "1.8.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri
+          (string-append "http://repo1.maven.org/maven2/org/clojure/clojure/"
+                         version "/clojure-" version ".zip"))
+         (sha256
+          (base32 "1nip095fz5c492sw15skril60i1vd21ibg6szin4jcvyy3xr6cym"))
+         (modules '((guix build utils)))
+         (snippet remove-archives)))
+      (build-system ant-build-system)
+      (arguments
+       `(#:modules ((guix build ant-build-system)
+                    (guix build utils)
+                    (ice-9 ftw)
+                    (ice-9 regex)
+                    (srfi srfi-1)
+                    (srfi srfi-26))
+         #:test-target "test"
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'unpack-submodule-sources
+             (lambda* (#:key inputs #:allow-other-keys)
+               (for-each
+                (lambda (name)
+                  (mkdir-p name)
+                  (with-directory-excursion name
+                    (or (zero? (system* "tar"
+                                        ;; Use xz for repacked tarball.
+                                        "--xz"
+                                        "--extract"
+                                        "--verbose"
+                                        "--file" (assoc-ref inputs name)
+                                        "--strip-components=1"))
+                        (error "failed to unpack tarball" name)))
+                  (copy-recursively (string-append name "/src/main/clojure/")
+                                    "src/clj/"))
+                '("data-generators-src"
+                  "java-classpath-src"
+                  "test-check-src"
+                  "test-generative-src"
+                  "tools-namespace-src"
+                  "tools-reader-src"))
+               #t))
+           ;; The javadoc target is not built by default.
+           (add-after 'build 'build-doc
+             (lambda _
+               (zero? (system* "ant" "javadoc"))))
+           ;; Needed since no install target is provided.
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((java-dir (string-append (assoc-ref outputs "out")
+                                              "/share/java/")))
+                 ;; Install versioned to avoid collisions.
+                 (install-file (string-append "clojure-" ,version ".jar")
+                               java-dir)
+                 #t)))
+           ;; Needed since no install-doc target is provided.
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((doc-dir (string-append (assoc-ref outputs "out")
+                                             "/share/doc/clojure-"
+                                             ,version "/")))
+                 (copy-recursively "doc/clojure" doc-dir)
+                 (copy-recursively "target/javadoc/"
+                                   (string-append doc-dir "javadoc/"))
+                 (for-each (cut install-file <> doc-dir)
+                           (filter (cut string-match
+                                     ".*\\.(html|markdown|md|txt)"
+                                     <>)
+                                   (scandir "./")))
+                 #t))))))
+      ;; The native-inputs below are needed to run the tests.
+      (native-inputs
+       `(("data-generators-src"
+          ,(submodule "data.generators/archive/data.generators-"
+                      "0.1.2"
+                      "0kki093jp4ckwxzfnw8ylflrfqs8b1i1wi9iapmwcsy328dmgzp1"))
+         ("java-classpath-src"
+          ,(submodule "java.classpath/archive/java.classpath-"
+                      "0.2.3"
+                      "0sjymly9xh1lkvwn5ygygpsfwz4dabblnlq0c9bx76rkvq62fyng"))
+         ("test-check-src"
+          ,(submodule "test.check/archive/test.check-"
+                      "0.9.0"
+                      "0p0mnyhr442bzkz0s4k5ra3i6l5lc7kp6ajaqkkyh4c2k5yck1md"))
+         ("test-generative-src"
+          ,(submodule "test.generative/archive/test.generative-"
+                      "0.5.2"
+                      "1pjafy1i7yblc7ixmcpfq1lfbyf3jaljvkgrajn70sws9xs7a9f8"))
+         ("tools-namespace-src"
+          ,(submodule "tools.namespace/archive/tools.namespace-"
+                      "0.2.11"
+                      "10baak8v0hnwz2hr33bavshm7y49mmn9zsyyms1dwjz45p5ymhy0"))
+         ("tools-reader-src"
+          ,(submodule "tools.reader/archive/tools.reader-"
+                      "0.10.0"
+                      "09i3lzbhr608h76mhdjm3932gg9xi8sflscla3c5f0v1nkc28cnr"))))
+      (home-page "https://clojure.org/")
+      (synopsis "Lisp dialect running on the JVM")
+      (description "Clojure is a dynamic, general-purpose programming language,
+combining the approachability and interactive development of a scripting
+language with an efficient and robust infrastructure for multithreaded
+programming.  Clojure is a compiled language, yet remains completely dynamic
+– every feature supported by Clojure is supported at runtime.  Clojure
+provides easy access to the Java frameworks, with optional type hints and type
+inference, to ensure that calls to Java can avoid reflection.
+
+Clojure is a dialect of Lisp, and shares with Lisp the code-as-data philosophy
+and a powerful macro system.  Clojure is predominantly a functional programming
+language, and features a rich set of immutable, persistent data structures.
+When mutable state is needed, Clojure offers a software transactional memory
+system and reactive Agent system that ensure clean, correct, multithreaded
+designs.")
+      ;; Clojure is licensed under EPL1.0
+      ;; ASM bytecode manipulation library is licensed under BSD-3
+      ;; Guava Murmur3 hash implementation is licensed under APL2.0
+      ;; src/clj/repl.clj is licensed under CPL1.0
+      ;;
+      ;; See readme.html or readme.txt for details.
+      (license (list license:epl1.0
+                     license:bsd-3
+                     license:asl2.0
+                     license:cpl1.0)))))
+
 (define-public ant
   (package
     (name "ant")
@@ -195,16 +337,15 @@ build process and its dependencies, whereas Make uses Makefile format.")
 (define-public icedtea-6
   (package
     (name "icedtea")
-    (version "1.13.11")
+    (version "1.13.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://icedtea.wildebeest.org/download/source/icedtea6-"
                     version ".tar.xz"))
-              (patches (search-patches "icedtea-remove-overrides.patch"))
               (sha256
                (base32
-                "1grki39a4rf8n74zc0iglcggxxbpniyfh1gk1lb10p63zvvcsvjj"))
+                "1q5iqm3dzqj8w3dwj6qqhczkkrslrfhmn3110klfwq9kyi2nimj8"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "Makefile.in"
@@ -262,7 +403,8 @@ build process and its dependencies, whereas Make uses Makefile format.")
        #:modules ((guix build utils)
                   (guix build gnu-build-system)
                   (ice-9 popen)
-                  (ice-9 rdelim))
+                  (ice-9 rdelim)
+                  (srfi srfi-19))
 
        #:configure-flags
        (let* ((gcjdir (assoc-ref %build-inputs "gcj"))
@@ -281,111 +423,109 @@ build process and its dependencies, whereas Make uses Makefile format.")
            ,(string-append "--with-jdk-home=" jdk)
            ,(string-append "--with-java=" jdk "/bin/java")))
        #:phases
-       (alist-replace
-        'unpack
-        (lambda* (#:key source inputs #:allow-other-keys)
-          (and (zero? (system* "tar" "xvf" source))
-               (begin
-                 (chdir (string-append "icedtea6-" ,version))
-                 (mkdir "openjdk.src")
-                 (with-directory-excursion "openjdk.src"
-                   (copy-file (assoc-ref inputs "openjdk6-src")
-                              "openjdk6-src.tar.xz")
-                   (zero? (system* "tar" "xvf" "openjdk6-src.tar.xz"))))))
-        (alist-cons-after
-         'unpack 'patch-patches
-         (lambda _
-           ;; shebang in patches so that they apply cleanly
-           (substitute* '("patches/jtreg-jrunscript.patch"
-                          "patches/hotspot/hs23/drop_unlicensed_test.patch")
-             (("#!/bin/sh") (string-append "#!" (which "sh"))))
+       (modify-phases %standard-phases
+         (replace 'unpack
+           (lambda* (#:key source inputs #:allow-other-keys)
+             (and (zero? (system* "tar" "xvf" source))
+                  (begin
+                    (chdir (string-append "icedtea6-" ,version))
+                    (mkdir "openjdk.src")
+                    (with-directory-excursion "openjdk.src"
+                      (copy-file (assoc-ref inputs "openjdk6-src")
+                                 "openjdk6-src.tar.xz")
+                      (zero? (system* "tar" "xvf" "openjdk6-src.tar.xz")))))))
+         (add-after 'unpack 'patch-patches
+           (lambda _
+             ;; shebang in patches so that they apply cleanly
+             (substitute* '("patches/jtreg-jrunscript.patch"
+                            "patches/hotspot/hs23/drop_unlicensed_test.patch")
+               (("#!/bin/sh") (string-append "#!" (which "sh"))))
+             #t))
+         (add-after 'unpack 'patch-paths
+           (lambda _
+             ;; buildtree.make generates shell scripts, so we need to replace
+             ;; the generated shebang
+             (substitute* '("openjdk.src/hotspot/make/linux/makefiles/buildtree.make")
+               (("/bin/sh") (which "bash")))
 
-           ;; fix path to alsa header in patch
-           (substitute* "patches/openjdk/6799141-split_out_versions.patch"
-             (("ALSA_INCLUDE=/usr/include/alsa/version.h")
-              (string-append "ALSA_INCLUDE="
-                             (assoc-ref %build-inputs "alsa-lib")
-                             "/include/alsa/version.h"))))
-         (alist-cons-after
-          'unpack 'patch-paths
-          (lambda _
-            ;; buildtree.make generates shell scripts, so we need to replace
-            ;; the generated shebang
-            (substitute* '("openjdk.src/hotspot/make/linux/makefiles/buildtree.make")
-              (("/bin/sh") (which "bash")))
+             (let ((corebin (string-append
+                             (assoc-ref %build-inputs "coreutils") "/bin/"))
+                   (binbin  (string-append
+                             (assoc-ref %build-inputs "binutils") "/bin/"))
+                   (grepbin (string-append
+                             (assoc-ref %build-inputs "grep") "/bin/")))
+               (substitute* '("openjdk.src/jdk/make/common/shared/Defs-linux.gmk"
+                              "openjdk.src/corba/make/common/shared/Defs-linux.gmk")
+                 (("UNIXCOMMAND_PATH  = /bin/")
+                  (string-append "UNIXCOMMAND_PATH = " corebin))
+                 (("USRBIN_PATH  = /usr/bin/")
+                  (string-append "USRBIN_PATH = " corebin))
+                 (("DEVTOOLS_PATH *= */usr/bin/")
+                  (string-append "DEVTOOLS_PATH = " corebin))
+                 (("COMPILER_PATH *= */usr/bin/")
+                  (string-append "COMPILER_PATH = "
+                                 (assoc-ref %build-inputs "gcc") "/bin/"))
+                 (("DEF_OBJCOPY *=.*objcopy")
+                  (string-append "DEF_OBJCOPY = " (which "objcopy"))))
 
-            (let ((corebin (string-append
-                            (assoc-ref %build-inputs "coreutils") "/bin/"))
-                  (binbin  (string-append
-                            (assoc-ref %build-inputs "binutils") "/bin/"))
-                  (grepbin (string-append
-                            (assoc-ref %build-inputs "grep") "/bin/")))
-              (substitute* '("openjdk.src/jdk/make/common/shared/Defs-linux.gmk"
-                             "openjdk.src/corba/make/common/shared/Defs-linux.gmk")
-                (("UNIXCOMMAND_PATH  = /bin/")
-                 (string-append "UNIXCOMMAND_PATH = " corebin))
-                (("USRBIN_PATH  = /usr/bin/")
-                 (string-append "USRBIN_PATH = " corebin))
-                (("DEVTOOLS_PATH *= */usr/bin/")
-                 (string-append "DEVTOOLS_PATH = " corebin))
-                (("COMPILER_PATH *= */usr/bin/")
-                 (string-append "COMPILER_PATH = "
-                                (assoc-ref %build-inputs "gcc") "/bin/"))
-                (("DEF_OBJCOPY *=.*objcopy")
-                 (string-append "DEF_OBJCOPY = " (which "objcopy"))))
+               ;; fix path to alsa header
+               (substitute* "openjdk.src/jdk/make/common/shared/Sanity.gmk"
+                 (("ALSA_INCLUDE=/usr/include/alsa/version.h")
+                  (string-append "ALSA_INCLUDE="
+                                 (assoc-ref %build-inputs "alsa-lib")
+                                 "/include/alsa/version.h")))
 
-              ;; fix hard-coded utility paths
-              (substitute* '("openjdk.src/jdk/make/common/shared/Defs-utils.gmk"
-                             "openjdk.src/corba/make/common/shared/Defs-utils.gmk")
-                (("ECHO *=.*echo")
-                 (string-append "ECHO = " (which "echo")))
-                (("^GREP *=.*grep")
-                 (string-append "GREP = " (which "grep")))
-                (("EGREP *=.*egrep")
-                 (string-append "EGREP = " (which "egrep")))
-                (("CPIO *=.*cpio")
-                 (string-append "CPIO = " (which "cpio")))
-                (("READELF *=.*readelf")
-                 (string-append "READELF = " (which "readelf")))
-                (("^ *AR *=.*ar")
-                 (string-append "AR = " (which "ar")))
-                (("^ *TAR *=.*tar")
-                 (string-append "TAR = " (which "tar")))
-                (("AS *=.*as")
-                 (string-append "AS = " (which "as")))
-                (("LD *=.*ld")
-                 (string-append "LD = " (which "ld")))
-                (("STRIP *=.*strip")
-                 (string-append "STRIP = " (which "strip")))
-                (("NM *=.*nm")
-                 (string-append "NM = " (which "nm")))
-                (("^SH *=.*sh")
-                 (string-append "SH = " (which "bash")))
-                (("^FIND *=.*find")
-                 (string-append "FIND = " (which "find")))
-                (("LDD *=.*ldd")
-                 (string-append "LDD = " (which "ldd")))
-                (("NAWK *=.*(n|g)awk")
-                 (string-append "NAWK = " (which "gawk")))
-                (("XARGS *=.*xargs")
-                 (string-append "XARGS = " (which "xargs")))
-                (("UNZIP *=.*unzip")
-                 (string-append "UNZIP = " (which "unzip")))
-                (("ZIPEXE *=.*zip")
-                 (string-append "ZIPEXE = " (which "zip")))
-                (("SED *=.*sed")
-                 (string-append "SED = " (which "sed"))))
+               ;; fix hard-coded utility paths
+               (substitute* '("openjdk.src/jdk/make/common/shared/Defs-utils.gmk"
+                              "openjdk.src/corba/make/common/shared/Defs-utils.gmk")
+                 (("ECHO *=.*echo")
+                  (string-append "ECHO = " (which "echo")))
+                 (("^GREP *=.*grep")
+                  (string-append "GREP = " (which "grep")))
+                 (("EGREP *=.*egrep")
+                  (string-append "EGREP = " (which "egrep")))
+                 (("CPIO *=.*cpio")
+                  (string-append "CPIO = " (which "cpio")))
+                 (("READELF *=.*readelf")
+                  (string-append "READELF = " (which "readelf")))
+                 (("^ *AR *=.*ar")
+                  (string-append "AR = " (which "ar")))
+                 (("^ *TAR *=.*tar")
+                  (string-append "TAR = " (which "tar")))
+                 (("AS *=.*as")
+                  (string-append "AS = " (which "as")))
+                 (("LD *=.*ld")
+                  (string-append "LD = " (which "ld")))
+                 (("STRIP *=.*strip")
+                  (string-append "STRIP = " (which "strip")))
+                 (("NM *=.*nm")
+                  (string-append "NM = " (which "nm")))
+                 (("^SH *=.*sh")
+                  (string-append "SH = " (which "bash")))
+                 (("^FIND *=.*find")
+                  (string-append "FIND = " (which "find")))
+                 (("LDD *=.*ldd")
+                  (string-append "LDD = " (which "ldd")))
+                 (("NAWK *=.*(n|g)awk")
+                  (string-append "NAWK = " (which "gawk")))
+                 (("XARGS *=.*xargs")
+                  (string-append "XARGS = " (which "xargs")))
+                 (("UNZIP *=.*unzip")
+                  (string-append "UNZIP = " (which "unzip")))
+                 (("ZIPEXE *=.*zip")
+                  (string-append "ZIPEXE = " (which "zip")))
+                 (("SED *=.*sed")
+                  (string-append "SED = " (which "sed"))))
 
-              ;; Some of these timestamps cause problems as they are more than
-              ;; 10 years ago, failing the build process.
-              (substitute*
-                  "openjdk.src/jdk/src/share/classes/java/util/CurrencyData.properties"
-                (("AZ=AZM;2005-12-31-20-00-00;AZN") "AZ=AZN")
-                (("MZ=MZM;2006-06-30-22-00-00;MZN") "MZ=MZN")
-                (("RO=ROL;2005-06-30-21-00-00;RON") "RO=RON")
-                (("TR=TRL;2004-12-31-22-00-00;TRY") "TR=TRY"))))
-          (alist-cons-before
-           'configure 'set-additional-paths
+               ;; Some of these timestamps cause problems as they are more than
+               ;; 10 years ago, failing the build process.
+               (substitute*
+                   "openjdk.src/jdk/src/share/classes/java/util/CurrencyData.properties"
+                 (("AZ=AZM;2005-12-31-20-00-00;AZN") "AZ=AZN")
+                 (("MZ=MZM;2006-06-30-22-00-00;MZN") "MZ=MZN")
+                 (("RO=ROL;2005-06-30-21-00-00;RON") "RO=RON")
+                 (("TR=TRL;2004-12-31-22-00-00;TRY") "TR=TRY")))))
+         (add-before 'configure 'set-additional-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let* ((gcjdir  (assoc-ref %build-inputs "gcj"))
                     (gcjlib  (string-append gcjdir "/lib"))
@@ -412,125 +552,180 @@ build process and its dependencies, whereas Make uses Makefile format.")
                                       "/include"))
                (setenv "ALT_FREETYPE_LIB_PATH"
                        (string-append (assoc-ref %build-inputs "freetype")
-                                      "/lib"))))
-           (alist-cons-before
-            'check 'fix-test-framework
-            (lambda _
-              ;; Fix PATH in test environment
-              (substitute* "src/jtreg/com/sun/javatest/regtest/Main.java"
-                (("PATH=/bin:/usr/bin")
-                 (string-append "PATH=" (getenv "PATH"))))
-              (substitute* "src/jtreg/com/sun/javatest/util/SysEnv.java"
-                (("/usr/bin/env") (which "env")))
-              #t)
-            (alist-cons-before
-             'check 'fix-hotspot-tests
-             (lambda _
-               (with-directory-excursion "openjdk.src/hotspot/test/"
-                 (substitute* "jprt.config"
-                   (("PATH=\"\\$\\{path4sdk\\}\"")
-                    (string-append "PATH=" (getenv "PATH")))
-                   (("make=/usr/bin/make")
-                    (string-append "make=" (which "make"))))
-                 (substitute* '("runtime/6626217/Test6626217.sh"
-                                "runtime/7110720/Test7110720.sh")
-                   (("/bin/rm") (which "rm"))
-                   (("/bin/cp") (which "cp"))
-                   (("/bin/mv") (which "mv"))))
-               #t)
-             (alist-cons-before
-              'check 'fix-jdk-tests
-              (lambda _
-                (with-directory-excursion "openjdk.src/jdk/test/"
-                  (substitute* "com/sun/jdi/JdbReadTwiceTest.sh"
-                    (("/bin/pwd") (which "pwd")))
-                  (substitute* "com/sun/jdi/ShellScaffold.sh"
-                    (("/bin/kill") (which "kill")))
-                  (substitute* "start-Xvfb.sh"
-                    ;;(("/usr/bin/X11/Xvfb") (which "Xvfb"))
-                    (("/usr/bin/nohup")    (which "nohup")))
-                  (substitute* "javax/security/auth/Subject/doAs/Test.sh"
-                    (("/bin/rm") (which "rm")))
-                  (substitute* "tools/launcher/MultipleJRE.sh"
-                    (("echo \"#!/bin/sh\"")
-                     (string-append "echo \"#!" (which "rm") "\""))
-                    (("/usr/bin/zip") (which "zip")))
-                  (substitute* "com/sun/jdi/OnThrowTest.java"
-                    (("#!/bin/sh") (string-append "#!" (which "sh"))))
-                  (substitute* "java/lang/management/OperatingSystemMXBean/GetSystemLoadAverage.java"
-                    (("/usr/bin/uptime") (which "uptime")))
-                  (substitute* "java/lang/ProcessBuilder/Basic.java"
-                    (("/usr/bin/env") (which "env"))
-                    (("/bin/false") (which "false"))
-                    (("/bin/true") (which "true"))
-                    (("/bin/cp") (which "cp"))
-                    (("/bin/sh") (which "sh")))
-                  (substitute* "java/lang/ProcessBuilder/FeelingLucky.java"
-                    (("/bin/sh") (which "sh")))
-                  (substitute* "java/lang/ProcessBuilder/Zombies.java"
-                    (("/usr/bin/perl") (which "perl"))
-                    (("/bin/ps") (which "ps"))
-                    (("/bin/true") (which "true")))
-                  (substitute* "java/lang/Runtime/exec/ConcurrentRead.java"
-                    (("/usr/bin/tee") (which "tee")))
-                  (substitute* "java/lang/Runtime/exec/ExecWithDir.java"
-                    (("/bin/true") (which "true")))
-                  (substitute* "java/lang/Runtime/exec/ExecWithInput.java"
-                    (("/bin/cat") (which "cat")))
-                  (substitute* "java/lang/Runtime/exec/ExitValue.java"
-                    (("/bin/sh") (which "sh"))
-                    (("/bin/true") (which "true"))
-                    (("/bin/kill") (which "kill")))
-                  (substitute* "java/lang/Runtime/exec/LotsOfDestroys.java"
-                    (("/usr/bin/echo") (which "echo")))
-                  (substitute* "java/lang/Runtime/exec/LotsOfOutput.java"
-                    (("/usr/bin/cat") (which "cat")))
-                  (substitute* "java/lang/Runtime/exec/SleepyCat.java"
-                    (("/bin/cat") (which "cat"))
-                    (("/bin/sleep") (which "sleep"))
-                    (("/bin/sh") (which "sh")))
-                  (substitute* "java/lang/Runtime/exec/StreamsSurviveDestroy.java"
-                    (("/bin/cat") (which "cat")))
-                  (substitute* "java/rmi/activation/CommandEnvironment/SetChildEnv.java"
-                    (("/bin/chmod") (which "chmod")))
-                  (substitute* "java/util/zip/ZipFile/Assortment.java"
-                    (("/bin/sh") (which "sh"))))
-                #t)
-              (alist-replace
-               'check
-               (lambda _
-                 ;; The "make check-*" targets always return zero, so we need to
-                 ;; check for errors in the associated log files to determine
-                 ;; whether any tests have failed.
-                 (use-modules (ice-9 rdelim))
-                 (let* ((error-pattern (make-regexp "^(Error|FAILED):.*"))
-                        (checker (lambda (port)
-                                   (let loop ()
-                                     (let ((line (read-line port)))
-                                       (cond
-                                        ((eof-object? line) #t)
-                                        ((regexp-exec error-pattern line) #f)
-                                        (else (loop)))))))
-                        (run-test (lambda (test)
-                                    (system* "make" test)
-                                    (call-with-input-file
-                                        (string-append "test/" test ".log")
-                                      checker))))
-                   (or #t ; skip tests
-                       (and (run-test "check-hotspot")
-                            (run-test "check-langtools")
-                            (run-test "check-jdk")))))
-               (alist-replace
-                'install
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (let ((doc (string-append (assoc-ref outputs "doc")
-                                            "/share/doc/icedtea"))
-                        (jre (assoc-ref outputs "out"))
-                        (jdk (assoc-ref outputs "jdk")))
-                    (copy-recursively "openjdk.build/docs" doc)
-                    (copy-recursively "openjdk.build/j2re-image" jre)
-                    (copy-recursively "openjdk.build/j2sdk-image" jdk)))
-                %standard-phases)))))))))))
+                                      "/lib")))))
+         (add-before 'check 'fix-test-framework
+           (lambda _
+             ;; Fix PATH in test environment
+             (substitute* "src/jtreg/com/sun/javatest/regtest/Main.java"
+               (("PATH=/bin:/usr/bin")
+                (string-append "PATH=" (getenv "PATH"))))
+             (substitute* "src/jtreg/com/sun/javatest/util/SysEnv.java"
+               (("/usr/bin/env") (which "env")))
+             #t))
+         (add-before 'check 'fix-hotspot-tests
+           (lambda _
+             (with-directory-excursion "openjdk.src/hotspot/test/"
+               (substitute* "jprt.config"
+                 (("PATH=\"\\$\\{path4sdk\\}\"")
+                  (string-append "PATH=" (getenv "PATH")))
+                 (("make=/usr/bin/make")
+                  (string-append "make=" (which "make"))))
+               (substitute* '("runtime/6626217/Test6626217.sh"
+                              "runtime/7110720/Test7110720.sh")
+                 (("/bin/rm") (which "rm"))
+                 (("/bin/cp") (which "cp"))
+                 (("/bin/mv") (which "mv"))))
+             #t))
+         (add-before 'check 'fix-jdk-tests
+           (lambda _
+             (with-directory-excursion "openjdk.src/jdk/test/"
+               (substitute* "com/sun/jdi/JdbReadTwiceTest.sh"
+                 (("/bin/pwd") (which "pwd")))
+               (substitute* "com/sun/jdi/ShellScaffold.sh"
+                 (("/bin/kill") (which "kill")))
+               (substitute* "start-Xvfb.sh"
+                 ;;(("/usr/bin/X11/Xvfb") (which "Xvfb"))
+                 (("/usr/bin/nohup")    (which "nohup")))
+               (substitute* "javax/security/auth/Subject/doAs/Test.sh"
+                 (("/bin/rm") (which "rm")))
+               (substitute* "tools/launcher/MultipleJRE.sh"
+                 (("echo \"#!/bin/sh\"")
+                  (string-append "echo \"#!" (which "rm") "\""))
+                 (("/usr/bin/zip") (which "zip")))
+               (substitute* "com/sun/jdi/OnThrowTest.java"
+                 (("#!/bin/sh") (string-append "#!" (which "sh"))))
+               (substitute* "java/lang/management/OperatingSystemMXBean/GetSystemLoadAverage.java"
+                 (("/usr/bin/uptime") (which "uptime")))
+               (substitute* "java/lang/ProcessBuilder/Basic.java"
+                 (("/usr/bin/env") (which "env"))
+                 (("/bin/false") (which "false"))
+                 (("/bin/true") (which "true"))
+                 (("/bin/cp") (which "cp"))
+                 (("/bin/sh") (which "sh")))
+               (substitute* "java/lang/ProcessBuilder/FeelingLucky.java"
+                 (("/bin/sh") (which "sh")))
+               (substitute* "java/lang/ProcessBuilder/Zombies.java"
+                 (("/usr/bin/perl") (which "perl"))
+                 (("/bin/ps") (which "ps"))
+                 (("/bin/true") (which "true")))
+               (substitute* "java/lang/Runtime/exec/ConcurrentRead.java"
+                 (("/usr/bin/tee") (which "tee")))
+               (substitute* "java/lang/Runtime/exec/ExecWithDir.java"
+                 (("/bin/true") (which "true")))
+               (substitute* "java/lang/Runtime/exec/ExecWithInput.java"
+                 (("/bin/cat") (which "cat")))
+               (substitute* "java/lang/Runtime/exec/ExitValue.java"
+                 (("/bin/sh") (which "sh"))
+                 (("/bin/true") (which "true"))
+                 (("/bin/kill") (which "kill")))
+               (substitute* "java/lang/Runtime/exec/LotsOfDestroys.java"
+                 (("/usr/bin/echo") (which "echo")))
+               (substitute* "java/lang/Runtime/exec/LotsOfOutput.java"
+                 (("/usr/bin/cat") (which "cat")))
+               (substitute* "java/lang/Runtime/exec/SleepyCat.java"
+                 (("/bin/cat") (which "cat"))
+                 (("/bin/sleep") (which "sleep"))
+                 (("/bin/sh") (which "sh")))
+               (substitute* "java/lang/Runtime/exec/StreamsSurviveDestroy.java"
+                 (("/bin/cat") (which "cat")))
+               (substitute* "java/rmi/activation/CommandEnvironment/SetChildEnv.java"
+                 (("/bin/chmod") (which "chmod")))
+               (substitute* "java/util/zip/ZipFile/Assortment.java"
+                 (("/bin/sh") (which "sh"))))
+             #t))
+         (replace 'check
+           (lambda _
+             ;; The "make check-*" targets always return zero, so we need to
+             ;; check for errors in the associated log files to determine
+             ;; whether any tests have failed.
+             (use-modules (ice-9 rdelim))
+             (let* ((error-pattern (make-regexp "^(Error|FAILED):.*"))
+                    (checker (lambda (port)
+                               (let loop ()
+                                 (let ((line (read-line port)))
+                                   (cond
+                                    ((eof-object? line) #t)
+                                    ((regexp-exec error-pattern line) #f)
+                                    (else (loop)))))))
+                    (run-test (lambda (test)
+                                (system* "make" test)
+                                (call-with-input-file
+                                    (string-append "test/" test ".log")
+                                  checker))))
+               (or #t ; skip tests
+                   (and (run-test "check-hotspot")
+                        (run-test "check-langtools")
+                        (run-test "check-jdk"))))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((doc (string-append (assoc-ref outputs "doc")
+                                       "/share/doc/icedtea"))
+                   (jre (assoc-ref outputs "out"))
+                   (jdk (assoc-ref outputs "jdk")))
+               (copy-recursively "openjdk.build/docs" doc)
+               (copy-recursively "openjdk.build/j2re-image" jre)
+               (copy-recursively "openjdk.build/j2sdk-image" jdk))))
+         ;; By default IcedTea only generates an empty keystore.  In order to
+         ;; be able to use certificates in Java programs we need to generate a
+         ;; keystore from a set of certificates.  For convenience we use the
+         ;; certificates from the nss-certs package.
+         (add-after 'install 'install-keystore
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((keystore  "cacerts")
+                    (certs-dir (string-append (assoc-ref inputs "nss-certs")
+                                              "/etc/ssl/certs"))
+                    (keytool   (string-append (assoc-ref outputs "jdk")
+                                              "/bin/keytool")))
+               (define (extract-cert file target)
+                 (call-with-input-file file
+                   (lambda (in)
+                     (call-with-output-file target
+                       (lambda (out)
+                         (let loop ((line (read-line in 'concat))
+                                    (copying? #f))
+                           (cond
+                            ((eof-object? line) #t)
+                            ((string-prefix? "-----BEGIN" line)
+                             (display line out)
+                             (loop (read-line in 'concat) #t))
+                            ((string-prefix? "-----END" line)
+                             (display line out)
+                             #t)
+                            (else
+                             (when copying? (display line out))
+                             (loop (read-line in 'concat) copying?)))))))))
+               (define (import-cert cert)
+                 (format #t "Importing certificate ~a\n" (basename cert))
+                 (let ((temp "tmpcert"))
+                   (extract-cert cert temp)
+                   (let ((port (open-pipe* OPEN_WRITE keytool
+                                           "-import"
+                                           "-alias" (basename cert)
+                                           "-keystore" keystore
+                                           "-storepass" "changeit"
+                                           "-file" temp)))
+                     (display "yes\n" port)
+                     (when (not (zero? (status:exit-val (close-pipe port))))
+                       (error "failed to import" cert)))
+                   (delete-file temp)))
+
+               ;; This is necessary because the certificate directory contains
+               ;; files with non-ASCII characters in their names.
+               (setlocale LC_ALL "en_US.utf8")
+               (setenv "LC_ALL" "en_US.utf8")
+
+               (for-each import-cert (find-files certs-dir "\\.pem$"))
+               (mkdir-p (string-append (assoc-ref outputs "out")
+                                       "/lib/security"))
+               (mkdir-p (string-append (assoc-ref outputs "jdk")
+                                       "/jre/lib/security"))
+               (install-file keystore
+                             (string-append (assoc-ref outputs "out")
+                                            "/lib/security"))
+               (install-file keystore
+                             (string-append (assoc-ref outputs "jdk")
+                                            "/jre/lib/security"))
+               #t))))))
     (native-inputs
      `(("ant" ,ant)
        ("alsa-lib" ,alsa-lib)
@@ -553,6 +748,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
        ("libxslt" ,libxslt) ;for xsltproc
        ("mit-krb5" ,mit-krb5)
        ("nss" ,nss)
+       ("nss-certs" ,nss-certs)
        ("libx11" ,libx11)
        ("libxcomposite" ,libxcomposite)
        ("libxt" ,libxt)
@@ -568,10 +764,10 @@ build process and its dependencies, whereas Make uses Makefile format.")
        ("openjdk6-src"
         ,(origin
            (method url-fetch)
-           (uri "https://java.net/downloads/openjdk6/openjdk-6-src-b39-03_may_2016.tar.gz")
+           (uri "https://java.net/downloads/openjdk6/openjdk-6-src-b40-22_aug_2016.tar.gz")
            (sha256
             (base32
-             "1brxbsgwcj4js26y5lk6capc3pvghgjidvv9cavw6z8n7c7aw8af"))))
+             "01v4q7g9pa6w7m6yxply5yrin08jgv12fck665xnmp09bpxy8sa5"))))
        ("lcms" ,lcms)
        ("zlib" ,zlib)
        ("gtk" ,gtk+-2)
@@ -587,7 +783,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
     (license license:gpl2+)))
 
 (define-public icedtea-7
-  (let* ((version "2.6.6")
+  (let* ((version "2.6.7")
          (drop (lambda (name hash)
                  (origin
                    (method url-fetch)
@@ -604,7 +800,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
                       version ".tar.xz"))
                 (sha256
                  (base32
-                  "0jjldnig382yqvzzsflilcz897v2lwnw4n57sggdjn318d29g53r"))
+                  "1r4y1afjdm72j4lkd1jsim595zy5s3hvc3dnl13f5a7wrxp2v4nh"))
                 (modules '((guix build utils)))
                 (snippet
                  '(substitute* "Makefile.in"
@@ -731,25 +927,25 @@ build process and its dependencies, whereas Make uses Makefile format.")
       (native-inputs
        `(("openjdk-src"
           ,(drop "openjdk"
-                 "1wxd5kbsmd4gdiz78iq7pq9hp0l6m946pd1pvaj750lkrgk17y14"))
+                 "0y38vgvzw2xggfg0nlalv42amy5sv6vzvjxik8bvkm1sajzazb2w"))
          ("corba-drop"
           ,(drop "corba"
-                 "0bba7drdpbggzgn7cnqv10myxa3bygaq2hkclgrmsijhl6bnr26f"))
+                 "0r778nhmzcnf6jkl50f6f279vbzh96rcwr74vb0930wgl2g46j80"))
          ("jaxp-drop"
           ,(drop "jaxp"
-                 "0c1d4yjaxzh9fi9bx50yi2psb9f475bfivivf6c31smgaihb97k7"))
+                 "02y7zaw4irjvbihpr4pbrl64pxjx5anfxms3i24rp1q6aj2n1gcz"))
          ("jaxws-drop"
           ,(drop "jaxws"
-                 "0662wzws45jwzwfc4pgizxdywz737vflkj9w3hw1xlgljs017bzr"))
+                 "1xrhdgykpi7amyyirzchp4mjrx2j3xm6nqg4bbfy2kxv7daw3z69"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "17qaf5mdijsn6jzyxv7rgn9g5mazkva6p8lcy7zq06yvfb595ahv"))
+                 "108d560iabk334lcifr5xf1w075a6c918smpbcaccsrln8qd6g79"))
          ("langtools-drop"
           ,(drop "langtools"
-                 "1wv34cyba1f4wynjkwf765agf4ifc04717ac7b3bpiagggp2rfsl"))
+                 "1r5llvhxzdihyz6rmr6ri9wz8zvbw4gmlllhb340p86liqqh1rqk"))
          ("hotspot-drop"
           ,(drop "hotspot"
-                 "1hhd5q2g7mnw3pqqv72labki5zv09vgc3hp3xig4x8r4yzzg9s54"))
+                 "0p3arg01jfdnbx856qfhhzp7s9yzmqwa1fspk5spmmxb9m7mj4h4"))
          ,@(fold alist-delete (package-native-inputs icedtea-6)
                  '("openjdk6-src"))))
       (inputs
@@ -757,7 +953,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
          ,@(package-inputs icedtea-6))))))
 
 (define-public icedtea-8
-  (let* ((version "3.0.1")
+  (let* ((version "3.1.0")
          (drop (lambda (name hash)
                  (origin
                    (method url-fetch)
@@ -766,7 +962,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
                          "/icedtea8/" version "/" name ".tar.xz"))
                    (sha256 (base32 hash))))))
     (package (inherit icedtea-7)
-      (version "3.0.1")
+      (version "3.1.0")
       (source (origin
                 (method url-fetch)
                 (uri (string-append
@@ -774,7 +970,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
                       version ".tar.xz"))
                 (sha256
                  (base32
-                  "1wislw090zx955rf9sppimdzqf044mpj96xp54vljv6yw46y6v1l"))
+                  "1d1kj8a6jbvcbzhmfrx2pca7pinsvpxd7zij9h93g13dmm0ncqbm"))
                 (modules '((guix build utils)))
                 (snippet
                  '(substitute* "Makefile.am"
@@ -798,6 +994,36 @@ build process and its dependencies, whereas Make uses Makefile format.")
              (delete 'patch-paths)
              (delete 'set-additional-paths)
              (delete 'patch-patches)
+             (add-after 'unpack 'patch-jni-libs
+               ;; Hardcode dynamically loaded libraries.
+               (lambda _
+                 (let* ((library-path (search-path-as-string->list
+                                       (getenv "LIBRARY_PATH")))
+                        (find-library (lambda (name)
+                                        (search-path
+                                         library-path
+                                         (string-append "lib" name ".so")))))
+                   (for-each
+                    (lambda (file)
+                      (catch 'encoding-error
+                        (lambda ()
+                          (substitute* file
+                            (("VERSIONED_JNI_LIB_NAME\\(\"(.*)\", \"(.*)\"\\)"
+                              _ name version)
+                             (format #f "\"~a\""  (find-library name)))
+                            (("JNI_LIB_NAME\\(\"(.*)\"\\)" _ name)
+                             (format #f "\"~a\"" (find-library name)))))
+                        (lambda _
+                          ;; Those are safe to skip.
+                          (format (current-error-port)
+                                  "warning: failed to substitute: ~a~%"
+                                  file))))
+                    (find-files "openjdk.src/jdk/src/solaris/native"
+                                "\\.c|\\.h"))
+                   #t)))
+             ;; FIXME: This phase is needed but fails with this version of
+             ;; IcedTea.
+             (delete 'install-keystore)
              (replace 'install
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((doc (string-append (assoc-ref outputs "doc")
@@ -812,28 +1038,31 @@ build process and its dependencies, whereas Make uses Makefile format.")
        `(("jdk" ,icedtea-7 "jdk")
          ("openjdk-src"
           ,(drop "openjdk"
-                 "1141wfz6vz889f5naj7zdbyw42ibw0ixvkd808lfcrwxlgznyxlb"))
+                 "1p6xgf00w754y3xdrccs67gjhb0181q49dk67h5v43aixkx7z7y1"))
          ("corba-drop"
           ,(drop "corba"
-                 "0l3fmfw88hf8709z033az1x6wzmcb0jnakj2br1r721zw01i0da2"))
+                 "088wnyfdhqkvc41pl3swnynbxx7x5lha6qg7q0biai6ya114scsy"))
          ("jaxp-drop"
           ,(drop "jaxp"
-                 "1i1pvyrdkk3w8vcnk6kfcbsjkfpbbrcywiypdl39bf2ishixbaf0"))
+                 "18xc4sib85z2zhz4k5lvi5b4vn88zqjpa3wi8gav81vz5gyysn3d"))
          ("jaxws-drop"
           ,(drop "jaxws"
-                 "0f1kglci65zsfy8ygw5w2zza7v1280znihvls4kraz06dgsc2y73"))
+                 "1my72q2zjly4imn834zgf4rysn48gbr8i81rxzrfdqgzzinxf6l1"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "1pcwb1kjd1ph4jbv07icgk0fb8jqnck2y24qjfd7dzg7gm45c1am"))
+                 "1ab2h7pppph82h3xhh1m5dha77j3wnhksq7c7f8yfcsyhr5hm243"))
          ("langtools-drop"
           ,(drop "langtools"
-                 "1jjil9s244wp0blj1qkzk7sy7y1jrxb4wq18c1rj2q2pa88n00i6"))
+                 "07bzcw2ml4apjfd0ydc3v44fnnwinwri114fig2mdcn1n388szra"))
          ("hotspot-drop"
           ,(drop "hotspot"
-                 "1pl0cz1gja6z5zbywni1x1pj4qkh745fpj55fcmj4lpfj2p98my1"))
+                 "0x5ic8cz3w9s8m8ynh31qlf47c6nwc512bp8ddwgmvsdxyiiwn1k"))
          ("nashorn-drop"
           ,(drop "nashorn"
-                 "1p0ynm2caraq1sal38qrrf42yah7j14c9vfwdv6h5h4rliahs177"))
+                 "0zyd8pyv1il8c9npw7wz1mwxhlq510ill20nhc7i8fq7gignzcsn"))
+         ("shenandoah-drop"
+          ,(drop "shenandoah"
+                 "1shisljn60zw9j4nahh07vw85gj25gfiy7z196fdw0pi95va6qwk"))
          ,@(fold alist-delete (package-native-inputs icedtea-7)
                  '("gcj" "openjdk-src" "corba-drop" "jaxp-drop" "jaxws-drop"
                    "jdk-drop" "langtools-drop" "hotspot-drop")))))))

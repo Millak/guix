@@ -300,7 +300,7 @@ Otherwise return #f."
 (define (narinfo-signature->canonical-sexp str)
   "Return the value of a narinfo's 'Signature' field as a canonical sexp."
   (match (string-split str #\;)
-    ((version _ sig)
+    ((version host-name sig)
      (let ((maybe-number (string->number version)))
        (cond ((not (number? maybe-number))
               (leave (_ "signature version must be a number: ~s~%")
@@ -610,7 +610,8 @@ if file doesn't exist, and the narinfo otherwise."
             (update-progress!)
             (cons narinfo result))
           (let* ((path      (uri-path (request-uri request)))
-                 (hash-part (string-drop-right path 8))) ; drop ".narinfo"
+                 (hash-part (basename
+                             (string-drop-right path 8)))) ;drop ".narinfo"
             (if len
                 (get-bytevector-n port len)
                 (read-to-eof port))

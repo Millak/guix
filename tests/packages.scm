@@ -49,6 +49,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-64)
   #:use-module (rnrs io ports)
+  #:use-module (ice-9 vlist)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 match))
 
@@ -78,6 +79,68 @@
                   (lambda ()
                     (write
                      (dummy-package "foo" (location #f)))))))
+
+(test-assert "hidden-package"
+  (and (hidden-package? (hidden-package (dummy-package "foo")))
+       (not (hidden-package? (dummy-package "foo")))))
+
+(test-assert "package-superseded"
+  (let* ((new (dummy-package "bar"))
+         (old (deprecated-package "foo" new)))
+    (and (eq? (package-superseded old) new)
+         (mock ((gnu packages) find-best-packages-by-name (const (list old)))
+               (specification->package "foo")
+               (and (eq? new (specification->package "foo"))
+                    (eq? new (specification->package+output "foo")))))))
+
+(test-assert "transaction-upgrade-entry, zero upgrades"
+  (let* ((old (dummy-package "foo" (version "1")))
+         (tx  (mock ((gnu packages) find-newest-available-packages
+                     (const vlist-null))
+                    ((@@ (guix scripts package) transaction-upgrade-entry)
+                     (manifest-entry
+                       (inherit (package->manifest-entry old))
+                       (item (string-append (%store-prefix) "/"
+                                            (make-string 32 #\e) "-foo-1")))
+                     (manifest-transaction)))))
+    (manifest-transaction-null? tx)))
+
+(test-assert "transaction-upgrade-entry, one upgrade"
+  (let* ((old (dummy-package "foo" (version "1")))
+         (new (dummy-package "foo" (version "2")))
+         (tx  (mock ((gnu packages) find-newest-available-packages
+                     (const (vhash-cons "foo" (list "2" new) vlist-null)))
+                    ((@@ (guix scripts package) transaction-upgrade-entry)
+                     (manifest-entry
+                       (inherit (package->manifest-entry old))
+                       (item (string-append (%store-prefix) "/"
+                                            (make-string 32 #\e) "-foo-1")))
+                     (manifest-transaction)))))
+    (and (match (manifest-transaction-install tx)
+           ((($ <manifest-entry> "foo" "2" "out" item))
+            (eq? item new)))
+         (null? (manifest-transaction-remove tx)))))
+
+(test-assert "transaction-upgrade-entry, superseded package"
+  (let* ((old (dummy-package "foo" (version "1")))
+         (new (dummy-package "bar" (version "2")))
+         (dep (deprecated-package "foo" new))
+         (tx  (mock ((gnu packages) find-newest-available-packages
+                     (const (vhash-cons "foo" (list "2" dep) vlist-null)))
+                    ((@@ (guix scripts package) transaction-upgrade-entry)
+                     (manifest-entry
+                       (inherit (package->manifest-entry old))
+                       (item (string-append (%store-prefix) "/"
+                                            (make-string 32 #\e) "-foo-1")))
+                     (manifest-transaction)))))
+    (and (match (manifest-transaction-install tx)
+           ((($ <manifest-entry> "bar" "2" "out" item))
+            (eq? item new)))
+         (match (manifest-transaction-remove tx)
+           (((? manifest-pattern? pattern))
+            (and (string=? (manifest-pattern-name pattern) "foo")
+                 (string=? (manifest-pattern-version pattern) "1")
+                 (string=? (manifest-pattern-output pattern) "out")))))))
 
 (test-assert "package-field-location"
   (let ()
@@ -335,7 +398,6 @@
                        ("patch" ,%bootstrap-coreutils&co)))
                     (patch-guile %bootstrap-guile)
                     (modules '((guix build utils)))
-                    (imported-modules modules)
                     (snippet '(begin
                                 ;; We end up in 'bin', because it's the first
                                 ;; directory, alphabetically.  Not a very good
@@ -739,12 +801,51 @@
            (and (build-derivations %store (list drv))
                 (file-exists? (string-append out "/bin/make")))))))
 
+(test-assert "package-input-rewriting"
+  (let* ((dep     (dummy-package "chbouib"
+                    (native-inputs `(("x" ,grep)))))
+         (p0      (dummy-package "example"
+                    (inputs `(("foo" ,coreutils)
+                              ("bar" ,grep)
+                              ("baz" ,dep)))))
+         (rewrite (package-input-rewriting `((,coreutils . ,sed)
+                                             (,grep . ,findutils))
+                                           (cut string-append "r-" <>)))
+         (p1      (rewrite p0))
+         (p2      (rewrite p0)))
+    (and (not (eq? p1 p0))
+         (eq? p1 p2)                              ;memoization
+         (string=? "r-example" (package-name p1))
+         (match (package-inputs p1)
+           ((("foo" dep1) ("bar" dep2) ("baz" dep3))
+            (and (eq? dep1 sed)
+                 (eq? dep2 findutils)
+                 (string=? (package-name dep3) "r-chbouib")
+                 (eq? dep3 (rewrite dep))         ;memoization
+                 (match (package-native-inputs dep3)
+                   ((("x" dep))
+                    (eq? dep findutils)))))))))
+
 (test-eq "fold-packages" hello
   (fold-packages (lambda (p r)
                    (if (string=? (package-name p) "hello")
                        p
                        r))
                  #f))
+
+(test-assert "fold-packages, hidden package"
+  ;; There are two public variables providing "guile@2.0" ('guile-final' in
+  ;; commencement.scm and 'guile-2.0/fixed' in guile.scm), but only the latter
+  ;; should show up.
+  (match (fold-packages (lambda (p r)
+                          (if (and (string=? (package-name p) "guile")
+                                   (string-prefix? "2.0"
+                                                   (package-version p)))
+                              (cons p r)
+                              r))
+                        '())
+    ((one)
+     (eq? one guile-2.0/fixed))))
 
 (test-assert "find-packages-by-name"
   (match (find-packages-by-name "hello")

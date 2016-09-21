@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,7 +31,8 @@
 (define-public mit-krb5
   (package
     (name "mit-krb5")
-    (version "1.13.3")
+    (replacement mit-krb5-1.14.3)
+    (version "1.14.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://web.mit.edu/kerberos/dist/krb5/"
@@ -38,18 +40,24 @@
                                   "/krb5-" version ".tar.gz"))
               (sha256
                (base32
-                "1gpscn78lv48dxccxq9ncyj53w9l2a15xmngjfa1wylvmn7g0jjx"))
-              (patches
-               (search-patches "mit-krb5-init-context-null-spnego.patch"
-                               "mit-krb5-CVE-2015-8629.patch"
-                               "mit-krb5-CVE-2015-8630.patch"
-                               "mit-krb5-CVE-2015-8631.patch"))))
+                "09wbv969ak4fqlqr1ip5bi62fny1zlp1vwjarvj6a6cdfzkdgjkb"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("bison" ,bison)
        ("perl" ,perl)))
     (arguments
-     `(#:phases
+     `(;; Work around "No rule to make target '../../include/gssapi/gssapi.h',
+       ;; needed by 'authgss_prot.so'."
+       #:parallel-build? #f
+
+       ;; Likewise with tests.
+       #:parallel-tests? #f
+
+       ;; XXX: On 32-bit systems, 'kdb5_util' hangs on an fcntl/F_SETLKW call
+       ;; while running the tests in 'src/tests'.
+       #:tests? ,(string=? (%current-system) "x86_64-linux")
+
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-source-directory
            (lambda _
@@ -76,3 +84,17 @@ cryptography.")
     (license (non-copyleft "file://NOTICE"
                            "See NOTICE in the distribution."))
     (home-page "http://web.mit.edu/kerberos/")))
+
+(define mit-krb5-1.14.3
+  (package
+    (inherit mit-krb5)
+    (source
+      (let ((version "1.14.3"))
+        (origin
+          (method url-fetch)
+          (uri (string-append "http://web.mit.edu/kerberos/dist/krb5/"
+                              (version-major+minor version)
+                              "/krb5-" version ".tar.gz"))
+          (sha256
+           (base32
+            "1jgjiyh1sp72lkxvk437lz5hzcibvw99jc4ihzfz03fg43aj0ind")))))))

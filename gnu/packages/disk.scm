@@ -2,8 +2,10 @@
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016 Tobias Geerinckx-Rice <tobias.geerinckx.rice@gmail.com>
+;;; Copyright © 2016 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,17 +23,27 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages disk)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages guile)
-  #:use-module (gnu packages compression))
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages xml))
 
 (define-public parted
   (package
@@ -69,7 +81,7 @@
     (description
      "GNU Parted is a package for creating and manipulating disk partition
 tables.  It includes a library and command-line utility.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public fdisk
   (package
@@ -95,7 +107,47 @@ tables.  It includes a library and command-line utility.")
      "GNU fdisk provides a GNU version of the common disk partitioning tool
 fdisk.  fdisk is used for the creation and manipulation of disk partition
 tables, and it understands a variety of different formats.")
-    (license gpl3+)))
+    (license license:gpl3+)))
+
+(define-public gptfdisk
+  (package
+    (name "gptfdisk")
+    (version "1.0.1")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://sourceforge/gptfdisk/gptfdisk/"
+                          version "/" name "-" version ".tar.gz"))
+      (sha256
+       (base32
+        "1izazbyv5n2d81qdym77i8mg9m870hiydmq4d0s51npx5vp8lk46"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("gettext" ,gnu-gettext)
+       ("ncurses" ,ncurses)
+       ("popt" ,popt)
+       ("util-linux" ,util-linux))) ; libuuid
+    (arguments
+     `(#:test-target "test"
+       #:phases
+       (modify-phases %standard-phases
+         ;; no configure script
+         (delete 'configure)
+         ;; no install target
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (install-file "gdisk" bin)
+               (install-file "sgdisk" bin)
+               (install-file "cgdisk" bin)
+               (install-file "fixparts" bin)))))))
+    (home-page "http://www.rodsbooks.com/gdisk/")
+    (synopsis "Low-level GPT disk partitioning and formatting")
+    (description "GPT fdisk (aka gdisk) is a text-mode partitioning tool that
+works on Globally Unique Identifier (GUID) Partition Table (GPT) disks, rather
+than on the more common (through 2009) Master Boot Record (MBR) partition
+tables.")
+    (license license:gpl2)))
 
 (define-public ddrescue
   (package
@@ -118,7 +170,7 @@ tables, and it understands a variety of different formats.")
 from one file to another, working to rescue data in case of read errors.  The
 program also includes a tool for manipulating its log files, which are used
 to recover data more efficiently by only reading the necessary blocks.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public dosfstools
   (package
@@ -139,11 +191,11 @@ to recover data more efficiently by only reading the necessary blocks.")
                           "CC=gcc")
        #:tests? #f))  ;no tests
     (home-page "https://github.com/dosfstools/dosfstools")
-    (synopsis "Utilities for making and checking MS-DOS FAT filesystems")
+    (synopsis "Utilities for making and checking MS-DOS FAT file systems")
     (description
      "The dosfstools package includes the mkfs.fat and fsck.fat utilities,
-which respectively make and check MS-DOS FAT filesystems.")
-    (license gpl3+)))
+which respectively make and check MS-DOS FAT file systems.")
+    (license license:gpl3+)))
 
 (define-public sdparm
   (package
@@ -169,7 +221,7 @@ uses a SCSI command set.  Such devices include CD/DVD drives (irrespective of
 transport), SCSI and ATAPI tape drives, and SCSI enclosures.  This utility can
 also send commands associated with starting and stopping the media, loading
 and unloading removable media and some other housekeeping functions.")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public idle3-tools
   (package
@@ -201,4 +253,43 @@ present in many Western Digital hard drives.  This timer is part of the
 \"IntelliPark\" feature that stops the disk when not in use.  Unfortunately,
 the default timer setting is not well suited to Linux or other *nix systems,
 and can dramatically shorten the lifespan of the drive if left unchecked.")
-    (license gpl3+)))
+    (license license:gpl3+)))
+
+(define-public gparted
+  (package
+    (name "gparted")
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/gparted/gparted/gparted-"
+                           version "/gparted-" version ".tar.gz"))
+       (sha256
+        (base32 "1h9d6x335wxpm49yphzm9n1hbh2hcg0p2rphv76mrvsss91bcm1g"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; Tests require a network connection.
+       #:configure-flags '("--disable-scrollkeeper")))
+    (inputs
+     `(("util-linux" ,util-linux)
+       ("parted" ,parted)
+       ("glib" ,glib)
+       ("gtkmm" ,gtkmm-2)
+       ("libxml2" ,libxml2)
+       ("libxslt" ,libxslt)
+       ("gnome-doc-utils" ,gnome-doc-utils)
+       ("docbook-xml" ,docbook-xml-4.2)
+       ("python" ,python-2)
+       ("python-libxml2" ,python2-libxml2)
+       ("which" ,which)))
+    (native-inputs
+     `(("intltool" ,intltool)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://sourceforge.net/projects/gparted/")
+    (synopsis "Partition editor to graphically manage disk partitions")
+    (description "GParted is a GNOME partition editor for creating,
+reorganizing, and deleting disk partitions.  It uses libparted from the parted
+project to detect and manipulate partition tables.  Optional file system tools
+permit managing file systems not included in libparted.")
+    ;; The home page says GPLv2, but the source code says GPLv2+.
+    (license license:gpl2+)))

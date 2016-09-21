@@ -29,6 +29,7 @@
   #:use-module (ice-9 match)
   #:export (gexp
             gexp?
+            with-imported-modules
 
             gexp-input
             gexp-input?
@@ -49,20 +50,23 @@
             computed-file?
             computed-file-name
             computed-file-gexp
-            computed-file-modules
             computed-file-options
 
             program-file
             program-file?
             program-file-name
             program-file-gexp
-            program-file-modules
             program-file-guile
 
             scheme-file
             scheme-file?
             scheme-file-name
             scheme-file-gexp
+
+            file-append
+            file-append?
+            file-append-base
+            file-append-suffix
 
             gexp->derivation
             gexp->file
@@ -98,11 +102,11 @@
 
 ;; "G expressions".
 (define-record-type <gexp>
-  (make-gexp references natives proc)
+  (make-gexp references modules proc)
   gexp?
-  (references gexp-references)                    ; ((DRV-OR-PKG OUTPUT) ...)
-  (natives    gexp-native-references)             ; ((DRV-OR-PKG OUTPUT) ...)
-  (proc       gexp-proc))                         ; procedure
+  (references gexp-references)                    ;list of <gexp-input>
+  (modules    gexp-self-modules)                  ;list of module names
+  (proc       gexp-proc))                         ;procedure
 
 (define (write-gexp gexp port)
   "Write GEXP on PORT."
@@ -113,8 +117,7 @@
   ;; tries to use 'append' on that, which fails with wrong-type-arg.
   (false-if-exception
    (write (apply (gexp-proc gexp)
-                 (append (gexp-references gexp)
-                         (gexp-native-references gexp)))
+                 (gexp-references gexp))
           port))
   (format port " ~a>"
           (number->string (object-address gexp) 16)))
@@ -128,26 +131,41 @@
 
 ;; Compiler for a type of objects that may be introduced in a gexp.
 (define-record-type <gexp-compiler>
-  (gexp-compiler predicate lower)
+  (gexp-compiler type lower expand)
   gexp-compiler?
-  (predicate  gexp-compiler-predicate)
-  (lower      gexp-compiler-lower))
+  (type       gexp-compiler-type)                 ;record type descriptor
+  (lower      gexp-compiler-lower)
+  (expand     gexp-compiler-expand))              ;#f | DRV -> sexp
 
 (define %gexp-compilers
-  ;; List of <gexp-compiler>.
-  '())
+  ;; 'eq?' mapping of record type descriptor to <gexp-compiler>.
+  (make-hash-table 20))
+
+(define (default-expander thing obj output)
+  "This is the default expander for \"things\" that appear in gexps.  It
+returns its output file name of OBJ's OUTPUT."
+  (match obj
+    ((? derivation? drv)
+     (derivation->output-path drv output))
+    ((? string? file)
+     file)))
 
 (define (register-compiler! compiler)
   "Register COMPILER as a gexp compiler."
-  (set! %gexp-compilers (cons compiler %gexp-compilers)))
+  (hashq-set! %gexp-compilers
+              (gexp-compiler-type compiler) compiler))
 
 (define (lookup-compiler object)
-  "Search a compiler for OBJECT.  Upon success, return the three argument
+  "Search for a compiler for OBJECT.  Upon success, return the three argument
 procedure to lower it; otherwise return #f."
-  (any (match-lambda
-        (($ <gexp-compiler> predicate lower)
-         (and (predicate object) lower)))
-       %gexp-compilers))
+  (and=> (hashq-ref %gexp-compilers (struct-vtable object))
+         gexp-compiler-lower))
+
+(define (lookup-expander object)
+  "Search for an expander for OBJECT.  Upon success, return the three argument
+procedure to expand it; otherwise return #f."
+  (and=> (hashq-ref %gexp-compilers (struct-vtable object))
+         gexp-compiler-expand))
 
 (define* (lower-object obj
                        #:optional (system (%current-system))
@@ -159,21 +177,35 @@ OBJ must be an object that has an associated gexp compiler, such as a
   (let ((lower (lookup-compiler obj)))
     (lower obj system target)))
 
-(define-syntax-rule (define-gexp-compiler (name (param predicate)
-                                                system target)
-                      body ...)
-  "Define NAME as a compiler for objects matching PREDICATE encountered in
-gexps.  BODY must return a derivation for PARAM, an object that matches
-PREDICATE, for SYSTEM and TARGET (the latter of which is #f except when
-cross-compiling.)"
-  (begin
-    (define name
-      (gexp-compiler predicate
-                     (lambda (param system target)
-                       body ...)))
-    (register-compiler! name)))
+(define-syntax define-gexp-compiler
+  (syntax-rules (=> compiler expander)
+    "Define NAME as a compiler for objects matching PREDICATE encountered in
+gexps.
 
-(define-gexp-compiler (derivation-compiler (drv derivation?) system target)
+In the simplest form of the macro, BODY must return a derivation for PARAM, an
+object that matches PREDICATE, for SYSTEM and TARGET (the latter of which is
+#f except when cross-compiling.)
+
+The more elaborate form allows you to specify an expander:
+
+  (define-gexp-compiler something something?
+    compiler => (lambda (param system target) ...)
+    expander => (lambda (param drv output) ...))
+
+The expander specifies how an object is converted to its sexp representation."
+    ((_ (name (param record-type) system target) body ...)
+     (define-gexp-compiler name record-type
+       compiler => (lambda (param system target) body ...)
+       expander => default-expander))
+    ((_ name record-type
+        compiler => compile
+        expander => expand)
+     (begin
+       (define name
+         (gexp-compiler record-type compile expand))
+       (register-compiler! name)))))
+
+(define-gexp-compiler (derivation-compiler (drv <derivation>) system target)
   ;; Derivations are the lowest-level representation, so this is the identity
   ;; compiler.
   (with-monad %store-monad
@@ -239,7 +271,7 @@ This is the declarative counterpart of the 'interned-file' monadic procedure."
 'system-error' exception is raised if FILE could not be found."
   (force (%local-file-absolute-file-name file)))
 
-(define-gexp-compiler (local-file-compiler (file local-file?) system target)
+(define-gexp-compiler (local-file-compiler (file <local-file>) system target)
   ;; "Compile" FILE by adding it to the store.
   (match file
     (($ <local-file> file (= force absolute) name recursive? select?)
@@ -266,62 +298,56 @@ This is the declarative counterpart of 'text-file'."
   ;; them in a declarative context.
   (%plain-file name content '()))
 
-(define-gexp-compiler (plain-file-compiler (file plain-file?) system target)
+(define-gexp-compiler (plain-file-compiler (file <plain-file>) system target)
   ;; "Compile" FILE by adding it to the store.
   (match file
     (($ <plain-file> name content references)
      (text-file name content references))))
 
 (define-record-type <computed-file>
-  (%computed-file name gexp modules options)
+  (%computed-file name gexp options)
   computed-file?
   (name       computed-file-name)                 ;string
   (gexp       computed-file-gexp)                 ;gexp
-  (modules    computed-file-modules)              ;list of module names
   (options    computed-file-options))             ;list of arguments
 
 (define* (computed-file name gexp
-                        #:key (modules '()) (options '(#:local-build? #t)))
+                        #:key (options '(#:local-build? #t)))
   "Return an object representing the store item NAME, a file or directory
-computed by GEXP.  MODULES specifies the set of modules visible in the
-execution context of GEXP.  OPTIONS is a list of additional arguments to pass
+computed by GEXP.  OPTIONS is a list of additional arguments to pass
 to 'gexp->derivation'.
 
 This is the declarative counterpart of 'gexp->derivation'."
-  (%computed-file name gexp modules options))
+  (%computed-file name gexp options))
 
-(define-gexp-compiler (computed-file-compiler (file computed-file?)
+(define-gexp-compiler (computed-file-compiler (file <computed-file>)
                                               system target)
   ;; Compile FILE by returning a derivation whose build expression is its
   ;; gexp.
   (match file
-    (($ <computed-file> name gexp modules options)
-     (apply gexp->derivation name gexp #:modules modules options))))
+    (($ <computed-file> name gexp options)
+     (apply gexp->derivation name gexp options))))
 
 (define-record-type <program-file>
-  (%program-file name gexp modules guile)
+  (%program-file name gexp guile)
   program-file?
   (name       program-file-name)                  ;string
   (gexp       program-file-gexp)                  ;gexp
-  (modules    program-file-modules)               ;list of module names
   (guile      program-file-guile))                ;package
 
-(define* (program-file name gexp
-                       #:key (modules '()) (guile #f))
+(define* (program-file name gexp #:key (guile #f))
   "Return an object representing the executable store item NAME that runs
-GEXP.  GUILE is the Guile package used to execute that script, and MODULES is
-the list of modules visible to that script.
+GEXP.  GUILE is the Guile package used to execute that script.
 
 This is the declarative counterpart of 'gexp->script'."
-  (%program-file name gexp modules guile))
+  (%program-file name gexp guile))
 
-(define-gexp-compiler (program-file-compiler (file program-file?)
+(define-gexp-compiler (program-file-compiler (file <program-file>)
                                              system target)
   ;; Compile FILE by returning a derivation that builds the script.
   (match file
-    (($ <program-file> name gexp modules guile)
+    (($ <program-file> name gexp guile)
      (gexp->script name gexp
-                   #:modules modules
                    #:guile (or guile (default-guile))))))
 
 (define-record-type <scheme-file>
@@ -336,12 +362,36 @@ This is the declarative counterpart of 'gexp->script'."
 This is the declarative counterpart of 'gexp->file'."
   (%scheme-file name gexp))
 
-(define-gexp-compiler (scheme-file-compiler (file scheme-file?)
+(define-gexp-compiler (scheme-file-compiler (file <scheme-file>)
                                             system target)
   ;; Compile FILE by returning a derivation that builds the file.
   (match file
     (($ <scheme-file> name gexp)
      (gexp->file name gexp))))
+
+;; Appending SUFFIX to BASE's output file name.
+(define-record-type <file-append>
+  (%file-append base suffix)
+  file-append?
+  (base   file-append-base)                    ;<package> | <derivation> | ...
+  (suffix file-append-suffix))                 ;list of strings
+
+(define (file-append base . suffix)
+  "Return a <file-append> object that expands to the concatenation of BASE and
+SUFFIX."
+  (%file-append base suffix))
+
+(define-gexp-compiler file-append-compiler <file-append>
+  compiler => (lambda (obj system target)
+                (match obj
+                  (($ <file-append> base _)
+                   (lower-object base system #:target target))))
+  expander => (lambda (obj lowered output)
+                (match obj
+                  (($ <file-append> base suffix)
+                   (let* ((expand (lookup-expander base))
+                          (base   (expand base lowered output)))
+                     (string-append base (string-concatenate suffix)))))))
 
 
 ;;;
@@ -386,6 +436,23 @@ whether this should be considered a \"native\" input or not."
 
 (set-record-type-printer! <gexp-output> write-gexp-output)
 
+(define (gexp-modules gexp)
+  "Return the list of Guile module names GEXP relies on."
+  (delete-duplicates
+   (append (gexp-self-modules gexp)
+           (append-map (match-lambda
+                         (($ <gexp-input> (? gexp? exp))
+                          (gexp-modules exp))
+                         (($ <gexp-input> (lst ...))
+                          (append-map (lambda (item)
+                                        (if (gexp? item)
+                                            (gexp-modules item)
+                                            '()))
+                                      lst))
+                         (_
+                          '()))
+                       (gexp-references gexp)))))
+
 (define raw-derivation
   (store-lift derivation))
 
@@ -420,8 +487,6 @@ corresponding derivation."
   "Based on LST, a list of output names and packages, return a list of output
 names and file names suitable for the #:allowed-references argument to
 'derivation'."
-  ;; XXX: Currently outputs other than "out" are not supported, and things
-  ;; other than packages aren't either.
   (with-monad %store-monad
     (define lower
       (match-lambda
@@ -467,7 +532,8 @@ derivation) on SYSTEM; EXP is stored in a file called SCRIPT-NAME.  When
 TARGET is true, it is used as the cross-compilation target triplet for
 packages referred to by EXP.
 
-Make MODULES available in the evaluation context of EXP; MODULES is a list of
+MODULES is deprecated in favor of 'with-imported-modules'.  Its meaning is to
+make MODULES available in the evaluation context of EXP; MODULES is a list of
 names of Guile modules searched in MODULE-PATH to be copied in the store,
 compiled, and made available in the load path during the execution of
 EXP---e.g., '((guix build utils) (guix build gnu-build-system)).
@@ -496,7 +562,9 @@ Similarly for DISALLOWED-REFERENCES, which can list items that must not be
 referenced by the outputs.
 
 The other arguments are as for 'derivation'."
-  (define %modules modules)
+  (define %modules
+    (delete-duplicates
+     (append modules (gexp-modules exp))))
   (define outputs (gexp-outputs exp))
 
   (define (graphs-file-names graphs)
@@ -630,11 +698,15 @@ references; otherwise, return only non-native references."
        ;; Ignore references to other kinds of objects.
        result)))
 
+  (define (native-input? x)
+    (and (gexp-input? x)
+         (gexp-input-native? x)))
+
   (fold-right add-reference-inputs
               '()
               (if native?
-                  (gexp-native-references exp)
-                  (gexp-references exp))))
+                  (filter native-input? (gexp-references exp))
+                  (remove native-input? (gexp-references exp)))))
 
 (define gexp-native-inputs
   (cut gexp-inputs <> #:native? #t))
@@ -687,18 +759,15 @@ and in the current monad setting (system type, etc.)"
                            (if (gexp-input? ref)
                                ref
                                (%gexp-input ref "out" n?))
-                           native?))
+                           (or n? native?)))
                         refs)))
         (($ <gexp-input> (? struct? thing) output n?)
-         (let ((target (if (or n? native?) #f target)))
+         (let ((target (if (or n? native?) #f target))
+               (expand (lookup-expander thing)))
            (mlet %store-monad ((obj (lower-object thing system
                                                   #:target target)))
              ;; OBJ must be either a derivation or a store file name.
-             (return (match obj
-                       ((? derivation? drv)
-                        (derivation->output-path drv output))
-                       ((? string? file)
-                        file))))))
+             (return (expand thing obj output)))))
         (($ <gexp-input> x)
          (return x))
         (x
@@ -706,9 +775,7 @@ and in the current monad setting (system type, etc.)"
 
   (mlet %store-monad
       ((args (sequence %store-monad
-                       (append (map reference->sexp (gexp-references exp))
-                               (map (cut reference->sexp <> #t)
-                                    (gexp-native-references exp))))))
+                       (map reference->sexp (gexp-references exp)))))
     (return (apply (gexp-proc exp) args))))
 
 (define (syntax-location-string s)
@@ -723,6 +790,17 @@ and in the current monad setting (system type, etc.)"
                              file line column)
               (simple-format #f "~a:~a" line column)))
         "<unknown location>")))
+
+(define-syntax-parameter current-imported-modules
+  ;; Current list of imported modules.
+  (identifier-syntax '()))
+
+(define-syntax-rule (with-imported-modules modules body ...)
+  "Mark the gexps defined in BODY... as requiring MODULES in their execution
+environment."
+  (syntax-parameterize ((current-imported-modules
+                         (identifier-syntax modules)))
+    body ...))
 
 (define-syntax gexp
   (lambda (s)
@@ -741,33 +819,9 @@ and in the current monad setting (system type, etc.)"
           ((ungexp-splicing _ ...)
            (cons exp result))
           ((ungexp-native _ ...)
-           result)
-          ((ungexp-native-splicing _ ...)
-           result)
-          ((exp0 exp ...)
-           (let ((result (loop #'exp0 result)))
-             (fold loop result #'(exp ...))))
-          (_
-           result))))
-
-    (define (collect-native-escapes exp)
-      ;; Return all the 'ungexp-native' forms present in EXP.
-      (let loop ((exp    exp)
-                 (result '()))
-        (syntax-case exp (ungexp
-                          ungexp-splicing
-                          ungexp-native
-                          ungexp-native-splicing)
-          ((ungexp-native _)
-           (cons exp result))
-          ((ungexp-native _ _)
            (cons exp result))
           ((ungexp-native-splicing _ ...)
            (cons exp result))
-          ((ungexp _ ...)
-           result)
-          ((ungexp-splicing _ ...)
-           result)
           ((exp0 exp ...)
            (let ((result (loop #'exp0 result)))
              (fold loop result #'(exp ...))))
@@ -838,14 +892,12 @@ and in the current monad setting (system type, etc.)"
 
     (syntax-case s (ungexp output)
       ((_ exp)
-       (let* ((normals (delete-duplicates (collect-escapes #'exp)))
-              (natives (delete-duplicates (collect-native-escapes #'exp)))
-              (escapes (append normals natives))
+       (let* ((escapes (delete-duplicates (collect-escapes #'exp)))
               (formals (generate-temporaries escapes))
               (sexp    (substitute-references #'exp (zip escapes formals)))
-              (refs    (map escape->ref normals))
-              (nrefs   (map escape->ref natives)))
-         #`(make-gexp (list #,@refs) (list #,@nrefs)
+              (refs    (map escape->ref escapes)))
+         #`(make-gexp (list #,@refs)
+                      current-imported-modules
                       (lambda #,formals
                         #,sexp)))))))
 
@@ -983,12 +1035,24 @@ they can refer to each other."
   (module-ref (resolve-interface '(gnu packages commencement))
               'guile-final))
 
-(define* (gexp->script name exp
-                       #:key (modules '()) (guile (default-guile)))
-  "Return an executable script NAME that runs EXP using GUILE with MODULES in
-its search path."
+(define (load-path-expression modules)
+  "Return as a monadic value a gexp that sets '%load-path' and
+'%load-compiled-path' to point to MODULES, a list of module names."
   (mlet %store-monad ((modules  (imported-modules modules))
                       (compiled (compiled-modules modules)))
+    (return (gexp (eval-when (expand load eval)
+                    (set! %load-path
+                      (cons (ungexp modules) %load-path))
+                    (set! %load-compiled-path
+                      (cons (ungexp compiled)
+                            %load-compiled-path)))))))
+
+(define* (gexp->script name exp
+                       #:key (guile (default-guile)))
+  "Return an executable script NAME that runs EXP using GUILE, with EXP's
+imported modules in its search path."
+  (mlet %store-monad ((set-load-path
+                       (load-path-expression (gexp-modules exp))))
     (gexp->derivation name
                       (gexp
                        (call-with-output-file (ungexp output)
@@ -1001,28 +1065,33 @@ its search path."
                                    "#!~a/bin/guile --no-auto-compile~%!#~%"
                                    (ungexp guile))
 
-                           ;; Write the 'eval-when' form so that it can be
-                           ;; compiled.
-                           (write
-                            '(eval-when (expand load eval)
-                               (set! %load-path
-                                    (cons (ungexp modules) %load-path))
-                               (set! %load-compiled-path
-                                     (cons (ungexp compiled)
-                                           %load-compiled-path)))
-                            port)
+                           (write '(ungexp set-load-path) port)
                            (write '(ungexp exp) port)
                            (chmod port #o555)))))))
 
-(define (gexp->file name exp)
-  "Return a derivation that builds a file NAME containing EXP."
-  (gexp->derivation name
-                    (gexp
-                     (call-with-output-file (ungexp output)
-                       (lambda (port)
-                         (write '(ungexp exp) port))))
-                    #:local-build? #t
-                    #:substitutable? #f))
+(define* (gexp->file name exp #:key (set-load-path? #t))
+  "Return a derivation that builds a file NAME containing EXP.  When
+SET-LOAD-PATH? is true, emit code in the resulting file to set '%load-path'
+and '%load-compiled-path' to honor EXP's imported modules."
+  (match (if set-load-path? (gexp-modules exp) '())
+    (()                                           ;zero modules
+     (gexp->derivation name
+                       (gexp
+                        (call-with-output-file (ungexp output)
+                          (lambda (port)
+                            (write '(ungexp exp) port))))
+                       #:local-build? #t
+                       #:substitutable? #f))
+    ((modules ...)
+     (mlet %store-monad ((set-load-path (load-path-expression modules)))
+       (gexp->derivation name
+                         (gexp
+                          (call-with-output-file (ungexp output)
+                            (lambda (port)
+                              (write '(ungexp set-load-path) port)
+                              (write '(ungexp exp) port))))
+                         #:local-build? #t
+                         #:substitutable? #f)))))
 
 (define* (text-file* name #:rest text)
   "Return as a monadic value a derivation that builds a text file containing

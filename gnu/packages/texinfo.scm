@@ -32,14 +32,14 @@
 (define-public texinfo
   (package
     (name "texinfo")
-    (version "6.0")
+    (version "6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/texinfo/texinfo-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1r3i6jyynn6ab45fxw5bms8mflk9ry4qpj6gqyry72vfd5c47fhi"))))
+                "1ll3d0l8izygdxqz96wfr2631kxahifwdknpgsx2090vw963js5c"))))
     (build-system gnu-build-system)
     (native-inputs `(("procps" ,procps)))  ;one of the tests needs pgrep
     (inputs `(("ncurses" ,ncurses)
@@ -62,17 +62,17 @@ their source and the command-line Info reader.  The emphasis of the language
 is on expressing the content semantically, avoiding physical markup commands.")
     (license gpl3+)))
 
-(define-public texinfo-6.1
+(define-public texinfo-6.3
   (package
     (inherit texinfo)
-    (version "6.1")
+    (version "6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/texinfo/texinfo-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ll3d0l8izygdxqz96wfr2631kxahifwdknpgsx2090vw963js5c"))))))
+                "0fpr9kdjjl6nj2pc50k2zr7134hvqz8bi8pfqa7131a9lpzz6v14"))))))
 
 (define-public texinfo-5
   (package (inherit texinfo)
@@ -105,10 +105,10 @@ is on expressing the content semantically, avoiding physical markup commands.")
   ;; The idea of this package is to have the standalone Info reader without
   ;; the dependency on Perl that 'makeinfo' drags.
   (package
-    (inherit texinfo-6.1)
+    (inherit texinfo)
     (name "info-reader")
     (arguments
-     `(#:disallowed-references ,(assoc-ref (package-inputs texinfo-6.1)
+     `(#:disallowed-references ,(assoc-ref (package-inputs texinfo)
                                            "perl")
 
        #:modules ((ice-9 ftw) (srfi srfi-1)

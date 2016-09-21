@@ -27,6 +27,8 @@
   #:use-module (gnu services avahi)
   #:use-module (gnu services xorg)
   #:use-module (gnu services networking)
+  #:use-module ((gnu system file-systems)
+                #:select (%elogind-file-systems))
   #:use-module (gnu system shadow)
   #:use-module (gnu system pam)
   #:use-module (gnu packages glib)
@@ -45,18 +47,47 @@
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
-  #:export (upower-service
+  #:export (upower-configuration
+            upower-configuration?
+            upower-service
+            upower-service-type
+
+            udisks-configuration
+            udisks-configuration?
             udisks-service
+            udisks-service-type
+
             colord-service
+
             geoclue-application
+            geoclue-configuration
+            geoclue-configuration?
             %standard-geoclue-applications
             geoclue-service
+            geoclue-service-type
+
             bluetooth-service
+
+            polkit-configuration
+            polkit-configuration?
             polkit-service
+            polkit-service-type
+
             elogind-configuration
+            elogind-configuration?
             elogind-service
+            elogind-service-type
+
+            gnome-desktop-configuration
+            gnome-desktop-configuration?
             gnome-desktop-service
+            gnome-desktop-service-type
+
+            xfce-desktop-configuration
+            xfce-desktop-configuration?
             xfce-desktop-service
+            xfce-desktop-service-type
+
             %desktop-services))
 
 ;;; Commentary:
@@ -91,30 +122,33 @@ is set to @var{value} when the bus daemon launches it."
                              (string-append #$service "/" #$program)
                              (cdr (command-line))))))
 
+  (define build
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (use-modules (guix build utils))
+
+          (define service-directory
+            "/share/dbus-1/system-services")
+
+          (mkdir-p (dirname (string-append #$output
+                                           service-directory)))
+          (copy-recursively (string-append #$service
+                                           service-directory)
+                            (string-append #$output
+                                           service-directory))
+          (symlink (string-append #$service "/etc") ;for etc/dbus-1
+                   (string-append #$output "/etc"))
+
+          (for-each (lambda (file)
+                      (substitute* file
+                        (("Exec[[:blank:]]*=[[:blank:]]*([[:graph:]]+)(.*)$"
+                          _ original-program arguments)
+                         (string-append "Exec=" #$wrapper arguments
+                                        "\n"))))
+                    (find-files #$output "\\.service$")))))
+
   (computed-file (string-append (package-name service) "-wrapper")
-                 #~(begin
-                     (use-modules (guix build utils))
-
-                     (define service-directory
-                       "/share/dbus-1/system-services")
-
-                     (mkdir-p (dirname (string-append #$output
-                                                      service-directory)))
-                     (copy-recursively (string-append #$service
-                                                      service-directory)
-                                       (string-append #$output
-                                                      service-directory))
-                     (symlink (string-append #$service "/etc") ;for etc/dbus-1
-                              (string-append #$output "/etc"))
-
-                     (for-each (lambda (file)
-                                 (substitute* file
-                                   (("Exec[[:blank:]]*=[[:blank:]]*([[:graph:]]+)(.*)$"
-                                     _ original-program arguments)
-                                    (string-append "Exec=" #$wrapper arguments
-                                                   "\n"))))
-                               (find-files #$output "\\.service$")))
-                 #:modules '((guix build utils))))
+                 build))
 
 
 ;;;
@@ -408,15 +442,15 @@ Users need to be in the @code{lp} group to access the D-Bus service.
 (define (polkit-directory packages)
   "Return a directory containing an @file{actions} and possibly a
 @file{rules.d} sub-directory, for use as @file{/etc/polkit-1}."
-  (computed-file "etc-polkit-1"
-                 #~(begin
-                     (use-modules (guix build union) (srfi srfi-26))
+  (with-imported-modules '((guix build union))
+    (computed-file "etc-polkit-1"
+                   #~(begin
+                       (use-modules (guix build union) (srfi srfi-26))
 
-                     (union-build #$output
-                                  (map (cut string-append <>
-                                            "/share/polkit-1")
-                                       (list #$@packages))))
-                 #:modules '((guix build union))))
+                       (union-build #$output
+                                    (map (cut string-append <>
+                                              "/share/polkit-1")
+                                         (list #$@packages)))))))
 
 (define polkit-etc-files
   (match-lambda
@@ -426,9 +460,8 @@ Users need to be in the @code{lp} group to access the D-Bus service.
 (define polkit-setuid-programs
   (match-lambda
     (($ <polkit-configuration> polkit)
-     (list #~(string-append #$polkit
-                            "/lib/polkit-1/polkit-agent-helper-1")
-           #~(string-append #$polkit "/bin/pkexec")))))
+     (list (file-append polkit "/lib/polkit-1/polkit-agent-helper-1")
+           (file-append polkit "/bin/pkexec")))))
 
 (define polkit-service-type
   (service-type (name 'polkit)
@@ -488,7 +521,7 @@ the capability to suspend the system if the user is logged in locally."
          (system? #t)
          (comment "colord daemon user")
          (home-directory "/var/empty")
-         (shell #~(string-append #$shadow "/sbin/nologin")))))
+         (shell (file-append shadow "/sbin/nologin")))))
 
 (define colord-service-type
   (service-type (name 'colord)
@@ -704,8 +737,8 @@ seats.)"
   (define pam-elogind
     (pam-entry
      (control "required")
-     (module #~(string-append #$(elogind-package config)
-                              "/lib/security/pam_elogind.so"))))
+     (module (file-append (elogind-package config)
+                          "/lib/security/pam_elogind.so"))))
 
   (list (lambda (pam)
           (pam-service
@@ -728,7 +761,11 @@ seats.)"
 
                        ;; Extend PAM with pam_elogind.so.
                        (service-extension pam-root-service-type
-                                          pam-extension-procedure)))))
+                                          pam-extension-procedure)
+
+                       ;; We need /run/user, /run/systemd, etc.
+                       (service-extension file-system-service-type
+                                          (const %elogind-file-systems))))))
 
 (define* (elogind-service #:key (config (elogind-configuration)))
   "Return a service that runs the @command{elogind} login and seat management
@@ -791,7 +828,7 @@ and extends polkit with the actions from @code{gnome-settings-daemon}."
 
 (define* (xfce-desktop-service #:key (config (xfce-desktop-configuration)))
   "Return a service that adds the @code{xfce} package to the system profile,
-and extends polkit with the abilit for @code{thunar} to manipulate the file
+and extends polkit with the ability for @code{thunar} to manipulate the file
 system as root from within a user session, after the user has authenticated
 with the administrator's password."
   (service xfce-desktop-service-type config))

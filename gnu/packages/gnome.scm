@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@openmailbox.org>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
@@ -19,6 +19,10 @@
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2016 ng0 <ng0@we.make.ritual.n0.is>
+;;; Copyright © 2016 David Craven <david@craven.ch>
+;;; Copyright © 2016 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -83,7 +87,6 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lirc)
   #:use-module (gnu packages lua)
-  #:use-module (gnu packages m4)
   #:use-module (gnu packages image)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages password-utils)
@@ -788,7 +791,7 @@ the API.")
     (version "1.2.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/project/gtkglext/gtkglext/"
+              (uri (string-append "mirror://sourceforge/gtkglext/gtkglext/"
                                   version "/gtkglext-" version ".tar.gz"))
               (sha256
                (base32 "1ya4d2j2aacr9ii5zj4ac95fjpdvlm2rg79mgnk7yvl1dcy3y1z5"))
@@ -1586,7 +1589,7 @@ Hints specification (EWMH).")
 (define-public gnumeric
   (package
     (name "gnumeric")
-    (version "1.12.28")
+    (version "1.12.31")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1594,7 +1597,7 @@ Hints specification (EWMH).")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1fsdp7r6fhc0m3fb4ly4xwh83v3hp2zrv9d0713g4lcy709svm02"))))
+                "1rvadlgikklwb6rccqc3rlhqv3m9qx27rchm7znxr062fn7fgb68"))))
     (build-system gnu-build-system)
     (arguments
      `(;; The gnumeric developers don't worry much about failing tests.
@@ -2420,7 +2423,7 @@ output devices.")
 (define-public geoclue
   (package
     (name "geoclue")
-    (version "2.4.3")
+    (version "2.4.4")
     (source
      (origin
        (method url-fetch)
@@ -2429,7 +2432,7 @@ output devices.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0pk07k65dlw37nz8z5spksivsv5nh96xmbi336rf2yfxf2ldpadd"))
+         "0p1ibjf5vzjsahw5xif2si3lj6a00sxhll008jk7w1hj1jfznhww"))
        (patches (search-patches "geoclue-config.patch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
@@ -3261,7 +3264,7 @@ which can read a large number of file formats.")
 (define-public rhythmbox
  (package
    (name "rhythmbox")
-   (version "3.2.1")
+   (version "3.4")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3269,7 +3272,7 @@ which can read a large number of file formats.")
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "0f3radhlji7rxl760yl2vm49fvfslympxrpm8497acbmbd7wlhxz"))))
+              "1347747m90aiz47wny1f8rdk5195qf2ph0554c6y91711sm951gg"))))
    (build-system glib-or-gtk-build-system)
    (arguments
     `(#:configure-flags
@@ -3287,11 +3290,13 @@ which can read a large number of file formats.")
            (let ((out               (assoc-ref outputs "out"))
                  (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
                  (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                 (grl-plugin-path   (getenv "GRL_PLUGIN_PATH")))
+                 (grl-plugin-path   (getenv "GRL_PLUGIN_PATH"))
+                 (python-path       (getenv "PYTHONPATH")))
              (wrap-program (string-append out "/bin/rhythmbox")
                `("GI_TYPELIB_PATH"        ":" prefix (,gi-typelib-path))
                `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-               `("GRL_PLUGIN_PATH"        ":" prefix (,grl-plugin-path))))
+               `("GRL_PLUGIN_PATH"        ":" prefix (,grl-plugin-path))
+               `("PYTHONPATH"             ":" prefix (,python-path))))
            #t)))))
    (propagated-inputs
     `(("dconf" ,dconf)))
@@ -3337,7 +3342,6 @@ which can read a large number of file formats.")
       ;; TODO:
       ;;  * libgpod
       ;;  * mx
-      ;;  * webkit
       ("brasero" ,brasero)))
    (home-page "https://wiki.gnome.org/Apps/Rhythmbox")
    (synopsis "Music player for GNOME")
@@ -3426,7 +3430,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
 (define-public gvfs
   (package
     (name "gvfs")
-    (version "1.28.1")
+    (version "1.28.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3434,7 +3438,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "16bry61hg681bwb0pih86cjayzvc5f89ip5xd8fydcy16nnfbksf"))))
+                "05xxy0ids310qy24vmkyl3hc6mq05p39aa8mkr5fzxkhhnv4r325"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f)) ; XXX: requiring `pidof'
@@ -3465,9 +3469,9 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
        ("nettle" ,nettle) ; XXX: required by libarchive.pc
        ("udisks" ,udisks)))
     (home-page "https://wiki.gnome.org/gvfs/")
-    (synopsis "Userspace virtual filesystem for GIO")
+    (synopsis "Userspace virtual file system for GIO")
     (description
-     "GVFS is a userspace virtual filesystem designed to work with the I/O
+     "GVFS is a userspace virtual file system designed to work with the I/O
 abstraction of GIO.  It contains a GIO module that seamlessly adds GVFS support
 to all applications using the GIO API.  It also supports exposing the GVFS
 mounts to non-GIO applications using FUSE.
@@ -3524,7 +3528,7 @@ USB transfers with your high-level application or system daemon.")
 (define-public simple-scan
   (package
     (name "simple-scan")
-    (version "3.19.91")
+    (version "3.22.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://launchpad.net/simple-scan/"
@@ -3533,7 +3537,7 @@ USB transfers with your high-level application or system daemon.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1c5glf5vxgld41w4jxfqcv17q76qnh43fawpv33hncgh8d283xkf"))))
+                "0l1b3llkdlqq0bcjx1cadba67l2zb4zfykdaprpjbjbr6gkbc1f5"))))
     (build-system glib-or-gtk-build-system)
     (inputs
      `(("gtk" ,gtk+)
@@ -3541,10 +3545,9 @@ USB transfers with your high-level application or system daemon.")
        ("cairo" ,cairo)
        ("gdk-pixbuf" ,gdk-pixbuf)
        ("gusb" ,gusb)
-       ("libgudev" ,libgudev)
        ("libsane" ,sane-backends)))
     (native-inputs
-     `(("intltool" ,intltool)
+     `(("gettext" ,gnu-gettext)
        ("itstool" ,itstool)
        ("colord" ,colord)
        ("glib" ,glib "bin")                       ; glib-compile-schemas, etc.
@@ -3578,7 +3581,7 @@ work and the interface is well tested.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "3.20.1")
+    (version "3.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3586,7 +3589,7 @@ work and the interface is well tested.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1ry9z6d51gjbv5n8kspwdyfrdai2hrin2ixdicmyiq6xbryzcwbi"))))
+                "18i4nk4k4q2yaj4zw0gbyp7ja2g67pm05p56bbras52cnjyy37ad"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      ;; FIXME: tests run under Xvfb, but fail with:
@@ -3810,7 +3813,7 @@ classes for commonly used data structures.")
 (define-public gexiv2
   (package
     (name "gexiv2")
-    (version "0.10.3")
+    (version "0.10.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3818,7 +3821,7 @@ classes for commonly used data structures.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "121r5lv6l82pjr0ycdf2b01mdwy7sxwca2r068zrzylpc6bgn31r"))))
+                "190www3b61spfgwx42jw8h5hsz2996jcxky48k63468avjpk33dd"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("glib" ,glib "bin")
@@ -3840,7 +3843,7 @@ metadata in photo and video files of various formats.")
 (define-public shotwell
   (package
     (name "shotwell")
-    (version "0.23.1")
+    (version "0.23.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3848,39 +3851,28 @@ metadata in photo and video files of various formats.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "12imip32mav0zqg1fh4xm6zk4qsgg2435xsyb6ljz47i37zk6kg2"))))
+                "0fgs1rgvkmy79bmpxrsvm5w8rvqml4l1vnwma0xqx5zzm02p8a07"))))
     (build-system glib-or-gtk-build-system)
-    (arguments
-     `(#:tests? #f ;no "check" target
-       #:make-flags '("CC=gcc")
-       #:configure-flags '("--disable-gsettings-convert-install")
-       #:out-of-source? #f))
+    (propagated-inputs
+     `(("dconf" ,dconf)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
+       ("itstool" ,itstool)
        ("gettext" ,gnu-gettext)
-       ("m4" ,m4)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("vala" ,vala)
-       ("which" ,which)
-       ("gnome-doc-utils" ,gnome-doc-utils)
-       ;; FIXME: I only added python2-libxml2 because xml2po needs it at
-       ;; runtime.  It should be propagated.
-       ("python2-libxml2" ,python2-libxml2)
-       ("python2" ,python-2)))
+       ("itstool" ,itstool)
+       ("vala" ,vala)))
     (inputs
-     `(("gstreamer" ,gstreamer)
+     `(("glib:bin" ,glib "bin")
+       ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-good" ,gst-plugins-good)
        ("libgee" ,libgee)
        ("gexiv2" ,gexiv2)
        ("libraw" ,libraw)
        ("json-glib" ,json-glib)
-       ("rest" ,rest)
        ("webkitgtk" ,webkitgtk)
        ("sqlite" ,sqlite)
        ("libsoup" ,libsoup)
        ("libxml2" ,libxml2)
-       ("gtk+" ,gtk+)
        ("libgudev" ,libgudev)
        ("libgphoto2" ,libgphoto2)))
     (home-page "https://wiki.gnome.org/Apps/Shotwell")
@@ -3895,7 +3887,7 @@ share them with others via social networking and more.")
 (define-public file-roller
   (package
     (name "file-roller")
-    (version "3.20.1")
+    (version "3.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3903,7 +3895,7 @@ share them with others via social networking and more.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0cx3d8mp0pxz9wcsb2ph7g1zy22m8z5x0a4f5vgfzl0jmrcxpcy8"))))
+                "1sa46vjx78d670m6bikpibgz39a5zb6ri8yjmj632lmxqvj2sp3b"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("intltool" ,intltool)
@@ -3928,7 +3920,7 @@ such as gzip tarballs.")
 (define-public gnome-session
   (package
     (name "gnome-session")
-    (version "3.20.1")
+    (version "3.20.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3936,7 +3928,7 @@ such as gzip tarballs.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04w90gyl0kdx5vwmdcgfdk3qr9xhip00vgpgzci151agqwyzbs9a"))))
+                "1npnjm6wirz2v0liv7n23ivp2w0y1q230qcdb681hhzmp7h9fpq2"))))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -4421,6 +4413,8 @@ users.")
                              "rundir=/tmp"
                              "statedir=/tmp"
                              "install")))))))
+    (propagated-inputs
+     `(("glib" ,glib)))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for gdbus-codegen
        ("gobject-introspection" ,gobject-introspection)
@@ -4455,6 +4449,27 @@ available.  It manages ethernet, WiFi, mobile broadband (WWAN), and PPPoE
 devices, and provides VPN integration with a variety of different VPN
 services.")
     (license license:gpl2+)))
+
+(define-public mobile-broadband-provider-info
+  (package
+    (name "mobile-broadband-provider-info")
+    (version "20151214")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://gnome/sources/"
+                    "mobile-broadband-provider-info/" version "/"
+                    "mobile-broadband-provider-info-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1905nab1h8p4hx0m1w0rn4mkg9209x680dcr4l77bngy21pmvr4a"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f)) ; No tests
+    (home-page "https://wiki.gnome.org/Projects/NetworkManager")
+    (synopsis "Database of broadband connection configuration")
+    (description "Database of broadband connection configuration.")
+    (license license:public-domain)))
 
 (define-public network-manager-applet
   (package
@@ -4853,8 +4868,8 @@ as SASL, TLS and VeNCrypt.  Additionally it supports encoding extensions.")
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)))
     (inputs
-     ;; TODO: add gvfs support.
      `(("dconf" ,dconf)
+       ("gvfs" ,gvfs)
        ("exempi" ,exempi)
        ("gnome-desktop" ,gnome-desktop)
        ;; XXX: gtk+ is required by libnautilus-extension.pc
@@ -4936,7 +4951,7 @@ can add your own files to the collection.")
 (define-public gnome-screenshot
   (package
     (name "gnome-screenshot")
-    (version "3.18.0")
+    (version "3.20.1")
     (source
      (origin
        (method url-fetch)
@@ -4945,7 +4960,7 @@ can add your own files to the collection.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0hc8m435q7yzvrw7jpi53kaxpmrd9w59sm7c5wibh2ng9azlv9pb"))))
+         "0hz1ywgb5vbfqr0p0cr20hmz5b11msyi3psanszdnv0lhxl9pa06"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
@@ -5014,6 +5029,7 @@ software that do not provide their own configuration interface.")
        ("eog"                       ,eog)
        ("epiphany"                  ,epiphany)
        ("evince"                    ,evince)
+       ("file-roller"               ,file-roller)
        ("gedit"                     ,gedit)
        ("glib-networking"           ,glib-networking)
        ("gnome-backgrounds"         ,gnome-backgrounds)
@@ -5147,6 +5163,36 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
     (description
      "GNOME Calendar is a simple calendar application designed to fit the GNOME
 desktop.  It supports multiple calendars, monthly view and yearly view.")
+    (license license:gpl3+)))
+
+(define-public gnome-dictionary
+  (package
+    (name "gnome-dictionary")
+    (version "3.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "08b1f5s5aqka3dwxnzmwr2fmyddjm9xw7zmqsf8r5zvfsivn7czg"))))
+    (build-system glib-or-gtk-build-system)
+    (native-inputs
+     `(("glib:bin" ,glib "bin")
+       ("gobject-introspection" ,gobject-introspection)
+       ("intltool" ,intltool)
+       ("itstool" ,itstool)
+       ("pkg-config" ,pkg-config)
+       ("xmllint" ,libxml2)))
+    (inputs
+     `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gtk+" ,gtk+)))
+    (home-page "https://wiki.gnome.org/Apps/Dictionary")
+    (synopsis "Look up words in dictionary sources")
+    (description
+     "GNOME Dictionary can look for the definition or translation of a word in
+existing databases over the internet.")
     (license license:gpl3+)))
 
 (define-public gnome-tweak-tool
@@ -5385,4 +5431,73 @@ compiled.")
     (description "This library allows you to use the Facebook API from
 GLib/GObject code.")
     (home-page "https://wiki.gnome.org/Projects/GFBGraph")
+    (license license:lgpl2.1+)))
+
+(define-public libgnomekbd
+  (package
+    (name "libgnomekbd")
+    (version "3.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version)  "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "02bahnl3vaqyqyr99r9kwka84sxj8qdrz7x0bf97192dysqaa7n4"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("glib" ,glib "bin")
+       ("intltool" ,intltool)))
+    (propagated-inputs
+     ;; Referred to in .h files and .pc.
+     `(("glib" ,glib)
+       ("gtk+" ,gtk+)
+       ("libxklavier" ,libxklavier)))
+    (home-page "https://www.gnome.org")
+    (synopsis "GNOME keyboard configuration library")
+    (description
+     "Libgnomekbd is a keyboard configuration library for the GNOME desktop
+environment, which can notably display keyboard layouts.")
+    (license license:lgpl2.0+)))
+
+;;; This package is no longer maintained:
+;;; https://wiki.gnome.org/Attic/LibUnique
+;;; "Unique is now in maintenance mode, and its usage is strongly discouraged.
+;;; Applications should use the GtkApplication class provided by GTK+ 3.0."
+(define-public libunique
+  (package
+    (name "libunique")
+    (version "3.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version)  "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0f70lkw66v9cj72q0iw1s2546r6bwwcd8idcm3621fg2fgh2rw58"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     `(#:configure-flags '("--disable-static"
+                           "--disable-dbus" ; use gdbus
+                           "--enable-introspection")))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("gobject-introspection" ,gobject-introspection)
+       ("glib:bin" ,glib "bin")
+       ("gtk-doc" ,gtk-doc)))
+    (propagated-inputs
+     ;; Referred to in .h files and .pc.
+     `(("gtk+" ,gtk+)))
+    (home-page "https://wiki.gnome.org/Attic/LibUnique")
+    (synopsis "Library for writing single instance applications")
+    (description
+     "Libunique is a library for writing single instance applications.  If you
+launch a single instance application twice, the second instance will either just
+quit or will send a message to the running instance.  Libunique makes it easy to
+write this kind of application, by providing a base class, taking care of all
+the IPC machinery needed to send messages to a running instance, and also
+handling the startup notification side.")
     (license license:lgpl2.1+)))

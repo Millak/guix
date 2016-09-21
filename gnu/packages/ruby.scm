@@ -24,6 +24,7 @@
 (define-module (gnu packages ruby)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages readline)
@@ -60,8 +61,7 @@
        (patches (search-patches "ruby-symlinkfix.patch"))
        (snippet `(begin
                    ;; Remove bundled libffi
-                   (delete-file-recursively
-                    (string-append "ext/fiddle/libffi-3.2.1"))
+                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
                    #t))))
     (build-system gnu-build-system)
     (arguments
@@ -244,13 +244,13 @@ an extensible architecture with a swappable backend.")
 (define ruby-rspec-support
   (package
     (name "ruby-rspec-support")
-    (version "3.2.2")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-support" version))
               (sha256
                (base32
-                "194zry5195ls2hni7r9824vqb5d3qfg4jb15fgj8glfy0rvw3zxl"))))
+                "10vf3k3d472y573mag2kzfsfrf6rv355s13kadnpryk8d36yq5r0"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
@@ -262,13 +262,13 @@ an extensible architecture with a swappable backend.")
 (define-public ruby-rspec-core
   (package
     (name "ruby-rspec-core")
-    (version "3.2.3")
+    (version "3.5.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-core" version))
               (sha256
                (base32
-                "0k2471iw30gc2cvv67damrx666pmsvx8l0ahk3hm20dhfnmcmpvv"))))
+                "0brfq51fwkkh5g6vw7smky5fvip46pryi243jmin0nzn7iwh9j5g"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
@@ -315,13 +315,13 @@ standard diff-like tool.")
 (define-public ruby-rspec-expectations
   (package
     (name "ruby-rspec-expectations")
-    (version "3.2.1")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-expectations" version))
               (sha256
                (base32
-                "01kmchabgpdcaqdsqg8r0g5gy385xhp1k1jsds3w264ypin17n14"))))
+                "0bbqfrb1x8gmwf8x2xhhwvvlhwbbafq4isbvlibxi6jk602f09gs"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
@@ -349,13 +349,13 @@ outcomes of a code example.")
 (define-public ruby-rspec-mocks
   (package
     (name "ruby-rspec-mocks")
-    (version "3.2.1")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-mocks" version))
               (sha256
                (base32
-                "09yig1lwgxl8fsns71z3xhv7wkg7zvagydh37pvaqpw92dz55jv2"))))
+                "0nl3ksivh9wwrjjd47z5dggrwx40v6gpb3a0gzbp1gs06a5dmk24"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
@@ -383,13 +383,13 @@ support for stubbing and mocking.")
 (define-public ruby-rspec
   (package
     (name "ruby-rspec")
-    (version "3.2.0")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec" version))
               (sha256
                (base32
-                "0lkz01j4yxcwb3g5w6r1l9khnyw3sxib4rrh4npd2pxh390fcc4f"))))
+                "16g3mmih999f0b6vcz2c3qsc7ks5zy4lj1rzjh8hf6wk531nvc6s"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
@@ -908,13 +908,13 @@ Ruby Gems.")
 (define-public ruby-ffi
   (package
     (name "ruby-ffi")
-    (version "1.9.10")
+    (version "1.9.14")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "ffi" version))
               (sha256
                (base32
-                "1m5mprppw0xcrv2mkim5zsk70v089ajzqiq5hpyb0xg96fcyzyxj"))))
+                "1nkcrmxqr0vb1y4rwliclwlj2ajsi4ddpdx2gvzjy0xbkk5iqzfp"))))
     (build-system ruby-build-system)
     ;; FIXME: Before running tests the build system attempts to build libffi
     ;; from sources.
@@ -956,13 +956,13 @@ the SimpleCov code coverage tool for Ruby version 1.9 and above.")
 (define-public ruby-simplecov
   (package
     (name "ruby-simplecov")
-    (version "0.10.0")
+    (version "0.12.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "simplecov" version))
               (sha256
                (base32
-                "1q2iq2vgrdvvla5y907gkmqx6ry2qvnvc7a90hlcbwgp1w0sv6z4"))))
+                "0ffhyrfnq2zm2mc1742a4hqy475g3qa1zf6yfldwg1ldh5sn3qbx"))))
     (build-system ruby-build-system)
     ;; Simplecov depends on rubocop for code style checking at build time.
     ;; Rubocop needs simplecov at build time.
@@ -1839,13 +1839,13 @@ net/http library.")
 (define-public ruby-arel
   (package
     (name "ruby-arel")
-    (version "6.0.3")
+    (version "7.1.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "arel" version))
               (sha256
                (base32
-                "1a270mlajhrmpqbhxcqjqypnvgrq4pgixpv3w9gwp1wrrapnwrzk"))))
+                "0d6kfsh7qf5gls0n1nrppxv89zyli27kw8nklpq2by3z7cxjcvjg"))))
     (build-system ruby-build-system)
     (arguments '(#:tests? #f)) ; no tests
     (home-page "https://github.com/rails/arel")
@@ -1909,37 +1909,48 @@ to reproduce user environments.")
 (define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.6.7.2")
+    (version "1.6.8")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "nokogiri" version))
               (sha256
                (base32
-                "11sbmpy60ynak6s3794q32lc99hs448msjy8rkp84ay7mq7zqspv"))))
+                "17pjhvm4yigriizxbbpx266nnh6nckdm33m3j4ws9dcg99daz91p"))))
     (build-system ruby-build-system)
     (arguments
      ;; Tests fail because Nokogiri can only test with an installed extension,
      ;; and also because many test framework dependencies are missing.
-     '(#:tests? #f
+     `(#:tests? #f
        #:gem-flags (list "--" "--use-system-libraries"
                          (string-append "--with-xml2-include="
                                         (assoc-ref %build-inputs "libxml2")
                                         "/include/libxml2" ))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'extract-gemspec 'update-dependency
-           (lambda _
-             (substitute* ".gemspec" (("2.0.0.rc2") "2.0"))
+         (add-before 'build 'patch-extconf
+           ;; 'pkg-config' is not included in the GEM_PATH during
+           ;; installation, so we add it directly to the load path.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((pkg-config (assoc-ref inputs "ruby-pkg-config"))
+                    (pkg-config-home (gem-home pkg-config
+                                               ,(package-version ruby))))
+               (substitute* "ext/nokogiri/extconf.rb"
+                 (("gem 'pkg-config'.*")
+                  (string-append "$:.unshift '"
+                                 pkg-config-home
+                                 "/gems/pkg-config-"
+                                 ,(package-version ruby-pkg-config)
+                                 "/lib'\n"))))
              #t)))))
     (native-inputs
-     `(("ruby-hoe" ,ruby-hoe)
-       ("ruby-rake-compiler" ,ruby-rake-compiler)))
+     `(("ruby-hoe" ,ruby-hoe)))
     (inputs
      `(("zlib" ,zlib)
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)))
     (propagated-inputs
-     `(("ruby-mini-portile" ,ruby-mini-portile-2)))
+     `(("ruby-mini-portile" ,ruby-mini-portile-2)
+       ("ruby-pkg-config" ,ruby-pkg-config)))
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
@@ -2525,22 +2536,26 @@ you about the changes.")
 (define-public ruby-activesupport
   (package
     (name "ruby-activesupport")
-    (version "4.2.4")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "activesupport" version))
        (sha256
         (base32
-         "19n38rj6r1gyxgka18qvcxyla0fwan8a5p3ghq0pp8aj93sbmr6f"))))
+         "0k7zhnz0aw1ym8phs10r85f91ja45vsd058fm9v0h2k0igw12cpf"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f)) ; no tests
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             ;; There is no tests, instead attempt to load the library.
+             (zero? (system* "ruby" "-Ilib" "-r" "active_support")))))))
     (propagated-inputs
-     `(("ruby-i18n" ,ruby-i18n)
-       ("ruby-json" ,ruby-json)
+     `(("ruby-concurrent" ,ruby-concurrent)
+       ("ruby-i18n" ,ruby-i18n)
        ("ruby-minitest" ,ruby-minitest)
-       ("ruby-thread-safe" ,ruby-thread-safe)
        ("ruby-tzinfo" ,ruby-tzinfo)
        ("ruby-tzinfo-data" ,ruby-tzinfo-data)))
     (synopsis "Ruby on Rails utility library")
@@ -2883,14 +2898,22 @@ differences (added or removed nodes) between two XML/HTML documents.")
 (define-public ruby-rack
   (package
     (name "ruby-rack")
-    (version "1.6.4")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
-       (uri (rubygems-uri "rack" version))
+       ;; Download from GitHub so that the patch can be applied.
+       (uri (string-append
+             "https://github.com/rack/rack/archive/"
+             version
+             ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "09bs295yq6csjnkzj7ncj50i6chfxrhmzg1pk6p0vd2lb9ac8pj5"))))
+         "00k62v8lpyjzghkn0h0awrnqj1jmlcs2wp57py27m43y65v89cp3"))
+       ;; Ignore test which fails inside the build environment but works
+       ;; outside.
+       (patches (search-patches "ruby-rack-ignore-failing-test.patch"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases
@@ -2915,7 +2938,11 @@ differences (added or removed nodes) between two XML/HTML documents.")
                                  (number->string (+ 33 size-diff))))))
              #t)))))
     (native-inputs
-     `(("ruby-bacon" ,ruby-bacon)))
+     `(("ruby-minitest" ,ruby-minitest)
+       ("ruby-minitest-sprint" ,ruby-minitest-sprint)
+       ("which" ,which)))
+    (propagated-inputs
+     `(("ruby-concurrent" ,ruby-concurrent)))
     (synopsis "Unified web application interface for Ruby")
     (description "Rack provides a minimal, modular and adaptable interface for
 developing web applications in Ruby.  By wrapping HTTP requests and responses,
@@ -2945,43 +2972,43 @@ Ruby classes.")
     (home-page "https://ms-ati.github.io/docile/")
     (license license:expat)))
 
-(define-public ruby-gherkin3
+(define-public ruby-gherkin
   (package
-    (name "ruby-gherkin3")
-    (version "3.1.1")
+    (name "ruby-gherkin")
+    (version "4.0.0")
     (source
       (origin
         (method url-fetch)
-        (uri (rubygems-uri "gherkin3" version))
+        (uri (rubygems-uri "gherkin" version))
         (sha256
           (base32
-            "0xsyxhqa1gwcxzvsdy4didaiq5vam8ma3fbwbw2w60via4k6r1z9"))))
+            "1ripjv97hg746xszx9isal8z8vrlb98asc2rdxl291b3hr6pj0pr"))))
     (build-system ruby-build-system)
     (native-inputs
      `(("bundler" ,bundler)))
     (arguments
      '(#:tests? #f)) ; needs simplecov, among others
     (synopsis "Gherkin parser for Ruby")
-    (description "Gherkin 3 is a parser and compiler for the Gherkin language.
-It is intended to replace Gherkin 2 and be used by all Cucumber
-implementations to parse '.feature' files.")
+    (description "Gherkin is a parser and compiler for the Gherkin language.
+It is intended be used by all Cucumber implementations to parse '.feature'
+files.")
     (home-page "https://github.com/cucumber/gherkin3")
     (license license:expat)))
 
 (define-public ruby-cucumber-core
   (package
     (name "ruby-cucumber-core")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "cucumber-core" version))
        (sha256
         (base32
-         "12mrzf0s96izpq0k10lahlkgwc4fjs0zfs344rh8r8h3w3jyppr8"))))
+         "0qj2fsqvp94nggnikbnrfvnmzr1pl6ifmdsxj69kdw1kkab30jjr"))))
     (build-system ruby-build-system)
     (propagated-inputs
-     `(("ruby-gherkin3" ,ruby-gherkin3)))
+     `(("ruby-gherkin" ,ruby-gherkin)))
     (native-inputs
      `(("bundler" ,bundler)))
     (arguments
@@ -3942,7 +3969,7 @@ part of the Prawn PDF generator.")
 (define-public ruby-puma
   (package
     (name "ruby-puma")
-    (version "3.4.0")
+    (version "3.6.0")
     (source
      (origin
        (method url-fetch)
@@ -3952,14 +3979,22 @@ part of the Prawn PDF generator.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "10svyj2jk949y1dmkxyzipk1ddzl4iz9limrcws1zhpganpvq3j8"))
-       ;; Ignore broken test reported upstream.
+         "08aws79n9slcr50d9lwm011cp1pxvr1409c2jmyjxywvrc0a30v1"))
+       ;; Ignore broken tests reported upstream.
        ;; https://github.com/puma/puma/issues/995
+       ;; https://github.com/puma/puma/issues/1044
        (patches (search-patches "ruby-puma-ignore-broken-test.patch"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'delete-integration-tests
+           (lambda _
+             ;; One broken test in this file cannot be easily removed in
+             ;; isolation, it probably causes race conditions.  So we delete
+             ;; the entire file.
+             (delete-file "test/test_integration.rb")
+             #t))
          (add-before 'build 'fix-gemspec
            (lambda _
              (substitute* "puma.gemspec"
@@ -4050,7 +4085,7 @@ associated records.")
        ("ruby-minitest-rg" ,ruby-minitest-rg)
        ("ruby-mocha" ,ruby-mocha)
        ("ruby-activesupport" ,ruby-activesupport)))
-    (synopsis "Test mocks for time-dependent functions.")
+    (synopsis "Test mocks for time-dependent functions")
     (description
      "Timecop provides \"time travel\" and \"time freezing\" capabilities,
 making it easier to test time-dependent code.  It provides a unified method to
@@ -4084,30 +4119,32 @@ call.")
      `(#:test-target "spec"
        #:phases
        (modify-phases %standard-phases
-         (add-before 'build 'remove-git-lsfiles-and-extra-gemspecs
-           (lambda _
-             (for-each (lambda (file)
-                         (substitute* file
-                           (("git ls-files") "find * |sort")))
-                       (list "concurrent-ruby.gemspec"
-                             "support/file_map.rb"))
-             #t))
-         (add-before 'build 'remove-extra-gemspecs
+         (add-before 'replace-git-ls-files 'remove-extra-gemspecs
            (lambda _
              ;; Delete extra gemspec files so 'first-gemspec' chooses the
              ;; correct one.
              (delete-file "concurrent-ruby-edge.gemspec")
              (delete-file "concurrent-ruby-ext.gemspec")
              #t))
+         (add-before 'build 'replace-git-ls-files2
+           (lambda _
+             (substitute* "support/file_map.rb"
+               (("git ls-files") "find * |sort"))
+             #t))
          (add-before 'check 'rake-compile
            ;; Fix the test error described at
            ;; https://github.com/ruby-concurrency/concurrent-ruby/pull/408
-           (lambda _ (zero? (system* "rake" "compile")))))))
+           (lambda _ (zero? (system* "rake" "compile"))))
+         (add-before 'check 'remove-timecop-dependency
+           ;; Remove timecop-dependent tests as having timecop as a depedency
+           ;; causes circular depedencies.
+           (lambda _
+             (delete-file "spec/concurrent/executor/timer_set_spec.rb")
+             (delete-file "spec/concurrent/scheduled_task_spec.rb")
+             #t)))))
     (native-inputs
      `(("ruby-rake-compiler" ,ruby-rake-compiler)
-       ("ruby-yard" ,ruby-yard)
-       ("ruby-rspec" ,ruby-rspec)
-       ("ruby-timecop" ,ruby-timecop)))
+       ("ruby-rspec" ,ruby-rspec)))
     (synopsis "Concurrency tools for Ruby")
     (description
      "This library provides modern concurrency tools including agents,
@@ -4117,3 +4154,24 @@ patterns.")
     (home-page "http://www.concurrent-ruby.com")
     (license license:expat)))
 
+(define-public ruby-pkg-config
+  (package
+    (name "ruby-pkg-config")
+    (version "1.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "pkg-config" version))
+       (sha256
+        (base32
+         "0lljiqnm0b4z6iy87lzapwrdfa6ps63x2z5zbs038iig8dqx2g0z"))))
+    (build-system ruby-build-system)
+    (arguments
+     ;; Tests require extra files not included in the gem.
+     `(#:tests? #f))
+    (synopsis "Detect libraries for compiling Ruby native extensions")
+    (description
+     "@code{pkg-config} can be used in your extconf.rb to properly detect need
+libraries for compiling Ruby native extensions.")
+    (home-page "https://github.com/ruby-gnome2/pkg-config")
+    (license license:lgpl2.0+)))
