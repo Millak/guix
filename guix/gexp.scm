@@ -725,7 +725,12 @@ references; otherwise, return only non-native references."
       (($ <gexp-input> (? gexp? exp))
        (append (gexp-outputs exp) result))
       (($ <gexp-input> (lst ...) output native?)
-       (add-reference-output lst result))
+       ;; XXX: Automatically convert LST.
+       (add-reference-output (map (match-lambda
+                                   ((? gexp-input? x) x)
+                                   (x (%gexp-input x "out" native?)))
+                                  lst)
+                             result))
       ((lst ...)
        (fold-right add-reference-output result lst))
       (_
@@ -842,8 +847,8 @@ instance, it could be a gexp), return it."
     (define (escape->ref exp)
       ;; Turn 'ungexp' form EXP into a "reference".
       (syntax-case exp (ungexp ungexp-splicing
-                               ungexp-native ungexp-native-splicing
-                               output)
+                        ungexp-native ungexp-native-splicing
+                        output)
         ((ungexp output)
          #'(gexp-output "out"))
         ((ungexp output name)
@@ -889,7 +894,7 @@ instance, it could be a gexp), return it."
       ;; Return a variant of EXP where all the cars of SUBSTS have been
       ;; replaced by the corresponding cdr.
       (syntax-case exp (ungexp ungexp-native
-                               ungexp-splicing ungexp-native-splicing)
+                        ungexp-splicing ungexp-native-splicing)
         ((ungexp _ ...)
          (substitute-ungexp exp substs))
         ((ungexp-native _ ...)
