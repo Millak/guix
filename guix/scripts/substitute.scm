@@ -34,6 +34,7 @@
   #:use-module ((guix build utils) #:select (mkdir-p dump-port))
   #:use-module ((guix build download)
                 #:select (current-terminal-columns
+                          trace-progress-proc
                           progress-proc uri-abbreviation nar-uri-abbreviation
                           (open-connection-for-uri
                            . guix:open-connection-for-uri)
@@ -836,7 +837,7 @@ expected by the daemon."
           (or (narinfo-size narinfo) 0)))
 
 (define* (process-query command
-                        #:key cache-urls acl)
+                        #:key cache-urls acl print-build-trace?)
   "Reply to COMMAND, a query as written by the daemon to this process's
 standard input.  Use ACL as the access-control list against which to check
 authorized substitutes."
@@ -860,7 +861,7 @@ authorized substitutes."
      (error "unknown `--query' command" wtf))))
 
 (define* (process-substitution store-item destination
-                               #:key cache-urls acl)
+                               #:key cache-urls acl print-build-trace?)
   "Substitute STORE-ITEM (a store file name) from CACHE-URLS, and write it to
 DESTINATION as a nar file.  Verify the substitute against ACL."
   (let* ((narinfo (lookup-narinfo cache-urls store-item))
@@ -871,31 +872,38 @@ DESTINATION as a nar file.  Verify the substitute against ACL."
     ;; Tell the daemon what the expected hash of the Nar itself is.
     (format #t "~a~%" (narinfo-hash narinfo))
 
-    (format (current-error-port)
-            ;; TRANSLATORS: The second part of this message looks like
-            ;; "(4.1MiB installed)"; it shows the size of the package once
-            ;; installed.
-            (G_ "Downloading ~a~:[~*~; (~a installed)~]...~%")
-            (uri->string uri)
-            ;; Use the Nar size as an estimate of the installed size.
-            (narinfo-size narinfo)
-            (and=> (narinfo-size narinfo)
-                   (cute byte-count->string <>)))
+    (unless print-build-trace?
+      (format (current-error-port)
+              ;; TRANSLATORS: The second part of this message looks like
+              ;; "(4.1MiB installed)"; it shows the size of the package once
+              ;; installed.
+              (G_ "Downloading ~a~:[~*~; (~a installed)~]...~%")
+              (uri->string uri)
+              ;; Use the Nar size as an estimate of the installed size.
+              (narinfo-size narinfo)
+              (and=> (narinfo-size narinfo)
+                     (cute byte-count->string <>))))
     (let*-values (((raw download-size)
                    ;; Note that Hydra currently generates Nars on the fly
                    ;; and doesn't specify a Content-Length, so
                    ;; DOWNLOAD-SIZE is #f in practice.
                    (fetch uri #:buffered? #f #:timeout? #f))
+                  ((progress-proc)
+                   (if print-build-trace?
+                       trace-progress-proc
+                       (lambda (destination uri size port)
+                         (progress-proc uri size port
+                                        #:abbreviation
+                                        nar-uri-abbreviation))))
                   ((progress)
                    (let* ((comp     (narinfo-compression narinfo))
                           (dl-size  (or download-size
                                         (and (equal? comp "none")
                                              (narinfo-size narinfo))))
-                          (progress (progress-proc (uri->string uri)
+                          (progress (progress-proc destination
+                                                   (uri->string uri)
                                                    dl-size
-                                                   (current-error-port)
-                                                   #:abbreviation
-                                                   nar-uri-abbreviation)))
+                                                   (current-error-port))))
                      (progress-report-port progress raw)))
                   ((input pids)
                    (decompressed-port (and=> (narinfo-compression narinfo)
@@ -986,6 +994,13 @@ default value."
 
 (define (guix-substitute . args)
   "Implement the build daemon's substituter protocol."
+  (define print-build-trace?
+    (match (or (find-daemon-option "untrusted-print-build-trace")
+               (find-daemon-option "print-build-trace"))
+      (#f #f)
+      ((= string->number number) (> number 0))
+      (_ #f)))
+
   (mkdir-p %narinfo-cache-directory)
   (maybe-remove-expired-cache-entries %narinfo-cache-directory
                                       cached-narinfo-files
@@ -1025,7 +1040,8 @@ default value."
                 (begin
                   (process-query command
                                  #:cache-urls %cache-urls
-                                 #:acl acl)
+                                 #:acl acl
+                                 #:print-build-trace? print-build-trace?)
                   (loop (read-line)))))))
        (("--substitute" store-path destination)
         ;; Download STORE-PATH and add store it as a Nar in file DESTINATION.
@@ -1034,7 +1050,8 @@ default value."
         (parameterize ((current-terminal-columns (client-terminal-columns)))
           (process-substitution store-path destination
                                 #:cache-urls %cache-urls
-                                #:acl (current-acl))))
+                                #:acl (current-acl)
+                                #:print-build-trace? print-build-trace?)))
        (("--version")
         (show-version-and-exit "guix substitute"))
        (("--help")

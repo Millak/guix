@@ -45,6 +45,7 @@
             byte-count->string
             current-terminal-columns
             progress-proc
+            trace-progress-proc
             uri-abbreviation
             nar-uri-abbreviation
             store-path-abbreviation))
@@ -206,6 +207,16 @@ used to shorten FILE for display."
                          log-port)
                 (flush-output-port log-port)
                 (cont))))))))
+
+(define* (trace-progress-proc file url size
+                              #:optional (log-port (current-output-port)))
+  "Like 'progress-proc', but instead of returning human-readable progress
+reports, write \"build trace\" lines to be processed elsewhere."
+  (lambda (transferred cont)
+    (format log-port "@ download-progress ~a ~a ~a ~a~%"
+            file (or url "-") (or size "-") transferred)
+    (flush-output-port log-port)
+    (cont)))
 
 (define* (uri-abbreviation uri #:optional (max-length 42))
   "If URI's string representation is larger than MAX-LENGTH, return an

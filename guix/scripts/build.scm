@@ -682,6 +682,7 @@ needed."
 ;;; Entry point.
 ;;;
 
+(use-modules (guix status))
 (define (guix-build . args)
   (define opts
     (parse-command-line args %options
@@ -698,9 +699,12 @@ needed."
         ;; Set the build options before we do anything else.
         (set-build-options-from-command-line store opts)
 
-        (parameterize ((current-build-output-port (if quiet?
-                                                      (%make-void-port "w")
-                                                      (current-error-port))))
+        (parameterize ((current-build-output-port
+                        (if quiet?
+                            (%make-void-port "w")
+                            (build-event-output-port
+                             (build-status-updater print-build-status)
+                             (build-status)))))
           (let* ((mode  (assoc-ref opts 'build-mode))
                  (drv   (options->derivations store opts))
                  (urls  (map (cut string-append <> "/log")

@@ -685,7 +685,14 @@ encoding conversion errors."
     (when (>= (nix-server-minor-version server) 10)
       (send (boolean use-substitutes?)))
     (when (>= (nix-server-minor-version server) 12)
-      (let ((pairs `(,@(if timeout
+      (let ((pairs `(;; This 'print-build-trace' option is honored by 'guix
+                     ;; substitute' et al.
+                     ,@(if print-build-trace
+                           `(("print-build-trace"
+                              . ,(if print-build-trace "1" "0")))
+                           '())
+
+                     ,@(if timeout
                            `(("build-timeout" . ,(number->string timeout)))
                            '())
                      ,@(if max-silent-time

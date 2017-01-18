@@ -53,6 +53,8 @@ static void builtinDownload(const Derivation &drv,
     const string subdir = getenv("GUIX_UNINSTALLED") != NULL
 	? "" : "/guix";
 
+    setenv("_NIX_OPTIONS", settings.pack().c_str(), 1);
+
     const string program = settings.nixLibexecDir + subdir + "/download";
     execv(program.c_str(), (char *const *) argv);
 
