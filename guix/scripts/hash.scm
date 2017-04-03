@@ -25,6 +25,7 @@
   #:use-module (guix ui)
   #:use-module (guix scripts)
   #:use-module (guix base16)
+  #:use-module (guix utils)
   #:use-module (ice-9 binary-ports)
   #:use-module (rnrs files)
   #:use-module (ice-9 match)
@@ -32,7 +33,8 @@
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
-  #:export (guix-hash))
+  #:export (guix-hash-git-checkout
+            guix-hash))
 
 
 ;;;
@@ -52,6 +54,9 @@ and 'hexadecimal' can be used as well).\n"))
   (format #t (_ "
   -x, --exclude-vcs      exclude version control directories"))
   (format #t (_ "
+  -g, --git              clone the git repository at FILE and hash it
+                         (implies -r)"))
+  (format #t (_ "
   -f, --format=FMT       write the hash in the given format"))
   (format #t (_ "
   -r, --recursive        compute the hash on FILE recursively"))
@@ -68,6 +73,10 @@ and 'hexadecimal' can be used as well).\n"))
   (list (option '(#\x "exclude-vcs") #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'exclude-vcs? #t result)))
+        (option '(#\g "git") #f #f
+                (lambda (opt name arg result)
+                  (alist-cons 'git? #t
+                              (alist-cons 'exclude-vcs? #t result))))
         (option '(#\f "format") #t #f
                 (lambda (opt name arg result)
                   (define fmt-proc
@@ -98,6 +107,35 @@ and 'hexadecimal' can be used as well).\n"))
 
 
 ;;;
+;;; Helpers.
+;;;
+
+(define (vcs-file? file stat)
+  (case (stat:type stat)
+    ((directory)
+     (member (basename file) '(".bzr" ".git" ".hg" ".svn" "CVS")))
+    ((regular)
+     ;; Git sub-modules have a '.git' file that is a regular text file.
+     (string=? (basename file) ".git"))
+    (else
+     #f)))
+
+(define* (recursive-hash file #:key (select? (const #t)))
+  (let-values (((port get-hash) (open-sha256-port)))
+    (write-file file port #:select? select?)
+    (force-output port)
+    (get-hash)))
+
+(define (guix-hash-git-checkout directory)
+  (call-with-temporary-directory
+   (lambda (dir)
+     (let ((checkout (in-vicinity dir "git-checkout")))
+       (unless (zero? (system* "git" "clone" "--" directory checkout))
+         (leave (_ "git clone failed~%")))
+       (recursive-hash checkout #:select? (negate vcs-file?))))))
+
+
+;;;
 ;;; Entry point.
 ;;;
 
@@ -111,16 +149,6 @@ and 'hexadecimal' can be used as well).\n"))
                 (lambda (arg result)
                   (alist-cons 'argument arg result))
                 %default-options))
-
-  (define (vcs-file? file stat)
-    (case (stat:type stat)
-      ((directory)
-       (member (basename file) '(".bzr" ".git" ".hg" ".svn" "CVS")))
-      ((regular)
-       ;; Git sub-modules have a '.git' file that is a regular text file.
-       (string=? (basename file) ".git"))
-      (else
-       #f)))
 
   (let* ((opts (parse-options))
          (args (filter-map (match-lambda
@@ -137,14 +165,15 @@ and 'hexadecimal' can be used as well).\n"))
       ;; Compute the hash of FILE.
       ;; Catch and gracefully report possible '&nar-error' conditions.
       (with-error-handling
-        (if (assoc-ref opts 'recursive?)
-            (let-values (((port get-hash) (open-sha256-port)))
-              (write-file file port #:select? select?)
-              (force-output port)
-              (get-hash))
-            (match file
-              ("-" (port-sha256 (current-input-port)))
-              (_   (call-with-input-file file port-sha256))))))
+        (cond
+         ((assoc-ref opts 'git?)
+          (guix-hash-git-checkout file))
+         ((assoc-ref opts 'recursive?)
+          (recursive-hash file #:select? select))
+         (else
+          (match file
+            ("-" (port-sha256 (current-input-port)))
+            (_   (call-with-input-file file port-sha256)))))))
 
     (match args
       ((file)

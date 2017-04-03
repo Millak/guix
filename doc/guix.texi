@@ -5281,6 +5281,24 @@ $ git clone http://example.org/foo.git
 $ cd foo
 $ guix hash -rx .
 @end example
+
+Hashing a git repository is so common that it has its own alias:
+
+@item --git
+@itemx -g
+Clones the git repository at @var{file} into a temporary directory and
+recursively hashes it, excluding the @file{.git} subdirectory.
+
+For example:
+@example
+$ git clone http://example.org/foo.git
+$ guix hash -g foo
+@end example
+
+Or even:
+@example
+$ guix hash -g http://example.org/foo.git
+@end example
 @end table
 
 @node Invoking guix import
