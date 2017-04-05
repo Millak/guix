@@ -123,6 +123,9 @@ MODULES =					\
   guix/build/make-bootstrap.scm			\
   guix/search-paths.scm				\
   guix/packages.scm				\
+  guix/potluck/build-systems.scm		\
+  guix/potluck/licenses.scm			\
+  guix/potluck/packages.scm			\
   guix/import/utils.scm				\
   guix/import/gnu.scm				\
   guix/import/snix.scm				\
@@ -160,6 +163,7 @@ MODULES =					\
   guix/scripts/graph.scm			\
   guix/scripts/container.scm			\
   guix/scripts/container/exec.scm		\
+  guix/scripts/potluck.scm			\
   guix.scm					\
   $(GNU_SYSTEM_MODULES)
 

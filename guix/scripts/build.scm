@@ -23,6 +23,7 @@
   #:use-module (guix store)
   #:use-module (guix derivations)
   #:use-module (guix packages)
+  #:use-module (guix potluck packages)
   #:use-module (guix grafts)
 
   ;; Use the procedure that destructures "NAME-VERSION" forms.
@@ -577,11 +578,20 @@ must be one of 'package', 'all', or 'transitive'~%")
          (append %transformation-options
                  %standard-build-options)))
 
+(define (load-package-or-derivation-from-file file)
+  (let ((mod (make-user-module '())))
+    ;; Expose potluck-package and potluck-source to the file.
+    (module-use! mod (resolve-interface
+                      '(guix potluck packages)
+                      #:select '(potluck-package potluck-source)))
+    (load* file mod)))
+
 (define (options->things-to-build opts)
   "Read the arguments from OPTS and return a list of high-level objects to
 build---packages, gexps, derivations, and so on."
   (define (validate-type x)
-    (unless (or (package? x) (derivation? x) (gexp? x) (procedure? x))
+    (unless (or (package? x) (potluck-package? x)
+                (derivation? x) (gexp? x) (procedure? x))
       (leave (_ "~s: not something we can build~%") x)))
 
   (define (ensure-list x)
@@ -601,7 +611,7 @@ build---packages, gexps, derivations, and so on."
                        (else
                         (list (specification->package spec)))))
                 (('file . file)
-                 (ensure-list (load* file (make-user-module '()))))
+                 (ensure-list (load-package-or-derivation-from-file file)))
                 (('expression . str)
                  (ensure-list (read/eval str)))
                 (('argument . (? derivation? drv))
@@ -625,27 +635,31 @@ build."
   (define system (assoc-ref opts 'system))
   (define graft? (assoc-ref opts 'graft?))
 
+  (define (package->derivation-list p)
+    (let ((p (or (and graft? (package-replacement p)) p)))
+      (match src
+        (#f
+         (list (package->derivation store p system)))
+        (#t
+         (match (package-source p)
+           (#f
+            (format (current-error-port)
+                    (_ "~a: warning: package '~a' has no source~%")
+                    (location->string (package-location p))
+                    (package-name p))
+            '())
+           (s
+            (list (package-source-derivation store s)))))
+        (proc
+         (map (cut package-source-derivation store <>)
+              (proc p))))))
+
   (parameterize ((%graft? graft?))
     (append-map (match-lambda
                   ((? package? p)
-                   (let ((p (or (and graft? (package-replacement p)) p)))
-                     (match src
-                       (#f
-                        (list (package->derivation store p system)))
-                       (#t
-                        (match (package-source p)
-                          (#f
-                           (format (current-error-port)
-                                   (_ "~a: warning: \
-package '~a' has no source~%")
-                                   (location->string (package-location p))
-                                   (package-name p))
-                           '())
-                          (s
-                           (list (package-source-derivation store s)))))
-                       (proc
-                        (map (cut package-source-derivation store <>)
-                             (proc p))))))
+                   (package->derivation-list p))
+                  ((? potluck-package? p)
+                   (package->derivation-list (lower-potluck-package p)))
                   ((? derivation? drv)
                    (list drv))
                   ((? procedure? proc)
