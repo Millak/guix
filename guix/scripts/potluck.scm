@@ -23,9 +23,10 @@
   #:use-module ((guix licenses) #:select (license-uri))
   #:use-module (guix ui)
   #:use-module (guix utils)
-  #:use-module (guix potluck packages)
   #:use-module (guix potluck build-systems)
+  #:use-module (guix potluck host)
   #:use-module (guix potluck licenses)
+  #:use-module (guix potluck packages)
   #:use-module (guix scripts)
   #:use-module (guix scripts hash)
   #:use-module (srfi srfi-1)
@@ -37,6 +38,9 @@
   #:use-module (ice-9 popen)
   #:use-module (ice-9 pretty-print)
   #:use-module (ice-9 textual-ports)
+  #:use-module (json)
+  #:use-module (web client)
+  #:use-module (web response)
   #:use-module (web uri)
   #:export (guix-potluck))
 
@@ -115,7 +119,7 @@
 ;;; guix potluck init
 ;;;
 
-(define* (init-potluck host-url remote-git-url #:key
+(define* (init-potluck host remote-git-url #:key
                        (build-system 'gnu) (autoreconf? #f)
                        (license 'gplv3+))
   (let* ((cwd (getcwd))
@@ -212,29 +216,24 @@ When you get that working, commit your results to git via:
   git add potluck && git commit -m 'Add initial Guix potluck files.'
 ") pkg-name pkg-name))))
 
-
 ;;;
-;;; guix potluck register
-;;;
-
-(define (register-potluck host-url git-url branch)
-  #t)
-
-
-;;;
-;;; guix potluck host-channel
+;;; guix potluck update
 ;;;
 
-(define (host-potluck host-url local-port local-git-checkout-dir)
-  #t)
-
-
-;;;
-;;; guix potluck request-update
-;;;
-
-(define (request-potluck-update host-url git-url branch)
-  #t)
+(define (request-potluck-update host git-url branch)
+  (call-with-values (lambda ()
+                      (http-post (build-uri 'https
+                                            #:host host
+                                            #:path "/api/enqueue-update")
+                                 #:body (scm->json-string
+                                         `((git-url . ,git-url)
+                                           (branch . ,branch)))))
+    (lambda (response body)
+      (unless (eqv? (response-code response) 200)
+        (error "request failed"
+               (response-code response)
+               (response-reason-phrase response)
+               body)))))
 
 
 ;;;
@@ -252,18 +251,16 @@ ARGS.\n"))
   (display (_ "\
    init             create potluck recipe for current working directory\n"))
   (display (_ "\
-   register         register remote git branch with potluck host\n"))
+   update           ask potluck host to add or update a potluck package\n"))
   (display (_ "\
    host-channel     run web service providing potluck packages as Guix channel\n"))
-  (display (_ "\
-   request-update   ask potluck host to update a potluck package\n"))
 
   (newline)
   (display (_ "The available OPTION flags are:\n"))
   (display (_ "
-      --host-url=URL     for 'register', 'host-channel', and 'request-update',
-                         the URL of the channel host
-                         (default: https://potluck.guixsd.org/)"))
+      --host=URL         for 'update' and 'host-channel', the name of the
+                         channel host
+                         (default: guix-potluck.org)"))
   (display (_ "
       --port=PORT        for 'host-channel', the local TCP port on which to
                          listen for HTTP connections
@@ -307,9 +304,9 @@ ARGS.\n"))
         (option '("license") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'license arg result)))
-        (option '("host-url") #t #f
+        (option '("host") #t #f
                 (lambda (opt name arg result)
-                  (alist-cons 'host-url arg result)))
+                  (alist-cons 'host arg result)))
         (option '("port") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'port arg result)))
@@ -319,9 +316,14 @@ ARGS.\n"))
 
 (define %default-options
   ;; Alist of default option values.
-  `((host-url . "https://potluck.guixsd.org/")
+  `((host . "guix-potluck.org")
     (port . "8080")
     (verbosity . 0)))
+
+(define (parse-host host-str)
+  ;; Will throw if the host is invalid somehow.
+  (build-uri 'https #:host host-str)
+  host-str)
 
 (define (parse-url url-str)
   (unless (string->uri url-str)
@@ -416,7 +418,7 @@ If your package's license is not in this list, add it to Guix first.~%")
         ('init
          (match args
            ((remote-git-url)
-            (init-potluck (parse-url (assoc-ref opts 'host-url))
+            (init-potluck (parse-host (assoc-ref opts 'host))
                           (parse-url remote-git-url)
                           #:build-system (parse-build-system
                                           (assoc-ref opts 'build-system))
@@ -426,33 +428,24 @@ If your package's license is not in this list, add it to Guix first.~%")
            (args
             (wrong-number-of-args
              (_ "usage: guix potluck init [OPT...] REMOTE-GIT-URL")))))
-        ('register
+        ('update
          (match args
            ((remote-git-url branch)
-            (register-potluck (parse-url (assoc-ref opts 'host-url))
-                              (parse-url remote-git-url)
-                              branch))
+            (request-potluck-update (parse-host (assoc-ref opts 'host))
+                                    (parse-url remote-git-url)
+                                    branch))
            (args
             (wrong-number-of-args
-             (_ "usage: guix potluck register REMOTE-GIT-URL BRANCH-NAME")))))
+             (_ "usage: guix potluck update REMOTE-GIT-URL BRANCH-NAME")))))
         ('host-channel
          (match args
            ((local-git-checkout)
-            (host-potluck (parse-url (assoc-ref opts 'host-url))
+            (host-potluck (parse-host (assoc-ref opts 'host))
                           (parse-port (assoc-ref opts 'port))
                           local-git-checkout))
            (args
             (wrong-number-of-args
              (_ "usage: guix potluck host-channel CHANNEL-DIRECTORY"))
             (exit 1))))
-        ('request-update
-         (match args
-           ((remote-git-url branch)
-            (request-potluck-update (parse-url (assoc-ref opts 'host-url))
-                                    (parse-url remote-git-url)
-                                    branch))
-           (args
-            (wrong-number-of-args
-             (_ "usage: guix potluck request-update REMOTE-GIT-URL BRANCH-NAME")))))
         (action
          (leave (_ "~a: unknown action~%") action))))))
