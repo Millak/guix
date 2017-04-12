@@ -90,10 +90,6 @@
   const
   noop)
 
-;; Nil bindings.
-(define-bindings (guile)
-  nil?)
-
 ;; Unspecified bindings.
 (define-bindings (guile)
   unspecified?

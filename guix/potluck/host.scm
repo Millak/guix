@@ -32,14 +32,15 @@
   #:use-module (guix scripts hash)
   #:use-module (ice-9 format)
   #:use-module (ice-9 ftw)
+  #:use-module (ice-9 iconv)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 pretty-print)
   #:use-module (ice-9 q)
   #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 textual-ports)
   #:use-module (ice-9 threads)
   #:use-module (json)
+  #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
@@ -93,7 +94,7 @@
         args))
   (let* ((real-args (redirect-input (prepend-env args)))
          (pipe (apply open-pipe* OPEN_READ real-args))
-         (output (get-string-all pipe))
+         (output (read-string pipe))
          (ret (close-pipe pipe)))
     (case (status:exit-val ret)
       ((0) output)
@@ -114,10 +115,12 @@
 (define (git . args)
   (git* args))
 
-(define (git-check-ref-format str)
+(define* (git-check-ref-format str #:key allow-onelevel?)
   (when (string-prefix? "-" str)
     (error "bad ref" str))
-  (git "check-ref-format" str))
+  (git "check-ref-format"
+       (if allow-onelevel? "--allow-onelevel" "--no-allow-onelevel")
+       str))
 
 (define (git-rev-parse rev)
   (string-trim-both (git "rev-parse" rev)))
@@ -204,7 +207,7 @@
 ;;;
 
 (define (bytes-free-on-fs filename)
-  (let* ((p (open-pipe* "r" "df" "--output=avail" filename))
+  (let* ((p (open-pipe* "r" "df" "-B1" "--output=avail" filename))
          (l1 (read-line p))
          (l2 (read-line p))
          (l3 (read-line p)))
@@ -335,7 +338,7 @@
       (error "expected a public URI" str))))
 
 (define (validate-branch-name str)
-  (unless (git-check-ref-format str)
+  (unless (git-check-ref-format str #:allow-onelevel? #t)
     (error "expected a valid git branch name" str)))
 
 (define (enqueue-update params queue)
@@ -345,6 +348,17 @@
     (validate-branch-name branch-name)
     (async-queue-push! queue (cons remote-git-url branch-name))))
 
+(define (request-body-json request body)
+  (cond
+   ((string? body) (json-string->scm body))
+   ((bytevector? body)
+    (let* ((content-type (request-content-type request))
+           (charset (or (assoc-ref (cdr content-type) "charset")
+                        "utf-8")))
+      (json-string->scm (bytevector->string body charset))))
+   ((port? body) (json->scm body))
+   (else (error "unexpected body" body))))
+
 (define (handler request body queue)
   (match (cons (request-method request)
                (split-and-decode-uri-path (uri-path (request-uri request))))
@@ -353,7 +367,7 @@
              "todo: show work queue"))
     (('POST "api" "enqueue-update")
      ;; An exception will cause error 500.
-     (enqueue-update (json->scm body) queue)
+     (enqueue-update (request-body-json request body) queue)
      (values (build-response #:code 200)
              ""))
     (_

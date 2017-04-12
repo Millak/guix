@@ -37,7 +37,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 pretty-print)
-  #:use-module (ice-9 textual-ports)
+  #:use-module (ice-9 rdelim)
   #:use-module (json)
   #:use-module (web client)
   #:use-module (web response)
@@ -84,7 +84,7 @@
         args))
   (let* ((real-args (redirect-input (prepend-env args)))
          (pipe (apply open-pipe* OPEN_READ real-args))
-         (output (get-string-all pipe))
+         (output (read-string pipe))
          (ret (close-pipe pipe)))
     (case (status:exit-val ret)
       ((0) output)
@@ -124,7 +124,7 @@
                        (license 'gplv3+))
   (let* ((cwd (getcwd))
          (dot-git (in-vicinity cwd ".git"))
-         (potluck-dir (in-vicinity cwd "potluck"))
+         (potluck-dir (in-vicinity cwd "guix-potluck"))
          (package-name (basename cwd)))
     (unless (and (file-exists? dot-git)
                  (file-is-directory? dot-git))
@@ -146,17 +146,17 @@
            ;; FIXME: Race condition if HEAD changes between git-rev-parse and
            ;; here.
            (pkg-sha256 (guix-hash-git-checkout cwd)))
-      (format #t (_ "Creating potluck/~%"))
+      (format #t (_ "Creating guix-potluck/~%"))
       (mkdir potluck-dir)
-      (format #t (_ "Creating potluck/README.md~%"))
+      (format #t (_ "Creating guix-potluck/README.md~%"))
       (call-with-output-file (in-vicinity potluck-dir "README.md")
         (lambda (port)
           (format port
                   "\
 This directory defines potluck packages.  Each file in this directory should
-define one package.  See https://potluck.guixsd.org/ for more information.
+define one package.  See https://guix-potluck.org/ for more information.
 ")))
-      (format #t (_ "Creating potluck/~a.scm~%") package-name)
+      (format #t (_ "Creating guix-potluck/~a.scm~%") package-name)
       (call-with-output-file (in-vicinity potluck-dir
                                           (string-append package-name ".scm"))
         (lambda (port)
@@ -205,15 +205,15 @@ define one package.  See https://potluck.guixsd.org/ for more information.
                             " is a ..."))
             (license license)))))
       (format #t (_ "
-Done.  Now open potluck/~a.scm in your editor, fill out its \"synopsis\" and
-\"description\" fields, add dependencies to the 'inputs' field, and try to
+Done.  Now open guix-potluck/~a.scm in your editor, fill out its \"synopsis\"
+and \"description\" fields, add dependencies to the 'inputs' field, and try to
 build with
 
-  guix build --file=potluck/~a.scm
+  guix build --file=guix-potluck/~a.scm
 
 When you get that working, commit your results to git via:
 
-  git add potluck && git commit -m 'Add initial Guix potluck files.'
+  git add guix-potluck && git commit -m 'Add initial Guix potluck files.'
 ") pkg-name pkg-name))))
 
 ;;;
