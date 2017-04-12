@@ -24,8 +24,9 @@
 
 (define all-build-systems
   (delay
-    (let* ((gbs (resolve-module '(guix build-system)))
-           (root (dirname (dirname (module-filename gbs))))
+    (let* ((gbs (or (search-path %load-path "guix/build-system.scm")
+                    (error "can't find (guix build-system)")))
+           (root (dirname (dirname gbs)))
            (by-name (make-hash-table)))
       (for-each (lambda (iface)
                   (module-for-each
