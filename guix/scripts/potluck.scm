@@ -258,13 +258,24 @@ ARGS.\n"))
   (newline)
   (display (_ "The available OPTION flags are:\n"))
   (display (_ "
-      --host=URL         for 'update' and 'host-channel', the name of the
+      --host=HOST        for 'update' and 'host-channel', the name of the
                          channel host
                          (default: guix-potluck.org)"))
   (display (_ "
       --port=PORT        for 'host-channel', the local TCP port on which to
                          listen for HTTP connections
                          (default: 8080)"))
+  (display (_ "
+      --scratch=DIR      for 'host-channel', the path to a local directory
+                         that will be used as a scratch space to check out
+                         remote git repositories"))
+  (display (_ "
+      --source=DIR       for 'host-channel', the path to a local checkout
+                         of guix potluck source packages to be managed by
+                         host-channel"))
+  (display (_ "
+      --target=DIR       for 'host-channel', the path to a local checkout
+                         of a guix channel to be managed by host-channel"))
   (display (_ "
       --build-system=SYS for 'init', specify the build system.  Use
                          --build-system=help for all available options."))
@@ -310,6 +321,15 @@ ARGS.\n"))
         (option '("port") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'port arg result)))
+        (option '("scratch") #t #f
+                (lambda (opt name arg result)
+                  (alist-cons 'scratch arg result)))
+        (option '("source") #t #f
+                (lambda (opt name arg result)
+                  (alist-cons 'source arg result)))
+        (option '("target") #t #f
+                (lambda (opt name arg result)
+                  (alist-cons 'target arg result)))
         (option '("verbosity") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'verbosity (string->number arg) result)))))
@@ -337,6 +357,13 @@ ARGS.\n"))
       port)
      (else
       (leave (_ "invalid port: ~a~%") port-str)))))
+
+(define (parse-absolute-directory-name str)
+  (unless (and (absolute-file-name? str)
+               (file-exists? str)
+               (file-is-directory? str))
+    (leave (_ "invalid absolute directory name: ~a~%") str))
+  str)
 
 (define (parse-build-system sys-str)
   (unless sys-str
@@ -439,13 +466,22 @@ If your package's license is not in this list, add it to Guix first.~%")
              (_ "usage: guix potluck update REMOTE-GIT-URL BRANCH-NAME")))))
         ('host-channel
          (match args
-           ((local-git-checkout)
+           (()
             (host-potluck (parse-host (assoc-ref opts 'host))
                           (parse-port (assoc-ref opts 'port))
-                          local-git-checkout))
+                          (parse-absolute-directory-name
+                           (or (assoc-ref opts 'scratch)
+                               (leave (_ "missing --scratch argument~%"))))
+                          (parse-absolute-directory-name
+                           (or (assoc-ref opts 'source)
+                               (leave (_ "missing --source argument~%"))))
+                          (parse-absolute-directory-name
+                           (or (assoc-ref opts 'target)
+                               (leave (_ "missing --target argument~%"))))))
            (args
             (wrong-number-of-args
-             (_ "usage: guix potluck host-channel CHANNEL-DIRECTORY"))
+             (_ "usage: guix potluck host-channel --scratch=DIR \
+--source=DIR --target=DIR"))
             (exit 1))))
         (action
          (leave (_ "~a: unknown action~%") action))))))
