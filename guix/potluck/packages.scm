@@ -62,6 +62,8 @@
             pretty-print-potluck-source
             pretty-print-potluck-package
 
+            load-potluck-package
+
             validate-potluck-package
 
             lower-potluck-source
@@ -190,6 +192,63 @@
     (format port "~a  (synopsis ~s)\n" prefix synopsis)
     (format port "~a  (description ~s)\n" prefix description)
     (format port "~a  (license '~s))\n" prefix license)))
+
+;; Safely loading potluck files.
+(define (make-potluck-sandbox-module)
+  "Return a fresh module that only imports the potluck environment."
+  (let ((m (make-fresh-user-module)))
+    (purify-module! m)
+    (module-use! m (resolve-interface '(guix potluck environment)))
+    m))
+
+(define eval-in-sandbox
+  (delay
+    (cond
+     ((false-if-exception (resolve-interface '(ice-9 sandbox)))
+      => (lambda (m)
+           (module-ref m 'eval-in-sandbox)))
+     ((getenv "GUIX_POTLUCK_NO_SANDBOX")
+      (warn "No sandbox available; be warned!!!")
+      (lambda* (exp #:key time-limit allocation-limit module)
+        (eval exp module)))
+     (else
+      (error "sandbox facility unavailable")))))
+
+;; Because potluck package definitions come from untrusted parties, they need
+;; to be sandboxed to prevent them from harming the host system.
+(define* (load-potluck-package file #:key
+                               (time-limit 1)
+                               (allocation-limit 50e6))
+  "Read a sequence of Scheme expressions from @var{file} and evaluate them in
+a potluck sandbox.  The result of evaluating that expression sequence should
+be a potluck package.  Any syntax error reading the expressions or run-time
+error evaluating the expressions will throw an exception.  The resulting
+potluck package will be validated with @code{validate-potluck-package}."
+  (define (read-expressions port)
+    (match (read port)
+      ((? eof-object?) '())
+      (exp (cons exp (read-expressions port)))))
+  (call-with-input-file file
+    (lambda (port)
+      (let ((exp (match (read-expressions port)
+                   (() (error "no expressions in file" file))
+                   (exps (cons 'begin exps))))
+            (mod (make-potluck-sandbox-module)))
+        (call-with-values
+            (lambda ()
+              ((force eval-in-sandbox) exp
+               #:time-limit time-limit
+               #:allocation-limit allocation-limit
+               #:module mod))
+          (lambda vals
+            (match vals
+              (() (error "no return values"))
+              ((val)
+               (unless (potluck-package? val)
+                 (error "not a potluck package" val))
+               (validate-potluck-package val)
+               val)
+              (_ (error "too many return values" vals)))))))))
 
 ;; Editing.
 
