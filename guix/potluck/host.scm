@@ -246,7 +246,7 @@
       (let lp ()
         (let ((line (read-line in)))
           (unless (eof-object? line)
-            (let ((trimmed (string-trim-left line)))
+            (let ((trimmed (string-trim line)))
               (when (or (string-null? trimmed) (string-prefix? ";" trimmed))
                 (display trimmed port)
                 (newline port)
