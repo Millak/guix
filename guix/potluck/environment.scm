@@ -535,4 +535,4 @@
 ;; Finally, the potluck bindings.
 (define-bindings (guix potluck packages)
   potluck-package
-  potluck-package-source)
+  potluck-source)
