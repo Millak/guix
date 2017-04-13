@@ -55,7 +55,9 @@
             find-newest-available-packages
 
             specification->package
-            specification->package+output))
+            specification->package+output
+
+            find-package-binding))
 
 ;;; Commentary:
 ;;;
@@ -368,3 +370,61 @@ version; if SPEC does not specify an output, return OUTPUT."
            (leave (_ "package `~a' lacks output `~a'~%")
                   (package-full-name package)
                   sub-drv))))))
+
+(define (find-package-binding package)
+  "Find the module that exports PACKAGE.  Return two values, an interface name
+and a symbol that can be used to import PACKAGE.  Signal an error if no public variable binds PACKAGE."
+  (define (strip-extension file exts)
+    (or (or-map (lambda (ext)
+                  (and (string-suffix? ext file)
+                       (substring file 0 (- (string-length file)
+                                            (string-length ext)))))
+                exts)
+        file))
+  (define (file-name->module-name file)
+    (and (not (absolute-file-name? file))
+         (map string->symbol
+              (string-split (strip-extension file %load-extensions)
+                            #\/))))
+  ;; Instead of building a table and always doing a search, first just see if
+  ;; we can use the package's location to find its module and look in that
+  ;; module.
+  (define (global-search)
+    (let search ((modules (all-package-modules)))
+      (match modules
+        (()
+         (raise (condition
+                 (&message (message
+                            (format #f (_ "~a@~a: binding not found")
+                                    (package-name package)
+                                    (package-version package)))))))
+        ((mod . modules)
+         (let ((next (lambda () (search modules))))
+           (local-search (module-name mod) mod next))))))
+  (define (local-search module-name iface k)
+    (let lp ((bindings (module-map cons iface)))
+      (match bindings
+        (() (k))
+        (((sym . var) . bindings)
+         (if (eq? (variable-ref var) package)
+             (values module-name sym)
+             (lp bindings))))))
+  (cond
+   ((package-location package)
+    => (lambda (loc)
+         (cond
+          ((file-name->module-name (location-file loc))
+           => (lambda (module-name)
+                (cond
+                 ((false-if-exception (resolve-interface module-name))
+                  => (lambda (iface)
+                       (let ((def (string->symbol (package-name package))))
+                         (cond
+                          ((and (module-variable iface def)
+                                (eq? (module-ref iface def) package))
+                           (values module-name def))
+                          (else
+                           (local-search module-name iface global-search))))))
+                 (else (global-search)))))
+          (else (global-search)))))
+   (else (global-search))))
