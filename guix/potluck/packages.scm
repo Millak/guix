@@ -507,7 +507,7 @@ potluck package will be validated with @code{validate-potluck-package}."
     (format port "(define-module ~a" lowered-module-name)
     (format port "~%  #:pure")
     ;; Because we're pure, we have to import these.
-    (format port "~%  #:use-module ((guile) #:select (list quote quasiquote unquote))")
+    (format port "~%  #:use-module ((guile) #:select (list quote define-public))")
     (when needs-runtime-lookup?
       (format port "~%  #:use-module ((gnu packages) #:select (specification->package))"))
     (format port "~%  #:use-module ((guix packages) #:select (package origin base32))")
@@ -521,27 +521,29 @@ potluck package will be validated with @code{validate-potluck-package}."
                  (format port "~%  #:use-module (~a #:select ~a)"
                          module-name syms)))
               (hash-map->list cons imports))
-    (format port ")~%")
+    (format port ")~%~%")
 
-    (format port "(package\n")
-    (format port "  (name ~s)\n" (potluck-package-name pkg))
-    (format port "  (version ~s)\n" (potluck-package-version pkg))
-    (format port "  (source\n")
+    (format port "(define-public ~s\n" (string->symbol
+                                        (potluck-package-name pkg)))
+    (format port "  (package\n")
+    (format port "    (name ~s)\n" (potluck-package-name pkg))
+    (format port "    (version ~s)\n" (potluck-package-version pkg))
+    (format port "    (source\n")
 
     (let ((source (potluck-package-source pkg)))
-      (format port "    (origin\n")
-      (format port "      (method git-fetch)\n")
-      (format port "      (uri (git-reference\n")
-      (format port "            (url ~s)\n" (potluck-source-git-uri source))
-      (format port "            (commit ~s)))\n"
+      (format port "      (origin\n")
+      (format port "        (method git-fetch)\n")
+      (format port "        (uri (git-reference\n")
+      (format port "              (url ~s)\n" (potluck-source-git-uri source))
+      (format port "              (commit ~s)))\n"
               (potluck-source-git-commit source))
       (when (potluck-source-snippet source)
         (pretty-print `(snippet ',(potluck-source-snippet source)) port
-                      #:per-line-prefix "      "))
-      (format port "      (sha256 (base32 ~s))))\n"
+                      #:per-line-prefix "        "))
+      (format port "        (sha256 (base32 ~s))))\n"
               (potluck-source-sha256 source)))
 
-    (format port "  (build-system ~s-build-system)\n"
+    (format port "    (build-system ~s-build-system)\n"
             (potluck-package-build-system pkg))
 
     (for-each
@@ -555,7 +557,7 @@ potluck package will be validated with @code{validate-potluck-package}."
                                 (or (hash-ref spec->binding spec)
                                     (error "internal error" spec)))
                               specs)))
-         port #:per-line-prefix "  ")))
+         port #:per-line-prefix "    ")))
      `((inputs . ,(potluck-package-inputs pkg))
        (native-inputs . ,(potluck-package-native-inputs pkg))
        (propagated-inputs . ,(potluck-package-propagated-inputs pkg))))
@@ -563,10 +565,10 @@ potluck package will be validated with @code{validate-potluck-package}."
     (match (potluck-package-arguments pkg)
       (() #t)
       (arguments
-       (pretty-print `(arguments ',arguments) port #:per-line-prefix "  ")))
+       (pretty-print `(arguments ',arguments) port #:per-line-prefix "    ")))
 
-    (format port "  (home-page ~s)\n" (potluck-package-home-page pkg))
-    (format port "  (synopsis ~s)\n" (potluck-package-synopsis pkg))
-    (format port "  (description ~s)\n" (potluck-package-description pkg))
-    (format port "  (license license:~s))\n" (potluck-package-license pkg))
+    (format port "    (home-page ~s)\n" (potluck-package-home-page pkg))
+    (format port "    (synopsis ~s)\n" (potluck-package-synopsis pkg))
+    (format port "    (description ~s)\n" (potluck-package-description pkg))
+    (format port "    (license license:~s)))\n" (potluck-package-license pkg))
     (force-output port)))

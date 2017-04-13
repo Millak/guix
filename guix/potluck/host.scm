@@ -309,8 +309,8 @@
                         `(gnu packages potluck
                               ,repo-dir
                               ,(uri-encode branch)
-                              ,(substring file 0
-                                          (- (string-length file)
+                              ,(substring (basename file) 0
+                                          (- (string-length (basename file))
                                              (string-length ".scm")))))
                       ;; Preserve copyright notices if possible.
                       (copy-header-comments port file)
