@@ -214,7 +214,11 @@ build with
 When you get that working, commit your results to git via:
 
   git add guix-potluck && git commit -m 'Add initial Guix potluck files.'
-") pkg-name pkg-name))))
+
+Once you push them out, add your dish to the communal potluck by running:
+
+  guix potluck update ~a
+") pkg-name pkg-name remote-git-url))))
 
 ;;;
 ;;; guix potluck update
