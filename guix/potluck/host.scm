@@ -93,7 +93,7 @@
                              "<" input-file))
         args))
   (let* ((real-args (redirect-input (prepend-env args)))
-         (pipe (apply open-pipe* OPEN_READ real-args))
+         (pipe (apply open-pipe* OPEN_READ (pk 'running real-args)))
          (output (read-string pipe))
          (ret (close-pipe pipe)))
     (case (status:exit-val ret)
@@ -159,9 +159,11 @@
   (git "add" "--" file))
 
 (define* (git-commit #:key message author-name author-email)
-  (git "commit"
-       (string-append "--message=" message)
-       (string-append "--author=" author-name "<" author-email ">")))
+  (git* (list "commit" (string-append "--message=" message))
+        #:env (list (string-append "GIT_COMMITTER_NAME=" author-name)
+                    (string-append "GIT_COMMITTER_EMAIL=" author-email)
+                    (string-append "GIT_AUTHOR_NAME=" author-name)
+                    (string-append "GIT_AUTHOR_EMAIL=" author-email))))
 
 
 ;;;
@@ -235,14 +237,20 @@
          (in-vicinity dir file))
        (scandir dir
                 (lambda (file)
-                  (and (not (file-is-directory? file))
+                  (and (not (file-is-directory? (in-vicinity dir file)))
                        (string-suffix? ".scm" file))))))
 
 (define (copy-header-comments port file)
-  #f)
-
-(define (emit-guix-package-module port pkg)
-  #f)
+  (call-with-input-file file
+    (lambda (in)
+      (let lp ()
+        (let ((line (read-line in)))
+          (unless (eof-object? line)
+            (let ((trimmed (string-trim-left line)))
+              (when (or (string-null? trimmed) (string-prefix? ";" trimmed))
+                (display trimmed port)
+                (newline port)
+                (lp)))))))))
 
 (define (process-update host working-dir source-checkout target-checkout
                         remote-git-url branch)
@@ -260,7 +268,7 @@
      (else
       (git-clone remote-git-url repo-dir)
       (chdir repo-dir)))
-    (git-reset #:ref branch #:mode 'hard)
+    (git-reset #:ref (string-append "origin/" branch) #:mode 'hard)
     (unless (file-is-directory? "guix-potluck")
       (error "repo+branch has no guix-potluck dir" remote-git-url branch))
     (let* ((files (scm-files-in-dir "guix-potluck"))
@@ -268,7 +276,9 @@
            ;; definitions.
            (packages (map load-potluck-package files))
            (source-dir (in-vicinity source-checkout repo+branch-dir))
-           (target-dir (in-vicinity target-checkout repo+branch-dir)))
+           (target-dir (in-vicinity target-checkout
+                                    (in-vicinity "gnu/packages/potluck"
+                                                 repo+branch-dir))))
       ;; Clear source and target repo entries.
       (define (ensure-empty-dir filename)
         (when (file-exists? filename)
@@ -276,26 +286,36 @@
         (mkdir-p filename))
       (define (commit-dir dir)
         (with-directory-excursion dir
-          (lambda ()
-            (git-add ".")
-            (git-commit #:message
-                        (format #f "Update ~a branch ~a."
-                                remote-git-url branch)
-                        #:author-name "Guix potluck host"
-                        #:author-email (string-append "host@" host))
-            (git-push))))
+          (git-add ".")
+          (git-commit #:message
+                      (format #f "Update ~a branch ~a."
+                              remote-git-url branch)
+                      #:author-name "Guix potluck host"
+                      #:author-email (string-append "host@" host))
+          (git-push)))
       (ensure-empty-dir source-dir)
       (ensure-empty-dir target-dir)
       ;; Add potluck files to source repo.
-      (for-each (lambda (file) (copy-file file source-dir)) files)
+      (for-each (lambda (file)
+                  (copy-file file (in-vicinity source-dir (basename file))))
+                files)
       (commit-dir source-dir)
       ;; Add transformed files to target repo.
       (for-each (lambda (file package)
-                  (call-with-output-file (in-vicinity target-dir file)
+                  (call-with-output-file
+                      (in-vicinity target-dir (basename file))
                     (lambda (port)
+                      (define module-name
+                        `(gnu packages potluck
+                              ,repo-dir
+                              ,(uri-encode branch)
+                              ,(substring file 0
+                                          (- (string-length file)
+                                             (string-length ".scm")))))
                       ;; Preserve copyright notices if possible.
                       (copy-header-comments port file)
-                      (emit-guix-package-module port package))))
+                      (lower-potluck-package-to-module port module-name
+                                                       package))))
                 files packages)
       (commit-dir target-dir)))
   ;; 8. post success message
