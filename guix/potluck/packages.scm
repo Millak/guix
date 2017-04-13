@@ -29,8 +29,10 @@
   #:use-module (guix potluck licenses)
   #:use-module (guix records)
   #:use-module (guix utils)
+  #:use-module ((guix ui) #:select (package-specification->name+version+output))
   #:use-module (ice-9 match)
   #:use-module (ice-9 pretty-print)
+  #:use-module ((srfi srfi-1) #:select (concatenate delete-duplicates))
   #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -67,7 +69,9 @@
             validate-potluck-package
 
             lower-potluck-source
-            lower-potluck-package))
+            lower-potluck-package
+
+            lower-potluck-package-to-module))
 
 ;;; Commentary:
 ;;;
@@ -456,3 +460,113 @@ potluck package will be validated with @code{validate-potluck-package}."
       (synopsis synopsis)
       (description description)
       (license (license-by-name license)))))
+
+(define (lower-potluck-package-to-module port lowered-module-name pkg)
+  (let ((lowered (lower-potluck-package pkg))
+        ;; specification -> exp
+        (spec->binding (make-hash-table))
+        ;; mod-name -> (sym ...)
+        (imports (make-hash-table))
+        ;; sym -> specification
+        (imported-syms (make-hash-table))
+        (needs-runtime-lookup? #f))
+    (define (add-bindings spec)
+      (unless (hash-ref spec->binding spec)
+        (match (false-if-exception (lower-input spec))
+          ((name pkg . outputs)
+           ;; Given that we found the pkg, surely we should find its binding
+           ;; also.
+           (call-with-values (lambda () (find-package-binding pkg))
+             (lambda (module-name sym)
+               ;; Currently we import these bindings using their original
+               ;; names.  We need to make sure that names don't collide.
+               ;; Ideally we should also ensure that they don't collide with
+               ;; other bindings that we import.
+               (when (hashq-ref imported-syms sym)
+                 (error "duplicate import name" sym))
+               (hashq-set! imported-syms sym spec)
+               (hash-set! spec->binding spec
+                          `(list ,name ,sym . ,outputs))
+               (hash-set! imports module-name
+                          (cons sym (hash-ref imports module-name '()))))))
+          (#f
+           (warn "could not resolve package specification" spec)
+           (call-with-values
+               (lambda ()
+                 (package-specification->name+version+output spec))
+             (lambda (name version . outputs)
+               (hash-set! spec->binding spec
+                          `(list ,name (specification->package ,spec) .
+                                 ,(if (equal? outputs '("out")) '() outputs)))
+               (set! needs-runtime-lookup? #t)))))))
+
+    (for-each add-bindings (potluck-package-inputs pkg))
+    (for-each add-bindings (potluck-package-native-inputs pkg))
+    (for-each add-bindings (potluck-package-propagated-inputs pkg))
+
+    (format port "(define-module ~a" lowered-module-name)
+    (format port "~%  #:pure")
+    ;; Because we're pure, we have to import these.
+    (format port "~%  #:use-module ((guile) #:select (list quote quasiquote unquote))")
+    (when needs-runtime-lookup?
+      (format port "~%  #:use-module ((gnu packages) #:select (specification->package))"))
+    (format port "~%  #:use-module ((guix packages) #:select (package origin base32))")
+    (format port "~%  #:use-module ((guix git-download) #:select (git-fetch git-reference))")
+    (format port "~%  #:use-module ((guix licenses) #:select ((~a . license:~a)))"
+            (potluck-package-license pkg) (potluck-package-license pkg))
+    (format port "~%  #:use-module ((guix build-system ~a) #:select (~a-build-system))"
+            (potluck-package-build-system pkg) (potluck-package-build-system pkg))
+    (for-each (match-lambda
+                ((module-name . syms)
+                 (format port "~%  #:use-module (~a #:select ~a)"
+                         module-name syms)))
+              (hash-map->list cons imports))
+    (format port ")~%")
+
+    (format port "(package\n")
+    (format port "  (name ~s)\n" (potluck-package-name pkg))
+    (format port "  (version ~s)\n" (potluck-package-version pkg))
+    (format port "  (source\n")
+
+    (let ((source (potluck-package-source pkg)))
+      (format port "    (origin\n")
+      (format port "      (method git-fetch)\n")
+      (format port "      (uri (git-reference\n")
+      (format port "            (url ~s)\n" (potluck-source-git-uri source))
+      (format port "            (commit ~s)))\n"
+              (potluck-source-git-commit source))
+      (when (potluck-source-snippet source)
+        (pretty-print `(snippet ',(potluck-source-snippet source)) port
+                      #:per-line-prefix "      "))
+      (format port "      (sha256 (base32 ~s))))\n"
+              (potluck-source-sha256 source)))
+
+    (format port "  (build-system ~s-build-system)\n"
+            (potluck-package-build-system pkg))
+
+    (for-each
+     (match-lambda
+       ((name)
+        ;; No inputs; do nothing.
+        #t)
+       ((name . specs)
+        (pretty-print
+         `(,name (list ,@(map (lambda (spec)
+                                (or (hash-ref spec->binding spec)
+                                    (error "internal error" spec)))
+                              specs)))
+         port #:per-line-prefix "  ")))
+     `((inputs . ,(potluck-package-inputs pkg))
+       (native-inputs . ,(potluck-package-native-inputs pkg))
+       (propagated-inputs . ,(potluck-package-propagated-inputs pkg))))
+
+    (match (potluck-package-arguments pkg)
+      (() #t)
+      (arguments
+       (pretty-print `(arguments ',arguments) port #:per-line-prefix "  ")))
+
+    (format port "  (home-page ~s)\n" (potluck-package-home-page pkg))
+    (format port "  (synopsis ~s)\n" (potluck-package-synopsis pkg))
+    (format port "  (description ~s)\n" (potluck-package-description pkg))
+    (format port "  (license license:~s))\n" (potluck-package-license pkg))
+    (force-output port)))
