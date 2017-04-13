@@ -381,6 +381,9 @@ init: missing --build-system; try --build-system=help for options~%")))
          (let ((sys (build-system-by-name name)))
            (format #t "  ~a ~25t~a~%" name (build-system-description sys))))
        (all-potluck-build-system-names))
+      (format #t "
+Additionally, --autotools is like --build-system=gnu, but also indicating
+that the package needs autoreconf before running ./configure.~%")
       (exit 0))
     (unless (build-system-by-name sys)
       (leave (_ "invalid build system: ~a; try --build-system=help~%") sys))
