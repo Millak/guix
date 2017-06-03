@@ -250,7 +250,8 @@
       (propagated-inputs
        `(("gnutls" ,gnutls/guile-2.2)             ;for 'guix download' & co.
          ("guile-json" ,guile-json)
-         ("guile-ssh" ,guile-ssh)))
+         ("guile-ssh" ,guile-ssh)
+         ("guile-sqlite3" ,guile-sqlite3)))
 
       (home-page "https://www.gnu.org/software/guix/")
       (synopsis "Functional package manager for installed software packages and versions")
