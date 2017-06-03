@@ -27,6 +27,7 @@
   #:use-module (guix hash)
   #:autoload   (guix build syscalls) (terminal-columns)
   #:use-module (rnrs bytevectors)
+  #:use-module (rnrs io ports)
   #:use-module (ice-9 binary-ports)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -41,6 +42,8 @@
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 popen)
   #:use-module (web uri)
+  #:use-module (sqlite3)
+  #:use-module (guix sql)
   #:export (%daemon-socket-uri
             %gc-roots-directory
             %default-substitute-urls
@@ -1300,32 +1303,71 @@ The result is always the empty list unless the daemon was started with
 This makes sense only when the daemon was started with '--cache-failures'."
   boolean)
 
+
+;; Would it be better to just make WRITE-FILE give size as well? I question
+;; the general utility of this approach.
+(define (counting-wrapper-port output-port)
+  "Some custom ports don't implement GET-POSITION at all. But if we want to
+figure out how many bytes are being written, we will want to use that. So this
+makes a wrapper around a port which implements GET-POSITION."
+  (let ((byte-count 0))
+    (make-custom-binary-output-port "counting-wrapper"
+                                    (lambda (bytes offset count)
+                                      (set! byte-count
+                                        (+ byte-count count))
+                                      (put-bytevector output-port bytes
+                                                      offset count)
+                                      count)
+                                    (lambda ()
+                                      byte-count)
+                                    #f
+                                    (lambda ()
+                                      (close-port output-port)))))
+
+
+(define (nar-sha256 file)
+  "Gives the sha256 hash of a file and the size of the file in nar form."
+  (let-values (((port get-hash) (open-sha256-port)))
+    (let ((wrapper (counting-wrapper-port port)))
+      (write-file file wrapper)
+      (force-output wrapper)
+      (force-output port)
+      (let ((hash (get-hash))
+            (size (port-position wrapper)))
+        (close-port wrapper)
+        (values hash
+                size)))))
+
+;; TODO: make this canonicalize store items that are registered. This involves
+;; setting permissions and timestamps, I think. Also, run a "deduplication
+;; pass", whatever that involves. Also, honor environment variables. Also,
+;; handle databases not existing yet (what should the default behavior be?
+;; Figuring out how the C++ stuff currently does it sounds like a lot of
+;; grepping for global variables...)
+
 (define* (register-path path
-                        #:key (references '()) deriver prefix
-                        state-directory)
+                        #:key (references '()) deriver (prefix "")
+                        (state-directory
+                         (string-append prefix %state-directory)))
   "Register PATH as a valid store file, with REFERENCES as its list of
 references, and DERIVER as its deriver (.drv that led to it.)  If PREFIX is
-not #f, it must be the name of the directory containing the new store to
-initialize; if STATE-DIRECTORY is not #f, it must be a string containing the
+given, it must be the name of the directory containing the new store to
+initialize; if STATE-DIRECTORY is given, it must be a string containing the
 absolute file name to the state directory of the store being initialized.
 Return #t on success.
 
 Use with care as it directly modifies the store!  This is primarily meant to
 be used internally by the daemon's build hook."
-  ;; Currently this is implemented by calling out to the fine C++ blob.
-  (let ((pipe (apply open-pipe* OPEN_WRITE %guix-register-program
-                     `(,@(if prefix
-                             `("--prefix" ,prefix)
-                             '())
-                       ,@(if state-directory
-                             `("--state-directory" ,state-directory)
-                             '())))))
-    (and pipe
-         (begin
-           (format pipe "~a~%~a~%~a~%"
-                   path (or deriver "") (length references))
-           (for-each (cut format pipe "~a~%" <>) references)
-           (zero? (close-pipe pipe))))))
+  (let* ((to-register (string-append %store-directory "/" (basename path))))
+    (let-values (((hash nar-size)
+                  (nar-sha256 (string-append prefix "/" to-register))))
+      (sqlite-register #:dbpath (string-append state-directory "/db/db.sqlite")
+                       #:path to-register
+                       #:references references
+                       #:deriver deriver
+                       #:hash (string-append "sha256:"
+                                             (bytevector->base16-string hash))
+                       #:nar-size nar-size))))
 
 
 ;;;
