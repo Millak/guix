@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017 Caleb Ristvedt <caleb.ristvedt@cune.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1246,15 +1247,17 @@ makes a wrapper around a port which implements GET-POSITION."
 
 ;; TODO: make this canonicalize store items that are registered. This involves
 ;; setting permissions and timestamps, I think. Also, run a "deduplication
-;; pass", whatever that involves. Also, honor environment variables. Also,
-;; handle databases not existing yet (what should the default behavior be?
-;; Figuring out how the C++ stuff currently does it sounds like a lot of
-;; grepping for global variables...)
+;; pass", whatever that involves. Also, handle databases not existing yet
+;; (what should the default behavior be?  Figuring out how the C++ stuff
+;; currently does it sounds like a lot of grepping for global
+;; variables...). Also, return #t on success like the documentation says we
+;; should.
 
 (define* (register-path path
-                        #:key (references '()) deriver (prefix "")
-                        (state-directory
-                         (string-append prefix %state-directory)))
+                        #:key (references '()) deriver prefix
+                        state-directory)
+  ;; Priority for options: first what is given, then environment variables,
+  ;; then defaults.
   "Register PATH as a valid store file, with REFERENCES as its list of
 references, and DERIVER as its deriver (.drv that led to it.)  If PREFIX is
 given, it must be the name of the directory containing the new store to
@@ -1264,16 +1267,42 @@ Return #t on success.
 
 Use with care as it directly modifies the store!  This is primarily meant to
 be used internally by the daemon's build hook."
-  (let* ((to-register (string-append %store-directory "/" (basename path))))
+  (let* ((db-dir (cond
+                  (state-directory
+                   (string-append state-directory "/db"))
+                  (prefix
+                   (string-append prefix %state-directory "/db"))
+                  ((getenv "NIX_DB_DIR")
+                   (getenv "NIX_DB_DIR"))
+                  ((getenv "NIX_STATE_DIR")
+                   (string-append (getenv "NIX_STATE_DIR") "/db"))
+                  (else
+                   (string-append %state-directory "/db"))))
+         (store-dir (if prefix
+                        (string-append prefix %store-directory)
+                        (or
+                         (getenv "NIX_STORE_DIR")
+                         (getenv "NIX_STORE")
+                         %store-directory)))
+         (to-register (if prefix
+                          ;; note: we assume here that if path is, for example,
+                          ;; /foo/bar/gnu/store/thing.txt, then an environment
+                          ;; variable has been used to change the store
+                          ;; directory to /foo/bar/gnu/store.
+                          (string-append %store-directory "/" (basename path))
+                          path))
+         (real-path (string-append store-dir "/"
+                                   (basename path))))
     (let-values (((hash nar-size)
-                  (nar-sha256 (string-append prefix "/" to-register))))
-      (sqlite-register #:dbpath (string-append state-directory "/db/db.sqlite")
-                       #:path to-register
-                       #:references references
-                       #:deriver deriver
-                       #:hash (string-append "sha256:"
-                                             (bytevector->base16-string hash))
-                       #:nar-size nar-size))))
+                  (nar-sha256 real-path)))
+      (sqlite-register
+       #:dbpath (string-append db-dir "/db.sqlite")
+       #:path to-register
+       #:references references
+       #:deriver deriver
+       #:hash (string-append "sha256:"
+                             (bytevector->base16-string hash))
+       #:nar-size nar-size))))
 
 
 ;;;
