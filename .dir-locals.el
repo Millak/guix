@@ -73,6 +73,11 @@
    (eval . (put 'wrap-program 'scheme-indent-function 1))
    (eval . (put 'with-imported-modules 'scheme-indent-function 1))
 
+   (eval . (put 'with-sql-statement 'scheme-indent-function 1))
+   (eval . (put 'with-sql-database 'scheme-indent-function 1))
+   (eval . (put 'run-sql 'scheme-indent-function 1))
+   (eval . (put 'run-statement 'scheme-indent-function 1))
+
    (eval . (put 'call-with-container 'scheme-indent-function 1))
    (eval . (put 'container-excursion 'scheme-indent-function 1))
    (eval . (put 'eventually 'scheme-indent-function 1))

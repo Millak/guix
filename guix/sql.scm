@@ -55,7 +55,7 @@
   (let maybe-step ((ret (sqlite-step statement))
                    (count 0))
     (if ret
-        (maybe-step ret (+ count 1))
+        (maybe-step (sqlite-step statement) (+ count 1))
         count)))
 
 ;; I get the feeling schemers have probably already got this "with" business
@@ -72,8 +72,8 @@ key-value pairs."
        (dynamic-wind noop
                      (lambda ()
                        (sql-parameters statement-var
-                                            (name1 val1)
-                                            (name2 val2) ...)
+                                       (name1 val1)
+                                       (name2 val2) ...)
                        exps ...)
                      (lambda ()
                        (sqlite-finalize statement-var)))))
@@ -155,10 +155,11 @@ placeholder name and the value to use. Returns the number of rows."
   "If the path \"path\" exists in the ValidPaths table, return its
 id. Otherwise, return #f. If you already have a compiled statement for this
 purpose, you can give it as statement."
-  (with-sql-statement db path-id-sql statement
-                      (;("$path" path)
-                       (1 path))
-                      (single-result statement)))
+  (with-sql-statement
+      db path-id-sql statement
+      (;("$path" path)
+       (1 path))
+      (single-result statement)))
 
 
 (define update-sql
@@ -177,32 +178,34 @@ of course. Returns the row id of the row that was modified or inserted."
   (let ((id (path-id db path)))
     (if id
         (begin
-          (run-sql db update-sql
-                   ;; As you may have noticed, sqlite-bind doesn't behave
-                   ;; exactly how I was expecting...
-                   ;; ("$id" id)
-                   ;; ("$deriver" deriver)
-                   ;; ("$hash" hash)
-                   ;; ("$size" nar-size)
-                   ;; ("$time" time)
-                   (5 id)
-                   (3 deriver)
-                   (1 hash)
-                   (4 nar-size)
-                   (2 time))
+          (run-sql
+              db update-sql
+              ;; As you may have noticed, sqlite-bind doesn't behave
+              ;; exactly how I was expecting...
+              ;; ("$id" id)
+              ;; ("$deriver" deriver)
+              ;; ("$hash" hash)
+              ;; ("$size" nar-size)
+              ;; ("$time" time)
+              (5 id)
+              (3 deriver)
+              (1 hash)
+              (4 nar-size)
+              (2 time))
           id)
         (begin
-          (run-sql db insert-sql
-                   ;; ("$path" path)
-                   ;; ("$deriver" deriver)
-                   ;; ("$hash" hash)
-                   ;; ("$size" nar-size)
-                   ;; ("$time" time)
-                   (1 path)
-                   (4 deriver)
-                   (2 hash)
-                   (5 nar-size)
-                   (3 time))
+          (run-sql
+              db insert-sql
+              ;; ("$path" path)
+              ;; ("$deriver" deriver)
+              ;; ("$hash" hash)
+              ;; ("$size" nar-size)
+              ;; ("$time" time)
+              (1 path)
+              (4 deriver)
+              (2 hash)
+              (5 nar-size)
+              (3 time))
           (sqlite-last-insert-rowid db)))))
 
 (define add-reference-sql
@@ -213,15 +216,16 @@ FROM ValidPaths WHERE path = $reference")
   "referrer is the id of the referring store item, references is a list
 containing store item paths being referred to. Note that all of the store
 items in \"references\" should already be registered."
-  (with-sql-statement db add-reference-sql add-reference-statement ()
-                      (for-each (lambda (reference)
-                                  (run-statement db
-                                                 add-reference-statement
-                                                 ;("$referrer" referrer)
-                                                 ;("$reference" reference)
-                                                 (1 referrer)
-                                                 (2 reference)))
-                                references)))
+  (with-sql-statement
+      db add-reference-sql add-reference-statement ()
+      (for-each (lambda (reference)
+                  (run-statement
+                      db add-reference-statement
+                                        ;("$referrer" referrer)
+                                        ;("$reference" reference)
+                      (1 referrer)
+                      (2 reference)))
+                references)))
 
 ;; XXX figure out caching of statement and database objects... later
 (define* (sqlite-register #:key dbpath path references deriver hash nar-size)
@@ -232,11 +236,12 @@ path of the derivation that created the store item PATH, HASH is the
 base16-encoded sha256 hash of the store item denoted by PATH (prefixed with
 \"sha256:\") after being converted to nar form, and nar-size is the size in
 bytes of the store item denoted by PATH after being converted to nar form."
-  (with-sql-database dbpath db
-                     (let ((id (update-or-insert #:db db
-                                                 #:path path
-                                                 #:deriver deriver
-                                                 #:hash hash
-                                                 #:nar-size nar-size
-                                                 #:time (current-time))))
+  (with-sql-database
+      dbpath db
+      (let ((id (update-or-insert #:db db
+                                  #:path path
+                                  #:deriver deriver
+                                  #:hash hash
+                                  #:nar-size nar-size
+                                  #:time (current-time))))
      (add-references db id references))))
