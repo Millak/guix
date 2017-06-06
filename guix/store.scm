@@ -45,6 +45,7 @@
   #:use-module (web uri)
   #:use-module (sqlite3)
   #:use-module (guix store database)
+  #:use-module (gnu build install)
   #:export (%daemon-socket-uri
             %gc-roots-directory
             %default-substitute-urls
@@ -1245,17 +1246,14 @@ makes a wrapper around a port which implements GET-POSITION."
         (values hash
                 size)))))
 
-;; TODO: make this canonicalize store items that are registered. This involves
-;; setting permissions and timestamps, I think. Also, run a "deduplication
-;; pass", whatever that involves. Also, handle databases not existing yet
-;; (what should the default behavior be?  Figuring out how the C++ stuff
-;; currently does it sounds like a lot of grepping for global
-;; variables...). Also, return #t on success like the documentation says we
-;; should.
+;; TODO: Run a "deduplication pass", whatever that involves. Also, handle
+;; databases not existing yet (what should the default behavior be?  Figuring
+;; out how the C++ stuff currently does it sounds like a lot of grepping for
+;; global variables...). Also, return #t on success like the documentation
+;; says we should.
 
 (define* (register-path path
-                        #:key (references '()) deriver prefix
-                        state-directory)
+                        #:key (references '()) deriver prefix state-directory)
   ;; Priority for options: first what is given, then environment variables,
   ;; then defaults. %state-directory, %store-directory, and
   ;; %store-database-directory already handle the "environment variables /
@@ -1305,7 +1303,13 @@ be used internally by the daemon's build hook."
        #:deriver deriver
        #:hash (string-append "sha256:"
                              (bytevector->base16-string hash))
-       #:nar-size nar-size))))
+       #:nar-size nar-size)
+      ;; reset-timestamps prints a message on each invocation that we probably
+      ;; don't want.
+      (with-output-to-port 
+          (%make-void-port "w")
+        (lambda ()
+          (reset-timestamps real-path))))))
 
 
 ;;;
