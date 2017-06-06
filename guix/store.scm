@@ -43,7 +43,6 @@
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 popen)
   #:use-module (web uri)
-  #:use-module (sqlite3)
   #:use-module (guix store database)
   #:use-module (gnu build install)
   #:export (%daemon-socket-uri
@@ -1246,11 +1245,44 @@ makes a wrapper around a port which implements GET-POSITION."
         (values hash
                 size)))))
 
-;; TODO: Run a "deduplication pass", whatever that involves. Also, handle
-;; databases not existing yet (what should the default behavior be?  Figuring
-;; out how the C++ stuff currently does it sounds like a lot of grepping for
-;; global variables...). Also, return #t on success like the documentation
-;; says we should.
+(define (get-temp-link target)
+  "Like mkstemp!, but instead of creating a new file and giving you the name,
+it creates a new hardlink to TARGET and gives you the name."
+  (let try-again ((tempname (tmpnam)))
+    (catch
+      #t
+      (lambda ()
+        (link target tempname)
+        tempname)
+      (lambda ()
+        (try-again (tmpnam))))))
+
+(define (replace-with-link target to-replace)
+  "Replaces the file TO-REPLACE with a hardlink to TARGET"
+  ;; According to the C++ code, this is how you replace it with a link
+  ;; "atomically".
+  (let ((temp-link (get-temp-link target)))
+    (delete-file to-replace)
+    (rename-file temp-link to-replace)))
+
+;; TODO: handling in case the .links directory doesn't exist? For now I'll
+;; just assume it's the responsibility of whoever makes the store to create
+;; it.
+(define (deduplicate path store hash)
+  "Checks if a store item with hash HASH already exists. If so, replaces PATH
+with a hardlink to the already-existing one. If not, it registers PATH so that
+future duplicates can hardlink to it."
+  (let ((links-path (string-append store
+                                   "/.links/"
+                                   (bytevector->base16-string hash))))
+    (if (file-exists? links-path)
+        (replace-with-link links-path path)
+        (link path links-path))))
+
+;; TODO: Handle databases not existing yet (what should the default behavior
+;; be?  Figuring out how the C++ stuff currently does it sounds like a lot of
+;; grepping for global variables...). Also, return #t on success like the
+;; documentation says we should.
 
 (define* (register-path path
                         #:key (references '()) deriver prefix state-directory)
@@ -1309,7 +1341,8 @@ be used internally by the daemon's build hook."
       (with-output-to-port 
           (%make-void-port "w")
         (lambda ()
-          (reset-timestamps real-path))))))
+          (reset-timestamps real-path)))
+      (deduplicate real-path store-dir hash))))
 
 
 ;;;
