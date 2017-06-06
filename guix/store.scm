@@ -1257,7 +1257,10 @@ makes a wrapper around a port which implements GET-POSITION."
                         #:key (references '()) deriver prefix
                         state-directory)
   ;; Priority for options: first what is given, then environment variables,
-  ;; then defaults.
+  ;; then defaults. %state-directory, %store-directory, and
+  ;; %store-database-directory already handle the "environment variables /
+  ;; defaults" question, so we only need to choose between what is given and
+  ;; those.
   "Register PATH as a valid store file, with REFERENCES as its list of
 references, and DERIVER as its deriver (.drv that led to it.)  If PREFIX is
 given, it must be the name of the directory containing the new store to
@@ -1271,28 +1274,28 @@ be used internally by the daemon's build hook."
                   (state-directory
                    (string-append state-directory "/db"))
                   (prefix
-                   (string-append prefix %state-directory "/db"))
-                  ((getenv "NIX_DB_DIR")
-                   (getenv "NIX_DB_DIR"))
-                  ((getenv "NIX_STATE_DIR")
-                   (string-append (getenv "NIX_STATE_DIR") "/db"))
+                   ;; If prefix is specified, the value of NIX_STATE_DIR
+                   ;; (which affects %state-directory) isn't supposed to
+                   ;; affect db-dir, only the compile-time-customized
+                   ;; default should. 
+                   (string-append prefix %localstatedir "/guix/db"))
                   (else
-                   (string-append %state-directory "/db"))))
+                   %store-database-directory)))
          (store-dir (if prefix
-                        (string-append prefix %store-directory)
-                        (or
-                         (getenv "NIX_STORE_DIR")
-                         (getenv "NIX_STORE")
-                         %store-directory)))
+                        ;; same situation as above
+                        (string-append prefix %storedir)
+                        %store-directory))
          (to-register (if prefix
-                          ;; note: we assume here that if path is, for example,
-                          ;; /foo/bar/gnu/store/thing.txt, then an environment
-                          ;; variable has been used to change the store
-                          ;; directory to /foo/bar/gnu/store.
-                          (string-append %store-directory "/" (basename path))
+                          (string-append %storedir "/" (basename path))
+                          ;; note: we assume here that if path is, for
+                          ;; example, /foo/bar/gnu/store/thing.txt and prefix
+                          ;; isn't given, then an environment variable has
+                          ;; been used to change the store directory to
+                          ;; /foo/bar/gnu/store, since otherwise real-path
+                          ;; would end up being /gnu/store/thing.txt, which is
+                          ;; probably not the right file in this case.
                           path))
-         (real-path (string-append store-dir "/"
-                                   (basename path))))
+         (real-path (string-append store-dir "/" (basename path))))
     (let-values (((hash nar-size)
                   (nar-sha256 real-path)))
       (sqlite-register
