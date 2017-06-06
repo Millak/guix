@@ -53,6 +53,8 @@ then
     NIX_LOCALSTATE_DIR="@GUIX_TEST_ROOT@/var"
     NIX_LOG_DIR="@GUIX_TEST_ROOT@/var/log/guix"
     NIX_DB_DIR="@GUIX_TEST_ROOT@/db"
+    # same problem as above, for %store-database-directory.
+    mkdir -p "$NIX_DB_DIR"
     NIX_ROOT_FINDER="@abs_top_builddir@/nix/scripts/list-runtime-roots"
 
     # Choose a PID-dependent name to allow for parallel builds.  Note
