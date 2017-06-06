@@ -44,7 +44,7 @@
   #:use-module (ice-9 popen)
   #:use-module (web uri)
   #:use-module (sqlite3)
-  #:use-module (guix sql)
+  #:use-module (guix store database)
   #:export (%daemon-socket-uri
             %gc-roots-directory
             %default-substitute-urls
