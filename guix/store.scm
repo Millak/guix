@@ -1280,9 +1280,9 @@ future duplicates can hardlink to it."
         (link path links-path))))
 
 ;; TODO: Handle databases not existing yet (what should the default behavior
-;; be?  Figuring out how the C++ stuff currently does it sounds like a lot of
-;; grepping for global variables...). Also, return #t on success like the
-;; documentation says we should.
+;; be? The C++ version checks for a number in the file "schema" in the
+;; database directory and compares it to a constant, and uses that to decide
+;; whether to "upgrade" or initialize the database).
 
 (define* (register-path path
                         #:key (references '()) deriver prefix state-directory)
@@ -1300,49 +1300,53 @@ Return #t on success.
 
 Use with care as it directly modifies the store!  This is primarily meant to
 be used internally by the daemon's build hook."
-  (let* ((db-dir (cond
-                  (state-directory
-                   (string-append state-directory "/db"))
-                  (prefix
-                   ;; If prefix is specified, the value of NIX_STATE_DIR
-                   ;; (which affects %state-directory) isn't supposed to
-                   ;; affect db-dir, only the compile-time-customized
-                   ;; default should. 
-                   (string-append prefix %localstatedir "/guix/db"))
-                  (else
-                   %store-database-directory)))
-         (store-dir (if prefix
-                        ;; same situation as above
-                        (string-append prefix %storedir)
-                        %store-directory))
-         (to-register (if prefix
-                          (string-append %storedir "/" (basename path))
-                          ;; note: we assume here that if path is, for
-                          ;; example, /foo/bar/gnu/store/thing.txt and prefix
-                          ;; isn't given, then an environment variable has
-                          ;; been used to change the store directory to
-                          ;; /foo/bar/gnu/store, since otherwise real-path
-                          ;; would end up being /gnu/store/thing.txt, which is
-                          ;; probably not the right file in this case.
-                          path))
-         (real-path (string-append store-dir "/" (basename path))))
-    (let-values (((hash nar-size)
-                  (nar-sha256 real-path)))
-      (sqlite-register
-       #:dbpath (string-append db-dir "/db.sqlite")
-       #:path to-register
-       #:references references
-       #:deriver deriver
-       #:hash (string-append "sha256:"
-                             (bytevector->base16-string hash))
-       #:nar-size nar-size)
-      ;; reset-timestamps prints a message on each invocation that we probably
-      ;; don't want.
-      (with-output-to-port 
-          (%make-void-port "w")
-        (lambda ()
-          (reset-timestamps real-path)))
-      (deduplicate real-path store-dir hash))))
+  (false-if-exception
+   (let* ((db-dir (cond
+                   (state-directory
+                    (string-append state-directory "/db"))
+                   (prefix
+                    ;; If prefix is specified, the value of NIX_STATE_DIR
+                    ;; (which affects %state-directory) isn't supposed to
+                    ;; affect db-dir, only the compile-time-customized
+                    ;; default should. 
+                    (string-append prefix %localstatedir "/guix/db"))
+                   (else
+                    %store-database-directory)))
+          (store-dir (if prefix
+                         ;; same situation as above
+                         (string-append prefix %storedir)
+                         %store-directory))
+          (to-register (if prefix
+                           (string-append %storedir "/" (basename path))
+                           ;; note: we assume here that if path is, for
+                           ;; example, /foo/bar/gnu/store/thing.txt and prefix
+                           ;; isn't given, then an environment variable has
+                           ;; been used to change the store directory to
+                           ;; /foo/bar/gnu/store, since otherwise real-path
+                           ;; would end up being /gnu/store/thing.txt, which is
+                           ;; probably not the right file in this case.
+                           path))
+          (real-path (string-append store-dir "/" (basename path))))
+     (let-values (((hash nar-size)
+                   (nar-sha256 real-path)))
+       (sqlite-register
+        #:dbpath (string-append db-dir "/db.sqlite")
+        #:path to-register
+        #:references references
+        #:deriver deriver
+        #:hash (string-append "sha256:"
+                              (bytevector->base16-string hash))
+        #:nar-size nar-size)
+       ;; reset-timestamps prints a message on each invocation that we probably
+       ;; don't want.
+       (with-output-to-port 
+           (%make-void-port "w")
+         (lambda ()
+           (reset-timestamps real-path)))
+       (deduplicate real-path store-dir hash)
+       ;; If we've made it this far without an exception, I guess we've
+       ;; probably succeeded?
+       #t))))
 
 
 ;;;
