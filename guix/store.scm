@@ -44,7 +44,7 @@
   #:use-module (ice-9 popen)
   #:use-module (web uri)
   #:use-module (guix store database)
-  #:use-module (gnu build install)
+  #:use-module (guix store deduplication)
   #:export (%daemon-socket-uri
             %gc-roots-directory
             %default-substitute-urls
@@ -1305,92 +1305,23 @@ This makes sense only when the daemon was started with '--cache-failures'."
   boolean)
 
 
-;; Would it be better to just make WRITE-FILE give size as well? I question
-;; the general utility of this approach.
-(define (counting-wrapper-port output-port)
-  "Some custom ports don't implement GET-POSITION at all. But if we want to
-figure out how many bytes are being written, we will want to use that. So this
-makes a wrapper around a port which implements GET-POSITION."
-  (let ((byte-count 0))
-    (make-custom-binary-output-port "counting-wrapper"
-                                    (lambda (bytes offset count)
-                                      (set! byte-count
-                                        (+ byte-count count))
-                                      (put-bytevector output-port bytes
-                                                      offset count)
-                                      count)
-                                    (lambda ()
-                                      byte-count)
-                                    #f
-                                    (lambda ()
-                                      (close-port output-port)))))
 
 
-(define (nar-sha256 file)
-  "Gives the sha256 hash of a file and the size of the file in nar form."
-  (let-values (((port get-hash) (open-sha256-port)))
-    (let ((wrapper (counting-wrapper-port port)))
-      (write-file file wrapper)
-      (force-output wrapper)
-      (force-output port)
-      (let ((hash (get-hash))
-            (size (port-position wrapper)))
-        (close-port wrapper)
-        (values hash
-                size)))))
-
-(define (get-temp-link target)
-  "Like mkstemp!, but instead of creating a new file and giving you the name,
-it creates a new hardlink to TARGET and gives you the name."
-  (let try-again ((tempname (tmpnam)))
-    (catch
-      #t
-      (lambda ()
-        (link target tempname)
-        tempname)
-      (lambda ()
-        (try-again (tmpnam))))))
-
-(define (replace-with-link target to-replace)
-  "Replaces the file TO-REPLACE with a hardlink to TARGET"
-  ;; According to the C++ code, this is how you replace it with a link
-  ;; "atomically".
-  (let ((temp-link (get-temp-link target)))
-    (delete-file to-replace)
-    (rename-file temp-link to-replace)))
-
-;; TODO: handling in case the .links directory doesn't exist? For now I'll
-;; just assume it's the responsibility of whoever makes the store to create
-;; it.
-(define (deduplicate path store hash)
-  "Checks if a store item with hash HASH already exists. If so, replaces PATH
-with a hardlink to the already-existing one. If not, it registers PATH so that
-future duplicates can hardlink to it."
-  (let ((links-path (string-append store
-                                   "/.links/"
-                                   (bytevector->base16-string hash))))
-    (if (file-exists? links-path)
-        (replace-with-link links-path path)
-        (link path links-path))))
 
 ;; TODO: Handle databases not existing yet (what should the default behavior
 ;; be? The C++ version checks for a number in the file "schema" in the
 ;; database directory and compares it to a constant, and uses that to decide
 ;; whether to "upgrade" or initialize the database).
 
-(define* (register-path path
-                        #:key (references '()) deriver prefix state-directory)
-  ;; Priority for options: first what is given, then environment variables,
-  ;; then defaults. %state-directory, %store-directory, and
-  ;; %store-database-directory already handle the "environment variables /
-  ;; defaults" question, so we only need to choose between what is given and
-  ;; those.
+(define* (register-path path #:key (references '()) deriver
+                        prefix state-directory (optimize #t))
   "Register PATH as a valid store file, with REFERENCES as its list of
 references, and DERIVER as its deriver (.drv that led to it.)  If PREFIX is
 given, it must be the name of the directory containing the new store to
 initialize; if STATE-DIRECTORY is given, it must be a string containing the
-absolute file name to the state directory of the store being initialized.
-Return #t on success.
+absolute file name to the state directory of the store being
+initialized. Deduplication (saves space, sometimes complicates things) can be
+controlled with OPTIMIZE.  Return #t on success.
 
 Use with care as it directly modifies the store!  This is primarily meant to
 be used internally by the daemon's build hook."
@@ -1437,7 +1368,8 @@ be used internally by the daemon's build hook."
            (%make-void-port "w")
          (lambda ()
            (reset-timestamps real-path)))
-       (deduplicate real-path store-dir hash)
+       (when optimize
+         (deduplicate real-path hash store-dir))
        ;; If we've made it this far without an exception, I guess we've
        ;; probably succeeded?
        #t))))

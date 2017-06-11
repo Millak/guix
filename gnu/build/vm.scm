@@ -35,6 +35,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
+  #:use-module (guix store deduplication)
   #:export (qemu-command
             load-in-linux-vm
             format-partition
