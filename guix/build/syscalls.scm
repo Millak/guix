@@ -42,6 +42,7 @@
             MS_BIND
             MS_MOVE
             MS_STRICTATIME
+            MS_PRIVATE
             MNT_FORCE
             MNT_DETACH
             MNT_EXPIRE
@@ -485,7 +486,9 @@ the returned procedure is called."
 (define MS_REMOUNT           32)
 (define MS_BIND            4096)
 (define MS_MOVE            8192)
+(define MS_PRIVATE       262144)
 (define MS_STRICTATIME 16777216)
+
 
 (define MNT_FORCE       1)
 (define MNT_DETACH      2)

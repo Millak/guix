@@ -31,6 +31,7 @@
             %store-directory
             %state-directory
             %store-database-directory
+            %store-database
             %config-directory
             %guix-register-program
 
@@ -85,6 +86,9 @@
 (define %store-database-directory
   (or (and=> (getenv "NIX_DB_DIR") canonicalize-path)
       (string-append %state-directory "/db")))
+
+(define %store-database
+  (string-append %store-database-directory "/db.sqlite"))
 
 (define %config-directory
   ;; This must match `GUIX_CONFIGURATION_DIRECTORY' as defined in `nix/local.mk'.

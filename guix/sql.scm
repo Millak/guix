@@ -27,7 +27,8 @@
             with-sql-database
             run-sql
             run-statement
-            single-result)
+            single-result
+            with-sql-statements)
   #:re-export (sqlite-step
                sqlite-fold
                sqlite-fold-right
@@ -36,8 +37,40 @@
                sqlite-reset
                sqlite-finalize))
 
-;; Miscellaneous SQL stuff, currently just setup for sqlite-register. Mostly
-;; macros.
+;; Miscellaneous SQL stuff. Mostly macros.
+
+
+;; This structure and the procedures that operate on it make it possible to
+;; open an sqlite database and compile sql statements only when
+;; necessary. Whichever macro opens the database is also responsible for
+;; closing it, and any macros using that database or statements compiled for
+;; it within the scope of that macro will use what is already there.
+(define-record-type <guix-database>
+  (make-guix-database sql-database statement-cache)
+  guix-database?
+  (sql-database guix-sql-database)
+  (statement-cache db-statement-cache))
+
+(define (open-guix-database location)
+  (make-guix-database (sqlite-open location)
+                      (make-hash-table)))
+
+(define (close-guix-database db)
+  (hash-for-each (lambda (key value)
+                   (sqlite-finalize value))
+                 (db-statement-cache db))
+  (sqlite-close (guix-sql-database db)))
+
+(define (maybe-compile-statement db sql)
+  (let ((statement (hash-ref (db-statement-cache db) sql)))
+    (or statement
+        (let ((new-statement (sqlite-prepare (guix-sql-database db)
+                                             sql)))
+          (hash-set! (db-statement-cache db)
+                     sql
+                     new-statement)
+          new-statement))))
+
 
 ;; This really belongs in guile-sqlite3, as can be seen from the @@s.
 (define sqlite-last-insert-rowid
@@ -48,7 +81,7 @@
                      (list '*))))
     (lambda (db)
       "Gives the row id of the last inserted row in DB."
-      (last-rowid ((@@ (sqlite3) db-pointer) db)))))
+      (last-rowid ((@@ (sqlite3) db-pointer) (guix-sql-database db))))))
 
 (define sqlite-parameter-index
   (let ((param-index (pointer->procedure
@@ -96,7 +129,7 @@ key-value pairs."
     ((with-sql-statement db sql statement-var
                          ((name1 val1) (name2 val2) ...)
                          exps ...)
-     (let ((statement-var (sqlite-prepare db sql)))
+     (let ((statement-var (maybe-compile-statement db sql)))
        (dynamic-wind noop
                      (lambda ()
                        (sql-parameters statement-var
@@ -104,25 +137,45 @@ key-value pairs."
                                        (name2 val2) ...)
                        exps ...)
                      (lambda ()
-                       (sqlite-finalize statement-var)))))
+                       (sqlite-reset statement-var)))))
     ((with-sql-statement db sql statement-var () exps ...)
-     (let ((statement-var (sqlite-prepare db sql)))
+     (let ((statement-var (maybe-compile-statement db sql)))
        (dynamic-wind noop
                      (lambda ()
                        exps ...)
                      (lambda ()
-                       (sqlite-finalize statement-var)))))))
+                       (sqlite-reset statement-var)))))))
+
+(define-syntax with-sql-statements
+  (syntax-rules ()
+    "Like with-sql-statement, but with multiple statements."
+    ((with-sql-statements db ((sql statement-var bindings))
+                          exps ...)
+     (with-sql-statement db sql statement-var bindings
+                         exps ...))
+    ((with-sql-statements db ((sql statement-var bindings) stmt-clause-rest ...)
+                          exps ...)
+     (with-sql-statements db (stmt-clause-rest ...)
+                          (with-sql-statement db sql statement-var bindings
+                                              exps ...)))))
+
 
 (define-syntax with-sql-database
   (syntax-rules ()
-    "Automatically closes the database once the scope of this macro is left."
+    "Automatically closes the database once the scope of this macro is left
+unless the database was already open - that is, LOCATION wasn't a string but a
+<sqlite-db>"
     ((with-sql-database location db-var exps ...)
-     (let ((db-var (sqlite-open location)))
+     (let* ((already-open? (guix-database? location))
+            (db-var (if already-open?
+                        location
+                        (open-guix-database location))))
        (dynamic-wind noop
                      (lambda ()
                        exps ...)
                      (lambda ()
-                       (sqlite-close db-var)))))))
+                       (unless already-open?
+                         (close-guix-database db-var))))))))
 
 (define-syntax run-sql
   (syntax-rules ()
@@ -131,7 +184,7 @@ database. Everything after database and sql source should be 2-element lists
 containing the sql placeholder name and the value to use. Returns the number
 of rows."
     ((run-sql db sql (name1 val1) (name2 val2) ...)
-     (let ((statement (sqlite-prepare db sql)))
+     (let ((statement (maybe-compile-statement db sql)))
        (dynamic-wind noop
                      (lambda ()
                        (sql-parameters statement
@@ -139,14 +192,14 @@ of rows."
                                             (name2 val2) ...)
                        (step-all statement))
                      (lambda ()
-                       (sqlite-finalize statement)))))
+                       (sqlite-reset statement)))))
     ((run-sql db sql)
-     (let ((statement (sqlite-prepare db sql)))
+     (let ((statement (maybe-compile-statement db sql)))
        (dynamic-wind noop
                      (lambda ()
                        (step-all statement))
                      (lambda ()
-                       (sqlite-finalize statement)))))))
+                       (sqlite-reset statement)))))))
 
 (define-syntax run-statement
   (syntax-rules ()
