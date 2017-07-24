@@ -29,7 +29,8 @@
   #:use-module (guix serialization)
   #:export (nar-sha256
             deduplicate
-            reset-timestamps))
+            reset-timestamps
+            counting-wrapper-port))
 
 ;; Would it be better to just make WRITE-FILE give size as well? I question
 ;; the general utility of this approach.
@@ -93,10 +94,10 @@ LINK-PREFIX."
       (lambda ()
         (link target tempname)
         tempname)
-      (lambda (args)
+      (lambda args
         (if (= (system-error-errno args) EEXIST)
             (try-again (tempname-in link-prefix))
-            (throw 'system-error args))))))
+            (throw args))))))
 
 ;; There are 3 main kinds of errors we can get from hardlinking: "Too many
 ;; things link to this" (EMLINK), "this link already exists" (EEXIST), and
@@ -117,10 +118,10 @@ will happen!"
      (catch 'system-error
        (lambda ()
          exps ...)
-       (lambda (args)
+       (lambda args
          (case (system-error-errno args)
            ((errors ...) #f)
-           (else (throw 'system-error args))))))))
+           (else (throw args))))))))
 
 ;; Under what conditions would PATH be on a separate filesystem from the
 ;; .links directory? Any instance of that as far as I can tell would be a
@@ -146,7 +147,7 @@ future duplicates can hardlink to it. If PATH isn't under the default
             (catch 'system-error
               (lambda ()
                 (link path link-file))
-              (lambda (args)
+              (lambda args
                 (case (system-error-errno args)
                   ((EEXIST)
                    ;; Someone else put an entry for PATH in links-directory
@@ -162,7 +163,7 @@ future duplicates can hardlink to it. If PATH isn't under the default
                   ;; things linked to the original file that we can't make another
                   ;; one? Sounds like an error! Anything we haven't anticipated,
                   ;; too.
-                  (else (throw 'system-error args)))))))))
+                  (else (throw args)))))))))
 
 (define (reset-timestamps directory)
   "Reset the timestamps of all the files under DIRECTORY, so that they appear

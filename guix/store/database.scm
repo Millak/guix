@@ -17,8 +17,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix store database)
+  #:use-module (sqlite3)
   #:use-module (guix sql)
-  #:export (sqlite-register))
+  #:use-module (guix config)
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 vlist)
+  #:export (sqlite-register
+            outputs-exist?
+            file-closure
+            register-derivation-output))
 
 ;;; Code for working with the store database directly.
 
@@ -93,7 +100,8 @@ item PATH refers to (they need to be already registered!), DERIVER is a string
 path of the derivation that created the store item PATH, HASH is the
 base16-encoded sha256 hash of the store item denoted by PATH (prefixed with
 \"sha256:\") after being converted to nar form, and nar-size is the size in
-bytes of the store item denoted by PATH after being converted to nar form."
+bytes of the store item denoted by PATH after being converted to nar
+form. Returns the id of the registered path."
   (with-sql-database
       dbpath db
       (let ((id (update-or-insert #:db db
@@ -102,4 +110,99 @@ bytes of the store item denoted by PATH after being converted to nar form."
                                   #:hash hash
                                   #:nar-size nar-size
                                   #:time (current-time))))
-     (add-references db id references))))
+        (add-references db id references)
+        id)))
+
+(define get-outputs-sql
+  "SELECT path FROM DerivationOutputs WHERE $drvpath IN (SELECT path FROM
+ValidPaths WHERE ValidPaths.id = DerivationOutputs.drv) AND id = $id")
+
+(define output-path-id-sql
+  "SELECT id FROM ValidPaths WHERE path IN (SELECT path FROM DerivationOutputs
+WHERE DerivationOutputs.id = $id AND drv IN (SELECT id FROM ValidPaths WHERE
+path = $drvpath))")
+;; "SELECT id FROM ValidPaths WHERE ValidPaths.path IN (SELECT path FROM
+;; DerivationOutputs WHERE $drvpath IN (SELECT path FROM ValidPaths WHERE
+;; ValidPaths.id = DerivationOutputs.drv) AND id = $id)"
+
+
+(define* (outputs-exist? drv-path outputs
+                         #:optional (database %store-database))
+  "Determines whether all output labels in OUTPUTS exist as built outputs of
+drv-path."
+  (with-sql-database
+      database db
+      (with-sql-statement db output-path-id-sql output-path-id
+                          (("$drvpath" drv-path))
+                          (fold
+                           (lambda (output-label prev)
+                             (and prev
+                                  (begin
+                                    (sqlite-reset output-path-id)
+                                    (sql-parameters output-path-id
+                                                    ("$id" output-label))
+                                    (single-result output-path-id))))
+                           #t
+                           outputs))))
+
+(define referrers-sql
+  "SELECT path FROM ValidPaths WHERE id IN (SELECT referrer FROM Refs WHERE
+reference IN (SELECT id FROM ValidPaths WHERE path = $path))")
+
+(define references-sql
+  "SELECT path FROM ValidPaths WHERE id IN (SELECT reference FROM Refs WHERE
+referrer IN (SELECT id FROM ValidPaths WHERE path = $path))")
+
+(define* (file-closure path #:key
+                       (database %store-database)
+                       (list-so-far vlist-null))
+  "Returns a vlist containing the store paths referenced by PATH, the store
+paths referenced by those paths, and so on."
+  (with-sql-database
+      database db
+      (with-sql-statement
+          db references-sql get-references ()
+
+          ;; to make it possible to go depth-first we need to get all the
+          ;; references of an item first or we'll have re-entrancy issues with
+          ;; the get-references statement.
+          (define (references-of path)
+            ;; There are no problems with resetting an already-reset
+            ;; statement.
+            (sqlite-reset get-references)
+            (sql-parameters get-references ("$path" path))
+            (sqlite-fold (lambda (row prev)
+                           (cons (vector-ref row 0) prev))
+                         '()
+                         get-references))
+
+          (let %file-closure ((references-vlist list-so-far)
+                              (path path))
+            (fold (lambda (ref prev)
+                    (if (vhash-assoc ref prev)
+                        prev
+                        (%file-closure (vhash-cons ref #t prev)
+                                       ref)))
+                  references-vlist
+                  (references-of path))))))
+
+(define register-output-sql
+  "INSERT OR REPLACE INTO DerivationOutputs (drv, id, path) SELECT id, $outid,
+$outpath FROM ValidPaths WHERE path = $drvpath")
+
+(define (register-derivation-output database drv-path outid output-path
+                                    references nar-size hash)
+  (with-sql-database
+      database db
+      (with-sql-statement db
+        register-output-sql register-output
+        (("$drvpath" drv-path)
+         ("$outid" outid)
+         ("$outpath" output-path))
+        (let ((id (sqlite-register #:dbpath db
+                                   #:path output-path
+                                   #:references references
+                                   #:deriver drv-path
+                                   #:hash hash
+                                   #:nar-size nar-size)))
+          (run-statement db register-output)))))
