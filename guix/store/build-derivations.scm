@@ -140,7 +140,9 @@ environment variable that should be set during the build execution."
                              (assoc-ref (derivation-builder-environment-vars drv)
                                         "impureEnvVars")))
                         (and leak-string
-                             (parse-delimited leak-string))))))
+                             (string-tokenize leak-string
+                                              (char-set-complement
+                                               (char-set #\space))))))))
     (append `(("PATH"             .  "/path-not-set")
               ("HOME"             .  "/homeless-shelter")
               ("NIX_STORE"        .  ,%store-directory)
@@ -194,21 +196,23 @@ already added by call-with-container."
   "Creates core files that will not vary when the derivation is constant. That
 is, whether these files are present or not is influenced solely by the
 derivation itself."
-  (mkdir-p* %store-directory #o1775)
-  (mkdir-p* "/tmp" #o1777)
-  (mkdir-p* "/etc")
+  (let ((uid (build-environment-user environment))
+        (gid (build-environment-group environment)))
+    (mkdir-p* %store-directory #o1775)
+    (chown %store-directory uid gid)
+    (mkdir-p* "/tmp" #o1777)
+    (mkdir-p* "/etc")
 
-  (format-file "/etc/passwd"
-               (string-append "nixbld:x:~a:~a:Nix build user:/:/noshell~%"
-                              "nobody:x:65534:65534:Nobody:/:/noshell~%")
-               (build-environment-user environment)
-               (build-environment-group environment))
-  (format-file "/etc/group"
-               "nixbld:!:~a:~%"
-               (build-environment-group environment))
-  (unless (fixed-output-derivation?
-           (build-environment-derivation environment))
-    (format-file "/etc/hosts" "127.0.0.1 localhost~%")))
+    (format-file "/etc/passwd"
+                 (string-append "nixbld:x:~a:~a:Nix build user:/:/noshell~%"
+                                "nobody:x:65534:65534:Nobody:/:/noshell~%")
+                 uid gid)
+    (format-file "/etc/group"
+                 "nixbld:!:~a:~%"
+                 (build-environment-group environment))
+    (unless (fixed-output-derivation?
+             (build-environment-derivation environment))
+      (format-file "/etc/hosts" "127.0.0.1 localhost~%"))))
 
 (define (path-already-assigned? path paths)
   "Determines whether something is already going to be bind-mounted to PATH
@@ -229,12 +233,13 @@ based on what is in PATHS, which should be a list of paths or path pairs."
 will override the default chroot directories, EXTRA-CHROOT-DIRS will
 not. Those two arguments should be #f or lists of either file names or pairs
 of file names of the form (outside . inside). Returns the <build-environment>
-and a list of all the files to be added from the store (useful for scanning
-for references to them)."
+and a list of all the files in the store that could be referenced."
   (let* ((build-dir (make-build-directory drv))
          (build-dir-inside (build-directory-name drv 0 "/tmp"))
          (env-vars (build-environment-vars drv build-dir-inside))
          (inputs-from-store (all-transitive-inputs drv))
+         ;; use "or" here instead of having a default value so that passing #f
+         ;; works.
          (all-inputs `(,@(or build-chroot-dirs
                              %default-chroot-dirs)
                        ,@extra-chroot-dirs
@@ -246,26 +251,48 @@ for references to them)."
     ;; 4. Honor "environment variables" passed through the derivation.
     ;;    these include "impureEnvVars", "exportReferencesGraph",
     ;;    "build-chroot-dirs", "build-extra-chroot-dirs", "preferLocalBuild"
+    (chown build-dir build-user build-group)
     (values
      (make-build-environment drv build-dir-inside build-dir env-vars
                              all-inputs
                              (special-filesystems all-inputs)
                              build-user
                              build-group)
-     inputs-from-store)))
+     (append (match (derivation-outputs drv)
+               (((outid . ($ <derivation-output> output-path)) ...)
+                output-path))
+             inputs-from-store))))
 
+
+(define (all-input-output-paths drv)
+  "Returns a list containing the output paths this derivation's inputs need to
+provide."
+  (fold (lambda (input output-paths)
+          (append (derivation-input-output-paths input)
+                  output-paths))
+        '()
+        (derivation-inputs drv)))
+
+;; Which store items should be included? According to the nix daemon, these
+;; are:
+;; - the relevant outputs of the inputs
+;; - everything referenced (direct/indirect) by the relevant outputs of the
+;;   inputs
+;; - the sources
+;; - everything referenced (direct/indirect) by the sources
+;;
+;; Importantly, this doesn't mention recursive inputs. Only direct inputs.
 (define (all-transitive-inputs drv)
   "Produces a list of all inputs and all of their references."
-  (let ((input-paths (inputs-closure drv)))
+  (let ((input-paths (all-input-output-paths drv)))
     (vhash-fold (lambda (key val prev)
                   (cons key prev))
                 input-paths
                 (fold (lambda (input list-so-far)
                         (file-closure input #:list-so-far list-so-far))
                       vlist-null
-                      ;; include the derivation's references as well
-                      (cons (derivation-file-name drv)
-                            input-paths)))))
+                      `(,@(derivation-sources drv)
+                        ,@input-paths)))))
 
 ;; Sigh... I just HAD to go and ask "what if there are spaces in the mountinfo
 ;; entries"... I couldn't find the behavior documented anywhere, but
@@ -385,8 +412,10 @@ assumes that it is in a separate namespace at this point."
                 (build-filesystems environment))
       (lambda ()
         (enact-build-environment environment)
-        ;(close-most-files)
         ;; DROP PRIVILEGES HERE
+        (setgid (build-environment-group environment))
+        (setuid (build-environment-user environment))
+        ;(close-most-files)
         (chdir (build-directory-inside environment))
         
         (format #t "command line: ~a~%"
@@ -646,6 +675,12 @@ nar, and the length of the nar."
               (get-hash)
               size))))
 
+;; XXX: make this configurable. Maybe I should read some more about those
+;; parameters I've heard about...
+(define %build-group (false-if-exception (group:gid (getgrnam "guixbuild"))))
+(define %build-user-pool (and %build-group
+                              (group:mem (getgrgid %build-group))))
+
 ;; every method of getting a derivation's outputs in the store needs to
 ;; provide 3 pieces of metadata: the size of the nar, the references of each
 ;; output, and the hash of each output. We happen to have ways of getting all
@@ -655,7 +690,21 @@ nar, and the length of the nar."
   (format #t "Starting build of derivation ~a~%~%" drv)
   ;; inputs should all exist as of now
   (let-values (((build-env store-inputs)
-                (prepare-build-environment drv #:extra-chroot-dirs '())))
+                (prepare-build-environment drv
+                                           #:extra-chroot-dirs '()
+                                           #:build-user
+                                           (or (and
+                                                %build-user-pool
+                                                ;; XXX: When implementing
+                                                ;; scheduling, make it so this
+                                                ;; searches for an unused
+                                                ;; one.
+                                                (passwd:uid
+                                                 (getpwnam
+                                                  (car %build-user-pool))))
+                                               (getuid))
+                                           #:build-group (or %build-group
+                                                             (getgid)))))
     (if (zero? (run-builder build-env))
         (get-output-specs drv store-inputs)
         #f)))
@@ -679,7 +728,10 @@ even if its outputs already exist."
                                                  output-path
                                                  references
                                                  nar-size
-                                                 hash))
+                                                 (string-append
+                                                  "sha256:"
+                                                  (bytevector->base16-string
+                                                   hash))))
                     (assimilate-path output-path))
                   output-specs)
         (throw 'derivation-build-failed drv))))

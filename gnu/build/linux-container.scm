@@ -272,12 +272,6 @@ identifiers to map into the user namespace."
               (_                        ;unexpected termination
                #f)))))))))
 
-(define (try-umount maybe-mountpoint)
-  (catch #t
-    (lambda ()
-      (umount maybe-mountpoint))
-    noop))
-
 (define* (call-with-container mounts thunk #:key (namespaces %namespaces)
                               (host-uids 1) use-output)
   "Run THUNK in a new container process and return its exit status.
@@ -311,7 +305,8 @@ load path must be adjusted as needed."
                 (use-output root))
               status))))
        (lambda ()
-         (try-umount root))))))
+         (false-if-exception
+          (umount root)))))))
 
 (define (container-excursion pid thunk)
   "Run THUNK as a child process within the namespaces of process PID and
