@@ -176,7 +176,9 @@ paths referenced by those paths, and so on."
                          '()
                          get-references))
 
-          (let %file-closure ((references-vlist list-so-far)
+          (let %file-closure ((references-vlist (vhash-cons path
+                                                            #t
+                                                            list-so-far))
                               (path path))
             (fold (lambda (ref prev)
                     (if (vhash-assoc ref prev)

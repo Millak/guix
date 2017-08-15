@@ -128,8 +128,11 @@ for the process."
               "/dev/random"
               "/dev/urandom"
               "/dev/tty"
-              "/dev/ptmx"
+   ;           "/dev/ptmx"
               "/dev/fuse"))
+
+  ;(mkdir (scope "/dev/pts"))
+  ;(bind-mount "/dev/pts" (scope "/dev/pts"))
 
   ;; Setup the container's /dev/console by bind mounting the pseudo-terminal
   ;; associated with standard input when there is one.

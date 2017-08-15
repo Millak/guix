@@ -26,12 +26,15 @@
   #:use-module (guix config)
   #:use-module (guix build syscalls)
   #:use-module (ice-9 vlist)
+  #:use-module (ice-9 popen)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-11)
   #:use-module (guix hash)
   #:use-module (guix serialization)
+  #:use-module (guix base16)
+  #:use-module (guix sets)
   #:use-module ((guix build utils) #:select (delete-file-recursively
                                              mkdir-p
                                              copy-recursively))
@@ -61,40 +64,52 @@
   (user        build-environment-user)      ; the user id to build with.
   (group       build-environment-group))    ; the group id to build with.      
 
+
 ;;; The derivation building process:
 ;;; 1. Build inputs if necessary.
 ;;; 2. Make a build directory under TMPDIR or /tmp
-;;; 3. Gather all the inputs, the inputs of the inputs, the inputs of the
-;;; inputs of the inputs, and so on. Copy them to /gnu/store under the build
+;;; 3. Gather all the inputs and sources and anything they transitively
+;;; reference and put them in the store in the chroot directory.
+;;; 4. Make an output directory for the build under /gnu/store in the build
 ;;; directory.
-;;; 4. Gather all the sources and plop them in the build directory
-;;; 5. Make an output directory for the build under /gnu/store in the build
-;;; directory.
-;;; 6. Set all the environment variables listed in the derivation, some of
+;;; 5. Set all the environment variables listed in the derivation, some of
 ;;; which we have to honor ourselves, like "preferLocalBuild",
 ;;; "allowSubstitutes", "allowedReferences", "disallowedReferences", and
 ;;; "impureEnvVars".
-;;; 7. Run the builder in a chroot where the build directory is the root.
+;;; 6. Run the builder in a chroot where the build directory is the root.
 
 ;; Add this to (guix config) later
 (define %temp-directory "/tmp")
 
-;; if a derivation builder name is in here, it is a builtin. For normal
-;; behavior, make sure everything starts with "builtin:". Also, the procedures
-;; stored in here should take a single argument, the derivation.
+
+(define (output-paths drv)
+  "Returns all store output paths produced by DRV."
+  (match (derivation-outputs drv)
+    (((outid . ($ <derivation-output> output-path)) ...)
+     output-path)))
 
 (define (get-output-specs drv possible-references)
+  "Gets hash, size, and reference info from each output of DRV."
   (map (match-lambda
          ((outid . ($ <derivation-output> output-path))
           (let-values (((references hash nar-size)
                         (scan-for-references output-path
-                                             possible-references)))
+                                             ;; outputs can reference
+                                             ;; themselves or other outputs of
+                                             ;; the same derivation.
+                                             (append (output-paths drv)
+                                                     possible-references))))
             (list outid output-path references hash nar-size))))
        (derivation-outputs drv)))
 
 (define (builtin-download drv)
   ((@@ (guix scripts perform-download) perform-download) drv)
   (get-output-specs drv (all-transitive-inputs drv)))
+
+;; if a derivation builder name is in here, it is a builtin. For normal
+;; behavior, make sure everything starts with "builtin:". Also, the procedures
+;; stored in here should take a single argument, the derivation.
+
 
 (define builtins
   (let ((builtins-table (make-hash-table 10)))
@@ -147,7 +162,7 @@ environment variable that should be set during the build execution."
               ("HOME"             .  "/homeless-shelter")
               ("NIX_STORE"        .  ,%store-directory)
               ;; XXX: make this configurable
-              ("NIX_BUILD_CORES"  .  "1")
+              ("NIX_BUILD_CORES"  .  "0")
               ("NIX_BUILD_TOP"    .  ,in-chroot-build-dir)
               ;; why yes that is something like /tmp/guix-build-<drv>-0, yes
               ;; indeed it does not make much sense to make that the TMPDIR
@@ -224,6 +239,8 @@ based on what is in PATHS, which should be a list of paths or path pairs."
            (string= target path)))
         paths))
 
+
+
 (define* (prepare-build-environment drv #:key
                                     build-chroot-dirs 
                                     (extra-chroot-dirs '())
@@ -248,9 +265,11 @@ and a list of all the files in the store that could be referenced."
                               build-dir-inside)
                        ,@inputs-from-store
                        ,@(derivation-sources drv))))
-    ;; 4. Honor "environment variables" passed through the derivation.
-    ;;    these include "impureEnvVars", "exportReferencesGraph",
-    ;;    "build-chroot-dirs", "build-extra-chroot-dirs", "preferLocalBuild"
+    ;;
+    ;; TODO: Honor "environment variables" passed through the derivation.
+    ;; these include "impureEnvVars", "exportReferencesGraph",
+    ;; "allowSubstitutes", "allowedReferences", "disallowedReferences"
+    ;; "preferLocalBuild".
     (chown build-dir build-user build-group)
     (values
      (make-build-environment drv build-dir-inside build-dir env-vars
@@ -258,10 +277,7 @@ and a list of all the files in the store that could be referenced."
                              (special-filesystems all-inputs)
                              build-user
                              build-group)
-     (append (match (derivation-outputs drv)
-               (((outid . ($ <derivation-output> output-path)) ...)
-                output-path))
-             inputs-from-store))))
+     inputs-from-store)))
 
 
 (define (all-input-output-paths drv)
@@ -287,11 +303,12 @@ provide."
   (let ((input-paths (all-input-output-paths drv)))
     (vhash-fold (lambda (key val prev)
                   (cons key prev))
-                input-paths
+                '()
                 (fold (lambda (input list-so-far)
                         (file-closure input #:list-so-far list-so-far))
                       vlist-null
-                      `(,@(derivation-sources drv)
+                      `(
+                        ,@(derivation-sources drv)
                         ,@input-paths)))))
 
 ;; Sigh... I just HAD to go and ask "what if there are spaces in the mountinfo
@@ -332,17 +349,20 @@ a list of paths or pairs of paths."
           '())
     
     ;; Indicates CONFIG_DEVPTS_MULTIPLE_INSTANCES=y in the kernel.
-    ,@(if  (and (file-exists? "/dev/pts/ptmx")
-                (not (file-exists? "/dev/ptmx"))
-                (not (path-already-assigned? "/dev/pts"
-                                             input-paths)))
-           (list (file-system
-                   (device "none")
-                   (mount-point "/dev/pts")
-                   (type "devpts")
-                   (options "newinstance,mode=0620")
-                   (check? #f)))
-           '())))
+    ,@(if (and (file-exists? "/dev/pts/ptmx")
+               ;; This check is fishy
+               (not (path-already-assigned? "/dev/ptmx"
+                                            input-paths))
+               (not (path-already-assigned? "/dev/pts"
+                                            input-paths)))
+          (list (file-system
+                  (device "none")
+                  (mount-point "/dev/pts")
+                  (type "devpts")
+                  (options "newinstance,mode=0620")
+                  (check? #f)))
+          '())
+    ))
 
 (define (initialize-loopback)
   ;; XXX: Implement this. I couldn't find anything in the manual about ioctl,
@@ -351,13 +371,18 @@ a list of paths or pairs of paths."
   ;;   )
   #f)
 
+(define (disable-address-randomization)
+  (let ((current-persona (personality #xffffffff)))
+    (personality (logior current-persona
+                         ADDR_NO_RANDOMIZE))))
+
 (define (enact-build-environment build-environment)
   "Makes the <build-environment> BUILD-ENVIRONMENT current by setting the
 environment variables and bind-mounting the listed files. Importantly, this
 assumes that it is in a separate namespace at this point."
   ;; warning: the order in which a lot of this happens is significant and
   ;; partially based on guesswork / copying what the c++ does.
-
+  ;(setsid)
   (add-core-files build-environment)
   ;; local communication within the build environment should still be
   ;; possible.
@@ -372,19 +397,30 @@ assumes that it is in a separate namespace at this point."
   (environ (map (match-lambda
                   ((key . val)
                    (string-append key "=" val)))
-                (build-environment-variables build-environment))))
+                (build-environment-variables build-environment)))
+  (sethostname "localhost")
+  (disable-address-randomization)
+  (setgid (build-environment-group build-environment))
+  (setuid (build-environment-user build-environment))
+  ;(close-most-files)
+  (chdir (build-directory-inside build-environment)))
 
 ;; The C++ stuff does this, and in pursuit of a bug I will mindlessly mimic
 ;; anything.
-(define (close-most-files)
-  (port-for-each (lambda (port)
-                   (when (port-filename port)
-                     (let ((port-fd (port->fdes port)))
-                       (unless (or
-                                (= port-fd (port->fdes (current-input-port)))
-                                (= port-fd (port->fdes (current-output-port)))
-                                (= port-fd (port->fdes (current-error-port))))
-                         (close port-fd)))))))
+(define (setup-i/o new-output)
+  "Redirect output and error streams to LOG-PIPE and get input from
+/dev/null, then close all other FDs."
+  ;; 
+  (redirect-port new-output (current-output-port))
+  (redirect-port (current-output-port) (current-error-port))
+  (call-with-input-file "/dev/null"
+    (lambda (null-port)
+      (dup2 (port->fdes null-port) 0)))
+  (let close-next ((fd 3))
+    ;; XXX: don't hardcode this.
+    (when (<= fd 20)
+      (false-if-exception (close-fdes fd))
+      (close-next (1+ fd)))))
 
 (define (inputs->mounts inputs)
   (map (match-lambda
@@ -404,6 +440,30 @@ assumes that it is in a separate namespace at this point."
             (check? #f))))
        inputs))
 
+(define (dump-port port)
+  (unless (port-eof? port)
+    (display (get-line port))
+    (display "\n")
+    (dump-port port)))
+
+(define (open-builder-pipe environment)
+  (let* ((drv (build-environment-derivation environment))
+         (prog (derivation-builder drv))
+         (args (derivation-builder-arguments drv)))
+    (match (pipe)
+      ((read-from . write-to)
+       (match (primitive-fork)
+         (0
+          (close read-from)
+          (enact-build-environment environment)
+          (setup-i/o write-to)
+          (when (stat "/dev/tty")
+            (format #t "/dev/tty exists!~%"))
+          (apply execl prog (basename prog) args))
+         (child-pid
+          (close write-to)
+          (values read-from child-pid)))))))
+
 (define (run-builder environment)
   "Runs the builder in the environment ENVIRONMENT."
   (let ((drv (build-environment-derivation environment)))
@@ -411,23 +471,20 @@ assumes that it is in a separate namespace at this point."
         (append (inputs->mounts (build-input-paths environment))
                 (build-filesystems environment))
       (lambda ()
-        (enact-build-environment environment)
-        ;; DROP PRIVILEGES HERE
-        (setgid (build-environment-group environment))
-        (setuid (build-environment-user environment))
-        ;(close-most-files)
-        (chdir (build-directory-inside environment))
-        
+                                        ;(close-most-files)
         (format #t "command line: ~a~%"
                 (cons (derivation-builder drv)
                       (derivation-builder-arguments drv)))
-        (if (zero? (status:exit-val
-                    (apply system*
-                           (derivation-builder drv)
-                                        ;(basename (derivation-builder drv))
-                           (derivation-builder-arguments drv))))
-            0
-            (throw 'build-failed-but-lets-debug drv)))
+        (format #t "environment variables: ~a~%" (environ))
+        
+        (let-values (((read-side pid) (open-builder-pipe environment)))
+          (dump-port read-side)
+          (close read-side)
+          (match (status:exit-val (cdr (waitpid pid)))
+            (0
+             0)
+            (exit-val
+             (throw 'build-failed-but-lets-debug exit-val drv)))))
       #:namespaces `(mnt pid ipc uts ,@(if (fixed-output-derivation? drv)
                                            '(net)
                                            '()))
@@ -545,9 +602,8 @@ already in TRIE."
                      (i (1- (bytevector-length sequence))))
     (match visited-nodes
       ((current parent others ...)
-       (when (<= (hash-count (const #t)
-                             (node-table current))
-                 1)
+       (when (zero? (hash-count (const #t)
+                                (node-table current)))
 
          (hash-remove! (node-table parent)
                        (bytevector-u8-ref sequence i))
@@ -560,10 +616,13 @@ already in TRIE."
   "Creates a wrapper port which passes through bytes to OUTPUT-PORT and
 returns it as well as a procedure which, when called, returns a list of all
 references out of the possibilities enumerated in STRINGS that were
-detected."
+detected. STRINGS must not be empty."
   ;; Not sure if I should be using custom ports or soft ports...
-  (let* ((lookback-size (apply max (map string-length strings)))
-         (smallest-length (apply min (map string-length strings)))
+  (let* ((lookback-size (apply max (map (compose bytevector-length string->utf8)
+                                        strings)))
+         (smallest-length (apply min (map (compose bytevector-length
+                                                   string->utf8)
+                                          strings)))
          (lookback-buffer (make-bytevector lookback-size))
          (search-trie (make-search-trie strings))
          (buffer-pos 0)
@@ -581,22 +640,21 @@ detected."
         (define (virtual-ref n)
           (if (in-lookback? n)
               (bytevector-u8-ref lookback-buffer n)
-              (bytevector-u8-ref bytes (- (+ offset n)
-                                          buffer-pos))))
+              (bytevector-u8-ref bytes (+ (- n buffer-pos)
+                                          offset))))
         
 
         (let ((total-length (+ buffer-pos count)))
           
           (define (virtual-copy! start end target)
-            (let* ((copy-size (- end start))
-                   (new-bytevector (make-bytevector copy-size)))
+            (let* ((copy-size (- end start)))
               (let copy-next ((i 0))
                 (unless (= i copy-size)
-                  (bytevector-u8-set! new-bytevector
+                  (bytevector-u8-set! target
                                       i
                                       (virtual-ref (+ start i)))
                   (copy-next (1+ i))))
-              new-bytevector))
+              target))
 
           ;; the gritty reality of that magic
           (define (remember-end)
@@ -612,9 +670,7 @@ detected."
                                 (current-node trie))
               (if (node-string-exists? current-node)
                   ;; MATCH
-                  (begin
-                    (format #t "Start:~a End: ~a~%" n i)
-                    (virtual-copy! n i (make-bytevector (- i n))))
+                  (virtual-copy! n i (make-bytevector (- i n)))
                   (if (>= i total-length)
                       #f
                       (let ((next-node (hash-ref (node-table current-node)
@@ -623,7 +679,9 @@ detected."
                             (test-position (1+ i)
                                            next-node)
                             #f))))))
-          
+
+
+                   
           (define (scan)
             (let next-char ((i 0))
               (when (< i (- total-length smallest-length))
@@ -631,13 +689,16 @@ detected."
                   (if match-result
                       (begin
                         (set! references
-                          (cons (utf8->string match-result)
-                                references))
+                          (let ((str-result (utf8->string match-result)))
+                            (format #t "Found reference to: ~a~%" str-result)
+                            (cons str-result
+                                  references)))
                         ;; We're not interested in multiple references, it'd
                         ;; just slow us down.
                         (remove-from-trie! search-trie match-result)
                         (next-char (+ i (bytevector-length match-result))))
                       (next-char (1+ i)))))))
+          (format #t "Scanning chunk of ~a bytes~%" count)
           (scan)
           (remember-end)
           (put-bytevector output-port bytes offset count)
@@ -721,7 +782,7 @@ even if its outputs already exist."
              (do-derivation-build drv))))
     (if output-specs
         (for-each (match-lambda
-                    ((outid output-path references nar-size hash)
+                    ((outid output-path references hash nar-size)
                      (register-derivation-output %store-database
                                                  (derivation-file-name drv)
                                                  outid
