@@ -177,9 +177,11 @@ environment variable that should be set during the build execution."
                 '(("NIX_OUTPUT_CHECKED" . "1"))
                 '())
             (if leaked-vars
-                (map (lambda (leaked-var)
-                       (cons leaked-var (getenv leaked-var)))
-                     leaked-vars)
+                ;; leaked vars might not be defined.
+                (filter cdr
+                        (map (lambda (leaked-var)
+                               (cons leaked-var (getenv leaked-var)))
+                             leaked-vars))
                 '())
             (derivation-builder-environment-vars drv))))
 
@@ -382,7 +384,7 @@ environment variables and bind-mounting the listed files. Importantly, this
 assumes that it is in a separate namespace at this point."
   ;; warning: the order in which a lot of this happens is significant and
   ;; partially based on guesswork / copying what the c++ does.
-  ;(setsid)
+  (setsid)
   (add-core-files build-environment)
   ;; local communication within the build environment should still be
   ;; possible.
@@ -524,7 +526,15 @@ builtin builder for DRV or it failed."
   (let ((builder (hash-ref builtins
                            (derivation-builder drv))))
     (if builder
-        (builder drv)
+        (begin
+          ;; strip-store-file-name from (guix build utils), used by
+          ;; perform-download indirectly, doesn't honor %store-directory. So
+          ;; we have to set it here. ¯\_(ツ)_/¯
+          (environ (map (match-lambda
+                          ((key . val)
+                           (string-append key "=" val)))
+                        (build-environment-vars drv "/tmp")))
+          (builder drv))
         #f)))
 
 
@@ -748,7 +758,6 @@ nar, and the length of the nar."
 ;; of those as long as we know which references to be looking for.
 ;;~/Programming/guix/test-tmp/store/3zazs4zzhv0iw4xw0bi0im0wi55cl4gv-hello-2.10.drv
 (define (do-derivation-build drv)
-  (format #t "Starting build of derivation ~a~%~%" drv)
   ;; inputs should all exist as of now
   (let-values (((build-env store-inputs)
                 (prepare-build-environment drv
@@ -776,6 +785,7 @@ even if its outputs already exist."
   ;; Inputs need to exist regardless of how we're getting the outputs of this
   ;; derivation.
   (ensure-input-outputs-exist (derivation-inputs drv))
+  (format #t "Starting build of derivation ~a~%~%" drv)
   (let ((output-specs
          (or (attempt-substitute drv)
              (maybe-use-builtin drv)
