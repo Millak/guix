@@ -95,7 +95,9 @@ for the process."
 
   ;; The container's file system is completely ephemeral, sans directories
   ;; bind-mounted from the host.
-  (mount "none" root "tmpfs")
+  ;; Make this private in the container namespace so everything mounted under
+  ;; it is local to this namespace.
+  (mount "none" root "none" MS_PRIVATE)
 
   ;; A proc mount requires a new pid namespace.
   (when mount-/proc?
@@ -211,8 +213,12 @@ corresponds to the symbols in NAMESPACES."
 the root directory for the container.  MOUNTS is a list of <file-system>
 objects that specify file systems to mount inside the container.  NAMESPACES
 is a list of symbols that correspond to the possible Linux namespaces: mnt,
-ipc, uts, user, and net.  HOST-UIDS specifies the number of
-host user identifiers to map into the user namespace."
+ipc, uts, user, and net.  HOST-UIDS specifies the number of host user
+identifiers to map into the user namespace."
+  ;; this needs to be visible outside the namespace if anyone wants to use the
+  ;; file-system output of running THUNK.
+  (when (memq 'mnt namespaces)
+    (mount "none" root "tmpfs"))
   ;; The parent process must initialize the user namespace for the child
   ;; before it can boot.  To negotiate this, a pipe is used such that the
   ;; child process blocks until the parent writes to it.
@@ -245,7 +251,7 @@ host user identifiers to map into the user namespace."
                 (write 'ready child)
                 (close-port child)
                 (thunk))
-               (_                                 ;parent died or something
+               (_                       ;parent died or something
                 (primitive-exit 2))))))
          (pid
           (close-port child)
@@ -259,15 +265,21 @@ host user identifiers to map into the user namespace."
           (let ((message (read parent)))
             (close-port parent)
             (match message
-              ('ready                             ;success
+              ('ready                   ;success
                pid)
-              (((? symbol? key) args ...)         ;exception
+              (((? symbol? key) args ...) ;exception
                (apply throw key args))
-              (_                                  ;unexpected termination
+              (_                        ;unexpected termination
                #f)))))))))
 
+(define (try-umount maybe-mountpoint)
+  (catch #t
+    (lambda ()
+      (umount maybe-mountpoint))
+    noop))
+
 (define* (call-with-container mounts thunk #:key (namespaces %namespaces)
-                              (host-uids 1))
+                              (host-uids 1) use-output)
   "Run THUNK in a new container process and return its exit status.
 MOUNTS is a list of <file-system> objects that specify file systems to mount
 inside the container.  NAMESPACES is a list of symbols corresponding to
@@ -283,15 +295,23 @@ module files must be present in one of the mappings in MOUNTS and the Guile
 load path must be adjusted as needed."
   (call-with-temporary-directory
    (lambda (root)
-     (let ((pid (run-container root mounts namespaces host-uids thunk)))
-       ;; Catch SIGINT and kill the container process.
-       (sigaction SIGINT
-         (lambda (signum)
-           (false-if-exception
-            (kill pid SIGKILL))))
+     (dynamic-wind
+       (const #t)
+       (lambda ()
+         (let ((pid (run-container root mounts namespaces host-uids thunk)))
+           ;; Catch SIGINT and kill the container process.
+           (sigaction SIGINT
+             (lambda (signum)
+               (false-if-exception
+                (kill pid SIGKILL))))
 
-       (match (waitpid pid)
-         ((_ . status) status))))))
+           (match (waitpid pid)
+             ((_ . status)
+              (when use-output
+                (use-output root))
+              status))))
+       (lambda ()
+         (try-umount root))))))
 
 (define (container-excursion pid thunk)
   "Run THUNK as a child process within the namespaces of process PID and
