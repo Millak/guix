@@ -1261,6 +1261,7 @@ provides uniform access to generation of barcodes with data.")
     (build-system cmake-build-system)
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
+       ("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))
     (inputs
      `(("hunspell" ,hunspell)
