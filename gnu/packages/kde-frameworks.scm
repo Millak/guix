@@ -1997,7 +1997,8 @@ KCModules can be created with the KConfigWidgets framework.")
        ("kconfig" ,kconfig)
        ("kwidgetsaddons" ,kwidgetsaddons)))
     (native-inputs
-     `(("extra-cmake-modules" ,extra-cmake-modules)))
+     `(("extra-cmake-modules" ,extra-cmake-modules)
+       ("kdoctools" ,kdoctools)))
     (inputs
      `(("kcoreaddons" ,kcoreaddons)
        ("kguiaddons" ,kguiaddons)
