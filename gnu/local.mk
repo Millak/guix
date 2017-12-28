@@ -325,6 +325,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/openldap.scm			\
   %D%/packages/openstack.scm			\
   %D%/packages/orpheus.scm			\
+  %D%/packages/osmocom.scm			\
   %D%/packages/ots.scm				\
   %D%/packages/package-management.scm		\
   %D%/packages/parallel.scm			\
