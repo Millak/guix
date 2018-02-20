@@ -26,9 +26,11 @@
   #:use-module (gnu packages python)
   #:use-module (guix licenses)
   #:use-module (guix packages)
+  #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system python))
 
 (define-public envstore
@@ -96,7 +98,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.11.3")
+    (version "2.14.0")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://github.com/direnv/" name
@@ -104,7 +106,7 @@ are already there.")
              (file-name (string-append name "-" version ".tar.gz"))
              (sha256
               (base32
-               "01mhwzq9ss2qlnn8aahvwsgnspq8hbz0qfknf290aicngwx10d1d"))))
+               "1kcc4rs3lr93xqhfbpd2balbl362sz010bfbj4xialxpgj13hy4i"))))
     (build-system gnu-build-system)
     (arguments
      '(#:test-target "test"
@@ -112,6 +114,7 @@ are already there.")
        #:phases (modify-phases %standard-phases (delete 'configure))))
     (native-inputs
       `(("go" ,go)
+        ("go-github-com-direnv-go-dotenv" ,go-github-com-direnv-go-dotenv)
         ("which" ,which)))
     (home-page "https://direnv.net/")
     (synopsis "Environment switcher for the shell")
@@ -124,6 +127,28 @@ Before each prompt, direnv checks for the existence of a @file{.envrc} file in
 the current and parent directories.  This file is then used to alter the
 environment variables of the current shell.")
     (license expat)))
+
+(define-public go-github-com-direnv-go-dotenv
+  (let ((commit "4738ec4932d7ea82d158b6900f0c7a12f116e5e5")
+        (revision "0"))
+    (package
+      (name "go-github-com-direnv-go-dotenv")
+      (version (git-version "1.19.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/direnv/go-dotenv.git")
+                       (commit commit)))
+                (sha256
+                 (base32
+                  "0k06lixzb340wanwzrxaxa8z63rz2fxbdrlcja1wq9q1vlhj9zml"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/direnv/go-dotenv"))
+      (synopsis "Go dotenv parsing library for direnv")
+      (description "bla")
+      (home-page "https://github.com/direnv/go-dotenv")
+      (license expat))))
 
 (define-public fzy
   (package
