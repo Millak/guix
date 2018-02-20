@@ -26,9 +26,11 @@
   #:use-module (gnu packages python)
   #:use-module (guix licenses)
   #:use-module (guix packages)
+  #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system python))
 
 (define-public envstore
@@ -96,7 +98,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.11.3")
+    (version "2.15.2")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://github.com/direnv/" name
@@ -104,12 +106,37 @@ are already there.")
              (file-name (string-append name "-" version ".tar.gz"))
              (sha256
               (base32
-               "01mhwzq9ss2qlnn8aahvwsgnspq8hbz0qfknf290aicngwx10d1d"))))
-    (build-system gnu-build-system)
+               "1hhmc6rb7b1d4s4kgb4blrq35h388ax37ap88dq3dgfcw9w6j1rm"))))
+    (build-system go-build-system)
     (arguments
-     '(#:test-target "test"
-       #:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))
-       #:phases (modify-phases %standard-phases (delete 'configure))))
+     '(;;#:test-target "test"
+       ;;#:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "src/github.com/direnv/direnv-2.15.2" 
+	       (zero? (system* "make" "all")))))
+	; (add-before 'install 'patch-destination
+        ;   (lambda* (#:key outputs #:allow-other-keys)
+        ;     (string-append "DESTDIR=" (assoc-ref %outputs "out"))))
+         (replace 'install
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "src/github.com/direnv/direnv-2.15.2" 
+	       (zero? (system* "make" "install"(string-append "DESTDIR=" (assoc-ref %outputs "out")))))))
+	; (replace 'install
+        ;   (lambda* (#:key outputs #:allow-other-keys)
+        ;     (let* ((out (assoc-ref outputs "out"))
+	;	     (bin (string-append out "/bin"))
+	;	     (man (string-append out "/share/man/man1")))
+	;       (install-file "direnv" bin)
+	;       ;(copy-recursively "man" man)
+	;       )))
+	 )
+       #:import-path "github.com/direnv/go-dotenv"
+       #:unpack-path "github.com/direnv"))
+    (inputs
+      `(("go-github-com-direnv-go-dotenv" ,go-github-com-direnv-go-dotenv)))
     (native-inputs
       `(("go" ,go)
         ("which" ,which)))
@@ -124,6 +151,29 @@ Before each prompt, direnv checks for the existence of a @file{.envrc} file in
 the current and parent directories.  This file is then used to alter the
 environment variables of the current shell.")
     (license expat)))
+
+(define-public go-github-com-direnv-go-dotenv
+  (let ((commit "4738ec4932d7ea82d158b6900f0c7a12f116e5e5")
+        (revision "0"))
+    (package
+      (name "go-github-com-direnv-go-dotenv")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/direnv/go-dotenv.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0k06lixzb340wanwzrxaxa8z63rz2fxbdrlcja1wq9q1vlhj9zml"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/direnv/go-dotenv"))
+      (synopsis "Go parsing library for direnv")
+      (description "bla")
+      (home-page "https://github.com/direnv/go-dotenv")
+      (license expat))))
 
 (define-public fzy
   (package
