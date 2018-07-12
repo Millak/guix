@@ -244,6 +244,7 @@
                             "--disable-libvtv"
                             "--disable-libssp"
                             "--disable-libquadmath"
+			    "--disable-libmpx"
                             "--disable-decimal-float")
                       (remove (cut string-match
                                 "--(with-system-zlib|enable-languages.*)" <>)
@@ -1061,10 +1062,10 @@ and binaries, plus debugging symbols in the 'debug' output), and Binutils.")
   (make-gcc-toolchain gcc-final))
 
 (define-public gcc-toolchain-5
-  gcc-toolchain)
+  (make-gcc-toolchain gcc-5))
 
 (define-public gcc-toolchain-6
-  (make-gcc-toolchain gcc-6))
+  gcc-toolchain)
 
 (define-public gcc-toolchain-7
   (make-gcc-toolchain gcc-7))

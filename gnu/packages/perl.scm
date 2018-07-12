@@ -76,7 +76,8 @@
                        "perl-no-sys-dirs.patch"
                        "perl-autosplit-default-time.patch"
                        "perl-deterministic-ordering.patch"
-                       "perl-reproducible-build-date.patch"))))
+                       ;"perl-reproducible-build-date.patch"
+		       ))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f
