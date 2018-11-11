@@ -15837,6 +15837,11 @@ file, the @command{guix system reconfigure my-system-config.scm} command
 instantiates that configuration, and makes it the default GRUB boot
 entry (@pxref{Invoking guix system}).
 
+@quotation Note
+We recommend that you keep this @file{my-system-config.scm} file safe
+and under version control to easily track changes to your configuration.
+@end quotation
+
 The normal way to change the system configuration is by updating this
 file and re-running @command{guix system reconfigure}.  One should never
 have to touch files in @file{/etc} or to run commands that modify the
@@ -21112,9 +21117,11 @@ You can do that directly, like this (you need to use the
              (list cups-filters epson-inkjet-printer-escpr hplip-minimal))))
 @end lisp
 
-Note: If you wish to use the Qt5 based GUI which comes with the hplip
+@quotation Note
+If you wish to use the Qt5 based GUI which comes with the hplip
 package then it is suggested that you install the @code{hplip} package,
 either in your OS configuration file or as your user.
+@end quotation
 
 The available configuration parameters follow.  Each parameter
 definition is preceded by its type; for example, @samp{string-list foo}
@@ -25595,13 +25602,15 @@ example if you want your users to have addresses like
 @samp{"john.smith@@example.com"} then you need to add a host
 @samp{"example.com"}.  All options in this list will apply only to this host.
 
-Note: the name @emph{virtual} host is used in configuration to avoid confusion with
+@quotation Note
+The name @emph{virtual} host is used in configuration to avoid confusion with
 the actual physical host that Prosody is installed on.  A single Prosody
 instance can serve many domains, each one defined as a VirtualHost entry in
 Prosody's configuration.  Conversely a server that hosts a single domain would
 have just one VirtualHost entry.
 
 See @url{https://prosody.im/doc/configure#virtual_host_settings}.
+@end quotation
 
 Available @code{virtualhost-configuration} fields are:
 
@@ -26202,8 +26211,10 @@ After setting this option, it is recommend that you inspect your Mumble
 server log to ensure that Mumble is using the cipher suites that you
 expected it to.
 
-Note: Changing this option may impact the backwards compatibility of your
+@quotation Note
+Changing this option may impact the backwards compatibility of your
 Mumble-Server server, and can remove the ability for older Mumble clients to be able to connect to it.
+@end quotation
 
 @item @code{public-registration} (default: @code{#f})
 Must be a @code{<mumble-server-public-registration-configuration>}
@@ -37577,6 +37588,10 @@ $ guix system extension-graph @var{file} | xdot -
 @end example
 
 shows the extension relations among services.
+
+@quotation Note
+The @command{dot} program is provided by the @code{graphviz} package.
+@end quotation
 
 @anchor{system-shepherd-graph}
 @item shepherd-graph
