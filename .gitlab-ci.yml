@@ -1,0 +1,14 @@
+image: opensuse/tumbleweed:latest
+
+before_script:
+  - zypper addrepo --no-gpgcheck https://download.opensuse.org/repositories/home:/jbrielmaier:/branches:/devel:/languages:/misc/openSUSE_Tumbleweed/home:jbrielmaier:branches:devel:languages:misc.repo
+  - zypper refresh
+  # build dependencies for guix
+  - zypper install -y gettext-tools make tar
+  - zypper --non-interactive source-install guix
+    
+guix_x86_64:
+  script:
+    - ./bootstrap
+    - ./configure --localstatedir=/var --disable-dependency-tracking
+    - make check
