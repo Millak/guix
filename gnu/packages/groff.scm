@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,7 +56,13 @@
    ;; from 'inputs'.
 
    (inputs `(("ghostscript" ,ghostscript)))
-   (native-inputs `(("bison" ,bison)
+
+   ;; When cross-compiling, this package depends upon a native install of
+   ;; itself.
+   (native-inputs `(,@(if (%current-target-system)
+                          `(("self" ,this-package))
+                          '())
+                    ("bison" ,bison)
                     ("perl" ,perl)
                     ("psutils" ,psutils)
                     ("texinfo" ,texinfo)))
@@ -94,7 +101,33 @@
           (lambda _         ;see https://savannah.gnu.org/bugs/index.php?55461
             (substitute* "Makefile.in"
               (("^docdir =.*") "docdir = @docdir@\n"))
-            #t)))))
+            #t))
+	,@(if (%current-target-system)
+              '((replace 'build
+		  (lambda* (#:key
+			    make-flags parallel-build?
+			    native-inputs target #:allow-other-keys)
+		    ;; When cross-compiling, native groff is needed, see:
+		    ;; http://www.mail-archive.com/bug-groff@gnu.org/msg01335.html
+		    (let ((parallel
+			   (if parallel-build?
+			       `("-j" ,(number->string (parallel-job-count)))
+			       '()))
+			  (flags
+			   (if target
+			       (let ((groff (or
+					     (assoc-ref native-inputs "groff")
+					     (assoc-ref native-inputs "self"))))
+				 (append
+				  make-flags
+				  (list
+				   (string-append "GROFF_BIN_PATH=" groff)
+				   (string-append "GROFFBIN=" groff
+						  "/bin/groff"))))
+			       make-flags)))
+		      (apply invoke `("make" ,@parallel ,@flags)))
+		    #t)))
+              '()))))
    (synopsis "Typesetting from plain text mixed with formatting commands")
    (description
     "Groff is a typesetting package that reads plain text and produces
@@ -115,7 +148,8 @@ is usually the formatter of \"man\" documentation pages.")
     ;; Omit the DVI, PS, PDF, and HTML backends.
     (inputs '())
     (native-inputs `(("bison" ,bison)
-                     ("perl" ,perl)))
+                     ("perl" ,perl)
+                     ("groff" ,groff)))
 
     (arguments
      `(#:disallowed-references (,perl)
