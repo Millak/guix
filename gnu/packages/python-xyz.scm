@@ -16778,3 +16778,23 @@ scratch and manipulate data from Intel HEX file format.  It also includes
 several convenience Python scripts, including \"classic\" hex2bin and bin2hex
 converters and more, those based on the library itself.")
     (license license:bsd-3)))
+
+(define-public python-gpxpy
+  (package
+    (name "python-gpxpy")
+    (version "1.3.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "gpxpy" version))
+        (sha256
+          (base32
+            "1gxfb33ljgab1z23yfjwsk0lwyy542644542626ii0xgr49357mh"))))
+    (build-system python-build-system)
+    (home-page
+      "http://www.trackprofiler.com/gpxpy/index.html")
+    (synopsis
+      "GPX file parser and GPS track manipulation library")
+    (description
+      "GPX file parser and GPS track manipulation library")
+    (license license:asl2.0)))

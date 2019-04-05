@@ -36,6 +36,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
@@ -2241,3 +2242,36 @@ generate Python bindings for your C or C++ code.")
       (description
        "Contains lupdate, rcc and uic tools for PySide2")
       (license license:gpl2))))
+
+(define-public qmlrunner
+  (package
+    (name "qmlrunner")
+    (version "1.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/rinigus/qmlrunner")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32 "0bn9605vy8phsj0wpw08l0c575lcysc0pj9a0rgzfa4l7r8a9n9l"))))
+    (build-system qt-build-system)
+    (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "qmake" "qmlrunner.pro")))
+	        (add-before 'install 'correct-install-root
+            (lambda* (#:key outputs #:allow-other-keys)
+	            (substitute* "Makefile"
+                           (("\\$\\(INSTALL_ROOT\\)/usr/local/bin")
+                           (string-append (assoc-ref outputs "out") "/bin")))))
+          (delete 'check))))
+    (native-inputs
+      `(("qtbase" ,qtbase)
+        ("qtdeclarative" ,qtdeclarative)))
+    (home-page "https://github.com/rinigus/qmlrunner")
+    (synopsis "Runner vor QML-Only Apps")
+    (description "bla")
+    (license license:gpl3+)))

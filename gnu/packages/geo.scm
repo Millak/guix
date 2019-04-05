@@ -34,6 +34,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system r)
   #:use-module (guix download)
@@ -42,6 +43,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
@@ -52,6 +54,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
@@ -1213,3 +1216,65 @@ supports loading GPX tracks, background imagery and OSM data from local
 sources as well as from online sources and allows to edit the OSM data (nodes,
 ways, and relations) and their metadata tags.")
     (license license:gpl2+)))
+    
+(define-public pure-maps
+  (package
+    (name "pure-maps")
+    (version "1.26.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/rinigus/pure-maps")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (patches (search-patches "pure-maps-install-path.patch"))
+              (sha256 
+                (base32 "1fccdb8y857awz2rqgzlszlqxpr1b0cx0pi6rmfjddwh3hv46f7s"))))
+    (build-system qt-build-system)
+    (arguments
+     `(#:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'check)
+         (add-after 'build 'invoke-qml-platform
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "make" "platform-qtcontrols")))
+         (add-before 'build 'fix-install-prefix
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("GUIX_INSTALL_PATH") 
+                 (string-append  (assoc-ref outputs "out")
+                    "/usr")))))
+         (add-before 'install 'unbundle-gpxpy
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("thirdparty/gpxpy") (string-append (assoc-ref inputs
+                                                       "python-gpxpy")
+                                            "/lib/python3.7/site-packages")))
+             #t)))))
+    ;; FIXME: jsonlint missing (python3-demjson)
+    (native-inputs 
+     `(("gettext-minimal" ,gettext-minimal)
+       ("python" ,python)
+       ("python-gpxpy" ,python-gpxpy)
+       ("python-pyflakes" ,python-pyflakes)
+       ("python-pytest" ,python-pytest)
+       ("qttools" ,qttools)))
+    ;; installed by hand qtdeclarative, qtlocation
+    ;; https://git.merproject.org/mer-core/nemo-qml-plugin-dbus missing
+    ;; see https://github.com/rinigus/pure-maps/blob/master/packaging/flatpak/io.github.rinigus.PureMaps.json
+    ;(inputs
+    ;  `(("qmlrunner" ,qmlrunner)))
+    (propagated-inputs
+      `(("qmlrunner" ,qmlrunner)
+        ("qtmultimedia" ,qtmultimedia)
+        ("qtquickcontrols" ,qtquickcontrols)
+        ("qtquickcontrols2" ,qtquickcontrols2)
+        ("qtdeclarative" ,qtdeclarative)))
+    (home-page "https://github.com/rinigus/pure-maps")
+    (synopsis "Maps and navigation")
+    (description "Pure Maps allows you to display vector and raster maps,
+places and provides navigation instructions.  It can use different data and
+service providers like OpenStreetMap.")
+    (license license:gpl3+)))
