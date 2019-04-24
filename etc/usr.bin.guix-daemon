@@ -1,0 +1,72 @@
+# Last Modified: Wed Apr 24 19:11:48 2019
+#include <tunables/global>
+
+/usr/bin/guix-daemon flags=(complain) {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/nameservice>
+  #include <abstractions/openssl>
+
+  capability chown,
+  capability dac_override,
+  capability fowner,
+  capability net_admin,
+  capability setuid,
+
+  signal send set=kill peer=/usr/bin/guix-daemon//null-/usr/lib/guix/offload//null-/usr/bin/guix,
+
+  /gnu/store/* rw,
+  /gnu/store/**/ rw,
+  /gnu/store/**/bin/** rw,
+  /gnu/store/**/gnu/** rw,
+  /gnu/store/**/guix/** rw,
+  /gnu/store/**/lib/** mrw,
+  /gnu/store/**/lib/*so* mrw,
+  /gnu/store/**/libexec/** rw,
+  /gnu/store/**/share/** rw,
+  /gnu/store/*-builder r,
+  /gnu/store/*.drv.chroot/** rw,
+  /gnu/store/*/bin/guile mrix,
+  /gnu/store/*docker-image* w,
+  /proc/** r,
+  /tmp/guix-build-** rw,
+  /usr/bin/bash ix,
+  /usr/bin/guile ix,
+  /usr/bin/guix mrix,
+  /usr/bin/guix-daemon mr,
+  /usr/lib/guix/offload mrix,
+  /usr/lib/guix/substitute mrix,
+  owner /dev/tty rw,
+  owner /etc/guix/acl r,
+  owner /etc/guix/signing-key.pub r,
+  owner /gnu/store/* rw,
+  owner /gnu/store/*-builder rw,
+  owner /gnu/store/*.chroot/** wl,
+  owner /gnu/store/*.drv rw,
+  owner /gnu/store/*.lock rwk,
+  owner /gnu/store/*.patch rw,
+  owner /gnu/store/*/.* rw,
+  owner /gnu/store/*/etc/** rw,
+  owner /gnu/store/*/include/** rw,
+  owner /gnu/store/*/sbin/** rw,
+  owner /gnu/store/.links/* l,
+  owner /gnu/store/.tmp-link* rwl,
+  owner /proc/*/maps r,
+  owner /proc/*/statm r,
+  owner /real-root/ w,
+  owner /usr/bin/bash r,
+  owner /usr/bin/guile r,
+  owner /var/guix/daemon-socket/socket w,
+  owner /var/guix/db** rw,
+  owner /var/guix/db/db.sqlite rwk,
+  owner /var/guix/db/db.sqlite-shm rwk,
+  owner /var/guix/db/big-lock rwk,
+  owner /var/guix/gc.lock rwk,
+  owner /var/guix/profiles/per-user/ w,
+  owner /var/guix/substitute/cache/** rw,
+  owner /var/guix/temproots/* rwk,
+  owner /var/guix/userpool/* rwk,
+  owner /var/log/guix/drvs/*/*.drv.bz2 w,
+  owner /{usr/,}lib{,32,64}/** mr,
+
+}
