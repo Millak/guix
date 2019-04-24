@@ -7,6 +7,7 @@
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@posteo.net>
+;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -240,7 +242,7 @@ other lower-level build files.")
 (define-public osc
   (package
     (name "osc")
-    (version "0.162.1")
+    (version "0.165.0")
     (source
      (origin
        (method url-fetch)
@@ -248,12 +250,11 @@ other lower-level build files.")
                            "/archive/" version ".tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0b4kpm96ns4smqyfjysbk2p78d36x44xprpna8zz85q1y5xn57aj"))))
+        (base32 "0w8z69fhjnlb7fm4fdvbi99kxndk63308f4mjzaljrcp4v9yr5am"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2 ; Module is python2 only.
-       #:phases
-       (modify-phases %standard-phases
+     `(#:phases
+        (modify-phases %standard-phases
          (add-after 'install 'fix-filename-and-remove-unused
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
@@ -262,13 +263,11 @@ other lower-level build files.")
                (rename-file
                 (string-append bin "osc-wrapper.py")
                 (string-append bin "osc"))
-               ;; Remove unused and broken script.
-               (delete-file (string-append bin "osc_hotshot.py"))
              #t))))))
     (inputs
-     `(("python2-m2crypto" ,python2-m2crypto)
-       ("python2-pycurl" ,python2-pycurl)
-       ("python2-urlgrabber" ,python2-urlgrabber)))
+     `(("python-m2crypto" ,python-m2crypto)
+       ("python-pycurl" ,python-pycurl)
+       ("rpm" ,rpm))) ; for python-rpm
     (home-page "https://github.com/openSUSE/osc")
     (synopsis "Open Build Service command line tool")
     (description "@command{osc} is a command line interface to the Open Build
