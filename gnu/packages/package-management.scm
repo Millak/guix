@@ -518,7 +518,7 @@ symlinks to the files in a common directory such as /usr/local.")
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("python" ,python-2)
+     `(("python" ,python)
        ("xz" ,xz)
        ("bdb" ,bdb)
        ("popt" ,popt)
