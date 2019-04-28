@@ -7,6 +7,7 @@
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell)
   #:use-module (gnu packages image)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages lua)
@@ -819,6 +821,38 @@ OpenStreetMap data.")
 PostgreSQL / PostGIS database suitable for applications like rendering into a
 map, geocoding with Nominatim, or general analysis.")
     (license license:gpl2+)))
+
+(define-public osmium-tool
+  (package
+    (name "osmium-tool")
+    (version "1.10.0")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/osmcode/osmium-tool.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+         (base32 "1balhz78nva0agmbp8n9vg8fhmdssnd9fjxj20bpw7b45mxhjc20"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("ghc-pandoc" ,ghc-pandoc)))
+    (inputs
+     `(("boost" ,boost)
+       ("bzip2" ,bzip2)
+       ("expat" ,expat)
+       ("libosmium" ,libosmium)
+       ("protozero" ,protozero)
+       ("rapidjson" ,rapidjson)
+       ("zlib" ,zlib)))
+    (home-page "https://osmcode.org/osmium-tool/")
+    (synopsis "Multipurpose command line tool for OSM files")
+    (description "Osmium-tool is a multipurpose command line tool to work on
+OSM files.  It allows different operations on them like sorting, converting to
+other file formats, merging changes, showing information about the file and
+many more.")
+    (license license:gpl3+)))
 
 (define-public tippecanoe
   (package
