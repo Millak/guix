@@ -744,7 +744,7 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public libosmium
   (package
     (name "libosmium")
-    (version "2.14.2")
+    (version "2.15.1")
     (source
      (origin
        (method git-fetch)
@@ -753,7 +753,7 @@ to create databases that are optimized for rendering/tile/map-services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "123ri1l0a2b9fljgpwsl7z2w4i3kmgxz79d4ns9z4mwbp8sw0250"))))
+        (base32 "1v1m068lcjngxnwirpi0vqjhqnxn9gqvafjp3sy14vzmgl2sw2kr"))))
     (build-system cmake-build-system)
     (propagated-inputs
      `(("boost" ,boost)
