@@ -68,6 +68,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages selinux)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)       ; for jansson
@@ -262,7 +263,6 @@
            ;; This is not needed for (modern) IMAP.
            mailutils
 
-           ;; TODO: Add the optional dependencies.
            gpm
            libx11
            gtk+
@@ -274,6 +274,7 @@
            giflib
            lcms
            libjpeg-turbo
+           libselinux
            acl
            jansson
            gmp
