@@ -373,6 +373,33 @@ business day calculation.")
 Python datetime objects.")
     (license expat)))
 
+(define-public python-relativetimebuilder
+  (package
+    (name "python-relativetimebuilder")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "relativetimebuilder" version))
+       (sha256
+        (base32 "1x83vzwajz8rmml8x4ysr4cnxh6x0w42wkhw4zivd8qsbi9zcwzm"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-aniso8601
+           python-dateutil))
+    (home-page "https://bitbucket.org/nielsenb/relativetimebuilder")
+    (synopsis "ANISO8601 builder for dateutil relativedeltas")
+    (description
+     "This package provides functionality for utilizing the relativedelta
+feature from the dateutil library, ensuring calendar precision with
+aniso8601.")
+    ;; setup.py and PyPI: "License :: OSI Approved :: BSD License"
+    (license bsd-3)))
+
 (define-public python-timezonefinder
   (package
     (name "python-timezonefinder")
