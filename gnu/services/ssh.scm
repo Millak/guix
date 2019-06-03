@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,7 +46,10 @@
             dropbear-configuration
             dropbear-configuration?
             dropbear-service-type
-            dropbear-service))
+            dropbear-service
+
+            endlessh-configuration
+            endlessh-service-type))
 
 ;;; Commentary:
 ;;;
@@ -627,5 +631,83 @@ of user-name/file-like tuples."
 daemon} with the given @var{config}, a @code{<dropbear-configuration>}
 object."
   (service dropbear-service-type config))
+
+
+;;;
+;;; Endlessh
+;;;
+
+(define-record-type* <endlessh-configuration>
+  endlessh-configuration make-endlessh-configuration endlessh-configuration?
+  (endlessh         endlessh-configuration-endlessh
+                    (default endlessh))
+  (protocol         endlessh-configuration-protocol
+                    (default 0)) ; 0/4/6
+  (message-delay    endlessh-configuration-delay
+                    (default 10000)) ; in milliseconds
+  (max-banner       endlessh-configuration-max-banner
+                    (default 32)) ; between 3 and 255
+  (max-clients      endlessh-configuration-max-clients
+                    (default 4096))
+  (port             endlessh-configuration-port
+                    (default 2222))
+  (log-level        endlessh-configuration-log-level
+                    (default 1))) ; 0/1/2
+
+(define %endlessh-activation
+  #~(begin
+      (use-modules (guix build utils))
+      (let ((logdir "/var/log/endlessh"))
+        ;; create log directory
+        (mkdir-p logdir)
+        (chmod logdir #o755))))
+
+(define endlessh-shepherd-service
+  (match-lambda
+    (($ <endlessh-configuration> endlessh protocol message-delay max-banner
+        max-clients port log-level)
+     (with-imported-modules (source-module-closure
+                              '((gnu build shepherd)
+                                (gnu system file-systems)))
+       (define config
+         (string-append
+           (match protocol
+            (4 "BindFamily 4\n")
+            (6 "BindFamily 6\n")
+            (_ "BindFamily 0\n"))
+           "Delay " (number->string message-delay) "\n"
+           "MaxLineLength " (number->string max-banner) "\n"
+           "MaxClients " (number->string max-clients) "\n"
+           "Port " (number->string port) "\n"
+           "LogLevel " (number->string log-level)))
+
+       (define endlessh.conf
+         (plain-file "endlessh.conf" config))
+
+       (list (shepherd-service
+               (provision '(endlessh))
+               (requirement '(networking))
+               (modules '((gnu build shepherd)
+                          (gnu system file-systems)))
+               (start #~(make-forkexec-constructor/container
+                          (list (string-append #$endlessh "/bin/endlessh")
+                                "-f" endlessh.conf)
+                          #:mappings (list (file-system-mapping
+                                             (source "/var/log/endlessh")
+                                             (target source)
+                                             (writable? #t)))
+                          #:log-file "/var/log/endlessh/endlessh.log"))
+               (stop #~(make-kill-destructor))))))))
+
+(define endlessh-service-type
+  (service-type (name 'endlessh)
+                (extensions
+                  (list (service-extension shepherd-root-service-type
+                                           endlessh-shepherd-service)
+                        (service-extension activation-service-type
+                                           (const %endlessh-activation))))
+                (default-value (endlessh-configuration))
+                (description
+                 "Run endlessh service")))
 
 ;;; ssh.scm ends here
