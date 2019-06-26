@@ -229,7 +229,7 @@ a server that supports the SSH-2 protocol.")
              (install-file "contrib/ssh-copy-id.1"
                            (string-append out "/share/man/man1/"))
              ;; Don't install the PRIVSEP_PATH directory.
-             (delete-file-recursively (string-append out "/var"))
+             ;(delete-file-recursively (string-append out "/var"))
              #t))))))
    (synopsis "Client and server for the secure shell (ssh) protocol")
    (description
