@@ -73,6 +73,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
@@ -975,3 +976,46 @@ your terminal.  It comes bundled with predefined styles:
 look.  The result can be uploaded on any web server without additional
 requirements.")
     (license license:gpl2+)))
+
+(define-public coin3D
+  (let ((changeset  "8d860d7ba112b22c4e9b289268fd8b3625ab81d3")
+        (revision "1"))
+    (package
+      (name "coin3D")
+      (version
+       (string-append "4.0.0a-" revision "." (string-take changeset 7)))
+      (source
+       (origin
+         (method hg-fetch)
+         (uri (hg-reference (url "https://bitbucket.org/Coin3D/coin")
+                            (changeset changeset)))
+         (sha256
+          (base32
+           "0kgg782j8lkd4bicd8x207mj66vali6kxh6idczjszcxq2iifsr0"))
+         (file-name (git-file-name "coin3D" version))))
+      (build-system cmake-build-system)
+      (native-inputs
+       `(("doxygen" ,doxygen)
+         ("graphviz" ,graphviz)))
+      (inputs
+       `(("boost" ,boost)
+         ("freeglut" ,freeglut)
+         ("glew" ,glew)))
+      (arguments
+       `(#:configure-flags
+         (list
+          "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
+          (string-append "-DBOOST_ROOT="
+                         (assoc-ref %build-inputs "boost")))))
+      (home-page "https://bitbucket.org/Coin3D/coin/wiki/Home")
+      (synopsis
+       "High-level 3D visualization library with Open Inventor 2.1 API")
+      (description
+       "Coin is a 3D graphics library with an Application Programming Interface
+based on the Open Inventor 2.1 API.  For those who are not familiar with
+Open Inventor, it is a scene-graph based retain-mode rendering and model
+interaction library, written in C++, which has become the de facto
+standard graphics library for 3D visualization and visual simulation
+software in the scientific and engineering community.")
+      (license license:bsd-3))))
+
