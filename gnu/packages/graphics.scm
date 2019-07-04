@@ -52,6 +52,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -1017,5 +1018,40 @@ Open Inventor, it is a scene-graph based retain-mode rendering and model
 interaction library, written in C++, which has become the de facto
 standard graphics library for 3D visualization and visual simulation
 software in the scientific and engineering community.")
+      (license license:bsd-3))))
+
+(define-public soqt
+  (let ((changeset "58b495aa6bed9e58542e60df28843f58e2ab8db4")
+        (revision "1"))
+    (package
+      (name "soqt")
+      (version
+       (string-append "1.6.0-" revision "." (string-take changeset 7)))
+      (source
+       (origin
+         (method hg-fetch)
+         (uri (hg-reference (url "https://bitbucket.org/Coin3d/soqt")
+                            (changeset changeset)))
+         (sha256
+          (base32
+           "023rhf8piwcmgi08d3xyqj1cj83v30z6l3zbd5qs1y1mkw9lqfpz"))
+         (file-name (git-file-name "soqt" version))))
+      (build-system cmake-build-system)
+      (native-inputs
+       `(("doxygen" ,doxygen)
+         ("graphviz" ,graphviz)))
+      (inputs
+       `(("coin3D" ,coin3D)
+         ("glew" ,glew)
+         ("libcxx" ,libcxx)
+         ("qtbase" ,qtbase)))
+      (arguments `(#:tests? #f))
+      (home-page "https://bitbucket.org/Coin3D/soqt")
+      (synopsis
+       "GUI component toolkit library for Coin")
+      (description
+       "SoQt is a Qt GUI component toolkit library for Coin.  It is also
+compatible with SGI and TGS Open Inventor, and the API is based on the API of
+the InventorXt GUI component toolkit.")
       (license license:bsd-3))))
 
