@@ -927,6 +927,8 @@ code for classes that correspond to data structures defined by XMLSchema.")
                                               (assoc-ref %build-inputs
                                                          "util-linux")
                                               "/bin/getopt"))))
+    (native-inputs
+     `(("util-linux" ,util-linux)))
     (inputs
      `(("util-linux" ,util-linux)                 ; for 'getopt'
        ("libxml2" ,libxml2)                       ; for 'xmllint'
