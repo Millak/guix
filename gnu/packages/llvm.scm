@@ -37,6 +37,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages bootstrap)           ;glibc-dynamic-linker
@@ -667,3 +668,36 @@ C/C++/Obj-C code according to a set of style options, see
     (synopsis "Rename every occurrence of a symbol using clang-rename")
     (description "This package renames every occurrence of a symbol at point
 using @code{clang-rename}.")))
+
+;; PySide2 docs recommend using a bundled version of libclang
+;; See https://wiki.qt.io/Qt_for_Python/GettingStarted
+;; The source they recommend: https://download.qt.io/development_releases/prebuilt/libclang/
+(define-public llvm-toolchain-6
+  (package
+    (inherit llvm-6)
+    (name "llvm-toolchain")
+    (build-system trivial-build-system)
+    (inputs
+     `(("clang-6" ,clang-6)
+       ("llvm-6" ,llvm-6)))
+    (arguments
+     `(#:modules ((guix build union)
+                  (guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build union)
+                      (ice-9 match)
+                      (srfi srfi-1))
+         (union-build
+          (assoc-ref %outputs "out")
+          (filter-map
+           (match-lambda
+             ((name . dir)
+              (if (or (string=? name "clang-6")
+                      (string=? name "llvm-6"))
+                  dir
+                  #f)))
+           %build-inputs))
+         #t)))
+    (license license:ncsa)))
+
