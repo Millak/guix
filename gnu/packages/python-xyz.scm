@@ -16034,3 +16034,49 @@ one-off scripts.")
 time-or-computationally-expensive properties quick and easy and works in Python
 2 or 3.")
     (license license:bsd-3)))
+
+(define-public python-shiboken-2
+  (let ((revision "1")
+        (commit "4018787a3cc01d632fdca7891ac8aa9487110c26"))
+    (package
+      (name "python-shiboken-2")
+      (version (git-version "v5.11.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://code.qt.io/pyside/pyside-setup")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0g8jacm2iqd7lw2m7f1dp1nnrsk38bl3m8pihm8zz9gxs8d31sf5"))))
+      (build-system cmake-build-system)
+      (inputs
+       `(("llvm-toolchain-6" ,llvm-toolchain-6)
+         ("libxml2" ,libxml2)
+         ("libxslt" ,libxslt)
+         ("python-wrapper" ,python-wrapper)
+         ("qtbase" ,qtbase)
+         ("qtxmlpatterns" ,qtxmlpatterns)))
+      (arguments
+       `(#:tests? #f
+         #:configure-flags '("-DBUILD_TESTS=off")
+         #:phases
+         (modify-phases
+             %standard-phases
+           (add-after 'unpack 'use-shiboken-dir-only
+             (lambda _ (chdir "sources/shiboken2") #t))
+           (add-before 'configure 'set-build-env
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((llvm-toolchain-dir (assoc-ref inputs "llvm-toolchain-6")))
+                 (setenv "CLANG_INSTALL_DIR" llvm-toolchain-dir)
+                 #t))))))
+      (home-page "https://wiki.qt.io/Qt_for_Python")
+      (synopsis
+       "Shiboken generates bindings for C++ libraries using CPython source code")
+      (description
+       "Shiboken generates bindings for C++ libraries using CPython source code")
+      ;; Help!
+      (license `(,license:gpl2+
+                 ,license:llgpl)))))
