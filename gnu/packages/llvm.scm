@@ -701,3 +701,58 @@ using @code{clang-rename}.")))
          #t)))
     (license license:ncsa)))
 
+;; See https://bugreports.qt.io/browse/PYSIDE-787
+;; STL headers are not parsed correctly, so only send in some headers
+(define-public python-pyside-2-libcxx-headers
+  (package
+    (inherit libcxx)
+    (name "python-pyside-2-libcxx-headers")
+    (version (package-version llvm-6))
+    (source
+     (origin
+       (inherit (package-source libcxx))
+       (uri (string-append "http://llvm.org/releases/"
+                           version "/libcxx-" version ".src.tar.xz"))
+       (sha256
+        (base32
+         "0rzw4qvxp6qx4l4h9amrq02gp7hbg8lw4m0sy3k60f50234gnm3n"))))
+    (native-inputs
+     `(("clang" ,clang-6)
+       ("llvm" ,llvm-6)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'use-only-required-headers
+           (lambda* (#:key outputs #:allow-other-keys)
+             (use-modules ((srfi srfi-1)))
+             (let ((out (assoc-ref outputs "out"))
+                   (required-headers
+                    '("type_traits"
+                      "__config"
+                      "cstddef"
+                      "__nullptr"
+                      "utility"
+                      "__tuple"
+                      "initializer_list"
+                      "cstring"
+                      "cstdint"
+                      "__debug")))
+               (for-each
+                delete-file
+                (filter
+                 (lambda (file)
+                   (not
+                    (fold
+                     (lambda (acc header)
+                       (or acc (string-contains file header)))
+                     #f
+                     required-headers)))
+                 (find-files (string-append out "/include/c++/v1"))))
+               (delete-file-recursively (string-append out "/include/c++/v1/ext"))
+               (delete-file-recursively (string-append out "/include/c++/v1/support"))
+               (delete-file-recursively (string-append out "/lib")))
+             #t)))))
+    (synopsis
+     "Libcxx files specifically used by PySide2")
+    (description
+     "Libcxx files specifically used by PySide2.")))
