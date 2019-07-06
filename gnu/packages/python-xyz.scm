@@ -89,6 +89,7 @@
   #:use-module (gnu packages backup)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
@@ -16034,6 +16035,82 @@ one-off scripts.")
 time-or-computationally-expensive properties quick and easy and works in Python
 2 or 3.")
     (license license:bsd-3)))
+
+(define-public python-pyside-2
+  (let ((revision "1")
+        (commit "4018787a3cc01d632fdca7891ac8aa9487110c26"))
+    (package
+      (name "python-pyside-2")
+      (version (git-version "v5.11.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://code.qt.io/pyside/pyside-setup")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0g8jacm2iqd7lw2m7f1dp1nnrsk38bl3m8pihm8zz9gxs8d31sf5"))))
+      (build-system cmake-build-system)
+      (inputs
+       `(("python-pyside-2-libcxx-headers" ,python-pyside-2-libcxx-headers)
+         ("libxml2" ,libxml2)
+         ("libxslt" ,libxslt)
+         ("llvm-toolchain-6" ,llvm-toolchain-6)
+         ("qtbase" ,qtbase)
+         ("qtdatavis3d" ,qtdatavis3d)
+         ("qtmultimedia" ,qtmultimedia)
+         ("qtquickcontrols" ,qtquickcontrols) ;; ??
+         ("qtscript" ,qtscript)
+         ("qtscxml" ,qtscxml)
+         ("qtsensors" ,qtsensors)
+         ("qtspeech" ,qtspeech)
+         ("qtsvg" ,qtsvg)
+         ("qtwebchannel" ,qtwebchannel)
+         ("qtwebsockets" ,qtwebsockets)
+         ("qtx11extras" ,qtx11extras)))
+      (native-inputs
+       `(("cmake" ,cmake)
+         ("git" ,git)
+         ("python-shiboken-2" ,python-shiboken-2)
+         ("python-wrapper" ,python-wrapper)
+         ("qttools" ,qttools)
+         ("which" ,which)))
+      (arguments
+       `(#:tests? #f
+         #:configure-flags '("-DBUILD_TESTS=off")
+         #:phases
+         (modify-phases
+             %standard-phases
+           (add-after 'unpack 'go-to-source-dir
+             (lambda _ (chdir "sources/pyside2") #t))
+           (add-before 'configure 'set-clang-dir
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((clang-dir (assoc-ref inputs "llvm-toolchain-6"))
+                     (libcxx-dir (assoc-ref inputs "python-pyside-2-libcxx-headers")))
+                 (setenv "CLANG_INSTALL_DIR" clang-dir)
+                 (substitute* "cmake/Macros/PySideModules.cmake"
+                   (("--include-paths=")
+                    (string-append "--include-paths=" libcxx-dir "/include/c++/v1:")))
+                 #t))))))
+      (home-page "https://wiki.qt.io/Qt_for_Python")
+      (synopsis
+       "The Qt for Python product enables the use of Qt5 APIs in Python applications")
+      (description
+       "The Qt for Python product enables the use of Qt5 APIs in Python applications.
+It lets Python developers utilize the full potential of Qt, using the PySide2 module.
+The PySide2 module provides access to the individual Qt modules such as QtCore, QtGui,
+and so on.  Qt for Python also comes with the Shiboken2 CPython binding code generator,
+which can be used to generate Python bindings for your C or C++ code.")
+      ;; Help!
+      (license
+       `(,license:fdl1.3+
+         ,license:gpl2+
+         ,license:gpl3+
+         ;; https://code.qt.io/cgit/pyside/pyside-setup.git/tree/LICENSE.GPLv3-EXCEPT
+         ;; https://code.qt.io/cgit/pyside/pyside-setup.git/tree/LICENSE.COMMERCIAL
+         ,license:lgpl3)))))
 
 (define-public python-shiboken-2
   (let ((revision "1")
