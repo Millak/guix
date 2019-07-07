@@ -48,6 +48,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -2062,6 +2063,51 @@ purpose circuit simulator and can perform DC and transient analyses, fourier
 analysis and AC analysis.  The engine is designed to do true mixed-mode
 simulation.")
     (license license:gpl3+)))
+
+
+;; TODO: Try the google archive version with gplv3
+;; subversion url:
+;;   svn checkout http://libarea.googlecode.com/svn/trunk/ libarea
+(define-public libarea
+  (let ((revision "1")
+        (commit "8f8bac811c10f1f01fda0d742a18591f61dd76ee"))
+    (package
+      (name "libarea")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url "https://github.com/Heeks/libarea.git")
+                             (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pvqz6cabxqdz5y26wnj6alkn8v5d7gkx0d3h8xmg4lvy9r3kh3g"))))
+      (build-system gnu-build-system)
+      (inputs `(("boost" ,boost)
+                ("python-wrapper" ,python-wrapper)))
+      (native-inputs
+       `(("cmake" ,cmake)))
+      (arguments
+       `(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'configure 'cmake-configure
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out"))
+                     (cmake (assoc-ref inputs "cmake")))
+                 (mkdir-p "build")
+                 (invoke "cmake"
+                         (string-append "-DCMAKE_INSTALL_PREFIX=" out)))))
+           (delete 'configure))))
+      (home-page "https://github.com/Heeks/libarea")
+      (synopsis
+       "Library and python module for pocketing and profiling operations")
+      (description
+       "Area is a CAM-related software for pocketing operation.
+
+This project provides library and associated python-module to compute pocket
+operations.")
+      (license license:bsd-3))))
 
 (define-public libspnav
   (let ((commit "20961617eecc845b23fcf9e06acd1a6bb340b88b")
