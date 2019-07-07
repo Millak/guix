@@ -52,6 +52,7 @@
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fpga)
@@ -64,10 +65,13 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)               ;FIXME: for pcb
   #:use-module (gnu packages m4)
@@ -88,6 +92,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
 (define-public librecad
@@ -2064,6 +2069,86 @@ analysis and AC analysis.  The engine is designed to do true mixed-mode
 simulation.")
     (license license:gpl3+)))
 
+(define-public freecad
+  (let ((commit "dbb4cc6415bac848a294f03b80f65e888d531742")
+        (revision "1"))
+    (package
+      (name "freecad")
+      (version (git-version "0.18.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/FreeCAD/FreeCAD.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01ay9wdacm1hymnaw67y8sg63pv0ar1n72ap77q12dv3qibmwz75"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       `(("doxygen" ,doxygen)
+         ("graphviz" ,graphviz)
+         ("qttools" ,qttools)
+         ("pkg-config" ,pkg-config)
+         ("swig" ,swig)))
+      (inputs
+       `(("boost" ,boost)
+         ("coin3D" ,coin3D)
+         ("eigen" ,eigen)
+         ("freetype" ,freetype)
+         ("glew" ,glew)
+         ("hdf5" ,hdf5)
+         ("libarea" ,libarea)
+         ("libspnav" ,libspnav)
+         ("libmedfile" ,libmedfile)
+         ("openmpi" ,openmpi)
+         ("opencascade-oce" ,opencascade-oce)
+         ("python-matplotlib" ,python-matplotlib)
+         ("python-pyside-2" ,python-pyside-2)
+         ("python-pyside-2-tools" ,python-pyside-2-tools)
+         ("python-shiboken-2" ,python-shiboken-2)
+         ("python-wrapper" ,python-wrapper)
+         ("qtbase" ,qtbase)
+         ("qtsvg" ,qtsvg)
+         ("qtx11extras" ,qtx11extras)
+         ("qtxmlpatterns" ,qtxmlpatterns)
+         ("qtwebkit" ,qtwebkit)
+         ("soqt" ,soqt)
+         ("vtk" ,vtk)
+         ("xerces-c" ,xerces-c)
+         ("zlib" ,zlib)))
+      (arguments
+       `(#:tests? #f
+         #:configure-flags
+         (list
+          "-DBUILD_QT5=ON"
+          (string-append "-DCMAKE_INSTALL_LIBDIR="
+                         (assoc-ref %outputs "out") "/lib"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'restore-pythonpath
+             (lambda _
+               (substitute* "src/Main/MainGui.cpp"
+                 (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))
+               #t))
+           (add-after 'install 'wrap-pythonpath
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/FreeCAD")
+                   (list "PYTHONPATH"
+                         'prefix (list (getenv "PYTHONPATH")))))
+               #t)))))
+      (home-page "https://www.freecadweb.org/")
+      (synopsis "Your Own 3D Parametric Modeler")
+      (description
+       "FreeCAD is a general purpose feature-based, parametric 3D modeler for
+CAD, MCAD, CAx, CAE and PLM, aimed directly at mechanical engineering and
+product design but also fits a wider range of uses in engineering, such as
+architecture or other engineering specialties.  It is 100% Open Source (LGPL2+
+license) and extremely modular, allowing for very advanced extension and
+customization.")
+      ;; Help!
+      (license license:lgpl2.1+))))
 
 (define-public libmedfile
   (package
