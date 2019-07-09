@@ -5114,7 +5114,8 @@ window manager.")
        ("gobject-introspection" ,gobject-introspection)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+       ("xsltproc" ,libxslt)
+       ("vala" ,vala)))
     (propagated-inputs
      `(("glib" ,glib)           ; required by goa-1.0.pc
        ("gtk+" ,gtk+)))         ; required by goa-backend-1.0.pc
@@ -8346,4 +8347,46 @@ intefaces for mobile devices using GTK+.")
 access library.  It only implements the core plumbing functions, not really the
 higher level porcelain stuff.")
     (home-page "https://wiki.gnome.org/Projects/Libgit2-glib")
+    (license license:gpl2+)))
+
+(define-public gnome-contacts
+  (package
+    (name "gnome-contacts")
+    (version "3.32.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/gnome-contacts/"
+                                  (version-major+minor version) "/"
+                                  "gnome-contacts-" version ".tar.xz"))
+              (sha256
+               (base32
+                "17g1gh8yj58cfpdx69h2szivlbjgvv982kmhnkkh0i5bwj0zs2yy"))
+              (patches
+                (search-patches "gnome-contacts-disambiguate-Gtk.HeaderBar.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:configure-flags (list "-Dtelepathy=false"
+                               "-Dmanpage=false")))
+    (native-inputs
+      `(("cheese" ,cheese)
+        ("folks" ,folks)
+        ("evolution-data-server" ,evolution-data-server)           ; libebook for folks-ed
+        ("gettext" ,gettext-minimal)
+        ("glib:bin" ,glib "bin")
+        ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
+        ("gobject-introspection" ,gobject-introspection)
+        ("gst-plugins-base" ,gst-plugins-base)
+        ("gtk+:bin" ,gtk+ "bin")
+        ("libhandy" ,libhandy)
+        ("libxslt" ,libxslt)
+        ("pkg-config" ,pkg-config)
+        ("vala" ,vala)))                                           ; vapigen
+    (inputs
+      `(("gnome-desktop" ,gnome-desktop)
+        ("gnome-online-accounts" ,gnome-online-accounts)
+        ("libgee" ,libgee)))
+    (home-page "https://wiki.gnome.org/Apps/Contacts")
+    (synopsis "Integrated address book and contacts")
+    (description "bla")
     (license license:gpl2+)))
