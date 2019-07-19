@@ -6046,7 +6046,7 @@ devices using the GNOME desktop.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "3.30.3")
+    (version "3.32.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6054,9 +6054,7 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0gih1cmqbv803kp30704sllghb0impa0mmv3j8pndfg4zr2mnq9r"))
-              (patches
-               (search-patches "gnome-control-center-udisks.patch"))))
+                "03np0mhfl9kkdw4cb711pda0cli9zgh2bq2gqn2zwbdi3qnhk9gs"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -6103,7 +6101,11 @@ devices using the GNOME desktop.")
        ("gtk+:bin" ,gtk+ "bin") ; for gtk-update-icon-cache
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+       ("xsltproc" ,libxslt)
+       ;; For tests
+       ("hicolor-icon-theme" ,hicolor-icon-theme)
+       ("python-dbusmock" ,python-dbusmock)
+       ("xorg-server" ,xorg-server-for-tests)))
     (inputs
      `(("accountsservice" ,accountsservice)
        ("clutter-gtk" ,clutter-gtk)
@@ -6119,6 +6121,7 @@ devices using the GNOME desktop.")
        ("gnome-session" ,gnome-session)
        ("gnome-settings-daemon" ,gnome-settings-daemon)
        ("grilo" ,grilo)
+       ("gsound" ,gsound)
        ("ibus" ,ibus)
        ("libcanberra" ,libcanberra)
        ("libgnomekbd" ,libgnomekbd)
