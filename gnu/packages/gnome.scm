@@ -2266,7 +2266,7 @@ passwords in the GNOME keyring.")
 (define-public vala
   (package
     (name "vala")
-    (version "0.44.5")
+    (version "0.44.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2274,20 +2274,20 @@ passwords in the GNOME keyring.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0zy2kfcvhikczfzhk5l7pkw6mvn3d6vw8cv7g08iah85p22q33xv"))))
+                "0fkrrpnisgq3y816piyr7hm2b94jaj7ki9y974galq3lmxb1g7xb"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
-                     (lambda _
-                       (setenv "CC" "gcc")
-                       (substitute* "valadoc/tests/testrunner.sh"
-                         (("export PKG_CONFIG_PATH=" m)
-                          (string-append m "$PKG_CONFIG_PATH:")))
-                       ;; For missing '/etc/machine-id'.
-                       (setenv "DBUS_FATAL_WARNINGS" "0")
-                       #t)))))
+           (lambda _
+             (setenv "CC" "gcc")
+             (substitute* "valadoc/tests/testrunner.sh"
+               (("export PKG_CONFIG_PATH=" m)
+                (string-append m "$PKG_CONFIG_PATH:")))
+             ;; For missing '/etc/machine-id'.
+             (setenv "DBUS_FATAL_WARNINGS" "0")
+             #t)))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("flex" ,flex)
