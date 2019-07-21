@@ -646,7 +646,7 @@ useful for C++.")
 (define-public python-pygobject
   (package
     (name "python-pygobject")
-    (version "3.28.3")
+    (version "3.32.2")
     (source
      (origin
        (method url-fetch)
@@ -655,11 +655,17 @@ useful for C++.")
                            "/pygobject-" version ".tar.xz"))
        (sha256
         (base32
-         "1c6h3brzlyvzbpdsammnd957azmp6cbzqrd65r400vnh2l8f5lrx"))))
-    (build-system gnu-build-system)
+         "049nm38gxd5libyspkn3hswfccb06hvfiij90nh7zdb4hfia5763"))))
+    (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; The test suite requires a running X server.
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1")
+             #t))
          (add-after 'unpack 'delete-broken-tests
            (lambda _
              ;; FIXME: this test freezes and times out.
@@ -667,17 +673,21 @@ useful for C++.")
              ;; FIXME: this test fails with this kind of error:
              ;; AssertionError: <Handlers.SIG_IGN: 1> != <built-in function default_int_handler
              (delete-file "tests/test_ossig.py")
+             ;; FIXME: this tests fails with this error:
+             ;; ModuleNotFoundError: No module named '__main__.helper'; '__main__' is not a package
+             (delete-file "tests/test_overrides_gtk.py")
              #t)))))
     (native-inputs
      `(("which" ,which)
        ;for tests: dbus-run-session and glib-compile-schemas
        ("dbus" ,dbus)
        ("glib-bin" ,glib "bin")
+       ("gtk+" ,gtk+)
        ("pkg-config" ,pkg-config)
-       ("python-pytest" ,python-pytest)))
+       ("python-pytest" ,python-pytest)
+       ("xorg-server" ,xorg-server-for-tests)))
     (inputs
-     `(("python" ,python)
-       ("python-pycairo" ,python-pycairo)
+     `(("python-pycairo" ,python-pycairo)
        ("gobject-introspection" ,gobject-introspection)))
     (propagated-inputs
      ;; pygobject-3.0.pc refers to all these.
@@ -685,7 +695,7 @@ useful for C++.")
        ("libffi" ,libffi)))
     ;; For finding typelib files, since gobject-introscpetion isn't propagated.
     (native-search-paths (package-native-search-paths gobject-introspection))
-    (home-page "https://live.gnome.org/PyGObject")
+    (home-page "https://pygobject.readthedocs.io/en/latest/")
     (synopsis "Python bindings for GObject")
     (description
      "Python bindings for GLib, GObject, and GIO.")
@@ -693,19 +703,7 @@ useful for C++.")
     (properties `((python2-variant . ,(delay python2-pygobject))))))
 
 (define-public python2-pygobject
-  (package (inherit (strip-python2-variant python-pygobject))
-    (name "python2-pygobject")
-    (inputs
-     `(("python" ,python-2)
-       ("python-pycairo" ,python2-pycairo)
-       ("gobject-introspection" ,gobject-introspection)))
-    (native-inputs
-     `(("which" ,which)
-       ;for tests: dbus-run-session and glib-compile-schemas
-       ("dbus" ,dbus)
-       ("glib-bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)
-       ("python-pytest" ,python2-pytest)))))
+  (package-with-python2 (strip-python2-variant python-pygobject)))
 
 (define-public perl-glib
   (package
