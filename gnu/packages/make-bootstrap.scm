@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018,2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -537,8 +537,9 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
            #t))))
     (inputs `(("gcc" ,%gcc-static)))))
 
+;; Two packages: first build static, bare minimum content...
 (define %mescc-tools-static
-  ;; A statically linked MesCC Tools for bootstrap.
+  ;; A statically linked MesCC Tools.
   (package
     (inherit mescc-tools)
     (name "mescc-tools-static")
@@ -547,6 +548,33 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
        ,@(substitute-keyword-arguments (package-arguments mescc-tools)
            ((#:make-flags flags)
             `(cons "CC=gcc -static" ,flags)))))))
+
+;; ...next remove store references.
+(define %mescc-tools-static-stripped
+  ;; A statically linked Mescc Tools with store references removed, for
+  ;; bootstrap.
+  (package
+    (inherit %mescc-tools-static)
+    (name (string-append (package-name %mescc-tools-static) "-stripped"))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((in  (assoc-ref %build-inputs "mescc-tools"))
+                (out (assoc-ref %outputs "out"))
+                (bin (string-append out "/bin")))
+           (mkdir-p bin)
+           (for-each (lambda (file)
+                       (let ((target (string-append bin "/" file)))
+                         (format #t "copying `~a'...~%" file)
+                         (copy-file (string-append in "/bin/" file)
+                                    target)
+                         (remove-store-references target)))
+                     '( "M1" "blood-elf" "hex2"))
+           #t))))
+    (inputs `(("mescc-tools" ,%mescc-tools-static)))))
 
 (define-public %mes-minimal-stripped
   ;; A minimal Mes without documentation dependencies, for bootstrap.
@@ -743,7 +771,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
 (define %mescc-tools-bootstrap-tarball
   ;; A tarball with MesCC binary seed.
-  (tarball-package %mescc-tools-static))
+  (tarball-package %mescc-tools-static-stripped))
 
 (define %mes-bootstrap-tarball
   ;; A tarball with Mes ASCII Seed and binary Mes C Library.
