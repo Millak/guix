@@ -1706,21 +1706,19 @@ possible to write plugins to add your own checks.")
 (define-public python2-pylint
   (package
     (name "python2-pylint")
-    (version "1.7.2")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://github.com/PyCQA/pylint/archive/pylint-"
-             version ".tar.gz"))
+       (uri (pypi-uri "pylint" version))
        (sha256
         (base32
-         "0mzn1czhf1mgr2wiqfihb274sja02h899b85kywdpivppa9nwrmp"))))
+         "004kfapkqxqy2s85pmddqv0fabxdxywxrlbi549p0v237pr2v94p"))))
     (build-system python-build-system)
     (native-inputs
      `(("python2-pytest" ,python2-pytest)
        ("python2-pytest-runner" ,python2-pytest-runner)
-       ("python2-tox" ,python2-tox)))
+       ("python2-futures" ,python2-futures)))
     (propagated-inputs
      `(("python2-astroid" ,python2-astroid)
        ("python2-backports-functools-lru-cache"
@@ -1746,7 +1744,7 @@ possible to write plugins to add your own checks.")
                  (invoke "python" "-m" "unittest" "discover"
                          "-s" (string-append work "/pylint/test")
                          "-p" "*test_*.py"))))))))
-    (home-page "https://github.com/PyCQA/pylint")
+    (home-page "https://www.pylint.org/")
     (synopsis "Python source code analyzer which looks for coding standard
 errors")
     (description "Pylint is a Python source code analyzer which looks
