@@ -1671,43 +1671,25 @@ statements in the module it tests.")
 (define-public python-pylint
   (package
     (name "python-pylint")
-    (version "1.7.2")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://github.com/PyCQA/pylint/archive/pylint-"
-             version ".tar.gz"))
+       (uri (pypi-uri "pylint" version))
        (sha256
         (base32
-         "0mzn1czhf1mgr2wiqfihb274sja02h899b85kywdpivppa9nwrmp"))))
+         "1wgzq0da87m7708hrc9h4bc5m4z2p7379i4xyydszasmjns3sgkj"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-pytest" ,python-pytest)
        ("python-pytest-runner" ,python-pytest-runner)
-       ("python-tox" ,python-tox)))
+       ("python-typed-ast" ,python-typed-ast)))
     (propagated-inputs
      `(("python-astroid" ,python-astroid)
        ("python-isort" ,python-isort)
        ("python-mccabe" ,python-mccabe)
        ("python-six" ,python-six)))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; Somehow, tests for python2-pylint
-             ;; fail if run from the build directory
-             (let ((work "/tmp/work"))
-               (mkdir-p work)
-               (setenv "PYTHONPATH"
-                       (string-append (getenv "PYTHONPATH") ":" work))
-               (copy-recursively "." work)
-               (with-directory-excursion "/tmp"
-                 (invoke "python" "-m" "unittest" "discover"
-                         "-s" (string-append work "/pylint/test")
-                         "-p" "*test_*.py"))))))))
-    (home-page "https://github.com/PyCQA/pylint")
+    (home-page "https://www.pylint.org/")
     (synopsis "Python source code analyzer which looks for coding standard
 errors")
     (description "Pylint is a Python source code analyzer which looks
