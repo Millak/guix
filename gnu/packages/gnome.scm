@@ -3221,7 +3221,7 @@ service via the system message bus.")
 (define-public libgweather
   (package
     (name "libgweather")
-    (version "3.28.3")
+    (version "3.32.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -3229,7 +3229,7 @@ service via the system message bus.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1xz60h59zgyk61y2wwzm0xlqav72i668g7v0x7rh9idz240hxls5"))))
+                "00iwbllh8dmnqch0ysng9xhkzzs3ir9jl9f4hp41vbvg1pq5zv98"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ; one of two tests requires network access
