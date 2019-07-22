@@ -3846,7 +3846,7 @@ for application developers.")
 (define-public grilo-plugins
   (package
     (name "grilo-plugins")
-    (version "0.3.3")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
@@ -3855,40 +3855,38 @@ for application developers.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "172vr1y98d2mzlmg5akjn4ibrcj3gh22cwnb3cv9rvvzhj3yhrpy"))))
-    (build-system gnu-build-system)
+         "1hv84b56qjic8vz8iz46ikhrxx31l29ilbr8dm5qcghbd8ikw8j1"))))
+    (build-system meson-build-system)
     (native-inputs
      `(("glib:bin" ,glib "bin")     ; for glib-mkenums and glib-genmarshal
+       ("gperf" ,gperf)
        ("intltool" ,intltool)
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("grilo" ,grilo)
+     `(("avahi" ,avahi)
        ("glib" ,glib)
-       ("libxml2" ,libxml2)
-       ("sqlite" ,sqlite)
        ("gom" ,gom)
+       ("gmime" ,gmime)
+       ("grilo" ,grilo)
+       ("json-glib" ,json-glib)
+       ("libarchive" ,libarchive)
+       ("libsoup" ,libsoup)
+       ("libxml2" ,libxml2)
+       ("lua" ,lua)
+       ("nettle" ,nettle) ; XXX: required by libgrlpls-0.3.la
+       ("sqlite" ,sqlite)
        ;; XXX TODO: Add oauth
        ;; XXX TODO: Add goa
        ;; XXX TODO: Add gdata (e.g. needed for youtube plugin)
-       ;; XXX TODO: Add lua (needs help finding it)
-       ("json-glib" ,json-glib)
-       ("avahi" ,avahi)
-       ("gmime" ,gmime)
-       ("libsoup" ,libsoup)
-       ("libarchive" ,libarchive)
        ("totem-pl-parser" ,totem-pl-parser)))
     (arguments
-     `(#:make-flags (list (string-append "GRL_PLUGINS_DIR="
-                                         %output
-                                         "/lib/grilo-"
-                                         ,(version-major+minor version)))
-       ;; XXX FIXME: Try to get the test suite working.  It appears to require
+     `(;; XXX FIXME: Try to get the test suite working.  It appears to require
        ;; a working system dbus.  Inside the build container, all tests fail
        ;; with: "assertion failed: (source)".  Outside of the build container,
        ;; most tests succeed.
        #:tests? #f))
-    (home-page "https://live.gnome.org/Grilo")
+    (home-page "https://wiki.gnome.org/action/show/Projects/Grilo")
     (synopsis "Plugins for the Grilo media discovery library")
     (description
      "Grilo is a framework focused on making media discovery and browsing easy
