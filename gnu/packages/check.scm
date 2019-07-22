@@ -1695,18 +1695,18 @@ statements in the module it tests.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-                  (lambda _
-                    ;; Somehow, tests for python2-pylint
-                    ;; fail if run from the build directory
-                    (let ((work "/tmp/work"))
-                      (mkdir-p work)
-                      (setenv "PYTHONPATH"
-                              (string-append (getenv "PYTHONPATH") ":" work))
-                      (copy-recursively "." work)
-                      (with-directory-excursion "/tmp"
-                        (invoke "python" "-m" "unittest" "discover"
-                                "-s" (string-append work "/pylint/test")
-                                "-p" "*test_*.py"))))))))
+           (lambda _
+             ;; Somehow, tests for python2-pylint
+             ;; fail if run from the build directory
+             (let ((work "/tmp/work"))
+               (mkdir-p work)
+               (setenv "PYTHONPATH"
+                       (string-append (getenv "PYTHONPATH") ":" work))
+               (copy-recursively "." work)
+               (with-directory-excursion "/tmp"
+                 (invoke "python" "-m" "unittest" "discover"
+                         "-s" (string-append work "/pylint/test")
+                         "-p" "*test_*.py"))))))))
     (home-page "https://github.com/PyCQA/pylint")
     (synopsis "Python source code analyzer which looks for coding standard
 errors")
@@ -1722,14 +1722,60 @@ possible to write plugins to add your own checks.")
     (license license:gpl2+)))
 
 (define-public python2-pylint
-  (let ((pylint (package-with-python2
-                  (strip-python2-variant python-pylint))))
-    (package (inherit pylint)
-             (propagated-inputs
-              `(("python2-backports-functools-lru-cache"
-                 ,python2-backports-functools-lru-cache)
-                ("python2-configparser" ,python2-configparser)
-                ,@(package-propagated-inputs pylint))))))
+  (package
+    (name "python2-pylint")
+    (version "1.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/PyCQA/pylint/archive/pylint-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "0mzn1czhf1mgr2wiqfihb274sja02h899b85kywdpivppa9nwrmp"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python2-pytest" ,python2-pytest)
+       ("python2-pytest-runner" ,python2-pytest-runner)
+       ("python2-tox" ,python2-tox)))
+    (propagated-inputs
+     `(("python2-astroid" ,python2-astroid)
+       ("python2-backports-functools-lru-cache"
+        ,python2-backports-functools-lru-cache)
+       ("python2-configparser" ,python2-configparser)
+       ("python2-isort" ,python2-isort)
+       ("python2-mccabe" ,python2-mccabe)
+       ("python2-six" ,python2-six)))
+    (arguments
+     `(#:python ,python-2
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             ;; Somehow, tests for python2-pylint
+             ;; fail if run from the build directory
+             (let ((work "/tmp/work"))
+               (mkdir-p work)
+               (setenv "PYTHONPATH"
+                       (string-append (getenv "PYTHONPATH") ":" work))
+               (copy-recursively "." work)
+               (with-directory-excursion "/tmp"
+                 (invoke "python" "-m" "unittest" "discover"
+                         "-s" (string-append work "/pylint/test")
+                         "-p" "*test_*.py"))))))))
+    (home-page "https://github.com/PyCQA/pylint")
+    (synopsis "Python source code analyzer which looks for coding standard
+errors")
+    (description "Pylint is a Python source code analyzer which looks
+for programming errors, helps enforcing a coding standard and sniffs
+for some code smells (as defined in Martin Fowler's Refactoring book).
+
+Pylint has many rules enabled by default, way too much to silence them
+all on a minimally sized program.  It's highly configurable and handle
+pragmas to control it from within your code.  Additionally, it is
+possible to write plugins to add your own checks.")
+    (license license:gpl2+)))
 
 (define-public python-paramunittest
   (package
