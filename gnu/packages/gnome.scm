@@ -8223,7 +8223,7 @@ hexadecimal or ASCII.  It is useful for editing binary files in general.")
      `(("glib" ,glib "bin")             ; glib-compile-resources
        ("pkg-config" ,pkg-config)
        ;; For tests.
-       ("xorg-server" ,xorg-server)))
+       ("xorg-server" ,xorg-server-for-tests)))
     (inputs
      `(("glib" ,glib)
        ("gobject-introspection" ,gobject-introspection)
