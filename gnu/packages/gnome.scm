@@ -2940,7 +2940,7 @@ floating in an ocean using only your brain and a little bit of luck.")
 (define-public gnome-sudoku
   (package
     (name "gnome-sudoku")
-    (version "3.30.0")
+    (version "3.32.0")
     (source
      (origin
        (method url-fetch)
@@ -2949,13 +2949,18 @@ floating in an ocean using only your brain and a little bit of luck.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1xy986s51jnrcqwan2hy4bjdg6797yr9s7gxx2z2q4j4gkx3qa1f"))))
-    (build-system glib-or-gtk-build-system)
+         "1wwdjflw1lbx3cv6gvqcgp5jnjkrq37ld6mjbjj03g3vr90qaf0l"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:glib-or-gtk? #t))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("desktop-file-utils" ,desktop-file-utils)
+       ("glib:bin" ,glib "bin") ; for glib-compile-resources
+       ("gtk+:bin" ,gtk+ "bin") ; for gtk-update-icon-cache
        ("intltool" ,intltool)
        ("itstool" ,itstool)
+       ("vala" ,vala)
        ("xmllint" ,libxml2)))
     (inputs
      `(("gtk+" ,gtk+)
