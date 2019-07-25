@@ -2234,7 +2234,7 @@ engineering.")
 (define-public seahorse
   (package
     (name "seahorse")
-    (version "3.30")
+    (version "3.32.2")
     (source
      (origin
        (method url-fetch)
@@ -2243,22 +2243,28 @@ engineering.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1sbj1czlx1fakm72dwgbn0bwm12j838yaky4mkf6hf8j8afnxmzp"))))
-    (build-system glib-or-gtk-build-system)
+         "0d8zdzmlz7fjv9xl20zl4ckidf465mvdjnbpxy3k08y9iw423q4x"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:glib-or-gtk? #t))
     (inputs
-     `(("gtk+" ,gtk+)
+     `(("avahi" ,avahi)
+       ("gtk+" ,gtk+)
        ("gcr" ,gcr)
        ("gnupg" ,gnupg)
        ("gpgme" ,gpgme)
        ("openldap" ,openldap)
        ("openssh" ,openssh)
+       ("libpwquality" ,libpwquality)
        ("libsecret" ,libsecret)
        ("libsoup" ,libsoup)))
     (native-inputs
      `(("intltool" ,intltool)
        ("glib:bin" ,glib "bin")
+       ("gtk+:bin" ,gtk+ "bin") ; for gtk-update-icon-cache
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)
+       ("vala" ,vala)
        ("xmllint" ,libxml2)))
     (home-page "https://launchpad.net/gnome-themes-standard")
     (synopsis "Manage encryption keys and passwords in the GNOME keyring")
