@@ -2903,7 +2903,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
 (define-public gnome-mines
   (package
     (name "gnome-mines")
-    (version "3.30.1.1")
+    (version "3.32.2")
     (source
      (origin
        (method url-fetch)
@@ -2912,14 +2912,13 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "08ddk400sg1g3q26gnm5mgv81vdqyix0yl7pd47p50vkc1w6f33z"))))
+         "1nv966wkp2rqxzcdb76bwlbzpjqadcaqzrnkxpzwnvjjr167yx8g"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'bootstrap))))
+     '(#:glib-or-gtk? #t))
     (native-inputs
      `(("glib:bin" ,glib "bin")       ; for glib-compile-resources
+       ("gtk+:bin" ,gtk+ "bin")       ; for gtk-update-icon-cache
        ("pkg-config" ,pkg-config)
        ("desktop-file-utils" ,desktop-file-utils)
        ("intltool" ,intltool)
