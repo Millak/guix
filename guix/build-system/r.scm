@@ -48,7 +48,12 @@ available via the first URI, the second URI points to the archived version."
         (string-append "mirror://cran/src/contrib/Archive/"
                        name "/" name "_" version ".tar.gz")))
 
-(define* (bioconductor-uri name version #:optional type)
+(define (default-bioc-version)
+  "Return the default Bioconductor version lazily."
+  (@* (guix import cran) %bioconductor-version))
+
+(define* (bioconductor-uri name version #:optional type
+                           (release (default-bioc-version)))
   "Return a URI string for the R package archive on Bioconductor for the
 release corresponding to NAME and VERSION."
   (let ((type-url-part (match type
@@ -59,8 +64,7 @@ release corresponding to NAME and VERSION."
                          type-url-part
                          "/src/contrib/"
                          name "_" version ".tar.gz")
-          ;; TODO: use %bioconductor-version from (guix import cran)
-          (string-append "https://bioconductor.org/packages/3.22"
+          (string-append "https://bioconductor.org/packages/" release
                          type-url-part
                          "/src/contrib/"
                          name "_" version ".tar.gz"))))
