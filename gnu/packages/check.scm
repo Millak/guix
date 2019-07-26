@@ -512,14 +512,14 @@ but it works for any C/C++ project.")
 (define-public python-parameterized
   (package
     (name "python-parameterized")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "parameterized" version))
        (sha256
         (base32
-         "1qj1939shm48d9ql6fm1nrdy4p7sdyj8clz1szh5swwpf1qqxxfa"))))
+         "1mbqv8aazdz007aj0cairxcfnfnsw2631qmrjdd2vvbpnrzq7j6q"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; there are no tests
     (home-page "https://github.com/wolever/parameterized")
