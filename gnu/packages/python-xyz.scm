@@ -16435,3 +16435,28 @@ services such as upower, systemd, logind, gnome-session or others, and it is
 hard (or impossible without root privileges) to set the state of the real
 services to what you expect in your tests.")
   (license license:lgpl3+)))
+
+(define-public python-anytree
+  (package
+    (name "python-anytree")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "anytree" version))
+       (sha256
+        (base32
+         "10vqlkkz1zxw16smn7vf0l2an7lbma7c8kc92zjdb9f30fkbc8d2"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-six" ,python-six)))
+    (native-inputs
+     `(("python-check-manifest" ,python-check-manifest)
+       ("python-coverage" ,python-coverage)
+       ("python-nose" ,python-nose)))
+    (home-page "https://github.com/c0fec0de/anytree")
+    (synopsis "Lightweight Python tree data structure library")
+    (description
+     "Anytree is a simple, lightweight and extensible tree data structure
+library for Python.")
+    (license license:asl2.0)))
