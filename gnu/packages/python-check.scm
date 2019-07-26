@@ -3,6 +3,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -60,6 +62,30 @@
 This package provides seamless integration with coverage.py (and thus pytest,
 nosetests, etc...) in Python projects.")
     (license license:expat)))
+
+(define-public python-check-manifest
+  (package
+  (name "python-check-manifest")
+  (version "0.39")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (pypi-uri "check-manifest" version))
+      (sha256
+        (base32
+          "1g2nspfjlbv54n62v5nmwiv5ibygalp6rliblaw3bhd7b3v5bid4"))))
+  (build-system python-build-system)
+  (propagated-inputs
+    `(("python-toml" ,python-toml)))
+  (native-inputs
+   `(("git-minimal" ,git-minimal) ; tests require a version control system
+     ("python-mock" ,python-mock)))
+  (home-page "https://github.com/mgedmin/check-manifest")
+  (synopsis "Check @file{MANIFEST.in} in Python packages")
+  (description "@code{check-manifest} is a tool that checks @file{MANIFEST.in}
+in a Python source package for completeness.  This helps Python developers
+avoid accidentally distributing their projects with files missing.")
+  (license license:expat)))
 
 (define-public python-vcrpy
   (package
