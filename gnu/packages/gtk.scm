@@ -1433,7 +1433,7 @@ information.")
 (define-public gtk-doc
   (package
     (name "gtk-doc")
-    (version "1.30")
+    (version "1.28")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1441,7 +1441,7 @@ information.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "17h6nwhis66z4dxjrc833wvfl6pqjp81yfx3fq6x7k1qp2749xm4"))))
+                "05apmwibkmn1icx05l8aw241lhymcx01zvk5i499cb150bijj7li"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -1463,14 +1463,12 @@ information.")
              #t))
          (add-after 'patch-gtk-doc-scan 'patch-test-out
            (lambda _
-             ;; annotations.sh, bugs.sh, empty.sh, gobject.sh and program.sh
-             ;; count the number of status lines.  Since our
+             ;; sanity.sh counts the number of status lines.  Since our
              ;; texlive regenerates the fonts every time and the font
-             ;; generator metafont outputs a lot of extra lines, these
-             ;; tests would always fail.  Disable them for now.
+             ;; generator metafont outputs a lot of extra lines, this
+             ;; test would always fail.  Disable it for now.
              (substitute* "tests/Makefile.in"
-               (("annotations.sh bugs.sh empty.sh fail.sh gobject.sh program.sh")
-                "fail.sh"))
+              (("empty.sh sanity.sh") "empty.sh"))
              #t))
          (add-before 'build 'set-HOME
            (lambda _
@@ -1510,8 +1508,7 @@ information.")
        ("itstool" ,itstool)
        ("libxml" ,libxml2)
        ("gettext" ,gettext-minimal)
-       ("bc" ,bc)
-       ("python-parameterized" ,python-parameterized)))
+       ("bc" ,bc)))
     (inputs
      `(("perl" ,perl)
        ("python" ,python)
@@ -1521,9 +1518,6 @@ information.")
        ("docbook-xsl" ,docbook-xsl)
        ("source-highlight" ,source-highlight)
        ("glib" ,glib)
-       ("python-anytree" ,python-anytree)
-       ("python-lxml" ,python-lxml)
-       ("python-pygments" ,python-pygments)
        ("python-six" ,python-six)))
     (home-page "https://www.gtk.org/gtk-doc/")
     (synopsis "Documentation generator from C source code")
