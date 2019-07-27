@@ -7317,7 +7317,7 @@ the Moka icon theme.")
 (define-public folks
   (package
     (name "folks")
-    (version "0.11.4")
+    (version "0.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7326,19 +7326,26 @@ the Moka icon theme.")
                     "folks-" version ".tar.xz"))
               (sha256
                (base32
-                "16hqh2gxlbx0b0hgq216hndr1m72vj54jvryzii9zqkk0g9kxc57"))))
-    (build-system glib-or-gtk-build-system)
+                "0xfl6rnzhdbmw1q26xiq34cdiy7a9karpi2r7wyplnnz1zaz5a9w"))))
+    (build-system meson-build-system)
     (inputs
      `(("bdb" ,bdb)
        ("dbus-glib" ,dbus-glib)
        ("evolution-data-server" ,evolution-data-server)
        ("glib" ,glib)
        ("libgee" ,libgee)
+       ("readline" ,readline)
        ("telepathy-glib" ,telepathy-glib)))
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
+       ("gettext", gettext-minimal)
+       ("glib" ,glib "bin") ; for glib-compile-schemas
+       ("gtk+:bin" ,gtk+ "bin") ; for gtk-update-icon-cache
        ("pkg-config" ,pkg-config)
+       ;; Python 2 is required by tests/tools/manager-file.py, but should be
+       ;; ported to Python 3 at some point.  Watch that file for updates.
+       ("python" ,python-2)
+       ("python-dbusmock" ,python-dbusmock)
        ("vala" ,vala)))
     (synopsis "Library to aggregate data about people")
     (description "Libfolks is a library that aggregates information about people
