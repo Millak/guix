@@ -5705,7 +5705,7 @@ Cisco's AnyConnect SSL VPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.8.18")
+    (version "1.8.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -5713,10 +5713,11 @@ Cisco's AnyConnect SSL VPN.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y31g0lxr93370xi74hbpvcy9m81n5wdkdhq8xy2nqp0y4219p13"))))
+                "1vbyhxknixyrf75pbjl3rxcy32m8y9cx5s30s3598vgza081rvzb"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t))
+     '(#:glib-or-gtk? #t
+       #:configure-flags '("-Dlibnm_gtk=true")))
     (native-inputs
      `(("intltool" ,intltool)
        ("glib:bin" ,glib "bin") ; for glib-compile-resources, etc.
