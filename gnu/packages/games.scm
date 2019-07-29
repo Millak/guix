@@ -6153,7 +6153,7 @@ GameController.")
 (define-public quadrapassel
   (package
     (name "quadrapassel")
-    (version "3.31.3")
+    (version "3.32.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/quadrapassel/"
@@ -6161,12 +6161,15 @@ GameController.")
                                   "quadrapassel-" version ".tar.xz"))
               (sha256
                (base32
-                "08i01nsgfb502xzzrrcxxbs7awb0j1h4c08vmj0j18ipa1sz8vb8"))))
-    (build-system glib-or-gtk-build-system)
+                "1zhi1957knz9dm98drn2dh95mr33sdch590yddh1f8r6bzsfjvpy"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:glib-or-gtk? #t))
     (native-inputs
      `(("desktop-file-utils" ,desktop-file-utils) ;for desktop-file-validate
        ("gettext" ,gnu-gettext)
        ("glib" ,glib "bin")             ;for glib-compile-resources
+       ("gtk+:bin" ,gtk+ "bin")          ;for gtk-update-icon-cache
        ("itstool" ,itstool)
        ("libxml2" ,libxml2)             ;for xmllint
        ("pkg-config" ,pkg-config)
