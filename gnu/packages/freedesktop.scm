@@ -874,41 +874,43 @@ message bus.")
 (define-public accountsservice
   (package
     (name "accountsservice")
-    (version "0.6.50")
+    (version "0.6.55")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.freedesktop.org/software/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0jn7vg1z4vxnna0hl33hbcb4bb3zpilxc2vyclh24vx4vvsjhn83"))))
-    (build-system gnu-build-system)
+                "16wwd633jak9ajyr1f1h047rmd09fhf3kzjz6g5xjsz0lwcj8azz"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:tests? #f ; XXX: tests require DocBook 4.1.2
-       #:configure-flags
-       '("--localstatedir=/var"
-         "--disable-systemd"
-         "--enable-elogind")
+     '(#:configure-flags
+       '("-Dsystemdsystemunitdir=no"
+         "-Dsystemd=false"
+         "-Delogind=true"
+         "-Dlocalstatedir=/var")
        #:phases
        (modify-phases %standard-phases
-         (add-before
-          'configure 'pre-configure
-          (lambda* (#:key inputs #:allow-other-keys)
-            ;; Don't try to create /var/lib/AccountsService.
-            (substitute* "src/Makefile.in"
-              (("\\$\\(MKDIR_P\\).*/lib/AccountsService.*") "true"))
-            (let ((shadow (assoc-ref inputs "shadow")))
-              (substitute* '("src/user.c" "src/daemon.c")
-                (("/usr/sbin/usermod") (string-append shadow "/sbin/usermod"))
-                (("/usr/sbin/useradd") (string-append shadow "/sbin/useradd"))
-                (("/usr/sbin/userdel") (string-append shadow "/sbin/userdel"))
-                (("/usr/bin/passwd")   (string-append shadow "/bin/passwd"))
-                (("/usr/bin/chage")    (string-append shadow "/bin/chage"))))
-            #t)))))
+         (add-before 'configure 'pre-configure
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Don't try to create /var/lib/AccountsService.
+             (substitute* "meson_post_install.py"
+               (("\\(os\\.path\\.join\\(.*'lib', 'AccountsService'.*")
+                ""))
+             (let ((shadow (assoc-ref inputs "shadow")))
+               (substitute* '("src/user.c" "src/daemon.c")
+                 (("/usr/sbin/usermod") (string-append shadow "/sbin/usermod"))
+                 (("/usr/sbin/useradd") (string-append shadow "/sbin/useradd"))
+                 (("/usr/sbin/userdel") (string-append shadow "/sbin/userdel"))
+                 (("/usr/bin/passwd")   (string-append shadow "/bin/passwd"))
+                 (("/usr/bin/chage")    (string-append shadow "/bin/chage"))
+                 (("/bin/cat")          (which "cat"))))
+             #t)))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
+     `(("dbus" ,dbus)
+       ("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
        ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("elogind" ,elogind)
