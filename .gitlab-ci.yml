@@ -1,7 +1,7 @@
 image: opensuse/tumbleweed:latest
 
 before_script:
-  - zypper addrepo --no-gpgcheck https://download.opensuse.org/repositories/home:/jbrielmaier:/branches:/devel:/languages:/misc/openSUSE_Tumbleweed/home:jbrielmaier:branches:devel:languages:misc.repo
+  - zypper addrepo --no-gpgcheck https://download.opensuse.org/repositories/home:/jbrielmaier:/guix/openSUSE_Tumbleweed/home:jbrielmaier:guix.repo
   - zypper refresh
   # build dependencies for guix
   - zypper install -y gettext-tools make tar xz
