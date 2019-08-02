@@ -36,6 +36,7 @@
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1949,36 +1950,44 @@ transparently through a bridge.")
                  (string-join (string-split version #\.) "_")
                  "/libnl-doc-" version ".tar.gz"))
            (sha256
-            (base32 "1m5cnzviv31gjnz6fz5rgyl6ah4dbp2akm49j9973sgwl36gs8jx"))))))
-    (inputs
-     `(("python-2" ,python-2)
-       ("python-3" ,python-3)))
-    (outputs '("out" "doc" "python2" "python3"))
+            (base32 "1m5cnzviv31gjnz6fz5rgyl6ah4dbp2akm49j9973sgwl36gs8jx"))))
+       ,@(if (%current-target-system)
+             '()
+             '(("python-2" ,python-2)
+               ("python-3" ,python-3)))))
+    (outputs `("out" "doc"
+               ,@(if (%current-target-system)
+                     '()
+                     '("python2" "python3"))))
     (arguments
      `(#:modules ((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-1))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'install 'install-python
-           (lambda* (#:key outputs #:allow-other-keys)
-             (define (python-inst python)
-               (invoke python "setup.py" "build")
-               (invoke python "setup.py" "install"
-                       (string-append "--prefix="
-                                      (assoc-ref %outputs python)))
-               (invoke python "setup.py" "clean"))
-             (setenv "LDFLAGS" (format #f "-Wl,-rpath=~a/lib"
-                                       (assoc-ref %outputs "out")))
-             (with-directory-excursion "./python"
-               (for-each python-inst '("python2" "python3")))
-             #t))
+         ,@(if (%current-target-system)
+               '()
+               ;; Cross building Python extensions is not supported.
+               '((add-after 'install 'install-python
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (define (python-inst python)
+                       (invoke python "setup.py" "build")
+                       (invoke python "setup.py" "install"
+                               (string-append "--prefix="
+                                              (assoc-ref %outputs python)))
+                       (invoke python "setup.py" "clean"))
+                     (setenv "LDFLAGS" (format #f "-Wl,-rpath=~a/lib"
+                                               (assoc-ref %outputs "out")))
+                     (with-directory-excursion "./python"
+                       (for-each python-inst '("python2" "python3")))
+                     #t))))
          (add-after 'install 'install-doc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let ((dest (string-append (assoc-ref outputs "doc")
                                         "/share/doc/libnl")))
                (mkdir-p dest)
-               (invoke "tar" "xf" (assoc-ref inputs "libnl3-doc")
+               (invoke "tar" "xf"
+                       (assoc-ref (or native-inputs inputs) "libnl3-doc")
                        "--strip-components=1" "-C" dest)))))))
     (home-page "https://www.infradead.org/~tgr/libnl/")
     (synopsis "NetLink protocol library suite")
