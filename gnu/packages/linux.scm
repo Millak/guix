@@ -665,6 +665,9 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
          (replace 'configure
            (lambda* (#:key inputs native-inputs target #:allow-other-keys)
              ;; Avoid introducing timestamps
+             ,@(if (%current-target-system)
+                   '((unsetenv "CROSS_CPATH"))
+                   '())
              (setenv "KCONFIG_NOTIMESTAMP" "1")
              (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
 
