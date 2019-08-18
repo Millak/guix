@@ -1513,7 +1513,7 @@ are searched for in PATH.  Return #f when MODULES and EXTENSIONS are empty."
                                                (string-append extension
                                                               "/share/guile/site/"
                                                               (effective-version)))
-                                             '((ungexp-native-splicing extensions)))
+                                             '((ungexp-splicing extensions)))
                                         %load-path)))
                         (set! %load-compiled-path
                           (cons (ungexp compiled)
@@ -1522,7 +1522,7 @@ are searched for in PATH.  Return #f when MODULES and EXTENSIONS are empty."
                                                               "/lib/guile/"
                                                               (effective-version)
                                                               "/site-ccache"))
-                                             '((ungexp-native-splicing extensions)))
+                                             '((ungexp-splicing extensions)))
                                         %load-compiled-path)))))))))
 
 (define* (gexp->script name exp
