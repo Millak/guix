@@ -15,6 +15,7 @@
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -477,13 +478,30 @@ gpgpme starting with version 1.7.")
               (sha256
                (base32
                 "1lhgh3105yi0ggrjsjibv4wp1ipz8s17pa820hk2wln3rc04wpvf"))
-              (file-name (string-append name "-" version "-checkout"))))
+              (file-name (string-append name "-" version "-checkout"))
+              (patches
+              (search-patches "guile-gcrypt-fix-cross-compilation.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; When cross-compiling, the bash script libgcrypt-config provided by
+     ;; libgcrypt must be accessible during configure phase.
+     `(,@(if (%current-target-system)
+             '(#:phases
+               (modify-phases %standard-phases
+                 (add-before 'configure 'add-libgrypt-config
+                   (lambda _
+                     (setenv "PATH" (string-append
+                                     (assoc-ref %build-inputs "libgcrypt")
+                                     "/bin:"
+                                     (getenv "PATH")))
+                     #t))))
+             '())))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("autoconf" ,autoconf)
        ("automake" ,automake)
-       ("texinfo" ,texinfo)))
+       ("texinfo" ,texinfo)
+       ("guile" ,guile-2.2)))
     (inputs
      `(("guile" ,guile-2.2)
        ("libgcrypt" ,libgcrypt)))

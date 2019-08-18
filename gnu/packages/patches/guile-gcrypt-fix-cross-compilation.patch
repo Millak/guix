@@ -1,0 +1,431 @@
+From 4ec6cb5209461452f7ebb0aae3ae916e28198dc9 Mon Sep 17 00:00:00 2001
+From: Mathieu Othacehe <m.othacehe@gmail.com>
+Date: Sun, 18 Aug 2019 09:42:39 +0200
+Subject: [PATCH] build: Fix cross-compilation.
+
+---
+ Makefile.am          |  2 +-
+ configure.ac         |  7 ++++++-
+ gcrypt/common.scm    | 42 ++++++++++++++++++++++++++++--------------
+ gcrypt/hash.scm      | 28 +++++++++++-----------------
+ gcrypt/hmac.scm      | 40 +++++++++++++++++++---------------------
+ gcrypt/pk-crypto.scm | 41 ++++++++++++++++++-----------------------
+ gcrypt/random.scm    |  7 ++++---
+ 7 files changed, 87 insertions(+), 80 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 0537256..7a3d1b2 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -39,7 +39,7 @@ $(guile_install_go_files): install-nobase_modDATA
+ GUILE_WARNINGS = -Wunbound-variable -Warity-mismatch -Wformat
+ SUFFIXES = .scm .go
+ .scm.go:
+-	$(AM_V_GEN)$(top_builddir)/pre-inst-env $(GUILE_TOOLS) compile $(GUILE_WARNINGS) -o "$@" "$<"
++	$(AM_V_GEN)$(top_builddir)/pre-inst-env $(GUILE_TOOLS) compile $(GUILE_TARGET) $(GUILE_WARNINGS) -o "$@" "$<"
+ 
+ moddir=$(prefix)/share/guile/site/$(GUILE_EFFECTIVE_VERSION)
+ godir = $(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache
+diff --git a/configure.ac b/configure.ac
+index e7ef6cf..7d0f569 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -73,6 +73,11 @@ AC_SUBST([LIBGCRYPT])
+ AC_SUBST([LIBGCRYPT_PREFIX])
+ AC_SUBST([LIBGCRYPT_LIBDIR])
+ 
+-GUIX_ASSERT_LIBGCRYPT_USABLE
++if test "$cross_compiling" = "no"; then
++   GUIX_ASSERT_LIBGCRYPT_USABLE
++else
++   GUILE_TARGET="--target=$host_alias"
++   AC_SUBST([GUILE_TARGET])
++fi
+ 
+ AC_OUTPUT
+diff --git a/gcrypt/common.scm b/gcrypt/common.scm
+index 189003f..a42f609 100644
+--- a/gcrypt/common.scm
++++ b/gcrypt/common.scm
+@@ -21,7 +21,8 @@
+   #:use-module (system foreign)
+   #:use-module (ice-9 match)
+   #:export (gcrypt-version
+-            libgcrypt-func
++            libgcrypt->pointer
++            libgcrypt->procedure
+             error-source error-string))
+ 
+ ;;; Commentary:
+@@ -31,34 +32,47 @@
+ ;;;
+ ;;; Code:
+ 
+-(define libgcrypt-func
+-  (let ((lib (dynamic-link %libgcrypt)))
+-    (lambda (func)
+-      "Return a pointer to symbol FUNC in libgcrypt."
+-      (dynamic-func func lib))))
++(define (libgcrypt->pointer name)
++  "Return a pointer to symbol FUNC in libgcrypt."
++  (catch #t
++    (lambda ()
++      (dynamic-func name (dynamic-link %libgcrypt)))
++    (lambda args
++      (lambda _
++        (throw 'system-error name  "~A" (list (strerror ENOSYS))
++               (list ENOSYS))))))
++
++(define (libgcrypt->procedure return name params)
++  "Return a pointer to symbol FUNC in libgcrypt."
++  (catch #t
++    (lambda ()
++      (let ((ptr (dynamic-func name (dynamic-link %libgcrypt))))
++        ;; The #:return-errno? facility was introduced in Guile 2.0.12.
++        (pointer->procedure return ptr params
++                            #:return-errno? #t)))
++    (lambda args
++      (lambda _
++        (throw 'system-error name  "~A" (list (strerror ENOSYS))
++               (list ENOSYS))))))
+ 
+ (define gcrypt-version
+   ;; According to the manual, this function must be called before any other,
+   ;; and it's not clear whether it can be called more than once.  So call it
+   ;; right here from the top level.
+-  (let* ((ptr     (libgcrypt-func "gcry_check_version"))
+-         (proc    (pointer->procedure '* ptr '(*)))
+-         (version (pointer->string (proc %null-pointer))))
++  (let ((proc (libgcrypt->procedure '* "gcry_check_version" '(*))))
+     (lambda ()
+       "Return the version number of libgcrypt as a string."
+-      version)))
++      (pointer->string (proc %null-pointer)))))
+ 
+ (define error-source
+-  (let* ((ptr  (libgcrypt-func "gcry_strsource"))
+-         (proc (pointer->procedure '* ptr (list int))))
++  (let ((proc (libgcrypt->procedure '* "gcry_strsource" (list int))))
+     (lambda (err)
+       "Return the error source (a string) for ERR, an error code as thrown
+ along with 'gcry-error'."
+       (pointer->string (proc err)))))
+ 
+ (define error-string
+-  (let* ((ptr  (libgcrypt-func "gcry_strerror"))
+-         (proc (pointer->procedure '* ptr (list int))))
++  (let ((proc (libgcrypt->procedure '* "gcry_strerror" (list int))))
+     (lambda (err)
+       "Return the error description (a string) for ERR, an error code as
+ thrown along with 'gcry-error'."
+diff --git a/gcrypt/hash.scm b/gcrypt/hash.scm
+index dad06e4..1b3fa67 100644
+--- a/gcrypt/hash.scm
++++ b/gcrypt/hash.scm
+@@ -50,13 +50,13 @@
+   (identifier-syntax 2))
+ 
+ (define bytevector-hash
+-  (let ((hash (pointer->procedure void
+-                                  (libgcrypt-func "gcry_md_hash_buffer")
+-                                  `(,int * * ,size_t))))
++  (let ((proc (libgcrypt->procedure void
++                                    "gcry_md_hash_buffer"
++                                    `(,int * * ,size_t))))
+     (lambda (bv type size)
+       "Return the hash TYPE, of SIZE bytes, of BV as a bytevector."
+       (let ((digest (make-bytevector size)))
+-        (hash type (bytevector->pointer digest)
++        (proc type (bytevector->pointer digest)
+               (bytevector->pointer bv) (bytevector-length bv))
+         digest))))
+ 
+@@ -67,30 +67,24 @@
+   (cut bytevector-hash <> GCRY_MD_SHA256 (/ 256 8)))
+ 
+ (define open-sha256-md
+-  (let ((open (pointer->procedure int
+-                                  (libgcrypt-func "gcry_md_open")
+-                                  `(* ,int ,unsigned-int))))
++  (let ((proc (libgcrypt->procedure int
++                                    "gcry_md_open"
++                                    `(* ,int ,unsigned-int))))
+     (lambda ()
+       (let* ((md  (bytevector->pointer (make-bytevector (sizeof '*))))
+-             (err (open md GCRY_MD_SHA256 0)))
++             (err (proc md GCRY_MD_SHA256 0)))
+         (if (zero? err)
+             (dereference-pointer md)
+             (throw 'gcrypt-error err))))))
+ 
+ (define md-write
+-  (pointer->procedure void
+-                      (libgcrypt-func "gcry_md_write")
+-                      `(* * ,size_t)))
++  (libgcrypt->procedure void "gcry_md_write" `(* * ,size_t)))
+ 
+ (define md-read
+-  (pointer->procedure '*
+-                      (libgcrypt-func "gcry_md_read")
+-                      `(* ,int)))
++  (libgcrypt->procedure '* "gcry_md_read" `(* ,int)))
+ 
+ (define md-close
+-  (pointer->procedure void
+-                      (libgcrypt-func "gcry_md_close")
+-                      '(*)))
++  (libgcrypt->procedure void "gcry_md_close" '(*)))
+ 
+ 
+ (define (open-sha256-port)
+diff --git a/gcrypt/hmac.scm b/gcrypt/hmac.scm
+index 0d8cc61..b9e1a9e 100644
+--- a/gcrypt/hmac.scm
++++ b/gcrypt/hmac.scm
+@@ -42,11 +42,11 @@
+     (format port "#<mac ~x>"
+             (pointer-address (mac->pointer mac)))))
+ 
+-
+ (define %gcry-mac-open
+-  (pointer->procedure int (libgcrypt-func "gcry_mac_open")
+-                      `(* ,int ,unsigned-int *)))  ; gcry_mac_hd_t *HD, int ALGO,
+-                                                   ; unsigned int FLAGS, gcry_ctx_t CTX
++  (libgcrypt->procedure int "gcry_mac_open"
++                        ;; gcry_mac_hd_t *HD, int ALGO,
++                        ;; unsigned int FLAGS, gcry_ctx_t CTX
++                        `(* ,int ,unsigned-int *)))
+ 
+ (define mac-algorithms-mapping
+   (alist->hashq-table
+@@ -59,9 +59,8 @@
+   (hashq-ref mac-algorithms-mapping sym))
+ 
+ (define mac-algo-maclen
+-  (let ((proc (pointer->procedure
+-               int (libgcrypt-func "gcry_mac_get_algo_maclen")
+-               `(,int))))
++  (let ((proc (libgcrypt->procedure
++               int "gcry_mac_get_algo_maclen" `(,int))))
+     (lambda (sym)
+       "Get expected length in bytes of mac yielded by algorithm SYM"
+       (proc (mac-algo-ref sym)))))
+@@ -76,8 +75,7 @@
+         (throw 'gcry-error 'mac-open err))))
+ 
+ (define %gcry-mac-setkey
+-  (pointer->procedure int (libgcrypt-func "gcry_mac_setkey")
+-                      `(* * ,size_t)))
++  (libgcrypt->procedure int "gcry_mac_setkey" `(* * ,size_t)))
+ 
+ (define (mac-setkey mac key)
+   "Set the KEY on <mac> object MAC
+@@ -96,9 +94,9 @@ In our case, KEY is either a string or a bytevector."
+         (throw 'gcry-error 'mac-setkey err))))
+ 
+ (define mac-close
+-  (let ((proc (pointer->procedure
+-               void (libgcrypt-func "gcry_mac_close")
+-               '(*))))  ; gcry_mac_hd_t H
++  (let ((proc (libgcrypt->procedure void
++                                    "gcry_mac_close"
++                                    '(*))))  ; gcry_mac_hd_t H
+     (lambda (mac)
+       "Release all resources of MAC.
+ 
+@@ -106,9 +104,9 @@ Running this on an already closed <mac> might segfault :)"
+       (proc (mac->pointer mac)))))
+ 
+ (define mac-write
+-  (let ((proc (pointer->procedure
+-               int (libgcrypt-func "gcry_mac_write")
+-               `(* * ,size_t))))
++  (let ((proc (libgcrypt->procedure int
++                                    "gcry_mac_write"
++                                    `(* * ,size_t))))
+     (lambda (mac obj)
+       "Writes string or bytevector OBJ to MAC"
+       (let* ((bv (match obj
+@@ -124,9 +122,9 @@ Running this on an already closed <mac> might segfault :)"
+             (throw 'gcry-error 'mac-write err))))))
+ 
+ (define mac-read
+-  (let ((proc (pointer->procedure
+-               int (libgcrypt-func "gcry_mac_read")
+-               `(* * *))))
++  (let ((proc (libgcrypt->procedure int
++                                    "gcry_mac_read"
++                                    `(* * *))))
+     (lambda (mac algorithm)
+       "Get bytevector representing result of MAC's written, signed data"
+       (define (int-bv* n)
+@@ -148,9 +146,9 @@ Running this on an already closed <mac> might segfault :)"
+ ;; rather than the gcry_error_t type.
+ 
+ (define mac-verify
+-  (let ((proc (pointer->procedure
+-               int (libgcrypt-func "gcry_mac_verify")
+-               `(* * ,size_t))))
++  (let ((proc (libgcrypt->procedure int
++                                    "gcry_mac_verify"
++                                    `(* * ,size_t))))
+     (lambda (mac bv)
+       "Verify that BV matches result calculated in MAC
+ 
+diff --git a/gcrypt/pk-crypto.scm b/gcrypt/pk-crypto.scm
+index be664a3..5d614a0 100644
+--- a/gcrypt/pk-crypto.scm
++++ b/gcrypt/pk-crypto.scm
+@@ -81,7 +81,7 @@
+                             16))))
+ 
+ (define finalize-canonical-sexp!
+-  (libgcrypt-func "gcry_sexp_release"))
++  (libgcrypt->pointer "gcry_sexp_release"))
+ 
+ (define-inlinable (pointer->canonical-sexp ptr)
+   "Return a <canonical-sexp> that wraps PTR."
+@@ -96,8 +96,9 @@
+     sexp))
+ 
+ (define string->canonical-sexp
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_new"))
+-         (proc (pointer->procedure int ptr `(* * ,size_t ,int))))
++  (let ((proc (libgcrypt->procedure int
++                                    "gcry_sexp_new"
++                                    `(* * ,size_t ,int))))
+     (lambda (str)
+       "Parse STR and return the corresponding gcrypt s-expression."
+ 
+@@ -115,8 +116,9 @@
+   (identifier-syntax 3))
+ 
+ (define canonical-sexp->string
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_sprint"))
+-         (proc (pointer->procedure size_t ptr `(* ,int * ,size_t))))
++  (let ((proc (libgcrypt->procedure size_t
++                                    "gcry_sexp_sprint"
++                                    `(* ,int * ,size_t))))
+     (lambda (sexp)
+       "Return a textual representation of SEXP."
+       (let loop ((len 1024))
+@@ -134,8 +136,7 @@
+              read-string)))
+ 
+ (define canonical-sexp-car
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_car"))
+-         (proc (pointer->procedure '* ptr '(*))))
++  (let ((proc (libgcrypt->procedure '* "gcry_sexp_car" '(*))))
+     (lambda (lst)
+       "Return the first element of LST, an sexp, if that element is a list;
+ return #f if LST or its first element is not a list (this is different from
+@@ -146,8 +147,7 @@ the usual Lisp 'car'.)"
+             (pointer->canonical-sexp result))))))
+ 
+ (define canonical-sexp-cdr
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_cdr"))
+-         (proc (pointer->procedure '* ptr '(*))))
++  (let ((proc (libgcrypt->procedure '* "gcry_sexp_cdr" '(*))))
+     (lambda (lst)
+       "Return the tail of LST, an sexp, or #f if LST is not a list."
+       (let ((result (proc (canonical-sexp->pointer lst))))
+@@ -156,8 +156,7 @@ the usual Lisp 'car'.)"
+             (pointer->canonical-sexp result))))))
+ 
+ (define canonical-sexp-nth
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_nth"))
+-         (proc (pointer->procedure '* ptr `(* ,int))))
++  (let ((proc (libgcrypt->procedure '* "gcry_sexp_nth" `(* ,int))))
+     (lambda (lst index)
+       "Return the INDEXth nested element of LST, an s-expression.  Return #f
+ if that element does not exist, or if it's an atom.  (Note: this is obviously
+@@ -174,8 +173,7 @@ different from Scheme's 'list-ref'.)"
+                        (sizeof size_t)))
+ 
+ (define canonical-sexp-length
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_length"))
+-         (proc (pointer->procedure int ptr '(*))))
++  (let ((proc (libgcrypt->procedure int "gcry_sexp_length" '(*))))
+     (lambda (sexp)
+       "Return the length of SEXP if it's a list (including the empty list);
+ return zero if SEXP is an atom."
+@@ -194,8 +192,7 @@ return zero if SEXP is an atom."
+            (not (char-set-contains? char-set:digit (string-ref str 0)))))))
+ 
+ (define canonical-sexp-nth-data
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_nth_data"))
+-         (proc (pointer->procedure '* ptr `(* ,int *))))
++  (let ((proc (libgcrypt->procedure '* "gcry_sexp_nth_data" `(* ,int *))))
+     (lambda (lst index)
+       "Return as a symbol (for \"sexp tokens\") or a bytevector (for any other
+ \"octet string\") the INDEXth data element (atom) of LST, an s-expression.
+@@ -266,8 +263,7 @@ Return #f if DATA does not conform."
+         (values #f #f))))
+ 
+ (define sign
+-  (let* ((ptr  (libgcrypt-func "gcry_pk_sign"))
+-         (proc (pointer->procedure int ptr '(* * *))))
++  (let ((proc (libgcrypt->procedure int "gcry_pk_sign" '(* * *))))
+     (lambda (data secret-key)
+       "Sign DATA, a canonical s-expression representing a suitable hash, with
+ SECRET-KEY (a canonical s-expression whose car is 'private-key'.)  Note that
+@@ -281,8 +277,7 @@ DATA must be a 'data' s-expression, as returned by
+             (throw 'gcry-error 'sign err))))))
+ 
+ (define verify
+-  (let* ((ptr  (libgcrypt-func "gcry_pk_verify"))
+-         (proc (pointer->procedure int ptr '(* * *))))
++  (let ((proc (libgcrypt->procedure int "gcry_pk_verify" '(* * *))))
+     (lambda (signature data public-key)
+       "Verify that SIGNATURE is a signature of DATA with PUBLIC-KEY, all of
+ which are gcrypt s-expressions."
+@@ -291,8 +286,7 @@ which are gcrypt s-expressions."
+                    (canonical-sexp->pointer public-key))))))
+ 
+ (define generate-key
+-  (let* ((ptr  (libgcrypt-func "gcry_pk_genkey"))
+-         (proc (pointer->procedure int ptr '(* *))))
++  (let ((proc (libgcrypt->procedure int "gcry_pk_genkey" '(* *))))
+     (lambda (params)
+       "Return as an s-expression a new key pair for PARAMS.  PARAMS must be an
+ s-expression like: (genkey (rsa (nbits 4:2048)))."
+@@ -303,8 +297,9 @@ s-expression like: (genkey (rsa (nbits 4:2048)))."
+             (throw 'gcry-error 'generate-key err))))))
+ 
+ (define find-sexp-token
+-  (let* ((ptr  (libgcrypt-func "gcry_sexp_find_token"))
+-         (proc (pointer->procedure '* ptr `(* * ,size_t))))
++  (let ((proc (libgcrypt->procedure '*
++                                    "gcry_sexp_find_token"
++                                    `(* * ,size_t))))
+     (lambda (sexp token)
+       "Find in SEXP the first element whose 'car' is TOKEN and return it;
+ return #f if not found."
+diff --git a/gcrypt/random.scm b/gcrypt/random.scm
+index 5391f94..ea6f9d3 100644
+--- a/gcrypt/random.scm
++++ b/gcrypt/random.scm
+@@ -33,7 +33,8 @@
+ (define %gcry-very-strong-random 2)
+ 
+ (define %gcry-randomize
+-  (pointer->procedure void (libgcrypt-func "gcry_randomize")
++  (libgcrypt->procedure void
++                      "gcry_randomize"
+                       `(* ,size_t ,int)))  ; buffer, length, level
+ 
+ (define* (gen-random-bv #:optional (bv-length 50)
+@@ -44,8 +45,8 @@
+     bv))
+ 
+ (define %gcry-create-nonce
+-  (pointer->procedure void (libgcrypt-func "gcry_create_nonce")
+-                      `(* ,size_t)))  ; buffer, length
++  (libgcrypt->procedure void "gcry_create_nonce"
++                        `(* ,size_t)))  ; buffer, length
+ 
+ 
+ (define* (gen-random-nonce #:optional (bv-length 50))
+-- 
+2.20.1
+

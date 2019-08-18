@@ -923,6 +923,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-relocatable.patch			\
   %D%/packages/patches/guile-rsvg-pkgconfig.patch		\
   %D%/packages/patches/guile-emacs-fix-configure.patch		\
+  %D%/packages/patches/guile-gcrypt-fix-cross-compilation.patch \
   %D%/packages/patches/guile-sqlite3-fix-cross-compilation.patch \
   %D%/packages/patches/gstreamer-buffer-reset-offset.patch	\
   %D%/packages/patches/gtk2-respect-GUIX_GTK2_PATH.patch	\
