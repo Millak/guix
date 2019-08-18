@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Chris Marusich <cmmarusich@gmail.com>
-;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;;
@@ -930,6 +930,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "
       --skip-checks      skip file system and initrd module safety checks"))
   (display (G_ "
+      --target=TRIPLET   cross-build for TRIPLET--e.g., \"armel-linux-gnu\""))
+  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (newline)
   (display (G_ "
@@ -1002,6 +1004,10 @@ Some ACTIONS support additional ARGS.\n"))
                  (lambda (opt name arg result)
                    (alist-cons 'system arg
                                (alist-delete 'system result eq?))))
+         (option '("target") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'target arg
+                               (alist-delete 'target result eq?))))
          (option '(#\r "root") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'gc-root arg result)))
@@ -1010,6 +1016,7 @@ Some ACTIONS support additional ARGS.\n"))
 (define %default-options
   ;; Alist of default option values.
   `((system . ,(%current-system))
+    (target . #f)
     (substitutes? . #t)
     (build-hook? . #t)
     (print-build-trace? . #t)
@@ -1043,6 +1050,7 @@ resulting from command-line parsing."
                         ((x . _) x)))
          (expr        (assoc-ref opts 'expression))
          (system      (assoc-ref opts 'system))
+         (target      (assoc-ref opts 'target))
          (os          (ensure-operating-system
                        (or file expr)
                        (cond
@@ -1059,7 +1067,7 @@ resulting from command-line parsing."
 
          (dry?        (assoc-ref opts 'dry-run?))
          (bootloader? (assoc-ref opts 'install-bootloader?))
-         (target      (match args
+         (target-file (match args
                         ((first second) second)
                         (_ #f)))
          (bootloader-target
@@ -1101,9 +1109,10 @@ resulting from command-line parsing."
                                                       (_ #f))
                                                     opts)
                              #:install-bootloader? bootloader?
-                             #:target target
+                             #:target target-file
                              #:bootloader-target bootloader-target
                              #:gc-root (assoc-ref opts 'gc-root)))))
+        #:target target
         #:system system))
     (warn-about-disk-space)))
 
