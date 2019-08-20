@@ -78,6 +78,8 @@
             package-name->name+version
             target-mingw?
             target-arm32?
+            target-arm64?
+            target-arm?
             target-64bit?
             version-compare
             version>?
@@ -492,6 +494,12 @@ a character other than '@'."
 
 (define (target-arm32?)
   (string-prefix? "arm" (or (%current-target-system) (%current-system))))
+
+(define (target-arm64?)
+  (string-prefix? "aarch64" (or (%current-target-system) (%current-system))))
+
+(define (target-arm?)
+  (or (target-arm32?) (target-arm64?)))
 
 (define (target-64bit?)
   (let ((system (or (%current-target-system) (%current-system))))
