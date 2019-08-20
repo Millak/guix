@@ -82,6 +82,7 @@
                            make-disk-image?
                            single-file-output?
                            target-arm32?
+                           target-arm64?
                            (disk-image-size (* 100 (expt 2 20)))
                            (disk-image-format "qcow2")
                            (references-graphs '()))
@@ -97,10 +98,14 @@ access it via /dev/hda.
 REFERENCES-GRAPHS can specify a list of reference-graph files as produced by
 the #:references-graphs parameter of 'derivation'."
 
+  (define target-arm? (or target-arm32? target-arm64?))
+
   (define arch-specific-flags
     `(;; On ARM, a machine has to be specified. Use "virt" machine to avoid
       ;; hardware limits imposed by other machines.
-      ,@(if target-arm32? '("-M" "virt") '())
+      ,@(if target-arm?
+            '("-M" "virt")
+            '())
 
       ;; On ARM32, if the kernel is built without LPAE support, ECAM conflicts
       ;; with VIRT_PCIE_MMIO causing PCI devices not to show up.  Disable
@@ -110,11 +115,18 @@ the #:references-graphs parameter of 'derivation'."
             '("-machine" "highmem=off")
             '())
 
+      ;; On ARM64, we have to specify the CPU. "max" behaves as "host" when
+      ;; KVM is enabled, and like a system CPU with the maximum possible
+      ;; feature set otherwise.
+      ,@(if target-arm64?
+            '("-cpu" "max")
+            '())
+
       ;; Only enable kvm if we see /dev/kvm exists.  This allows users without
       ;; hardware virtualization to still use these commands.  KVM support is
-      ;; still buggy on some ARM32 boards. Do not use it even if available.
+      ;; still buggy on some ARM boards. Do not use it even if available.
       ,@(if (and (file-exists? "/dev/kvm")
-                 (not target-arm32?))
+                 (not target-arm?))
             '("-enable-kvm")
             '())
 
@@ -125,11 +137,11 @@ the #:references-graphs parameter of 'derivation'."
                       ;; The serial port name differs between emulated
                       ;; architectures/machines.
                       " console="
-                      (if target-arm32? "ttyAMA0" "ttyS0"))
+                      (if target-arm? "ttyAMA0" "ttyS0"))
 
       ;; NIC is not supported on ARM "virt" machine, so use a user mode
       ;; network stack instead.
-      ,@(if target-arm32?
+      ,@(if target-arm?
             '("-device" "virtio-net-pci,netdev=mynet"
               "-netdev" "user,id=mynet")
             '("-net" "nic,model=virtio"))))
