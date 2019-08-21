@@ -727,6 +727,7 @@ derivations--e.g., code evaluated for its side effects."
                        (compiled (if (pair? %modules)
                                      (compiled-modules %modules
                                                        #:system system
+                                                       #:target target
                                                        #:module-path module-path
                                                        #:extensions extensions
                                                        #:guile guile
