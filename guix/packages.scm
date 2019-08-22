@@ -266,7 +266,7 @@ name of its URI."
                  (default '()) (thunked))
 
   (outputs package-outputs                ; list of strings
-           (default '("out")))
+           (default '("out")) (thunked))
 
                                                   ; lists of
                                                   ; <search-path-specification>,
@@ -1046,7 +1046,7 @@ and return it."
                              #:source source
                              #:inputs (append (inputs self)
                                               (propagated-inputs self))
-                             #:outputs outputs
+                             #:outputs (outputs self)
                              #:native-inputs (native-inputs self)
                              #:arguments (args self))
                    (raise (if target
