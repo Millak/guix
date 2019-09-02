@@ -21,6 +21,7 @@
   #:use-module (gnu bootloader extlinux)
   #:use-module (gnu bootloader)
   #:use-module (gnu packages bootloaders)
+  #:use-module (gnu packages genimage)
   #:use-module (guix gexp)
   #:export (u-boot-bootloader
             u-boot-a20-olinuxino-lime-bootloader
@@ -89,6 +90,12 @@
                               device (* 64 512))
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               device (* 512 512)))))
+
+(define install-buildroot-u-boot
+  #~(lambda (bootloader device mount-point)
+      ;; FIXME: Take genimage and a custom config from buildroot in order to install bootloader.
+      #$genimage
+      #f))
 
 
 
