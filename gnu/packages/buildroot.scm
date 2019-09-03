@@ -39,7 +39,7 @@
 (define-public buildroot-boards
   (package
     (name "buildroot-boards")
-    (version "2019.02.1")
+    (version "2019.08")
     (source (origin
               (method url-fetch)
               (uri
@@ -48,7 +48,7 @@
                 ".tar.bz2"))
               (sha256
                (base32
-                "08cn7jd23kfd0g5sh8gzskn3s0ix27kvsr3r9i4vns1yz53zmi6g"))))
+                "1phi33q7c0wjqv9pgkc1hsgvdz2qkzsc0d39hfzp57l0hg4m879x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
