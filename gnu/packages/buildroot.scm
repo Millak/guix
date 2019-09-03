@@ -58,9 +58,10 @@
          (delete 'check)
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((destination (string-append (assoc-ref outputs "out")
-                                               "/share/buildroot/board")))
-               (copy-recursively "board" destination))
+             (let ((out-share (string-append (assoc-ref outputs "out")
+                                             "/share/buildroot/")))
+               (copy-recursively "board" (string-append out-share "board"))
+               (copy-recursively "support" (string-append out-share "support")))
              #t)))))
     (synopsis "Generate embedded Linux system images")
     (description "@code{buildroot} generates embedded Linux system images.")
