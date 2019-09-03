@@ -128,10 +128,16 @@
            `((bootloader
              (inherit u-boot-bootloader)
              (package
-              (make-u-boot-package
-               ,(string-append (assoc-ref buildroot-configuration "BR2_TARGET_UBOOT_BOARD_DEFCONFIG")
-                               "_defconfig")
-               (if (eq? (assoc-ref "BR2_aarch64" 'y)
-                        "aarch64-linux-gnu"
-                        "arm-linux-gnueabihf"))))
+              (make-buildroot-u-boot-package
+               ,(string-append (assoc-ref buildroot-configuration "BR2_TARGET_UBOOT_BOARD_DEFCONFIG"))
+               (quote ,(filter (match-lambda
+                        ((a . 'y)
+                         (string-prefix? "BR2_TARGET_UBOOT_" a))
+                        ((a . 'n)
+                         (string-prefix? "BR2_TARGET_UBOOT_" a))
+                        (_ #f))
+                       buildroot-configuration))
+               ,(if (eq? (assoc-ref buildroot-configuration "BR2_aarch64") 'y)
+                    "aarch64-linux-gnu"
+                    "arm-linux-gnueabihf")))
              (installer install-buildroot-u-boot))))))))
