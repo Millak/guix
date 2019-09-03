@@ -140,4 +140,8 @@
                ,(if (eq? (assoc-ref buildroot-configuration "BR2_aarch64") 'y)
                     "aarch64-linux-gnu"
                     "arm-linux-gnueabihf")))
-             (installer install-buildroot-u-boot))))))))
+             (installer (install-buildroot-u-boot
+                         ,(assoc-ref buildroot-configuration
+                                     "BR2_ROOTFS_POST_IMAGE_SCRIPT")
+                         ,(assoc-ref buildroot-configuration
+                                     "BR2_ROOTFS_POST_SCRIPT_ARGS"))))))))))

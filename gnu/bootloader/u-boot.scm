@@ -91,10 +91,13 @@
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               device (* 512 512)))))
 
-(define install-buildroot-u-boot
+(define (install-buildroot-u-boot post-image-script post-script-args)
   #~(lambda (bootloader device mount-point)
       ;; FIXME: Take genimage and a custom config from buildroot in order to install bootloader.
       #$genimage
+      #$buildroot-boards
+      #$post-image-script
+      #$post-script-args
       #f))
 
 
