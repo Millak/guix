@@ -27,12 +27,7 @@ info_TEXINFOS = %D%/guix.texi			\
   %D%/guix.fr.texi				\
   %D%/guix.ru.texi				\
   %D%/guix.zh_CN.texi				\
-  %D%/guix-cookbook.texi			\
-  %D%/guix-cookbook.de.texi			\
-  %D%/guix-cookbook.es.texi			\
-  %D%/guix-cookbook.fr.texi			\
-  %D%/guix-cookbook.ru.texi			\
-  %D%/guix-cookbook.zh_CN.texi
+  %D%/guix-cookbook.texi
 
 %C%_guix_TEXINFOS = \
   %D%/contributing.texi \
@@ -69,11 +64,6 @@ TRANSLATED_INFO =				\
   %D%/guix.fr.texi				\
   %D%/guix.ru.texi				\
   %D%/guix.zh_CN.texi				\
-  %D%/guix-cookbook.de.texi			\
-  %D%/guix-cookbook.es.texi			\
-  %D%/guix-cookbook.fr.texi			\
-  %D%/guix-cookbook.ru.texi			\
-  %D%/guix-cookbook.zh_CN.texi			\
   %D%/contributing.de.texi			\
   %D%/contributing.es.texi			\
   %D%/contributing.fr.texi			\
