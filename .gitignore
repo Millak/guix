@@ -45,6 +45,7 @@
 /doc/guix*.vr
 /doc/guix*.vrs
 /doc/guix.*.texi
+/doc/guix-cookbook.*.texi
 /doc/guix.aux
 /doc/guix.cp
 /doc/guix.cps

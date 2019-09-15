@@ -23,12 +23,7 @@ DOC_PO_FILES=					\
   %D%/guix-manual.ru.po				\
   %D%/guix-manual.zh_CN.po
 
-DOC_COOKBOOK_PO_FILES=				\
-  %D%/guix-cookbook.es.po			\
-  %D%/guix-cookbook.de.po			\
-  %D%/guix-cookbook.fr.po			\
-  %D%/guix-cookbook.ru.po			\
-  %D%/guix-cookbook.zh_CN.po
+DOC_COOKBOOK_PO_FILES=
 
 EXTRA_DIST = \
   %D%/guix-manual.pot \
