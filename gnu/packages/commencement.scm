@@ -1048,6 +1048,7 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
                 #t)))))))))
 
 (define diffutils-mesboot
+  ;; The initial diffutils.
   (package
     (inherit diffutils)
     (name "diffutils-mesboot")
@@ -1062,12 +1063,7 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
     (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
-    (native-inputs `(("mes" ,mes-boot)
-                     ("tcc" ,tcc-boot)
-
-                     ("bash" ,%bootstrap-coreutils&co)
-                     ("coreutils" ,%bootstrap-coreutils&co)
-                     ("make" ,make-mesboot0)))
+    (native-inputs (%boot-tcc0-inputs))
     (arguments
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
@@ -1076,20 +1072,29 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
        #:strip-binaries? #f   ; no strip yet
        #:phases
        (modify-phases %standard-phases
-         ;; diffutils-2.7 needs more traditional configure
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (bash (assoc-ref %build-inputs "bash")))
-               (setenv "CONFIG_SHELL" (string-append bash "/bin/sh"))
-               (setenv "CC" "tcc")
-               (setenv "LD" "tcc")
-               (invoke "./configure" (string-append "--prefix=" out)))))
          (add-before 'configure 'remove-diff3-sdiff
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "Makefile.in"
-               (("PROGRAMS = .*" all) "PROGRAMS = cmp diff"))
-             #t)))))))
+               (("PROGRAMS = .*" all) "PROGRAMS = cmp diff"))))
+         (replace 'configure           ; needs classic invocation of configure
+           (lambda* (#:key configure-flags #:allow-other-keys)
+             (let* ((out (assoc-ref %outputs "out"))
+                    (bash (assoc-ref %build-inputs "bash"))
+                    (shell (string-append bash "/bin/bash")))
+               (setenv "CONFIG_SHELL" shell)
+               (setenv "CC" "tcc")
+               (setenv "LD" "tcc")
+               (format (current-error-port)
+                       "running ./configure ~a\n" (string-join configure-flags))
+               (apply invoke (cons "./configure" configure-flags)))))
+         (replace 'install
+           (lambda _
+             (let* ((out (assoc-ref %outputs "out"))
+                    (bin (string-append out "/bin")))
+               (mkdir-p bin)
+               (install-file "cmp" bin)
+               (install-file "diff" bin)
+               #t))))))))
 
 (define binutils-mesboot0
   (package
