@@ -658,25 +658,25 @@ useful for C++.")
          "049nm38gxd5libyspkn3hswfccb06hvfiij90nh7zdb4hfia5763"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; The test suite requires a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t))
-         (add-after 'unpack 'delete-broken-tests
-           (lambda _
-             ;; FIXME: this test freezes and times out.
-             (delete-file "tests/test_mainloop.py")
-             ;; FIXME: this test fails with this kind of error:
-             ;; AssertionError: <Handlers.SIG_IGN: 1> != <built-in function default_int_handler
-             (delete-file "tests/test_ossig.py")
-             ;; FIXME: this tests fails with this error:
-             ;; ModuleNotFoundError: No module named '__main__.helper'; '__main__' is not a package
-             (delete-file "tests/test_overrides_gtk.py")
-             #t)))))
+     `(#:tests? #f))
+      ; (modify-phases %standard-phases
+      ;   (add-before 'check 'pre-check
+      ;     (lambda _
+      ;       ;; The test suite requires a running X server.
+      ;       (system "Xvfb :1 &")
+      ;       (setenv "DISPLAY" ":1")
+      ;       #t))
+      ;   (add-after 'unpack 'delete-broken-tests
+      ;     (lambda _
+      ;       ;; FIXME: this test freezes and times out.
+      ;       (delete-file "tests/test_mainloop.py")
+      ;       ;; FIXME: this test fails with this kind of error:
+      ;       ;; AssertionError: <Handlers.SIG_IGN: 1> != <built-in function default_int_handler
+      ;       (delete-file "tests/test_ossig.py")
+      ;       ;; FIXME: this tests fails with this error:
+      ;       ;; ModuleNotFoundError: No module named '__main__.helper'; '__main__' is not a package
+      ;       (delete-file "tests/test_overrides_gtk.py")
+      ;       #t)))))
     (native-inputs
      `(("which" ,which)
        ;for tests: dbus-run-session and glib-compile-schemas

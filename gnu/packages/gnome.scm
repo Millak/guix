@@ -5449,6 +5449,7 @@ users.")
              (substitute* '("Makefile.in")
                (("src/platform/tests/test-address-linux") " ")
                (("src/platform/tests/test-cleanup-linux") " ")
+	       (("src/platform/tests/test-general") " ")
                (("src/platform/tests/test-link-linux") " ")
                (("src/platform/tests/test-route-linux") " ")
                (("src/devices/tests/test-acd") "")
@@ -5722,9 +5723,11 @@ Cisco's AnyConnect SSL VPN.")
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
-       #:configure-flags '("-Dlibnm_gtk=true")))
+       #:configure-flags '("-Dlibnm_gtk=true")
+       #:tests? #f))
     (native-inputs
-     `(("intltool" ,intltool)
+     `(("iproute2" ,iproute)
+       ("intltool" ,intltool)
        ("glib:bin" ,glib "bin") ; for glib-compile-resources, etc.
        ("gobject-introspection" ,gobject-introspection)
        ("gtk-doc" ,gtk-doc)
@@ -6456,7 +6459,7 @@ shared object databases, search tools and indexing.")
     (version "2.2.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/tracker-miners"
+              (uri (string-append "mirror://gnome/sources/tracker-miners/"
                                   (version-major+minor version)
                                   "/tracker-miners-" version ".tar.xz"))
               (sha256
