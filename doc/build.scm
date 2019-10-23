@@ -162,7 +162,9 @@ as well as images, OS examples, and translations."
 
 (define %makeinfo-html-options
   ;; Options passed to 'makeinfo --html'.
-  '("--css-ref=https://www.gnu.org/software/gnulib/manual.css"))
+  '("--css-ref=https://www.gnu.org/software/gnulib/manual.css"
+    "-c" "EXTRA_HEAD=<meta name=\"viewport\" \
+content=\"width=device-width, initial-scale=1\" />"))
 
 (define* (html-manual source #:key (languages %languages)
                       (version "0.0")
