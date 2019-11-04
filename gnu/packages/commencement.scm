@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -83,6 +83,77 @@
 ;;; that are in fact not going to be used.
 ;;;
 ;;; Code:
+
+(define-public m2-planet-boot0
+  ;; The soon-to-be initial bootstrap package: no binary inputs except for a
+  ;; 357 byte binary seed: `x86/hex0-seed'.
+  (package
+    (inherit m2-planet)
+    (name "m2-planet-boot0")
+    (version "1.4.0-12-g30a09a5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://lilypond.org/janneke/mes/20191117/"
+                                  "m2-planet" "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16xji4kyf862apaigdmkr5krldi2nm3il92nj059csq2rsbpsgwk"))))
+    (inputs
+     `(("mescc-tools-seed"
+        ,(bootstrap-origin
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "http://lilypond.org/janneke/mes/20191117/"
+                  "mescc-tools-seed-1.1-2-g7e10d76.tar.gz"))
+            (sha256
+             (base32
+              "1c1a112xd3dwbppl4w936c6hljgh0gm6ihwgvbfpcww991hww6hx")))))
+       ("mescc-tools"
+        ,(bootstrap-origin
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "http://lilypond.org/janneke/mes/20191117/"
+                  "mescc-tools-0.6.1-33-g7aa76b1.tar.gz"))
+            (sha256
+             (base32
+              "1x7621m144z22rcp4g3dsmcrmxh2h11mg1a4izxjvbhsmn88cqa3")))))))
+    (native-inputs
+     `(("coreutils" , %bootstrap-coreutils&co)
+       ("guile" , %bootstrap-guile)))
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:guile ,%bootstrap-guile
+       #:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let* ((mescc-tools-seed (assoc-ref %build-inputs "mescc-tools-seed"))
+                (mescc-tools (assoc-ref %build-inputs "mescc-tools"))
+                (source (assoc-ref %build-inputs "source"))
+                (dir (string-append "mescc-tools-seed-" ,version))
+                (coreutils (assoc-ref %build-inputs "coreutils"))
+                (guile     (assoc-ref %build-inputs "guile"))
+                (out       (assoc-ref %outputs "out"))
+                (bindir    (string-append out "/bin")))
+           (setenv "PATH" (string-append coreutils "/bin"))
+           (invoke "tar" "--strip=1" "-xvf" mescc-tools-seed)
+           (invoke "tar" "--strip=1" "-C" "mescc-tools" "-xvf" mescc-tools)
+           (invoke "tar" "--strip=1" "-C" "M2-Planet" "-xvf" source)
+           (mkdir-p bindir)
+           (with-directory-excursion "x86"
+             (invoke "../kaem-optional-seed"
+                     "--verbose" "--strict" "--file" "mescc-tools.kaem"))
+           (with-directory-excursion "bin"
+             (install-file "hex2" bindir)
+             (install-file "M1" bindir)
+             (install-file "blood-elf" bindir)
+             (install-file "kaem" bindir)
+             (install-file "get_machine" bindir)
+             (install-file "M2-Planet" bindir))
+           #t))))))
 
 (define mes-boot
   (package
