@@ -10396,7 +10396,7 @@ the nick color and the background color
 (define-public emacs-engine-mode
   (package
     (name "emacs-engine-mode")
-    (version "2.0.0")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -10405,7 +10405,7 @@ the nick color and the background color
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02xas46nl28mascqsyr1zcd4hn15bh0fjv2xlxv1kmrj0pis94ml"))))
+        (base32 "1xka8i4cdvp5r2v2mkli1zz17x1sdsnmszbhqav2rf94v656d91i"))))
     (build-system emacs-build-system)
     (synopsis "Minor mode for defining and querying search engines")
     (description "@code{engine-mode} is a global minor mode for Emacs.  It
