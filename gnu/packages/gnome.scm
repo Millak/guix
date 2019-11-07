@@ -3518,13 +3518,20 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
                 "06sa83zggk29wcg75fl3gqh0rmi7cd3gsbk09a2z23r7vpy7xanq"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t))
+     '(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           ;; Don't create 'icon-theme.cache'.
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") "true"))
+             #t)))))
     (native-inputs
      `(("intltool" ,intltool)
        ("itstool" ,itstool)
        ("gobject-introspection" ,gobject-introspection)
        ("glib:bin" ,glib "bin") ; for glib-mkmenus
-       ("gtk+:bin" ,gtk+ "bin")  ; for gtk-update-icon-cache
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("amtk" ,amtk)
