@@ -2378,8 +2378,9 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define gnu-make-final
   ;; The final GNU Make, which uses the final Guile.
   (let ((pkg-config (package
-                      (inherit pkg-config)
-                      (inputs (%boot5-inputs))
+                      (inherit %pkg-config)       ;the native pkg-config
+                      (inputs `(("guile" ,guile-final)
+                                ,@(%boot5-inputs)))
                       (arguments
                        `(#:implicit-inputs? #f
                          ,@(package-arguments pkg-config))))))
