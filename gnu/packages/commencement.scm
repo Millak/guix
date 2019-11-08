@@ -1453,8 +1453,7 @@ exec " gcc "/bin/" program
        ("binutils" ,binutils-mesboot)
        ("gcc-wrapper" ,gcc-mesboot-wrapper)
        ("gcc" ,gcc-mesboot)
-       ,@(fold alist-delete (%bootstrap-inputs)
-               '("bootstrap-mescc-tools" "mes"))))
+       ,@(%bootstrap-inputs)))
     (_
      (%bootstrap-inputs))))
 
