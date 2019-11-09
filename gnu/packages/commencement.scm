@@ -155,6 +155,81 @@
              (install-file "M2-Planet" bindir))
            #t))))))
 
+(define-public mes-boot0
+  ;; The initial Scheme interpreter: mes, and the first C99 compiler: mescc.
+  (package
+    (inherit mes)
+    (name "mes-boot0")
+    (version "0.20-192-gb2098b3a7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://lilypond.org/janneke/mes/20191117/"
+                    "mes-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wbgl9gxjp37c520dx8y4l8knbxyki22vjjzcsrwkzfmjwkq7qhb"))))
+    (inputs '())
+    (propagated-inputs '())
+    (native-inputs
+     `(("m2-planet" ,m2-planet-boot0)
+       ("nyacc-source" ,(bootstrap-origin (package-source nyacc)))
+
+       ("coreutils" , %bootstrap-coreutils&co)))
+    (arguments
+     `(#:implicit-inputs? #f
+       #:guile ,%bootstrap-guile
+       #:strip-binaries? #f  ; binutil's strip b0rkes MesCC/M1/hex2 binaries
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-seeds
+           (lambda _
+             (let ((nyacc-source (assoc-ref %build-inputs "nyacc-source")))
+               (with-directory-excursion ".."
+                 (mkdir-p "nyacc-source")
+                 (invoke "tar" "--strip=1" "-C" "nyacc-source" "-xvf" nyacc-source))
+               #t)))
+         (replace 'configure
+           (lambda _
+             (let ((out (assoc-ref %outputs "out")))
+               (setenv "GUILE_LOAD_PATH" (string-append "module:../module"
+                                                        ":" "nyacc:../nyacc"))
+               (symlink (string-append "../nyacc-source/module") "nyacc")
+
+               (setenv "AR" (string-append "bash " (getcwd) "/scripts/mesar"))
+               (setenv "CC" (string-append (getcwd) "/bin/mes"
+                                           " -e main"
+                                           " " (getcwd) "/scripts/mescc.scm"
+                                           " -- "))
+               (setenv "arch" "x86")
+               (invoke "bash" "configure.sh"
+                       (string-append "--prefix=" out)))))
+         (replace 'build
+           (lambda _
+             (invoke "sh" "bootstrap.sh")))
+         (replace 'check
+           (lambda _
+             (setenv "DIFF" (string-append "sh " (getcwd) "/scripts/diff.scm"))
+             ;; fail fast tests
+             ;; (invoke "sh" "-x" "build-aux/test.sh" "scaffold/tests/t")
+             ;; (invoke "sh" "-x" "build-aux/test.sh" "scaffold/tests/63-struct-cell")
+             (invoke "sh" "check.sh")))
+         (replace 'install
+           (lambda _
+             (invoke "sh" "install.sh"))))))
+    (native-search-paths
+     ;; Use the language-specific variables rather than 'CPATH' because they
+     ;; are equivalent to '-isystem' whereas 'CPATH' is equivalent to '-I'.
+     ;; The intent is to allow headers that are in the search path to be
+     ;; treated as "system headers" (headers exempt from warnings) just like
+     ;; the typical /usr/include headers on an FHS system.
+     (list (search-path-specification
+            (variable "C_INCLUDE_PATH")
+            (files '("share/mes/include")))
+           (search-path-specification
+            (variable "LIBRARY_PATH")
+            (files '("share/mes/lib")))))))
+
 (define mes-boot
   (package
     (inherit mes)
