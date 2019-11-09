@@ -85,8 +85,8 @@
 ;;; Code:
 
 (define-public m2-planet-boot0
-  ;; The soon-to-be initial bootstrap package: no binary inputs except for a
-  ;; 357 byte binary seed: `x86/hex0-seed'.
+  ;; The initial bootstrap package: no binary inputs except for a 357 byte
+  ;; binary seed: `x86/hex0-seed'.
   (package
     (inherit m2-planet)
     (name "m2-planet-boot0")
@@ -230,68 +230,101 @@
             (variable "LIBRARY_PATH")
             (files '("share/mes/lib")))))))
 
-(define mes-boot
+(define tcc-boot0
+  ;; Pristine tcc cannot be built by MesCC, we are keeping a delta of 11
+  ;; patches.  In a very early and rough form they were presented to the
+  ;; TinyCC developers, who at the time showed no interest in supporting the
+  ;; bootstrappable effort; we will try again later.  These patches have been
+  ;; ported to 0.9.27, alas the resulting tcc is buggy.  Once MesCC is more
+  ;; mature, this package should use the 0.9.27 sources (or later).
   (package
-    (inherit mes)
-    (name "mes-boot")
-    (version "0.19")
+    (inherit tcc)
+    (name "tcc-boot0")
+    (version "0.9.26-1103-g6e62e0e")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://gnu/mes/"
-                                  "mes-" version ".tar.gz"))
+              (uri (string-append
+                    "http://lilypond.org/janneke/mes/20191117/"
+                    "/tcc-" version ".tar.gz"))
               (sha256
                (base32
-                "15h4yhaywdc0djpjlin2jz1kzahpqxfki0r0aav1qm9nxxmnp1l0"))))
+                "1qbybw7mxbgkv3sazvz1v7c8byq998vk8f1h25ik8w3d2l63lxng"))))
+    (build-system gnu-build-system)
+    (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
     (native-inputs
-     `(("mescc-tools" ,%bootstrap-mescc-tools)
+     `(("mes" ,mes-boot0)
+       ("mescc-tools" ,m2-planet-boot0)
        ("nyacc-source" ,(bootstrap-origin
-                         (package-source nyacc-0.86)))
+                         (package-source nyacc)))
 
-       ("coreutils" , %bootstrap-coreutils&co)
-       ("bootstrap-mes" ,%bootstrap-mes)))
+       ("coreutils" , %bootstrap-coreutils&co)))
     (arguments
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
-       #:strip-binaries? #f    ; binutil's strip b0rkes MesCC/M1/hex2 binaries
+       #:validate-runpath? #f        ; no dynamic executables
+       #:strip-binaries? #f          ; no strip yet
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'unpack-seeds
-           (lambda _
-             (let ((nyacc-source (assoc-ref %build-inputs "nyacc-source"))
-                   (bootstrap-mes (assoc-ref %build-inputs "bootstrap-mes")))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((nyacc-source (assoc-ref %build-inputs "nyacc-source")))
                (with-directory-excursion ".."
-                 (mkdir-p "nyacc-source")
-                 (invoke "tar" "--strip=1" "-C" "nyacc-source" "-xvf" nyacc-source)
-                 (symlink (string-append bootstrap-mes "/share/mes/lib") "mes-seed"))
-               #t)))
+                 (invoke "tar" "-xvf" nyacc-source)))))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref %outputs "out")))
-               (setenv "GUILE" "mes")
-               (setenv "GUILE_EFFECTIVE_VERSION" "2.2")
-               (setenv "GUILE_LOAD_PATH" "nyacc")
-               (symlink (string-append "../nyacc-source/module") "nyacc")
-               (invoke "bash" "configure.sh"
-                       (string-append "--prefix=" out)))))
+             (let* ((out (assoc-ref %outputs "out"))
+                    (dir (with-directory-excursion ".." (getcwd)))
+                    (coreutils (assoc-ref %build-inputs "coreutils"))
+                    (mes (assoc-ref %build-inputs "mes"))
+                    (mescc-tools (assoc-ref %build-inputs "mescc-tools"))
+                    (interpreter (string-append mes "/lib/mes-loader")))
+               (setenv "PATH" (string-append
+                               coreutils "/bin"
+                               ":" mes "/bin"
+                               ":" mescc-tools "/bin"))
+               (format (current-error-port) "PATH=~s\n" (getenv "PATH"))
+
+               (setenv "prefix" out)
+               (setenv "MES_PREFIX" mes)
+               (setenv "GUILE_LOAD_PATH"
+                       (string-append dir "/nyacc-0.99.0/module"))
+
+               (substitute* "conftest.c"
+                 (("volatile") ""))
+
+               (invoke "sh" "configure"
+                       "--cc=mescc"
+                       (string-append "--prefix=" out)
+                       (string-append "--elfinterp=" interpreter)
+                       "--crtprefix=."
+                       "--tccdir=."))))
          (replace 'build
            (lambda _
-             (let ((mes (assoc-ref %build-inputs "bootstrap-mes")))
-               (setenv "MES_PREFIX" (string-append mes "/share/mes"))
-               (setenv "MES_ARENA" "100000000")
-               (setenv "MES_MAX_ARENA" "100000000")
-               (setenv "MES_STACK" "10000000")
-               (invoke "sh" "bootstrap.sh"))))
+             (substitute* "bootstrap.sh" ; Show some progress
+               (("^( *)((cp|ls|mkdir|rm|[.]/tcc|[.]/[$][{PROGRAM_PREFIX[}]tcc) [^\"]*[^\\])\n" all space cmd)
+                (string-append space "echo \"" cmd "\"\n"
+                               space cmd "\n")))
+             (substitute* "bootstrap.sh"
+               (("^( *)cmp" all indent) (string-append indent "#cmp")))
+             (invoke "sh" "bootstrap.sh")))
          (replace 'check
            (lambda _
-             (setenv "DIFF" "sh scripts/diff.scm")
              ;; fail fast tests
-             ;; (invoke "sh" "-x" "build-aux/test.sh" "scaffold/tests/t")
-             ;; (invoke "sh" "-x" "build-aux/test.sh" "scaffold/tests/63-struct-cell")
-             (invoke "sh" "check.sh")))
+             (system* "./tcc" "--help") ; --help exits 1
+             ;; (invoke "sh" "test.sh" "mes/scaffold/tests/30-strlen")
+             ;; (invoke "sh" "-x" "test.sh" "mes/scaffold/tinycc/00_assignment")
+             ;; TODO: add sensible check target (without depending on make)
+             ;; (invoke "sh" "check.sh")
+             #t))
          (replace 'install
            (lambda _
+             (substitute* "install.sh" ; Show some progress
+               (("^( *)((cp|ls|mkdir|rm|tar|./[$][{PROGRAM_PREFIX[}]tcc) [^\"]*[^\\])\n" all space cmd)
+                (string-append space "echo \"" cmd "\"\n"
+                               space cmd "\n")))
+
              (invoke "sh" "install.sh"))))))
     (native-search-paths
      ;; Use the language-specific variables rather than 'CPATH' because they
@@ -301,126 +334,10 @@
      ;; the typical /usr/include headers on an FHS system.
      (list (search-path-specification
             (variable "C_INCLUDE_PATH")
-            (files '("share/mes/include")))
+            (files '("include")))
            (search-path-specification
             (variable "LIBRARY_PATH")
-            (files '("share/mes/lib")))))))
-
-(define tcc-boot0
-  ;; Pristine tcc cannot be built by MesCC, we are keeping a delta of 11
-  ;; patches.  In a very early and rough form they were presented to the
-  ;; TinyCC developers, who at the time showed no interest in supporting the
-  ;; bootstrappable effort; we will try again later.  These patches have been
-  ;; ported to 0.9.27, alas the resulting tcc is buggy.  Once MesCC is more
-  ;; mature, this package should use the 0.9.27 sources (or later).
-  (let ((version "0.9.26")
-        (revision "6")
-        (commit "c004e9a34fb026bb44d211ab98bb768e79900eef"))
-    (package
-      (inherit tcc)
-      (name "tcc-boot0")
-      (version (string-append version "-" revision "." (string-take commit 7)))
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://gitlab.com/janneke/tinycc"
-                                    "/-/archive/" commit
-                                    "/tinycc-" commit ".tar.gz"))
-                (sha256
-                 (base32
-                  "1hmzn1pq0x22ppd80hyrn5qzqq94mxd0ychzj6vrr2vnj2frjv5b"))))
-      (build-system gnu-build-system)
-      (supported-systems '("i686-linux" "x86_64-linux"))
-      (inputs '())
-      (propagated-inputs '())
-      (native-inputs
-       `(("mes" ,mes-boot)
-         ("mescc-tools" ,%bootstrap-mescc-tools)
-         ("nyacc-source" ,(bootstrap-origin
-                           (package-source nyacc-0.86)))
-
-         ("coreutils" , %bootstrap-coreutils&co)
-         ("bootstrap-mes" ,%bootstrap-mes)))
-      (arguments
-       `(#:implicit-inputs? #f
-         #:guile ,%bootstrap-guile
-         #:strip-binaries? #f  ; binutil's strip b0rkes MesCC/M1/hex2 binaries
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'unpack-seeds
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((coreutils (assoc-ref %build-inputs "coreutils"))
-                      (nyacc-source (assoc-ref %build-inputs "nyacc-source"))
-                      (bootstrap-mes (assoc-ref %build-inputs "bootstrap-mes")))
-                 (setenv "PATH" (string-append
-                                 coreutils "/bin"))
-                 (format (current-error-port) "PATH=~s\n" (getenv "PATH"))
-                 (with-directory-excursion ".."
-                   (mkdir-p "nyacc-source")
-                   (invoke "tar" "--strip=1" "-C" "nyacc-source"
-                           "-xvf" nyacc-source)
-                   (symlink (string-append bootstrap-mes "/share/mes/lib") "mes-seed"))
-                 #t)))
-           (replace 'configure
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref %outputs "out"))
-                      (dir (with-directory-excursion ".." (getcwd)))
-                      (coreutils (assoc-ref %build-inputs "coreutils"))
-                      (mes (assoc-ref %build-inputs "mes"))
-                      (mescc-tools (assoc-ref %build-inputs "mescc-tools"))
-                      (libc (assoc-ref %build-inputs "libc"))
-                      (interpreter (if libc
-                                       ;; also for x86_64-linux, we are still on i686-linux
-                                       (string-append libc ,(glibc-dynamic-linker "i686-linux"))
-                                       (string-append mes "/lib/mes-loader"))))
-                 (setenv "PATH" (string-append
-                                 coreutils "/bin"
-                                 ":" mes "/bin"
-                                 ":" mescc-tools "/bin"))
-                 (format (current-error-port) "PATH=~s\n" (getenv "PATH"))
-
-                 (setenv "PREFIX" out)
-                 (symlink (string-append mes "/share/mes") "mes")
-                 (symlink (string-append "../nyacc-source/module") "nyacc")
-                 (setenv "MES_PREFIX" "mes")
-                 (setenv "MES_ARENA" "100000000")
-                 (setenv "MES_MAX_ARENA" "100000000")
-                 (setenv "MES_STACK" "10000000")
-                 (setenv "MES" "mes")
-                 (setenv "GUILE_LOAD_PATH" "nyacc")
-                 (invoke "sh" "configure"
-                         "--prefix=$PREFIX"
-                         (string-append "--elfinterp=" interpreter)
-                         "--crtprefix=."
-                         "--tccdir=."))))
-           (replace 'build
-             (lambda _
-               (substitute* "bootstrap.sh"
-                 (("^    cmp") "#    cmp"))
-               (invoke "sh" "bootstrap.sh")))
-           (replace 'check
-             (lambda _
-               (setenv "DIFF" "diff.scm")
-               (setenv "OBJDUMP" "true")
-               ;; fail fast tests
-               ;; (invoke "sh" "test.sh" "mes/scaffold/tests/30-strlen")
-               ;; (invoke "sh" "-x" "test.sh" "mes/scaffold/tinycc/00_assignment")
-               (setenv "TCC" "./tcc")
-               (invoke "sh" "check.sh")))
-           (replace 'install
-             (lambda _
-               (invoke "sh" "install.sh"))))))
-      (native-search-paths
-       ;; Use the language-specific variables rather than 'CPATH' because they
-       ;; are equivalent to '-isystem' whereas 'CPATH' is equivalent to '-I'.
-       ;; The intent is to allow headers that are in the search path to be
-       ;; treated as "system headers" (headers exempt from warnings) just like
-       ;; the typical /usr/include headers on an FHS system.
-       (list (search-path-specification
-              (variable "C_INCLUDE_PATH")
-              (files '("include")))
-             (search-path-specification
-              (variable "LIBRARY_PATH")
-              (files '("lib"))))))))
+            (files '("lib")))))))
 
 (define tcc-boot
   (package
@@ -435,7 +352,7 @@
     (inputs '())
     (propagated-inputs '())
     (native-inputs
-     `(("mes" ,mes-boot)
+     `(("mes" ,mes-boot0)
        ("tcc" ,tcc-boot0)
 
        ("coreutils" , %bootstrap-coreutils&co)))
@@ -585,7 +502,7 @@
     (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
-    (native-inputs `(("mes" ,mes-boot)
+    (native-inputs `(("mes" ,mes-boot0)
                      ("tcc" ,tcc-boot)
 
                      ("bash" ,%bootstrap-coreutils&co)
@@ -764,13 +681,8 @@ ac_cv_c_float_format='IEEE (little-endian)'
                (copy-file "gcc/libgcc2.a" (string-append out "/lib/libgcc2.a"))
                (copy-file (string-append tcc "/lib/libtcc1.a")
                           (string-append out "/lib/libtcc1.a"))
-               (invoke "ar" "r" (string-append gcc-dir "/libc.a")
-                       (string-append tcc-lib "/libc+gnu.o")
-                       (string-append tcc-lib "/libtcc1.o"))
-               (invoke "ar" "r" (string-append out "/lib/libc.a")
-                       (string-append tcc-lib "/libc+gnu.o")
-                       (string-append tcc-lib "/libtcc1.o"))
-               (invoke "ls" "-ltrF" gcc-dir)
+               (copy-file (string-append tcc "/lib/libc.a")
+                          (string-append out "/lib/libc.a"))
                (copy-recursively (string-append tcc "/include")
                                  (string-append out "/include"))
                #t))))))
@@ -789,7 +701,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
 
 (define mesboot-headers
   (package
-    (inherit mes-boot)
+    (inherit mes-boot0)
     (name "mesboot-headers")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs '())
@@ -1517,7 +1429,7 @@ exec " gcc "/bin/" program
                (base32
                 "1f9bxj176kf3pvs350w2dfs8jgwhminywri5pyn01b11yc4yhsjw"))))
     (supported-systems '("i686-linux" "x86_64-linux"))
-    (native-inputs `(("mes" ,mes-boot)
+    (native-inputs `(("mes" ,mes-boot0)
                      ("tcc" ,tcc-boot)))
     (arguments
      `(#:phases
