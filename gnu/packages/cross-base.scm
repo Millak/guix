@@ -135,6 +135,9 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
                                "--disable-shared" "--enable-static"
                                "--enable-languages=c,c++"
 
+                               ;; Required for powerpc64le
+                               "--with-long-double-128"
+
                                ;; libstdc++ cannot be built at this stage
                                ;; ("Link tests are not allowed after
                                ;; GCC_NO_EXECUTABLES.").

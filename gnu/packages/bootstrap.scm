@@ -112,7 +112,16 @@
      ("tar"
       ,(base32 "06gmqdjq3rl8lr47b9fyx4ifnm5x56ymc8lyryp1ax1j2s4y5jb4"))
      ("xz"
-      ,(base32 "09j1d69qr0hhhx4k4ih8wp00dfc9y4rp01hfg3vc15yxd0jxabh5")))))
+      ,(base32 "09j1d69qr0hhhx4k4ih8wp00dfc9y4rp01hfg3vc15yxd0jxabh5")))
+    ("powerpc64le-linux"
+     ("bash"
+      ,(base32 "1ayxkk4sxamd063rz9l7yy6www958gh214bfkir3g4m3ni7pyc42"))
+     ("mkdir"
+      ,(base32 "0nadnf0nn1bjdhyc55j0qgd58lydypggzd00yagyaf0mfdav3p57"))
+     ("tar"
+      ,(base32 "1v8aj66w5zg1pil2sfp8p53qng72jnqambwyyi2srqiwsnw877ng"))
+     ("xz"
+      ,(base32 "04r4l0ai041a6gakhl53hsvsg4r47vd3ckcbb1j634a5xyi8356p")))))
 
 (define (bootstrap-executable-url program system)
   "Return the URL where PROGRAM can be found for SYSTEM."
@@ -301,7 +310,8 @@ or false to signal an error."
     "http://alpha.gnu.org/gnu/guix/bootstrap"
     "ftp://alpha.gnu.org/gnu/guix/bootstrap"
     "http://www.fdn.fr/~lcourtes/software/guix/packages"
-    "http://flashner.co.il/guix/bootstrap"))
+    "http://flashner.co.il/guix/bootstrap"
+    "https://w3.suse.de/~jbrielmaier/guix/bootstrap/"))
 
 (define (bootstrap-guile-url-path system)
   "Return the URI for FILE."
@@ -311,6 +321,8 @@ or false to signal an error."
                     "/20170217/guile-2.0.14.tar.xz")
                    ("armhf-linux"
                     "/20150101/guile-2.0.11.tar.xz")
+		   ("powerpc64le-linux"
+		    "guile-static-stripped-2.2.6-powerpc64le-linux-gnu.tar.xz")
                    (_
                     "/20131110/guile-2.0.9.tar.xz"))))
 
@@ -326,7 +338,9 @@ or false to signal an error."
     ("armhf-linux"
      (base32 "1mi3brl7l58aww34rawhvja84xc7l1b4hmwdmc36fp9q9mfx0lg5"))
     ("aarch64-linux"
-     (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))))
+     (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))
+    ("powerpc64le-linux"
+     (base32 "05v6faw143jm7f2ng2qh1s43a32vsx345msrwgxqw8xbrwpzarfv"))))
 
 (define (bootstrap-guile-origin system)
   "Return an <origin> object for the Guile tarball of SYSTEM."
@@ -456,6 +470,8 @@ $out/bin/guile --version~%"
                                              "/20150101/static-binaries.tar.xz")
                                             ("aarch64-linux"
                                              "/20170217/static-binaries.tar.xz")
+					    ("powerpc64le-linux"
+					     "static-binaries-0-powerpc64le-linux-gnu.tar.xz")
                                             (_
                                              "/20131110/static-binaries.tar.xz")))
                                      %bootstrap-base-urls))
@@ -475,7 +491,10 @@ $out/bin/guile --version~%"
                                 "18dfiq6c6xhsdpbidigw6480wh0vdgsxqq3xindq4lpdgqlccpfh"))
                               ("mips64el-linux"
                                (base32
-                                "072y4wyfsj1bs80r6vbybbafy8ya4vfy7qj25dklwk97m6g71753"))))))
+                                "072y4wyfsj1bs80r6vbybbafy8ya4vfy7qj25dklwk97m6g71753"))
+			      ("powerpc64le-linux"
+			       (base32
+				 "0s95vj0hzn4iz4sgdblahr2vci8dxabcszb4q5rxnhgsdbmfqqn5"))))))
                         "fgrep"                    ; the program to test
                         "Bootstrap binaries of Coreutils, Awk, etc."
                         #:snippet
@@ -519,6 +538,8 @@ $out/bin/guile --version~%"
                                              "/20150101/binutils-2.25.tar.xz")
                                             ("aarch64-linux"
                                              "/20170217/binutils-2.27.tar.xz")
+					    ("powerpc64le-linux"
+					     "binutils-static-stripped-2.32-powerpc64le-linux-gnu.tar.xz")
                                             (_
                                              "/20131110/binutils-2.23.2.tar.xz")))
                                      %bootstrap-base-urls))
@@ -538,7 +559,10 @@ $out/bin/guile --version~%"
                                 "111s7ilfiby033rczc71797xrmaa3qlv179wdvsaq132pd51xv3n"))
                               ("mips64el-linux"
                                (base32
-                                "1x8kkhcxmfyzg1ddpz2pxs6fbdl6412r7x0nzbmi5n7mj8zw2gy7"))))))
+                                "1x8kkhcxmfyzg1ddpz2pxs6fbdl6412r7x0nzbmi5n7mj8zw2gy7"))
+			      ("powerpc64le-linux"
+			       (base32
+				 "05v6faw143jm7f2ng2qh1s43a32vsx345msrwgxqw8xbrwpzarfv"))))))
                         "ld"                      ; the program to test
                         "Bootstrap binaries of the GNU Binutils"))
 
@@ -589,6 +613,8 @@ $out/bin/guile --version~%"
                                        "/20150101/glibc-2.20.tar.xz")
                                       ("aarch64-linux"
                                        "/20170217/glibc-2.25.tar.xz")
+				      ("powerpc64le-linux"
+				       "glibc-stripped-2.29-powerpc64le-linux-gnu.tar.xz")
                                       (_
                                        "/20131110/glibc-2.18.tar.xz")))
                                %bootstrap-base-urls))
@@ -608,7 +634,10 @@ $out/bin/guile --version~%"
                           "07nx3x8598i2924rjnlrncg6rm61c9bmcczbbcpbx0fb742nvv5c"))
                         ("mips64el-linux"
                          (base32
-                          "0k97a3whzx3apsi9n2cbsrr79ad6lh00klxph9hw4fqyp1abkdsg")))))))))
+                          "0k97a3whzx3apsi9n2cbsrr79ad6lh00klxph9hw4fqyp1abkdsg"))
+			("powerpc64le-linux"
+			 (base32
+			   "1zcvslrzb5vjlwcvxksmxkin3brykvx7d7hxkmvj3rclg6q1ds7q")))))))))
     (synopsis "Bootstrap binaries and headers of the GNU C Library")
     (description synopsis)
     (home-page #f)
@@ -675,6 +704,8 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                                         "/20150101/gcc-4.8.4.tar.xz")
                                        ("aarch64-linux"
                                         "/20170217/gcc-5.4.0.tar.xz")
+				       ("powerpc64le-linux"
+					"gcc-stripped-7.4.0-powerpc64le-linux-gnu.tar.xz")
                                        (_
                                         "/20131110/gcc-4.8.2.tar.xz")))
                                 %bootstrap-base-urls))
@@ -694,7 +725,10 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                            "1ar3vdzyqbfm0z36kmvazvfswxhcihlacl2dzdjgiq25cqnq9ih1"))
                          ("mips64el-linux"
                           (base32
-                           "1m5miqkyng45l745n0sfafdpjkqv9225xf44jqkygwsipj2cv9ks")))))))))
+                           "1m5miqkyng45l745n0sfafdpjkqv9225xf44jqkygwsipj2cv9ks"))
+			 ("powerpc64le-linux"
+			  (base32
+			    "1i9dzc67dznd8l6b7mwc3yr7rhas50nx2kzx39h51fqrikdgcl91")))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "CPATH")
