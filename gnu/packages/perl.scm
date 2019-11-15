@@ -1611,14 +1611,14 @@ CPAN::Meta object are present.")
 (define-public perl-cpanel-json-xs
   (package
     (name "perl-cpanel-json-xs")
-    (version "4.16")
+    (version "4.17")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/R/RU/RURBAN/"
                            "Cpanel-JSON-XS-" version ".tar.gz"))
        (sha256
-        (base32 "1clqgz2y8182i7ry11x8in4yzm08xfqrv3n6wh9xm1xymh13vqrh"))))
+        (base32 "1yq6hwd6hayqrhaa2h90svqqvsc28k0g4bdip5nyxgm9r93sx07s"))))
     (build-system perl-build-system)
     (propagated-inputs
      `(("perl-common-sense" ,perl-common-sense)))
@@ -2268,14 +2268,14 @@ time before its creation (in 1582).")
 (define-public perl-datetime-calendar-julian
   (package
     (name "perl-datetime-calendar-julian")
-    (version "0.100")
+    (version "0.102")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/W/WY/WYANT/"
                            "DateTime-Calendar-Julian-" version ".tar.gz"))
        (sha256
-        (base32 "0gbw7rh706qk5jlmmz3yzsm0ilzp39kyar28g4j6d57my8cwaipx"))))
+        (base32 "0j95dhma66spjyb04zi6rwy7l33hibnrx02mn0znd9m89aiq52s6"))))
     (build-system perl-build-system)
     ;; Only needed for tests
     (native-inputs
@@ -2700,17 +2700,17 @@ particular command is available.")
 (define-public perl-devel-checklib
   (package
     (name "perl-devel-checklib")
-    (version "1.13")
+    (version "1.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/M/MA/MATTN/Devel-CheckLib-"
              version ".tar.gz"))
        (sha256
-        (base32 "1a19qkwxwz3wqb16cdabymfbf9kiydiifw90nd5srpq5hy8gvb94"))))
+        (base32 "15621qh5gaan1sgmk9y9svl70nm8viw17x5h1kf0zknkk8lmw77j"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-io-captureoutput" ,perl-io-captureoutput)
+     `(("perl-capture-tiny" ,perl-capture-tiny)
        ("perl-mock-config" ,perl-mock-config)))
     (home-page "https://metacpan.org/release/Devel-CheckLib")
     (synopsis "Check that a library is available")
@@ -9213,14 +9213,14 @@ variable conform.")
 (define-public perl-type-tiny
   (package
     (name "perl-type-tiny")
-    (version "1.004004")
+    (version "1.006000")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/T/TO/TOBYINK/"
                            "Type-Tiny-" version ".tar.gz"))
        (sha256
-        (base32 "1gk2f0zs2xq99nqn6wcgvl8l9qlq2cnab2lk7l08kpac03m824h8"))))
+        (base32 "007xsx78cnjillbny7x9sjn1w6z8m22fmksmay710jhbvw9h19nm"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-test-warnings" ,perl-test-warnings)))

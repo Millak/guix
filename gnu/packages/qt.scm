@@ -2010,16 +2010,17 @@ time Web content can be enhanced with native controls.")
 (define-public dotherside
   (package
     (name "dotherside")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/filcuc/DOtherSide/"
-                           "archive/v" version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/filcuc/DOtherSide")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0azq7qlsrfdwbd6qsi7d3c1knn42qw0r47g43xf7clwbinapswpz"))))
+         "09fz6v8rp28997f235yaifj8p4vvsyv45knc1iivgdvx7msgcd0m"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("qttools" ,qttools)))

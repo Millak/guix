@@ -23,6 +23,7 @@
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2019 Alexandros Theodotou <alex@zrythm.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
@@ -1107,7 +1109,7 @@ follower.")
 (define-public fluidsynth
   (package
     (name "fluidsynth")
-    (version "2.0.8")
+    (version "2.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1116,7 +1118,7 @@ follower.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s32c0jxjica2agy0mp36vgvpgj2vl5i5zvacd6igmbam0x4gs7c"))))
+                "08bhwv0gw7zq1z0b36m2dzxl6zcgvmvaa60nly2wif7rinkprp5n"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
@@ -1572,17 +1574,17 @@ synchronous execution of all clients, and low latency operation.")
 (define-public jalv
   (package
     (name "jalv")
-    (version "1.6.0")
+    (version "1.6.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/jalv-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1x2wpzzx2cgvz3dgdcgsj8dr0w3zsasy62mvl199bsdj5fbjaili"))))
+                "1wwfn7yzbs37s2rdlfjgks63svd5g14yyzd2gdl7h0z12qncwsy2"))))
     (build-system waf-build-system)
     (arguments
-     `(#:tests? #f ; no check target
+     `(#:tests? #f                      ; no check target
        #:python ,python-2))
     (inputs
      `(("lv2" ,lv2)
@@ -1805,22 +1807,20 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
 (define-public lilv
   (package
     (name "lilv")
-    (version "0.24.4")
+    (version "0.24.6")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/lilv-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "0f24cd7wkk5l969857g2ydz2kjjrkvvddg1g87xzzs78lsvq8fy3"))))
+               "1p3hafsxgs5d4za7n66lf5nz74qssfqpmk520cm7iq2njvvlqm2z"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
-       #:configure-flags (list "--bindings")
        #:phases
        (modify-phases %standard-phases
-         (add-before
-          'configure 'set-ldflags
+         (add-before 'configure 'set-ldflags
           (lambda* (#:key outputs #:allow-other-keys)
             (setenv "LDFLAGS"
                     (string-append "-Wl,-rpath="
@@ -2388,17 +2388,18 @@ input/output.")
 (define-public sratom
   (package
     (name "sratom")
-    (version "0.6.2")
+    (version "0.6.4")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://download.drobilla.net/sratom-"
-                                 version ".tar.bz2"))
-             (sha256
-              (base32
-               "0lz883ravxjf7r9wwbx2gx9m8vhyiavxrl9jdxfppjxnsralll8a"))))
+              (method url-fetch)
+              (uri (string-append "https://download.drobilla.net/sratom-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "0vh0biy3ngpzzgdml309c2mqz8xq9q0hlblczb4c6alhp0a8yv0l"))))
     (build-system waf-build-system)
-    (arguments `(#:tests? #f)) ; no check target
-    (inputs
+    (arguments `(#:tests? #f))          ;no check target
+    (propagated-inputs
+     ;; In Requires of sratom-0.pc.
      `(("lv2" ,lv2)
        ("serd" ,serd)
        ("sord" ,sord)))
@@ -2414,14 +2415,14 @@ the Turtle syntax.")
 (define-public suil
   (package
     (name "suil")
-    (version "0.10.4")
+    (version "0.10.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/suil-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0ay7hl6nr6ip1nn9k2m8ri3b52b6sx9mhixmcy4fy3kr2a88ksd1"))))
+                "0z4v01pjw4wh65x38w6icn28wdwxz13ayl8hvn4p1g9kmamp1z06"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f))                    ;no check target
@@ -3682,16 +3683,16 @@ library.")
 (define-public faudio
   (package
     (name "faudio")
-    (version "19.09")
+    (version "19.11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/FNA-XNA/FAudio.git")
              (commit version)))
-       (file-name (string-append name "-" version "-checkout"))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0fagik55jmy3qmb27nhg0zxash1ahfkxphx8m8gs0pimqqrdrd9d"))))
+        (base32 "0ckpr6ffz8ssfh1y850dhip5s5jv0j6n90qz5yx1v9d6gpwf08rp"))))
     (arguments
      '(#:tests? #f                      ; No tests.
        #:configure-flags '("-DFFMPEG=ON")))
@@ -3765,4 +3766,59 @@ other Gnaural instances, allowing synchronous sessions between many users.")
     (description "DarkIce is a live audio streamer.  It takes audio input from
 a sound card, encodes it into Ogg Vorbis and/or mp3, and sends the audio
 stream to one or more IceCast and/or ShoutCast servers.")
+    (license license:gpl3+)))
+
+(define-public libltc
+  (package
+    (name "libltc")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://github.com/x42/libltc/releases/download/v"
+                       version "/libltc-" version ".tar.gz"))
+       (sha256
+        (base32
+         "173h9dgmain3nyrwk6q2d7yl4fnh4vacag4s2p01n5b7nyrkxrjh"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-tests? #f))           ;tests fail otherwise
+    (native-inputs
+     `(("doxygen" ,doxygen)
+       ("pkg-config" ,pkg-config)))
+    (synopsis "Encode or decode Linear/Longitudinal Time Code (LTC) audio")
+    (description "Libltc is a POSIX-C Library for handling
+@dfn{Linear/Longitudinal Time Code} (LTC) data.")
+    (home-page "https://x42.github.io/libltc/")
+    (license license:lgpl3+)))
+
+(define-public redkite
+  (package
+    (name "redkite")
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/geontime/redkite.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1i874izajbdhlfacwwj84qrsxf7g4y6nblzxalrkzaap9sa7d1r6"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))                    ;no tests included
+    (inputs
+     `(("cairo" ,cairo)))
+    (native-inputs
+     `(("pkg-config", pkg-config)))
+    (synopsis "Small GUI toolkit")
+    (description "Redkite is a small GUI toolkit developed in C++17 and
+inspired from other well known GUI toolkits such as Qt and GTK.  It is
+minimal on purpose and is intended to be statically linked to applications,
+therefore satisfying any requirements they may have to be self contained,
+as is the case with audio plugins.")
+    (home-page "https://gitlab.com/geontime/redkite")
     (license license:gpl3+)))

@@ -355,42 +355,42 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                         "linux-" version ".tar.xz"))
     (sha256 hash)))
 
-(define-public linux-libre-5.3-version "5.3.9")
+(define-public linux-libre-5.3-version "5.3.11")
 (define-public linux-libre-5.3-pristine-source
   (let ((version linux-libre-5.3-version)
-        (hash (base32 "12p98z12hnrgvfssmi1003l7fgx5d0zc9pwsfwjhxp9fffm7j9fp")))
+        (hash (base32 "1dxfh0l4inpjd17pyxfsskjsphs43r8lg6nhhr3y4whxdna5cwbf")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.3)))
 
-(define-public linux-libre-4.19-version "4.19.82")
+(define-public linux-libre-4.19-version "4.19.84")
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0parrg1ayi677zinkqq8n1bz863s0gj92j3ix67jis2y5in6vnaq")))
+        (hash (base32 "0q06mhz170x1lkx6c6qdh82rcnsj03q6f2m28aqhmc4wc694m2w6")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.152")
+(define-public linux-libre-4.14-version "4.14.154")
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1amhwbdg7rki9i2q7mqp4vg5rzi8snps5rx891xy1aj1sgcry8x9")))
+        (hash (base32 "00q662s8mgnzqfgk5gkzqfv9ws3vryf28blbq1zxcy4s6wj4mpl6")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.199")
+(define-public linux-libre-4.9-version "4.9.201")
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "1mby7ymcx6f9phacbaq2n9rr0rfv0r2dis2lk7j0wclfj3q3298g")))
+        (hash (base32 "125xmh5h1zmfniidpjljny53qkl4phpxaali69i66lajscxx8grq")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
 
-(define-public linux-libre-4.4-version "4.4.199")
+(define-public linux-libre-4.4-version "4.4.201")
 (define-public linux-libre-4.4-pristine-source
   (let ((version linux-libre-4.4-version)
-        (hash (base32 "1w35j5w9jjlnwl0bis376gh3l6jsy9vpvcpaihr4pj872jcv0f8p")))
+        (hash (base32 "120kci4kmc48zcw16lhxmh71kaxm9ac5qxik36q3a20czg28b2m7")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.4)))
@@ -1065,14 +1065,14 @@ at login.  Local and dynamic reconfiguration are its key features.")
 (define-public psmisc
   (package
     (name "psmisc")
-    (version "23.2")
+    (version "23.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/psmisc/psmisc/psmisc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "103qp3f8jvz07x8r8zgsqwyw84g5g92w6pdq97d78d1pr7yvyz2b"))))
+       (base32 "16i7qzjmm6g0lzha8yzpfrlcxnvkgh95hkq9gdjd4zmzb8d0wxa1"))))
     (build-system gnu-build-system)
     (inputs `(("ncurses" ,ncurses)))
     (home-page "https://gitlab.com/psmisc/psmisc")
@@ -4418,7 +4418,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
   (package
     (name "rng-tools")
     (home-page "https://github.com/nhorman/rng-tools")
-    (version "6.7")
+    (version "6.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page)
@@ -4426,7 +4426,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19f75m6mzg8h7b4snzg7d6ypvkz6nq32lrpi9ja95gqz4wsd18a5"))))
+                "1clm9i9xg3j79q0d6vinn6dx0nwh1fvzcmkqpcbay7mwsgkknvw2"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Avoid using OpenSSL, curl, and libxml2, reducing the closure by 166 MiB.
@@ -4964,16 +4964,16 @@ monitoring tools for Linux.  These include @code{mpstat}, @code{iostat},
 (define-public light
   (package
     (name "light")
-    (version "1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                     "https://github.com/haikarainen/light/archive/v"
-                     version ".tar.gz"))
-              (sha256
-               (base32
-                "1gfvsw7gh5pis733l7j54vzp272pvjyzbg8a0pvapfmg0s7mip97"))
-              (file-name (string-append name "-" version ".tar.gz"))))
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/haikarainen/light.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0zrjipd392bzjvxx0rjrb0cgi0ix1d83fwgw1mcy8kc4d16cgyjg"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)

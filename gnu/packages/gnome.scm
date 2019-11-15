@@ -3991,7 +3991,6 @@ for application developers.")
        ("desktop-file-utils" ,desktop-file-utils)
        ("gobject-introspection" ,gobject-introspection)
        ("glib:bin" ,glib "bin")                   ;for 'glib-mkenums'
-       ("gtk:bin" ,gtk+ "bin")                    ;for 'gtk-update-icon-cache'
        ("intltool" ,intltool)
        ("itstool" ,itstool)
        ("xmllint" ,libxml2)
@@ -4041,6 +4040,12 @@ for application developers.")
                            "--default-library" "shared")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           ;; Don't create 'icon-theme.cache'.
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") "true"))
+             #t))
          (add-before
           'install 'disable-cache-generation
           (lambda _
@@ -4369,12 +4374,14 @@ DAV, and others.")
     (name "gusb")
     (version "0.3.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/hughsie/libgusb/archive/"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/hughsie/libgusb.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wa9787ww7s1kl9jml6kiyrjgimlgagq4jmgdj7xcpsx83w10qxk"))))
+                "002pg0p4qzzk5dkyiynm483ir26zxrn4k71c7f6j85mfsdzbgli7"))))
     (build-system meson-build-system)
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)

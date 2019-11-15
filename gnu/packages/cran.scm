@@ -290,14 +290,13 @@ single step.")
 (define-public r-rvest
   (package
     (name "r-rvest")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rvest" version))
        (sha256
-        (base32
-         "0ji5lk8g1gbv4d9c4jg1fg6rgsqrrwkm05j1id7drdw9kqdifgj1"))))
+        (base32 "0r0a5jic09xw5pk0x42pr99r3zab5m9s4x85ymx1sl769jz42zqf"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-httr" ,r-httr)
@@ -1296,14 +1295,14 @@ including functions for geolocation and routing.")
 (define-public r-haven
   (package
     (name "r-haven")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "haven" version))
        (sha256
         (base32
-         "12h64r2v2451igyl7v4w2kg0hzw9rnanph0m7smffq29ybkv9g4h"))))
+         "0g9d6mxqmrw2zdms78jpx2sx73pczlyy771v1h5hmxqz9sqyk7hr"))))
     (build-system r-build-system)
     (inputs
      `(("zlib" ,zlib)))
@@ -1311,8 +1310,10 @@ including functions for geolocation and routing.")
      `(("r-forcats" ,r-forcats)
        ("r-hms" ,r-hms)
        ("r-rcpp" ,r-rcpp)
+       ("r-rlang" ,r-rlang)
        ("r-readr" ,r-readr)
-       ("r-tibble" ,r-tibble)))
+       ("r-tibble" ,r-tibble)
+       ("r-tidyselect" ,r-tidyselect)))
     (home-page "https://haven.tidyverse.org")
     (synopsis "Import and Export 'SPSS', 'Stata' and 'SAS' Files")
     (description
@@ -1586,13 +1587,13 @@ you to rapidly iterate while developing a package.")
 (define-public r-rcpp
   (package
     (name "r-rcpp")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rcpp" version))
        (sha256
-        (base32 "170jlmjrs92z5qdv58badhxycjvfjpqwwpic7rm13pc9zkb3i4xd"))))
+        (base32 "03h3zyjq948y0hrrs95lfk4zgx6wfrg64hjlrfrzf5na7bfh0d9b"))))
     (build-system r-build-system)
     (native-inputs
      `(("r-knitr" ,r-knitr))) ; for vignettes
@@ -2583,14 +2584,14 @@ regression using Kernel Ridge Regression.")
 (define-public r-prodlim
   (package
     (name "r-prodlim")
-    (version "2018.04.18")
+    (version "2019.10.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "prodlim" version))
        (sha256
         (base32
-         "1aslq87sqwikh8chxc378r38146y7kv79zz0kcq3j93ivx7va8jb"))))
+         "0rsyfpz667y5cijmq33l318mrdw8r340khp72gcg8n490b1g0176"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-kernsmooth" ,r-kernsmooth)
@@ -3884,13 +3885,13 @@ iVAT).")
 (define-public r-xfun
   (package
     (name "r-xfun")
-    (version "0.10")
+    (version "0.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xfun" version))
        (sha256
-        (base32 "065ygh046ah43p5aqyrkv2vkxcnvnb4j7blfdygysg6hmqzp4pbv"))))
+        (base32 "0dncw6bqkal7nyarrrrj9arxy0y3nkdzmrbibcjh84m1cxd4phiw"))))
     (build-system r-build-system)
     (home-page "https://github.com/yihui/xfun")
     (synopsis "Miscellaneous functions")
@@ -4028,14 +4029,14 @@ terminals.")
 (define-public r-tinytex
   (package
     (name "r-tinytex")
-    (version "0.16")
+    (version "0.17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tinytex" version))
        (sha256
         (base32
-         "1dadq9l0527v038b1k1dyfs0dklsgxnmplls3qhqprfgskif8mga"))))
+         "0mgxrbj4gam2gvxfk26nq820vsfjggj81m2l7j9m8vp361k15r0w"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-xfun" ,r-xfun)))
@@ -5264,17 +5265,19 @@ additional external tools on any platform.")
 (define-public r-openxlsx
   (package
     (name "r-openxlsx")
-    (version "4.1.0.1")
+    (version "4.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openxlsx" version))
        (sha256
         (base32
-         "1lflygpi1z4rlb1c6g6wsmi334maiiy7jhpg6ph4sw8lpvg12w4b"))))
+         "087zivh9xdh1kk8zci67ys0m2xq0slzwgnf0jl05yy4gsgb6nmyx"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-rcpp" ,r-rcpp)
+       ("r-rlang" ,r-rlang)
+       ("r-stringi" ,r-stringi)
        ("r-zip" ,r-zip)))
     (home-page "https://github.com/awalker89/openxlsx")
     (synopsis "Read, write and edit XLSX files")
@@ -5465,26 +5468,52 @@ user's computer should be used to save data, caches and logs.  It is a port of
 Python's @url{https://github.com/ActiveState/appdirs,Appdirs} to R.")
     (license license:expat)))
 
+(define-public r-renv
+  (package
+    (name "r-renv")
+    (version "0.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "renv" version))
+       (sha256
+        (base32
+         "0034jlaq7z40q3hcpkjlaff37dpn46kvxvzw4scbwlw4x9q8sx9j"))))
+    (properties `((upstream-name . "renv")))
+    (build-system r-build-system)
+    (home-page "https://rstudio.github.io/renv")
+    (synopsis "Project environments")
+    (description
+     "This package provides a dependency management toolkit for R.  Using
+renv, you can create and manage project-local R libraries, save the state of
+these libraries to a lockfile, and later restore your library as required.
+Together, these tools can help make your projects more isolated, portable, and
+reproducible.")
+    (license license:expat)))
+
 (define-public r-learnr
   (package
     (name "r-learnr")
-    (version "0.9.2.1")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "learnr" version))
        (sha256
         (base32
-         "0jbk0g6fkw7zs8ykzhsvh9vvz8xmc4v03bqzjsa5mmpxpqan5vx5"))))
+         "0278q9nbkc4nb0rp930kjrwyidf0v7y38d1s187m4f4bs7ha82k6"))))
     (build-system r-build-system)
     (propagated-inputs
-     `(("r-evaluate" ,r-evaluate)
+     `(("r-checkmate" ,r-checkmate)
+       ("r-ellipsis" ,r-ellipsis)
+       ("r-evaluate" ,r-evaluate)
        ("r-htmltools" ,r-htmltools)
        ("r-htmlwidgets" ,r-htmlwidgets)
        ("r-jsonlite" ,r-jsonlite)
        ("r-knitr" ,r-knitr)
        ("r-markdown" ,r-markdown)
        ("r-rappdirs" ,r-rappdirs)
+       ("r-renv" ,r-renv)
        ("r-rmarkdown" ,r-rmarkdown)
        ("r-rprojroot" ,r-rprojroot)
        ("r-shiny" ,r-shiny)
@@ -5652,14 +5681,14 @@ and adds the annotation to the plot.")
 (define-public r-ggpubr
   (package
     (name "r-ggpubr")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpubr" version))
        (sha256
         (base32
-         "0i81mmz4qn9yzcgfa6dhkcrx4ddlflkm2c3b40isc8all43rm8rn"))))
+         "0ln1gh3zlfx5s7zqcpvfdiksq74v1pma5kwkhc6r0riqnjjd19pf"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-cowplot" ,r-cowplot)
@@ -5934,14 +5963,14 @@ functions.")
 (define-public r-rjags
   (package
     (name "r-rjags")
-    (version "4-9")
+    (version "4-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rjags" version))
        (sha256
         (base32
-         "1vrmxxfnia2mkmfkp5yaq5qrlh4xg3ggab6fnj14mrp1231wb91a"))))
+         "1nhaim84ww8fd6m8xlpmngqcnp2qpql29ahc38366fxja3ghngmx"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-coda" ,r-coda)))
@@ -5987,14 +6016,14 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.3.5")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "005kaxjhr40shpav2pg7s7gj8f49579r7rbgwlncbwv16nn0rbbg"))))
+         "1i6jmnbkx7gd0qyf6akhizmxp7y1dh3h7a886mcbmrzka9d60zh4"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-base64enc" ,r-base64enc)
@@ -6307,14 +6336,14 @@ functions.")
 (define-public r-flextable
   (package
     (name "r-flextable")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flextable" version))
        (sha256
         (base32
-         "1q6x9mfk5gikqjbbra1dn8hs1rq5ws99jdjav3m113gx9f2j5yxh"))))
+         "1f869f2dfqkzhf6yix7xcbs8rn1nwq3sg623h74zg6h1pl6px66w"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-base64enc" ,r-base64enc)
@@ -6683,14 +6712,14 @@ bootstrap.  Confidence intervals can be computed for (p)AUC or ROC curves.")
 (define-public r-rootsolve
   (package
     (name "r-rootsolve")
-    (version "1.7")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rootSolve" version))
        (sha256
         (base32
-         "08ic6ggcc5dw4nv9xsqkm3vnvswmxyhnqnv1rdjv1h2gy1ivpcq8"))))
+         "0skrspq7sd7gaq73w91km14v8znc8chncgy64hvjgcng2xw15phx"))))
     (properties `((upstream-name . "rootSolve")))
     (build-system r-build-system)
     (native-inputs `(("gfortran" ,gfortran)))
@@ -8273,14 +8302,14 @@ effects models and Bayesian models.")
 (define-public r-ggeffects
   (package
     (name "r-ggeffects")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggeffects" version))
        (sha256
         (base32
-         "0idfycjk05gyykfp9ibmhxfcjvd01ikh1dl0fb4nqw6znw3ar0xp"))))
+         "0ryfbaav0k874kbwmhbiv7fan93dmkpaimm1iw5kryjhhs3917lb"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-dplyr" ,r-dplyr)
@@ -8289,7 +8318,6 @@ effects models and Bayesian models.")
        ("r-mass" ,r-mass)
        ("r-purrr" ,r-purrr)
        ("r-rlang" ,r-rlang)
-       ("r-scales" ,r-scales)
        ("r-sjlabelled" ,r-sjlabelled)
        ("r-sjmisc" ,r-sjmisc)))
     (home-page "https://github.com/strengejacke/ggeffects")
@@ -8920,14 +8948,14 @@ address a bug.")
 (define-public r-rcppannoy
   (package
     (name "r-rcppannoy")
-    (version "0.0.13")
+    (version "0.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppAnnoy" version))
        (sha256
         (base32
-         "1jibp9b07c5ka1kif0nl7f168hxfvysj32wnmnxg85l663hmvm8j"))))
+         "1wiigx5g5788j6lyc3f6bs1rsvc4alyc3052g35hxl1giinxmhn4"))))
     (properties `((upstream-name . "RcppAnnoy")))
     (build-system r-build-system)
     (propagated-inputs
@@ -9580,13 +9608,13 @@ manipulate tree data.")
 (define-public r-rvcheck
   (package
     (name "r-rvcheck")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rvcheck" version))
        (sha256
-        (base32 "15222q3sglq0mad5q806p99fhrb96qizmpqw35fa1rb148f95paf"))))
+        (base32 "11n3qxapxcqsa0771s9q8n95kxmfyflya1d6wz4mm0lz0i6q55ia"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-biocmanager" ,r-biocmanager)
@@ -10874,13 +10902,13 @@ This makes it a convenient and fast interface to C/C++ and Fortran code.")
 (define-public r-spam
   (package
     (name "r-spam")
-    (version "2.3-0.2")
+    (version "2.4-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spam" version))
        (sha256
-        (base32 "0czmzwhvcs0shm1asvphhz366df3n7vrlls4cfpq5b3i19fak3w4"))))
+        (base32 "0xb7a0x1i93kzijr518m9plzmg8s3mxh5anwfx9xrkg5ipldvz10"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-dotcall64" ,r-dotcall64)))
@@ -10903,13 +10931,13 @@ Differences with other sparse matrix packages are:
 (define-public r-fields
   (package
     (name "r-fields")
-    (version "9.9")
+    (version "10.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fields" version))
        (sha256
-        (base32 "1qbqdqq76xgnlbc9z643zn4s8k493h1jmav2f465hfvp63306br6"))))
+        (base32 "173zm5vr236ydiq0v27qy0l3x7h9fc7jly38iakg77j26i0a01il"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-maps" ,r-maps)
@@ -11096,14 +11124,14 @@ putative directions).")
 (define-public r-rbamtools
   (package
     (name "r-rbamtools")
-    (version "2.16.11.2")
+    (version "2.16.17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rbamtools" version))
        (sha256
         (base32
-         "0gzkb1xyrkriv45wq8gv7qfwjslnvwkfkk5jjc4wg5kmm0ydpdzj"))))
+         "0qj37ljdva3v29s01dkrbg31mcfzy3bl145cp40d54v4h9xhcghc"))))
     (build-system r-build-system)
     (inputs `(("zlib" ,zlib)))
     (propagated-inputs
@@ -11379,14 +11407,14 @@ them in distributed compute environments.")
 (define-public r-future
   (package
     (name "r-future")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "future" version))
        (sha256
         (base32
-         "1jyv2wlmpfqbk3hw269h4xg36na3wh1kd1lxmwdb40bsv4850lqa"))))
+         "1cbp7agb9lipjxsh7xm1yphh8a4hrjy7wrbkvhsxn1swh0c4s3b7"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-digest" ,r-digest)
@@ -13332,13 +13360,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.14")
+    (version "0.15")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "1jiq2d292y0l3f4npyfzfpnmb0sqxsl212kkjfbjg5301h0na762"))))
+                "0pgkabaqsckaz8z1nlza84jp172jyzv17kx5dily43jfx5psy2ap"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-htmltools" ,r-htmltools)
@@ -13417,14 +13445,13 @@ data manipulation and visualization.")
 (define-public r-kernlab
   (package
     (name "r-kernlab")
-    (version "0.9-27")
+    (version "0.9-29")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kernlab" version))
        (sha256
-        (base32
-         "1m0xqf6gyvwayz7w3c83y32ayvnlz0jicj8ijk808zq9sh7dbbgn"))))
+        (base32 "0vqhndl4zm7pvkfvq0f6i9cbrm7pij6kmdp7d7w39pa100x6knn3"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/kernlab")
     (synopsis "Kernel-based machine learning tools")
@@ -13780,16 +13807,15 @@ consists of @code{grid} grobs and viewports that can then be manipulated with
 (define-public r-farver
   (package
     (name "r-farver")
-    (version "1.1.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "farver" version))
        (sha256
         (base32
-         "1dllgx121al374gyp9pjv1m8ip4imm8zhbgyh1970dsz2c4z71i0"))))
+         "0aq1hk561pz3s3lpay1adwsihha6mxp7zbj4n1m6307g34awlhhn"))))
     (build-system r-build-system)
-    (propagated-inputs `(("r-rcpp" ,r-rcpp)))
     (home-page "https://github.com/thomasp85/farver")
     (synopsis "Vectorized color conversion and comparison")
     (description
@@ -14858,14 +14884,14 @@ includes data sets from oceanography.")
 (define-public r-ggfortify
   (package
     (name "r-ggfortify")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggfortify" version))
        (sha256
         (base32
-         "1wk9j0xg5hj9i1vf62qjiphv8cbsgq7y6baay3pfl3wyb2dwgci0"))))
+         "191q2z7w0l4v7swjlxs2hjgbjngw2838688s7ygnj0kigsm310f3"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-dplyr" ,r-dplyr)

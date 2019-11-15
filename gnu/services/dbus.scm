@@ -176,18 +176,9 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
 
       (unless (file-exists? "/etc/machine-id")
         (format #t "creating /etc/machine-id...~%")
-        (let ((prog (string-append #$(dbus-configuration-dbus config)
-                                   "/bin/dbus-uuidgen")))
-          ;; XXX: We can't use 'system' because the initrd's
-          ;; guile system(3) only works when 'sh' is in $PATH.
-          (let ((pid (primitive-fork)))
-            (if (zero? pid)
-                (call-with-output-file "/etc/machine-id"
-                  (lambda (port)
-                    (close-fdes 1)
-                    (dup2 (port->fdes port) 1)
-                    (execl prog)))
-                (waitpid pid)))))))
+        (invoke (string-append #$(dbus-configuration-dbus config)
+                               "/bin/dbus-uuidgen")
+                "--ensure=/etc/machine-id"))))
 
 (define dbus-shepherd-service
   (match-lambda
@@ -195,10 +186,10 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
      (list (shepherd-service
             (documentation "Run the D-Bus system daemon.")
             (provision '(dbus-system))
-            (requirement '(user-processes))
+            (requirement '(user-processes syslogd))
             (start #~(make-forkexec-constructor
                       (list (string-append #$dbus "/bin/dbus-daemon")
-                            "--nofork" "--system")
+                            "--nofork" "--system" "--syslog-only")
                       #:pid-file "/var/run/dbus/pid"))
             (stop #~(make-kill-destructor)))))))
 
@@ -229,7 +220,10 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
                             (append (dbus-configuration-services config)
                                     services)))))
 
-                (default-value (dbus-configuration))))
+                (default-value (dbus-configuration))
+                (description "Run the system-wide D-Bus inter-process message
+bus.  It allows programs and daemons to communicate and is also responsible
+for spawning (@dfn{activating}) D-Bus services on demand.")))
 
 (define* (dbus-service #:key (dbus dbus) (services '()))
   "Return a service that runs the \"system bus\", using @var{dbus}, with

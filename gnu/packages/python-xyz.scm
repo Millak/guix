@@ -4310,14 +4310,13 @@ operators such as union, intersection, and difference.")
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32
-         "1df113c9i6vazsn6y3n9wc22jh737z1g7dmx3mypkdwpdnscyhr6"))))
+        (base32 "192d8dsybvhv19igkrsafbdafx198nz7pibkjgrqjhlr66s3jfd0"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-numpy" ,python-numpy)
@@ -4454,6 +4453,35 @@ as the original project seems to have been abandoned circa 2007.")
 
 (define-public python2-socksipy-branch
   (package-with-python2 python-socksipy-branch))
+
+(define-public python-socksipychain
+  (package
+    (name "python-socksipychain")
+    (version "2.0.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pagekite/PySocksipyChain.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1pkljnh9hfwla8sg7mil4f9zrnsqj0dbhr3crxjw3k8dnjz70dvk"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ; Tests try to access the network.
+    (home-page "http://pagekite.net/wiki/Floss/PySocksipyChain/")
+    (synopsis "Python SOCKS module with chained proxies support")
+    (description
+     "SocksiPyChain is a modified version of the SocksiPy SOCKS module, which
+adds support for arbitrary chaining of proxy servers and various modes of
+TLS/SSL encryption.  It was developed for use in PageKite, and also includes
+a simple netcat replacement with chaining support.")
+    (license license:bsd-3)))
+
+(define-public python2-socksipychain
+  (package-with-python2 python-socksipychain))
 
 (define-public python-pycodestyle
   (package
@@ -8993,14 +9021,14 @@ servers.")
 (define-public python-jmespath
   (package
    (name "python-jmespath")
-   (version "0.9.3")
+   (version "0.9.4")
    (source
     (origin
      (method url-fetch)
      (uri (pypi-uri "jmespath" version))
      (sha256
       (base32
-       "0r7wc7fsxmlwzxx9j1j7rms06c6xs6d4sysirdhz1jk2mb4x90ba"))))
+       "0k0765x1mybcrzajh3hiqkl8sy9hs0bmn4900frxy0j3ykvaxqmx"))))
    (build-system python-build-system)
    (native-inputs
     `(("python-nose" ,python-nose)))

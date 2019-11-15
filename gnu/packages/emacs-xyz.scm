@@ -56,6 +56,7 @@
 ;;; Copyright © 2019 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Stephen Webber <montokapro@gmail.com>
 ;;; Copyright © 2019 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1580,17 +1581,14 @@ as a library for other Emacs packages.")
 (define-public emacs-auctex
   (package
     (name "emacs-auctex")
-    (version "12.1.2")
+    (version "12.2.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://elpa.gnu.org/packages/auctex-"
-             version
-             ".tar"))
+       (uri (string-append "https://elpa.gnu.org/packages/auctex-"
+                           version ".tar"))
        (sha256
-        (base32
-         "1yibg2anpmyr2a27wm4xqjsvsi9km2jzb56bf7cwyj8dnjfsd11n"))))
+        (base32 "0j919l3q5sq6h1k1kmk4kyv0vkzl4f98fxcd64v34x5q1ahjhg48"))))
     (build-system emacs-build-system)
     ;; We use 'emacs' because AUCTeX requires dbus at compile time
     ;; ('emacs-minimal' does not provide dbus).
@@ -4880,6 +4878,30 @@ mode switching in the way of solarized.  The main focus when developing gruvbox
 is to keep colors easily distinguishable, contrast enough and still pleasant
 for the eyes.")
     (license license:expat))) ; MIT license
+
+(define-public emacs-spacegray-theme
+  (let ((commit "9826265c2bceb2ebc1c5e16a45021da0253ace97")
+        (revision "0"))
+    (package
+      (name "emacs-spacegray-theme")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bruce/emacs-spacegray-theme.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0aplwmm17ypbns5blc4rf5rr6dasj0zp5ibykpfl43fh4bd8z89n"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/bruce/emacs-spacegray-theme")
+      (synopsis "Port of Sublime Text's Spacegray theme for Emacs")
+      (description
+       "@code{spacegray-theme} is an Emacs port of the Spacegray theme from
+Sublime Text.  It features a dark blue/gray background and soft blue, green,
+orange and red as accent colors.")
+      (license license:expat)))) ; MIT license
 
 (define-public emacs-2048-game
   (package
@@ -17823,7 +17845,7 @@ a suffix) we prefer to call it just a \"transient\".")
                    (invoke "makeinfo" "forge.texi")
                    (install-file "forge.info" info)
                    #t)))))))
-      (home-page "https://github.com/magit/ghub/")
+      (home-page "https://github.com/magit/forge/")
       (synopsis "Access Git forges from Magit")
       (description
        "Work with Git forges, such as Github and Gitlab, from the comfort of
@@ -19811,3 +19833,53 @@ such as:
 - swap windows à-la @code{windmove}.
 @end itemize\n")
     (license license:gpl3+)))
+
+(define-public emacs-flycheck-cpplint
+  (let ((commit "1d8a090861572258ab704915263feeb3a436c3d2")
+        (revision "1"))
+    (package
+      (name "emacs-flycheck-cpplint")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/flycheck/flycheck-google-cpplint")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0l6sg83f6z8x2alnblpv03rj442sbnkkkcbf8i0agjmx3713a5yx"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       `(("flycheck-mode" ,emacs-flycheck)))
+      (synopsis "Google C++ checker for Flycheck")
+      (description "This package provides a interface for @code{cpplint} over
+Flycheck plugin.  @code{cpplint} is a static code checker for C++, following
+Google guidelines.")
+      (home-page "https://github.com/flycheck/flycheck-google-cpplint")
+      (license license:gpl3+))))
+
+(define-public emacs-helm-fish-completion
+  (let ((commit "ef764dd123040fe67ef8b62a1c13842e940b0963")
+        (revision "1"))
+    (package
+      (name "emacs-helm-fish-completion")
+      (version (git-version "0.1" revision commit))
+      (home-page "https://github.com/emacs-helm/helm-fish-completion")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0k80kpapwfq2rv1lb0r994d0w6czl92xrmnkmrg0a05f4b3q0lb4"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       `(("helm" ,emacs-helm)
+         ("fish-completion" ,emacs-fish-completion)))
+      (synopsis "Helm interface for Emacs fish-completion")
+      (description "Helm Fish Completion is a Helm interface for Emacs
+fish-completion.  It can be used in both Eshell and M-x shell.")
+      (license license:gpl3+))))

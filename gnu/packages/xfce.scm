@@ -645,15 +645,15 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "1.8.9")
+    (version "1.8.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://archive.xfce.org/src/xfce/"
                                   "thunar/" (version-major+minor version) "/"
-                                  "Thunar-" version ".tar.bz2"))
+                                  "thunar-" version ".tar.bz2"))
               (sha256
                (base32
-                "1fah2d7v3a7fp28xa5wv896rap1iad9q9y04qchca09mq1x8wxbs"))))
+                "02g72bpbb8dkwspay9qii8bi99l87jn39gz6bamgp7p4q20qsi1x"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -1426,7 +1426,7 @@ governor and frequencies supported and used by your system.")
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-diskperf-plugin")
     (synopsis "Display disk performance in the Xfce panel")
     (description "This Xfce panel plugin displays instant disk/partition
-performance (bytes transfered per second).")
+performance (bytes transferred per second).")
     (license gpl2+)))
 
 (define-public xfce4-embed-plugin
@@ -1452,7 +1452,7 @@ performance (bytes transfered per second).")
        ("gtk+-2" ,gtk+-2)))
     (home-page
      "https://goodies.xfce.org/projects/panel-plugins/xfce4-embed-plugin")
-    (synopsis "Embed arbitary applications inside the Xfce panel")
+    (synopsis "Embed arbitrary applications inside the Xfce panel")
     (description "This plugin enables the embedding of arbitrary
 application windows into the Xfce panel.  The window is resized into
 the panel space available, and the associated program can be
