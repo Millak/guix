@@ -1526,7 +1526,7 @@ exec " gcc "/bin/" program
   ;; 'Makefile.def' forcefully adds --enable-shared) and thus needs to refer
   ;; to libstdc++.so.  We cannot build libstdc++-5.3 because it relies on
   ;; C++14 features missing in some of our bootstrap compilers.
-  (let ((lib (make-libstdc++ gcc-4.9)))
+  (let ((lib (make-libstdc++ gcc-7)))
     (package
       (inherit lib)
       (source (bootstrap-origin (package-source lib)))
