@@ -395,8 +395,8 @@ or false to signal an error."
                     (lambda (p)
                       (format p "\
 #!~a
-export GUILE_SYSTEM_PATH=~a/share/guile/2.0
-export GUILE_SYSTEM_COMPILED_PATH=~a/lib/guile/2.0/ccache
+export GUILE_SYSTEM_PATH=~a/share/guile/2.2
+export GUILE_SYSTEM_COMPILED_PATH=~a/lib/guile/2.2/ccache
 exec -a \"~a0\" ~a \"~a@\"\n"
                               bash out out dollar guile-real dollar)))
                   (chmod guile   #o555)
@@ -411,8 +411,8 @@ cd $out
 ~a -dc < $GUILE_TARBALL | ~a xv
 
 # Use the bootstrap guile to create its own wrapper to set the load path.
-GUILE_SYSTEM_PATH=$out/share/guile/2.0 \
-GUILE_SYSTEM_COMPILED_PATH=$out/lib/guile/2.0/ccache \
+GUILE_SYSTEM_PATH=$out/share/guile/2.2 \
+GUILE_SYSTEM_COMPILED_PATH=$out/lib/guile/2.2/ccache \
 $out/bin/guile -c ~s $out ~a
 
 # Sanity check.
@@ -453,7 +453,7 @@ $out/bin/guile --version~%"
                (lower make-raw-bag))))
    (package
      (name "guile-bootstrap")
-     (version "2.0")
+     (version "2.2")
      (source #f)
      (build-system raw)
      (synopsis "Bootstrap Guile")
