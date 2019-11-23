@@ -36,6 +36,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages multiprecision)
@@ -58,7 +59,7 @@
 (define-public php
   (package
     (name "php")
-    (version "7.3.11")
+    (version "7.3.12")
     (home-page "https://secure.php.net/")
     (source (origin
               (method url-fetch)
@@ -66,7 +67,7 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "088hl1gyjr7a8ipdzylwy00c4xmvywn7mh2r1i4yja5c9d3gcz35"))
+                "1psmv3yw21rng2qqwck2b5w190s8q76qi35gqrh8i0mdc6c5xzma"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -101,7 +102,7 @@
                (with "--with-jpeg-dir" "libjpeg")
                (with "--with-ldap" "openldap")
                (with "--with-ldap-sasl" "cyrus-sasl")
-               (with "--with-libzip" "zip")
+               (with "--with-libzip" "libzip")
                (with "--with-libxml-dir" "libxml2")
                (with "--with-onig" "oniguruma")
                (with "--with-pcre-dir" "pcre")
@@ -136,9 +137,11 @@
                "--enable-fpm"
                "--enable-ftp"
                "--enable-inifile"
+               "--enable-intl"
                "--enable-mbstring"
                "--enable-pcntl"
-               "--enable-sockets"))
+               "--enable-sockets"
+               "--enable-zip"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'do-not-record-build-flags
@@ -356,6 +359,7 @@
        ("glibc" ,glibc)
        ("gmp" ,gmp)
        ("gnutls" ,gnutls)
+       ("icu4c" ,icu4c)
        ("libgcrypt" ,libgcrypt)
        ("libjpeg" ,libjpeg)
        ("libpng" ,libpng)
@@ -364,6 +368,7 @@
        ("libxpm" ,libxpm)
        ("libxslt" ,libxslt)
        ("libx11" ,libx11)
+       ("libzip" ,libzip)
        ("oniguruma" ,oniguruma)
        ("openldap" ,openldap)
        ("openssl" ,openssl)
@@ -372,7 +377,6 @@
        ("readline" ,readline)
        ("sqlite" ,sqlite)
        ("tidy" ,tidy)
-       ("zip" ,zip)
        ("zlib" ,zlib)))
     (native-inputs
      `(("pkg-config" ,pkg-config)

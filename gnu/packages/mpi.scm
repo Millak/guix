@@ -29,7 +29,9 @@
   #:use-module ((guix licenses)
                 #:hide (expat))
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix deprecation)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -50,7 +52,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
-(define-public hwloc
+(define-public hwloc-1
   ;; Note: For now we keep 1.x as the default because many packages have yet
   ;; to migrate to 2.0.
   (package
@@ -129,11 +131,11 @@ a powerful programming interface to gather information about the hardware,
 bind processes, and much more.")
     (license bsd-3)))
 
-(define-public hwloc-2.0
+(define-public hwloc-2
   ;; Note: 2.0 isn't the default yet, see above.
   (package
-    (inherit hwloc)
-    (version "2.0.3")
+    (inherit hwloc-1)
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.open-mpi.org/software/hwloc/v"
@@ -141,12 +143,12 @@ bind processes, and much more.")
                                   "/downloads/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "09f7ajak8wv5issr0hw72vs3jkldc7crcc7z5fd34sspkvrsm4z3"))))
+                "0qh8s7pphz0m5cwb7liqmc17xzfs23xhz5wn24r6ikvjyx99fhhr"))))
 
     ;; libnuma is no longer needed.
-    (inputs (alist-delete "numactl" (package-inputs hwloc)))
+    (inputs (alist-delete "numactl" (package-inputs hwloc-1)))
     (arguments
-     (substitute-keyword-arguments (package-arguments hwloc)
+     (substitute-keyword-arguments (package-arguments hwloc-1)
        ((#:phases phases)
         `(modify-phases ,phases
            (replace 'skip-linux-libnuma-test
@@ -157,6 +159,13 @@ bind processes, and much more.")
                  (("numa_available\\(\\)")
                   "-1"))
                #t))))))))
+
+(define-deprecated hwloc-2.0 'hwloc-2
+  hwloc-2)
+
+(define-public hwloc
+  ;; The latest stable series of hwloc.
+  hwloc-2)
 
 (define-public openmpi
   (package
@@ -169,10 +178,11 @@ bind processes, and much more.")
                           (version-major+minor version)
                           "/downloads/openmpi-" version ".tar.bz2"))
       (sha256
-       (base32 "0ms0zvyxyy3pnx9qwib6zaljyp2b3ixny64xvq3czv3jpr8zf2wh"))))
+       (base32 "0ms0zvyxyy3pnx9qwib6zaljyp2b3ixny64xvq3czv3jpr8zf2wh"))
+      (patches (search-patches "openmpi-psm2-priority.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("hwloc" ,hwloc "lib")
+     `(("hwloc" ,hwloc-2 "lib")
        ("gfortran" ,gfortran)
        ("libfabric" ,libfabric)
        ("libevent" ,libevent)
@@ -186,7 +196,7 @@ bind processes, and much more.")
              `(("psm2" ,psm2))
              '())
        ,@(if (and (not (%current-target-system))
-                  (member (%current-system) (package-supported-systems psm2)))
+                  (member (%current-system) (package-supported-systems ucx)))
              `(("ucx" ,ucx))
              '())
        ("rdma-core" ,rdma-core)
@@ -336,7 +346,67 @@ only provides @code{MPI_THREAD_FUNNELED}.")))
      ;; Allow oversubscription in case there are less physical cores available
      ;; in the build environment than the package wants while testing.
      (setenv "OMPI_MCA_rmaps_base_mapping_policy" "core:OVERSUBSCRIBE")
+
+     ;; UCX sometimes outputs uninteresting warnings such as:
+     ;;
+     ;;   mpool.c:38   UCX  WARN  object 0x7ffff44fffc0 was not returned to mpool ucp_am_bufs
+     ;;
+     ;; These in turn leads to failures of test suites that capture and
+     ;; compare stdout, such as that of 'hdf5-parallel-openmpi'.  Thus, tell
+     ;; UCX to not emit those warnings.
+     (setenv "UCX_LOG_LEVEL" "error")
      #t))
+
+(define-public intel-mpi-benchmarks
+  (package
+    (name "intel-mpi-benchmarks")
+    (version "2019.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/intel/mpi-benchmarks.git")
+                    (commit (string-append "IMB-v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0si5xi6ilhd3w0gbsg124589pvp094hvf366rvjjb9pi7pdk5p4i"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (delete 'check)
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (define (benchmark? file stat)
+                        (and (string-prefix? "IMB-" (basename file))
+                             (executable-file? file)))
+
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        (for-each (lambda (file)
+                                    (install-file file bin))
+                                  (find-files "." benchmark?))
+                        #t))))
+
+       ;; The makefile doesn't express all the dependencies, it seems.
+       #:parallel-build? #t
+
+       #:make-flags (list (string-append "CC="
+                                         (assoc-ref %build-inputs "openmpi")
+                                         "/bin/mpicc")
+                          (string-append "CXX="
+                                         (assoc-ref %build-inputs "openmpi")
+                                         "/bin/mpicxx"))))
+    (inputs
+     `(("openmpi" ,openmpi)))
+    (home-page "https://github.com/intel/mpi-benchmarks")
+    (synopsis "Benchmarks for the Message Passing Interface (MPI)")
+    (description
+     "Intel MPI Benchmarks (IMB) provides a set of elementary benchmarks that
+conform with versions 1, 2, and 3 of the Message Passing Interface (MPI).")
+    (license
+     (fsf-free "https://directory.fsf.org/wiki/License:CPL-1.0"
+               "https://www.gnu.org/licenses/license-list.html#CommonPublicLicense10"))))
 
 (define-public python-mpi4py
   (package

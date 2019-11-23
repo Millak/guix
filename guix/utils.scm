@@ -78,6 +78,8 @@
             package-name->name+version
             target-mingw?
             target-arm32?
+            target-aarch64?
+            target-arm?
             target-64bit?
             version-compare
             version>?
@@ -494,6 +496,12 @@ a character other than '@'."
 (define (target-arm32?)
   (string-prefix? "arm" (or (%current-target-system) (%current-system))))
 
+(define (target-aarch64?)
+  (string-prefix? "aarch64" (or (%current-target-system) (%current-system))))
+
+(define (target-arm?)
+  (or (target-arm32?) (target-aarch64?)))
+
 (define (target-64bit?)
   (let ((system (or (%current-target-system) (%current-system))))
     (any (cut string-prefix? <> system) '("x86_64" "aarch64" "mips64" "ppc64"))))
@@ -782,13 +790,11 @@ be determined."
           ;; the absolute file name by looking at %LOAD-PATH; doing this at
           ;; run time rather than expansion time is necessary to allow files
           ;; to be moved on the file system.
-          (cond ((not file-name)
-                 #f)                ;raising an error would upset Geiser users
-                ((string-prefix? "/" file-name)
-                 (dirname file-name))
-                (else
-                 #`(absolute-dirname #,file-name))))
-         (#f
+          (if (string-prefix? "/" file-name)
+              (dirname file-name)
+              #`(absolute-dirname #,file-name)))
+         ((or ('filename . #f) #f)
+          ;; raising an error would upset Geiser users
           #f))))))
 
 ;; A source location.
