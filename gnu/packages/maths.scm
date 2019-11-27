@@ -2345,14 +2345,13 @@ sparse system of linear equations A x = b using Gaussian elimination.")
 (define-public r-quadprog
   (package
     (name "r-quadprog")
-    (version "1.5-7")
+    (version "1.5-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quadprog" version))
        (sha256
-        (base32
-         "0vg7i9p241bwvfdspjbydjrsvgipl6nsb8bjigp0hbbgvxbixx0s"))))
+        (base32 "1ka9g8zak8sg4y2xbz93dfrldznlk9qpd4pq9z21cdcdn3b8s4i2"))))
     (build-system r-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)))
@@ -2992,7 +2991,7 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "19.09.0")
+    (version "19.11.1")
     (source
      (origin
        (method git-fetch)
@@ -3001,7 +3000,7 @@ point numbers.")
              (commit (string-append "Version-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "195j6j8z0jd6xg3a63ywbrbsc6dany795m3fb95nbx1vq0bqqvvn"))))
+        (base32 "16xizaddb27432n1083y89ir5zdqvllsgbwrzzk4jc2rw1ldxfsv"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)))
@@ -4408,14 +4407,13 @@ are noisy or are discontinuous at the solution.")
 (define-public r-desolve
   (package
     (name "r-desolve")
-    (version "1.24")
+    (version "1.25")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "deSolve" version))
         (sha256
-         (base32
-          "0hkvspq0fp8j64l9zayab2l2nazazhwfgfym0jllh0xv5a12r99s"))))
+         (base32 "0735y3p5glhqx69rzrc8qgmvs7p7w0p98qxmvylb6bgqp6kp0cbp"))))
     (properties `((upstream-name . "deSolve")))
     (build-system r-build-system)
     (native-inputs

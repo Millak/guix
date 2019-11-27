@@ -2354,28 +2354,28 @@ libraries written in C.")
 (define-public vte
   (package
     (name "vte")
-    (version "0.56.3")
+    (version "0.58.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
+              (uri (string-append "mirror://gnome/sources/vte/"
                                   (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
+                                  "vte-" version ".tar.xz"))
               (sha256
                (base32
-                "0j166gic5znssdb9r45qazq4kb4v9fial82czand5wa8i2yd988p"))))
-    (build-system gnu-build-system)
+                "0xa9ipwic4jnhhbzlnqbhssz10xkzv61cpkl1ammc6mdq95bbp12"))))
+    (build-system meson-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("intltool" ,intltool)
        ("vala" ,vala)
        ("gobject-introspection" ,gobject-introspection)
-       ("glib" ,glib "bin") ; for glib-genmarshal, etc.
+       ("glib" ,glib "bin")             ; for glib-genmarshal, etc.
        ("gperf" ,gperf)
        ("xmllint" ,libxml2)))
     (propagated-inputs
-     `(("gtk+" ,gtk+)                             ;required by vte-2.91.pc
-       ("gnutls" ,gnutls)                         ;ditto
-       ("pcre2" ,pcre2)))                         ;ditto
+     `(("gtk+" ,gtk+)                   ; required by vte-2.91.pc
+       ("gnutls" ,gnutls)               ; ditto
+       ("pcre2" ,pcre2)))               ; ditto
     (home-page "https://www.gnome.org/")
     (synopsis "Virtual Terminal Emulator")
     (description
@@ -4419,7 +4419,7 @@ USB transfers with your high-level application or system daemon.")
 (define-public simple-scan
   (package
     (name "simple-scan")
-    (version "3.34.1")
+    (version "3.34.2")
     (source
      (origin
        (method url-fetch)
@@ -4427,7 +4427,7 @@ USB transfers with your high-level application or system daemon.")
                            (version-major+minor version) "/"
                            "simple-scan-" version ".tar.xz"))
        (sha256
-        (base32 "0glzskxdc7p9z7nwcakqc7qzij4l79adlvvb2cj5fmis731zw9yq"))))
+        (base32 "1fk3g4f9slckqfwm576jrjq1d1qihw0dlgzdf00ns7qbhzb0kxsp"))))
     (build-system meson-build-system)
     ;; TODO: Fix icons in home screen, About dialogue, and scan menu.
     (arguments
