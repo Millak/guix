@@ -250,6 +250,14 @@ without requiring the source code to be rewritten.")
             (variable "GUILE_LOAD_COMPILED_PATH")
             (files '("lib/guile/2.2/site-ccache")))))))
 
+(define-public guile-2.2-libgc8
+  (package
+    (inherit guile-2.2)
+    (propagated-inputs
+     `(("libgc" ,libgc-8)
+       ,@(srfi-1:alist-delete "bdw-gc"
+		       (package-propagated-inputs guile-2.2))))))
+
 (define-public guile-2.2/fixed
   ;; A package of Guile 2.2 that's rarely changed.  It is the one used
   ;; in the `base' module, and thus changing it entails a full rebuild.

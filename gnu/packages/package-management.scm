@@ -285,7 +285,7 @@
          ("sqlite" ,sqlite)
          ("libgcrypt" ,libgcrypt)
 
-         ("guile" ,guile-2.2)
+         ("guile" ,guile-2.2-libgc8)
 
          ;; Some of the tests use "unshare" when it is available.
          ("util-linux" ,util-linux)

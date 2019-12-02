@@ -91,6 +91,19 @@ C or C++ programs, though that is not its primary goal.")
 
    (license (x11-style (string-append home-page "license.txt")))))
 
+(define-public libgc-8
+  (package
+    (inherit libgc)
+    (version "8.0.4")
+    (name "libgc")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/ivmai/bdwgc/releases"
+                                "/download/v" version "/gc-" version ".tar.gz"))
+            (sha256
+             (base32
+              "1798rp3mcfkgs38ynkbg2p47bq59pisrc6mn0l20pb5iczf0ssj3"))))))
+
 (define-public libgc/back-pointers
   (package
     (inherit libgc)
