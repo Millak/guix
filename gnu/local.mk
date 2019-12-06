@@ -593,6 +593,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/system/shadow.scm				\
   %D%/system/uuid.scm				\
   %D%/system/vm.scm				\
+  %D%/system/bootstrap.scm			\
 						\
   %D%/machine.scm				\
   %D%/machine/digital-ocean.scm			\
