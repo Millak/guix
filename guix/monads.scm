@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2017 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -279,11 +279,16 @@ more optimizations."
   ;; does not get redefined.  This works around a race condition in a
   ;; multi-threaded context with Guile <= 2.2.4: <https://bugs.gnu.org/27476>.
   (eval-when (load eval expand compile)
-    (define name
-      (if (module-locally-bound? (current-module) 'name)
-          (module-ref (current-module) 'name)
-          (make-syntax-transformer 'name 'syntax-parameter
-                                   (list proc))))))
+    (cond-expand
+      ((not guile-2.2)
+       ;; The trick below doesn't work on Guile 2.0.
+       (define-syntax-parameter name proc))
+      (else
+       (define name
+         (if (module-locally-bound? (current-module) 'name)
+             (module-ref (current-module) 'name)
+             (make-syntax-transformer 'name 'syntax-parameter
+                                      (list proc))))))))
 
 (define-syntax-parameter-once >>=
   ;; The name 'bind' is already taken, so we choose this (obscure) symbol.
