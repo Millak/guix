@@ -508,14 +508,17 @@ a character other than '@'."
 
 (define version-compare
   (let ((strverscmp
-         (let ((sym (or (dynamic-func "strverscmp" (dynamic-link))
-                        (error "could not find `strverscmp' (from GNU libc)"))))
-           (pointer->procedure int sym (list '* '*)))))
+         ;; Delay symbol resolution so that this module can be used even on a
+         ;; statically-linked Guile.
+         (delay
+           (let ((sym (or (dynamic-func "strverscmp" (dynamic-link))
+                          (error "could not find `strverscmp' (from GNU libc)"))))
+             (pointer->procedure int sym (list '* '*))))))
     (lambda (a b)
       "Return '> when A denotes a newer version than B,
 '< when A denotes a older version than B,
 or '= when they denote equal versions."
-      (let ((result (strverscmp (string->pointer a) (string->pointer b))))
+      (let ((result ((force strverscmp) (string->pointer a) (string->pointer b))))
         (cond ((positive? result) '>)
               ((negative? result) '<)
               (else '=))))))
