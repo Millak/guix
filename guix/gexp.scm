@@ -82,6 +82,9 @@
             raw-derivation-file
             raw-derivation-file?
 
+            raw-derivation-closure
+            raw-derivation-closure?
+
             load-path-expression
             gexp-modules
 
@@ -290,6 +293,35 @@ The expander specifies how an object is converted to its sexp representation."
                 (if (derivation? lowered)
                     (derivation-file-name lowered)
                     lowered)))
+
+;; File containing the closure of a raw .drv file, in topological order.  This
+;; works around a deficiency of #:references-graphs that can produce the
+;; reference graph of an output, but not that of a raw .drv file.
+(define-record-type <raw-derivation-closure>
+  (raw-derivation-closure obj)
+  raw-derivation-closure?
+  (obj  raw-derivation-closure-object))
+
+(define sorted-references
+  (store-lift (lambda (store item)
+                (define (fixed-output? file)
+                  (and (string-suffix? ".drv" file)
+                       (let ((drv (read-derivation-from-file file)))
+                         (fixed-output-derivation? drv))))
+
+                (topologically-sorted store (list item)
+                                      #:cut? fixed-output?))))
+
+(define-gexp-compiler (raw-derivation-closure-compiler
+                       (obj <raw-derivation-closure>)
+                       system target)
+  (mlet %store-monad ((obj (lower-object
+                            (raw-derivation-closure-object obj)
+                            system #:target target)))
+    (if (derivation? obj)
+        (mlet %store-monad ((refs (sorted-references (derivation-file-name obj))))
+          (text-file "graph" (object->string refs)))
+        (return obj))))
 
 
 ;;;
