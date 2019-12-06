@@ -127,6 +127,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages mail)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pdf)
@@ -1660,15 +1661,14 @@ a set of simplified face specifications and a user-supplied color palette")
 (define-public emacs-howm
   (package
     (name "emacs-howm")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://howm.sourceforge.jp/a/howm-"
+       (uri (string-append "https://howm.sourceforge.jp/a/howm-"
                            version ".tar.gz"))
        (sha256
-        (base32
-         "0ddm91l6z58j7x59fa966j6q1rg4cinyza4r8ibg80hprn5h31qk"))))
+        (base32 "1kvr5pxpc9rwhkza9025mdi0wvh0f0rpawl21rzirjk1x10903yi"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("emacs" ,emacs-minimal)))
@@ -1686,7 +1686,7 @@ a set of simplified face specifications and a user-supplied color palette")
        (modify-phases %standard-phases
          (add-after 'install 'make-autoloads
            (assoc-ref emacs:%standard-phases 'make-autoloads)))))
-    (home-page "http://howm.osdn.jp/")
+    (home-page "https://howm.osdn.jp/")
     (synopsis "Note-taking tool for Emacs")
     (description "Howm is a note-taking tool for Emacs.  Like
 code@{emacs-wiki.el}, it facilitates using hyperlinks and doing full-text
@@ -2242,7 +2242,7 @@ a command.")
 (define-public emacs-olivetti
   (package
     (name "emacs-olivetti")
-    (version "1.8.0")
+    (version "1.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2251,7 +2251,7 @@ a command.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ba30swqxxbpa8866chymywnahby1hk670zzkz44q49328i2wksj"))))
+                "1fbj9s49y5yx5i429awv9rybacfgvhwp7v5h0zw67bpgx4qs44pa"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/rnkn/olivetti")
     (synopsis "Emacs minor mode for a nice writing environment")
@@ -3358,7 +3358,7 @@ word (to avoid repetitions for example).")
 (define-public emacs-elisp-demos
   (package
     (name "emacs-elisp-demos")
-    (version "2019.08.16")
+    (version "2019.12.01")
     (source
      (origin
        (method git-fetch)
@@ -3368,7 +3368,7 @@ word (to avoid repetitions for example).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lybadq66bl4snkwph9i1y0qxln29wyfjn222ii3nfwany28cj66"))))
+         "097d8xhvq0770z96wlhiv4gz98cq89pwx5fa42zpfh4p85qj4q9z"))))
     (build-system emacs-build-system)
     (arguments
      `(#:include '("\\.el$" "\\.org$")
@@ -3490,14 +3490,14 @@ source code using IPython.")
 (define-public emacs-debbugs
   (package
     (name "emacs-debbugs")
-    (version "0.20")
+    (version "0.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                                   version ".tar"))
               (sha256
                (base32
-                "03mmb1zvbqlsznl5agq8k3xrlcz310vnsa2zn0y8myanm4ra51zm"))))
+                "1xx1wjfpsnwx2fpydqhwy9k1b5kjk8dqbkzf8lqaj9c4rvjbn50a"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.wsdl$" "\\.info$")))
     (propagated-inputs
@@ -3644,7 +3644,7 @@ These are distributed in separate files and can be used individually.")
 (define-public emacs-irony-mode
   (package
     (name "emacs-irony-mode")
-    (version "1.2.0")
+    (version "1.4.0")
     (home-page "https://github.com/Sarcasm/irony-mode")
     (source (origin
               (method git-fetch)
@@ -3654,7 +3654,7 @@ These are distributed in separate files and can be used individually.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nhjrnlmss535jbshjjd30vydbr8py21vkx4p294w6d8vg2rssf8"))))
+                "0n2nfcq58md1p2xdhq1smh8v7lsyj0ci7ma5xyd6bkg5rvhsh10i"))))
     (build-system emacs-build-system)
     (inputs `(("server" ,emacs-irony-mode-server)))
     (arguments `(#:phases
@@ -4117,7 +4117,7 @@ to a key in your preferred mode.")
                (substitute* "el/CMakeLists.txt"
                  (("share/emacs/site-lisp/SuperCollider")
                   (string-append
-                   "share/emacs/site-lisp/guix.d/scel-" ,version)))
+                   "share/emacs/site-lisp")))
                ((assoc-ref cmake:%standard-phases 'configure)
                 #:outputs outputs
                 #:configure-flags '("-DSC_EL_BYTECOMPILE=OFF"))))
@@ -6697,16 +6697,16 @@ of its name.")
 (define-public emacs-rainbow-mode
   (package
     (name "emacs-rainbow-mode")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://elpa.gnu.org/packages/rainbow-mode-" version ".el"))
+                    "https://elpa.gnu.org/packages/rainbow-mode-" version ".el"))
               (sha256
                (base32
-                "0cpga4ax635rfpj7y2vmh7ank0yw00dcy20gjg1mj74r97by8csf"))))
+                "1zfqj63sr07pdlwy7caz4fxsjhmbhh939n81z6jxq9xggm8ajxkd"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/rainbow-mode.html")
+    (home-page "https://elpa.gnu.org/packages/rainbow-mode.html")
     (synopsis "Colorize color names in buffers")
     (description
      "This minor mode sets background color to strings that match color
@@ -8014,7 +8014,7 @@ programming and reproducible research.")
                                  string=? contrib-files org+contrib-files)))
                (with-directory-excursion
                    (string-append
-                    out "/share/emacs/site-lisp/guix.d/org-contrib-" ,version)
+                    out "/share/emacs/site-lisp")
                  (for-each delete-file duplicates))
                #t))))))
     (propagated-inputs
@@ -8948,7 +8948,7 @@ actually changing the buffer's text.")
 (define-public emacs-diff-hl
   (package
     (name "emacs-diff-hl")
-    (version "1.8.6")
+    (version "1.8.7")
     (source
      (origin
        (method git-fetch)
@@ -8957,8 +8957,7 @@ actually changing the buffer's text.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1xlsg728mz3cwhrsqvisa0aidic67nymd9g7h4c1h3q63j39yb2s"))))
+        (base32 "0i7x6qgr3nydcwhw72sbc8z9x9dfhgkf0dqj9nakvx36vn1bblbq"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/dgutov/diff-hl")
     (synopsis
@@ -9865,8 +9864,7 @@ Emacs.")
                  (substitute* "bin/ert-runner"
                    (("ERT_RUNNER=\"\\$\\(dirname \\$\\(dirname \\$0\\)\\)")
                     (string-append "ERT_RUNNER=\"" out
-                                   "/share/emacs/site-lisp/guix.d/ert-runner-"
-                                   ,version)))
+                                   "/share/emacs/site-lisp")))
                  (install-file "bin/ert-runner" (string-append out "/bin"))
                  (wrap-program (string-append out "/bin/ert-runner")
                    (list "EMACSLOADPATH" ":" 'prefix
@@ -11955,13 +11953,13 @@ object has been freed.")
                (install-file "sqlite/emacsql-sqlite"
                              (string-append out "/bin"))
                (for-each (cut install-file <>
-                              (string-append out "/share/emacs/site-lisp/guix.d/"
-                                             "emacsql" "-" ,version))
+                              (string-append out "/share/emacs/site-lisp"))
                          (find-files "." "\\.elc*$")))
              #t)))))
     (inputs
      `(("emacs-minimal" ,emacs-minimal)
-       ("mariadb" ,mariadb)
+       ("mariadb" ,mariadb "lib")
+       ("mariadb-dev" ,mariadb "dev")
        ("postgresql" ,postgresql)))
     (propagated-inputs
      `(("emacs-finalize" ,emacs-finalize)
@@ -17807,19 +17805,14 @@ as Emacs Lisp.")
          #:imported-modules (,@%gnu-build-system-modules
                              (guix build emacs-utils))
          #:tests? #f                   ; tests are not included in the release
-         #:make-flags (list "lisp" "info"
-                            (string-append "LOAD_PATH=-L . -L "
-                                           (assoc-ref %build-inputs "dash")
-                                           "/share/emacs/site-lisp/guix.d/dash-"
-                                           ,(package-version emacs-dash)))
+         #:make-flags (list "lisp" "info")
          #:phases
          (modify-phases %standard-phases
            (delete 'configure)
            (replace 'install
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
-                      (lisp (string-append out "/share/emacs/site-lisp/guix.d/"
-                                           "transient" "-" ,version))
+                      (lisp (string-append out "/share/emacs/site-lisp"))
                       (info (string-append out "/share/info")))
                  (for-each (cut install-file <> lisp)
                            (find-files "." "\\.elc*$"))
@@ -19954,3 +19947,140 @@ Google guidelines.")
       (description "Helm Fish Completion is a Helm interface for Emacs
 fish-completion.  It can be used in both Eshell and M-x shell.")
       (license license:gpl3+))))
+
+(define-public emacs-telega
+  (let ((commit "019e923f933370d75dbe0a8473a18eb66fe94c0e")
+	(revision "1")
+	(version "0.4.4"))
+    (package
+      (name "emacs-telega")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/zevlg/telega.el.git")
+               (commit commit)))
+         (sha256
+          (base32
+           "058814agkq8mp9ajpj8sz51rm9nigs2xpsdij05wjkxhfq30kqva"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f
+         #:modules ((guix build gnu-build-system)
+                    ((guix build emacs-build-system) #:prefix emacs:)
+                    (guix build utils)
+                    (guix build emacs-utils))
+         #:imported-modules (,@%gnu-build-system-modules
+                             (guix build emacs-build-system)
+                             (guix build emacs-utils))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'unpack-patch
+             (lambda _
+               (substitute* "server/Makefile"
+                 (("CC=cc")
+                  "CC=gcc")
+                 (("INSTALL_PREFIX=\\$\\(HOME\\)/.telega")
+                  (string-append "INSTALL_PREFIX=" (assoc-ref %outputs "out")
+                                 "/bin")))
+               #t))
+           (delete 'configure)
+
+           ;; Build emacs-side using `emacs-build-system'
+           (add-after 'compress-documentation 'emacs-add-source-to-load-path
+             (assoc-ref emacs:%standard-phases 'add-source-to-load-path))
+           (add-after 'emacs-set-emacs-load-path 'emacs-install
+             (assoc-ref emacs:%standard-phases 'install))
+           (add-after 'emacs-install 'emacs-build
+             (assoc-ref emacs:%standard-phases 'build))
+           (add-after 'emacs-install 'emacs-make-autoloads
+             (assoc-ref emacs:%standard-phases 'make-autoloads)))))
+      (propagated-inputs
+       `(("emacs-visual-fill-column" ,emacs-visual-fill-column)))
+      (native-inputs
+       `(("tdlib" ,tdlib)
+         ("emacs" ,emacs-minimal)))
+      (synopsis "GNU Emacs client for the Telegram messenger")
+      (description
+       "Telega is full-featured, unofficial client for the Telegram messaging
+platform for GNU Emacs.")
+      (home-page "https://github.com/zevlg/telega.el")
+      (license license:gpl3+))))
+
+(define-public emacs-doom-modeline
+  (package
+    (name "emacs-doom-modeline")
+    (version "2.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/seagle0128/doom-modeline.git")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "12zksk0rwpgpdc00km3z0hmc8wm1j1r8lbwn4kivniw56mgy0n22"))
+              (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:test-command '("ert-runner")))
+    (native-inputs `(("emacs-ert-runner" ,emacs-ert-runner)))
+    (propagated-inputs
+     `(("emacs-all-the-icons" ,emacs-all-the-icons)
+       ("emacs-shrink-path" ,emacs-shrink-path)))
+    (synopsis "Fancy and fast mode-line inspired by minimalism design")
+    (description "Doom modeline is a complete modeline for GNU Emacs inspired
+by the Doom theme collection.  This modeline features support for mode-specific
+icon support, git integration, and several other utilities.")
+    (home-page "https://github.com/seagle0128/doom-modeline/")
+    (license license:gpl3+)))
+
+(define-public emacs-shrink-path
+  (package
+    (name "emacs-shrink-path")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/bennya/shrink-path.el.git")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "0kx0c4syd7k6ff9j463bib32pz4wq0rzjlg6b0yqnymlzfr1mbki"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-s" ,emacs-s)
+       ("emacs-dash" ,emacs-dash)
+       ("emacs-f" ,emacs-f)))
+    (home-page "https://gitlab.com/bennya/shrink-path.el")
+    (synopsis "Fish-style path truncation in emacs-lisp")
+    (description "This package provides utility functions that allow for
+Fish-style truncated directories in eshell and various modelines.")
+    (license license:gpl3+)))
+
+(define-public emacs-org-present
+  (let ((commit "d13acd70eff6a1608bc991920232146a0de76b21"))
+    (package
+      (name "emacs-org-present")
+      (version "0.0.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rlister/org-present.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0jz8xiny3rv9ql0p623byz32pip1b82j2c2nyfz2wd114kiabb6q"))))
+      (build-system emacs-build-system)
+      (synopsis "Ultra-minimalist presentation minor-mode for Emacs org-mode")
+      (description "Org-present is an extremely minimalist presentation tool
+for Emacs org-mode.  Simply layout your presentation with each slide under a
+top-level header, start the minor mode with @code{org-present}, and page through
+each slide with left/right keys.")
+      (home-page "https://github.com/rlister/org-present")
+      (license license:gpl2))))

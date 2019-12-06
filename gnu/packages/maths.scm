@@ -62,7 +62,6 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system r)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
@@ -2342,44 +2341,6 @@ sparse system of linear equations A x = b using Gaussian elimination.")
     (inputs
      (alist-delete "pt-scotch" (package-inputs mumps-openmpi)))))
 
-(define-public r-quadprog
-  (package
-    (name "r-quadprog")
-    (version "1.5-8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "quadprog" version))
-       (sha256
-        (base32 "1ka9g8zak8sg4y2xbz93dfrldznlk9qpd4pq9z21cdcdn3b8s4i2"))))
-    (build-system r-build-system)
-    (native-inputs
-     `(("gfortran" ,gfortran)))
-    (home-page "https://cran.r-project.org/web/packages/quadprog")
-    (synopsis "Functions to solve quadratic programming problems")
-    (description
-     "This package contains routines and documentation for solving quadratic
-programming problems.")
-    (license license:gpl3+)))
-
-(define-public r-pracma
-  (package
-    (name "r-pracma")
-    (version "2.2.5")
-    (source (origin
-      (method url-fetch)
-      (uri (cran-uri "pracma" version))
-      (sha256
-        (base32 "0isd3s0i4mzmva8lkh0j76hwjy1w50q7d1n9lhxsnnkgalx3xs1g"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/pracma/")
-    (synopsis "Practical numerical math functions")
-    (description "This package provides functions for numerical analysis and
-linear algebra, numerical optimization, differential equations, plus some
-special functions.  It uses Matlab function names where appropriate to simplify
-porting.")
-    (license license:gpl3+)))
-
 (define-public ruby-asciimath
   (package
     (name "ruby-asciimath")
@@ -3113,12 +3074,8 @@ parts of it.")
 
 (define-public openblas
   (package
-    ;; TODO: Incorporate 'openblas/fixed-num-threads' changes on the next
-    ;; rebuild cycle.
-    (replacement openblas/fixed-num-threads)
-
     (name "openblas")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
@@ -3127,7 +3084,7 @@ parts of it.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1r2g9zzwq5dm8vjd19pxwggfvfzy56cvkmpmp5d014qr3svgmsap"))))
+         "0jbdjsi0qsxahdcm42agnn1y7xpmg0hrhwjsxg0zbhs9wwy3p568"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -3144,6 +3101,13 @@ parts of it.")
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
              "SHELL=bash"
              "MAKE_NB_JOBS=0"           ;use jobserver for submakes
+
+             ;; This is the maximum number of threads OpenBLAS will ever use (that
+             ;; is, if $OPENBLAS_NUM_THREADS is greater than that, then NUM_THREADS
+             ;; is used.)  If we don't set it, the makefile sets it to the number
+             ;; of cores of the build machine, which is obviously wrong.
+             "NUM_THREADS=128"
+
              ;; Build the library for all supported CPUs.  This allows
              ;; switching CPU targets at runtime with the environment variable
              ;; OPENBLAS_CORETYPE=<type>, where "type" is a supported CPU type.
@@ -3197,24 +3161,6 @@ parts of it.")
                  ,flags))))
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
-
-(define openblas/fixed-num-threads
-  ;; TODO: Move that to 'openblas' proper on the next rebuild cycle.
-  (package
-    (inherit openblas)
-    (version (match (string-split (package-version openblas) #\.)
-               ((numbers ... (= string-length len))
-                (string-join (append numbers
-                                     (list (make-string len #\a)))
-                             "."))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments openblas)
-       ((#:make-flags flags ''())
-        ;; This is the maximum number of threads OpenBLAS will ever use (that
-        ;; is, if $OPENBLAS_NUM_THREADS is greater than that, then NUM_THREADS
-        ;; is used.)  If we don't set it, the makefile sets it to the number
-        ;; of cores of the build machine, which is obviously wrong.
-        `(cons "NUM_THREADS=128" ,flags))))))
 
 (define* (make-blis implementation #:optional substitutable?)
   "Return a BLIS package with the given IMPLEMENTATION (see config/ in the
@@ -4147,7 +4093,7 @@ as equations, scalars, vectors, and matrices.")
 (define-public z3
   (package
     (name "z3")
-    (version "4.8.6")
+    (version "4.8.7")
     (home-page "https://github.com/Z3Prover/z3")
     (source (origin
               (method git-fetch)
@@ -4156,7 +4102,7 @@ as equations, scalars, vectors, and matrices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sywcqj5y8yp28m4cdvzsgw74kd6zr1s3y1x17ky8pr9prvpvl6x"))))
+                "0hprcdwhhyjigmhhk6514m71bnmvqci9r8gglrqilgx424r6ff7q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -4381,56 +4327,6 @@ analysed.")
      `(("boost" ,boost)))
     (arguments
      '(#:configure-flags '("-DMCRL2_ENABLE_GUI_TOOLS=OFF")))))
-
-(define-public r-subplex
-  (package
-    (name "r-subplex")
-    (version "1.5-4")
-    (source
-    (origin
-      (method url-fetch)
-      (uri (cran-uri "subplex" version))
-      (sha256
-       (base32
-        "10cbgbx1bgsax5z7gz6716g360xpq4mvq19cf4qqrxv02mmwz57z"))))
-    (build-system r-build-system)
-    (native-inputs
-     `(("gfortran" ,gfortran)))
-    (home-page "https://cran.r-project.org/web/packages/subplex")
-    (synopsis "Unconstrained optimization using the subplex algorithm")
-    (description "This package implements the Subplex optimization algorithm.
-It solves unconstrained optimization problems using a simplex method on
-subspaces.  The method is well suited for optimizing objective functions that
-are noisy or are discontinuous at the solution.")
-    (license license:gpl3+)))
-
-(define-public r-desolve
-  (package
-    (name "r-desolve")
-    (version "1.25")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "deSolve" version))
-        (sha256
-         (base32 "0735y3p5glhqx69rzrc8qgmvs7p7w0p98qxmvylb6bgqp6kp0cbp"))))
-    (properties `((upstream-name . "deSolve")))
-    (build-system r-build-system)
-    (native-inputs
-     `(("gfortran" ,gfortran)))
-    (home-page "https://desolve.r-forge.r-project.org/")
-    (synopsis "Solvers for initial value problems of differential equations")
-    (description "This package provides functions that solve initial
-value problems of a system of first-order ordinary differential equations (ODE),
-of partial differential equations (PDE), of differential algebraic equations
-(DAE), and of delay differential equations.  The functions provide an interface
-to the FORTRAN functions lsoda, lsodar, lsode, lsodes of the ODEPACK collection,
-to the FORTRAN functions dvode and daspk and a C-implementation of solvers of
-the Runge-Kutta family with fixed or variable time steps.  The package contains
-routines designed for solving ODEs resulting from 1-D, 2-D and 3-D partial
-differential equations (PDE) that have been converted to ODEs by numerical
-differencing.")
-    (license license:gpl2+)))
 
 (define-public tcalc
   (package
@@ -5104,7 +5000,7 @@ management via the GIMPS project's Primenet server.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.6r11")
+    (version "2.6r12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5113,7 +5009,7 @@ management via the GIMPS project's Primenet server.")
                     ".tar.gz"))
               (sha256
                (base32
-                "05z6mk7c31j70md83396cdjmvzzip1hqb88pfszzc6k4gy8h3m2y"))))
+                "1p4mxf8q5wm47nxyskxbqwa5p1vvkycv1zgswvnk9nsn6vff0al6"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments

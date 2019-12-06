@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -252,6 +253,9 @@ as ordering relation.")
 intuitive syntax and trivial integration.")
     (license license:expat)))
 
+(define-public nlohmann-json-cpp
+  (deprecated-package "nlohmann-json-cpp" json-modern-cxx))
+
 (define-public xtl
   (package
     (name "xtl")
@@ -289,7 +293,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
 (define-public ccls
   (package
     (name "ccls")
-    (version "0.20190823.3")
+    (version "0.20190823.5")
     (source
      (origin
        (method git-fetch)
@@ -297,7 +301,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
              (url "https://github.com/MaskRay/ccls")
              (commit version)))
        (sha256
-        (base32 "1sx31zp6q2qc6fz3r78rx34zp2x4blrqzxwbpww71vb6lp1clmdm"))
+        (base32 "0b2pkpzn576b92zcxpwchpkyw2fww6s69818rx4g9z34kzm35zy5"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -374,4 +378,35 @@ tools:
 for style issues following Google’s C++ style guide.  While Google maintains
 it's own version of the tool, this is a fork that aims to be more responsive
 and make @code{cpplint} usable in wider contexts.")
+    (license license:bsd-3)))
+
+(define-public sobjectizer
+  (package
+    (name "sobjectizer")
+    (version "5.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Stiffstream/sobjectizer.git")
+             (commit (string-append "v." version))))
+       (sha256
+        (base32 "0jfai7sqxnnjkms38krm7mssj5l79nb3pllkbyj4j581a7l5j6l5"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'change-directory
+           (lambda _
+             (chdir "dev")
+             #t)))))
+    (home-page "https://stiffstream.com/en/products/sobjectizer.html")
+    (synopsis "Cross-platform actor framework for C++")
+    (description
+     "SObjectizer is a cross-platform \"actor frameworks\" for C++.
+SObjectizer supports not only the Actor Model but also the Publish-Subscribe
+Model and CSP-like channels.  The goal of SObjectizer is to simplify
+development of concurrent and multithreaded applications in C++.")
     (license license:bsd-3)))

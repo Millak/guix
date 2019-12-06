@@ -66,6 +66,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sphinx)
@@ -567,14 +568,14 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-matrix
   (package
     (name "r-matrix")
-    (version "1.2-17")
+    (version "1.2-18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Matrix" version))
        (sha256
         (base32
-         "1k1zf92ycqr7fz44w7bp1p354ww7jg0wm23ybb8dzmbg37qfchyv"))))
+         "06b1rc1vq65b271f2wpzhqkvhng8hwwnvjflzxkng50i52603zzp"))))
     (properties `((upstream-name . "Matrix")))
     (build-system r-build-system)
     (propagated-inputs
@@ -692,14 +693,14 @@ analysis.")
 (define-public r-survival
   (package
     (name "r-survival")
-    (version "3.1-7")
+    (version "3.1-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survival" version))
        (sha256
         (base32
-         "1ij77bgfcjx29xkx5bck0sv4ybglpcmzzv9ilkinj8fqhhclbs8p"))))
+         "15fj4y8c107bwq22amx88r5hw7qndlcbr9sapzrpkpr7iqz3kkyf"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-matrix" ,r-matrix)))
@@ -1554,13 +1555,13 @@ R packages that praise their users.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "2.3.0")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "0qlajfgm3zjrmladwcm0xzw8zp2431zz2asa2w7lpg7zl6ymvz29"))))
+                "0m8xchdpgn9iwj6gb2qw46zr85v9zf1gkbr9nnahmy5sp1s9bbky"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-cli" ,r-cli)
@@ -2031,13 +2032,13 @@ jackknifed confidence intervals are available for most estimates.")
 (define-public r-rversions
   (package
     (name "r-rversions")
-    (version "2.0.0")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rversions" version))
               (sha256
                (base32
-                "0mkg9zrjxlbwqzijiysivrs523x48syqj30xdfp88clpkqfk435m"))))
+                "1ic6sxnyya24d5xsxjg3fba73fhya9fhs0kaf66yha6nwxj1zv2i"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-curl" ,r-curl)
@@ -2259,13 +2260,13 @@ tables, autolinks and strikethrough text.")
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
-    (version "7.0.1")
+    (version "7.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roxygen2" version))
               (sha256
                (base32
-                "07v7f7may3vr80f4m1w1ll41qdahszycyx4c1yf8pw7asx73d77j"))))
+                "162xag27hwwyadfwm5zpyy15nxwhw2vbhwapx3jmi9cfyryr68sq"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-brew" ,r-brew)
@@ -2615,13 +2616,13 @@ vectors.")
 (define-public r-catools
   (package
     (name "r-catools")
-    (version "1.17.1.2")
+    (version "1.17.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "caTools" version))
               (sha256
                (base32
-                "0svj31y7h8vimvliygmmbl7pk850qk80k1vn38mlcxsnmcpm9k39"))))
+                "04m7vbydxb1nipday97w29p2miykyzxw572j9lda6jxmmp2kb1yp"))))
     (properties `((upstream-name . "caTools")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2661,13 +2662,13 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "1.17")
+    (version "1.18")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "18dj6nr1m79pv1pv9w2n0rhiidwqjb2w8w1rnpcwijwbz4i8d3k2"))))
+          (base32 "0fykzbb5kjsqc8v6gjcdma7rmq0gailp30qij6plgna4d8nhjw3w"))))
     (properties `((upstream-name . "rmarkdown")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2776,13 +2777,13 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.1.2")
+    (version "2.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "1inrhap5cs0wry2jbw42fx9wwxb3qdzlpy0ba4f6a29bs8jx9nk6"))))
+                "0c5s67s8w4q6p57rnh14n4gcmymyardg8lhnrdlimmjcfawj15h7"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3332,14 +3333,14 @@ Stochastic Neighbor Embedding using a Barnes-Hut implementation.")
 (define-public r-e1071
   (package
     (name "r-e1071")
-    (version "1.7-2")
+    (version "1.7-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "e1071" version))
        (sha256
         (base32
-         "0lipj692rjjw8rrhqh2k9i5dh8y2sjrw9q53rwm32irhx2f2j73j"))))
+         "0pf2pjb590z0jikgv1037xcp7dq06mg3dzmyffjw6gk7dd9blbdv"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-class" ,r-class)))
@@ -5655,20 +5656,20 @@ inferring an appropriate positioning method.")
     (license license:gpl3)))
 
 (define-public r-catterplots
-  (let ((commit "40063ec57f9515d231508f135ca0ec769614efb9")
-        (revision "2"))
+  (let ((commit "ae17cd5e49ddda4ecfe0eba8a4c21df8c88e72c4")
+        (revision "3"))
     (package
       (name "r-catterplots")
-      (version (string-append "0-" revision "." (string-take commit 9)))
+      (version (git-version "0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/Gibbsdavidl/CatterPlots.git")
                       (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1wl80pgbz8d9kfpffvkh439hlgz2qldm9m75wqjfrgrg8lcjzrxg"))))
+                  "0qa8liylffpxgdg8xcgjar5dsvczqhn3akd4w35113hnyg1m4xyg"))))
       (build-system r-build-system)
       (propagated-inputs
        `(("r-png" ,r-png)))
@@ -5709,26 +5710,6 @@ You can customize the colors according to your taste, guided by the color
 table made by the command @code{show256Colors()}.  You can also set the colors
 to any arbitrary string.  In this case, it is up to you to set valid values.")
     (license license:gpl3+)))
-
-(define-public r-txtplot
-  (package
-    (name "r-txtplot")
-    (version "1.0-3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "txtplot" version))
-       (sha256
-        (base32
-         "1949ab1bzvysdb79g8x1gaknj0ih3d6g63pv9512h5m5l3a6c31h"))))
-    (build-system r-build-system)
-    (home-page "https://cran.r-project.org/web/packages/txtplot/")
-    (synopsis "Text-based plotting")
-    (description "This package provides functions to produce rudimentary ASCII
-graphics directly in the terminal window.  This package provides a basic
-plotting function (and equivalents of curve, density, acf and barplot) as well
-as a boxplot function.")
-    (license license:lgpl3+)))
 
 (define-public python-rpy2
   ;; We need to take this changeset instead of the RELEASE_3_0_4 tag, because

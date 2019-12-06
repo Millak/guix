@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
-;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -423,7 +423,10 @@ many input formats and provides a customisable Vi-style user interface.")
                             "Clarinet in Bb.denemo"))
              #t)))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")         ; for gtester
+     `(("intltool" ,intltool)
+       ("glib:bin" ,glib "bin")         ; for gtester
+       ("gtk-doc" ,gtk-doc)
+       ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -433,13 +436,10 @@ many input formats and provides a customisable Vi-style user interface.")
        ("fluidsynth" ,fluidsynth)
        ("glib" ,glib)
        ("gtk+" ,gtk+)
-       ("gtk-doc" ,gtk-doc)
        ("gtksourceview" ,gtksourceview-3)
        ("guile" ,guile-2.0)
-       ("intltool" ,intltool)
        ("librsvg" ,librsvg)
        ("libsndfile" ,libsndfile)
-       ("libtool" ,libtool)
        ("libxml2" ,libxml2)
        ("lilypond" ,lilypond)
        ("portaudio" ,portaudio)
@@ -1830,7 +1830,7 @@ export.")
 (define-public pd
   (package
     (name "pd")
-    (version "0.50-0")
+    (version "0.50-2")
     (source (origin
               (method url-fetch)
               (uri
@@ -1838,7 +1838,7 @@ export.")
                               version ".src.tar.gz"))
               (sha256
                (base32
-                "0hg4n5b55f650qsc0mjx559072dp7vfza7w0pvk6rk2l831cvsps"))))
+                "0dz6r6jy0zfs1xy1xspnrxxks8kddi9c7pxz4vpg2ygwv83ghpg5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no "check" target
@@ -2242,14 +2242,14 @@ improves on support for JACK features, such as JACK MIDI.")
 (define-public libgig
   (package
     (name "libgig")
-    (version "4.1.0")
+    (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.linuxsampler.org/packages/"
                                   "libgig-" version ".tar.bz2"))
               (sha256
                (base32
-                "02xx6bqxzgkvrawwnzrnxx1ypk244q4kpwfd58266f9ji8kq18h6"))))
+                "1zs5yy124bymfyapsnljr6rv2lnn5inwchm0xnwiw44b2d39l8hn"))))
     (build-system gnu-build-system)
     (inputs
      `(("libuuid" ,util-linux)

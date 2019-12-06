@@ -129,6 +129,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -1154,95 +1155,6 @@ human-friendly syntax.")
 
 (define-public python2-schedule
   (package-with-python2 python-schedule))
-
-(define-public python-pandas
-  (package
-    (name "python-pandas")
-    (version "0.25.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pandas" version))
-       (sha256
-        (base32 "1gp2pvzdiakvgjmykdzdlzrsfbg4vjm49jjdl9s0ha0a3yfs34fa"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:modules ((guix build utils)
-                  (guix build python-build-system)
-                  (ice-9 ftw)
-                  (srfi srfi-26))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-which
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((which (assoc-ref inputs "which")))
-                        (substitute* "pandas/io/clipboard/__init__.py"
-                          (("^CHECK_CMD = .*")
-                           (string-append "CHECK_CMD = \"" which "\"\n"))))
-                      #t))
-                  (replace 'check
-                    (lambda _
-                      (let ((build-directory
-                             (string-append
-                              (getcwd) "/build/"
-                              (car (scandir "build"
-                                            (cut string-prefix? "lib." <>))))))
-                        ;; Disable the "strict data files" option which causes
-                        ;; the build to error out if required data files are
-                        ;; not available (as is the case with PyPI archives).
-                        (substitute* "setup.cfg"
-                          (("addopts = --strict-data-files") "addopts = "))
-                        (with-directory-excursion build-directory
-                          ;; Delete tests that require "moto" which is not yet
-                          ;; in Guix.
-                          (for-each delete-file
-                                    '("pandas/tests/io/conftest.py"
-                                      "pandas/tests/io/json/test_compression.py"
-                                      "pandas/tests/io/parser/test_network.py"
-                                      "pandas/tests/io/test_parquet.py"))
-                          (invoke "pytest" "-vv" "pandas" "--skip-slow"
-                                  "--skip-network" "-k"
-                                  ;; XXX: Due to the deleted tests above.
-                                  "not test_read_s3_jsonl"))))))))
-    (propagated-inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-openpyxl" ,python-openpyxl)
-       ("python-pytz" ,python-pytz)
-       ("python-dateutil" ,python-dateutil)
-       ("python-xlrd" ,python-xlrd)))
-    (inputs
-     `(("which" ,which)))
-    (native-inputs
-     `(("python-cython" ,python-cython)
-       ("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-lxml" ,python-lxml)
-       ("python-html5lib" ,python-html5lib)
-       ("python-nose" ,python-nose)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-mock" ,python-pytest-mock)))
-    (home-page "https://pandas.pydata.org")
-    (synopsis "Data structures for data analysis, time series, and statistics")
-    (description
-     "Pandas is a Python package providing fast, flexible, and expressive data
-structures designed to make working with structured (tabular,
-multidimensional, potentially heterogeneous) and time series data both easy
-and intuitive.  It aims to be the fundamental high-level building block for
-doing practical, real world data analysis in Python.")
-    (properties `((python2-variant . ,(delay python2-pandas))))
-    (license license:bsd-3)))
-
-;; Pandas 0.24.x are the last versions that support Python 2.
-(define-public python2-pandas
-  (let ((pandas (package-with-python2
-                 (strip-python2-variant python-pandas))))
-    (package/inherit
-     pandas
-     (version "0.24.2")
-     (source (origin
-               (method url-fetch)
-               (uri (pypi-uri "pandas" version))
-               (sha256
-                (base32
-                 "18imlm8xbhcbwy4wa957a1fkamrcb0z988z006jpfda3ki09z4ag")))))))
 
 (define-public python2-mechanize
   (package
@@ -3308,42 +3220,6 @@ Mallard using the @command{ducktype} tool.  The yelp-tools package
 provides additional functionality on the produced Mallard documents.")
     (license license:expat)))
 
-(define-public python-scikit-image
-  (package
-    (name "python-scikit-image")
-    (version "0.14.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scikit-image" version))
-       (sha256
-        (base32 "07qchljkyxvg5nrm12fvszi7pmjk4m01qp0w0z8syxzxxs20pz8s"))))
-    (build-system python-build-system)
-    (arguments
-     ;; TODO: Some tests require running X11 server. Disable them?
-     '(#:tests? #f))
-    ;; See DEPENDS.txt for the list of build and run time requiremnts
-    (propagated-inputs
-     `(("python-cloudpickle" ,python-cloudpickle)
-       ("python-dask" ,python-dask)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-networkx" ,python-networkx)
-       ("python-numpy" ,python-numpy)
-       ("python-pillow" ,python-pillow)
-       ("python-pywavelets" ,python-pywavelets)
-       ("python-scipy" ,python-scipy)
-       ("python-six" ,python-six)))
-    (native-inputs
-     `(("python-cython" ,python-cython)))
-    (home-page "http://scikit-image.org/")
-    (synopsis "Image processing in Python")
-    (description
-     "Scikit-image is a collection of algorithms for image processing.")
-    (license license:bsd-3)))
-
-(define-public python2-scikit-image
-  (package-with-python2 python-scikit-image))
-
 (define-public python-cython
   (package
     (name "python-cython")
@@ -3997,14 +3873,14 @@ convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.
 (define-public python-matplotlib
   (package
     (name "python-matplotlib")
-    (version "3.1.1")
+    (version "3.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "matplotlib" version))
        (sha256
         (base32
-         "14qc109dibp32xfd9lah54djc0rc76fhbsj9cwyb328lzqmd5sqz"))))
+         "1nmshfqh7wyg15i16hx1yiylcvzkws29ivn66n3i0wyqwcpjr3lf"))))
     (build-system python-build-system)
     (propagated-inputs ; the following packages are all needed at run time
      `(("python-cycler" ,python-cycler)
@@ -4069,8 +3945,14 @@ convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.
              (for-each delete-file
                        ;; test_normal_axes, test_get_tightbbox_polar
                        '("lib/matplotlib/tests/test_axes.py"
+                         ;; We don't use the webagg backend and this test forces it.
+                         "lib/matplotlib/tests/test_backend_webagg.py"
                          ;; test_outward_ticks
                          "lib/matplotlib/tests/test_tightlayout.py"
+                         ;; test_hidden_axes fails with minor extent
+                         ;; differences, possibly due to the use of a
+                         ;; different version of FreeType.
+                         "lib/matplotlib/tests/test_constrainedlayout.py"
                          ;; Fontconfig returns no fonts.
                          "lib/matplotlib/tests/test_font_manager.py"))
              #t))
@@ -4083,12 +3965,11 @@ convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.
                        (assoc-ref inputs "jquery-ui")
                        "-d" dir))
              #t))
-         (delete 'check)
-         (add-after 'install 'check
+         (replace 'check
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
              (invoke "python" "tests.py" "-v"
-                     "-m" "not network")))
+                     "-m" "not network and not webagg")))
          (add-before 'build 'configure-environment
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let ((cairo (assoc-ref inputs "cairo")))
@@ -4142,6 +4023,7 @@ toolkits.")
                            (assoc-ref inputs "jquery-ui")
                            "-d" dir))
                  #t))
+             (delete 'fix-and-disable-failing-tests)
              (delete 'check))))) ; These tests weren't run the the past.
       ;; Make sure to use special packages for Python 2 instead
       ;; of those automatically rewritten by package-with-python2.
@@ -4307,125 +4189,6 @@ those files.  It can also efficiently manipulate ranges of integers using set
 operators such as union, intersection, and difference.")
     (license license:asl2.0)))
 
-(define-public python-scipy
-  (package
-    (name "python-scipy")
-    (version "1.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scipy" version))
-       (sha256
-        (base32 "192d8dsybvhv19igkrsafbdafx198nz7pibkjgrqjhlr66s3jfd0"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-pyparsing" ,python-pyparsing)))
-    (inputs
-     `(("lapack" ,lapack)
-       ("openblas" ,openblas)))
-    (native-inputs
-     `(("python-cython" ,python-cython)
-       ("python-pytest" ,python-pytest)
-       ("python-sphinx" ,python-sphinx)
-       ("python-numpydoc" ,python-numpydoc)
-       ("gfortran" ,gfortran)
-       ("perl" ,perl)
-       ("which" ,which)))
-    (outputs '("out" "doc"))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "scipy/sparse/linalg/dsolve/tests/test_linsolve.py"
-               (("^( +)def test_threads_parallel\\(self\\):" m indent)
-                (string-append indent
-                               "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))
-             (substitute* "scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py"
-               (("^def test_parallel_threads\\(\\):" m)
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))
-             #t))
-         (add-before 'build 'configure-openblas
-           (lambda* (#:key inputs #:allow-other-keys)
-             (call-with-output-file "site.cfg"
-               (lambda (port)
-                 (format port
-                         "[blas]
-libraries = openblas
-library_dirs = ~a/lib
-include_dirs = ~a/include
-
-# backslash-n to make emacs happy
-\n[atlas]
-library_dirs = ~a/lib
-atlas_libs = openblas
-"
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas"))))
-             #t))
-         (add-after 'install 'install-doc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (html (string-append doc "/html"))
-                    (pyver ,(string-append "PYVER=" (version-major+minor
-                                                     (package-version python))))
-                    ;; By default it tries to run sphinx-build through the Python
-                    ;; interpreter which won't work with our shell wrapper.
-                    (sphinxbuild "SPHINXBUILD=LANG=C sphinx-build"))
-               ;; Make installed package available for building the
-               ;; documentation
-               (add-installed-pythonpath inputs outputs)
-               (with-directory-excursion "doc"
-                 ;; Fix generation of images for mathematical expressions.
-                 (substitute* (find-files "source" "conf\\.py")
-                   (("pngmath_use_preview = True")
-                    "pngmath_use_preview = False"))
-                 (mkdir-p html)
-                 (invoke "make" "html" pyver sphinxbuild)
-                 (with-directory-excursion "build/html"
-                   (for-each (lambda (file)
-                               (let* ((dir (dirname file))
-                                      (tgt-dir (string-append html "/" dir)))
-                                 (install-file file html)))
-                             (find-files "." ".*")))))
-             #t))
-         ;; Tests can only be run after the library has been installed and not
-         ;; within the source directory.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (with-directory-excursion "/tmp"
-               (invoke "python" "-c"
-                       "import scipy; scipy.test(verbose=2)")))))))
-    (home-page "https://www.scipy.org/")
-    (synopsis "The Scipy library provides efficient numerical routines")
-    (description "The SciPy library is one of the core packages that make up
-the SciPy stack.  It provides many user-friendly and efficient numerical
-routines such as routines for numerical integration and optimization.")
-    (properties `((python2-variant . ,(delay python2-scipy))))
-    (license license:bsd-3)))
-
-;; Version 1.2.2 is the last version to support Python 2
-(define-public python2-scipy
-  (package
-    (inherit (package-with-python2
-              (strip-python2-variant python-scipy)))
-    (version "1.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scipy" version))
-       (sha256
-        (base32
-         "1cgvgin8fvckv96hjh3ikmwkra5rif51bdb75ifzf7xbil5iwcx4"))))))
-
 (define-public python-socksipy-branch
   (package
     (name "python-socksipy-branch")
@@ -4457,7 +4220,7 @@ as the original project seems to have been abandoned circa 2007.")
 (define-public python-socksipychain
   (package
     (name "python-socksipychain")
-    (version "2.0.15")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -4467,7 +4230,7 @@ as the original project seems to have been abandoned circa 2007.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pkljnh9hfwla8sg7mil4f9zrnsqj0dbhr3crxjw3k8dnjz70dvk"))))
+         "0idm9a050rd2kbgbz2sk9ib9589kj4xh1xdnggs6xbq2v2y8f6zn"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f)) ; Tests try to access the network.
@@ -4479,9 +4242,6 @@ adds support for arbitrary chaining of proxy servers and various modes of
 TLS/SSL encryption.  It was developed for use in PageKite, and also includes
 a simple netcat replacement with chaining support.")
     (license license:bsd-3)))
-
-(define-public python2-socksipychain
-  (package-with-python2 python-socksipychain))
 
 (define-public python-pycodestyle
   (package
@@ -4672,25 +4432,25 @@ the OleFileIO module from PIL, the Python Image Library.")
 (define-public python-pillow
   (package
     (name "python-pillow")
-    (version "6.1.0")
+    (version "6.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Pillow" version))
        (sha256
         (base32
-         "1pnrsz0f0n0c819v1pdr8j6rm8xvhc9f3kh1fv9xpdp9n5ygf108"))))
+         "1c8wkzc58f5wdh006jvmwdk3wxld1xgagcbdvj7iv17qi0m9fkmz"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (inputs
      `(("freetype" ,freetype)
        ("lcms"     ,lcms)
-       ("zlib"     ,zlib)
        ("libjpeg"  ,libjpeg)
-       ("openjpeg" ,openjpeg)
        ("libtiff"  ,libtiff)
-       ("libwebp"  ,libwebp)))
+       ("libwebp"  ,libwebp)
+       ("openjpeg" ,openjpeg)
+       ("zlib"     ,zlib)))
     (propagated-inputs
      `(("python-olefile" ,python-olefile)))
     (arguments
@@ -4700,15 +4460,16 @@ the OleFileIO module from PIL, the Python Image Library.")
            (lambda _
              (substitute* "setup.py"
                (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
-         (delete 'check) ; We must run checks after python-pillow is installed.
-         (add-after 'install 'check-installed
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (begin
-               (setenv "HOME" (getcwd))
-               ;; Make installed package available for running the tests.
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "selftest.py" "--installed")
-               (invoke "python" "-m" "pytest" "-vv")))))))
+         (replace 'check
+           (lambda* (#:key outputs inputs tests? #:allow-other-keys)
+             (if tests?
+               (begin
+                 (setenv "HOME" (getcwd))
+                 ;; Make installed package available for running the tests.
+                 (add-installed-pythonpath inputs outputs)
+                 (invoke "python" "selftest.py" "--installed")
+                 (invoke "python" "-m" "pytest" "-vv"))
+               #t))))))
     (home-page "https://python-pillow.org")
     (synopsis "Fork of the Python Imaging Library")
     (description
@@ -5945,14 +5706,14 @@ parsing (browser/HTTP) user agent strings.")
 (define-public python-dbus
   (package
     (name "python-dbus")
-    (version "1.2.10")
+    (version "1.2.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dbus.freedesktop.org/releases/dbus-python/"
                            "dbus-python-" version ".tar.gz"))
        (sha256
-        (base32 "11nqk01iq5bx2llgb3ksknyinijdp29w4ndj210glm009ayjncyl"))))
+        (base32 "0cdchkgnivlka4lf8q4qfk0yxq483i3r3aqickjf8hfn7nx0c0mi"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -5971,10 +5732,7 @@ implementation of D-Bus.")
     (inputs `(("python" ,python-2)
               ,@(alist-delete "python"
                               (package-inputs python-dbus)
-                              equal?)))
-    ;; FIXME: on Python 2, the test_utf8 fails with:
-    ;; "ValueError: unichr() arg not in range(0x10000) (narrow Python build)"
-    (arguments `(#:tests? #f))))
+                              equal?)))))
 
 (define-public python-notify2
   (package
@@ -6266,7 +6024,19 @@ SVG, EPS, PNG and terminal output.")
        (method url-fetch)
        (uri (pypi-uri "seaborn" version))
        (sha256
-        (base32 "0bqysi3fxfjl1866m5jq8z7mynhqbqnikim74dmzn8539iwkzj3n"))))
+        (base32 "0bqysi3fxfjl1866m5jq8z7mynhqbqnikim74dmzn8539iwkzj3n"))
+       (patches
+        (list (origin
+                (method url-fetch)
+                ;; This has already been merged, but there is no new
+                ;; release including this patch.  It fixes problems
+                ;; with axis rotation that would lead to test
+                ;; failures.
+                (uri "https://patch-diff.githubusercontent.com/raw/mwaskom/seaborn/pull/1716.diff")
+                (sha256
+                 (base32
+                  "1lm870z316n9ivsyr86hpk1gxaraw0mrjvq42lqsm0znhjdp9q9w"))
+                (file-name "seaborn-0.9.0-axis-rotation.patch"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -6279,6 +6049,12 @@ SVG, EPS, PNG and terminal output.")
                (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
                (setenv "DISPLAY" ":1")
                #t)))
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; test_cbar_ticks fails probably because of matplotlib's
+             ;; expectation of using an older version of FreeType.
+             (delete-file "seaborn/tests/test_matrix.py")
+             #t))
          (replace 'check (lambda _ (invoke "pytest" "seaborn") #t)))))
     (propagated-inputs
      `(("python-pandas" ,python-pandas)
@@ -6287,7 +6063,7 @@ SVG, EPS, PNG and terminal output.")
        ("python-scipy" ,python-scipy)))
     (native-inputs
      `(("python-pytest" ,python-pytest)
-       ("xorg-server" ,xorg-server)))
+       ("xorg-server" ,xorg-server-for-tests)))
     (home-page "http://stanford.edu/~mwaskom/software/seaborn/")
     (synopsis "Statistical data visualization")
     (description
@@ -8640,13 +8416,13 @@ minimal and fast API targeting the following uses:
 (define-public python-icalendar
   (package
     (name "python-icalendar")
-    (version "4.0.3")
+    (version "4.0.4")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "icalendar" version))
              (sha256
               (base32
-               "0mk3dk1dxkcm46jy48v27j2w2349iv4sbimqj1yb5js43mx49hh7"))))
+               "16gjvqv0n05jrb9g228pdjgzd3amz2pdhvcgsn1jypszjg5m2w9l"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-dateutil" ,python-dateutil)
@@ -12456,13 +12232,13 @@ projects.")
   (package
     (name "python-invoke")
     (home-page "http://www.pyinvoke.org/")
-    (version "1.1.0")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "invoke" version))
               (sha256
                (base32
-                "0aiy1xvk1f91246zxd1zqrm679vdvd10h843a2na41cqr3cflpi6"))))
+                "1nn7gad0rvy492acpyhkrp01zsk86acf34qhsvq4xmm6x39788n5"))))
     (build-system python-build-system)
     (arguments
      ;; XXX: Requires many dependencies that are not yet in Guix.
@@ -13269,14 +13045,14 @@ several utilities, as well as an API for building localization tools.")
 (define-public python-packaging
   (package
     (name "python-packaging")
-    (version "19.0")
+    (version "19.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "packaging" version))
         (sha256
          (base32
-          "1brjhygq9dz6x1kdljivkjfldi3qf5rbkqgck1bpgv9qpv8ab60c"))))
+          "0izwlz9h0bw171a1chr311g2y7n657zjaf4mq4rgm8pp9lbj9f98"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -14361,14 +14137,13 @@ Git.")
 (define-public python-pyclipper
   (package
     (name "python-pyclipper")
-    (version "1.1.0.post1")
+    (version "1.1.0.post3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyclipper" version ".zip"))
        (sha256
-        (base32
-         "0ldbkbnx94an4zzrwb1sxmg6k0jgk4cwmvcdyy8y5k1zslc612wa"))
+        (base32 "164yksvqwqvwzh8f8lq92asg87hd8rvcy2xb5vm4y4ccvd5xgb7i"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -16949,3 +16724,28 @@ scratch and manipulate data from Intel HEX file format.  It also includes
 several convenience Python scripts, including \"classic\" hex2bin and bin2hex
 converters and more, those based on the library itself.")
     (license license:bsd-3)))
+
+(define-public python-pykwalify
+  (package
+    (name "python-pykwalify")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pykwalify" version))
+       (sha256
+        (base32
+         "1cnfzkg1b01f825ikpw2fhjclf9c8akxjfrbd1vc22x1lg2kk2vy"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ;missing dependencies
+    (propagated-inputs
+     `(("python-dateutil" ,python-dateutil)
+       ("python-docopt" ,python-docopt)
+       ("python-pyyaml" ,python-pyyaml)))
+    (home-page "https://github.com/grokzen/pykwalify")
+    (synopsis
+     "Python lib/cli for JSON/YAML schema validation")
+    (description
+     "This package provides a parser, schema validator, and data binding tool
+for YAML and JSON.")
+    (license license:expat)))

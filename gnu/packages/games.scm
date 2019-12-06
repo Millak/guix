@@ -27,7 +27,7 @@
 ;;; Copyright © 2017, 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -4938,9 +4938,9 @@ fight against their plot and save his fellow rabbits from slavery.")
     (home-page "https://play0ad.com")
     (license (list (license:fsdg-compatible
                     "http://tavmjong.free.fr/FONTS/ArevCopyright.txt"
-                    (license:license-comment
-                     (package-license font-bitstream-vera)))
-                   (package-license font-bitstream-vera)
+                    "Similar to the license of the Bitstream Vera fonts.")
+                   (license:fsdg-compatible
+                    "https://www.gnome.org/fonts/#Final_Bitstream_Vera_Fonts")
                    license:cc-by-sa3.0
                    license:expat
                    license:gfl1.0
@@ -5139,7 +5139,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
 (define-public tome4
   (package
     (name "tome4")
-    (version "1.6.1")
+    (version "1.6.4")
     (synopsis "Single-player, RPG roguelike game set in the world of Eyal")
     (source
      (origin
@@ -5148,7 +5148,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
                            version ".tar.bz2"))
        (sha256
         (base32
-         "0c5a2bdyfccwkqnb6yqvzggyi2nk032v01kfc00zlgpdfzljcb9i"))
+         "1hrh79aqmvwwd7idlr3lzpdpc9dgm1k5p7w2462chcjvd8vhfhb7"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -6822,7 +6822,7 @@ where the player draws runes in real time to effect the desired spell.")
 (define-public edgar
   (package
     (name "edgar")
-    (version "1.31")
+    (version "1.32")
     (source
      (origin
        (method url-fetch)
@@ -6830,7 +6830,7 @@ where the player draws runes in real time to effect the desired spell.")
         (string-append "https://github.com/riksweeney/edgar/releases/download/"
                        version "/edgar-" version "-1.tar.gz"))
        (sha256
-        (base32 "0i4851ci8a86ql4bhdq3xdfmf4b9z5zrd4xpc6vhi06697zgm13i"))))
+        (base32 "12lam6qcscc5ima1w2ksd1cvsvxbd17h6mqkgsqpzx8ap43p2r5p"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f            ; there are no tests
                  #:make-flags
@@ -6898,6 +6898,22 @@ a fortress beyond the forbidden swamp.")
                (("PATH_SUFFIXES \"src\" \"gtest\"")
                 "PATH_SUFFIXES \"src\""))
              #t))
+         (add-after 'unpack 'adjust-backward-cpp-includes
+           (lambda _
+             ;; XXX: The bundled backward-cpp exports a CMake "interface"
+             ;; that includes external libraries such as libdl from glibc.
+             ;; By default, CMake interface includes are treated as "system
+             ;; headers", and GCC behaves poorly when glibc is passed as a
+             ;; system header (causing #include_next failures).
+
+             ;; Here we prevent targets that consume the Backward::Backward
+             ;; interface from treating it as "system includes".
+             (substitute* "CMakeLists.txt"
+               (("target_link_libraries\\((.+) Backward::Backward\\)" all target)
+                (string-append "set_property(TARGET " target " PROPERTY "
+                               "NO_SYSTEM_FROM_IMPORTED true)\n"
+                               all)))
+             #t))
          (add-after 'unpack 'add-libiberty
            ;; Build fails upon linking executables without this.
            (lambda _
@@ -6949,7 +6965,7 @@ a fortress beyond the forbidden swamp.")
      "Multiplayer action game where you control small and nimble humanoids")
     (description "OpenClonk is a multiplayer action/tactics/skill game.  It is
 often referred to as a mixture of The Settlers and Worms.  In a simple 2D
-antfarm-style landscape, the player controls his crew of Clonks, small but
+antfarm-style landscape, the player controls a crew of Clonks, small but
 robust humanoid beings.  The game encourages free play but the normal goal is
 to either exploit valuable resources from the earth by building a mine or
 fight each other on an arena-like map.")
@@ -7812,3 +7828,84 @@ remake of that series or any other game.")
 the AlphaGo Zero paper.  The current best network weights file for the engine
 can be downloaded from @url{https://zero.sjeng.org/best-network}.")
    (license license:gpl3+)))
+
+(define-public q5go
+  (package
+   (name "q5go")
+   (version "1.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/bernds/q5Go.git")
+                  (commit (string-append "q5go-" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1gdlfqcqkqv7vph3qwq78d0qz6dhmdsranxq9bmixiisbzkqby31"))))
+   (build-system gnu-build-system)
+   (native-inputs
+    `(("pkg-config" ,pkg-config)))
+   (inputs
+    `(("qtbase" ,qtbase)
+      ("qtmultimedia" ,qtmultimedia)
+      ("qtsvg" ,qtsvg)))
+   (arguments
+    '(#:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'fix-configure-script
+          (lambda _
+            ;; Bypass the unavailable qtchooser program.
+            (substitute* "configure"
+              (("test -z \"QTCHOOSER\"")
+               "false")
+              (("qtchooser -run-tool=(.*) -qt=qt5" _ command)
+               command))
+            #t))
+        (add-after 'unpack 'fix-paths
+          (lambda _
+            (substitute* '("src/pics/Makefile.in"
+                           "src/translations/Makefile.in")
+              (("\\$\\(datadir\\)/qGo/")
+               "$(datadir)/q5go/"))
+            #t))
+        (add-after 'install 'install-desktop-file
+          (lambda* (#:key outputs #:allow-other-keys)
+            (let* ((out (assoc-ref outputs "out"))
+                   (apps (string-append out "/share/applications"))
+                   (pics (string-append out "/share/q5go/pics")))
+              (delete-file-recursively (string-append out "/share/applnk"))
+              (delete-file-recursively (string-append out "/share/mimelnk"))
+              (install-file "../source/src/pics/Bowl.ico" pics)
+              (mkdir-p apps)
+              (with-output-to-file (string-append apps "/q5go.desktop")
+                (lambda _
+                  (format #t
+                          "[Desktop Entry]~@
+                           Name=q5go~@
+                           Exec=~a/bin/q5go~@
+                           Icon=~a/Bowl.ico~@
+                           Categories=Game;~@
+                           Comment=Game of Go~@
+                           Comment[de]=Spiel des Go~@
+                           Comment[eo]=Goo~@
+                           Comment[es]=Juego de Go~@
+                           Comment[fr]=Jeu de Go~@
+                           Comment[ja]=囲碁~@
+                           Comment[ko]=바둑~@
+                           Comment[zh]=围棋~@
+                           Terminal=false~@
+                           Type=Application~%"
+                          out pics))))
+             #t)))))
+   (synopsis "Qt GUI to play the game of Go")
+   (description
+    "This a tool for Go players which performs the following functions:
+@itemize
+@item SGF editor,
+@item Analysis frontend for Leela Zero (or compatible engines),
+@item GTP interface (to play against an engine),
+@item IGS client (to play on the internet),
+@item Export games to a variety of formats.
+@end itemize")
+   (home-page "https://github.com/bernds/q5Go")
+   (license license:gpl2+)))

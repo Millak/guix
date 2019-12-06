@@ -320,14 +320,14 @@ asynchronous fashion.")
 (define-public nsd
   (package
     (name "nsd")
-    (version "4.2.2")
+    (version "4.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.nlnetlabs.nl/downloads/nsd/nsd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1ys608jyp5scc957q4brm094c97sxlwymina7d2nvzi51aa37cw3"))))
+        (base32 "1664wpglrwqk627xma10f9qa652vzmf90gsjd8pribyj74xrczc1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -595,14 +595,15 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "2.9.0")
+    (version "2.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://secure.nic.cz/files/knot-dns/"
                            "knot-" version ".tar.xz"))
        (sha256
-        (base32 "18i1kdyaqaskjyhmq888wml4d2p4ic1sbjynlb6ggfxsxzm38x6z"))
+        (base32
+         "0kd0v2w1c2by1l8jw91x16wkyyy9wh9lyr93g4w0qdmadjaj34gi"))
        (modules '((guix build utils)))
        (snippet
         '(begin

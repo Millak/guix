@@ -322,22 +322,6 @@ must contain the original contents of a narinfo file."
                     (and=> signature narinfo-signature->canonical-sexp))
                    str)))
 
-(define* (assert-valid-signature narinfo signature hash
-                                 #:optional (acl (current-acl)))
-  "Bail out if SIGNATURE, a canonical sexp representing the signature of
-NARINFO, doesn't match HASH, a bytevector containing the hash of NARINFO."
-  (let ((uri (uri->string (first (narinfo-uris narinfo)))))
-    (signature-case (signature hash acl)
-      (valid-signature #t)
-      (invalid-signature
-       (leave (G_ "invalid signature for '~a'~%") uri))
-      (hash-mismatch
-       (leave (G_ "hash mismatch for '~a'~%") uri))
-      (unauthorized-key
-       (leave (G_ "'~a' is signed with an unauthorized key~%") uri))
-      (corrupt-signature
-       (leave (G_ "signature on '~a' is corrupt~%") uri)))))
-
 (define* (read-narinfo port #:optional url
                        #:key size)
   "Read a narinfo from PORT.  If URL is true, it must be a string used to
@@ -526,6 +510,9 @@ initial connection on which HTTP requests are sent."
   (let connect ((port     port)
                 (requests requests)
                 (result   seed))
+    (define batch
+      (at-most 1000 requests))
+
     ;; (format (current-error-port) "connecting (~a requests left)..."
     ;;         (length requests))
     (let ((p (or port (guix:open-connection-for-uri
@@ -536,7 +523,7 @@ initial connection on which HTTP requests are sent."
       (when (file-port? p)
         (setvbuf p 'block (expt 2 16)))
 
-      ;; Send REQUESTS, up to a certain number, in a row.
+      ;; Send BATCH in a row.
       ;; XXX: Do our own caching to work around inefficiencies when
       ;; communicating over TLS: <http://bugs.gnu.org/22966>.
       (let-values (((buffer get) (open-bytevector-output-port)))
@@ -544,16 +531,21 @@ initial connection on which HTTP requests are sent."
         (set-http-proxy-port?! buffer (http-proxy-port? p))
 
         (for-each (cut write-request <> buffer)
-                  (at-most 1000 requests))
+                  batch)
         (put-bytevector p (get))
         (force-output p))
 
       ;; Now start processing responses.
-      (let loop ((requests requests)
-                 (result   result))
-        (match requests
+      (let loop ((sent      batch)
+                 (processed 0)
+                 (result    result))
+        (match sent
           (()
-           (reverse result))
+           (match (drop requests processed)
+             (()
+              (reverse result))
+             (remainder
+              (connect port remainder result))))
           ((head tail ...)
            (let* ((resp   (read-response p))
                   (body   (response-body-port resp))
@@ -564,9 +556,11 @@ initial connection on which HTTP requests are sent."
              (match (assq 'connection (response-headers resp))
                (('connection 'close)
                 (close-connection p)
-                (connect #f tail result))         ;try again
+                (connect #f                       ;try again
+                         (append tail (drop requests processed))
+                         result))
                (_
-                (loop tail result))))))))))       ;keep going
+                (loop tail (+ 1 processed) result)))))))))) ;keep going
 
 (define (read-to-eof port)
   "Read from PORT until EOF is reached.  The data are discarded."

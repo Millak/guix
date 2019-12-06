@@ -92,7 +92,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.21.14")
+    (version "0.21.16")
     (source (origin
               (method url-fetch)
               (uri
@@ -101,7 +101,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "0iknnm9xvwfgk8h82hjwrmbijpk9l0dgap0794c2nyg8i66qlb0y"))))
+                "14jd9byvxlxmn9ygkyap1izy0d7i2lsssib74y3q8f6pyzfipkrh"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Ddocumentation=true"))) ;the default is 'false'...
@@ -183,7 +183,7 @@ player daemon.")
 (define-public ncmpc
   (package
     (name "ncmpc")
-    (version "0.35")
+    (version "0.36")
     (source (origin
               (method url-fetch)
               (uri
@@ -192,7 +192,7 @@ player daemon.")
                               "/ncmpc-" version ".tar.xz"))
               (sha256
                (base32
-                "0hfjvm1p0z7x6gfn5xhl5c0jsmidvz0qfl04pq45x4chh9iiwkxx"))))
+                "0b1yg93is9057p9d7vfv5nz85d11p6jq94fw07jn3zlfzhyqfcj6"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

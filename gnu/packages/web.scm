@@ -103,6 +103,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -110,7 +111,6 @@
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages lisp)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages ncurses)
@@ -546,21 +546,24 @@ supported at your website.")
 (define-public fcgi
   (package
     (name "fcgi")
-    (version "2.4.0")
+    (version "2.4.2")
     (source
      (origin
-       (method url-fetch)
+       (method git-fetch)
        ;; Upstream has disappeared.
-       (uri (string-append "https://sources.archlinux.org/other/packages/fcgi/"
-                           "fcgi-" version ".tar.gz"))
+       (uri (git-reference
+             (url "https://github.com/FastCGI-Archives/fcgi2")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1f857wnl1d6jfrgfgfpz3zdaj8fch3vr13mnpcpvy8bang34bz36"))
-       (patches (search-patches "fcgi-2.4.0-poll.patch"
-                                "fcgi-2.4.0-gcc44-fixes.patch"))))
+        (base32 "1jhz6jfwv5kawa8kajvg18nfwc1b30f38zc0lggszd1vcmrwqkz1"))))
     (build-system gnu-build-system)
     ;; Parallel building is not supported.
     (arguments `(#:parallel-build? #f))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)))
     ;; This is an archived fork of the original home page, www.fastcgi.com.
     (home-page "https://fastcgi-archives.github.io/")
     (synopsis "Language-independent, high-performant extension to CGI")
@@ -5329,25 +5332,27 @@ additional capabilities.")
 (define-public xinetd
   (package
     (name "xinetd")
-    (version "2.3.15")
+    ;; This is the maintenance fork currently used by openSUSE and Debian.
+    (version "2.3.15.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/xinetd-org/xinetd.git")
-             (commit (string-append "xinetd-"
-                                    (string-join (string-split version #\.)
-                                                 "-")))))
+             (url "https://github.com/openSUSE/xinetd.git")
+             (commit version)))
        (file-name (git-file-name name version))
-       (patches (search-patches "xinetd-CVE-2013-4342.patch"
-                                "xinetd-fix-fd-leak.patch"))
        (sha256
-        (base32 "0wjai6qagcgxpa1khh639ih7kswgkryc7ll1i4hxhs29sc7irdcn"))))
+        (base32 "0lrp3lcj6azhjplwxws2rx40bkyp6i6bp7n77ndcisb7ninad30q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-loadavg")
        #:tests? #f))                    ; no tests
-    (home-page "https://github.com/xinetd-org/xinetd")
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://github.com/openSUSE/xinetd")
     (synopsis "Internet services daemon")
     (description "@code{xinetd}, a more secure replacement for @code{inetd},
 listens for incoming requests over a network and launches the appropriate
@@ -5866,27 +5871,27 @@ encoder/decoder based on the draft-12 specification for UBJSON.")
 (define-public java-tomcat
   (package
     (name "java-tomcat")
-    (version "8.5.38")
+    (version "8.5.46")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/tomcat/tomcat-8/v"
                                   version "/src/apache-tomcat-" version "-src.tar.gz"))
               (sha256
                (base32
-                "13pbsyk39g1qph82nngp54mqycmg60rxlxwy4yszsssahrqnggb2"))
+                "0fb49gsqa3r6jrwc54yynvsakq9qbzr2pbxr7a29c2zvja2v65iq"))
               (modules '((guix build utils)))
               ;; Delete bundled jars.
               (snippet
                '(begin
                   (for-each delete-file (find-files "." "\\.jar$"))
+                  (for-each delete-file (find-files "." "\\.bat$"))
                   #t))))
     (build-system ant-build-system)
     (inputs
-     `(("java-eclipse-jdt-core" ,java-eclipse-jdt-core)))
-    (native-inputs
-     `(("java-junit" ,java-junit)))
+     `(("java-commons-daemon" ,java-commons-daemon)
+       ("java-ecj" ,java-ecj)))
     (arguments
-     `(#:build-target "package"
+     `(#:build-target "deploy"
        #:tests? #f; requires downloading some files.
        #:phases
        (modify-phases %standard-phases
@@ -5909,6 +5914,34 @@ encoder/decoder based on the draft-12 specification for UBJSON.")
                (("<filter token=\"VERSION_BUILT\" value=.*")
                 "<filter token=\"VERSION_BUILT\" value=\"Jan 1 1970 00:00:00 UTC\"/>"))
              #t))
+         (add-after 'unpack 'modify-deploy
+           (lambda _
+             ;; The Tomcat build downloads and copies these files to the
+             ;; bin and lib directory.
+             ;; We instead symlink to the input (see below).
+             (substitute* "build.xml"
+               (("<copy tofile=\"\\$\\{tomcat.build\\}/bin/commons-daemon.jar.*") "")
+               (("<copy file=\"\\$\\{jdt.jar\\}\" todir=\"\\$\\{tomcat.build\\}/lib\"/>")
+                ""))
+             #t))
+         (add-after 'install 'symlink-commons-daemon
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((commons-daemon (assoc-ref inputs "java-commons-daemon"))
+                    (files (find-files commons-daemon "commons-daemon-.*\\.jar"))
+                    (daemon-jar (car files))
+                    (out-bin (string-append (assoc-ref outputs "out") "/bin"))
+                    (target (string-append out-bin "/commons-daemon.jar")))
+               (symlink daemon-jar target)
+               #t)))
+         (add-after 'install 'symlink-java-ecj
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((java-ecj (assoc-ref inputs "java-ecj"))
+                    (files (find-files java-ecj "ecj.*\\.jar"))
+                    (java-ecj-jar (car files))
+                    (out-lib (string-append (assoc-ref outputs "out") "/lib"))
+                    (target (string-append out-lib "/java-ecj.jar")))
+               (symlink java-ecj-jar target)
+               #t)))
          (add-after 'unpack 'generate-properties
            (lambda _
              ;; This could have been passed to make-flags, but getcwd returns
@@ -5919,7 +5952,10 @@ encoder/decoder based on the draft-12 specification for UBJSON.")
                    (string-append "base.path=" (getcwd) "/downloads\n"))))
              #t))
          (replace 'install
-           (install-jars "output/build/lib")))))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (copy-recursively "output/build" out))
+             #t)))))
     (home-page "https://tomcat.apache.org")
     (synopsis "Java Servlet, JavaServer Pages, Java Expression Language and Java
 WebSocket")
@@ -6030,7 +6066,7 @@ Web Server.")
              #t)))))
     (inputs
      `(("slf4j" ,java-slf4j-api)
-       ("servlet" ,java-tomcat)))
+       ("servlet" ,java-javaee-servletapi)))
     (native-inputs
      `(("junit" ,java-junit)
        ("hamcrest" ,java-hamcrest-all)
@@ -6218,7 +6254,7 @@ or embedded instantiation.  This package provides the JMX management.")))
              #t)))))
     (inputs
      `(("slf4j" ,java-slf4j-api)
-       ("servlet" ,java-tomcat)
+       ("java-javaee-servletapi" ,java-javaee-servletapi)
        ("http" ,java-eclipse-jetty-http)
        ("io" ,java-eclipse-jetty-io)
        ("util" ,java-eclipse-jetty-util)))))
@@ -6313,7 +6349,7 @@ artifact.")))
              #t)))))
     (inputs
      `(("slf4j" ,java-slf4j-api)
-       ("servlet" ,java-tomcat)
+       ("servlet" ,java-javaee-servletapi)
        ("http" ,java-eclipse-jetty-http)
        ("server" ,java-eclipse-jetty-server)
        ("util" ,java-eclipse-jetty-util)))
@@ -6356,7 +6392,7 @@ infrastructure")))
              #t)))))
     (inputs
      `(("slf4j" ,java-slf4j-api)
-       ("servlet" ,java-tomcat)
+       ("java-javaee-servletapi" ,java-javaee-servletapi)
        ("http" ,java-eclipse-jetty-http)
        ("http-test" ,java-eclipse-jetty-http-test-classes)
        ("io" ,java-eclipse-jetty-io)
@@ -6491,7 +6527,7 @@ container.")))
        ("java-eclipse-jetty-servlet-9.2" ,java-eclipse-jetty-servlet-9.2)
        ("java-eclipse-jetty-security-9.2" ,java-eclipse-jetty-security-9.2)
        ("java-eclipse-jetty-xml-9.2" ,java-eclipse-jetty-xml-9.2)
-       ("java-tomcat" ,java-tomcat)
+       ("java-javaee-servletapi" ,java-javaee-servletapi)
        ,@(package-inputs java-eclipse-jetty-util-9.2)))
     (native-inputs
      `(("java-eclipse-jetty-io-9.2" ,java-eclipse-jetty-io-9.2)

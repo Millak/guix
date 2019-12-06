@@ -25,6 +25,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019 Christopher Lemmer Webber <cwebber@dustycloud.org>
+;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -553,14 +554,14 @@ plugins are provided.")
 (define-public calf
   (package
     (name "calf")
-    (version "0.90.2")
+    (version "0.90.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://calf-studio-gear.org/files/calf-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0bn4j1klw2yfxz8clbmasaydifq25rdfsv0n6iisxrzcj1lx7sgh"))))
+                "17x4hylgq4dn9qycsdacfxy64f5cv57n2qgkvsdp524gnqzw4az3"))))
     (build-system gnu-build-system)
     (inputs
      `(("fluidsynth" ,fluidsynth)
@@ -2300,6 +2301,29 @@ aimed at audio/musical applications.")
                  (base32
                   "04fajrass3ymr72flx5js5vxc601ccrmx8ny8scp0rw7j0igyjdr")))))))
 
+(define-public resample
+  (package
+    (name "resample")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ccrma.stanford.edu/~jos/gz/resample-"
+                                  version
+                                  ".tar.gz"))
+              (sha256 (base32
+                       "074zj8ydp05yy1hjcglfv3hkvj4cm50f9nralka1992pm6yf8yvy"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)
+       ("libtool" ,libtool)))
+    (synopsis "Real-time library for sampling rate conversion")
+    (description "The @command{resample} software package contains free
+sampling-rate conversion and filter design utilities.")
+    (home-page "https://ccrma.stanford.edu/~jos/resample/Free_Resampling_Software.html")
+    (license license:lgpl2.1+)))
+
 (define-public rubberband
   (package
     (name "rubberband")
@@ -2682,7 +2706,7 @@ Tracker 3 S3M and Impulse Tracker IT files.")
        ("automake" ,automake)
        ("libtool" ,libtool)
        ("file" ,file)))
-    (home-page "http://www.surina.net/soundtouch/")
+    (home-page "https://www.surina.net/soundtouch/")
     (synopsis
      "Audio processing library for changing tempo, pitch and playback rate")
     (description
@@ -3171,21 +3195,23 @@ with support for HD extensions.")
 (define-public bs1770gain
   (package
     (name "bs1770gain")
-    (version "0.6.0")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/bs1770gain/bs1770gain/"
                            version "/bs1770gain-" version ".tar.gz"))
        (sha256
-        (base32 "0nnqixvw3x7i22nsr54n4bgm35z9nh3d9qj5s75cfd3ajjsjndyh"))
+        (base32 "15nvlh9bg0a52cpg2mii17mlzmxszwivjjalbb4np1v5nj8l5fk6"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; XXX
+           (substitute* (find-files "." "\\.[ch]$")
+             (("^ \\* N..o.*") ""))
            (substitute* "libbg/bgx.c"
-             (("#define BS.* ") "#define BS ")
-             (("BS.*NO?.*N.*S.*E.*N.*SE?") "NO")
+             (("#define BG.* ") "#define BS ")
+             (("BG.*NO?.*N.*S.*E.*N.*SE?") "NO")
              (("\"( #|N).*\"") "\"\""))
            (substitute* (list "config.h"
                               "configure.ac"
@@ -3354,14 +3380,14 @@ on the ALSA software PCM plugin.")
 (define-public snd
   (package
     (name "snd")
-    (version "19.6")
+    (version "19.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://ccrma-ftp.stanford.edu/pub/Lisp/"
                                   "snd-" version ".tar.gz"))
               (sha256
                (base32
-                "0s2qv8sznvw6559bi39qj9p072azh9qcb2b86w6w8clz2azjaa76"))))
+                "13s8fahpsjygjdrcwmprcrz23ny3klaj2rh2xzdv3bfs69gxvhys"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -3906,8 +3932,8 @@ outputs and effect algorithms. Effects and audio objects can be combined in
 various ways, and their parameters can be controlled by operator objects like
 oscillators and MIDI-CCs. A versatile console mode user-interface is included
 in the package.")
-    ;; As an exception to the above, the C, C++ and python implementations 
-    ;; of the Ecasound Control Interface (ECI) are licensed under the LGPL 
-    ;; (see the file 'COPYING.LGPL'). This allows writing ECI applications 
+    ;; As an exception to the above, the C, C++ and python implementations
+    ;; of the Ecasound Control Interface (ECI) are licensed under the LGPL
+    ;; (see the file 'COPYING.LGPL'). This allows writing ECI applications
     ;; that are not licensed under GPL.
     (license (list license:gpl2 license:lgpl2.1))))

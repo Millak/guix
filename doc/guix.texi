@@ -47,7 +47,7 @@ Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017 Christopher Allan Webber@*
 Copyright @copyright{} 2017, 2018 Marius Bakke@*
-Copyright @copyright{} 2017 Hartmut Goebel@*
+Copyright @copyright{} 2017, 2019 Hartmut Goebel@*
 Copyright @copyright{} 2017, 2019 Maxim Cournoyer@*
 Copyright @copyright{} 2017, 2018, 2019 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
@@ -68,6 +68,7 @@ Copyright @copyright{} 2019 Ivan Petkov@*
 Copyright @copyright{} 2019 Jakob L. Kreuze@*
 Copyright @copyright{} 2019 Kyle Andrews@*
 Copyright @copyright{} 2019 Alex Griffin@*
+Copyright @copyright{} 2019 Guillaume Le Vaillant@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -305,6 +306,7 @@ Services
 * Virtualization Services::     Virtualization services.
 * Version Control Services::    Providing remote access to Git repositories.
 * Game Services::               Game servers.
+* PAM Mount Service::           Service to mount volumes when logging in.
 * Miscellaneous Services::      Other services.
 
 Defining Services
@@ -6408,6 +6410,25 @@ passes flags specified by the @code{#:make-maker-flags} or
 Which Perl package is used can be specified with @code{#:perl}.
 @end defvr
 
+@defvr {Scheme Variable} qt-build-system
+This variable is exported by @code{(guix build-system qt)}.  It
+is intended for use with applications using Qt or KDE.
+
+This build system adds the phase @code{qt-wrap} to the ones defined by
+@var{cmake-build-system}, after the @code{install} phase.
+
+This phase searches for Qt5 plugin paths, QML paths and some XDG in the inputs
+and output.  In case some path is found, all programs in the output's
+@file{bin/}, @file{sbin/}, @file{libexec/} and @file{lib/libexec/} directories
+are wrapped in scripts defining the necessary environment variables.
+
+It is possible to exclude specific package outputs from that wrapping process
+by listing their names in the @code{#:qt-wrap-excluded-outputs} parameter.
+This is useful when an output is known not to contain any Qt binaries, and
+where wrapping would gratuitously add a dependency of that output on Qt, KDE,
+or such.
+@end defvr
+
 @defvr {Scheme Variable} r-build-system
 This variable is exported by @code{(guix build-system r)}.  It
 implements the build procedure used by @uref{https://r-project.org, R}
@@ -7682,10 +7703,13 @@ content is directly passed as a string.
 
 @deffn {Scheme Procedure} local-file @var{file} [@var{name}] @
    [#:recursive? #f] [#:select? (const #t)]
-Return an object representing local file @var{file} to add to the store; this
-object can be used in a gexp.  If @var{file} is a relative file name, it is looked
-up relative to the source file where this form appears.  @var{file} will be added to
-the store under @var{name}--by default the base name of @var{file}.
+Return an object representing local file @var{file} to add to the store;
+this object can be used in a gexp.  If @var{file} is a literal string
+denoting a relative file name, it is looked up relative to the source
+file where it appears; if @var{file} is not a literal string, it is
+looked up relative to the current working directory at run time.
+@var{file} will be added to the store under @var{name}--by default the
+base name of @var{file}.
 
 When @var{recursive?} is true, the contents of @var{file} are added recursively; if @var{file}
 designates a flat file and @var{recursive?} is true, its contents are added, and its
@@ -11931,6 +11955,7 @@ declaration.
 * Virtualization Services::     Virtualization services.
 * Version Control Services::    Providing remote access to Git repositories.
 * Game Services::               Game servers.
+* PAM Mount Service::           Service to mount volumes when logging in.
 * Guix Services::               Services relating specifically to Guix.
 * Miscellaneous Services::      Other services.
 @end menu
@@ -15585,6 +15610,13 @@ capabilities to ordinary users.  For example, an ordinary user can be granted
 the capability to suspend the system if the user is logged in locally.
 @end deffn
 
+@defvr {Scheme Variable} polkit-wheel-service
+Service that adds the @code{wheel} group as admins to the Polkit
+service.  This makes it so that users in the @code{wheel} group are queried
+for their own passwords when performing administrative actions instead of
+@code{root}'s, similar to the behaviour used by @code{sudo}.
+@end defvr
+
 @defvr {Scheme Variable} upower-service-type
 Service that runs @uref{https://upower.freedesktop.org/, @command{upowerd}}, a
 system-wide monitor for power consumption and battery levels, with the given
@@ -15720,6 +15752,41 @@ bluetooth keyboard or mouse.
 
 Users need to be in the @code{lp} group to access the D-Bus service.
 @end deffn
+
+@defvr {Scheme Variable} gnome-keyring-service-type
+This is the type of the service that adds the
+@uref{https://wiki.gnome.org/Projects/GnomeKeyring, GNOME Keyring}.  Its
+value is a @code{gnome-keyring-configuration} object (see below.)
+
+This service adds the @code{gnome-keyring} package to the system profile
+and extends PAM with entries using @code{pam_gnome_keyring.so}, unlocking
+a user's login keyring when they log in or setting its password with passwd.
+@end defvr
+
+@deftp {Data Type} gnome-keyring-configuration
+Configuration record for the GNOME Keyring service.
+
+@table @asis
+@item @code{keyring} (default: @code{gnome-keyring})
+The GNOME keyring package to use.
+
+@item @code{pam-services}
+A list of @code{(@var{service} . @var{kind})} pairs denoting PAM
+services to extend, where @var{service} is the name of an existing
+service to extend and @var{kind} is one of @code{login} or
+@code{passwd}.
+
+If @code{login} is given, it adds an optional
+@code{pam_gnome_keyring.so} to the auth block without arguments and to
+the session block with @code{auto_start}.  If @code{passwd} is given, it
+adds an optional @code{pam_gnome_keyring.so} to the password block
+without arguments.
+
+By default, this field contains ``gdm-password'' with the value @code{login}
+and ``passwd'' is with the value @code{passwd}.
+@end table
+@end deftp
+
 
 @node Sound Services
 @subsection Sound Services
@@ -20447,7 +20514,7 @@ A simple services setup for nginx with php can look like this:
                            (server-name '("example.com"))
                            (root "/srv/http/")
                            (locations
-                            (list (nginx-php-fpm-location)))
+                            (list (nginx-php-location)))
                            (listen '("80"))
                            (ssl-certificate #f)
                            (ssl-certificate-key #f)))
@@ -24656,6 +24723,89 @@ The port to bind the server to.
 @end deftp
 
 
+@node PAM Mount Service
+@subsection PAM Mount Service
+@cindex pam-mount
+
+The @code{(gnu services pam-mount)} module provides a service allowing
+users to mount volumes when they log in.  It should be able to mount any
+volume format supported by the system.
+
+@defvar {Scheme Variable} pam-mount-service-type
+Service type for PAM Mount support.
+@end defvar
+
+@deftp {Data Type} pam-mount-configuration
+Data type representing the configuration of PAM Mount.
+
+It takes the following parameters:
+
+@table @asis
+@item @code{rules}
+The configuration rules that will be used to generate
+@file{/etc/security/pam_mount.conf.xml}.
+
+The configuration rules are SXML elements (@pxref{SXML,,, guile, GNU
+Guile Reference Manual}), and the the default ones don't mount anything
+for anyone at login:
+
+@lisp
+`((debug (@@ (enable "0")))
+  (mntoptions (@@ (allow ,(string-join
+                          '("nosuid" "nodev" "loop"
+                            "encryption" "fsck" "nonempty"
+                            "allow_root" "allow_other")
+                          ","))))
+  (mntoptions (@@ (require "nosuid,nodev")))
+  (logout (@@ (wait "0")
+             (hup "0")
+             (term "no")
+             (kill "no")))
+  (mkmountpoint (@@ (enable "1")
+                   (remove "true"))))
+@end lisp
+
+Some @code{volume} elements must be added to automatically mount volumes
+at login.  Here's an example allowing the user @code{alice} to mount her
+encrypted @code{HOME} directory and allowing the user @code{bob} to mount
+the partition where he stores his data:
+
+@lisp
+(define pam-mount-rules
+`((debug (@@ (enable "0")))
+            (volume (@@ (user "alice")
+                       (fstype "crypt")
+                       (path "/dev/sda2")
+                       (mountpoint "/home/alice")))
+            (volume (@@ (user "bob")
+                       (fstype "auto")
+                       (path "/dev/sdb3")
+                       (mountpoint "/home/bob/data")
+                       (options "defaults,autodefrag,compress")))
+            (mntoptions (@@ (allow ,(string-join
+                                    '("nosuid" "nodev" "loop"
+                                      "encryption" "fsck" "nonempty"
+                                      "allow_root" "allow_other")
+                                    ","))))
+            (mntoptions (@@ (require "nosuid,nodev")))
+            (logout (@@ (wait "0")
+                       (hup "0")
+                       (term "no")
+                       (kill "no")))
+            (mkmountpoint (@@ (enable "1")
+                             (remove "true")))))
+
+(service pam-mount-service-type
+         (pam-mount-configuration
+           (rules pam-mount-rules)))
+@end lisp
+
+The complete list of possible options can be found in the man page for
+@uref{http://pam-mount.sourceforge.net/pam_mount.conf.5.html, pam_mount.conf}.
+@end table
+@end deftp
+
+
 @node Guix Services
 @subsection Guix Services
 
@@ -26297,6 +26447,18 @@ keyring.
 @item @code{identity} (default: @code{#f})
 If specified, the path to the SSH private key to use to authenticate with the
 remote host.
+
+@item @code{host-key} (default: @code{#f})
+This should be the SSH host key of the machine, which looks like this:
+
+@example
+ssh-ed25519 AAAAC3Nz@dots{} root@@example.org
+@end example
+
+When @code{host-key} is @code{#f}, the server is authenticated against
+the @file{~/.ssh/known_hosts} file, just like the OpenSSH @command{ssh}
+client does.
+
 @end table
 @end deftp
 

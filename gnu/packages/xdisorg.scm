@@ -95,14 +95,14 @@
 (define-public arandr
   (package
     (name "arandr")
-    (version "0.1.9")
+    (version "0.1.10")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://christian.amsuess.com/tools/" name
-                                  "/files/" name "-" version ".tar.gz"))
+              (uri (string-append "https://christian.amsuess.com/tools/arandr"
+                                  "/files/arandr-" version ".tar.gz"))
               (sha256
                (base32
-                "1i3f1agixxbfy4kxikb2b241p7c2lg73cl9wqfvlwz3q6zf5faxv"))
+                "135q0llvm077jil2fr92ssw3p095m4r8jfj0lc5rr3m71n4srj6v"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -762,7 +762,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.58")
+    (version "5.59")
     (source (origin
              (method url-fetch)
              (uri (list (string-append "http://sillycycle.com/xlock/"
@@ -773,7 +773,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                                        "xlockmore-" version ".tar.xz")))
              (sha256
               (base32
-               "1va11sbv5lbkxkp0i0msz5md3n2n82nzppk27rzdrw7y79vq37zw"))))
+               "0lajc5a4lki33b9mzfsi74q4hbivbmhwysp7mib4ivnyxianhaid"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--enable-appdefaultdir="

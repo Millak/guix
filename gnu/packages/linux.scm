@@ -356,42 +356,42 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                         "linux-" version ".tar.xz"))
     (sha256 hash)))
 
-(define-public linux-libre-5.3-version "5.3.13")
+(define-public linux-libre-5.3-version "5.3.15")
 (define-public linux-libre-5.3-pristine-source
   (let ((version linux-libre-5.3-version)
-        (hash (base32 "0by9lmgmllf19yflzm9f24cy9glcq6m73ywm25bddsnh0czya14z")))
+        (hash (base32 "15qidl06lyfylx1b43b4wz2zfkr4000bkr7ialslmb7yi7mamj6f")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.3)))
 
-(define-public linux-libre-4.19-version "4.19.86")
+(define-public linux-libre-4.19-version "4.19.88")
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1xmzcxsiydym574y7k313qd8s4c3mdahpb3nx3cingfl36ivnb5z")))
+        (hash (base32 "1gizkdmq46ykw7ya3hibd6lalww2kvsia346pq3xvrk6s5mkp4n1")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.156")
+(define-public linux-libre-4.14-version "4.14.158")
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1h47fxfbq0d5ry7j3jxz45v5c4103qncgm2vydpz6zdx1kmrz27q")))
+        (hash (base32 "1cqvr8pgqx005a9qyphqykakzwc54adq8mmdc9sgrxkkw9rfqj8d")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.203")
+(define-public linux-libre-4.9-version "4.9.206")
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "0jd8n8y3yf59sgfjhgjxsznxng7s4b30x5vdb48wrpgqmz7m1n8w")))
+        (hash (base32 "1mnabj0d5ra40hijwynnzxnh5w1qnvkvj2l3ydsdhkdwm6cpiwhx")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
 
-(define-public linux-libre-4.4-version "4.4.203")
+(define-public linux-libre-4.4-version "4.4.206")
 (define-public linux-libre-4.4-pristine-source
   (let ((version linux-libre-4.4-version)
-        (hash (base32 "02krniihix9mb9bc0ffs03q4i9grjhwymnfp10h1r6gmxa554qlj")))
+        (hash (base32 "14ylg9cm7z12mvkzg8z92gsw0libw9xz392ayzw0d9cgw1py39ax")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.4)))
@@ -2164,11 +2164,16 @@ the command line or a script.")
                 "1kp8mqg2pbxq4xzpianypadfxcsyfgwcaqgqia6h9fsq6zyh4z0s"))))
     (build-system python-build-system)
     (arguments
-     ;; The setup.py script expects python-2.
-     `(#:python ,python-2
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-build-with-python3
+           (lambda _
+             (substitute* "setup.py"
+               (("itervalues") "values"))
+             #t)))
        ;; There are currently no checks in the package.
        #:tests? #f))
-    (native-inputs `(("python" ,python-2)))
+    (native-inputs `(("python" ,python)))
     (home-page "http://guichaz.free.fr/iotop/")
     (synopsis
      "Displays the IO activity of running processes")
@@ -2886,7 +2891,6 @@ interface.")
                             (string-append "REG_BIN=" regdb
                                            "/lib/crda/regulatory.bin")))))
     (native-inputs `(("pkg-config" ,pkg-config)
-                     ("python" ,python-2)
                      ("wireless-regdb" ,wireless-regdb)))
     (inputs `(("libnl" ,libnl)))
     (home-page
@@ -3746,7 +3750,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
 (define-public bluez
   (package
     (name "bluez")
-    (version "5.50")
+    (version "5.51")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3754,7 +3758,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "048r91vx9gs5nwwbah2s0xig04nwk14c5s0vb7qmaqdvighsmz2z"))))
+                "1fpbsl9kkfq6mn6n0dg4h0il4c7fzhwhn79gh907k5b2kwszpvgb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -4094,7 +4098,7 @@ disks and SD cards.  This package provides the userland utilities.")
   (package
     (inherit f2fs-tools-1.7)
     (name "f2fs-tools")
-    (version "1.12.0")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4102,7 +4106,7 @@ disks and SD cards.  This package provides the userland utilities.")
                     "/f2fs-tools.git/snapshot/f2fs-tools-" version ".tar.gz"))
               (sha256
                (base32
-                "15pn2fm9knn7p1vzfzy6msnrdl14p6y1gn4m2ka6ba5bzx6lw4p2"))))
+                "0z9c0y3qq75iyqknl5k0v7v46l8c3pcifpqb0yqalrs24blkm7dk"))))
     (inputs
      `(("libuuid" ,util-linux)))))
 
@@ -4945,14 +4949,14 @@ running boot option, and more.")
 (define-public sysstat
   (package
     (name "sysstat")
-    (version "12.1.6")
+    (version "12.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://pagesperso-orange.fr/sebastien.godard/"
                                   "sysstat-" version ".tar.xz"))
               (sha256
                (base32
-                "0agi17n82k363mf9f7cky3isq195hw112vs98v26yfhm0v2g6lpp"))))
+                "0xc3983ccr0dwab1px2jhbgj86pfmmr29k7ggnwjwm1qigmriak1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; No test suite.
@@ -5470,7 +5474,7 @@ the MTP device as a file system.")
 (define-public procenv
   (package
    (name "procenv")
-   (version "0.50")
+   (version "0.51")
    (source
     (origin
      (method url-fetch)
@@ -5478,7 +5482,7 @@ the MTP device as a file system.")
                          version ".tar.gz"))
      (file-name (string-append name "-" version ".tar.gz"))
      (sha256
-      (base32 "0dvscyf47i3j5ay0amncqmqw9kd916689r2pqdvpnsrhp6j46zp1"))))
+      (base32 "1javw97yw0qvjmj14js8vw6nsfyf2xc0kfiyq5f2hsp0553w2cdq"))))
    (build-system gnu-build-system)
    (arguments `(#:configure-flags '("--disable-silent-rules")))
    (native-inputs `(("pkg-config" ,pkg-config)))
@@ -5543,7 +5547,8 @@ libraries, which are often integrated directly into libfabric.")
        (patches (search-patches
                  "psm-arch.patch"     ; uname -p returns "unknown" on Debian 9
                  "psm-ldflags.patch"  ; build shared lib with LDFLAGS
-                 "psm-repro.patch"))))  ; reproducibility
+                 "psm-repro.patch"    ; reproducibility
+                 "psm-disable-memory-stats.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (inputs `(("libuuid" ,util-linux)))
