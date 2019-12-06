@@ -85,6 +85,9 @@
             raw-derivation-closure
             raw-derivation-closure?
 
+            object-sources
+            object-sources?
+
             load-path-expression
             gexp-modules
 
@@ -321,6 +324,57 @@ The expander specifies how an object is converted to its sexp representation."
     (if (derivation? obj)
         (mlet %store-monad ((refs (sorted-references (derivation-file-name obj))))
           (text-file "graph" (object->string refs)))
+        (return obj))))
+
+;; Representation of all the sources and fixed-output derivations OBJ refers
+;; to, directly or indirectly.
+(define-record-type <object-sources>
+  (object-sources obj)
+  object-sources?
+  (obj   object-sources-object))
+
+(define-gexp-compiler (object-sources-compiler (obj <object-sources>)
+                                               system target)
+  (define (derivation-fixed-output-requirements drv)
+    (derivation-input-fold (lambda (input result)
+                             (let ((drv (derivation-input-derivation input)))
+                               (if (fixed-output-derivation? drv)
+                                   (cons drv result)
+                                   result)))
+                           '()
+                           (derivation-inputs drv)
+
+                           ;; Skip the dependencies of fixed-output
+                           ;; derivations (e.g., 'git' for a 'git-fetch'
+                           ;; derivation.)
+                           #:skip-dependencies?
+                           (compose fixed-output-derivation?
+                                    derivation-input-derivation)))
+
+  (define (derivation-recursive-sources drv)
+    (delete-duplicates
+     (derivation-input-fold (lambda (input result)
+                              (let ((drv (derivation-input-derivation input)))
+                                (append (derivation-sources drv)
+                                        result)))
+                            '()
+                            (derivation-inputs drv))))
+
+  (mlet %store-monad ((obj (lower-object (object-sources-object obj)
+                                         system #:target target)))
+    (if (derivation? obj)
+        (let* ((drvs    (derivation-fixed-output-requirements obj))
+               (sources (derivation-recursive-sources obj))
+               (pairs   (append (map (lambda (drv)
+                                       `(,(store-path-package-name
+                                           (derivation-file-name drv))
+                                         ,drv))
+                                     drvs)
+                                (map (lambda (file)
+                                       `(,(basename file) ,file))
+                                     sources)))
+               (union   (file-union "sources" pairs)))
+          (lower-object union system #:target target))
         (return obj))))
 
 
