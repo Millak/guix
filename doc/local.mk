@@ -5,6 +5,7 @@
 # Copyright © 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
+# Copyright © 2019 Timothy Sample <samplet@ngyro.com>
 #
 # This file is part of GNU Guix.
 #
@@ -247,3 +248,25 @@ $(srcdir)/%D%/guix-daemon.1: guix-daemon$(EXEEXT)
 
 endif
 endif
+
+# Reproducible tarball
+
+# Generate 'version.texi' reproducibly using metadata from Git rather than
+# using metadata from the filesystem.  This is expected to generate warnings:
+#
+#   Makefile:7376: warning: overriding recipe for target 'doc/stamp-vti'
+#   Makefile:5098: warning: ignoring old recipe for target 'doc/stamp-vti'
+$(srcdir)/doc/stamp-vti: $(srcdir)/doc/guix.texi $(top_srcdir)/configure
+	$$(AM_V_GEN)set -e;						\
+	export LANG=C LANGUAGE=C LC_ALL=C LC_TIME=C; 			\
+	export TZ=UTC0;							\
+	timestamp=$$(git log --pretty=format:%ct -n1 -- $< 2>/dev/null	\
+		|| echo $(SOURCE_DATE_EPOCH))				\
+	dmy=$$(date --date="@$$timestamp" "+%-d %B %Y");		\
+	my=$$(date --date="@$$timestamp" "+%B %Y");			\
+	{ echo "@set UPDATED $$dmy";					\
+	  echo "@set UPDATED-MONTH $$my";				\
+	  echo "@set EDITION $(VERSION)";				\
+	  echo "@set VERSION $(VERSION)"; } > $@-t;			\
+	mv $@-t $@;							\
+	cp $@ $(srcdir)/doc/version.texi
