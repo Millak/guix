@@ -84,7 +84,7 @@
 ;;;
 ;;; Code:
 
-(define %bootstrap-guile+guild
+(define-public %bootstrap-guile+guild
   ;; This package combines %bootstrap-guile with guild, which is not included
   ;; in %bootstrap-guile.  Guild is needed to build gash-boot and
   ;; gash-core-utils-boot because it is dependency of the Guile build system.
@@ -133,7 +133,8 @@
     (synopsis "Bootstrap Guile plus Guild")
     (description "Bootstrap Guile with added Guild")
     (home-page #f)
-    (license (package-license guile-2.0))))
+    (license (package-license guile-2.0))
+    (properties '((hidden? . #t)))))
 
 (define mes-boot
   (package

@@ -21,7 +21,13 @@
   #:use-module (guix modules)
   #:use-module ((guix packages) #:select (default-guile))
   #:use-module ((guix self) #:select (make-config.scm))
-  #:use-module (gnu packages bootstrap)
+  #:use-module ((guix utils)
+                #:select (version-major+minor substitute-keyword-arguments))
+  #:use-module (guix packages)
+  #:use-module (guix build-system trivial)
+  #:use-module (gnu packages commencement)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu system)
   #:use-module (gnu system shadow)
   #:use-module (gnu system file-systems)
@@ -43,6 +49,73 @@
 ;;; metal!
 ;;;
 ;;; Code:
+
+(define* (hash-script obj #:key (guile (default-guile)))
+  "Return a derivation that computes the SHA256 hash of OBJ, using Guile and
+only pure Guile code."
+  (define hashing
+    (package
+      (inherit guile-hashing)
+      (arguments
+       `(#:guile ,guile
+         ,@(package-arguments guile-hashing)))
+      (native-inputs `(("guile" ,guile)))))
+
+  (define build
+    ;; Compute and display the SHA256 of OBJ.  Do that in pure Scheme: it's
+    ;; slower, but removes the need for a full-blown C compiler and GNU
+    ;; userland to get libgcrypt, etc.
+    (with-extensions (list hashing)
+      (with-imported-modules (source-module-closure
+                              '((guix serialization)))
+        #~(begin
+            (use-modules (hashing sha-2)
+                         (guix serialization)
+                         (rnrs io ports)
+                         (rnrs bytevectors)
+                         (ice-9 match))
+
+            (define (port-sha256 port)
+              ;; Return the SHA256 of the data read from PORT.
+              (define bv (make-bytevector 65536))
+              (define hash (make-sha-256))
+
+              (let loop ()
+                (match (get-bytevector-n! port bv 0
+                                          (bytevector-length bv))
+                  ((? eof-object?)
+                   (sha-256-finish! hash)
+                   hash)
+                  (n
+                   (sha-256-update! hash bv 0 n)
+                   (loop)))))
+
+            (define (file-sha256 file)
+              ;; Return the SHA256 of FILE.
+              (call-with-input-file file port-sha256))
+
+            ;; Serialize OBJ as a nar.  XXX: We should avoid writing to disk
+            ;; as this might be a tmpfs.
+            (call-with-output-file "nar"
+              (lambda (port)
+                (write-file #$obj port)))
+
+            ;; Compute, display, and store the hash of OBJ.
+            (let ((hash (file-sha256 "nar")))
+              (call-with-output-file #$output
+                (lambda (result)
+                  (for-each (lambda (port)
+                              (format port "~a\t~a~%"
+                                      (sha-256->string hash)
+                                      #$obj))
+                            (list (current-output-port)
+                                  result)))))))))
+
+  (computed-file "build-result-hashes" build
+                 #:guile guile
+                 #:options
+                 `(#:effective-version
+                   ,(version-major+minor (package-version guile)))))
 
 (define* (build-script obj #:key (guile (default-guile)))
   "Return a build script that builds OBJ, an arbitrary lowerable object such
@@ -143,7 +216,6 @@ build loop normally performed by 'guix-daemon'."
                                     (format #t "~%Congratulations!~%")
                                     (sleep 3600)))
                             port)
-              ;; TODO: Print a hash or something at the end?
               (chmod port #o555))))))
 
   (computed-file "build.scm" emit-script
@@ -181,9 +253,10 @@ dependencies, from scratch, as it boots."
     ;; includes all the source code (tarballs) necessary to build them.
     (initrd (lambda (fs . rest)
               (expression->initrd
-               #~(execl #$(build-script obj #:guile %bootstrap-guile)
-                        "build")
-               #:guile %bootstrap-guile)))))
+               (let ((obj (hash-script obj #:guile %bootstrap-guile+guild)))
+                 #~(execl #$(build-script obj #:guile %bootstrap-guile+guild)
+                          "build"))
+               #:guile %bootstrap-guile+guild)))))
 
 ;; This operating system builds MES-BOOT from scratch.  That currently
 ;; requires ~5 GiB of RAM.  TODO: Should we mount a root file system on a hard
