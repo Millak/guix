@@ -287,6 +287,21 @@ order."
          string<?)
    string=?))
 
+(cond-expand
+  ((not guile-2.2)
+   ;; Guile 2.0 lacks 'define-values'.
+   (define-syntax define-values
+     (syntax-rules ()
+       ((_ (a b) exp)
+        (begin
+          (define a #f)
+          (define b #f)
+          (call-with-values (lambda () exp)
+            (lambda (x y)
+              (set! a x)
+              (set! b y))))))))
+  (else #t))
+
 (define* (write-file-tree file port
                           #:key
                           file-type+size
