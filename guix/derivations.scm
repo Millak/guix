@@ -305,10 +305,13 @@ result is the set of prerequisites of DRV not already in valid."
           sub-drvs))))
 
 (define* (derivation-input-fold proc seed inputs
-                                #:key (cut? (const #f)))
+                                #:key
+                                (cut? (const #f))
+                                (skip-dependencies? (const #f)))
   "Perform a breadth-first traversal of INPUTS, calling PROC on each input
-with the current result, starting from SEED.  Skip recursion on inputs that
-match CUT?."
+with the current result, starting from SEED.  Skip inputs that match CUT? as
+well as all their dependencies; skip the dependencies of inputs that match
+SKIP-DEPENDENCIES?, but not the input itself."
   (let loop ((inputs inputs)
              (result seed)
              (visited (set)))
@@ -323,7 +326,9 @@ match CUT?."
                 (loop rest result (set-insert key visited)))
                (else
                 (let ((drv (derivation-input-derivation input)))
-                  (loop (append (derivation-inputs drv) rest)
+                  (loop (if (skip-dependencies? input)
+                            rest
+                            (append (derivation-inputs drv) rest))
                         (proc input result)
                         (set-insert key visited))))))))))
 
