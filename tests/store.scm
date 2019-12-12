@@ -388,6 +388,16 @@
          (s (topologically-sorted %store (list d))))
     (equal? s (list a b c d))))
 
+(test-assert "topologically-sorted, one item, cutting"
+  (let* ((a (add-text-to-store %store "a" "a"))
+         (b (add-text-to-store %store "b" "b" (list a)))
+         (c (add-text-to-store %store "c" "c" (list b)))
+         (d (add-text-to-store %store "d" "d" (list c)))
+         (s (topologically-sorted %store (list d)
+                                  #:cut?
+                                  (cut string-suffix? "-b" <>))))
+    (equal? s (list c d))))
+
 (test-assert "topologically-sorted, several items"
   (let* ((a  (add-text-to-store %store "a" "a"))
          (b  (add-text-to-store %store "b" "b" (list a)))

@@ -1378,9 +1378,10 @@ SEED."
 its references, recursively)."
   (fold-path store cons '() paths))
 
-(define (topologically-sorted store paths)
+(define* (topologically-sorted store paths #:key (cut? (const #f)))
   "Return a list containing PATHS and all their references sorted in
-topological order."
+topological order.  Skip store items that match CUT? as well as their
+dependencies."
   (define (traverse)
     ;; Do a simple depth-first traversal of all of PATHS.
     (let loop ((paths   paths)
@@ -1394,17 +1395,20 @@ topological order."
 
       (match paths
         ((head tail ...)
-         (if (visited? head)
-             (loop tail visited result)
-             (call-with-values
-                 (lambda ()
-                   (loop (references store head)
-                         (visit head)
-                         result))
-               (lambda (visited result)
-                 (loop tail
-                       visited
-                       (cons head result))))))
+         (cond ((visited? head)
+                (loop tail visited result))
+               ((cut? head)
+                (loop tail visited result))
+               (else
+                (call-with-values
+                    (lambda ()
+                      (loop (references store head)
+                            (visit head)
+                            result))
+                  (lambda (visited result)
+                    (loop tail
+                          visited
+                          (cons head result)))))))
         (()
          (values visited result)))))
 
