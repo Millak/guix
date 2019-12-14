@@ -9832,3 +9832,56 @@ index files needed for Adwaita to be used outside of GNOME.")
 integrate seamlessly with the GNOME desktop.")
     (home-page "https://wiki.gnome.org/Apps/Polari")
     (license license:gpl2+)))
+
+(define-public phosh
+  (package
+    (name "phosh")
+    (version "0.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://source.puri.sm/Librem5/phosh.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bkhd34zb3p2ly4pxbxw98bz61xn8rm18524bhpg0ykgmkivnplr"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'get-libgnome-volume-control 
+           (lambda* (#:key inputs #:allow-other-keys)
+             (copy-recursively (assoc-ref inputs "libgnome-volume-control-source")
+                               "subprojects/gvc")))
+         (delete 'check)))) ; TODO: needs a running wayland compositor
+    (native-inputs
+     `(("gcr" ,gcr)
+       ("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("gnome-desktop" ,gnome-desktop)
+       ("gtk+:bin" ,gtk+ "bin")
+       ("libgnome-volume-control-source" ; needs to be present in subprojects/gvc folder
+        ,(origin
+	         (method git-fetch)
+           (uri (git-reference
+                 (url "https://gitlab.gnome.org/GNOME/libgnome-volume-control.git")
+                 (commit "ec5cf3e0de6715803e64b65abb059e2155b3d6de")))
+           (file-name (string-append name "-" version "-checkout"))
+           (sha256
+            (base32
+             "0azq1xy50s1bg28xf97g16657490ng00amc4cw7vvdgminq82rq5"))))
+       ("libsecret" ,libsecret)
+       ("linux-pam" ,linux-pam)
+       ("network-manager" ,network-manager)
+       ("pkg-config" ,pkg-config)
+       ("polkit" ,polkit)
+       ("upower" ,upower)))
+    (inputs
+      `(("gnome-session" ,gnome-session)
+        ("libhandy" ,libhandy)
+        ("pulseaudio" ,pulseaudio)))
+    (build-system meson-build-system)
+    (synopsis "Wayland shell for GNOME on mobile devices")
+    (description "Phosh is a pure Wayland prototype intended for mobile devices.")
+    (home-page "https://source.puri.sm/Librem5/phosh")
+    (license license:gpl3+)))
