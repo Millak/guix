@@ -9901,6 +9901,7 @@ integrate seamlessly with the GNOME desktop.")
              (copy-recursively (assoc-ref inputs "libgnome-volume-control-source")
                                "subprojects/gvc")))
          (delete 'check)))) ; TODO: needs a running wayland compositor
+    (build-system meson-build-system)
     (native-inputs
      `(("gcr" ,gcr)
        ("gettext" ,gettext-minimal)
@@ -9924,10 +9925,11 @@ integrate seamlessly with the GNOME desktop.")
        ("polkit" ,polkit)
        ("upower" ,upower)))
     (inputs
-      `(("gnome-session" ,gnome-session)
-        ("libhandy" ,libhandy)
-        ("pulseaudio" ,pulseaudio)))
-    (build-system meson-build-system)
+     `(("libhandy" ,libhandy)
+       ("phoc" ,phoc)
+       ("pulseaudio" ,pulseaudio)))
+    (propagated-inputs
+     `(("gnome-session" ,gnome-session)))
     (synopsis "Wayland shell for GNOME on mobile devices")
     (description "Phosh is a pure Wayland prototype intended for mobile devices.")
     (home-page "https://source.puri.sm/Librem5/phosh")
