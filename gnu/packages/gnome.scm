@@ -166,6 +166,7 @@
   #:use-module (gnu packages vpn)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages wm)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -9832,6 +9833,52 @@ index files needed for Adwaita to be used outside of GNOME.")
 integrate seamlessly with the GNOME desktop.")
     (home-page "https://wiki.gnome.org/Apps/Polari")
     (license license:gpl2+)))
+
+(define-public phoc
+  (package
+    (name "phoc")
+    (version "0.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://source.puri.sm/Librem5/phoc.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07z49ml7jdkvnjz6zqq86iw4vasvb1d8iv1r1dd651lpnggywslr"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ; source of wlroots required in subprojects/wlroots folder
+         (add-after 'unpack 'get-wlroots 
+           (lambda* (#:key inputs #:allow-other-keys)
+             (copy-recursively (assoc-ref inputs "wlroots-librem5-source")
+                               "subprojects/wlroots"))))))
+    (native-inputs
+     `(("gobject-introspection" ,gobject-introspection)
+       ("glib:bin" ,glib "bin")
+       ("gnome-desktop" ,gnome-desktop)
+       ("libinput" ,libinput)
+       ("libxkbcommon" ,libxkbcommon)
+       ("pkg-config" ,pkg-config)
+       ("wayland" ,wayland)
+       ("wayland-protocols" ,wayland-protocols)
+       ("wlroots-librem5-source" ; patched version for Librem 5
+        ,(origin
+	         (method git-fetch)
+           (uri (git-reference
+                 (url "https://source.puri.sm/Librem5/wlroots.git")
+                 (commit "543d780b876466f5556d69cf41beb6b8e6630510")))
+           (file-name (string-append name "-" version "-checkout"))
+           (sha256
+            (base32
+             "187njlmbn7gn4h8inrr500hlg1s99z6lbgy5mqqm3dy4gn3xs0yb"))))))
+    (synopsis "wlroots based phone compositor")
+    (description "Phoc is a...")
+    (home-page "https://source.puri.sm/Librem5/phoc")
+    (license license:gpl3))) ; TODO or gpl3+?
 
 (define-public phosh
   (package
