@@ -6237,7 +6237,7 @@ Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
 (define-public evolution-data-server
   (package
     (name "evolution-data-server")
-    (version "3.32.4")
+    (version "3.34.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6246,7 +6246,7 @@ Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
               (patches (search-patches "evolution-data-server-locales.patch"))
               (sha256
                (base32
-                "0zsc9xwy6ixk3x0dx69ax5isrdw8qxjdxg2i5fr95s40nss7rxl3"))))
+                "16z85y6hhazcrp5ngw47w4x9r0j8zrj7awv5im58hhp0xs19zf1y"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -6273,13 +6273,6 @@ Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
              (delete-file-recursively "tests/book-migration")
              (substitute* "tests/CMakeLists.txt"
                (("add_subdirectory\\(book-migration\\)") ""))
-             ;; tests/libebook/client/test-book-client-view-operations:8077):
-             ;; e-data-server-WARNING **:
-             ;; (src/libedataserver/e-source-registry.c:264):thread_closure_free:
-             ;; runtime check failed:
-             ;; (!g_main_context_pending (closure->main_context))
-             (substitute* "tests/libebook/client/CMakeLists.txt"
-               (("test-book-client-view-operations") ""))
              #t))
          (add-after 'unpack 'patch-paths
           (lambda _
