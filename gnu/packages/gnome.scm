@@ -4442,7 +4442,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
 (define-public eog
  (package
    (name "eog")
-   (version "3.32.2")
+   (version "3.34.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnome/sources/" name "/"
@@ -4450,7 +4450,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "1bcxpqgzlk2cy4wfb3b5h66mhpj2fhrk1rrb5qqcv5xrr62ik5xy"))))
+              "0b7ld4azs9xbdjsk9b91ywhdzvxgajhndiwiivxjzbr0hjgp7c7x"))))
    (build-system meson-build-system)
    (arguments
     `(#:configure-flags
@@ -4479,6 +4479,7 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
       ("itstool" ,itstool)
       ("glib" ,glib "bin")
       ("gobject-introspection" ,gobject-introspection)
+      ("librsvg-next" ,librsvg-next)
       ("pkg-config" ,pkg-config)
       ("xmllint" ,libxml2)))
    (inputs
