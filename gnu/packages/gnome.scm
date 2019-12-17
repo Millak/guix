@@ -8528,7 +8528,7 @@ handling the startup notification side.")
 (define-public gnome-calculator
   (package
     (name "gnome-calculator")
-    (version "3.32.2")
+    (version "3.34.1")
     (source
      (origin
        (method url-fetch)
@@ -8537,12 +8537,20 @@ handling the startup notification side.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0fgpn3sc226s9fpzhik5rkkrf669037gc659ga2kn9jsyckj6p41"))))
+         "0lbh87255zzggqzai6543qg920y52bl4vs5m5h5087ghzg14hlsd"))))
     (build-system meson-build-system)
-    (arguments '(#:glib-or-gtk? #t))
+    (arguments
+     '(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           ;; Don't create 'icon-theme.cache'.
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") "true"))
+             #t)))))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, gio-2.0.
-       ("gtk+:bin" ,gtk+ "bin") ; for gtk-update-icon-cache
        ("intltool" ,intltool)
        ("itstool" ,itstool)
        ("vala" ,vala)
@@ -8550,6 +8558,7 @@ handling the startup notification side.")
     (inputs
      `(("glib" ,glib)
        ("gtksourceview" ,gtksourceview)
+       ("libgee" ,libgee)
        ("libsoup" ,libsoup)
        ("libxml2" ,libxml2)
        ("mpc" ,mpc)
