@@ -6,6 +6,7 @@
 ;;; Copyright © 2016 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016 Stefan Reichoer <stefan@xsteve.at>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages dav)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages perl)
@@ -82,7 +84,7 @@
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("glib" ,glib)
+     `(("glib" ,glib) ; FIXME: move to libical-glib
        ("libxml2" ,libxml2)
        ("tzdata" ,tzdata)))
     (propagated-inputs
@@ -95,6 +97,26 @@
 data units.")
     ;; Can be used with either license.  See COPYING.
     (license (list license:lgpl2.1 license:mpl2.0))))
+
+; FIXME: make the inherit more minimal but still working (gir folders)
+(define-public libical-glib
+  (package
+    (inherit libical)
+    (name "libical-glib")
+    (arguments
+     `(#:tests? #f
+       #:configure-flags '("-DSHARED_ONLY=true"
+                           "-DICAL_GLIB=true"
+                           "-DGOBJECT_INTROSPECTION=true"
+                           "-DICAL_GLIB_VAPI=true")))
+    (native-inputs
+     `(("gobject-introspection" ,gobject-introspection)
+       ("libical" ,libical)
+       ("vala" ,vala)
+       ("gtk-doc" ,gtk-doc)
+       ("perl" ,perl)
+       ("pkg-config" ,pkg-config)))
+    (synopsis "GObject wrapper for the libical library")))
 
 (define-public khal
   (package
