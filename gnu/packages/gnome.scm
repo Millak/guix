@@ -4251,7 +4251,7 @@ for application developers.")
 (define-public totem
   (package
     (name "totem")
-    (version "3.32.1")
+    (version "3.34.1")
     (source
      (origin
        (method url-fetch)
@@ -4260,7 +4260,7 @@ for application developers.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0yra8apc7smpwf7d1k8crhrm8d4wix24ds6i9yxbch1v11jnhr3v"))))
+         "028sc6xbyi7rs884862d8f3di6zhcm0lhvlpc3r69ifzjsq9my3b"))))
     (build-system meson-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
