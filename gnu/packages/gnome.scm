@@ -4792,7 +4792,7 @@ a secret password store, an adblocker, and a modern UI.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "3.32.5")
+    (version "3.34.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -4800,7 +4800,7 @@ a secret password store, an adblocker, and a modern UI.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "1hj4yy53fwh96h17cqiw3gxc070vmc7yqwc7phvhnpyinkp9g5my"))))
+                "18d48vcp2nxs63bddkdplslgbnlfq79pm2ivl8hk38kkggy3dahf"))))
 
     (build-system meson-build-system)
     (arguments
@@ -5427,7 +5427,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "3.32.2")
+    (version "3.34.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -5435,7 +5435,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1h577i2ap7dpfy1jg101jvc6nzccc0csgvd55ahydlr8f94frcva"))))
+                "0b8bz5kvs7rlwvqsg87cf6jhrrj95vgd1l235mjx8rip35ipfvrd"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -5829,6 +5829,7 @@ users.")
                (("src/platform/tests/test-address-linux") " ")
                (("src/platform/tests/test-cleanup-linux") " ")
                (("src/platform/tests/test-link-linux") " ")
+               (("src/platform/tests/test-platform-general") " ")
                (("src/platform/tests/test-route-linux") " ")
                (("src/devices/tests/test-acd") "")
                (("src/devices/tests/test-arping") " ")

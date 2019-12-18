@@ -162,7 +162,7 @@ shared NFS home directories.")
 (define glib
   (package
    (name "glib")
-   (version "2.60.6")
+   (version "2.62.3")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnome/sources/"
@@ -170,7 +170,7 @@ shared NFS home directories.")
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "0v7vpx2md1gn0wwiirn7g4bhf2csfvcr03y96q2zv97ain6sp3zz"))
+              "1i2mlrd351dnmpfi465qmx9rhgyff01j29a2x3lczzyky34ss024"))
             (patches (search-patches "glib-tests-timer.patch"))
             (modules '((guix build utils)))
             (snippet
@@ -199,8 +199,7 @@ shared NFS home directories.")
       ("perl" ,perl)                              ; needed by GIO tests
       ("tzdata" ,tzdata-for-tests)))                  ; for tests/gdatetime.c
    (arguments
-    `(;; TODO: Uncomment on the next rebuild cycle.
-      ;; #:disallowed-references (,tzdata-for-tests)
+    `(#:disallowed-references (,tzdata-for-tests)
 
       #:phases
       (modify-phases %standard-phases
@@ -284,14 +283,14 @@ shared NFS home directories.")
                       (;; Requires /etc/machine-id.
                        "/gdbus/codegen-peer-to-peer"))
 
-                     ("gio/tests/gdbus-unix-addresses.c"
-                      (;; Requires /etc/machine-id.
-                       "/gdbus/x11-autolaunch"))
-
                      ("gio/tests/gsocketclient-slow.c"
                       (;; These tests tries to resolve "localhost", and fails.
                        "/socket-client/happy-eyeballs/slow"
                        "/socket-client/happy-eyeballs/cancellation/delayed"))
+
+                     ("gio/tests/gdbus-address-get-session.c"
+                      (;; XXX:
+                       "/gdbus/x11-autolaunch"))
 
                      )))
               (for-each (lambda (x) (apply disable x)) failing-tests)
