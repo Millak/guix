@@ -3611,7 +3611,7 @@ services for numerous locations.")
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
-    (version "3.32.1")
+    (version "3.34.2")
     (source
      (origin
        (method url-fetch)
@@ -3620,7 +3620,7 @@ services for numerous locations.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "02d0s0g2mmqfib44r3sf0499r08p61s8l2ndsjssbam1bi7x2dks"))))
+         "1vfpgbdxkhh9xwvb3ja174jk3gpzj4n3jzcy9ygbjlvy45zfdflz"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -3631,11 +3631,13 @@ services for numerous locations.")
              ;; Otherwise, the RUNPATH will lack the final path component.
              (string-append "-Dc_link_args=-Wl,-rpath="
                             (assoc-ref %outputs "out")
-                            "/lib/gnome-settings-daemon-3.0"))
+                            "/lib/gnome-settings-daemon-3.0")
+             "-Dsystemd=false")
        ;; Color management test can't reach the colord system service.
        #:tests? #f))
     (native-inputs
-     `(("glib:bin" ,glib "bin")     ; for glib-mkenums
+     `(("gcr" ,gcr)
+       ("glib:bin" ,glib "bin")     ; for glib-mkenums
        ("pkg-config" ,pkg-config)
        ("intltool" ,intltool)
        ("xsltproc" ,libxslt)
@@ -3658,6 +3660,7 @@ services for numerous locations.")
        ("geocode-glib" ,geocode-glib)
        ("libgweather" ,libgweather)
        ("gnome-desktop" ,gnome-desktop)
+       ("modem-manager" ,modem-manager)
        ("nss" ,nss)
        ("cups" ,cups)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
