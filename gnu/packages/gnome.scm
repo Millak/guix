@@ -6421,7 +6421,7 @@ devices using the GNOME desktop.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "3.32.2")
+    (version "3.34.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6429,7 +6429,7 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03np0mhfl9kkdw4cb711pda0cli9zgh2bq2gqn2zwbdi3qnhk9gs"))))
+                "054igagvmyzpaa5nwzz98gv7bk7l5dwp6g813707132si3szlpx8"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -6475,6 +6475,7 @@ devices using the GNOME desktop.")
      `(("glib:bin" ,glib "bin") ; for glib-mkenums, etc.
        ("gtk+:bin" ,gtk+ "bin") ; for gtk-update-icon-cache
        ("intltool" ,intltool)
+       ("libhandy" ,libhandy)
        ("pkg-config" ,pkg-config)
        ("xsltproc" ,libxslt)
        ;; For tests
