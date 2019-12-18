@@ -7052,7 +7052,7 @@ beautifying border effects.")
 (define-public dconf-editor
   (package
     (name "dconf-editor")
-    (version "3.32.0")
+    (version "3.34.2")
     (source
      (origin
        (method url-fetch)
@@ -7061,7 +7061,7 @@ beautifying border effects.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1fmsmlh16njjm948grz20mzrsvb4wjj7pl1fvkrkxqi7mhr177gi"))))
+         "0pwxjada2vaf69ihpjgp9nky54iykvxq63lp1vl8pxjanif2mk6f"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
