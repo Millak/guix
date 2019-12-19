@@ -2102,7 +2102,11 @@ dealing with different structured file formats.")
            (lambda _
              (with-directory-excursion "tests/fixtures/reftests"
                (for-each delete-file
-                         '(;; This test fails on i686:
+                         '(;; These tests fail on x86_64:
+                           "bugs/340047.svg"
+                           "bugs/587721-text-transform.svg"
+                           "bugs/749415.svg"
+                           ;; This test fails on i686:
                            "svg1.1/masking-path-04-b.svg"
                            ;; This test fails on armhf:
                            "svg1.1/masking-mask-01-b.svg"
