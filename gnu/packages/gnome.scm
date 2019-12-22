@@ -9837,7 +9837,7 @@ integrate seamlessly with the GNOME desktop.")
 (define-public phoc
   (package
     (name "phoc")
-    (version "0.1.3")
+    (version "0.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9846,7 +9846,7 @@ integrate seamlessly with the GNOME desktop.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07z49ml7jdkvnjz6zqq86iw4vasvb1d8iv1r1dd651lpnggywslr"))))
+                "1qibzx2i3j5z2qaf33p8273vjmmppdjm180w17p4yhgbb83h3lw8"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -9875,6 +9875,8 @@ integrate seamlessly with the GNOME desktop.")
            (sha256
             (base32
              "187njlmbn7gn4h8inrr500hlg1s99z6lbgy5mqqm3dy4gn3xs0yb"))))))
+    (propagated-inputs
+     `(("mutter" ,mutter)))
     (synopsis "wlroots based phone compositor")
     (description "Phoc is a...")
     (home-page "https://source.puri.sm/Librem5/phoc")
