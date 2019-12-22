@@ -7168,7 +7168,7 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "3.32.2")
+    (version "3.34.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7176,8 +7176,9 @@ properties, screen resolution, and other GNOME parameters.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0anlkdnqsp5fqvmg95rqjpp1ifcx5xzsvwcrdsvb1cqzbh6inmp5"))
-              (patches (search-patches "gnome-shell-theme.patch"))
+                "0k9vq2gh1nhdd6fpp7jnwx37qxaakawiqw1xnlfjvq5g5zdn8ckh"))
+              (patches (search-patches "gnome-shell-theme.patch"
+                                       "gnome-shell-disable-test.patch"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
@@ -7271,7 +7272,8 @@ properties, screen resolution, and other GNOME parameters.")
                                     '("inkscape" "intltool" "glib:bin"))
                      #:outputs outputs)))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
+     `(("asciidoc" ,asciidoc)
+       ("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
        ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
        ("gobject-introspection" ,gobject-introspection)
        ("inkscape" ,inkscape)
@@ -7292,6 +7294,7 @@ properties, screen resolution, and other GNOME parameters.")
        ("gdm" ,gdm)
        ("gdk-pixbuf" ,gdk-pixbuf+svg)
        ("gjs" ,gjs)
+       ("gnome-autoar" ,gnome-autoar)
        ("gnome-bluetooth" ,gnome-bluetooth)
        ("gnome-desktop" ,gnome-desktop)
        ("gnome-settings-daemon" ,gnome-settings-daemon)
