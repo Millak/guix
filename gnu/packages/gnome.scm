@@ -7421,15 +7421,19 @@ easy, safe, and automatic.")
              (substitute* "tests/tracker-steroids/meson.build"
                (("test\\(.*") ""))
              #t))
-         ;; Two tests fail if LANG is not set.
+         ;; Two tests fail if LANG is not set, and the functional tests require
+         ;; DConf to be the default GSettings backend, which in turn requires
+         ;; HOME to be set.
          (add-before 'check 'pre-check
            (lambda _
+             (setenv "HOME" (getcwd))
              (setenv "LANG" "en_US.UTF-8")
              ;; For the missing /etc/machine-id.
              (setenv "DBUS_FATAL_WARNINGS" "0")
              #t)))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
+     `(("dconf" ,dconf)
+       ("glib:bin" ,glib "bin")
        ("gnome-common" ,gnome-common)
        ("gobject-introspection" ,gobject-introspection)
        ("python-pygobject" ,python-pygobject)
