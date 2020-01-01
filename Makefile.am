@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2015, 2017 Alex Kost <alezost@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -70,6 +70,7 @@ MODULES =					\
   guix/docker.scm	   			\
   guix/json.scm					\
   guix/records.scm				\
+  guix/openpgp.scm				\
   guix/pki.scm					\
   guix/progress.scm				\
   guix/combinators.scm				\
@@ -413,6 +414,7 @@ SCM_TESTS =					\
   tests/nar.scm				\
   tests/networking.scm				\
   tests/opam.scm				\
+  tests/openpgp.scm				\
   tests/packages.scm				\
   tests/pack.scm				\
   tests/pki.scm				\
@@ -564,6 +566,10 @@ EXTRA_DIST +=						\
   tests/signing-key.pub					\
   tests/signing-key.sec					\
   tests/cve-sample.json					\
+  tests/civodul.key					\
+  tests/rsa.key						\
+  tests/dsa.key						\
+  tests/ed25519.key					\
   build-aux/config.rpath				\
   bootstrap						\
   doc/build.scm						\
