@@ -898,8 +898,8 @@ to the other.")
      `(("m4" ,m4)
        ("ocaml" ,ocaml)))
     (arguments
-     `(#:tests? #f  ; no test suite
-       #:parallel-build? #f
+     `(#:tests? #f  ; No test suite.
+       #:parallel-build? #t
        #:make-flags (list "all" "opt")
        #:phases (modify-phases %standard-phases
                   (replace
