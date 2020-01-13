@@ -330,8 +330,8 @@ Software distribution.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/AltGr/ocaml-mccs")
-                     (commit version)))
+                    (url "https://github.com/AltGr/ocaml-mccs.git")
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
@@ -346,10 +346,10 @@ a set of criteria.  It relies on a Integer Programming solver or a
 Pseudo Boolean solver to achieve its task.  Mccs can use a wide set of
 underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
     (license (list
-               license:bsd-3
-               license:gpl3+
-               ;; With static-linking exception
-               license:lgpl2.1+))))
+              license:bsd-3
+              license:gpl3+
+              ;; With static-linking exception
+              license:lgpl2.1+))))
 
 (define-public ocaml-dose3
   (package
