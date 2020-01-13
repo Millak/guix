@@ -3749,7 +3749,7 @@ base converters")
     (description "Part of Jane Street's Core library The Core suite of
 libraries is an industrial strength alternative to OCaml's standard library
 that was developed by Jane Street, the largest industrial user of OCaml.")
-(license license:expat)))
+    (license license:expat)))
 
 (define-public ocaml-parsexp
   (package
