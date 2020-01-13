@@ -263,13 +263,16 @@ for building OCaml library and programs.")
   (package
     (name "ocaml-extlib")
     (version "1.7.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ygrek.org.ua/p/release/ocaml-extlib/"
-                                  "extlib-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0wfs20v1yj5apdbj7214wdsr17ayh0qqq7ihidndvc8nmmwfa1dz"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ygrek/ocaml-extlib.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0hv147mk9g0xnj11ansg40himlhr0pwmz10x33s5jk4n1b7nijci"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:phases
