@@ -378,17 +378,17 @@ underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
                             (assoc-ref %outputs "out")
                             "/lib/ocaml/site-lib"))))
     (propagated-inputs
-      `(("ocaml-graph" ,ocaml-graph)
-        ("ocaml-cudf" ,ocaml-cudf)
-        ("ocaml-extlib" ,ocaml-extlib)
-        ("ocaml-re" ,ocaml-re)))
+     `(("ocaml-graph" ,ocaml-graph)
+       ("ocaml-cudf" ,ocaml-cudf)
+       ("ocaml-extlib" ,ocaml-extlib)
+       ("ocaml-re" ,ocaml-re)))
     (native-inputs
-      `(("perl" ,perl)
-        ("python" ,python-2) ; for a test script
-        ("python2-pyyaml" ,python2-pyyaml) ; for a test script
-        ("ocaml-extlib" ,ocaml-extlib)
-        ("ocamlbuild" ,ocamlbuild)
-        ("ocaml-cppo" ,ocaml-cppo)))
+     `(("perl" ,perl)
+       ("python" ,python-2) ; for a test script
+       ("python2-pyyaml" ,python2-pyyaml) ; for a test script
+       ("ocaml-extlib" ,ocaml-extlib)
+       ("ocamlbuild" ,ocamlbuild)
+       ("ocaml-cppo" ,ocaml-cppo)))
     (home-page "http://www.mancoosi.org/software/")
     (synopsis "Package distribution management framework")
     (description "Dose3 is a framework made of several OCaml libraries for
