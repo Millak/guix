@@ -3742,7 +3742,8 @@ exclusion algorithms are typical examples of such systems.")
          "1b1bk0xs1hqa12qs5y4h1yl3mq6xml4ya2570dyhdn1j0fbw4g3y"))))
     (build-system dune-build-system)
     (arguments
-     '(#:tests? #f)) ;no tests
+     '(#:tests? #t
+       #:test-target "."))
     (synopsis "Library containing the definition of S-expressions and some
 base converters")
     (description "Part of Jane Street's Core library The Core suite of
