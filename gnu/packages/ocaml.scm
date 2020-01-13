@@ -958,12 +958,16 @@ compilers that can directly deal with packages.")
   (package
     (name "ocaml-ounit")
     (version "2.0.8")
-    (source (origin
-              (method url-fetch)
-              (uri (ocaml-forge-uri "ounit" version 1749))
-              (sha256
-               (base32
-                "03ifp9hjcxg4m5j190iy373jcn4039d3vy10kmd8p4lfciwzwc1f"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gildor478/ounit.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ihj04bgvs78fgj1ahvmaa1gib7mp6fqj21kf6hacy9chbxdfgz0"))))
     (build-system ocaml-build-system)
     (native-inputs
      `(("libxml2" ,libxml2)           ; for xmllint
