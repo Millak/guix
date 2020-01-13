@@ -903,16 +903,16 @@ to the other.")
        #:make-flags (list "all" "opt")
        #:phases (modify-phases %standard-phases
                   (replace
-                   'configure
-                   (lambda* (#:key inputs outputs #:allow-other-keys)
-                     (let ((out (assoc-ref outputs "out")))
-                       (invoke
-                        "./configure"
-                        "-bindir" (string-append out "/bin")
-                        "-config" (string-append out "/etc/ocamfind.conf")
-                        "-mandir" (string-append out "/share/man")
-                        "-sitelib" (string-append out "/lib/ocaml/site-lib")
-                        "-with-toolbox"))))
+                      'configure
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (invoke
+                         "./configure"
+                         "-bindir" (string-append out "/bin")
+                         "-config" (string-append out "/etc/ocamfind.conf")
+                         "-mandir" (string-append out "/share/man")
+                         "-sitelib" (string-append out "/lib/ocaml/site-lib")
+                         "-with-toolbox"))))
                   (replace 'install
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out")))
