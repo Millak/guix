@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,7 +66,7 @@ gitignore rules.")
 (define-public rust-cbindgen
   (package
     (name "rust-cbindgen")
-    (version "0.9.1")
+    (version "0.12.2")
     (source
       (origin
         (method url-fetch)
@@ -74,7 +74,7 @@ gitignore rules.")
         (file-name (string-append name "-" version ".crate"))
         (sha256
          (base32
-          "1zgamxahlxmg4warzivaa8m1f8d6b45mhznm7n6d7p5l18acdblx"))))
+          "13jzbmjz1bmmfr0i80hw6ar484mgabx3hbpb2ynhk0ddqi0yr58m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -86,9 +86,7 @@ gitignore rules.")
         ("serde-json" ,rust-serde-json-1.0)
         ("syn" ,rust-syn-1.0)
         ("tempfile" ,rust-tempfile-3.0)
-        ("toml" ,rust-toml-0.5))
-       #:cargo-development-inputs
-       (("autocfg" ,rust-autocfg-0.1))))
+        ("toml" ,rust-toml-0.5))))
     (home-page "https://github.com/eqrion/cbindgen/")
     (synopsis "Tool for generating C bindings to Rust code")
     (description
