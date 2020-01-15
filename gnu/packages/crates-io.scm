@@ -6435,6 +6435,27 @@ drop-in replacement for miniz.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-mint-0.5
+  (package
+    (name "rust-mint")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mint" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0c4190gr348fkfijij7vm19iagwl36mssj1irc9f6m448hbhgn68"))))
+    (build-system cargo-build-system)
+    (arguments '(#:skip-build? #t))
+    (home-page "https://github.com/kvark/mint")
+    (synopsis "Math interoperability standard types")
+    (description
+     "Math interoperability standard types")
+    (license license:expat)))
+
 (define-public rust-mio-0.6
   (package
     (name "rust-mio")
