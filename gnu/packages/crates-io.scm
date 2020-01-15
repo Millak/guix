@@ -885,6 +885,21 @@ behave like a set of bitflags.")
          "1x5z8hmirpnapkx6sww8gkc6x0q8ppni0lbsigm3mrba5byfjw0k"))))
     (arguments '(#:skip-build? #t))))
 
+(define-public rust-bitflags-0.7
+  (package
+    (inherit rust-bitflags-0.8)
+    (name "rust-bitflags")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bitflags" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0v8hh6wdkpk9my8z8442g4hqrqf05h0qj53dsay6mv18lqvqklda"))))))
+
 (define-public rust-blake2-rfc-0.2
   (package
     (name "rust-blake2-rfc")
