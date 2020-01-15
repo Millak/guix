@@ -11464,6 +11464,21 @@ and Jaro-Winkler.")
          "151ngha649cyybr3j50qg331b206zrinxqz7fzw1ra8r0n0mrldl"))))
     (arguments '(#:skip-build? #t))))
 
+(define-public rust-strsim-0.5
+  (package
+    (inherit rust-strsim-0.6)
+    (name "rust-strsim")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "strsim" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0z3zzvmilfldp4xw42qbkjf901dcnbk58igrzsvivydjzd24ry37"))))))
+
 (define-public rust-syn-1.0
   (package
     (name "rust-syn")
