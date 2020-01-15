@@ -5353,6 +5353,22 @@ primitives to an @code{io::Write}.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-itoa-0.3
+  (package
+    (inherit rust-itoa-0.4)
+    (name "rust-itoa")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "itoa" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "136vwi6l2k1vrlvfx49lhficj813pk88xrcx1q3axqh1mwms6943"))))
+    (arguments '(#:skip-build? #t))))
+
 (define-public rust-itoa-0.1
  (package
    (inherit rust-itoa-0.4)
