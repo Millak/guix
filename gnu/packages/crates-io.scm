@@ -8413,6 +8413,22 @@ to write.")
          (base32
           "1nw0klza45hf127kfyrpxsxd5jw2l6h21qxalil3hkr7bnf7kx7s"))))))
 
+(define-public rust-quote-0.3
+  (package
+    (inherit rust-quote-0.6)
+    (name "rust-quote")
+    (version "0.3.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quote" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0yhnnix4dzsv8y4wwz4csbnqjfh73al33j35msr10py6cl5r4vks"))))
+    (arguments '(#:skip-build? #t))))
+
 (define-public rust-rand-0.7
   (package
     (name "rust-rand")
