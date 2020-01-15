@@ -13080,6 +13080,26 @@ untrusted inputs in Rust.")
      "Convert ranges of Unicode codepoints to UTF-8 byte ranges.")
     (license (list license:expat license:unlicense))))
 
+(define-public rust-utf8parse-0.1
+  (package
+    (name "rust-utf8parse")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "utf8parse" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t))
+    (home-page "https://github.com/jwilm/vte")
+    (synopsis "Table-driven UTF-8 parser")
+    (description "Table-driven UTF-8 parser")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-uuid-0.7
   (package
     (name "rust-uuid")
