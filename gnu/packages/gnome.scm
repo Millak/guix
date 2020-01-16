@@ -9837,7 +9837,7 @@ integrate seamlessly with the GNOME desktop.")
 (define-public phoc
   (package
     (name "phoc")
-    (version "0.1.4")
+    (version "0.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9846,7 +9846,7 @@ integrate seamlessly with the GNOME desktop.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qibzx2i3j5z2qaf33p8273vjmmppdjm180w17p4yhgbb83h3lw8"))))
+                "1i8nhw650s5hksagcr93r32z4c624qgbzr5bnsii88q74g5bkjx4"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
