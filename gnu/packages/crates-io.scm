@@ -12164,6 +12164,29 @@ cryptographic implementations.")
     (properties '((hidden? . #t)))
     (license license:expat)))
 
+(define-public rust-syntex-pos-0.58
+  (package
+    (name "rust-syntex-pos")
+    (version "0.58.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "syntex_pos" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0iqhircpr723da1g97xrrj8smqqz3gxw91cf03sckasjzri4gb8k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))
+    (home-page "https://github.com/serde-rs/syntex")
+    (synopsis "Backport of libsyntax_pos")
+    (description "Backport of libsyntax_pos")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sysctl-0.4
   (package
     (name "rust-sysctl")
