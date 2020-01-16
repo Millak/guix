@@ -9885,7 +9885,7 @@ integrate seamlessly with the GNOME desktop.")
 (define-public phosh
   (package
     (name "phosh")
-    (version "0.1.5")
+    (version "0.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9894,7 +9894,7 @@ integrate seamlessly with the GNOME desktop.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bkhd34zb3p2ly4pxbxw98bz61xn8rm18524bhpg0ykgmkivnplr"))))
+                "0jbii8ka43aqmnsw0p2nqk7l21dssyrxlcmmj3vbm4alpl9j6x3f"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -9902,7 +9902,12 @@ integrate seamlessly with the GNOME desktop.")
            (lambda* (#:key inputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "libgnome-volume-control-source")
                                "subprojects/gvc")))
-         (delete 'check)))) ; TODO: needs a running wayland compositor
+         (add-before 'configure 'fix-phoc-path
+           (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "data/phosh.in"
+                  (("@bindir@") (string-append (assoc-ref inputs "phoc") "/bin")))))
+         (delete 'check) ; TODO: needs a running wayland compositor
+                     )))
     (build-system meson-build-system)
     (native-inputs
      `(("gcr" ,gcr)
@@ -9928,10 +9933,15 @@ integrate seamlessly with the GNOME desktop.")
        ("upower" ,upower)))
     (inputs
      `(("libhandy" ,libhandy)
-       ("phoc" ,phoc)
        ("pulseaudio" ,pulseaudio)))
     (propagated-inputs
-     `(("gnome-session" ,gnome-session)))
+      ;; "missing" schema files
+      ;; org.gnome.DejaDup.File org.guido-berhoerster.code.package-update-indicator org.blueberry
+     `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas) ;org.gnome.desktop.wm.keybindings
+       ("gnome-session" ,gnome-session)
+       ("mutter" ,mutter) ;org.gnome.mutter.keybindings
+       ("network-manager-applet" ,network-manager-applet) ;org.gnome.nm-applet
+       ("phoc" ,phoc))) ;sm.puri.phoc
     (synopsis "Wayland shell for GNOME on mobile devices")
     (description "Phosh is a pure Wayland prototype intended for mobile devices.")
     (home-page "https://source.puri.sm/Librem5/phosh")
