@@ -12162,6 +12162,27 @@ cryptographic implementations.")
      "Simplified interface to libc::sysctl.")
     (license license:expat)))
 
+(define-public rust-sysctl-0.1
+  (package
+    (inherit rust-sysctl-0.4)
+    (name "rust-sysctl")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sysctl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "10wxlk4nkzlxp4fg435jmdmfwl4hy0y4w2rcsgs634lvbp8pgksb"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1.3)
+        ("rust-errno" ,rust-errno-0.2)
+        ("rust-libc" ,rust-libc-0.2))))))
+
 (define-public rust-tar-0.4
   (package
     (name "rust-tar")
