@@ -9516,6 +9516,32 @@ generator that uses the HC-128 algorithm.")
      `(#:skip-build? #t
        #:cargo-inputs (("rust-rand-core" ,rust-rand-core-0.3))))))
 
+(define-public rust-rand-isaac-0.2
+  (package
+    (name "rust-rand-isaac")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rand_isaac" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0xlb9415x518ffkazxhvk8b04i9i548nva4i5l5s34crvjrv1xld"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-rand-core" ,rust-rand-core-0.5)
+        ("rust-serde" ,rust-serde-1.0))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1.1))))
+    (home-page "https://crates.io/crates/rand_isaac")
+    (synopsis "ISAAC random number generator")
+    (description "ISAAC random number generator")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rand-isaac-0.1
   (package
     (name "rust-rand-isaac")
