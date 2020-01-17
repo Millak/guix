@@ -9210,6 +9210,7 @@ to write.")
 ;; Dev dependencies are allowed to have them in crates.io.
 (define-public rust-quickcheck-0.8
   (package
+    (inherit rust-quickcheck-0.9)
     (name "rust-quickcheck")
     (version "0.8.5")
     (source
@@ -9221,21 +9222,13 @@ to write.")
        (sha256
         (base32
          "0mkl4wnvvjk4m32aq3an4ayfyvnmbxnzcybfm7n3fbsndb1xjdcw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-env-logger" ,rust-env-logger-0.6)
         ("rust-log" ,rust-log-0.4)
         ("rust-rand" ,rust-rand-0.4)
-        ("rust-rand-core" ,rust-rand-core-0.5))))
-    (home-page
-     "https://github.com/BurntSushi/quickcheck")
-    (synopsis
-     "Automatic property based testing with shrinking")
-    (description
-     "Automatic property based testing with shrinking.")
-    (license (list license:expat license:unlicense))))
+        ("rust-rand-core" ,rust-rand-core-0.5))))))
 
 (define-public rust-quickcheck-0.7
   (package
