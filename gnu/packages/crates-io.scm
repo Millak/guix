@@ -9100,6 +9100,34 @@ in terms of the upstream unstable API.")
      "This package provides a quasi-quoting macro system")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-quasi-codegen-0.32
+  (package
+    (name "rust-quasi-codegen")
+    (version "0.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quasi_codegen" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1m3nwzn5ip8y86cyfk6hdnbhiinsk2faag7l0cc4q11wl9gy5fai"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-aster" ,rust-aster-0.41)
+        ("rust-clippy" ,rust-clippy-0.0)
+        ("rust-syntex" ,rust-syntex-0.58)
+        ("rust-syntex-errors" ,rust-syntex-errors-0.58)
+        ("rust-syntex-syntax" ,rust-syntex-syntax-0.58))))
+    (home-page "https://github.com/serde-rs/quasi")
+    (synopsis "A quasi-quoting macro system")
+    (description
+     "This package provides a quasi-quoting macro system")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quick-error-1.2
   (package
     (name "rust-quick-error")
