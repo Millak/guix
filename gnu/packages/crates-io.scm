@@ -9734,6 +9734,35 @@ generator that uses the HC-128 algorithm.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-rand-xoshiro-0.4
+  (package
+    (name "rust-rand-xoshiro")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rand-xoshiro" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "013h45rikipv5bda2ixmwx5rwsk9wpc7mr0a77cz20hxi0pdvz59"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-rand-core" ,rust-rand-core-0.5)
+        ("rust-serde" ,rust-serde-1.0))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1.1))))
+    (home-page
+     "https://crates.io/crates/rand_xoshiro")
+    (synopsis
+     "Xoshiro, xoroshiro and splitmix64 random number generators")
+    (description
+     "Xoshiro, xoroshiro and splitmix64 random number generators.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rand-xoshiro-0.3
   (package
     (name "rust-rand-xoshiro")
