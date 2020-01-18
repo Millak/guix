@@ -8032,6 +8032,30 @@ under its new name.")
      "A cross-platform library for opening OS pipes.")
     (license license:expat)))
 
+(define-public rust-osmesa-sys-0.1
+  (package
+    (name "rust-osmesa-sys")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "osmesa-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0fq1q1zcgfb0qydrg9r2738jlwc4hqxgb9vj11z72bjxx7kfrkw8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-shared-library" ,rust-shared-library-0.1))))
+    (home-page
+     "https://github.com/Daggerbot/osmesa-rs.git")
+    (synopsis "OSMesa library bindings for Rust")
+    (description "OSMesa library bindings for Rust")
+    (license license:cc0)))
+
 (define-public rust-owning-ref-0.4
   (package
     (name "rust-owning-ref")
