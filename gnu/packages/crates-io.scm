@@ -4078,6 +4078,35 @@ implementation that is more efficient for smaller hash keys.")
         (base32
          "0jxgzd04ra4imjv8jgkmdq59kj8fsz6w4zxsbmlai34h26225c00"))))))
 
+(define-public rust-freetype-sys-0.9
+  (package
+    (name "rust-freetype-sys")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "freetype-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1i309xc6gcsgdfiim3j5f0sk08imr4frlzfa185iaxqciysqgikx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1.0))
+       #:cargo-development-inputs
+       (("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page
+     "https://github.com/PistonDevelopers/freetype-sys")
+    (synopsis
+     "Low level binding for FreeType font library")
+    (description
+     "Low level binding for FreeType font library")
+    (license license:expat)))
+
 (define-public rust-fs-extra-1.1
   (package
     (name "rust-fs-extra")
