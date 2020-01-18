@@ -11536,6 +11536,33 @@ proven statistical guarantees.")
      "A library for using child processes from multiple threads.")
     (license license:expat)))
 
+(define-public rust-shared-library-0.1
+  (package
+    (name "rust-shared-library")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "shared_library" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "04fs37kdak051hm524a360978g58ayrcarjsbf54vqps5c7px7js"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-libc" ,rust-libc-0.2))))
+    (home-page
+     "https://github.com/tomaka/shared_library/")
+    (synopsis
+     "Easily bind to and load shared libraries")
+    (description
+     "Easily bind to and load shared libraries")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-shlex-0.1
   (package
     (name "rust-shlex")
