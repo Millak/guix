@@ -3918,6 +3918,7 @@ APIs.")
 
 (define-public rust-foreign-types-shared-0.2
   (package
+    (inherit rust-foreign-types-shared-0.3)
     (name "rust-foreign-types-shared")
     (version "0.2.0")
     (source
@@ -3927,15 +3928,7 @@ APIs.")
         (file-name (string-append name "-" version ".crate"))
         (sha256
          (base32
-          "0kanxlif1vp0ffh2r9l610jqbkmb3183yqykxq1z5w1vay2rn7y6"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/sfackler/foreign-types")
-    (synopsis "Internal crate used by foreign-types")
-    (description
-     "An internal crate used by foreign-types.")
-    (license (list license:asl2.0
-                   license:expat))))
+          "0kanxlif1vp0ffh2r9l610jqbkmb3183yqykxq1z5w1vay2rn7y6"))))))
 
 (define-public rust-foreign-types-shared-0.1
   (package
