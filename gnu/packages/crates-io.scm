@@ -4166,6 +4166,31 @@ implementation that is more efficient for smaller hash keys.")
      "Cross-platform file locks and file duplication.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fsevent-sys-2
+  (package
+    (name "rust-fsevent-sys")
+    (version "2.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "fsevent-sys" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "18246vxk7rqn52m0sfrhivxq802i34p2wqqx5zsa0pamjj5086zl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page
+      "https://github.com/octplane/fsevent-rust/tree/master/fsevent-sys")
+    (synopsis
+      "Rust bindings to the fsevent macOS API for file changes notifications")
+    (description
+      "Rust bindings to the fsevent macOS API for file changes notifications")
+    (license license:expat)))
+
 (define-public rust-fs-extra-1.1
   (package
     (name "rust-fs-extra")
