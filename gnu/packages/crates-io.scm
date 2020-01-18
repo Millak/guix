@@ -4586,6 +4586,36 @@ archive to be linked into Rustcode.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-gdi32-sys-0.2
+  (package
+    (name "rust-gdi32-sys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdi32-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0605d4ngjsspghwjv4jicajich1gnl0aik9f880ajjzjixd524h9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.2))
+       #:cargo-development-inputs
+       (("rust-winapi-build" ,rust-winapi-build-0.1))))
+    (home-page
+     "https://github.com/retep998/winapi-rs")
+    (synopsis
+     "Contains function definitions for the Windows API library gdi32.
+See winapi for types and constants")
+    (description
+     "Contains function definitions for the Windows API library gdi32.
+See winapi for types and constants.")
+    (license license:expat)))
+
 (define-public rust-generic-array-0.13
   (package
     (name "rust-generic-array")
