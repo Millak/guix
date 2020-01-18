@@ -3893,6 +3893,29 @@ APIs.")
         ("rust-quote" ,rust-quote-1.0)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-foreign-types-shared-0.3
+  (package
+    (name "rust-foreign-types-shared")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "foreign-types-shared" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0mg85r21bxg2i97zl3q8l3cviqz4wcbwziz875wlja3zpcrwz13n"))))
+    (build-system cargo-build-system)
+    (arguments '(#:skip-build? #t))
+    (home-page
+     "https://github.com/sfackler/foreign-types")
+    (synopsis
+     "An internal crate used by foreign-types")
+    (description
+     "An internal crate used by foreign-types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-foreign-types-shared-0.2
   (package
     (name "rust-foreign-types-shared")
