@@ -2112,6 +2112,35 @@ intrinsics.")
      "Statistics-driven micro-benchmarking library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-criterion-plot-0.4
+  (package
+    (name "rust-criterion-plot")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "criterion-plot" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "18kjl0fh2n5ws6ssiqskikmz893dm9rfdgi5j2l2qddyig7cdkgc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cast" ,rust-cast-0.2)
+        ("rust-itertools" ,rust-itertools-0.8))
+       #:cargo-development-inputs
+       (("rust-itertools-num" ,rust-itertools-num-0.1)
+        ("rust-num-complex" ,rust-num-complex-0.2)
+        ("rust-rand" ,rust-rand-0.4))))
+    (home-page
+     "https://github.com/bheisler/criterion.rs")
+    (synopsis "Criterion's plotting library")
+    (description "Criterion's plotting library")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-criterion-plot-0.3
   (package
     (name "rust-criterion-plot")
