@@ -11488,6 +11488,34 @@ rustc compiler.")
      "Automatically apply the suggestions made by rustc.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rustversion-1.0
+  (package
+    (name "rust-rustversion")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustversion" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "11krxgi7j6h5crhs6ws06wwzjvgdqaazvli805xja5vyi6ykh19s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1.0)
+        ("rust-quote" ,rust-quote-1.0)
+        ("rust-syn" ,rust-syn-1.0))))
+    (home-page
+     "https://github.com/dtolnay/rustversion")
+    (synopsis
+     "Conditional compilation according to rustc compiler version")
+    (description
+     "Conditional compilation according to rustc compiler version.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rusty-fork-0.2
   (package
     (name "rust-rusty-fork")
