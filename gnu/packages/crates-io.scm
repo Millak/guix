@@ -1758,6 +1758,32 @@ depending on a large number of #[cfg] parameters.  Structured like an
          (base32
           "1r50dwy5hj5gq07dn0qf8222d07qv0970ymx0j8n9779yayc3w3f"))))))
 
+(define-public rust-clang-sys-0.22
+  (package
+    (inherit rust-clang-sys-0.26)
+    (name "rust-clang-sys")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clang-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0f65dw1ydnzq4wrv894fql78n4ikb53jjp53xck0s4hb64s1m6lk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-clippy" ,rust-clippy-0.0)
+        ("rust-glob" ,rust-glob-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libloading" ,rust-libloading-0.5))
+       #:cargo-development-inputs
+       (("rust-clippy" ,rust-clippy-0.0)
+        ("rust-glob" ,rust-glob-0.2))))))
+
 (define-public rust-clap-2
   (package
     (name "rust-clap")
