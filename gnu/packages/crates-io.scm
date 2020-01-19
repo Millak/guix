@@ -5918,6 +5918,30 @@ renamed to indexmap.")
     (description "DEFLATE decoding")
     (license license:expat)))
 
+(define-public rust-inotify-sys-0.1
+  (package
+    (name "rust-inotify-sys")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "inotify-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1h2nwgajz80qddjm4mpma94zahxw84nscbycy9pgzbjrgjl1ljp7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page
+     "https://github.com/inotify-rs/inotify-sys")
+    (synopsis
+     "inotify bindings for the Rust programming language")
+    (description
+     "inotify bindings for the Rust programming language")
+    (license license:isc)))
+
 (define-public rust-insta-0.8
   (package
     (name "rust-insta")
