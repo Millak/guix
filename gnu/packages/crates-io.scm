@@ -10946,6 +10946,7 @@ functionality.")
 
 (define-public rust-ref-cast-0.2
   (package
+    (inherit rust-ref-cast-1.0)
     (name "rust-ref-cast")
     (version "0.2.6")
     (source
@@ -10957,16 +10958,10 @@ functionality.")
        (sha256
         (base32
          "0jgj1zxaikqm030flpifbp517fy4z21lly6ysbwyciii39bkzcf1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-ref-cast-impl" ,rust-ref-cast-impl-0.2))))
-    (home-page "https://github.com/dtolnay/ref-cast")
-    (synopsis "Safely cast &T to &U")
-    (description
-     "Safely cast &T to &U where the struct U contains a single field of type T.")
-    (license (list license:asl2.0 license:expat))))
+       (("rust-ref-cast-impl" ,rust-ref-cast-impl-0.2))))))
 
 (define-public rust-ref-cast-impl-1.0
   (package
