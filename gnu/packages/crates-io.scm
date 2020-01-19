@@ -8268,6 +8268,38 @@ combinators library.")
      "Cross-platform filesystem notification library.")
     (license license:cc0)))
 
+(define-public rust-num-0.2
+  (package
+    (name "rust-num")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1nq8krgrz3nah4c2wqp3ap06xwjk9lpyk31ag2rhc50ygr0jaj6g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-num-bigint" ,rust-num-bigint-0.2)
+        ("rust-num-complex" ,rust-num-complex-0.2)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-iter" ,rust-num-iter-0.1)
+        ("rust-num-rational" ,rust-num-rational-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/rust-num/num")
+    (synopsis
+     "A collection of numeric types and traits for Rust, including bigint,
+complex, rational, range iterators, generic integers, and more!")
+    (description
+     "This package provides a collection of numeric types and traits for Rust,
+including bigint,complex, rational, range iterators, generic integers, and more!")
+    (license (list license:expat license:asl2.0))))
+
 (define rust-num-bigint-0.2
   (package
     (name "rust-num-bigint")
