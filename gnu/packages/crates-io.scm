@@ -1283,6 +1283,26 @@ in a byte slice, fast.")
 little-endian.")
     (license (list license:expat license:unlicense))))
 
+(define-public rust-byteorder-1.2
+  (package
+    (inherit rust-byteorder-1.3)
+    (name "rust-byteorder")
+    (version "1.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "byteorder" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0pgpxnfcsg1s7chdkpbigzl304yc2rbhzar2r6npnh957br8vy4l"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-0.7)
+        ("rust-rand" ,rust-rand-0.5))))))
+
 (define-public rust-bytes-0.4
   (package
     (name "rust-bytes")
