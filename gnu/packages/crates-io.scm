@@ -10969,6 +10969,7 @@ functionality.")
 
 (define-public rust-ref-cast-impl-0.2
   (package
+    (inherit rust-ref-cast-impl-1.0)
     (name "rust-ref-cast-impl")
     (version "0.2.6")
     (source
@@ -10980,18 +10981,12 @@ functionality.")
        (sha256
         (base32
          "0hw0frpzna5rf5szix56zyzd0vackcb3svj94ndj629xi75dkb32"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-0.4)
         ("rust-quote" ,rust-quote-1.0)
-        ("rust-syn" ,rust-syn-0.15))))
-    (home-page "https://github.com/dtolnay/ref-cast")
-    (synopsis "Derive implementation for @code{ref_cast::RefCast}")
-    (description
-     "Derive implementation for ref_cast::RefCast.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-syn" ,rust-syn-0.15))))))
 
 (define-public rust-regex-1.3
   (package
