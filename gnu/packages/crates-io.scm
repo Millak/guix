@@ -8244,6 +8244,40 @@ combinators library.")
      "Cross-platform filesystem notification library.")
     (license license:cc0)))
 
+(define rust-num-bigint-0.2
+  (package
+    (name "rust-num-bigint")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num-bigint" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "11y8v74cgqymzvkgvm4n1s2i37pwgjdfhcdf5bkmjnllbkqksfrl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-0.8)
+        ("rust-quickcheck-macros"
+         ,rust-quickcheck-macros-0.8)
+        ("rust-rand" ,rust-rand-0.5)
+        ("rust-serde" ,rust-serde-1.0))
+       #:cargo-development-inputs
+       (("rust-autocfg" ,rust-autocfg-0.1)
+        ("rust-serde-test" ,rust-serde-test-1.0))))
+    (home-page
+     "https://github.com/rust-num/num-bigint")
+    (synopsis "Big integer implementation for Rust")
+    (description
+     "Big integer implementation for Rust")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-num-complex-0.2
   (package
     (name "rust-num-complex")
