@@ -8401,6 +8401,37 @@ combinators library.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-num-rational-0.2
+  (package
+    (name "rust-num-rational")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num-rational" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0m5l76rdzzq98cfhnbjsxfngz6w75pal5mnfflpxqapysmw5527j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-num-bigint" ,rust-num-bigint-0.2)
+        ("rust-num-integer" ,rust-num-integer-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-serde" ,rust-serde-1.0))
+       #:cargo-development-inputs
+       (("rust-autocfg" ,rust-autocfg-0.1))))
+    (home-page
+     "https://github.com/rust-num/num-rational")
+    (synopsis
+     "Rational numbers implementation for Rust")
+    (description
+     "Rational numbers implementation for Rust")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-num-traits-0.2
   (package
     (name "rust-num-traits")
