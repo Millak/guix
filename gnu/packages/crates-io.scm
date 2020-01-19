@@ -9108,6 +9108,7 @@ synchronization primitives.")
 
 (define-public rust-parking-lot-0.9
   (package
+    (inherit rust-parking-lot-0.10)
     (name "rust-parking-lot")
     (version "0.9.0")
     (source
@@ -9119,7 +9120,6 @@ synchronization primitives.")
        (sha256
         (base32
          "0lk2vq3hp88ygpgsrypdr3ss71fidnqbykva0csgxhmn5scb2hpq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -9129,13 +9129,7 @@ synchronization primitives.")
        (("rust-bincode" ,rust-bincode-1.1)
         ("rust-lazy-static" ,rust-lazy-static-1.3)
         ("rust-rand" ,rust-rand-0.4)
-        ("rust-rustc-version" ,rust-rustc-version-0.2))))
-    (home-page "https://github.com/Amanieu/parking_lot")
-    (synopsis "Compact standard synchronization primitives")
-    (description
-     "More compact and efficient implementations of the standard
-synchronization primitives.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-rustc-version" ,rust-rustc-version-0.2))))))
 
 (define-public rust-parking-lot-0.8
   (package
