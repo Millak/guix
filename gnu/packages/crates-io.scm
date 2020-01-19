@@ -15506,6 +15506,34 @@ updated when the crate version changes.")
     (properties '((hidden? . #t)))
     (license license:expat)))
 
+(define-public rust-vswhom-sys-0.1
+  (package
+    (name "rust-vswhom-sys")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vswhom-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0clm4dx4amwlhg5lkh52fmvvwq6c7s7b9xqljw39mryhsc158bzw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-cc" ,rust-cc-1.0))))
+    (home-page
+     "https://github.com/nabijaczleweli/vswhom-sys.rs")
+    (synopsis
+     "Pure FFI to Jon Blow's VS discovery script")
+    (description
+     "Pure FFI to Jon Blow's VS discovery script")
+    (license license:expat)))
+
 (define-public rust-vte-0.3
   (package
     (name "rust-vte")
