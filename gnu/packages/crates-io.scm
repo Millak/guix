@@ -1243,6 +1243,7 @@ BLAKE2bp hash functions.")
 
 (define-public rust-bumpalo-2.5
   (package
+    (inherit rust-bumpalo-3.1)
     (name "rust-bumpalo")
     (version "2.5.0")
     (source
@@ -1254,17 +1255,11 @@ BLAKE2bp hash functions.")
        (sha256
         (base32
          "018b5calz3895v04shk9bn7i73r4zf8yf7p1dqg92s3xya13vm1c"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.2)
-        ("rust-quickcheck" ,rust-quickcheck-0.8))))
-    (home-page "https://github.com/fitzgen/bumpalo")
-    (synopsis "Fast bump allocation arena for Rust")
-    (description
-     "This package provides a fast bump allocation arena for Rust.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-quickcheck" ,rust-quickcheck-0.8))))))
 
 (define-public rust-bstr-0.2
   (package
