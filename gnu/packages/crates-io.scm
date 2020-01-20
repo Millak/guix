@@ -1437,6 +1437,36 @@ little-endian.")
      "Types and traits for working with bytes.")
     (license license:expat)))
 
+(define-public rust-bzip2-sys-0.1
+  (package
+    (name "rust-bzip2-sys")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bzip2-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0pz2mdhkk8yphiqdh2kghdxb60kqyd10lfrjym3r4k5dylvam135"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-cc" ,rust-cc-1.0))))
+    (home-page
+     "https://github.com/alexcrichton/bzip2-rs")
+    (synopsis
+     "Bindings to libbzip2 for bzip2 compression and decompression exposed as
+Reader/Writer streams")
+    (description
+     "Bindings to libbzip2 for bzip2 compression and decompression exposed as
+Reader/Writer streams.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-c2-chacha-0.2
   (package
     (name "rust-c2-chacha")
