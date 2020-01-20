@@ -13243,6 +13243,32 @@ proven statistical guarantees.")
     (description "YAML support for Serde.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-servo-freetype-sys-4.0
+  (package
+    (name "rust-servo-freetype-sys")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "servo-freetype-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "19fx4rf4xrvw2csqv0azbn9f28nafwi1hffiahs0q348rn1bzcml"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-development-inputs
+       (("rust-cmake" ,rust-cmake-0.1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page "http://www.freetype.org/")
+    (synopsis
+     "FreeType is a freely available software library to render fonts")
+    (description
+     "FreeType is a freely available software library to render fonts.")
+    (license (list license:freetype license:gpl2))))
+
 (define-public rust-sha-1-0.8
   (package
     (name "rust-sha-1")
