@@ -2908,6 +2908,36 @@ intrinsics.")
 hexadecimal, base32, and base64.")
     (license license:expat)))
 
+(define-public rust-deflate-0.7
+  (package
+    (name "rust-deflate")
+    (version "0.7.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deflate" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1d7d9fpmgjnznrksmd3vlv3dyw01wsrm11ifil6ag22871xnlyvh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-adler32" ,rust-adler32-1.0)
+        ("rust-byteorder" ,rust-byteorder-1.3)
+        ("rust-gzip-header" ,rust-gzip-header-0.3))
+       #:cargo-development-inputs
+       (("rust-flate2" ,rust-flate2-1.0))))
+    (home-page
+     "https://github.com/image-rs/deflate-rs")
+    (synopsis
+     "A DEFLATE, zlib and gzip encoder written in rust")
+    (description
+     "This package provides a DEFLATE, zlib and gzip encoder written in rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-defmac-0.2
   (package
     (name "rust-defmac")
