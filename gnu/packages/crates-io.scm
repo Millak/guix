@@ -13243,6 +13243,31 @@ proven statistical guarantees.")
     (description "YAML support for Serde.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-servo-fontconfig-0.4
+  (package
+    (name "rust-servo-fontconfig")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "servo-fontconfig" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1nach6s4hdf86jz5hlm4p5r7vin91cs7gg89mr533id5fpbzi250"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-servo-fontconfig-sys" ,rust-servo-fontconfig-sys-4.0))))
+    (home-page
+     "https://github.com/servo/rust-fontconfig/")
+    (synopsis "Rust bindings for fontconfig")
+    (description "Rust bindings for fontconfig")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-servo-fontconfig-sys-4.0
   (package
     (name "rust-servo-fontconfig-sys")
