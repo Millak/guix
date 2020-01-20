@@ -1216,6 +1216,31 @@ BLAKE2bp hash functions.")
      "Padding and unpadding of messages divided into blocks.")
     (license (list license:asl1.1 license:expat))))
 
+(define-public rust-bumpalo-3.1
+  (package
+    (name "rust-bumpalo")
+    (version "3.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bumpalo" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1x1j6lgaidayfvg7yh9ysdpfjlaiqx60y4vvg1rmy2nw3n607f2z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-0.9))))
+    (home-page "https://github.com/fitzgen/bumpalo")
+    (synopsis "Fast bump allocation arena for Rust")
+    (description
+     "This package provides a fast bump allocation arena for Rust.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-bumpalo-2.5
   (package
     (name "rust-bumpalo")
