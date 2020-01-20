@@ -4029,6 +4029,29 @@ is configured via an environment variable.")
     (description "Geometry primitives")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-expat-sys-2.1
+  (package
+    (name "rust-expat-sys")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "expat-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0gijyhfrp4wh0czrs9lg8wxziafgp6zgs2kg2wgmghclhn1nzksc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-make-cmd" ,rust-make-cmd-0.1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page "http://www.libexpat.org/")
+    (synopsis "XML parser library written in C")
+    (description "XML parser library written in C")
+    (license license:expat)))
+
 (define-public rust-fake-simd-0.1
   (package
     (name "rust-fake-simd")
