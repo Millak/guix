@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -26,6 +26,8 @@
   #:use-module (guix utils)
   #:use-module (guix ui)
   #:use-module ((guix self) #:select (make-config.scm))
+  #:use-module (guix packages)
+  #:use-module (guix git-download)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -278,6 +280,24 @@ selected keymap."
            (lambda (result prev-steps)
              ((installer-final-page current-installer)
               result prev-steps))))))))
+
+(define guile-newt
+  ;; Guile-Newt with 'form-watch-fd'.
+  (let ((commit "b3c885d42cfac327d3531c9d064939514ce6bf12")
+        (revision "1"))
+    (package
+      (inherit (@ (gnu packages guile-xyz) guile-newt))
+      (name "guile-newt")
+      (version (git-version "0.0.1" revision commit))
+      (source  (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url "https://gitlab.com/mothacehe/guile-newt")
+                       (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "02p0bi6c05699idgx6gfkljhqgi8zf09clhzx81i8wa064s70r1y")))))))
 
 (define (installer-program)
   "Return a file-like object that runs the given INSTALLER."
