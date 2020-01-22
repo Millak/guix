@@ -19,6 +19,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu installer newt page)
+  #:use-module (gnu installer steps)
   #:use-module (gnu installer utils)
   #:use-module (gnu installer newt utils)
   #:use-module (guix i18n)
@@ -27,6 +28,8 @@
   #:use-module (ice-9 receive)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (newt)
   #:export (draw-info-page
             draw-connecting-page
@@ -36,7 +39,10 @@
             run-listbox-selection-page
             run-scale-page
             run-checkbox-tree-page
-            run-file-textbox-page))
+            run-file-textbox-page
+
+            watch-clients!
+            with-client))
 
 ;;; Commentary:
 ;;;
@@ -49,9 +55,46 @@
 ;;;
 ;;; Code:
 
+(define (watch-clients! form)
+  "Have FORM watch the file descriptors corresponding to current client
+connections.  Consequently, FORM may exit with the 'exit-fd-ready' reason."
+  (when (current-server-socket)
+    (form-watch-fd form (fileno (current-server-socket))
+                   FD-READ))
+
+  (for-each (lambda (client)
+              (form-watch-fd form (fileno client)
+                             (logior FD-READ FD-EXCEPT)))
+            (current-clients)))
+
+(define (call-with-client fd proc fallback)
+  (match (fdes->ports fd)
+    ((port _ ...)
+     (if (memq port (current-clients))
+         (if (catch 'system-error
+               (lambda ()
+                 (eof-object? (peek-char port)))
+               (const #t))                        ;ECONNRESET, etc.
+             (begin
+               (close-port port)
+               (current-clients (delq port (current-clients)))
+               (fallback))
+             (proc port))
+         (match (accept port)
+           ((client . _)
+            (current-clients (cons client (current-clients)))
+            (fallback)))))))
+
+(define-syntax-rule (with-client fd port exp fallback)
+  "Evaluate EXP with PORT bound to the client connection corresponding to FD.
+Alternately, if FD is not available for reading (e.g., because the client
+disconnected), evaluate FALLBACK."
+  (call-with-client fd (lambda (port) exp) (lambda () fallback)))
+
 (define (draw-info-page text title)
   "Draw an informative page with the given TEXT as content.  Set the title of
 this page to TITLE."
+  (send-to-clients `(info (title ,title) (text ,text)))
   (let* ((text-box
           (make-reflowed-textbox -1 -1 text 40
                                  #:flags FLAG-BORDER))
@@ -109,6 +152,11 @@ input box, such as FLAG-PASSWORD."
                 GRID-ELEMENT-COMPONENT ok-button))
          (form (make-form #:flags FLAG-NOF12)))
 
+    (watch-clients! form)
+    (send-to-clients
+     `(input (title ,title) (text ,text)
+             (default ,default-text)))
+
     (add-component-callback
      input-visible-cb
      (lambda (component)
@@ -127,19 +175,24 @@ input box, such as FLAG-PASSWORD."
       (let loop ()
         (receive (exit-reason argument)
             (run-form form)
-          (let ((input (entry-value input-entry)))
-            (if (and (not allow-empty-input?)
-                     (eq? exit-reason 'exit-component)
-                     (string=? input ""))
-                (begin
-                  ;; Display the error page.
-                  (error-page)
-                  ;; Set the focus back to the input input field.
-                  (set-current-component form input-entry)
-                  (loop))
-                (begin
-                  (destroy-form-and-pop form)
-                  input))))))))
+          (let ((input (if (eq? exit-reason 'exit-fd-ready)
+                           (with-client argument port
+                             (read port)
+                             #f)
+                           (entry-value input-entry))))
+            (cond ((not input)                 ;client disconnect or something
+                   (loop))
+                  ((and (not allow-empty-input?)
+                        (eq? exit-reason 'exit-component)
+                        (string=? input ""))
+                   ;; Display the error page.
+                   (error-page)
+                   ;; Set the focus back to the input input field.
+                   (set-current-component form input-entry)
+                   (loop))
+                  (else
+                   (destroy-form-and-pop form)
+                   input))))))))
 
 (define (run-error-page text title)
   "Run a page to inform the user of an error. The page contains the given TEXT
@@ -186,18 +239,28 @@ of the page is set to TITLE."
     (add-form-to-grid grid form #t)
     (make-wrapped-grid-window grid title)
 
+    (watch-clients! form)
+    (send-to-clients
+     `(confirmation (title ,title) (text ,text)))
+
     (receive (exit-reason argument)
         (run-form form)
       (dynamic-wind
         (const #t)
         (lambda ()
-          (case exit-reason
-            ((exit-component)
+          (match exit-reason
+            ('exit-component
              (cond
               ((components=? argument ok-button)
                #t)
               ((components=? argument exit-button)
-               (exit-button-procedure))))))
+               (exit-button-procedure))))
+            ('exit-fd-ready
+             (with-client argument port
+               (if (read port)
+                   #t
+                   (exit-button-procedure))
+               #f))))                             ;FIXME: retry
         (lambda ()
           (destroy-form-and-pop form))))))
 
@@ -222,6 +285,8 @@ of the page is set to TITLE."
                                       (const #t))
                                      (listbox-callback-procedure
                                       identity)
+                                     (client-callback-procedure
+                                      listbox-callback-procedure)
                                      (hotkey-callback-procedure
                                       (const #t)))
   "Run a page asking the user to select an item in a listbox. The page
@@ -254,9 +319,9 @@ Each time the listbox current item changes, call SKIP-ITEM-PROCEDURE? with the
 current listbox item as argument. If it returns #t, skip the element and jump
 to the next/previous one depending on the previous item, otherwise do
 nothing."
-
-  (define (fill-listbox listbox items)
-    "Append the given ITEMS to LISTBOX, once they have been converted to text
+  (let loop ()
+    (define (fill-listbox listbox items)
+      "Append the given ITEMS to LISTBOX, once they have been converted to text
 with LISTBOX-ITEM->TEXT. Each item appended to the LISTBOX is given a key by
 newt. Save this key by returning an association list under the form:
 
@@ -264,144 +329,176 @@ newt. Save this key by returning an association list under the form:
 
 where NEWT-LISTBOX-KEY is the key returned by APPEND-ENTRY-TO-LISTBOX, when
 ITEM was inserted into LISTBOX."
-    (map (lambda (item)
-           (let* ((text (listbox-item->text item))
-                  (key (append-entry-to-listbox listbox text)))
-             (cons key item)))
-         items))
+      (map (lambda (item)
+             (let* ((text (listbox-item->text item))
+                    (key (append-entry-to-listbox listbox text)))
+               (cons key item)))
+           items))
 
-  (define (sort-listbox-items listbox-items)
-    "Return LISTBOX-ITEMS sorted using the 'string-locale<?' procedure on the text
+    (define (sort-listbox-items listbox-items)
+      "Return LISTBOX-ITEMS sorted using the 'string-locale<?' procedure on the text
 corresponding to each item in the list."
-    (let* ((items (map (lambda (item)
-                         (cons item (listbox-item->text item)))
-                       listbox-items))
-           (sorted-items
-            (sort items (lambda (a b)
-                          (let ((text-a (cdr a))
-                                (text-b (cdr b)))
-                            (string-locale<? text-a text-b))))))
-      (map car sorted-items)))
+      (let* ((items (map (lambda (item)
+                           (cons item (listbox-item->text item)))
+                         listbox-items))
+             (sorted-items
+              (sort items (lambda (a b)
+                            (let ((text-a (cdr a))
+                                  (text-b (cdr b)))
+                              (string-locale<? text-a text-b))))))
+        (map car sorted-items)))
 
-  ;; Store the last selected listbox item's key.
-  (define last-listbox-key (make-parameter #f))
+    ;; Store the last selected listbox item's key.
+    (define last-listbox-key (make-parameter #f))
 
-  (define (previous-key keys key)
-    (let ((index (list-index (cut eq? key <>) keys)))
-      (and index
-           (> index 0)
-           (list-ref keys (- index 1)))))
+    (define (previous-key keys key)
+      (let ((index (list-index (cut eq? key <>) keys)))
+        (and index
+             (> index 0)
+             (list-ref keys (- index 1)))))
 
-  (define (next-key keys key)
-    (let ((index (list-index (cut eq? key <>) keys)))
-      (and index
-           (< index (- (length keys) 1))
-           (list-ref keys (+ index 1)))))
+    (define (next-key keys key)
+      (let ((index (list-index (cut eq? key <>) keys)))
+        (and index
+             (< index (- (length keys) 1))
+             (list-ref keys (+ index 1)))))
 
-  (define (set-default-item listbox listbox-keys default-item)
-    "Set the default item of LISTBOX to DEFAULT-ITEM. LISTBOX-KEYS is the
+    (define (set-default-item listbox listbox-keys default-item)
+      "Set the default item of LISTBOX to DEFAULT-ITEM. LISTBOX-KEYS is the
 association list returned by the FILL-LISTBOX procedure. It is used because
 the current listbox item has to be selected by key."
-    (for-each (match-lambda
-                ((key . item)
-                 (when (equal? item default-item)
-                   (set-current-listbox-entry-by-key listbox key))))
-              listbox-keys))
+      (for-each (match-lambda
+                  ((key . item)
+                   (when (equal? item default-item)
+                     (set-current-listbox-entry-by-key listbox key))))
+                listbox-keys))
 
-  (let* ((listbox (make-listbox
-                   -1 -1
-                   listbox-height
-                   (logior FLAG-SCROLL FLAG-BORDER FLAG-RETURNEXIT
-                           (if listbox-allow-multiple?
-                               FLAG-MULTIPLE
-                               0))))
-         (form (make-form #:flags FLAG-NOF12))
-         (info-textbox
-          (make-reflowed-textbox -1 -1 info-text
-                                 info-textbox-width
-                                 #:flags FLAG-BORDER))
-         (button (make-button -1 -1 button-text))
-         (button2 (and button2-text
-                       (make-button -1 -1 button2-text)))
-         (grid (vertically-stacked-grid
-                GRID-ELEMENT-COMPONENT info-textbox
-                GRID-ELEMENT-COMPONENT listbox
-                GRID-ELEMENT-SUBGRID
-                (apply
-                 horizontal-stacked-grid
-                 GRID-ELEMENT-COMPONENT button
-                 `(,@(if button2
-                         (list GRID-ELEMENT-COMPONENT button2)
-                         '())))))
-         (sorted-items (if sort-listbox-items?
-                           (sort-listbox-items listbox-items)
-                           listbox-items))
-         (keys (fill-listbox listbox sorted-items)))
+    (let* ((listbox (make-listbox
+                     -1 -1
+                     listbox-height
+                     (logior FLAG-SCROLL FLAG-BORDER FLAG-RETURNEXIT
+                             (if listbox-allow-multiple?
+                                 FLAG-MULTIPLE
+                                 0))))
+           (form (make-form #:flags FLAG-NOF12))
+           (info-textbox
+            (make-reflowed-textbox -1 -1 info-text
+                                   info-textbox-width
+                                   #:flags FLAG-BORDER))
+           (button (make-button -1 -1 button-text))
+           (button2 (and button2-text
+                         (make-button -1 -1 button2-text)))
+           (grid (vertically-stacked-grid
+                  GRID-ELEMENT-COMPONENT info-textbox
+                  GRID-ELEMENT-COMPONENT listbox
+                  GRID-ELEMENT-SUBGRID
+                  (apply
+                   horizontal-stacked-grid
+                   GRID-ELEMENT-COMPONENT button
+                   `(,@(if button2
+                           (list GRID-ELEMENT-COMPONENT button2)
+                           '())))))
+           (sorted-items (if sort-listbox-items?
+                             (sort-listbox-items listbox-items)
+                             listbox-items))
+           (keys (fill-listbox listbox sorted-items)))
 
-    ;; On every listbox element change, check if we need to skip it. If yes,
-    ;; depending on the 'last-listbox-key', jump forward or backward. If no,
-    ;; do nothing.
-    (add-component-callback
-     listbox
-     (lambda (component)
-       (let* ((current-key (current-listbox-entry listbox))
-              (listbox-keys (map car keys))
-              (last-key (last-listbox-key))
-              (item (assoc-ref keys current-key))
-              (prev-key (previous-key listbox-keys current-key))
-              (next-key (next-key listbox-keys current-key)))
-         ;; Update last-listbox-key before a potential call to
-         ;; set-current-listbox-entry-by-key, because it will immediately
-         ;; cause this callback to be called for the new entry.
-         (last-listbox-key current-key)
-         (when (skip-item-procedure? item)
-           (when (eq? prev-key last-key)
-             (if next-key
-                 (set-current-listbox-entry-by-key listbox next-key)
-                 (set-current-listbox-entry-by-key listbox prev-key)))
-           (when (eq? next-key last-key)
-             (if prev-key
-                 (set-current-listbox-entry-by-key listbox prev-key)
-                 (set-current-listbox-entry-by-key listbox next-key)))))))
+      (define (choice->item str)
+        ;; Return the item that corresponds to STR.
+        (match (find (match-lambda
+                       ((key . item)
+                        (string=? str (listbox-item->text item))))
+                     keys)
+          ((key . item) item)
+          (#f (raise (condition (&installer-step-abort))))))
 
-    (when listbox-default-item
-      (set-default-item listbox keys listbox-default-item))
+      (watch-clients! form)
 
-    (when allow-delete?
-      (form-add-hotkey form KEY-DELETE))
+      ;; On every listbox element change, check if we need to skip it. If yes,
+      ;; depending on the 'last-listbox-key', jump forward or backward. If no,
+      ;; do nothing.
+      (add-component-callback
+       listbox
+       (lambda (component)
+         (let* ((current-key (current-listbox-entry listbox))
+                (listbox-keys (map car keys))
+                (last-key (last-listbox-key))
+                (item (assoc-ref keys current-key))
+                (prev-key (previous-key listbox-keys current-key))
+                (next-key (next-key listbox-keys current-key)))
+           ;; Update last-listbox-key before a potential call to
+           ;; set-current-listbox-entry-by-key, because it will immediately
+           ;; cause this callback to be called for the new entry.
+           (last-listbox-key current-key)
+           (when (skip-item-procedure? item)
+             (when (eq? prev-key last-key)
+               (if next-key
+                   (set-current-listbox-entry-by-key listbox next-key)
+                   (set-current-listbox-entry-by-key listbox prev-key)))
+             (when (eq? next-key last-key)
+               (if prev-key
+                   (set-current-listbox-entry-by-key listbox prev-key)
+                   (set-current-listbox-entry-by-key listbox next-key)))))))
 
-    (add-form-to-grid grid form #t)
-    (make-wrapped-grid-window grid title)
+      (when listbox-default-item
+        (set-default-item listbox keys listbox-default-item))
 
-    (receive (exit-reason argument)
-        (run-form form)
-      (dynamic-wind
-        (const #t)
-        (lambda ()
-          (case exit-reason
-            ((exit-component)
-             (cond
-              ((components=? argument button)
-               (button-callback-procedure))
-              ((and button2
-                    (components=? argument button2))
-               (button2-callback-procedure))
-              ((components=? argument listbox)
-               (if listbox-allow-multiple?
-                   (let* ((entries (listbox-selection listbox))
-                          (items (map (lambda (entry)
-                                        (assoc-ref keys entry))
-                                      entries)))
-                     (listbox-callback-procedure items))
-                   (let* ((entry (current-listbox-entry listbox))
-                          (item (assoc-ref keys entry)))
-                     (listbox-callback-procedure item))))))
-            ((exit-hotkey)
-             (let* ((entry (current-listbox-entry listbox))
-                    (item (assoc-ref keys entry)))
-               (hotkey-callback-procedure argument item)))))
-        (lambda ()
-          (destroy-form-and-pop form))))))
+      (when allow-delete?
+        (form-add-hotkey form KEY-DELETE))
+
+      (add-form-to-grid grid form #t)
+      (make-wrapped-grid-window grid title)
+
+      (send-to-clients
+       `(list-selection (title ,title)
+                        (multiple-choices? ,listbox-allow-multiple?)
+                        (items ,(map listbox-item->text listbox-items))))
+
+      (receive (exit-reason argument)
+          (run-form form)
+        (define &retry
+          (list 'retry))
+
+        (define result
+          (dynamic-wind
+            (const #t)
+            (lambda ()
+              (match exit-reason
+                ('exit-component
+                 (cond
+                  ((components=? argument button)
+                   (button-callback-procedure))
+                  ((and button2
+                        (components=? argument button2))
+                   (button2-callback-procedure))
+                  ((components=? argument listbox)
+                   (if listbox-allow-multiple?
+                       (let* ((entries (listbox-selection listbox))
+                              (items (map (lambda (entry)
+                                            (assoc-ref keys entry))
+                                          entries)))
+                         (listbox-callback-procedure items))
+                       (let* ((entry (current-listbox-entry listbox))
+                              (item (assoc-ref keys entry)))
+                         (listbox-callback-procedure item))))))
+                ('exit-fd-ready
+                 (with-client argument port
+                   (let* ((choice (read port))
+                          (item   (if listbox-allow-multiple?
+                                      (map choice->item choice)
+                                      (choice->item choice))))
+                     (client-callback-procedure item))
+                   &retry))
+                ('exit-hotkey
+                 (let* ((entry (current-listbox-entry listbox))
+                        (item (assoc-ref keys entry)))
+                   (hotkey-callback-procedure argument item)))))
+            (lambda ()
+              (destroy-form-and-pop form))))
+
+        (if (eq? &retry result)
+            (loop)
+            result)))))
 
 (define* (run-scale-page #:key
                          title
@@ -498,48 +595,75 @@ ITEMS when 'Ok' is pressed."
          items
          selection))
 
-  (let* ((checkbox-tree
-          (make-checkboxtree -1 -1
-                             checkbox-tree-height
-                             FLAG-BORDER))
-         (info-textbox
-          (make-reflowed-textbox -1 -1 info-text
-                                 info-textbox-width
-                                 #:flags FLAG-BORDER))
-         (ok-button (make-button -1 -1 (G_ "OK")))
-         (exit-button (make-button -1 -1 (G_ "Exit")))
-         (grid (vertically-stacked-grid
-                GRID-ELEMENT-COMPONENT info-textbox
-                GRID-ELEMENT-COMPONENT checkbox-tree
-                GRID-ELEMENT-SUBGRID
-                (horizontal-stacked-grid
-                 GRID-ELEMENT-COMPONENT ok-button
-                 GRID-ELEMENT-COMPONENT exit-button)))
-         (keys (fill-checkbox-tree checkbox-tree items))
-         (form (make-form #:flags FLAG-NOF12)))
+  (let loop ()
+    (let* ((checkbox-tree
+            (make-checkboxtree -1 -1
+                               checkbox-tree-height
+                               FLAG-BORDER))
+           (info-textbox
+            (make-reflowed-textbox -1 -1 info-text
+                                   info-textbox-width
+                                   #:flags FLAG-BORDER))
+           (ok-button (make-button -1 -1 (G_ "OK")))
+           (exit-button (make-button -1 -1 (G_ "Exit")))
+           (grid (vertically-stacked-grid
+                  GRID-ELEMENT-COMPONENT info-textbox
+                  GRID-ELEMENT-COMPONENT checkbox-tree
+                  GRID-ELEMENT-SUBGRID
+                  (horizontal-stacked-grid
+                   GRID-ELEMENT-COMPONENT ok-button
+                   GRID-ELEMENT-COMPONENT exit-button)))
+           (keys (fill-checkbox-tree checkbox-tree items))
+           (form (make-form #:flags FLAG-NOF12)))
 
-    (add-form-to-grid grid form #t)
-    (make-wrapped-grid-window grid title)
+      (define (choice->item str)
+        ;; Return the item that corresponds to STR.
+        (match (find (match-lambda
+                       ((key . item)
+                        (string=? str (item->text item))))
+                     keys)
+          ((key . item) item)
+          (#f (raise (condition (&installer-step-abort))))))
 
-    (receive (exit-reason argument)
-        (run-form form)
-      (dynamic-wind
-        (const #t)
-        (lambda ()
-          (case exit-reason
-            ((exit-component)
-             (cond
-              ((components=? argument ok-button)
-               (let* ((entries (current-checkbox-selection checkbox-tree))
-                      (current-items (map (lambda (entry)
-                                            (assoc-ref keys entry))
-                                          entries)))
-                 (ok-button-callback-procedure)
-                 current-items))
-              ((components=? argument exit-button)
-               (exit-button-callback-procedure))))))
-        (lambda ()
-          (destroy-form-and-pop form))))))
+      (add-form-to-grid grid form #t)
+      (make-wrapped-grid-window grid title)
+
+      (watch-clients! form)
+      (send-to-clients
+       `(checkbox-list (title ,title) (text ,info-text)
+                       (items ,(map item->text items))))
+
+      (receive (exit-reason argument)
+          (run-form form)
+        (define &retry
+          (list 'retry))
+
+        (define result
+          (dynamic-wind
+            (const #t)
+            (lambda ()
+              (match exit-reason
+                ('exit-component
+                 (cond
+                  ((components=? argument ok-button)
+                   (let* ((entries (current-checkbox-selection checkbox-tree))
+                          (current-items (map (lambda (entry)
+                                                (assoc-ref keys entry))
+                                              entries)))
+                     (ok-button-callback-procedure)
+                     current-items))
+                  ((components=? argument exit-button)
+                   (exit-button-callback-procedure))))
+                ('exit-fd-ready
+                 (with-client argument port
+                   (map choice->item (read port))
+                   &retry))))
+            (lambda ()
+              (destroy-form-and-pop form))))
+
+        (if (eq? result &retry)
+            (loop)
+            result)))))
 
 (define* (edit-file file #:key locale)
   "Spawn an editor for FILE."
@@ -595,6 +719,12 @@ ITEMS when 'Ok' is pressed."
                            '())))))
            (form (make-form #:flags FLAG-NOF12)))
 
+      (watch-clients! form)
+      (send-to-clients
+       `(file-dialog (title ,title)
+                     (text ,info-text)
+                     (file ,file)))
+
       (add-form-to-grid grid form #t)
       (make-wrapped-grid-window grid title)
 
@@ -611,8 +741,8 @@ ITEMS when 'Ok' is pressed."
           (dynamic-wind
             (const #t)
             (lambda ()
-              (case exit-reason
-                ((exit-component)
+              (match exit-reason
+                ('exit-component
                  (cond
                   ((components=? argument ok-button)
                    (ok-button-callback-procedure))
@@ -621,10 +751,17 @@ ITEMS when 'Ok' is pressed."
                    (exit-button-callback-procedure))
                   ((and edit-button?
                         (components=? argument edit-button))
-                   (edit-file file))))))
+                   (edit-file file))))
+                ('exit-fd-ready
+                 (with-client argument port
+                   (if (read port)
+                       (ok-button-callback-procedure)
+                       (exit-button-callback-procedure))
+                   #f))))                         ;FIXME: retry
             (lambda ()
               (destroy-form-and-pop form))))
 
-        (if (components=? argument edit-button)
+        (if (and (eq? exit-reason 'exit-component)
+                 (components=? argument edit-button))
             (loop)                                ;recurse in tail position
             result)))))
