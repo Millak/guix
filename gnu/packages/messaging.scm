@@ -2041,4 +2041,40 @@ support for high performance Telegram Bot creation.")
     (home-page "https://source.puri.sm/Librem5/purple-mm-sms")
     (license license:gpl2+)))
 
+(define-public chatty
+ (package
+   (name "chatty")
+   (version "0.1.7")
+   (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://source.puri.sm/Librem5/chatty.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1prqd2dnib3j12pjiplzr2rim9q617vmvzv76lgmz0n3bmp7v7ma"))))
+   (build-system meson-build-system)
+   (native-inputs
+     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
+       ("evolution-data-server" ,evolution-data-server) ;libebook-contacts
+       ("folks" ,folks)
+       ("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("gtk+:bin" ,gtk+ "bin")
+       ("libgcrypt" ,libgcrypt)
+       ("libgee" ,libgee)
+       ("libhandy" ,libhandy)
+       ("pidgin" ,pidgin)
+       ("purple-mm-sms" ,purple-mm-sms)
+       ("pkg-config" ,pkg-config)
+       ("sqlite" ,sqlite)))
+   (propagated-inputs
+     `(("hicolor-icon-theme" ,hicolor-icon-theme)))
+   (synopsis "Mobile client for XMPP and SMS messaging")
+   (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
+as well as on desktop platforms.  It's based on libpurple and ModemManager.")
+   (home-page "https://source.puri.sm/Librem5/chatty")
+   (license license:gpl3+)))
+
 ;;; messaging.scm ends here
