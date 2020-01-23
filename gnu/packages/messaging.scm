@@ -18,6 +18,7 @@
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +56,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -1994,5 +1996,49 @@ from almost any programming language with a C-FFI and features first-class
 support for high performance Telegram Bot creation.")
       (home-page "https://core.telegram.org/tdlib")
       (license license:boost1.0))))
+
+(define-public purple-mm-sms
+  (package
+    (name "purple-mm-sms")
+    (version "0.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://source.puri.sm/Librem5/purple-mm-sms.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "Makefile"
+                    ;; By default these two directories point to Pidgin's own
+                    ;; prefix. TODO: Find a better solution.
+                    (("^PLUGIN_DIR_PURPLE	   = .*$")
+                     (string-append
+                      "PLUGIN_DIR_PURPLE = /lib/purple-2\n"))
+                    (("^DATA_ROOT_DIR_PURPLE = .*$")
+                     "DATA_ROOT_DIR_PURPLE = /usr/share\n"))
+                  #t))
+              (sha256
+               (base32
+                "0mma1gdlpcpvai5h8mq47igdkmrfw2f44x0wsrbdv9ygkygdn8m0"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (let ((out (assoc-ref %outputs "out")))
+         (list (string-append "DESTDIR=" out)))
+       #:phases
+       (modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check)))) ; no tests
+    (native-inputs
+     `(("glib:bin" ,glib "bin")
+       ("modem-manager" ,modem-manager)
+       ("pidgin" ,pidgin)
+       ("pkg-config" ,pkg-config)))
+    (synopsis "Libpurple plugin for SMS via ModemManager")
+    (description "Plugin for libpurple to allow sending SMS using ModemManager.")
+    (home-page "https://source.puri.sm/Librem5/purple-mm-sms")
+    (license license:gpl2+)))
 
 ;;; messaging.scm ends here
