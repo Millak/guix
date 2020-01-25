@@ -6579,6 +6579,46 @@ SystemTime}}.")
 ignore files such as .gitignore against file paths.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-image-0.22
+  (package
+    (name "rust-image")
+    (version "0.22.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "image" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "09kqym26z03j31rfzr9zd8i8y2d0apxmm4mf8bf4axdyxymfhjvv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1.3)
+        ("rust-gif" ,rust-gif-0.10)
+        ("rust-jpeg-decoder" ,rust-jpeg-decoder-0.1)
+        ("rust-num-iter" ,rust-num-iter-0.1)
+        ("rust-num-rational" ,rust-num-rational-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-png" ,rust-png-0.15)
+        ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+        ("rust-tiff" ,rust-tiff-0.3))
+       #:cargo-development-inputs
+       (("rust-crc32fast" ,rust-crc32fast-1.2)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-num-complex" ,rust-num-complex-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-0.6))))
+    (home-page "https://github.com/image-rs/image")
+    (synopsis
+     "Imaging library written in Rust. Provides basic filters and decoders for
+the most common image formats")
+    (description
+     "Imaging library written in Rust.  Provides basic filters and decoders
+for the most common image formats.")
+    (license license:expat)))
+
 (define-public rust-indexmap-1.0
   (package
     (name "rust-indexmap")
