@@ -11473,6 +11473,27 @@ to write.")
         ("rust-log" ,rust-log-0.3)
         ("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-quickcheck-0.4
+  (package
+    (inherit rust-quickcheck-0.5)
+    (name "rust-quickcheck")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quickcheck" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "01hligcv1h4pvc8ykch65qjzi7jgcq2s462v69j27slc84fl3hh2"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-env-logger" ,rust-env-logger-0.3)
+        ("rust-log" ,rust-log-0.3)
+        ("rust-rand" ,rust-rand-0.3))))))
+
 (define-public rust-quickcheck-0.2
   (package
     (inherit rust-quickcheck-0.5)
