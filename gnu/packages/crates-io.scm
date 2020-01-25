@@ -185,6 +185,32 @@ Rust, using gimli.")
         ("rust-serde" ,rust-serde-1.0)
         ("rust-serde-derive" ,rust-serde-derive-1.0))))))
 
+(define-public rust-aho-corasick-0.5
+  (package
+    (inherit rust-aho-corasick-0.6)
+    (name "rust-aho-corasick")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aho-corasick" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0rnvdmlajikq0i4zdy1p3pv699q6apvsxfc7av7byhppllp2r5ya"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-memchr" ,rust-memchr-0.1))
+       #:cargo-development-inputs
+       (("rust-csv" ,rust-csv-0.14)
+        ("rust-docopt" ,rust-docopt-0.6)
+        ("rust-memmap" ,rust-memmap-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-0.2)
+        ("rust-rand" ,rust-rand-0.3)
+        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
+
 (define-public rust-android-glue-0.2
   (package
     (name "rust-android-glue")
@@ -1406,6 +1432,26 @@ little-endian.")
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.7)
         ("rust-rand" ,rust-rand-0.5))))))
+
+(define-public rust-byteorder-0.5
+  (package
+    (inherit rust-byteorder-1.2)
+    (name "rust-byteorder")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "byteorder" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0ma8pkyz1jbglr29m1yzlc9ghmv6672nvsrn7zd0yn5jqs60xh8g"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-0.2)
+        ("rust-rand" ,rust-rand-0.3))))))
 
 (define-public rust-bytes-0.4
   (package
@@ -2908,6 +2954,28 @@ intrinsics.")
      "Fast CSV parsing with support for serde.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-csv-0.14
+  (package
+    (inherit rust-csv-1.1)
+    (name "rust-csv")
+    (version "0.14.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "csv" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1g0qvr9fj25fq1fy0p758glrb30yz7x46h18hsysaqyaswaihv16"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-0.5)
+        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))
+       #:cargo-development-inputs
+       (("rust-regex" ,rust-regex-0.1))))))
+
 (define-public rust-csv-core-0.1
   (package
     (name "rust-csv-core")
@@ -3424,6 +3492,28 @@ from macros.")
         ("rust-regex" ,rust-regex-0.2)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-strsim" ,rust-strsim-0.6))))))
+
+(define-public rust-docopt-0.6
+  (package
+    (inherit rust-docopt-0.7)
+    (name "rust-docopt")
+    (version "0.6.86")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "docopt" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1nf4f4zf5yk0d0l4kl7hkii4na22fhn0l2hgfb46yzv08l2g6zja"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-0.2)
+        ("rust-regex" ,rust-regex-0.1)
+        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+        ("rust-strsim" ,rust-strsim-0.5))))))
 
 (define-public rust-downcast-rs-1.1
   (package
@@ -3955,6 +4045,26 @@ is configured via an environment variable.")
        #:cargo-inputs
        (("rust-log" ,rust-log-0.3)
         ("rust-regex" ,rust-regex-0.2))))))
+
+(define-public rust-env-logger-0.3
+  (package
+    (inherit rust-env-logger-0.4)
+    (name "rust-env-logger")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "env_logger" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0bvcjgkw4s3k1rd7glpflgc8s9a393zjd6jfdgvs8gjvwj0dgaqm"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-log" ,rust-log-0.3)
+        ("rust-regex" ,rust-regex-0.1))))))
 
 (define-public rust-envmnt-0.6
   (package
@@ -8133,6 +8243,28 @@ for searching bytes.")
         (base32
          "0yjyja34pzhipdl855q3m21w1lyih4lw79x2dp3czwdla4pap3ql"))))))
 
+(define-public rust-memchr-0.1
+  (package
+    (inherit rust-memchr-1.0)
+    (name "rust-memchr")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "memchr" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "084d85hjfa3xf5kwdms2mhbkh78m1gl2254cp5swcxj3a7xjkdnq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-0.2))))))
+
 (define-public rust-memmap-0.7
   (package
     (name "rust-memmap")
@@ -11341,6 +11473,27 @@ to write.")
         ("rust-log" ,rust-log-0.3)
         ("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-quickcheck-0.2
+  (package
+    (inherit rust-quickcheck-0.5)
+    (name "rust-quickcheck")
+    (version "0.2.27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quickcheck" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vb4acppaavlnchzc1jmn5wlkgir9x9gmhgp97bavyxxqxgsg1nh"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-env-logger" ,rust-env-logger-0.3)
+        ("rust-log" ,rust-log-0.3)
+        ("rust-rand" ,rust-rand-0.3))))))
+
 (define-public rust-quickcheck-macros-0.8
   (package
     (name "rust-quickcheck-macros")
@@ -12466,6 +12619,34 @@ uses finite automata and guarantees linear time matching on all inputs.")
        (("rust-lazy-static" ,rust-lazy-static-1.3)
         ("rust-quickcheck" ,rust-quickcheck-0.6)
         ("rust-rand" ,rust-rand-0.4))))))
+
+(define-public rust-regex-0.1
+  (package
+    (inherit rust-regex-0.2)
+    (name "rust-regex")
+    (version "0.1.80")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "regex" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0bs036h3vzc6pj5jj4vc909s9rppq7b808ic99qn0y6gm3karm2g"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-aho-corasick" ,rust-aho-corasick-0.5)
+        ("rust-memchr" ,rust-memchr-0.1)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.3)
+        ("rust-simd" ,rust-simd-0.1)
+        ("rust-thread-local" ,rust-thread-local-0.2)
+        ("rust-utf8-ranges" ,rust-utf8-ranges-0.1))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-0.1)
+        ("rust-quickcheck" ,rust-quickcheck-0.2)
+        ("rust-rand" ,rust-rand-0.3))))))
 
 (define-public rust-regex-automata-0.1
   (package
@@ -17051,6 +17232,31 @@ untrusted inputs in Rust.")
     (description
      "Convert ranges of Unicode codepoints to UTF-8 byte ranges.")
     (license (list license:expat license:unlicense))))
+
+(define-public rust-utf8-ranges-0.1
+  (package
+    (inherit rust-utf8-ranges-1.0)
+    (name "rust-utf8-ranges")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "utf8-ranges" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "03xf604b2v51ag3jgzw92l97xnb10kw9zv948bhc7ja1ik017jm1"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-0.2))))
+    (home-page
+     "https://github.com/BurntSushi/utf8-ranges")
+    (synopsis
+     "DEPRECATED. Use regex-syntax::utf8 submodule instead")
+    (description
+     "DEPRECATED.  Use regex-syntax::utf8 submodule instead.")))
 
 (define-public rust-utf8parse-0.1
   (package
