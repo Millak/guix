@@ -1780,6 +1780,42 @@ depending on a large number of #[cfg] parameters.  Structured like an
        (("rust-gleam" ,rust-gleam-0.6)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-cgmath-0.17
+  (package
+    (name "rust-cgmath")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cgmath" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1rvgila6ivr0dh1bxza450a4yfwdi2pwj3h1vnwg0jy4xk6l8f98"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       ;; TODO: glium and cgmath has cyclic dev dependencies on each other
+       ;; almost to the very beginning of both projects. To satisfy
+       ;; #:cargo-development-inputs we'll have to package many versions
+       ;; of cgmath and glium in one go.
+       #:cargo-inputs
+       (("rust-approx" ,rust-approx-0.3)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rand" ,rust-rand-0.6)
+        ("rust-serde" ,rust-serde-1.0)
+        ("rust-simd" ,rust-simd-0.2))))
+    (home-page
+     "https://github.com/brendanzab/cgmath")
+    (synopsis
+     "A linear algebra and mathematics library for computer graphics.")
+    (description
+     "This package provides a linear algebra and mathematics library
+for computer graphics.")
+    (license license:asl2.0)))
+
 (define-public rust-ci-info-0.3
   (package
     (name "rust-ci-info")
