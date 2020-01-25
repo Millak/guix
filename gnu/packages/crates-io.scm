@@ -1816,6 +1816,30 @@ depending on a large number of #[cfg] parameters.  Structured like an
 for computer graphics.")
     (license license:asl2.0)))
 
+(define-public rust-cgmath-0.16
+  (package
+    (inherit rust-cgmath-0.17)
+    (name "rust-cgmath")
+    (version "0.16.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cgmath" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "07754c03v3srzf64ghsl3fggrdi4kjy6l3vyq2d2wfjfixybb934"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-approx" ,rust-approx-0.1)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-num-traits" ,rust-num-traits-0.1)
+        ("rust-rand" ,rust-rand-0.4)
+        ("rust-serde" ,rust-serde-1.0)
+        ("rust-simd" ,rust-simd-0.2))))))
+
 (define-public rust-ci-info-0.3
   (package
     (name "rust-ci-info")
