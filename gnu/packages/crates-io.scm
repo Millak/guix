@@ -8672,6 +8672,37 @@ known as zlib).")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-line-drawing-0.7
+  (package
+    (name "rust-line-drawing")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "line_drawing" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fcna7hq1g1kkkqy07hydscx5d2zgb6gskz3vnsvsif8h8ysvisw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-num-traits" ,rust-num-traits-0.2))
+       #:cargo-development-inputs
+       (("rust-bresenham" ,rust-bresenham-0.1)
+        ("rust-image" ,rust-image-0.22)
+        ("rust-rand" ,rust-rand-0.7))))
+    (home-page
+     "https://github.com/expenses/line_drawing")
+    (synopsis
+     "A collection of line-drawing algorithms for use in graphics and video games")
+    (description
+     "This package provides a collection of line-drawing algorithms for use in
+graphics and video games.")
+    (license license:expat)))
+
 (define-public rust-linked-hash-map-0.5
   (package
     (name "rust-linked-hash-map")
