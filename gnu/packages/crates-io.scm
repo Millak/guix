@@ -11496,7 +11496,7 @@ to write.")
 
 (define-public rust-quickcheck-0.2
   (package
-    (inherit rust-quickcheck-0.5)
+    (inherit rust-quickcheck-0.4)
     (name "rust-quickcheck")
     (version "0.2.27")
     (source
@@ -11507,13 +11507,7 @@ to write.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1vb4acppaavlnchzc1jmn5wlkgir9x9gmhgp97bavyxxqxgsg1nh"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-env-logger" ,rust-env-logger-0.3)
-        ("rust-log" ,rust-log-0.3)
-        ("rust-rand" ,rust-rand-0.3))))))
+         "1vb4acppaavlnchzc1jmn5wlkgir9x9gmhgp97bavyxxqxgsg1nh"))))))
 
 (define-public rust-quickcheck-macros-0.8
   (package
