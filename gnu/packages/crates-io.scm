@@ -13679,6 +13679,24 @@ proven statistical guarantees.")
        #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-0.9))))))
 
+(define-public rust-serde-0.4
+  (package
+    (inherit rust-serde-0.9)
+    (name "rust-serde")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "06s2ayx1p5zzj4q7bfld60c9iprsk1256pnh8qj6h794mjinw11b"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-num" ,rust-num-0.2))))))
+
 ;; Circular dev dependency on bincode.
 ;; Probably not going away: https://github.com/rust-lang/cargo/issues/4242
 (define-public rust-serde-bytes-0.11
