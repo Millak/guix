@@ -1517,6 +1517,42 @@ little-endian.")
      "Types and traits for working with bytes.")
     (license license:expat)))
 
+(define-public rust-bzip2-0.3
+  (package
+    (name "rust-bzip2")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bzip2" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0fvfwanp42j1zpig880jhb5mc0na50bijmwd6211p77sy35w7ds2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bzip2-sys" ,rust-bzip2-sys-0.1)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-tokio-io" ,rust-tokio-io-0.1))
+       #:cargo-development-inputs
+       (("rust-partial-io" ,rust-partial-io-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-0.4)
+        ("rust-rand" ,rust-rand-0.3)
+        ("rust-tokio-core" ,rust-tokio-core-0.1))))
+    (home-page
+     "https://github.com/alexcrichton/bzip2-rs")
+    (synopsis
+     "Bindings to libbzip2 for bzip2 compression and decompression exposed as
+Reader/Writer streams")
+    (description
+     "Bindings to libbzip2 for bzip2 compression and decompression exposed as
+Reader/Writer streams.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bzip2-sys-0.1
   (package
     (name "rust-bzip2-sys")
