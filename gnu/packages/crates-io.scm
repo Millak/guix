@@ -9988,6 +9988,35 @@ Things in odds may move to more appropriate crates if we find them.")
     (description "OpenSSL bindings.")
     (license license:asl2.0)))
 
+(define-public rust-openssl-0.7
+  (package
+    (inherit rust-openssl-0.10)
+    (name "rust-openssl")
+    (version "0.7.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "openssl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0cw767rbasg4dbsfcsnxqm3q5ljkv6s1jq0a2p82xi5a8ii7n4f4"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-0.7)
+        ("rust-lazy-static" ,rust-lazy-static-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.7)
+        ("rust-openssl-sys-extras" ,rust-openssl-sys-extras-0.7))
+       #:cargo-development-inputs
+       (("rust-gcc" ,rust-gcc-0.3)
+        ("rust-net2" ,rust-net2-0.2)
+        ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
+        ("rust-winapi" ,rust-winapi-0.2)
+        ("rust-ws2-32-sys" ,rust-ws2-32-sys-0.2))))))
+
 (define-public rust-openssl-probe-0.1
   (package
     (name "rust-openssl-probe")
