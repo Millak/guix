@@ -17709,6 +17709,36 @@ untrusted inputs in Rust.")
         ("rust-rustc-test" ,rust-rustc-test-0.3)
         ("rust-serde-json" ,rust-serde-json-1.0))))))
 
+(define-public rust-user32-sys-0.2
+  (package
+    (name "rust-user32-sys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "user32-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0ivxc7hmsxax9crdhxdd1nqwik4s9lhb2x59lc8b88bv20fp3x2f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.2))
+       #:cargo-development-inputs
+       (("rust-winapi-build" ,rust-winapi-build-0.1))))
+    (home-page
+     "https://github.com/retep998/winapi-rs")
+    (synopsis
+     "Contains function definitions for the Windows API library user32.
+See winapi for types and constants.")
+    (description
+     "Contains function definitions for the Windows API library user32.
+See winapi for types and constants.")
+    (license license:expat)))
+
 (define-public rust-utf-8-0.7
   (package
     (name "rust-utf-8")
