@@ -18540,6 +18540,30 @@ color in a Windows console.")
      "Interoperability library for Rust Windowing applications.")
     (license license:expat)))
 
+(define-public rust-winpty-sys-0.4
+  (package
+    (name "rust-winpty-sys")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winpty-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0s5m2vvlw7wphc466s47zfmp08zk00wzj999l1w3ajqlxbnfgb9x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.33)
+        ("rust-cc" ,rust-cc-1.0))))
+    (home-page "https://github.com/rprichard/winpty")
+    (synopsis "Rust winpty bindings")
+    (description "Rust winpty bindings")
+    (license license:expat)))
+
 (define-public rust-winutil-0.1
   (package
     (name "rust-winutil")
