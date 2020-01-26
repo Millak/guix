@@ -10069,6 +10069,35 @@ system for OpenSSL.")
      "This package provides FFI bindings to OpenSSL for use in rust crates.")
     (license license:expat)))
 
+(define-public rust-openssl-sys-0.7
+  (package
+    (name "rust-openssl-sys")
+    (version "0.7.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "openssl-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0gswbbfkhhj8f9jifwvdssv3p2lpgyz69qzqvafylbim9klpxi49"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-gdi32-sys" ,rust-gdi32-sys-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libressl-pnacl-sys" ,rust-libressl-pnacl-sys-2)
+        ("rust-user32-sys" ,rust-user32-sys-0.2))
+       #:cargo-development-inputs
+       (("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page
+     "https://github.com/sfackler/rust-openssl")
+    (synopsis "FFI bindings to OpenSSL")
+    (description "FFI bindings to OpenSSL")
+    (license license:expat)))
+
 (define-public rust-ordered-float-1.0
   (package
     (name "rust-ordered-float")
