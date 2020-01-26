@@ -14497,6 +14497,26 @@ proven statistical guarantees.")
      "Minimal implementation of SHA1 for Rust.")
     (license license:bsd-3)))
 
+(define-public rust-sha1-0.2
+  (package
+    (inherit rust-sha1-0.6)
+    (name "rust-sha1")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0p09zfhd27z6yr5in07gfjcx345010rw51ivlcf14364x3hv2c6c"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-development-inputs
+       (("rust-openssl" ,rust-openssl-0.7)
+        ("rust-rand" ,rust-rand-0.3))))))
+
 (define-public rust-sha1-asm-0.4
   (package
     (name "rust-sha1-asm")
