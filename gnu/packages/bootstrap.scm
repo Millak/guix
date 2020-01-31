@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;;
@@ -104,6 +104,15 @@
       ,(base32 "07830bx29ad5i0l1ykj0g0b1jayjdblf01sr3ww9wbnwdbzinqms"))
      ("xz"
       ,(base32 "0i9kxdi17bm5gxfi2xzm0y73p3ii0cqxli1sbljm6rh2fjgyn90k")))
+    ("i586-gnu"
+     ("bash"
+      ,(base32 "1rlflpyczjynszzjc7k4rkhs80vyiiz7mrlj78i6y3msv39dwsfl"))
+     ("mkdir"
+      ,(base32 "1gw5jrahgcwgl0k9zqfv22y8lna7yjfjn2m9qbjqg25xcfcp9i8b"))
+     ("tar"
+      ,(base32 "0pqazjyv9bq6bvp6698mxpg8faklh8f69367djkn89ycx0c9fm46"))
+     ("xz"
+      ,(base32 "0cq3f9rgr3835r00hikhg7hx3rjzx3yrq1581x2vj3xlrfk83kv5")))
     ("mips64el-linux"
      ("bash"
       ,(base32 "1aw046dhda240k9pb9iaj5aqkm23gkvxa9j82n4k7fk87nbrixw6"))
@@ -117,9 +126,10 @@
 (define (bootstrap-executable-url program system)
   "Return the URL where PROGRAM can be found for SYSTEM."
   (string-append
-   "https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
-   system "/" program
-   "?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))
+    "http://flashner.co.il/guix/bootstrap/i586-gnu/20200131/" program))
+   ;"https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
+   ;system "/" program
+   ;"?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))
 
 (define bootstrap-executable
   (mlambda (program system)
@@ -311,6 +321,8 @@ or false to signal an error."
                     "/20170217/guile-2.0.14.tar.xz")
                    ("armhf-linux"
                     "/20150101/guile-2.0.11.tar.xz")
+                   ("i586-gnu"
+                    "/20200131/guile-2.2.6.tar.xz")
                    (_
                     "/20131110/guile-2.0.9.tar.xz"))))
 
@@ -326,7 +338,9 @@ or false to signal an error."
     ("armhf-linux"
      (base32 "1mi3brl7l58aww34rawhvja84xc7l1b4hmwdmc36fp9q9mfx0lg5"))
     ("aarch64-linux"
-     (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))))
+     (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))
+    ("i586-gnu"
+     (base32 "0czgpql0if2px0lmxn2jqrxn7qfr54ydbir4xnkjh5z4nkiv8vbf"))))
 
 (define (bootstrap-guile-origin system)
   "Return an <origin> object for the Guile tarball of SYSTEM."
@@ -379,8 +393,8 @@ or false to signal an error."
                     (lambda (p)
                       (format p "\
 #!~a
-export GUILE_SYSTEM_PATH=~a/share/guile/2.0
-export GUILE_SYSTEM_COMPILED_PATH=~a/lib/guile/2.0/ccache
+export GUILE_SYSTEM_PATH=~a/share/guile/2.2
+export GUILE_SYSTEM_COMPILED_PATH=~a/lib/guile/2.2/ccache
 exec -a \"~a0\" ~a \"~a@\"\n"
                               bash out out dollar guile-real dollar)))
                   (chmod guile   #o555)
@@ -395,8 +409,8 @@ cd $out
 ~a -dc < $GUILE_TARBALL | ~a xv
 
 # Use the bootstrap guile to create its own wrapper to set the load path.
-GUILE_SYSTEM_PATH=$out/share/guile/2.0 \
-GUILE_SYSTEM_COMPILED_PATH=$out/lib/guile/2.0/ccache \
+GUILE_SYSTEM_PATH=$out/share/guile/2.2 \
+GUILE_SYSTEM_COMPILED_PATH=$out/lib/guile/2.2/ccache \
 $out/bin/guile -c ~s $out ~a
 
 # Sanity check.
@@ -437,7 +451,7 @@ $out/bin/guile --version~%"
                (lower make-raw-bag))))
    (package
      (name "guile-bootstrap")
-     (version "2.0")
+     (version "2.2")
      (source #f)
      (build-system raw)
      (synopsis "Bootstrap Guile")
@@ -456,6 +470,8 @@ $out/bin/guile --version~%"
                                              "/20150101/static-binaries.tar.xz")
                                             ("aarch64-linux"
                                              "/20170217/static-binaries.tar.xz")
+                                            ("i586-gnu"
+                                             "/20200131/static-binaries.tar.xz")
                                             (_
                                              "/20131110/static-binaries.tar.xz")))
                                      %bootstrap-base-urls))
@@ -473,6 +489,9 @@ $out/bin/guile --version~%"
                               ("aarch64-linux"
                                (base32
                                 "18dfiq6c6xhsdpbidigw6480wh0vdgsxqq3xindq4lpdgqlccpfh"))
+                              ("i586-gnu"
+                               (base32
+                                "1s596pjq9zyjsqz4x3b22qdb5rwwlc5c47lcqd44s8wd22dnhb8c"))
                               ("mips64el-linux"
                                (base32
                                 "072y4wyfsj1bs80r6vbybbafy8ya4vfy7qj25dklwk97m6g71753"))))))
@@ -519,6 +538,8 @@ $out/bin/guile --version~%"
                                              "/20150101/binutils-2.25.tar.xz")
                                             ("aarch64-linux"
                                              "/20170217/binutils-2.27.tar.xz")
+                                            ("i586-gnu"
+                                             "/20200131/binutils-2.32.tar.xz")
                                             (_
                                              "/20131110/binutils-2.23.2.tar.xz")))
                                      %bootstrap-base-urls))
@@ -536,6 +557,9 @@ $out/bin/guile --version~%"
                               ("aarch64-linux"
                                (base32
                                 "111s7ilfiby033rczc71797xrmaa3qlv179wdvsaq132pd51xv3n"))
+                              ("i586-gnu"
+                               (base32
+                                "0n7rrb9pc1dvszjjn5bw24548r506y6rsyfhpvf0dvlam44hf32h"))
                               ("mips64el-linux"
                                (base32
                                 "1x8kkhcxmfyzg1ddpz2pxs6fbdl6412r7x0nzbmi5n7mj8zw2gy7"))))))
@@ -589,6 +613,8 @@ $out/bin/guile --version~%"
                                        "/20150101/glibc-2.20.tar.xz")
                                       ("aarch64-linux"
                                        "/20170217/glibc-2.25.tar.xz")
+                                      ("i586-gnu"
+                                       "/20200131/glibc-2.29.tar.xz")
                                       (_
                                        "/20131110/glibc-2.18.tar.xz")))
                                %bootstrap-base-urls))
@@ -606,6 +632,9 @@ $out/bin/guile --version~%"
                         ("aarch64-linux"
                          (base32
                           "07nx3x8598i2924rjnlrncg6rm61c9bmcczbbcpbx0fb742nvv5c"))
+                        ("i586-gnu"
+                         (base32
+                          "0yksvkf1fzwjix6kwwf621ffnz5hxnkqvyqk622615anifn9ikxc"))
                         ("mips64el-linux"
                          (base32
                           "0k97a3whzx3apsi9n2cbsrr79ad6lh00klxph9hw4fqyp1abkdsg")))))))))
@@ -675,6 +704,8 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                                         "/20150101/gcc-4.8.4.tar.xz")
                                        ("aarch64-linux"
                                         "/20170217/gcc-5.4.0.tar.xz")
+                                       ("i586-gnu"
+                                        "/20200131/gcc-7.5.0.tar.xz")
                                        (_
                                         "/20131110/gcc-4.8.2.tar.xz")))
                                 %bootstrap-base-urls))
@@ -692,6 +723,9 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                          ("aarch64-linux"
                           (base32
                            "1ar3vdzyqbfm0z36kmvazvfswxhcihlacl2dzdjgiq25cqnq9ih1"))
+                         ("i586-gnu"
+                          (base32
+                           "15rvahyjh2cxz8vhqma1z7k7yy97m302y4xy9lyd5naai8rakcii"))
                          ("mips64el-linux"
                           (base32
                            "1m5miqkyng45l745n0sfafdpjkqv9225xf44jqkygwsipj2cv9ks")))))))))
