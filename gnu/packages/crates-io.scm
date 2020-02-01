@@ -19159,6 +19159,27 @@ you are working on custom wayland protocol extensions.
 Look at the crate wayland-client for usable bindings.")
     (license license:expat)))
 
+(define-public rust-wayland-scanner-0.21
+  (package
+    (inherit rust-wayland-scanner-0.23)
+    (name "rust-wayland-scanner")
+    (version "0.21.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-scanner" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "17mp49v7w0p0x5ry628lj2llljnwkr9aj9g4bqqhfibid32jhf5z"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-0.6)
+        ("rust-xml-rs" ,rust-xml-rs-0.8))))))
+
 (define-public rust-wayland-server-0.23
   (package
     (name "rust-wayland-server")
