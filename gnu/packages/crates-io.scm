@@ -19226,6 +19226,27 @@ You should only need this crate if you are working on custom wayland
 protocol extensions.  Look at the crate wayland-client for usable bindings.")
     (license license:expat)))
 
+(define-public rust-wayland-sys-0.21
+  (package
+    (inherit rust-wayland-sys-0.23)
+    (name "rust-wayland-sys")
+    (version "0.21.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0a0ndgkg98pvmkv44yya4f7mxzjaxylknqh64bpa05w0azyv02jj"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-dlib" ,rust-dlib-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-libc" ,rust-libc-0.2))))))
+
 (define-public rust-web-sys-0.3
   (package
     (name "rust-web-sys")
