@@ -18564,7 +18564,7 @@ in Rust.")
 (define-public rust-wasm-bindgen-0.2
   (package
     (name "rust-wasm-bindgen")
-    (version "0.2.48")
+    (version "0.2.58")
     (source
      (origin
        (method url-fetch)
@@ -18573,15 +18573,24 @@ in Rust.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0m8vq3jkhz04fn3wjvb7ii7xql60w32nlvr10jcskcbbh2hpzsad"))))
+         "0v31s91andxcj73w63g3fkbw3ld6cfsaa4135qcjna22vypyj1aj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-serde" ,rust-serde-1.0)
-        ("rust-serde-json" ,rust-serde-json-1.0)
-        ("rust-wasm-bindgen-macro"
-         ,rust-wasm-bindgen-macro-0.2))))
+      (("rust-cfg-if" ,rust-cfg-if-0.1)
+       ("rust-serde" ,rust-serde-1.0)
+       ("rust-serde-json" ,rust-serde-json-1.0)
+       ("rust-wasm-bindgen-macro" ,rust-wasm-bindgen-macro-0.2))
+      #:cargo-development-inputs
+      (("rust-js-sys" ,rust-js-sys-0.3)
+       ("rust-serde-derive" ,rust-serde-derive-1.0)
+       ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
+       ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+       ("rust-wasm-bindgen-test-crate-a"
+        ,rust-wasm-bindgen-test-crate-a-0.1)
+       ("rust-wasm-bindgen-test-crate-b"
+        ,rust-wasm-bindgen-test-crate-b-0.1))))
     (home-page "https://rustwasm.github.io/")
     (synopsis "Easy support for interacting between JS and Rust")
     (description
@@ -18591,7 +18600,7 @@ in Rust.")
 (define-public rust-wasm-bindgen-backend-0.2
   (package
     (name "rust-wasm-bindgen-backend")
-    (version "0.2.48")
+    (version "0.2.58")
     (source
      (origin
        (method url-fetch)
@@ -18600,17 +18609,17 @@ in Rust.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1qxqkbjkjg4pphhcr91nk95c0gizx77dyq24mmijqnwzxxqc30jx"))))
+         "0icskn0qlj30np6x6nbyl1i9dndckx0pczaq69dm42r92rcbkk8i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-bumpalo" ,rust-bumpalo-2.5)
+       (("rust-bumpalo" ,rust-bumpalo-3.1)
         ("rust-lazy-static" ,rust-lazy-static-1.3)
         ("rust-log" ,rust-log-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-1.0)
         ("rust-quote" ,rust-quote-1.0)
-        ("rust-syn" ,rust-syn-0.15)
+        ("rust-syn" ,rust-syn-1.0)
         ("rust-wasm-bindgen-shared" ,rust-wasm-bindgen-shared-0.2))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
     (synopsis "Backend code generation of the wasm-bindgen tool")
@@ -18680,7 +18689,7 @@ in Rust.")
 (define-public rust-wasm-bindgen-macro-0.2
   (package
     (name "rust-wasm-bindgen-macro")
-    (version "0.2.48")
+    (version "0.2.58")
     (source
      (origin
        (method url-fetch)
@@ -18689,7 +18698,7 @@ in Rust.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "07fqzzlbncccmnxbbkg9v4n53qc1lps5g0bb9wq3i9zp9gvm0zgh"))))
+         "1hwxw0nhi2n4izhjn2fvnrrn59xqjxs3ybkgzdv1b4p65ivr8h2p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -18699,7 +18708,8 @@ in Rust.")
          ,rust-wasm-bindgen-macro-support-0.2))
        #:cargo-development-inputs
        (("rust-trybuild" ,rust-trybuild-1.0)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
     (synopsis "Definition of the @code{#[wasm_bindgen]} attribute")
     (description
@@ -18710,7 +18720,7 @@ dependency.")
 (define-public rust-wasm-bindgen-macro-support-0.2
   (package
     (name "rust-wasm-bindgen-macro-support")
-    (version "0.2.48")
+    (version "0.2.58")
     (source
      (origin
        (method url-fetch)
@@ -18719,14 +18729,14 @@ dependency.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1mxi6rj11k67sks88pfqiqylnijxmb1s0gcgpj8mzfj5gvkqzkwm"))))
+         "0s3n7v741i4wkzib41m126li40qlhqyirnxpigkypsi59wsk2l78"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+       (("rust-proc-macro2" ,rust-proc-macro2-1.0)
         ("rust-quote" ,rust-quote-1.0)
-        ("rust-syn" ,rust-syn-0.15)
+        ("rust-syn" ,rust-syn-1.0)
         ("rust-wasm-bindgen-backend" ,rust-wasm-bindgen-backend-0.2)
         ("rust-wasm-bindgen-shared" ,rust-wasm-bindgen-shared-0.2))))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
@@ -18739,7 +18749,7 @@ attribute that is not in the shared backend crate.")
 (define-public rust-wasm-bindgen-shared-0.2
   (package
     (name "rust-wasm-bindgen-shared")
-    (version "0.2.48")
+    (version "0.2.58")
     (source
       (origin
         (method url-fetch)
@@ -18747,7 +18757,7 @@ attribute that is not in the shared backend crate.")
         (file-name (string-append name "-" version ".crate"))
         (sha256
          (base32
-          "08rnfhjyk0f6liv8n4rdsvhx7r02glkhcbj2lp9lcbkbfpad9hnr"))))
+          "00cnbabf4k9bahb217vkilmjwqwzpwp112vlvgfw1x19r4gydrzm"))))
     (build-system cargo-build-system)
     (arguments '(#:skip-build? #t))
     (home-page "https://rustwasm.github.io/wasm-bindgen/")
