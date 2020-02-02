@@ -6125,6 +6125,59 @@ reading and writing git repositories.")
      "Generated OpenGL bindings and wrapper for Servo.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-glium-0.25
+  (package
+    (name "rust-glium")
+    (version "0.25.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glium" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0mhjly07x10lxg802ppg16wbxddhh4fdnlg10i99qwpfamvqhzbd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-fnv" ,rust-fnv-1.0)
+        ("rust-glutin" ,rust-glutin-0.21)
+        ("rust-lazy-static" ,rust-lazy-static-1.3)
+        ("rust-smallvec" ,rust-smallvec-0.6)
+        ("rust-takeable-option" ,rust-takeable-option-0.4))
+       #:cargo-development-inputs
+       (("rust-cgmath" ,rust-cgmath-0.17)
+        ("rust-genmesh" ,rust-genmesh-0.6)
+        ("rust-gl-generator" ,rust-gl-generator-0.11)
+        ("rust-image" ,rust-image-0.21)
+        ("rust-obj" ,rust-obj-0.9)
+        ("rust-rand" ,rust-rand-0.6))))
+    (home-page "https://github.com/glium/glium")
+    (synopsis
+     "Elegant and safe OpenGL wrapper")
+    (description
+     "Elegant and safe OpenGL wrapper.
+
+Glium is an intermediate layer between OpenGL and your application.
+You still need to manually handle the graphics pipeline,
+but without having to use OpenGL's old and error-prone API.
+
+Its objectives:
+
+ - Be safe to use.  Many aspects of OpenGL that can trigger
+a crash if misused are automatically handled by glium.
+ - Provide an API that enforces good pratices such as
+RAII or stateless function calls.
+ - Be compatible with all OpenGL versions that support shaders,
+providing unified API when things diverge.
+ - Avoid all OpenGL errors beforehand.
+ - Produce optimized OpenGL function calls,and allow the user to
+easily use modern OpenGL techniques.")
+    (license license:asl2.0)))
+
 (define-public rust-glob-0.3
   (package
     (name "rust-glob")
