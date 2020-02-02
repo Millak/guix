@@ -15248,6 +15248,28 @@ CPUs, as well as raw interfaces to platform-specific instructions.
 ")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-simd-0.1
+  (package
+    (inherit rust-simd-0.2)
+    (name "rust-simd")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simd" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "17hqvvhnwjfybpy9v1cdsw8gjxizqjvsn2whw180arlpkwgj0v77"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-0.4)
+        ("rust-serde-macros" ,rust-serde-macros-0.4))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1))))))
+
 (define-public rust-siphasher-0.2
   (package
     (name "rust-siphasher")
