@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
+;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages version-control))
+  #:use-module (gnu packages version-control)
+  #:use-module (guix utils))
 
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
@@ -6327,6 +6329,16 @@ path simultaneously, and returning all of the globs that matched.")
     (description
      "Cross-platform OpenGL context provider.")
     (license license:asl2.0)))
+
+(define-public rust-glutin-0.22-for-alacritty
+  (package
+    (inherit rust-glutin-0.22)
+    (name "rust-glutin")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-glutin-0.22)
+       ((#:cargo-inputs inputs)
+        (cons `("rust-winit" ,rust-winit-c2fdb27092aba5a7)
+              (delete `("rust-winit" ,rust-winit-0.20) inputs)))))))
 
 (define-public rust-glutin-0.21
   (package
