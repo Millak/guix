@@ -18,6 +18,7 @@
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
 
 (define-module (gnu packages terminals)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
@@ -47,7 +49,9 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages fontutils)
@@ -72,11 +76,13 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -1141,3 +1147,201 @@ while also supporting native scrolling and @command{tmux} control mode
 an st fork using wld. st is a simple terminal emulator for X originally
 made by suckless.")
     (license license:x11)))
+
+(define-public alacritty
+  (package
+    (name "alacritty")
+    (version "0.4.1")
+    (source
+     (origin
+       ;; cargo-build-system breaks if using url-fetch with a tar archive
+       ;; so use git-fetch with a tag instead
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jwilm/alacritty.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05jcg33ifngpzw2hdhgb614j87ihhhlqgar0kky183rywg0dxikg"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; cargo-build-system does not allow Cargo to patch packages from
+        ;; the Internet so we use glutin with a patched winit instead,
+        ;; look for "rust-glutin" cargo input.
+        '(substitute* "Cargo.toml"
+           (("winit = \\{ git = .*, rev = .* \\}") "")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-serde" ,rust-serde-1.0)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+        ("rust-serde-json" ,rust-serde-json-1.0)
+        ("rust-glutin" ,rust-glutin-0.22-for-alacritty)
+        ("rust-notify" ,rust-notify-4)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-parking-lot" ,rust-parking-lot-0.9)
+        ("rust-urlocator" ,rust-urlocator-0.1)
+        ("rust-xdg" ,rust-xdg-2.2)
+        ("rust-image" ,rust-image-0.22)
+        ("rust-dirs" ,rust-dirs-2.0)
+        ("rust-x11-dl" ,rust-x11-dl-2)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-base64" ,rust-base64-0.11)
+        ("rust-bigflags" ,rust-bitflags-1)
+        ("rust-fnv" ,rust-fnv-1.0)
+        ("rust-mio" ,rust-mio-0.6)
+        ("rust-mio-extras" ,rust-mio-extras-2)
+        ("rust-terminfo" ,rust-terminfo-0.6)
+        ("rust-url" ,rust-url-2.1)
+        ("rust-vte" ,rust-vte-0.3)
+        ("rust-nix" ,rust-nix-0.15)
+        ("rust-miow" ,rust-miow-0.3)
+        ("rust-mio-anonymous-pipes" ,rust-mio-anonymous-pipes-0.1)
+        ("rust-mio-named-pipes" ,rust-mio-named-pipes-0.1)
+        ("rust-signal-hook" ,rust-signal-hook-0.1)
+        ("rust-clipboard-win" ,rust-clipboard-win-2.1)
+        ("rust-objc" ,rust-objc-0.2)
+        ("rust-objc-id" ,rust-objc-id-0.1)
+        ("rust-objc-foundation" ,rust-objc-foundation-0.1)
+        ("rust-x11-clipboard" ,rust-x11-clipboard-0.4)
+        ("rust-smithay-clipboard" ,rust-smithay-clipboard-0.3)
+        ("rust-wayland-client" ,rust-wayland-client-0.23)
+        ("rust-euclid" ,rust-euclid-0.20)
+        ("rust-foreign-types" ,rust-foreign-types-0.5)
+        ("rust-servo-fontconfig" ,rust-servo-fontconfig-0.4)
+        ("rust-freetype-rs" ,rust-freetype-rs-0.23)
+        ("rust-core-foundation" ,rust-core-foundation-0.6)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
+        ("rust-core-text" ,rust-core-text-13)
+        ("rust-core-graphics" ,rust-core-graphics-0.17)
+        ("rust-dwrote" ,rust-dwrote-0.9)
+        ("rust-winpty-sys" ,rust-winpty-sys-0.4))
+       #:cargo-development-inputs
+       (("rust-rustc-tools-util" ,rust-rustc-tools-util-0.2)
+        ("rust-gl-generator" ,rust-gl-generator-0.14)
+        ("rust-andrew" ,rust-andrew-0.2)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.6)
+        ("rust-embed-resource" ,rust-embed-resource-1.3)
+        ("rust-http-req" ,rust-http-req-0.5)
+        ("rust-zip" ,rust-zip-0.5)
+        ("rust-tempfile" ,rust-tempfile-3.0)
+        ("rust-named-pipe" ,rust-named-pipe-0.4)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'patch-glutin-libgl-path-remove-alacritty-vendor
+           (lambda* (#:key inputs cargo-inputs #:allow-other-keys)
+             (let* ((vendor-dir "guix-vendor/")
+                    (glutin-name
+                     ,(package-name rust-glutin-0.22-for-alacritty))
+                    (glutin-version
+                     ,(package-version rust-glutin-0.22-for-alacritty))
+                    (src-api
+                     (string-append
+                      glutin-name "-" glutin-version ".tar.gz/src/api/"))
+                    (mesa (assoc-ref inputs "mesa")))
+              (substitute* (string-append vendor-dir src-api "glx/mod.rs")
+                (("libGL.so") (string-append mesa "/lib/libGL.so")))
+              (substitute* (string-append vendor-dir src-api "egl/mod.rs")
+                (("libEGL.so") (string-append mesa "/lib/libEGL.so")))
+              ;; We don't want Alacritty to be a dependency of itself
+              ;; If we don't delete it from guix-vendor then build will fail
+              ;; because Alacritty has a virtual workspace Cargo.toml.
+              (delete-file-recursively
+               (string-append vendor-dir "alacritty-0.4.1.tar.xz")))))
+         ;; We don't need to run tests
+         (delete 'check)
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (icons (string-append share "/icons/hicolor/scalable/apps"))
+                    (gzip (string-append (assoc-ref inputs "gzip") "/bin/gzip"))
+                    (tic (string-append (assoc-ref inputs "ncurses") "/bin/tic"))
+                    (man (string-append share "/man/man1"))
+                    (icons-dir (string-append))
+                    (alacritty-bin "target/release/alacritty"))
+
+               ;; Install binary
+               (install-file alacritty-bin (string-append out "/bin"))
+
+               ;; Install man pages
+               (mkdir-p man)
+               ;; gzip will exit with status 2 because the file
+               ;; has a timestamp out of gzip's range so we use system*
+               ;; because we don't care about this warning.
+               (system* gzip "-k" "-q" "extra/alacritty.man")
+               ;; (invoke gzip "-k" "extra/alacritty.man")
+               (copy-file "extra/alacritty.man.gz" (string-append man "/alacritty.1.gz"))
+
+               ;; Install desktop file
+               (install-file "extra/linux/alacritty.desktop"
+                             (string-append share "/applications"))
+
+               ;; Install icon
+               (mkdir-p icons)
+               (copy-file "extra/logo/alacritty-term.svg"
+                          (string-append icons "/Alacritty.svg"))
+
+               ;; Install terminfo
+               (mkdir-p (string-append share "/terminfo"))
+               ;; We don't compile alacritty-common entry because
+               ;; it's being used only for inheritance
+               (invoke tic "-x" "-e" "alacritty,alacritty-direct"
+                       "-o" (string-append share "/terminfo/")
+                       "extra/alacritty.info")
+
+               ;; Install completions
+               (install-file
+                "extra/completions/alacritty.bash"
+                (string-append out "/etc/bash_completion.d"))
+               (install-file
+                "extra/completions/_alacritty"
+                (string-append share "/zsh/site-functions"))
+               (install-file
+                "extra/completions/alacritty.fish"
+                (string-append share "/fish/vendor_completions.d"))
+               #t)))
+         ;; The 'reset-gzip-timestamps phase will throw a
+         ;; permission error if gzip files aren't writable
+         (add-before
+             'reset-gzip-timestamps
+             'make-compressed-files-writable
+           (lambda _
+             (for-each make-file-writable
+                       (find-files %output ".*\\.t?gz$"))
+             #t)))))
+    (inputs
+     `(("expat" ,expat)
+       ("fontconfig" ,fontconfig)
+       ("freetype" ,freetype)
+       ("libxcb" ,libxcb)
+       ("libxkbcommon" ,libxkbcommon)
+       ("libx11" ,libx11)
+       ("libxcursor" ,libxcursor)
+       ("libxi" ,libxi)
+       ("libxrandr" ,libxrandr)
+       ("libxxf86vm" ,libxxf86vm)
+       ("wayland" ,wayland)
+       ("mesa" ,mesa)))
+    (native-inputs
+     `(("cmake" ,cmake)
+       ("ncurses" ,ncurses)
+       ("python3" ,python)
+       ("pkg-config" ,pkg-config)
+       ("gzip" ,gzip)))
+    (home-page "https://github.com/alacritty/alacritty")
+    (synopsis "GPU-accelerated terminal emulator")
+    (description
+     "Alacritty is a GPU-accelerated terminal emulator with a strong
+focus on simplicity and performance.
+With such a strong focus on performance, included features are
+carefully considered and you can always expect Alacritty to be blazingly fast.
+By making sane choices for defaults, Alacritty requires no additional setup.
+However, it does allow configuration of many aspects of the terminal.")
+    (license license:asl2.0)))
