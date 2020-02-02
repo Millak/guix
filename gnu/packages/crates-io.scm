@@ -20234,6 +20234,21 @@ color in a Windows console.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-x11-dl" ,rust-x11-dl-2))))))
 
+;; For Alacritty v0.4.1
+(define-public rust-winit-c2fdb27092aba5a7
+  (package
+    (inherit rust-winit-0.20)
+    (name "rust-winit")
+    (version "0.20.0-alpha6-c2fdb27092aba5a7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+         "https://github.com/rust-windowing/winit/archive/d1c6506865c7bddbb5fb4d80a613e43ddc1370b5.tar.gz")
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dqbrlxa9b71pscxk2vsbyf17ifz7x77ysyp0dmvh9bg3ai79chf"))))))
+
 (define-public rust-winpty-sys-0.4
   (package
     (name "rust-winpty-sys")
