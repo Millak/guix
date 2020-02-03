@@ -827,9 +827,9 @@ library for parsing shell scripts.  Gash is designed to bootstrap Bash
 as part of the Guix bootstrap process.")
     (license gpl3+)))
 
-(define-public gash-core-utils
+(define-public gash-utils
   (package
-    (name "gash-core-utils")
+    (name "gash-utils")
     (version "0.0.211-789c3")
     (source (origin
               (method url-fetch)
