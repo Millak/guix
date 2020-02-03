@@ -1,24 +1,23 @@
-;;; thunderbird.scm - NONFSDG Thunderbird package
+;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright (C) 2017, 2018 ng0 <gillmann@infotropique.org>
 ;;; Copyright (C) 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
+;;; Copyright (C) 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; This file is part of GNU Guix.
 ;;;
-;;; This program is free software: you can redistribute it and/or modify
-;;; it under the terms of the GNU Affero General Public License as
-;;; published by the Free Software Foundation, either version 3 of the
-;;; License, or (at your option) any later version.
+;;; GNU Guix is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
 ;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; GNU Guix is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU Affero General Public License for more details.
+;;; GNU General Public License for more details.
 ;;;
-;;; You should have received a copy of the GNU Affero General Public License
-;;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Parts of this file originated from the (gnu packages gnuzilla) module of
-;; GNU Guix which is GPL3 licensed.
-
-(define-module (warrah-nonfsdg packages thunderbird)
+(define-module (gnu packages icedove)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
@@ -321,10 +320,10 @@
             ("rust-cbindgen" ,rust-cbindgen)
             ("node" ,node)
             ))
-         (home-page "https://mozilla.org/thunderbird/")
-         (synopsis "Trademarkless version of Thunderbird")
+         (home-page "https://www.thunderbird.net")
+         (synopsis "Trademarkless version of Mozilla Thunderbird")
          (description
-          "Full-featured Email client built from Thunderbird source tree.")
+          "Full-featured email client built from Thunderbird source tree.")
          (license license:mpl2.0))) ;and others, see toolkit/content/license.html
 
 thunderbird
