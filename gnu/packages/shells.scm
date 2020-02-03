@@ -830,32 +830,26 @@ as part of the Guix bootstrap process.")
 (define-public gash-utils
   (package
     (name "gash-utils")
-    (version "0.0.211-789c3")
+    (version "0.1.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://lilypond.org/janneke/guix/20191123/"
-                                  "/gash-core-utils-" version ".tar.gz"))
+              (uri (string-append "mirror://savannah/gash/gash-utils-"
+                                  version ".tar.gz"))
               (sha256
                (base32
-                "1ycf0ivyn9q3lc9hwq8vxg6wkwpsykvh48a5lrzsmganh0ma8wrr"))))
+                "0ib2p52qmbac5n0s5bys4fiwim461ps546976l1n7pwbs0avh7fk"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     `(("pkg-config" ,pkg-config)))
     (inputs
      `(("guile" ,guile-2.2)
        ("gash" ,gash)))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-test
-           (lambda _
-             (substitute* "tests/core-utils.org"
-               (("ls \\(GASH\\) UNKNOWN") "ls (GASH) 0.0.211-789c3"))
-             #t)))))
-    (home-page "https://gitlab.com/janneke/gash-core-utils")
-    (synopsis "Bootstrappable replacement of core GNU utilities in Guile Scheme")
-    (description "Gash Core Utils provides core GNU utilities in Guile
-Scheme as bootstrappable replacement for GNU coreutils&co.")
+    (home-page "https://savannah.nongnu.org/projects/gash/")
+    (synopsis "Core POSIX utilities written in Guile Scheme")
+    (description "Gash-Utils provides Scheme implementations of many
+common POSIX utilities (there are about 40 of them, ranging in
+complexity from @command{false} to @command{awk}).  The utilities are
+designed to be capable of bootstrapping their standard GNU counterparts.
+Underpinning these utilities are many Scheme interfaces for manipulating
+files and text.")
     (license gpl3+)))
