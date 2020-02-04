@@ -70,7 +70,7 @@
 ;; patches location is relative to the top directory, if you see what i mean
 ;; alternatively (patches (list (local-file "patches/foo.patch")))
 
-(define %icedove-version "68.4.1")
+(define %icedove-version "68.4.2")
 
 (define-public thunderbird
   (package 
@@ -85,7 +85,7 @@
                            ".source.tar.xz"))
        (sha256
         (base32
-         "1dsjbhs7paqmf2nschahzvsy4pgi3k6l7dsczp2wzbysv6zw8zyw"))))
+         "1z0jflvh6vrfs61vbg0hvvmz1gn1p2bsy9x6ihdbwlpk563clmmg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f          ; no check target
