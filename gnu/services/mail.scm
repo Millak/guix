@@ -4,6 +4,7 @@
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2017, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Kristofer Buffington <kristoferbuffington@gmail.com>
+;;; Copyright © 2020 Gábor Boskovits <boskovits@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,7 +71,19 @@
             imap4d-configuration
             imap4d-configuration?
             imap4d-service-type
-            %default-imap4d-config-file))
+            %default-imap4d-config-file
+
+            <postfix-configuration>
+            postfix-configuration
+            postfix-configuration?
+            postfix-configuration-postfix
+            postfix-configuration-master-file
+            postfix-configuration-main-file
+            postfix-confgiuration-queue-directory
+            postfix-confgiuration-data-directory
+            postfix-confgiuration-user
+
+            postfix-service-type))
 
 ;;; Commentary:
 ;;;
@@ -1829,3 +1842,135 @@ exim_group = exim
     (list (service-extension
            shepherd-root-service-type imap4d-shepherd-service)))
    (default-value (imap4d-configuration))))
+
+
+;;;
+;;; Postfix mail server.
+;;;
+
+(define-record-type* <postfix-configuration>
+  postfix-configuration
+  make-postfix-configuration
+  postfix-configuration?
+  (postfix postfix-configuration-postfix
+           (default postfix-minimal))
+  (master-file postfix-configuration-master-file
+               (default #f))
+  (main-file postfix-configuration-main-file
+             (default #f))
+  (queue-directory postfix-configuration-queue-directory
+                   (default "/var/spool/postfix"))
+  (data-directory postfix-configuration-data-directory
+                  (default "/var/lib/postfix"))
+  (meta-directory postfix-configuration-meta-directory
+                  (default #f))
+  (user postfix-configuration-user
+        (default "postfix"))
+  (group postfix-configuration-group
+         (default "postdrop")))
+
+(define default-postfix-master.cf
+  (plain-file "master.cf" "\
+smtp      inet  n       -       n       -       -       smtpd
+pickup    unix  n       -       n       60      1       pickup
+cleanup   unix  n       -       n       -       0       cleanup
+qmgr      unix  n       -       n       300     1       qmgr
+tlsmgr    unix  -       -       n       1000?   1       tlsmgr
+rewrite   unix  -       -       n       -       -       trivial-rewrite
+bounce    unix  -       -       n       -       0       bounce
+defer     unix  -       -       n       -       0       bounce
+trace     unix  -       -       n       -       0       bounce
+verify    unix  -       -       n       -       1       verify
+flush     unix  n       -       n       1000?   0       flush
+proxymap  unix  -       -       n       -       -       proxymap
+proxywrite unix -       -       n       -       1       proxymap
+smtp      unix  -       -       n       -       -       smtp
+relay     unix  -       -       n       -       -       smtp
+        -o syslog_name=postfix/$service_name
+showq     unix  n       -       n       -       -       showq
+error     unix  -       -       n       -       -       error
+retry     unix  -       -       n       -       -       error
+discard   unix  -       -       n       -       -       discard
+local     unix  -       n       n       -       -       local
+virtual   unix  -       n       n       -       -       virtual
+lmtp      unix  -       -       n       -       -       lmtp
+anvil     unix  -       -       n       -       1       anvil
+scache    unix  -       -       n       -       1       scache
+postlog   unix-dgram n  -       n       -       1       postlogd
+"))
+
+(define (default-postfix-main.cf config)
+  (match-record config <postfix-configuration>
+    (postfix queue-directory data-directory meta-directory user group)
+    (mixed-text-file "main.cf" "\
+compatibility_level = 2
+queue_directory = " queue-directory "
+command_directory = " postfix  "
+daemon_directory = " postfix "
+data_directory = " data-directory "
+meta_directory = " (or meta-directory postfix) "
+mail_owner = " user "
+setgid_group = " group "
+inet_protocols = ipv4
+")))
+
+(define (postfix-configuration-directory config)
+  (match-record config <postfix-configuration>
+    (master-file main-file)
+    (file-union "postfix-config-dir"
+                `(("master.cf" ,(or master-file default-postfix-master.cf))
+                  ("main.cf" ,(or main-file (default-postfix-main.cf config)))))))
+
+(define (postfix-accounts config)
+  (match-record config <postfix-configuration>
+    (queue-directory user group)
+    (list (user-account
+           (name user)
+           (group "postfix")
+           (comment "Postfix system user")
+           (home-directory queue-directory))
+          (user-group
+           (name "postfix"))
+          (user-group
+           (name group)))))
+
+(define (postfix-activation config)
+  (match-record config <postfix-configuration>
+    (data-directory user)
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (use-modules (guix build utils))
+
+          (let* ((postfix (getpwnam #$user))
+                 (uid (passwd:uid postfix))
+                 (gid (passwd:gid postfix)))
+            (mkdir-p #$data-directory)
+            (for-each (lambda (file)
+                        (chown file uid gid))
+                      (find-files #$data-directory #:directories? #t)))))))
+
+(define (postfix-shepherd-service config)
+  (match-record config <postfix-configuration>
+    (postfix)
+    (let* ((postfix-binary (file-append postfix "/postfix"))
+           (postfix-action
+            (lambda (action)
+              #~(lambda _
+                  (invoke #$postfix-binary "-c"
+                          #$(postfix-configuration-directory config)
+                          #$action)))))
+      (list
+       (shepherd-service
+        (provision '(postfix))
+        (documentation "Run the Postfix MTA.")
+        (start (postfix-action "start"))
+        (stop (postfix-action "stop")))))))
+
+(define postfix-service-type
+  (service-type
+   (name 'postfix)
+   (extensions (list (service-extension account-service-type postfix-accounts)
+                     (service-extension activation-service-type postfix-activation)
+                     (service-extension shepherd-root-service-type postfix-shepherd-service)))
+   (description "Run the Postfix MTA.")
+   (default-value (postfix-configuration))))
