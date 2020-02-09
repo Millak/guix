@@ -1,7 +1,7 @@
 dnl GNU Guix --- Functional package management for GNU
 dnl Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 dnl Copyright © 2014 Mark H Weaver <mhw@netris.org>
-dnl Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+dnl Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 dnl
 dnl This file is part of GNU Guix.
 dnl
@@ -88,7 +88,7 @@ courageous and port the GNU System distribution to it (see
   # Currently only Linux-based systems are supported, and only on some
   # platforms.
   case "$guix_system" in
-    x86_64-linux|i686-linux|armhf-linux|aarch64-linux|mips64el-linux)
+    x86_64-linux|i686-linux|armhf-linux|aarch64-linux|mips64el-linux|powerpc-linux)
       ;;
     *)
       if test "x$guix_courageous" = "xyes"; then
