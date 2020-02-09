@@ -2,6 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;;
@@ -86,6 +87,15 @@
       ,(base32 "1j51gv08sfg277yxj73xd564wjq3f8xwd6s9rbcg8v9gms47m4cx"))
      ("xz"
       ,(base32 "1d779rwsrasphg5g3r37qppcqy3p7ay1jb1y83w7x4i3qsc7zjy2")))
+    ("powerpc-linux"
+     ("bash"
+      ,(base32 "00g9mp51jk4gy1hszx6dz5dqhnhxzn7hh31hakyxhyv6xqiw74fx"))
+     ("mkdir"
+      ,(base32 "1s6p31sq5k5fqv5x548vq7l7z481qh93k0fyhqmkzjf2vvkgd1xm"))
+     ("tar"
+      ,(base32 "1ci1lj5zpq2fj1h1r1svyi4qw45h6qc93rq715ps9b2ikm7d9nhd"))
+     ("xz"
+      ,(base32 "17jfrc0kn8qgckxynjaidl9xsz6g7sms1k3hdll0lbxrjnwayha9")))
     ("armhf-linux"
      ("bash"
       ,(base32 "0s6f1s26g4dsrrkl39zblvwpxmbzi6n9mgqf6vxsqz42gik6bgyn"))
@@ -117,9 +127,12 @@
 (define (bootstrap-executable-url program system)
   "Return the URL where PROGRAM can be found for SYSTEM."
   (string-append
-   "https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
-   system "/" program
-   "?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))
+    ;; For powerpc and other new targets.
+    "http://flashner.co.il/guix/bootstrap/powerpc-linux/20191103/powerpc-linux/"
+    program))
+    ;"https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
+    ;system "/" program
+    ;"?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))
 
 (define bootstrap-executable
   (mlambda (program system)
@@ -309,6 +322,8 @@ or false to signal an error."
                  (match system
                    ("aarch64-linux"
                     "/20170217/guile-2.0.14.tar.xz")
+                   ("powerpc-linux"
+                    "/20191103/guile-2.2.6.tar.xz")
                    ("armhf-linux"
                     "/20150101/guile-2.0.11.tar.xz")
                    (_
@@ -326,7 +341,9 @@ or false to signal an error."
     ("armhf-linux"
      (base32 "1mi3brl7l58aww34rawhvja84xc7l1b4hmwdmc36fp9q9mfx0lg5"))
     ("aarch64-linux"
-     (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))))
+     (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))
+    ("powerpc-linux"
+     (base32 "1y7ymjhd7g0w27198xxia1sskjp07r4bxfq261i0lj4ff4amkif6"))))
 
 (define (bootstrap-guile-origin system)
   "Return an <origin> object for the Guile tarball of SYSTEM."
@@ -379,10 +396,11 @@ or false to signal an error."
                     (lambda (p)
                       (format p "\
 #!~a
-export GUILE_SYSTEM_PATH=~a/share/guile/2.0
-export GUILE_SYSTEM_COMPILED_PATH=~a/lib/guile/2.0/ccache
+export GUILE_SYSTEM_PATH=~a/share/guile/2.2
+export GUILE_SYSTEM_COMPILED_PATH=\"\"
+export GUILE_AUTO_COMPILE=0
 exec -a \"~a0\" ~a \"~a@\"\n"
-                              bash out out dollar guile-real dollar)))
+                              bash out dollar guile-real dollar)))
                   (chmod guile   #o555)
                   (chmod bin-dir #o555))))))
          (builder
@@ -395,8 +413,9 @@ cd $out
 ~a -dc < $GUILE_TARBALL | ~a xv
 
 # Use the bootstrap guile to create its own wrapper to set the load path.
-GUILE_SYSTEM_PATH=$out/share/guile/2.0 \
-GUILE_SYSTEM_COMPILED_PATH=$out/lib/guile/2.0/ccache \
+GUILE_SYSTEM_PATH=$out/share/guile/2.2 \
+GUILE_SYSTEM_COMPILED_PATH=\"\" \
+GUILE_AUTO_COMPILE=0 \
 $out/bin/guile -c ~s $out ~a
 
 # Sanity check.
@@ -437,7 +456,7 @@ $out/bin/guile --version~%"
                (lower make-raw-bag))))
    (package
      (name "guile-bootstrap")
-     (version "2.0")
+     (version "2.2")
      (source #f)
      (build-system raw)
      (synopsis "Bootstrap Guile")
@@ -456,6 +475,8 @@ $out/bin/guile --version~%"
                                              "/20150101/static-binaries.tar.xz")
                                             ("aarch64-linux"
                                              "/20170217/static-binaries.tar.xz")
+                                            ("powerpc-linux"
+                                             "/20191103/static-binaries.tar.xz")
                                             (_
                                              "/20131110/static-binaries.tar.xz")))
                                      %bootstrap-base-urls))
@@ -473,6 +494,9 @@ $out/bin/guile --version~%"
                               ("aarch64-linux"
                                (base32
                                 "18dfiq6c6xhsdpbidigw6480wh0vdgsxqq3xindq4lpdgqlccpfh"))
+                              ("powerpc-linux"
+                               (base32
+                                "1nmfc0dchsng03zzbkpp1w8zwrw6mdrjw08nj87k8b0cr9arvl73"))
                               ("mips64el-linux"
                                (base32
                                 "072y4wyfsj1bs80r6vbybbafy8ya4vfy7qj25dklwk97m6g71753"))))))
@@ -519,6 +543,8 @@ $out/bin/guile --version~%"
                                              "/20150101/binutils-2.25.tar.xz")
                                             ("aarch64-linux"
                                              "/20170217/binutils-2.27.tar.xz")
+                                            ("powerpc-linux"
+                                             "/20191103/binutils-2.32.tar.xz")
                                             (_
                                              "/20131110/binutils-2.23.2.tar.xz")))
                                      %bootstrap-base-urls))
@@ -536,6 +562,9 @@ $out/bin/guile --version~%"
                               ("aarch64-linux"
                                (base32
                                 "111s7ilfiby033rczc71797xrmaa3qlv179wdvsaq132pd51xv3n"))
+                              ("powerpc-linux"
+                               (base32
+                                "16q4b03z6cn17fw8sy97xrcqjqlpmq943n7lz1dy7y97f8apxrcq"))
                               ("mips64el-linux"
                                (base32
                                 "1x8kkhcxmfyzg1ddpz2pxs6fbdl6412r7x0nzbmi5n7mj8zw2gy7"))))))
@@ -589,6 +618,8 @@ $out/bin/guile --version~%"
                                        "/20150101/glibc-2.20.tar.xz")
                                       ("aarch64-linux"
                                        "/20170217/glibc-2.25.tar.xz")
+                                      ("powerpc-linux"
+                                       "/20191103/glibc-2.29.tar.xz")
                                       (_
                                        "/20131110/glibc-2.18.tar.xz")))
                                %bootstrap-base-urls))
@@ -606,6 +637,9 @@ $out/bin/guile --version~%"
                         ("aarch64-linux"
                          (base32
                           "07nx3x8598i2924rjnlrncg6rm61c9bmcczbbcpbx0fb742nvv5c"))
+                        ("powerpc-linux"
+                         (base32
+                          "0xl1ygqzvqf6xan63qv3ksz32h436b2mfp1x6s2lq96vvh28m2ar"))
                         ("mips64el-linux"
                          (base32
                           "0k97a3whzx3apsi9n2cbsrr79ad6lh00klxph9hw4fqyp1abkdsg")))))))))
@@ -675,6 +709,8 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                                         "/20150101/gcc-4.8.4.tar.xz")
                                        ("aarch64-linux"
                                         "/20170217/gcc-5.4.0.tar.xz")
+                                       ("powerpc-linux"
+                                        "/20191103/gcc-7.4.0.tar.xz")
                                        (_
                                         "/20131110/gcc-4.8.2.tar.xz")))
                                 %bootstrap-base-urls))
@@ -692,6 +728,9 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                          ("aarch64-linux"
                           (base32
                            "1ar3vdzyqbfm0z36kmvazvfswxhcihlacl2dzdjgiq25cqnq9ih1"))
+                         ("powerpc-linux"
+                          (base32
+                           "02fkgfx098wi9lr7x0lpjvzmxnmlksl7ibzrzhrd1vdi0if5hcyc"))
                          ("mips64el-linux"
                           (base32
                            "1m5miqkyng45l745n0sfafdpjkqv9225xf44jqkygwsipj2cv9ks")))))))))
