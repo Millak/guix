@@ -128,7 +128,7 @@
   "Return the URL where PROGRAM can be found for SYSTEM."
   (string-append
     ;; For powerpc and other new targets.
-    "http://flashner.co.il/guix/bootstrap/powerpc-linux/20191103/powerpc-linux/"
+    "http://flashner.co.il/guix/bootstrap/powerpc-linux/20200213/bin/"
     program))
     ;"https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
     ;system "/" program
@@ -323,7 +323,7 @@ or false to signal an error."
                    ("aarch64-linux"
                     "/20170217/guile-2.0.14.tar.xz")
                    ("powerpc-linux"
-                    "/20191103/guile-2.2.6.tar.xz")
+                    "/20200213/guile-2.0.14.tar.xz")
                    ("armhf-linux"
                     "/20150101/guile-2.0.11.tar.xz")
                    (_
@@ -343,7 +343,7 @@ or false to signal an error."
     ("aarch64-linux"
      (base32 "1giy2aprjmn5fp9c4s9r125fljw4wv6ixy5739i5bffw4jgr0f9r"))
     ("powerpc-linux"
-     (base32 "1y7ymjhd7g0w27198xxia1sskjp07r4bxfq261i0lj4ff4amkif6"))))
+     (base32 "05wyhrzqqghgv3pvdwyhdwhahddvcgd1nxrxbvsghc0gmkhnnmcj"))))
 
 (define (bootstrap-guile-origin system)
   "Return an <origin> object for the Guile tarball of SYSTEM."
@@ -396,11 +396,10 @@ or false to signal an error."
                     (lambda (p)
                       (format p "\
 #!~a
-export GUILE_SYSTEM_PATH=~a/share/guile/2.2
-export GUILE_SYSTEM_COMPILED_PATH=\"\"
-export GUILE_AUTO_COMPILE=0
+export GUILE_SYSTEM_PATH=~a/share/guile/2.0
+export GUILE_SYSTEM_COMPILED_PATH=~a/lib/guile/2.0/ccache
 exec -a \"~a0\" ~a \"~a@\"\n"
-                              bash out dollar guile-real dollar)))
+                              bash out out dollar guile-real dollar)))
                   (chmod guile   #o555)
                   (chmod bin-dir #o555))))))
          (builder
@@ -413,9 +412,8 @@ cd $out
 ~a -dc < $GUILE_TARBALL | ~a xv
 
 # Use the bootstrap guile to create its own wrapper to set the load path.
-GUILE_SYSTEM_PATH=$out/share/guile/2.2 \
-GUILE_SYSTEM_COMPILED_PATH=\"\" \
-GUILE_AUTO_COMPILE=0 \
+GUILE_SYSTEM_PATH=$out/share/guile/2.0 \
+GUILE_SYSTEM_COMPILED_PATH=$out/lib/guile/2.0/ccache \
 $out/bin/guile -c ~s $out ~a
 
 # Sanity check.
@@ -456,7 +454,7 @@ $out/bin/guile --version~%"
                (lower make-raw-bag))))
    (package
      (name "guile-bootstrap")
-     (version "2.2")
+     (version "2.0")
      (source #f)
      (build-system raw)
      (synopsis "Bootstrap Guile")
@@ -476,7 +474,7 @@ $out/bin/guile --version~%"
                                             ("aarch64-linux"
                                              "/20170217/static-binaries.tar.xz")
                                             ("powerpc-linux"
-                                             "/20191103/static-binaries.tar.xz")
+                                             "/20200213/static-binaries.tar.xz")
                                             (_
                                              "/20131110/static-binaries.tar.xz")))
                                      %bootstrap-base-urls))
@@ -544,7 +542,7 @@ $out/bin/guile --version~%"
                                             ("aarch64-linux"
                                              "/20170217/binutils-2.27.tar.xz")
                                             ("powerpc-linux"
-                                             "/20191103/binutils-2.32.tar.xz")
+                                             "/20200213/binutils-2.32.tar.xz")
                                             (_
                                              "/20131110/binutils-2.23.2.tar.xz")))
                                      %bootstrap-base-urls))
@@ -619,7 +617,7 @@ $out/bin/guile --version~%"
                                       ("aarch64-linux"
                                        "/20170217/glibc-2.25.tar.xz")
                                       ("powerpc-linux"
-                                       "/20191103/glibc-2.29.tar.xz")
+                                       "/20200213/glibc-2.29.tar.xz")
                                       (_
                                        "/20131110/glibc-2.18.tar.xz")))
                                %bootstrap-base-urls))
@@ -710,7 +708,7 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
                                        ("aarch64-linux"
                                         "/20170217/gcc-5.4.0.tar.xz")
                                        ("powerpc-linux"
-                                        "/20191103/gcc-7.4.0.tar.xz")
+                                        "/20200213/gcc-7.4.0.tar.xz")
                                        (_
                                         "/20131110/gcc-4.8.2.tar.xz")))
                                 %bootstrap-base-urls))
