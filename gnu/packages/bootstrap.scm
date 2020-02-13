@@ -1,8 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;;
@@ -126,13 +125,17 @@
 
 (define (bootstrap-executable-url program system)
   "Return the URL where PROGRAM can be found for SYSTEM."
-  (string-append
-    ;; For powerpc and other new targets.
-    "http://flashner.co.il/guix/bootstrap/powerpc-linux/20200213/bin/"
-    program))
-    ;"https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
-    ;system "/" program
-    ;"?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))
+  (match (%current-system)
+    ("powerpc-linux"
+     (string-append
+       ;; PowerPC bootstrap binaries were never stored in the source repo.
+       "http://flashner.co.il/guix/bootstrap/powerpc-linux/20200213/bin/"
+       program))
+    (_
+      (string-append
+        "https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
+        system "/" program
+        "?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))))
 
 (define bootstrap-executable
   (mlambda (program system)
