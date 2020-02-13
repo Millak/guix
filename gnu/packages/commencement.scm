@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
@@ -1522,7 +1522,10 @@ exec " gcc "/bin/" program
   ;; 'Makefile.def' forcefully adds --enable-shared) and thus needs to refer
   ;; to libstdc++.so.  We cannot build libstdc++-5.3 because it relies on
   ;; C++14 features missing in some of our bootstrap compilers.
-  (let ((lib (make-libstdc++ gcc-4.9)))
+  (let ((lib (make-libstdc++
+               (match (%current-system)
+                 ("powerpc-linux" gcc-7)
+                 (_ gcc-4.9)))))
     (package
       (inherit lib)
       (source (bootstrap-origin (package-source lib)))
