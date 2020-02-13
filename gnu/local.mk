@@ -981,6 +981,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-finalization-crash.patch		\
   %D%/packages/patches/guile-linux-syscalls.patch		\
   %D%/packages/patches/guile-present-coding.patch		\
+  %D%/packages/patches/guile-2.0-relocatable.patch		\
   %D%/packages/patches/guile-relocatable.patch			\
   %D%/packages/patches/guile-rsvg-pkgconfig.patch		\
   %D%/packages/patches/guile-emacs-fix-configure.patch		\
