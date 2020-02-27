@@ -7,7 +7,7 @@
 # Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 # Copyright © 2017 Leo Famulari <leo@famulari.name>
 # Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
-# Copyright © 2017, 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2017, 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 # Copyright © 2018 Nikita <nikita@n0.is>
 # Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
@@ -970,6 +970,7 @@ $(top_srcdir)/.version: config.status
 
 gen-tarball-version:
 	echo $(VERSION) > "$(distdir)/.tarball-version"
+	git show HEAD --format=%ct --no-patch > $(distdir)/.tarball-timestamp
 
 gen-ChangeLog:
 	$(AM_V_GEN)if test -e .git; then		\
@@ -1001,6 +1002,17 @@ dist-with-updated-version:
 #
 # Release management.
 #
+
+# Reproducible tarball
+override GZIP_ENV = --best --no-name
+# Be friendly to Debian; avoid using EPOCH
+override am__tar = $${TAR-tar}			\
+ --sort=name					\
+ --mode=go=rX,u+rw,a-s				\
+ --mtime=@$$(cat "$$tardir"/.tarball-timestamp)	\
+ --owner=0 --group=0 --numeric-owner		\
+ -cf -						\
+ "$$tardir"
 
 releasedir = release-$(PACKAGE_VERSION)
 
