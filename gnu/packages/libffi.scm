@@ -49,8 +49,7 @@
                               name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0mi0cpf8aa40ljjmzxb7im6dbj45bb0kllcd09xgmp834y9agyvj"))
-              (patches (search-patches "libffi-3.3-powerpc-fixes.patch"))))
+                "0mi0cpf8aa40ljjmzxb7im6dbj45bb0kllcd09xgmp834y9agyvj"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Prevent the build system from passing -march and -mtune to the
@@ -207,3 +206,11 @@ from Ruby code.  Moreover, a Ruby-FFI extension works without changes on Ruby
 and JRuby.")
     (home-page "http://wiki.github.com/ffi/ffi")
     (license bsd-3)))
+
+(define-public libffi-ppc
+  (package
+    (inherit libffi)
+    (name "libffi")
+    (version "3.3")
+    (source (origin (inherit (package-source libffi))
+                    (patches (search-patches "libffi-3.3-powerpc-fixes.patch"))))))
