@@ -38,7 +38,6 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages bdw-gc)
-  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages hurd)
@@ -697,8 +696,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
                   (inputs
                    `(("libunistring:static" ,libunistring "static")
-                     ("libffi" ,libffi-ppc)
-                     ,@(alist-delete "libffi" (package-inputs guile-2.2))))
+                     ,@(package-inputs guile-2.2)))
 
                   (propagated-inputs
                    `(("bdw-gc" ,libgc/static-libs)
