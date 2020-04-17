@@ -628,7 +628,7 @@ the store.")
 
 (export make-ld-wrapper)
 
-(define-public glibc
+(define-public glibc-2.31
   ;; This is the GNU C Library, used on GNU/Linux and GNU/Hurd.  Prior to
   ;; version 2.28, GNU/Hurd used a different glibc branch.
   (package
@@ -887,10 +887,10 @@ with the Linux kernel.")
 
 (define-public glibc-2.30
   (package
-    (inherit glibc)
+    (inherit glibc-2.31)
     (version "2.30")
     (source (origin
-              (inherit (package-source glibc))
+              (inherit (package-source glibc-2.31))
               (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
               (sha256
                (base32
@@ -902,6 +902,8 @@ with the Linux kernel.")
                                        "glibc-allow-kernel-2.6.32.patch"
                                        "glibc-reinstate-prlimit64-fallback.patch"
                                        "glibc-2.29-supported-locales.patch"))))))
+
+(define glibc glibc-2.30)
 
 (define-public glibc-2.29
   (package
