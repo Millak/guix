@@ -355,6 +355,49 @@ right in its guesswork but it can also be terribly wrong.  Never believe its
 output without any plausibility checks.")
       (license license:gpl2+))))
 
+(define-public mac-fdisk
+  (package
+    (name "mac-fdisk")
+    (version "0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://debian/pool/main/m/mac-fdisk/"
+                            "mac-fdisk_" version ".orig.tar.gz"))
+        (sha256
+         (base32 "0rkaqp82l47pg0ymqys07mljf3widv2yk4hhgs2yz8hwli5zqnbh"))
+        (patches (search-patches "mac-fdisk-p18.patch"
+                                 "mac-fdisk-gentoo-patchset.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)        ; no configure script.
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (sbin (string-append out "/sbin"))
+                    (man8 (string-append out "/share/man/man8")))
+               (mkdir-p sbin)
+               (mkdir-p man8)
+               (copy-file "fdisk" (string-append sbin "/mac-fdisk"))
+               (copy-file "pdisk" (string-append sbin "/pmac-fdisk"))
+               (copy-file "mac-fdisk.8.in" (string-append man8 "/mac-fdisk.8"))
+               (copy-file "pmac-fdisk.8.in" (string-append man8 "/pmac-fdisk.8"))))))
+       #:make-flags (list (string-append "CC=" ,(cc-for-target)))
+       #:tests? #f))                ; no tests
+    (home-page "https://tracker.debian.org/pkg/mac-fdisk")
+    (synopsis "Apple disk partition manipulation tool")
+    (description "The @code{fdisk} utilities from the MkLinux project, adopted
+for Linux/m68k.  @code{mac-fdisk} allows you to create and edit the partition
+table of a disk.  It supports only the Apple partition format used on Macintosh
+and PowerMac, use @code{pmac-fdisk} for PC partition format disks as used on
+PowerPC machines.  @code{mac-fdisk} is an interactive tool with a menu similar
+to PC @code{fdisk}, supported options are somewhat different from PC
+@code{fdisk} due to the differences in partition format.")
+    (supported-systems '("powerpc-linux" "i686-linux" "x86_64-linux"))
+    (license license:gpl2)))
+
 (define-public gptfdisk
   (package
     (name "gptfdisk")

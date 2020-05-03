@@ -1,0 +1,866 @@
+https://gitweb.gentoo.org/repo/gentoo.git/tree/sys-fs/mac-fdisk/files
+
+---
+ bitfield.c      | 16 +++++-----
+ bitfield.h      |  4 +--
+ dump.c          | 42 ++++++++++++--------------
+ errors.c        | 11 ++++---
+ fdisk.c         | 68 ++++++++++++++++++++++++++++++++++++++----
+ fdisk.h         |  5 ++++
+ fdisklabel.c    | 79 +++++++++++++++++++++++++++----------------------
+ fdisklabel.h    |  2 +-
+ io.c            |  8 +++--
+ kernel-defs.h   |  6 ++++
+ partition_map.c | 43 ++++++++++++++++-----------
+ pdisk.c         |  7 ++---
+ 12 files changed, 186 insertions(+), 105 deletions(-)
+
+diff --git a/bitfield.c b/bitfield.c
+index 687e8bd..02e7f68 100644
+--- a/bitfield.c
++++ b/bitfield.c
+@@ -67,13 +67,12 @@ const unsigned long masks[] = {
+ //
+ // Routines
+ //
+-unsigned long
+-bitfield_set(unsigned long *bf, int base, int length, unsigned long value)
++unsigned int
++bitfield_set(unsigned int *bf, int base, int length, unsigned int value)
+ {
+-    unsigned long t;
+-    unsigned long m;
++    unsigned int t;
++    unsigned int m;
+     int s;
+-    int i;
+ 
+     // compute shift & mask, coerce value to correct number of bits,
+     // zap the old bits and stuff the new value
+@@ -86,12 +85,11 @@ bitfield_set(unsigned long *bf, int base, int length, unsigned long value)
+ }
+ 
+ 
+-unsigned long
+-bitfield_get(unsigned long bf, int base, int length)
++unsigned int
++bitfield_get(unsigned int bf, int base, int length)
+ {
+-    unsigned long m;
++    unsigned int m;
+     int s;
+-    int i;
+ 
+     // compute shift & mask
+     // return the correct number of bits (shifted to low end)
+diff --git a/bitfield.h b/bitfield.h
+index ff56759..abfdf05 100644
+--- a/bitfield.h
++++ b/bitfield.h
+@@ -63,5 +63,5 @@
+ //
+ // Forward declarations
+ //
+-unsigned long bitfield_set(unsigned long *bf, int base, int length, unsigned long value);
+-unsigned long bitfield_get(unsigned long bf, int base, int length);
++unsigned int bitfield_set(unsigned int *bf, int base, int length, unsigned int value);
++unsigned int bitfield_get(unsigned int bf, int base, int length);
+diff --git a/dump.c b/dump.c
+index 4153dc5..edeeb31 100644
+--- a/dump.c
++++ b/dump.c
+@@ -30,10 +30,8 @@
+  */
+ 
+ #include <stdio.h>
+-#ifndef __linux__
+ #include <stdlib.h>
+ #include <unistd.h>
+-#endif
+ #include <string.h>
+ #include <errno.h>
+ #include <fcntl.h>
+@@ -63,16 +61,16 @@ typedef struct names {
+ // Global Constants
+ //
+ NAMES plist[] = {
+-    "Drvr", "Apple_Driver",
+-    "Dr43", "Apple_Driver43",
+-    "Free", "Apple_Free",
+-    " HFS", "Apple_HFS",
+-    " MFS", "Apple_MFS",
+-    "PDOS", "Apple_PRODOS",
+-    "junk", "Apple_Scratch",
+-    "unix", "Apple_UNIX_SVR2",
+-    " map", "Apple_partition_map",
+-    0,	0
++    {"Drvr"}, {"Apple_Driver"},
++    {"Dr43"}, {"Apple_Driver43"},
++    {"Free"}, {"Apple_Free"},
++    {" HFS"}, {"Apple_HFS"},
++    {" MFS"}, {"Apple_MFS"},
++    {"PDOS"}, {"Apple_PRODOS"},
++    {"junk"}, {"Apple_Scratch"},
++    {"unix"}, {"Apple_UNIX_SVR2"},
++    {" map"}, {"Apple_partition_map"},
++    {0},	{0}
+ };
+ 
+ const char * kStringEmpty	= "";
+@@ -164,10 +162,10 @@ dump_partition_map(partition_map_header *map, int disk_order)
+     }
+ #ifdef __mc68000__
+     printf("%*s  type name         "
+-	    "%*s   %-*s ( size )  system\n", strlen(map->name)+1, "#", j, "length", j, "base");
++	    "%*s   %-*s ( size )  system\n", (int)strlen(map->name)+1, "#", j, "length", j, "base");
+ #else
+     printf("%*s                    type name               "
+-	    "%*s   %-*s ( size )  system\n", strlen(map->name)+1, "#", j, "length", j, "base");
++	    "%*s   %-*s ( size )  system\n", (int)strlen(map->name)+1, "#", j, "length", j, "base");
+ #endif
+ 
+     /* Grok devfs names. (courtesy Colin Walters)*/
+@@ -201,7 +199,6 @@ dump_partition_entry(partition_map *entry, int digits, char *dev)
+     partition_map_header *map;
+     int j;
+     DPME *p;
+-    BZB *bp;
+     char *s;
+ #ifdef __mc68000__
+     int aflag = 1;
+@@ -224,13 +221,13 @@ dump_partition_entry(partition_map *entry, int digits, char *dev)
+ 	    }
+ 	}
+ #ifdef __mc68000__
+-	printf("%s%-2d %.4s %-12.12s ", dev, entry->disk_address, s, p->dpme_name);
++	printf("%s%-2d %.4s %-12.12s ", dev, (int)entry->disk_address, s, p->dpme_name);
+ #else
+-	printf("%s%-4d  %.4s %-18.32s ", dev, entry->disk_address, s, p->dpme_name);
++	printf("%s%-4d  %.4s %-18.32s ", dev, (int)entry->disk_address, s, p->dpme_name);
+ #endif
+     } else {
+ 	printf("%s%-4d %20.32s %-18.32s ", dev, 
+-		entry->disk_address, p->dpme_type, p->dpme_name);
++		(int)entry->disk_address, p->dpme_type, p->dpme_name);
+     }
+ 
+     if (pflag) {
+@@ -314,7 +311,6 @@ list_all_disks()
+     int i;
+     int fd;
+     DPME * data;
+-    long t;
+ 
+     data = (DPME *) malloc(PBLOCK_SIZE);
+     if (data == NULL) {
+@@ -382,7 +378,7 @@ show_data_structures(partition_map_header *map)
+     printf("Header:\n");
+     printf("fd=%d (%s)\n", map->fd, (map->regular_file)?"file":"device");
+     printf("map %d blocks out of %d,  media %u blocks\n",
+-	    map->blocks_in_map, map->maximum_in_map, map->media_size);
++	    map->blocks_in_map, map->maximum_in_map, (unsigned int)map->media_size);
+     printf("Map is%s writeable", (map->writeable)?kStringEmpty:kStringNot);
+     printf(", but%s changed\n", (map->changed)?kStringEmpty:kStringNot);
+     printf("\n");
+@@ -426,7 +422,7 @@ u32     dpme_reserved_3[62]     ;
+     for (entry = map->disk_order; entry != NULL; entry = entry->next_on_disk) {
+ 	p = entry->data;
+ 	printf("%2d: %20.32s ",
+-		entry->disk_address, p->dpme_type);
++		(int)entry->disk_address, p->dpme_type);
+ 	printf("%7u @ %-7u ", p->dpme_pblocks, p->dpme_pblock_start);
+ 	printf("%c%c%c%c%c%c%c%c%c%c ",
+ 		(dpme_valid_get(p))?'V':'v',
+@@ -449,7 +445,7 @@ u32     dpme_reserved_3[62]     ;
+ 	    "goto_address checksum processor\n");
+     for (entry = map->disk_order; entry != NULL; entry = entry->next_on_disk) {
+ 	p = entry->data;
+-	printf("%2d: ", entry->disk_address);
++	printf("%2d: ", (int)entry->disk_address);
+ 	printf("%7u ", p->dpme_boot_block);
+ 	printf("%7u ", p->dpme_boot_bytes);
+ 	printf("%8x ", p->dpme_load_addr);
+@@ -466,7 +462,7 @@ xx: cccc RU *dd s...
+ */
+     for (entry = map->disk_order; entry != NULL; entry = entry->next_on_disk) {
+ 	p = entry->data;
+-	printf("%2d: ", entry->disk_address);
++	printf("%2d: ", (int)entry->disk_address);
+ 
+ 	bp = (BZB *) (p->dpme_bzb);
+ 	j = -1;
+diff --git a/errors.c b/errors.c
+index 47c9c30..4e9e486 100644
+--- a/errors.c
++++ b/errors.c
+@@ -26,12 +26,11 @@
+  */
+ 
+ #include <stdio.h>
+-#ifndef __linux__
+ #include <stdlib.h>
+-#endif
+ #include <string.h>
+ #include <stdarg.h>
+ 
++#include <errno.h>
+ #include "errors.h"
+ #include "pdisk.h"
+ 
+@@ -115,8 +114,8 @@ fatal(int value, char *fmt, ...)
+     va_end(ap);
+ 
+ #ifdef __linux__
+-    if (value > 0 && value < sys_nerr) {
+-	fprintf(stderr, "  (%s)\n", sys_errlist[value]);
++    if (value > 0 && value < errno) {
++	fprintf(stderr, "  (%s)\n", strerror(value));
+     } else {
+ 	fprintf(stderr, "\n");
+     }
+@@ -144,8 +143,8 @@ error(int value, char *fmt, ...)
+     va_end(ap);
+ 
+ #ifdef __linux__
+-    if (value > 0 && value < sys_nerr) {
+-	fprintf(stderr, "  (%s)\n", sys_errlist[value]);
++    if (value > 0 && value < errno) {
++	fprintf(stderr, "  (%s)\n", strerror(value));
+     } else {
+ 	fprintf(stderr, "\n");
+     }
+diff --git a/fdisk.c b/fdisk.c
+index d77619b..dec19ae 100644
+--- a/fdisk.c
++++ b/fdisk.c
+@@ -59,9 +59,14 @@
+  */
+ 
+ 
++#ifndef _LARGEFILE64_SOURCE
++#define _LARGEFILE64_SOURCE
++#endif
++#include <sys/types.h>
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <fcntl.h>
+ #include <ctype.h>
+ #include <setjmp.h>
+@@ -70,12 +75,65 @@
+ 
+ #include <sys/ioctl.h>
+ 
+-typedef unsigned short kdev_t;	/* BAD hack; kdev_t is not exported */
+-
+ #include "kernel-defs.h"
+ 
+ #include "fdisk.h"
+ 
++/* ----------- */
++#define _PPC64_TYPES_H
++#define BITS_PER_LONG 64
++
++typedef __signed__ char __s8;
++typedef signed char s8;
++typedef unsigned char u8;
++typedef unsigned char __u8;
++
++typedef __signed__ short __s16;
++typedef signed short s16;
++/*typedef unsigned short __u16;*/
++typedef unsigned short u16;
++
++typedef __signed__ int __s32;
++typedef signed int s32;
++/*typedef unsigned int __u32;*/
++typedef unsigned int u32;
++
++typedef __signed__ long __s64;
++typedef signed long s64;
++typedef unsigned long __u64;
++typedef unsigned long u64;
++
++typedef struct {
++        __u32 u[4];
++} __attribute((aligned(16))) __vector128;
++
++typedef __vector128 vector128;
++
++typedef u32 dma_addr_t;
++typedef u64 dma64_addr_t;
++
++typedef struct {
++        unsigned long entry;
++        unsigned long toc;
++        unsigned long env;
++} func_descr_t;
++
++typedef unsigned int umode_t;
++
++#define BITS_TO_LONGS(bits) \
++        (((bits)+BITS_PER_LONG-1)/BITS_PER_LONG)
++#define DECLARE_BITMAP(name,bits) \
++        unsigned long name[BITS_TO_LONGS(bits)]
++#define CLEAR_BITMAP(name,bits) \
++        memset(name, 0, BITS_TO_LONGS(bits)*sizeof(unsigned long))
++
++/* hd/ide ctl's that pass (arg) ptrs to user space are numbered 0x030n/0x031n */
++#define HDIO_GETGEO             0x0301  /* get device geometry */
++
++#define BLKRRPART  _IO(0x12,95) /* re-read partition table */
++
++/* ---------- */
++
+ #define hex_val(c)	({ \
+ 				char _c = (c); \
+ 				isdigit(_c) ? _c - '0' : \
+@@ -192,10 +250,10 @@ char read_char(char *mesg);
+ 
+ jmp_buf listingbuf;
+ 
+-inline unsigned short __swap16(unsigned short x) {
++static inline unsigned short __swap16(unsigned short x) {
+ 	return (((__u16)(x) & 0xFF) << 8) | (((__u16)(x) & 0xFF00) >> 8);
+ }
+-inline __u32 __swap32(__u32 x) {
++static inline __u32 __swap32(__u32 x) {
+ 	return (((__u32)(x) & 0xFF) << 24) | (((__u32)(x) & 0xFF00) << 8) | (((__u32)(x) & 0xFF0000) >> 8) | (((__u32)(x) & 0xFF000000) >> 24);
+ }
+ 
+@@ -1415,7 +1473,7 @@ void try(char *device)
+ 	}
+ }
+ 
+-void main(int argc, char **argv)
++int main(int argc, char **argv)
+ {
+ 	if (argc > 3)
+ 		fatal(usage);
+diff --git a/fdisk.h b/fdisk.h
+index 2b6ddc8..0a0566d 100644
+--- a/fdisk.h
++++ b/fdisk.h
+@@ -2,6 +2,11 @@
+    fdisk.h
+ */
+ 
++#ifdef __linux__
++#define _FILE_OFFSET_BITS 64
++#define _LARGE_FILES
++#endif
++
+ #define SECTOR_SIZE	512
+ #define NETBSD_PARTITION 0xa5
+ #define cround(n)	(((n) + display_factor * unit_flag) / display_factor)
+diff --git a/fdisklabel.c b/fdisklabel.c
+index 70c3cfa..7622bc2 100644
+--- a/fdisklabel.c
++++ b/fdisklabel.c
+@@ -35,9 +35,14 @@
+    SUCH DAMAGE.
+ */
+ 
++#ifndef _LARGEFILE64_SOURCE
++#define _LARGEFILE64_SOURCE
++#endif
++#include <sys/types.h>
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <fcntl.h>
+ #include <ctype.h>
+ #include <setjmp.h>
+@@ -46,6 +51,8 @@
+ #include <sys/ioctl.h>
+ #include <sys/param.h>
+ 
++#include <asm/types.h>
++
+ #include "kernel-defs.h"
+ 
+ #include "fdisk.h"
+@@ -68,7 +75,7 @@ static int bsd_initlabel  (struct partition *p, struct disklabel *d, int pindex)
+ static int bsd_readlabel  (struct partition *p, struct disklabel *d);
+ static int bsd_writelabel (struct partition *p, struct disklabel *d);
+ static void sync_disks (void);
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+ static int bsd_translate_fstype (int linux_type);
+ static void bsd_link_part (void);
+ #endif
+@@ -78,7 +85,7 @@ void alpha_bootblock_checksum (char *boot);
+ 
+ static struct disklabel bsd_dlabel;
+ static char buffer[BSD_BBSIZE];
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+ static struct partition *bsd_part;
+ static int bsd_part_index;
+ #endif
+@@ -95,13 +102,13 @@ bmenu (void)
+ 	"   n   add a new BSD partition\n"
+ 	"   p   print BSD partition table\n"
+ 	"   q   quit without saving changes\n"
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+ 	"   r   return to main menu\n"
+ #endif
+ 	"   s   show complete disklabel\n"
+ 	"   t   change a partition's filesystem id\n"
+ 	"   w   write disklabel to disk\n"
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+ 	"   x   link BSD partition to non-BSD partition"
+ #endif
+ 	);
+@@ -110,7 +117,7 @@ bmenu (void)
+ void
+ bselect (void)
+ {
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   int t;
+ 
+   for (t=0; t<4; t++)
+@@ -181,7 +188,7 @@ bselect (void)
+       case 'w':
+ 	bsd_write_disklabel ();
+ 	break;
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+       case 'r':
+ 	return;
+       case 'x':
+@@ -219,7 +226,7 @@ bsd_new_part (void)
+   if (!bsd_check_new_partition (&i))
+     return;
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   begin = bsd_part -> start_sect;
+   end = begin + bsd_part -> nr_sects - 1;
+ #elif defined (__alpha__) || defined (__powerpc__)
+@@ -253,7 +260,7 @@ bsd_print_disklabel (int show_all)
+ 
+   if (show_all)
+   {
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+     fprintf(f, "# %s%d:\n", disk_device, bsd_part_index+1);
+ #elif defined (__alpha__) || defined (__powerpc__)
+     fprintf(f, "# %s:\n", disk_device);
+@@ -262,8 +269,8 @@ bsd_print_disklabel (int show_all)
+       fprintf(f, "type: %s\n", bsd_dktypenames[lp->d_type]);
+     else
+       fprintf(f, "type: %d\n", lp->d_type);
+-    fprintf(f, "disk: %.*s\n", sizeof(lp->d_typename), lp->d_typename);
+-    fprintf(f, "label: %.*s\n", sizeof(lp->d_packname), lp->d_packname);
++    fprintf(f, "disk: %.*s\n", (int)sizeof(lp->d_typename), lp->d_typename);
++    fprintf(f, "label: %.*s\n", (int)sizeof(lp->d_packname), lp->d_packname);
+     fprintf(f, "flags:");
+     if (lp->d_flags & BSD_D_REMOVABLE)
+       fprintf(f, " removable");
+@@ -272,17 +279,17 @@ bsd_print_disklabel (int show_all)
+     if (lp->d_flags & BSD_D_BADSECT)
+       fprintf(f, " badsect");
+     fprintf(f, "\n");
+-    fprintf(f, "bytes/sector: %d\n", lp->d_secsize);
+-    fprintf(f, "sectors/track: %d\n", lp->d_nsectors);
+-    fprintf(f, "tracks/cylinder: %d\n", lp->d_ntracks);
+-    fprintf(f, "sectors/cylinder: %d\n", lp->d_secpercyl);
+-    fprintf(f, "cylinders: %d\n", lp->d_ncylinders);
++    fprintf(f, "bytes/sector: %d\n", (int)lp->d_secsize);
++    fprintf(f, "sectors/track: %d\n", (int)lp->d_nsectors);
++    fprintf(f, "tracks/cylinder: %d\n", (int)lp->d_ntracks);
++    fprintf(f, "sectors/cylinder: %d\n", (int)lp->d_secpercyl);
++    fprintf(f, "cylinders: %d\n", (int)lp->d_ncylinders);
+     fprintf(f, "rpm: %d\n", lp->d_rpm);
+     fprintf(f, "interleave: %d\n", lp->d_interleave);
+     fprintf(f, "trackskew: %d\n", lp->d_trackskew);
+     fprintf(f, "cylinderskew: %d\n", lp->d_cylskew);
+-    fprintf(f, "headswitch: %d\t\t# milliseconds\n", lp->d_headswitch);
+-    fprintf(f, "track-to-track seek: %d\t# milliseconds\n", lp->d_trkseek);
++    fprintf(f, "headswitch: %d\t\t# milliseconds\n", (int)lp->d_headswitch);
++    fprintf(f, "track-to-track seek: %d\t# milliseconds\n", (int)lp->d_trkseek);
+     fprintf(f, "drivedata: ");
+     for (i = NDDATA - 1; i >= 0; i--)
+       if (lp->d_drivedata[i])
+@@ -290,7 +297,7 @@ bsd_print_disklabel (int show_all)
+     if (i < 0)
+       i = 0;
+     for (j = 0; j <= i; j++)
+-      fprintf(f, "%d ", lp->d_drivedata[j]);
++      fprintf(f, "%d ", (int)lp->d_drivedata[j]);
+   }
+   fprintf (f, "\n%d partitions:\n", lp->d_npartitions);
+   fprintf (f, "#        size   offset    fstype   [fsize bsize   cpg]\n");
+@@ -298,7 +305,7 @@ bsd_print_disklabel (int show_all)
+   for (i = 0; i < lp->d_npartitions; i++, pp++) {
+     if (pp->p_size) {
+       fprintf(f, "  %c: %8d %8d  ", 'a' + i,
+-	      pp->p_size, pp->p_offset);
++	      (int)pp->p_size, (int)pp->p_offset);
+       if ((unsigned) pp->p_fstype < BSD_FSMAXTYPES)
+ 	fprintf(f, "%8.8s", bsd_fstypes[pp->p_fstype].name);
+       else
+@@ -307,12 +314,12 @@ bsd_print_disklabel (int show_all)
+       {
+         case BSD_FS_UNUSED:
+ 	  fprintf(f, "    %5d %5d %5.5s ",
+-		  pp->p_fsize, pp->p_fsize * pp->p_frag, "");
++		  (int)pp->p_fsize, (int)pp->p_fsize * pp->p_frag, "");
+ 	  break;
+ 	  
+ 	case BSD_FS_BSDFFS:
+ 	  fprintf(f, "    %5d %5d %5d ",
+-		  pp->p_fsize, pp->p_fsize * pp->p_frag,
++		  (int)pp->p_fsize, (int)pp->p_fsize * pp->p_frag,
+ 		  pp->p_cpg);
+ 	  break;
+ 	  
+@@ -322,21 +329,21 @@ bsd_print_disklabel (int show_all)
+       }
+       fprintf(f, "\t# (Cyl. %4d",
+ #if 0
+-	      pp->p_offset / lp->d_secpercyl); /* differs from Linux fdisk */
++	      (int)(pp->p_offset / lp->d_secpercyl)); /* differs from Linux fdisk */
+ #else
+-	      pp->p_offset / lp->d_secpercyl + 1);
++	      (int)(pp->p_offset / lp->d_secpercyl + 1));
+ #endif
+       if (pp->p_offset % lp->d_secpercyl)
+ 	putc('*', f);
+       else
+ 	putc(' ', f);
+       fprintf(f, "- %d",
+-	      (pp->p_offset + 
++	      (int)((pp->p_offset + 
+ 	       pp->p_size + lp->d_secpercyl - 1) /
+ #if 0
+-	      lp->d_secpercyl - 1); /* differs from Linux fdisk */
++	      lp->d_secpercyl - 1)); /* differs from Linux fdisk */
+ #else
+-	      lp->d_secpercyl);
++	      lp->d_secpercyl));
+ #endif
+       if (pp->p_size % lp->d_secpercyl)
+ 	putc('*', f);
+@@ -348,7 +355,7 @@ bsd_print_disklabel (int show_all)
+ static void
+ bsd_write_disklabel (void)
+ {
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   printf ("Writing disklabel to %s%d.\n", disk_device, bsd_part_index+1);
+   bsd_writelabel (bsd_part, &bsd_dlabel);
+ #elif defined (__alpha__) || defined (__powerpc__)
+@@ -362,7 +369,7 @@ bsd_create_disklabel (void)
+ {
+   char c;
+ 
+-#if defined (i386)
++#if defined (i386) || defined(__amd64)
+   fprintf (stderr, "%s%d contains no disklabel.\n",
+ 	   disk_device, bsd_part_index+1);
+ #elif defined (__alpha__) || defined (__powerpc__)
+@@ -372,7 +379,7 @@ bsd_create_disklabel (void)
+   while (1)
+     if ((c = tolower (read_char ("Do you want to create a disklabel? (y/n) "))) == 'y')
+     {
+-#if defined (i386)
++#if defined (i386) || defined(__amd64)
+       if (bsd_initlabel (bsd_part, &bsd_dlabel, bsd_part_index) == 1)
+ #elif defined (__alpha__) || defined (__powerpc__) || defined (__mc68000__)
+       if (bsd_initlabel (NULL, &bsd_dlabel, 0) == 1)
+@@ -503,7 +510,7 @@ bsd_write_bootstrap (void)
+ 
+   bcopy (&dl, d, sizeof (struct disklabel));
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   sector = bsd_part -> start_sect;
+ #elif defined (__powerpc__)
+   sector = 0;
+@@ -517,7 +524,7 @@ bsd_write_bootstrap (void)
+   if (BSD_BBSIZE != write (fd, buffer, BSD_BBSIZE))
+     fatal (unable_to_write);
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   printf ("Bootstrap installed on %s%d.\n", disk_device, bsd_part_index+1);
+ #elif defined (__alpha__) || defined (__powerpc__)
+   printf ("Bootstrap installed on %s.\n", disk_device);
+@@ -621,7 +628,7 @@ bsd_initlabel (struct partition *p, struct disklabel *d, int pindex)
+   d -> d_subtype = BSD_DSTYPE_INDOSPART & pindex;
+ #endif
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   d -> d_flags = BSD_D_DOSPART;
+ #else
+   d -> d_flags = 0;
+@@ -644,7 +651,7 @@ bsd_initlabel (struct partition *p, struct disklabel *d, int pindex)
+   d -> d_bbsize = BSD_BBSIZE;
+   d -> d_sbsize = BSD_SBSIZE;
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   d -> d_npartitions = 4;
+   pp = &d -> d_partitions[2]; /* Partition C should be the NetBSD partition */
+   pp -> p_offset = p -> start_sect;
+@@ -670,7 +677,7 @@ bsd_readlabel (struct partition *p, struct disklabel *d)
+ {
+   int t, sector;
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   sector = p -> start_sect;
+ #elif defined (__alpha__) || defined (__powerpc__)
+   sector = 0;
+@@ -704,7 +711,7 @@ bsd_writelabel (struct partition *p, struct disklabel *d)
+ {
+   int sector;
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+   sector = p -> start_sect + BSD_LABELSECTOR;
+ #elif defined (__alpha__) || defined (__powerpc__)
+   sector = BSD_LABELSECTOR;
+@@ -745,7 +752,7 @@ sync_disks (void)
+   sleep (4);
+ }
+ 
+-#if defined (i386)
++#if defined (i386) || defined (__amd64)
+ static int
+ bsd_translate_fstype (int linux_type)
+ {
+diff --git a/fdisklabel.h b/fdisklabel.h
+index a9c4d2e..44cb89f 100644
+--- a/fdisklabel.h
++++ b/fdisklabel.h
+@@ -35,7 +35,7 @@
+ #define	BSD_MAXPARTITIONS 8
+ #define BSD_LINUX_BOOTDIR "/usr/ucb/mdec"
+ 
+-#if defined (i386)
++#if defined (i386) || defined(__amd64)
+ #define BSD_LABELSECTOR   1
+ #define BSD_LABELOFFSET   0
+ #define	BSD_BBSIZE        8192		/* size of boot area, with label */
+diff --git a/io.c b/io.c
+index 0937e29..0ee7873 100644
+--- a/io.c
++++ b/io.c
+@@ -25,16 +25,20 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. 
+  */
+ 
++#define _LARGEFILE64_SOURCE
+ #include <stdio.h>
+-#ifndef __linux__
+ #include <stdlib.h>
+ #include <fcntl.h>
++#ifndef __linux__
+ #include <SCSI.h>
+ #else
+ #ifdef __GLIBC__
+ #include <sys/types.h>
++#include <sys/stat.h>
+ #endif
+ #endif
++#include <linux/unistd.h>
++#include <sys/types.h>
+ #include <unistd.h>
+ #include <string.h>
+ #include <stdarg.h>
+@@ -466,7 +470,7 @@ write_block(int fd, unsigned long num, char *buf)
+     long t;
+ 
+     if (rflag) {
+-	printf("Can't write block %u to file", num);
++	printf("Can't write block %u to file", (unsigned int)num);
+ 	return 0;
+     }
+ #ifndef __linux__
+diff --git a/kernel-defs.h b/kernel-defs.h
+index 5f15fd4..4dd4414 100644
+--- a/kernel-defs.h
++++ b/kernel-defs.h
+@@ -15,8 +15,14 @@ struct hd_geometry {
+ /* from asm/ioctl.h */
+ #define _IOC_NRBITS	8
+ #define _IOC_TYPEBITS	8
++
++#ifndef _IOC_SIZEBITS
+ #define _IOC_SIZEBITS	13
++#endif
++
++#ifndef _IOC_DIRBITS
+ #define _IOC_DIRBITS	3
++#endif
+ 
+ #define _IOC_NRMASK	((1 << _IOC_NRBITS)-1)
+ #define _IOC_TYPEMASK	((1 << _IOC_TYPEBITS)-1)
+diff --git a/partition_map.c b/partition_map.c
+index 6ca2c16..4aaf4b0 100644
+--- a/partition_map.c
++++ b/partition_map.c
+@@ -25,11 +25,15 @@
+  * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. 
+  */
+ 
++//
++// Defines
++//
++// #define TEST_COMPUTE
++
+ #include <stdio.h>
+-#ifndef __linux__
++#include <string.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+-#endif
+ #include <errno.h>
+ 
+ #include <fcntl.h>
+@@ -37,6 +41,10 @@
+ #include <sys/ioctl.h>
+ #include "kernel-defs.h"
+ #include <sys/stat.h>
++#ifdef TEST_COMPUTE
++#include <linux/fs.h>
++#endif
++
+ #endif
+ 
+ #include "partition_map.h"
+@@ -46,10 +54,6 @@
+ #include "errors.h"
+ 
+ 
+-//
+-// Defines
+-//
+-// #define TEST_COMPUTE
+ 
+ 
+ //
+@@ -106,7 +110,6 @@ open_partition_map(char *name, int *valid_file)
+     int fd;
+     partition_map_header * map;
+     int writeable;
+-    unsigned long length;
+ #ifdef __linux__
+     struct stat info;
+ #endif
+@@ -403,9 +406,7 @@ create_partition_map(char *name)
+ {
+     int fd;
+     partition_map_header * map;
+-    unsigned long length;
+     DPME *data;
+-    int ok;
+     unsigned long number;
+ #ifdef __linux__
+     struct stat info;
+@@ -434,13 +435,13 @@ create_partition_map(char *name)
+     map->maximum_in_map = -1;
+ 
+     number = compute_device_size(fd);
+-    printf("size of 'device' is %u blocks: ", number);
++    printf("size of 'device' is %u blocks: ", (unsigned int)number);
+     flush_to_newline(0);
+     get_number_argument("what should be the size? ", (long *)&number, number);
+     if (number < 4) {
+ 	number = 4;
+     }
+-    printf("new size of 'device' is %u blocks\n", number);
++    printf("new size of 'device' is %u blocks\n", (unsigned int)number);
+     map->media_size = number;
+ 
+ #ifdef __linux__
+@@ -670,7 +671,7 @@ compute_device_size(int fd)
+     loff_t pos;
+ #endif
+     char* data;
+-    unsigned long l, r, x;
++    unsigned long long l, r, x;
+     int valid;
+ 
+ #ifdef TEST_COMPUTE
+@@ -724,9 +725,11 @@ compute_device_size(int fd)
+ 	    } else {
+ 		r = r * 2;
+ 	    }
+-	    if (r >= (1024*1024*1024)) {
+-		break;
+-	    }
++// 	    There's no explanation for this, but I suspect the author was trying to
++// 	    prevent going over the 32 bit size
++//	    if (r >= (1024*1024*1024*2)) {
++//		break;
++//	    }
+ 	}
+ 	// binary search for end
+ 	while (l <= r) {
+@@ -744,11 +747,17 @@ compute_device_size(int fd)
+ 	if (valid != 0) {
+ 	    x = x + 1;
+ 	}
+-	// printf("size in blocks = %d\n", x);
++#ifdef TEST_COMPUTE
++	printf("size in blocks = %d\n", x);
++#endif
+ 	free(data);
+     }
++    
++    // Add a warning just in case...
++    if(x > 0x80000000)
++    	printf("Warning: Large disks may not work with this tool!\n");
+ 
+-    return x;
++    return (unsigned long) x;
+ }
+ 
+ 
+diff --git a/pdisk.c b/pdisk.c
+index a9bc629..ec85f6d 100644
+--- a/pdisk.c
++++ b/pdisk.c
+@@ -32,10 +32,11 @@
+ #include <getopt.h>
+ #include <stddef.h>
+ #else
++#include <SIOUX.h>
++#endif
+ #include <stdlib.h>
+ #include <unistd.h>
+-#include <SIOUX.h>
+-#endif
++#include <string.h>
+ #include <errno.h>
+ 
+ #ifdef __linux__
+@@ -436,7 +437,6 @@ do_create_partition(partition_map_header *map, int get_type)
+ {
+     long base;
+     long length;
+-    long mult;
+     char *name;
+     char *type_name;
+ 
+@@ -598,7 +598,6 @@ do_delete_partition(partition_map_header *map)
+ void
+ do_reorder(partition_map_header *map)
+ {
+-    partition_map * cur;
+     long old_index;
+     long index;
+ 
+-- 
+2.26.2
+
