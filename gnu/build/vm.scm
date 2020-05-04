@@ -75,6 +75,7 @@
                    (cond
                     ((string-match "^i[3456]86$" cpu) "i386")
                     ((string-match "armhf" cpu) "arm")
+                    ((string-match "^powerpc$" cpu) "ppc")
                     (else cpu)))))
 
 (define* (load-in-linux-vm builder
