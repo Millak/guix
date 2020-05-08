@@ -1676,7 +1676,12 @@ execution of any hook written in any language before every commit.")
                          "--slowtimeout" "86400"
                          ;; The test suite takes a long time and produces little
                          ;; output by default.  Prevent timeouts due to silence.
-                         "-v"))))))))
+                         "-v"))))))
+       ;; Tests on powerpc-linux take more than 10 hours.
+       #:tests? ,(if (string=? "powerpc-linux" (or (%current-system)
+                                                   (%current-target-system)))
+                   #f #t)))
+    ;; The following inputs are only needed to run the tests.
     (native-inputs
      `(("python-docutils", python-docutils)
        ;; The following inputs are only needed to run the tests.
