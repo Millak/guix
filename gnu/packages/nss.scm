@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
@@ -109,7 +109,10 @@ in the Mozilla clients.")
        ;; Parallel builds are not supported (see:
        ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1640328).
        `(#:parallel-build? #f
-         #:tests? #t                   ;requires at least one hour to run
+         ;; Tests on powerpc-linux take forever and fail sporatically.
+         #:tests? ,(if (string=? "powerpc-linux" (or (%current-system)
+                                                     (%current-target-system)))
+                     '#f '#t)
          #:make-flags
          (let* ((out (assoc-ref %outputs "out"))
                 (nspr (string-append (assoc-ref %build-inputs "nspr")))
