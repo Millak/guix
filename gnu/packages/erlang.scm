@@ -359,3 +359,21 @@ of reusable Erlang components.")
     (description "This package provides an Erlang module to parse command line
 arguments using the GNU getopt syntax.")
     (license license:bsd-3)))
+
+(define-public erlang-providers
+  (package
+    (name "erlang-providers")
+    (version "1.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "providers" version))
+       (sha256
+        (base32 "05y0kz3xgx77hzn1l05byaisvmk8bgds7c22hrh0a5ba81sfi1yj"))))
+    (build-system rebar-build-system)
+    (propagated-inputs
+     (list erlang-erlware-commons erlang-getopt))
+    (home-page "https://github.com/tsloughter/providers")
+    (synopsis "Erlang providers library")
+    (description "This package provides an Erlang providers library.")
+    (license license:asl2.0)))
