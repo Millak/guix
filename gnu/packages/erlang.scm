@@ -246,3 +246,30 @@ Mozilla's canonical set.")
     (description "This package provides a helper library for termial colour
 printing extending the io:format syntax to add colours.")
     (license license:expat)))
+
+(define-public erlang-erlware-commons
+  (package
+    (name "erlang-erlware-commons")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "erlware_commons" version))
+       (sha256
+        (base32 "18qam9xdzi74wppb0cj4zc8161i0i8djr79z8662m6d276f2jz5m"))))
+    (build-system rebar-build-system)
+    (propagated-inputs
+     (list erlang-cf))
+    (native-inputs
+     (list git-minimal/fixed))  ;; Required for tests
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'check-setup
+           (lambda _
+             (setenv "TERM" "xterm")))))) ; enable color in logs
+    (home-page "http://erlware.github.io/erlware_commons/")
+    (synopsis "Additional standard library for Erlang")
+    (description "Erlware Commons is an Erlware project focused on all aspects
+of reusable Erlang components.")
+    (license license:expat)))
