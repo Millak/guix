@@ -9258,6 +9258,49 @@ with @code{#:zef} or removed by passing @code{#f} to the
 @code{with-zef?} parameter.
 @end defvr
 
+@defvr {Scheme Variable} rebar-build-system
+This variable is exported by @code{(guix build-system rebar)}.  It
+implements a build procedure around @uref{https://rebar3.org,rebar3},
+a build system for programs written in the Erlang language.
+
+It adds both @code{rebar3} and the @code{erlang} to the set of inputs.
+Different packages can be specified with the @code{#:rebar} and
+@code{#:erlang} parameters, respectively.
+
+This build system is based on @code{gnu-build-system}, but with the
+following phases changed:
+
+@table @code
+
+@item unpack
+This phase, after unpacking the source like the @code{gnu-build-system}
+does, checks for a file @code{contents.tar.gz} at the top-level of the
+source.  If this file exists, it will be unpacked, too.  This eases
+handling of package hosted at @uref{https://hex.pm/},
+the Erlang and Elixir package repository.
+
+@item bootstrap
+@item configure
+There are no @code{bootstrap} and @code{configure} phase because erlang
+packages typically don’t need to be configured.
+
+@item build
+This phase runs @code{rebar3 compile}
+with the flags listed in @code{#:rebar-flags}.
+
+@item check
+Unless @code{#:tests? #f} is passed,
+this phase runs @code{rebar3 eunit},
+or some other target specified with @code{#:test-target},
+with the flags listed in @code{#:rebar-flags},
+
+@item install
+This installs the files created in the @i{default} profile, or some
+other profile specified with @code{#:install-profile}.
+
+@end table
+@end defvr
+
 @defvr {Scheme Variable} texlive-build-system
 This variable is exported by @code{(guix build-system texlive)}.  It is
 used to build TeX packages in batch mode with a specified engine.  The

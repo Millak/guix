@@ -171,6 +171,7 @@ MODULES =					\
   guix/build-system/waf.scm			\
   guix/build-system/r.scm			\
   guix/build-system/rakudo.scm			\
+  guix/build-system/rebar.scm			\
   guix/build-system/ruby.scm			\
   guix/build-system/scons.scm			\
   guix/build-system/texlive.scm			\
@@ -225,6 +226,7 @@ MODULES =					\
   guix/build/r-build-system.scm			\
   guix/build/renpy-build-system.scm			\
   guix/build/rakudo-build-system.scm		\
+  guix/build/rebar-build-system.scm		\
   guix/build/ruby-build-system.scm		\
   guix/build/scons-build-system.scm		\
   guix/build/texlive-build-system.scm		\
