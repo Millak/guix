@@ -3,7 +3,7 @@
 ;; This is an operating system configuration template for a "bare bones
 ;; development" setup, with no X11 display server.
 
-;; To build a disk image for a virtual machine, do
+;; To build a disk image for a virtual machine, do something like:
 ;;
 ;;   ./pre-inst-env guix system image --image-type=hurd-qcow2 --image-size=6G \
 ;;      --no-offload gnu/system/examples/devel-hurd.tmpl
@@ -11,41 +11,38 @@
 ;; You may run it like so
 ;;
 ;;     cp /gnu/store/.../disk-image devel-hurd.img
-;;     guix shell qemu -- qemu-system-i386 -enable-kvm -m 4096 \
-;;      -device rtl8139,netdev=net0                            \
-;;      -netdev user,id=net0,hostfwd=tcp:127.0.0.1:10022-:2222 \
-;;      -hda devel-hurd.img
-;;
-;; and use it like
+;;     guix shell qemu -- qemu-system-i386 -m 4096                \
+;;       --enable-kvm                                             \
+;;       --device e1000,netdev=net0                               \
+;;       --netdev user,id=net0,hostfwd=tcp:127.0.0.1:10022-:2222  \
+;;       --hda devel-hurd.img
 ;;
 ;;     ssh -p 10022 root@localhost
 ;;     guix build -e '(@@ (gnu packages commencement) gnu-make-boot0)'
 ;;
-;; or even (if you use --image-size=3G)
+;; or even:
 ;;
 ;;     guix build hello
 ;;
-;; Building Guix, do something like:
+;; For Guix hacking, do something like:
 ;;
-;;     GUIX_PROFILE=/run/current-system/bootstrap-profile
-;;     source $GUIX_PROFILE/etc/profile
+;;     guix shell --boostrap -D guix
 ;;     mkdir -p ~/src/guix
 ;;     cd src/guix
 ;;     git clone https://git.savannah.gnu.org/git/guix.git master
 ;;     cd master
 ;;     ./bootstrap
-;;     ./configure --with-courage
+;;     ./configure
 ;;     make
+
+(include "bare-hurd.tmpl")
 
 (use-modules (srfi srfi-1)
              (ice-9 match)
-             (gnu)
              (gnu system hurd)
-             (gnu system locale)
              (guix packages)
-             (guix store)
-             (guix utils))
-(use-service-modules ssh virtualization)
+             (guix store))
+
 (use-package-modules base compression file gawk gdb hurd less m4
                      package-management ssh version-control)
 
@@ -64,23 +61,23 @@
                     ;; These are not essential and do not build yet.
                     '("graphviz" "guile-avahi" "po4a"))))
 
+(define hurd-packages
+  (filter-map input->package
+              (fold alist-delete (package-direct-inputs hurd)
+                    ;; These are not essential, rumpkernel is very big.
+                    '("dde-sources" "parted" "rumpkernel" "util-linux"
+                      "texinfo"))))
+
 (define %hurd-devel-os
   (operating-system
-    (inherit %hurd-vm-operating-system)
-    (host-name "guixydevel")
+    (inherit %hurd-os)
+    (bootloader (bootloader-configuration
+                 (bootloader grub-minimal-bootloader)
+                 (targets '("/dev/sdX"))
+                 (timeout 0)))
     (timezone "Europe/Berlin")
-    (file-systems (cons (file-system
-                          (device (file-system-label "hurd"))
-                          (mount-point "/")
-                          (type "ext2"))
-                        %base-file-systems))
     (swap-devices (list (swap-space
                           (target "/swapfile"))))
-    (users (cons (user-account
-                  (name "guix")
-                  (group "users")
-                  (supplementary-groups '("wheel")))
-                 %base-user-accounts))
     (packages (cons*
                gdb-minimal
                git-minimal
@@ -89,18 +86,7 @@
                openssh-sans-x
                (append
                 guix-packages
-                %base-packages/hurd)))
-    (services (cons*
-               (modify-services (operating-system-user-services
-                                 %hurd-vm-operating-system)
-                 (openssh-service-type
-                  config =>
-                  ;; Set wide open
-                  (openssh-configuration
-                   (openssh openssh-sans-x)
-                   (port-number 2222)
-                   (permit-root-login #t)
-                   (allow-empty-passwords? #t)
-                   (password-authentication? #t))))))))
+                hurd-packages
+                %base-packages/hurd)))))
 
 %hurd-devel-os

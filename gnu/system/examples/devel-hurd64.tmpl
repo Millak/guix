@@ -1,0 +1,65 @@
+;; -*-scheme-*-
+
+;; This is an operating system configuration template
+;; for a "bare bones" QEMU setup, with no X11 display server.
+
+;; To build a disk image for a virtual machine, do:
+;;
+;;   ./pre-inst-env guix system image --image-type=hurd-qcow2 --image-size=6G \
+;;      --no-offload gnu/system/examples/devel-hurd64.tmpl
+;;
+;; You may run it like so:
+;;
+;;     cp /gnu/store/.../disk-image devel-hurd.img
+;;     guix shell qemu@7 -- qemu-system-x86_64 -m 4096            \
+;;       --machine q35                                            \
+;;       --enable-kvm                                             \
+;;       --device e1000,netdev=net0                               \
+;;       --netdev user,id=net0,hostfwd=tcp:127.0.0.1:10022-:2222  \
+;;       --hda devel-hurd.img
+;;
+;; and use it like:
+;;
+;;     ssh -p 10022 root@localhost
+;;     guix build -e '(@@ (gnu packages commencement) gnu-make-boot0)'
+;;
+;; or even:
+;;
+;;     guix build hello
+;;
+;; For Guix hacking, do something like:
+;;
+;;     guix shell --boostrap -D guix
+;;     mkdir -p ~/src/guix
+;;     cd src/guix
+;;     git clone git clone git://git.savannah.gnu.org/guix
+;;     cd master
+;;     ./bootstrap
+;;     ./configure
+;;     make
+
+(include "devel-hurd.tmpl")
+(include "bare-hurd64.tmpl")
+
+(define %hurd64-devel-os
+  (operating-system
+    (inherit %hurd64-os)
+    (bootloader (bootloader-configuration
+                 (bootloader grub-minimal-bootloader)
+                 (targets '("/dev/sdX"))
+                 (timeout 0)))
+    (timezone "Europe/Berlin")
+    (swap-devices (list (swap-space
+                          (target "/swapfile"))))
+    (packages (cons*
+               gdb-minimal-15
+               git-minimal
+               gnu-make
+               m4
+               openssh-sans-x
+               (append
+                guix-packages
+                hurd-packages
+                %base-packages/hurd)))))
+
+%hurd64-devel-os
