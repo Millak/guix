@@ -38,9 +38,7 @@
                 "1r3mgky9d19b2285s274qxzlgs7sncx8plm01vd691sdx2xii8d9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; musl has no tests
-       #:configure-flags
-       (list "--disable-gcc-wrapper")))
+     `(#:tests? #f))                    ; musl has no tests
     (synopsis "Small C standard library")
     (description "musl is a simple and lightweight C standard library.  It
 strives to be correct in the sense of standards-conformance and safety.")
