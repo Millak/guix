@@ -450,6 +450,33 @@ evaluating an expression at compile-time and substitute the result as a
 compile-time constant.")
     (license license:asl2.0)))
 
+(define-public erlang-proper
+  (package
+    (name "erlang-proper")
+    (version "1.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (hexpm-uri "proper" version))
+        (sha256
+          (base32 "1fwcas4a9kz3w3z1jqdk9lw8822srfjk9lcpvbxkxlsv3115ha0q"))))
+    (build-system rebar-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-covertool
+           ;; no need to generate a coverage report
+           (lambda _
+             (substitute* "rebar.config"
+               (("\\{plugins, \\[covertool\\]\\}\\." _) "")))))))
+    (home-page "https://proper-testing.github.io/")
+    (synopsis "QuickCheck-inspired property-based testing tool for Erlang")
+    (description "PropEr is a tool for the automated, semi-random,
+property-based testing of Erlang programs.  It is fully integrated with
+Erlang's type language, and can also be used for the model-based random
+testing of stateful systems.")
+    (license license:gpl3+)))
+
 (define-public erlang-providers
   (package
     (name "erlang-providers")
