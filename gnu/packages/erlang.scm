@@ -37,6 +37,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages wxwidgets))
 
@@ -646,4 +647,35 @@ of locations (git, hg, etc).")
     (synopsis "Rebar3 plugin for supporting \"raw\" dependencies")
     (description "This plugin provides support for handling non-OTP
 applications as a dependent libraries.")
+    (license license:expat)))
+
+(define-public rebar3-git-vsn
+  (package
+    (name "rebar3-git-vsn")
+    (version "1.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (hexpm-uri "rebar3_git_vsn" version))
+        (sha256
+          (base32 "1dfz56034pa25axly9vqdzv3phkn8ll0qwrkws96pbgcprhky1hx"))))
+    (build-system rebar-build-system)
+    (inputs
+     (list git-minimal/fixed))
+    (arguments
+     `(;; Running the tests require binary artifact (tar-file containing
+       ;; samples git repos)  TODO: remove these from the source
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((git (assoc-ref inputs "git-minimal")))
+               (substitute* "src/rebar3_git_vsn.erl"
+                 (("rebar_utils:sh\\(\"git " _)
+                  (string-append "rebar_utils:sh(\"" git "/bin/git ")))))))))
+    (home-page "https://github.com/soranoba/rebar3_git_vsn")
+    (synopsis "Rebar3 plugin for generating the version from git")
+    (description "This plugin adds support for generating the version from
+a git checkout.")
     (license license:expat)))
