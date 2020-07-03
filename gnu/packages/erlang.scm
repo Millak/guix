@@ -679,3 +679,20 @@ applications as a dependent libraries.")
     (description "This plugin adds support for generating the version from
 a git checkout.")
     (license license:expat)))
+
+(define-public rebar3-proper
+  (package
+    (name "rebar3-proper")
+    (version "0.12.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (hexpm-uri "rebar3_proper" version))
+        (sha256
+          (base32 "1f174fb6h2071wr7qbw9aqqvnglzsjlylmyi8215fhrmi38w94b6"))))
+    (build-system rebar-build-system)
+    (home-page "https://github.com/ferd/rebar3_proper")
+    (synopsis "Rebar3 PropEr plugin")
+    (description "This plugin allows running PropEr test suites from within
+rebar3.")
+    (license license:bsd-3)))
