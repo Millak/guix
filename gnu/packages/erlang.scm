@@ -630,3 +630,20 @@ build configuration work.  @code{rebar3} also provides dependency management,
 enabling application writers to easily re-use common libraries from a variety
 of locations (git, hg, etc).")
     (license license:asl2.0)))
+
+(define-public rebar3-raw-deps
+  (package
+    (name "rebar3-raw-deps")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "rebar3_raw_deps" version))
+       (sha256
+        (base32 "1pzmm3m8gb2s9jn8fp6shzgfmy4mvh2vdci0z6nsm74ma3ffh1i3"))))
+    (build-system rebar-build-system)
+    (home-page "https://github.com/soranoba/rebar3_raw_deps")
+    (synopsis "Rebar3 plugin for supporting \"raw\" dependencies")
+    (description "This plugin provides support for handling non-OTP
+applications as a dependent libraries.")
+    (license license:expat)))
