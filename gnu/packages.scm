@@ -164,6 +164,12 @@ flags."
              %default-package-module-path
              channels-scm))))
 
+(define (strip-trailing-slash s)
+  ;; Strip the trailing slash of a string, if present.
+  (if (string-suffix? "/" s)
+      (string-drop-right s 1)
+      s))
+
 (define %patch-path
   ;; Define it after '%package-module-path' so that '%load-path' contains user
   ;; directories, allowing patches in $GUIX_PACKAGE_PATH to be found.
@@ -172,7 +178,7 @@ flags."
           (if (string=? directory %distro-root-directory)
               (string-append directory "/gnu/packages/patches")
               directory))
-        %load-path)))
+        (map strip-trailing-slash %load-path))))
 
 ;; This procedure is used by Emacs-Guix up to 0.5.1.1, so keep it for now.
 ;; See <https://github.com/alezost/guix.el/issues/30>.
