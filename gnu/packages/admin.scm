@@ -702,6 +702,7 @@ hostname.")
        '(,@(if (hurd-target?)
              '()
              '("--with-libpam"))
+          "shadow_cv_logdir=/var/log"
           "ac_cv_func_setpgrp_void=yes")
 
        #:phases
