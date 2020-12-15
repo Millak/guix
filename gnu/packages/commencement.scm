@@ -535,27 +535,27 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
   (package
     (inherit mes)
     (name "mes-boot")
-    (version "0.22")
+    (version "0.24")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "0p1jsrrmcbc0zrvbvnjbb6iyxr0in71km293q8qj6gnar6bw09av"))))
+                "00lrpm4x5qg0l840zhbf9mr67mqhp8gljcl24j5dy0y109gf32w2"))))
     (inputs '())
     (propagated-inputs '())
     (native-inputs
-     `(("nyacc-source" ,(origin (inherit (package-source nyacc-0.99))
-                                (snippet #f)))
-       ("mes" ,%bootstrap-mes-rewired)
-       ("mescc-tools" ,%bootstrap-mescc-tools)
+     `(("m2-planet" ,stage0-posix)
+       ("nyacc-source" ,(bootstrap-origin
+                         (origin (inherit (package-source nyacc-1.00.2))
+                                 (snippet #f))))
        ,@(%boot-gash-inputs)))
     (arguments
      `(#:implicit-inputs? #f
        #:tests? #f
        #:guile ,%bootstrap-guile
-       #:strip-binaries? #f    ; binutil's strip b0rkes MesCC/M1/hex2 binaries
+       #:strip-binaries? #f             ;no strip yet
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'unpack-seeds
@@ -564,44 +564,42 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
                (with-directory-excursion ".."
                  (invoke "tar" "-xvf" nyacc-source)))))
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref %outputs "out"))
-                   (gash (assoc-ref %build-inputs "bash"))
-                   (mes (assoc-ref %build-inputs "mes"))
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (gash (assoc-ref inputs "bash"))
+                   (mes (assoc-ref inputs "mes"))
                    (dir (with-directory-excursion ".." (getcwd))))
-               (setenv "AR" (string-append "gash " (getcwd) "/scripts/mesar"))
-               (setenv "BASH" (string-append gash "/bin/bash"))
-               (setenv "CC" (string-append mes "/bin/mescc"))
-               (setenv "GUILE_LOAD_PATH"
-                       (string-append
-                        mes "/share/mes/module"
-                        ":" dir "/nyacc-0.99.0/module"))
+               (setenv "GUILE_LOAD_PATH" (string-append
+                                          dir "/nyacc-1.00.2/module"))
                (invoke "gash" "configure.sh"
                        (string-append "--prefix=" out)
-                       (string-append "--host=i686-linux-gnu")))))
+                       "--host=i686-linux-gnu"))))
          (replace 'build
            (lambda _
-             (invoke "sh" "bootstrap.sh")))
+             (invoke "gash" "bootstrap.sh")))
          (delete 'check)
          (replace 'install
-           (lambda _
+           (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "install.sh"  ; show some progress
                ((" -xf") " -xvf")
                (("^( *)((cp|mkdir|tar) [^']*[^\\])\n" all space cmd)
                 (string-append space "echo '" cmd "'\n"
                                space cmd "\n")))
-             (invoke "sh" "install.sh")
+             (invoke "gash" "install.sh")
              ;; Keep ASCII output, for friendlier comparison and bisection
-             (let* ((out (assoc-ref %outputs "out"))
+             (let* ((out (assoc-ref outputs "out"))
                     (cache (string-append out "/lib/cache")))
                (define (objects-in-dir dir)
                  (find-files dir
                              (lambda (name stat)
                                (and (equal? (dirname name) dir)
-                                    (or (string-suffix? ".o" name)
+                                    (or (string-suffix? ".M1" name)
+                                        (string-suffix? ".hex2" name)
+                                        (string-suffix? ".o" name)
                                         (string-suffix? ".s" name))))))
                (for-each (lambda (x) (install-file x cache))
-                         (append (objects-in-dir ".")
+                         (append (objects-in-dir "m2")
+                                 (objects-in-dir ".")
                                  (objects-in-dir "mescc-lib")))))))))
     (native-search-paths
      (list (search-path-specification
