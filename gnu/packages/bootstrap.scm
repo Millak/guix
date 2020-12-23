@@ -1035,9 +1035,7 @@ exec ~a/bin/.gcc-wrapped -B~a/lib \
   ;; own packages.
   (match (%current-system)
     ((or "i686-linux" "x86_64-linux")
-     `(("linux-libre-headers" ,%bootstrap-linux-libre-headers)
-       ("bootstrap-mescc-tools" ,%bootstrap-mescc-tools)
-       ("mes" ,%bootstrap-mes)))
+     `(("linux-libre-headers" ,%bootstrap-linux-libre-headers)))
     (_
      `(("libc" ,%bootstrap-glibc)
        ("gcc" ,%bootstrap-gcc)
