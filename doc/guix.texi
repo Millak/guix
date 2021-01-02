@@ -36,7 +36,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020 Jan Nieuwenhuizen@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2021, 2022 Jan Nieuwenhuizen@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
@@ -394,7 +394,7 @@ Installing Debugging Files
 
 Bootstrapping
 
-* Reduced Binary Seed Bootstrap::  A Bootstrap worthy of GNU.
+* Full-source Bootstrap::       A Bootstrap worthy of GNU.
 * Preparing to Use the Bootstrap Binaries:: Building that what matters most.
 
 @end detailmenu
@@ -39491,12 +39491,12 @@ re-create them if needed (@pxref{Preparing to Use the Bootstrap
 Binaries}).
 
 @menu
-* Reduced Binary Seed Bootstrap::  A Bootstrap worthy of GNU.
+* Full-source Bootstrap::       A Bootstrap worthy of GNU.
 * Preparing to Use the Bootstrap Binaries:: Building that what matters most.
 @end menu
 
-@node Reduced Binary Seed Bootstrap
-@section The Reduced Binary Seed Bootstrap
+@node Full-source Bootstrap
+@section The Full-source Bootstrap
 
 Guix---like other GNU/Linux distributions---is traditionally bootstrapped from
 a set of bootstrap binaries: Bourne shell, command-line tools provided by GNU
@@ -39511,28 +39511,47 @@ about 250MB (@pxref{Bootstrappable Builds,,, mes, GNU Mes}).  Auditing
 or even inspecting these is next to impossible.
 
 For @code{i686-linux} and @code{x86_64-linux}, Guix now features a
-``Reduced Binary Seed'' bootstrap @footnote{We would like to say: ``Full
-Source Bootstrap'' and while we are working towards that goal it would
-be hyperbole to use that term for what we do now.}.
+@dfn{full-source bootstrap}.  This bootstrap is rooted in
+@file{hex0-seed} from the @url{https://savannah.gnu.org/projects/stage0,
+Stage0} package.  The hex0 program is minimalist assembler: it reads
+space-separated hexadecimal digits (nibbles) from a file, possibly
+including comments, and emits on standard output the bytes corresponding
+to those hexadecimal numbers.  The source code of this initial hex0
+program is a file called
+@c XXX TODO: udpate to savannah url, once accepted there
+@url{https://github.com/oriansj/bootstrap-seeds/blob/master/POSIX/x86/hex0_x86.hex0,@file{hex0_x86.hex0}}
+and is written in the @code{hex0} language.
 
-The Reduced Binary Seed bootstrap removes the most critical tools---from a
-trust perspective---from the bootstrap binaries: GCC, Binutils and the GNU C
-Library are replaced by: @code{bootstrap-mescc-tools} (a tiny assembler and
-linker) and @code{bootstrap-mes} (a small Scheme Interpreter and a C compiler
-written in Scheme and the Mes C Library, built for TinyCC and for GCC).
+Hex0 is self-hosting, which means that it can build itself:
 
-Using these new binary seeds the ``missing'' Binutils, GCC, and the GNU
-C Library are built from source.  From here on the more traditional
-bootstrap process resumes.  This approach has reduced the bootstrap
-binaries in size to about 145MB in Guix v1.1.
+@example
+./hex0-seed hex0_x86.hex0 hex0
+@end example
 
-The next step that Guix has taken is to replace the shell and all its
+Hex0 it is the ASCII-equivalent of the binary program and can be
+produced by doing something much like:
+
+@example
+sed 's/[;#].*$//g' hex0_x86.hex0 | xxd -r -p > hex0
+chmod +x hex0
+@end example
+
+It is because of this ASCII-binary equivalence that we can bless this
+initial 357-byte binary as source, and hence `full-source bootstrap''.
+
+The bootstrap then continues: @code{hex0} builds @code{hex1} and then on
+to @code{M0}, @code{hex2}, @code{M1}, @code{mescc-tools} and finally
+@code{M2-Planet}.  Then, using @code{mescc-tools}, @code{M2-Planet} we
+build Mes (@pxref{Top, GNU Mes Reference Manual,, mes, GNU Mes}, a
+Scheme interpreter and C compiler in Scheme).  Frome here on starts
+the more traditional @code{C}-based bootstrap of the GNU System.
+
+Another step that Guix has taken is to replace the shell and all its
 utilities with implementations in Guile Scheme, the @emph{Scheme-only
 bootstrap}.  Gash (@pxref{Gash,,, gash, The Gash manual}) is a
 POSIX-compatible shell that replaces Bash, and it comes with Gash Utils
 which has minimalist replacements for Awk, the GNU Core Utilities, Grep,
-Gzip, Sed, and Tar.  The rest of the bootstrap binary seeds that were
-removed are now built from source.
+Gzip, Sed, and Tar.
 
 Building the GNU System from source is currently only possible by adding
 some historical GNU packages as intermediate steps@footnote{Packages
@@ -39548,22 +39567,10 @@ The graph below shows the resulting dependency graph for
 @code{gcc-core-mesboot0}, the bootstrap compiler used for the
 traditional bootstrap of the rest of the Guix System.
 
-@c ./pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' | sed -re 's,((bootstrap-mescc-tools|bootstrap-mes|guile-bootstrap).*shape =) box,\1 ellipse,' > doc/images/gcc-core-mesboot0-graph.dot
+@c ./pre-inst-env guix graph -e '(@@ (gnu packages commencement) gcc-core-mesboot0)' | sed -re 's,((bootstrap-seeds|guile-bootstrap).*shape =) box,\1 ellipse,' > doc/images/gcc-core-mesboot0-graph.dot
 @image{images/gcc-core-mesboot0-graph,6in,,Dependency graph of gcc-core-mesboot0}
 
-The only significant binary bootstrap seeds that remain@footnote{
-Ignoring the 68KB @code{mescc-tools}; that will be removed later,
-together with @code{mes}.} are a Scheme interpreter and a Scheme
-compiler: GNU Mes and GNU Guile@footnote{Not shown in this graph are the
-static binaries for @file{bash}, @code{tar}, and @code{xz} that are used
-to get Guile running.}.
-
-This further reduction has brought down the size of the binary seed to
-about 60MB for @code{i686-linux} and @code{x86_64-linux}.
-
-Work is ongoing to remove all binary blobs from our free software
-bootstrap stack, working towards a Full Source Bootstrap.  Also ongoing
-is work to bring these bootstraps to the @code{arm-linux} and
+Work is ongoing to to bring these bootstraps to the @code{arm-linux} and
 @code{aarch64-linux} architectures and to the Hurd.
 
 If you are interested, join us on @samp{#bootstrappable} on the Freenode
