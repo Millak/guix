@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
@@ -265,6 +265,46 @@ pure Scheme to Tar and decompression in one easy step.")
     ("coreutils" , gash-utils-boot)
     ("bootar" ,bootar)
     ("guile" ,%bootstrap-guile)))
+
+(define bootstrap-seeds
+  (package
+    (name "bootstrap-seeds")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (list
+                    (string-append "mirror://gnu/guix/mirror/"
+                                   "bootstrap-seeds-" version ".tar.gz")
+                    (string-append
+                     "https://lilypond.org/janneke/guix/20220501/"
+                     "bootstrap-seeds-" version ".tar.gz")))
+       (sha256
+        (base32
+         "0scz2bx8fd8c821h6y1j3x6ywgxxns7iinyn9z32dnkiacfdcpfn"))))
+    (native-inputs (list bootar))
+    (build-system trivial-build-system)
+    (arguments
+     (list #:guile %bootstrap-guile
+           #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
+               (let ((source (assoc-ref %build-inputs "source"))
+                     (tar (assoc-ref %build-inputs "bootar"))
+                     (out (assoc-ref %outputs "out")))
+                 (setenv "PATH" (string-append tar "/bin:"))
+                 (invoke "tar" "xvf" source)
+                 (mkdir-p out)
+                 (copy-recursively "bootstrap-seeds" out)))))
+    (home-page "https://github.com/oriansj/bootstrap-seeds")
+    (synopsis "The initial bootstrap seeds: 357-byte hex0 and kaem shell")
+    (description
+     "This package provides pre-built binaries of the bootstrap seeds.  It
+contains a hex0-seed and an optional kaem-minimal shell.  The size of the hex0
+seeds are for knight: 250 bytes, x86-linux: 357 bytes, x86_64-linux: 431
+bytes, and aarch64-linux 526 bytes.  These can be used to build stage0: hex0,
+hex1, hex2, M1, and M2-Planet.")
+    (license license:gpl3+)))
 
 (define %bootstrap-mes-rewired
   (package
