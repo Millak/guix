@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,7 @@
 (define-public wget
   (package
     (name "wget")
-    (version "1.20.3")
+    (version "1.21.1")
     (source
      (origin
       (method url-fetch)
@@ -52,7 +53,7 @@
                           version ".tar.lz"))
       (sha256
        (base32
-        "1frajd86ds8vz2hprq30wq8ya89z9dcxnwm8nwk12bbc47l7qq39"))))
+        "1bchzkacjsc5c0x01ngaana9fs5j12wfw1c8qxps1yp68x9vx6yv"))))
     (build-system gnu-build-system)
     (inputs
      `(("gnutls" ,gnutls)
