@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -379,11 +380,7 @@ type '<elpa-package>'."
   "Fetch the package NAME from REPO and produce a Guix package S-expression."
   (match (fetch-elpa-package name repo)
     (#false
-     (raise (condition
-             (&message
-              (message (format #false
-                               "couldn't find meta-data for ELPA package `~a'."
-                               name))))))
+     (values #f '()))
     (package
       ;; ELPA is known to contain only GPLv3+ code.  Other repos may contain
       ;; code under other license but there's no license metadata.
