@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2019 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -337,10 +338,13 @@ respectively."
                 (if port
                     (read-cabal-and-hash port)
                     (hackage-fetch-and-hash package-name))))
-    (and=> cabal-meta (compose (cut hackage-module->sexp <> cabal-hash
-                                    #:include-test-dependencies?
-                                    include-test-dependencies?)
-                               (cut eval-cabal <> cabal-environment)))))
+    (if cabal-meta
+        ((compose (cut hackage-module->sexp <> cabal-hash
+                       #:include-test-dependencies?
+                       include-test-dependencies?)
+                  (cut eval-cabal <> cabal-environment))
+         cabal-meta)
+        (values #f '()))))
 
 (define hackage->guix-package/m                   ;memoized variant
   (memoize hackage->guix-package))
