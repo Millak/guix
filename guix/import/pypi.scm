@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Vivien Kraus <vivien@planete-kraus.eu>
+;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -496,36 +497,37 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
      (let* ((project (pypi-fetch package-name))
             (info    (and=> project pypi-project-info))
             (version (or version (and=> project latest-version))))
-       (and project
-            (guard (c ((missing-source-error? c)
-                       (let ((package (missing-source-error-package c)))
-                         (raise
-                          (apply
-                           make-compound-condition
-                           (formatted-message
-                            (G_ "no source release for pypi package ~a ~a~%")
-                            (project-info-name info) version)
-                           (match (project-info-home-page info)
-                             ((or #f "") '())
-                             (url
-                              (list
-                               (condition
-                                (&fix-hint
-                                 (hint (format #f (G_ "This indicates that the
+       (if project
+           (guard (c ((missing-source-error? c)
+                      (let ((package (missing-source-error-package c)))
+                        (raise
+                         (apply
+                          make-compound-condition
+                          (formatted-message
+                           (G_ "no source release for pypi package ~a ~a~%")
+                           (project-info-name info) version)
+                          (match (project-info-home-page info)
+                            ((or #f "") '())
+                            (url
+                             (list
+                              (condition
+                               (&fix-hint
+                                (hint (format #f (G_ "This indicates that the
 package is available on PyPI, but only as a \"wheel\" containing binaries, not
 source.  To build it from source, refer to the upstream repository at
 @uref{~a}.")
-                                               url))))))))))))
-              (make-pypi-sexp (project-info-name info) version
-                              (and=> (source-release project version)
-                                     distribution-url)
-                              (and=> (wheel-release project version)
-                                     distribution-url)
-                              (project-info-home-page info)
-                              (project-info-summary info)
-                              (project-info-summary info)
-                              (string->license
-                               (project-info-license info)))))))))
+                                              url))))))))))))
+             (make-pypi-sexp (project-info-name info) version
+                             (and=> (source-release project version)
+                                    distribution-url)
+                             (and=> (wheel-release project version)
+                                    distribution-url)
+                             (project-info-home-page info)
+                             (project-info-summary info)
+                             (project-info-summary info)
+                             (string->license
+                              (project-info-license info))))
+           (values #f '()))))))
 
 (define* (pypi-recursive-import package-name #:optional version)
   (recursive-import package-name
