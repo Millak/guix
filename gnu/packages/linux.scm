@@ -2487,7 +2487,7 @@ Linux-based operating systems.")
 (define-public libcap
   (package
     (inherit libcap-2.31)
-    (version "2.45")
+    (version "2.46")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2495,7 +2495,7 @@ Linux-based operating systems.")
                     "libcap2/libcap-" version ".tar.xz"))
               (sha256
                (base32
-                "11ijmi7jik9iw6pdszc6bylhggghr8cza03bcrbhbqf0cpvkjrnn"))))
+                "1d6q447wf0iagiyzhfdqcj4cv0dmzc49i0czwikrcv7s2cad3lsf"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libcap-2.31)
        ((#:phases phases)
