@@ -121,9 +121,9 @@
                  (invoke guile "--no-auto-compile" source)
                  (chdir "bootar"))))
            (replace 'configure (bootstrap-configure "Bootar" ,version
-                                                    "." "scripts"))
-           (replace 'build (bootstrap-build "."))
-           (replace 'install (bootstrap-install "." "scripts"))))))
+                                                    '(".") "scripts"))
+           (replace 'build (bootstrap-build '(".")))
+           (replace 'install (bootstrap-install '(".") "scripts"))))))
     (inputs `(("guile" ,%bootstrap-guile)))
     (home-page "https://git.ngyro.com/bootar")
     (synopsis "Tar decompression and extraction in Guile Scheme")
@@ -158,9 +158,9 @@ pure Scheme to Tar and decompression in one easy step.")
          (modify-phases %standard-phases
            (replace 'configure
              (bootstrap-configure "Gash" ,(package-version gash)
-                                  "gash" "scripts"))
-           (replace 'build (bootstrap-build "gash"))
-           (replace 'install (bootstrap-install "gash" "scripts"))
+                                  '("gash") "scripts"))
+           (replace 'build (bootstrap-build '("gash")))
+           (replace 'install (bootstrap-install '("gash") "scripts"))
            (add-after 'install 'install-symlinks
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
@@ -222,9 +222,9 @@ pure Scheme to Tar and decompression in one easy step.")
                (delete-file "scripts/template.in")))
            (replace 'configure
              (bootstrap-configure "Gash-Utils" ,(package-version gash-utils)
-                                  "gash" "scripts"))
-           (replace 'build (bootstrap-build "gash"))
-           (replace 'install (bootstrap-install "gash" "scripts"))
+                                  '("gash") "scripts"))
+           (replace 'build (bootstrap-build '("gash")))
+           (replace 'install (bootstrap-install '("gash") "scripts"))
            ;; XXX: The scripts should add Gash to their load paths and
            ;; this phase should not exist.
            (add-after 'install 'copy-gash
