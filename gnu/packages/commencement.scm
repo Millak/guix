@@ -120,7 +120,8 @@
                       (guile (string-append guile-dir "/bin/guile")))
                  (invoke guile "--no-auto-compile" source)
                  (chdir "bootar"))))
-           (replace 'configure (bootstrap-configure ,version "." "scripts"))
+           (replace 'configure (bootstrap-configure "Bootar" ,version
+                                                    "." "scripts"))
            (replace 'build (bootstrap-build "."))
            (replace 'install (bootstrap-install "." "scripts"))))))
     (inputs `(("guile" ,%bootstrap-guile)))
@@ -156,7 +157,8 @@ pure Scheme to Tar and decompression in one easy step.")
          (use-modules (guix build gnu-bootstrap))
          (modify-phases %standard-phases
            (replace 'configure
-             (bootstrap-configure ,(package-version gash) "gash" "scripts"))
+             (bootstrap-configure "Gash" ,(package-version gash)
+                                  "gash" "scripts"))
            (replace 'build (bootstrap-build "gash"))
            (replace 'install (bootstrap-install "gash" "scripts"))
            (add-after 'install 'install-symlinks
@@ -219,7 +221,7 @@ pure Scheme to Tar and decompression in one easy step.")
                  (("@UTILITY@") "testb"))
                (delete-file "scripts/template.in")))
            (replace 'configure
-             (bootstrap-configure ,(package-version gash-utils)
+             (bootstrap-configure "Gash-Utils" ,(package-version gash-utils)
                                   "gash" "scripts"))
            (replace 'build (bootstrap-build "gash"))
            (replace 'install (bootstrap-install "gash" "scripts"))

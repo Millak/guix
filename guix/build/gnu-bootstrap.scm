@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
+;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,12 +30,12 @@
             bootstrap-build
             bootstrap-install))
 
-(define (bootstrap-configure version modules scripts)
+(define (bootstrap-configure name version modules scripts)
   "Create a procedure that configures an early bootstrap package.  The
 procedure will search the MODULES directory and configure all of the
-'.in' files with VERSION.  It will then search the SCRIPTS directory and
-configure all of the '.in' files with the bootstrap Guile and its module
-and object directories."
+'.in' files with NAME and VERSION.  It will then search the SCRIPTS
+directory and configure all of the '.in' files with the bootstrap
+Guile and its module and object directories."
   (lambda* (#:key inputs outputs #:allow-other-keys)
     (let* ((out (assoc-ref outputs "out"))
            (guile-dir (assoc-ref inputs "guile"))
@@ -50,6 +50,7 @@ and object directories."
                   (let ((target (string-drop-right template 3)))
                     (copy-file template target)
                     (substitute* target
+                      (("@PACKAGE_NAME@") name)
                       (("@VERSION@") version))))
                 (find-files modules
                             (lambda (fn st)
