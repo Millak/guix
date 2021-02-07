@@ -91,7 +91,7 @@
 (define bootar
   (package
     (name "bootar")
-    (version "1a")
+    (version "1b")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -101,7 +101,7 @@
                           version ".ses")))
               (sha256
                (base32
-                "0mvp6vgx0q316fvy3z2lddlc5xgq5np3bm1fypgvj6dnayibg9np"))))
+                "0cf5vj5yxfvkgzvjvh2l7b2nz5ji5l534n9g4mfp8f5jsjqdrqjc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:implicit-inputs? #f
