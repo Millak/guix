@@ -143,9 +143,6 @@ pure Scheme to Tar and decompression in one easy step.")
   (package
     (inherit gash)
     (name "gash-boot")
-    (source (origin
-              (inherit (package-source gash))
-              (snippet #f)))            ;discard snippet for Guile 3.0 support
     (arguments
      `(#:implicit-inputs? #f
        #:tests? #f

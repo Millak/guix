@@ -870,29 +870,19 @@ scripts.")
 (define-public gash
   (package
     (name "gash")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin (method url-fetch)
              (uri (string-append "mirror://savannah/gash/gash-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "13m0yz5h9nj3x40mr6wr5xcpq1lscndfwcicw3skrz801025hhgf"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Allow builds with Guile 3.0.
-                 (substitute* "configure"
-                   (("search=\"2\\.2 2\\.0\"")
-                    "search=\"3.0 2.2 2.0\""))
-                 #t))))
+               "1af2jz4a6rzsshi379wzw4b8d04zvfamdhfzip2pgmk821lyqsjl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
      (list guile-3.0))
-    (arguments
-     '(#:make-flags '("XFAIL_TESTS=tests/redirects.org")))
     (home-page "https://savannah.nongnu.org/projects/gash/")
     (synopsis "POSIX-compatible shell written in Guile Scheme")
     (description "Gash is a POSIX-compatible shell written in Guile
