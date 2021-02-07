@@ -175,10 +175,6 @@ pure Scheme to Tar and decompression in one easy step.")
   (package
     (inherit gash-utils)
     (name "gash-utils-boot")
-    (source (origin
-              (inherit (package-source gash-utils))
-              (patches '())
-              (snippet #f)))            ;discard snippet for Guile 3.0 support
     (arguments
      `(#:implicit-inputs? #f
        #:tests? #f
@@ -210,9 +206,9 @@ pure Scheme to Tar and decompression in one easy step.")
                              (substitute* target
                                (("@UTILITY@") script))))
                          '("awk" "basename" "cat" "chmod" "cmp" "command"
-                           "compress" "cp" "cut" "diff" "dirname" "expr"
-                           "false" "find" "grep" "head" "ln" "ls" "mkdir"
-                           "mv" "printf" "pwd" "reboot" "rm" "rmdir"
+                           "compress" "cp" "cut" "diff" "dirname" "env"
+                           "expr" "false" "find" "grep" "head" "ln" "ls"
+                           "mkdir" "mv" "printf" "pwd" "reboot" "rm" "rmdir"
                            "sed" "sleep" "sort" "tar" "test" "touch" "tr"
                            "true" "uname" "uniq" "wc" "which"))
                (format #t "Creating scripts/[.in~%")
@@ -222,9 +218,10 @@ pure Scheme to Tar and decompression in one easy step.")
                (delete-file "scripts/template.in")))
            (replace 'configure
              (bootstrap-configure "Gash-Utils" ,(package-version gash-utils)
-                                  '("gash") "scripts"))
-           (replace 'build (bootstrap-build '("gash")))
-           (replace 'install (bootstrap-install '("gash") "scripts"))
+                                  '("gash" "gash-utils") "scripts"))
+           (replace 'build (bootstrap-build '("gash" "gash-utils")))
+           (replace 'install
+             (bootstrap-install '("gash" "gash-utils") "scripts"))
            ;; XXX: The scripts should add Gash to their load paths and
            ;; this phase should not exist.
            (add-after 'install 'copy-gash

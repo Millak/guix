@@ -904,23 +904,14 @@ as part of the Guix bootstrap process.")
 (define-public gash-utils
   (package
     (name "gash-utils")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/gash/gash-utils-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0ib2p52qmbac5n0s5bys4fiwim461ps546976l1n7pwbs0avh7fk"))
-              (patches (search-patches "gash-utils-ls-test.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure"
-                    (("search=\"2\\.2 2\\.0\"")
-                     "search=\"3.0 2.2 2.0\""))
-                  #t))))
+                "18ylb54l9lmaynapbncc1zhbsirhihznrxihhxgqrpqgyjkfbap6"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
