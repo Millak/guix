@@ -11,7 +11,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -21,7 +21,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017, 2018 nee <nee-git@hidamari.blue>
@@ -44,18 +44,19 @@
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2019, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2019, 2020 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2019, 2020, 2021 Leo Prikler <leo.prikler@student.tugraz.at>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
+;;; Copyright © 2020 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -792,6 +793,65 @@ patterns.")
      (list
       license:lgpl2.1+
       license:gpl2+))))
+
+(define-public gnome-recipes
+  (package
+    (name "gnome-recipes")
+    (version "2.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/GNOME/recipes")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h049mzqnlcfqwrhmzbq3pzzdglvy2bn9fj1p8wql7a60pn8sr32"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") (which "true")))
+             #t))
+         (add-after 'unpack 'unpack-libgd
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((libgd (assoc-ref inputs "libgd")))
+               (copy-recursively libgd "subprojects/libgd")
+               #t))))))
+    (inputs
+     `(("glib" ,glib)
+       ("gnome-autoar" ,gnome-autoar)
+       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
+       ("gspell" ,gspell)
+       ("gtk+" ,gtk+)
+       ("json-glib" ,json-glib)
+       ("libcanberra" ,libcanberra)
+       ("libsoup" ,libsoup)
+       ("rest" ,rest)))
+    (native-inputs
+     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
+       ("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("itstool" ,itstool)
+       ("libgd"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://gitlab.gnome.org/GNOME/libgd")
+                 (commit "c7c7ff4e05d3fe82854219091cf116cce6b19de0")))
+           (file-name (git-file-name "libgd" version))
+           (sha256
+            (base32 "16yld0ap7qj1n96h4f2sqkjmibg7xx5xwkqxdfzam2nmyfdlrrrs"))))
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://wiki.gnome.org/Apps/Recipes")
+    (synopsis "Discover recipes for preparing food")
+    (description "GNOME Recipes helps you discover what to cook today,
+tomorrow, the rest of the week and for special occasions.")
+    (license license:gpl3+)))
 
 (define-public gnome-photos
   (package
@@ -2251,6 +2311,16 @@ and keep up to date translations of documentation.")
            (lambda _
              (substitute* "meson-postinstall.sh"
                (("update-desktop-database") (which "true")))
+             #t))
+         (add-after 'install 'patch-thumbnailer
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute*
+                   (string-append
+                    out
+                    "/share/thumbnailers/gnome-font-viewer.thumbnailer")
+                 (("gnome-thumbnail-font")
+                  (string-append out "/bin/gnome-thumbnail-font"))))
              #t)))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -2840,7 +2910,7 @@ database is translated at Transifex.")
 (define-public system-config-printer
   (package
     (name "system-config-printer")
-    (version "1.5.13")
+    (version "1.5.15")
     (source
      (origin
        (method url-fetch)
@@ -2849,7 +2919,7 @@ database is translated at Transifex.")
              "download/v" version
              "/system-config-printer-" version ".tar.xz"))
        (sha256
-        (base32 "18dqvi1s971lggkw6pv1sqxixlpg5a8rppzc1pxbanxa91jg18zf"))))
+        (base32 "12d6xx51vizc476zfnsga9q09nflp51ipn6y7lhi9w2v4772dlpv"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:imported-modules ((guix build python-build-system)
@@ -3280,7 +3350,7 @@ library.")
 (define-public librsvg-next
   (package
     (name "librsvg")
-    (version "2.50.1")
+    (version "2.50.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/librsvg/"
@@ -3288,7 +3358,7 @@ library.")
                                   "librsvg-" version ".tar.xz"))
               (sha256
                (base32
-                "02csvx2nzygh8kyal2qiy3y6xb7d52vszxxr37dzav704a9pkncv"))
+                "1lsnl08b5pjf01q3agixjd53islw5rqkc38r31rlmm2crrqz44b2"))
               (modules '((guix build utils)))
               (snippet
                '(begin (delete-file-recursively "vendor")
@@ -3300,7 +3370,6 @@ library.")
        ((guix build cargo-build-system)
         (guix build utils)
         ((guix build gnu-build-system) #:prefix gnu:))
-       #:rust ,rust-1.40
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cairo-rs" ,rust-cairo-rs-0.8)
@@ -5174,7 +5243,7 @@ output devices.")
 (define-public geoclue
   (package
     (name "geoclue")
-    (version "2.5.6")
+    (version "2.5.7")
     (source
      (origin
        (method url-fetch)
@@ -5182,7 +5251,7 @@ output devices.")
         (string-append "https://gitlab.freedesktop.org/geoclue/geoclue/-/archive/"
                        version "/geoclue-" version ".tar.bz2"))
        (sha256
-        (base32 "0a833x5apzabxj80ywvsh8crd635vni2i9v9c1p095f6hvmfc45k"))
+        (base32 "09ww26a76kanldhgwnn5sqy9ly2940k45zpp68spykkv2zjdpivc"))
        (patches (search-patches "geoclue-config.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -6440,7 +6509,7 @@ DAV, and others.")
 (define-public gusb
   (package
     (name "gusb")
-    (version "0.3.0")
+    (version "0.3.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6449,7 +6518,7 @@ DAV, and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "002pg0p4qzzk5dkyiynm483ir26zxrn4k71c7f6j85mfsdzbgli7"))))
+                "0ifhdqhpyxwsg0z9s1anj7cf5pya5qsqyp5ksh9n7mqwa4lrjkl8"))))
     (build-system meson-build-system)
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
@@ -6514,14 +6583,14 @@ almost all of them.")
 (define-public eolie
   (package
     (name "eolie")
-    (version "0.9.100")
+    (version "0.9.101")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://adishatz.org/eolie/eolie-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1vzhfp8j1z3jvd5ndqfyn7nqrx3zdvx9mv1byjl36nnd9g63ji62"))))
+                "1v8n21y75abdzsnx5idyd0q6yfb6cd0sqbknlbkwh5fdgvjzyvwn"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -9502,7 +9571,7 @@ existing databases over the internet.")
 (define-public gnome-tweaks
   (package
     (name "gnome-tweaks")
-    (version "3.34.0")
+    (version "3.34.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-tweaks/"
@@ -9512,7 +9581,7 @@ existing databases over the internet.")
                (list (search-patch "gnome-tweaks-search-paths.patch")))
               (sha256
                (base32
-                "0l2j42ba7v866iknygamnkiq7igh0fjvq92r93cslvvfnkx2ccq0"))))
+                "19y62dj4n5i6v4zpjllxl51dch6ndy8xs45v5aqmmq9xyfrqk5yq"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -9585,141 +9654,6 @@ GNOME Shell appearance and extension, etc.")
     (description "GNOME Shell extensions modify and extend GNOME Shell
 functionality and behavior.")
     (home-page "https://extensions.gnome.org/")
-    (license license:gpl3+)))
-
-(define-public arc-theme
-  (package
-    (name "arc-theme")
-    (version "20201013")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jnsh/arc-theme")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1x2l1mwjx68dwf3jb1i90c1q8nqsl1wf2zggcn8im6590k5yv39s"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags
-       (list "--disable-cinnamon")
-       #:phases
-       (modify-phases %standard-phases
-         ;; autogen.sh calls configure at the end of the script.
-         (replace 'bootstrap
-           (lambda _ (invoke "autoreconf" "-vfi")))
-         (add-before 'build 'set-home   ;placate Inkscape
-           (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("glib" ,glib "bin")             ; for glib-compile-resources
-       ("gnome-shell" ,gnome-shell)
-       ("gtk+" ,gtk+)
-       ("inkscape" ,inkscape)
-       ("optipng" ,optipng)
-       ("pkg-config" ,pkg-config)
-       ("sassc" ,sassc/libsass-3.5)))
-    (synopsis "A flat GTK+ theme with transparent elements")
-    (description "Arc is a flat theme with transparent elements for GTK 3, GTK
-2, and GNOME Shell which supports GTK 3 and GTK 2 based desktop environments
-like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
-    (home-page "https://github.com/horst3180/arc-theme")
-    ;; No "or later" language found.
-    (license license:gpl3+)))
-
-(define-public faba-icon-theme
-  (package
-    (name "faba-icon-theme")
-    (version "4.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/snwh/faba-icon-theme")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0xh6ppr73p76z60ym49b4d0liwdc96w41cc5p07d48hxjsa6qd6n"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'disable-post-install
-           (lambda _
-             (substitute* "meson.build"
-               (("meson.add_install_script.*") "")))))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
-    (synopsis "Faba icon theme")
-    (description
-     "Faba is a minimal icon set used as a basis for other themes such as
-Moka")
-    (home-page "https://snwh.org/moka")
-    (license (list license:lgpl3+
-                   license:cc-by-sa4.0))))
-
-(define-public moka-icon-theme
-  (package
-    (inherit faba-icon-theme)
-    (name "moka-icon-theme")
-    (version "5.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/snwh/moka-icon-theme")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "015l02im4mha5z91dbchxf6xkp66d346bg3xskwg0rh3lglhjsrd"))))
-    (propagated-inputs
-     ;; Moka is based on Faba by using it as a fallback icon set instead of
-     ;; bundling it, so we need to add it as a propagated input.
-     `(("faba-icon-theme" ,faba-icon-theme)))
-    (synopsis "Moka icon theme")
-    (description "Moka is a stylized desktop icon set, designed to be clear,
-simple and consistent.")
-    (license (list license:gpl3+
-                   license:cc-by-sa4.0))))
-
-(define-public arc-icon-theme
-  (package
-    (name "arc-icon-theme")
-    (version "20161122")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/horst3180/arc-icon-theme")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ch3hp08qri93510hypzz6m2x4xgg2h15wvnhjwh1x1s1b7jvxjd"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-configure-during-bootstrap
-           (lambda _
-             (substitute* "autogen.sh"
-               (("^\"\\$srcdir/configure\".*") ""))
-             #t)))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
-    ;; When Arc is missing an icon, it looks in the Moka icon theme for it.
-    (propagated-inputs
-     `(("moka-icon-theme" ,moka-icon-theme)))
-    (synopsis "Arc icon theme")
-    (description "The Arc icon theme provides a set of icons matching the
-style of the Arc GTK theme.  Icons missing from the Arc theme are provided by
-the Moka icon theme.")
-    (home-page "https://github.com/horst3180/arc-icon-theme")
     (license license:gpl3+)))
 
 (define-public folks
@@ -10877,32 +10811,37 @@ advanced image management tool")
 (define-public terminator
   (package
     (name "terminator")
-    (version "1.91")
+    (version "1.92")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://launchpad.net/" name "/"
-                                  "gtk3/" version "/" "+download/"
+              (uri (string-append "https://github.com/gnome-" name "/" name "/"
+                                  "releases/download/v" version "/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0sdyqwydmdnh7j6mn74vrywz35m416kqsbxbrqcnv5ak08y6xxwm"))))
+                "1wbkfp0nk6x9bcwi681zy30qmrp4h754sdz6b7hi9j22mmvdd50z"))))
     (build-system python-build-system)
     (native-inputs
-     `(("intltool" ,intltool)
+     `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")                   ; for glib-compile-resources
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+       ("gobject-introspection" ,gobject-introspection)
+       ("intltool" ,intltool)
+       ("pkg-config" ,pkg-config)
+       ("python-psutil" ,python-psutil)
+       ("python-pytest-runner" ,python-pytest-runner)
+       ("python-pytest" ,python-pytest)))
     (inputs
      `(("cairo" ,cairo)
-       ("gobject-introspection" ,gobject-introspection)
+       ("dbus-glib" ,dbus-glib)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("python2-pycairo" ,python2-pycairo)
-       ("python2-pygobject" ,python2-pygobject)
-       ("python2-psutil" ,python2-psutil)
+       ("gtk+" ,gtk+)
+       ("python-pycairo" ,python-pycairo)
+       ("python-pygobject" ,python-pygobject)
        ("vte" ,vte)))
+    (propagated-inputs
+     `(("python-configobj" ,python-configobj)))
     (arguments
-     `(#:python ,python-2                          ; Python 3 isn't supported
-       #:imported-modules ((guix build glib-or-gtk-build-system)
+     `(#:imported-modules ((guix build glib-or-gtk-build-system)
                            ,@%python-build-system-modules)
        #:modules ((guix build python-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -10913,24 +10852,29 @@ advanced image management tool")
           'install 'wrap-program
           (lambda* (#:key outputs #:allow-other-keys)
             (let ((prog (string-append (assoc-ref outputs "out")
-                                       "/bin/terminator")))
+                                       "/bin/terminator"))
+                  (pylib (string-append (assoc-ref outputs "out")
+                                        "/lib/python"
+                                        ,(version-major+minor
+                                          (package-version python))
+                                        "/site-packages")))
               (wrap-program prog
-                `("PYTHONPATH" = (,(getenv "PYTHONPATH")))
+                `("PYTHONPATH" = (,(getenv "PYTHONPATH") ,pylib))
                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
               #t)))
          (add-after 'wrap-program 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
-    (home-page "https://gnometerminator.blogspot.com/")
+    (home-page "https://gnome-terminator.org/")
     (synopsis "Store and run multiple GNOME terminals in one window")
     (description
      "Terminator allows you to run multiple GNOME terminals in a grid and
-+tabs, and it supports drag and drop re-ordering of terminals.")
+tabs, and it supports drag and drop re-ordering of terminals.")
     (license license:gpl2)))
 
 (define-public libhandy
   (package
     (name "libhandy")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -10939,7 +10883,7 @@ advanced image management tool")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bmmkahshvlvpsnb7zp8bddv7i1h5k4p967n6kxh71g1vnj8x20m"))))
+        (base32 "0flgwlm921801i3ns0dwqpnxl89f3rzn4y9h723i13bmflch3in7"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -11523,7 +11467,7 @@ and toolbars.")
 (define-public setzer
   (package
     (name "setzer")
-    (version "0.3.8")
+    (version "0.3.9")
     (source
      (origin
        (method git-fetch)
@@ -11532,7 +11476,7 @@ and toolbars.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f5qmkz4hzn54sh56z3hw8zrvg93xlz62ggzlzyg7vgsr83kpns9"))))
+        (base32 "1qmy2bxl8x6pijjaaj91v6rqdipha6iyy0b6b9y1lk3r2p3azd42"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -11957,7 +11901,7 @@ integrated profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.24.0")
+    (version "0.26.0")
     (source
      (origin
        (method git-fetch)
@@ -11967,7 +11911,7 @@ integrated profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "010p32zrim245y0l784yp0rasqcqlyr3lrxwl3r1876x83qhs6q3"))))
+         "1g5rhp3d97v0s8nk536vqpv6qd4gha4h27bfdkypcqa42h8wyxm2"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t

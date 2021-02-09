@@ -15,12 +15,12 @@
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2020,2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +50,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
@@ -1214,14 +1215,14 @@ use on a given system.")
 (define-public libredwg
   (package
     (name "libredwg")
-    (version "0.11.1")
+    (version "0.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/libredwg/libredwg-"
              version ".tar.xz"))
        (sha256
-        (base32 "1xx6y6ckm4mzqln8y8lqf5frcn2b32ypc0d0h9dzpz6363zh7pdn"))))
+        (base32 "0z5algzi3alq166885y0qyj2gnc7gc6vhnz7nw0kwc0d236p6md8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-bindings")))
@@ -1524,7 +1525,7 @@ bindings for Python, Java, OCaml and more.")
 (define-public radare2
   (package
     (name "radare2")
-    (version "4.4.0")
+    (version "5.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1532,7 +1533,7 @@ bindings for Python, Java, OCaml and more.")
                     (commit version)))
               (sha256
                (base32
-                "0gwdnrnk7wdgkajp2qwg4fyplh7nsbmf01bzx07px6xmiscd9z2s"))
+                "0aa7c27kd0l55fy5qfvxqmakp4pz6240v3hn84095qmqkzcbs420"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -2367,7 +2368,7 @@ simulation.")
 (define-public cutter
   (package
     (name "cutter")
-    (version "1.10.3")
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
@@ -2376,7 +2377,7 @@ simulation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qj8jyij02nif4jpirl09ygwnv8a9zi3vkb5sf5s8mg7qwlpnvyk"))))
+        (base32 "0ljj3j3apbbw628n2nyrxpbnclixx20bqjxm0xwggqzz9vywsar0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -2513,122 +2514,131 @@ full programmatic control over your models.")
     (home-page "https://www.openscad.org/")
     (license license:gpl2+)))
 
-(define-public freecad
+(define-public emacs-scad-mode
   (package
-    (name "freecad")
-    (version "0.18.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/FreeCAD/FreeCAD")
-             (commit version)))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fix build with Python 3.8, see
-           ;; <https://tracker.freecadweb.org/view.php?id=4143>.
-           (substitute* "src/Base/swigpyrun.inl"
-             (("PyObject \\*modules = interp->modules;")
-              "PyObject *modules = PyEval_GetBuiltins();"))
-           #t))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0r31jzzkamf76l19fb175hhv48irk06fpi8ldxdlr31w8c1ix4aa"))))
-    (build-system qt-build-system)
-    (native-inputs
-     `(("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("qttools" ,qttools)
-       ("pkg-config" ,pkg-config)
-       ("swig" ,swig)))
-    (inputs
-     `(("boost" ,boost)
-       ("coin3D" ,coin3D)
-       ("eigen" ,eigen)
-       ("freetype" ,freetype)
-       ("glew" ,glew)
-       ("hdf5" ,hdf5-1.10)
-       ("libarea" ,libarea)
-       ("libmedfile" ,libmedfile)
-       ("libspnav" ,libspnav)
-       ("libxi" ,libxi)
-       ("libxmu" ,libxmu)
-       ("openmpi" ,openmpi)
-       ("opencascade-occt" ,opencascade-occt)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-pyside-2" ,python-pyside-2)
-       ("python-pyside-2-tools" ,python-pyside-2-tools)
-       ("python-shiboken-2" ,python-shiboken-2)
-       ("python-wrapper" ,python-wrapper)
-       ("qtbase" ,qtbase)
-       ("qtsvg" ,qtsvg)
-       ("qtx11extras" ,qtx11extras)
-       ("qtxmlpatterns" ,qtxmlpatterns)
-       ;; qtwebkit is optional. We remove it currently, because it takes
-       ;; much time to compile and substitutes are often unavailable
-       ;;("qtwebkit" ,qtwebkit)
-       ("tbb" ,tbb)
-       ("vtk" ,vtk)
-       ("xerces-c" ,xerces-c)
-       ("zlib" ,zlib)))
+    (inherit openscad)
+    (name "emacs-scad-mode")
+    (native-inputs '())
+    (inputs '())
+    (build-system emacs-build-system)
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list
-        "-DBUILD_QT5=ON"
-        (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib")
-
-        (string-append "-DPYSIDE2UICBINARY="
-                       (assoc-ref %build-inputs "python-pyside-2-tools")
-                       "/bin/uic")
-        (string-append "-DPYSIDE2RCCBINARY="
-                       (assoc-ref %build-inputs "python-pyside-2-tools")
-                       "/bin/rcc")
-
-        "-DPYSIDE_LIBRARY=PySide2::pyside2"
-        (string-append
-         "-DPYSIDE_INCLUDE_DIR="
-         (assoc-ref %build-inputs "python-pyside-2") "/include;"
-         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2;"
-         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtCore;"
-         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtWidgets;"
-         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtGui;")
-
-        "-DSHIBOKEN_LIBRARY=Shiboken2::libshiboken"
-        (string-append "-DSHIBOKEN_INCLUDE_DIR="
-                       (assoc-ref %build-inputs "python-shiboken-2")
-                       "/include/shiboken2"))
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'restore-pythonpath
+         (add-after 'unpack 'chdir-elisp
+           ;; Elisp directory is not in root of the source.
            (lambda _
-             (substitute* "src/Main/MainGui.cpp"
-               (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))
-             #t))
-         (add-after 'install 'wrap-pythonpath
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/FreeCAD")
-                 (list "PYTHONPATH"
-                       'prefix (list (getenv "PYTHONPATH")))))
+             (chdir "contrib")
              #t)))))
-    (home-page "https://www.freecadweb.org/")
-    (synopsis "Your Own 3D Parametric Modeler")
-    (description
-     "FreeCAD is a general purpose feature-based, parametric 3D modeler for
+    (synopsis "Emacs major mode for editing editing OpenSCAD code")
+    (description "@code{scad-mode} provides an Emacs major mode for editing
+OpenSCAD code.  It supports syntax highlighting, indenting and refilling of
+comments.")))
+
+(define-public freecad
+  (let ((commit-ref "7616153b3c31ace006169cdc2fdafab484498858")
+        (revision "1"))
+    (package
+      (name "freecad")
+      (version (git-version "0.18.5" revision commit-ref))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/FreeCAD/FreeCAD")
+                 (commit commit-ref)))
+          (file-name (git-file-name name version))
+          (sha256
+            (base32
+              "16965yxnp2pq7nm8z3p0pjkzjdyq62vfrj8j3nk26bwc898czyn2"))))
+      (build-system qt-build-system)
+      (native-inputs
+       `(("doxygen" ,doxygen)
+         ("graphviz" ,graphviz)
+         ("qttools" ,qttools)
+         ("pkg-config" ,pkg-config)
+         ("python-pyside-2-tools" ,python-pyside-2-tools)
+         ("swig" ,swig)))
+      (inputs
+       `(("boost" ,boost)
+         ("coin3D" ,coin3D)
+         ("eigen" ,eigen)
+         ("freetype" ,freetype)
+         ("glew" ,glew)
+         ("hdf5" ,hdf5-1.10)
+         ("libarea" ,libarea)
+         ("libmedfile" ,libmedfile)
+         ("libspnav" ,libspnav)
+         ("libxi" ,libxi)
+         ("libxmu" ,libxmu)
+         ("openmpi" ,openmpi)
+         ("opencascade-occt" ,opencascade-occt)
+         ("python-matplotlib" ,python-matplotlib)
+         ("python-pyside-2" ,python-pyside-2)
+         ("python-shiboken-2" ,python-shiboken-2)
+         ("python-pivy" ,python-pivy)
+         ("python-wrapper" ,python-wrapper)
+         ("qtbase" ,qtbase)
+         ("qtsvg" ,qtsvg)
+         ("qtx11extras" ,qtx11extras)
+         ("qtxmlpatterns" ,qtxmlpatterns)
+         ("qtwebkit" ,qtwebkit)
+         ("tbb" ,tbb)
+         ("vtk" ,vtk)
+         ("xerces-c" ,xerces-c)
+         ("zlib" ,zlib)))
+      (arguments
+       `(#:tests? #f
+         #:configure-flags
+         (list
+          "-DBUILD_QT5=ON"
+          (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib")
+          (string-append "-DPYSIDE2UICBINARY="
+                         (assoc-ref %build-inputs "python-pyside-2-tools")
+                         "/bin/uic")
+          (string-append "-DPYSIDE2RCCBINARY="
+                         (assoc-ref %build-inputs "python-pyside-2-tools")
+                         "/bin/rcc")
+          "-DPYSIDE_LIBRARY=PySide2::pyside2"
+          (string-append
+           "-DPYSIDE_INCLUDE_DIR="
+           (assoc-ref %build-inputs "python-pyside-2") "/include;"
+           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2;"
+           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtCore;"
+           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtWidgets;"
+           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtGui;")
+          "-DSHIBOKEN_LIBRARY=Shiboken2::libshiboken"
+          (string-append "-DSHIBOKEN_INCLUDE_DIR="
+                         (assoc-ref %build-inputs "python-shiboken-2")
+                         "/include/shiboken2"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'restore-pythonpath
+             (lambda _
+               (substitute* "src/Main/MainGui.cpp"
+                 (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))
+               #t))
+           (add-after 'install 'wrap-pythonpath
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/FreeCAD")
+                   (list "PYTHONPATH"
+                         'prefix (list (getenv "PYTHONPATH")))))
+               #t)))))
+      (home-page "https://www.freecadweb.org/")
+      (synopsis "Your Own 3D Parametric Modeler")
+      (description
+       "FreeCAD is a general purpose feature-based, parametric 3D modeler for
 CAD, MCAD, CAx, CAE and PLM, aimed directly at mechanical engineering and
 product design but also fits a wider range of uses in engineering, such as
 architecture or other engineering specialties.  It is 100% Open Source (LGPL2+
 license) and extremely modular, allowing for very advanced extension and
 customization.")
-    (license
-     (list
-      license:lgpl2.1+
-      license:lgpl2.0+
-      license:gpl3+
-      license:bsd-3))))
+      (license
+       (list
+        license:lgpl2.1+
+        license:lgpl2.0+
+        license:gpl3+
+        license:bsd-3)))))
 
 (define-public libmedfile
   (package

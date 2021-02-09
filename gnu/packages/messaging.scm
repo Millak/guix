@@ -10,7 +10,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
 ;;; Copyright © 2017, 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
@@ -24,9 +24,9 @@
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mason Hock <chaosmonk@riseup.net>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020 Robert Karszniewicz <avoidr@posteo.de>
+;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -72,6 +72,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -85,9 +86,11 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages mono)
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -375,32 +378,39 @@ powerful, standard and open protocol.")
   (package
     (name "libotr")
     (version "4.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://otr.cypherpunks.ca/libotr-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1x8rliydhbibmzwdbyr7pd7n87m2jmxnqkpvaalnf4154hj1hfwb"))
-              (patches (search-patches "libotr-test-auth-fix.patch"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://otr.cypherpunks.ca/libotr-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1x8rliydhbibmzwdbyr7pd7n87m2jmxnqkpvaalnf4154hj1hfwb"))
+       (patches
+        (search-patches "libotr-test-auth-fix.patch"))))
     (build-system gnu-build-system)
+    (native-inputs
+     `(("perl" ,perl)))                 ; for the test suite
+    (inputs
+     `(("libgpg-error" ,libgpg-error)))
     (propagated-inputs
-     `(("libgcrypt" ,libgcrypt)))  ; libotr headers include gcrypt.h
-    (inputs `(("libgpg-error" ,libgpg-error)))
-    (native-inputs `(("perl" ,perl))) ; for the test suite
+     `(("libgcrypt" ,libgcrypt)))    ; libotr headers include gcrypt.h
     (synopsis "Off-the-Record (OTR) Messaging Library and Toolkit")
-    (description
-     "OTR allows you to have private conversations over instant messaging by
-providing: (1) Encryption: No one else can read your instant messages.  (2)
-Authentication: You are assured the correspondent is who you think it is.  (3)
-Deniability: The messages you send do not have digital signatures that are
-checkable by a third party.  Anyone can forge messages after a conversation to
-make them look like they came from you.  However, during a conversation, your
-correspondent is assured the messages he sees are authentic and
-unmodified.  (4) Perfect forward secrecy: If you lose control of your private
-keys, no previous conversation is compromised.")
+    (description "OTR allows you to have private conversations over instant
+messaging by providing: (1) Encryption: No one else can read your instant
+messages.  (2) Authentication: You are assured the correspondent is who you
+think it is.  (3) Deniability: The messages you send do not have digital
+signatures that are checkable by a third party.  Anyone can forge messages
+after a conversation to make them look like they came from you.  However,
+during a conversation, your correspondent is assured the messages he sees are
+authentic and unmodified.  (4) Perfect forward secrecy: If you lose control of
+your private keys, no previous conversation is compromised.")
     (home-page "https://otr.cypherpunks.ca/")
-    (license (list license:lgpl2.1 license:gpl2))))
+    (license
+     (list
+      ;; Library
+      license:lgpl2.1+
+      ;; Others
+      license:gpl2+))))
 
 (define-public libsignal-protocol-c
   (package
@@ -649,14 +659,14 @@ dictionaries.  HexChat can be extended with multiple addons.")
 (define-public ngircd
   (package
     (name "ngircd")
-    (version "26")
+    (version "26.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://arthur.barton.de/pub/ngircd/ngircd-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ijmv18fa648y7apxb9vp4j9iq6fxq850kz5v36rysaq614cdp2n"))
+                "0m32v0c7mq96rshws4h6d0pi4bm0hynfzx3x01mgrxh9c396zham"))
               (patches (search-patches "ngircd-handle-zombies.patch"))))
     (build-system gnu-build-system)
     ;; Needed for the test suite.
@@ -715,89 +725,113 @@ authentication.")
 (define-public pidgin
   (package
     (name "pidgin")
-    (version "2.13.0")
+    (version "2.14.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://sourceforge/pidgin/Pidgin/"
-                           version "/pidgin-" version ".tar.bz2"))
+       (uri
+        (string-append "mirror://sourceforge/pidgin/Pidgin/"
+                       version "/pidgin-" version ".tar.gz"))
        (sha256
-        (base32 "13vdqj70315p9rzgnbxjp9c51mdzf1l4jg1kvnylc4bidw61air7"))
-       (patches (search-patches "pidgin-add-search-path.patch"
-                                ;; Remove the snippet and bootstrapping
-                                ;; native-inputs together with this patch.
-                                "pidgin-libnm.patch"))
+        (base32 "1c4dzxg9c3d9zfqqa7jwijj9rv9fm6w95igmpljwy88lxq7v5w11"))
+       (patches
+        (search-patches
+         "pidgin-add-search-path.patch"
+         "pidgin-vv-gst.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Remove stale generated file after applying pidgin-libnm.patch.
+           ;; Remove stale generated file after applying patches.
            (delete-file "configure")
            #t))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("check" ,check-0.14)
-       ("intltool" ,intltool)
+     `(("autoconf" ,autoconf) ;; For bootstrap
+       ("automake" ,automake) ;; For bootstrap
+       ("check" ,check)
+       ("dot" ,graphviz)
        ("gconf" ,gconf)
-       ("python" ,python-2)
-       ("doxygen" ,doxygen)
-
-       ;; For bootstrapping after applying pidgin-libnm.patch.
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+       ("intltool" ,intltool)
+       ("libtool" ,libtool) ;; For bootstrap
+       ("pkg-config" ,pkg-config)))
     (inputs
-     `(("gtk+" ,gtk+-2)
-       ("libgcrypt" ,libgcrypt)
-       ("gnutls" ,gnutls)
+     `(("avahi" ,avahi)
        ("cyrus-sasl" ,cyrus-sasl)
        ("dbus" ,dbus)
        ("dbus-glib" ,dbus-glib)
-       ("python2-dbus" ,python2-dbus)
+       ;; ("evolution-data-server" ,evolution-data-server)
+       ("farstream" ,farstream)
+       ("gnutls" ,gnutls)
+       ("gstreamer" ,gstreamer)
+       ;; ("gtkspell2" ,gtkspell2)
+       ("libgadu" ,libgadu)
+       ("libgcrypt" ,libgcrypt)
+       ("libgnt" ,libgnt)
+       ("libice" ,libice)
        ("libidn" ,libidn)
        ("libltdl" ,libltdl)
+       ("libsm" ,libsm)
+       ("libx11" ,libx11)
+       ("libxext" ,libxext)
        ("libxml2" ,libxml2)
-       ;; TODO: gstreamer: patches needed to support gstreamer-1.0 or later
-       ;; TODO: farstream
-       ;; TODO: meanwhile
-       ;; TODO: gtkspell
-       ;; TODO: libxephyr
-       ;; TODO: libgadu
+       ("libxscrnsaver" ,libxscrnsaver)
        ("libxslt" ,libxslt)
-       ("avahi" ,avahi)
+       ;; ("libzephyr" ,libzephyr)
+       ("meanwhile" ,meanwhile)
+       ("mono" ,mono)
        ("ncurses" ,ncurses)
        ("network-manager" ,network-manager)
+       ("nspr" ,nspr)
+       ("nss" ,nss)
+       ("pango" ,pango)
+       ("perl" ,perl)
+       ("python" ,python-2)
+       ("python2-dbus" ,python2-dbus)
+       ("silc" ,silc-toolkit)
        ("sqlite" ,sqlite)
-       ("libice" ,libice)
-       ("libsm" ,libsm)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("startup-notification" ,startup-notification)))
+       ("startup-notification" ,startup-notification)
+       ("tcl" ,tcl)
+       ("tk" ,tk)))
+    (propagated-inputs
+     `(("glib" ,glib)
+       ("gtk+" ,gtk+-2)))
     (arguments
      `(#:configure-flags
-       (list "--disable-gtkspell"
-             "--disable-tcl"
-             "--disable-meanwhile"
-             "--disable-vv"  ; XXX remove when we have farstream and gstreamer
-             "--disable-gstreamer" ; XXX patches needed to support gstreamer-1.0
-             "--enable-cyrus-sasl"
-             (string-append "--with-ncurses-headers="
-                            (assoc-ref %build-inputs "ncurses")
-                            "/include"))))
+       (list
+        (string-append "CFLAGS=-I"
+                       (assoc-ref %build-inputs "gst-plugins-base")
+                       "/include/gstreamer-1.0")
+        "--disable-gtkspell"
+        ;; "--enable-gevolution"
+        "--enable-cap"
+        "--enable-mono"
+        "--enable-cyrus-sasl"
+        (string-append "--with-ncurses-headers="
+                       (assoc-ref %build-inputs "ncurses")
+                       "/include")
+        (string-append "--with-tclconfig="
+                       (assoc-ref %build-inputs "tcl")
+                       "/lib")
+        (string-append "--with-tkconfig="
+                       (assoc-ref %build-inputs "tk")
+                       "/lib"))))
     (native-search-paths
-     (list (search-path-specification
-            (variable "PURPLE_PLUGIN_PATH")
-            (files (list (string-append "lib/purple-"
-                                        (version-major version))
-                         "lib/pidgin")))))
+     (list
+      (search-path-specification
+       (variable "PURPLE_PLUGIN_PATH")
+       (files
+        (list
+         (string-append "lib/purple-"
+                        (version-major version))
+         "lib/pidgin")))))
     (home-page "https://www.pidgin.im/")
     (synopsis "Graphical multi-protocol instant messaging client")
-    (description
-     "Pidgin is a modular instant messaging client that supports many popular
-chat protocols.")
+    (description "Pidgin is a modular instant messaging client that supports
+many popular chat protocols.")
     (license
      (list
-      license:gpl2+    ; Most of the code
-      license:lgpl2.1  ; GG protocol plugin (libpurple/protocols/gg/lib)
+      license:gpl2+   ; Most of the code
+      license:lgpl2.1 ; GG protocol plugin (libpurple/protocols/gg/lib)
       license:lgpl2.0+ ; OSCAR protocol plugin (libpurple/protocols/oscar)
       ;; The following licenses cover the zephyr protocol plugin:
       (license:non-copyleft
@@ -811,39 +845,40 @@ chat protocols.")
   (package
     (name "pidgin-otr")
     (version "4.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://otr.cypherpunks.ca/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1i5s9rrgbyss9rszq6c6y53hwqyw1k86s40cpsfx5ccl9bprxdgl"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://otr.cypherpunks.ca/"
+                       name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1i5s9rrgbyss9rszq6c6y53hwqyw1k86s40cpsfx5ccl9bprxdgl"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
+     `(("gettext" ,gettext-minimal)
+       ("intltool" ,intltool)
+       ("pkg-config" ,pkg-config)))
     (inputs
-     `(("pidgin" ,pidgin)
-       ("libotr" ,libotr)
-       ("libgpg-error" ,libgpg-error)
+     `(("glib" ,glib)
+       ("gtk+" ,gtk+-2)
        ("libgcrypt" ,libgcrypt)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+-2)))
+       ("libgpg-error" ,libgpg-error)
+       ("libotr" ,libotr)
+       ("perl" ,perl)
+       ("pidgin" ,pidgin)))
     (home-page "https://otr.cypherpunks.ca/")
     (synopsis "Off-the-Record Messaging plugin for Pidgin")
-    (description
-     "Pidgin-OTR is a plugin that adds support for OTR to the Pidgin instant
-messaging client.  OTR (Off-the-Record) Messaging allows you to have private
-conversations over instant messaging by providing: (1) Encryption: No one else
-can read your instant messages.  (2) Authentication: You are assured the
-correspondent is who you think it is.  (3) Deniability: The messages you send
-do not have digital signatures that are checkable by a third party.  Anyone
+    (description "Pidgin-OTR is a plugin that adds support for OTR to the Pidgin
+instant messaging client.  OTR (Off-the-Record) Messaging allows you to have
+private conversations over instant messaging by providing: (1) Encryption: No
+one else can read your instant messages.  (2) Authentication: You are assured
+the correspondent is who you think it is.  (3) Deniability: The messages you
+send do not have digital signatures that are checkable by a third party.  Anyone
 can forge messages after a conversation to make them look like they came from
-you.  However, during a conversation, your correspondent is assured the
-messages he sees are authentic and unmodified.  (4) Perfect forward secrecy:
-If you lose control of your private keys, no previous conversation is
-compromised.")
-    (license license:gpl2)))
+you.  However, during a conversation, your correspondent is assured the messages
+he sees are authentic and unmodified.  (4) Perfect forward secrecy: If you lose
+control of your private keys, no previous conversation is compromised.")
+    (license license:gpl2+)))
 
 (define-public znc
   (package
@@ -1395,7 +1430,7 @@ messenger protocol.")
 (define-public utox
   (package
    (name "utox")
-   (version "0.18.0")
+   (version "0.18.1")
    (source
     (origin
      (method git-fetch)
@@ -1406,7 +1441,7 @@ messenger protocol.")
      (file-name (string-append name "-" version "-checkout"))
      (sha256
       (base32
-       "0d0mwgxffg4nhai62irf8lyhd1whp9s4k892rsmqz1sra3pbjcg9"))))
+       "01rvlf94d4rkrygnnjak3cg16hrrqyi1rn9nx65y17qk2nbyh68g"))))
    (build-system cmake-build-system)
    (arguments
     `(#:configure-flags '("-DENABLE_TESTS=on")
@@ -1431,7 +1466,6 @@ messenger protocol.")
       ("filteraudio" ,filteraudio)
       ("fontconfig" ,fontconfig)
       ("freetype" ,freetype)
-      ("libsodium" ,libsodium)
       ("c-toxcore" ,c-toxcore)
       ("gtk+" ,gtk+)
       ("libvpx" ,libvpx)
@@ -1963,7 +1997,7 @@ is also scriptable and extensible via Guile.")
 (define-public libmesode
   (package
     (name "libmesode")
-    (version "0.9.3")
+    (version "0.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1972,7 +2006,7 @@ is also scriptable and extensible via Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xzfg1xx88cn36352nnjlb1p7xyw32yqkhjzq10px88iaaqz1vv0"))))
+                "1bxnkhrypgv41qyy1n545kcggmlw1hvxnhwihijhhcf2pxd2s654"))))
     (build-system gnu-build-system)
     (inputs
      `(("expat" ,expat)
@@ -2023,7 +2057,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.9.5")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
@@ -2032,7 +2066,7 @@ are both supported).")
                        version ".tar.gz"))
        (sha256
         (base32
-         "00j9l9v62rz9hprgiy1vrz8v3v59ph18h8kskqxr31fgqvjv5xr3"))))
+         "137z77514fgj2dk13d12g4jrn6gs5k85nwrk1r1kiv7rj0jy61aa"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2319,7 +2353,7 @@ There is support for:
 (define-public quaternion
   (package
     (name "quaternion")
-    (version "0.0.9.4e")
+    (version "0.0.9.4f")
     (outputs '("out" "debug"))
     (source
      (origin
@@ -2329,7 +2363,7 @@ There is support for:
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hqhg7l6wpkdbzrdjvrbqymmahziri07ba0hvbii7dd2p0h248fv"))))
+        (base32 "1q9ddz4rs02a0w3lwrsjnh59khv38cq9f0kv09vnwvazvayn87ck"))))
     (build-system qt-build-system)
     (inputs
      `(("libqmatrixclient" ,libqmatrixclient)
@@ -2340,7 +2374,7 @@ There is support for:
        ("qtquickcontrols2" ,qtquickcontrols2)
        ("qtsvg" ,qtsvg)
        ("qttools" ,qttools)
-       ("xdg-utils", xdg-utils)))
+       ("xdg-utils" ,xdg-utils)))
     (arguments
      `(#:tests? #f))                    ; no tests
     (home-page "https://matrix.org/docs/projects/client/quaternion.html")

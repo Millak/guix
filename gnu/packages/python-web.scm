@@ -75,6 +75,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
@@ -506,15 +507,7 @@ classes
 @item Compatible with both CPython and PyPy
 @item Cython support for better performance when used with CPython
 @end itemize")
-    (properties `((python2-variant . ,(delay python2-falcon))))
     (license license:asl2.0)))
-
-(define-public python2-falcon
-  (let ((falcon (package-with-python2 (strip-python2-variant python-falcon))))
-    (package
-      (inherit falcon)
-      (native-inputs
-       (alist-delete "python-rapidjson" (package-native-inputs falcon))))))
 
 (define-public python-falcon-cors
   (package
@@ -538,9 +531,6 @@ sharing} (CORS) support for Falcon.  It allows applying a specially crafted
 CORS object to the incoming requests, enabling the ability to serve resources
 over a different origin than that of the web application.")
     (license license:asl2.0)))
-
-(define-public python2-falcon-cors
-  (package-with-python2 python-falcon-cors))
 
 (define-public python-furl
   (package
@@ -2527,16 +2517,7 @@ library.")
     (description
       "This module provides a building block to stub out the HTTP requests
 portions of your testing code.")
-    (properties `((python2-variant . ,(delay python2-requests-mock))))
     (license license:asl2.0)))
-
-(define-public python2-requests-mock
-  (package (inherit (package-with-python2
-                     (strip-python2-variant python-requests-mock)))
-           (arguments
-            `(#:python ,python-2
-              ;; FIXME: 'subunit.run discover: error: no such option: --list'
-              #:tests? #f))))
 
 (define-public python-requests-toolbelt
   (package
@@ -3121,9 +3102,6 @@ concurrent HTTP client library for python using @code{gevent}.")
 provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients.")
     (license license:isc)))
 
-(define-public python2-requests-oauthlib
-  (package-with-python2 python-requests-oauthlib))
-
 (define-public python-url
   (package
     (name "python-url")
@@ -3183,9 +3161,6 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
     (description "CacheControl is a port of the caching algorithms in
 @code{httplib2} for use with @code{requests} session objects.")
     (license license:asl2.0)))
-
-(define-public python2-cachecontrol
-  (package-with-python2 python-cachecontrol))
 
 (define-public python-cachecontrol-0.11
   (package

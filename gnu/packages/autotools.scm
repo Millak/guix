@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@openmailbox.org>
 ;;; Copyright © 2014 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2015, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -11,6 +11,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (ice-9 match)
@@ -103,10 +105,11 @@ scripts are self-contained and portable, freeing the user from needing to
 know anything about Autoconf or M4.")
     (license gpl3+))) ; some files are under GPLv2+
 
-(define-public autoconf-2.70
+;; This is the renaissance version, which is not widely supported yet.
+(define-public autoconf-2.71
   (package
     (inherit autoconf-2.69)
-    (version "2.70")
+    (version "2.71")
     (source
      (origin
        (method url-fetch)
@@ -114,7 +117,7 @@ know anything about Autoconf or M4.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1ipckz0wr2mvhj9n3ys54fmf2aksin6bhqvzl304bn6rc1w257ps"))))
+         "197sl23irn6s9pd54rxj5vcp5y8dv65jb9yfqgr2g56cxg7q6k7i"))))
     (arguments
      (substitute-keyword-arguments (package-arguments autoconf-2.69)
        ((#:tests? _ #f)
@@ -490,6 +493,53 @@ presenting a single consistent, portable interface that hides the usual
 complexity of working with shared libraries across platforms.")
     (license gpl3+)
     (home-page "https://www.gnu.org/software/libtool/")))
+
+(define-public config
+  (let ((revision "1")
+        (commit "c8ddc8472f8efcadafc1ef53ca1d863415fddd5f"))
+    (package
+      (name "config")
+      (version (git-version "0.0.0" revision commit)) ;no release tag
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/config.git/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0x6ycvkmmhhhag97wsf0pw8n5fvh12rjvrck90rz17my4ys16qwv"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'patch-/bin/sh
+                      (lambda _
+                        (substitute* "testsuite/config-guess.sh"
+                          (("#!/bin/sh")
+                           (string-append "#!" (which "sh"))))
+                        #t))
+                    (replace 'build
+                      (lambda _
+                        (invoke "make" "manpages")))
+                    (delete 'configure)
+                    (replace 'install
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let* ((out (assoc-ref outputs "out"))
+                               (bin (string-append out "/bin"))
+                               (man1 (string-append out "/share/man/man1")))
+                          (install-file "config.guess" bin)
+                          (install-file "config.sub" bin)
+                          (install-file "doc/config.guess.1" man1)
+                          (install-file "doc/config.sub.1" man1)
+                          #t))))))
+      (native-inputs
+       `(("help2man" ,help2man)))
+      (home-page "https://savannah.gnu.org/projects/config")
+      (synopsis "Ubiquitious config.guess and config.sub scripts")
+      (description "The `config.guess' script tries to guess a canonical system triple,
+and `config.sub' validates and canonicalizes.  These are used as part of
+configuration in nearly all GNU packages (and many others).")
+      (license gpl2+))))
 
 (define-public libltdl
   ;; This is a libltdl package separate from the libtool package.  This is

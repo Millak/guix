@@ -14,7 +14,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
@@ -23,7 +23,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;;
@@ -6058,7 +6058,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
 (define-public xterm
   (package
     (name "xterm")
-    (version "362")
+    (version "363")
     (source
      (origin
        (method url-fetch)
@@ -6068,7 +6068,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
              (string-append "ftp://ftp.invisible-island.net/xterm/"
                             "xterm-" version ".tgz")))
        (sha256
-        (base32 "18mch57f5sypgfdbvna22ailcfpnixw0fc5wkf2j3w58dwigwkqx"))))
+        (base32 "0j0bl5z3kmhahf770mbrj2zwm2nvxkhqpwnwbdvbclk5w8wkc6nq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-wide-chars" "--enable-load-vt-fonts"
@@ -6252,14 +6252,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.0.5")
+    (version "4.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "11ml66z8vbc0fa567kkmp2j20l5l60aflnkrz5ay8arw3w92nmnz"))
+        (base32 "1s49y2s75a8a70vj0micnmpic5zv1n32yjxy8fkxsqa6j5njyrww"))
        (patches (search-patches "xpra-4.0.1-systemd-run.patch"))))
     (build-system python-build-system)
     ;; see also http://xpra.org/trac/wiki/Dependencies
@@ -6286,6 +6286,9 @@ basic eye-candy effects.")
               ("xf86-input-keyboard" ,xf86-input-keyboard)
               ("python-pillow" ,python-pillow)
               ;; Optional dependencies.
+              ("libx264" ,libx264)
+              ("x265" ,x265)
+              ("libvpx" ,libvpx)
               ("python-rencode" ,python-rencode) ; For speed.
               ("python-numpy" ,python-numpy)
               ("python-pyopengl" ,python-pyopengl) ; Drawing acceleration.

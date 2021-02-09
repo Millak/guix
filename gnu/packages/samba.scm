@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
@@ -64,14 +64,14 @@
 (define-public cifs-utils
   (package
     (name "cifs-utils")
-    (version "6.11")
+    (version "6.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/linux-cifs/"
                            "cifs-utils/cifs-utils-" version ".tar.bz2"))
        (sha256 (base32
-                "1n98hy3zi4klm1xxhb840br1x7hhz0xx8kp5sch84kr07yd26ndq"))))
+                "1vw570pvir73kl4y6fhd6ns936ankimkhb1ii43yh8lr0p1xqbcj"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -87,12 +87,6 @@
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (replace 'bootstrap
-           ;; Force a bootstrap to fix a ‘cannot find install-sh, install.sh,
-           ;; or shtool’ error since version 6.10.
-           (lambda _
-             (invoke "autoreconf" "-vfi")
-             #t))
          (add-before 'configure 'set-root-sbin
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Don't try to install into "/sbin".
@@ -178,14 +172,14 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
-    (version "4.13.3")
+    (version "4.13.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/samba/stable/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "0hb5fli4kgwg376c289mcmdqszd51vs8pzzrw7j6yr9k7za8a1f1"))
+        (base32 "0y2wc7njhyhg055krp878xfv9c3wbhrhzn02d5ich30hyxilrcx1"))
        (patches (search-patches "samba-fix-fcntl-hint-detection.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -287,14 +281,14 @@ Desktops into Active Directory environments using the winbind daemon.")
 (define-public talloc
   (package
     (name "talloc")
-    (version "2.3.1")
+    (version "2.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/talloc/talloc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0xwzgzrqamfdlklwacp9d219pqkah0yfrhxb1j7bxlmgzp924j7g"))))
+                "1mvv57srpzcc1qh6vjjyjhgpdlcw4bmmsxfz4j8pfk9qkvwkx817"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -449,51 +443,48 @@ key-value pair databases and a real LDAP database.")
     (license lgpl3+)))
 
 (define-public ppp
-  ;; This git commit contains unreleased fixes for CVE-2020-8597.
-  (let ((revision "1")
-        (commit "8d45443bb5c9372b4c6a362ba2f443d41c5636af"))
-    (package
-      (name "ppp")
-      (version (git-version "2.4.8" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/paulusmack/ppp")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "06cf8fb84l3h2zy5da4j7k2j1qjv2gfqn986sf43xgj75605aks2"))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:tests? #f                    ; no check target
-         #:make-flags '("CC=gcc")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'patch-Makefile
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((libc    (assoc-ref inputs "libc"))
-                     (openssl (assoc-ref inputs "openssl"))
-                     (libpcap (assoc-ref inputs "libpcap")))
-                 (substitute* "pppd/Makefile.linux"
-                   (("/usr/include/crypt\\.h")
-                    (string-append libc "/include/crypt.h"))
-                   (("/usr/include/openssl")
-                    (string-append openssl "/include/openssl"))
-                   (("/usr/include/pcap-bpf.h")
-                    (string-append libpcap "/include/pcap-bpf.h")))
-                 #t))))))
-      (inputs
-       `(("libpcap" ,libpcap)
-         ("openssl" ,(@ (gnu packages tls) openssl))))
-      (synopsis "Implementation of the Point-to-Point Protocol")
-      (home-page "https://ppp.samba.org/")
-      (description
-       "The Point-to-Point Protocol (PPP) provides a standard way to establish
+  (package
+    (name "ppp")
+    (version "2.4.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/paulusmack/ppp")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bhhksdclsnkw54a517ndrw55q5zljjbh9pcqz1z4a2z2flxpsgk"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f                    ; no check target
+       #:make-flags '("CC=gcc")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'patch-Makefile
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((libc    (assoc-ref inputs "libc"))
+                   (openssl (assoc-ref inputs "openssl"))
+                   (libpcap (assoc-ref inputs "libpcap")))
+               (substitute* "pppd/Makefile.linux"
+                 (("/usr/include/crypt\\.h")
+                  (string-append libc "/include/crypt.h"))
+                 (("/usr/include/openssl")
+                  (string-append openssl "/include/openssl"))
+                 (("/usr/include/pcap-bpf.h")
+                  (string-append libpcap "/include/pcap-bpf.h")))
+               #t))))))
+    (inputs
+     `(("libpcap" ,libpcap)
+       ("openssl" ,(@ (gnu packages tls) openssl))))
+    (synopsis "Implementation of the Point-to-Point Protocol")
+    (home-page "https://ppp.samba.org/")
+    (description
+     "The Point-to-Point Protocol (PPP) provides a standard way to establish
 a network connection over a serial link.  At present, this package supports IP
 and IPV6 and the protocols layered above them, such as TCP and UDP.")
-      ;; pppd, pppstats and pppdump are under BSD-style notices.
-      ;; some of the pppd plugins are GPL'd.
-      ;; chat is public domain.
-      (license (list bsd-3 bsd-4 gpl2+ public-domain)))))
+    ;; pppd, pppstats and pppdump are under BSD-style notices.
+    ;; some of the pppd plugins are GPL'd.
+    ;; chat is public domain.
+    (license (list bsd-3 bsd-4 gpl2+ public-domain))))
 

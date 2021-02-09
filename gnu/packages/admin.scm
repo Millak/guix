@@ -9,11 +9,11 @@
 ;;; Copyright © 2016, 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
@@ -28,7 +28,7 @@
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -267,7 +267,8 @@ and provides a \"top-like\" mode (monitoring).")
                 "0x9zr0x3xvk4qkb6jnda451d5iyrl06cz1bjzjsm0lxvjj3fabyk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--localstatedir=/var")))
+     '(#:configure-flags '("--localstatedir=/var")
+       #:make-flags '("GUILE_AUTO_COMPILE=0")))
     (native-inputs
      `(("pkg-config" ,pkg-config)
 
@@ -297,7 +298,8 @@ interface and is based on GNU Guile.")
      `(("pkg-config" ,pkg-config)
        ("guile" ,guile-2.2)))
     (inputs
-     `(("guile" ,guile-2.2)))))
+     `(("guile" ,guile-2.2)
+       ("guile2.2-readline" ,guile2.2-readline)))))
 
 (define-public guile3.0-shepherd
   (deprecated-package "guile3.0-shepherd" shepherd))
@@ -307,10 +309,21 @@ interface and is based on GNU Guile.")
     (inherit shepherd)
     (name "guile2.0-shepherd")
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("help2man" ,help2man)
+       ("pkg-config" ,pkg-config)
        ("guile" ,guile-2.0)))
     (inputs
-     `(("guile" ,guile-2.0)))))
+     `(("guile" ,guile-2.0)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-source
+           (lambda _
+             ;; (ice-9 threads) isn't available in guile-2.0
+             (substitute* "modules/shepherd.scm"
+               ((".*\\(ice-9 threads\\).*") ""))
+             #t)))
+       ,@(package-arguments shepherd)))))
 
 (define-public cloud-utils
   (package
@@ -445,7 +458,7 @@ graphs and can export its output to different formats.")
 (define-public facter
   (package
     (name "facter")
-    (version "4.0.47")
+    (version "4.0.49")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -454,7 +467,7 @@ graphs and can export its output to different formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zz5kk3ad1jj8y939369dfvjh7zqwpkcqzzad7yb6wp01rc5sf88"))))
+                "0l7gic5ql5xiy5s6rb0j9ydyaal5bcxl10bx45khcgdr9zg16pb1"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -516,7 +529,7 @@ or via the @code{facter} Ruby library.")
 (define-public htop
   (package
     (name "htop")
-    (version "3.0.4")
+    (version "3.0.5")
     (source
      (origin
        (method git-fetch)
@@ -524,7 +537,7 @@ or via the @code{facter} Ruby library.")
              (url "https://github.com/htop-dev/htop")
              (commit version)))
        (sha256
-        (base32 "1fckfv96vzqjs3lzy0cgwsqv5vh1sxca3fhvgskmnkvr5bq6cia9"))
+        (base32 "10lp6cbfvigzp6pq5nwj3s3l4vs7cv92krz2r08nwrz8vl6rqdzp"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -663,7 +676,10 @@ hostname.")
      `(;; Assume System V `setpgrp (void)', which is the default on GNU
        ;; variants (`AC_FUNC_SETPGRP' is not cross-compilation capable.)
        #:configure-flags
-       '("--with-libpam" "ac_cv_func_setpgrp_void=yes")
+       '(,@(if (hurd-target?)
+             '()
+             '("--with-libpam"))
+          "ac_cv_func_setpgrp_void=yes")
 
        #:phases
        (modify-phases %standard-phases
@@ -688,7 +704,10 @@ hostname.")
                (for-each delete-file (find-files man "^groups\\."))
                #t))))))
 
-    (inputs `(("linux-pam" ,linux-pam)))
+    (inputs
+     `(,@(if (hurd-target?)
+           '()
+           `(("linux-pam" ,linux-pam)))))
     (home-page "https://github.com/shadow-maint/shadow")
     (synopsis "Authentication-related tools such as passwd, su, and login")
     (description
@@ -929,14 +948,14 @@ recursive runs on the generated subnets.  (also IPv6)
 (define-public alive
   (package
     (name "alive")
-    (version "2.0.2")
+    (version "2.0.3")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/alive/alive-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1vrzg51ai68x9yld7vbgl58sxaw5qpx8rbakwcxn4cqq6vpxj38j"))))
+               "053hfp7s66lnilm1ii4jrjmy44wpa2cwwh6f0sl8cyz0mm813x4b"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("alive_cv_nice_ping=yes")))
     (inputs `(("guile" ,guile-2.0)
@@ -1402,7 +1421,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.4p2")
+    (version "1.9.5p2")
     (source (origin
               (method url-fetch)
               (uri
@@ -1412,7 +1431,7 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "0r0g8z289ipw0zpkhmm33cpfm42j01jds2q1wilhh3flg7xg2jn3"))
+                "0y093z4f3822rc88g9asdch12nljdamp817vjxk04mca7ks2x7jk"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1483,7 +1502,9 @@ system administrator.")
          `(("groff" ,groff))))
     (inputs
      `(("coreutils" ,coreutils)
-       ("linux-pam" ,linux-pam)
+       ,@(if (hurd-target?)
+           '()
+           `(("linux-pam" ,linux-pam)))
        ("zlib" ,zlib)))
     (home-page "https://www.sudo.ws/")
     (synopsis "Run commands as root")
@@ -1499,7 +1520,7 @@ commands and their arguments.")
 (define-public opendoas
   (package
     (name "opendoas")
-    (version "6.8")
+    (version "6.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1508,7 +1529,7 @@ commands and their arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dlwnvy8r6slxcy260gfkximp1ms510wdslpfq9y6xvd2qi5izcb"))))
+                "0gfcssm21vdfg6kcrcc7hz1h4jmhy2zv29rfqyrrj3a6r9b5ah8p"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1862,7 +1883,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20201217")
+    (version "20210105")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1870,7 +1891,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "06rdpfjmij5nni1x2wi1gnalhsza5yxq1viskjm9r11wmsjnxm2a"))))
+                "1gi7qzfywg118g5nlqn5lawxk25pg2sz01gmbz40vvmikks4ri9r"))))
     (build-system gnu-build-system)
     (native-inputs `(("flex" ,flex)
                      ("bison" ,bison)))
@@ -1945,7 +1966,7 @@ system is under heavy load.")
 (define-public detox
   (package
     (name "detox")
-    (version "1.3.0")
+    (version "1.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1954,7 +1975,7 @@ system is under heavy load.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dd608c7g65s5lj02cddvani3q9kzirddgkjqa22ap9d4f8b9xgr"))))
+                "13mhs62m7bpff45liy65pajq5jg3i12jj90vwdkra94z9mlr2rlz"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -2082,7 +2103,7 @@ track changes in important system configuration files.")
 (define-public libcap-ng
   (package
     (name "libcap-ng")
-    (version "0.8")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2090,7 +2111,7 @@ track changes in important system configuration files.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "08cy59iassiwbmfxa5v0kb374r80290vv32f5q1mnip11av26kgi"))))
+                "1sasp1n154aqy9fz0knlb966svm7xg1zjhg1vr4q839bgjvq7h2j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2110,7 +2131,7 @@ various ways that may be running with too much privilege.")
 (define-public smartmontools
   (package
     (name "smartmontools")
-    (version "7.1")
+    (version "7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2118,7 +2139,7 @@ various ways that may be running with too much privilege.")
                     version "/smartmontools-" version ".tar.gz"))
               (sha256
                (base32
-                "0imqb7ka4ia5573w8rnpck571pjjc9698pdjcapy9cfyk4n4swrz"))))
+                "1mlc25sd5rgj5xmzcllci47inmfdw7cp185fday6hc9rwqkqmnaw"))))
     (build-system gnu-build-system)
     (inputs `(("libcap-ng" ,libcap-ng)))
     (home-page "https://www.smartmontools.org/")
@@ -2611,14 +2632,14 @@ done with the @code{auditctl} utility.")
 (define-public nmap
   (package
     (name "nmap")
-    (version "7.91")
+    (version "7.80")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nmap.org/dist/nmap-" version
                                   ".tar.bz2"))
               (sha256
                (base32
-                "001kb5xadqswyw966k2lqi6jr6zz605jpp9w4kmm272if184pk0q"))
+                "1aizfys6l9f9grm82bk878w56mg0zpkfns3spzj157h98875mypw"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2696,7 +2717,7 @@ advanced netcat implementation (ncat), a utility for comparing scan
 results (ndiff), and a packet generation and response analysis tool (nping).")
     ;; This package uses nmap's bundled versions of libdnet and liblinear, which
     ;; both use a 3-clause BSD license.
-    (license (list license:npsl license:bsd-3))))
+    (license (list license:nmap license:bsd-3))))
 
 (define-public dstat
   (package
@@ -2797,13 +2818,13 @@ a new command using the matched rule, and runs it.")
 (define-public di
   (package
     (name "di")
-    (version "4.48")
+    (version "4.48.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gentoo.com/di/di-" version ".tar.gz"))
        (sha256
-        (base32 "0crvvfsxh8ryc0j19a2x52i9zacvggm8zi6j3kzygkcwnpz4km8r"))))
+        (base32 "0rxli3bcm6vlcfx2jminviv8aawwczrpp9kja5zniawy6528al30"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; obscure test failures
@@ -3419,7 +3440,7 @@ make it a perfect utility on modern distros.")
 (define-public thermald
   (package
     (name "thermald")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
      (origin
       (method git-fetch)
@@ -3428,7 +3449,7 @@ make it a perfect utility on modern distros.")
              (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0rlac7v1b59m7gh767hkd8a0r4p001nd24786fnmryygbxynd2s6"))))
+       (base32 "0nzjfiis4d3ml765s65bywk5dhx5x2fb3hpiixpxzzrs50ajwasj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3617,7 +3638,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.2.01-1")
+      (version "3.2.02-2")
       (source
        (origin
          (method git-fetch)
@@ -3626,7 +3647,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "15bakrv3jzj5h88c3bd0cfhh6hb8b4hm79924k1ygn29sqzgyw65"))))
+          (base32 "0fwx798v9kwiwkgbj97w6rjdanwf7ap65vvq1fqy7gd9x78xcxsq"))))
       (build-system trivial-build-system)
       (inputs
        `(("bash" ,bash-minimal)
@@ -4306,3 +4327,59 @@ This program allows you to view and manipulate this EEPROM list.")
     (home-page "https://github.com/xobs/novena-eeprom/")
     (supported-systems '("armhf-linux"))
     (license license:bsd-3)))
+
+(define-public lrzsz
+  (package
+    (name "lrzsz")
+    (version "0.12.20")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.ohse.de/uwe/releases/lrzsz-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1wcgfa9fsigf1gri74gq0pa7pyajk12m4z69x7ci9c6x9fqkd2y2"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "CONFIG_SHELL" (which "bash"))
+             (invoke "./configure"
+              (string-append "--prefix="
+                             (assoc-ref outputs "out"))))))))
+    (synopsis "Implementation of XMODEM/YMODEM/ZMODEM transfer protocols")
+    (description "This package provides programs that transfer files using
+the XMODEM/YMODEM/ZMODEM file transfer protocols.")
+    (home-page "https://ohse.de/uwe/software/lrzsz.html")
+    (license license:gpl2+)))
+
+(define-public nq
+  (package
+    (name "nq")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leahneukirchen/nq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1db96ykz35r273jyhf7cdknqk4p2jj9l8gbz7pjy1hq4pb6ffk99"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("perl" ,perl)))
+    (arguments
+     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
+                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (synopsis "Unix command line queue utility")
+    (description
+     "@code{nq} can create very lightweight job queue systems which require no
+setup, maintenance, supervision, or any long-running processes.")
+    (home-page "https://github.com/leahneukirchen/nq")
+    (license license:public-domain)))

@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2016 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -67,14 +67,14 @@
 (define-public ccid
   (package
     (name "ccid")
-    (version "1.4.33")
+    (version "1.4.34")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ccid.apdu.fr/files/ccid-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0974h2v9wq0j0ajw3c7yckaw8wqcppb2npfhfhmv9phijy9xlmjj"))))
+                "02mlbpnsvy6jgwpz0jk5lh27y3cn2bsyz9xini7898m9b5dn9xz6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--enable-usbdropdir=" %output
@@ -87,11 +87,11 @@
                (("/bin/echo") (which "echo")))
              #t)))))
     (native-inputs
-     `(("pcsc-lite" ,pcsc-lite)         ; only required for headers
-       ("perl" ,perl)
+     `(("perl" ,perl)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("libusb" ,libusb)))
+     `(("libusb" ,libusb)
+       ("pcsc-lite" ,pcsc-lite)))
     (home-page "https://ccid.apdu.fr/")
     (synopsis "PC/SC driver for USB smart card devices")
     (description
@@ -104,7 +104,7 @@ readers and is needed to communicate with such devices through the
 (define-public eid-mw
   (package
     (name "eid-mw")
-    (version "5.0.8")
+    (version "5.0.11")
     (source
      (origin
        (method git-fetch)
@@ -113,7 +113,7 @@ readers and is needed to communicate with such devices through the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ckini00iz9w96n9hpkx6w2ivpfkd4yyxyhnmsl9n0k8x4j6jg5a"))))
+        (base32 "0590cz00cny749p99srv880gpgzvxaf9fwm2lghv3nw0qdsilss8"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -134,7 +134,9 @@ readers and is needed to communicate with such devices through the
        ("libxml2" ,libxml2)
        ("cyrus-sasl" ,cyrus-sasl)))
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "--disable-static")
+       #:phases
        (modify-phases %standard-phases
          (replace 'bootstrap
            (lambda _

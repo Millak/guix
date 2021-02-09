@@ -42,9 +42,7 @@
   #:use-module (gnu packages bash)
   #:use-module ((gnu packages bootstrap)
                 #:select (bootstrap-executable %bootstrap-guile))
-  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 rdelim)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
@@ -677,7 +675,7 @@ message if any test fails."
   (let* ((root (if (string-prefix? "/" root)
                    root
                    (string-append (canonicalize-path (dirname root))
-                                  "/" root))))
+                                  "/" (basename root)))))
     (catch 'system-error
       (lambda ()
         (symlink target root)

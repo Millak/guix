@@ -7,7 +7,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;;
@@ -312,18 +312,14 @@ Kate stream.")
 (define vorbis-tools
   (package
    (name "vorbis-tools")
-   (version "1.4.0")
+   (version "1.4.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://downloads.xiph.org/releases/vorbis/"
                                 "vorbis-tools-" version ".tar.gz"))
             (sha256
              (base32
-              "1g12bnh5ah08v529y72kfdz5lhvy75iaz7f9jskyby23m9dkk2d3"))
-            (patches (search-patches 
-                       "vorbis-tools-CVE-2014-9638+CVE-2014-9639.patch"
-                       "vorbis-tools-CVE-2014-9640.patch"
-                       "vorbis-tools-CVE-2015-6749.patch"))))
+              "1c7h4ivgfdyygz2hyh6nfibxlkz8kdk868a576qkkjgj5gn78xyv"))))
    (build-system gnu-build-system)
    (inputs `(("ao" ,ao)
              ("curl" ,curl)
@@ -494,7 +490,7 @@ things in between.")
 (define-public libshout
   (package
     (name "libshout")
-    (version "2.4.4")
+    (version "2.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -502,7 +498,7 @@ things in between.")
                     "libshout-" version ".tar.gz"))
               (sha256
                (base32
-                "1hz670a4pfpsb89b0mymy8nw4rx8x0vmh61gq6j1vbg70mfhrscc"))))
+                "1438da40y73y9068saxrbmm27qq6xqmmzsziwgmr8fb7i9k6irfr"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))

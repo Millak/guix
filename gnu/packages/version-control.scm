@@ -6,12 +6,12 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2020 EuAndreh <eu@euandre.org>
@@ -32,6 +32,8 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,6 +98,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -163,14 +166,14 @@ as well as the classic centralized workflow.")
 (define-public git
   (package
    (name "git")
-   (version "2.29.2")
+   (version "2.30.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1h87yv117ypnc0yi86941089c14n91gixk8b6shj2y35prp47z7j"))))
+              "06ad6dylgla34k9am7d5z8y3rryc8ln3ibq5z0d74rcm20hm0wsm"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -187,7 +190,7 @@ as well as the classic centralized workflow.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "14npkg9rnp2yclsx5p622qpm6byzfy5k5wb209vkmm5r60m4mm72"))))
+            "0xngjg60rwzrb9x32d1qbdd8szkzwcyha5qni7ilkldxsl2q8avv"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc-py3)
       ("docbook-xsl" ,docbook-xsl)
@@ -1575,14 +1578,14 @@ execution of any hook written in any language before every commit.")
 (define-public mercurial
   (package
     (name "mercurial")
-    (version "5.5.1")
+    (version "5.6.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://www.mercurial-scm.org/"
                                  "release/mercurial-" version ".tar.gz"))
              (sha256
               (base32
-               "0x08yjs26j88kh1bvl2g3r24lnfc023ry3i1cxfq6haray6sv5ag"))))
+               "1bgz8f1a7lnmh6lzcvwg6q1yx6i7yibhwy06l4k55i04957jap75"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1595,8 +1598,7 @@ execution of any hook written in any language before every commit.")
                             "tests/test-run-tests.t"
                             "tests/test-transplant.t")
                (("/bin/sh")
-                (which "sh")))
-             #t))
+                (which "sh")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (with-directory-excursion "tests"
@@ -1607,9 +1609,10 @@ execution of any hook written in any language before every commit.")
                            ;; PATH from before (that's why we are building it!)?
                            "test-hghave.t"
 
-                           ;; FIXME: Why does this fail in the build container, but
-                           ;; not in 'guix environment -C' (even without /bin/sh)?
+                           ;; These tests fail because the program is not
+                           ;; connected to a TTY in the build container.
                            "test-nointerrupt.t"
+                           "test-transaction-rollback-on-sigpipe.t"
 
                            ;; FIXME: This gets killed but does not receive an interrupt.
                            "test-commandserver.t"
@@ -1638,8 +1641,7 @@ execution of any hook written in any language before every commit.")
                          "--slowtimeout" "86400"
                          ;; The test suite takes a long time and produces little
                          ;; output by default.  Prevent timeouts due to silence.
-                         "-v"))
-               #t))))))
+                         "-v"))))))))
     ;; The following inputs are only needed to run the tests.
     (native-inputs
      `(("python-nose" ,python-nose)
@@ -1682,14 +1684,14 @@ history.  It implements the changeset evolution concept for Mercurial.")
 (define-public neon
   (package
     (name "neon")
-    (version "0.30.2")
+    (version "0.31.2")
     (source (origin
              (method url-fetch)
-             (uri (string-append "http://www.webdav.org/neon/neon-"
+             (uri (string-append "https://notroj.github.io/neon/neon-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1jpvczcx658vimqm7c8my2q41fnmjaf1j03g7bsli6rjxk6xh2yv"))))
+               "0y46dbhiblcvg8k41bdydr3fivghwk73z040ki5825d24ynf67ng"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("perl" ,perl)
@@ -1703,11 +1705,12 @@ history.  It implements the changeset evolution concept for Mercurial.")
        ;; https://sourceware.org/bugzilla/show_bug.cgi?id=16475
        #:tests? #f
        #:configure-flags '("--enable-shared"
+                           "--disable-static"
                            ;; requires libgnutils-config, deprecated
                            ;; in gnutls 2.8.
                            ; "--with-ssl=gnutls")))
                            "--with-ssl=openssl")))
-    (home-page "http://www.webdav.org/neon/")
+    (home-page "https://notroj.github.io/neon/")
     (synopsis "HTTP and WebDAV client library")
     (description
      "Neon is an HTTP and WebDAV client library, with a C interface and the
@@ -1936,7 +1939,7 @@ standards-compliant ChangeLog entries based on the changes that it detects.")
 (define-public diffstat
   (package
     (name "diffstat")
-    (version "1.63")
+    (version "1.64")
     (source (origin
               (method url-fetch)
               (uri
@@ -1947,7 +1950,7 @@ standards-compliant ChangeLog entries based on the changes that it detects.")
                                 "diffstat-" version ".tgz")))
               (sha256
                (base32
-                "0vyw200s5dv1257pmrh6c6fdkmw3slyz5szpqfx916xr04sdbpby"))))
+                "1z7pwcv48fjnhxrjcsjdy83x8b9ckl582mbbds90a79fkn6y7bmq"))))
     (build-system gnu-build-system)
     (home-page "https://invisible-island.net/diffstat/")
     (synopsis "Make histograms from the output of @command{diff}")
@@ -2318,13 +2321,13 @@ based on a manifest file published by servers.")
 (define-public b4
   (package
     (name "b4")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "b4" version))
        (sha256
-        (base32 "01qid6mvddikcdpf2ihsyn8x3z5j2n64g0ip9pqbx42hrc50pmcz"))))
+        (base32 "1j904dy9cwxl85k2ngc498q5cdnqwsmw3jibjr1m55w8aqdck68z"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; No tests.
     (inputs
@@ -2664,7 +2667,7 @@ interrupted, published, and collaborated on while in progress.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "2.11.0")
+    (version "2.13.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2673,7 +2676,7 @@ interrupted, published, and collaborated on while in progress.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05qd96bn2cl7gn5qarbcv6scdpj28qiwdfzalamqk5jjiidpmng5"))))
+                "0gfpzdya48phwln61746ii78sq55mhzj938lz8x062xkkcsdvbf4"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/git-lfs/git-lfs"
@@ -2962,3 +2965,54 @@ commit message side by side
 
 If several repos are related, it helps to see their status together.")
       (license license:expat))))
+
+(define-public ghq
+  (package
+    (name "ghq")
+    (version "1.1.5")
+    (home-page "https://github.com/x-motemen/ghq")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "098fik155viylq07az7crzbgswcvhpx0hr68xpvyx0rpri792jbq"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:install-source? #f
+       #:import-path "github.com/x-motemen/ghq"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs import-path #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bash-completion (string-append out "/etc/bash_completion.d"))
+                    (zsh-completion (string-append out "/share/zsh/site-functions")))
+               (with-directory-excursion (string-append "src/" import-path)
+                 (mkdir-p bash-completion)
+                 (copy-file "misc/bash/_ghq"
+                            (string-append bash-completion "/ghq"))
+                 (mkdir-p zsh-completion)
+                 (copy-file "misc/zsh/_ghq"
+                            (string-append zsh-completion "/_ghq"))))
+             #t)))))
+    (native-inputs
+     `(("git" ,git-minimal)))
+    (inputs
+     `(("github.com/songmu/gitconfig" ,go-github-com-songmu-gitconfig)
+       ("github.com/mattn/go-isatty" ,go-github-com-mattn-go-isatty)
+       ("github.com/motemen/go-colorine" ,go-github-com-motemen-go-colorine)
+       ("github.com/saracen/walker" ,go-github-com-saracen-walker)
+       ("github.com/urfave/cli/v2" ,go-github-com-urfave-cli-v2)
+       ("golang.org/x/net/html" ,go-golang-org-x-net-html)
+       ("golang.org/x/sync/errgroup" ,go-golang.org-x-sync-errgroup)))
+    (synopsis "Manage remote repository clones")
+    (description
+     "@code{ghq} provides a way to organize remote repository clones, like
+@code{go get} does.  When you clone a remote repository by @code{ghq get}, ghq
+makes a directory under a specific root directory (by default @file{~/ghq})
+using the remote repository URL's host and path.")
+    (license license:expat)))

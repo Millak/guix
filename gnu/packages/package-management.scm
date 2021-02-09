@@ -1,15 +1,15 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -132,8 +132,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.2.0")
-        (commit "7624ebbae33cf49dded5e9032ed426781c9554f6")
-        (revision 8))
+        (commit "a53f711422f63d7e32b8639b968cf00bcc69ffea")
+        (revision 13))
     (package
       (name "guix")
 
@@ -149,11 +149,18 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0dd28df278fzlwxk1c0n86q98q8q8cj6g87as8v4rymyprf4gyjc"))
+                  "01sky036v6dh8zwvrzl08pj4r6vkz7mjadkqbrwhak4nvds5frq8"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
        `(#:configure-flags (list
+
+                            ;; Provide channel metadata for 'guix describe'.
+                            ;; Don't pass '--with-channel-url' and
+                            ;; '--with-channel-introduction' and instead use
+                            ;; the defaults.
+                            ,(string-append "--with-channel-commit=" commit)
+
                             "--localstatedir=/var"
                             "--sysconfdir=/etc"
                             (string-append "--with-bash-completion-dir="
@@ -301,6 +308,7 @@ $(prefix)/etc/init.d\n")))
                                (sqlite (assoc-ref inputs "guile-sqlite3"))
                                (zlib   (assoc-ref inputs "guile-zlib"))
                                (lzlib  (assoc-ref inputs "guile-lzlib"))
+                               (zstd   (assoc-ref inputs "guile-zstd"))
                                (git    (assoc-ref inputs "guile-git"))
                                (bs     (assoc-ref inputs
                                                   "guile-bytestructures"))
@@ -308,7 +316,7 @@ $(prefix)/etc/init.d\n")))
                                (gnutls (assoc-ref inputs "gnutls"))
                                (locales (assoc-ref inputs "glibc-utf8-locales"))
                                (deps   (list gcrypt json sqlite gnutls git
-                                             bs ssh zlib lzlib))
+                                             bs ssh zlib lzlib zstd))
                                (deps*  ,@(if (%current-target-system)
                                              '(deps)
                                              '((cons avahi deps))))
@@ -362,6 +370,7 @@ $(prefix)/etc/init.d\n")))
                        ("guile-sqlite3" ,guile-sqlite3)
                        ("guile-zlib" ,guile-zlib)
                        ("guile-lzlib" ,guile-lzlib)
+                       ("guile-zstd" ,guile-zstd)
                        ("guile-ssh" ,guile-ssh)
                        ("guile-git" ,guile-git)
 
@@ -417,7 +426,19 @@ $(prefix)/etc/init.d\n")))
          ("guile-ssh" ,guile-ssh)
          ("guile-git" ,guile-git)
          ("guile-zlib" ,guile-zlib)
-         ("guile-lzlib" ,guile-lzlib)))
+         ("guile-lzlib" ,guile-lzlib)
+         ("guile-zstd" ,guile-zstd)))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "GUIX_EXTENSIONS_PATH")
+              (files '("share/guix/extensions")))
+
+             ;; (guix git) and (guix build download) honor this variable whose
+             ;; name comes from OpenSSL.
+             (search-path-specification
+              (variable "SSL_CERT_DIR")
+              (separator #f)                      ;single entry
+              (files '("etc/ssl/certs")))))
 
       (home-page "https://www.gnu.org/software/guix/")
       (synopsis "Functional package manager for installed software packages and versions")
@@ -584,14 +605,14 @@ out) and returning a package that uses that as its 'source'."
 (define-public nix
   (package
     (name "nix")
-    (version "2.3.9")
+    (version "2.3.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://nixos.org/releases/nix/nix-"
                                  version "/nix-" version ".tar.xz"))
              (sha256
               (base32
-               "1yi2c1fp33sxv9j0pvxlpxs1dhq3axrwkxdwr867ll90lbdiycvj"))))
+               "1axphwkx270c10bjyn4icq9wlx46npgnw0qkpymigl23vramxa58"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--sysconfdir=/etc" "--enable-gc")
@@ -982,24 +1003,18 @@ written entirely in Python.")
 (define-public gwl
   (package
     (name "gwl")
-    (version "0.2.1")
+    (version "0.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gwl/gwl-" version ".tar.gz"))
               (sha256
                (base32
-                "1ji5jvzni8aml9fmimlr11g3k8isrnlvnbzhmwgdjh72hils0alc"))))
+                "1lqif00mq7fsaknbc2gvvcv1j89k311sm44jp9jklbrv0v2lc83n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-tests
-           (lambda _
-             ;; Avoid cross-device link.
-             (substitute* "tests/cache.scm"
-               (("/tmp/gwl-test-input-XXXXXX")
-                (string-append (getcwd) "/gwl-test-input-XXXXXX")))
-             #t)))))
+     `(#:parallel-build? #false ; for reproducibility
+       #:make-flags
+       '("GUILE_AUTO_COMPILE=0")))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -1007,14 +1022,17 @@ written entirely in Python.")
        ("texinfo" ,texinfo)
        ("graphviz" ,graphviz)))
     (inputs
-     `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))))
-    (propagated-inputs
-     `(("guix" ,guix)
-       ("guile-commonmark" ,guile-commonmark)
-       ("guile-gcrypt" ,guile-gcrypt)
-       ("guile-pfds" ,guile-pfds)
-       ("guile-syntax-highlight" ,guile-syntax-highlight)
-       ("guile-wisp" ,guile-wisp)))
+     (let ((p (package-input-rewriting
+               `((,guile-3.0 . ,guile-3.0-latest))
+               #:deep? #false)))
+       `(("guix" ,guix)
+         ("guile" ,guile-3.0-latest)
+         ("guile-commonmark" ,(p guile-commonmark))
+         ("guile-config" ,(p guile-config))
+         ("guile-gcrypt" ,(p guile-gcrypt))
+         ("guile-pfds" ,(p guile-pfds))
+         ("guile-syntax-highlight" ,(p guile-syntax-highlight))
+         ("guile-wisp" ,(p guile-wisp)))))
     (home-page "https://workflows.guix.info")
     (synopsis "Workflow management extension for GNU Guix")
     (description "The @dfn{Guix Workflow Language} (GWL) provides an
@@ -1028,8 +1046,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "c33d3f570bd32afc2def410067db6b92ad6aff0a")
-        (revision "12"))
+  (let ((commit "5c7f53b311ae18d8eeae681e02cc675ede58731e")
+        (revision "16"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1040,7 +1058,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "01mr211s1nb9hhm6784ibp87g59wifajcclbss3ry7i3qsbvg22j"))
+                  "08l5g5f9d47rdja710dambbjv8vz1adsya9llxrfr0zklj3s4fs7"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1070,7 +1088,6 @@ environments.")
                     (wrap-program file
                       `("PATH" ":" prefix
                         (,bin
-                         ,(dirname (which "nproc")) ; used by the agent
                          ;; Support building without sqitch as an input, as it
                          ;; can't be cross-compiled yet
                          ,@(or (and=> (assoc-ref inputs "sqitch")
@@ -1127,7 +1144,7 @@ outputs of those builds.")
 (define-public guix-jupyter
   (package
     (name "guix-jupyter")
-    (version "0.1.0")
+    (version "0.2.1")
     (home-page "https://gitlab.inria.fr/guix-hpc/guix-kernel")
     (source (origin
               (method git-fetch)
@@ -1135,24 +1152,7 @@ outputs of those builds.")
                                   (commit (string-append "v" version))))
               (sha256
                (base32
-                "01z7jjkc7r7lj6637rcgpz40v8xqqyfp6871h94yvcnwm7zy9h1n"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure.ac"
-                    (("^GUILE_PKG.*")
-                     "GUILE_PKG([3.0 2.2])\n"))
-
-                  ;; Avoid name clash and build failure now that
-                  ;; 'define-json-mapping' is also provided by Guile-JSON, as
-                  ;; of version 4.3.
-                  (substitute* (find-files "." "\\.scm$")
-                    (("define-json-mapping")
-                     "define-json-mapping*")
-                    (("<=>")
-                     "<->"))
-                  #t))
+                "1kqwfp5h95s6mirq5nbydsbmlhsinn32grz1ld5mbxvhl6sn2i0j"))
               (file-name (string-append "guix-jupyter-" version "-checkout"))))
     (build-system gnu-build-system)
     (arguments
@@ -1345,14 +1345,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
    (name "flatpak")
-   (version "1.8.2")
+   (version "1.10.1")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                          version "/flatpak-" version ".tar.xz"))
      (sha256
-      (base32 "1c45a0k7wx685n5b3ihv7dk0mm2kmwbw7cx8w5g2la62yxfn49kr"))))
+      (base32 "1dywvfpmszvp2wy5hvpzy8z6gz2gzmi9p302njp52p9vpx14ydf1"))))
 
    ;; Wrap 'flatpak' so that GIO_EXTRA_MODULES is set, thereby allowing GIO to
    ;; find the TLS backend in glib-networking.

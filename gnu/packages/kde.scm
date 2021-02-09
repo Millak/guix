@@ -1,15 +1,15 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018 Mark Meyer <mark@ofosos.org>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
 ;;;
@@ -49,6 +49,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -141,6 +142,77 @@ This package contains GUI widgets for baloo.")
     (description "This library provides Grantlee theme support.")
     (license ;; LGPL for libraries, FDL for documentation
      (list license:lgpl2.1+ license:fdl1.2+))))
+
+(define-public akregator
+  (package
+    (name "akregator")
+    (version "20.04.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/akregator-" version ".tar.xz"))
+       (sha256
+        (base32 "1711yhwsdq9iyc3wm3a4xmz81p73hvvc0h58sasc89ifpry50k2p"))))
+    (build-system qt-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-qt-process-path
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin/akregator"))
+                    (qt-process-path (string-append
+                                       (assoc-ref inputs "qtwebengine")
+                                       "/lib/qt5/libexec/QtWebEngineProcess")))
+               (wrap-program bin
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
+               #t))))))
+    (native-inputs
+     `(("extra-cmake-modules" ,extra-cmake-modules)
+       ("kdoctools" ,kdoctools)))
+    (inputs
+     `(("akonadi" ,akonadi)
+       ("akonadi-contacts" ,akonadi-contacts)
+       ("akonadi-mime" ,akonadi-mime)
+       ("boost" ,boost)
+       ("breeze-icons" ,breeze-icons)
+       ("gpgme" ,gpgme)
+       ("grantlee" ,grantlee)
+       ("grantleetheme" ,grantleetheme)
+       ("kcmutils" ,kcmutils)
+       ("kcontacts" ,kcontacts)
+       ("kcrash" ,kcrash)
+       ("kimap" ,kimap)
+       ("kitemmodels" ,kitemmodels)
+       ("kmessagelib" ,kmessagelib)
+       ("kmime" ,kmime)
+       ("knotifications" ,knotifications)
+       ("knotifyconfig" ,knotifyconfig)
+       ("kontactinterface" ,kontactinterface)
+       ("kpimcommon" ,kpimcommon)
+       ("kpimtextedit" ,kpimtextedit)
+       ("kqtquickcharts" ,kqtquickcharts)
+       ("ktexteditor" ,ktexteditor)
+       ("kuserfeedback" ,kuserfeedback)
+       ("libkdepim" ,libkdepim)
+       ("libkleo" ,libkleo)
+       ("qgpgme" ,qgpgme)
+       ("qtbase" ,qtbase)
+       ("qtdeclarative" ,qtdeclarative)
+       ("qtwebchannel" ,qtwebchannel)
+       ("qtwebengine" ,qtwebengine)
+       ("syndication" ,syndication)))
+    (home-page "https://apps.kde.org/en/akregator")
+    (synopsis "KDE Feed Reader")
+    (description
+     "Akregator is a news feed reader.  It enables you to follow news
+sites, blogs and other RSS/Atom-enabled websites without the need to manually
+check for updates using a web browser.  Akregator is designed to be both easy to
+use and to be powerful enough to read hundreds of news sources conveniently.
+It comes with a fast search, advanced archiving functionality and an internal
+browser for easy news reading.")
+    (license license:gpl2+)))
 
 (define-public kdenlive
   (let ((version "20.08.3"))
@@ -385,7 +457,7 @@ illustrate project schedules.")
 (define-public krita
   (package
     (name "krita")
-    (version "4.4.1")
+    (version "4.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -393,7 +465,7 @@ illustrate project schedules.")
                     "/krita-" version ".tar.gz"))
               (sha256
                (base32
-                "05rq5hkh2lmk8hall2h9ccaav0nw8fj7vd4aff5fyp2fiq3aybbg"))))
+                "14lprcv7xw6r19bmylcz4c1p1jfazmza2b4m48f3x7vmdv2sx5ln"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
@@ -506,7 +578,7 @@ used in KDE development tools Kompare and KDevelop.")
 (define-public qca
   (package
     (name "qca")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
       (origin
         (method url-fetch)
@@ -514,7 +586,7 @@ used in KDE development tools Kompare and KDevelop.")
                             "/qca-" version ".tar.xz"))
         (sha256
          (base32
-          "1mrj748yz1grgzmfbmffgjkpcqiaj1l3m4pbddwcj7dnl50yys0x"))))
+          "0jsfjwz84fc5jnl16aiwrcd6pgs5lzizm2896wildz5yk8852f61"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -642,6 +714,7 @@ different notification systems.")
        ("qtmultimedia" ,qtmultimedia)
        ("qtquickcontrols" ,qtquickcontrols)
        ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtwayland" ,qtwayland)
        ("qtx11extras" ,qtx11extras)))
     (home-page "https://community.kde.org/KDEConnect")
     (synopsis "Enable your devices to communicate with each other")
@@ -685,6 +758,40 @@ communicate with each other.  Here's a few things KDE Connect can do:
      "Kqtquickcharts is a QtQuick plugin to render beautiful and interactive
 charts.")
     (license license:lgpl2.1+)))
+
+(define-public kdf
+  (package
+    (name "kdf")
+    (version "20.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kdf-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0ba67hs4vlb3qyvdzhnpmf8p62df12s8aqw4hzf9vnxff3qix5k1"))))
+    (build-system qt-build-system)
+    (native-inputs
+     `(("extra-cmake-modules" ,extra-cmake-modules)
+       ("kdoctools" ,kdoctools)))
+    (inputs
+     `(("kcmutils" ,kcmutils)
+       ("kconfigwidgets" ,kconfigwidgets)
+       ("kcoreaddons" ,kcoreaddons)
+       ("ki18n" ,ki18n)
+       ("kiconthemes" ,kiconthemes)
+       ("kio" ,kio)
+       ("knotifications" ,knotifications)
+       ("kwidgetsaddons" ,kwidgetsaddons)
+       ("kxmlgui" ,kxmlgui)
+       ("qtbase" ,qtbase)))
+    (home-page "https://kde.org/applications/system/kdk")
+    (synopsis "View Disk Usage")
+    (description "KDiskFree displays the available file devices (hard drive
+partitions, floppy and CD drives, etc.) along with information on their
+capacity, free space, type and mount point.  It also allows you to mount and
+unmount drives and view them in a file manager.")
+    (license license:gpl2+)))
 
 (define-public kcachegrind
   (package
@@ -777,14 +884,14 @@ Python, PHP, and Perl.")
 (define-public okular
   (package
     (name "okular")
-    (version "20.12.0")
+    (version "20.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1kib8zqfd9qgqn7bz88hay2j3kcvarnlfyr3a417pi6rvaam6b4p"))))
+        (base32 "0gpm7n47yijsjg4yba561j5pbvd98hgvr93w1kvzk851nb87m89c"))))
     (build-system qt-build-system)
     ;; The tests fail because they can't find the proper mimetype plugins:
     ;; "org.kde.okular.core: No plugin for mimetype '"image/jpeg"'."
@@ -839,6 +946,33 @@ Python, PHP, and Perl.")
     (description
      "Okular is a document viewer developed for KDE.  It can display files in
 a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
+    (license license:gpl2+)))
+
+(define-public poxml
+  (package
+    (name "poxml")
+    (version "20.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "mirror://kde/stable/release-service/" version
+                              "/src/poxml-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1smjvblx0jcv3afs2sr4qcmvhqd44iw24hvr9fppa3nxhrmjwmlk"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("extra-cmake-modules" ,extra-cmake-modules)
+       ("kdoctools" ,kdoctools)))
+    (inputs
+     `(("gettext" ,gettext-minimal)
+       ("qtbase" ,qtbase)))
+    (home-page "https://kde.org/applications/development")
+    (synopsis "Tools for translating DocBook XML files with Gettext")
+    (description "This is a collection of tools that facilitate translating
+DocBook XML files using Gettext message files (PO files).  Also included are
+several command-line utilities for manipulating DocBook XML files, PO files and
+PO template files.")
     (license license:gpl2+)))
 
 (define-public kdegraphics-mobipocket

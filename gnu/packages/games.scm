@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
@@ -24,13 +24,13 @@
 ;;; Copyright © 2016 Steve Webber <webber.sl@gmail.com>
 ;;; Copyright © 2017 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
 ;;; Copyright © 2017, 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2019 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Madalin Ionel-Patrascu <madalinionel.patrascu@mdc-berlin.de>
@@ -53,9 +53,10 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Trevor Hass <thass@okstate.edu>
-;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2020, 2021 Leo Prikler <leo.prikler@student.tugraz.at>
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
+;;; Copyright © 2021 Olivier Rojon <o.rojon@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -98,6 +99,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cyrus-sasl)
@@ -133,6 +135,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages less)
@@ -855,6 +858,52 @@ things far stranger and deadlier, and against the others like yourself, that
 want what you have.")
     (license license:cc-by-sa3.0)))
 
+(define-public cockatrice
+  (let ((release-date "2021-01-26"))
+    (package
+      (name "cockatrice")
+      (version "2.8.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Cockatrice/Cockatrice")
+               (commit (string-append release-date "-Release-" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0q8ffcklb2b7hcqhy3d2f9kz9aw22pp04pc9y4sslyqmf17pwnz9"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Strip image URLs as they point towards non-free web services
+          '(substitute* "cockatrice/src/settings/downloadsettings.cpp"
+             (("downloadURLs.append\\(\".*\"\\);") "")))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:configure-flags '("-DWITH_SERVER=1"
+                             "-DWITH_CLIENT=1"
+                             "-DWITH_ORACLE=1"
+                             "-DTEST=1")))
+      (native-inputs
+       `(("googletest" ,googletest)
+         ("pkg-config" ,pkg-config)))
+      (inputs
+       `(("protobuf" ,protobuf)
+         ("qtbase" ,qtbase)
+         ("qtmultimedia" ,qtmultimedia)
+         ("qtsvg" ,qtsvg)
+         ("qttools" ,qttools)
+         ("qtwebsockets" ,qtwebsockets)
+         ("xz" ,xz)
+         ("zlib" ,zlib)))
+      (home-page "https://cockatrice.github.io")
+      (synopsis "Tabletop card game simulator")
+      (description "Cockatrice is a program for playing tabletop card games
+over a network.  Its server design prevents users from manipulating the game
+for unfair advantage.  The client also provides a single-player mode, which
+allows users to brew while offline.")
+      (license license:gpl2))))
+
 (define-public corsix-th
   (package
     (name "corsix-th")
@@ -1322,7 +1371,7 @@ automata.  The following features are available:
 (define-public julius
   (package
     (name "julius")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1331,7 +1380,7 @@ automata.  The following features are available:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10d6py1cmkq8lnb5h3w8rdpp4fmpd1wgqkgiabdghqxi7b2s0g4b"))
+        (base32 "0nfdn8n6ywhm69ckz9a1chl5xxiqyaj3l337wadsbppnpscjihrc"))
        ;; Remove unused bundled libraries.
        (modules '((guix build utils)))
        (snippet
@@ -1358,7 +1407,7 @@ does not include game data.")
   (package
     (inherit julius)
     (name "augustus")
-    (version "1.4.1a")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1367,7 +1416,7 @@ does not include game data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xqv8j8jh3f13fjhyf7hk1anrn799cwwsvsd75kpl9n5yh5s1j5y"))
+        (base32 "0czazw8mc3fbvdazs2nzvgxd1dpzjc8z5fwiv89vv4nd7laz3jkj"))
        ;; Remove unused bundled libraries.
        (modules '((guix build utils)))
        (snippet
@@ -2235,6 +2284,100 @@ and defeat them with your bubbles!")
     ;; GPL2+ is for code, CC0 is for art.
     (license (list license:gpl2+ license:cc0))))
 
+(define-public solarus
+  (package
+    (name "solarus")
+    ;; XXX: When updating this package, please also update hash in
+    ;; `solarus-quest-editor' below.
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/solarus-games/solarus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n6l91yyqjx0pz4w1lp3yybpq0fs2yjswfcm8c1wjfkxwiznbdxi"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-failing-tests
+           ;; The following tests fail reporting a missing "/dev/dri"
+           ;; file.
+           (lambda _
+             (substitute* "tests/cmake/AddTestMaps.cmake"
+               ((".*1200_create_shader_from_source.*" all)
+                (string-append "#" all))
+               ((".*1210_shader_scaling_factor.*" all)
+                (string-append "#" all)))
+             #t))
+         (add-before 'check 'set-home
+           ;; Tests fail without setting the following environment
+           ;; variables.
+           (lambda _
+             (setenv "HOME" (getcwd))
+             (setenv "XDG_RUNTIME_DIR" (getcwd))
+             #t)))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("qttools" ,qttools)))
+    (inputs
+     `(("glm" ,glm)
+       ("libmodplug" ,libmodplug)
+       ("libogg" ,libogg)
+       ("libvorbis" ,libvorbis)
+       ("luajit" ,luajit)
+       ("openal" ,openal)
+       ("physfs" ,physfs)
+       ("qtbase" ,qtbase)
+       ("sdl2" ,(sdl-union (list sdl2 sdl2-image sdl2-ttf)))))
+    (home-page "https://www.solarus-games.org/")
+    (synopsis "Lightweight game engine for Action-RPGs")
+    (description
+     "Solarus is a 2D game engine written in C++, that can run games
+scripted in Lua.  It has been designed with 16-bit classic Action-RPGs
+in mind.")
+    ;; The source code is licensed under the terms of GPL-3.0.
+    ;; Resources are licensed under the terms of CC-BY-SA-3.0 and
+    ;; CC-BY-SA 4.0.
+    (license (list license:gpl3 license:cc-by-sa3.0 license:cc-by-sa4.0))))
+
+(define-public solarus-quest-editor
+  (package
+    (inherit solarus)
+    (name "solarus-quest-editor")
+    (version (package-version solarus))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/solarus-games/solarus-quest-editor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qbc2j9kalk7xqk9j27s7wnm5zawiyjs47xqkqphw683idmzmjzn"))))
+    (arguments
+     `(#:tests? #false                  ;no test
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-qt-build
+           ;; XXX: Fix build with Qt 5.15.  It has been applied upstream as
+           ;; 81d5c7f1 and can be removed at next upgrade.
+           (lambda _
+             (substitute* "src/entities/jumper.cpp"
+               (("#include <QPainter>" all)
+                (string-append all "\n" "#include <QPainterPath>\n")))
+             #t)))))
+    (inputs
+     `(("solarus" ,solarus)
+       ,@(package-inputs solarus)))
+    (synopsis "Create and modify quests for the Solarus engine")
+    (description
+     "Solarus Quest Editor is a graphical user interface to create and
+modify quests for the Solarus engine.")))
+
 (define-public superstarfighter
   (package
     (name "superstarfighter")
@@ -2362,6 +2505,93 @@ available, as well as a single-player mode with AI-controlled ships.")
           (("\\$\\(call ZIP\\)")
            "$(call ZIP) -X"))
         #t))))
+
+(define-public trigger-rally
+  (package
+    (name "trigger-rally")
+    (version "0.6.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/trigger-rally/"
+                           "trigger-" version "/"
+                           "trigger-rally-" version ".tar.gz"))
+       (sha256
+        (base32
+         "016bc2hczqscfmngacim870hjcsmwl8r3aq8x03vpf22s49nw23z"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("freealut" ,freealut)
+       ("glew" ,glew)
+       ("glu" ,glu)
+       ("mesa" ,mesa)
+       ("openal" ,openal)
+       ("physfs" ,physfs)
+       ("sdl" ,(sdl-union (list sdl2 sdl2-image)))
+       ("tinyxml2" ,tinyxml2)))
+    (arguments
+     `(#:make-flags (list (string-append "prefix=" %output)
+                          "bindir=$(prefix)/bin"
+                          "datadir=$(datarootdir)"
+                          "OPTIMS=-Ofast")
+       #:tests? #f                      ; No tests present
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-before 'build 'cd-src
+           (lambda _ (chdir "src")))
+         (add-before 'build 'remove-timestamps
+           (lambda _
+             (substitute* (list "Trigger/menu.cpp"
+                                "PEngine/app.cpp")
+               ((".*__DATE__.*") ""))))
+         (add-before 'build 'make-verbose
+           (lambda _
+             (substitute* "GNUmakefile"
+               (("@\\$\\(CXX\\)") "$(CXX)"))))
+         (add-after 'build 'set-data-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* "../bin/trigger-rally.config.defs"
+                 (("<data path=\"C:[^\"]*\"")
+                  (string-append "<data path=\"" out "/share/trigger-rally\""))))))
+         (add-after 'install 'create-desktop-entry
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (apps (string-append out "/share/applications")))
+               (mkdir-p apps)
+               (with-output-to-file
+                   (string-append apps "/trigger-rally.desktop")
+                 (lambda ()
+                   (format #t           ; Borrowed from Debian package
+                           "[Desktop Entry]~@
+                            Name=Trigger Rally~@
+                            Icon=trigger-rally~@
+                            Comment=3D rally racing car game~@
+                            Comment[de]=3D Rally-Autorennen~@
+                            Comment[fr_FR]=un jeu de rally en 3D~@
+                            Comment[ro_RO]=Un joc în 3D cu curse de raliu~@
+                            Exec=~a/bin/trigger-rally~@
+                            Terminal=false~@
+                            StartupNotify=false~@
+                            Type=Application~@
+                            TryExec=~:*~a/bin/trigger-rally~@
+                            Categories=Game;ArcadeGame;~@
+                            Keywords=racing;tracks;~@
+                            Keywords[de]=Rennstrecke;~%"
+                           out)))))))))
+    (home-page "http://trigger-rally.sourceforge.net")
+    (synopsis "Fast-paced single-player racing game")
+    (description "Trigger-rally is a 3D rally simulation with great physics
+for drifting on over 200 maps.  Different terrain materials like dirt,
+asphalt, sand, ice, etc. and various weather, light, and fog conditions give
+this rally simulation the edge over many other games.  You need to make it
+through the maps in often tight time limits and can further improve by beating
+the recorded high scores.  All attached single races must be finished in time
+in order to win an event, unlocking additional events and cars.  Most maps are
+equipped with spoken co-driver notes and co-driver icons.")
+    (license (list license:cc0               ;textures and audio in data.zip
+                   license:gpl2+))))
 
 (define-public ufo2map
   (package
@@ -4218,7 +4448,7 @@ Transport Tycoon Deluxe.")
 (define openrct2-objects
   (package
    (name "openrct2-objects")
-   (version "1.0.9")
+   (version "1.0.20")
    (source
     (origin
      (method url-fetch)
@@ -4226,7 +4456,7 @@ Transport Tycoon Deluxe.")
                          version "/objects.zip"))
      (file-name (string-append name "-" version ".zip"))
      (sha256
-      (base32 "02apb8h553m7d6jvysgb1zahvxc1yzyygfca2iclb21b3fhpsas4"))))
+      (base32 "1q7a38kcwrfijav6app1gf253yfv8b0rljbkah8040y6i7snw9mw"))))
    (build-system trivial-build-system)
    (native-inputs
     `(("bash" ,bash)
@@ -4258,7 +4488,7 @@ Transport Tycoon Deluxe.")
 (define-public openrct2
   (package
     (name "openrct2")
-    (version "0.2.6")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -4267,7 +4497,7 @@ Transport Tycoon Deluxe.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vikbkg3wh5ngzdfilb6irbh6nqinf138qpdz8wz9izlvl8s36k4"))))
+        (base32 "1fd32wniiy6qz2046ppqfj2sb3rf2qf086rf9v1bdhyj254d0b1z"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DDOWNLOAD_OBJECTS=OFF"
@@ -4296,6 +4526,7 @@ Transport Tycoon Deluxe.")
                (("-Werror") ""))
              #t)))))
     (inputs `(("curl" ,curl)
+              ("duktape" ,duktape)
               ("fontconfig" ,fontconfig)
               ("freetype" ,freetype)
               ("icu4c" ,icu4c)
@@ -4303,6 +4534,7 @@ Transport Tycoon Deluxe.")
               ("libpng" ,libpng)
               ("libzip" ,libzip)
               ("mesa" ,mesa)
+              ("nlohmann-json-cpp" ,nlohmann-json-cpp)
               ("openrct2-objects" ,openrct2-objects)
               ("openrct2-title-sequences" ,openrct2-title-sequences)
               ("openssl" ,openssl)
@@ -4938,7 +5170,7 @@ of war.  Widelands also offers an Artificial Intelligence to challenge you.")
 (define-public starfighter
   (package
     (name "starfighter")
-    (version "2.3.3")
+    (version "2.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4947,7 +5179,7 @@ of war.  Widelands also offers an Artificial Intelligence to challenge you.")
                     version "-src.tar.gz"))
               (sha256
                (base32
-                "0jz2lgvmp299nks6ajg2yxbx4xcaxlc4cpfr61861p7m7z2nv84y"))))
+                "0ips79j3sdy8wa64jqka0skbbqkzqiln9bbiiilh4z717q7vz9r5"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -5571,7 +5803,7 @@ for Un*x systems with X11.")
 (define-public freeciv
   (package
    (name "freeciv")
-   (version "2.6.2.1")
+   (version "2.6.3")
    (source
     (origin
      (method url-fetch)
@@ -5583,7 +5815,7 @@ for Un*x systems with X11.")
                   (version-major+minor version) "/" version
                   "/freeciv-" version ".tar.bz2")))
      (sha256
-      (base32 "0pjqnwpxsirhyf5c4f1b9gxkqah0213wqaynklq84mahq41sq15x"))))
+      (base32 "1lgq7wcbhwpy2yqdw4biwfmp5q8fh7lhlwxcgm0fpaapfl12whvp"))))
    (build-system gnu-build-system)
    (inputs
     `(("curl" ,curl)
@@ -5919,11 +6151,13 @@ small robot living in the nano world, repair its maker.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/teeworlds/teeworlds")
-                    (commit version)))
+                    (commit version)
+                    ;; There are two submodules in datasrc/{languages,maps}
+                    (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "169dl83q08zl4h813az8hjs4rs3dms9yjn6bnsld4fjcj0imvvc6"))
+                "1l19ksmimg6b8zzjy0skyhh7z11ql7n5gvilkv7ay5x2b9ndbqwz"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (ice-9 regex)
@@ -5936,15 +6170,12 @@ small robot living in the nano world, repair its maker.")
                             (remove (cut string-match "(^.)|(^md5$)" <>)
                                     (scandir base-dir)))
                   #t))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests included
-       #:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
-         (replace 'configure
+         (add-after 'unpack 'patch-paths
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Embed path to assets.
              (substitute* "src/engine/shared/storage.cpp"
@@ -5953,51 +6184,7 @@ small robot living in the nano world, repair its maker.")
                                (assoc-ref outputs "out")
                                "/share/teeworlds/data"
                                "\"")))
-
-             ;; Bam expects all files to have a recent time stamp.
-             (for-each (cut utime <> 1 1)
-                       (find-files "."))
-
-             ;; Do not use bundled libraries.
-             (substitute* "bam.lua"
-               (("local json = Compile.+$")
-                "local json = nil
-settings.link.libs:Add(\"jsonparser\")")
-               (("local png = Compile.+$")
-                "local png = nil
-settings.link.libs:Add(\"pnglite\")")
-               (("local wavpack = Compile.+$")
-                "local wavpack = nil
-settings.link.libs:Add(\"wavpack\")")
-               (("if config\\.zlib\\.value == 1")
-                "if config.zlib.value"))
-             (substitute* "src/engine/client/graphics_threaded.cpp"
-               (("engine/external/pnglite/pnglite\\.h")
-                "pnglite.h"))
-             (substitute* "src/engine/client/sound.cpp"
-               (("engine/external/wavpack/wavpack\\.h")
-                "wavpack/wavpack.h"))
-             #t))
-         (replace 'build
-           (lambda _
-             (invoke "bam" "-a" "-v" "conf=release")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((arch ,(system->linux-architecture
-                            (or (%current-target-system)
-                                (%current-system))))
-                    (build (string-append "build/" (if (string=? arch "i386")
-                                                       "x86" arch)
-                                          "/release/"))
-                    (data-built (string-append build "data/"))
-                    (out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/"))
-                    (data (string-append out "/share/teeworlds/data/")))
-               (for-each (cut install-file <> bin)
-                         (map (cut string-append build <>)
-                              '("teeworlds" "teeworlds_srv")))
-               (copy-recursively data-built data)
-               #t))))))
+             #t)))))
     (inputs
      `(("freetype" ,freetype)
        ("glu" ,glu)
@@ -6008,17 +6195,17 @@ settings.link.libs:Add(\"wavpack\")")
        ("sdl2-image" ,sdl2-image)
        ("sdl2-mixer" ,sdl2-mixer)
        ("wavpack" ,wavpack)
+       ("openssl" ,openssl)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("bam" ,bam)
-       ("python" ,python-wrapper)
+     `(("python" ,python-wrapper)
        ("pkg-config" ,pkg-config)))
     (home-page "https://www.teeworlds.com")
     (synopsis "2D retro multiplayer shooter game")
     (description "Teeworlds is an online multiplayer game.  Battle with up to
 16 players in a variety of game modes, including Team Deathmatch and Capture
 The Flag.  You can even design your own maps!")
-    (license license:bsd-3)))
+    (license (list license:bsd-3 license:cc-by-sa3.0)))) ; game+maps&languages
 
 (define-public enigma
   (package
@@ -6192,31 +6379,15 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.25.0")
+    (version "0.26.1")
     (source
      (origin
        (method url-fetch)
-       (uri (list
-             ;; Older releases get moved into a versioned directory
-             (string-append "http://crawl.develz.org/release/"
-                            (version-major+minor version) "/stone_soup-"
-                            version "-nodeps.tar.xz")
-             ;; Only the latest release is in this directory
-             (string-append "http://crawl.develz.org/release/stone_soup-"
-                            version "-nodeps.tar.xz")))
+       (uri (string-append "https://github.com/crawl/crawl/releases/download/"
+                           version "/stone_soup-" version "-nodeps.tar.xz"))
        (sha256
-        (base32 "0rn1wjxdqw33caiwisfypm1j8cid3c9pz01ahicl17144zs29z3d"))
-       (patches (search-patches "crawl-upgrade-saves.patch"))
-       ;; The 0.25.0 -nodeps.tar.xz was built from an OSX machine; normally
-       ;; apparently it's built from a Debian machine before the Debian
-       ;; packages are made.  These ._* files are binary and have the string
-       ;; "Mac OS X" in them... removing these seems to result in compilation
-       ;; again.
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (for-each delete-file (find-files "." "^\\._"))
-           #t))))
+        (base32 "1d8p2np2q5951wqphq2f4dyvv976m2lh82b0qp7w9pp1h8zzi1ff"))
+       (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
      `(("lua51" ,lua-5.1)
@@ -6959,7 +7130,7 @@ elements to achieve a simple goal in the most complex way possible.")
 (define-public pioneer
   (package
     (name "pioneer")
-    (version "20200203")
+    (version "20210203")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6968,7 +7139,7 @@ elements to achieve a simple goal in the most complex way possible.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1011xsi94jhw98mhm8kryq8ajig0qfbrdx5xdasi92bd4nk7lcp8"))))
+                "1zyi1xyghj99hz8fa6dywpscj6flp04fspnlgxbivf3rgmnxflg7"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))

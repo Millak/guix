@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Coypright © 2015, 2016, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Coypright © 2015, 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -933,14 +933,14 @@ application suites.")
 (define-public guile-cairo
   (package
     (name "guile-cairo")
-    (version "1.11.1")
+    (version "1.11.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/guile-cairo/guile-cairo-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1gc642r9ndsjhhmh9bl5cbd3dwvy4dpxwhr0zpsw43y9nmz37xpl"))
+                "0yx0844p61ljd4d3d63qrawiygiw6ks02fwv2cqx7nav5kfd8ck2"))
               (modules '((guix build utils)))
               (snippet
                (begin
@@ -951,19 +951,40 @@ application suites.")
                        (string-append name "dir = " prefix
                                       "/guile/site/@GUILE_EFFECTIVE_VERSION@"
                                       suffix)))
-
-                    ;; Guile 2.x <libguile.h> used to pull in <string.h> and
-                    ;; other headers but this is no longer the case in 3.0.
-                    (substitute* (find-files "." "\\.[ch]$")
-                      (("^ *# *include.*libguile\\.h.*$")
-                       "#include <libguile.h>\n#include <string.h>\n"))
                     #t)))))
     (build-system gnu-build-system)
     (arguments
      ;; Uses of 'scm_t_uint8' & co. are deprecated; don't stop the build
      ;; because of them.
-     '(#:configure-flags '("--disable-Werror")
-       #:make-flags '("GUILE_AUTO_COMPILE=0")))     ; to prevent guild warnings
+     `(#:configure-flags '("--disable-Werror")
+       #:make-flags '("GUILE_AUTO_COMPILE=0") ; to prevent guild warnings
+       #:modules ((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 rdelim)
+                  (ice-9 popen))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-go-files
+           (lambda* (#:key outputs inputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (effective (read-line
+                                (open-pipe* OPEN_READ
+                                            "guile" "-c"
+                                            "(display (effective-version))")))
+                    (module-dir (string-append out "/share/guile/site/"
+                                               effective))
+                    (object-dir (string-append out "/lib/guile/" effective
+                                               "/site-ccache"))
+                    (prefix     (string-length module-dir)))
+               ;; compile to the destination
+               (for-each (lambda (file)
+                           (let* ((base (string-drop (string-drop-right file 4)
+                                                     prefix))
+                                  (go   (string-append object-dir base ".go")))
+                             (invoke "guild" "compile" "-L" module-dir
+                                     file "-o" go)))
+                         (find-files module-dir "\\.scm$"))
+               #t))))))
     (inputs
      `(("guile-lib" ,guile-lib)
        ("expat" ,expat)
@@ -1024,10 +1045,36 @@ exceptions, macros, and a dynamic programming environment.")
                 (file-name (string-append name "-" version ".tar.gz"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (replace 'bootstrap
-                      (lambda _
-                        (invoke "autoreconf" "-vfi"))))))
+       `(#:modules ((guix build gnu-build-system)
+                    (guix build utils)
+                    (ice-9 rdelim)
+                    (ice-9 popen))
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'bootstrap
+             (lambda _
+               (invoke "autoreconf" "-vfi")))
+           (add-after 'install 'install-go-files
+             (lambda* (#:key outputs inputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (effective (read-line
+                                  (open-pipe* OPEN_READ
+                                              "guile" "-c"
+                                              "(display (effective-version))")))
+                      (module-dir (string-append out "/share/guile/site/"
+                                                 effective))
+                      (object-dir (string-append out "/lib/guile/" effective
+                                                 "/site-ccache"))
+                      (prefix     (string-length module-dir)))
+                 ;; compile to the destination
+                 (for-each (lambda (file)
+                             (let* ((base (string-drop (string-drop-right file 4)
+                                                       prefix))
+                                    (go   (string-append object-dir base ".go")))
+                               (invoke "guild" "compile" "-L" module-dir
+                                       file "-o" go)))
+                           (find-files module-dir "\\.scm$"))
+                 #t))))))
       (native-inputs `(("pkg-config" ,pkg-config)
                        ("autoconf" ,autoconf)
                        ("automake" ,automake)

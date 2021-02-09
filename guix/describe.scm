@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,15 +23,18 @@
   #:use-module ((guix utils) #:select (location-file))
   #:use-module ((guix store) #:select (%store-prefix store-path?))
   #:use-module ((guix config) #:select (%state-directory))
+  #:autoload   (guix channels) (sexp->channel manifest-entry-channel)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (current-profile
             current-profile-date
             current-profile-entries
+            current-channels
             package-path-entries
 
             package-provenance
-            manifest-entry-with-provenance))
+            manifest-entry-with-provenance
+            manifest-entry-provenance))
 
 ;;; Commentary:
 ;;;
@@ -85,10 +88,19 @@ as a number of seconds since the Epoch, or #f if it could not be determined."
                            (string-append (dirname file) "/" target)))))
              (const #f)))))))
 
+(define (channel-metadata)
+  "Return the 'guix' channel metadata sexp from (guix config) if available;
+otherwise return #f."
+  ;; Older 'build-self.scm' would create a (guix config) file without the
+  ;; '%channel-metadata' variable.  Thus, properly deal with a lack of
+  ;; information.
+  (let ((module (resolve-interface '(guix config))))
+    (and=> (module-variable module '%channel-metadata) variable-ref)))
+
 (define current-profile-entries
   (mlambda ()
     "Return the list of entries in the 'guix pull' profile the calling process
-lives in, or #f if this is not applicable."
+lives in, or the empty list if this is not applicable."
     (match (current-profile)
       (#f '())
       (profile
@@ -102,6 +114,20 @@ lives in, or #f if this is not applicable."
     (remove (lambda (entry)
               (string=? (manifest-entry-name entry) "guix"))
             (current-profile-entries))))
+
+(define current-channels
+  (mlambda ()
+    "Return the list of channels currently available, including the 'guix'
+channel.  Return the empty list if this information is missing."
+    (match (current-profile-entries)
+      (()
+       ;; As a fallback, if we're not running from a profile, use 'guix'
+       ;; channel metadata from (guix config).
+       (match (channel-metadata)
+         (#f '())
+         (sexp (or (and=> (sexp->channel sexp 'guix) list) '()))))
+      (entries
+       (filter-map manifest-entry-channel entries)))))
 
 (define (package-path-entries)
   "Return two values: the list of package path entries to be added to the
@@ -166,3 +192,31 @@ there."
                (#f   properties)
                (sexp `((provenance ,@sexp)
                        ,@properties)))))))))
+
+(define (manifest-entry-provenance entry)
+  "Return the list of channels ENTRY comes from.  Return the empty list if
+that information is missing."
+  (match (assq-ref (manifest-entry-properties entry) 'provenance)
+    ((main extras ...)
+     ;; XXX: Until recently, channel sexps lacked the channel name.  For
+     ;; entries created by 'manifest-entry-with-provenance', the first sexp
+     ;; is known to be the 'guix channel, and for the other ones, invent a
+     ;; fallback name (it's OK as the name is just a "pet name").
+     (match (sexp->channel main 'guix)
+       (#f '())
+       (channel
+        (let loop ((extras   extras)
+                   (counter  1)
+                   (channels (list channel)))
+          (match extras
+            (()
+             (reverse channels))
+            ((head . tail)
+             (let* ((name  (string->symbol
+                            (format #f "channel~a" counter)))
+                    (extra (sexp->channel head name)))
+               (if extra
+                   (loop tail (+ 1 counter) (cons extra channels))
+                   (loop tail counter channels)))))))))
+    (_
+     '())))

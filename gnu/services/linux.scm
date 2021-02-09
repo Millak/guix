@@ -2,6 +2,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,35 +148,34 @@ representation."
 (define kernel-module-loader-shepherd-service
   (match-lambda
     ((and (? list? kernel-modules) ((? string?) ...))
-     (list
-      (shepherd-service
-       (documentation "Load kernel modules.")
-       (provision '(kernel-module-loader))
-       (requirement '(file-systems))
-       (one-shot? #t)
-       (modules `((srfi srfi-1)
-                  (srfi srfi-34)
-                  (srfi srfi-35)
-                  (rnrs io ports)
-                  ,@%default-modules))
-       (start
-        #~(lambda _
-            (cond
-             ((null? '#$kernel-modules) #t)
-             ((file-exists? "/proc/sys/kernel/modprobe")
-              (let ((modprobe (call-with-input-file
-                               "/proc/sys/kernel/modprobe" get-line)))
-                (guard (c ((message-condition? c)
-                           (format (current-error-port) "~a~%"
-                                   (condition-message c))
-                           #f))
-                  (every (lambda (module)
-                         (invoke/quiet modprobe "--" module))
-                         '#$kernel-modules))))
-             (else
-               (format (current-error-port) "error: ~a~%"
-                       "Kernel is missing loadable module support.")
-               #f)))))))))
+     (shepherd-service
+      (documentation "Load kernel modules.")
+      (provision '(kernel-module-loader))
+      (requirement '())
+      (one-shot? #t)
+      (modules `((srfi srfi-1)
+                 (srfi srfi-34)
+                 (srfi srfi-35)
+                 (rnrs io ports)
+                 ,@%default-modules))
+      (start
+       #~(lambda _
+           (cond
+            ((null? '#$kernel-modules) #t)
+            ((file-exists? "/proc/sys/kernel/modprobe")
+             (let ((modprobe (call-with-input-file
+                                 "/proc/sys/kernel/modprobe" get-line)))
+               (guard (c ((message-condition? c)
+                          (format (current-error-port) "~a~%"
+                                  (condition-message c))
+                          #f))
+                 (every (lambda (module)
+                          (invoke/quiet modprobe "--" module))
+                        '#$kernel-modules))))
+            (else
+             (format (current-error-port) "error: ~a~%"
+                     "Kernel is missing loadable module support.")
+             #f))))))))
 
 (define kernel-module-loader-service-type
   (service-type
@@ -183,7 +183,7 @@ representation."
    (description "Load kernel modules.")
    (extensions
     (list (service-extension shepherd-root-service-type
-                             kernel-module-loader-shepherd-service)))
+                             (compose list kernel-module-loader-shepherd-service))))
    (compose concatenate)
    (extend append)
    (default-value '())))

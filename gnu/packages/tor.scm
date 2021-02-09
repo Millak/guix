@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
@@ -54,19 +54,26 @@
 (define-public tor
   (package
     (name "tor")
-    (version "0.4.4.6")
+    (version "0.4.4.7")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dist.torproject.org/tor-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1p0zpqmbskygx0wmiijhprg8r45n2wqbbjl7kv4gbb83b0alq5az"))))
+               "1vh5kdx7s74il8a6gr7jydbpv0an01nla4y2r8w7h33z2wk2jv9j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list "--enable-lzma"
-             "--enable-zstd")))
+             "--enable-zstd")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'skip-practracker
+           ;; This is a style linter.  It doesn't get to throw fatal errors.
+           (lambda _
+             (setenv "TOR_DISABLE_PRACTRACKER" "set")
+             #t)))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python" ,python)))             ; for tests
@@ -155,7 +162,7 @@ rejects UDP traffic from the application you're using.")
 (define-public privoxy
   (package
     (name "privoxy")
-    (version "3.0.29")
+    (version "3.0.31")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://sourceforge/ijbswa/Sources/"
@@ -163,7 +170,7 @@ rejects UDP traffic from the application you're using.")
                                  version "-stable-src.tar.gz"))
              (sha256
               (base32
-               "17a8fbdyb0ixc0wwq68fg7xn7l6n7jq67njpq93psmxgzng0dii5"))))
+               "1sq4s0h73r7mynl8s0ynn3a6zl98j06nb2nqx2j254n7maijjxq7"))))
     (build-system gnu-build-system)
     (arguments
      '(;; The default 'sysconfdir' is $out/etc; change that to
@@ -253,7 +260,7 @@ networks.")
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (inputs
-     `(("python-pycrypto" ,python-pycrypto)
+     `(("python-pycryptodome" ,python-pycryptodome)
        ("python-flask" ,python-flask)
        ("python-flask-httpauth" ,python-flask-httpauth)
        ("python-nautilus" ,python-nautilus)

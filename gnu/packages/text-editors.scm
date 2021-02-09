@@ -5,13 +5,15 @@
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.org>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Mark Meyer <mark@ofosos.org>
+;;; Copyright © 2020 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 aecepoglu <aecepoglu@fastmail.fm>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,9 +35,9 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
@@ -45,6 +47,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -203,6 +206,50 @@ competitive (as in keystroke count) with Vim.")
     (home-page "https://kakoune.org/")
     (license license:unlicense)))
 
+(define-public kak-lsp
+  (package
+    (name "kak-lsp")
+    (version "9.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kak-lsp/kak-lsp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 "1wfv2fy5ga6kc51zka3pak0hq97csm2l11bz74w3n1hrf5q9nnf8")))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-daemonize" ,rust-daemonize-0.4)
+        ("rust-dirs" ,rust-dirs-2)
+        ("rust-enum_primitive" ,rust-enum-primitive-0.1)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-lsp-types" ,rust-lsp-types-0.80)
+        ("rust-jsonrpc-core" ,rust-jsonrpc-core-14)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-ropey" ,rust-ropey-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde_derive" ,rust-serde-derive-1)
+        ("rust-serde_json" ,rust-serde-json-1)
+        ("rust-slog" ,rust-slog-2)
+        ("rust-slog-scope" ,rust-slog-scope-4)
+        ("rust-sloggers" ,rust-sloggers-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-url" ,rust-url-2)
+        ("rust-whoami" ,rust-whoami-0.8))))
+    (home-page "https://github.com/kak-lsp/kak-lsp")
+    (synopsis "Language Server Protocol (LSP) client for Kakoune")
+    (description
+     "kak-lsp is a Language Server Protocol client for Kakoune implemented in
+Rust.")
+    (license license:unlicense)))
+
 (define-public joe
   (package
     (name "joe")
@@ -229,7 +276,7 @@ bindings and many of the powerful features of GNU Emacs.")
 (define-public jucipp
   (package
     (name "jucipp")
-    (version "1.6.1")
+    (version "1.6.2")
     (home-page "https://gitlab.com/cppit/jucipp")
     (source (origin
               (method git-fetch)
@@ -241,7 +288,7 @@ bindings and many of the powerful features of GNU Emacs.")
                                   (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0lb477acqrm3fy3j6i7j9l68j48cnkrzi80588npwwjssqicy4g6"))))
+               (base32 "10idv2kyw2dg45wfcnh7nybs8qys7kfvif90sjrff3541k97pm5y"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_TESTING=ON"
@@ -787,6 +834,14 @@ editors.")
                (substitute* "packages/linux/icons.sh"
                  (("/usr/share")
                   (string-append out "/share")))
+               #t)))
+         (add-after 'install 'install-desktop-file
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Install desktop file.
+             (let* ((out (assoc-ref outputs "out"))
+                    (apps (string-append out "/share/applications"))
+                    (source "TeXmacs/misc/mime/texmacs.desktop"))
+               (install-file source apps)
                #t)))
          (add-before 'configure 'gzip-flags
            (lambda _

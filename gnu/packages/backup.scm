@@ -17,6 +17,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
+;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -672,6 +673,19 @@ detection, and lossless compression.")
                            "docs/misc/internals-picture.txt"
                            "docs/misc/prune-example.txt"))
                (copy-recursively "docs/man" man)
+               #t)))
+         (add-after 'install-docs 'install-shell-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (etc (string-append out "/etc"))
+                    (share (string-append out "/share")))
+               (with-directory-excursion "scripts/shell_completions"
+                 (install-file "bash/borg"
+                               (string-append etc "/bash_completion.d"))
+                 (install-file "zsh/_borg"
+                               (string-append share "/zsh/site-functions"))
+                 (install-file "fish/borg.fish"
+                               (string-append share "/fish/vendor_completions.d")))
                #t))))))
     (native-inputs
      `(("python-cython" ,python-cython)
@@ -994,7 +1008,7 @@ is format-agnostic, so you can feed virtually any files to it.")
 (define-public dump
   (package
     (name "dump")
-    (version "0.4b46")
+    (version "0.4b47")
     (source
      (origin
        (method url-fetch)
@@ -1002,7 +1016,7 @@ is format-agnostic, so you can feed virtually any files to it.")
                            version "/dump-" version ".tar.gz"))
        (sha256
         (base32
-         "15rg5y15ak0ppqlhcih78layvg7cwp6hc16p3c58xs8svlkxjqc0"))))
+         "1l2gzzxyqhinx1yqvj4yn9k8vx3iyqi1965dxf9kvvdv9zgaq8fh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1012,7 +1026,7 @@ is format-agnostic, so you can feed virtually any files to it.")
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("openssl" ,openssl-1.0)
+     `(("openssl" ,openssl)
        ("zlib" ,zlib)
        ("util-linux" ,util-linux "lib")
        ("e2fsprogs" ,e2fsprogs)))

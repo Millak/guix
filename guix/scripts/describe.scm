@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
@@ -113,22 +113,6 @@ Display information about the channels currently in use.\n"))
        (_
         (warning (G_ "'GUIX_PACKAGE_PATH' is set but it is not captured~%")))))))
 
-(define* (channel->sexp channel #:key (include-introduction? #t))
-  (let ((intro (and include-introduction?
-                    (channel-introduction channel))))
-    `(channel
-      (name ',(channel-name channel))
-      (url ,(channel-url channel))
-      (commit ,(channel-commit channel))
-      ,@(if intro
-            `((introduction (make-channel-introduction
-                             ,(channel-introduction-first-signed-commit intro)
-                             (openpgp-fingerprint
-                              ,(openpgp-format-fingerprint
-                                (channel-introduction-first-commit-signer
-                                 intro))))))
-            '()))))
-
 (define (channel->json channel)
   (scm->json-string
    (let ((intro (channel-introduction channel)))
@@ -183,7 +167,7 @@ string is ~a.~%")
        (format #t (G_ "  branch: ~a~%") (reference-shorthand head))
        (format #t (G_ "  commit: ~a~%") commit))
       ('channels
-       (pretty-print `(list ,(channel->sexp (channel (name 'guix)
+       (pretty-print `(list ,(channel->code (channel (name 'guix)
                                                      (url (dirname directory))
                                                      (commit commit))))))
       ('json
@@ -198,24 +182,22 @@ string is ~a.~%")
                           (current-output-port))))
     (display-package-search-path fmt)))
 
-(define (display-profile-info profile fmt)
+(define* (display-profile-info profile fmt
+                               #:optional
+                               (channels (profile-channels profile)))
   "Display information about PROFILE, a profile as created by (guix channels),
-in the format specified by FMT."
+in the format specified by FMT.  PROFILE can be #f, in which case CHANNELS is
+what matters."
   (define number
-    (generation-number profile))
-
-  (define channels
-    (profile-channels (if (zero? number)
-                          profile
-                          (generation-file-name profile number))))
+    (and profile (generation-number profile)))
 
   (match fmt
     ('human
-     (display-profile-content profile number))
+     (display-profile-content profile number channels))
     ('channels
-     (pretty-print `(list ,@(map channel->sexp channels))))
+     (pretty-print `(list ,@(map channel->code channels))))
     ('channels-sans-intro
-     (pretty-print `(list ,@(map (cut channel->sexp <>
+     (pretty-print `(list ,@(map (cut channel->code <>
                                       #:include-introduction? #f)
                                  channels))))
     ('json
@@ -229,39 +211,37 @@ in the format specified by FMT."
                   channels))))
   (display-package-search-path fmt))
 
-(define (display-profile-content profile number)
-  "Display the packages in PROFILE, generation NUMBER, in a human-readable
-way and displaying details about the channel's source code."
-  (display-generation profile number)
-  (for-each (lambda (entry)
-              (format #t "  ~a ~a~%"
-                      (manifest-entry-name entry)
-                      (manifest-entry-version entry))
-              (match (assq 'source (manifest-entry-properties entry))
-                (('source ('repository ('version 0)
-                                       ('url url)
-                                       ('branch branch)
-                                       ('commit commit)
-                                       _ ...))
-                 (let ((channel (channel (name 'nameless)
-                                         (url url)
-                                         (branch branch)
-                                         (commit commit))))
-                   (format #t (G_ "    repository URL: ~a~%") url)
-                   (when branch
-                     (format #t (G_ "    branch: ~a~%") branch))
-                   (format #t (G_ "    commit: ~a~%")
-                           (if (supports-hyperlinks?)
-                               (channel-commit-hyperlink channel commit)
-                               commit))))
-                (_ #f)))
+(define (profile-generation-channels profile number)
+  "Return the list of channels for generation NUMBER of PROFILE."
+  (profile-channels (if (zero? number)
+                        profile
+                        (generation-file-name profile number))))
 
-            ;; Show most recently installed packages last.
-            (reverse
-             (manifest-entries
-              (profile-manifest (if (zero? number)
-                                    profile
-                                    (generation-file-name profile number)))))))
+(define* (display-profile-content profile number
+                                  #:optional
+                                  (channels
+                                   (profile-generation-channels profile
+                                                                number)))
+  "Display CHANNELS along with PROFILE info, generation NUMBER, in a
+human-readable way and displaying details about the channel's source code.
+PROFILE and NUMBER "
+  (when (and number profile)
+    (display-generation profile number))
+
+  (for-each (lambda (channel)
+              (format #t "  ~a ~a~%"
+                      (channel-name channel)
+                      (string-take (channel-commit channel) 7))
+              (format #t (G_ "    repository URL: ~a~%")
+                      (channel-url channel))
+              (when (channel-branch channel)
+                (format #t (G_ "    branch: ~a~%")
+                        (channel-branch channel)))
+              (format #t (G_ "    commit: ~a~%")
+                      (if (supports-hyperlinks?)
+                          (channel-commit-hyperlink channel)
+                          (channel-commit channel))))
+            channels))
 
 (define %vcs-web-views
   ;; Hard-coded list of host names and corresponding web view URL templates.
@@ -317,6 +297,10 @@ text.  The hyperlink links to a web view of COMMIT, when available."
     (with-error-handling
       (match profile
         (#f
-         (display-checkout-info format))
+         (match (current-channels)
+           (()
+            (display-checkout-info format))
+           (channels
+            (display-profile-info #f format channels))))
         (profile
          (display-profile-info (canonicalize-profile profile) format))))))

@@ -1,14 +1,14 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -2343,14 +2343,14 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
 (define-public lilv
   (package
     (name "lilv")
-    (version "0.24.8")
+    (version "0.24.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://download.drobilla.net/lilv-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "0063i5zgf3d3accwmyx651hw0wh5ik7kji2hvfkcdbl1qia3dp6a"))))
+               "1565zy0yz46cf2f25pi46msdnzkj6bbhml9gfigdpjnsdlyskfyi"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
@@ -2703,7 +2703,7 @@ background file post-processing.")
 (define-public supercollider
   (package
     (name "supercollider")
-    (version "3.11.0")
+    (version "3.11.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2714,7 +2714,7 @@ background file post-processing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02v911w2kdbg3kfl593lb2ig4sjbfxzv20a0vbcymhfzpvp1x6xp"))
+                "1gi7nrmjmbnjndqkmhfrkk0jchrzvnhl3f6gp6n5wgdd4mxbgxgw"))
               (modules '((guix build utils)
                          (ice-9 ftw)))
               (snippet
@@ -2744,7 +2744,8 @@ link REQUIRED)"))
     (arguments
      `(#:configure-flags '("-DSYSTEM_BOOST=on" "-DSYSTEM_YAMLCPP=on"
                            "-DSC_QT=ON" "-DCMAKE_BUILD_TYPE=Release"
-                           "-DFORTIFY=ON" "-DLIBSCSYNTH=ON"
+                           "-DFORTIFY=ON"
+                           ;"-DLIBSCSYNTH=ON"   ; TODO: Re-enable?
                            "-DSC_EL=off") ;scel is packaged individually as
                                           ;emacs-scel
        #:phases
@@ -4133,6 +4134,63 @@ the following features:
 ")
     (license license:lgpl3+)))
 
+(define-public lv2-speech-denoiser
+  (let ((commit "04cfba929630404f8d4f4ca5bac8d9b09a99152f")
+        (revision "1"))
+    (package
+      (name "lv2-speech-denoiser")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lucianodato/speech-denoiser/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "189l6lz8sz5vr6bjyzgcsrvksl1w6crqsg0q65r94b5yjsmjnpr4"))))
+      (build-system meson-build-system)
+      (arguments
+       `(#:meson ,meson-0.55
+         ;; Using a "release" build is recommended for performance
+         #:build-type "release"
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-meson-build
+             (lambda _
+               (substitute* "meson.build"
+                 (("install_folder = 'sdenoise.lv2'")
+                  "install_folder = 'lib/lv2/sdenoise.lv2'")
+                 (("build/manifest.ttl") "../build/manifest.ttl"))
+               #t))
+           (add-after 'unpack 'build-rnnoise
+             (lambda _
+               (with-directory-excursion "rnnoise"
+                 (let ((old-CFLAGS (getenv "CFLAGS")))
+                   (setenv "CFLAGS" "-fvisibility=hidden -fPIC -Wl,--exclude-libs,ALL")
+                   (setenv "CONFIG_SHELL" (which "bash"))
+                   (invoke "autoreconf" "-vif")
+                   (invoke "sh" "configure"
+                           "--disable-examples"
+                           "--disable-doc"
+                           "--disable-shared"
+                           "--enable-static")
+                   (invoke "make")
+                   (setenv "CFLAGS" old-CFLAGS))))))))
+      (inputs
+       `(("lv2" ,lv2)))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("libtool" ,libtool)
+         ("pkg-config" ,pkg-config)))
+      (home-page "https://github.com/werman/noise-suppression-for-voice")
+      (synopsis "Speech denoise LV2 plugin based on Xiph's RNNoise library")
+      (description "RNNoise is a library that uses deep learning to apply
+noise supression to audio sources with voice presence.  This package provides
+an LV2 audio plugin.")
+      (license license:lgpl3+))))
+
 (define-public cli-visualizer
   (package
     (name "cli-visualizer")
@@ -4771,11 +4829,13 @@ with the provided metadata and adhere to well-known best practices.")
         (base32
          "07xl3cmdaf7k9mm58m93cn8i1jvgimmiifdw1w7v2jl88nx60pm1"))))
     (build-system meson-build-system)
-    (inputs
-     `(("cairo" ,cairo)
-       ("libx11" ,libx11)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
+    ;; These are listed as propagated inputs because they are dependencies
+    ;; in pkgconfig.
+    (propagated-inputs
+     `(("cairo" ,cairo)
+       ("libx11" ,libx11)))
     (synopsis "GUI toolkit for LV2 plugins")
     (description "ZToolkit (Ztk) is a cross-platform GUI toolkit heavily
 inspired by GTK.  It handles events and low level drawing on behalf of
@@ -4824,24 +4884,23 @@ edited, converted, compressed and saved.")
     (name "ztoolkit-rsvg")
     (arguments
      `(#:configure-flags `("-Denable_rsvg=true")))
-    (inputs
+    (propagated-inputs
      `(("librsvg" ,librsvg)
-       ,@(package-inputs ztoolkit)))
+       ,@(package-propagated-inputs ztoolkit)))
     (synopsis "ZToolkit with SVG support")))
 
 (define-public lsp-dsp-lib
   (package
     (name "lsp-dsp-lib")
-    (version "0.5.8")
+    (version "0.5.11")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/sadko4u/lsp-dsp-lib/"
-                            "releases/download/lsp-dsp-lib-" version
+                            "releases/download/" version
                             "/lsp-dsp-lib-" version "-src.tar.gz"))
         (sha256
-         (base32
-          "07w3d2i0z0xmvi1ngcgs7lc5a0da8jvf7rv4dnjk01md43b7fkh1"))))
+         (base32 "0lkar6r9jfrrqswi8nnndlm5a9kfwqjn92d81gp2yhc3p46xsswz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -4849,6 +4908,11 @@ edited, converted, compressed and saved.")
        (list (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'omit-static-library
+           (lambda _
+             (substitute* "src/Makefile"
+               ((".*@.*ARTIFACT_SLIB.*") "")       ; don't install it
+               ((" \\$\\(ARTIFACT_SLIB\\)") "")))) ; don't build it
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke "make" "config"

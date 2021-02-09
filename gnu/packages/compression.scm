@@ -10,7 +10,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2019, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -29,6 +29,8 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020 Léo Le Bouter <lle-bout@zaclys.net>
+;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +57,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
@@ -70,7 +73,9 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -78,6 +83,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:select (last)))
@@ -621,14 +627,14 @@ archiving.  Lzip is a clean implementation of the LZMA algorithm.")
 (define-public lziprecover
   (package
     (name "lziprecover")
-    (version "1.21")
+    (version "1.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/lzip/lziprecover/"
                                   "lziprecover-" version ".tar.gz"))
               (sha256
                (base32
-                "094w2z8fz41yaq0gkyr61cl7pb1d7kchpl5dka7rvm3qvbb7ncd2"))))
+                "0qh8dnhr5rly2k9dnx43qqynqwqzi5kfb15pyd29qwppfl4qm5gx"))))
     (build-system gnu-build-system)
     (home-page "https://www.nongnu.org/lzip/lziprecover.html")
     (synopsis "Recover and decompress data from damaged lzip files")
@@ -1024,6 +1030,41 @@ smaller than those produced by @code{Xdelta}.")
     (description "Extracts files out of Microsoft Cabinet (.cab) archives")
     ;; Some source files specify gpl2+, lgpl2+, however COPYING is gpl3.
     (license license:gpl3+)))
+
+(define-public libjcat
+  (package
+    (name "libjcat")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/hughsie/libjcat")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rxyqikdhkh2nq1y0hy05df2kkxf3d2cp6lm5x1s5i717k6y3zy5"))))
+    (build-system meson-build-system)
+    (native-inputs
+     `(("gobject-introspection" ,gobject-introspection)
+       ("help2man" ,help2man)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("git" ,git)
+       ("glib" ,glib)
+       ("gnupg" ,gnupg)
+       ("gnutls" ,gnutls)
+       ("gpgme" ,gpgme)
+       ("json-glib" ,json-glib)
+       ("vala" ,vala)))
+    (home-page "https://github.com/hughsie/libjcat")
+    (synopsis "Library for reading and writing Jcat files")
+    (description
+     "This library allows reading and writing gzip-compressed JSON catalog
+files, which can be used to store GPG, PKCS-7 and SHA-256 checksums for each
+file.")
+    (license license:lgpl2.1+)))
 
 (define-public xdelta
   (package
@@ -1816,14 +1857,14 @@ Clzip is intended to be fully compatible with the regular lzip package.")
 (define-public lzlib
   (package
     (name "lzlib")
-    (version "1.11")
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/lzlib/"
                            "lzlib-" version ".tar.gz"))
        (sha256
-        (base32 "0djdj4sg33rzi4k84cygvnp09bfsv6i8wy2k7i67rayib63myp3c"))))
+        (base32 "1c9pwd6by8is4z8bs6j306jyy6pgm2dvsn4fr7fg2b5m5qj88pcf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1843,14 +1884,14 @@ corrupted input.")
 (define-public plzip
   (package
     (name "plzip")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/plzip/"
                            "plzip-" version ".tar.gz"))
        (sha256
-        (base32 "04indil809qgfmz776imb3dnhkysh7zk28jcv3mw0ahl2lyaxbzd"))))
+        (base32 "19zinpx7hssl6r3vilpvq2s7wha3545xan8b0vcvsxnyipdx3n0l"))))
     (build-system gnu-build-system)
     (inputs
      `(("lzlib" ,lzlib)))
@@ -2075,13 +2116,13 @@ reading from and writing to ZIP archives. ")
 (define-public zutils
   (package
     (name "zutils")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/zutils/zutils-" version ".tar.lz"))
        (sha256
-        (base32 "0y2wm8wqr1wi1b1fv45dn50njv4q81p6ifx0279ji1bq56qkrn2r"))))
+        (base32 "15dimqp8zlqaaa2l46r22srp1py38mlmn69ph1j5fmrd54w43m0d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2327,14 +2368,14 @@ to their original, binary CD format.")
 (define-public tarlz
   (package
     (name "tarlz")
-    (version "0.17")
+    (version "0.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/tarlz/"
                            "tarlz-" version ".tar.lz"))
        (sha256
-        (base32 "0gpdm6z9pdr5bn31kxg73wm686hhpb5pdf5782pbl5a4xqqhqj90"))))
+        (base32 "09xal55973ivzpaja93jcc1pfla8gb3vrk8dx7pj9qvvz5aynf9n"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("lzip" ,lzip)))

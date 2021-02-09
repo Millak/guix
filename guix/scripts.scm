@@ -3,6 +3,8 @@
 ;;; Copyright © 2014 Deck Pickard <deck.r.pickard@gmail.com>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,7 +88,8 @@
   (development (G_ "software development commands"))
   (packaging   (G_ "packaging commands"))
   (plumbing    (G_ "plumbing commands"))
-  (internal    (G_ "internal commands")))
+  (internal    (G_ "internal commands"))
+  (extension   (G_ "extension commands")))
 
 (define-syntax define-command
   (syntax-rules (category synopsis)
@@ -109,6 +112,13 @@ procedure, but both the category and synopsis are meant to be read (parsed) by
        (define (name . args)
          doc
          body ...)))))
+
+(define (option-hint guess options)
+  "Return the closest long-name OPTIONS from GUESS,
+according to'string-distance'."
+  (define (options->long-names options)
+    (filter string? (append-map option-names options)))
+  (string-closest guess (options->long-names options) #:threshold 3))
 
 (define (args-fold* args options unrecognized-option-proc operand-proc . seeds)
   "A wrapper on top of `args-fold' that does proper user-facing error
@@ -147,7 +157,12 @@ parameter of 'args-fold'."
     ;; Actual parsing takes place here.
     (apply args-fold* args options
            (lambda (opt name arg . rest)
-             (leave (G_ "~A: unrecognized option~%") name))
+             (let ((hint (option-hint name options)))
+               (report-error (G_ "~A: unrecognized option~%") name)
+               (when hint
+                 (display-hint
+                  (format #f (G_ "Did you mean @code{~a}?~%") hint)))
+               (exit 1)))
            argument-handler
            seeds))
 

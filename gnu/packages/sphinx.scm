@@ -10,7 +10,7 @@
 ;;; Copyright © 2017 Christopher Allan Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -42,6 +42,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time))
@@ -100,7 +101,52 @@
 for Python projects or other documents consisting of multiple reStructuredText
 sources.")
     (license license:bsd-2)
-    (properties `((python2-variant . ,(delay python-sphinx))))))
+    (properties `((python2-variant . ,(delay python2-sphinx))))))
+
+;; Sphinx 2 does not support Python 2, so we stick with this older version here.
+(define-public python2-sphinx
+  (let ((base (package-with-python2 (strip-python2-variant python-sphinx))))
+    (package
+      (inherit base)
+      (version "1.7.7")
+      (source (origin
+                (method url-fetch)
+                (uri (pypi-uri "Sphinx" version))
+                (sha256
+                 (base32
+                  "0pkkbfj7cl157q550gcs45am5y78ps0h7q6455d64s1zmw01jlvi"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-before 'check 'disable-broken-tests
+               (lambda _
+                 (for-each delete-file
+                           ;; These tests are broken when using Python2:
+                           ;; <https://github.com/sphinx-doc/sphinx/issues/4710>.
+                           '("tests/test_api_translator.py"
+                             "tests/test_setup_command.py"
+                             ;; This one fails for unknown reasons.
+                             "tests/test_correct_year.py"))))))))
+      (native-inputs `(("python2-mock" ,python2-mock)
+                       ("python2-enum34" ,python2-enum34)
+                       ,@(package-native-inputs base)))
+      ;; Sphinx 2 has some dependencies that do not support Python 2, so
+      ;; we keep our own propagated-inputs here instead of inheriting.
+      (propagated-inputs
+       `(("python2-pytz" ,python2-pytz)
+         ("python2-typing" ,python2-typing)
+         ("python2-imagesize" ,python2-imagesize)
+         ("python2-sphinx-alabaster-theme" ,python2-sphinx-alabaster-theme)
+         ("python2-babel" ,python2-babel)
+         ("python2-snowballstemmer" ,python2-snowballstemmer)
+         ("python2-docutils" ,python2-docutils-0.14)
+         ("python2-jinja2" ,python2-jinja2)
+         ("python2-packaging" ,python2-packaging)
+         ("python2-pygments" ,python2-pygments)
+         ("python2-requests" ,python2-requests)
+         ("python2-six" ,python2-six)
+         ("python2-sphinxcontrib-websupport" ,python2-sphinxcontrib-websupport))))))
 
 (define-public python-sphinxcontrib-applehelp
   (package
@@ -437,6 +483,30 @@ theme for the Sphinx documentation system.  It's the default theme of Sphinx.")
 
 (define-public python2-sphinx-alabaster-theme
   (package-with-python2 python-sphinx-alabaster-theme))
+
+(define-public python-sphinx-argparse
+  (package
+    (name "python-sphinx-argparse")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinx-argparse" version))
+       (sha256
+        (base32 "05wc8f5hb3jsg2vh2jf7jsyan8d4i09ifrz2c8fp6f7x1zw9iav0"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-sphinx" ,python-sphinx)))
+    (native-inputs
+     `(("python-commonmark" ,python-commonmark)
+       ("python-pytest" ,python-pytest)
+       ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)))
+    (home-page "https://github.com/ribozz/sphinx-argparse")
+    (synopsis "Sphinx extension for documenting argparse commands and options")
+    (description
+     "This package is a sphinx extension that automatically documents
+argparse commands and options")
+    (license license:expat)))
 
 (define-public python-sphinx-cloud-sptheme
   (package

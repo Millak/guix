@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,7 +49,7 @@ supported content to the Kodi media center.")
   (make-chromium-extension play-to-kodi))
 
 (define uassets
-  (let ((commit "8e79f25fceb7c27960753de6f4d21491257741ab"))
+  (let ((commit "61b43044fbe7be0cf4e9c636fe96236dc52e44cf"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -58,12 +58,12 @@ supported content to the Kodi media center.")
       (file-name (git-file-name "uAssets" (string-take commit 9)))
       (sha256
        (base32
-        "19ymyv6qpmmyw4lnpx6adm6mzf8ygfj0c9ljw24wl239v9vzn46w")))))
+        "03ikia0prmzsc34qa3418dc49ss8ari9hj6g3s6nvxrgyd127idi")))))
 
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.32.4")
+    (version "1.33.2")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
@@ -71,7 +71,7 @@ supported content to the Kodi media center.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v5phzsrav1z0gd7rirmsy7k500xhibw73ffk61754hkqd0l635v"))))
+                "1pdf3fzc7ld65gr87s1cdy2sb84jbqnyq9lvwg1mgzi9dg8x7639"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (arguments

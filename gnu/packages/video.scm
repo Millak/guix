@@ -15,7 +15,7 @@
 ;;; Copyright © 2016, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 201–72021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
@@ -35,19 +35,21 @@
 ;;; Copyright © 2019 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen@protonmail.com>
-;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Alex McGrath <amk@amk.ie>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2020 Ivan Kozlov <kanichos@yandex.ru>
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
+;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +76,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
+  #:use-module (guix hg-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
@@ -886,14 +889,14 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public mkvtoolnix
   (package
     (name "mkvtoolnix")
-    (version "51.0.0")
+    (version "52.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mkvtoolnix.download/sources/"
                            "mkvtoolnix-" version ".tar.xz"))
        (sha256
-        (base32 "0w2crz6wnfw18m9m4zrij1yplcq5drzhz8n58w9kp51wl48a0yn1"))
+        (base32 "15y7ahlifsclnkl70wn5w34dil8nwcwcjnw3k2ydqc6dz4vb0j5s"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Delete bundled libraries.
@@ -915,6 +918,7 @@ H.264 (MPEG-4 AVC) video streams.")
        ("file" ,file)
        ("flac" ,flac)
        ("fmt" ,fmt)
+       ("libdvdread" ,libdvdread)
        ("libmatroska" ,libmatroska)
        ("libogg" ,libogg)
        ("libvorbis" ,libvorbis)
@@ -1766,17 +1770,16 @@ videoformats depend on the configuration flags of ffmpeg.")
 (define-public vlc
   (package
     (name "vlc")
-    (version "3.0.11.1")
+    (version "3.0.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://download.videolan.org/pub/videolan/vlc/"
                     (car (string-split version #\-))
                     "/vlc-" version ".tar.xz"))
-              (patches (search-patches "vlc-qt-5.15.patch"))
               (sha256
                (base32
-                "1f46h0hv7fk35zg4iczlp7ib7h2jmh8m4r5klw3g2558ib9134qq"))))
+                "0ygqihw2c5vvzv8950dlf7rdwz1cpz1668jgyja604ljibrmix7g"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("flex" ,flex)
@@ -2194,14 +2197,14 @@ To load this plugin, specify the following option when starting mpv:
 (define-public youtube-dl
   (package
     (name "youtube-dl")
-    (version "2020.12.14")
+    (version "2021.01.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://youtube-dl.org/downloads/latest/"
                                   "youtube-dl-" version ".tar.gz"))
               (sha256
                (base32
-                "0ws2nsvn0qlnnyxz9g95ffygscfmg5npzmwbq8iyyi6b2njsb0cn"))
+                "1q8pvw5j45k8nvr3d9rvnhi6xaj1mdqlkrg7q7qq6zciq5r54fhi"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
@@ -2376,7 +2379,7 @@ other site that youtube-dl supports.")
 (define-public you-get
   (package
     (name "you-get")
-    (version "0.4.1488")
+    (version "0.4.1500")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2385,7 +2388,7 @@ other site that youtube-dl supports.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10dx1gka92m42f8ah1mzylbd71apzrphfa48r5ci7g1j8ysdcs7q"))))
+                "02wkmq6bjg9iz0kccsgs192aiky99l2jnw1xs6zjhvjvq7jyvf7s"))))
     (build-system python-build-system)
     (inputs
      `(("ffmpeg" ,ffmpeg)))             ; for multi-part and >=1080p videos
@@ -2415,7 +2418,7 @@ audio, images) from the Web.  It can use either mpv or vlc for playback.")
 (define-public youtube-viewer
   (package
     (name "youtube-viewer")
-    (version "3.8.0")
+    (version "3.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2424,7 +2427,7 @@ audio, images) from the Web.  It can use either mpv or vlc for playback.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16gskhzkvgzhfb89zqfmvz7kmhjsyc38f2dl86ksal4p69kn8j3g"))))
+                "0xdybiihd66b79rbsawjhxs9snm78gld5ziz3gnp8vdcw0bshwz7"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-module-build" ,perl-module-build)))
@@ -2873,14 +2876,14 @@ and custom quantization matrices.")
 (define-public streamlink
   (package
     (name "streamlink")
-    (version "1.7.0")
+    (version "2.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "streamlink" version))
         (sha256
          (base32
-          "0ymqxzpwk7mr77w0dnnv7dj63d46q7cl1l4vj9llgn8jfaj64ypq"))))
+          "1nv2kj1k42a1b20ws8sdzlxk3wh1qz6pg5mxp75433b3c7lxksn0"))))
     (build-system python-build-system)
     (home-page "https://github.com/streamlink/streamlink")
     (native-inputs
@@ -3075,7 +3078,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "26.1.0")
+    (version "26.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3084,7 +3087,9 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p8wdzm9imn3s17arr206sz92g4pkacfcpfbwvhvgkrrs4w000bx"))))
+                "1k1asqiqw757v59ayx0w029ril947hs0lcp8n91knzjl891fr4nc"))
+              (patches
+               (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -3099,6 +3104,15 @@ be used for realtime video capture via Linux-specific APIs.")
                (wrap-program (string-append out "/bin/obs")
                  `("QT_PLUGIN_PATH" ":" prefix (,plugin-path))))
              #t)))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "OBS_PLUGINS_DIRECTORY")
+            (separator #f)                         ;single entry
+            (files '("lib/obs-plugins")))
+           (search-path-specification
+            (variable "OBS_PLUGINS_DATA_DIRECTORY")
+            (separator #f)                         ;single entry
+            (files '("share/obs/obs-plugins")))))
     (native-inputs
      `(("cmocka" ,cmocka)
        ("pkg-config" ,pkg-config)))
@@ -3129,6 +3143,67 @@ from many input sources such as webcams, X11 (for screencasting), PulseAudio,
 and JACK.")
     (home-page "https://obsproject.com")
     (license license:gpl2+)))
+
+(define-public obs-spectralizer
+  (package
+    (name "obs-spectralizer")
+    (version "1.3.3")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/univrsal/spectralizer")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+
+        ;; Remove bundled Windows DLLs.
+        (snippet '(delete-file-recursively "fftw3"))
+        (modules '((guix build utils)))
+
+        (sha256
+         (base32
+          "0q75cnyqydpvfda51zm9gxqj3wqr99ad0lxzjhw0ld67qvj1ag6i"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       (list "-DGLOBAL_INSTALLATION=ON" "-DUSE_CMAKE_LIBDIR=ON")))
+    (inputs `(("obs" ,obs)
+              ("fftw" ,fftw)))
+    (home-page "https://github.com/univrsal/spectralizer")
+    (synopsis "OBS plugin for audio visualization")
+    (description "This OBS plugins allows you to vizualize MPD and internal
+OBS audio sources.")
+    (license license:gpl2)))
+
+(define-public obs-wlrobs
+  (package
+    (name "obs-wlrobs")
+    (version "1.0")
+    (source
+      (origin
+        (method hg-fetch)
+        (uri (hg-reference
+              (url "https://hg.sr.ht/~scoopta/wlrobs")
+              (changeset (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "1faiq2gdb7qis3m1hilm4pz8lkmkab75vzm608dbiazahhybf96p"))))
+    (build-system meson-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (propagated-inputs `() )
+    (inputs `(("obs" ,obs)
+              ("libx11" ,libx11 "out")
+              ("wayland" ,wayland)
+              ("wayland-protocols" ,wayland-protocols)))
+    (home-page "https://hg.sr.ht/~scoopta/wlrobs")
+    (synopsis "OBS plugin for Wayland (wlroots) screen capture")
+    (description
+     "This OBS plugin allows you to capture the screen on wlroots-based
+Wayland compositors.")
+    (license license:gpl3+)))
 
 (define-public libvdpau
   (package
@@ -4157,7 +4232,7 @@ It counts more than 100 plugins.")
 (define-public motion
   (package
     (name "motion")
-    (version "4.2.2")
+    (version "4.3.2")
     (home-page "https://motion-project.github.io/")
     (source (origin
               (method git-fetch)
@@ -4166,7 +4241,7 @@ It counts more than 100 plugins.")
                     (commit (string-append "release-" version))))
               (sha256
                (base32
-                "05c1gx75xy2hw49x6vkydvwxbr80kipsc3nr906k3hq8735svx6f"))
+                "09xs815jsivcilpmnrx2jkcxirj4lg5kp99fkr0p2sdxw03myi95"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
@@ -4183,7 +4258,7 @@ It counts more than 100 plugins.")
      '(#:phases (modify-phases %standard-phases
                   (replace 'bootstrap
                     (lambda _
-                      (patch-shebang "version.sh")
+                      (patch-shebang "scripts/version.sh")
                       (invoke "autoreconf" "-vfi"))))
        #:configure-flags '("--sysconfdir=/etc")
        #:make-flags (list (string-append "sysconfdir="
@@ -4457,7 +4532,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
       (origin
         (method git-fetch)
@@ -4466,8 +4541,7 @@ transitions, and effects and then export your film to many common formats.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "0mjn87xjdqv0q1gj4s4f6fdmsj504mhk4qmqiyrhq2rs7yqj4csv"))))
+         (base32 "1820fpmmq1vxjzjmza6ydk4fgxipb8gmcc5skybki64qn7410v7x"))))
     (build-system meson-build-system)
     (native-inputs `(("nasm" ,nasm)))
     (home-page "https://code.videolan.org/videolan/dav1d")
@@ -4508,7 +4582,7 @@ video from a Wayland session.")
 (define-public gaupol
   (package
     (name "gaupol")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4517,7 +4591,7 @@ video from a Wayland session.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00wxdyja0m6l3yrynjgapa010lkwxpkv1xnnjbmrwi4ayhh5l3gg"))))
+                "1mmjg8nwhif2hmmp8i11643izwzdf839brqdai3ksfg0qkh8rnxk"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -4739,7 +4813,7 @@ result in several formats:
 (define-public rav1e
   (package
     (name "rav1e")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
       (origin
         (method url-fetch)
@@ -4748,7 +4822,7 @@ result in several formats:
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1mx6jlx2rdhmyh68h9h34kn9ssa7lv0y97j8fd9qm7qhs2q1n0cj"))))
+          "0c40gq4qid2apmlgzx98f6826jmn2n61prk0rn7sjxaw7yimw854"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -4787,7 +4861,7 @@ result in several formats:
         ("rust-simd-helpers" ,rust-simd-helpers-0.1)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-toml" ,rust-toml-0.5)
-        ("rust-vergen" ,rust-vergen-3.1)
+        ("rust-vergen" ,rust-vergen-3)
         ("rust-y4m" ,rust-y4m-0.5))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-1)

@@ -6,8 +6,8 @@
 ;;; Copyright © 2015, 2018 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2018, 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2017, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
@@ -133,8 +133,8 @@
 
 ;; Building from recent Git because the official 5.0 release no longer builds.
 (define-public dolphin-emu
-  (let ((commit "a9745400ec5cea7e55d94955afbdc44d1a4982d1")
-        (revision "7"))
+  (let ((commit "3e4bf57c696ed1e4f465075ae311653de2cd33b0")
+        (revision "8"))
     (package
       (name "dolphin-emu")
       (version (git-version "5.0" revision commit))
@@ -160,7 +160,7 @@
              #t))
          (sha256
           (base32
-           "0ic08ii4vlqlmk2wkfc99jiy6nji2wfq56r7slj23wgvhznnaabk"))))
+           "0mscspwd4k635b0857253ic55idlv2jvjdljssbryf8kd1ikwlhs"))))
       (build-system cmake-build-system)
       (arguments
        '(#:tests? #f
@@ -1552,7 +1552,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.226")
+    (version "0.228")
     (source
      (origin
        (method git-fetch)
@@ -1561,7 +1561,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yfns42rk1l0qprj5ksj9fqsgqpa23xnzxf29r4434p4n18bb77v"))
+        (base32 "1xqd0b8xz9bc6ks9qbnrm7kkjcr81l0ksisvflr6gr6lxg2268xz"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
