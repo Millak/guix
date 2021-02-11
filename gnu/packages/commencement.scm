@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022, 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
@@ -2015,10 +2016,7 @@ exec " gcc "/bin/" program
        ,@(%bootstrap-inputs+toolchain)))
     (arguments
      `(#:implicit-inputs? #f
-       ;; Ignore test failure in gnulib for armhf/aarch64.
-       #:tests? ,(not (target-arm?))
        #:guile ,%bootstrap-guile
-
        ;; The build system assumes we have done a mistake when time_t is 32-bit
        ;; on a 64-bit system.  Ignore that for our bootstrap toolchain.
        ,@(substitute-keyword-arguments (package-arguments findutils)
@@ -2035,17 +2033,24 @@ exec " gcc "/bin/" program
               ,flags))
            ((#:phases phases '%standard-phases)
             `(modify-phases ,phases
-              ;; 'test-fnmatch' fails when using glibc-mesboot@2.16, due
-              ;; to incorrect handling of the [:alpha:] regexp character
-              ;; class.  Ignore it.
-               ,@(if (member (%current-system)
-                             '("x86_64-linux" "i686-linux"))
-                     '((add-before 'check 'skip-fnmatch-test
-                         (lambda _
-                           (substitute* "gnulib-tests/Makefile"
-                             (("^XFAIL_TESTS =")
-                              "XFAIL_TESTS = test-fnmatch ")))))
-                     '()))))))))
+               (add-before 'check 'skip-problematic-tests
+                 (lambda _
+                   ,(match (%current-system)
+                     ;; 'test-fnmatch' fails when using glibc-mesboot@2.16, due
+                     ;; to incorrect handling of the [:alpha:] regexp character
+                     ;; class.  Ignore it.
+                     ((or "x86_64-linux" "i686-linux")
+                      '(substitute* "gnulib-tests/Makefile"
+                         (("^XFAIL_TESTS =")
+                          "XFAIL_TESTS = test-fnmatch ")))
+                     (_
+                      ;; XXX: The pthread tests are known to fail at least on
+                      ;; ARM; skip them.
+                      '(substitute* "gnulib-tests/Makefile"
+                         (("test-pthread\\$\\(EXEEXT\\)") "")
+                         (("test-pthread-thread\\$\\(EXEEXT\\)") "")
+                         (("test-pthread_sigmask1\\$\\(EXEEXT\\)") "")
+                         (("test-pthread_sigmask2\\$\\(EXEEXT\\)") "")))))))))))))
 
 (define file
   (package
