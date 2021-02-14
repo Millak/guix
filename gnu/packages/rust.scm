@@ -1456,4 +1456,4 @@ move around."
     "0pjs7j62maiyvkmhp9zrxl528g2n0fphp4rq6ap7aqdv0a6qz5wm"))
 
 ;; TODO(staging): Bump this variable to the latest packaged rust.
-(define-public rust rust-1.45)
+(define-public rust rust-1.50)
