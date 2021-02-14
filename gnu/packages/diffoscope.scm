@@ -72,7 +72,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "165")
+    (version "166")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -81,7 +81,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0chi8drkxdwk7mlfgljij0nihnxp9pi5ybhqaq8rc4l1zl6srirb"))))
+                "0vc4a38ii6b10af4c7cxfkvj4lk4ihx1xs4q5lshnkyg74gmm21b"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -135,7 +135,6 @@
                         (install-file "doc/diffoscope.1" man)
                         #t))))))
     (inputs `(("rpm" ,rpm)              ;for rpm-python
-              ("python-file" ,python-file)
               ("python-debian" ,python-debian)
               ("python-libarchive-c" ,python-libarchive-c)
               ("python-magic" ,python-magic)

@@ -30,7 +30,7 @@
 ;;; Copyright © 2016, 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2016, 2017, 2018, 2020 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -15257,17 +15257,29 @@ projects.")
   (package
     (name "python-invoke")
     (home-page "https://www.pyinvoke.org/")
-    (version "1.4.1")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "invoke" version))
               (sha256
                (base32
-                "0pg1lpl4583z83i12262v72y1a4cxdcxi7vqhl8dpqv9wszj6gyy"))))
+                "0l16v7zcbgi36z6pvmdrs5q4ks8lalcafi5d9nhrpcjzbc3n1igh"))))
     (build-system python-build-system)
     (arguments
      ;; XXX: Requires many dependencies that are not yet in Guix.
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-bash-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((bash (assoc-ref inputs "bash")))
+               (substitute* "invoke/config.py"
+                 (("shell = \"/bin/bash\"")
+                  (string-append "shell = \"" bash "/bin/bash\""))
+                 )
+               #t))))))
+    (inputs
+     `(("bash" ,bash-minimal)))
     (synopsis "Pythonic task execution")
     (description
      "Invoke is a Python task execution tool and library, drawing inspiration
@@ -17281,18 +17293,24 @@ design and layout.")
 (define-public python-pkginfo
   (package
     (name "python-pkginfo")
-    (version "1.4.2")
+    (version "1.7.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pkginfo" version))
         (sha256
           (base32
-            "0x6lm17p1ks031mj6pajyp4rkq74vpqq8qwjb7ikgwmkli1day2q"))))
+            "1d1xn1xmfvz0jr3pj8irdwnwby3r13g0r2gwklr1q5y68p5p16h2"))))
     (build-system python-build-system)
     (arguments
-     ;; The tests are broken upstream.
-     '(#:tests? #f))
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'patch-tests
+           (lambda _
+             (substitute* "pkginfo/tests/test_installed.py"
+               (("test_ctor_w_package_no_PKG_INFO")
+                "_test_ctor_w_package_no_PKG_INFO"))
+             #t)))))
     (home-page
       "https://code.launchpad.net/~tseaver/pkginfo/trunk")
     (synopsis
@@ -23733,3 +23751,24 @@ implementations.")
       "Pivy provides python bindings for Coin, a 3D graphics library with an
 Application Programming Interface based on the Open Inventor 2.1 API.")
     (license license:isc)))
+
+(define-public python-crayons
+  (package
+    (name "python-crayons")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "crayons" version))
+        (sha256
+         (base32
+          "0gw106k4b6y8mw7pp52awxyplj2bwvwk315k4sywzwh0g1abfcxx"))))
+    (build-system python-build-system)
+    (propagated-inputs
+      `(("python-colorama" ,python-colorama)))
+    (home-page "https://github.com/MasterOdin/crayons")
+    (synopsis "TextUI colors for Python")
+    (description "This package gives you colored strings for the terminal.
+Crayons automatically wraps a given string in the foreground color and
+restores the original state after the string is printed.")
+    (license license:expat)))

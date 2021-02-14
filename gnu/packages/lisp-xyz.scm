@@ -67,6 +67,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
@@ -1759,6 +1760,38 @@ Common Lisp.")
 (define-public ecl-cl-fad
   (sbcl-package->ecl-package sbcl-cl-fad))
 
+(define-public sbcl-fn
+  (let ((commit "8d8587d03a7b5e26b306fc90018e385d9e5acc2c")
+        (revision "1"))
+    (package
+      (name "sbcl-fn")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cbaggers/fn")
+               (commit commit)))
+         (file-name (git-file-name "fn" version))
+         (sha256
+          (base32 "0yyp9z6iwx476whz0n1rpjznjyqqhlylhzwpgg5xx92lxmskl752"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       `(("named-readtables" ,sbcl-named-readtables)))
+      (home-page "https://github.com/cbaggers/fn")
+      (synopsis "Macros for lambda brevity")
+      (description
+       "This is a Common Lisp library providing lambda shorthand macros aiming
+to be used in cases where the word @emph{lambda} and the arguments are longer
+than the body of the lambda.")
+      (license license:public-domain))))
+
+(define-public ecl-fn
+  (sbcl-package->ecl-package sbcl-fn))
+
+(define-public cl-fn
+  (sbcl-package->cl-source-package sbcl-fn))
+
 (define-public sbcl-rt
   (let ((commit "a6a7503a0b47953bc7579c90f02a6dba1f6e4c5a")
         (revision "1"))
@@ -1869,8 +1902,8 @@ streams, support is included for convenient stream wrappers.")
   (sbcl-package->ecl-package sbcl-ironclad))
 
 (define-public sbcl-named-readtables
-  (let ((commit "64bd53f37a1694cfde48fc38b8f03901f6f0c05b")
-        (revision "2"))
+  (let ((commit "585a28eee8b1b1999279b48cb7e9731187e14b66")
+        (revision "3"))
     (package
       (name "sbcl-named-readtables")
       (version (git-version "0.9" revision commit))
@@ -1881,16 +1914,14 @@ streams, support is included for convenient stream wrappers.")
                (url "https://github.com/melisgl/named-readtables")
                (commit commit)))
          (sha256
-          (base32 "01l4831m7k84qvhzyx0qgdl50isr4zmp40qf6dfq2iqcaj8y4h3n"))
+          (base32 "072p5djqq9pliw9r20rmpz5r5q5yn6rhbp98vkkp7gfcnp5ppj51"))
          (file-name (git-file-name "named-readtables" version))))
       (build-system asdf-build-system/sbcl)
-      (arguments
-       ;; Tests seem to be broken.
-       `(#:tests? #f))
       (home-page "https://github.com/melisgl/named-readtables/")
       (synopsis "Library that creates a namespace for named readtables")
-      (description "Named readtables is a library that creates a namespace for
-named readtables, which is akin to package namespacing in Common Lisp.")
+      (description
+       "Named readtables is a library that creates a namespace for named
+readtables, which is akin to package namespacing in Common Lisp.")
       (license license:bsd-3))))
 
 (define-public cl-named-readtables
@@ -2616,6 +2647,78 @@ non-consing thread safe queues and fibonacci priority queues.")
 
 (define-public ecl-queues
   (sbcl-package->ecl-package sbcl-queues))
+
+(define-public sbcl-glsl-spec
+  (let ((commit "f04476f7da89355ae6856b33283c60ba95c6555d")
+        (revision "1"))
+    (package
+      (name "sbcl-glsl-spec")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cbaggers/glsl-spec")
+               (commit commit)))
+         (file-name (git-file-name "glsl-spec" version))
+         (sha256
+          (base32 "01ipspr22fgfj3w8wq2y81lzrjc4vpfiwnr3dqhjlpzzra46am8c"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("glsl-spec" "glsl-symbols" "glsl-docs")))
+      (home-page "https://github.com/cbaggers/glsl-spec")
+      (synopsis "Common Lisp GLSL specification as a datastructure")
+      (description
+       "This package contains the specification of all functions and variables
+from GLSL as data.")
+      (license license:unlicense))))
+
+(define-public ecl-glsl-spec
+  (sbcl-package->ecl-package sbcl-glsl-spec))
+
+(define-public cl-glsl-spec
+  (sbcl-package->cl-source-package sbcl-glsl-spec))
+
+(define-public sbcl-varjo
+  (let ((commit "9e77f30220053155d2ef8870ceba157f75e538d4")
+        (revision "1"))
+    (package
+      (name "sbcl-varjo")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/cbaggers/varjo")
+               (commit commit)))
+         (file-name (git-file-name "varjo" version))
+         (sha256
+          (base32 "1p9x1wj576x5d31yvls9r1avkjkyhri7kyxbjfkg9z93a1w18j9z"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       `(("fiveam" ,sbcl-fiveam)))
+      (inputs
+       `(("alexandria" ,sbcl-alexandria)
+         ("cl-ppcre" ,sbcl-cl-ppcre)
+         ("documentation-utils" ,sbcl-documentation-utils)
+         ("fn" ,sbcl-fn)
+         ("glsl-spec" ,sbcl-glsl-spec)
+         ("named-readtables" ,sbcl-named-readtables)
+         ("parse-float" ,sbcl-parse-float)
+         ("vas-string-metrics" ,sbcl-vas-string-metrics)))
+      (home-page "https://github.com/cbaggers/varjo")
+      (synopsis "Lisp to GLSL Language Translator")
+      (description
+       "Varjo is a Lisp to GLSL compiler.  Vari is the dialect of lisp Varjo
+compiles.  It aims to be as close to Common Lisp as possible, but naturally it
+is statically typed so there are differences.")
+      (license license:bsd-2))))
+
+(define-public ecl-varjo
+  (sbcl-package->ecl-package sbcl-varjo))
+
+(define-public cl-varjo
+  (sbcl-package->cl-source-package sbcl-varjo))
 
 (define-public sbcl-cffi
   (package
@@ -3988,8 +4091,8 @@ addition, removal, and random selection.")
   (sbcl-package->ecl-package sbcl-map-set))
 
 (define-public sbcl-quri
-  (let ((commit "3a2ad208d71506b6243c0a4cf6a116f8ecf5ad2c")
-        (revision "3"))
+  (let ((commit "d7f2720568146c6674187f625f115925e6364a7f")
+        (revision "4"))
     (package
       (name "sbcl-quri")
       (version (git-version "0.1.0" revision commit))
@@ -4001,12 +4104,14 @@ addition, removal, and random selection.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1n0gs5xib42ccpai17f5xj9krmn9mwzkhlwdh59bka2sma64l829"))))
+          (base32 "0yrcvz5ksfr7x8yx741vp65il0fxxaskppq3iyk9bq895s1jn37w"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       ;; Tests fail with: Component QURI-ASD::QURI-TEST not found,
-       ;; required by #<SYSTEM "quri">. Why?
-       '(#:tests? #f))
+       ;; Test system must be loaded before, otherwise tests fail with:
+       ;; Component QURI-ASD::QURI-TEST not found, required by #<SYSTEM
+       ;; "quri">.
+       '(#:asd-systems '("quri-test"
+                         "quri")))
       (native-inputs `(("sbcl-prove" ,sbcl-prove)))
       (inputs `(("sbcl-babel" ,sbcl-babel)
                 ("sbcl-split-sequence" ,sbcl-split-sequence)
@@ -4181,7 +4286,7 @@ Lisp.")
 (define-public sbcl-static-vectors
   (package
     (name "sbcl-static-vectors")
-    (version "1.8.4")
+    (version "1.8.6")
     (source
      (origin
        (method git-fetch)
@@ -4190,11 +4295,12 @@ Lisp.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qvf9z6bhwhm8n45fjwkm7j8dcb58szfvndky65cyn4lpdval7m1"))))
+        (base32 "01hwxzhyjkhsd3949g70120g7msw01byf0ia0pbj319q1a3cq7j9"))))
     (native-inputs
      `(("sbcl-fiveam" ,sbcl-fiveam)))
     (inputs
-     `(("sbcl-cffi" ,sbcl-cffi)))
+     `(("sbcl-alexandria" ,sbcl-alexandria)
+       ("sbcl-cffi" ,sbcl-cffi)))
     (build-system asdf-build-system/sbcl)
     (home-page "https://github.com/sionescu/static-vectors")
     (synopsis "Allocate SIMPLE-ARRAYs in static memory")
@@ -8174,6 +8280,38 @@ continuations of the @code{cl-cont} library.")
 
 (define-public ecl-cl-coroutine
   (sbcl-package->ecl-package sbcl-cl-coroutine))
+
+(define-public sbcl-vas-string-metrics
+  (let ((commit "f2e4500b180316123fbd549bd51c751ee2d6ba0f")
+        (revision "1"))
+    (package
+      (name "sbcl-vas-string-metrics")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vsedach/vas-string-metrics")
+               (commit commit)))
+         (file-name (git-file-name "vas-string-metrics" version))
+         (sha256
+          (base32 "11fcnd03ybzz37rkg3z0wsb727yqgcd9gn70sccfb34l89ia279k"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:test-asd-file "test.vas-string-metrics.asd"))
+      (home-page "https://github.com/vsedach/vas-string-metrics")
+      (synopsis "String distance algorithms for Common Lisp")
+      (description
+       "VAS-STRING-METRICS provides the Jaro, Jaro-Winkler, Soerensen-Dice,
+Levenshtein, and normalized Levenshtein string distance/similarity metrics
+algorithms.")
+      (license license:lgpl3+))))
+
+(define-public ecl-vas-string-metrics
+  (sbcl-package->ecl-package sbcl-vas-string-metrics))
+
+(define-public cl-vas-string-metrics
+  (sbcl-package->cl-source-package sbcl-vas-string-metrics))
 
 (define-public sbcl-vom
   (let ((commit "1aeafeb5b74c53741b79497e0ef4acf85c92ff24")
@@ -13761,10 +13899,10 @@ standard library.")
   (sbcl-package->cl-source-package sbcl-shlex))
 
 (define-public sbcl-cmd
-  (let ((commit "e6a54dbf660bf229c80abc124fa47e7bb6d20c93"))
+  (let ((commit "bc5a3bee8f22917126e4c3d05b33f766e562dbd8"))
     (package
       (name "sbcl-cmd")
-      (version (git-version "0.0.1" "2" commit))
+      (version (git-version "0.0.1" "3" commit))
       (source
        (origin
          (method git-fetch)
@@ -13773,11 +13911,12 @@ standard library.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1i0l8ci4cnkx84q4afmpkq51nxah24fqpi6k9kgjbxz6li3zp8hy"))))
+          (base32 "1sjlabrknw1kjb2y89vssjhcqh3slgly8wnr3152zgis8lsj2yc7"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("alexandria" ,sbcl-alexandria)
          ("coreutils" ,coreutils)
+         ("procps" ,procps)
          ("serapeum" ,sbcl-serapeum)
          ("shlex" ,sbcl-shlex)
          ("trivia" ,sbcl-trivia)))
@@ -13786,10 +13925,21 @@ standard library.")
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
-               (let ((bin (string-append (assoc-ref inputs "coreutils") "/bin")))
+               (let ((bin (string-append (assoc-ref inputs "coreutils") "/bin"))
+                     (ps-bin (string-append (assoc-ref inputs "procps") "/bin")))
                  (substitute* "cmd.lisp"
-                   (("\"env\"") (format #f "\"~a/env\"" bin))
-                   (("\"pwd\"") (format #f "\"~a/pwd\"" bin)))))))))
+                   (("\\(def \\+env\\+ \"env\"\\)")
+                    (format #f "(def +env+ \"~a/env\")" bin))
+                   (("\\(def \\+kill\\+ \"kill\"\\)")
+                    (format #f "(def +kill+ \"~a/kill\")" bin))
+                   (("\\(def \\+ps\\+ \"ps\"\\)")
+                    (format #f "(def +ps+ \"~a/ps\")" ps-bin))
+                   (("\\(def \\+pwd\\+ \"pwd\"\\)")
+                    (format #f "(def +pwd+ \"~a/pwd\")" bin))
+                   (("\\(def \\+sh\\+ \"/bin/sh\"\\)")
+                    (format #f "(def +sh+ \"~a\")" (which "sh")))
+                   (("\\(def \\+tr\\+ \"tr\"\\)")
+                    (format #f "(def +tr+ \"~a/tr\")" bin)))))))))
       (home-page "https://github.com/ruricolist/cmd")
       (synopsis "Conveniently run external programs from Common Lisp")
       (description

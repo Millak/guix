@@ -166,14 +166,14 @@ as well as the classic centralized workflow.")
 (define-public git
   (package
    (name "git")
-   (version "2.30.0")
+   (version "2.30.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "06ad6dylgla34k9am7d5z8y3rryc8ln3ibq5z0d74rcm20hm0wsm"))))
+              "0rwlbps9x8kgk2hsm0bvsrkpsk9bnbnz8alknbd7i688jnhai27r"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -190,7 +190,7 @@ as well as the classic centralized workflow.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "0xngjg60rwzrb9x32d1qbdd8szkzwcyha5qni7ilkldxsl2q8avv"))))
+            "015rqnz3ly1h6z6k9hfikgh401s3mzkmys8srai1kfv4v75pxz1h"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc-py3)
       ("docbook-xsl" ,docbook-xsl)
@@ -1736,14 +1736,14 @@ following features:
 (define-public subversion
   (package
     (name "subversion")
-    (version "1.14.0")
+    (version "1.14.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/subversion/"
                                  "subversion-" version ".tar.bz2"))
              (sha256
               (base32
-               "00i1f88snlpcnsycpn6r315h6792l5nkr2p5k6kq6yprz4cf5a3b"))))
+               "1ag1hvcm9q92kgalzbbgcsq9clxnzmbj9nciz9lmabjx4lyajp9c"))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-tests? #f             ; TODO Seems to cause test failures on

@@ -40,6 +40,7 @@
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gstreamer)
@@ -578,17 +579,22 @@ using GNU Radio and the Qt GUI toolkit.")
 (define-public fldigi
   (package
     (name "fldigi")
-    (version "4.1.17")
+    (version "4.1.18")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.w1hkj.com/files/fldigi/fldigi-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/fldigi/fldigi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1gzff60sn3h05279f9mdi1rkdws52m28shcil16911lvlq6ki13m"))))
+        (base32 "177qnl1bxy46rqwdxizfy2i3mxk5bzz733cp445rfzl7b6yf6zrn"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("gettext" ,gettext-minimal)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("fltk" ,fltk)
@@ -617,14 +623,18 @@ hardware.")
     (version "1.3.52")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.w1hkj.com/files/flrig/flrig-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/fldigi/flrig")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18c154080vl25cy4l5amh96abm6kzm7mzld9h58pabc28yqq8zl8"))))
+        (base32 "0vxn1wy5b2zfq20k93rfgq34m1nd3mxd74h8l98f90d85fhcqggy"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("fltk" ,fltk)
        ("libx11" ,libx11)
@@ -645,14 +655,18 @@ or USB connection.")
     (version "2.2.05")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.w1hkj.com/files/flamp/flamp-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/fldigi/flamp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19z1kghhdf7bq6hi2j0mzlsn2nhpn3gl1a623x3inmsk80yw3ck4"))))
+        (base32 "0ll2wbhyh1sb4iqsypwrd118mrgw3vbsdbz442qhk4r6l8kjzblq"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("fltk" ,fltk)
        ("libx11" ,libx11)
@@ -672,14 +686,18 @@ or USB connection.")
     (version "1.3.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.w1hkj.com/files/flwrap/flwrap-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/fldigi/flwrap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qqivqkkravcg7j45740xfky2q3k7czqpkj6y364qff424q2pppg"))))
+        (base32 "0xkhr82smfr7wpb9xl05wf7bz3vi2mr4xkcr2s8v6mblhgsdhqwg"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("fltk" ,fltk)
        ("libx11" ,libx11)

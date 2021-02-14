@@ -7120,22 +7120,26 @@ for Ivy and Company that make use of the library.")
     (license license:expat)))
 
 (define-public emacs-selectrum
-  (package
-    (name "emacs-selectrum")
-    (version "3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/raxod502/selectrum")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j10yxlikyg7qxcmp4fnddyd5nc3hlz080d1zcbijq020a08k86g"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/raxod502/selectrum/")
-    (synopsis "Incremental narrowing in Emacs")
-    (description "Selectrum is a solution for incremental narrowing in
+  ;; Release 3.0 has compatibility issues with recent versions of Emacs
+  ;; Consult.
+  (let ((commit "a2ba6333e59ddc853318ece229f34016400ca033")
+        (revision "0"))
+    (package
+      (name "emacs-selectrum")
+      (version (git-version "3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/raxod502/selectrum")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1agpcazga6gxl6k28bdski1sx046699cici8a9hz0nj7s8rkx1zm"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/raxod502/selectrum/")
+      (synopsis "Incremental narrowing in Emacs")
+      (description "Selectrum is a solution for incremental narrowing in
 Emacs, replacing Helm, Ivy, and IDO.  Its design philosophy is based
 on choosing the right abstractions and prioritizing consistency and
 predictability over special-cased improvements for particular cases.
@@ -7143,7 +7147,7 @@ As such, Selectrum follows existing Emacs conventions where they exist
 and are reasonable, and it declines to implement features which have
 marginal benefit compared to the additional complexity of a new
 interface.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public emacs-orderless
   (package
@@ -7171,7 +7175,7 @@ style, or as multiple word prefixes.")
 (define-public emacs-consult
   (package
     (name "emacs-consult")
-    (version "0.4")
+    (version "0.5")
     (source
      (origin
        (method git-fetch)
@@ -7179,7 +7183,7 @@ style, or as multiple word prefixes.")
              (url "https://github.com/minad/consult")
              (commit version)))
        (sha256
-        (base32 "0rn98xkf1agyjiq7jqmc7cdq5zd9x9ym7r02wyd70xshvh7gm1rf"))
+        (base32 "0840hm6nk6yzz8yp8xqzdrycf7wwklxaxp10q0d30wpxwcrsw5c2"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
@@ -7195,7 +7199,7 @@ list of candidates.")
 (define-public emacs-marginalia
   (package
     (name "emacs-marginalia")
-    (version "0.2")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -7204,7 +7208,7 @@ list of candidates.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lbng4l5h3c61m9pbgnwzp89y40b71l8ygf5r98m8yagqzvxjaj1"))))
+        (base32 "1qihw1vq9sysrl6ha23ggycp0n2n1dx1ajkaqfm5vmv8480al07i"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/marginalia")
     (synopsis "Marginalia in the minibuffer completions")
@@ -19722,10 +19726,10 @@ source code.")
                    license:asl2.0))))
 
 (define-public emacs-ztree
-  (let ((commit "c54425a094353ec40a8179f9eab3596f76c6cf94"))
+  (let ((commit "6eee81d2691009ce60b2edf7c298b227caf1b0d6"))
     (package
       (name "emacs-ztree")
-      (version (git-version "1.0.5" "1" commit))
+      (version (git-version "1.0.5" "2" commit))
       (source
        (origin
          (method git-fetch)
@@ -19735,7 +19739,7 @@ source code.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0j8fpxds8m1zi04nrs8vv21091abvh4n8ab76f1sgdxnp4l5cfb0"))))
+           "1xmimjflylssx63g1kpd5n34gdlpivgg9ih8nwplad57bxiy2yqb"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/fourier/ztree")
       (synopsis "Directory tree comparison mode for Emacs")
@@ -23742,14 +23746,14 @@ federated microblogging social network.")
 (define-public emacs-ebdb
   (package
     (name "emacs-ebdb")
-    (version "0.6.21")
+    (version "0.6.22")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "ebdb-" version ".tar"))
        (sha256
-        (base32 "0pp190wr6z98kggmw9ls486f9vxfimdjdbqsp263qiyi21ws98if"))))
+        (base32 "0dljl21n6508c7ash7l6zgxhpn2wdfzga0va63d4k9nwnqmkvsgz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/girzel/ebdb")
     (synopsis "EIEIO port of BBDB, Emacs's contact-management package")
