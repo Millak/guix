@@ -20,7 +20,7 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1538,7 +1538,7 @@ manipulating PDF documents from the command line.  It supports
        ("glib" ,glib)
        ("pango" ,pango)))
     (propagated-inputs
-     `(("gdk-pixbuf" ,gdk-pixbuf)
+     `(("gdk-pixbuf" ,gdk-pixbuf+svg)
        ("python-cairocffi" ,python-cairocffi)
        ("python-cairosvg" ,python-cairosvg)
        ("python-cffi" ,python-cffi)
