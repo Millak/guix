@@ -3335,11 +3335,11 @@ dealing with different structured file formats.")
        ("libcroco" ,libcroco)
        ("bzip2" ,bzip2)
        ("libgsf" ,libgsf)
+       ("gdk-pixbuf" ,gdk-pixbuf)
        ("libxml2" ,libxml2)))
     (propagated-inputs
      ;; librsvg-2.0.pc refers to all of that.
      `(("cairo" ,cairo)
-       ("gdk-pixbuf" ,gdk-pixbuf)
        ("glib" ,glib)))
     (home-page "https://wiki.gnome.org/LibRsvg")
     (synopsis "Render SVG files using Cairo")
