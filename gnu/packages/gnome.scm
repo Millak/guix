@@ -3292,6 +3292,7 @@ dealing with different structured file formats.")
                (base32
                 "1fljkag2gr7c4k5mn798lgf9903xslz8h51bgvl89nnay42qjqpp"))))
     (build-system gnu-build-system)
+    (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags
        (list "--disable-static"
@@ -3364,7 +3365,7 @@ library.")
                '(begin (delete-file-recursively "vendor")
                        #t))))
     (build-system cargo-build-system)
-    (outputs '("out" "doc"))
+    (outputs '("out" "debug" "doc"))
     (arguments
      `(#:modules
        ((guix build cargo-build-system)
