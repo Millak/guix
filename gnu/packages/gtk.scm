@@ -565,12 +565,15 @@ highlighting and other features typical of a source code editor.")
              (base32
               "1rnlx9yfw970maxi2x6niaxmih5la11q1ilr7gzshz2kk585k0hm"))))
    (build-system meson-build-system)
+   (outputs '("out" "debug"))
    (arguments
     `(#:configure-flags '("-Dinstalled_tests=false")
+      #:modules ((guix build meson-build-system)
+                 (guix build utils)
+                 (srfi srfi-1))
       #:phases
       (modify-phases %standard-phases
-        (add-after
-         'unpack 'disable-failing-tests
+        (add-after 'unpack 'disable-failing-tests
          (lambda _
            (substitute* "tests/meson.build"
              ;; XXX FIXME: This test fails on armhf machines with:
@@ -581,8 +584,13 @@ highlighting and other features typical of a source code editor.")
              ;; ERROR:pixbuf-jpeg.c:74:test_type9_rotation_exif_tag:
              ;; assertion failed (error == NULL): Data differ
              ;; (gdk-pixbuf-error-quark, 0)
-             ((".*'pixbuf-jpeg'.*") ""))
-           #t))
+             ((".*'pixbuf-jpeg'.*") ""))))
+        (replace 'shrink-runpath
+          ;; Workaround until core-updates is merged (this is fixed in commit
+          ;; ca080b3efb).
+          (lambda* (#:key outputs #:allow-other-keys #:rest args)
+            (apply (assoc-ref %standard-phases 'shrink-runpath)
+                   `(,@args #:outputs ,(alist-delete "debug" outputs)))))
         ;; The slow tests take longer than the specified timeout.
         ,@(if (any (cute string=? <> (%current-system))
                    '("armhf-linux" "aarch64-linux"))
