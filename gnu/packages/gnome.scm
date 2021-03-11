@@ -3350,7 +3350,7 @@ library.")
 
 (define-public librsvg-next
   (package
-    (name "librsvg")
+    (name "librsvg-next")
     (version "2.50.2")
     (source (origin
               (method url-fetch)
