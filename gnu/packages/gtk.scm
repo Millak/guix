@@ -621,33 +621,31 @@ in the GNOME project.")
     (home-page "https://developer.gnome.org/gdk-pixbuf/")))
 
 ;; To build gdk-pixbuf with SVG support, we need librsvg, and librsvg depends
-;; on gdk-pixbuf, so this new varibale.  Also, librsvg adds 90MiB to the
+;; on gdk-pixbuf, so this new variable.  Also, librsvg adds 90MiB to the
 ;; closure size.
 (define-public gdk-pixbuf+svg
-  (package (inherit gdk-pixbuf)
+  (package
+    (inherit gdk-pixbuf)
     (name "gdk-pixbuf+svg")
     (inputs
      `(("librsvg" ,librsvg)
        ,@(package-inputs gdk-pixbuf)))
     (arguments
-     '(#:configure-flags '("-Dinstalled-tests=false")
-       #:tests? #f ; tested by the gdk-pixbuf package already
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'register-svg-loader
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (librsvg (assoc-ref inputs "librsvg"))
-                    (loaders
-                     (append
-                      (find-files out "^libpixbufloader-.*\\.so$")
-                      (find-files librsvg "^libpixbufloader-.*\\.so$")))
-                    (gdk-pixbuf-query-loaders
-                     (string-append out "/bin/gdk-pixbuf-query-loaders")))
-               (apply invoke
-                      gdk-pixbuf-query-loaders
-                      "--update-cache"
-                      loaders)))))))
+     (substitute-keyword-arguments (package-arguments gdk-pixbuf)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'install 'register-svg-loader
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out     (assoc-ref outputs "out"))
+                      (librsvg (assoc-ref inputs "librsvg"))
+                      (loaders
+                       (append
+                        (find-files out "^libpixbufloader-.*\\.so$")
+                        (find-files librsvg "^libpixbufloader-.*\\.so$")))
+                      (gdk-pixbuf-query-loaders
+                       (string-append out "/bin/gdk-pixbuf-query-loaders")))
+                 (apply invoke gdk-pixbuf-query-loaders
+                        "--update-cache" loaders))))))))
     (synopsis
      "GNOME image loading and manipulation library, with SVG support")))
 
