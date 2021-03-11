@@ -5424,7 +5424,7 @@ service via the system message bus.")
      ;; gweather-3.0.pc refers to GTK+, GDK-Pixbuf, GLib/GObject, libxml, and
      ;; libsoup.
      `(("gtk+" ,gtk+)
-       ("gdk-pixbuf" ,gdk-pixbuf)
+       ("gdk-pixbuf" ,gdk-pixbuf+svg)
        ("libxml2" ,libxml2)
        ("libsoup" ,libsoup)
        ("geocode-glib" ,geocode-glib)))
