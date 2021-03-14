@@ -66,6 +66,8 @@
                        (default #f))
   (deploy-hook         certificate-configuration-deploy-hook
                        (default #f))
+  (dry-run?            certbot-configuration-dry-run?
+                       (default #f))
   (start-self-signed?  certificate-configuration-start-self-signed?
                        (default #t)))
 
@@ -141,40 +143,44 @@ deploy."
               (match-lambda
                 (($ <certificate-configuration> custom-name domains challenge
                                                 csr authentication-hook
-                                                cleanup-hook deploy-hook)
-                 (let ((name (or custom-name (car domains))))
-                   (if challenge
-                     (append
-                      (list name certbot "certonly" "-n" "--agree-tos"
-                            "--manual"
-                            (string-append "--preferred-challenges=" challenge)
-                            "--cert-name" name
-                            "-d" (string-join domains ","))
-                      (if csr `("--csr" ,csr) '())
-                      (if email
-                          `("--email" ,email)
-                          '("--register-unsafely-without-email"))
-                      (if server `("--server" ,server) '())
-                      (if rsa-key-size `("--rsa-key-size" ,rsa-key-size) '())
-                      (if authentication-hook
-                          `("--manual-auth-hook" ,authentication-hook)
-                          '())
-                      (if cleanup-hook `("--manual-cleanup-hook" ,cleanup-hook) '())
-                      (list "--deploy-hook"
-                            (certbot-deploy-hook name deploy-hook)))
-                     (append
-                      (list name certbot "certonly" "-n" "--agree-tos"
-                            "--webroot" "-w" webroot
-                            "--cert-name" name
-                            "-d" (string-join domains ","))
-                      (if csr `("--csr" ,csr) '())
-                      (if email
-                          `("--email" ,email)
-                          '("--register-unsafely-without-email"))
-                      (if server `("--server" ,server) '())
-                      (if rsa-key-size `("--rsa-key-size" ,rsa-key-size) '())
-                      (list "--deploy-hook"
-                            (certbot-deploy-hook name deploy-hook)))))))
+                                                cleanup-hook deploy-hook
+                                                dry-run?)
+                 (append
+                  (let ((name (or custom-name (car domains))))
+                    (if challenge
+                        (append
+                         (list name certbot "certonly" "-n" "--agree-tos"
+                               "--manual"
+                               (string-append "--preferred-challenges=" challenge)
+                               "--cert-name" name
+                               "-d" (string-join domains ","))
+                         (if csr `("--csr" ,csr) '())
+                         (if email
+                             `("--email" ,email)
+                             '("--register-unsafely-without-email"))
+                         (if server `("--server" ,server) '())
+                         (if rsa-key-size `("--rsa-key-size" ,rsa-key-size) '())
+                         (if authentication-hook
+                             `("--manual-auth-hook" ,authentication-hook)
+                             '())
+                         (if cleanup-hook `("--manual-cleanup-hook" ,cleanup-hook) '())
+                         (list "--deploy-hook"
+                               (certbot-deploy-hook name deploy-hook)))
+                        (append
+                         (list name certbot "certonly" "-n" "--agree-tos"
+                               "--webroot" "-w" webroot
+                               "--cert-name" name
+                               "-d" (string-join domains ","))
+                         (if csr `("--csr" ,csr) '())
+                         (if email
+                             `("--email" ,email)
+                             '("--register-unsafely-without-email"))
+                         (if server `("--server" ,server) '())
+                         (if rsa-key-size `("--rsa-key-size" ,rsa-key-size) '())
+                         (list "--deploy-hook"
+                               (certbot-deploy-hook name deploy-hook)))))
+                  ;; Common options.
+                  (if dry-run? '("--dry-run") '()))))
               certificates)))
        (program-file
         "certbot-command"
