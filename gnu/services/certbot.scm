@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -148,7 +149,6 @@ deploy."
                             "--manual"
                             (string-append "--preferred-challenges=" challenge)
                             "--cert-name" name
-                            "--manual-public-ip-logging-ok"
                             "-d" (string-join domains ","))
                       (if csr `("--csr" ,csr) '())
                       (if email
