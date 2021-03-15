@@ -83,11 +83,11 @@
                      (headers '((user-agent . "GNU Guile")))
                      (log-port (current-error-port))
                      timeout)
-  "Return an input port containing the data at URI, and the expected number of
-bytes available or #f.  If TEXT? is true, the data at URI is considered to be
-textual.  Follow any HTTP redirection.  When BUFFERED? is #f, return an
-unbuffered port, suitable for use in `filtered-port'.  HEADERS is an alist of
-extra HTTP headers.
+  "Return an input port containing the data at URI, and the HTTP response from
+the server.  If TEXT? is true, the data at URI is considered to be textual.
+Follow any HTTP redirection.  When BUFFERED? is #f, return an unbuffered port,
+suitable for use in `filtered-port'.  HEADERS is an alist of extra HTTP
+headers.
 
 When KEEP-ALIVE? is true, the connection is marked as 'keep-alive' and PORT is
 not closed upon completion.
@@ -126,7 +126,7 @@ Raise an '&http-get-error' condition if downloading fails."
                      (response-code resp)))
         (case code
           ((200)
-           (values data (response-content-length resp)))
+           (values data resp))
           ((301                                   ; moved permanently
             302                                   ; found (redirection)
             303                                   ; see other

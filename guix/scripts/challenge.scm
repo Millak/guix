@@ -44,6 +44,7 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 ftw)
   #:use-module (web uri)
+  #:use-module (web response)
   #:export (compare-contents
 
             comparison-report?
@@ -257,11 +258,14 @@ in the nar."
   "Call PROC with an input port from which it can read the nar pointed to by
 NARINFO."
   (let* ((uri compression size (narinfo-best-uri narinfo))
-         (port actual-size     (http-fetch uri)))
+         (port response        (http-fetch uri)))
     (define reporter
       (progress-reporter/file (narinfo-path narinfo)
                               (and size
-                                   (max size (or actual-size 0))) ;defensive
+                                   (max size (or
+                                              (response-content-length
+                                               response)
+                                              0))) ;defensive
                               #:abbreviation (const (uri-host uri))))
 
     (define result

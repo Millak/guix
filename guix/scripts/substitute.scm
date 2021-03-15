@@ -61,6 +61,7 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-71)
   #:use-module (web uri)
+  #:use-module (web response)
   #:use-module (guix http-client)
   #:export (%allow-unauthenticated-substitutes?
             %reply-file-descriptor
@@ -496,10 +497,14 @@ STATUS-PORT."
                     (uri->string uri))
            (warning (G_ "try `--no-substitutes' if the problem persists~%")))
          (with-cached-connection uri port
-           (http-fetch uri #:text? #f
-                       #:port port
-                       #:keep-alive? #t
-                       #:buffered? #f))))
+           (let ((raw
+                  response
+                  (http-fetch uri #:text? #f
+                              #:port port
+                              #:keep-alive? #t
+                              #:buffered? #f)))
+             (values raw
+                     (response-content-length response))))))
       (else
        (raise
         (formatted-message

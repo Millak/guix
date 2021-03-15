@@ -22,6 +22,7 @@
 (define-module (guix build download)
   #:use-module (web uri)
   #:use-module (web http)
+  #:use-module (web response)
   #:use-module ((web client) #:hide (open-socket-for-uri))
   #:use-module (web response)
   #:use-module (guix base64)
@@ -752,7 +753,7 @@ otherwise simply ignore them."
     (case (uri-scheme uri)
       ((http https)
        (false-if-exception*
-        (let-values (((port size)
+        (let-values (((port response)
                       (http-fetch uri
                                   #:verify-certificate? verify-certificate?
                                   #:timeout timeout)))
@@ -762,9 +763,13 @@ otherwise simply ignore them."
                           #:buffer-size %http-receive-buffer-size
                           #:reporter (if print-build-trace?
                                          (progress-reporter/trace
-                                          file (uri->string uri) size)
+                                          file (uri->string uri)
+                                          (response-content-length
+                                           response))
                                          (progress-reporter/file
-                                          (uri-abbreviation uri) size)))
+                                          (uri-abbreviation uri)
+                                          (response-content-length
+                                           response))))
               (newline)))
           (close-port port)
           file)))
