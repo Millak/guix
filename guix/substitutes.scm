@@ -487,7 +487,9 @@ OPEN-CONNECTION-FOR-URI to open connections."
     (case (uri-scheme uri)
       ((file)
        (let ((port (open-file (uri-path uri) "r0b")))
-         (values port (stat:size (stat port)))))
+         (values port
+                 (stat:size (stat port))
+                 #t)))
       ((http https)
        ;; Test this with:
        ;;   sudo tc qdisc add dev eth0 root netem delay 1500ms
@@ -517,7 +519,11 @@ OPEN-CONNECTION-FOR-URI to open connections."
                                 #:keep-alive? keep-alive?
                                 #:buffered? #f)))
                (values port
-                       (response-content-length response)))))))
+                       (response-content-length response)
+                       (or
+                        (memq 'close
+                              (response-connection response))
+                        (not keep-alive?))))))))
       (else
        (raise
         (formatted-message
@@ -533,11 +539,11 @@ OPEN-CONNECTION-FOR-URI to open connections."
                   (warning (G_ "download from '~a' failed, trying next URL~%")
                            (uri->string uri))
                   (try-fetch rest)))
-         (let ((port download-size (fetch uri)))
+         (let ((port download-size close? (fetch uri)))
            (unless print-build-trace?
              (format (current-error-port)
                      (G_ "Downloading ~a...~%") (uri->string uri)))
-           (values port uri compression download-size))))
+           (values port uri compression download-size close?))))
       (()
        (raise
         (formatted-message
@@ -554,7 +560,7 @@ OPEN-CONNECTION-FOR-URI to open connections."
                                          fast-decompression?)))
     ;; 'guix publish' without '--cache' doesn't specify a Content-Length, so
     ;; DOWNLOAD-SIZE is #f in this case.
-    (let* ((raw uri compression download-size (try-fetch choices))
+    (let* ((raw uri compression download-size close? (try-fetch choices))
            (progress
             (let* ((dl-size  (or download-size
                                  (and (equal? compression "none")
@@ -597,10 +603,7 @@ OPEN-CONNECTION-FOR-URI to open connections."
       ;; Wait for the reporter to finish.
       (every (compose zero? cdr waitpid) pids)
 
-      ;; TODO The port should also be closed if the relevant HTTP response
-      ;; header is set, but http-fetch doesn't currently share that
-      ;; information
-      (unless keep-alive?
+      (when close?
         (close-port raw))
 
       (values expected
