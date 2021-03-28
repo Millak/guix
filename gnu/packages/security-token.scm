@@ -9,6 +9,7 @@
 ;;; Copyright © 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Raphaël Mélotte <raphael.melotte@mind.be>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Antero Mejr <antero@kodmin.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
@@ -665,7 +666,7 @@ operations.")
            gengetopt
            help2man
            pkg-config
-           gtk-doc
+           gtk-doc/stable
            which))
     (home-page "https://developers.yubico.com/libu2f-server/")
     ;; TRANSLATORS: The U2F protocol has a "server side" and a "host side".

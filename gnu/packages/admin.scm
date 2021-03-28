@@ -4364,7 +4364,7 @@ hard-coded.")
            autoconf-archive
            automake
            `(,glib "bin") ; for glib-genmarshal, etc.
-           gtk-doc
+           gtk-doc/stable
            pkg-config))
     (inputs
      (list dbus-glib libevdev libxml2 upower xz))

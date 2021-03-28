@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
@@ -723,7 +724,7 @@ such as Batch image processing.")
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           gtk-doc
+           gtk-doc/stable
            itstool
            libxml2
            perl
