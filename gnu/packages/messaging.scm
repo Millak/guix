@@ -28,6 +28,7 @@
 ;;; Copyright © 2020, 2022 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
@@ -288,7 +289,7 @@ XMPP-based sessions.")
      (list docbook-xml-4.1.2
            `(,glib "bin")
            gobject-introspection
-           gtk-doc
+           gtk-doc/stable
            pkg-config))
     (inputs (list ncurses))
     (propagated-inputs (list glib libxml2 python-2))
@@ -2122,7 +2123,7 @@ including psyced.")
     (native-inputs
      (list pkg-config check
            `(,glib "bin") ; gtester
-           gtk-doc))
+           gtk-doc/stable))
     (home-page "https://mcabber.com/")
     (description
      "Loudmouth is a lightweight and easy-to-use C library for programming

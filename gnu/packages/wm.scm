@@ -44,6 +44,7 @@
 ;;; Copyright © 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2023 jgart <jgart@dismail.de>
@@ -1386,7 +1387,7 @@ all of them.  Currently supported window managers include:
     (inputs
      (list gtk+ gobject-introspection))
     (native-inputs
-     (list gtk-doc pkg-config))
+     (list gtk-doc/stable pkg-config))
     (synopsis "Library for registering global keyboard shortcuts, Gtk3 version")
     (description
      "Keybinder is a library for registering global keyboard shortcuts.
