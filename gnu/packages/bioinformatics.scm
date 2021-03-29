@@ -17169,29 +17169,35 @@ Thus the per-base error rate is similar to the raw input reads.")
         (base32 "1bbsn5f5x8wlspg4pbibqz6m5vin8c19nl224f3z3km0pkc97rwv"))))
     (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (invoke "qmake" "Bandage.pro")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (substitute* "tests/bandage_command_line_tests.sh"
-                 (("^bandagepath=.*")
-                  (string-append "bandagepath=" (getcwd) "/Bandage\n")))
-               (with-directory-excursion "tests"
-                 (setenv "XDG_RUNTIME_DIR" (getcwd))
-                 (invoke "./bandage_command_line_tests.sh")))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "Bandage" (string-append out "/bin"))
-               #t))))))
+     (list
+      ;; TODO: Once <https://issues.guix.gnu.org/47475> is fixed,
+      ;; consider uncommenting the following:
+      ;;
+      ;; Prevent the (rarely updated) imagemagick/stable package from
+      ;; ending up in the closure.
+      ;; #:disallowed-references (list imagemagick/stable)
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "qmake" "Bandage.pro")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "tests/bandage_command_line_tests.sh"
+                  (("^bandagepath=.*")
+                   (string-append "bandagepath=" (getcwd) "/Bandage\n")))
+                (with-directory-excursion "tests"
+                  (setenv "XDG_RUNTIME_DIR" (getcwd))
+                  (invoke "./bandage_command_line_tests.sh")))))
+          (replace 'install
+            (lambda _
+              (install-file "Bandage" (string-append #$output "/bin")))))))
     (inputs
      (list qtbase-5 qtsvg-5))
     (native-inputs
+     ;; imagemagick/stable cannot be used here, as it will end up in
+     ;; the closure.  See <https://issues.guix.gnu.org/47475>.
      (list imagemagick))
     (home-page "https://rrwick.github.io/Bandage/")
     (synopsis
