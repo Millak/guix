@@ -2333,10 +2333,14 @@ command.")
     (native-inputs
      ;; For icons.
      (modify-inputs (package-native-inputs wpa-supplicant)
-       (prepend imagemagick inkscape/stable)))
+       (prepend imagemagick/stable
+                inkscape/stable)))
     (build-system qt-build-system)
     (arguments
      (list
+      ;; Make sure the (rarely updated) package 'imagemagick/stable'
+      ;; does not end up in the closure.
+      #:disallowed-references (list imagemagick/stable)
       #:test-target "check"
       #:phases
       #~(modify-phases %standard-phases
