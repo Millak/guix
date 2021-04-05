@@ -662,54 +662,6 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
     ("tcc" ,tcc-boot0)
     ,@(%boot-gash-inputs)))
 
-(define bzip2-mesboot
-  ;; The initial bzip2
-  (package
-    (inherit bzip2)
-    (name "bzip2-mesboot")
-    (version (package-version bzip2))
-    (source (bootstrap-origin (package-source bzip2)))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs (%boot-tcc0-inputs))
-    (outputs '("out"))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:parallel-build? #f
-       #:tests? #f            ; check is naive, also checks non-built PROGRAMS
-       #:strip-binaries? #f   ; no strip yet
-       #:make-flags (list "CC=tcc -I ." "AR=tcc -ar" "bzip2"
-                          (string-append "PREFIX="
-                                         (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'scripted-patch
-           (lambda _
-             (substitute* "Makefile"
-               (("\tln " all)
-                (string-append "\t#" all)))
-             (substitute* "bzip2.c"
-               (("struct utimbuf uTimBuf;" all)
-                (string-append "// " all))
-               (("uTimBuf[.]" all)
-                (string-append "// " all))
-               (("retVal = utime [(] dstName, &uTimBuf [)];" all)
-                (string-append "retVal = 0; // " all)))))
-         (replace 'configure
-           (lambda _
-             (with-output-to-file "utime.h"
-               (lambda _ (display "
-#define fchown(filedes, owner, group) 0
-#define fchmod(filedes, mode) 0
-")))))
-         (replace 'check
-           (lambda _
-             (invoke "./bzip2" "--help")))
-         ;; FIXME: no compressing gzip yet
-         (delete 'compress-documentation))))))
-
 (define bash-mesboot0
   ;; The initial Bash
   (package
@@ -818,8 +770,7 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
     (build-system gnu-build-system)
     (inputs '())
     (propagated-inputs '())
-    (native-inputs `(("bzip2" ,bzip2-mesboot)
-                     ,@(%boot-tcc0-inputs)))
+    (native-inputs (%boot-tcc0-inputs))
     (arguments
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
@@ -827,14 +778,6 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
        #:strip-binaries? #f             ; no strip yet
        #:phases
        (modify-phases %standard-phases
-         ;; tar xvf ..bz2 gives
-         ;; bzip2: PANIC -- internal consistency error
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (copy-file source "tarball.tar.bz2")
-             (invoke "bzip2" "-d" "tarball.tar.bz2")
-             (invoke "tar" "xvf" "tarball.tar")
-             (chdir (string-append "tcc-" ,version))))
          (add-after 'unpack 'scripted-patch
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libtcc.c"
@@ -982,7 +925,6 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
 
 (define (%boot-tcc-inputs)
   `(("bash" ,bash-mesboot0)
-    ("bzip2" ,bzip2-mesboot)
     ("gzip" ,gzip-mesboot)
     ("patch" ,patch-mesboot)
     ("sed" ,sed-mesboot0)
