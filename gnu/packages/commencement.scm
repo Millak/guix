@@ -894,14 +894,17 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
   (package
     (inherit binutils)
     (name "binutils-mesboot0")
-    (version "2.14")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/binutils/binutils-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1w8xp7k44bkijr974x9918i4p1sw4g2fcd5mxvspkjpg38m214ds"))))
+    (version "2.20.1a")
+    (source (bootstrap-origin
+             (origin
+               (method url-fetch)
+               (uri (string-append "mirror://gnu/binutils/binutils-"
+                                   version ".tar.bz2"))
+               (patches (search-patches "binutils-boot-2.20.1a.patch"))
+               (patch-guile %bootstrap-guile)
+               (sha256
+                (base32
+                 "0r7dr0brfpchh5ic0z9r4yxqn4ybzmlh25sbp30cacqk8nb7rlvi")))))
     (inputs '())
     (propagated-inputs '())
     (native-inputs (%boot-tcc-inputs))
@@ -913,40 +916,21 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
        #:parallel-build? #f
        #:strip-binaries? #f             ; no strip yet
        #:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         `("--disable-nls"
+       (let ((cppflags (string-append " -D __GLIBC_MINOR__=6"
+                                      " -D MES_BOOTSTRAP=1"))
+             (bash (assoc-ref %build-inputs "bash")))
+         `(,(string-append "CONFIG_SHELL=" bash "/bin/sh")
+           ,(string-append "CPPFLAGS=" cppflags)
+           "AR=tcc -ar"
+           "CXX=false"
+           "RANLIB=true"
+           ,(string-append "CC=tcc" cppflags)
+           "--disable-nls"
            "--disable-shared"
            "--disable-werror"
-           "--build=i386-unknown-linux"
-           "--host=i386-unknown-linux"
-           "--target=i386-unknown-linux"
-           "--with-sysroot=/"
-           ,(string-append "--prefix=" out)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'setenv
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bash (assoc-ref %build-inputs "bash"))
-                    (shell (string-append bash "/bin/bash")))
-               (setenv "CONFIG_SHELL" shell)
-               (setenv "SHELL" shell)
-               (setenv "AR" "tcc -ar")
-               (setenv "RANLIB" "true")
-               (setenv "CC" "tcc -D __GLIBC_MINOR__=6"))))
-         (add-after 'unpack 'scripted-patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "bfd/configure"
-               (("^sed -e '/SRC-POTFILES.*" all)
-                "echo -e 'all:\\n\\ttrue\\n\\ninstall:\\n\\ttrue\\n' > po/Makefile\n"))))
-         (replace 'configure           ; needs classic invocation of configure
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             (format (current-error-port)
-                     "running ./configure ~a\n" (string-join configure-flags))
-             (apply system* "./configure" configure-flags)
-             (substitute* "config.status"
-               (("[.]//dev/null") "/dev/null"))
-             (invoke "sh" "./config.status"))))))))
+           "--build=i686-unknown-linux-gnu"
+           "--host=i686-unknown-linux-gnu"
+           "--with-sysroot=/"))))))
 
 (define gcc-core-mesboot0
   ;; Gcc-2.95.3 is the most recent GCC that is supported by what the Mes C
@@ -1420,15 +1404,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
              "--build=i686-unknown-linux-gnu"
              "--host=i686-unknown-linux-gnu"
              "--with-sysroot=/"
-             ,(string-append "--prefix=" out))))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'setenv
-             (lambda _
-               (let* ((out (assoc-ref %outputs "out"))
-                      (bash (assoc-ref %build-inputs "bash"))
-                      (shell (string-append bash "/bin/bash")))
-                 (setenv "CONFIG_SHELL" shell))))))))))
+             ,(string-append "--prefix=" out))))))))
 
 (define coreutils-mesboot0
   (package
@@ -1911,72 +1887,10 @@ ac_cv_c_float_format='IEEE (little-endian)'
 
 (define binutils-mesboot
   (package
-    (inherit binutils)
+    (inherit binutils-mesboot1)
     (name "binutils-mesboot")
-    (version "2.20.1a")
-    (source (bootstrap-origin
-             (origin
-               (method url-fetch)
-               (uri (string-append "mirror://gnu/binutils/binutils-"
-                                   version ".tar.bz2"))
-               (patches (search-patches "binutils-boot-2.20.1a.patch"))
-               (sha256
-                (base32
-                 "0r7dr0brfpchh5ic0z9r4yxqn4ybzmlh25sbp30cacqk8nb7rlvi")))))
-    (inputs '())
-    (propagated-inputs '())
     (native-inputs `(("xz" ,xz-mesboot)
-                     ,@(%boot-mesboot2-inputs)))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:tests? #f                     ; runtest: command not found
-       #:parallel-build? #f
-       #:strip-binaries? #f            ; no strip yet
-       #:configure-flags
-       `("CC=gcc"
-         "CXX=false"
-         "RANLIB=true"
-         "--disable-doc"
-         "--disable-nls"
-         "--disable-shared"
-         "--disable-werror"
-         "--build=i686-unknown-linux-gnu"
-         "--host=i686-unknown-linux-gnu"
-         "--with-sysroot=/"
-         ;; checking for grep that handles long lines and -e
-         "ac_cv_path_GREP=grep")
-       ;; FIXME: ac_cv_path_GREP=grep doesn't seem to be forwarded to
-       ;; cascading configure's?
-       #:make-flags '("ac_cv_path_GREP=grep")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'scripted-patch
-           (lambda _
-             ;; sed-mesboot0 cannot build these
-             (copy-file "binutils/Makefile.in" "binutils/Makefile.in.orig")
-             (substitute* "binutils/Makefile.in"
-               ;; binutils/binutils uses an amazingly complex install
-               ;; command, using FOR, SED, READ, IF, ECHO, SED, SED, AWK,
-               ;; READ, and then LIBTOOL (to do something like
-               ;; `mkdir $DESTDIR$bindir; cp readline $DESTDIR$bindir ...')
-
-               ;; Some tool [debugme!] cannot handle two escaped newlines
-               ;; (bash?), and the install stops after $(am__EXEEXT_11)
-               ;; ("objcopy"), so $(am__EXEEXT_13) ("readelf") and others do
-               ;; not get installed.  Remove the stray newline:
-               (("^\t@BUILD_NLMCONV@ @BUILD_SRCONV@ @BUILD_DLLTOOL@ @BUILD_WINDRES@ .*") ""))
-             (substitute* "opcodes/Makefile.in"
-               (("^SUBDIRS = [.] po") "SUBDIRS = ."))
-             (substitute* "binutils/Makefile.in"
-               (("^SUBDIRS = doc po") "SUBDIRS ="))
-             (substitute* "gas/Makefile.in"
-               (("^SUBDIRS = doc po") "SUBDIRS ="))
-             (substitute* "gprof/Makefile.in"
-               (("^SUBDIRS = po") "SUBDIRS ="))
-             (substitute* "ld/Makefile.in"
-               (("^SUBDIRS = po") "SUBDIRS =")))))))))
+                     ,@(%boot-mesboot2-inputs)))))
 
 (define (%boot-mesboot3-inputs)
   `(("binutils" ,binutils-mesboot)
