@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -363,11 +364,14 @@ connection to the store."
   "Switch the system profile to the generation specified by SPEC, and
 re-install bootloader with a configuration file that uses the specified system
 generation as its default entry.  STORE is an open connection to the store."
-  (let ((number (relative-generation-spec->number %system-profile spec)))
+  (let* ((number (relative-generation-spec->number %system-profile spec))
+         (generation (generation-file-name %system-profile number))
+         (activate (string-append generation "/activate")))
     (if number
         (begin
           (reinstall-bootloader store number)
-          (switch-to-generation* %system-profile number))
+          (switch-to-generation* %system-profile number)
+          (unless-file-not-found (primitive-load activate)))
         (leave (G_ "cannot switch to system generation '~a'~%") spec))))
 
 (define* (system-bootloader-name #:optional (system %system-profile))
@@ -680,13 +684,15 @@ checking this by themselves in their 'check' procedure."
 ;;; Action.
 ;;;
 
-(define* (system-derivation-for-action os action
-                                       #:key image-size image-type
-                                       full-boot? container-shared-network?
-                                       mappings label
-                                       volatile-root?)
-  "Return as a monadic value the derivation for OS according to ACTION."
-  (mlet %store-monad ((target (current-target-system)))
+(define* (system-derivation-for-action image action
+                                       #:key
+                                       full-boot?
+                                       container-shared-network?
+                                       mappings)
+  "Return as a monadic value the derivation for IMAGE according to ACTION."
+  (mlet %store-monad ((target (current-target-system))
+                      (os -> (image-operating-system image))
+                      (image-size -> (image-size image)))
     (case action
       ((build init reconfigure)
        (operating-system-derivation os))
@@ -695,8 +701,6 @@ checking this by themselves in their 'check' procedure."
         os
         #:mappings mappings
         #:shared-network? container-shared-network?))
-      ((vm-image)
-       (system-qemu-image os #:disk-image-size image-size))
       ((vm)
        (system-qemu-image/shared-store-script os
                                               #:full-boot? full-boot?
@@ -705,21 +709,12 @@ checking this by themselves in their 'check' procedure."
                                                   image-size
                                                   (* 70 (expt 2 20)))
                                               #:mappings mappings))
-      ((image disk-image)
-       (let* ((base-image (os->image os #:type image-type))
-              (base-target (image-target base-image)))
-         (when (eq? action 'disk-image)
-           (warning (G_ "'disk-image' is deprecated: use 'image' instead~%")))
-         (lower-object
-          (system-image
-           (image
-            (inherit (if label
-                         (image-with-label base-image label)
-                         base-image))
-            (target (or base-target target))
-            (size image-size)
-            (operating-system os)
-            (volatile-root? volatile-root?))))))
+      ((image disk-image vm-image)
+       (when (eq? action 'disk-image)
+         (warning (G_ "'disk-image' is deprecated: use 'image' instead~%")))
+       (when (eq? action 'vm-image)
+         (warning (G_ "'vm-image' is deprecated: use 'image' instead~%")))
+       (lower-object (system-image image)))
       ((docker-image)
        (system-docker-image os
                             #:shared-network? container-shared-network?)))))
@@ -765,7 +760,7 @@ and TARGET arguments."
      (set! %load-compiled-path (lowered-gexp-load-compiled-path lowered))
      (return (primitive-eval (lowered-gexp-sexp lowered))))))
 
-(define* (perform-action action os
+(define* (perform-action action image
                          #:key
                          (validate-reconfigure ensure-forward-reconfigure)
                          save-provenance?
@@ -773,17 +768,13 @@ and TARGET arguments."
                          install-bootloader?
                          dry-run? derivations-only?
                          use-substitutes? bootloader-target target
-                         image-size image-type
-                         volatile-root?
-                         full-boot? label container-shared-network?
+                         full-boot?
+                         container-shared-network?
                          (mappings '())
                          (gc-root #f))
-  "Perform ACTION for OS.  INSTALL-BOOTLOADER? specifies whether to install
+  "Perform ACTION for IMAGE.  INSTALL-BOOTLOADER? specifies whether to install
 bootloader; BOOTLOADER-TAGET is the target for the bootloader; TARGET is the
-target root directory; IMAGE-SIZE is the size of the image to be built, for
-the 'vm-image' and 'image' actions.  IMAGE-TYPE is the type of image to
-be built.  When VOLATILE-ROOT? is #t, the root file system is mounted
-volatile.
+target root directory.
 
 FULL-BOOT? is used for the 'vm' action; it determines whether to
 boot directly to the kernel or to the bootloader.  CONTAINER-SHARED-NETWORK?
@@ -804,6 +795,9 @@ static checks."
     (if (eq? 'init action)
         '()
         (map boot-parameters->menu-entry (profile-boot-parameters))))
+
+  (define os
+    (image-operating-system image))
 
   (define bootloader
     (operating-system-bootloader os))
@@ -827,11 +821,7 @@ static checks."
       (check-initrd-modules os)))
 
   (mlet* %store-monad
-      ((sys       (system-derivation-for-action os action
-                                                #:label label
-                                                #:image-type image-type
-                                                #:image-size image-size
-                                                #:volatile-root? volatile-root?
+      ((sys       (system-derivation-for-action image action
                                                 #:full-boot? full-boot?
                                                 #:container-shared-network? container-shared-network?
                                                 #:mappings mappings))
@@ -969,8 +959,6 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "\
    vm               build a virtual machine image that shares the host's store\n"))
   (display (G_ "\
-   vm-image         build a freestanding virtual machine image\n"))
-  (display (G_ "\
    image            build a Guix System image\n"))
   (display (G_ "\
    docker-image     build a Docker image\n"))
@@ -999,7 +987,7 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "
   -t, --image-type=TYPE  for 'image', produce an image of TYPE"))
   (display (G_ "
-      --image-size=SIZE  for 'vm-image', produce an image of SIZE"))
+      --image-size=SIZE  for 'image', produce an image of SIZE"))
   (display (G_ "
       --no-bootloader    for 'init', do not install a bootloader"))
   (display (G_ "
@@ -1017,8 +1005,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "
   -N, --network          for 'container', allow containers to access the network"))
   (display (G_ "
-  -r, --root=FILE        for 'vm', 'vm-image', 'image', 'container',
-                         and 'build', make FILE a symlink to the result, and
+  -r, --root=FILE        for 'vm', 'image', 'container' and 'build',
+                         make FILE a symlink to the result, and
                          register it as a garbage collector root"))
   (display (G_ "
       --full-boot        for 'vm', make a full boot sequence"))
@@ -1169,9 +1157,9 @@ Some ACTIONS support additional ARGS.\n"))
 ACTION must be one of the sub-commands that takes an operating system
 declaration as an argument (a file name.)  OPTS is the raw alist of options
 resulting from command-line parsing."
-  (define (ensure-operating-system file-or-exp obj)
-    (unless (operating-system? obj)
-      (leave (G_ "'~a' does not return an operating system~%")
+  (define (ensure-operating-system-or-image file-or-exp obj)
+    (unless (or (operating-system? obj) (image? obj))
+      (leave (G_ "'~a' does not return an operating system or an image~%")
              file-or-exp))
     obj)
 
@@ -1185,27 +1173,47 @@ resulting from command-line parsing."
          (expr        (assoc-ref opts 'expression))
          (system      (assoc-ref opts 'system))
          (target      (assoc-ref opts 'target))
-         (transform   (if save-provenance?
-                          (cut operating-system-with-provenance <> file)
-                          identity))
-         (os          (transform
-                       (ensure-operating-system
-                        (or file expr)
-                        (cond
-                         ((and expr file)
-                          (leave
-                           (G_ "both file and expression cannot be specified~%")))
-                         (expr
-                          (read/eval expr))
-                         (file
-                          (load* file %user-module
-                                 #:on-error (assoc-ref opts 'on-error)))
-                         (else
-                          (leave (G_ "no configuration specified~%")))))))
-
+         (transform   (lambda (obj)
+                        (if (and save-provenance? (operating-system? obj))
+                            (operating-system-with-provenance obj file)
+                            obj)))
+         (obj          (transform
+                        (ensure-operating-system-or-image
+                         (or file expr)
+                         (cond
+                          ((and expr file)
+                           (leave
+                            (G_ "both file and expression cannot be specified~%")))
+                          (expr
+                           (read/eval expr))
+                          (file
+                           (load* file %user-module
+                                  #:on-error (assoc-ref opts 'on-error)))
+                          (else
+                           (leave (G_ "no configuration specified~%")))))))
          (dry?        (assoc-ref opts 'dry-run?))
          (bootloader? (assoc-ref opts 'install-bootloader?))
          (label       (assoc-ref opts 'label))
+         (image-type  (lookup-image-type-by-name
+                       (assoc-ref opts 'image-type)))
+         (image       (let* ((image-type (if (eq? action 'vm-image)
+                                            qcow2-image-type
+                                            image-type))
+                            (image-size (assoc-ref opts 'image-size))
+                            (volatile?  (assoc-ref opts 'volatile-root?))
+                            (base-image (if (operating-system? obj)
+                                            (os->image obj
+                                                       #:type image-type)
+                                            obj))
+                            (base-target (image-target base-image)))
+                        (image
+                         (inherit (if label
+                                      (image-with-label base-image label)
+                                      base-image))
+                         (target (or base-target target))
+                         (size image-size)
+                         (volatile-root? volatile?))))
+         (os          (image-operating-system image))
          (target-file (match args
                         ((first second) second)
                         (_ #f)))
@@ -1241,7 +1249,7 @@ resulting from command-line parsing."
                  (warn-about-old-distro #:suggested-command
                                         "guix system reconfigure"))
 
-               (perform-action action os
+               (perform-action action image
                                #:dry-run? dry?
                                #:derivations-only? (assoc-ref opts
                                                               'derivations-only?)
@@ -1250,11 +1258,6 @@ resulting from command-line parsing."
                                (assoc-ref opts 'skip-safety-checks?)
                                #:validate-reconfigure
                                (assoc-ref opts 'validate-reconfigure)
-                               #:image-type (lookup-image-type-by-name
-                                             (assoc-ref opts 'image-type))
-                               #:image-size (assoc-ref opts 'image-size)
-                               #:volatile-root?
-                               (assoc-ref opts 'volatile-root?)
                                #:full-boot? (assoc-ref opts 'full-boot?)
                                #:container-shared-network?
                                (assoc-ref opts 'container-shared-network?)
@@ -1264,7 +1267,6 @@ resulting from command-line parsing."
                                                         (_ #f))
                                                       opts)
                                #:install-bootloader? bootloader?
-                               #:label label
                                #:target target-file
                                #:bootloader-target bootloader-target
                                #:gc-root (assoc-ref opts 'gc-root)))))

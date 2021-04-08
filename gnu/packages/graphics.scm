@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
@@ -24,6 +24,7 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
@@ -97,6 +99,7 @@
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -317,7 +320,7 @@ minimum of resource usage and overhead.")
     (synopsis "Interface description language")
     (description "Flux is an interface description language used by DirectFB.
 Fluxcomp compiles .flux files to .cpp or .c files.")
-    (home-page "http://www.directfb.org/")
+    (home-page "https://www.directfb.org/")
     (license license:lgpl2.1+))) ; Same as DirectFB
 
 (define-public fox
@@ -715,15 +718,15 @@ more.")
 (define-public cgal
   (package
     (name "cgal")
-    (version "4.14.2")
+    (version "5.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://github.com/CGAL/cgal/releases/download/releases/"
-                    "CGAL-" version "/CGAL-" version ".tar.xz"))
+                    "https://github.com/CGAL/cgal/releases/download/v" version
+                    "/CGAL-" version ".tar.xz"))
               (sha256
                (base32
-                "08lrp3hfwdypggz4138bnkh6bjxn441zg2y9xnq5mrjfc5ini6w1"))))
+                "1rhrpjsp4081nn2q215h78kc4msrj0081zg65k1gfp5hl88bg03y"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no test target
@@ -750,7 +753,7 @@ many more.")
 (define-public ilmbase
   (package
     (name "ilmbase")
-    (version "2.5.2")
+    (version "2.5.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -759,7 +762,7 @@ many more.")
               (file-name (git-file-name "ilmbase" version))
               (sha256
                (base32
-                "1vf8bqld2bpcdi99jbr043y6vp01cp3fvbiasrn66xn91mf6imbn"))
+                "0mjzb3fd8b9pcqmrgy5cdsmvqd70hmlvjnfypi66v59h3fhrmgd8"))
               (patches (search-patches "ilmbase-fix-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -1914,3 +1917,40 @@ Some feature highlights:
 @item Automatic port forwarding with UPnP
 @end itemize\n")
       (license license:gpl3+))))
+
+(define-public monado
+  (package
+    (name "monado")
+    (version "21.0.0")
+    (source (origin
+          (method url-fetch)
+          (uri (string-append "https://gitlab.freedesktop.org/" name "/"
+                              name "/-/archive/v" version "/"
+                              name "-v" version ".tar.bz2"))
+          (sha256
+           (base32
+            "0n04k7a8b0i8ga0kbzh7qxmvni1ijawgk98s83519vxg4d0yyjbq"))))
+    (build-system meson-build-system)
+    (inputs
+     `(("ffmpeg" ,ffmpeg)
+       ("glslang" ,glslang)
+       ("libudev" ,eudev)
+       ("libusb" ,libusb)
+       ("libxcb" ,libxcb)
+       ("libxrandr" ,libxrandr)
+       ("opengl" ,mesa)
+       ("v4l" ,v4l-utils)
+       ("vulkan-loader" ,vulkan-loader)))
+    (native-inputs
+     `(("eigen" ,eigen)
+       ("pkg-config" ,pkg-config)
+       ("vulkan-headers" ,vulkan-headers)))
+    (arguments
+     `(#:configure-flags
+       (list "-Dinstall-active-runtime=false")))
+    (home-page "https://monado.freedesktop.org/")
+    (synopsis "OpenXR runtime")
+    (description "Monado is an OpenXR runtime delivering immersive experiences
+such as VR and AR on mobile, PC/desktop, and any other device.  Monado aims to be
+a complete and conforming implementation of the OpenXR API made by Khronos.")
+    (license license:boost1.0)))

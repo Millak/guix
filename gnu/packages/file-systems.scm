@@ -1,12 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021 raid5atemyhoemwork <raid5atemyhomework@protonmail.com>
+;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system linux-module)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
@@ -53,6 +55,7 @@
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -77,7 +80,7 @@
 (define-public autofs
   (package
     (name "autofs")
-    (version "5.1.6")
+    (version "5.1.7")
     (source
      (origin
        (method url-fetch)
@@ -85,7 +88,7 @@
                            "v" (version-major version) "/"
                            "autofs-" version ".tar.xz"))
        (sha256
-        (base32 "1vya21mb4izj3khcr3flibv7xc15vvx2v0rjfk5yd31qnzcy7pnx"))))
+        (base32 "1myfz6a3wj2c4j9h5g44zj796fdi82jhp1s92w2hg6xp2632csx3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -109,6 +112,12 @@
                (("^searchpath=\".*\"")
                 "searchpath=\"$PATH\""))
              #t))
+         (add-before 'configure 'fix-rpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* "Makefile.rules"
+                 (("^AUTOFS_LIB_LINK.*=" match)
+                  (string-append match " -Wl,-rpath=" out "/lib"))))))
          (add-before 'install 'omit-obsolete-lookup_nis.so-link
            ;; Building lookup_yp.so depends on $(YPCLNT) but this doesn't,
            ;; leading to a make error.  Since it's broken, comment it out.
@@ -149,14 +158,14 @@ large and/or frequently changing (network) environment.")
 (define-public bindfs
   (package
     (name "bindfs")
-    (version "1.14.8")
+    (version "1.15.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://bindfs.org/downloads/bindfs-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "15y4brlcrqhxl6z73785m0dr1vp2q3wc6xss08x9jjr0apzmmjp5"))))
+                "1av8dj9i1g0105fs5r9srqqsp7yahlhwc0yl8i1szyfdls23bp84"))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX: The tests have no hope of passing until there is a "nogroup"
@@ -262,7 +271,7 @@ always possible.")
 (define-public fsarchiver
   (package
     (name "fsarchiver")
-    (version "0.8.5")
+    (version "0.8.6")
     (source
      (origin
        (method git-fetch)
@@ -272,7 +281,7 @@ always possible.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rvwq5v3rl14bqxjm1ibfapyicf0sa44nw7451v10kx39lp56ylp"))))
+        (base32 "1ry2sdkfbg4bwcldk42g1i3wa3z4pr9yh9dil6ilhwcvhqiw41zc"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -331,8 +340,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "612f6b9ab73c7f46e0254355b707d494a8ad9270")
-        (revision "3"))
+  (let ((commit "bb6eccc2ecd4728871bfc70462d3a4a20daa9d68")
+        (revision "4"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -344,7 +353,7 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1a62wkv1i6pg5k1cjw7fzn933cbz8cp8y40cdpfd8rxjx0wg2szb"))))
+          (base32 "0ziqmcxbrak6bjck6s46hqrqx44zc97yaj0kbk3amsxf18rsfs0n"))))
       (build-system gnu-build-system)
       (arguments
        `(#:make-flags
@@ -463,7 +472,7 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public exfatprogs
   (package
     (name "exfatprogs")
-    (version "1.0.4")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -472,7 +481,7 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1braffz1wc4ki3nb42q85l5zg2dl2hwjr64rk27nc85wcsrbavnl"))))
+        (base32 "1ciy28lx7c1vr1f138qi0mkz88pzlkay6nlwmp1yjzd830x48549"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -847,7 +856,7 @@ APFS.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.0.3")
+    (version "2.0.4")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -856,7 +865,7 @@ APFS.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "0fg5hz1yy2z5ah0hzjv3xy5vcg1c214rps90dr80lfkalx5gd506"))))
+           (base32 "0v2zshimz5miyj8mbskb52pnzyl1s4rhpr6208zq549v8g2l84vx"))))
     (build-system linux-module-build-system)
     (arguments
      `(;; The ZFS kernel module should not be downloaded since the license
@@ -966,9 +975,9 @@ APFS.")
        ("util-linux:lib" ,util-linux "lib")
        ("zlib" ,zlib)))
     (home-page "https://zfsonlinux.org/")
-    (synopsis "Native ZFS on Linux")
+    (synopsis "OpenZFS on Linux")
     (description
-     "ZFS on Linux is an advanced file system and volume manager which was
+     "OpenZFS is an advanced file system and volume manager which was
 originally developed for Solaris and is now maintained by the OpenZFS
 community.")
     (license license:cddl1.0)))
@@ -976,7 +985,7 @@ community.")
 (define-public mergerfs
   (package
     (name "mergerfs")
-    (version "2.31.0")
+    (version "2.32.4")
     (source
      (origin
        (method url-fetch)
@@ -984,7 +993,7 @@ community.")
                            version "/mergerfs-" version ".tar.gz"))
        (sha256
         (base32
-         "0k4asbg5n9dhy5jpjkw6simqqnr1zira2y4i71cq05091dfwm90p"))))
+         "0yz7nljx6axcj6hb09sgc0waspgfhp535228rjqvqgyd8y74jc3s"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; No tests exist.
@@ -1074,14 +1083,14 @@ compatible directories.")
 (define-public python-dropbox
   (package
     (name "python-dropbox")
-    (version "11.2.0")
+    (version "11.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dropbox" version))
         (sha256
          (base32
-          "0ml6z37k6nkhkiy483kvifs8im8z7vabd2g9jl6fkf1fzy3n6bym"))))
+          "16bxx9xqx2s4d9khrw57a0bj4q7nc6kq355wl4pfddn9cqvh9rg2"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))  ; Tests require a network connection.
     (native-inputs
@@ -1129,3 +1138,70 @@ Dropbox API v2.")
    "@code{dbxfs} allows you to mount your Dropbox folder as if it were a
 local file system using FUSE.")
   (license license:gpl3+)))
+
+(define-public go-github-com-hanwen-fuse
+  (package
+    (name "go-github-com-hanwen-fuse")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hanwen/go-fuse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1y44d08fxyis99s6jxdr6dbbw5kv3wb8lkhq3xmr886i4w41lz03"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/hanwen/go-fuse"))
+    (propagated-inputs
+     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+    (home-page "https://github.com/hanwen/go-fuse")
+    (synopsis "FUSE bindings for Go")
+    (description
+     "This package provides Go native bindings for the FUSE kernel module.")
+    (license license:bsd-3)))
+
+(define-public tmsu
+  (package
+    (name "tmsu")
+    (version "0.7.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oniony/TMSU")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0834hah7p6ad81w60ifnxyh9zn09ddfgrll04kwjxwp7ypbv38wq"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/oniony/TMSU"
+       #:unpack-path ".."
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'post-install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               ;; The go build system produces /bin/TMSU -> install as /bin/tmsu
+               (rename-file (string-append out "/bin/TMSU")
+                            (string-append out "/bin/tmsu"))))))))
+    (inputs
+     `(("go-github-com-mattn-go-sqlite3" ,go-github-com-mattn-go-sqlite3)
+       ("go-github-com-hanwen-fuse" ,go-github-com-hanwen-fuse)))
+    (home-page "https://github.com/oniony/TMSU")
+    (synopsis "Tag files and access them through a virtual filesystem")
+    (description
+     "TMSU is a tool for tagging your files.  It provides a simple
+command-line utility for applying tags and a virtual filesystem to give you a
+tag-based view of your files from any other program.  TMSU does not alter your
+files in any way: they remain unchanged on disk, or on the network, wherever
+your put them.  TMSU maintains its own database and you simply gain an
+additional view, which you can mount where you like, based upon the tags you
+set up.")
+    (license license:gpl3+)))

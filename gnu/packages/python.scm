@@ -11,7 +11,7 @@
 ;;; Copyright © 2015, 2016 Christopher Allan Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2015, 2016, 2017, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -32,7 +32,7 @@
 ;;; Copyright © 2016, 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2016, 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
@@ -59,6 +59,7 @@
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,6 +107,7 @@
 (define-public python-2.7
   (package
     (name "python2")
+    (replacement python-2.7/fixed)
     (version "2.7.17")
     (source
      (origin
@@ -349,6 +351,14 @@ data types.")
     (properties '((cpe-name . "python")))
     (license license:psfl)))
 
+(define python-2.7/fixed
+  (package
+    (inherit python-2.7)
+    (source (origin
+              (inherit (package-source python-2.7))
+              (patches (append (search-patches "python-2.7-CVE-2021-3177.patch")
+                               (origin-patches (package-source python-2.7))))))))
+
 ;; Current 2.x version.
 (define-public python-2 python-2.7)
 
@@ -356,14 +366,14 @@ data types.")
   ;; Both 2.x and 3.x used to be called "python".  In commit
   ;; a7714d42de2c3082f3609d1e63c83d703fb39cf9 (March 2018), we renamed the
   ;; Python 2.x package to "python2".
-  (package
-    (inherit python-2)
+  (package/inherit python-2
     (name "python")
     (properties `((superseded . ,python-2)))))
 
 (define-public python-3.8
   (package (inherit python-2)
     (name "python")
+    (replacement python-3.8/fixed)
     (version "3.8.2")
     (source (origin
               (method url-fetch)
@@ -521,10 +531,18 @@ data types.")
                                         (version-major+minor version)
                                         "/site-packages"))))))))
 
+(define python-3.8/fixed
+  (package
+    (inherit python-3.8)
+    (source (origin
+              (inherit (package-source python-3.8))
+              (patches (append (search-patches "python-3.8-CVE-2021-3177.patch")
+                               (origin-patches (package-source python-3.8))))))))
+
 (define-public python-3.9
   (package (inherit python-3.8)
     (name "python-next")
-    (version "3.9.1")
+    (version "3.9.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.python.org/ftp/python/"
@@ -535,7 +553,7 @@ data types.")
                         "python-3-search-paths.patch"))
               (sha256
                (base32
-                "1zq3k4ymify5ig739zyvx9s2ainvchxb1zpy139z74krr653y74r"))
+                "0z94vv5qhlwvcgc4sy9sdiqs0220s84wx3b62vslh5419z2k881w"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -649,15 +667,15 @@ To function properly, this package should not be installed together with the
 (define-public micropython
   (package
     (name "micropython")
-    (version "1.13")
+    (version "1.14")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/micropython/micropython/"
                             "releases/download/v" version
-                            "/micropython-" version ".tar.gz"))
+                            "/micropython-" version ".tar.xz"))
         (sha256
-         (base32 "0lfl7dv5v9rqckslrjqy5swjri29x1nj5d79wxnjys4sq6r2xcws"))
+         (base32 "0k6ri3rxxnnmvcbi7z7x59r21f4vj9dcf9j64jhj1cgazmb62c4p"))
       (modules '((guix build utils)))
       (snippet
        '(begin

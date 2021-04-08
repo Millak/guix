@@ -557,7 +557,7 @@ external server.")
 (define-public mujs
   (package
     (name "mujs")
-    (version "1.0.9")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -566,7 +566,7 @@ external server.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "146lmmigqlvx36d3fzb9kk7sy6y4ddv0ih4pkjz4zyj30zl84gy2"))))
+        (base32 "00j748hzf4azgjgykc8x9xalh70hj1dm8qvqzvldbf08zq0s3n5j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -597,14 +597,14 @@ roots, or wrestle with obscure build systems.")
 (define-public quickjs
   (package
     (name "quickjs")
-    (version "2020-11-08")
+    (version "2021-03-27")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://bellard.org/quickjs/quickjs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0yqqcjxi3cqagw184mqrxpvqg486x7c233r3cp9mxachngd6779f"))))
+                "06pywwpmfwjz225h59wf90q96a2fd66qfcw5xa6m6y9k9k7glnx4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

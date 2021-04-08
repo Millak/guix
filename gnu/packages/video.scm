@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2016, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
-;;; Copyright © 201–72021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
@@ -50,6 +50,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021 David Wilson <david@daviwil.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -286,7 +287,7 @@ video and audio streams from a DVD.")
 (define-public svt-hevc
   (package
     (name "svt-hevc")
-    (version "1.4.3")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -296,7 +297,7 @@ video and audio streams from a DVD.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sqh3dciqm2p1b66kngcpxqy5fx3ramxlxy8gfcbdwn2i3rsqhs7"))))
+        (base32 "038r3x3axil895vh2dq6223623ybrc45vn58vfmfb7cikz68sy23"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ; Test script is stand-alone
@@ -381,7 +382,7 @@ video decode, encode and filtering on Intel's Gen graphics hardware platforms.")
                #t))))))
     (native-inputs
      `(("dash" ,dash)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("glew" ,glew)
@@ -707,7 +708,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.20")
+    (version "0.21")
     (source
      (origin
        (method url-fetch)
@@ -715,7 +716,7 @@ old-fashioned output methods with powerful ascii-art renderer.")
                            "/releases/download/v" version
                            "/celluloid-" version ".tar.xz"))
        (sha256
-        (base32 "0kjjv2pcdvwcn4yi8kbpsca7pnx6cx6xdznv7ppqm0fssx68qyb3"))))
+        (base32 "1dvyf21iv9hrgv99szc24386vkacmhidm5b4d31hqqjs3b6di692"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("intltool" ,intltool)
@@ -772,7 +773,7 @@ television and DVD.  It is also known as AC-3.")
 (define-public libaom
   (package
     (name "libaom")
-    (version "2.0.1")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -781,7 +782,7 @@ television and DVD.  It is also known as AC-3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vakwmcwvmmrdw7460m8hzq96y71lxqix8b2g07c6s12br0rrdhl"))))
+                "178rq1d7i9q4lg40bipkyhdrk18j9wi5k5avpa5bls0zm7g5ifsx"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("perl" ,perl)
@@ -1014,7 +1015,7 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public straw-viewer
   (package
     (name "straw-viewer")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method git-fetch)
@@ -1023,7 +1024,7 @@ H.264 (MPEG-4 AVC) video streams.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s6w8m9377ajy21x7lf6mbgp5yk5i70nhzmqscibjnarr3xfg9zs"))))
+        (base32 "1n21byn7hqykpm94jmmnir1fwsskq6dp9wgj0bd2qf0qx5nq33cl"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-module-build" ,perl-module-build)
@@ -1234,7 +1235,9 @@ ASS/SSA (Advanced Substation Alpha/SubStation Alpha) subtitle format.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1x3j6yfyxl52adgnabycr0n38j9hx2j74la0hz0n8cnh9ry4d2qj"))))
+                "1x3j6yfyxl52adgnabycr0n38j9hx2j74la0hz0n8cnh9ry4d2qj"))
+              (patches (search-patches "libcaca-CVE-2021-3410-pt1.patch"
+                                       "libcaca-CVE-2021-3410-pt2.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -1305,14 +1308,14 @@ SMPTE 314M.")
 (define-public libmatroska
   (package
     (name "libmatroska")
-    (version "1.6.2")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.matroska.org/downloads/"
                            "libmatroska/libmatroska-" version ".tar.xz"))
        (sha256
-        (base32 "140r3q6n4a0n11zaf76lvyxd9gp435dgm8gn7mj0gar2hjm7ji5w"))))
+        (base32 "06h81sxyz2riic0gpzik6ffcnq32wrqphi8c6k55glcdymiimyfs"))))
     (build-system cmake-build-system)
     (inputs
      `(("libebml" ,libebml)))
@@ -1419,14 +1422,14 @@ operate properly.")
 (define-public ffmpeg
   (package
     (name "ffmpeg")
-    (version "4.3.1")
+    (version "4.3.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1yrg9nri54iav86vxy5i8pj51dhikksa04x20d77nc3fsi09405d"))))
+               "1nyd9jlcy0pqnwzi29a7sg50hq37vb0g3f9l16y3q8yh3m7ydr26"))))
     (build-system gnu-build-system)
     (inputs
      `(("dav1d" ,dav1d)
@@ -1610,27 +1613,6 @@ convert and stream audio and video.  It includes the libavcodec
 audio/video codec library.")
     (license license:gpl2+)))
 
-;; ungoogled-chromium crashes with ffmpeg 4.3, so stick with this version for
-;; now.  See <https://issues.guix.gnu.org/41987>.
-(define-public ffmpeg-4.2
-  (package
-    (inherit ffmpeg)
-    (version "4.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0cddkb5sma9dzy8i59sfls19rhjlq40zn9mh3x666dqkxl5ckxlx"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg)
-       ((#:configure-flags flags)
-        `(delete "--enable-librav1e" ,flags))))
-    (inputs (fold alist-delete
-                  (package-inputs ffmpeg)
-                  '("rav1e")))))
-
 (define-public ffmpeg-3.4
   (package
     (inherit ffmpeg)
@@ -1790,6 +1772,7 @@ videoformats depend on the configuration flags of ffmpeg.")
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("avahi" ,avahi)
+       ("dav1d" ,dav1d)
        ("dbus" ,dbus)
        ("eudev" ,eudev)
        ("flac" ,flac)
@@ -2013,7 +1996,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.33.0")
+    (version "0.33.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2022,7 +2005,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06cmycd2gb826kf2zv470w6nhzyk9sdhjydsdiinbgb902lzcpfy"))))
+                "06rw1f55zcsj78ql8w70j9ljp2qb1pv594xj7q9cmq7i92a7hq45"))))
     (build-system waf-build-system)
     (native-inputs
      `(("perl" ,perl) ; for zsh completion file
@@ -2197,14 +2180,14 @@ To load this plugin, specify the following option when starting mpv:
 (define-public youtube-dl
   (package
     (name "youtube-dl")
-    (version "2021.01.16")
+    (version "2021.04.07")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://youtube-dl.org/downloads/latest/"
                                   "youtube-dl-" version ".tar.gz"))
               (sha256
                (base32
-                "1q8pvw5j45k8nvr3d9rvnhi6xaj1mdqlkrg7q7qq6zciq5r54fhi"))
+                "02d51l6gdjr3zhhi7ydf5kzv8dv4jzq0ygja7zb2h9k7hnl0l27m"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
@@ -2664,7 +2647,7 @@ device without having to bother about the decryption.")
 (define-public srt2vtt
   (package
     (name "srt2vtt")
-    (version "0.1")
+    (version "0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2672,10 +2655,29 @@ device without having to bother about the decryption.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "16b377znjm6qlga5yb8aj7b7bcisa1ghcnj2lrb1d30lvxp4liif"))))
+                "1ravl635x81fcai4h2xnsn926i69pafgr6zkghq6319iprkw8ffv"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-srt2vtt
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bin  (string-append out "/bin"))
+                    (version ,(let ((v (package-version guile-3.0)))
+                                (string-append (car (string-split v #\.))
+                                               ".0")))
+                    (site (string-append out "/share/guile/site/" version))
+                    (compiled (string-append
+                               out "/lib/guile/" version
+                               "/site-ccache")))
+               (wrap-program (string-append bin "/srt2vtt")
+                 `("GUILE_LOAD_PATH" ":" prefix (,site))
+                 `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,compiled)))))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("guile" ,guile-2.0)))
+     `(("guile" ,guile-3.0)))
     (synopsis "SubRip to WebVTT subtitle converter")
     (description "srt2vtt converts SubRip formatted subtitles to WebVTT format
 for use with HTML5 video.")
@@ -2685,7 +2687,7 @@ for use with HTML5 video.")
 (define-public avidemux
   (package
     (name "avidemux")
-    (version "2.7.6")
+    (version "2.7.8")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -2693,7 +2695,7 @@ for use with HTML5 video.")
                    "avidemux_" version ".tar.gz"))
              (sha256
               (base32
-               "1kwkn976ppahrcr74bnv6sqx75pzl9y21m1mvr5ksi1m6lgp924s"))
+               "00blv5455ry3bb86zyzk1xmq3rbqmbif62khc0kq3whza97l12k2"))
              (patches (search-patches "avidemux-install-to-lib.patch"))))
     (build-system cmake-build-system)
     (native-inputs
@@ -2726,7 +2728,7 @@ for use with HTML5 video.")
        #:phases
        ;; Make sure files inside the included ffmpeg tarball are
        ;; patch-shebanged.
-       (let ((ffmpeg "ffmpeg-4.2.3"))
+       (let ((ffmpeg "ffmpeg-4.2.4"))
          (modify-phases %standard-phases
            (add-before 'patch-source-shebangs 'unpack-ffmpeg
              (lambda _
@@ -3175,6 +3177,43 @@ and JACK.")
     (description "This OBS plugins allows you to vizualize MPD and internal
 OBS audio sources.")
     (license license:gpl2)))
+
+(define-public obs-websocket
+  (package
+    (name "obs-websocket")
+    (version "4.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Palakis/obs-websocket")
+             (commit version)
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r47861ma1s3998clahbnbc216wcf706b1ps514k5p28h511l5w0"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                      ;no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-permission-change
+           (lambda* _
+             (substitute* "CMakeLists.txt"
+               ;; Remove lines that set writeable permissions on outputs.
+               (("set\\(CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS") "")
+               (("OWNER_READ.*\\)") "")
+               (("PERMISSIONS") ")"))
+             #t)))))
+    (inputs
+     `(("obs" ,obs)
+       ("qtbase" ,qtbase)))
+    (home-page "https://github.com/Palakis/obs-websocket")
+    (synopsis "OBS plugin for remote control via WebSockets")
+    (description "This OBS plugin allows you to establish a WebSocket channel
+from within your running OBS instance so that you can control it remotely from
+programs on your current machine or on other machines.")
+    (license license:gpl2+)))
 
 (define-public obs-wlrobs
   (package
@@ -4079,18 +4118,19 @@ tools for styling them, including a built-in real-time video preview.")
 (define-public pitivi
   ;; Pitivi switched to a non-semantic versioning scheme close before 1.0
   (let ((latest-semver "0.999.0")
-        (%version "2020.09.2"))
+        (%version "2021.01.0"))
    (package
      (name "pitivi")
      (version (string-append latest-semver "-" %version))
-     (source (origin
-               (method url-fetch)
-               (uri (string-append "mirror://gnome/sources/" name "/"
-                                   (version-major+minor %version) "/"
-                                   name "-" %version ".tar.xz"))
-               (sha256
-                (base32
-                 "0hzvv4wia4rk0kvq16y27imq2qd4q5lg3vx99hdcjdb1x3zqqfg0"))))
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://gitlab.gnome.org/GNOME/pitivi.git")
+              (commit %version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1jics10l16ismi5br6wxi4jxz3dd4p0c0xv8l0l3nvksvda4aafi"))))
      (build-system meson-build-system)
      (inputs
       `(("glib" ,glib)
@@ -4245,7 +4285,7 @@ It counts more than 100 plugins.")
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf-wrapper)
+     `(("autoconf" ,autoconf)
        ("automake" ,automake)
        ("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
@@ -4532,7 +4572,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
       (origin
         (method git-fetch)
@@ -4541,7 +4581,7 @@ transitions, and effects and then export your film to many common formats.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1820fpmmq1vxjzjmza6ydk4fgxipb8gmcc5skybki64qn7410v7x"))))
+         (base32 "0plmnxpz66yv3nqv1kgbyyfnwfqi9dqs0zbsdj488i6464a1m6si"))))
     (build-system meson-build-system)
     (native-inputs `(("nasm" ,nasm)))
     (home-page "https://code.videolan.org/videolan/dav1d")
@@ -4719,7 +4759,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/AOMediaCodec/SVT-AV1")
+             (url "https://gitlab.com/AOMediaCodec/SVT-AV1.git")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -4745,7 +4785,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
     (description "SVT-AV1 is an AV1 codec implementation.  The encoder is a
 work-in-progress, aiming to support video-on-demand and live streaming
 applications.  It only supports Intel-compatible CPUs (x86).")
-    (home-page "https://github.com/AOMediaCodec/SVT-AV1")
+    (home-page "https://gitlab.com/AOMediaCodec/SVT-AV1")
     (license license:bsd-2)))
 
 (define-public svt-vp9
@@ -4761,7 +4801,7 @@ applications.  It only supports Intel-compatible CPUs (x86).")
               (sha256
                (base32
                 "1ypdiw4cq22llvm8jyszxdq6r1aydkj80dsxjarjn5b7c1f2q3ar"))))
-    ;; SVT-AV1 only supports 64-bit Intel-compatible CPUs.
+    ;; SVT-VP9 only supports 64-bit Intel-compatible CPUs.
     (supported-systems '("x86_64-linux"))
     (build-system cmake-build-system)
     (arguments
@@ -4995,7 +5035,7 @@ brightness, contrast, and frame rate.")
 (define-public get-iplayer
   (package
     (name "get-iplayer")
-    (version "3.26")
+    (version "3.27")
     (source
       (origin
         (method git-fetch)
@@ -5004,11 +5044,10 @@ brightness, contrast, and frame rate.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "0lsz5hz1ia5j612540rb0f31y7j2k5gf7x5i43l8k06b90wi73d6"))))
+         (base32 "077y31gg020wjpx5pcivqgkqawcjxh5kjnvq97x2gd7i3wwc30qi"))))
     (build-system perl-build-system)
     (arguments
-     `(#:tests? #f  ; no tests
+     `(#:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)

@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
@@ -147,7 +147,9 @@
               (files '("arm-none-eabi/include")))
              (search-path-specification
               (variable "CROSS_CPLUS_INCLUDE_PATH")
-              (files '("arm-none-eabi/include")))
+              (files '("arm-none-eabi/include"
+                       "arm-none-eabi/include/c++"
+                       "arm-none-eabi/include/c++/arm-none-eabi")))
              (search-path-specification
               (variable "CROSS_LIBRARY_PATH")
               (files '("arm-none-eabi/lib"))))))))
@@ -317,7 +319,9 @@ usable on embedded products.")
               (files '("arm-none-eabi/include")))
              (search-path-specification
               (variable "CROSS_CPLUS_INCLUDE_PATH")
-              (files '("arm-none-eabi/include")))
+              (files '("arm-none-eabi/include"
+                       "arm-none-eabi/include/c++"
+                       "arm-none-eabi/include/c++/arm-none-eabi")))
              (search-path-specification
               (variable "CROSS_LIBRARY_PATH")
               (files '("arm-none-eabi/lib"))))))))
@@ -380,7 +384,7 @@ usable on embedded products.")
              "--with-newlib"
              ,(string-append "--with-gxx-include-dir="
                              (assoc-ref %outputs "out")
-                             "/arm-none-eabi/include")))))
+                             "/arm-none-eabi/include/c++")))))
       (native-inputs
        `(("newlib" ,newlib)
          ("xgcc" ,xgcc)
@@ -1469,7 +1473,7 @@ and Zilog Z80 families, plus many of their variants.")
 (define-public sdcc
   (package
     (name "sdcc")
-    (version "4.0.0")
+    (version "4.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1477,7 +1481,7 @@ and Zilog Z80 families, plus many of their variants.")
                     "/" version "/sdcc-src-" version ".tar.bz2"))
               (sha256
                (base32
-                "042fxw5mnsfhpc0z9lxfsw88kdkm32pwrxacp88kj2n2dy0814a8"))
+                "0gskzli17ghnn5qllvn4d56qf9bvvclqjh63nnj63p52smvggvc1"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1547,3 +1551,40 @@ families, plus many of their variants.")
     (synopsis "Tool for dealing with AMD binary blobs")
     (description "PSPTool is a tool for dealing with AMD binary blobs")
     (license license:gpl3+)))
+
+(define-public agent-proxy
+  (let ((commit "8927798a71d246871ea8fc22b4512296a3fa1765")
+        (revision "0"))
+    (package
+      (name "agent-proxy")
+      (version (git-version "1.98" revision commit))
+      (home-page
+       "https://git.kernel.org/pub/scm/utils/kernel/kgdb/agent-proxy.git")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1bxkzwsqfld4pknmiq8j3k55pv90n8s6kzh0xh42bhy2jv1wxz2z"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (add-after 'build 'build-kdmx
+             (lambda _
+               (invoke "make" "-C" "kdmx")
+               #t))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+                 (install-file "agent-proxy" bin)
+                 (install-file "kdmx/kdmx" bin)
+                 #t))))))
+      (synopsis "Proxies to run kgdb/gdbserver and console on a serial port")
+      (description "These programs are proxies allowing to run kgdb/gdbserver
+and console on a single serial port.  agent-proxy creates network sockets,
+whereas kdmx creates pseudo-ttys.")
+      (license license:gpl2))))

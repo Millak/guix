@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
@@ -600,6 +600,11 @@ extension functionality is exposed in a single header file.")
                         "godir = $(moddir)\n"))))
                  (add-before 'build 'patch-dynamic-link
                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (substitute* "gl/runtime.scm"
+                       (("\\(dynamic-link\\)")
+                        (string-append "(dynamic-link \""
+                                       (assoc-ref inputs "mesa")
+                                       "/lib/libGL.so" "\")")))
                      (define (dynamic-link-substitute file lib input)
                        (substitute* file
                          (("dynamic-link \"lib([a-zA-Z]+)\"" _ lib)
@@ -770,7 +775,7 @@ OpenGL.")
 (define-public glfw
   (package
     (name "glfw")
-    (version "3.3.2")
+    (version "3.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/glfw/glfw"
@@ -778,7 +783,7 @@ OpenGL.")
                                   "/glfw-" version ".zip"))
               (sha256
                (base32
-                "1izgc4r0ypxwwklfzj98ab4xqsjpb1wbsfdbivvxpmr95x8km8q8"))))
+                "0xrrahhbs4sn7sgvdk9sgz5zla4sw3ajq6kxpqrx635l8nnqfc3j"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; no test target

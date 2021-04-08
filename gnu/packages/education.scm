@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -276,7 +276,7 @@ easy.")
 (define-public snap
   (package
     (name "snap")
-    (version "6.5.0")
+    (version "6.6.0")
     (source
      (origin
        (method git-fetch)
@@ -285,7 +285,7 @@ easy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sqd4ddkfc7f7gx02wffvwbqgfbhpkcgyv7v5rh3gx60jca02p4w"))))
+        (base32 "1k0j0sp6zz2hnh7zc7f086zc3sld01h7sk277j6fak914yv6slzy"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -614,14 +614,14 @@ Portuguese, Spanish and Italian.")
 (define-public fet
   (package
     (name "fet")
-    (version "5.48.1")
+    (version "5.49.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.lalescu.ro/liviu/fet/download/"
                            "fet-" version ".tar.bz2"))
        (sha256
-        (base32 "0k728l6zi0lkhzyipsb0f2jw53s4xicm7arp33ikhrvc4jlwcp4v"))))
+        (base32 "1aa8xnhwvbhvp7yigcdk7qdwqh59yyfknqbpn3ybgjljc22m8w5n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -689,17 +689,6 @@ language and very flexible regarding to new or unknown keyboard layouts.")
         (sha256
          (base32 "10lm2p8w26c9n6lhvw3301myfss0dq7hl7rawzb3hsy1lqvmvdib"))))
     (build-system qt-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'patch-makefiles
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((qtdec (assoc-ref inputs "qtdeclarative")))
-               (substitute* '("src/CMakeFiles/ktouch_autogen.dir/build.make"
-                              "src/CMakeFiles/ktouch.dir/build.make")
-                 (("/gnu/store/.*qmlcachegen")
-                  (string-append qtdec "/bin/qmlcachegen"))))
-             #t)))))
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
        ("kdoctools" ,kdoctools)

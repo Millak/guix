@@ -384,7 +384,7 @@ http://www.tux.org/~ricdude/overview.html")
                 "if (error) return 77;"))
              #t)))))
     (native-inputs
-     `(("gtk-doc" ,gtk-doc)))
+     `(("gtk-doc" ,gtk-doc/stable)))
     (home-page "https://gstreamer.freedesktop.org/modules/orc.html")
     (synopsis "Oil runtime compiler")
     (description
@@ -985,7 +985,7 @@ be used by Python applications using GStreamer.")
        ("gst-plugins-base" ,gst-plugins-base)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
-    (home-page "http://space.twc.de/~stefan/gst123.php")
+    (home-page "https://space.twc.de/~stefan/gst123.php")
     (synopsis "Flexible command line media player based on gstreamer")
     (description "The program gst123 is designed to be a more flexible command
 line player in the spirit of ogg123 and mpg123, based on the gstreamer media

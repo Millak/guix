@@ -44,6 +44,7 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -699,7 +700,7 @@ move windows, switch between desktops, etc.).")
 (define-public scrot
   (package
     (name "scrot")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -709,8 +710,7 @@ move windows, switch between desktops, etc.).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "12xq6glg70icwsvbnfw9gm4dahlbnrc7b6adpd0mpf89h4sj2gds"))))
+        (base32 "0x64b7xqi5cbq29pb8s8r2kzbxaday1f5k0j70n3s2p7sahjxy72"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -719,8 +719,8 @@ move windows, switch between desktops, etc.).")
     (inputs
      `(("giblib" ,giblib)
        ("libx11" ,libx11)
-       ("libXcursor" ,libxcursor)
        ("libxcomposite" ,libxcomposite)
+       ("libxext" ,libxext)
        ("libXfixes" ,libxfixes)))
     (home-page "https://github.com/resurrecting-open-source-projects/scrot")
     (synopsis "Command-line screen capture utility for X Window System")
@@ -1473,7 +1473,7 @@ less if you are working in front of the screen at night.")
 (define-public xscreensaver
   (package
     (name "xscreensaver")
-    (version "5.44")
+    (version "5.45")
     (source
      (origin
        (method url-fetch)
@@ -1481,7 +1481,7 @@ less if you are working in front of the screen at night.")
         (string-append "https://www.jwz.org/xscreensaver/xscreensaver-"
                        version ".tar.gz"))
        (sha256
-        (base32 "15bv05vpfjwsrqbazrjmm382jd7vvw0mp6y9vasn6wvxzjf0in3k"))))
+        (base32 "03fmyjlwjinzv7mih6n07glmys8s877snd8zijk2c0ds6rkxy5kh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
@@ -1977,7 +1977,7 @@ a user-configurable period of time.")
 (define-public screen-message
   (package
     (name "screen-message")
-    (version "0.25")
+    (version "0.26")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1985,7 +1985,7 @@ a user-configurable period of time.")
                     "/screen-message-" version ".tar.gz"))
               (sha256
                (base32
-                "1lw955qq5pq010lzmaf32ylj2iprgsri9ih4hx672c3f794ilab0"))))
+                "0dwgm4z3dfk6xz41w8xiv0hmnwr74gf3ykb91b090hc4ffwsf4mw"))))
     (build-system gnu-build-system)
     (inputs `(("gtk3" ,gtk+)
               ("gdk" ,gdk-pixbuf)
@@ -2249,7 +2249,7 @@ Wayland.")
 (define-public autocutsel
   (package
     (name "autocutsel")
-    (version "0.10.0")
+    (version "0.10.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/sigmike/autocutsel"
@@ -2257,7 +2257,7 @@ Wayland.")
                                   "autocutsel-" version ".tar.gz"))
               (sha256
                (base32
-                "0gsys2dzh4az51ndcsabhlbbrjn2nm75lnjr45kg6r8sm8q66dx2"))))
+                "05zb85imp42birvrc320q20r98qddc5vxx169dnl753l5za0czpi"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f)) ; no "check" target
@@ -2323,7 +2323,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
 (define-public xwallpaper
   (package
     (name "xwallpaper")
-    (version "0.6.5")
+    (version "0.6.6")
     (source
      (origin
        (method git-fetch)
@@ -2332,7 +2332,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "121ai4dc0v65qk12gn9w62ixly8hc8a5qrygkbb82vy8ck4jqxj7"))))
+        (base32 "10klm81rs3k3l2i7whpvcsg95x51ja11l86fmwbrvg3kq705p2sr"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -2661,7 +2661,7 @@ using @command{dmenu}.")
 (define-public wofi
   (package
     (name "wofi")
-    (version "1.2.3")
+    (version "1.2.4")
     (source (origin
               (method hg-fetch)
               (uri (hg-reference
@@ -2670,7 +2670,7 @@ using @command{dmenu}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0glpb2gf5n78s01z3rn614ak8ibxhfr824gy6xlljbxclgds264i"))))
+                "1bnf078fg1kwslzwm1mjxwcqqq3bhk1dzymwfw9gk3brqbxrl75c"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
@@ -2707,7 +2707,7 @@ such as sway, similar to @command{rofi}.")
          (delete 'configure))
        #:tests? #f))
     (inputs
-     `(("python", python)))
+     `(("python" ,python)))
     (native-inputs
      `(("python-sphinx" ,python-sphinx)))
     (home-page "https://github.com/jceb/dex")

@@ -25,12 +25,20 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (sysctl-configuration
-            sysctl-service-type))
+            sysctl-configuration-sysctl
+            sysctl-configuration-settings
+            sysctl-service-type
+            %default-sysctl-settings))
 
 
 ;;;
 ;;; System Control Service.
 ;;;
+
+(define %default-sysctl-settings
+  ;; Default kernel parameters enabled with sysctl.
+  '(("fs.protected_hardlinks" . "1")
+    ("fs.protected_symlinks" . "1")))
 
 (define-record-type* <sysctl-configuration>
   sysctl-configuration make-sysctl-configuration
@@ -38,7 +46,7 @@
   (sysctl   sysctl-configuration-sysctl    ; path of the 'sysctl' command
             (default (file-append procps "/sbin/sysctl")))
   (settings sysctl-configuration-settings  ; alist of string pairs
-            (default '())))
+            (default %default-sysctl-settings)))
 
 (define (sysctl-configuration-settings->sysctl.conf settings)
   "Return a file for @command{sysctl} to set kernel parameters as specified by

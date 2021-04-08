@@ -35,14 +35,15 @@
   #:use-module (guix packages)
   #:use-module (guix profiles)
   #:use-module (guix search-paths)
-  #:use-module (guix import json)
+  #:autoload   (guix import json) (json->scheme-file)
   #:use-module (guix monads)
   #:use-module (guix utils)
   #:use-module (guix config)
   #:use-module (guix scripts)
   #:use-module (guix scripts build)
   #:use-module (guix transformations)
-  #:use-module (guix describe)
+  #:autoload   (guix describe) (manifest-entry-provenance
+                                manifest-entry-with-provenance)
   #:autoload   (guix channels) (channel-name channel-commit channel->code)
   #:autoload   (guix store roots) (gc-roots user-owned?)
   #:use-module ((guix build utils)
@@ -235,14 +236,12 @@ non-zero relevance score."
                (case (version-compare candidate-version version)
                  ((>)
                   (manifest-transaction-install-entry
-                   (manifest-entry-with-transformations
-                    (package->manifest-entry* pkg output))
+                   (package->manifest-entry* pkg output)
                    transaction))
                  ((<)
                   transaction)
                  ((=)
-                  (let* ((new (manifest-entry-with-transformations
-                               (package->manifest-entry* pkg output))))
+                  (let* ((new (package->manifest-entry* pkg output)))
                     ;; Here we want to determine whether the NEW actually
                     ;; differs from ENTRY, but we need to intercept
                     ;; 'build-things' calls because they would prevent us from

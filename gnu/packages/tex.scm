@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -13,8 +13,9 @@
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
+;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -342,14 +343,23 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
          "--with-system-teckit"
          "--with-system-xpdf"
          "--with-system-zlib"
-         "--with-system-zziplib")
+         "--with-system-zziplib"
+         ;; LuaJIT is not ported to powerpc64le* yet.
+         ,@(if (string-prefix? "powerpc64le" (or (%current-target-system)
+                                                 (%current-system)))
+               '("--disable-luajittex"
+                 "--disable-mfluajit")
+               '()))
 
-      ;; Disable tests on mips64/aarch64 to cope with a failure of luajiterr.test.
-      ;; XXX FIXME fix luajit properly on mips64 and aarch64.
+      ;; Disable tests on some architectures to cope with a failure of
+      ;; luajiterr.test.
+      ;; XXX FIXME fix luajit properly on these architectures.
       #:tests? ,(let ((s (or (%current-target-system)
                              (%current-system))))
                   (not (or (string-prefix? "aarch64" s)
-                           (string-prefix? "mips64" s))))
+                           (string-prefix? "mips64" s)
+                           (string-prefix? "powerpc64le" s))))
+
       #:phases
       (modify-phases %standard-phases
         (add-after 'unpack 'configure-ghostscript-executable
@@ -2510,6 +2520,10 @@ formats.")
                           "eptex eptex" "ptex ptex" "pdfxmltex pdftex" "platex eptex"
                           "csplain pdftex" "mf mf-nowin" "mex pdftex" "pdfmex pdftex"
                           "luacsplain luatex"
+                          ,@(if (string-prefix? "powerpc64le"
+                                                (or (%current-target-system)
+                                                    (%current-system)))
+                              '("luajittex") '())
                           "cont-en xetex" "cont-en pdftex" "pdfcsplain xetex"
                           "pdfcsplain pdftex" "pdfcsplain luatex" "cslatex pdftex"
                           "mptopdf pdftex" "uplatex euptex" "jadetex pdftex"
@@ -6738,8 +6752,7 @@ produce either PostScript or PDF output.")
                 "1vz9zg7s5w52xr323zgglzprfrvba2zvyzf6b8vrdf4wdghlpv4z"))))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (ice-9 match))
+     `(#:modules ((guix build utils))
        #:builder
        (begin
          (use-modules (guix build utils)
@@ -7765,3 +7778,173 @@ Adobe.  LaTeX use is enabled by the mathpazo package, which is part of
 the @code{psnfss} distribution.")
     ;; Either LPPL version 1.0 or later, or GPL version 2
     (license (list license:lppl1.0+ license:gpl2))))
+
+(define-public texlive-arev
+  (package
+    (inherit (simple-texlive-package
+              "texlive-arev"
+              (list "/doc/fonts/arev/"
+                    "/fonts/afm/public/arev/"
+                    "/fonts/enc/dvips/arev/"
+                    "/fonts/map/dvips/arev/"
+                    "/fonts/tfm/public/arev/"
+                    "/fonts/type1/public/arev/"
+                    "/fonts/vf/public/arev/"
+                    "/tex/latex/arev/")
+              (base32
+               "15wkgc48r52mjpymv6l7j9bl99kwxbvg3g1mi3qyq7nfm799dkxy")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/arev")
+    (synopsis "Fonts and LaTeX support files for Arev Sans")
+    (description "The @code{arev} package provides type 1 fonts,
+virtual fonts and LaTeX packages for using Arev Sans in both text and
+mathematics.  Arev Sans is a derivative of Bitstream Vera Sans, adding
+support for Greek and Cyrillic characters and a few variant letters
+appropriate for mathematics.  The font is primarily used in LaTeX for
+presentations, particularly when using a computer projector.  Arev
+Sans has large x-height, \"open letters\", wide spacing and thick
+stems.  The style is very similar to the SliTeX font lcmss but
+heavier.  Arev is one of a very small number of sans-font mathematics
+support packages.  Others are cmbright, hvmath and kerkis.")
+    (license (list license:silofl1.1 ;for Arev Sans
+                   license:lppl1.3a  ;for TeX support files
+                   license:gpl2))))  ;for ams-mdbch.sty
+
+(define-public texlive-mathdesign
+  (package
+    (inherit (simple-texlive-package
+              "texlive-mathdesign"
+              (list "/doc/fonts/mathdesign/"
+                    "/dvips/mathdesign/"
+                    "/fonts/enc/dvips/mathdesign/"
+                    "/fonts/map/dvips/mathdesign/"
+                    "/fonts/tfm/public/mathdesign/"
+                    "/fonts/type1/public/mathdesign/"
+                    "/fonts/vf/public/mathdesign/"
+                    "/tex/latex/mathdesign/")
+              (base32
+               "0jcby2sd0l3ank2drxc0qcf5d1cwa8idzh4g91h4nxk8zrzxj8nr")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/mathdesign")
+    (synopsis "Mathematical fonts to fit with particular text fonts")
+    (description "The Math Design project offers free mathematical
+fonts that match with existing text fonts.  To date, three free font
+families are available: Adobe Utopia, URW Garamond and Bitstream
+Charter.  Mathdesign covers the whole LaTeX glyph set including AMS
+symbols.  Both roman and bold versions of these symbols can be used.
+Moreover, there is a choice between three greek fonts (two of them
+created by the Greek Font Society).")
+    (license license:gpl2+)))
+
+(define-public texlive-bera
+  (package
+    (inherit (simple-texlive-package
+              "texlive-bera"
+              (list "/doc/fonts/bera/"
+                    "/fonts/afm/public/bera/"
+                    "/fonts/map/dvips/bera/"
+                    "/fonts/tfm/public/bera/"
+                    "/fonts/type1/public/bera/"
+                    "/fonts/vf/public/bera/"
+                    "/tex/latex/bera/")
+              (base32
+               "1pkmhhr6ah44xhipjr7nianv03hr4w4bn45xcvp264yw6ymqzqwr")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/bera")
+    (synopsis "Bera fonts")
+    (description "The @code{bera} package contains the Bera Type 1
+fonts and files to use the fonts with LaTeX.  Bera is a set of three
+font families: Bera Serif (a slab-serif Roman), Bera Sans (a Frutiger
+descendant) and Bera Mono (monospaced/typewriter).  The Bera family is
+a repackaging, for use with TeX, of the Bitstream Vera family.")
+    (license license:silofl1.1)))
+
+(define-public texlive-fourier
+  (package
+    (inherit (simple-texlive-package
+              "texlive-fourier"
+              (list "/doc/fonts/fourier/"
+                    "/fonts/afm/public/fourier/"
+                    "/fonts/map/dvips/fourier/"
+                    "/fonts/tfm/public/fourier/"
+                    "/fonts/type1/public/fourier/"
+                    "/fonts/vf/public/fourier/"
+                    "/tex/latex/fourier/")
+              (base32
+               "1vs2xdx6f6hd01zlslx3y93g3dsa7k3yhqpnhgkizgjmz0r9ipz1")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/fourier")
+    (synopsis "Utopia fonts for LaTeX documents")
+    (description "Fourier-GUTenberg is a LaTeX typesetting system
+which uses Adobe Utopia as its standard base font.  Fourier-GUTenberg
+provides all complementary typefaces needed to allow Utopia based TeX
+typesetting including an extensive mathematics set and several other
+symbols.  The system is absolutely stand-alone; apart from Utopia and
+Fourier no other typefaces are required.  Utopia is a registered
+trademark of Adobe Systems Incorporated.")
+    (license license:lppl)))
+
+(define-public texlive-utopia
+  (package
+    (inherit (simple-texlive-package
+              "texlive-utopia"
+              (list "/doc/fonts/utopia/"
+                    "/fonts/afm/adobe/utopia/"
+                    "/fonts/tfm/adobe/utopia/"
+                    "/fonts/type1/adobe/utopia/"
+                    "/fonts/vf/adobe/utopia/")
+              (base32
+               "113wgkfz4z0ls2grxxfj17l42a1yv9r5ipcd0156xnfsrqvqzxfc")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/utopia")
+    (synopsis "Adobe Utopia fonts")
+    (description "The Adobe Standard Encoding set of the Utopia font
+family, as contributed to the X Consortium.  The set comprises upright
+and italic shapes in medium and bold weights.  Macro support and
+matching maths fonts are provided by the @code{fourier} and
+@code{mathdesign} font packages.")
+    (license (license:fsf-free
+              "http://mirrors.ctan.org/fonts/utopia/README"))))
+
+(define-public texlive-fontaxes
+  (package
+    (name "texlive-fontaxes")
+    (version "1.0e")
+    (source
+     (origin
+       (method svn-fetch)
+       (uri (texlive-ref "latex" "fontaxes"))
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32
+         "19mhp9l7cjw0sbq55c9lz0l2pffkyhyir3i63jqynifjmglbgkl7"))))
+    (build-system texlive-build-system)
+    (arguments '(#:tex-directory "latex/fontaxes"))
+    (home-page "http://www.ctan.org/pkg/fontaxes")
+    (synopsis "Additional font axes for LaTeX")
+    (description "The @code{fontaxes} package adds several new font
+axes on top of LaTeX's New Font Selection Scheme (NFSS).  In
+particular, it splits the shape axis into a primary and a secondary
+shape axis and it adds three new axes to deal with the different
+figure versions offered by many professional fonts.")
+    (license license:lppl1.3+)))
+
+(define-public texlive-mweights
+  (package
+    (inherit (simple-texlive-package
+              "texlive-mweights"
+              (list "/doc/latex/mweights/"
+                    "/tex/latex/mweights/")
+              (base32
+               "1k2xclk54q3xgn48hji23q52nivkzgwf0s30bmm6k83f7v57qv8h")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/mweights")
+    (synopsis "Support for multiple-weight font packages")
+    (description "Many font families available for use with LaTeX are
+available at multiple weights.  Many Type 1-oriented support packages
+for such fonts re-define the standard @code{\\mddefault} or
+@code{\\bfdefault} macros.  This can create difficulties if the weight
+desired for one font family is not available for another font family,
+or if it differs from the weight desired for another font family.  The
+@code{mweights} package provides a solution to these difficulties.")
+    (license license:lppl)))

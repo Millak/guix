@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2016, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2016, 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2020 Pierre Langlois <pierre.langlois@gmx.com>
@@ -49,6 +49,7 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages guile)
@@ -59,8 +60,11 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml))
@@ -286,6 +290,73 @@ and probably others.")
    (license license:lgpl2.1)
    (home-page "https://www.infradead.org/openconnect/")))
 
+(define-public openconnect-sso
+  (package
+    (name "openconnect-sso")
+    (version "0.6.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "openconnect-sso" version))
+        (sha256
+         (base32
+          "1yybmscka3m5yxfkp1m5pqz2m8jlwdq9b0hx2w5l1jj6bzpl9fsf"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f  ; Tests not included, building from git requires poetry.
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'adjust-package-version-requirements
+           (lambda _
+             (substitute* "setup.py"
+               (("(pyxdg>=0.26),<0.27" _ pyxdg) pyxdg))
+             #t))
+         (add-after 'unpack 'patch-openconnect
+           (lambda _
+             (substitute* "openconnect_sso/app.py"
+               (("\"openconnect\"")
+                (string-append "\"" (which "openconnect") "\"")))
+             #t))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v"))
+             #t))
+         (add-after 'install 'wrap-qt-process-path
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin/openconnect-sso"))
+                    (qt-process-path (string-append
+                                       (assoc-ref inputs "qtwebengine")
+                                       "/lib/qt5/libexec/QtWebEngineProcess")))
+               (wrap-program bin
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
+               #t))))))
+    (inputs
+     `(("openconnect" ,openconnect)
+       ("python-attrs" ,python-attrs)
+       ("python-colorama" ,python-colorama)
+       ("python-keyring" ,python-keyring)
+       ("python-lxml" ,python-lxml)
+       ("python-prompt-toolkit" ,python-prompt-toolkit)
+       ("python-requests" ,python-requests)
+       ("python-pyqt" ,python-pyqt)
+       ("python-pyqtwebengine" ,python-pyqtwebengine)
+       ("python-pysocks" ,python-pysocks)
+       ("python-pyxdg" ,python-pyxdg)
+       ("python-structlog" ,python-structlog)
+       ("python-toml" ,python-toml)
+       ("qtwebengine" ,qtwebengine)))
+    (native-inputs
+     `(("python-pytest" ,python-pytest)
+       ("python-setuptools-scm" ,python-setuptools-scm)))
+    (home-page "https://github.com/vlaci/openconnect-sso")
+    (synopsis "OpenConnect wrapper script supporting Azure AD (SAMLv2)")
+    (description
+     "This package provides a wrapper script for OpenConnect supporting Azure AD
+(SAMLv2) authentication to Cisco SSL-VPNs.")
+    (license license:gpl3)))
+
 (define-public openfortivpn
   (package
     (name "openfortivpn")
@@ -317,7 +388,7 @@ this process.  It is compatible with Fortinet VPNs.")
 (define-public openvpn
   (package
     (name "openvpn")
-    (version "2.4.10")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -325,7 +396,7 @@ this process.  It is compatible with Fortinet VPNs.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "0xx378ja2rdfaayc257z0z5ddsp8h0jcpqnd1a6bdw3rlsam6a6g"))))
+                "157ikzap2bbkzx34hkh33bpk2i14xjx1x3pkadhmzh1pr24h94s0"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-iproute2=yes")))
@@ -612,7 +683,7 @@ WireGuard was added to Linux 5.6.")
 (define-public wireguard-tools
   (package
     (name "wireguard-tools")
-    (version "1.0.20200827")
+    (version "1.0.20210315")
     (source
      (origin
        (method git-fetch)
@@ -621,7 +692,7 @@ WireGuard was added to Linux 5.6.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h351hn531z6z85sx9ya27xjz1jszgn1pkwibacjj49mds15f7gn"))))
+        (base32 "1an5gm2dv111n3fylbrnyynxmi2d3iwf2b46zq08hc54kzazxcml"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

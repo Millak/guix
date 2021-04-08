@@ -18,6 +18,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
+;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -317,7 +318,9 @@ and BOOTP/TFTP for network booting of diskless machines.")
   (package
     (name "bind")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
-    (version "9.16.11")
+    ;; The BIND release notes are available here:
+    ;; https://www.isc.org/bind/
+    (version "9.16.13")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -325,7 +328,7 @@ and BOOTP/TFTP for network booting of diskless machines.")
                     "/bind-" version ".tar.xz"))
               (sha256
                (base32
-                "1hcr0q6i2mk83yi12zxjs5q21y3gx7683q99l77ibxfqsx6zc481"))))
+                "026cliyj570wxvvij96mrzsxyf421xv9a80gc5gv6savza9wfk55"))))
     (build-system gnu-build-system)
     (outputs `("out" "utils"))
     (inputs
@@ -536,14 +539,14 @@ asynchronous fashion.")
 (define-public nsd
   (package
     (name "nsd")
-    (version "4.3.4")
+    (version "4.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.nlnetlabs.nl/downloads/nsd/nsd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0l4ba80ihwg3s2ifhnkmk7rjabrcy5zw6sz4hn0vm9sif6lk9s1v"))))
+        (base32 "062zwx4k5rgpg2c0b4721ldj36aj8clrxv79mlfw9b15ap7w1rmy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -606,14 +609,14 @@ to result in system-wide compromise.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.13.0")
+    (version "1.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "18dj7migq6379hps59793457l81s3z7dll3y0fj6qcmhjlx08m59"))))
+        (base32 "1f2hky62f4xxnjr0lncrzz4gipg01rp12pf98mrqkgf5ixxxj145"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -763,16 +766,16 @@ served by AS112.  Stub and forward zones are supported.")
 (define-public yadifa
   (package
     (name "yadifa")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
-     (let ((build "9916"))
+     (let ((build "9997"))
        (origin
          (method url-fetch)
          (uri
           (string-append "https://www.yadifa.eu/sites/default/files/releases/"
                          "yadifa-" version "-" build ".tar.gz"))
          (sha256
-          (base32 "1m1j7q1f0682xig8qign5ms52igix8pd45fds7p5j285dvrfa4xd")))))
+          (base32 "0f1by2c7l39qpsar5nh98f3xypmn2ikv7wr557wmva6m0lwbl3q0")))))
     (build-system gnu-build-system)
     (native-inputs
      `(("which" ,which)))
@@ -810,7 +813,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.0.3")
+    (version "3.0.5")
     (source
      (origin
        (method git-fetch)
@@ -819,7 +822,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xzig9l91wj6x23mh75vw2r51ihrgx916c7wxvpcfnwrqsv4f3hy"))
+        (base32 "16rgcmgj21w2niyz45d3zjlci9i22gxcvfzqw7g5zwsjdy9610nx"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -940,14 +943,14 @@ synthesis, and on-the-fly re-configuration.")
 (define-public knot-resolver
   (package
     (name "knot-resolver")
-    (version "5.2.1")
+    (version "5.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://secure.nic.cz/files/knot-resolver/"
                                   "knot-resolver-" version ".tar.xz"))
               (sha256
                (base32
-                "09jqy23q1pgj76y2qd1xfk72wwmypnyawm3span3gx00qi2bfdxa"))))
+                "1j99sz6r1hdvvd8rffx1917r9cyb7z46ivp5934sq57irmxnnkcx"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1047,9 +1050,7 @@ LuaJIT, both a resolver library and a daemon.")
        ("perl-digest-sha1" ,perl-digest-sha1)
        ("perl-io-socket-ssl" ,perl-io-socket-ssl)))
     (arguments
-     `(#:modules ((guix build utils)
-                  (ice-9 match)
-                  (srfi srfi-26))
+     `(#:modules ((guix build utils))
        #:builder
        (begin
          (use-modules (guix build utils)
@@ -1109,20 +1110,17 @@ attempts the update when it has changed.")
     (license license:gpl2+)))
 
 (define-public hnsd
-  ;; There have been no releases yet, hence this commit.
-  (let ((revision "0")
-        (commit "895d89c25d316d18df9d374fe78aae3902bc89fb"))
    (package
      (name "hnsd")
-     (version (git-version "0.0" revision commit))
+     (version "1.0.0")
      (source (origin
                (method git-fetch)
                (uri (git-reference
                      (url "https://github.com/handshake-org/hnsd")
-                     (commit commit)))
+                     (commit (string-append "v" version))))
                (sha256
                 (base32
-                 "0704y73sddn24jga9csw4gxyfb3pnrfnk0vdcph84n1h38490l16"))
+                 "1kdgff8rf8gmvwz2p758ilbjxpvz4xm6z41pa5353asg6xb853bb"))
                (file-name (git-file-name name version))
                (modules '((guix build utils)))
                (snippet
@@ -1159,7 +1157,7 @@ attempts the update when it has changed.")
      (description
       "@command{hnsd} is a @dfn{host name resolver} for the Handshake Naming
 System (HNS) peer-to-peer network.")
-     (license license:expat))))
+     (license license:expat)))
 
 (define-public libmicrodns
   (package
@@ -1285,14 +1283,14 @@ and TCP-capable recursive DNS server for finding domains on the internet.")
 (define-public openresolv
   (package
     (name "openresolv")
-    (version "3.10.0")
+    (version "3.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://roy.marples.name/downloads/openresolv/"
                                   "openresolv-" version ".tar.xz"))
               (sha256
                (base32
-                "01ms6c087la4hk0f0w6n2vpsb7dg4kklah2rqyhz88p0vr9bqy20"))
+                "15qvp5va2yrqpz0ba54clvn8cbc66v4sl7k3bi9ji8jpx040bcs2"))
               (patches
                (search-patches "openresolv-restartcmd-guix.patch"))))
     (build-system gnu-build-system)

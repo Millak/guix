@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
@@ -165,6 +165,7 @@ living in the same process.")
   (package
     (name "gnutls")
     (version "3.6.15")
+    (replacement gnutls/fixed)
     (source (origin
               (method url-fetch)
               ;; Note: Releases are no longer on ftp.gnu.org since the
@@ -250,11 +251,20 @@ living in the same process.")
     (description
      "GnuTLS is a secure communications library implementing the SSL, TLS
 and DTLS protocols.  It is provided in the form of a C library to support the
-protocols, as well as to parse and write X.5009, PKCS 12, OpenPGP and other
+protocols, as well as to parse and write X.509, PKCS #12, OpenPGP and other
 required structures.")
     (license license:lgpl2.1+)
     (properties '((ftp-server . "ftp.gnutls.org")
                   (ftp-directory . "/gcrypt/gnutls")))))
+
+(define gnutls/fixed
+  (package
+    (inherit gnutls)
+    (source (origin
+              (inherit (package-source gnutls))
+              (patches (append (search-patches "gnutls-CVE-2021-20231.patch"
+                                               "gnutls-CVE-2021-20232.patch")
+                               (origin-patches (package-source gnutls))))))))
 
 (define-public gnutls/guile-2.0
   ;; GnuTLS for Guile 2.0.
@@ -274,8 +284,7 @@ required structures.")
               ,@(package-inputs gnutls)))))
 
 (define-public guile2.2-gnutls
-  (package
-    (inherit gnutls)
+  (package/inherit gnutls
     (name "guile2.2-gnutls")
     (inputs `(("guile" ,guile-2.2)
               ,@(alist-delete "guile"
@@ -287,6 +296,7 @@ required structures.")
 (define-public openssl
   (package
    (name "openssl")
+   (replacement openssl/fixed)
    (version "1.1.1i")
    (source (origin
              (method url-fetch)
@@ -361,7 +371,8 @@ required structures.")
                       ;; PREFIX/ssl.  Change that to something more
                       ;; conventional.
                       (string-append "--openssldir=" out
-                                     "/share/openssl-" ,version)
+                                     "/share/openssl-"
+                                     ,(package-version this-package))
 
                       (string-append "--prefix=" out)
                       (string-append "-Wl,-rpath," lib)
@@ -401,7 +412,8 @@ required structures.")
            ;; scripts.  Remove them to avoid retaining a reference on Perl.
            (let ((out (assoc-ref outputs "out")))
              (delete-file-recursively (string-append out "/share/openssl-"
-                                                     ,version "/misc"))
+                                                     ,(package-version this-package)
+                                                     "/misc"))
              #t))))))
    (native-search-paths
     (list (search-path-specification
@@ -418,6 +430,24 @@ required structures.")
     "OpenSSL is an implementation of SSL/TLS.")
    (license license:openssl)
    (home-page "https://www.openssl.org/")))
+
+(define-public openssl/fixed
+  (package
+   (inherit openssl)
+   (version "1.1.1k")
+   (source (origin
+             (method url-fetch)
+             (uri (list (string-append "https://www.openssl.org/source/openssl-"
+                                       version ".tar.gz")
+                        (string-append "ftp://ftp.openssl.org/source/"
+                                       "openssl-" version ".tar.gz")
+                        (string-append "ftp://ftp.openssl.org/source/old/"
+                                       (string-trim-right version char-set:letter)
+                                       "/openssl-" version ".tar.gz")))
+             (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
+             (sha256
+              (base32
+               "1rdfzcrxy9y38wqdw5942vmdax9hjhgrprzxm42csal7p5shhal9"))))))
 
 (define-public openssl-1.0
   (package
@@ -557,13 +587,13 @@ netcat implementation that supports TLS.")
   (package
     (name "python-acme")
     ;; Remember to update the hash of certbot when updating python-acme.
-    (version "1.10.1")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "acme" version))
               (sha256
                (base32
-                "1n1g29f3qzy77xn06dss9nc92wndgm8phgjrvx740sy9xnd5bfzw"))))
+                "1260a7bcgmha19drqzn6syz3cy61482b3w6lihgg1md6svgmfhkb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -579,10 +609,8 @@ netcat implementation that supports TLS.")
                (install-file "docs/_build/texinfo/acme-python.info" info)
                (install-file "docs/_build/man/acme-python.1" man)
                #t))))))
-    ;; TODO: Add optional inputs for testing.
     (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)
+     `(("python-pytest" ,python-pytest)
        ;; For documentation
        ("python-sphinx" ,python-sphinx)
        ("python-sphinxcontrib-programoutput" ,python-sphinxcontrib-programoutput)
@@ -590,7 +618,6 @@ netcat implementation that supports TLS.")
        ("texinfo" ,texinfo)))
     (propagated-inputs
      `(("python-josepy" ,python-josepy)
-       ("python-six" ,python-six)
        ("python-requests" ,python-requests)
        ("python-requests-toolbelt" ,python-requests-toolbelt)
        ("python-pytz" ,python-pytz)
@@ -614,7 +641,7 @@ netcat implementation that supports TLS.")
               (uri (pypi-uri "certbot" version))
               (sha256
                (base32
-                "1dww9m1a2p3a9vpxs5j29f8cdkqywqb4j70z3cnkpl7017yf77hd"))))
+                "0n7lwajmlypkqgsd2cv74j41f5ag381skjlzhjfpsrppgnsl3kv4"))))
     (build-system python-build-system)
     (arguments
      `(,@(substitute-keyword-arguments (package-arguments python-acme)
@@ -630,7 +657,6 @@ netcat implementation that supports TLS.")
                     (install-file "docs/_build/man/certbot.1" man1)
                     (install-file "docs/_build/man/certbot.7" man7)
                     #t))))))))
-    ;; TODO: Add optional inputs for testing.
     (native-inputs
      `(("python-mock" ,python-mock)
        ("python-pytest" ,python-pytest)
@@ -651,7 +677,6 @@ netcat implementation that supports TLS.")
        ("python-distro" ,python-distro)
        ("python-zope-component" ,python-zope-component)
        ("python-parsedatetime" ,python-parsedatetime)
-       ("python-six" ,python-six)
        ("python-psutil" ,python-psutil)
        ("python-requests" ,python-requests)
        ("python-pytz" ,python-pytz)))
@@ -1024,3 +1049,30 @@ relatively simple Bash script.")
 derived from Mozilla's collection.")
       (home-page "https://certifi.io")
       (license license:mpl2.0))))
+
+(define-public s2n
+  (package
+    (name "s2n")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/awslabs/" name))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q6kmgwb8jxmc4ijzk9pkqzz8lsbfsv9hyzqvy944w7306zx1r5h"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f                      ; tests fail to build for static library
+       #:configure-flags
+       '("-DBUILD_TESTING=OFF"
+         "-DBUILD_SHARED_LIBS=ON")))
+    (propagated-inputs
+     `(("openssl" ,openssl)
+       ("openssl:static" ,openssl "static")))
+    (synopsis "SSL/TLS implementation")
+    (description "This library provides a C99 implementation of SSL/TLS.")
+    (home-page "https://github.com/awslabs/s2n")
+    (license license:asl2.0)))

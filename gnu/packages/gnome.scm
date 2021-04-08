@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014, 2016, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -9,7 +9,7 @@
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
@@ -52,11 +52,12 @@
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
-;;; Copyright © 2020 Andy Tai <atai@atai.org>
+;;; Copyright © 2020, 2021 Andy Tai <atai@atai.org>
+;;; Copyright © 2020, 2021 Sébastien Lerique <sl@eauchat.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,6 +150,7 @@
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages password-utils)
@@ -164,6 +166,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -198,7 +201,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu artwork)
-  #:use-module ((guix build utils) #:select (modify-phases))
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
@@ -212,8 +214,6 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp)
-  #:use-module (guix monads)
-  #:use-module (guix store)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
@@ -260,7 +260,7 @@
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
      `(("glib" ,glib)
@@ -363,7 +363,7 @@ features to enable users to create their discs easily and quickly.")
     (native-inputs
      `(("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
     (inputs
@@ -412,7 +412,7 @@ services.")
     (native-inputs
      `(("docbook-xml" ,docbook-xml-4.1.2)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
      `(("glib" ,glib)
@@ -509,7 +509,7 @@ bindings.")
        ("docbook-xml" ,docbook-xml-4.1.2)
        ("gettext" ,gettext-minimal)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("intltool" ,intltool)
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)))
@@ -619,7 +619,7 @@ It is written in C using GObject and libsoup.")
                        "/share/gtk-doc/html"))))
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
      `(("glib" ,glib)))
@@ -689,7 +689,7 @@ of writing test cases for asynchronous interactions.")
        ("dbus-test-runner" ,dbus-test-runner)
        ("docbook-xml" ,docbook-xml-4.3)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ;; Would only be required by configure flag "--enable-extended-tests".
        ;("gtx" ,gtx)
        ("pkg-config" ,pkg-config)
@@ -765,7 +765,7 @@ of known objects without needing a central registrar.")
        ("docbook-xml" ,docbook-xml-4.3)
        ("gettext" ,gettext-minimal)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)
@@ -1174,7 +1174,7 @@ Library reference documentation.")
     `(("docbook-xml" ,docbook-xml-4.3)
       ("gettext" ,gettext-minimal)
       ("glib:bin" ,glib "bin")
-      ("gtk-doc" ,gtk-doc)
+      ("gtk-doc" ,gtk-doc/stable)
       ("pkg-config" ,pkg-config)))
    (inputs
     `(("avahi" ,avahi)
@@ -1292,7 +1292,7 @@ It has miners for Facebook, Flickr, Google, ownCloud and SkyDrive.")
     `(("gettext" ,gettext-minimal)
       ("glib:bin" ,glib "bin")
       ("gobject-introspection" ,gobject-introspection)
-      ("gtk-doc" ,gtk-doc)
+      ("gtk-doc" ,gtk-doc/stable)
       ("pkg-config" ,pkg-config)
       ("vala" ,vala)))
    (inputs
@@ -1323,7 +1323,7 @@ a debugging tool, @command{gssdp-device-sniffer}.")
     `(("gettext" ,gettext-minimal)
       ("glib:bin" ,glib "bin")
       ("gobject-introspection" ,gobject-introspection)
-      ("gtk-doc" ,gtk-doc)
+      ("gtk-doc" ,gtk-doc/stable)
       ("pkg-config" ,pkg-config)
       ("vala" ,vala)))
    (inputs
@@ -1354,7 +1354,7 @@ for creating UPnP devices and control points, written in C using
     `(("gettext" ,gettext-minimal)
       ("glib:bin" ,glib "bin")
       ("gobject-introspection" ,gobject-introspection)
-      ("gtk-doc" ,gtk-doc)
+      ("gtk-doc" ,gtk-doc/stable)
       ("libxml" ,libxml2)
       ("pkg-config" ,pkg-config)
       ("vala" ,vala)))
@@ -1388,7 +1388,7 @@ given profile, etc.  DLNA is a subset of UPnP A/V.")
     `(("gettext" ,gettext-minimal)
       ("glib:bin" ,glib "bin")
       ("gobject-introspection" ,gobject-introspection)
-      ("gtk-doc" ,gtk-doc)
+      ("gtk-doc" ,gtk-doc/stable)
       ("libxml" ,libxml2)
       ("pkg-config" ,pkg-config)))
    (inputs
@@ -1604,7 +1604,7 @@ preview files on the GNOME desktop.")
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
     (inputs
@@ -1666,7 +1666,7 @@ client devices can handle.")
      `(("docbook-xml" ,docbook-xml-4.3)
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("gobject-introspection" ,gobject-introspection)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
@@ -1972,7 +1972,7 @@ access the common Google services, and has full asynchronous support.")
 (define-public libgxps
   (package
     (name "libgxps")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1980,7 +1980,7 @@ access the common Google services, and has full asynchronous support.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "157s4c9gjjss6yd7qp7n4q6s72gz1k4ilsx4xjvp357azk49z4qs"))))
+                "07156nj7yrp3h9zyzx6mjwxwmfijialb4gi5d6dwyp53arr8c9vd"))))
     (build-system meson-build-system)
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
@@ -2414,7 +2414,7 @@ GNOME Desktop.")
        ("automake" ,automake)
        ("glib" ,glib "bin")             ; for glib-genmarshal, etc.
        ("gnome-common" ,gnome-common)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
        ("libtool" ,libtool)
@@ -2431,8 +2431,7 @@ GNOME Desktop.")
 
 ;;; A minimal variant used to break a cycle with Inkscape.
 (define-public gdl-minimal
-  (package
-    (inherit gdl)
+  (package/inherit gdl
     (name "gdl-minimal")
     (arguments
      '(#:phases
@@ -2544,6 +2543,8 @@ GNOME Desktop.")
        ("libxslt" ,libxslt) ;for documentation
        ("docbook-xml" ,docbook-xml-4.2)
        ("docbook-xsl" ,docbook-xsl)))
+    (propagated-inputs
+     `(("gcr" ,gcr)))
     (home-page "https://www.gnome.org")
     (synopsis "Daemon to store passwords and encryption keys")
     (description
@@ -3053,7 +3054,7 @@ configuring CUPS.")
        ("gobject-introspection" ,gobject-introspection)
 
        ;; For the documentation.
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("xsltproc" ,libxslt)
        ("docbook-xsl" ,docbook-xsl)))
     (home-page "https://developer-next.gnome.org/libnotify/")
@@ -3351,7 +3352,7 @@ library.")
 (define-public librsvg-next
   (package
     (name "librsvg-next")
-    (version "2.50.2")
+    (version "2.50.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/librsvg/"
@@ -3359,7 +3360,7 @@ library.")
                                   "librsvg-" version ".tar.xz"))
               (sha256
                (base32
-                "1lsnl08b5pjf01q3agixjd53islw5rqkc38r31rlmm2crrqz44b2"))
+                "0n79i4wj9hm0d3bbn4xvknq5ylhqs16pvhaqr1rxspx9wfc8lad4"))
               (modules '((guix build utils)))
               (snippet
                '(begin (delete-file-recursively "vendor")
@@ -3367,7 +3368,8 @@ library.")
     (build-system cargo-build-system)
     (outputs '("out" "debug" "doc"))
     (arguments
-     `(#:modules
+     `(#:install-source? #f
+       #:modules
        ((guix build cargo-build-system)
         (guix build utils)
         ((guix build gnu-build-system) #:prefix gnu:))
@@ -3414,7 +3416,7 @@ library.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-criterion" ,rust-criterion-0.3)
         ("rust-float-cmp" ,rust-float-cmp-0.8)
-        ("rust-lopdf" ,rust-lopdf-0.25)
+        ("rust-lopdf" ,rust-lopdf-0.26)
         ("rust-png" ,rust-png-0.16)
         ("rust-predicates" ,rust-predicates-1)
         ("rust-tempfile" ,rust-tempfile-3))
@@ -4114,14 +4116,14 @@ Hints specification (EWMH).")
 (define-public goffice
   (package
     (name "goffice")
-    (version "0.10.48")
+    (version "0.10.49")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/goffice/"
                                   (version-major+minor version)  "/"
                                   "goffice-" version ".tar.xz"))
               (sha256
-               (base32 "1z6f3q8fxkd1ysqrwdxdi0844zqa00vjpf07gq8mh3kal8picfd4"))))
+               (base32 "1s87ngs3g3nfvcn96aq4lgzx5cscbfg4n9f6ns2zpvc5ngdiiz2z"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ; 4.0 MiB of gtk-doc
@@ -4178,7 +4180,7 @@ Hints specification (EWMH).")
 (define-public gnumeric
   (package
     (name "gnumeric")
-    (version "1.12.48")
+    (version "1.12.49")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnumeric/"
@@ -4186,7 +4188,7 @@ Hints specification (EWMH).")
                                   "gnumeric-" version ".tar.xz"))
               (sha256
                (base32
-                "14556b0vyxdvdwjlin0rv7jk0vq4nplbmvp9j89bhkfk84xf7k2p"))))
+                "0mzdhhpa7kwkc51l344g6vgqwaxkjdf03s7zasqh0bn3jpn75h4i"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(;; The gnumeric developers don't worry much about failing tests.
@@ -4235,6 +4237,57 @@ engineering.")
     (license
     ;; Dual licensed under GPLv2 or GPLv3 (both without "or later")
      (list license:gpl2 license:gpl3))))
+
+(define-public drawing
+  (package
+    (name "drawing")
+    (version "0.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/maoschanz/drawing")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kfgmalakifcvzhzss9zhmqjbdk24zr22c5xwkkahlvfcafp13wn"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((prog (string-append (assoc-ref outputs "out")
+                                        "/bin/drawing"))
+                   (pylib (string-append (assoc-ref outputs "out")
+                                         "/lib/python"
+                                         ,(version-major+minor
+                                           (package-version python))
+                                         "/site-packages")))
+               (wrap-program prog
+                 `("PYTHONPATH" = (,(getenv "PYTHONPATH") ,pylib))
+                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
+               #t))))))
+    (native-inputs
+     `(("desktop-file-utils" ,desktop-file-utils)
+       ("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("gobject-introspection" ,gobject-introspection)
+       ("gtk+:bin" ,gtk+ "bin")
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("gdk-pixbuf" ,gdk-pixbuf+svg)
+       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gtk+" ,gtk+)
+       ("pango" ,pango)
+       ("python-pycairo" ,python-pycairo)
+       ("python-pygobject" ,python-pygobject)))
+    (home-page "https://maoschanz.github.io/drawing/")
+    (synopsis "Basic image editor for GNOME")
+    (description
+     "Drawing is a basic image editor aiming at the GNOME desktop.")
+    (license license:gpl3+)))
 
 (define-public gnome-themes-standard
   (package
@@ -4432,7 +4485,7 @@ editors, IDEs, etc.")
                 "0rnm5c6m3abbm81jsfdas0y80z299ny54gr4syn4bfrms3s4g19l"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gtk-doc" ,gtk-doc)
+     `(("gtk-doc" ,gtk-doc/stable)
        ,@(package-native-inputs vte)))
     (arguments
      `(#:configure-flags '("-Ddocs=true")))
@@ -4549,7 +4602,7 @@ and RDP protocols.")
        ("docbook-xml" ,docbook-xml-4.2)
        ("docbook-xsl" ,docbook-xsl)
        ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
     (arguments
@@ -4626,7 +4679,7 @@ and objects.")
      `(("glib:bin"              ,glib "bin") ; for glib-mkenums, etc.
        ("gobject-introspection" ,gobject-introspection)
        ("pkg-config"            ,pkg-config)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("intltool" ,intltool)
        ("which" ,which)
        ("autoconf" ,autoconf)
@@ -4849,7 +4902,7 @@ libxml to ease remote use of the RESTful API.")
      `(("docbook-xml" ,docbook-xml-4.1.2)
        ("glib:bin" ,glib "bin")                   ; for glib-mkenums
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
@@ -4879,8 +4932,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
 
 ;;; A minimal version of libsoup used to prevent a cycle with Inkscape.
 (define-public libsoup-minimal
-  (package
-    (inherit libsoup)
+  (package/inherit libsoup
     (name "libsoup-minimal")
     (outputs (delete "doc" (package-outputs libsoup)))
     (arguments
@@ -5217,7 +5269,7 @@ keyboard shortcuts.")
      `(("glib:bin" ,glib "bin")         ; for glib-compile-resources, etc.
        ("gettext" ,gettext-minimal)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
     (propagated-inputs
@@ -5262,7 +5314,7 @@ output devices.")
        ("gobject-introspection" ,gobject-introspection)
        ("modem-manager" ,modem-manager)
        ("libnotify" ,libnotify)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("intltool" ,intltool)))
     (inputs
      `(("avahi" ,avahi)
@@ -5307,7 +5359,7 @@ permission from user.")
        ("glibc-locales" ,glibc-locales) ; for tests
        ("gettext" ,gettext-minimal)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
        ("json-glib" ,json-glib)))
     (propagated-inputs
@@ -5613,7 +5665,7 @@ which are easy to play with the aid of a mouse.")
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
        ("glib:bin" ,glib "bin")         ; for glib-mkenums
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("glib" ,glib)
@@ -6030,7 +6082,7 @@ as possible!")
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("vala" ,vala)))
     (inputs
      `(("cyrus-sasl" ,cyrus-sasl)
@@ -6440,7 +6492,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
 (define-public gvfs
   (package
     (name "gvfs")
-    (version "1.40.1")
+    (version "1.40.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gvfs/"
@@ -6448,7 +6500,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                                   "gvfs-" version ".tar.xz"))
               (sha256
                (base32
-                "1cfnzamr4mvgpf6yhm28lh9cafy9z6842s8jpbqnfizfxybg8ylj"))
+                "07lpcfric3h0302n9b1pwa38mjb76r9s98kg2867y2d1qvzfivxx"))
               ;; This patch may be removed when upgrading to version 1.46.x.
               (patches
                (search-patches "gvfs-add-support-for-libplist-2.2.patch"))))
@@ -6464,7 +6516,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-genmarshal, etc.
        ("gettext" ,gettext-minimal)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
        ("xsltproc" ,libxslt)))
     (inputs
@@ -6495,6 +6547,10 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
        ("openssh" ,openssh)
        ("polkit" ,polkit)
        ("udisks" ,udisks)))
+    ;; CVE-2019-{12447,12448,12449} are fixed in the 1.40.2 release.
+    (properties '((lint-hidden-cve . ("CVE-2019-12447"
+                                      "CVE-2019-12448"
+                                      "CVE-2019-12449"))))
     (home-page "https://wiki.gnome.org/gvfs/")
     (synopsis "Userspace virtual file system for GIO")
     (description
@@ -6525,7 +6581,7 @@ DAV, and others.")
      `(("gobject-introspection" ,gobject-introspection)
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)
-       ("gtk-doc" ,gtk-doc)))
+       ("gtk-doc" ,gtk-doc/stable)))
     (propagated-inputs
      ;; Both of these are required by gusb.pc.
      `(("glib" ,glib)
@@ -6638,9 +6694,11 @@ almost all of them.")
        ("python-pygobject" ,python-pygobject)
        ("python-pycairo" ,python-pycairo)
        ("python-pycrypto" ,python-pycrypto)
+       ("libhandy" ,libhandy)
        ("libsecret" ,libsecret)
        ("gtkspell3" ,gtkspell3)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gnome-settings-daemon" ,gnome-settings-daemon) ; desktop-schemas are not enough
        ("webkitgtk" ,webkitgtk)))
     (home-page "https://wiki.gnome.org/Apps/Eolie")
     (synopsis "Web browser for GNOME")
@@ -6925,7 +6983,7 @@ classes for commonly used data structures.")
 (define-public gexiv2
   (package
     (name "gexiv2")
-    (version "0.12.1")
+    (version "0.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6933,7 +6991,7 @@ classes for commonly used data structures.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0xxxq8xdkgkn146my307jgws4qgxx477h0ybg1mqza1ycmczvsla"))))
+                "0k4ljzzz5dwqndw8awvlw3ala8rh3b2rk9i4jzvywc53mi9ba8i3"))))
     (build-system meson-build-system)
     (native-inputs
      `(("gcr" ,gcr)
@@ -7476,7 +7534,9 @@ Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                                   (version-major+minor version) "/"
                                   name "-" version ".tar.xz"))
               (patches (search-patches "evolution-data-server-locales.patch"
-                                       "evolution-data-server-libical-compat.patch"))
+                                       "evolution-data-server-libical-compat.patch"
+                                       "evolution-data-server-CVE-2020-14928.patch"
+                                       "evolution-data-server-CVE-2020-16117.patch"))
               (sha256
                (base32
                 "16z85y6hhazcrp5ngw47w4x9r0j8zrj7awv5im58hhp0xs19zf1y"))))
@@ -7726,7 +7786,7 @@ users.")
      `(("glib" ,glib)))
     (native-inputs
      `(("glib:bin" ,glib "bin")         ; for gdbus-codegen
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("gobject-introspection" ,gobject-introspection)
        ("docbook-xml" ,docbook-xml)
        ("docbook-xsl" ,docbook-xsl)
@@ -7965,7 +8025,7 @@ Cisco's AnyConnect SSL VPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.16.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/network-manager-applet/"
@@ -7973,15 +8033,17 @@ Cisco's AnyConnect SSL VPN.")
                                   "network-manager-applet-" version ".tar.xz"))
               (sha256
                (base32
-                "1rf3nm0hjcy9f8ajb4vmvwy503w8yj8d4daxkcb7w7i7b92qmyfn"))))
+                "0lsjkbv66hn7acl2pg9h6hz4b700zzv4cjwrwjvy7043blw0bcla"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t))
+     '(#:glib-or-gtk? #t
+       #:configure-flags
+       '("-Dappindicator=yes")))
     (native-inputs
      `(("intltool" ,intltool)
        ("glib:bin" ,glib "bin") ; for glib-compile-resources, etc.
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
      ;; libnm-gtk.pc refers to all these.
@@ -7992,6 +8054,7 @@ Cisco's AnyConnect SSL VPN.")
        ("libnma" ,libnma)))
     (inputs
      `(("gcr" ,gcr)
+       ("libappindicator" ,libappindicator)
        ("libgudev" ,libgudev)
        ("libnotify" ,libnotify)
        ("libsecret" ,libsecret)
@@ -8416,7 +8479,7 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "3.34.2")
+    (version "3.34.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8424,8 +8487,9 @@ properties, screen resolution, and other GNOME parameters.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0k9vq2gh1nhdd6fpp7jnwx37qxaakawiqw1xnlfjvq5g5zdn8ckh"))
-              (patches (search-patches "gnome-shell-theme.patch"
+                "0l3mdn7g2c22mdhrqkxvvc1pk2w0v32f2v4a6n1phvaalwcg75nj"))
+              (patches (search-patches "gnome-shell-CVE-2020-17489.patch"
+                                       "gnome-shell-theme.patch"
                                        "gnome-shell-disable-test.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -8567,6 +8631,9 @@ properties, screen resolution, and other GNOME parameters.")
        ;; Missing propagation? See also: <https://bugs.gnu.org/27264>
        ("librsvg" ,librsvg)
        ("geoclue" ,geoclue)))
+    ;; CVE-2019-3820 was fixed before GNOME 3.34 was released, in upstream
+    ;; commit f0a7395b3006360905ccdc642982f9fc67378927.
+    (properties '((lint-hidden-cve . ("CVE-2019-3820"))))
     (synopsis "Desktop shell for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GnomeShell")
     (description
@@ -8623,7 +8690,7 @@ core C library, and bindings for Python (PyGTK).")
 (define-public gnome-autoar
   (package
     (name "gnome-autoar")
-    (version "0.2.4")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8631,7 +8698,7 @@ core C library, and bindings for Python (PyGTK).")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0yk56ch46n3wfy633mq31kif9n7v06rlij4vqbsbn6l4z1vw6d0a"))))
+                "1y6hh5dldhdq7mpbmd571zl0yadfackvifhnxvykkqqddwz72y0f"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
@@ -9023,7 +9090,7 @@ associations for GNOME.")
 (define-public libgovirt
   (package
    (name "libgovirt")
-   (version "0.3.6")
+   (version "0.3.8")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9031,7 +9098,7 @@ associations for GNOME.")
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "19pb71pag3vsi83kbv8h08kimwym4hpw36kjl6a5ik5nk50mc8sg"))))
+              "1y0x1wyakj3ya33hgj0w1jkbcn50q21gmn2zyalxysqp55i1ij8x"))))
    (build-system glib-or-gtk-build-system)
    (native-inputs
     `(("gettext" ,gettext-minimal)
@@ -9724,7 +9791,7 @@ compiled.")
                            "--enable-introspection")))
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
 
        ;; The 0.2.4 ‘release’ tarball isn't bootstrapped.
@@ -9796,7 +9863,7 @@ environment, which can notably display keyboard layouts.")
      `(("pkg-config" ,pkg-config)
        ("gobject-introspection" ,gobject-introspection)
        ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc)))
+       ("gtk-doc" ,gtk-doc/stable)))
     (propagated-inputs
      ;; Referred to in .h files and .pc.
      `(("gtk+" ,gtk+)))
@@ -10066,8 +10133,7 @@ accessibility infrastructure.")
     (properties '((upstream-name . "pyatspi")))))
 
 (define-public python2-pyatspi
-  (package
-    (inherit python-pyatspi)
+  (package/inherit python-pyatspi
     (name "python2-pyatspi")
     (inputs
      `(("python" ,python-2)))
@@ -10382,7 +10448,7 @@ photo-booth-like software, such as Cheese.")
        ("docbook-xml" ,docbook-xml-4.3)
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("itstool" ,itstool)
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
@@ -10703,7 +10769,8 @@ generic enough to work for everyone.")
                                   "evolution-" version ".tar.xz"))
               (sha256
                (base32
-                "164vy8h432pjglafn8y2ms4gsvk3kbgc63h5qp0mk5dv4smsp29c"))))
+                "164vy8h432pjglafn8y2ms4gsvk3kbgc63h5qp0mk5dv4smsp29c"))
+              (patches (search-patches "evolution-CVE-2020-11879.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:imported-modules (,@%cmake-build-system-modules
@@ -10766,7 +10833,7 @@ functionality.")
 (define-public gthumb
   (package
     (name "gthumb")
-    (version "3.8.2")
+    (version "3.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gthumb/"
@@ -10774,7 +10841,7 @@ functionality.")
                                   "gthumb-" version ".tar.xz"))
               (sha256
                (base32
-                "15wqks35ks5dm7zj046dfd45vvrilan2ayfy2sxiprv7q74cip2q"))))
+                "14sw8d37g1lkp44dwsgyxjjsgh5pnpp4wq00mcy9p3rp30lf9spx"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -10813,19 +10880,19 @@ advanced image management tool")
 (define-public terminator
   (package
     (name "terminator")
-    (version "1.92")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/gnome-" name "/" name "/"
-                                  "releases/download/v" version "/"
-                                  name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1wbkfp0nk6x9bcwi681zy30qmrp4h754sdz6b7hi9j22mmvdd50z"))))
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/gnome-terminator/terminator/"
+                           "releases/download/v" version "/"
+                           name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xdgmam7ghnxw6g38a4gjw3kk3rhga8c66lns18k928jlr9fmddw"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")                   ; for glib-compile-resources
+       ("glib:bin" ,glib "bin")         ; for glib-compile-resources
        ("gobject-introspection" ,gobject-introspection)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
@@ -10837,33 +10904,45 @@ advanced image management tool")
        ("dbus-glib" ,dbus-glib)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gtk+" ,gtk+)
+       ("python" ,python-wrapper)
+       ("python-dbus" ,python-dbus)
+       ("python-notify2" ,python-notify2)
        ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
        ("vte" ,vte)))
     (propagated-inputs
      `(("python-configobj" ,python-configobj)))
     (arguments
-     `(#:imported-modules ((guix build glib-or-gtk-build-system)
+     ;; One test out of 28 fails due to dbus-python and python-notify; skip
+     ;; tests.
+     `(#:tests? #f
+       #:imported-modules ((guix build glib-or-gtk-build-system)
                            ,@%python-build-system-modules)
        #:modules ((guix build python-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
        #:phases
        (modify-phases %standard-phases
-         (add-after
-          'install 'wrap-program
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((prog (string-append (assoc-ref outputs "out")
-                                       "/bin/terminator"))
-                  (pylib (string-append (assoc-ref outputs "out")
-                                        "/lib/python"
-                                        ,(version-major+minor
-                                          (package-version python))
-                                        "/site-packages")))
-              (wrap-program prog
-                `("PYTHONPATH" = (,(getenv "PYTHONPATH") ,pylib))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-              #t)))
+         (add-after 'unpack 'handle-dbus-python
+           (lambda _
+             ;; python-dbus cannot be found but it's really there.  See
+             ;; https://github.com/SpotlightKid/jack-select/issues/2
+             (substitute* "setup.py"
+               (("'dbus-python',") ""))
+             #t))
+         (add-after 'install 'wrap-program
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((prog (string-append (assoc-ref outputs "out")
+                                        "/bin/terminator"))
+                   (pylib (string-append (assoc-ref outputs "out")
+                                         "/lib/python"
+                                         ,(version-major+minor
+                                           (package-version python))
+                                         "/site-packages")))
+               (wrap-program prog
+                 `("PYTHONPATH" = (,(getenv "PYTHONPATH") ,pylib))
+                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
+               #t)))
          (add-after 'wrap-program 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (home-page "https://gnome-terminator.org/")
@@ -10876,7 +10955,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
 (define-public libhandy
   (package
     (name "libhandy")
-    (version "1.0.3")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -10885,7 +10964,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0flgwlm921801i3ns0dwqpnxl89f3rzn4y9h723i13bmflch3in7"))))
+        (base32 "1a8wfgm2jd3gcbk1nzhq6f2xq7vkxdc9qky8p9k0za9gqi7xfg4v"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -10907,7 +10986,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
      `(("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection) ; for g-ir-scanner
        ("vala" ,vala)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
        ("gettext" ,gettext-minimal)
 
@@ -11153,7 +11232,7 @@ index files needed for Adwaita to be used outside of GNOME.")
 (define-public gnote
   (package
     (name "gnote")
-    (version "3.38.0")
+    (version "3.38.1")
     (source
      (origin
        (method url-fetch)
@@ -11161,7 +11240,7 @@ index files needed for Adwaita to be used outside of GNOME.")
                            (version-major+minor version)  "/"
                            "gnote-" version ".tar.xz"))
        (sha256
-        (base32 "1ingbaw4d8vpjn083xvzqw7kz8z0k2bx7msk78pbzd68bwgkadpx"))))
+        (base32 "1adjfjhmsm2d33999khjyzvli6kiz1jlzavn77jhd49kfzhxa9y4"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("desktop-file-utils" ,desktop-file-utils)
@@ -11314,7 +11393,8 @@ these services on the Guix System.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01cc921kyh3zxz07biqbdzkjgmdcc36kwjyajm4y382a75cl5zg7"))))
+                "01cc921kyh3zxz07biqbdzkjgmdcc36kwjyajm4y382a75cl5zg7"))
+              (patches (search-patches "geary-CVE-2020-24661.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -11441,7 +11521,7 @@ card sheets that you’ll find at most office supply stores.")
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("intltool" ,intltool)
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)
@@ -11469,7 +11549,7 @@ and toolbars.")
 (define-public setzer
   (package
     (name "setzer")
-    (version "0.3.9")
+    (version "0.4.1")
     (source
      (origin
        (method git-fetch)
@@ -11478,7 +11558,7 @@ and toolbars.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qmy2bxl8x6pijjaaj91v6rqdipha6iyy0b6b9y1lk3r2p3azd42"))))
+        (base32 "1rcx2c07jg1ij81pnvg3px49hfbjmkagn68d3gp79z3gcajbp2av"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -11510,6 +11590,7 @@ and toolbars.")
        ("gtksourceview" ,gtksourceview)
        ("pango" ,pango)
        ("poppler" ,poppler)
+       ("python-pdfminer" ,python-pdfminer-six)
        ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
        ("python-pyxdg" ,python-pyxdg)
@@ -11903,7 +11984,7 @@ integrated profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.26.0")
+    (version "0.27.0")
     (source
      (origin
        (method git-fetch)
@@ -11913,7 +11994,7 @@ integrated profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1g5rhp3d97v0s8nk536vqpv6qd4gha4h27bfdkypcqa42h8wyxm2"))))
+         "0mj4bsy7jp9wjj1dqz9zdq5aj0ib813wkz5k1481k80jp9dnlqnv"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -11945,6 +12026,7 @@ integrated profiler via Sysprof, debugging support, and more.")
        ("libnotify" ,libnotify)
        ("libsecret" ,libsecret)
        ("python-beautifulsoup4" ,python-beautifulsoup4)
+       ("python-brotli" ,python-brotli)
        ("python-dateparser" ,python-dateparser)
        ("python-keyring" ,python-keyring)
        ("python-lxml" ,python-lxml)
@@ -11954,7 +12036,8 @@ integrated profiler via Sysprof, debugging support, and more.")
        ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
        ("python-requests" ,python-requests)
-       ("python-unidecode" ,python-unidecode)))
+       ("python-unidecode" ,python-unidecode)
+       ("webkitgtk" ,webkitgtk)))
     (native-inputs
      `(("desktop-file-utils" ,desktop-file-utils)
        ("gettext" ,gettext-minimal)
@@ -12030,7 +12113,7 @@ developed with the aim of being used with the Librem 5 phone.")
        ("glib:bin" ,glib "bin")
        ("gnome-common" ,gnome-common)
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("intltool" ,intltool)
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)
@@ -12094,4 +12177,68 @@ your data.")
 for the GNOME 3.x platform with many features.  It aims to be a very complete
 editing environment for translation issues within the GNU gettext/GNOME desktop
 world.")
+    (license license:gpl3+)))
+
+
+(define-public ocrfeeder
+  (package
+    (name "ocrfeeder")
+    (version "0.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/ocrfeeder/"
+                                  (version-major+minor version) "/"
+                                  "ocrfeeder-" version ".tar.xz"))
+              (sha256
+               (base32
+                "12f5gnq92ffnd5zaj04df7jrnsdz1zn4zcgpbf5p9qnd21i2y529"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after
+          'install 'wrap-program
+          (lambda* (#:key outputs #:allow-other-keys)
+            (let ((prog (string-append (assoc-ref outputs "out")
+                                       "/bin/" "ocrfeeder"))
+                  (pylib (string-append (assoc-ref outputs "out")
+                                        "/lib/python"
+                                        ,(version-major+minor
+                                          (package-version python))
+                                        "/site-packages")))
+              (wrap-program prog
+                `("PYTHONPATH" = (,(getenv "PYTHONPATH") ,pylib))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
+              #t))))))
+    (native-inputs
+     `(("glib:bin" ,glib "bin")                   ; for glib-compile-resources
+       ("gobject-introspection" ,gobject-introspection)
+       ("gtk+:bin" ,gtk+ "bin")                   ; for gtk-update-icon-cache
+       ("intltool" ,intltool)
+       ("itstool" ,itstool)
+       ("pkg-config" ,pkg-config)
+       ("xmllint" ,libxml2)))
+    (inputs
+     `(("enchant" ,enchant)
+       ("glib" ,glib)
+       ("goocanvas" ,goocanvas)
+       ("gtk" ,gtk+)
+       ("gtkspell3" ,gtkspell3)
+       ("libjpeg" ,libjpeg-turbo)
+       ("libtiff" ,libtiff)
+       ("libraw" ,libraw)
+       ("ocrad" ,ocrad)
+       ("python" ,python-wrapper)
+       ("python-pygobject" ,python-pygobject)
+       ("python-odfpy" ,python-odfpy)
+       ("python-pillow" ,python-pillow)
+       ("python-pyenchant" ,python-pyenchant)
+       ("python-reportlab" ,python-reportlab)
+       ("python-sane" ,python-sane)
+       ("sane-backends" ,sane-backends)
+       ("tesseract-ocr" ,tesseract-ocr)))
+    (home-page "https://wiki.gnome.org/Apps/OCRFeeder")
+    (synopsis "Complete OCR Suite")
+    (description "OCRFeeder is a complete Optical Character Recognition and
+Document Analysis and Recognition program.")
     (license license:gpl3+)))

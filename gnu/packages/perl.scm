@@ -15,7 +15,7 @@
 ;;; Copyright © 2017 Raoul J.P. Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Christopher Allan Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2018, 2019 Oleg Pykhalov <go.wigust@gmail.com>
@@ -70,6 +70,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-compression)
+  #:use-module (gnu packages perl-maths)
   #:use-module (gnu packages perl-web)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages readline)
@@ -2212,7 +2213,7 @@ Password Generator\".")
 (define-public perl-crypt-rijndael
   (package
     (name "perl-crypt-rijndael")
-    (version "1.15")
+    (version "1.16")
     (source
      (origin
       (method url-fetch)
@@ -2220,7 +2221,7 @@ Password Generator\".")
             "mirror://cpan/authors/id/L/LE/LEONT/Crypt-Rijndael-"
             version ".tar.gz"))
       (sha256
-       (base32 "0qs1b6ma4sj0ip5d8544fzgc1bbankc4qlmznp8hay8dk5arp650"))))
+       (base32 "0h2dr1bd15y0sipxsdh1k4hx5bccywn15haj0xpjmf0471g0hh35"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Crypt-Rijndael")
     (synopsis "Crypt::CBC compliant Rijndael encryption module")
@@ -3770,15 +3771,14 @@ for CRC-CCITT, CRC-16 and CRC-32.")
 (define-public perl-digest-hmac
   (package
     (name "perl-digest-hmac")
-    (version "1.03")
+    (version "1.04")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://cpan/authors/id/G/GA/GAAS/"
+       (uri (string-append "mirror://cpan/authors/id/A/AR/ARODLAND/"
                            "Digest-HMAC-" version ".tar.gz"))
        (sha256
-        (base32
-         "0naavabbm1c9zgn325ndy66da4insdw9l3mrxwxdfi7i7xnjrirv"))))
+        (base32 "1m4fn0w3hb4vn7k5kja508a5hjmcrm28zhdpjkbl8p17m9b83g6n"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Digest-HMAC")
     (synopsis "Keyed-Hashing for Message Authentication")
@@ -6699,14 +6699,14 @@ Moose and is optimised for rapid startup.")
 (define-public perl-moose
   (package
     (name "perl-moose")
-    (version "2.2012")
+    (version "2.2015")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/E/ET/ETHER/"
                                   "Moose-" version ".tar.gz"))
               (sha256
                (base32
-                "0s9m2pskc8h1k94pbvx0lvf0xgv9xca349isbcsrqdqnkmxf9fs6"))))
+                "05gma3q3l15igqrqi8ax8v5cmmvy7s939q3xzs45l1rc7sfx6yd6"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-cpan-meta-check" ,perl-cpan-meta-check)
@@ -6805,14 +6805,14 @@ private methods are not.")
 (define-public perl-moosex-getopt
   (package
     (name "perl-moosex-getopt")
-    (version "0.74")
+    (version "0.75")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/E/ET/ETHER/"
                            "MooseX-Getopt-" version ".tar.gz"))
        (sha256
-        (base32 "091crga5gjyhj2lz55w3ba37xq6pmjg5dx5xccsrzghy8cxxzq0x"))))
+        (base32 "1j7b2jnf0blxr4czp3vfcnv1h5zj601mrfdm92g1wf5wn9dvxwv3"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-module-build" ,perl-module-build)
@@ -8134,16 +8134,16 @@ designed for the more complex job, such as @code{Params::Validate}")
 (define-public perl-params-util
   (package
     (name "perl-params-util")
-    (version "1.07")
+    (version "1.102")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://cpan/authors/id/A/AD/ADAMK/Params-Util-"
+             "mirror://cpan/authors/id/R/RE/REHSACK/Params-Util-"
              version ".tar.gz"))
        (sha256
         (base32
-         "0v67sx93yhn7xa0nh9mnbf8mixf54czk6wzrjsp6dzzr5hzyrw9h"))))
+         "00kl154zisf2zsl8yl6xa6yw54nhd9cja5d5fyigs96vhasb36s9"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Params-Util")
     (synopsis "Simple, compact and correct param-checking functions")
@@ -8284,14 +8284,14 @@ file names.")
 (define-public perl-path-tiny
   (package
     (name "perl-path-tiny")
-    (version "0.108")
+    (version "0.118")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/D/DA/DAGOLDEN/"
                                   "Path-Tiny-" version ".tar.gz"))
               (sha256
                (base32
-                "1x9zf8r3cynf4vqlycyyspsr70v4zw6bk9bkgvfpvsxkw8mlhj9w"))))
+                "1zdhc3azw6wn21db3yyygs57vlqkx72ipyd8sa21m72c1y6qs4rj"))))
     (build-system perl-build-system)
     (arguments
      `(#:tests? #f)) ; Tests require additional test modules to be packaged
@@ -8309,7 +8309,7 @@ with file paths.")
 (define-public perl-pdf-api2
   (package
     (name "perl-pdf-api2")
-    (version "2.038")
+    (version "2.039")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8317,7 +8317,7 @@ with file paths.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "02dxz798sx0ncdphjrfvfl2a3c1lkplyriyk4psq99q2kdsc8ivl"))))
+                "08x1anlvmxwym081flkrz7wr9q89y9wbq8ajqk72xsbzhhc479rn"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-test-exception" ,perl-test-exception)
@@ -8892,6 +8892,48 @@ straightforward and (perhaps someday) standard way.  Spiffy borrows ideas from
 other OO languages like Python, Ruby, Java and Perl 6.")
     (license (package-license perl))))
 
+(define-public perl-want
+  (package
+    (name "perl-want")
+    (version "0.29")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/R/RO/ROBIN/Want-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1xsjylbxxcbkjazqms49ipi94j1hd2ykdikk29cq7dscil5p9r5l"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Want")
+    (synopsis "Generalization of wantarray")
+    (description "This module generalises the mechanism of the
+@code{wantarray} function, allowing a function to determine in some detail how
+its return value is going to be immediately used.")
+    (license license:perl-license)))
+
+(define-public perl-contextual-return
+  (package
+    (name "perl-contextual-return")
+    (version "0.004014")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DC/DCONWAY/Contextual-Return-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0y4zf5qkpayp4kkg7lw9ydbbin1z99m6xvy02fgacjbfw4ai9zh9"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+     `(("perl-want" ,perl-want)))
+    (home-page "https://metacpan.org/release/Contextual-Return")
+    (synopsis "Create context-sensitive return values")
+    (description "This module provides a collection of named blocks that allow
+a return statement to return different values depending on the context in
+which it is called.")
+    (license license:perl-license)))
+
 (define-public perl-statistics-basic
   (package
     (name "perl-statistics-basic")
@@ -8912,6 +8954,32 @@ other OO languages like Python, Ruby, Java and Perl 6.")
     (description "This package provides basic statistics functions like
 @code{median()}, @code{mean()}, @code{variance()} and @code{stddev()}.")
     (license license:lgpl2.0)))
+
+(define-public perl-statistics-pca
+  (package
+    (name "perl-statistics-pca")
+    (version "0.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DS/DSTH/Statistics-PCA-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1i3bskwibp54c9a2wx8gzr3hyds6mmhr3d550g8j6893005v3bgq"))))
+    (build-system perl-build-system)
+    (native-inputs
+     `(("perl-module-build" ,perl-module-build)))
+    (propagated-inputs
+     `(("perl-contextual-return" ,perl-contextual-return)
+       ("perl-math-cephes" ,perl-math-cephes)
+       ("perl-math-matrixreal" ,perl-math-matrixreal)
+       ("perl-text-simpletable" ,perl-text-simpletable)))
+    (home-page "https://metacpan.org/release/Statistics-PCA")
+    (synopsis "Perl implementation of Principal Component Analysis")
+    (description "This package provides the Statistics::PCA module, an
+implementation of @dfn{Principal Component Analysis} (PCA).")
+    (license license:perl-license)))
 
 (define-public perl-stream-buffered
   (package
@@ -10288,14 +10356,14 @@ rounded or exact terms.")
 (define-public perl-time-duration-parse
   (package
     (name "perl-time-duration-parse")
-    (version "0.14")
+    (version "0.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/N/NE/NEILB/"
                            "Time-Duration-Parse-" version ".tar.gz"))
        (sha256
-        (base32 "17nh73r50mqqpgxdf3zpgdiqrizmjy0vdk0zd6xi9zcsdijrdhnc"))))
+        (base32 "10g39bbrxkabbsfq4rv7f5b5x7h3jba08j4pg8gwr0b9iqx19n31"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-time-duration" ,perl-time-duration)))
@@ -11084,14 +11152,14 @@ files, using JSON::PP and/or CPAN::Meta::YAML.")
 (define-public perl-scalar-list-utils
   (package
     (name "perl-scalar-list-utils")
-    (version "1.53")
+    (version "1.56")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/P/PE/PEVANS/"
                            "Scalar-List-Utils-" version ".tar.gz"))
        (sha256
-        (base32 "16dfpnrcf5846j998rdd6gra16m9030rnz9fpsh1hfzvcsq8ch5x"))))
+        (base32 "0nxb29x7i2w6kjxq188n131b56bsqj1ykrxjcjp6sgpv81ym7f0m"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Scalar-List-Utils")
     (synopsis "Common Scalar and List utility subroutines")

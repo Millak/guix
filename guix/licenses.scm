@@ -16,6 +16,7 @@
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,7 +40,7 @@
             apsl2
             asl1.1 asl2.0
             boost1.0
-            bsd-2 bsd-3 bsd-4
+            bsd-0 bsd-2 bsd-3 bsd-4
             non-copyleft
             cc0
             cc-by2.0 cc-by3.0 cc-by4.0
@@ -68,6 +69,7 @@
             imlib2
             ipa
             knuth
+            lal1.3
             lgpl2.0 lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3 lgpl3+ llgpl
             lppl lppl1.0+ lppl1.1+ lppl1.2 lppl1.2+
             lppl1.3 lppl1.3+
@@ -158,6 +160,11 @@
   (license "Boost 1.0"
            "http://directory.fsf.org/wiki/License:Boost1.0"
            "https://www.gnu.org/licenses/license-list#boost"))
+
+(define bsd-0
+  (license "Zero-Clause BSD"
+           "https://spdx.org/licenses/0BSD.html"
+           "https://opensource.org/licenses/0BSD"))
 
 (define bsd-2
   (license "FreeBSD"
@@ -405,6 +412,11 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "Donald Knuth's license for TeX"
            "http://www.ctan.org/license/knuth"
            "Modification are only permitted under a different name."))
+
+(define lal1.3
+  (license "Free Art License 1.3"
+           "http://artlibre.org/licence/lal/en/"
+           "https://www.gnu.org/licenses/license-list#FreeArt"))
 
 (define lgpl2.0
   (license "LGPL 2.0"

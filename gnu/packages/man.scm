@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2014, 2015, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2014, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
@@ -31,6 +31,8 @@
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ruby)
+  #:use-module (guix utils)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
@@ -121,14 +123,14 @@ a flexible and convenient way.")
 (define-public man-db
   (package
     (name "man-db")
-    (version "2.9.3")
+    (version "2.9.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/man-db/man-db-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1f4palf5bdyf3f8sa0981cqxn9cjcr2pz53ngrrsybb9n0da2nps"))))
+                "0mk7n7yn6scy785jhg1j14b3q9l0cgvpry49r0ldjsnizbnrjv5n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -220,10 +222,54 @@ accessed using the man command.  It uses a Berkeley DB database in place of
 the traditional flat-text whatis databases.")
     (license license:gpl2+)))
 
+(define-public mandoc
+  (package
+    (name "mandoc")
+    (version "1.14.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://mandoc.bsd.lv/snapshots/mandoc-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1xyqllxpjj1kimlipx11pzyywf5c25i4wmv0lqm7ph3gnlnb86c2"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "regress"
+       #:phases (modify-phases %standard-phases
+                  (add-before 'configure 'set-prefix
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (substitute* "configure"
+                        (("^CC=.*")
+                         (string-append "CC=" ,(cc-for-target) "\n"))
+                        (("^DEFCFLAGS=\\\\\"")
+                         "DEFCFLAGS=\"-O2 ")
+                        (("^UTF8_LOCALE=.*")      ;used for tests
+                         "UTF8_LOCALE=en_US.UTF-8\n")
+                        (("^MANPATH_(BASE|DEFAULT)=.*" _ which)
+                         (string-append "MANPATH_" which "="
+                                        "/run/current-system/profile/share/man\n"))
+                        (("^PREFIX=.*")
+                         (string-append "PREFIX=" (assoc-ref outputs "out")
+                                        "\n"))))))))
+    (native-inputs `(("perl" ,perl)))             ;used to run tests
+    (inputs `(("zlib" ,zlib)))
+    (synopsis "Tools for BSD mdoc and man pages")
+    (description
+     "mandoc is a suite of tools compiling mdoc, the roff macro language of
+choice for BSD manual pages, and man, the predominant historical language for
+UNIX manuals.  It is small and quite fast.  The main component of the toolset
+is the @command{mandoc} utility program, based on the libmandoc validating
+compiler, to format output for UTF-8 and ASCII UNIX terminals, HTML 5,
+PostScript, and PDF.  Additional tools include the @command{man} viewer, and
+@command{apropos} and @command{whatis}.")
+    (home-page "https://mandoc.bsd.lv/")
+    (license license:isc)))
+
 (define-public man-pages
   (package
     (name "man-pages")
-    (version "5.10")
+    (version "5.11")
     (source
      (origin
        (method url-fetch)
@@ -233,7 +279,7 @@ the traditional flat-text whatis databases.")
               (string-append "mirror://kernel.org/linux/docs/man-pages/Archive/"
                              "man-pages-" version ".tar.xz")))
        (sha256
-        (base32 "0ql7fqs0w2nbwv1b6ffnzyjz1sysvkhq8kb77wi2z7qip8sja43m"))))
+        (base32 "1aiwn6yi19idg4jbf7x4x5i06macjv7r8d5fgp1rwnc4a775vniy"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases (delete 'configure))
@@ -293,17 +339,18 @@ automatically.")
    (version "1.10.1")
    (source
     (origin
-     (method url-fetch)
-     (uri (string-append "https://git.sr.ht/%7Esircmpwn/scdoc/archive/" version
-                         ".tar.gz"))
-     (file-name (string-append name "-" version ".tar.gz"))
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://git.sr.ht/~sircmpwn/scdoc")
+           (commit version)))
+     (file-name (git-file-name name version))
      (sha256
-      (base32
-       "13x7g1r56bshvfmlvapvz35ywnbgsh337kywb5kcv8nc6b3j3q40"))))
+      (base32 "1xmh6fnp378xmiycslg4migs1vx7yly4i1cf2vbbnwim9c9g0aw7"))))
    (build-system gnu-build-system)
    (arguments
     `(#:make-flags
-      (list "CC=gcc" (string-append "PREFIX=" (assoc-ref %outputs "out")))
+      (list (string-append "CC=" ,(cc-for-target))
+            (string-append "PREFIX=" (assoc-ref %outputs "out")))
       #:phases
       (modify-phases %standard-phases
         (delete 'configure))))

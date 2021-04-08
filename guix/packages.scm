@@ -5,6 +5,7 @@
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2017, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -345,7 +346,8 @@ name of its URI."
 (define %supported-systems
   ;; This is the list of system types that are supported.  By default, we
   ;; expect all packages to build successfully here.
-  '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "mips64el-linux" "i586-gnu"))
+  '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "mips64el-linux" "i586-gnu"
+    "powerpc64le-linux"))
 
 (define %hurd-systems
   ;; The GNU/Hurd systems for which support is being developed.
@@ -425,7 +427,7 @@ name of its URI."
 
 (define-syntax-rule (package/inherit p overrides ...)
   "Like (package (inherit P) OVERRIDES ...), except that the same
-transformation is done to the package replacement, if any.  P must be a bare
+transformation is done to the package P's replacement, if any.  P must be a bare
 identifier, and will be bound to either P or its replacement when evaluating
 OVERRIDES."
   (let loop ((p p))
@@ -475,29 +477,34 @@ object."
 
   (match (package-location package)
     (($ <location> file line column)
-     (catch 'system-error
-       (lambda ()
-         ;; In general we want to keep relative file names for modules.
-         (call-with-input-file (search-path %load-path file)
-           (lambda (port)
-             (goto port line column)
-             (match (read port)
-               (('package inits ...)
-                (let ((field (assoc field inits)))
-                  (match field
-                    ((_ value)
-                     (let ((loc (and=> (source-properties value)
-                                       source-properties->location)))
-                       (and loc
-                            ;; Preserve the original file name, which may be a
-                            ;; relative file name.
-                            (set-field loc (location-file) file))))
-                    (_
-                     #f))))
-               (_
-                #f)))))
-       (lambda _
-         #f)))
+     (match (search-path %load-path file)
+       ((? string? file-found)
+        (catch 'system-error
+          (lambda ()
+            ;; In general we want to keep relative file names for modules.
+            (call-with-input-file file-found
+              (lambda (port)
+                (goto port line column)
+                (match (read port)
+                  (('package inits ...)
+                   (let ((field (assoc field inits)))
+                     (match field
+                       ((_ value)
+                        (let ((loc (and=> (source-properties value)
+                                          source-properties->location)))
+                          (and loc
+                               ;; Preserve the original file name, which may be a
+                               ;; relative file name.
+                               (set-field loc (location-file) file))))
+                       (_
+                        #f))))
+                  (_
+                   #f)))))
+          (lambda _
+            #f)))
+       (#f
+        ;; FILE could not be found in %LOAD-PATH.
+        #f)))
     (_ #f)))
 
 

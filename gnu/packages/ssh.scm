@@ -186,16 +186,15 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "8.4p1")
+   (version "8.5p1")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
                                  "openssh-" version ".tar.gz"))
-             (patches (search-patches "openssh-hurd.patch"
-                                      "openssh-fix-ssh-copy-id.patch"))
+             (patches (search-patches "openssh-hurd.patch"))
              (sha256
               (base32
-               "091b3pxdlj47scxx6kkf4agkx8c8sdacdxx8m1dw1cby80pd40as"))))
+               "09gc8rv7728chxraab85dzkdikaw4aph1wlcwcc9kai9si0kybzm"))))
    (build-system gnu-build-system)
    (native-inputs `(("groff" ,groff)
                     ("pkg-config" ,pkg-config)))
@@ -404,48 +403,57 @@ libssh library.")
   (deprecated-package "guile3.0-ssh" guile-ssh))
 
 (define-public corkscrew
-  (package
-    (name "corkscrew")
-    (version "2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/patpadgett/corkscrew")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "0g4pkczrc1zqpnxyyjwcjmyzdj5qqcpzwf1bm3965zdwp94bpppf"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           ;; Replace configure phase as the ./configure script does not like
-           ;; CONFIG_SHELL and SHELL passed as parameters.
-           (lambda* (#:key outputs build target #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bash  (which "bash"))
-                    ;; Set --build and --host flags as the provided config.guess
-                    ;; is not able to detect them.
-                    (flags `(,(string-append "--prefix=" out)
-                             ,(string-append "--build=" build)
-                             ,(string-append "--host=" (or target build)))))
-               (setenv "CONFIG_SHELL" bash)
-               (apply invoke bash "./configure" flags))))
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "README.markdown" doc)
-               #t))))))
-    (home-page "https://github.com/patpadgett/corkscrew")
-    (synopsis "SSH tunneling through HTTP(S) proxies")
-    (description
-     "Corkscrew tunnels SSH connections through most HTTP and HTTPS proxies.
-Proxy authentication is only supported through the plain-text HTTP basic
-authentication scheme.")
-    (license license:gpl2+)))
+  ;; The last 2.0 release hails from 2009.  Use a fork (submitted upstream as
+  ;; <https://github.com/patpadgett/corkscrew/pull/5>) that adds now-essential
+  ;; IPv6 and TLS support.
+  (let ((revision "0")
+        (commit "268b71e88ee51fddceab96d665b327394f1feb12"))
+    (package
+      (name "corkscrew")
+      (version (git-version "2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rtgill82/corkscrew")
+               (commit commit)))
+         (sha256
+          (base32 "1rylbimlfig3ii4bqr4r058lkc43pqkxnxqpqdpm31blh3xs0dcw"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         (list "--enable-ssl")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'update-metadata
+             (lambda _
+               (substitute* "configure.ac"
+                 ;; Our version differs significantly.
+                 (("2.0") (string-append ,version " (Guix)")))
+               (substitute* "corkscrew.c"
+                 ;; This domain's since been squat.
+                 (("\\(agroman@agroman\\.net\\)")
+                  (format #f "<~a>" ,(package-home-page this-package))))))
+           (add-after 'install 'install-documentation
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (doc (string-append out "/share/doc/" ,name "-" ,version)))
+                 (install-file "README.md" doc)
+                 #t))))))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("pkg-config" ,pkg-config)))
+      (inputs
+       `(("openssl" ,openssl)))
+      (home-page "https://github.com/patpadgett/corkscrew")
+      (synopsis "SSH tunneling through HTTP(S) proxies")
+      (description
+       "Corkscrew tunnels SSH connections through most HTTP and HTTPS proxies.
+It supports proxy authentication through the HTTP basic authentication scheme
+with optional @acronym{TLS, Transport-Level Security} to protect credentials.")
+      (license license:gpl2+))))
 
 (define-public mosh
   (package
@@ -782,14 +790,14 @@ shell services and remote host selection.")
 (define-public python-asyncssh
   (package
     (name "python-asyncssh")
-    (version "2.3.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncssh" version))
        (sha256
         (base32
-         "0pi6npmsgx7l9r1qrfvg8mxx3i23ipff492xz4yhrw13f56a7ga4"))))
+         "02xpzir9rmw7b7k07m3f912h6jvy9yzan9yn3ckrmqx2ffpy4r8b"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-cryptography" ,python-cryptography)

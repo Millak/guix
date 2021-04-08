@@ -299,13 +299,6 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
     (license (list license:bsd-3
                    license:gpl2))))
 
-(define-public poppler-qt4
-  (package/inherit poppler
-   (name "poppler-qt4")
-   (inputs `(("qt-4" ,qt-4)
-             ,@(package-inputs poppler)))
-   (synopsis "Qt4 frontend for the Poppler PDF rendering library")))
-
 (define-public poppler-qt5
   (package/inherit poppler
    (name "poppler-qt5")
@@ -316,14 +309,14 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 (define-public python-poppler-qt5
   (package
     (name "python-poppler-qt5")
-    (version "0.24.2")
+    (version "21.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "python-poppler-qt5" version))
         (sha256
          (base32
-          "0l69llw1fzwz8y90q0qp9q5pifbrqjjbwii7di54dwghw5fc6w1r"))))
+          "0b82gm4i75q5v19kfbq0h4y0b2vcwr2213zkhxh6l0h45kdndmxd"))))
     (build-system python-build-system)
     (arguments
      `(;; There are no tests.  The check phase just causes a rebuild.
@@ -724,7 +717,8 @@ extracting content or merging files.")
                            "mupdf-" version "-source.tar.xz"))
        (sha256
         (base32 "16m5sksil22sshxy70xkslsb2qhvcqb1d95i9savnhds1xn4ybar"))
-       (patches (search-patches "mupdf-fix-linkage.patch"))
+       (patches (search-patches "mupdf-fix-linkage.patch"
+                                "mupdf-CVE-2021-3407.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1275,7 +1269,7 @@ python-pypdf2 instead.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.7.0")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -1284,7 +1278,7 @@ python-pypdf2 instead.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dmgmvpghsm938iznalbg8h8k17a5h3q466yfc67mcll428n4nx3"))))
+        (base32 "1c2mafnz8pv32wzkc2wx4q8y2x7xffpn6ag12dj7ga5n772fb6s3"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f                      ;no tests

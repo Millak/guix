@@ -17,9 +17,10 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Leo Prikler <leo.prikler@student.tugraz.at>
 ;;; Copyright © 2019 Jethro Cao <jethrocao@gmail.com>
-;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +56,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fltk)
@@ -446,7 +448,7 @@ support.")
 (define-public tiled
   (package
     (name "tiled")
-    (version "1.4.3")
+    (version "1.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -455,7 +457,7 @@ support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14bx4gywfzr2f07ldqk3la82g5ag1agj21f7ccrxip12ydmpx0xb"))))
+                "1prajkx1xpp3csa0xpkrn3c2cnzvmwzxgrqb9d3gqszp3sllr2dg"))))
     (build-system gnu-build-system)
     (inputs
      `(("qtbase" ,qtbase)
@@ -529,7 +531,7 @@ clone.")
                    all)))
                #t))))))
     (native-inputs
-     `(("autoconf" ,autoconf-wrapper)
+     `(("autoconf" ,autoconf)
        ("automake" ,automake)
        ("guile" ,guile-3.0)
        ("pkg-config" ,pkg-config)
@@ -638,7 +640,7 @@ sounds from presets such as \"explosion\" or \"powerup\".")
 (define-public surgescript
   (package
     (name "surgescript")
-    (version "0.5.4.4")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)
@@ -647,12 +649,13 @@ sounds from presets such as \"explosion\" or \"powerup\".")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vck1wk6r6jrrw5xzpqldplz601dfgpk5s5p45fam00nfsid0p7p"))))
+        (base32 "0xwd4g7n0b0rxkpbyshkzyl472h1y606ghyvf8gv034n3jz2g4jk"))))
      (build-system cmake-build-system)
      (arguments
       '(#:configure-flags
         (let ((share (string-append (assoc-ref %outputs "out") "/share")))
-          (list (string-append "-DICON_PATH=" share "/pixmaps")
+          (list "-DWANT_STATIC=NO"
+                (string-append "-DICON_PATH=" share "/pixmaps")
                 (string-append "-DMETAINFO_PATH=" share "/metainfo")))
         #:tests? #f))
      (home-page "https://docs.opensurge2d.org")
@@ -1131,7 +1134,7 @@ to create fully featured games and multimedia programs in the python language.")
           ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))))
       (native-inputs
        `(("python2-cython" ,python2-cython)))
-      (home-page "http://www.renpy.org/")
+      (home-page "https://www.renpy.org/")
       (synopsis "Reimplementation of the Pygame API using SDL2")
       (description "Pygame_SDL2 reimplements the Pygame API using SDL2,
 staying close to the original, but also adding some SDL2-specific features.
@@ -1759,6 +1762,44 @@ features design tools such as a visual editor, can import 3D models and
 provide high-quality 3D rendering, it contains an animation editor, and can be
 scripted in a Python-like language.")
     (license license:expat)))
+
+(define-public entt
+  (package
+    (name "entt")
+    (version "3.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/skypjack/entt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nzvnhiw3r6nkmxp749zwxc8kzja09nijyxibdbri3g2i7pysf58"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DENTT_BUILD_TESTING=ON"
+                               "-DENTT_FIND_GTEST_PACKAGE=ON"
+                               "-DENTT_BUILD_DOCS=ON")
+       ;; Only tests are compiled, and they need assertions to work correctly.
+       #:build-type "Debug"))
+    (native-inputs
+     `(;; for testing
+       ("googletest" ,googletest)
+       ;; for documentation
+       ("doxygen" ,doxygen)
+       ("graphviz" ,graphviz)))
+    (synopsis "Entity component system")
+    (description "EnTT is a header-only library, containing (among other things)
+@itemize
+@item an entity component system based on sparse sets,
+@item a configuration system using the monostate pattern,
+@item a static reflection system,
+@item and a cooperative scheduler.
+@end itemize")
+    (home-page "https://github.com/skypjack/entt")
+    (license (list license:expat        ; code
+                   license:cc-by4.0)))) ; documentation
 
 (define-public eureka
   (package
@@ -2393,7 +2434,7 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
 (define-public dhewm3
   (package
     (name "dhewm3")
-    (version "1.5.0")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2401,7 +2442,7 @@ game engine.  id Tech 2 is the engine originally behind Quake 2.")
                     version "/dhewm3-" version "-src.tar.xz"))
               (sha256
                (base32
-                "0dmd1876az5q8gbjrd1jk8zidz11ydj607z3m8m5kvw2yj136jzv"))))
+                "0s2brx6wyljhjbpli97iy4lc4fqqsvdc09raz8njg0vgzcsiyrri"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No tests.

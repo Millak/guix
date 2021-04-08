@@ -115,6 +115,7 @@ limited support for fork events.")
      '(#:configure-flags '("--disable-static")
        ;; XXX: Some tests want /dev/tty, attempt to make connections, etc.
        #:tests? #f))
+    ;; TODO replace with autoconf on core-updates
     (native-inputs `(("autoconf" ,autoconf-wrapper)
                      ("automake" ,automake)
                      ("libtool" ,libtool)
@@ -132,6 +133,22 @@ resolution, asynchronous file system operations, and threading primitives.")
     ;; A few files fall under other non-copyleft licenses; see 'LICENSE' for
     ;; details.  Documentation is CC-BY 4.0 as of 1.12.0; see 'LICENSE-docs'.
     (license (list expat cc-by4.0))))
+
+(define-public libuv-for-node
+  ;; When upgrading Node, also upgrade this. Get the version from
+  ;; https://github.com/nodejs/node/blob/master/deps/uv/include/uv/version.h
+  (package
+    (inherit libuv)
+    (name "libuv")
+    (version "1.40.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://dist.libuv.org/dist/v" version
+                                  "/libuv-v" version ".tar.gz"))
+              (sha256
+               (base32
+                "1551k3ab27vbg9517l9b4iqbramwxdkwgpf53knas05cbfwhvab1"))))
+    (properties '((hidden? . #t)))))
 
 (define-public perl-anyevent
   (package

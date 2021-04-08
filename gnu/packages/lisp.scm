@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019, 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -400,14 +400,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.1.0")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "0k12m2z60fnq64m8dgivprs2mvrsnmp7c5ipzx7jzkprcsymdvh5"))))
+        (base32 "1h6s3as8m72ik971zy7a8j1kqfyy5gzpv9ksy09ixv65a10ll3d9"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -847,7 +847,7 @@ enough to play the original mainframe Zork all the way through.")
 (define-public txr
   (package
     (name "txr")
-    (version "246")
+    (version "255")
     (source
      (origin
        (method git-fetch)
@@ -856,7 +856,7 @@ enough to play the original mainframe Zork all the way through.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ynkz0ss7nn1ssiaxagpq80iabknf085nk0pra9hn8y9hx7av0db"))))
+        (base32 "0fjca44761x29xg5hh60yf4i3k7462z7ysnadbk2wzisp42yxk6j"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1090,7 +1090,7 @@ assembler, PEG) is less than 1MB.")
 (define-public lisp-repl-core-dumper
   (package
     (name "lisp-repl-core-dumper")
-    (version "0.5.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1099,7 +1099,7 @@ assembler, PEG) is less than 1MB.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hrilm9lxy7zdidn4wac4yfqryg3hfw0371nanhd7g9bcfjx7n1q"))))
+        (base32 "0yfsyxj462yi3bx587yssp4gwb54jdm6fjk9q93gjrfv8a65ilp7"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan

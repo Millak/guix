@@ -12,6 +12,8 @@
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 qblade <qblade@protonmail.com>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +39,8 @@
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -146,6 +150,53 @@ provide information on how a given compilation unit is processed.  With this,
 it is easy to re-run the compilation with alternate programs.  Bear is used to
 generate such a compilation database.")
     (license license:gpl3+)))
+
+(define-public bmake
+  (package
+    (name "bmake")
+    (version "20210206")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
+       (sha256
+        (base32 "07n9avzdg6gifrzyddnyzada5s5rzklvbqfpv5drljpxcgpqpvwg"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("bash" ,bash-minimal)))
+    (native-inputs
+     `(("coreutils" ,coreutils)))
+    (arguments
+     `(#:tests? #f                      ; test during build
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'fix-test ; fix from nixpkgs
+           (lambda _
+             (substitute* "unit-tests/unexport-env.mk"
+               (("PATH=\t/bin:/usr/bin:/sbin:/usr/sbin")
+                "PATH := ${PATH}"))))
+         (add-after 'configure 'remove-fail-tests
+           (lambda _
+             (substitute* "unit-tests/Makefile"
+               (("cmd-interrupt") "")
+               (("varmod-localtime") ""))
+             #t)))
+       #:configure-flags
+       (list
+        (string-append
+         "--with-defshell=" (assoc-ref %build-inputs "bash") "/bin/bash")
+        (string-append
+         "--with-default-sys-path=" (assoc-ref %outputs "out") "/share/mk"))
+       #:make-flags
+       (list "INSTALL=install"))) ;; use coreutils install
+    (home-page "http://www.crufty.net/help/sjg/bmake.htm")
+    (synopsis "BSD's make")
+    (description
+     "bmake is a program designed to simplify the maintenance of other
+programs.  Its input is a list of specifications as to the files upon which
+programs and other files depend.")
+    (license license:bsd-3)))
 
 (define-public gn
   (let ((commit "e327ffdc503815916db2543ec000226a8df45163")
@@ -262,6 +313,19 @@ resembles Python.")
               (sha256
                (base32
                 "1070kjiirxxdfppmrhi3wsc6rykay1zlciqrzayjhjg0hkw42mrv"))))))
+
+(define-public meson-next
+  (package
+    (inherit meson)
+    (version "0.57.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/mesonbuild/meson/"
+                                  "releases/download/" version  "/meson-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "19n8alcpzv6npgp27iqljkmvdmr7s2c7zm8y997j1nlvpa1cgqbj"))))))
 
 (define-public meson-for-build
   (package
@@ -412,7 +476,7 @@ a build worked by accident.")
 (define-public osc
   (package
     (name "osc")
-    (version "0.165.2")
+    (version "0.172.0")
     (source
      (origin
        (method git-fetch)
@@ -421,7 +485,7 @@ a build worked by accident.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yjwvbvv9fgkpiyvrag89zxchyn3nbgp9jz0wn5p0z9450zwfyz6"))))
+        (base32 "1sqdnkka3c6b6hwnrmlwrgy7w62cp8raq8mph9pgd2lydzzbvwlp"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -435,6 +499,8 @@ a build worked by accident.")
                 (string-append bin "osc-wrapper.py")
                 (string-append bin "osc"))
                #t))))))
+    (native-inputs
+     `(("python-chardet" ,python-chardet)))
     (inputs
      `(("python-m2crypto" ,python-m2crypto)
        ("python-pycurl" ,python-pycurl)
@@ -481,3 +547,43 @@ besides executing the make build command, updates the JSON compilation
 database file corresponding to that build, resulting in a command-line
 interface similar to Bear.")
     (license license:gpl3)))
+
+(define-public build
+  (package
+    (name "build")
+    (version "0.3.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.codesynthesis.com/download/"
+                           "build/" (version-major+minor version)
+                           "/build-" version ".tar.bz2"))
+       (sha256
+        (base32 "1lx5rpnmsbip43zpp0a57sl5rm7pjb0y6i2si6rfglfp4p9d3z76"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags (list (string-append "install_prefix=" %output))
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (delete 'build)
+                  (delete 'configure))))
+    (home-page "https://www.codesynthesis.com/projects/build/")
+    (synopsis "Massively-parallel build system implemented on top of GNU make")
+    (description "Build is a massively-parallel software build system
+implemented on top of GNU Make, designed with the following tasks in mind:
+@itemize
+@item configuration
+@item building
+@item testing
+@item installation
+@end itemize
+Build has features such as:
+@itemize
+@item Position-independent makefiles.
+@item Non-recursive multi-makefile include-based structure.
+@item Leaf makefiles are full-fledged GNU makefiles, not just variable definitions.
+@item Complete dependency graph.
+@item Inter-project dependency tracking.
+@item Extensible language/compiler framework.
+@end itemize")
+    (license license:gpl2+)))

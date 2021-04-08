@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
 ;;; Copyright © 2019 Andy Tai <atai@atai.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -152,23 +152,16 @@ to the clients.")
 (define-public simde
   (package
     (name "simde")
-    (version "0.7.0")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                    (url "https://github.com/simd-everywhere/simde")
-                    (commit (string-append "v" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1xf5xfzkk9rj47cichgz5ni8xs9hbpz5p6fmxr4ij721ffd002k3"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Fix the version string
-                 (substitute* "meson.build"
-                   (("0.7.0-rc2") "0.7.0"))
-                 #t))))
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/simd-everywhere/simde")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xkf21gbkgz6zlxabkmgwvy7py6cdnfqx9aplj90gz25gzrr1mkb"))))
     (build-system meson-build-system)
     ;; We really want this for the headers, and the tests require a bundled library.
     (arguments '(#:configure-flags '("-Dtests=false")))
@@ -184,14 +177,14 @@ speed on x86, NEON on ARM, etc.).")
 (define-public fasm
   (package
     (name "fasm")
-    (version "1.73.25")
+    (version "1.73.27")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://flatassembler.net/fasm-"
                            version ".tgz"))
        (sha256
-        (base32 "0k3h61mfwslyb34kf4dnapfwl8jxlmrp4dv666wc057hkj047knn"))))
+        (base32 "1cghiks49ql77b9l4mwrnlk76kai0fm0z22j71kbdlxngwvlh0b8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests exist
@@ -349,7 +342,7 @@ package for the Game Boy and Game Boy Color.  It consists of:
 (define-public wla-dx
   (package
     (name "wla-dx")
-    (version "9.11")
+    (version "9.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -358,7 +351,7 @@ package for the Game Boy and Game Boy Color.  It consists of:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i8pxvyaih79pqnyvqyqd9rwdid91pna76cap0k1n5zhg8xswf2f"))))
+                "1wlbqv2rgk9q6m9an1mi0i29250zl8lw7zipki2bbi9mczpyczli"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("sphinx" ,python-sphinx)))      ; to generate man pages

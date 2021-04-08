@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -186,14 +186,14 @@ SILC and ICB protocols via plugins.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "3.0")
+    (version "3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1yziv4cbcy61c9mb81c5sg3rmw6nh0srzwmry4svhriv6rdd5dvc"))))
+                "1xx4fx7785yw3ml3k1z08h3qvrizvcypwl0j6jc7d7qim9sjjnm5"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -282,14 +282,14 @@ for the IRCv3 protocol.")
 (define-public ircii
   (package
     (name "ircii")
-    (version "20151120")
+    (version "20210314")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ircii.warped.com/"
                                  name "-" version ".tar.gz"))
              (sha256
               (base32
-               "178dc279f5j894qvp96dzz7c0jpryqlcqw5g0dc9yaxg9kgw1lqm"))))
+               "04jczayv1vdn21fcf5zkfaa98sy7d6ydrv2sns2i67gvya2z28j3"))))
     (build-system gnu-build-system)
     ;; TODO: We should package a small socks4/5 library/server to configure
     ;; ircii with socks client. `ghc-socks' pulls in lots of haskell, which

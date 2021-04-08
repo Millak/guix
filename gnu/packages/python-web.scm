@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2014, 2017 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2014, 2017, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
@@ -24,9 +24,9 @@
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017 Mark Meyer <mark@ofosos.org>
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
-;;; Copyright © 2018, 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018, 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
@@ -91,16 +91,84 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (srfi srfi-1))
 
+(define-public python-prawcore
+  (package
+    (name "python-prawcore")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "prawcore" version))
+       (sha256
+        (base32 "1l9nrn4s03xl8fvkyybdk86bm9cyyk43alkxf9g014a9ynvdk65l"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python-betamax" ,python-betamax)
+       ("python-betamax-matchers" ,python-betamax-matchers)
+       ("python-betamax-serializers" ,python-betamax-serializers)
+       ("python-mock" ,python-mock)
+       ("python-pytest" ,python-pytest)
+       ("python-testfixtures" ,python-testfixtures)))
+    (propagated-inputs
+     `(("python-requests" ,python-requests)))
+    (synopsis "Core component of PRAW")
+    (description "PRAWcore is a low-level communication layer used by PRAW.")
+    (home-page "https://praw.readthedocs.io/en/latest/")
+    (license license:bsd-2)))
+
+(define-public python-praw
+  (package
+    (name "python-praw")
+    (version "7.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "praw" version))
+       (sha256
+        (base32 "0ll1a0n8xs8gykizdsfrw63jp6bc39ab0pk3yzwcak96fyxh0ij3"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-failing-tests
+           (lambda _
+             (with-directory-excursion "tests"
+               ;; Require networking.
+               (for-each delete-file-recursively
+                         '("integration/models" "unit/models"))
+               ;; https://github.com/praw-dev/praw/issues/1699
+               ;; #issuecomment-795336704
+               (delete-file "unit/test_config.py"))
+             #t))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest"))
+             #t)))))
+    (native-inputs
+     `(("python-betamax" ,python-betamax)
+       ("python-betamax-matchers" ,python-betamax-matchers)
+       ("python-pytest" ,python-pytest)))
+    (propagated-inputs
+     `(("python-prawcore" ,python-prawcore)
+       ("python-websocket-client" ,python-websocket-client)))
+    (synopsis "Python Reddit API Wrapper")
+    (description "PRAW is a Python package that allows for simple access to
+Reddit’s API.  It aims to be easy to use and internally follows all of Reddit’s
+API rules.")
+    (home-page "https://praw.readthedocs.io/en/latest/")
+    (license license:bsd-2)))
+
 (define-public python-aiohttp
   (package
     (name "python-aiohttp")
-    (version "3.7.3")
+    (version "3.7.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiohttp" version))
        (sha256
-        (base32 "1i3p4yrfgrf1zpbgnywqmb33ps4k51wylcxykhf2cwky0spq26lw"))))
+        (base32 "1pn79h8fng4xi5gl1f6saw31nxgmgyxl41yf3vba1l21673yr12x"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -555,9 +623,6 @@ over a different origin than that of the web application.")
 @code{urllib} and @code{urlparse} modules for manipulating URLs.")
     (license license:unlicense)))
 
-(define-public python2-furl
-  (package-with-python2 python-furl))
-
 (define-public python-httplib2
   (package
     (name "python-httplib2")
@@ -640,8 +705,7 @@ Swartz.")
 
 (define-public python2-html2text
   (let ((base (package-with-python2 python-html2text)))
-    (package
-      (inherit base)
+    (package/inherit base
       ;; This is the last version with support for Python 2.
       (version "2019.8.11")
       (source (origin
@@ -655,7 +719,7 @@ Swartz.")
   (package
     (name "python-jose")
     (version "3.2.0")
-    (home-page "http://github.com/mpdavis/python-jose")
+    (home-page "https://github.com/mpdavis/python-jose")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
@@ -949,9 +1013,6 @@ between a web browser and web server.")
 support for Flask.  This is based on the Python babel module as well as pytz -
 both of which are installed automatically if you install this library.")
     (license license:bsd-3)))
-
-(define-public python2-flask-babel
-  (package-with-python2 python-flask-babel))
 
 (define-public python-flask-cors
   (package
@@ -1627,14 +1688,14 @@ connection to each user.")
 (define-public python-tornado-6
   (package
     (name "python-tornado")
-    (version "6.0.4")
+    (version "6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tornado" version))
        (sha256
         (base32
-         "1p5n7sw4580pkybywg93p8ddqdj9lhhy72rzswfa801vlidx9qhg"))))
+         "14cpzdv6p6qvk6vn02krdh5rcfdi174ifdbr5s6lcnymgcfyiiik"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -1657,7 +1718,7 @@ connection to each user.")
 
 (define-public python2-tornado
   (let ((tornado (package-with-python2 (strip-python2-variant python-tornado))))
-    (package (inherit tornado)
+    (package/inherit tornado
       (propagated-inputs
        `(("python2-backport-ssl-match-hostname"
           ,python2-backport-ssl-match-hostname)
@@ -1716,7 +1777,7 @@ term.js Javascript terminal emulator library.")
 
 (define-public python2-terminado
   (let ((terminado (package-with-python2 (strip-python2-variant python-terminado))))
-    (package (inherit terminado)
+    (package/inherit terminado
       (propagated-inputs
        `(("python2-backport-ssl-match-hostname"
           ,python2-backport-ssl-match-hostname)
@@ -2303,7 +2364,7 @@ verification of the SSL peer.")
 ;; python2-openssl requires special care, so package-with-python2 is
 ;; insufficient.
 (define-public python2-ndg-httpsclient
-  (package (inherit python-ndg-httpsclient)
+  (package/inherit python-ndg-httpsclient
     (name "python2-ndg-httpsclient")
     (arguments
      (substitute-keyword-arguments (package-arguments python-ndg-httpsclient)
@@ -2335,8 +2396,7 @@ WebSocket usage in Python programs.")
 (define-public python2-websocket-client
   (let ((base (package-with-python2
                 (strip-python2-variant python-websocket-client))))
-    (package
-      (inherit base)
+    (package/inherit base
       (native-inputs
        `(("python2-backport-ssl-match-hostname"
           ,python2-backport-ssl-match-hostname)
@@ -2642,8 +2702,7 @@ authenticated session objects providing things like keep-alive.")
 
 (define-public python2-rauth
   (let ((base (package-with-python2 (strip-python2-variant python-rauth))))
-    (package
-      (inherit base)
+    (package/inherit base
       (native-inputs `(("python2-unittest2" ,python2-unittest2)
                        ,@(package-native-inputs base))))))
 
@@ -2658,6 +2717,7 @@ authenticated session objects providing things like keep-alive.")
         (sha256
          (base32
           "024yldjwjavps39yb77sc422z8fa9bn20wcqrcncjwrqjab8y60r"))))
+    (replacement python-urllib3/fixed)
     (build-system python-build-system)
     (arguments `(#:tests? #f))
     (propagated-inputs
@@ -2675,6 +2735,17 @@ can reuse the same socket connection for multiple requests, it can POST files,
 supports url redirection and retries, and also gzip and deflate decoding.")
     (properties `((python2-variant . ,(delay python2-urllib3))))
     (license license:expat)))
+
+(define python-urllib3/fixed
+  (package/inherit python-urllib3
+    (version "1.26.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urllib3" version))
+       (sha256
+        (base32
+         "0dw9w9bs3hmr5dp3r3h43jyzzb1g1046ag7lj8pqf58i4kvj3c77"))))))
 
 ;; Some software requires an older version of urllib3, notably Docker.
 (define-public python-urllib3-1.24
@@ -2858,9 +2929,6 @@ and Jinja2 template engine.  It is called a micro framework because it does not
 presume or force a developer to use a particular tool or library.")
     (license license:bsd-3)))
 
-(define-public python2-flask
-  (package-with-python2 python-flask))
-
 (define-public python-flask-wtf
   (package
     (name "python-flask-wtf")
@@ -2893,9 +2961,6 @@ presume or force a developer to use a particular tool or library.")
 upload, and reCAPTCHA.")
     (license license:bsd-3)))
 
-(define-public python2-flask-wtf
-  (package-with-python2 python-flask-wtf))
-
 (define-public python-flask-multistatic
   (package
     (name "python-flask-multistatic")
@@ -2915,9 +2980,6 @@ upload, and reCAPTCHA.")
     (description "@code{flask-multistatic} is a flask plugin that adds support
 for overriding static files.")
     (license license:gpl3+)))
-
-(define-public python2-flask-multistatic
-  (package-with-python2 python-flask-multistatic))
 
 (define-public python-cookies
   (package
@@ -3032,16 +3094,20 @@ for the basic TCP/IP protocols.")
                '(begin
                   ;; Delete pre-compiled files.
                   (for-each delete-file (find-files "src/geventhttpclient"
-                                                    ".*\\.pyc"))
-                  #t))))
+                                                    ".*\\.pyc"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'delete-network-tests
            (lambda _
-             (delete-file "src/geventhttpclient/tests/test_client.py")
-             #t))
+             (delete-file "src/geventhttpclient/tests/test_client.py")))
+         (add-after 'unpack 'fix-compatibility-issue
+           ;; See: https://github.com/gwik/geventhttpclient/issues/137.
+           (lambda _
+             (substitute* "src/geventhttpclient/tests/test_ssl.py"
+               ((".*sock.last_seen_sni = None.*")
+                ""))))
          (replace 'check
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
@@ -3049,10 +3115,9 @@ for the basic TCP/IP protocols.")
                      ;; Append the test modules to sys.path to avoid
                      ;; namespace conflict which breaks SSL tests.
                      "--import-mode=append"
-                     ;; XXX: Disable test fails with Python 3.8:
+                     ;; XXX: This test fails with Python 3.8:
                      ;; https://github.com/gwik/geventhttpclient/issues/119
-                     "-k" (string-append "not test_cookielib_compatibility"))
-             #t)))))
+                     "-k" "not test_cookielib_compatibility"))))))
     (native-inputs
      `(("python-dpkt" ,python-dpkt)
        ("python-pytest" ,python-pytest)))
@@ -3128,7 +3193,7 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
 
 (define-public python2-url
   (let ((base (package-with-python2 (strip-python2-variant python-url))))
-    (package (inherit base)
+    (package/inherit base
       (propagated-inputs
        `(("python2-publicsuffix" ,python2-publicsuffix))))))
 
@@ -3225,6 +3290,26 @@ Betamax.")
 (define-public python2-betamax-matchers
   (package-with-python2 python-betamax-matchers))
 
+(define-public python-betamax-serializers
+  (package
+    (name "python-betamax-serializers")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "betamax-serializers" version))
+       (sha256
+        (base32 "0ja9isbjmzzhxdj69s0kdsvw8nkp073w6an6a4liy5vk3fdl2p1l"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-betamax" ,python-betamax)
+       ("python-pyyaml" ,python-pyyaml)))
+    (synopsis "Set of third-party serializers for Betamax")
+    (description "Betamax-Serializers are an experimental set of Serializers for
+Betamax that may possibly end up in the main package.")
+    (home-page "https://gitlab.com/betamax/serializers")
+    (license license:asl2.0)))
+
 (define-public python-s3transfer
   (package
     (name "python-s3transfer")
@@ -3270,8 +3355,7 @@ transfers.")
 
 (define-public python2-s3transfer
   (let ((base (package-with-python2 (strip-python2-variant python-s3transfer))))
-    (package
-      (inherit base)
+    (package/inherit base
       (native-inputs
        `(("python2-futures" ,python2-futures)
          ,@(package-native-inputs base))))))
@@ -3511,9 +3595,6 @@ It comes with safe defaults and easily configurable options.")
      "Minify @code{text/html} MIME type responses when using @code{Flask}.")
     (license license:bsd-3)))
 
-(define-public python2-flask-htmlmin
-  (package-with-python2 python-flask-htmlmin))
-
 (define-public python-jsmin
   (package
     (name "python-jsmin")
@@ -3566,9 +3647,6 @@ on the command line.")
 handles the common tasks of logging in, logging out, and remembering your
 users' sessions over extended periods of time.")
     (license license:expat)))
-
-(define-public python2-flask-login
-  (package-with-python2 python-flask-login))
 
 (define-public python-oauth2client
   (package
@@ -3714,6 +3792,29 @@ this it tries to be opinion-free and very extendable.")
 
 (define-public python2-elasticsearch
   (package-with-python2 python-elasticsearch))
+
+(define-public python-engineio
+  (package
+    (name "python-engineio")
+    (version "4.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-engineio" version))
+       (sha256
+        (base32
+         "0xqkjjxbxakz9fd7v94rkr2r5r9nrkap2c3gf3abbd0j6ld5qmxv"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-aiohttp" ,python-aiohttp)
+       ("python-requests" ,python-requests)
+       ("python-websocket-client" ,python-websocket-client)))
+    (arguments '(#:tests? #f))        ; Tests not included in release tarball.
+    (home-page "https://github.com/miguelgrinberg/python-engineio/")
+    (synopsis "Engine.IO server")
+    (description "Python implementation of the Engine.IO realtime client and
+server.")
+    (license license:expat)))
 
 (define-public python-flask-script
   (package
@@ -5375,6 +5476,27 @@ decorators and tools to describe your API and expose its documentation properly 
 Swagger.")
     (license license:bsd-3)))
 
+(define-public python-flask-socketio
+  (package
+    (name "python-flask-socketio")
+    (version "5.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Flask-SocketIO" version))
+       (sha256
+        (base32
+         "09r2gpj2nbn72v2zaf6xsvlazln77pgqzp2pg2021nja47sijhsw"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-flask" ,python-flask)
+       ("python-socketio" ,python-socketio)))
+    (arguments '(#:tests? #f))        ; Tests not included in release tarball.
+    (home-page "https://github.com/miguelgrinberg/Flask-SocketIO/")
+    (synopsis "Socket.IO integration for Flask applications")
+    (description "Socket.IO integration for Flask applications")
+    (license license:expat)))
+
 (define-public python-manuel
   (package
     (name "python-manuel")
@@ -5655,14 +5777,14 @@ as a Python package.")
 (define-public python-sanic
   (package
     (name "python-sanic")
-    (version "20.9.1")
+    (version "20.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sanic" version))
        (sha256
         (base32
-         "06p0lsxqbfbka2yaqlpp0bg5pf7ma44zi6kq7qbb6hhry48dp1w6"))))
+         "1c02gdp1j18xny9jd33fp0w57qqi7g66zwmaykv2dhcks96f5mxr"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -5671,9 +5793,8 @@ as a Python package.")
            ;; Allow using recent dependencies.
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "setup.py"
-               (("httpcore==0.3.0") "httpcore")
                (("pytest==5.2.1") "pytest")
-               (("multidict==5.0.0") "multidict")
+               (("multidict>=5.0,<6.0") "multidict")
                (("httpx==0\\.15\\.4") "httpx"))
              #t))
          (replace 'check
@@ -5699,17 +5820,44 @@ as a Python package.")
        ("python-pytest-benchmark" ,python-pytest-benchmark)
        ("python-pytest-sanic" ,python-pytest-sanic)
        ("python-pytest-sugar" ,python-pytest-sugar)
+       ("python-pytest-asyncio" ,python-pytest-asyncio)
        ("python-urllib3" ,python-urllib3)
        ("python-uvicorn" ,python-uvicorn)))
     (home-page
-     "https://github.com/huge-success/sanic/")
+     "https://github.com/sanic-org/sanic/")
     (synopsis
-     "Async Python 3.6+ web server/framework")
+     "Async Python web server/framework")
     (description
-     "Sanic is a Python 3.6+ web server and web framework
+     "Sanic is a Python web server and web framework
 that's written to go fast.  It allows the usage of the
 @code{async/await} syntax added in Python 3.5, which makes
 your code non-blocking and speedy.")
+    (license license:expat)))
+
+(define-public python-socketio
+  (package
+    (name "python-socketio")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-socketio" version))
+       (sha256
+        (base32
+         "14vhpxdn54lz54mhcqlgcks0ssbws9gd1y7ii16a2g3gpfdc531k"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-aiohttp" ,python-aiohttp)
+       ("python-bidict" ,python-bidict)
+       ("python-engineio" ,python-engineio)
+       ("python-requests" ,python-requests)
+       ("python-websocket-client" ,python-websocket-client)
+       ("python-websockets" ,python-websockets)))
+    (arguments '(#:tests? #f))        ; Tests not included in release tarball.
+    (home-page "https://github.com/miguelgrinberg/python-socketio/")
+    (synopsis "Python Socket.IO server")
+    (description
+     "Python implementation of the Socket.IO realtime client and server.")
     (license license:expat)))
 
 (define-public python-socks

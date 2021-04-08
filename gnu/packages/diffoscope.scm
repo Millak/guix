@@ -72,7 +72,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "166")
+    (version "172")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -81,7 +81,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vc4a38ii6b10af4c7cxfkvj4lk4ihx1xs4q5lshnkyg74gmm21b"))))
+                "1lglxn9h8s7kvmfd2rsyhrcv3y8a4bppbxr9nf2sgnlbdln1vwqq"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -121,13 +121,6 @@
                       ;; This requires /sbin to be in $PATH.
                       (delete-file "tests/test_tools.py")
                       #t))
-                  (add-before 'check 'skip-dex-test-with-missing-procyon
-                    (lambda _
-                      ;; This test actually requires procyon decompiler
-                      (substitute* "tests/comparators/test_dex.py"
-                        (("skip_unless_tools_exist.\"enjarify\", \"zipinfo\", \"javap\"")
-                         "skip_unless_tools_exist(\"enjarify\", \"zipinfo\", \"javap\", \"procyon\""))
-                     #t))
                   (add-after 'install 'install-man-page
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))

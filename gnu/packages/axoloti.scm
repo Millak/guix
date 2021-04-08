@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -39,14 +39,21 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml))
 
+;; XXX The patch does not apply to libusb 1.0.24.
+;; See https://github.com/axoloti/axoloti/issues/464
 (define libusb-for-axoloti
-  (package (inherit libusb)
-    (name "axoloti-libusb")
-    (version (package-version libusb))
+  (package
+    (inherit libusb)
+    (version "1.0.23")
     (source
      (origin
-       (inherit (package-source libusb))
-       (patches (list (search-patch "libusb-for-axoloti.patch")))))))
+      (method url-fetch)
+      (uri (string-append "https://github.com/libusb/libusb/"
+                          "releases/download/v" version
+                          "/libusb-" version ".tar.bz2"))
+      (sha256
+       (base32 "13dd2a9x290d1q8nb1lqiaf36grcvns5ripk5k2xm0lajmpc04fv"))
+      (patches (list (search-patch "libusb-for-axoloti.patch")))))))
 
 (define dfu-util-for-axoloti
   (package (inherit dfu-util)
@@ -140,18 +147,7 @@
          (delete 'configure)
          (replace 'build
            ;; Build Axoloti firmware with cross-compiler
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((toolchain (assoc-ref inputs "cross-toolchain"))
-                    (headers   (string-append
-                                toolchain
-                                "/arm-none-eabi/include:"
-                                toolchain
-                                "/arm-none-eabi/include/arm-none-eabi/armv7e-m")))
-               (setenv "CROSS_CPATH" headers)
-               (setenv "CROSS_CPLUS_INCLUDE_PATH" headers)
-               (setenv "CROSS_LIBRARY_PATH"
-                       (string-append toolchain
-                                      "/arm-none-eabi/lib")))
+           (lambda _
              (with-directory-excursion "platform_linux"
                (invoke "sh" "compile_firmware.sh"))))
          (replace 'install

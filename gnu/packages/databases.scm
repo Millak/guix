@@ -32,7 +32,7 @@
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
@@ -47,6 +47,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -191,52 +192,6 @@
     (description "4store is a RDF/SPARQL store written in C, supporting
 either single machines or networked clusters.")
     (license license:gpl3+)))
-
-(define-public go-gopkg.in-mgo.v2
-  (package
-    (name "go-gopkg.in-mgo.v2")
-    (version "2016.08.01")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/go-mgo/mgo")
-                    (commit (string-append "r" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0rwbi1z63w43b0z9srm8m7iz1fdwx7bq7n2mz862d6liiaqa59jd"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "gopkg.in/mgo.v2"
-       ;; TODO: The tests fail as MongoDB fails to start
-       ;; Error parsing command line: unrecognised option '--chunkSize'
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'reset-gzip-timestamps)
-         (add-before 'check 'start-mongodb
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "src/gopkg.in/mgo.v2"
-                 (invoke "make" "startdb")))
-             #t))
-         (add-after 'check 'stop'mongodb
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "src/gopkg.in/mgo.v2"
-                 (invoke "make" "stopdb")))
-             #t)))))
-    (native-inputs
-     `(("go-gopkg.in-check.v1" ,go-gopkg.in-check.v1)
-       ("mongodb" ,mongodb)
-       ("daemontools" ,daemontools)))
-    (synopsis "@code{mgo} offers a rich MongoDB driver for Go.")
-    (description
-     "@code{mgo} (pronounced as mango) is a MongoDB driver for the Go language.
-It implements a rich selection of features under a simple API following
-standard Go idioms.")
-    (home-page "https://labix.org/mgo")
-    (license license:bsd-2)))
 
 (define-public ephemeralpg
   (package
@@ -571,7 +526,8 @@ applications.")
        ("cyrus-sasl" ,cyrus-sasl)))
     (outputs '("out" "doc"))
     (arguments
-     '(#:phases
+     '(#:tests? #f                      ;many tests fail and use too much time
+       #:phases
        (modify-phases %standard-phases
          (add-before 'bootstrap 'fix-configure.ac
            ;; Move the AC_CONFIG_AUX_DIR macro use under AC_INIT, otherwise we
@@ -583,24 +539,9 @@ applications.")
              (delete-file "bootstrap.sh") ;not useful in the context of Guix
              (substitute* "configure.ac"
                (("^AC_CONFIG_AUX_DIR\\(\\[build-aux\\]\\).*") "")
-               (("(^AC_INIT.*)" anchor)
-                (string-append anchor "AC_CONFIG_AUX_DIR([build-aux])\n")))
-             #t))
-         (add-before 'bootstrap 'disable-failing-tests
-           ;; See: https://bugs.launchpad.net/libmemcached/+bug/1803926
-           (lambda _
-             ;; Mark some heavily failing test suites as expected to fail.
-             (substitute* "Makefile.am"
-               (("(XFAIL_TESTS =[^\n]*)" xfail_tests)
-                (string-append xfail_tests " tests/testudp"
-                               " tests/libmemcached-1.0/testapp"
-                               " tests/libmemcached-1.0/testsocket")))
-             ;; Disable two tests of the unittest test suite.
-             (substitute* "libtest/unittest.cc"
-               ((".*echo_fubar_BINARY \\},.*") "")
-               ((".*application_doesnotexist_BINARY \\},.*") ""))
-             #t))
-         (add-after 'disable-dns-tests 'build-and-install-html-doc
+               (("^AC_INIT.*" anchor)
+                (string-append anchor "AC_CONFIG_AUX_DIR([build-aux])\n")))))
+         (add-before 'build 'build-and-install-html-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((html (string-append (assoc-ref outputs "doc")
                                         "/share/doc/libmemcached/html/")))
@@ -608,9 +549,8 @@ applications.")
                ;; Cleanup useless files.
                (for-each delete-file-recursively
                          (map (lambda (x) (string-append html x))
-                              '("_sources" ".doctrees" ".buildinfo"))))
-             #t)))))
-    (home-page "https://libmemcached.org/")
+                              '("_sources" ".doctrees" ".buildinfo")))))))))
+    (home-page "https://libmemcached.org/libMemcached.html")
     (synopsis "C++ library for memcached")
     (description "libMemcached is a library to use memcached in C/C++
 applications.  It comes with a complete reference guide and documentation of
@@ -660,143 +600,6 @@ replacement for the code@{python-memcached} library.")
 (define-public python2-pylibmc
   (package-with-python2 python-pylibmc))
 
-(define-public mongodb
-  (package
-    (name "mongodb")
-    (version "3.4.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mongodb/mongo/archive/r"
-                                  version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0676lvkljj7a5hdhv78dbykqnqrj9lbn9799mi84b8vbnzsq961r"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (for-each (lambda (dir)
-                              (delete-file-recursively
-                                (string-append "src/third_party/" dir)))
-                            '("pcre-8.41" "scons-2.5.0" "snappy-1.1.3"
-                              "valgrind-3.11.0" "wiredtiger"
-                              "yaml-cpp-0.5.3" "zlib-1.2.8"))
-                  #t))
-              (patches
-               (list
-                (search-patch "mongodb-support-unknown-linux-distributions.patch")))))
-    (build-system scons-build-system)
-    (inputs
-     `(("openssl" ,openssl-1.0)
-       ("pcre" ,pcre)
-        ,@(match (%current-system)
-            ((or "x86_64-linux" "aarch64-linux" "mips64el-linux")
-             `(("wiredtiger" ,wiredtiger)))
-            (_ `()))
-       ("yaml-cpp" ,yaml-cpp)
-       ("zlib" ,zlib)
-       ("snappy" ,snappy)))
-    (native-inputs
-     `(("valgrind" ,valgrind)
-       ("perl" ,perl)
-       ("python" ,python-2)
-       ("python2-pymongo" ,python2-pymongo)
-       ("python2-pyyaml" ,python2-pyyaml)
-       ("tzdata" ,tzdata-for-tests)))
-    (arguments
-     `(#:scons ,scons-python2
-       #:phases
-       (let ((common-options
-              `(;; "--use-system-tcmalloc" TODO: Missing gperftools
-                "--use-system-pcre"
-                ;; wiredtiger is 64-bit only
-                ,,(if (any (cute string-prefix? <> (or (%current-target-system)
-                                                       (%current-system)))
-                           '("i686-linux" "armhf-linux"))
-                    ``"--wiredtiger=off"
-                    ``"--use-system-wiredtiger")
-                ;; TODO
-                ;; build/opt/mongo/db/fts/unicode/string.o failed: Error 1
-                ;; --use-system-boost
-                "--use-system-snappy"
-                "--use-system-zlib"
-                "--use-system-valgrind"
-                ;; "--use-system-stemmer" TODO: Missing relevant package
-                "--use-system-yaml"
-                "--disable-warnings-as-errors"
-                ,(format #f "--jobs=~a" (parallel-job-count))
-                "--ssl")))
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch
-             (lambda _
-               ;; Remove use of GNU extensions in parse_number_test.cpp, to
-               ;; allow compiling with GCC 7 or later
-               ;; https://jira.mongodb.org/browse/SERVER-28063
-               (substitute* "src/mongo/base/parse_number_test.cpp"
-                 (("0xabcab\\.defdefP-10")
-                  "687.16784283419838"))
-               #t))
-           (add-after 'unpack 'scons-propagate-environment
-             (lambda _
-               ;; Modify the SConstruct file to arrange for
-               ;; environment variables to be propagated.
-               (substitute* "SConstruct"
-                 (("^env = Environment\\(")
-                  "env = Environment(ENV=os.environ, "))
-               #t))
-           (add-after 'unpack 'create-version-file
-             (lambda _
-               (call-with-output-file "version.json"
-                 (lambda (port)
-                   (display ,(simple-format #f "{
-    \"version\": \"~A\"
-}" version) port)))
-               #t))
-           (replace 'build
-             (lambda _
-               (apply invoke `("scons"
-                               ,@common-options
-                               "mongod" "mongo" "mongos"))))
-           (replace 'check
-             (lambda* (#:key tests? inputs #:allow-other-keys)
-               (setenv "TZDIR"
-                       (string-append (assoc-ref inputs "tzdata")
-                                      "/share/zoneinfo"))
-               (when tests?
-                 ;; Note that with the tests, especially the unittests, the
-                 ;; build can take up to ~45GB of space, as many tests are
-                 ;; individual executable files, with some being hundreds of
-                 ;; megabytes in size.
-                 (apply invoke `("scons" ,@common-options "dbtest" "unittests"))
-                 (substitute* "build/unittests.txt"
-                   ;; TODO: Don't run the async_stream_test, as it hangs
-                   (("^build\\/opt\\/mongo\\/executor\\/async\\_stream\\_test\n$")
-                    "")
-                   ;; TODO: This test fails
-                   ;; Expected 0UL != disks.size() (0 != 0) @src/mongo/util/procparser_test.cpp:476
-                   (("^build\\/opt\\/mongo\\/util\\/procparser\\_test\n$")
-                    ""))
-                 (invoke "python" "buildscripts/resmoke.py"
-                         "--suites=dbtest,unittests"
-                         (format #f  "--jobs=~a" (parallel-job-count))))
-               #t))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-                 (install-file "mongod" bin)
-                 (install-file "mongos" bin)
-                 (install-file "mongo" bin))
-               #t))))))
-    (home-page "https://www.mongodb.org/")
-    (synopsis "High performance and high availability document database")
-    (description
-     "Mongo is a high-performance, high availability, schema-free
-document-oriented database.  A key goal of MongoDB is to bridge the gap
-between key/value stores (which are fast and highly scalable) and traditional
-RDBMS systems (which are deep in functionality).")
-    (license (list license:agpl3
-                   ;; Some parts are licensed under the Apache License
-                   license:asl2.0))))
-
 (define-public mycli
   (package
     (name "mycli")
@@ -832,7 +635,7 @@ auto-completion and syntax highlighting.")
 (define-public mysql
   (package
     (name "mysql")
-    (version "5.7.27")
+    (version "5.7.33")
     (source (origin
              (method url-fetch)
              (uri (list (string-append
@@ -844,7 +647,7 @@ auto-completion and syntax highlighting.")
                           name "-" version ".tar.gz")))
              (sha256
               (base32
-               "1fhv16zr46pxm1j8vb8x8mh3nwzglg01arz8gnazbmjqldr5idpq"))))
+               "1bb343mf7n0qg2qz497gxjsqprygrjz1q1pbz76hgqxnsy08sfxd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -931,6 +734,7 @@ Language.")
                             (append (find-files "extra/wolfssl")
                                     (find-files "zlib")))
                   #t))))
+    (replacement mariadb/fixed)
     (build-system cmake-build-system)
     (outputs '("out" "lib" "dev"))
     (arguments
@@ -1166,10 +970,17 @@ Language.")
 as a drop-in replacement of MySQL.")
     (license license:gpl2)))
 
+(define mariadb/fixed
+  (package
+    (inherit mariadb)
+    (source (origin
+              (inherit (package-source mariadb))
+              (patches (search-patches "mariadb-CVE-2021-27928.patch"))))))
+
 (define-public mariadb-connector-c
   (package
     (name "mariadb-connector-c")
-    (version "3.1.11")
+    (version "3.1.12")
     (source
      (origin
        (method url-fetch)
@@ -1177,8 +988,9 @@ as a drop-in replacement of MySQL.")
              "https://downloads.mariadb.org/f/connector-c-" version
              "/mariadb-connector-c-" version "-src.tar.gz"
              "/from/https%3A//mirrors.ukfast.co.uk/sites/mariadb/?serve"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03svzahdf7czjlm695c11r4bfd04qdqgx8r1vkpr1zlkjhwnqvry"))))
+        (base32 "0qzyahr8x9l1xz0l79wz3iahxz7648n1azc5yr7kx0dl113y2nig"))))
     (inputs
      `(("openssl" ,openssl)))
     (build-system cmake-build-system)
@@ -1246,38 +1058,38 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-13)
     (name "postgresql")
-    (version "11.6")
+    (version "11.11")
     (source (origin
               (inherit (package-source postgresql-13))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0w1iq488kpzfgfnlw4k32lz5by695mpnkq461jrgsr99z5zlz4j9"))))))
+                "0v0qk298nxmpzpgsxcsxma328hdkyzd7fwjs0zsn6zavl5zpnq20"))))))
 
 (define-public postgresql-10
   (package
     (inherit postgresql-11)
-    (version "10.13")
+    (version "10.16")
     (source (origin
               (inherit (package-source postgresql-11))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1qal0yp7a90yzya7hl56gsmw5fvacplrdhpn7h9gnbyr1i2iyw2d"))))))
+                "1cvv8qw0gkkczqhiwx6ns7w88dwkvdz4cvb2d4ff14363f5p2p53"))))))
 
 (define-public postgresql-9.6
   (package
     (inherit postgresql-10)
-    (version "9.6.16")
+    (version "9.6.21")
     (source (origin
               (inherit (package-source postgresql-10))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1rr2dgv4ams8r2lp13w85c77rkmzpb88fjlc28mvlw6zq2fblv2w"))))))
+                "0d0ngpadf1i7c0i2psaxcbmiwx8334ibcsn283n9fp4853pyl3wk"))))))
 
 (define-public postgresql postgresql-13)
 
@@ -2249,14 +2061,14 @@ similar to BerkeleyDB, LevelDB, etc.")
 (define-public redis
   (package
     (name "redis")
-    (version "6.0.10")
+    (version "6.0.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.redis.io/releases/redis-"
                                   version".tar.gz"))
               (sha256
                (base32
-                "1gc529nfh8frk4pynyjlnmzvwa0j9r5cmqwyd7537sywz6abifvr"))
+                "0prwqap452m581nyc3cz642d1z3x9nd81896hlqdm3z8238z49y9"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled jemalloc, as the package will use the libc one
@@ -2476,7 +2288,7 @@ database.")
 (define-public lmdb
   (package
     (name "lmdb")
-    (version "0.9.27")
+    (version "0.9.28")
     (source
      (origin
        (method git-fetch)
@@ -2485,7 +2297,7 @@ database.")
              (commit (string-append "LMDB_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09xqqm8yjsf1gv4gd4llal48sms76hfhxadx6rik1j2g5v3d3f1k"))))
+        (base32 "012a8bs49cswsnzw7k4piis5b6dn4by85w7a7mai9i04xcjyy9as"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -2625,17 +2437,28 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
 (define-public python-tortoise-orm
   (package
     (name "python-tortoise-orm")
-    (version "0.16.7")
+    (version "0.16.21")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tortoise-orm" version))
        (sha256
         (base32
-         "0wr7p4v0b16ypm9fcpwpl99kf491m6w3jkd13xcsgq13fy73fbqc"))))
+         "1dallk0q8q4v37klm0v3rppf2w8sjkqmypc1w8r9rraqxg1ylacp"))))
     (build-system python-build-system)
-    ;; Disable tests for now. They pull in a lot of dependencies.
-    (arguments `(#:tests? #f))
+    (arguments
+     `(#:tests? #f ; Pypi does not have tests and Git snapshot depends on
+                   ; poetry.
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-version-requirements
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("pypika>=0\\.44\\.0,<0\\.45\\.0") "pypika")
+                        (("aiosqlite>=0.16.0,<0.17.0") "aiosqlite")
+                        (("pytz>=2020\\.4,<2021\\.0") "pytz")
+                        ;; Not required, since ciso8601 is used.
+                        (("'iso8601>=0\\.1\\.13,<0\\.2\\.0',") ""))
+                      #t)))))
     (native-inputs
      `(("python-asynctest" ,python-asynctest)
        ("python-nose2" ,python-nose2)))
@@ -2643,6 +2466,7 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
      `(("python-aiosqlite" ,python-aiosqlite)
        ("python-pypika" ,python-pypika)
        ("python-ciso8601" ,python-ciso8601)
+       ("python-pytz" ,python-pytz)
        ("python-typing-extensions"
         ,python-typing-extensions)))
     (home-page
@@ -3220,15 +3044,25 @@ translate the complete SQLite API into Python.")
 (define-public python-aiosqlite
   (package
     (name "python-aiosqlite")
-    (version "0.12.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiosqlite" version))
        (sha256
         (base32
-         "1w8248yz85xyzvvh4jaxnc59fqil45aka6h82kn1rcih4rjxbnn1"))))
+         "0lgfpbkcd730hbgj3zlrbx2y8fzvdns2zj3s4r4l31n49g1arrph"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "python" "-m" "unittest" "aiosqlite.tests")
+                          (format #t "test suite not run~%"))
+                      #t)))))
+    (propagated-inputs
+     `(("python-typing-extensions" ,python-typing-extensions)))
     (native-inputs
      `(("python-aiounittest" ,python-aiounittest)))
     (home-page "https://github.com/jreese/aiosqlite")
@@ -3516,9 +3350,6 @@ processing them in the background with workers.  It is backed by Redis and it
 is designed to have a low barrier to entry.")
     (license license:bsd-2)))
 
-(define-public python2-rq
-  (package-with-python2 python-rq))
-
 (define-public python-rq-scheduler
   (package
     (name "python-rq-scheduler")
@@ -3631,7 +3462,7 @@ transforms idiomatic python function calls to well-formed SQL queries.")
 (define-public python-pypika
   (package
     (name "python-pypika")
-    (version "0.44.0")
+    (version "0.47.6")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -3640,7 +3471,7 @@ transforms idiomatic python function calls to well-formed SQL queries.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0mpddrw9z1pzcc40j3pzhd583hlgjx96aa8ak6m9zzhpm4bv3ard"))))
+               "001pg36sw9a36zdd1kccbymcxndphjcjbbrsy6ri7ng8h4dgz549"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-parameterized" ,python-parameterized)))
@@ -3651,127 +3482,12 @@ transforms idiomatic python function calls to well-formed SQL queries.")
 the SQL language using a syntax that reflects the resulting query.")
     (license license:asl2.0)))
 
-(define-public mongo-tools
-  (package
-    (name "mongo-tools")
-    (version "3.4.0")
-    (source
-     (origin (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/mongodb/mongo-tools")
-                   (commit (string-append "r" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1bcsz5cvj39a7nsxsfqmz9igrw33j6yli9kffigqyscs52amw7x1"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/mongodb/mongo-tools"
-       #:modules ((srfi srfi-1)
-                  (guix build go-build-system)
-                  (guix build utils))
-       #:install-source? #f
-       #:phases
-       (let ((all-tools
-              '("bsondump" "mongodump" "mongoexport" "mongofiles"
-                "mongoimport" "mongooplog" "mongorestore"
-                "mongostat" "mongotop")))
-         (modify-phases %standard-phases
-           (add-after 'unpack 'delete-bundled-source-code
-             (lambda _
-               (delete-file-recursively
-                "src/github.com/mongodb/mongo-tools/vendor")
-               #t))
-           (add-after 'delete-bundled-source-code 'patch-source
-             (lambda _
-               ;; Remove a redundant argument that causes compilation to fail.
-               (substitute*
-                   "src/github.com/mongodb/mongo-tools/mongorestore/filepath.go"
-                 (("skipping restore of system.profile collection\", db)")
-                  "skipping restore of system.profile collection\")"))
-               #t))
-           (replace 'build
-             (lambda _
-               (for-each (lambda (tool)
-                           (let ((command
-                                  `("go" "build"
-                                    ;; This is where the tests expect to find the
-                                    ;; executables
-                                    "-o" ,(string-append
-                                           "src/github.com/mongodb/mongo-tools/bin/"
-                                           tool)
-                                    "-v"
-                                    "-tags=\"ssl sasl\""
-                                    "-ldflags"
-                                    "-extldflags=-Wl,-z,now,-z,relro"
-                                    ,(string-append
-                                      "src/github.com/mongodb/mongo-tools/"
-                                      tool "/main/" tool ".go"))))
-                             (simple-format #t "build: running ~A\n"
-                                            (string-join command))
-                             (apply invoke command)))
-                         all-tools)
-               #t))
-           (replace 'check
-             (lambda _
-               (with-directory-excursion "src"
-                 (for-each (lambda (tool)
-                             (invoke
-                              "go" "test" "-v"
-                              (string-append "github.com/mongodb/mongo-tools/"
-                                             tool)))
-                           all-tools))
-               #t))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (for-each (lambda (tool)
-                           (install-file
-                            (string-append "src/github.com/mongodb/mongo-tools/bin/"
-                                           tool)
-                            (string-append (assoc-ref outputs "out")
-                                           "/bin")))
-                         all-tools)
-               #t))))))
-    (native-inputs
-     `(("go-github.com-howeyc-gopass" ,go-github.com-howeyc-gopass)
-       ("go-github.com-jessevdk-go-flags" ,go-github.com-jessevdk-go-flags)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-gopkg.in-mgo.v2" ,go-gopkg.in-mgo.v2)
-       ("go-gopkg.in-tomb.v2" ,go-gopkg.in-tomb.v2)
-       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)
-       ("go-github.com-smartystreets-goconvey" ,go-github.com-smartystreets-goconvey)))
-    (home-page "https://github.com/mongodb/mongo-tools")
-    (synopsis "Various tools for interacting with MongoDB and BSON")
-    (description
-     "This package includes a collection of tools related to MongoDB.
-@table @code
-@item bsondump
-Display BSON files in a human-readable format
-@item mongoimport
-Convert data from JSON, TSV or CSV and insert them into a collection
-@item mongoexport
-Write an existing collection to CSV or JSON format
-@item mongodump/mongorestore
-Dump MongoDB backups to disk in the BSON format
-@item mongorestore
-Read MongoDB backups in the BSON format, and restore them to a live database
-@item mongostat
-Monitor live MongoDB servers, replica sets, or sharded clusters
-@item mongofiles
-Read, write, delete, or update files in GridFS
-@item mongooplog
-Replay oplog entries between MongoDB servers
-@item mongotop
-Monitor read/write activity on a mongo server
-@end table")
-    (license license:asl2.0)))
-
 ;; There are many wrappers for this in other languages. When touching, please
 ;; be sure to ensure all dependencies continue to build.
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "0.17.1")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3781,7 +3497,7 @@ Monitor read/write activity on a mongo server
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02r6yx3yhywzikd3b0vfkjgddhfiriyx2vpm3jf5880wq59x798a"))))
+         "03ngddh3r1g6f9aja2jlfksgvgyzmxmfy4bxvzjrcv5fvl5x8ii0"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
@@ -3859,23 +3575,24 @@ Monitor read/write activity on a mongo server
              ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
              "-DARROW_BUILD_STATIC=OFF")))
     (inputs
-     `(("boost" ,boost)
+     `(("apache-thrift" ,apache-thrift "lib")
+       ("boost" ,boost)
        ("brotli" ,google-brotli)
+       ("bzip2" ,bzip2)
        ("double-conversion" ,double-conversion)
-       ("snappy" ,snappy)
        ("gflags" ,gflags)
        ("glog" ,glog)
-       ("apache-thrift" ,apache-thrift "lib")
-       ("protobuf" ,protobuf)
-       ("rapidjson" ,rapidjson)
-       ("zlib" ,zlib)
-       ("bzip2" ,bzip2)
-       ("lz4" ,lz4)
-       ("zstd" ,zstd "lib")
-       ("re2" ,re2)
        ("grpc" ,grpc)
+       ("lz4" ,lz4)
+       ("protobuf" ,protobuf)
        ("python-3" ,python)
-       ("python-numpy" ,python-numpy)))
+       ("python-numpy" ,python-numpy)
+       ("rapidjson" ,rapidjson)
+       ("re2" ,re2)
+       ("snappy" ,snappy)
+       ("utf8proc" ,utf8proc)
+       ("zlib" ,zlib)
+       ("zstd" ,zstd "lib")))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (outputs '("out" "lib" "include"))
@@ -4054,7 +3771,8 @@ The drivers officially supported by @code{libdbi} are:
                (base32
                 "14x2gjblkgpflv75wl144cyjp1sis5rbxnr9r2gj3yw16v2av0bp"))))
     (build-system cmake-build-system)
-    (inputs
+    (propagated-inputs
+     ;; Headers of soci has include-references to headers of these inputs.
      `(("firebird" ,firebird)
        ("postgresql" ,postgresql)
        ("sqlite" ,sqlite)

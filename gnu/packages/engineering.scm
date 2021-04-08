@@ -1,12 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2018, 2019, 2020 Arun Isaac <arunisaac@systemreboot.net>
@@ -21,6 +21,8 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2021 qblade <qblade@protonmail.com>
+;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -106,6 +108,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -125,7 +128,7 @@
 (define-public librecad
   (package
     (name "librecad")
-    (version "2.1.3")
+    (version "2.2.0-rc2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -134,7 +137,7 @@
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "01nvc1g3si05r5np1pzn62ah9w84p8nxa32wqrjh6gdi17jfvi3l"))))
+                "0a7fzhxkkn2s3hkgqrw3s3wyspzfla3c5lgbsjyqzvlnrp3anxnm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -1215,14 +1218,14 @@ use on a given system.")
 (define-public libredwg
   (package
     (name "libredwg")
-    (version "0.12")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/libredwg/libredwg-"
              version ".tar.xz"))
        (sha256
-        (base32 "0z5algzi3alq166885y0qyj2gnc7gc6vhnz7nw0kwc0d236p6md8"))))
+        (base32 "1vhm3r3zr8hh0jbvv6qdykh1x14r4c1arl1qj48i4cx2dd3366mk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-bindings")))
@@ -1245,7 +1248,7 @@ replacement for the OpenDWG libraries.")
 (define-public minicom
   (package
     (name "minicom")
-    (version "2.7.1")
+    (version "2.8")
     (source
      (origin
        (method git-fetch)
@@ -1253,13 +1256,16 @@ replacement for the OpenDWG libraries.")
              (url "https://salsa.debian.org/minicom-team/minicom.git")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0f36wv015zpz1x895qv0z6marlynzyh0d5mfkyd7lfyy2xd1i2w0"))
+        (base32 "0kfihxbh9qkjk9m1932ajyqx384c2aj3d9yaphh3i9i7y1shxlpx"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-lock-dir=/var/lock")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'make-git-checkout-writable
+           (lambda _
+             (for-each make-file-writable (find-files "."))))
          (replace 'bootstrap
            ;; autogen.sh needlessly hard-codes aclocal-1.14.
            (lambda _
@@ -1522,10 +1528,36 @@ bindings for Python, Java, OCaml and more.")
 (define-public python2-capstone
   (package-with-python2 python-capstone))
 
+
+(define-public python-esptool-3.0
+  (package
+    (name "python-esptool")
+    (version "3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "esptool" version))
+       (sha256
+        (base32
+         "0d69rd9h8wrzjvfrc66vmz4qd5hly2fpdcwj2bdrlb7dbwikv5c7"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f))                    ;XXX: require python-reedsolo
+    (propagated-inputs
+     `(("python-ecdsa" ,python-ecdsa)
+       ("python-pyaes" ,python-pyaes)
+       ("python-pyserial" ,python-pyserial)))
+    (home-page "https://github.com/espressif/esptool")
+    (synopsis "Bootloader utility for Espressif ESP8266 & ESP32 chips")
+    (description
+     "@code{esptool.py} is a Python-based utility to communicate with the ROM
+bootloader in Espressif ESP8266 & ESP32 series chips.")
+    (license license:gpl2+)))
+
 (define-public radare2
   (package
     (name "radare2")
-    (version "5.0.0")
+    (version "5.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1533,7 +1565,7 @@ bindings for Python, Java, OCaml and more.")
                     (commit version)))
               (sha256
                (base32
-                "0aa7c27kd0l55fy5qfvxqmakp4pz6240v3hn84095qmqkzcbs420"))
+                "0hv9x31iabasj12g8f04incr1rbcdkxi3xnqn3ggp8gl4h6pf2f3"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1987,256 +2019,6 @@ parallel computing platforms.  It also supports serial execution.")
     (license (list license:gpl2+
                    license:lgpl2.0+)))) ; freehdl's libraries
 
-(define-public qucs
-  ;; Qucs 0.0.19 segfaults when using glibc-2.26. Temporarily build from git.
-  ;; TODO: When qucs-0.0.20 is released, revert the commit that introduced this
-  ;; comment and update the package.
-  (let ((commit "b4f27d9222568066cd59e4c387c51a35056c99d8")
-        (revision "0"))
-    (package
-      (name "qucs")
-      (version (git-version "0.0.19" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Qucs/qucs")
-                      (commit commit)))
-                (sha256
-                 (base32 "10bclay9xhkffmsh4j4l28kj1qpxx0pnxja5vx6305cllnq4r3gb"))
-                (file-name (string-append name "-" version "-checkout"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'bootstrap 'patch-bootstrap
-             (lambda _
-               (for-each patch-shebang
-                         '("bootstrap"
-                           "qucs/bootstrap"
-                           "qucs-doc/bootstrap"
-                           "qucs-core/bootstrap"))
-               #t))
-           (add-before 'configure 'patch-configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "qucs/configure"
-                 (("\\$QTDIR") (assoc-ref inputs "qt4")))
-               #t))
-           (add-after 'patch-configure 'patch-scripts
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (substitute* '("qucs/qucs/qucsdigi"
-                              "qucs/qucs/qucsdigilib"
-                              "qucs/qucs/qucsveri")
-                 (("\\$BINDIR")
-                  (string-append (assoc-ref outputs "out") "/bin"))
-                 (("freehdl-config")
-                  (string-append (assoc-ref inputs "freehdl") "/bin/freehdl-config"))
-                 (("freehdl-v2cc")
-                  (string-append (assoc-ref inputs "freehdl") "/bin/freehdl-v2cc"))
-                 (("cp ")
-                  (string-append (assoc-ref inputs "coreutils") "/bin/cp "))
-                 (("glibtool")
-                  (string-append (assoc-ref inputs "libtool") "/bin/libtool"))
-                 (("sed")
-                  (string-append (assoc-ref inputs "sed") "/bin/sed"))
-                 (("iverilog")
-                  (string-append (assoc-ref inputs "iverilog") "/bin/iverilog"))
-                 (("vvp")
-                  (string-append (assoc-ref inputs "iverilog") "/bin/vvp")))
-               #t))
-           (add-before 'check 'pre-check
-             (lambda _
-               ;; The test suite requires a running X server.
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1")
-               #t))
-           (add-after 'install 'make-wrapper
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 ;; 'qucs' directly invokes gcc, hence this wrapping.
-                 (wrap-program (string-append out "/bin/qucs")
-                   `("CPLUS_INCLUDE_PATH" ":" prefix
-                     (,(string-append (assoc-ref inputs "gcc-toolchain")
-                                      "/include")))
-                   `("PATH" ":" prefix
-                     (,(string-append (assoc-ref inputs "gcc-toolchain")
-                                      "/bin")))
-                   `("LIBRARY_PATH" ":" prefix
-                     (,(string-append (assoc-ref inputs "gcc-toolchain")
-                                      "/lib")))
-                   `("ADMSXMLBINDIR" ":" prefix
-                     (,(string-append (assoc-ref inputs "adms") "/bin")))
-                   `("ASCOBINDIR" ":" prefix
-                     (,(string-append (assoc-ref inputs "asco") "/bin")))
-                   `("QUCS_OCTAVE" ":" prefix
-                     (,(string-append (assoc-ref inputs "octave") "/bin/octave")))))
-               #t)))
-         #:parallel-build? #f ; race condition
-         #:configure-flags '("--disable-doc"))) ; we need octave-epstk
-      (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("bison" ,bison)
-         ("flex" ,flex)
-         ("gperf" ,gperf)
-         ("libtool-native" ,libtool)
-         ("pkg-config" ,pkg-config)
-         ("python" ,python-2) ; for tests
-         ("matplotlib" ,python2-matplotlib) ; for tests
-         ("numpy" ,python2-numpy) ; for tests
-         ("xorg-server" ,xorg-server-for-tests))) ; for tests
-      (inputs
-       `(("adms" ,adms)
-         ("asco" ,asco)
-         ("coreutils" ,coreutils)
-         ("freehdl" ,freehdl)
-         ("gcc-toolchain" ,gcc-toolchain)
-         ("iverilog" ,iverilog)
-         ("libtool" ,libtool)
-         ("octave" ,octave-cli)
-         ("qt4" ,qt-4)
-         ("sed" ,sed)))
-      (home-page "http://qucs.sourceforge.net/")
-      (synopsis "Circuit simulator with graphical user interface")
-      (description
-       "Qucs is a circuit simulator with graphical user interface.  The software
-aims to support all kinds of circuit simulation types---e.g. DC, AC,
-S-parameter, transient, noise and harmonic balance analysis.  Pure digital
-simulations are also supported.")
-      (license license:gpl2+))))
-
-(define-public qucs-s
-  (package
-    (name "qucs-s")
-    (version "0.0.21")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/ra3xdh/qucs_s/archive/"
-                                  version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "12m1jwhb9qwvb141qzyskbxnw3wn1x22d02z4b4862p7xvccl5h7"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-scripts
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("qucs/qucsdigi"
-                            "qucs/qucsdigilib"
-                            "qucs/qucsveri")
-               (("\\$BINDIR")
-                (string-append (assoc-ref inputs "qucs") "/bin"))
-               (("freehdl-config")
-                (string-append (assoc-ref inputs "freehdl") "/bin/freehdl-config"))
-               (("freehdl-v2cc")
-                (string-append (assoc-ref inputs "freehdl") "/bin/freehdl-v2cc"))
-               (("cp ")
-                (string-append (assoc-ref inputs "coreutils") "/bin/cp "))
-               (("glibtool")
-                (string-append (assoc-ref inputs "libtool") "/bin/libtool"))
-               (("sed")
-                (string-append (assoc-ref inputs "sed") "/bin/sed"))
-               (("iverilog")
-                (string-append (assoc-ref inputs "iverilog") "/bin/iverilog"))
-               (("vvp")
-                (string-append (assoc-ref inputs "iverilog") "/bin/vvp")))
-             #t))
-         (add-after 'patch-scripts 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "qucs/main.cpp"
-               (((string-append "QucsSettings\\.Qucsator = QucsSettings\\.BinDir "
-                                "\\+ \"qucsator\" \\+ executableSuffix"))
-                (string-append "}{ QucsSettings.Qucsator = \""
-                               (assoc-ref inputs "qucs") "/bin/qucsator\""))
-               (((string-append "QucsSettings\\.XyceExecutable = "
-                                "\"/usr/local/Xyce-Release-6.8.0-OPENSOURCE/bin/Xyce"))
-                (string-append "}{ QucsSettings.XyceExecutable = \""
-                               (assoc-ref inputs "xyce-serial") "/bin/Xyce"))
-               (((string-append "else QucsSettings\\.XyceParExecutable = "
-                                "\"mpirun -np %p /usr/local"
-                                "/Xyce-Release-6.8.0-OPENMPI-OPENSOURCE/bin/Xyce"))
-                (string-append "QucsSettings.XyceParExecutable = \""
-                               (assoc-ref inputs "mpi") "/bin/mpirun -np %p "
-                               (assoc-ref inputs "xyce-parallel") "/bin/Xyce"))
-               (("else QucsSettings\\.NgspiceExecutable = \"ngspice\"")
-                (string-append "QucsSettings.NgspiceExecutable = " "\""
-                               (assoc-ref inputs "ngspice") "/bin/ngspice\"")))
-             (substitute* "qucs/extsimkernels/ngspice.cpp"
-               (("share/qucs/xspice_cmlib") "share/qucs-s/xspice_cmlib"))
-             (substitute* "qucs/qucs_actions.cpp"
-               (("qucstrans")
-                (string-append (assoc-ref inputs "qucs") "/bin/qucstrans"))
-               (("qucsattenuator")
-                (string-append (assoc-ref inputs "qucs") "/bin/qucsattenuator"))
-               (("qucsrescodes")
-                (string-append (assoc-ref inputs "qucs") "/bin/qucsrescodes")))
-             #t))
-         (add-after 'install 'install-scripts
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (for-each
-              (lambda (script)
-                (let ((file (string-append "../qucs_s-" ,version
-                                           "/qucs/" script))
-                      (out (assoc-ref outputs "out")))
-                  (install-file file (string-append out "/bin"))
-                  (chmod (string-append out "/bin/" script) #o555)))
-              '("qucsdigi" "qucsdigilib" "qucsveri"))
-             #t))
-         (add-after 'install-scripts 'make-wrapper
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (file (string-append out "/bin/qucs-s"))
-                    (qucs (assoc-ref inputs "qucs"))
-                    (qucsator (string-append qucs "/bin/qucsator")))
-               (wrap-program file
-                 `("CPLUS_INCLUDE_PATH" ":" prefix
-                   (,(string-append (assoc-ref inputs "gcc-toolchain")
-                                    "/include")))
-                 `("PATH" ":" prefix
-                   (,(string-append (assoc-ref inputs "gcc-toolchain")
-                                    "/bin")))
-                 `("LIBRARY_PATH" ":" prefix
-                   (,(string-append (assoc-ref inputs "gcc-toolchain")
-                                    "/lib")))
-                 `("QUCSATOR" ":" prefix (,qucsator))
-                 `("QUCSCONV" ":" prefix (,(string-append qucsator "/bin/qucsconv")))
-                 `("ADMSXMLBINDIR" ":" prefix (,(string-append (assoc-ref inputs "adms")
-                                                               "/bin")))
-                 `("ASCOBINDIR" ":" prefix (,(string-append (assoc-ref inputs "asco")
-                                                            "/bin")))
-                 `("QUCS_OCTAVE" ":" prefix (,(string-append (assoc-ref inputs "octave")
-                                                             "/bin/octave"))))
-               (symlink qucsator (string-append out "/bin/qucsator"))
-               #t))))))
-    (native-inputs
-     `(("libtool-native" ,libtool)))
-    (inputs
-     `(("adms" ,adms)
-       ("asco" ,asco)
-       ("coreutils" ,coreutils)
-       ("freehdl" ,freehdl)
-       ("gcc-toolchain" ,gcc-toolchain)
-       ("iverilog" ,iverilog)
-       ("libtool" ,libtool)
-       ("mpi" ,openmpi)
-       ("ngspice" ,ngspice)
-       ("octave" ,octave-cli)
-       ("qt4" ,qt-4)
-       ("qucs" ,qucs)
-       ("sed" ,sed)
-       ("xyce-serial" ,xyce-serial)
-       ("xyce-parallel" ,xyce-parallel)))
-    (home-page "https://ra3xdh.github.io/")
-    (synopsis "Circuit simulator with graphical user interface")
-    (description
-     "Qucs-S is a spin-off of the Qucs cross-platform circuit simulator.
-The S letter indicates SPICE.  The purpose of the Qucs-S subproject is to use
-free SPICE circuit simulation kernels with the Qucs GUI.  It provides the
-simulator backends @code{Qucsator}, @code{ngspice} and @code{Xyce}.")
-    (license license:gpl2+)))
-
 (define-public librepcb
   (package
     (name "librepcb")
@@ -2365,6 +2147,21 @@ analysis and AC analysis.  The engine is designed to do true mixed-mode
 simulation.")
     (license license:gpl3+)))
 
+(define-public radare2-for-cutter
+  (package
+    (inherit radare2)
+    (name "radare2")
+    (version "5.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/radareorg/radare2")
+                    (commit version)))
+              (sha256
+               (base32
+                "0aa7c27kd0l55fy5qfvxqmakp4pz6240v3hn84095qmqkzcbs420"))
+              (file-name (git-file-name name version))))))
+
 (define-public cutter
   (package
     (name "cutter")
@@ -2400,7 +2197,9 @@ simulation.")
      `(("qtbase" ,qtbase)
        ("qtsvg" ,qtsvg)
        ("openssl" ,openssl)
-       ("radare2" ,radare2)))
+       ;; Depends on radare2 4.5.1 officially, builds and works fine with
+       ;; radare2 5.0.0 but fails to build with radare2 5.1.1.
+       ("radare2" ,radare2-for-cutter)))
     (home-page "https://github.com/radareorg/cutter")
     (synopsis "GUI for radare2 reverse engineering framework")
     (description "Cutter is a GUI for radare2 reverse engineering framework.
@@ -2413,7 +2212,7 @@ engineers for reverse engineers.")
 (define-public lib3mf
   (package
     (name "lib3mf")
-    (version "1.8.1")
+    (version "2.1.1")
     (source
      (origin
       (method git-fetch)
@@ -2422,20 +2221,21 @@ engineers for reverse engineers.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "11wpk6n9ga2p57h1dcrp37w77mii0r7r6mlrgmykf7rvii1rzgqd"))))
+        "1417xlxc1y5jnipixhbjfrrjgkrprbbraj8647sff9051m3hpxc3"))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("googletest-source" ,(package-source googletest))))
-    (inputs
-     `(("libuuid" ,util-linux "lib")))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-googletest
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "googletest-source")
-                               "UnitTests/googletest")
-             #t)))))
+     `(#:configure-flags (list "-DUSE_INCLUDED_ZLIB=0"
+                               "-DUSE_INCLUDED_LIBZIP=0"
+                               "-DUSE_INCLUDED_GTEST=0"
+                               "-DUSE_INCLUDED_SSL=0")))
+    (native-inputs
+     `(("googletest" ,googletest)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("libuuid" ,util-linux "lib")
+       ("libzip" ,libzip)
+       ("libressl" ,libressl)
+       ("zlib" ,zlib)))
     (synopsis "Implementation of the 3D Manufacturing Format (3MF) file standard")
     (description
      "Lib3MF is a C++ implementation of the 3D Manufacturing Format (3MF) file
@@ -2448,7 +2248,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
 (define-public openscad
   (package
     (name "openscad")
-    (version "2019.05")
+    (version "2021.01")
     (source
      (origin
        (method url-fetch)
@@ -2456,9 +2256,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
                            ".src.tar.gz"))
        (sha256
         (base32
-         "0nbgk5q5pgnw53la0kccdcpz2f4xf6d6076rkn0q08z57hkc85ha"))
-       (patches (search-patches
-                 "openscad-parser-boost-1.72.patch"))))
+         "0n83szr88h8snccjrslr96mgw3f65x3sq726n6x5vxp5wybw4f6r"))))
     (build-system cmake-build-system)
     (inputs
      `(("boost" ,boost)
@@ -2501,7 +2299,28 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
              (with-directory-excursion "tests"
                (invoke "cmake" ".")
                (invoke "make")
-               (invoke "ctest"))
+               (invoke "ctest" "--exclude-regex"
+                       (string-join
+                        (list
+                         "astdumptest_allexpressions"
+                         "echotest_function-literal-compare"
+                         "echotest_function-literal-tests"
+                         "echotest_allexpressions"
+                         "lazyunion-*"
+                         "pdfexporttest_centered"
+                         "pdfexporttest_simple-pdf"
+
+                         ;; Broken due since cgal@5.2 +
+                         ;; https://github.com/CGAL/cgal/pull/5371 (security)
+                         ;; FIXME: Investigate or wait for future releases to
+                         ;; fix it.
+                         ;; Unsure if wrong test-suite or wrong security
+                         ;; patch.
+                         "cgalpngtest_nef3_broken"
+                         "opencsgtest_nef3_broken"
+                         "csgpngtest_nef3_broken"
+                         "throwntogethertest_nef3_broken")
+                        "|")))
              ;; strip python test files since lib dir ends up in out/share
              (for-each delete-file
                        (find-files "libraries/MCAD" ".*\\.py"))
@@ -2900,66 +2719,45 @@ GUI.")
     (license license:gpl3+)))
 
 (define-public poke
-  ;; Upstream has yet to tag any releases.
-  (let ((commit "d33317a46e3b7c48130a471a48cbfea1abab70d8")
-        (revision "0"))
-    (package
-      (name "poke")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "git://git.savannah.gnu.org/poke.git")
-               (commit commit)
-               (recursive? #t)))
-         (sha256
-          (base32 "1dd0r1x123bqi78lrsk58rvg9c9wka0kywdyzn7g3i4hkh54xb7d"))
-         (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      ;; The GUI, which we elide, requires tcl and tk.
-      (native-inputs `(("autoconf" ,autoconf)
-                       ("automake" ,automake)
-                       ;; Requires bison 3.6+ but we currently only have 3.5.
-                       ;; Bison 3.6 will be available in the next core update.
-                       ("bison-3.6" ,bison-3.6)
-                       ("clisp" ,clisp)
-                       ("dejagnu" ,dejagnu)
-                       ("flex" ,flex)
-                       ("gettext" ,gettext-minimal)
-                       ("help2man" ,help2man)
-                       ("libtool" ,libtool)
-                       ("perl" ,perl)
-                       ("pkg-config" ,pkg-config)
-                       ("python-2" ,python-2)
-                       ("python-3" ,python-3)
-                       ("texinfo" ,texinfo)))
-      ;; FIXME: Enable NBD support by adding `libnbd' (currently unpackaged).
-      ;; FIXME: A "hyperlinks-capable" `libtexststyle' needed for the hserver.
-      (inputs `(("json-c" ,json-c)
-                ("libgc" ,libgc)
-                ("readline" ,readline)))
-      (arguments
-       ;; To build the GUI, add the `--enable-gui' configure flag.
-       ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
-       `(#:configure-flags '("--enable-mi")
-         #:phases (modify-phases %standard-phases
-                    ;; This is a non-trivial bootstrap that needs many of the
-                    ;; native-inputs and thus must run after `patch-shebangs'.
-                    (delete 'bootstrap)
-                    (add-after 'patch-source-shebangs 'bootstrap
-                      (lambda _
-                        (invoke "./bootstrap" "--no-git"
-                                "--no-bootstrap-sync"
-                                "--gnulib-srcdir=gnulib")
-                        #t)))))
-      (home-page "http://jemarch.net/poke.html")
-      (synopsis "Interactive, extensible editor for binary data")
-      (description "GNU poke is an interactive, extensible editor for binary
+  (package
+    (name "poke")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/poke/poke-" version
+                                  ".tar.gz"))
+              (sha256
+               (base32
+                "1mkaq19a8d951n9l6d3f8rwq45a7gkr05snb285idd21qxixys6d"))))
+    (build-system gnu-build-system)
+    ;; The GUI, which we elide, requires tcl and tk.
+    (native-inputs `(;; Requires bison 3.6+ but we currently only have 3.5.
+                     ;; Bison 3.6 will be available in the next core update.
+                     ("bison-3.6" ,bison-3.6)
+                     ("clisp" ,clisp)
+                     ("dejagnu" ,dejagnu)
+                     ("flex" ,flex)
+                     ("libtool" ,libtool)
+                     ("perl" ,perl)
+                     ("pkg-config" ,pkg-config)
+                     ("python-2" ,python-2)
+                     ("python-3" ,python-3)))
+    ;; FIXME: Enable NBD support by adding `libnbd' (currently unpackaged).
+    (inputs `(("json-c" ,json-c)
+              ("libgc" ,libgc)
+              ("readline" ,readline)
+              ("libtextstyle" ,libtextstyle)))
+    (arguments
+     ;; To build the GUI, add the `--enable-gui' configure flag.
+     ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
+     `(#:configure-flags '("--enable-mi")))
+    (home-page "http://jemarch.net/poke.html")
+    (synopsis "Interactive, extensible editor for binary data")
+    (description "GNU poke is an interactive, extensible editor for binary
   data.  Not limited to editing basic entities such as bits and bytes, it
   provides a full-fledged procedural, interactive programming language designed
   to describe data structures and to operate on them.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public pcb2gcode
     (package
@@ -2996,3 +2794,39 @@ and drilling of PCBs.  It takes Gerber files as input and outputs G-code files
 for the milling of PCBs.  It also includes an autoleveller for the automatic
 dynamic calibration of the milling depth.")
      (license license:gpl3+)))
+
+(define-public syscall-intercept
+  ;; Upstream provides no tag. Also, last version update is 4 years old.
+  (let ((commit "304404581c57d43478438d175099d20260bae74e")
+        (revision "0"))
+    (package
+      (name "syscall-intercept")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/pmem/syscall_intercept/")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17sw78xp5wjzv25adpbq3khl8fi0avj7bgpi57q3jnvl3c68xy5z"))))
+      (native-inputs
+       `(("perl" ,perl)
+         ("pkg-config" ,pkg-config)))
+      (inputs
+       `(("capstone" ,capstone)))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:build-type "Release"
+         ;; FIXME: "syscall_format_logging" test fails.
+         #:tests? #f))
+      (home-page "https://github.com/pmem/syscall_intercept")
+      (synopsis "System call intercepting library")
+      (description
+       "The system call intercepting library provides a low-level interface
+for hooking Linux system calls in user space.  This is achieved by
+hot-patching the machine code of the standard C library in the memory of
+a process.")
+      (license license:bsd-2))))

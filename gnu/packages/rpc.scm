@@ -3,6 +3,8 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -207,7 +209,7 @@ with the HTTP/2-based RPC framework gRPC.")
 (define-public apache-thrift
   (package
     (name "apache-thrift")
-    (version "0.13.0")
+    (version "0.14.1")
     (source
      (origin
        (method git-fetch)
@@ -216,8 +218,7 @@ with the HTTP/2-based RPC framework gRPC.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "17ckl7p7s3ga33yrjisilsimp80ansqxl54wvpkv0j7vx2zvc13y"))))
+        (base32 "1mj3c5jhjbg2sfkx9k9jqg88h1c5rswr9b606s02ny9ydf3akcny"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f

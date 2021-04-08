@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -16,6 +16,9 @@
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
+;;; Copyright © 2020 Milkey Mouse <milkeymouse@meme.institute>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,13 +39,16 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix modules)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages code)
@@ -57,12 +63,14 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages web))
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages xml))
 
 (define-public range-v3
   (package
@@ -89,7 +97,7 @@
     (description "Range-v3 is an extension of the Standard Template Library that
 makes its iterators and algorithms more powerful by making them composable.
 Unlike other range-like solutions which, seek to do away with iterators, in
-range-v3 ranges are an abstration layer on top of iterators.")
+range-v3 ranges are an abstraction layer on top of iterators.")
     (home-page "https://github.com/ericniebler/range-v3/")
     (license
      (list
@@ -480,7 +488,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
 (define-public ccls
   (package
     (name "ccls")
-    (version "0.20201025")
+    (version "0.20201219")
     (source
      (origin
        (method git-fetch)
@@ -488,8 +496,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
              (url "https://github.com/MaskRay/ccls")
              (commit version)))
        (sha256
-        (base32
-         "13v00q1bz8g0ckw1sv0zyicbc44irc00vhwxdv3vvwlvylm7s21p"))
+        (base32 "0nkg92rgb1x6scpiwdamfrd1ag87j7ajxyn5qi861r916m5mh9m8"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -512,7 +519,7 @@ maintained anymore.")
 (define-public gperftools
   (package
     (name "gperftools")
-    (version "2.8")
+    (version "2.8.1")
     (source
      (origin
        (method git-fetch)
@@ -520,9 +527,13 @@ maintained anymore.")
              (url "https://github.com/gperftools/gperftools")
              (commit (string-append "gperftools-" version))))
        (sha256
-        (base32 "1rnc53kaxlljgbpsff906vdsry9jl9gcvcnmxgkprwzxq1wipyd0"))
+        (base32 "19bj2vlsbfwq7m826v2ccqg47kd7cb5vcz1yw2x0v5qzhaxbakk1"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
+    (arguments
+      ;; The tests are flaky when run in parallel. For more info:
+      ;; https://bugs.gnu.org/46562
+     '(#:parallel-tests? #f))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -672,7 +683,7 @@ point and then, after each tween step, plugging back the result.")
 (define-public abseil-cpp
   (package
     (name "abseil-cpp")
-    (version "20200225.2")
+    (version "20200923.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -681,11 +692,17 @@ point and then, after each tween step, plugging back the result.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dwxg54pv6ihphbia0iw65r64whd7v8nm4wwhcz219642cgpv54y"))))
+                "1p4djhm1f011ficbjjxx3n8428p8481p20j4glpaawnpsi362hkl"))
+              ;; Remove after next googletest release and update.
+              (patches
+               (search-patches
+                "abseil-cpp-fix-gtest.patch"
+                "abseil-cpp-fix-strerror_test.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
                                "-DABSL_RUN_TESTS=ON"
+                               "-DABSL_USE_EXTERNAL_GOOGLETEST=ON"
                                ;; Needed, else we get errors like:
                                ;;
                                ;; ld: CMakeFiles/absl_periodic_sampler_test.dir/internal/periodic_sampler_test.cc.o:
@@ -807,7 +824,7 @@ of C++14 components that complements @code{std} and Boost.")
 (define-public aws-sdk-cpp
   (package
     (name "aws-sdk-cpp")
-    (version "1.8.102")
+    (version "1.8.159")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -816,13 +833,13 @@ of C++14 components that complements @code{std} and Boost.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w8x2vakg5ngjyyg08n4g3dqy8wqnz0k3gkrlqrh460s2pvdivba"))))
+                "0jpfv9x82nq7hcix9in7qgrc8009dwpg6gr96hlgmcvqrqckd2r9"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests are run during the build phase.
        #:tests? #f
        #:configure-flags
-       '("-DBUILD_SHARED_LIBS=OFF"
+       '("-DBUILD_SHARED_LIBS=ON"
          "-DBUILD_DEPS=OFF")))
     (propagated-inputs
      `(("aws-c-common" ,aws-c-common)
@@ -899,3 +916,298 @@ provides a number of utilities to make coding with expected cleaner.")
     (description "Magic Enum offers static reflection of enums, with
 conversions to and from strings, iteration and related functionality.")
     (license license:expat)))
+
+(define-public cli11
+  (package
+    (name "cli11")
+    (version "1.9.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/CLIUtils/CLI11")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0hbch0vk8irgmiaxnfqlqys65v1770rxxdfn3d23m2vqyjh0j9l6"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin (delete-file-recursively "extern")
+                 #t))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       '("-DCLI11_SINGLE_FILE=OFF"
+         "-DCLI11_BUILD_EXAMPLES=OFF")
+       #:imported-modules ,%cmake-build-system-modules
+       #:modules ((guix build cmake-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'no-vendor-gtest
+           (lambda _
+             (substitute* "tests/CMakeLists.txt"
+               ;; We provide our own googletest, so this is not really a
+               ;; problem.
+               (("message\\(FATAL_ERROR \"You have requested")
+                "message(TRACE \"You have requested"))
+             (substitute* "cmake/AddGoogletest.cmake"
+               (("^add_subdirectory\\(.*googletest.*$") "find_package(GTest REQUIRED)")
+               (("^set_target_properties\\(gtest gtest_main gmock gmock_main") "")
+               (("^    PROPERTIES FOLDER \"Extern\"\\)") ""))
+             #t)))))
+    (native-inputs
+     `(("doxygen" ,doxygen)
+       ("googletest" ,googletest)))
+    (synopsis "Command line parser for C++11")
+    (description
+     "CLI11 is a command line parser for C++11 and beyond that provides a rich
+feature set with a simple and intuitive interface.")
+    (home-page "https://cliutils.github.io/CLI11/book/")
+    (license license:bsd-3)))
+
+(define-public caf
+  (package
+    (name "caf")
+    (version "0.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/actor-framework/actor-framework")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1c3spd6vm1h9qhlk5c4fdwi6nbqx5vwz2zvv6qp0rj1hx6xpq3cx"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags
+       '("-DCAF_ENABLE_EXAMPLES=OFF")))
+    (inputs
+     `(("openssl" ,openssl)))
+    (synopsis "C++ implementation of the actor model")
+    (description "The C++ Actor Framework (CAF) offers a high-level C++17
+programming environment using the actor model for concurrent, distributed
+computation.")
+    (home-page "https://www.actor-framework.org/")
+    (license license:bsd-3)))
+
+(define-public pcg-cpp
+  (let ((commit "5b5cac8d61339e810c5dbb4692d868a1d7ca1b2d")
+        (revision "1"))
+    (package
+      (name "pcg-cpp")
+      (version (git-version "0.98.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/imneme/pcg-cpp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1s9dcd4iydlc1xj9m6f7c52nlyx99klk043sk7arqy6kp7gdaa33"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:test-target "test"
+         #:phases
+          (modify-phases %standard-phases
+            (delete 'configure))
+         #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
+      (synopsis "C++11 header only library for random number generation")
+      (description "The Permuted Congruential Generator (PCG) extends the
+Linear Congruential Generator (LCG) with a permutation function to increase
+output randomness while retaining speed, simplicity, and conciseness.")
+      (home-page "https://www.pcg-random.org")
+      (license (list license:expat license:asl2.0))))) ; dual licensed
+
+(define-public libcutl
+  (package
+    (name "libcutl")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://www.codesynthesis.com/download/libcutl/"
+                    (version-major+minor version)
+                    "/libcutl-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "070j2x02m4gm1fn7gnymrkbdxflgzxwl7m96aryv8wp3f3366l8j"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove bundled sources.
+                  (with-directory-excursion "cutl/details"
+                    (for-each delete-file-recursively
+                              ;; FIXME: Boost_RegEx isn't being detected.
+                              (list
+                               ;;"boost"
+                               "expat")))))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list "--disable-static"
+                               ;;"--with-external-boost"
+                               "--with-external-expat")))
+    (inputs
+     `(;;("boost ,boost)
+       ("expat" ,expat)))
+    (home-page "https://www.codesynthesis.com/projects/libcutl/")
+    (synopsis "C++ utility library with generic and independent components")
+    (description "libcutl is a C++ utility library.  It contains a collection
+of generic and independent components such as meta-programming tests, smart
+pointers, containers, compiler building blocks, etc.")
+    (license (list license:expat        ;everything except...
+                   license:boost1.0)))) ;...the files under cutl/details/boost
+
+(define-public libxsd-frontend
+  (package
+    (name "libxsd-frontend")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.codesynthesis.com/download/"
+                           "libxsd-frontend/" (version-major+minor version)
+                           "/libxsd-frontend-" version ".tar.bz2"))
+       (sha256
+        (base32 "1nmzchsvwvn66jpmcx18anzyl1a3l309x1ld4zllrg37ijc31fim"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:imported-modules ((guix build copy-build-system)
+                           ,@%gnu-build-system-modules)
+       #:modules (((guix build copy-build-system) #:prefix copy:)
+                  (guix build gnu-build-system)
+                  (guix build utils))
+       #:make-flags (list (string-append "--include-dir="
+                                         (assoc-ref %build-inputs "build")
+                                         "/include/"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda args
+             (apply (assoc-ref copy:%standard-phases 'install)
+                    #:install-plan
+                    '(("xsd-frontend" "include/xsd-frontend"
+                       #:include-regexp ("\\.?xx$"))
+                      ("xsd-frontend" "lib"
+                       #:include-regexp ("\\.so$")))
+                    args))))))
+    (native-inputs
+     `(("build" ,build)))
+    (inputs
+     `(("libcutl" ,libcutl)
+       ("libxerces-c" ,xerces-c)))
+    (synopsis "XSD Front-end")
+    (description "@code{libxsd-frontend} is a compiler frontend for the W3C
+XML Schema definition language.  It includes a parser, semantic graph types
+and a traversal mechanism.")
+    (home-page "https://www.codesynthesis.com/projects/libxsd-frontend/")
+    (license license:gpl2+)))
+
+(define-public cli
+  (package
+    (name "cli")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.codesynthesis.com/download/"
+                           "cli/" (version-major+minor version)
+                           "/cli-" version ".tar.bz2"))
+       (sha256
+        (base32 "0bg0nsai2q4h3mldpnj0jz4iy4svs0bcfvmq0v0c9cdyknny606g"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:make-flags (list (string-append "--include-dir="
+                                         (assoc-ref %build-inputs "build")
+                                         "/include")
+                          (string-append "install_prefix="
+                                         (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda _
+             (substitute* (find-files "." "\\.make$")
+               (("build-0\\.3")
+                (string-append (assoc-ref %build-inputs "build")
+                               "/include/build-0.3")))
+             ;; Add the namespace prefix, to avoid errors such as "error:
+             ;; ‘iterate_and_dispatch’ was not declared in this scope".
+             (substitute* (find-files "." "\\.?xx$")
+               (("add \\(typeid \\(type\\), \\*this\\);" all)
+                (string-append "traverser_map<B>::" all))
+               (("iterate_and_dispatch \\(s\\.names_begin.*;" all)
+                (string-append "edge_dispatcher::" all)))))
+         (delete 'configure))))
+    (native-inputs
+     `(("build" ,build)))
+    (inputs
+     `(("libcutl" ,libcutl)))
+    (synopsis "C++ Command Line Interface (CLI) definition language")
+    (description "@code{cli} is a domain-specific language (DSL) for defining
+command line interfaces of C++ programs.  It allows you to describe the
+options that your program supports, their types, default values, and
+documentation.")
+    (home-page "https://codesynthesis.com/projects/cli/")
+    (license license:expat)))
+
+(define-public xsd
+  (package
+    (name "xsd")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.codesynthesis.com/download/"
+                           "xsd/" (version-major+minor version)
+                           "/xsd-" version ".tar.bz2"))
+       (sha256
+        (base32 "1hi9ppxd34np8ydv1h0vgc2qpdmgcd1cdzgk30aidv670xjg91fx"))))
+    (build-system gnu-build-system)
+    (outputs '("out" "doc"))            ;3.8 MiB of doc and examples
+    (arguments
+     `(#:test-target "test"
+       #:make-flags (list (string-append "--include-dir="
+                                         (assoc-ref %build-inputs "build")
+                                         "/include/")
+                          (string-append "install_prefix="
+                                         (assoc-ref %outputs "out")))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'move-doc
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out"))
+                            (doc (assoc-ref outputs "doc")))
+                        (mkdir-p (string-append doc "/share/doc"))
+                        (rename-file (string-append out "/share/doc/xsd")
+                                     (string-append doc "/share/doc/xsd-"
+                                                    ,version)))))
+                  (delete 'configure))))
+    (native-inputs
+     `(("build" ,build)
+       ("cli" ,cli)))
+    (inputs
+     `(("libcutl" ,libcutl)
+       ("libnsl" ,libnsl)
+       ("libxsd-frontend" ,libxsd-frontend)))
+    (propagated-inputs
+     ;; The code XSD generates requires the following library at run time;
+     ;; propagate it for convenience.
+     `(("xerces-c" ,xerces-c)))
+    (synopsis "XML Data Binding for C++")
+    (description "CodeSynthesis XSD (also known as libxsd or xsdcxx) is an XML
+Schema to C++ data binding compiler.  Provided with an XML instance
+specification (XML Schema), it generates C++ classes that represent the given
+vocabulary as well as XML parsing and serialization code.  The data stored in
+XML can then be accessed using types and functions that semantically
+correspond to an application domain rather than dealing with the intricacies
+of reading and writing XML.")
+    (home-page "https://codesynthesis.com/projects/xsd/")
+    ;; Exceptions are made to allow using the generated source files as well
+    ;; as the libxsd library in free software projects whose license is
+    ;; incompatible with the GPL v2.  Refer to the file named FLOSSE for the
+    ;; details.
+    (license license:gpl2+)))

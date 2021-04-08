@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system python))
 
@@ -249,7 +251,7 @@ by no means limited to these applications.)  This package provides XML DTDs.")
     (inputs
      `(("docbook-dsssl-doc" ,docbook-dsssl-doc)))
     (native-inputs
-     `(("bzip2", bzip2)
+     `(("bzip2" ,bzip2)
        ("tar" ,tar)))
     (home-page "https://docbook.org/")
     (synopsis "DSSSL style sheets for DocBook")
@@ -287,7 +289,7 @@ by no means limited to these applications.)  This package provides XML DTDs.")
                    "--no-same-owner" "-C" docdir
                    (string-append "docbook-dsssl-" ,version "/doc"))))))
     (native-inputs
-     `(("bzip2", bzip2)
+     `(("bzip2" ,bzip2)
        ("tar" ,tar)))
     (home-page "https://docbook.org/")
     (synopsis "DocBook DSSSL style sheets documentation")
@@ -460,3 +462,14 @@ process.  MathML 2.0 markups are supported too.  It started as a clone of
 DB2LaTeX.")
     ;; lib/contrib/which is under an X11 license
     (license gpl2+)))
+
+;; This is a variant of the 'dblatex' package that is not updated often.  It
+;; is intended to be used as a native-input at build-time only, e.g. by
+;; 'gtk-doc' for generating package documentation.  This allows the main
+;; 'dblatex' and 'imagemagick' packages to be freely updated on the 'master'
+;; branch without triggering an excessive number of rebuilds.
+(define-public dblatex/stable
+  (hidden-package
+   (package/inherit dblatex
+     (inputs (alist-replace "imagemagick" `(,imagemagick/stable)
+                            (package-inputs dblatex))))))

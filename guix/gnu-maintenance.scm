@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
@@ -28,6 +28,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (rnrs io ports)
   #:use-module (system foreign)
   #:use-module (guix http-client)
@@ -37,7 +38,8 @@
   #:use-module (guix records)
   #:use-module (guix upstream)
   #:use-module (guix packages)
-  #:use-module (zlib)
+  #:autoload   (zlib) (call-with-gzip-input-port)
+  #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
   #:export (gnu-package-name
             gnu-package-mundane-name
             gnu-package-copyright-holder
@@ -64,8 +66,10 @@
             %gnu-updater
             %gnu-ftp-updater
             %savannah-updater
+            %sourceforge-updater
             %xorg-updater
-            %kernel.org-updater))
+            %kernel.org-updater
+            %generic-html-updater))
 
 ;;; Commentary:
 ;;;
@@ -238,7 +242,8 @@ network to check in GNU's database."
   ;; The .zip extensions is notably used for freefont-ttf.
   ;; The "-src" pattern is for "TeXmacs-1.0.7.9-src.tar.gz".
   ;; The "-gnu[0-9]" pattern is for "icecat-38.4.0-gnu1.tar.bz2".
-  (make-regexp "^([^.]+)-([0-9]|[^-])+(-(src|gnu[0-9]))?\\.(tar\\.|zip$)"))
+  ;; Accept underscores as in "PKG_1.2.tar.gz" for some non-GNU packages.
+  (make-regexp "^([^.]+)[-_]([0-9]|[^-])+(-(src|[sS]ource|gnu[0-9]))?\\.(tar\\.|zip$)"))
 
 (define %alpha-tarball-rx
   (make-regexp "^.*-.*[0-9](-|~)?(alpha|beta|rc|RC|cvs|svn|git)-?[0-9\\.]*\\.tar\\."))
@@ -246,7 +251,9 @@ network to check in GNU's database."
 (define (release-file? project file)
   "Return #f if FILE is not a release tarball of PROJECT, otherwise return
 true."
-  (and (not (member (file-extension file) '("sig" "sign" "asc")))
+  (and (not (member (file-extension file)
+                    '("sig" "sign" "asc"
+                      "md5sum" "sha1sum" "sha256sum")))
        (and=> (regexp-exec %tarball-rx file)
               (lambda (match)
                 ;; Filter out unrelated files, like `guile-www-1.1.1'.
@@ -322,15 +329,10 @@ name/directory pairs."
                              #:key
                              (server "ftp.gnu.org")
                              (directory (string-append "/gnu/" project))
-                             (keep-file? (const #t))
-                             (file->signature (cut string-append <> ".sig"))
-                             (ftp-open ftp-open) (ftp-close ftp-close))
+                             (file->signature (cut string-append <> ".sig")))
   "Return an <upstream-source> for the latest release of PROJECT on SERVER
 under DIRECTORY, or #f.  Use FTP-OPEN and FTP-CLOSE to open (resp. close) FTP
 connections; this can be useful to reuse connections.
-
-KEEP-FILE? is a predicate to decide whether to enter a directory and to
-consider a given file (source tarball) as a valid candidate based on its name.
 
 FILE->SIGNATURE must be a procedure; it is passed a source file URL and must
 return the corresponding signature URL, or #f it signatures are unavailable."
@@ -345,7 +347,7 @@ return the corresponding signature URL, or #f it signatures are unavailable."
     ;; Return #t for patch directory names such as 'bash-4.2-patches'.
     (cut string-suffix? "patches" <>))
 
-  (define conn (ftp-open server))
+  (define conn (ftp-open server #:timeout 5))
 
   (define (file->url directory file)
     (string-append "ftp://" server directory "/" file))
@@ -389,7 +391,6 @@ return the corresponding signature URL, or #f it signatures are unavailable."
            (releases (filter-map (match-lambda
                                    ((file 'file . _)
                                     (and (release-file? project file)
-                                         (keep-file? file)
                                          (file->source directory file)))
                                    (_ #f))
                                  entries)))
@@ -447,18 +448,6 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
 ;;; Latest HTTP release.
 ;;;
 
-(define (html->sxml port)
-  "Read HTML from PORT and return the corresponding SXML tree."
-  (let ((str (get-string-all port)))
-    (catch #t
-      (lambda ()
-        ;; XXX: This is the poor developer's HTML-to-XML converter.  It's good
-        ;; enough for directory listings at <https://kernel.org/pub> but if
-        ;; needed we could resort to (htmlprag) from Guile-Lib.
-        (call-with-input-string (string-replace-substring str "<hr>" "<hr />")
-          xml->sxml))
-      (const '(html)))))                          ;parse error
-
 (define (html-links sxml)
   "Return the list of links found in SXML, the SXML tree of an HTML page."
   (let loop ((sxml sxml)
@@ -479,33 +468,47 @@ hosted on ftp.gnu.org, or not under that name (this is the case for
                               #:key
                               (base-url "https://kernel.org/pub")
                               (directory (string-append "/" package))
-                              (file->signature (cut string-append <> ".sig")))
+                              file->signature)
   "Return an <upstream-source> for the latest release of PACKAGE (a string) on
 SERVER under DIRECTORY, or #f.  BASE-URL should be the URL of an HTML page,
 typically a directory listing as found on 'https://kernel.org/pub'.
 
-FILE->SIGNATURE must be a procedure; it is passed a source file URL and must
-return the corresponding signature URL, or #f it signatures are unavailable."
-  (let* ((uri  (string->uri (string-append base-url directory "/")))
-         (port (http-fetch/cached uri #:ttl 3600))
-         (sxml (html->sxml port)))
+When FILE->SIGNATURE is omitted or #f, guess the detached signature file name,
+if any.  Otherwise, FILE->SIGNATURE must be a procedure; it is passed a source
+file URL and must return the corresponding signature URL, or #f it signatures
+are unavailable."
+  (let* ((uri   (string->uri (if (string-null? directory)
+                                 base-url
+                                 (string-append base-url directory "/"))))
+         (port  (http-fetch/cached uri #:ttl 3600))
+         (sxml  (html->sxml port))
+         (links (delete-duplicates (html-links sxml))))
+    (define (file->signature/guess url)
+      (let ((base (basename url)))
+        (any (lambda (link)
+               (any (lambda (extension)
+                      (and (string=? (string-append base extension)
+                                     (basename link))
+                           (string-append url extension)))
+                    '(".asc" ".sig" ".sign")))
+             links)))
+
     (define (url->release url)
-      (and (string=? url (basename url))          ;relative reference?
-           (release-file? package url)
-           (let-values (((name version)
-                         (package-name->name+version
-                          (tarball-sans-extension url)
-                          #\-)))
-             (upstream-source
-              (package name)
-              (version version)
-              (urls (list (string-append base-url directory "/" url)))
-              (signature-urls
-               (list (file->signature
-                      (string-append base-url directory "/" url))))))))
+      (let* ((base (basename url))
+             (url  (if (string=? base url)
+                       (string-append base-url directory "/" url)
+                       url)))
+        (and (release-file? package base)
+             (let ((version (tarball->version base)))
+               (upstream-source
+                (package package)
+                (version version)
+                (urls (list url))
+                (signature-urls
+                 (list ((or file->signature file->signature/guess) url))))))))
 
     (define candidates
-      (filter-map url->release (html-links sxml)))
+      (filter-map url->release links))
 
     (close-port port)
     (match candidates
@@ -593,7 +596,7 @@ list available from %GNU-FILE-LIST-URI over HTTP(S)."
 (define %package-name-rx
   ;; Regexp for a package name, e.g., "foo-X.Y".  Since TeXmacs uses
   ;; "TeXmacs-X.Y-src", the `-src' suffix is allowed.
-  (make-regexp "^(.*)-(([0-9]|\\.)+)(-src)?"))
+  (make-regexp "^(.*)[-_](([0-9]|\\.)+)(-src|\\.src|\\.orig)?"))
 
 (define (gnu-package-name->name+version name+version)
   "Return the package name and version number extracted from NAME+VERSION."
@@ -608,11 +611,12 @@ list available from %GNU-FILE-LIST-URI over HTTP(S)."
 (define (pure-gnu-package? package)
   "Return true if PACKAGE is a non-Emacs and non-GNOME GNU package.  This
 excludes AucTeX, for instance, whose releases are now uploaded to
-elpa.gnu.org, and all the GNOME packages; EMMS is included though, because its
-releases are on gnu.org."
+elpa.gnu.org, GNU Radio, which has releases at www.gnuradio.org, and all the
+GNOME packages; EMMS is included though, because its releases are on gnu.org."
   (and (or (not (string-prefix? "emacs-" (package-name package)))
            (gnu-hosted? package))
        (not (gnome-package? package))
+       (not (string-prefix? "gnuradio" (package-name package)))
        (gnu-package? package)))
 
 (define gnu-hosted?
@@ -621,7 +625,7 @@ releases are on gnu.org."
 (define (url-prefix-rewrite old new)
   "Return a one-argument procedure that rewrites URL prefix OLD to NEW."
   (lambda (url)
-    (if (string-prefix? old url)
+    (if (and url (string-prefix? old url))
         (string-append new (string-drop url (string-length old)))
         url)))
 
@@ -633,9 +637,6 @@ releases are on gnu.org."
    (signature-urls (and=> (upstream-source-signature-urls source)
                           (lambda (urls)
                             (map rewrite-url urls))))))
-
-(define savannah-package?
-  (url-prefix-predicate "mirror://savannah/"))
 
 (define %savannah-base
   ;; One of the Savannah mirrors listed at
@@ -653,13 +654,56 @@ releases are on gnu.org."
          (directory (dirname (uri-path uri)))
          (rewrite   (url-prefix-rewrite %savannah-base
                                         "mirror://savannah")))
-    ;; Note: We use the default 'file->signature', which adds ".sig", but not
-    ;; all projects on Savannah follow that convention: some use ".asc" and
-    ;; perhaps some lack signatures altogether.
+    ;; Note: We use the default 'file->signature', which adds ".sig", ".asc",
+    ;; or whichever detached signature naming scheme PACKAGE uses.
     (and=> (latest-html-release package
                                 #:base-url %savannah-base
                                 #:directory directory)
            (cut adjusted-upstream-source <> rewrite))))
+
+(define (latest-sourceforge-release package)
+  "Return the latest release of PACKAGE."
+  (define (uri-append uri extension)
+    ;; Return URI with EXTENSION appended.
+    (build-uri (uri-scheme uri)
+               #:host (uri-host uri)
+               #:path (string-append (uri-path uri) extension)))
+
+  (define (valid-uri? uri)
+    ;; Return true if URI is reachable.
+    (false-if-exception
+     (case (response-code (http-head uri))
+       ((200 302) #t)
+       (else #f))))
+
+  (let* ((name     (package-upstream-name package))
+         (base     (string-append "https://sourceforge.net/projects/"
+                                  name "/files"))
+         (url      (string-append base "/latest/download"))
+         (response (false-if-exception (http-head url))))
+    (and response
+         (= 302 (response-code response))
+         (response-location response)
+         (match (string-tokenize (uri-path (response-location response))
+                                 (char-set-complement (char-set #\/)))
+           ((_ components ...)
+            (let* ((path (string-join components "/"))
+                   (url  (string-append "mirror://sourceforge/" path)))
+              (and (release-file? name (basename path))
+
+                   ;; Take the heavy-handed approach of probing 3 additional
+                   ;; URLs.  XXX: Would be nicer if this could be avoided.
+                   (let* ((loc (response-location response))
+                          (sig (any (lambda (extension)
+                                      (let ((uri (uri-append loc extension)))
+                                        (and (valid-uri? uri)
+                                             (string-append url extension))))
+                                    '(".asc" ".sig" ".sign"))))
+                     (upstream-source
+                      (package name)
+                      (version (tarball->version (basename path)))
+                      (urls (list url))
+                      (signature-urls (and sig (list sig))))))))))))
 
 (define (latest-xorg-release package)
   "Return the latest release of PACKAGE."
@@ -695,6 +739,60 @@ releases are on gnu.org."
                                 #:file->signature file->signature)
            (cut adjusted-upstream-source <> rewrite))))
 
+(define html-updatable-package?
+  ;; Return true if the given package may be handled by the generic HTML
+  ;; updater.
+  (let ((hosting-sites '("github.com" "github.io" "gitlab.com"
+                         "notabug.org" "sr.ht"
+                         "gforge.inria.fr" "gitlab.inria.fr"
+                         "ftp.gnu.org" "download.savannah.gnu.org"
+                         "pypi.org" "crates.io" "rubygems.org"
+                         "bioconductor.org")))
+    (define http-url?
+      (url-predicate (lambda (url)
+                       (match (string->uri url)
+                         (#f #f)
+                         (uri
+                          (let ((scheme (uri-scheme uri))
+                                (host   (uri-host uri)))
+                            (and (memq scheme '(http https))
+                                 (not (member host hosting-sites)))))))))
+
+    (lambda (package)
+      (or (assoc-ref (package-properties package) 'release-monitoring-url)
+          (http-url? package)))))
+
+(define (latest-html-updatable-release package)
+  "Return the latest release of PACKAGE.  Do that by crawling the HTML page of
+the directory containing its source tarball."
+  (let* ((uri       (string->uri
+                     (match (origin-uri (package-source package))
+                       ((? string? url) url)
+                       ((url _ ...) url))))
+         (custom    (assoc-ref (package-properties package)
+                               'release-monitoring-url))
+         (base      (or custom
+                        (string-append (symbol->string (uri-scheme uri))
+                                       "://" (uri-host uri))))
+         (directory (if custom
+                        ""
+                        (dirname (uri-path uri))))
+         (package   (package-upstream-name package)))
+    (catch #t
+      (lambda ()
+        (guard (c ((http-get-error? c) #f))
+          (latest-html-release package
+                               #:base-url base
+                               #:directory directory)))
+      (lambda (key . args)
+        ;; Return false and move on upon connection failures and bogus HTTP
+        ;; servers.
+        (unless (memq key '(gnutls-error tls-certificate-error
+                                         system-error
+                                         bad-header bad-header-component))
+          (apply throw key args))
+        #f))))
+
 (define %gnu-updater
   ;; This is for everything at ftp.gnu.org.
   (upstream-updater
@@ -721,6 +819,13 @@ releases are on gnu.org."
    (pred (url-prefix-predicate "mirror://savannah/"))
    (latest latest-savannah-release)))
 
+(define %sourceforge-updater
+  (upstream-updater
+   (name 'sourceforge)
+   (description "Updater for packages hosted on sourceforge.net")
+   (pred (url-prefix-predicate "mirror://sourceforge/"))
+   (latest latest-sourceforge-release)))
+
 (define %xorg-updater
   (upstream-updater
    (name 'xorg)
@@ -734,5 +839,12 @@ releases are on gnu.org."
    (description "Updater for packages hosted on kernel.org")
    (pred (url-prefix-predicate "mirror://kernel.org/"))
    (latest latest-kernel.org-release)))
+
+(define %generic-html-updater
+  (upstream-updater
+   (name 'generic-html)
+   (description "Updater that crawls HTML pages.")
+   (pred html-updatable-package?)
+   (latest latest-html-updatable-release)))
 
 ;;; gnu-maintenance.scm ends here

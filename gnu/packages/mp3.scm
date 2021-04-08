@@ -1,11 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014, 2015, 2017, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2015, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2019, 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;;
@@ -208,7 +208,7 @@ a highly stable and efficient implementation.")
 (define-public taglib
   (package
     (name "taglib")
-    (version "1.12-beta-1")
+    (version "1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -217,7 +217,7 @@ a highly stable and efficient implementation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mp6w2ikniw8w6d5wr0h20j0ijg8jw7s9dli5a8k9znpznvxpym4"))))
+                "0q7dkn5rh9v6b0scmcp2qmjv3iransafmpn6jvgid0yq75m2nqd2"))))
     (build-system cmake-build-system)
     (arguments
       '(#:tests? #f ; Tests are not ran with BUILD_SHARED_LIBS on.
@@ -372,7 +372,7 @@ This package contains the binary.")
 (define-public mpg123
   (package
     (name "mpg123")
-    (version "1.26.4")
+    (version "1.26.5")
     (source
      (origin
        (method url-fetch)
@@ -382,7 +382,7 @@ This package contains the binary.")
                    "https://www.mpg123.org/download/mpg123-"
                    version ".tar.bz2")))
        (sha256
-        (base32 "0m34hjssgslcsns8lj1n7f32iyiw547qgba9j2r6d9pp1ma92688"))))
+        (base32 "01pgcqjbbi2r7nlg5118bkivl0gkv0hq0cw7v4vpxgimv7h9fajh"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--with-default-audio=pulse")))
     (native-inputs
@@ -405,10 +405,13 @@ command-line tool as well as a C library, libmpg123.")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://sourceforge/mpg321/mpg321/"
-                                 version "/mpg321-" version ".tar.gz"))
+                                 version "/mpg321_" version ".orig.tar.gz"))
+             (file-name (string-append "mpg321-" version ".tar.gz"))
              (sha256
               (base32
-               "0ki8mh76bbmdh77qsiw682dvi8y468yhbdabqwg05igmwc1wqvq5"))))
+               "0ki8mh76bbmdh77qsiw682dvi8y468yhbdabqwg05igmwc1wqvq5"))
+             (patches
+              (search-patches "mpg321-CVE-2019-14247.patch"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-alsa")))
     (inputs

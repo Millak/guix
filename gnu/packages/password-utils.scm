@@ -30,6 +30,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,6 +60,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages authentication)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -178,37 +180,6 @@ algorithms AES or Twofish.")
     ;; the combined work falls under the GPLv3.
     (license license:gpl3)))
 
-(define-public keepassx
-  (package
-    (name "keepassx")
-    (version "2.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://www.keepassx.org/releases/" version
-                           "/keepassx-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1ia7cqx9ias38mnffsl7da7g1f66bcbjsi23k49sln0c6spb9zr3"))))
-    (build-system cmake-build-system)
-    (inputs
-     `(("libgcrypt" ,libgcrypt)
-       ("libxi" ,libxi)
-       ("libxtst" ,libxtst)
-       ("qt" ,qt-4)))
-    (native-inputs
-     `(("zlib" ,zlib)))
-    (home-page "https://www.keepassx.org")
-    (synopsis "Password manager")
-    (description "KeePassX is a password manager or safe which helps you to
-manage your passwords in a secure way.  You can put all your passwords in one
-database, which is locked with one master key or a key-file which can be stored
-on an external storage device.  The databases are encrypted using the
-algorithms AES or Twofish.")
-    ;; Non functional parts use various licences.
-    (license license:gpl3)
-    (properties `((superseded . ,keepassxc)))))
-
 (define-public pwsafe
   (package
     (name "pwsafe")
@@ -255,6 +226,51 @@ Schneier.  It offers a simple UI to manage passwords for different services.
 There are other programs that support the file format on different
 platforms.")
     (license license:artistic2.0)))
+
+(define-public pwsafe-cli
+  (let ((commit "c49a0541b66647ad04d19ddb351d264054c67759")
+        (revision "0"))
+    (package
+      (name "pwsafe-cli")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nsd20463/pwsafe")
+               (commit commit)))
+         (sha256
+          (base32
+           "0ak09r1l7k57m6pdx468hhzvz0szmaq42vyr575fvsjc8rbrp8qq"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       ;; FIXME: skip failing test suite (requires write access to /tmp),
+       ;; patching path does not help somehow.
+       `(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'bootstrap
+             (lambda _
+               (invoke "aclocal")
+               (invoke "autoheader")
+               (invoke "automake" "--add-missing")
+               (invoke "autoconf")
+               #t)))))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)))
+      (inputs
+       `(("libx11" ,libx11)
+         ("libxmu" ,libxmu)
+         ("libxt" ,libxt)
+         ("openssl" ,openssl)))
+      (home-page "https://github.com/nsd20463/pwsafe")
+      (synopsis "CLI password manager")
+      (description
+       "@command{pwsafe} is a command line tool compatible with
+Counterpane's Passwordsafe.")
+      (license license:gpl2+))))
 
 (define-public shroud
   (package
@@ -470,93 +486,100 @@ any X11 window.")
     (license license:gpl3+)))
 
 (define-public password-store
-  (package
-    (name "password-store")
-    (version "1.7.3")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://git.zx2c4.com/password-store/snapshot/"
-                              name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1x53k5dn3cdmvy8m4fqdld4hji5n676ksl0ql4armkmsds26av1b"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (add-before 'install 'patch-system-extension-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (extension-dir (string-append out "/lib/password-store/extensions")))
-               (substitute* "src/password-store.sh"
-                 (("^SYSTEM_EXTENSION_DIR=.*$")
-                  ;; lead with whitespace to prevent 'make install' from
-                  ;; overwriting it again
-                  (string-append " SYSTEM_EXTENSION_DIR=\""
-                                 "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
-                                 extension-dir
-                                 "}\"\n"))))
-             #t))
-         (add-before 'install 'patch-passmenu-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "contrib/dmenu/passmenu"
-               (("dmenu") (string-append (assoc-ref inputs "dmenu")
-                                         "/bin/dmenu"))
-               (("xdotool") (string-append (assoc-ref inputs "xdotool")
-                                           "/bin/xdotool")))
-             #t))
-         (add-after 'install 'install-passmenu
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "contrib/dmenu/passmenu" bin)
-               #t)))
-         (add-after 'install 'wrap-path
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (path (map (lambda (pkg)
-                                (string-append (assoc-ref inputs pkg) "/bin"))
-                              '("coreutils" "getopt" "git" "gnupg" "qrencode"
-                                "sed" "tree" "which" "xclip"))))
-               (wrap-program (string-append out "/bin/pass")
-                 `("PATH" ":" prefix (,(string-join path ":"))))
-               #t))))
-       #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output)
-                          "WITH_ALLCOMP=yes"
-                          (string-append "BASHCOMPDIR="
-                                         %output "/etc/bash_completion.d"))
-       ;; Parallel tests may cause a race condition leading to a
-       ;; timeout in some circumstances.
-       #:parallel-tests? #f
-       #:test-target "test"))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "PASSWORD_STORE_SYSTEM_EXTENSION_DIR")
-            (separator #f)                        ;single entry
-            (files '("lib/password-store/extensions")))))
-    (inputs
-     `(("dmenu" ,dmenu)
-       ("getopt" ,util-linux)
-       ("git" ,git)
-       ("gnupg" ,gnupg)
-       ("qrencode" ,qrencode)
-       ("sed" ,sed)
-       ("tree" ,tree)
-       ("which" ,which)
-       ("xclip" ,xclip)
-       ("xdotool" ,xdotool)))
-    (home-page "https://www.passwordstore.org/")
-    (synopsis "Encrypted password manager")
-    (description "Password-store is a password manager which uses GnuPG to
+  ;; The 1.7.3 release does not include support for wl-clipboard, which was
+  ;; added in b0b784b1a57c0b06936e6f5d6560712b4b810cd3. Instead, use the
+  ;; latest commit on master at the time of writing.
+  (let ((commit "918992c19231b33b3d4a3288a7288a620e608cb4")
+        (revision "1"))
+    (package
+      (name "password-store")
+      (version (git-version "1.7.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://git.zx2c4.com/password-store")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0ni62f4pq96g0i0q66bch1dl9k4zqwhg7xaf746k3gbbqxcdh3vi"))
+                (file-name (git-file-name name version)) ))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (delete 'build)
+           (add-before 'install 'patch-system-extension-dir
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (extension-dir (string-append out "/lib/password-store/extensions")))
+                 (substitute* "src/password-store.sh"
+                   (("^SYSTEM_EXTENSION_DIR=.*$")
+                    ;; lead with whitespace to prevent 'make install' from
+                    ;; overwriting it again
+                    (string-append " SYSTEM_EXTENSION_DIR=\""
+                                   "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
+                                   extension-dir
+                                   "}\"\n"))))
+               #t))
+           (add-before 'install 'patch-passmenu-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "contrib/dmenu/passmenu"
+                 (("dmenu") (string-append (assoc-ref inputs "dmenu")
+                                           "/bin/dmenu"))
+                 (("xdotool") (string-append (assoc-ref inputs "xdotool")
+                                             "/bin/xdotool")))
+               #t))
+           (add-after 'install 'install-passmenu
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin")))
+                 (install-file "contrib/dmenu/passmenu" bin)
+                 #t)))
+           (add-after 'install 'wrap-path
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out"))
+                     (path (map (lambda (pkg)
+                                  (string-append (assoc-ref inputs pkg) "/bin"))
+                                '("coreutils" "getopt" "git" "gnupg" "qrencode"
+                                  "sed" "tree" "which" "wl-clipboard" "xclip"))))
+                 (wrap-program (string-append out "/bin/pass")
+                   `("PATH" ":" prefix (,(string-join path ":"))))
+                 #t))))
+         #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output)
+                            "WITH_ALLCOMP=yes"
+                            (string-append "BASHCOMPDIR="
+                                           %output "/etc/bash_completion.d"))
+         ;; Parallel tests may cause a race condition leading to a
+         ;; timeout in some circumstances.
+         #:parallel-tests? #f
+         #:test-target "test"))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "PASSWORD_STORE_SYSTEM_EXTENSION_DIR")
+              (separator #f)                        ;single entry
+              (files '("lib/password-store/extensions")))))
+      (inputs
+       `(("dmenu" ,dmenu)
+         ("getopt" ,util-linux)
+         ("git" ,git)
+         ("gnupg" ,gnupg)
+         ("qrencode" ,qrencode)
+         ("sed" ,sed)
+         ("tree" ,tree)
+         ("which" ,which)
+         ("wl-clipboard" ,wl-clipboard)
+         ("xclip" ,xclip)
+         ("xdotool" ,xdotool)))
+      (home-page "https://www.passwordstore.org/")
+      (synopsis "Encrypted password manager")
+      (description "Password-store is a password manager which uses GnuPG to
 store and retrieve passwords.  The tool stores each password in its own
 GnuPG-encrypted file, allowing the program to be simple yet secure.
 Synchronization is possible using the integrated git support, which commits
 changes to your password database to a git repository that can be managed
 through the pass command.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public pass-otp
   (package

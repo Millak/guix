@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Jookia <166291@gmail.com>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Dmitry Nikolaev <cameltheman@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Toni Reina <areina@riseup.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -82,7 +82,7 @@
 (define-public font-ibm-plex
   (package
     (name "font-ibm-plex")
-    (version "4.0.2")
+    (version "5.1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -90,7 +90,7 @@
                     "v" version "/OpenType.zip"))
               (sha256
                (base32
-                "17bd84ic7z9hkcjy4bwnh4z51bnkh2vrjzwvs9g6lwzmxjswa5b6"))))
+                "0zlz8kxx54i4hpgaip9690bilvn5w14gp7jjkk6cz4h9p3xml231"))))
     (build-system font-build-system)
     (home-page "https://github.com/IBM/plex")
     (synopsis "IBM Plex typeface")
@@ -221,7 +221,7 @@ Cyrillic, Canadian Syllabics and most Latin based languages are supported.")
 (define-public font-cantarell
   (package
     (name "font-abattis-cantarell")
-    (version "0.201")
+    (version "0.301")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/cantarell-fonts/"
@@ -229,7 +229,7 @@ Cyrillic, Canadian Syllabics and most Latin based languages are supported.")
                                   "/cantarell-fonts-" version ".tar.xz"))
               (sha256
                (base32
-                "0qwqmkczqy09fdj8l11nr841ks0dwsydqg55qyms12m4yvjn87xn"))))
+                "10sycxscs9kzl451mhygyj2qj8qlny8pamskb86np7izq05dnd9x"))))
     (build-system meson-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)))   ; for msgfmt
@@ -334,14 +334,15 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
 (define-public font-liberation
   (package
     (name "font-liberation")
-    (version "2.1.2")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/liberationfonts/liberation-fonts/"
-                           "files/5722233/liberation-fonts-ttf-" version ".tar.gz"))
+       (uri (string-append
+             "https://github.com/liberationfonts/liberation-fonts/"
+             "files/6060976/liberation-fonts-ttf-" version ".tar.gz"))
        (sha256
-        (base32 "1q7qx9bpn1gqjh1zbb8n9fkzwz8skn41hyy61186g4c3y8q4js8l"))))
+        (base32 "0bv8i47iq2irxkkjlqwdli4zz01sb1qg2n6vbdqjrqqhx912zji2"))))
     (build-system font-build-system)
     (home-page "https://github.com/liberationfonts")
     (synopsis "Fonts compatible with Arial, Times New Roman, and Courier New")
@@ -357,9 +358,7 @@ Bitstream Vera Sans);
 Bitstream Vera Serif);
 @item Mono (a substitute for Courier New, Cumberland, Courier, Nimbus Mono L,
 and Bitstream Vera Sans Mono).
-@end enumerate
-
-The Liberation Fonts are sponsored by Red Hat.")
+@end enumerate\n")
     (license license:silofl1.1)))
 
 (define-public font-linuxlibertine
@@ -409,7 +408,7 @@ Biolinum is available in both Regular and Bold weights.")
 (define-public font-libertinus
   (package
     (name "font-libertinus")
-    (version "6.12")
+    (version "7.040")
     (source
      (origin
        (method url-fetch)
@@ -417,7 +416,7 @@ Biolinum is available in both Regular and Bold weights.")
                            "/download/v" version "/libertinus-" version
                            ".zip"))
        (sha256
-        (base32 "06pcsd5pijjid7xjxak35jla089krm5hqnbglv8ldncq475q7kb2"))))
+        (base32 "1xkj993hwkr49q63dd2dnkvdkm9sckxm3zjwhdxsxn21fi80ikic"))))
     (build-system font-build-system)
     (home-page "https://github.com/alerque/libertinus")
     (synopsis "Font family based on Linux Libertine")
@@ -731,7 +730,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "13.0.05")
+    (version "13.0.06")
     (source
      (origin
        (method url-fetch)
@@ -741,7 +740,7 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "0kkgagnyhl92pwgnvf1vjrc1ql8lk5khb125sz18ck8vnxk4i3pr"))))
+        (base32 "09g91g0gv76sadslp70m5xwfk3jf8kh7rpk2pz3l2hpldnjggpk8"))))
     (build-system gnu-build-system)
     (outputs '("out"   ; TrueType version
                "pcf"   ; PCF (bitmap) version
@@ -1756,7 +1755,7 @@ files (TTF).")
 (define-public font-mononoki
   (package
     (name "font-mononoki")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1764,9 +1763,15 @@ files (TTF).")
                     (commit version)))
               (sha256
                (base32
-                "1rkzyxn30rn8qv2h2xz324j7q15hzg2lci8790a7cdl1dfgic4xi"))
+                "07gh84iw84g8fha3gx4yjyl1rsksqhy2kk38f01m048sgjp6ww5j"))
               (file-name (git-file-name name version))))
     (build-system font-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'make-files-writable
+           (lambda _
+             (for-each make-file-writable (find-files ".")))))))
     (synopsis "Font for programming and code review")
     (description
      "Mononoki is a typeface by Matthias Tellen, created to enhance code
@@ -1825,7 +1830,7 @@ have been designed to be very distinguishable from each other.")
 (define-public font-dseg
   (package
     (name "font-dseg")
-    (version "0.45")
+    (version "0.46")
     (source
       (origin
         (method url-fetch/zipbomb)
@@ -1836,8 +1841,7 @@ have been designed to be very distinguishable from each other.")
                          (string-concatenate (string-split version #\.))
                          ".zip"))
         (sha256
-          (base32
-            "0v8sghh4vl286faf8pvi74znz07pyf0qii8z4wjllisqwc35sx72"))))
+          (base32 "13133kpa1ndsji9yq5ppkds5yq2y094qvrv2f83ah74p40sz9hm6"))))
     (build-system font-build-system)
     (arguments
      `(#:phases

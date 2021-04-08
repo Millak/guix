@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2019 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -2107,11 +2107,8 @@ new Date();"))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
-     `(#:imported-modules
-       ((guix build syscalls)
-        (ice-9 binary-ports)
-        (rnrs bytevectors)
-        ,@%gnu-build-system-modules)
+     `(#:imported-modules ((guix build syscalls)
+                           ,@%gnu-build-system-modules)
        #:tests? #f; requires jtreg
        ;; TODO package jtreg
        #:configure-flags
@@ -2696,10 +2693,101 @@ distribution.")))
      `(#:jar-name "java-openjfx-graphics.jar"
        #:source-dir "modules/graphics/src/main/java"
        #:tests? #f; require X
-       #:test-dir "modules/graphics/src/test"))
+       #:test-dir "modules/graphics/src/test"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'copy-missing-file
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((target "modules/graphics/src/main/native-prism-sw/JNativeSurface.c"))
+               (copy-file (assoc-ref inputs "JNativeSurface.c") target)
+               ;; XXX: looks like the missing file we found isn't *quite*
+               ;; compatible...
+               (substitute* target
+                 (("case TYPE_INT_ARGB:") "")))))
+         (add-after 'build 'build-native
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((jdk (assoc-ref inputs "jdk"))
+                   (class-file->class-name
+                    (lambda (class-file)
+                      (string-map (lambda (c)
+                                    (if (char=? c #\/) #\. c))
+                                  (string-drop-right class-file
+                                                     (string-length ".class"))))))
+               (setenv "CPPFLAGS"
+                       (string-append "-DINLINE=inline "
+                                      "-DLINUX "
+                                      "-I" jdk "/include "
+                                      "-I" jdk "/include/linux "
+                                      "-I " (getcwd) "/build/classes/include "
+                                      "-I " (getcwd) "/modules/graphics/src/main/native-prism-sw"))
+
+               ;; Instructions have been adapted from buildSrc/linux.gradle
+               (with-directory-excursion "build/classes"
+                 ;; Build prism
+                 (mkdir-p "include")
+
+                 ;; Generate headers for prism
+                 (apply invoke "javah" "-d" "include" "-cp" "."
+                        (map class-file->class-name
+                             (append (find-files "com/sun/prism/impl" "\\.class$")
+                                     (find-files "com/sun/prism" "PresentableState.*\\.class$"))))
+
+                 ;; ...then for prism_sw
+                 (apply invoke "javah" "-d" "include" "-cp" "."
+                        (map class-file->class-name
+                             (find-files "com/sun/pisces" "\\.class$")))
+
+                 ;; ...and for prism_es2
+                 (apply invoke "javah" "-d" "include" "-cp" "."
+                        (map class-file->class-name
+                             (find-files "com/sun/prism/es2" "\\.class$")))))
+
+             (with-directory-excursion "netbeans/native-prism"
+               (invoke "make" "CONF=Release"))
+             (with-directory-excursion "netbeans/native-prism-sw"
+               (invoke "make" "CONF=Release"))
+             ;; TODO: This fails due to unknown EGL procedure names
+             #;
+             (with-directory-excursion "netbeans/native-prism-es2"
+               (invoke "make" "CONF=Release"))
+
+             (let* ((out (assoc-ref outputs "out"))
+                    (dir ,(match (%current-system)
+                            ("i686-linux"
+                             "i386")
+                            ((or "armhf-linux" "aarch64-linux")
+                             "arm")
+                            ((or "x86_64-linux")
+                             "amd64")
+                            (_ "unknown")))
+                    (target (string-append out "/share/" dir "/")))
+               (mkdir-p target)
+               (for-each (lambda (file)
+                           (let ((new-name
+                                  (string-append "lib"
+                                                 (string-map
+                                                  (lambda (c)
+                                                    (if (char=? c #\-) #\_ c))
+                                                  (string-drop (basename file)
+                                                               (string-length "libnative-"))))))
+                             (copy-file file
+                                        (string-append target new-name))))
+                         (find-files "netbeans" "\\.so$"))))))))
     (propagated-inputs
      `(("java-openjfx-base" ,java-openjfx-base)
        ("java-swt" ,java-swt)))
+    ;; XXX: for unknown reasons
+    ;; modules/graphics/src/main/native-prism-sw/JNativeSurface.c is missing
+    ;; in this revision.
+    (native-inputs
+     `(("JNativeSurface.c"
+        ,(origin
+           (method url-fetch)
+           (uri "https://raw.githubusercontent.com/openjdk/jfx/8u20-b02\
+/modules/graphics/src/main/native-prism-sw/JNativeSurface.c")
+           (sha256
+            (base32
+             "1kp15wbnd6rn0nciczp5ibq0ikby2yysvx1gnz5fa05vl2mm8mbm"))))))
     (description "OpenJFX is a client application platform for desktop,
 mobile and embedded systems built on Java.  Its goal is to produce a
 modern, efficient, and fully featured toolkit for developing rich client
@@ -2719,6 +2807,33 @@ OpenJFX distribution.")))
 mobile and embedded systems built on Java.  Its goal is to produce a
 modern, efficient, and fully featured toolkit for developing rich client
 applications.  This package contains media-related classes for the
+OpenJFX distribution.")))
+
+(define-public java-openjfx-controls
+  (package (inherit java-openjfx-build)
+    (name "java-openjfx-controls")
+    (propagated-inputs
+     `(("java-openjxf-graphics" ,java-openjfx-graphics)))
+    (arguments
+     `(#:jar-name "java-openjfx-controls.jar"
+       #:source-dir "modules/controls/src/main/java"
+       #:test-dir "modules/controls/src/test"
+       ;; TODO: tests require com.sun.javafx.pgstub,
+       ;; javafx.collections.MockSetObserver, and
+       ;; com.sun.javafx.binding.ExpressionHelperUtility
+       #:tests? #false
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'copy-resources
+           (lambda _
+             (copy-recursively "modules/controls/src/test/resources"
+                               "build/test-classes")
+             (copy-recursively "modules/controls/src/main/resources"
+                               "build/classes"))))))
+    (description "OpenJFX is a client application platform for desktop,
+mobile and embedded systems built on Java.  Its goal is to produce a
+modern, efficient, and fully featured toolkit for developing rich client
+applications.  This package contains UI control classes for the
 OpenJFX distribution.")))
 
 (define-public javacc-4
@@ -13332,6 +13447,61 @@ technology that allows you to embed data about a file, known as metadata,
 into the file itself.  The XMP Toolkit for Java is based on the C++ XMPCore
 library and the API is similar.")
     (license license:bsd-3)))
+
+(define-public java-args4j
+  (package
+    (name "java-args4j")
+    (version "2.33")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kohsuke/args4j")
+                    (commit (string-append "args4j-site-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0w061fg65qrsm1a0lz0vyprsyidj31krjb459qi2lw0y78xza26s"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "args4j.jar"
+       #:source-dir "args4j/src"
+       #:test-dir "args4j/test"
+       #:test-exclude
+       (list "**/ExampleTest.*"
+             "**/ExternalConfiguredTest.*" ; fails to find a file
+             ;; We still don't want to run abstract classes
+             "**/Abstract*.*")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'fix-test-dir
+           (lambda _
+             (substitute* "build.xml"
+               (("/java\">") "\">"))
+             #t))
+         (add-before 'build 'copy-resources
+           (lambda _
+             (let ((from-prefix "args4j/src/org/kohsuke/args4j/")
+                   (to-prefix "build/classes/org/kohsuke/args4j/"))
+               (for-each (lambda (f)
+                           (install-file
+                            (string-append from-prefix f)
+                            (string-append to-prefix (dirname f))))
+                         (list "Messages.properties"
+                               "Messages_de.properties"
+                               "Messages_en.properties"
+                               "Messages_ru.properties"
+                               "spi/Messages.properties"
+                               "spi/Messages_de.properties"
+                               "spi/Messages_en.properties"
+                               "spi/Messages_ru.properties")))
+             #t)))))
+    (native-inputs
+     `(("java-junit" ,java-junit)))
+    (home-page "https://args4j.kohsuke.org/")
+    (synopsis "Command line parser library")
+    (description "Args4j is a small Java class library that makes it easy to
+parse command line options/arguments in your CUI application.")
+    (license license:expat)))
 
 (define-public java-metadata-extractor
   (package

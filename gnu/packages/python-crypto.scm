@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
@@ -334,7 +334,7 @@ etc.).  The package is structured to make adding new modules easy.")
 
 (define-public python2-pycrypto
   (let ((pycrypto (package-with-python2 python-pycrypto)))
-    (package (inherit pycrypto)
+    (package/inherit pycrypto
       (inputs
        `(("python" ,python-2)
          ,@(alist-delete
@@ -369,39 +369,33 @@ do what is needed for client/server Kerberos authentication based on
 (define-public python-keyring
   (package
     (name "python-keyring")
-    (version "21.0.0")
+    (version "22.0.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "keyring" version))
       (sha256
        (base32
-        "1k0w3yh3fz0qp0cvkxdiinq9jzbrnc6bd88qpjz34x3cgcr94psz"))
-      (modules '((guix build utils)))
-      (snippet
-        ;; https://github.com/jaraco/keyring/issues/414
-       '(begin (substitute* "tests/test_packaging.py"
-                 (("ep, =") "(ep,) =")) #t))))
+        "1pvqc6may03did0iz98gasg7cy4h8ljzs4ibh927bfzda8a3xjws"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             ;; Not clear why this test fails.
-             (delete-file "tests/test_packaging.py")
-             (substitute* "pytest.ini"
-               (("--black ") ""))
-             (invoke "pytest"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest"))
+             #t)))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
+     `(("python-toml" ,python-toml)
+       ("python-pytest" ,python-pytest)
        ("python-pytest-checkdocs" ,python-pytest-checkdocs)
        ("python-pytest-cov" ,python-pytest-cov)
        ("python-pytest-flake8" ,python-pytest-flake8)
+       ("python-setuptools" ,python-setuptools)
        ("python-setuptools-scm" ,python-setuptools-scm)))
     (propagated-inputs
-     `(("python-importlib-metadata" ,python-importlib-metadata)
-       ("python-secretstorage" ,python-secretstorage)))
+     `(("python-secretstorage" ,python-secretstorage)))
     (home-page "https://github.com/jaraco/keyring")
     (synopsis "Store and access your passwords safely")
     (description
@@ -559,7 +553,7 @@ message digests and key derivation functions.")
 (define-public python2-cryptography
   (let ((crypto (package-with-python2
                  (strip-python2-variant python-cryptography))))
-    (package (inherit crypto)
+    (package/inherit crypto
       (propagated-inputs
        `(("python2-ipaddress" ,python2-ipaddress)
          ("python2-backport-ssl-match-hostname"
@@ -1107,6 +1101,10 @@ provides drop-in compatibility with PyCrypto.")))
        (sha256
         (base32 "09yirf3w77w6f49q6nxhrjm9c3a4y9s30s1k09chqrw8zdgx8sjc"))))
     (build-system python-build-system)
+    (arguments
+     `(;; FIXME: Tests start failing with time due to date checks in TLS
+       ;; certificates.
+       #:tests? #f))
     (inputs `(("openssl" ,openssl)))
     (native-inputs `(("swig" ,swig)))
     (home-page "https://gitlab.com/m2crypto/m2crypto")
@@ -1124,7 +1122,7 @@ through the Engine interface.")
 (define-public python2-m2crypto
   (let ((m2crypto (package-with-python2
                    (strip-python2-variant python-m2crypto))))
-    (package (inherit m2crypto)
+    (package/inherit m2crypto
              (propagated-inputs
               `(("python2-typing" ,python2-typing))))))
 
@@ -1483,14 +1481,14 @@ and Backlog for a list of what is and is not currently supported.")
 (define-public python-secretstorage
   (package
     (name "python-secretstorage")
-    (version "3.1.2")
+    (version "3.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "SecretStorage" version))
         (sha256
          (base32
-          "1xmzr0j3066s220bss4nkgqbiwb5k4kkp2rkpqlqwjb5kfc8mnhm"))))
+          "15ginv4gzxrx77n7517xnvf2jcpqc6ran12s951hc85zlr8nqrpx"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; Tests require a running dbus service.
@@ -1571,18 +1569,20 @@ certificates, signing and building trust bundles.")
 (define-public python-jeepney
   (package
     (name "python-jeepney")
-    (version "0.4.3")
+    (version "0.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "jeepney" version))
         (sha256
-         (base32 "0vp3p1lqhqk2kd3254q5sxr50znmm2hmysc8a7g0fr1brihvhy9l"))))
+         (base32 "0mw6ch5s4czpmsiwqwhcidgk27858pl8vlvb7acrxjkm4ribcnbx"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-testpath" ,python-testpath)
        ("python-tornado" ,python-tornado)
-       ("python-pytest" ,python-pytest)))
+       ("python-trio" ,python-trio)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-trio" ,python-pytest-trio)))
     (home-page "https://gitlab.com/takluyver/jeepney")
     (synopsis "Low-level, pure Python DBus protocol wrapper")
     (description

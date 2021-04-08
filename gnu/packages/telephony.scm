@@ -17,8 +17,9 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -323,14 +324,14 @@ GNU ccRTP stack and serves as library for other RTP stacks
 (define-public osip
   (package
    (name "osip")
-   (version "5.1.2")
+   (version "5.2.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/osip/libosip2-" version ".tar.gz"))
             (patches (search-patches "osip-CVE-2017-7853.patch"))
             (sha256
              (base32
-              "148j1i0zkwf09qdpk3nc5sssj1dvppw7p0n9rgrg8k56447l1h1b"))))
+              "0xdk3cszkzb8nb757gl47slrr13mf6xz43ab4k343fv8llp8pd2g"))))
    (build-system gnu-build-system)
 
    (synopsis "Library implementing SIP (RFC-3261)")
@@ -515,34 +516,37 @@ address of one of the participants.")
 (define-public mumble
   (package
     (name "mumble")
-    (version "1.3.3")
+    (version "1.3.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://mumble.info/snapshot/stable/"
-                                  name "-" version ".tar.gz"))
+              (uri
+               (string-append
+                "https://github.com/mumble-voip/mumble/releases/download/"
+                version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "101gw1334zmqsbjrba5dq1v4p2nxcs37g2yrzvkcra6s9ri4fw3j"))
-              (modules '((guix build utils)))
+                "14v0rgy1a5alxmz7ly95y38bdj0hx79yysgkcd8r8p9qqfzlwpv1"))
+              (modules '((guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-1)))
               (snippet
                `(begin
-                  ;; Remove bundled software.  Keep arc4random, celt-0.7.0,
-                  ;; celt-0.11.0, qqbonjour, rnnoise, smallft.
-                  (for-each
-                    delete-file-recursively
-                    '("3rdparty/GL" ; in mesa
-                      "3rdparty/mach-override-build" ; for macx
-                      "3rdparty/mach-override-src"
-                      "3rdparty/minhook-build" ; for win32
-                      "3rdparty/minhook-src"
-                      "3rdparty/opus-build" ; in opus
-                      "3rdparty/opus-src"
-                      "3rdparty/speex-build" ; in speex
-                      "3rdparty/speex-src"
-                      "3rdparty/speexdsp-src" ; in speexdsp
-                      "3rdparty/xinputcheck-build" ; for win32
-                      "3rdparty/xinputcheck-src"))
-                  #t))))
+                  (let ((keep
+                         '("arc4random-src"
+                           "celt-0.7.0-build"
+                           "celt-0.7.0-src"
+                           "celt-0.11.0-build"
+                           "celt-0.11.0-src"
+                           "qqbonjour-src"
+                           "rnnoise-build"
+                           "rnnoise-src"
+                           "smallft-src")))
+	            (with-directory-excursion "3rdparty"
+	              (for-each delete-file-recursively
+			        (lset-difference string=?
+                                                 (scandir ".")
+                                                 (cons* "." ".." keep))))
+                    #t)))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f  ; no "check" target
@@ -719,7 +723,7 @@ your calls and messages.")
 (define-public pjproject
   (package
     (name "pjproject")
-    (version "2.10")
+    (version "2.11")
     (source
      (origin
        (method git-fetch)
@@ -729,12 +733,8 @@ your calls and messages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1aklicpgwc88578k03i5d5cm5h8mfm7hmx8vfprchbmaa2p8f4z0"))
+         "1kn9g1x1vmh4130ghph8mldz5m89gsjs4vpdzlzm98m3808gk5an"))
        (modules '((guix build utils)))
-       ;; The patches upstream status can be tracked at:
-       ;; https://github.com/pjsip/pjproject/pull/2501.
-       (patches (search-patches "pjproject-correct-the-cflags-field.patch"
-                                "pjproject-fix-pkg-config-ldflags.patch"))
        (snippet
         '(begin
            ;; Remove bundled libraries.
@@ -742,8 +742,7 @@ your calls and messages.")
            (substitute* "aconfigure.ac"
              (("third_party/build/os-auto.mak") ""))
            (substitute* "Makefile"
-             (("third_party/build") ""))
-           #t))))
+             (("third_party/build") ""))))))
     (build-system gnu-build-system)
     (outputs '("out" "debug" "static"))
     (arguments
@@ -781,8 +780,7 @@ your calls and messages.")
            ;; Make all the files writable to prevent the following error:
            ;; "autom4te: cannot open aconfigure: Permission denied".
            (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
+             (for-each make-file-writable (find-files "."))))
          (add-before 'build 'build-dep
            (lambda _ (invoke "make" "dep")))
          ;; The check phases is moved after the install phase so to
@@ -796,8 +794,7 @@ your calls and messages.")
                (with-directory-excursion out
                  (for-each (lambda (f)
                              (rename-file f (string-append s "/" (basename f))))
-                           (find-files "." "\\.a$")))
-               #t)))
+                           (find-files "." "\\.a$"))))))
          (add-after 'install 'check
            (assoc-ref %standard-phases 'check))
          (add-before 'patch-source-shebangs 'autoconf
@@ -840,8 +837,7 @@ your calls and messages.")
                ;; Disable the pjnath and pjsua tests, which require an actual
                ;; network and an actual sound card, respectively.
                (("pjnath-test pjmedia-test pjsip-test pjsua-test")
-                "pjmedia-test pjsip-test"))
-             #t)))))
+                "pjmedia-test pjsip-test")))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -886,8 +882,8 @@ Initiation Protocol (SIP) and a multimedia framework.")
     (build-system gnu-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("libopusenc" ,libopusenc)
        ("openssl" ,openssl)
+       ("opus" ,opus)
        ("pulseaudio" ,pulseaudio)))
     (arguments
      `(#:phases

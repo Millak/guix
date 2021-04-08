@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
@@ -47,6 +47,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,6 +77,7 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -169,6 +171,79 @@
   #:use-module (gnu packages xml)
   #:use-module ((srfi srfi-1) #:select (delete-duplicates)))
 
+(define-public qhttp
+  (package
+    (name "qhttp")
+    (version "3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/azadkuh/qhttp")
+         (commit (string-append "version-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cx23g4y4k4v9p5ph6h7gfhp8sfy1gcdv1g6bl44hppar1y0zfdq"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no target
+       #:imported-modules
+       ((guix build copy-build-system)
+        ,@%gnu-build-system-modules)
+       #:modules
+       (((guix build copy-build-system) #:prefix copy:)
+        (guix build gnu-build-system)
+        (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-source
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "commondir.pri"
+               (("\\$\\$PRJDIR/xbin")
+                (string-append (assoc-ref outputs "out") "/lib"))
+               (("-L")
+                "-lhttp_parser -L")
+               (("\\$\\$PRJDIR/3rdparty")
+                ""))
+             (substitute* "src/src.pro"
+               (("SOURCES  \\+= \\$\\$PRJDIR/3rdparty/http-parser/http_parser.c")
+                "")
+               (("HEADERS  \\+= \\$\\$PRJDIR/3rdparty/http-parser/http_parser.h")
+                ""))
+             (substitute* '("src/private/qhttpbase.hpp" "src/qhttpabstracts.cpp")
+               (("http-parser/http_parser.h")
+                "http_parser.h"))
+             #t))
+         (replace 'configure
+           (lambda _ (invoke "qmake")))
+         (replace 'install
+           (lambda args
+             (apply (assoc-ref copy:%standard-phases 'install)
+                    #:install-plan
+                    '(("src" "include"
+                       #:include-regexp ("\\.hpp$")))
+                    args)))
+         (add-after 'install 'remove-examples
+           (lambda* (#:key outputs #:allow-other-keys)
+             (with-directory-excursion
+                 (string-append (assoc-ref outputs "out") "/lib")
+               (for-each delete-file
+                         (list
+                          "basic-server"
+                          "helloworld"
+                          "postcollector")))
+             #t)))))
+    (inputs
+     `(("http-parser" ,http-parser)
+       ("qtbase" ,qtbase)))
+    (home-page "https://github.com/azadkuh/qhttp/")
+    (synopsis "Qt-based HTTP Library")
+    (description
+     "Qhttp is a light-weight and asynchronous HTTP library
+(both server & client) in Qt5 and C++14.")
+    (license license:expat)))
+
 (define-public httpd
   (package
     (name "httpd")
@@ -241,7 +316,7 @@ Interface} specification.")
 (define-public monolith
   (package
     (name "monolith")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -250,17 +325,18 @@ Interface} specification.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18c6bsv9m3spiyfhqp08v807m93r6n9hrlv4qbfiqp4kw5aryb4h"))))
+        (base32 "1z0bcvk2cvx2cd0hs8addzcb070xvrkcxvg25691xw0ikiynpkwz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-base64" ,rust-base64-0.13)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-2)
-        ("rust-cssparser" ,rust-cssparser-0.27)
+        ("rust-cssparser" ,rust-cssparser-0.28)
         ("rust-html5ever" ,rust-html5ever-0.24)
         ("rust-regex" ,rust-regex-1)
-        ("rust-reqwest" ,rust-reqwest-0.10)
+        ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
@@ -291,14 +367,14 @@ the same, being completely separated from the Internet.")
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
     ;; Consider updating the nginx-documentation package together with this one.
-    (version "1.19.6")
+    (version "1.19.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1d9kzks8x1226prjbpdin4dz93fjnv304zlqybfqachx5fh9a4di"))))
+                "0hfqqyfgqa6wqazmb3d434nb3r5p8szfisa0m6nfh9lqdbqdyd9f"))))
     (build-system gnu-build-system)
     (inputs `(("openssl" ,openssl)
               ("pcre" ,pcre)
@@ -381,9 +457,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.19.6")
-        (revision 2636)
-        (changeset "a0824dab33ff"))
+  (let ((version "1.19.9")
+        (revision 2696)
+        (changeset "f85798c1c70a"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -395,7 +471,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "06w6fg33pnkqpaagzp9rqizill61vj7db7083mrd6i6by0j7cp1b"))))
+                 "1ksl32jw6h3qzyxxlsdjag7fcjvk3md3hdxn6ljs8pr2nhk1v6cs"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -1477,7 +1553,7 @@ used to validate and fix HTML data.")
 (define-public esbuild
   (package
     (name "esbuild")
-    (version "0.8.43")
+    (version "0.8.51")
     (source
      (origin
        (method git-fetch)
@@ -1486,7 +1562,7 @@ used to validate and fix HTML data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ab8xpbh39nvrq1302qld692i4xy2mgynk6hjkwhlrziybj74njp"))
+        (base32 "1j4qza2chng3az1h1fh9zbhxh99q7bfrqbgppyyq5947svi8fvaz"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3994,7 +4070,7 @@ is limited to http and https.")
 (define-public perl-net-http
   (package
     (name "perl-net-http")
-    (version "6.20")
+    (version "6.21")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -4002,7 +4078,7 @@ is limited to http and https.")
                    "Net-HTTP-" version ".tar.gz"))
              (sha256
               (base32
-               "07lzfycza7qqxli18xgsnqwiwxapl0b64z33wfw62aai4hm7nllj"))))
+               "1i7fk6q1iaxzgf82mjd5hg77hvy7dbb79488cijg16dyfrds6nip"))))
     (build-system perl-build-system)
     (propagated-inputs
      `(("perl-io-socket-ssl" ,perl-io-socket-ssl)
@@ -4632,8 +4708,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
   (package-with-python2 python-feedparser))
 
 (define-public guix-data-service
-  (let ((commit "b7ba8d0c2ca3aca9ba5b5f9f27b9778ee949d20e")
-        (revision "25"))
+  (let ((commit "410f58cb43f083623885a430700c6818a187cadc")
+        (revision "26"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4645,7 +4721,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0brv64bsqysl7dncz067blwvmqrlx99c2kwrgpz6k0nqv8nzsa28"))))
+                  "1jvxn3w6gwlvm52raf6zkjwg7bvfvbznsb9ch8ha0fcc6ccx7r60"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4704,15 +4780,15 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                  #t)))
            (delete 'strip))))           ; As the .go files aren't compatible
       (inputs
-       `(("guix" ,guile3.0-guix)
-         ("guile-fibers" ,guile3.0-fibers)
-         ("guile-json" ,guile3.0-json)
-         ("guile-email" ,guile3.0-email)
+       `(("guix" ,guix)
+         ("guile-fibers" ,guile-fibers)
+         ("guile-json" ,guile-json-4)
+         ("guile-email" ,guile-email)
          ("guile-prometheus" ,guile-prometheus)
-         ("guile-squee" ,guile3.0-squee)
+         ("guile-squee" ,guile-squee)
          ("ephemeralpg" ,ephemeralpg)
          ("util-linux" ,util-linux)
-         ("postgresql" ,postgresql-11)
+         ("postgresql" ,postgresql-13)
          ("sqitch" ,sqitch)))
       (native-inputs
        `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
@@ -4867,6 +4943,33 @@ mangle the data format that you have into the one that you want with very
 little effort, and the program to do so is often shorter and simpler than
 you'd expect.")
     (license (list license:expat license:cc-by3.0))))
+
+(define-public pup
+  (let ((revision "1")
+        (commit "681d7bb639334bf485476f5872c5bdab10931f9a"))
+    (package
+      (name "pup")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ericchiang/pup")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hx1k0qlc1bq6gg5d4yprn4d7kvqzagg6mi5mvb39zdq6c4y17vr"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "github.com/ericchiang/pup"))
+      (home-page "https://github.com/ericchiang/pup")
+      (synopsis "Parse HTML at the command line")
+      (description
+       "@command{pup} is a command line tool for processing HTML.  It reads
+from stdin, prints to stdout, and allows the user to filter parts of the page
+using CSS selectors.  Inspired by @command{jq}, @command{pup} aims to be a
+fast and flexible way of exploring HTML from the terminal.")
+      (license license:expat))))
 
 (define-public uhttpmock
   (package
@@ -5784,14 +5887,14 @@ tools like SSH (Secure Shell) to reach the outside world.")
 (define-public stunnel
   (package
   (name "stunnel")
-  (version "5.57")
+  (version "5.59")
   (source
     (origin
       (method url-fetch)
       (uri (string-append "https://www.stunnel.org/downloads/stunnel-"
                           version ".tar.gz"))
       (sha256
-       (base32 "1q8gc05fiz7w55ws0whwzb94ffjnhzfppf1mhz1hf671vmrvjnmg"))))
+       (base32 "17yf2n47j5hw2y9527mrkx3j7q9jk5vvg46m3hgp1wg8dggpcxqk"))))
   (build-system gnu-build-system)
   (native-inputs
    ;; For tests.
@@ -5818,6 +5921,8 @@ tools like SSH (Secure Shell) to reach the outside world.")
            (substitute* "tests/make_test"
              (("/bin/sh ")
               (string-append (which "sh") " ")))
+           ;; test requires networking
+           (delete-file "tests/recipes/055_socket_closed")
            #t)))))
   (home-page "https://www.stunnel.org")
   (synopsis "TLS proxy for clients or servers")
@@ -5906,14 +6011,14 @@ configuration language.")
   (package
     (name "varnish-modules")
     (home-page "https://github.com/varnish/varnish-modules")
-    (version "0.17.0")
+    (version "0.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zg8y2sgkygdani70zp9rbx278431fmssj26d47c5qsiw939i519"))))
+                "1mzkad9r4rpm1fi7j7skwrsyzzbwcapfnlvvl1ls3rng2djcqb5j"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -6103,9 +6208,6 @@ response.  This exists to cover all kinds of HTTP scenarios.  All endpoint respo
 JSON-encoded.")
     (license license:isc)))
 
-(define-public python2-httpbin
-  (package-with-python2 python-httpbin))
-
 (define-public python-pytest-httpbin
   (package
     (name "python-pytest-httpbin")
@@ -6133,103 +6235,103 @@ into your tests.  It automatically starts up a HTTP server in a separate thread 
     (license license:expat)))
 
 (define-public http-parser
-  (package
-    (name "http-parser")
-    (version "2.9.4")
-    (home-page "https://github.com/nodejs/http-parser")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page)
-                           (commit (string-append "v" version))))
-       (sha256
-        (base32 "1vda4dp75pjf5fcph73sy0ifm3xrssrmf927qd1x8g3q46z0cv6c"))
-       (file-name (git-file-name name version))
-       (patches
-        (list
-         (origin
-           ;; Treat an empty port (e.g. `http://hostname:/`) when parsing
-           ;; URLs as if no port were specified.  This patch is applied
-           ;; to Fedora's http-parser and to libgit2's bundled version.
-           (method url-fetch)
-           (uri (string-append
-                 "https://src.fedoraproject.org/rpms/http-parser/raw/"
-                 "e89b4c4e2874c19079a5a1a2d2ccc61b551aa289/"
-                 "f/0001-url-treat-empty-port-as-default.patch"))
-           (sha256
-            (base32
-             "0pbxf2nq9pcn299k2b2ls8ldghaqln9glnp79gi57mamx4iy0f6g")))))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (list (string-append "PREFIX="
-                            (assoc-ref %outputs "out"))
-             "library"
-             ,@(if (%current-target-system)
-                   '()
-                   '("CC=gcc")))
-       #:phases
-       (modify-phases %standard-phases
-         ,@(match (%current-system)
-             ("armhf-linux"
-              '((add-before 'check 'apply-assertion.patch
-                  (lambda* (#:key inputs #:allow-other-keys)
-                    (let ((patch (assoc-ref inputs "assertion.patch")))
-                      (invoke "patch" "-p1" "-i" patch)
-                      #t)))))
-             (_ '()))
-         ,@(if (%current-target-system)
-               '((replace 'configure
-                    (lambda* (#:key target #:allow-other-keys)
-                      (substitute* (find-files "." "Makefile")
-                        (("CC\\?=.*$")
-                         (string-append "CC=" target "-gcc\n"))
-                        (("AR\\?=.*$")
-                         (string-append "AR=" target "-ar\n")))
-                      #t)))
-               '((delete 'configure))))))
-    (native-inputs
-     `(,@(match (%current-system)
-           ("armhf-linux"
-            ;; A fix for <https://issues.guix.gnu.org/40604> which in turn
-            ;; breaks i686-linux builds.
-            `(("assertion.patch"
-               ,@(search-patches "http-parser-fix-assertion-on-armhf.patch"))))
-           (_ '()))))
-    (synopsis "HTTP request/response parser for C")
-    (description "This is a parser for HTTP messages written in C.  It parses
-both requests and responses.  The parser is designed to be used in
+  (let ((commit "ec8b5ee63f0e51191ea43bb0c6eac7bfbff3141d")
+        (revision "1"))
+    (package
+      (name "http-parser")
+      (version (git-version "2.9.4" revision commit))
+      (home-page "https://github.com/nodejs/http-parser")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page)
+                             (commit commit)))
+         (sha256
+          (base32 "0f297hrbx0kvy3qwgm9rhmbnjww6iljlcz9grsc9d4km1qj1071i"))
+         (file-name (git-file-name name version))
+         (patches
+          (append
+           (search-patches "http-parser-CVE-2020-8287.patch")
+           (list
+            (origin
+              ;; Treat an empty port (e.g. `http://hostname:/`) when parsing
+              ;; URLs as if no port were specified.  This patch is applied
+              ;; to Fedora's http-parser and to libgit2's bundled version.
+              (method url-fetch)
+              (uri (string-append
+                    "https://src.fedoraproject.org/rpms/http-parser/raw/"
+                    "e89b4c4e2874c19079a5a1a2d2ccc61b551aa289/"
+                    "f/0001-url-treat-empty-port-as-default.patch"))
+              (sha256
+               (base32
+                "0pbxf2nq9pcn299k2b2ls8ldghaqln9glnp79gi57mamx4iy0f6g"))))))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; This assertion fails when building for i686-linux.
+             (substitute* "test.c"
+               (("assert\\(sizeof\\(http_parser\\) == 32\\);")
+                "assert(1);"))
+             #t))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:test-target "test"
+         #:make-flags
+         (list (string-append "PREFIX="
+                              (assoc-ref %outputs "out"))
+               "library"
+               ,@(if (%current-target-system)
+                     '()
+                     '("CC=gcc")))
+         #:phases
+         (modify-phases %standard-phases
+           ,@(if (%current-target-system)
+                 '((replace 'configure
+                     (lambda* (#:key target #:allow-other-keys)
+                       (substitute* (find-files "." "Makefile")
+                         (("CC\\?=.*$")
+                          (string-append "CC=" target "-gcc\n"))
+                         (("AR\\?=.*$")
+                          (string-append "AR=" target "-ar\n")))
+                       #t)))
+                 '((delete 'configure))))))
+      (synopsis "HTTP request/response parser for C")
+      (description "This is a parser for HTTP messages written in C.  It
+parses both requests and responses.  The parser is designed to be used in
 high-performance HTTP applications.  It does not make any syscalls nor
 allocations, it does not buffer data, it can be interrupted at anytime.
 Depending on your architecture, it only requires about 40 bytes of data per
 message stream (in a web server that is per connection).")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-httpretty
   (package
     (name "python-httpretty")
-    (version "0.9.6")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "httpretty" version))
        (sha256
-        (base32 "1p1rb4mpngh0632xrmdfhvc8yink519yfkqz97d2ww3y0x2jvd81"))))
+        (base32 "1dg0nfl7i9kjnq98ww98x2afzav4mpgiwzvjc43ily1x9my94g75"))))
     (build-system python-build-system)
-    (propagated-inputs
-     `(("python-six" ,python-six)))
+    (arguments
+     `(#:tests? #f  ; Tests require network access.
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "nosetests"))
+             #t)))))
     (native-inputs
      `(("python-coverage" ,python-coverage)
-       ("python-httplib2" ,python-httplib2)
-       ("python-mock" ,python-mock)
+       ("python-eventlet" ,python-eventlet)
        ("python-nose" ,python-nose)
-       ("python-nose-randomly" ,python-nose-randomly)
        ("python-rednose" ,python-rednose)
        ("python-requests" ,python-requests)
        ("python-sure" ,python-sure)
-       ("python-tornado" ,python-tornado)
-       ("python-urllib3" ,python-urllib3)))
+       ("python-tornado" ,python-tornado)))
     (home-page "https://httpretty.readthedocs.io")
     (synopsis "HTTP client mock for Python")
     (description "@code{httpretty} is a helper for faking web requests,
@@ -6558,14 +6660,14 @@ encoder/decoder based on the draft-12 specification for UBJSON.")
 (define-public java-tomcat
   (package
     (name "java-tomcat")
-    (version "8.5.53")
+    (version "8.5.63")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/tomcat/tomcat-8/v"
                                   version "/src/apache-tomcat-" version "-src.tar.gz"))
               (sha256
                (base32
-                "15lwq3clf21hzk7mma70sffpxjqn8ww5mjq6zhmwcp4m17m22z26"))
+                "1wr6mpgbk2gs18vp8mdggiq6vifj68a875dd1fkdf7cs31q54rns"))
               (modules '((guix build utils)))
               ;; Delete bundled jars.
               (snippet

@@ -2,10 +2,11 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,9 +26,11 @@
 (define-module (gnu packages sync)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -40,22 +43,177 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages selinux)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls))
+
+(define-public nextcloud-client
+  (package
+    (name "nextcloud-client")
+    (version "3.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/nextcloud/desktop")
+         (commit (string-append "v" version))))
+       (file-name
+        (git-file-name name version))
+       (sha256
+        (base32 "15ymk3gvfmgwzmqbhlw7jjy9y65ib3391h1dlmpll65iaj2miajk"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-1)))
+       (snippet
+        '(begin
+           ;; Not available in Guix.
+           (let* ((keep '("QProgressIndicator" "qtokenizer")))
+             (with-directory-excursion "src/3rdparty"
+               (for-each delete-file-recursively
+                         (lset-difference string=?
+                                          (scandir ".")
+                                          (cons* "." ".." keep)))))
+           (with-directory-excursion "src/gui"
+             (substitute* "CMakeLists.txt"
+               ;; Remove references of deleted 3rdparties.
+               (("[ \t]*\\.\\./3rdparty/qtlockedfile/?.*\\.cpp")
+                "")
+               (("[ \t]*\\.\\./3rdparty/qtsingleapplication/?.*\\.cpp")
+                "")
+               (("[ \t]*\\.\\./3rdparty/kmessagewidget/?.*\\.cpp")
+                "")
+               (("[ \t]*list\\(APPEND 3rdparty_SRC \\.\\./3rdparty/?.*\\)")
+                "")
+               (("\\$\\{CMAKE_SOURCE_DIR\\}/src/3rdparty/qtlockedfile")
+                "")
+               (("\\$\\{CMAKE_SOURCE_DIR\\}/src/3rdparty/qtsingleapplication")
+                "")
+               (("\\$\\{CMAKE_SOURCE_DIR\\}/src/3rdparty/kmessagewidget")
+                ;; For this, we rely on build inputs, so let's just replace
+                ;; them by an autoconf-style variable.
+                "@kwidgetsaddons@")
+               ;; Expand libraries, that used to be statically linked, but
+               ;; no longer are post-vendoring.
+               (("\\$\\{synclib_NAME\\}")
+                (string-append "${synclib_NAME} "
+                               "QtSolutions_LockedFile "
+                               "QtSolutions_SingleApplication "
+                               "KF5WidgetsAddons")))
+             ;; Fix compatibility with QtSingleApplication from QtSolutions.
+             (substitute* '("application.h" "application.cpp")
+               (("SharedTools::QtSingleApplication")
+                "QtSingleApplication")
+               (("slotParseMessage\\(const QString &(msg)?.*\\)")
+                "slotParseMessage(const QString &msg)")))
+           #t))))
+    (build-system qt-build-system)
+    (arguments
+     `(#:configure-flags
+       (list
+        "-DUNIT_TESTING=ON"
+        ;; Upstream Bug: https://github.com/nextcloud/desktop/issues/2885
+        "-DNO_SHIBBOLETH=ON")
+       #:imported-modules
+       ((guix build glib-or-gtk-build-system)
+        ,@%qt-build-system-modules)
+       #:modules
+       (((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+        (guix build qt-build-system)
+        (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-cmake
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Patch install directory for dbus service files.
+             (substitute* "shell_integration/libcloudproviders/CMakeLists.txt"
+               (("PKGCONFIG_GETVAR\\(.+ _install_dir\\)")
+                (string-append "set(_install_dir \"${CMAKE_INSTALL_PREFIX}"
+                               "/share/dbus-1/services\")")))
+             (substitute* "shell_integration/dolphin/CMakeLists.txt"
+               ;; Make sure, that Qt modules are installed under $prefix.
+               (("ON CACHE") "OFF CACHE"))
+             (substitute* "src/gui/CMakeLists.txt"
+               (("@kwidgetsaddons@")
+                (string-append (assoc-ref inputs "kwidgetsaddons")
+                               "/include/KF5/KWidgetsAddons/")))
+             #t))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Tests write to $HOME.
+             (setenv "HOME" (getcwd))
+             #t))
+         (add-after 'install 'glib-or-gtk-compile-schemas
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+         (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+    (native-inputs
+     `(("cmocka" ,cmocka)
+       ("dot" ,graphviz)
+       ("doxygen" ,doxygen)
+       ("extra-cmake-modules" ,extra-cmake-modules)
+       ("glib:bin" ,glib "bin")
+       ("perl" ,perl)
+       ("pkg-config" ,pkg-config)
+       ("python" ,python-wrapper)
+       ("qttools" ,qttools)
+       ("ruby" ,ruby)))
+    (inputs
+     `(("appstream" ,appstream)
+       ("desktop-file-utils" ,desktop-file-utils)
+       ("glib" ,glib)
+       ("kconfig" ,kconfig)
+       ("kcoreaddons" ,kcoreaddons)
+       ("kio" ,kio)
+       ("kjs" ,kjs)
+       ("kwidgetsaddons" ,kwidgetsaddons)
+       ("libcloudproviders" ,libcloudproviders)
+       ("libzip" ,libzip)
+       ("openssl" ,openssl)
+       ("python-nautilus" ,python-nautilus)
+       ("qtbase" ,qtbase)
+       ("qtdeclarative" ,qtdeclarative)
+       ("qtgraphicaleffects" ,qtgraphicaleffects)
+       ("qtkeychain" ,qtkeychain)
+       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtsolutions" ,qtsolutions)
+       ("qtsvg" ,qtsvg)
+       ("qtwebchannel" ,qtwebchannel)
+       ("qtwebsockets" ,qtwebsockets)
+       ("qtwebkit" ,qtwebkit)
+       ("sqlite" ,sqlite)
+       ("xdg-utils" ,xdg-utils)
+       ("zlib" ,zlib)))
+    (propagated-inputs
+     `(("qtwebengine" ,qtwebengine)))
+    (synopsis "Desktop sync client for Nextcloud")
+    (description "Nextcloud-Desktop is a tool to synchronize files from
+Nextcloud Server with your computer.")
+    (home-page "https://nextcloud.com")
+    (license (list license:expat     ; QProgressIndicator
+                   license:lgpl2.1+  ; qtokenizer
+                   license:gpl2+))))
 
 (define-public megacmd
   (package
@@ -154,14 +312,14 @@ See also: megacmd, the official tool set by MEGA.")
 (define-public owncloud-client
   (package
     (name "owncloud-client")
-    (version "2.7.5.3180")
+    (version "2.7.6.3261")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.owncloud.com/desktop/ownCloud/stable/"
                            version "/source/ownCloud-" version ".tar.xz"))
        (sha256
-        (base32 "13vlkmkr3i99ww3fkps7lwrx6vgr43rvmjcpsix259rj7f2ikkrp"))
+        (base32 "19jjlhbzhy4v5h1wj5a87ismxq2p7avb2bb4lfbh2rvl01r432vy"))
        (patches (search-patches "owncloud-disable-updatecheck.patch"))))
     ;; TODO: unbundle qprogessindicator, qlockedfile, qtokenizer and
     ;; qtsingleapplication which have not yet been packaged, but all are
@@ -314,6 +472,43 @@ machines.  Lsyncd is thus a light-weight live mirror solution that is
 comparatively easy to install not requiring new file systems or block devices
 and does not hamper local file system performance.")
     (license license:gpl2+)))
+
+(define-public usync
+  (let ((revision "1")
+        (commit "09a8059a1adc22666d3ecf7872e22e6846c3ac9e"))
+    (package
+      (name "usync")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ebzzry/usync")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16i1q8f0jmfd43rb8d70l2b383vr5ib4kh7iq3yd345q7xjz9c2j"))))
+      (build-system copy-build-system)
+      (inputs
+       `(("scsh" ,scsh)))
+      (propagated-inputs
+       `(("rsync" ,rsync)
+         ("unison" ,unison)))
+      (arguments
+       `(#:install-plan '(("usync" "bin/usync"))
+         #:phases (modify-phases %standard-phases
+                    (add-before 'install 'patch-usync-shebang
+                      (lambda _
+                        (substitute* "usync"
+                          (("/usr/bin/env scsh")
+                           (which "scsh"))))))))
+      (home-page "https://github.com/ebzzry/usync")
+      (synopsis "Command line site-to-site synchronization tool")
+      (description
+       "@command{usync} is a simple site-to-site synchronization program
+written in @command{scsh}.  It makes use of @command{unison} and
+@command{rsync} for bi- and uni-directional synchronizations.")
+      (license license:expat))))
 
 (define-public casync
   (package

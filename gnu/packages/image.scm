@@ -27,7 +27,7 @@
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -590,16 +590,18 @@ extracting icontainer icon files.")
        (sha256
         (base32
          "0d46bdvxdiv59lxnb0xz9ywm8arsr6xsapi5s6y6vnys2wjz6aax"))))
+   (replacement libtiff/fixed)
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                           ;1.3 MiB of HTML documentation
    (arguments
     ;; Instead of using --docdir, this package has its own --with-docdir.
-    `(#:configure-flags (list (string-append "--with-docdir="
-                                             (assoc-ref %outputs "doc")
-                                             "/share/doc/"
-                                             ,name "-" ,version)
-                              "--disable-static")))
+    `(#:configure-flags
+      (list (string-append "--with-docdir="
+                           (assoc-ref %outputs "doc")
+                           "/share/doc/"
+                           ,name "-" ,(package-version this-package))
+            "--disable-static")))
    (inputs `(("zlib" ,zlib)
              ("libjpeg" ,libjpeg-turbo)))
    (synopsis "Library for handling TIFF files")
@@ -611,6 +613,20 @@ collection of tools for doing simple manipulations of TIFF images.")
    (license (license:non-copyleft "file://COPYRIGHT"
                                   "See COPYRIGHT in the distribution."))
    (home-page "http://www.simplesystems.org/libtiff/")))
+
+(define-public libtiff/fixed
+  (package
+    (inherit libtiff)
+    (name "libtiff")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.osgeo.org/libtiff/tiff-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1jrkjv0xya9radddn8idxvs2gqzp3l2b1s8knlizmn7ad3jq817b"))))))
 
 (define-public leptonica
   (package
@@ -1352,34 +1368,6 @@ and XMP metadata of images in various formats.")
     ;;   <https://launchpad.net/ubuntu/precise/+source/exiv2/+copyright>.
     (license license:gpl2+)))
 
-(define-public exiv2-0.26
-  (package
-    (inherit exiv2)
-    (version "0.26")
-    (source (origin
-             (method url-fetch)
-             (uri (list (string-append "https://www.exiv2.org/builds/exiv2-"
-                                       version "-trunk.tar.gz")
-                        (string-append "https://www.exiv2.org/exiv2-"
-                                       version ".tar.gz")
-                        (string-append "https://fossies.org/linux/misc/exiv2-"
-                                       version ".tar.gz")))
-             (patches (search-patches "exiv2-CVE-2017-14860.patch"
-                                      "exiv2-CVE-2017-14859-14862-14864.patch"))
-             (sha256
-              (base32
-               "1yza317qxd8yshvqnay164imm0ks7cvij8y8j86p1gqi1153qpn7"))))
-    (build-system gnu-build-system)
-    (arguments '(#:tests? #f))                    ; no `check' target
-    (propagated-inputs
-     `(("expat" ,expat)
-       ("zlib" ,zlib)))
-    (native-inputs
-     `(("intltool" ,intltool)))
-
-    ;; People should rely on the newer version, so don't expose it.
-    (properties `((hidden? . #t)))))
-
 (define-public devil
   (package
     (name "devil")
@@ -1420,7 +1408,7 @@ convert, manipulate, filter and display a wide variety of image formats.")
 (define-public jasper
   (package
     (name "jasper")
-    (version "2.0.23")
+    (version "2.0.27")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1429,7 +1417,7 @@ convert, manipulate, filter and display a wide variety of image formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fccpss5ii9rnsd2pkg6k7mkckwpfi8dgp64qzqv3zp1vs2nffw6"))))
+                "0mrnazk8qla7nn59xad86gmrf5fzqcv74j5xhcdrxbgfw67l17zd"))))
     (build-system cmake-build-system)
     (inputs
      `(("libjpeg" ,libjpeg-turbo)))
@@ -1580,6 +1568,39 @@ also converts external formats (BMP, GIF, PNM and TIFF) to optimized
 PNG, and performs PNG integrity checks and corrections.")
     (home-page "http://optipng.sourceforge.net/")
     (license license:zlib)))
+
+(define-public imgp
+  (package
+    (name "imgp")
+    (version "2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "imgp" version))
+       (sha256
+        (base32 "0q99h9wv9rynig0s0flnr9mxi541zzl0gw8vh4y6m5x132diilri"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f ;there are no tests
+       #:phases
+       (modify-phases %standard-phases
+         ;; setup.py expects the file to be named 'imgp'.
+         (add-after 'unpack 'rename-imgp
+           (lambda _
+             (rename-file "imgp.py" "imgp")
+             #t)))))
+    (inputs
+     `(("python-pillow" ,python-pillow)))
+    (home-page "https://github.com/jarun/imgp")
+    (synopsis "High-performance CLI batch image resizer & rotator")
+    (description
+     "@code{imgp} is a command line image resizer and rotator for JPEG and PNG
+images.  It can resize (or thumbnail) and rotate thousands of images in a go
+while saving significantly on storage.
+
+This package may optionally be built with @code{python-pillow-simd} in place
+of @{python-pillow} for SIMD parallelism.")
+    (license license:gpl3+)))
 
 (define-public pngsuite
   (package
@@ -2105,7 +2126,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
 (define-public libavif
   (package
     (name "libavif")
-    (version "0.8.4")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2114,7 +2135,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qvjd3xi9r89pcblxdgz4c6hqp67ss53b1x9zkg7lrik7g3lwq8d"))))
+                "1aw41m8ddrckq375w0lv2zd4ybhccsy1hw4f9kipppwxhgvk17gf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
@@ -2142,6 +2163,42 @@ by AOM, including with alpha.")
     (home-page "https://github.com/AOMediaCodec/libavif")
     (license (list license:bsd-2    ; libavif itself
                    license:expat)))) ; cJSON in the test suite
+
+(define-public libheif
+  (package
+    (name "libheif")
+    (version "1.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/strukturag/libheif")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "036n63vlk4sk7y25q2kzyvvw4r5vv323ysbmbrcaprg9hdyjqgf5"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ;no test target although there is a tests folder
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("dav1d" ,dav1d)
+       ("gdk-pixbuf" ,gdk-pixbuf) ;optional
+       ("libaom" ,libaom)
+       ("libde265" ,libde265)
+       ("libjpeg" ,libjpeg-turbo)
+       ("libpng" ,libpng)
+       ("x265" ,x265)))
+    (home-page "https://github.com/strukturag/libheif")
+    (synopsis "HEIF and AVIF file format decoder and encoder")
+    (description
+     "@code{libheif} is an ISO/IEC 23008-12:2017 HEIF and AVIF (AV1 Image File
+Format) file format decoder and encoder.")
+    (license license:lgpl3+)))
 
 (define-public mtpaint
   (package

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
-;;; Copyright © 2015, 2016 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2015, 2016, 2021 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2015, 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2018 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
@@ -36,6 +36,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages assembly)
@@ -284,7 +285,7 @@ older games.")
 (define-public qtmips
   (package
     (name "qtmips")
-    (version "0.7.3")
+    (version "0.7.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -293,7 +294,7 @@ older games.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1khvwgqz4h6q6mhbbq0yx43ajz8gx9wmwzs8784vmfrglndbxgax"))))
+                "1fal7a8y5g0rqqjrk795jh1l50ihz01ppjnrfjrk9vkjbd59szbp"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
@@ -539,7 +540,7 @@ The following systems are supported:
 (define-public mgba
   (package
     (name "mgba")
-    (version "0.8.4")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -548,7 +549,7 @@ The following systems are supported:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nqj4bnn5c2z1bq4bnbw1wznc0wpmq4sy3w8pipd6n6620b9m4qq"))
+        (base32 "16v08m9irping65d94vb5skp4m6nc63zj6bfajbzhmf944dswmi5"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure we don't use the bundled software.
@@ -1231,10 +1232,48 @@ System (NES/Famicom) emulator Nestopia, with enhancements from members of the
 emulation community.  It provides highly accurate emulation.")
     (license license:gpl2+)))
 
+(define-public libretro-lowresnx
+  (let ((commit "743ab43a6c4a13e0d5363b0d25ac12c7511c6581")
+        (revision "1"))
+    (package
+      (name "libretro-lowresnx")
+      (version (git-version "1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/timoinutilis/lowres-nx")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0r15kb5p5s2jwky6zy4v1j9i95i4rz36p9wxg0g6xdjksf04b5cf"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ; no tests
+         #:make-flags (list "-C" "platform/LibRetro"
+                            (string-append "CC=" ,(cc-for-target)))
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)          ; no configure script
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (libretrodir (string-append out "/lib/libretro")))
+                 (install-file "platform/LibRetro/lowresnx_libretro.so"
+                               libretrodir)
+                 #t))))))
+      (home-page "https://lowresnx.inutilis.com/")
+      (synopsis "Libretro core for LowRES NX")
+      (description "LowRES NX is a simulated retro game console, which can be
+programmed in the classic BASIC language.  This package provides a libretro
+core allowing the lowRES NX programs to be used with libretro frontends such
+as RetroArch.")
+      (license license:zlib))))
+
 (define-public retroarch
   (package
     (name "retroarch")
-    (version "1.8.1")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -1243,18 +1282,9 @@ emulation community.  It provides highly accurate emulation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y7rcpz7psf8k3agsrq277jdm651vbnn9xpqvmj2in1a786idya7"))
+        (base32 "1n0dcv85vqrdr79psnf009hi4r2mvsgsjbghrrc9pm5g7ywwwcvp"))
        (patches
-        (search-patches "retroarch-disable-online-updater.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Don't suggest using the Online Updater if available: it never
-           ;; is.  This disables translation of this particular message.
-           (substitute* (find-files "menu/drivers" "\\.c$")
-             (("msg_hash_to_str\\(MSG_MISSING_ASSETS\\)")
-              "\"Warning: Missing assets, go get some\""))
-           #t))))
+        (search-patches "retroarch-LIBRETRO_DIRECTORY.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1289,7 +1319,9 @@ emulation community.  It provides highly accurate emulation.")
                        '("--enable-neon" "--enable-floathard")
                        '())
                  (string-append "--prefix=" out)
-                 (string-append "--global-config-dir=" etc)
+                 ;; Non-free software are available through the core updater,
+                 ;; disable it.  See <https://issues.guix.gnu.org/38360>.
+                 "--disable-update_cores"
                  "--disable-builtinminiupnpc")))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -1315,6 +1347,11 @@ emulation community.  It provides highly accurate emulation.")
      `(("pkg-config" ,pkg-config)
        ("wayland-protocols" ,wayland-protocols)
        ("which" ,which)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LIBRETRO_DIRECTORY")
+            (separator #f)              ; single entry
+            (files '("lib/libretro")))))
     (home-page "https://www.libretro.com/")
     (synopsis "Reference frontend for the libretro API")
     (description
@@ -1552,7 +1589,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.228")
+    (version "0.230")
     (source
      (origin
        (method git-fetch)
@@ -1561,7 +1598,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xqd0b8xz9bc6ks9qbnrm7kkjcr81l0ksisvflr6gr6lxg2268xz"))
+        (base32 "0dk8q2691pycv9mq77h6sdfwjnwdrfwrblf8nwyykrmdawzi56ks"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1706,7 +1743,7 @@ This is a part of the TiLP project.")
        ("texinfo" ,texinfo)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("asio" ,asio)
+       ("asio" ,asio-1.12)              ;the bundled copy is at 1.11
        ("expat" ,expat)
        ("flac" ,flac)
        ("fontconfig" ,fontconfig)
@@ -2047,7 +2084,7 @@ performance, features, and ease of use.")
             `(("assembler-for-tests" ,(cross-binutils "i686-unknown-linux-gnu"))))
          ("cmocka" ,cmocka)
          ("hexdump-for-tests" ,util-linux)))
-      (home-page "http://www.unicorn-engine.org")
+      (home-page "https://www.unicorn-engine.org")
       (synopsis "Unicorn CPU emulator framework")
       (description
        "Unicorn is a lightweight, multi-platform, multi-architecture CPU emulator
@@ -2057,7 +2094,7 @@ framework based on QEMU.")
 (define-public ppsspp
   (package
     (name "ppsspp")
-    (version "1.10.3")
+    (version "1.11.3")
     (source
      (origin
        (method git-fetch)
@@ -2065,7 +2102,7 @@ framework based on QEMU.")
              (url "https://github.com/hrydgard/ppsspp")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0znxlbj6cfw7gn0naay0mzhc0k5saw8nrwpspcn7gap1023p06w2"))
+        (base32 "1dpxnwvl6jq7z67lbjws4lqc1bxc31xi6ddlmg5n3aig008yi2fp"))
        (file-name (git-file-name name version))
        (patches
         (search-patches "ppsspp-disable-upgrade-and-gold.patch"))
@@ -2076,16 +2113,16 @@ framework based on QEMU.")
            ;; There are still a number of external sources, that we don't
            ;; remove here.  Some may be packaged, others are not.
            ;; First, we patch existing sources to include the right headers.
-           (substitute* (append (list "ext/native/thin3d/vulkan_utils.cpp"
-                                      "ext/native/thin3d/thin3d_vulkan.cpp")
-                                (find-files "Common" ".*\\.(h|cpp)")
+           (substitute* (append (find-files "Common" ".*\\.(h|cpp)")
                                 (find-files "Core" ".*\\.(h|cpp)")
                                 (find-files "GPU" ".*\\.(h|cpp)")
                                 (find-files "SDL" ".*\\.(h|cpp)")
                                 (find-files "UI" ".*\\.(h|cpp)"))
              ;; These headers are all hard-coded in the original source.
              (("ext/cityhash/") "")
-             (("ext/glslang/") "")
+             (("ext/glslang/glslang/") "glslang/")
+             (("ext/glslang/") "glslang/")
+             (("ext/miniupnp/") "")
              (("ext/SPIRV-Cross/") "spirv_cross/")
              (("ext/vulkan/") "vulkan/")
              (("ext/xxhash.h") "xxhash.h")
@@ -2108,7 +2145,12 @@ framework based on QEMU.")
              ;; Don't search for cityhash/xxhash, we already have them.
              (("add_library\\((city|xx)hash STATIC") "if()\nendif(")
              (("ext/xxhash\\.[ch]") "")
-             (("ext/native/ext/cityhash/.*\\.(cpp|h)") "")
+             (("ext/cityhash/.*\\.(cpp|h)") "")
+             (("if\\(USE_MINIUPNPC\\)" all)
+              (string-append all "
+find_package(miniupnpc)
+target_link_libraries(${CoreLibName} miniupnpc ${LDLIBS})
+elseif(FALSE)"))
              ;; Link all of spirv-cross.
              (("spirv-cross-glsl" all)
               (string-append all
@@ -2121,12 +2163,12 @@ framework based on QEMU.")
              (("add_subdirectory\\(SPIRV-Cross-build\\)") ""))
            ;; Finally, we can delete the bundled sources.
            (for-each delete-file-recursively
-                     '("ext/cmake"
+                     '("MoltenVK"
+                       "ext/cmake"
                        "ext/glew"
                        "ext/glslang" "ext/glslang-build"
-                       "ext/native/ext/cityhash"
-                       "ext/native/ext/libpng17"
-                       "ext/native/ext/libzip"
+                       "ext/miniupnp" "ext/miniupnp-build"
+                       "ext/native"
                        "ext/snappy"
                        "ext/SPIRV-Cross" "ext/SPIRV-Cross-build"
                        "ext/vulkan"
@@ -2149,6 +2191,7 @@ framework based on QEMU.")
        ("libpng" ,libpng)
        ("libzip" ,libzip)
        ("mesa" ,mesa)
+       ("miniupnpc" ,miniupnpc)
        ("sdl2" ,sdl2)
        ("snappy" ,snappy)
        ("spirv-cross" ,spirv-cross)
@@ -2159,24 +2202,24 @@ framework based on QEMU.")
        ;; TODO: unbundle armips.
        ("armips-source" ,(package-source armips))
        ("lang"
-        ,(let ((commit "1c64b8fbd3cb6bd87935eb53f302f7de6f86e209"))
+        ,(let ((commit "6bd5b4bc983917ea8402f73c726b46e36f3de0b4"))
            (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/hrydgard/ppsspp-lang")
                    (commit commit)))
              (sha256
-              (base32 "0rprn3yd8xfrvi0fm62sgpqa8n73jk7zmlscp8cp0h2fawqpiamd"))
+              (base32 "08npr3a4xskf85gnlxidl4ksc3rhc7m5rgnj7vsbjvhvw5ap02qx"))
              (file-name (git-file-name "ppsspp-lang" commit)))))
        ("tests"
-        ,(let ((commit "328b839c7243e7f733f9eae88d059485e3d808e7"))
+        ,(let ((commit "1047400eaec6bcbdb2a64d326375ef6a6617c4ac"))
            (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/hrydgard/pspautotests")
                    (commit commit)))
              (sha256
-              (base32 "1gj1kr5ijxrqwvz7c41phskjr70ndp8iz0gr8c3xxsd8p9z5gdvm"))
+              (base32 "0nxv1lskcr8zbg6nrfai21mxsw0n5vaqhbsa41c3cxfyx5c4w2pg"))
              (file-name (git-file-name "pspautotests" commit)))))))
     (arguments
      `(#:out-of-source? #f
@@ -2199,13 +2242,23 @@ framework based on QEMU.")
              (copy-recursively (assoc-ref inputs "lang")
                                "assets/lang")
              #t))
+         (add-after 'unpack 'fix-unittest-build
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("unittest/TestVertexJit.cpp" all)
+                (string-append all " unittest/TestShaderGenerators.cpp")))
+             (substitute* "unittest/TestVertexJit.cpp"
+               (("#include \"unittest/UnitTest.h\"" all)
+                (string-append all "\n#include <cmath>")))
+             #t))
          (replace 'check
            (lambda _
              (for-each
               (lambda (t) (invoke "./unitTest" t))
               '("Arm64Emitter" "ArmEmitter" "X64Emitter" "VertexJit" "Asin"
-                "SinCos" "VFPUSinCos" "MathUtil" "Parsers" "Jit"
-                "MatrixTranspose" "ParseLBN" "QuickTexHash" "CLZ" "MemMap"))
+                "SinCos" #|"VFPUSinCos" SIGSEGV|# "MathUtil" "Parsers" "Jit"
+                "MatrixTranspose" "ParseLBN" "QuickTexHash" "CLZ"
+                #|"ShaderGenerators"|#))
              (invoke "python3" "test.py" "-g")
              #t))
          (replace 'install

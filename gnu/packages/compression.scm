@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -27,10 +27,11 @@
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
+;;; Copyright © 2020, 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -86,7 +87,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match)
-  #:use-module ((srfi srfi-1) #:select (last)))
+  #:use-module (srfi srfi-1))
 
 (define-public zlib
   (package
@@ -890,14 +891,14 @@ extract such file systems.")
 (define-public pigz
   (package
     (name "pigz")
-    (version "2.4")
+    (version "2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://zlib.net/pigz/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0wsgw5vwl23jrnpsvd8v3xcp5k4waw5mk0164fynjhkv58i1dy54"))))
+                "0z9avc4mifwcpj3qdsf9m2rjw9jx03b2r9pj0c4xgla9fh6ppv9f"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -952,44 +953,6 @@ possible and can compress in parallel.  This is especially useful for large
 tarballs.")
     (license license:bsd-2)))
 
-(define-public bsdiff
-  (package
-    (name "bsdiff")
-    (version "4.3")
-    (home-page "https://www.daemonology.net/bsdiff/")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append home-page name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0j2zm3z271x5aw63mwhr3vymzn45p2vvrlrpm9cz2nywna41b0hq"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags (list "INSTALL=install"
-                          (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-before 'build 'fix-Makefile
-                    (lambda _
-                      (substitute* "Makefile"
-                        ;; Adjust syntax to make it compatible with GNU Make.
-                        (("^\\.") "")
-                        ;; Help install(1) create the target directory.
-                        (("\\$\\{PREFIX\\}") "-D -t ${PREFIX}"))
-                      #t)))
-       #:tests? #f)) ;no tests
-    (inputs
-     `(("bzip2" ,bzip2)))
-    (synopsis "Patch binary files")
-    (description
-     "@command{bsdiff} and @command{bspatch} are tools for building and
-applying patches to binary files.  By using suffix sorting (specifically
-Larsson and Sadakane's @code{qsufsort}) and taking advantage of how
-executable files change, bsdiff routinely produces binary patches 50-80%
-smaller than those produced by @code{Xdelta}.")
-    (license license:bsd-2)))
-
 (define-public cabextract
  (package
    (name "cabextract")
@@ -1037,7 +1000,7 @@ smaller than those produced by @code{Xdelta}.")
 (define-public libjcat
   (package
     (name "libjcat")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method git-fetch)
@@ -1047,7 +1010,7 @@ smaller than those produced by @code{Xdelta}.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rxyqikdhkh2nq1y0hy05df2kkxf3d2cp6lm5x1s5i717k6y3zy5"))))
+        (base32 "1a2z34m8611xvna9kwch8ralxx7c9mk4rm9vrxx7p9hr8sbqbsaz"))))
     (build-system meson-build-system)
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
@@ -1109,16 +1072,14 @@ human-readable output.")
 (define-public lrzip
   (package
     (name "lrzip")
-    (version "0.631")
+    (version "0.641")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://ck.kolivas.org/apps/lrzip/lrzip-" version ".tar.bz2"))
+             "http://ck.kolivas.org/apps/lrzip/lrzip-" version ".tar.xz"))
        (sha256
-        (base32
-         "0mb449vmmwpkalq732jdyginvql57nxyd31sszb108yps1lf448d"))
-       (patches (search-patches "lrzip-CVE-2017-8842.patch"))))
+        (base32 "0ziyanspd96dc3lp2qdcylc7aq8dhb511jhqrhxvlp502fjqjqrc"))))
     (build-system gnu-build-system)
     (native-inputs
      `(;; nasm is only required when building for 32-bit x86 platforms
@@ -1129,6 +1090,7 @@ human-readable output.")
        ("perl" ,perl)))
     (inputs
      `(("bzip2" ,bzip2)
+       ("lz4" ,lz4)
        ("lzo" ,lzo)
        ("zlib" ,zlib)))
     (home-page "http://ck.kolivas.org/apps/lrzip/")
@@ -1262,6 +1224,12 @@ handles the 7z format which features very high compression ratios.")
      `(#:test-target "test"
        #:phases
        (modify-phases %standard-phases
+         ;; Enable PIC, so it can be used in shared libraries.
+         (add-after 'unpack 'use-pic
+           (lambda _
+             (substitute* "Makefile"
+               (("CPPFLAGS = " all) (string-append all "-fPIC ")))
+            #t))
          (delete 'configure)
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -1441,6 +1409,7 @@ or junctions, and always follows hard links.")
                            "v" version "/zstd-" version ".tar.gz"))
        (sha256
         (base32 "05ckxap00qvc0j51d3ci38150cxsw82w7s9zgd5fgzspnzmp1vsr"))))
+    (replacement zstd/fixed)
     (build-system gnu-build-system)
     (outputs '("out"                    ;1.2MiB executables and documentation
                "lib"                    ;1.2MiB shared library and headers
@@ -1500,12 +1469,21 @@ speed.")
                    license:public-domain ; zlibWrapper/examples/fitblk*
                    license:zlib))))      ; zlibWrapper/{gz*.c,gzguts.h}
 
-(define-public pzstd
+(define zstd/fixed
   (package
+    (inherit zstd)
+    (source
+     (origin
+       (inherit (package-source zstd))
+       (patches
+        (search-patches
+         ;; From Ubuntu focal-security
+         "zstd-CVE-2021-24031_CVE-2021-24032.patch"))))))
+
+(define-public pzstd
+  (package/inherit zstd
     (name "pzstd")
-    (version (package-version zstd))
-    (source (package-source zstd))
-    (build-system gnu-build-system)
+    (outputs '("out"))
     (inputs
      `(,@(if (%current-target-system)
            `(("googletest" ,googletest))
@@ -1615,6 +1593,7 @@ Compression ratios of 2:1 to 3:1 are common for text files.")
                                 "unzip-overflow-on-invalid-input.patch"
                                 "unzip-format-secure.patch"
                                 "unzip-overflow-long-fsize.patch"))))
+    (replacement unzip/fixed)
     (build-system gnu-build-system)
     ;; no inputs; bzip2 is not supported, since not compiled with BZ_NO_STDIO
     (arguments
@@ -1649,6 +1628,57 @@ subdirectories below it, all files from the specified zipfile.  UnZip
 recreates the stored directory structure by default.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
+
+(define unzip/fixed
+  (package
+    (inherit unzip)
+    (version "6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/infozip"
+                           "/UnZip%206.x%20%28latest%29/UnZip%206.0/unzip60.tar.gz"))
+       (sha256
+        (base32
+         "0dxx11knh3nk95p2gg2ak777dd11pr7jx5das2g49l262scrcv83"))
+       (patches (search-patches "unzip-CVE-2014-8139.patch"
+                                "unzip-CVE-2014-8140.patch"
+                                "unzip-CVE-2014-8141.patch"
+                                "unzip-CVE-2014-9636.patch"
+                                "unzip-CVE-2015-7696.patch"
+                                "unzip-CVE-2015-7697.patch"
+                                "unzip-allow-greater-hostver-values.patch"
+                                "unzip-initialize-symlink-flag.patch"
+                                "unzip-remove-build-date.patch"
+                                "unzip-attribs-overflow.patch"
+                                "unzip-overflow-on-invalid-input.patch"
+                                "unzip-format-secure.patch"
+                                "unzip-overflow-long-fsize.patch"
+
+                                ;; From Fedora
+                                "unzip-alt-iconv-utf8.patch"
+                                "unzip-alt-iconv-utf8-print.patch"
+                                "unzip-fix-recmatch.patch"
+                                "unzip-case-insensitive.patch"
+                                "unzip-close.patch"
+                                "unzip-COVSCAN-fix-unterminated-string.patch"
+                                "unzip-CVE-2016-9844.patch"
+                                "unzip-CVE-2018-1000035.patch"
+                                "unzip-CVE-2018-18384.patch"
+                                "unzip-exec-shield.patch"
+                                "unzip-manpage-fix.patch"
+                                "unzip-overflow.patch"
+                                "unzip-timestamp.patch"
+                                "unzip-valgrind.patch"
+                                "unzip-x-option.patch"
+                                ;; CVE-2019-13232
+                                "unzip-zipbomb-manpage.patch"
+                                "unzip-zipbomb-part1.patch"
+                                "unzip-zipbomb-part2.patch"
+                                "unzip-zipbomb-part3.patch"
+
+                                ;; https://github.com/madler/unzip/issues/2
+                                "unzip-32bit-zipbomb-fix.patch"))))))
 
 (define-public ziptime
   (let ((commit "2a5bc9dfbf7c6a80e5f7cb4dd05b4036741478bc")
@@ -1713,6 +1743,7 @@ timestamps in the file header with a fixed time (1 January 2008).
               (sha256
                (base32
                 "0fbk9k7ryas2wh2ykwkvm1pbi40i88rfvc3dydh9xyd7w2jcki92"))))
+    (replacement zziplib/fixed)
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1740,6 +1771,40 @@ timestamps in the file header with a fixed time (1 January 2008).
     ;; zziplib is dual licensed under LGPL2.0+ and MPL1.1.  Some example source
     ;; files carry the Zlib license; see "docs/copying.html" for details.
     (license (list license:lgpl2.0+ license:mpl1.1))))
+
+(define-public zziplib/fixed
+  (package
+    (inherit zziplib)
+    (name "zziplib")
+    (version "0.13.72")
+    (home-page "https://github.com/gdraheim/zziplib")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0i6bpa2b13z19alm6ig80364dnin1w28cvif18k6wkkb0w3dzp8y"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-compatibility-symlinks
+           (lambda* (#:key outputs #:allow-other-keys)
+             (with-directory-excursion
+               (string-append (assoc-ref outputs "out") "/lib")
+               (map (lambda (lib new-symlink)
+                      (symlink lib new-symlink))
+                    (list "libzzip.so.13" "libzzipfseeko.so.13"
+                          "libzzipmmapped.so.13" "libzzipwrap.so.13")
+                    (list "libzzip-0.so.13" "libzzipfseeko-0.so.13"
+                          "libzzipmmapped-0.so.13" "libzzipwrap-0.so.13")))
+             #t)))))
+    (native-inputs
+     `(("python" ,python)
+       ,@(alist-delete "python"
+                       (package-native-inputs zziplib))))
+    (build-system cmake-build-system)))
 
 (define-public libzip
   (package
@@ -1807,14 +1872,14 @@ of archives.")
 (define-public lunzip
   (package
     (name "lunzip")
-    (version "1.11")
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/lunzip/"
                            "lunzip-" version ".tar.gz"))
        (sha256
-        (base32 "19zq3gmlbia2krq4k4zs1j0xjdv7nsdzqvfb0pyca5n53h2mzb91"))))
+        (base32 "1liaynyy3qcs29hfk1pnb7i9r1mnmpw557j5v356qsv6qnm4lnz5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1834,14 +1899,14 @@ Lunzip is intended to be fully compatible with the regular lzip package.")
 (define-public clzip
   (package
     (name "clzip")
-    (version "1.11")
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/lzip/clzip/"
                            "clzip-" version ".tar.gz"))
        (sha256
-        (base32 "1h14dmc9fi10gcdpdpbgq1bwvcxvivppilj64pf720x8mw915mfr"))))
+        (base32 "1s7yidqvmxi61hh569h5aci816l6qkffjgx0zx57qyyq0qq2pjgw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2043,7 +2108,8 @@ decompression is a little bit slower.")
                                  version "/upx-" version "-src.tar.xz"))
              (sha256
               (base32
-               "051pk5jk8fcfg5mpgzj43z5p4cn7jy5jbyshyn78dwjqr7slsxs7"))))
+               "051pk5jk8fcfg5mpgzj43z5p4cn7jy5jbyshyn78dwjqr7slsxs7"))
+             (patches (search-patches "upx-CVE-2021-20285.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("perl" ,perl)))
@@ -2246,7 +2312,7 @@ file compression algorithm.")
 (define-public xarchiver
   (package
     (name "xarchiver")
-    (version "0.5.4.16")
+    (version "0.5.4.17")
     (source
      (origin
        (method git-fetch)
@@ -2255,7 +2321,7 @@ file compression algorithm.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nblyk65w1in0zpfbyzy6dw4x0fzx3q7xs85dby5ap4w0gjz9s44"))))
+        (base32 "00adrjpxqlaccrwjf65w3vhxfswdj0as8aj263c6f9b85llypc5v"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)

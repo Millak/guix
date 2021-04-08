@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,7 +29,9 @@
 (define-module (gnu packages python-check)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages django)
   #:use-module (gnu packages openstack)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages web)
@@ -39,6 +42,31 @@
   #:use-module (guix git-download)
   #:use-module (guix download)
   #:use-module (guix build-system python))
+
+(define-public python-testfixtures
+  (package
+    (name "python-testfixtures")
+    (version "6.17.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "testfixtures" version))
+       (sha256
+        (base32 "1nlv2hz20czjp4a811ichl5kwg99rh84l0mw9wq4rk3idzfs1hsy"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f))          ; PyTest-Django fails to build in master
+    (native-inputs
+     `(("python-pytest" ,python-pytest)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ;;("python-pytest-django" ,python-pytest-django)
+       ("python-twine" ,python-twine)
+       ("python-wheel" ,python-wheel)))
+    (synopsis "Tests components for Python")
+    (description "Testfixtures is a collection of helpers and mock objects that
+are useful when writing automated tests in Python.")
+    (home-page "https://testfixtures.readthedocs.io/en/latest/")
+    (license license:expat)))
 
 (define-public python-coveralls
   (package
@@ -195,6 +223,65 @@ interactions, which will update them to correspond to the new API.")
      "This plugin defines Pytest markers to ensure that some tests, or groups
 of tests run in a specific order.")
     (license license:expat)))
+
+(define-public python-pytest-astropy-header
+(package
+  (name "python-pytest-astropy-header")
+  (version "0.1.2")
+  (source
+    (origin
+      (method url-fetch)
+      (uri (pypi-uri "pytest-astropy-header" version))
+      (sha256
+        (base32 "1y87agr324p6x5gvhziymxjlw54pyn4gqnd49papbl941djpkp5g"))))
+  (build-system python-build-system)
+  (native-inputs
+   `(("pytest" ,python-pytest)
+     ("setuptools-scm" ,python-setuptools-scm)))
+  (home-page "https://www.astropy.org/")
+  (synopsis
+   "Pytest plugin adding diagnostic data to the header of the test output")
+  (description
+    "This plugin package provides a way to include information about the system,
+Python installation, and select dependencies in the header of the output when
+running pytest.  It can be used with packages that are not affiliated with the
+Astropy project, but is optimized for use with astropy-related projects.")
+  (license license:bsd-3)))
+
+(define-public python-pytest-astropy
+  (package
+    (name "python-pytest-astropy")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-astropy" version))
+       (sha256
+        (base32 "18j6z6y2fvykmcs5z0mldhhaxxn6wzpnhlm2ps7m8r5z5kmh1631"))))
+    (build-system python-build-system)
+    (arguments
+     ;; No tests provided
+     '(#:tests? #f))
+    (native-inputs
+     `(("attrs" ,python-attrs)
+       ("hypothesis" ,python-hypothesis)
+       ("pytest" ,python-pytest)
+       ("pytest-arraydiff" ,python-pytest-arraydiff)
+       ("pytest-astropy-header" ,python-pytest-astropy-header)
+       ("pytest-cov" ,python-pytest-cov)
+       ("pytest-doctestplus" ,python-pytest-doctestplus)
+       ("pytest-filter-subpackage" ,python-pytest-filter-subpackage)
+       ("pytest-mock" ,python-pytest-mock)
+       ("pytest-openfiles" ,python-pytest-openfiles)
+       ("pytest-remotedata" ,python-pytest-remotedata)
+       ("setuptools-scm" ,python-setuptools-scm)))
+    (home-page "https://github.com/astropy/pytest-astropy")
+    (synopsis
+     "Metapackage for all the testing machinery used by the Astropy Project")
+    (description
+     "This is a meta-package that pulls in the dependencies that are used by
+astropy related packages.")
+    (license license:bsd-3)))
 
 (define-public python-pytest-arraydiff
   (package
@@ -540,14 +627,14 @@ friendly library for concurrency and async I/O in Python.")
 (define-public python-pytest-flake8
   (package
     (name "python-pytest-flake8")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-flake8" version))
        (sha256
         (base32
-         "09vhn7r77s1yiqnlwfvh5585f904zpyd6620a90dpccfr1cbp0hv"))))
+         "0syx68xk5ss3hgp3nr2y122w0fgkzr5936ghsqrkymh3m5hrf9gh"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-flake8" ,python-flake8)))
@@ -1177,22 +1264,23 @@ help in debugging failures and optimizing the scheduler to improve speed.")
 (define-public python-pytest-sanic
   (package
     (name "python-pytest-sanic")
-    (version "1.6.2")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-sanic" version))
               (sha256
                 (base32
-                  "02ajd8z77ahi69kzkz200qgxrb4s2j4qb6k8j9ds1kz6qa6fsa34"))))
+                  "0hm7im77dgqfk8k34qbbfhimg8hifl4zwpa2s3mgbknrjvyw5qpx"))))
     (build-system python-build-system)
     (arguments
      ;; Tests depend on python-sanic.
      `(#:tests? #f))
     (propagated-inputs
-      `(("python-aiohttp" ,python-aiohttp)
+      `(("python-httpx" ,python-httpx)
         ("python-async-generator"
          ,python-async-generator)
-        ("python-pytest" ,python-pytest)))
+        ("python-pytest" ,python-pytest)
+        ("python-websockets" ,python-websockets)))
     (home-page
       "https://github.com/yunstanford/pytest-sanic")
     (synopsis "Pytest plugin for Sanic")

@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;;
@@ -122,7 +122,7 @@ engine that uses Wayland for graphics output.")
 (define-public wpewebkit
   (package
     (name "wpewebkit")
-    (version "2.28.3")
+    (version "2.30.5")
     (source
      (origin
        (method url-fetch)
@@ -130,7 +130,7 @@ engine that uses Wayland for graphics output.")
         (string-append "https://wpewebkit.org/releases/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "12z9457ja1xm93kl3gpd6nvd5xn11mvm8pr0w2zhmh3k9lx2cf95"))))
+        (base32 "16imr0kmzhs7dz6jva9750xbsdz9v50playnagabajy30x7pymsb"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -140,8 +140,10 @@ engine that uses Wayland for graphics output.")
         "-DPORT=WPE"
         ;; XXX: To be enabled.
         ;; "-DENABLE_ACCELERATED_2D_CANVAS=ON"
-        "-DENABLE_ENCRYPTED_MEDIA=ON"
-        "-DENABLE_GTKDOC=ON")
+        "-DUSE_SYSTEMD=OFF"
+        "-DENABLE_ENCRYPTED_MEDIA=OFF"
+        "-DENABLE_GTKDOC=ON"
+        "-DUSE_GSTREAMER_GL=OFF")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'setenv
@@ -172,7 +174,7 @@ engine that uses Wayland for graphics output.")
        ("docbook-xsl" ,docbook-xsl)
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
+       ("gtk-doc" ,gtk-doc/stable)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
@@ -224,14 +226,14 @@ acceleration in mind, leveraging common 3D graphics APIs for best performance.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.30.4")
+    (version "2.32.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   "webkitgtk-" version ".tar.xz"))
               (sha256
                (base32
-                "093v5wwi237kq8a2fvs6dn5b9rgjll1y6mdicrr7izq1a1ya75fm"))
+                "1w3b0w8izp0i070grhv19j631sdcd0mcqnjnax13k8mdx7dg8zcx"))
               (patches (search-patches "webkitgtk-share-store.patch"
                                        "webkitgtk-bind-all-fonts.patch"))))
     (build-system cmake-build-system)
@@ -242,6 +244,9 @@ acceleration in mind, leveraging common 3D graphics APIs for best performance.")
        #:configure-flags (list
                           "-DPORT=GTK"
                           "-DENABLE_GTKDOC=ON" ; No doc by default
+                          ;; Requires libmanette, new dependency added in 2.32.0.
+                          ;; TODO Decide if we should enable this
+                          "-DENABLE_GAMEPAD=OFF"
                           "-DUSE_SYSTEMD=OFF"
                           (string-append ; uses lib64 by default
                            "-DLIB_INSTALL_DIR="
@@ -254,12 +259,7 @@ acceleration in mind, leveraging common 3D graphics APIs for best performance.")
                           ;; included.  More investigation is needed.  For
                           ;; now, we explicitly disable it to prevent an error
                           ;; at configuration time.
-                          "-DUSE_GSTREAMER_GL=OFF"
-
-                          ;; XXX Disable WOFF2 ‘web fonts’.  These were never
-                          ;; supported in our previous builds.  Enabling them
-                          ;; requires building libwoff2 and possibly woff2dec.
-                          "-DUSE_WOFF2=OFF")
+                          "-DUSE_GSTREAMER_GL=OFF")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'configure-bubblewrap-store-directory
@@ -304,7 +304,7 @@ acceleration in mind, leveraging common 3D graphics APIs for best performance.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)
-       ("gtk-doc" ,gtk-doc) ; For documentation generation
+       ("gtk-doc" ,gtk-doc/stable) ; For documentation generation
        ("docbook-xml" ,docbook-xml) ; For documentation generation
        ("ruby" ,ruby)))
     (propagated-inputs
@@ -336,6 +336,7 @@ acceleration in mind, leveraging common 3D graphics APIs for best performance.")
        ("mesa" ,mesa)
        ("openjpeg" ,openjpeg)
        ("sqlite" ,sqlite)
+       ("woff2" ,woff2)
        ("wpebackend-fdo" ,wpebackend-fdo)
        ("xdg-dbus-proxy" ,xdg-dbus-proxy)))
     (home-page "https://www.webkitgtk.org/")

@@ -62,6 +62,7 @@
               (base32
                "12w7gskrglg6qrmp822j37fmbr0icrcxv7rib1fy5xiw80n5z7cr"))
              (patches (search-patches "curl-use-ssl-cert-env.patch"))))
+   (replacement curl/fixed)
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                             ;1.2 MiB of man3 pages
@@ -151,6 +152,20 @@ tunneling, and so on.")
     (name "curl-minimal")
     (inputs (alist-delete "openldap" (package-inputs curl))))))
 
+(define-public curl/fixed
+  (package
+    (inherit curl)
+    (version "7.76.0")
+    (source
+     (origin
+       (inherit (package-source curl))
+       (uri (string-append "https://curl.haxx.se/download/curl-"
+                           version ".tar.xz"))
+       (patches (search-patches "curl-7.76-use-ssl-cert-env.patch"))
+       (sha256
+        (base32
+         "1j2g04m6als6hmqzvddv84c31m0x90bfgyz3bjrwdkarbkby40k3"))))))
+
 (define-public kurly
   (package
     (name "kurly")
@@ -198,14 +213,14 @@ not offer a replacement for libcurl.")
 (define-public guile-curl
   (package
    (name "guile-curl")
-   (version "0.7")
+   (version "0.9")
    (source (origin
             (method url-fetch)
             (uri (string-append "http://www.lonelycactus.com/tarball/"
                                 "guile_curl-" version ".tar.gz"))
             (sha256
              (base32
-              "1zk0ijx6bj212k0j0ma84cpvpvn0x6raaxnby3wdx3w4wnhnscn7"))))
+              "0y7wfhilfm6vzs0wyifrrc2pj9nsxfas905c7qa5cw4i6s74ypmi"))))
    (build-system gnu-build-system)
    (arguments
     `(#:modules (((guix build guile-build-system)
@@ -230,7 +245,7 @@ not offer a replacement for libcurl.")
       (modify-phases %standard-phases
         (add-after 'unpack 'patch-undefined-references
           (lambda* _
-            (substitute* "src/curl.scm"
+            (substitute* "module/curl.scm"
               ;; The following #defines are missing from our curl package
               ;; and therefore result in the evaluation of undefined symbols.
               ((",CURLOPT_HAPROXYPROTOCOL") "#f")

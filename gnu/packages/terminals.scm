@@ -824,6 +824,43 @@ programmer to write text-based user interfaces.")
 usable with any list--including files, command history, processes and more.")
     (license license:expat)))
 
+(define-public fzf
+  (package
+    (inherit go-github-com-junegunn-fzf)
+    (name "fzf")
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments go-github-com-junegunn-fzf)
+      `(#:phases
+        (modify-phases %standard-phases
+          (add-after 'install 'copy-binaries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (with-directory-excursion "src/github.com/junegunn/fzf"
+                  (install-file "bin/fzf-tmux"
+                                (string-append out "/bin"))))))
+          (add-after 'copy-binaries 'wrap-programs
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (ncurses (assoc-ref inputs "ncurses")))
+                (wrap-program (string-append out "/bin/fzf-tmux")
+                  `("PATH" ":" prefix (,(string-append ncurses "/bin")))))))
+          (add-after 'install 'install-completions
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bash-completion (string-append out "/etc/bash_completion.d"))
+                     (zsh-completion (string-append out "/share/zsh/site-functions")))
+                (with-directory-excursion "src/github.com/junegunn/fzf"
+                  (mkdir-p bash-completion)
+                  (copy-file "shell/completion.bash"
+                             (string-append bash-completion "/fzf"))
+                  (mkdir-p zsh-completion)
+                  (copy-file "shell/completion.zsh"
+                             (string-append zsh-completion "/_fzf"))))))))))
+    (inputs
+     `(,@(package-inputs go-github-com-junegunn-fzf)
+       ("ncurses" ,ncurses)))))
+
 (define-public go-github.com-howeyc-gopass
   (let ((commit "bf9dde6d0d2c004a008c27aaee91170c786f6db8")
         (revision "0"))
@@ -1220,23 +1257,21 @@ made by suckless.")
         (base32 "1b9hy3ya72hhpl8nkayc7dy4f97xp75np48dm5na5pgyv8b45agi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags '("--release" "--" "--skip=config_read_eof")
+     `(#:install-source? #f     ; virtual manifest
+       #:cargo-test-flags '("--release" "--" "--skip=config_read_eof")
        #:cargo-inputs
        (("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.1)
         ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.12)
-        ("rust-bitflags" ,rust-bitflags-1)
         ("rust-clap" ,rust-clap-2)
         ("rust-cocoa" ,rust-cocoa-0.24)
         ("rust-copypasta" ,rust-copypasta-0.7)
         ("rust-crossfont" ,rust-crossfont-0.2)
-        ("rust-dirs" ,rust-dirs-2)
         ("rust-embed-resource" ,rust-embed-resource-1)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
         ;; XXX: Adjust `add-absolute-library-references' phase when updating
         ;; glutin input.
         ("rust-glutin" ,rust-glutin-0.26)
-        ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-notify" ,rust-notify-4)
         ("rust-objc" ,rust-objc-0.2)
@@ -1247,10 +1282,7 @@ made by suckless.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-yaml" ,rust-serde-yaml-0.8)
         ("rust-time" ,rust-time-0.1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-urlocator" ,rust-urlocator-0.1)
-        ("rust-wayland-client" ,rust-wayland-client-0.28)
-        ("rust-winapi" ,rust-winapi-0.3)
         ("rust-x11-dl" ,rust-x11-dl-2)
         ("rust-xdg" ,rust-xdg-2))
        #:phases
@@ -1261,7 +1293,28 @@ made by suckless.")
                     (glutin-version ,(package-version rust-glutin-0.26))
                     (glutin-api (string-append glutin-name "-" glutin-version
                                                ".tar.gz/src/api/"))
+                    (smithay-client-toolkit-name
+                     ,(package-name rust-smithay-client-toolkit-0.12))
+                    (smithay-client-toolkit-version
+                     ,(package-version rust-smithay-client-toolkit-0.12))
+                    (smithay-client-toolkit-src
+                     (string-append smithay-client-toolkit-name "-"
+                                    smithay-client-toolkit-version ".tar.gz/src"))
+                    (libxkbcommon (assoc-ref inputs "libxkbcommon"))
                     (mesa (assoc-ref inputs "mesa")))
+               ;; Fix dlopen()ing some libraries on pure Wayland (no $DISPLAY):
+               ;; Failed to initialize any backend! Wayland status: NoWaylandLib
+               ;; XXX We patch transitive dependencies that aren't even direct
+               ;; inputs to this package, because of the way Guix's Rust build
+               ;; system currently works.  <http://issues.guix.gnu.org/46399>
+               ;; might fix this and allow patching them directly.
+               (substitute* (string-append vendor-dir "/"
+                                           smithay-client-toolkit-src
+                                           "/seat/keyboard/ffi.rs")
+                 (("libxkbcommon\\.so")
+                  (string-append libxkbcommon "/lib/libxkbcommon.so")))
+
+               ;; Mesa is needed everywhere.
                (substitute*
                    (string-append vendor-dir "/" glutin-api "glx/mod.rs")
                  (("libGL.so") (string-append mesa "/lib/libGL.so")))
@@ -1323,8 +1376,14 @@ made by suckless.")
        ("libxkbcommon" ,libxkbcommon)
        ("libxrandr" ,libxrandr)
        ("libxxf86vm" ,libxxf86vm)
-       ("wayland" ,wayland)
-       ("mesa" ,mesa)))
+       ("mesa" ,mesa)
+       ("rust-bitflags" ,rust-bitflags-1)
+       ("rust-dirs" ,rust-dirs-2)
+       ("rust-libc" ,rust-libc-0.2)
+       ("rust-unicode-width" ,rust-unicode-width-0.1)
+       ("rust-wayland-client" ,rust-wayland-client-0.28)
+       ("rust-winapi" ,rust-winapi-0.3)
+       ("wayland" ,wayland)))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
@@ -1345,7 +1404,7 @@ terminal.  Note that you need support for OpenGL 3.2 or higher.")
 (define-public bootterm
   (package
     (name "bootterm")
-    (version "0.2")
+    (version "0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1354,7 +1413,7 @@ terminal.  Note that you need support for OpenGL 3.2 or higher.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08yb4kiid3028cqsx7wzyrzk46asphxlxlj1y141hi245wbql55n"))))
+                "1k3jacld98za41dbpr10sjms77hrw91sb10m0cnwv3h7aifiwmrs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no test suite

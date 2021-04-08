@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2016, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
@@ -302,17 +302,69 @@ fdisk.  fdisk is used for the creation and manipulation of disk partition
 tables, and it understands a variety of different formats.")
     (license license:gpl3+)))
 
+(define-public gpart
+  ;; The latest (0.3) release is from 2015 and is missing a crash fix.
+  (let ((commit "ec03350a01ad69708b5a3e2d47b8e002b0eba6c9")
+        (revision "0"))
+    (package
+      (name "gpart")
+      (version (git-version "0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/baruch/gpart")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dassswliaiwhhmx7yz540yyxgk53fvg672dbvgc5q0v6cqrh5jx"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         (list (string-append "--docdir=" (assoc-ref %outputs "out") "/share/doc/"
+                              ,name "-" ,version))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'skip-premature-configuration
+             (lambda _
+               (substitute* "autogen.sh"
+                 (("\\./configure") "")))))))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)))
+      (home-page "https://github.com/baruch/gpart")
+      (synopsis "Guess and recover PC-style partition tables")
+      (description
+       "Gpart tries to guess the partitions on a PC-style, MBR-partitioned disk
+after they have been inadvertently deleted or the primary partition table at
+sector 0 damaged.  In both cases, the contents of these partitions still exist
+on the disk but the operating system cannot access them.
+
+Gpart ignores the partition table and scans each sector of the device or image
+file for several known file system and partition types.  Only partitions which
+have been formatted in some way can be recognized.  Several file system guessing
+modules are built in; more can be written and loaded at run time.
+
+The guessed table can be restored manually, for example with @command{fdisk},
+written to a file, or---if you firmly believe it's entirely correct---directly
+to disk.
+
+It should be stressed that gpart does a very heuristic job.  It can easily be
+right in its guesswork but it can also be terribly wrong.  Never believe its
+output without any plausability checks.")
+      (license license:gpl2+))))
+
 (define-public gptfdisk
   (package
     (name "gptfdisk")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/gptfdisk/gptfdisk/"
                           version "/gptfdisk-" version ".tar.gz"))
       (sha256
-       (base32 "1a4c2ss6n2s6x8v11h79jykh96y46apd6i838ka0ngx58gb53ifx"))))
+       (base32 "1h1871gwlq05gdc2wym98ghfmq6pn5lh8g5cqy3r49svz2vh8h3m"))))
     (build-system gnu-build-system)
     (inputs
      `(("gettext" ,gettext-minimal)
@@ -363,6 +415,8 @@ scheme.")
       (sha256
        (base32 "0qqh38izl5ppap9a5izf3hijh94k65s3zbfkczd4b7x04syqwlyf"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list (string-append "CXX=" ,(cxx-for-target)))))
     (home-page "https://www.gnu.org/software/ddrescue/ddrescue.html")
     (synopsis "Data recovery utility")
     (native-inputs `(("lzip" ,lzip)))
@@ -376,23 +430,26 @@ to recover data more efficiently by only reading the necessary blocks.")
 (define-public dosfstools
   (package
     (name "dosfstools")
-    (version "4.1")
+    (version "4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/" name "/" name
-                           "/releases/download/v" version "/"
-                           name "-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dosfstools/dosfstools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0wy13i3i4x2bw1hf5m4fd0myh61f9bcrs035fdlf6gyc1jksrcp6"))))
+        (base32 "1xygsixmmc9l7drxylggnzkqqiks8zmlsbhg3z723ii2ak94236s"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--enable-compat-symlinks")
        #:make-flags (list (string-append "PREFIX=" %output)
                           "CC=gcc")))
     (native-inputs
-     `(("xxd" ,xxd))) ; for tests
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ;; For tests.
+       ("xxd" ,xxd)))
     (home-page "https://github.com/dosfstools/dosfstools")
     (synopsis "Utilities for making and checking MS-DOS FAT file systems")
     (description
@@ -1116,7 +1173,7 @@ that support this feature).")
 (define-public memkind
   (package
     (name "memkind")
-    (version "1.10.1")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1125,7 +1182,7 @@ that support this feature).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11iz887f3cp5pzf1bzm644wzab8gkbhz3b7x1w6pcps71yd94ylj"))))
+                "0w5hws12l167mbr4n6a6fl0mhf8mci61fsn55lh2cxz33f7q8n2x"))))
     (build-system gnu-build-system)
     (inputs
      `(;; memkind patched jemalloc to add je_arenalookupx,
@@ -1138,7 +1195,10 @@ that support this feature).")
        ("automake" ,automake)
        ("libtool" ,libtool)))
     (arguments
-     `(#:tests? #f ; Tests require a NUMA-enabled system.
+     `(#:configure-flags
+       (list (string-append "--docdir=" (assoc-ref %outputs "out")
+                            "/share/doc/" ,name "-" ,version))
+       #:tests? #f ; Tests require a NUMA-enabled system.
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'autogen-jemalloc

@@ -16,6 +16,8 @@
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2021 Cage <cage-dev@twistfold.it>
+;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,12 +49,14 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnome-xyz)
@@ -67,6 +71,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -169,14 +174,14 @@ older or slower computers and embedded systems.")
 (define-public links
   (package
     (name "links")
-    (version "2.21")
+    (version "2.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "0qqdcghsdqm7l6kyi0k752ws3ak5crw85pqkcb11wy67j62yspi8"))))
+                "0k88qbmq0mf6zmk2v158c0rxvqbi7ysn58xyf4qqw7kz79mrhr03"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -474,7 +479,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "1.14.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
@@ -482,13 +487,14 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "15l7jphy1qjsh6y6kd5mgkxsl6ymm9564g1yypa946jbyrgi8k2m"))))
+        (base32 "0fxkazz4ykmkiww27l92yr96hq00qn5vvjmknxcy4cl97d2pxa28"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-attrs" ,python-attrs))) ; for tests
     (inputs
      `(("python-colorama" ,python-colorama)
        ("python-cssutils" ,python-cssutils)
+       ("python-importlib-resources" ,python-importlib-resources)
        ("python-jinja2" ,python-jinja2)
        ("python-markupsafe" ,python-markupsafe)
        ("python-pygments" ,python-pygments)
@@ -586,40 +592,12 @@ vim editor and also easily configurable during runtime.  Vimb is mostly keyboard
 driven and does not detract you from your daily work.")
     (license license:gpl3+)))
 
-;; Nyxt 2 pre-release 5 is incompatible with the new nickname "class*" of defclass-star.
-;; Use the older commit then.
-(define sbcl-hu.dwim.defclass-star--no-nickname
-  (let ((commit "2cf30b37006824ec912cf7732fe6c4f4b414597f"))
-    (package
-      (name "sbcl-hu.dwim.defclass-star")
-      ;; We used to set version from the date when it was a darcs repo, so we
-      ;; keep the year so that package gets updated on previous installs.
-      (version (git-version "2015-07-09" "1" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/hu-dwim/hu.dwim.defclass-star")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0zmzvwgcp6lpkqxnfphd05v20xqsvz392mx1v98469kavh4zd7hf"))))
-      (build-system asdf-build-system/sbcl)
-      (native-inputs
-       `(("hu.dwim.asdf" ,sbcl-hu.dwim.asdf)))
-      (arguments
-       '(#:tests? #f))
-      (home-page "https://github.com/hu-dwim/hu.dwim.defclass-star")
-      (synopsis "See sbcl-hu.dwim.defclass-star")
-      (description "See sbcl-hu.dwim.defclass-star.")
-      (license license:public-domain))))
-
 (define-public nyxt
   (package
     (name "nyxt")
     ;; Package the pre-release because latest stable 1.5.0 does not build
     ;; anymore.
-    (version "2-pre-release-5")
+    (version "2-pre-release-6")
     (source
      (origin
        (method git-fetch)
@@ -630,7 +608,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "1sdafyhiicasd4wyzqnzdyrr16mz55y4b2hf5ya6i7nvm2vyhywl"))
+         "0kcqp3p070i6x2jj27h8pxzvmhrzsl4kl3vkc8m76abkxc9lvn03"))
        (file-name (git-file-name "nyxt" version))))
     (build-system gnu-build-system)
     (arguments
@@ -691,6 +669,8 @@ driven and does not detract you from your daily work.")
        ("cl-calispel" ,sbcl-calispel)
        ("cl-containers" ,sbcl-cl-containers)
        ("cl-css" ,sbcl-cl-css)
+       ("cl-custom-hash-table" ,sbcl-custom-hash-table)
+       ("cl-html-diff" ,sbcl-cl-html-diff)
        ("cl-json" ,sbcl-cl-json)
        ("cl-markup" ,sbcl-cl-markup)
        ("cl-ppcre" ,sbcl-cl-ppcre)
@@ -699,16 +679,15 @@ driven and does not detract you from your daily work.")
        ("cluffer" ,sbcl-cluffer)
        ("dexador" ,sbcl-dexador)
        ("enchant" ,sbcl-enchant)
+       ("file-attributes" ,sbcl-file-attributes)
        ("fset" ,sbcl-fset)
-       ;; TODO: Use latest upstream for 2 pre-release 6 onward.
-       ("hu.dwim.defclass-star" ,sbcl-hu.dwim.defclass-star--no-nickname)
+       ("hu.dwim.defclass-star" ,sbcl-hu.dwim.defclass-star)
        ("iolib" ,sbcl-iolib)
        ("local-time" ,sbcl-local-time)
        ("log4cl" ,sbcl-log4cl)
        ("mk-string-metrics" ,sbcl-mk-string-metrics)
        ("moptilities" ,sbcl-moptilities)
        ("named-readtables" ,sbcl-named-readtables)
-       ("osicat" ,sbcl-osicat)
        ("parenscript" ,sbcl-parenscript)
        ("plump" ,sbcl-plump)
        ("quri" ,sbcl-quri)
@@ -721,7 +700,6 @@ driven and does not detract you from your daily work.")
        ("trivial-package-local-nicknames" ,sbcl-trivial-package-local-nicknames)
        ("trivial-types" ,sbcl-trivial-types)
        ("unix-opts" ,sbcl-unix-opts)
-       ("usocket" ,sbcl-usocket)
        ;; WebKitGTK deps
        ("cl-cffi-gtk" ,sbcl-cl-cffi-gtk)
        ("cl-webkit" ,sbcl-cl-webkit)
@@ -817,4 +795,78 @@ vim-like key bindings, a document pager, configurable settings, and robust
 command selection.  The following protocols are supported as first-class
 citizens: gopher, gemini, finger, and local.  There is also support for telnet,
 http, and https via third-party applications.")
+    (license license:gpl3+)))
+
+(define-public tinmop
+  (package
+    (name "tinmop")
+    (version "0.5.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://notabug.org/cage/tinmop")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zdra4q4mkrldv7dpag9p1bsma2k9pvp9pp9k7qsbm0alj7xwqpr"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("curl" ,curl)
+       ("gettext" ,gnu-gettext)
+       ("gnupg" ,gnupg)
+       ("sbcl" ,sbcl)))
+    (inputs
+     `(("access" ,sbcl-access)
+       ("alexandria" ,sbcl-alexandria)
+       ("babel" ,sbcl-babel)
+       ("bordeaux-threads" ,sbcl-bordeaux-threads)
+       ("cl-base64" ,sbcl-cl-base64)
+       ("cl-colors2" ,sbcl-cl-colors2)
+       ("cl-html5-parser" ,sbcl-cl-html5-parser)
+       ("cl-i18n" ,sbcl-cl-i18n)
+       ("cl-ppcre" ,sbcl-cl-ppcre)
+       ("cl-spark" ,sbcl-cl-spark)
+       ("cl-sqlite" ,sbcl-cl-sqlite)
+       ("cl+ssl" ,sbcl-cl+ssl)
+       ("clunit2" ,sbcl-clunit2)
+       ("croatoan" ,sbcl-croatoan)
+       ("crypto-shortcuts" ,sbcl-crypto-shortcuts)
+       ("drakma" ,sbcl-drakma)
+       ("esrap" ,sbcl-esrap)
+       ("ieee-floats" ,sbcl-ieee-floats)
+       ("local-time" ,sbcl-local-time)
+       ("log4cl" ,sbcl-log4cl)
+       ("marshal" ,sbcl-marshal)
+       ("nano" ,nano)
+       ("openssl" ,openssl)
+       ("osicat" ,sbcl-osicat)
+       ("parse-number" ,sbcl-parse-number)
+       ("percent-encoding" ,sbcl-percent-encoding)
+       ("sxql" ,sbcl-sxql)
+       ("sxql-composer" ,sbcl-sxql-composer)
+       ("tooter" ,sbcl-tooter)
+       ("unix-opts" ,sbcl-unix-opts)
+       ("usocket" ,sbcl-usocket)
+       ("xdg-utils" ,xdg-utils)))
+    (arguments
+     `(#:tests? #f
+       #:strip-binaries? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-home
+           (lambda _
+             (setenv "HOME" "/tmp")
+             #t))
+         (add-after 'configure 'fix-asdf
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "Makefile.in"
+               (("LISP_COMPILER) ")
+                "LISP_COMPILER) --eval \"(require 'asdf)\" --eval \"(push \\\"$$(pwd)/\\\" asdf:*central-registry*)\"  "))
+             #t)))))
+    (synopsis "Gemini and pleroma client with a terminal interface")
+    (description
+     "This package provides a Gemini and pleroma client with a terminal
+interface.")
+    (home-page "https://www.autistici.org/interzona/tinmop.html")
     (license license:gpl3+)))

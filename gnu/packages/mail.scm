@@ -8,10 +8,10 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
-;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017 Troy Sankey <sankeytms@gmail.com>
@@ -27,19 +27,21 @@
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020 Alexey Abramov <levenson@mmer.org>
+;;; Copyright © 2020, 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020 divoplade <d@divoplade.fr>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +59,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages mail)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aspell)
@@ -86,6 +89,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages groff)
@@ -153,7 +157,9 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
@@ -315,6 +321,37 @@ software.")
      ;; Libraries are under LGPLv3+, and programs under GPLv3+.
      (list license:gpl3+ license:lgpl3+))))
 
+(define-public go-gitlab.com-shackra-goimapnotify
+  (let ((commit "832bc7112db9b28e28d69e90b91ea6c005244c9b")
+        (revision "0"))
+    (package
+      (name "go-gitlab.com-shackra-goimapnotify")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/shackra/goimapnotify")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1h27kshx4vwl5k6vc2szsq3d701fzs4gczjypz907f8hj0lrnjmy"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:import-path "gitlab.com/shackra/goimapnotify"))
+      (propagated-inputs
+       `(("go-github-com-emersion-go-imap" ,go-github-com-emersion-go-imap)
+         ("go-github-com-emersion-go-imap-idle" ,go-github-com-emersion-go-imap-idle)
+         ("go-github-com-emersion-go-sasl" ,go-github-com-emersion-go-sasl)
+         ("go-github-com-sirupsen-logrus" ,go-github-com-sirupsen-logrus)
+         ("go-golang-org-x-text" ,go-golang-org-x-text)))
+      (synopsis "Execute scripts on IMAP mailbox changes.")
+      (description
+       "Script to execute scripts on IMAP mailbox changes (new/deleted/updated
+messages) using IDLE.  Implemented in Go.")
+      (home-page "https://gitlab.com/shackra/goimapnotify")
+      (license license:gpl3+))))
+
 (define-public guile2.2-mailutils
   (package
     (inherit mailutils)
@@ -410,7 +447,7 @@ to run without any changes.")
 (define-public fetchmail
   (package
     (name "fetchmail")
-    (version "6.4.14")
+    (version "6.4.18")
     (source
      (origin
        (method url-fetch)
@@ -418,7 +455,7 @@ to run without any changes.")
                            (version-major+minor version) "/"
                            "fetchmail-" version ".tar.xz"))
        (sha256
-        (base32 "1jxxb3qyrh7118fwqa3bhirjh97j2w8r71s8vcb6vp3w1wwhfis2"))))
+        (base32 "17r5zfk9yh7jhgdb360dlzx5fx9lsbmalasx6zgxw9v9vjycjb9h"))))
     (build-system gnu-build-system)
     (inputs
      `(("openssl" ,openssl)))
@@ -445,7 +482,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.0.5")
+    (version "2.0.6")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -455,7 +492,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "0k80s27sf7djb7zxj81ihksr8jkr71mfaa8976fzh41i1pn5l7g2"))
+               "165mpivdhvhavglykwlz0hss2akxd6i6l40rgxs29mjzi52irqw1"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -492,7 +529,7 @@ operating systems.")
 (define-public neomutt
   (package
     (name "neomutt")
-    (version "20201127")
+    (version "20210205")
     (source
      (origin
        (method git-fetch)
@@ -501,7 +538,7 @@ operating systems.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yhpz591jhcjpwllgppwf7vl7z2rnaqfphsvqd1sihd9k4lwch06"))))
+        (base32 "15kr9nvb4j8lx5rl2yapv231rbp4sbn709vv82pfhx5717x3yf00"))))
     (build-system gnu-build-system)
     (inputs
      `(("cyrus-sasl" ,cyrus-sasl)
@@ -1249,14 +1286,14 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.31.3")
+    (version "0.31.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1jisflxdly1nlyy17212ch3hk96dns4j9f5552jz724gs2p42h28"))))
+                "0magnyjjhhv11nwcm2596hdxszrj61y69i0hmwqdc3v6cxjvcqc6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -1438,14 +1475,14 @@ pairs have previously synchronized.")
 (define-public getmail
   (package
     (name "getmail")
-    (version "5.14")
+    (version "5.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://pyropus.ca/software/getmail/old-versions/"
                            "getmail-" version ".tar.gz"))
        (sha256
-        (base32 "1hcrd9h4g12f5gvl1djsbchcjry02ghq4icdr897s8v48pkrzagk"))))
+        (base32 "0ahn2jyj4ka996qzs99id59pwxv6sqxp61g7drcf53rzzigq0lyl"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1474,7 +1511,7 @@ useful features.")
              (sha256
                (base32 "0g7an003simfdn7ihg9yjv7hl2czsmjsndjrp39i7cad8icixscn"))))
     (build-system gnu-build-system)
-    (native-inputs `(("autoconf" ,autoconf-wrapper)
+    (native-inputs `(("autoconf" ,autoconf)
                      ("automake" ,automake)
                      ("libtool" ,libtool)
                      ("pkg-config" ,pkg-config)))
@@ -1591,14 +1628,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.14")
+    (version "1.8.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases/"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "1d3knxpwpglg20z4zcsi82mqv9285ah1b1b16k1fk1hlf5fhcvym"))))
+        (base32 "1klrj2a77671xb6xa0a0iyszhjb7swxhmzpzd4qdybmzkrixqr92"))))
     (build-system gnu-build-system)
     (inputs
      `(("libsecret" ,libsecret)
@@ -1754,7 +1791,7 @@ facilities for checking incoming mail.")
   (package
     (name "dovecot")
     ;; Also update dovecot-pigeonhole when updating to a new minor version.
-    (version "2.3.13")
+    (version "2.3.14")
     (source
      (origin
        (method url-fetch)
@@ -1762,7 +1799,7 @@ facilities for checking incoming mail.")
                            (version-major+minor version) "/"
                            "dovecot-" version ".tar.gz"))
        (sha256
-        (base32 "1i7ijss79a23v7b6lycfzaa8r5rh01k0h0b9h0j4a6n11sw7by53"))))
+        (base32 "0jm3p52z619v7ajh533g2g7d790k82fk0w7ry0zqlm8ymzrxgcy8"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -1823,7 +1860,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
   (let ((dovecot-version (version-major+minor (package-version dovecot))))
     (package
       (name "dovecot-pigeonhole")
-      (version "0.5.13")
+      (version "0.5.14")
       (source
        (origin
          (method url-fetch)
@@ -1831,7 +1868,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
                "https://pigeonhole.dovecot.org/releases/" dovecot-version "/"
                "dovecot-" dovecot-version "-pigeonhole-" version ".tar.gz"))
          (sha256
-          (base32 "05xz2d82ck6lmv94nbc3qff09j8b60a5640i3fmqwqsvv9kfa7wi"))
+          (base32 "1lmjzz4kd90wbdslacybizd1dks4bhwmrx39lj8b19naldw0zjk8"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1986,14 +2023,14 @@ hashing scheme (such as scrypt) plug-in for @code{Dovecot}.")
 (define-public isync
   (package
     (name "isync")
-    (version "1.3.3")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/isync/isync/"
                            version "/isync-" version ".tar.gz"))
        (sha256 (base32
-                "10n8ykag0q3ws6fc15xqyg3v980v5nq3kzpablly2rh2z7vkn8gj"))))
+                "0l01880fcyqn6xq9n8236ha5n2a3wl5g8rmv22z8nv5hgfsxndhd"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("perl" ,perl)))
@@ -2682,14 +2719,14 @@ easily (one at a time).")
 (define-public mpop
   (package
     (name "mpop")
-    (version "1.4.12")
+    (version "1.4.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/mpop/releases/"
                            "mpop-" version ".tar.xz"))
        (sha256
-        (base32 "02j8qfd44dfyq1sq7r9znj9y6wam39ncch1sc8chcdlw5nsmaqsz"))))
+        (base32 "1hbx69d6ivbvjajrcp54fdb3g1ms4ydj0ybf3bfhlravqrk88jdk"))))
     (build-system gnu-build-system)
     (inputs
      `(("gnutls" ,gnutls)))
@@ -3132,6 +3169,39 @@ writing OpenSMTPd filters.")
      "The @command{filter-dkimsign} OpenSMTPd filter signs outgoing e-mail
 messages with @acronym{DKIM, DomainKeys Identified Mail} (RFC 4871).")
     (license license:expat)))
+
+(define-public opensmtpd-filter-rspamd
+  (package
+    (name "opensmtpd-filter-rspamd")
+    (version "0.1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/poolpOrg/filter-rspamd")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32 "1qhrw20q9y44ffgx5k14nvqc9dh47ihywgzza84g0zv9xgif7hd5"))
+              (file-name (git-file-name name version))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/poolpOrg/filter-rspamd"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'set-bootstrap-variables
+           (lambda* (#:key outputs inputs #:allow-other-keys)
+             ;; Tell the build system where to install binaries
+             (let* ((out (assoc-ref outputs "out"))
+                    (libexec (string-append out "/libexec/opensmtpd")))
+               (setenv "GOBIN" libexec)))))))
+    (native-inputs
+     `(("opensmtpd" ,opensmtpd)))
+    (home-page "https://github.com/poolpOrg/filter-rspamd")
+    (synopsis "OpenSMTPd filter to request an Rspamd analysis")
+    (description
+     "The @command{filter-rspamd} OpenSMTPd filter implements the
+Rspamd protocol and allows OpenSMTPd to request an Rspamd analysis of
+an SMTP transaction before a message is committed to queue.")
+    (license license:isc)))
 
 (define-public mailman
   (package
@@ -3622,14 +3692,14 @@ tools and applications:
 (define-public balsa
   (package
     (name "balsa")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://pawsa.fedorapeople.org/balsa/"
                            "balsa-" version ".tar.bz2"))
        (sha256
-        (base32 "1xkxx801p7sbfkn0bh3cz85wra4xf1z1zhjqqc80z1z1nln7fhb4"))))
+        (base32 "1w0239i01mw4wwwy7xh8gz7zgl5khwvfm5wy35x0swvvax021mai"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3651,8 +3721,9 @@ tools and applications:
        ("gnutls" ,gnutls)
        ("gpgme" ,gpgme)
        ("gtk+" ,gtk+)
-       ("gtksourceview" ,gtksourceview-3)
+       ("gtksourceview" ,gtksourceview)
        ("gtkspell3" ,gtkspell3)
+       ("libassuan" ,libassuan)         ; in gpgme.pc Requires
        ("libcanberra" ,libcanberra)
        ("libesmtp" ,libesmtp)
        ("libical" ,libical)
@@ -3788,13 +3859,13 @@ servers.  The 4rev1 and 4 versions of IMAP are supported.")
 (define-public urlscan
   (package
     (name "urlscan")
-    (version "0.9.5")
+    (version "0.9.6")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urlscan" version))
         (sha256
-         (base32 "07vcwirap0p4dkqrqblfn1q017slgd8m6qyijvbi3gxnr09pbyx2"))))
+         (base32 "09lxi7dhn49fpb3ij4cgrhj3qqqqs9rcxbjb7p9smw5wblrqpzga"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-urwid" ,python-urwid)))
@@ -3836,8 +3907,8 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "8c82c8f104ff0013e2bfb3d6b4277280f32446a6")
-        (revision "3"))
+  (let ((commit "9f070bd90adc67064cd8aff4e40f303d5957ef4a")
+        (revision "5"))
     (package
       (name "mumi")
       (version (git-version "0.0.1" revision commit))
@@ -3849,7 +3920,7 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1gkwagy7qplzq2x2zqsbrwhlilxviqb0dqhrvnnhxd7z8wvyzcsi"))))
+                  "1ym1j3nzy8qhd1ydadccbgm0nckkmnq3vnz9qh9x8rasx7zg1ldp"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -3909,7 +3980,9 @@ It is a replacement for the @command{urlview} program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07h48s5qf08503pp9kafqbwipdqghiif22ghki7z8j67gyp04l6l"))))
+                "07h48s5qf08503pp9kafqbwipdqghiif22ghki7z8j67gyp04l6l"))
+              (patches (search-patches "ytnef-CVE-2021-3403.patch"
+                                       "ytnef-CVE-2021-3404.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -3920,6 +3993,45 @@ It is a replacement for the @command{urlview} program.")
     (description "This package provides a TNEF stream reader library and
 related tools to process winmail.dat files.")
     (license license:gpl2+)))
+
+(define-public l2md
+  ;; No official release.
+  (let ((commit "f7286b49bb5fce25c898c143712fe34ad4d7864e")
+        (revision "1"))
+    (package
+      (name "l2md")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/l2md.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hxz8i70v1xgv30zjclfvmjqszn073c7i8nwmswi2lr6vd7cklvp"))))
+      (build-system gnu-build-system)
+      (inputs
+       `(("libgit2" ,libgit2)))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (delete 'configure)          ;no configure scripts
+           (delete 'check)              ;no tests
+           (add-before 'install 'mkdir
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((l2md (string-append (assoc-ref outputs "out") "/bin")))
+                 (mkdir-p l2md)))))
+         #:make-flags
+         (list ,(string-append "CC=" (cc-for-target))
+               (string-append "PREFIX=" %output "/bin"))))
+      (home-page
+       "https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/l2md.git")
+      (synopsis "Import public-inbox archives via Git")
+      (description
+       "The @command{l2md} command line tool imports public-inbox archives via
+Git and exports them in maildir format or to an MDA through a pipe.")
+      (license license:gpl2))))
 
 (define-public public-inbox
   (package

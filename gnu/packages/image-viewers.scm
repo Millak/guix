@@ -16,6 +16,8 @@
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Rovanion Luckey <rovanion.luckey@gmail.com>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,7 +78,7 @@
 (define-public feh
   (package
     (name "feh")
-    (version "3.6.2")
+    (version "3.6.3")
     (home-page "https://feh.finalrewind.org/")
     (source (origin
               (method url-fetch)
@@ -84,7 +86,7 @@
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0d66qz9h37pk8h10bc918hbv3j364vyni934rlw2j951s5wznj8n"))))
+                "1d13x8hmvpdc5f5rj4l29ha7iz7wvqxjlvh6il04wq8igzrj0x23"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases (delete 'configure))
@@ -747,3 +749,40 @@ allows creating false color images.  A unique feature of Nomacs is the
 synchronization of multiple instances.")
     (home-page "https://nomacs.org/")
     (license license:gpl3+)))
+
+(define-public xzgv
+  (package
+    (name "xzgv")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/xzgv/"
+                           version "/xzgv-" version ".tar.gz"))
+       (sha256
+        (base32 "17l1xr9v07ggwga3vn0z1i4lnwjrr20rr8z1kjbw71aaijxl18i5"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'override-target-directory
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "config.mk"
+               (("/usr/local") (assoc-ref outputs "out")))))
+         (delete 'configure)            ; no configure script
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "src/xzgv" bin))))) ; just install the executable
+       #:tests? #f))                             ; no rule for target 'test'
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("gtk+" ,gtk+-2)
+       ("libexif" ,libexif)))
+    (home-page "https://sourceforge.net/projects/xzgv/")
+    (synopsis "Picture viewer for X with a thumbnail-based selector")
+    (description
+     "xzgv is a fast image viewer that provides extensive keyboard support.")
+    (license license:gpl2+)))
