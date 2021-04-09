@@ -662,104 +662,6 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
     ("tcc" ,tcc-boot0)
     ,@(%boot-gash-inputs)))
 
-(define bash-mesboot0
-  ;; The initial Bash
-  (package
-    (inherit static-bash)
-    (name "bash-mesboot0")
-    (version "2.05b")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/bash/bash-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1r1z2qdw3rz668nxrzwa14vk2zcn00hw7mpjn384picck49d80xs"))))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs (%boot-tcc0-inputs))
-    (outputs '("out"))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:parallel-build? #f
-       #:strip-binaries? #f             ; no strip yet
-       #:configure-flags
-       (list "--build=i686-unknown-linux-gnu"
-             "--host=i686-unknown-linux-gnu"
-
-             "--without-bash-malloc"
-             "--disable-readline"
-             "--disable-history"
-             "--disable-help-builtin"
-             "--disable-progcomp"
-             "--disable-net-redirections"
-             "--disable-nls"
-
-             ;; Pretend 'dlopen' is missing so we don't build loadable
-             ;; modules and related code.
-             "ac_cv_func_dlopen=no")
-       #:make-flags '("bash")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'setenv
-           (lambda _
-             (let* ((gash (assoc-ref %build-inputs "bash"))
-                    (shell (string-append gash "/bin/gash")))
-               (setenv "CONFIG_SHELL" shell)
-               (setenv "SHELL" shell)
-               (setenv "CC" "tcc")
-               (setenv "LD" "tcc")
-               (setenv "AR" "tcc -ar")
-               (setenv "CFLAGS" "-D _POSIX_VERSION=1"))))
-         (add-after 'unpack 'scripted-patch
-           (lambda _
-             (substitute* "Makefile.in"
-               (("mksyntax\\.c\n") "mksyntax.c -lgetopt\n")
-               (("buildversion[.]o\n") "buildversion.o -lgetopt\n")
-               ;; No size in Gash
-               (("\tsize ") "#\tsize"))
-             (substitute* "lib/sh/oslib.c"
-               (("int name, namelen;") "char *name; int namelen;"))
-             (substitute* "lib/sh/snprintf.c"
-               (("^#if (defined [(]HAVE_LOCALE_H[)])" all define) (string-append "#if 0 //" define)))
-             (substitute* "configure"
-               ((" egrep") " grep"))))
-         (replace 'configure
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             (let ((configure-flags (filter (lambda (x)
-                                              (and (not (string-prefix? "CONFIG_SHELL=" x))
-                                                   (not (string-prefix? "SHELL=" x))))
-                                            configure-flags)))
-               (format (current-error-port)
-                       "running ./configure ~a\n" (string-join configure-flags)))
-             (apply invoke (cons "./configure" configure-flags))))
-         (add-after 'configure 'configure-fixups
-           (lambda _
-             (substitute* "config.h"
-               (("#define GETCWD_BROKEN 1") "#undef GETCWD_BROKEN"))
-             (let ((config.h (open-file "config.h" "a")))
-               (display "
-// tcc: error: undefined symbol 'enable_hostname_completion'
-#define enable_hostname_completion(on_or_off) 0
-
-// /gnu/store/…-tcc-boot0-0.9.26-6.c004e9a/lib/libc.a: error: 'sigprocmask' defined twice
-#define HAVE_POSIX_SIGNALS 1
-#define endpwent(x) 0
-"
-                        config.h)
-               (close config.h))))
-         (replace 'check
-           (lambda _
-             (invoke "./bash" "--version")))
-         (replace 'install
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (copy-file "bash" (string-append bin "/bash"))
-               (copy-file "bash" (string-append bin "/sh"))))))))))
-
 (define tcc-boot
   ;; The final tcc.
   (package
@@ -882,8 +784,7 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
          (delete 'compress-documentation))))))
 
 (define (%boot-tcc-inputs)
-  `(("bash" ,bash-mesboot0)
-    ("gzip" ,gzip-mesboot)
+  `(("gzip" ,gzip-mesboot)
     ("patch" ,patch-mesboot)
     ("tcc" ,tcc-boot)
     ,@(alist-delete "tcc" (%boot-tcc0-inputs))))
@@ -1056,7 +957,6 @@ ac_cv_c_float_format='IEEE (little-endian)'
 
 (define (%boot-mesboot-core-inputs)
   `(("binutils" ,binutils-mesboot0)
-    ("gawk" ,gawk-mesboot0)
     ("gcc" ,gcc-core-mesboot0)
     ,@(alist-delete "tcc" (%boot-tcc-inputs))))
 
@@ -1086,72 +986,6 @@ ac_cv_c_float_format='IEEE (little-endian)'
                (mkdir-p include)
                (copy-recursively "include" out)
                (copy-recursively headers out)))))))))
-
-(define gawk-mesboot0
-  ;; The initial Gawk.
-  (package
-    (inherit gawk)
-    (name "gawk-mesboot0")
-    (version "3.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/gawk/gawk-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "087s7vpc8zawn3l7bwv9f44bf59rc398hvaiid63klw6fkbvabr3"))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs (%boot-tcc-inputs))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:configure-flags '("--build=i686-unknown-linux-gnu"
-                           "--host=i686-unknown-linux-gnu"
-                           "--disable-nls")
-       #:make-flags '("gawk")
-       #:parallel-build? #f
-       #:parallel-tests? #f
-       #:strip-binaries? #f             ; no strip yet
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'scripted-patch
-           (lambda _
-             (substitute* "Makefile.in"
-               (("date ") "echo today ")
-               ((" autoheader") "true")
-               ((" -lm ") " "))
-             (substitute* "test/Makefile.in"
-               (("^bigtest:.*") "bigtest: basic\n")
-               (("( |\t)(childin|convfmt|fflush|longwrds|math|negexp)" all sep) sep))))
-         (add-before 'configure 'setenv
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bash (assoc-ref %build-inputs "bash"))
-                    (shell (string-append bash "/bin/bash")))
-               (setenv "CONFIG_SHELL" shell)
-               (setenv "SHELL" shell)
-               (setenv "CC" "tcc")
-               (setenv "CPP" "tcc -E")
-               (setenv "LD" "tcc")
-               (setenv "ac_cv_func_getpgrp_void" "yes")
-               (setenv "ac_cv_func_tzset" "yes"))))
-         (replace 'configure           ; needs classic invocation of configure
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             (let* ((out (assoc-ref %outputs "out"))
-                    (configure-flags
-                     `(,@configure-flags
-                       ,(string-append "--prefix=" out))))
-               (format (current-error-port) "running ./configure ~a\n" (string-join configure-flags))
-               (system* "touch" "configure") ; aclocal.m4 is newer than configure
-               (apply invoke (cons "./configure" configure-flags)))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "gawk" bin)
-               (symlink "gawk" (string-append bin "/awk"))))))))))
 
 (define glibc-mesboot0
   ;; GNU C Library 2.2.5 is the most recent glibc that we managed to build
@@ -1297,97 +1131,6 @@ ac_cv_c_float_format='IEEE (little-endian)'
     ("libc" ,glibc-mesboot0)
     ,@(alist-delete "gcc" (%boot-mesboot-core-inputs))))
 
-(define tar-mesboot
-  ;; Initial tar with support for xz compression.
-  (package
-    (inherit tar)
-    (name "tar-mesboot")
-    (version  "1.22")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/tar/tar-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "19nvix64y95n5v6rr5g9g3fn08zz85cb5anzd7csfv4a4sz9lw4y"))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs (%boot-mesboot0-inputs))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:parallel-build? #f
-       #:tests? #f            ; check is naive, also checks non-built PROGRAMS
-       #:strip-binaries? #f   ; no strip yet
-       #:configure-flags '("--build=i686-unknown-linux-gnu"
-                           "--host=i686-unknown-linux-gnu"
-                           "--disable-nls")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bash (assoc-ref %build-inputs "bash"))
-                    (shell (string-append bash "/bin/bash")))
-               (setenv "CONFIG_SHELL" shell)
-               (setenv "SHELL" shell)
-               (setenv "LIBS" "-lc -lnss_files -lnss_dns -lresolv")
-               (setenv "gl_cv_func_rename_dest_works" "yes")
-               (format (current-error-port)
-                       "running ./configure ~a\n" (string-join configure-flags))
-               (apply invoke (cons "./configure" configure-flags)))))
-         (add-after 'unpack 'scripted-patch
-           (lambda _
-             (let* ((bash (assoc-ref %build-inputs "bash"))
-                    (shell (string-append bash "/bin/bash")))
-               (substitute* "configure"
-                 ((" /bin/sh") shell)))
-             (substitute* "Makefile.in"
-               (("^SUBDIRS = doc") "SUBDIRS ="))))
-         (replace 'install
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "src/tar" bin)))))))))
-
-(define grep-mesboot
-  ;; The initial grep.
-  (package
-    (inherit grep)
-    (name "grep-mesboot")
-    (version "2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/grep/grep-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1w862l80lgc5mxvpiy4cfwk761d6xxavn0m3xd2l7xs2kmzvp6lq"))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs (%boot-mesboot0-inputs))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:parallel-build? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-configure
-           (lambda _
-             (let* ((bash (assoc-ref %build-inputs "bash"))
-                    (shell (string-append bash "/bin/bash")))
-               (substitute* "configure"
-                 ((" [|][|] ./config.status") " || sh ./config.status")))))
-         (replace 'install
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "grep" bin)
-               (symlink "grep" (string-append bin "/egrep"))
-               (symlink "grep" (string-append bin "/fgrep"))))))))))
-
 (define binutils-mesboot1
   (package
     (inherit binutils-mesboot0)
@@ -1404,37 +1147,6 @@ ac_cv_c_float_format='IEEE (little-endian)'
              "--host=i686-unknown-linux-gnu"
              "--with-sysroot=/"
              ,(string-append "--prefix=" out))))))))
-
-(define coreutils-mesboot0
-  (package
-    (inherit coreutils)
-    (name "coreutils-mesboot0")
-    ;; The latest .gz release of Coreutils is 8.13; which does not build with gcc-2.95.3:
-    ;; randperm.c: In function `sparse_swap':
-    ;; randperm.c:117: invalid lvalue in unary `&'
-    (version "5.0")                     ; 2003-04
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/coreutils/coreutils-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "10wq6k66i8adr4k08p0xmg87ff4ypiazvwzlmi7myib27xgffz62"))))
-    (native-inputs (%boot-mesboot0-inputs))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (arguments
-     `(#:implicit-inputs? #f
-       #:tests? #f                      ; WARNING: `perl' is needed, ...
-       #:parallel-build? #f
-       #:strip-binaries? #f   ; strip: unrecognized option `--only-keep-debug'
-       #:guile ,%bootstrap-guile
-       #:configure-flags
-       '("--disable-doc"
-         "LIBS=-lc -lnss_files -lnss_dns -lresolv"
-         "ac_cv_func_gethostbyname=no"
-         "gl_cv_func_rename_dest_works=yes")))))
 
 (define gnu-make-mesboot
   (package
@@ -1468,150 +1180,11 @@ ac_cv_c_float_format='IEEE (little-endian)'
                     (bin (string-append out "/bin")))
                (install-file "make" bin)))))))))
 
-(define gawk-mesboot
-  (package
-    (inherit gawk)
-    (name "gawk-mesboot")
-    (version "3.1.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/gawk/gawk-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "03d5y7jabq7p2s7ys9alay9446mm7i5g2wvy8nlicardgb6b6ii1"))))
-    (native-inputs `(,@(%boot-mesboot0-inputs)
-                     ("mesboot-headers" ,mesboot-headers)))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (arguments
-     `(#:implicit-inputs? #f
-       #:parallel-build? #f
-       #:guile ,%bootstrap-guile
-       #:configure-flags '("ac_cv_func_connect=no")
-       #:make-flags '("gawk")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "./gawk" "--version")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "gawk" bin)
-               (symlink "gawk" (string-append bin "/awk"))))))))))
-
-(define sed-mesboot
-  (package
-    (inherit sed)
-    (name "sed-mesboot")
-    (version "4.0.6")                   ; 2003-04
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/sed/sed-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0861ij94cqc4vaaki6r2wlapwcmhpx4ggp4r70f46mb21a8fkvf1"))))
-    (native-inputs (%boot-mesboot0-inputs))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (arguments
-     `(#:implicit-inputs? #f
-       #:parallel-build? #f
-       #:guile ,%bootstrap-guile
-       #:tests? #f                      ; 8to7 fails
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack '/bin/sh
-           (lambda _
-             (let* ((bash (assoc-ref %build-inputs "bash"))
-                    (shell (string-append bash "/bin/bash")))
-               (substitute* "testsuite/Makefile.tests"
-                 (("^SHELL = /bin/sh")
-                  (string-append "SHELL = " shell)))))))))))
-
-(define bash-mesboot
-  (package
-    (inherit bash-mesboot0)
-    (version "4.4")
-    (name "bash-mesboot")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/bash/bash-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1jyz6snd63xjn6skk7za6psgidsd53k05cr3lksqybi0q6936syq"))))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs (%boot-mesboot0-inputs))
-    (outputs '("out"))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:parallel-build? #f
-       #:configure-flags
-       '("--build=i686-unknown-linux-gnu"
-         "--host=i686-unknown-linux-gnu"
-
-         "--without-bash-malloc"
-         "--disable-readline"
-         "--disable-history"
-         "--disable-help-builtin"
-         "--disable-progcomp"
-         "--disable-net-redirections"
-         "--disable-nls"
-
-         ;; Pretend 'dlopen' is missing so we don't build loadable
-         ;; modules and related code.
-         "ac_cv_func_dlopen=no")
-       #:make-flags '("bash")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'scripted-patch
-           (lambda _
-             (substitute* "shell.c"
-               ((";;") ";"))))
-         (add-before 'configure 'setenv
-           (lambda _
-             (setenv "AWK" "gawk")
-             (setenv "LIBS" "-lc -lnss_files -lnss_dns -lresolv")
-             (setenv "gl_cv_func_rename_dest_works" "yes")))
-         (add-after 'configure 'configure-fixups
-           (lambda _
-             (let ((config.h (open-file "config.h" "a")))
-               (display (string-append "
-#define enable_hostname_completion(on_or_off) 0
-")
-                        config.h)
-               (close config.h))))
-         (replace 'check
-           (lambda _
-             (invoke "./bash" "--version")))
-         (replace 'install
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (copy-file "bash" (string-append bin "/bash"))
-               (copy-file "bash" (string-append bin "/sh"))))))))))
-
 (define (%boot-mesboot1-inputs)
-  `(("bash" ,bash-mesboot)
-    ("binutils" ,binutils-mesboot1)
-    ("coreutils" ,coreutils-mesboot0)
-    ("gawk" ,gawk-mesboot)
-    ("grep" ,grep-mesboot)
+  `(("binutils" ,binutils-mesboot1)
     ("make" ,gnu-make-mesboot)
-    ("sed" ,sed-mesboot)
-    ("tar" ,tar-mesboot)
     ,@(fold alist-delete (%boot-mesboot0-inputs)
-            '("bash" "binutils" "bootar" "coreutils" "gash"
-              "gawk" "grep" "guile" "make" "sed" "tar"))))
+            '("binutils" "make"))))
 
 (define gmp-boot
   (let ((version "4.3.2"))
@@ -1805,52 +1378,6 @@ ac_cv_c_float_format='IEEE (little-endian)'
   `(("gcc" ,gcc-mesboot1)
     ,@(alist-delete "gcc" (%boot-mesboot1-inputs))))
 
-(define xz-mesboot
-  ;; Finally, we can build xz.
-  (package
-    (inherit xz)
-    (name "xz-mesboot")
-    (version "5.0.0")
-    (source (bootstrap-origin
-             (origin
-               (method url-fetch)
-               (uri (list (string-append "http://tukaani.org/xz/xz-" version
-                                         ".tar.gz")
-                          (string-append "http://multiprecision.org/guix/xz-"
-                                         version ".tar.gz")))
-               (sha256
-                (base32
-                 "0kf40ggbs1vaaj5s9k4csycahzqcf65n20pa6lngqhm6j0cj3agb")))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (outputs '("out"))
-    (propagated-inputs '())
-    (native-inputs (%boot-mesboot2-inputs))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:parallel-build? #f
-       #:configure-flags
-       `("--disable-assembler"
-         "--disable-shared"
-         "--enable-small"
-         "--disable-threads"
-         "--disable-xzdec"
-         "--disable-lzmadec"
-         "--disable-lzmainfo"
-         "--disable-lzma-links"
-         "--disable-scripts"
-         "--disable-doc"
-         "--disable-nls"
-         "--disable-symbol-versions"
-         ;; configure disqualifies BASH, CPP, GCC and GREP
-         ;; all of which seem fine for the build
-         "ac_cv_prog_cc_c99=-std=gnu9x"
-         "ac_cv_path_GREP=grep"
-         "gl_cv_posix_shell=bash"
-         "ac_cv_have_decl_optreset=no"
-         "CPPFLAGS=-D__GNUC__=1")))))
-
 (define hello-mesboot
   ;; Check for Scheme-only bootstrap.  Note that newer versions of Hello
   ;; break due to the way that newer versions of Gnulib handle
@@ -1888,12 +1415,49 @@ ac_cv_c_float_format='IEEE (little-endian)'
   (package
     (inherit binutils-mesboot1)
     (name "binutils-mesboot")
-    (native-inputs `(("xz" ,xz-mesboot)
-                     ,@(%boot-mesboot2-inputs)))))
+    (native-inputs (%boot-mesboot2-inputs))))
+
+;; Sadly we have to introduce Gawk here.  The "versions.awk" script of
+;; glibc 2.16.0 is too complicated for Gash-Utils.  This is the version
+;; of Gawk used previously during bootstrap.  It's possible that a newer
+;; version would work, too, but this one was already ready to go.
+(define gawk-mesboot
+  (package
+    (inherit gawk)
+    (name "gawk-mesboot")
+    (version "3.1.8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gawk/gawk-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "03d5y7jabq7p2s7ys9alay9446mm7i5g2wvy8nlicardgb6b6ii1"))))
+    (native-inputs (%boot-mesboot2-inputs))
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (inputs '())
+    (propagated-inputs '())
+    (arguments
+     `(#:implicit-inputs? #f
+       #:parallel-build? #f
+       #:guile ,%bootstrap-guile
+       #:configure-flags '("ac_cv_func_connect=no")
+       #:make-flags '("gawk")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             (invoke "./gawk" "--version")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "gawk" bin)
+               (symlink "gawk" (string-append bin "/awk"))))))))))
 
 (define (%boot-mesboot3-inputs)
   `(("binutils" ,binutils-mesboot)
-    ("xz" ,xz-mesboot)
+    ("gawk" ,gawk-mesboot)
     ,@(alist-delete "binutils" (%boot-mesboot2-inputs))))
 
 (define glibc-headers-mesboot
@@ -1970,6 +1534,11 @@ ac_cv_c_float_format='IEEE (little-endian)'
                       (out (assoc-ref outputs "out")))
                   (apply invoke "make" make-flags)
                   (copy-recursively kernel-headers out))))
+            (add-before 'configure 'remove-bashism
+              (lambda _
+                (substitute* "sysdeps/unix/make-syscalls.sh"
+                  (("\\$[{]vdso_symver//\\./_[}]")
+                   "$(echo $vdso_symver | sed -e 's/\\./_/g')"))))
             (replace 'configure
               (lambda* (#:key configure-flags #:allow-other-keys)
                 (format (current-error-port) "running ../configure ~a\n"
@@ -2015,6 +1584,17 @@ SHELL := " shell "
                 (list (string-append "SHELL=" bash "/bin/sh"))))
            ((#:phases phases)
             #~(modify-phases #$phases
+                (add-after 'unpack 'simplify-intl-tests
+                  (lambda _
+                    ;; The bootstrap Guile (2.0.9) crashes trying to
+                    ;; perform a regex on non-ASCII text.  This gets
+                    ;; triggered by 'intl/po2test.sed' running over
+                    ;; 'po/de.po'.  If we ever remove the bootstrap
+                    ;; Guile or add pure-Scheme regex to Gash, this can
+                    ;; be removed.
+                    (substitute* '("catgets/Makefile"
+                                   "intl/Makefile")
+                      (("de\\.po") "en_GB.po"))))
                 (replace 'install
                   (lambda* (#:key outputs make-flags #:allow-other-keys)
                     (let* ((kernel-headers (assoc-ref %build-inputs "kernel-headers"))
@@ -2036,8 +1616,8 @@ SHELL := " shell "
     (name "gcc-mesboot1-wrapper")
     (source #f)
     (inputs '())
-    (native-inputs `(("bash" ,bash-mesboot)
-                     ("coreutils" ,coreutils-mesboot0)
+    (native-inputs `(("bash" ,gash-boot)
+                     ("coreutils" ,gash-utils-boot)
                      ("libc" ,glibc-mesboot)
                      ("gcc" ,gcc-mesboot1)))
     (arguments
@@ -2175,8 +1755,8 @@ exec " gcc "/bin/" program
     (version (package-version gcc-mesboot))
     (source #f)
     (inputs '())
-    (native-inputs `(("bash" ,bash-mesboot)
-                     ("coreutils" ,coreutils-mesboot0)
+    (native-inputs `(("bash" ,gash-boot)
+                     ("coreutils" ,gash-utils-boot)
                      ("libc" ,glibc-mesboot)
                      ("gcc" ,gcc-mesboot)))))
 
@@ -2185,24 +1765,59 @@ exec " gcc "/bin/" program
     ("gcc" ,gcc-mesboot)
     ,@(fold alist-delete (%boot-mesboot4-inputs) '("gcc" "gcc-wrapper"))))
 
-(define coreutils-mesboot
+(define (mesboot-package name pkg)
   (package
-    (inherit coreutils)
-    (name "coreutils-mesboot")
-    (source (bootstrap-origin (package-source coreutils)))
+    (inherit pkg)
+    (name name)
+    (source (bootstrap-origin (package-source pkg)))
     (native-inputs (%boot-mesboot5-inputs))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
     (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:tests? #f))))
+     (ensure-keyword-arguments (package-arguments pkg)
+                               `(#:implicit-inputs? #f
+                                 #:guile ,%bootstrap-guile
+                                 #:tests? #f)))))
+
+;; These packages are needed to complete the rest of the bootstrap.
+;; In the future, Gash et al. could handle it directly, but it's not
+;; ready yet.
+(define bash-mesboot (mesboot-package "bash-mesboot" static-bash))
+(define coreutils-mesboot (mesboot-package "coreutils-mesboot" coreutils))
+(define grep-mesboot (mesboot-package "grep-mesboot" grep))
+(define sed-mesboot (mesboot-package "sed-mesboot" sed))
+
+;; The XZ implementation in Bootar cannot decompress 'tar'.
+(define xz-mesboot
+  (let ((pkg (mesboot-package "xz-mesboot" xz)))
+    (package
+      (inherit pkg)
+      (arguments
+       (ensure-keyword-arguments (package-arguments pkg)
+                                 ;; XXX: This fails even though the
+                                 ;; actual runpaths seem fine.
+                                 `(#:validate-runpath? #f))))))
+
+;; We don't strictly need Tar here, but it allows us to get rid of
+;; Bootar and Gash-Utils and continue with the standard GNU tools.
+(define tar-mesboot
+  (let ((pkg (mesboot-package "tar-mesboot" tar)))
+    (package
+      (inherit pkg)
+      (native-inputs
+       `(("xz" ,xz-mesboot)
+         ,@(package-native-inputs pkg))))))
 
 (define (%boot-mesboot6-inputs)
-  `(("coreutils" ,coreutils-mesboot)
+  `(("bash" ,bash-mesboot)
+    ("coreutils" ,coreutils-mesboot)
+    ("grep" ,grep-mesboot)
+    ("sed" ,sed-mesboot)
+    ("tar" ,tar-mesboot)
+    ("xz" ,xz-mesboot)
     ,@(fold alist-delete (%boot-mesboot5-inputs)
-            '("coreutils" "kernel-headers"))))
+            '("bash" "coreutils" "bootar" "kernel-headers"))))
 
 (define (%bootstrap-inputs+toolchain)
   ;; The traditional bootstrap-inputs.  For the i686-linux, x86_64-linux
