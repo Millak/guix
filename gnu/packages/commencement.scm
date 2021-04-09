@@ -885,7 +885,6 @@ $MES -e '(mescc)' module/mescc.scm -- \"$@\"
   `(("bash" ,bash-mesboot0)
     ("gzip" ,gzip-mesboot)
     ("patch" ,patch-mesboot)
-    ("gash-utils" ,gash-utils-boot)
     ("tcc" ,tcc-boot)
     ,@(alist-delete "tcc" (%boot-tcc0-inputs))))
 
