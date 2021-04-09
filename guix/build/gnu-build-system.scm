@@ -727,9 +727,9 @@ which cannot be found~%"
                      ;; UTF-8-encoded.
                      (with-fluids ((%default-port-encoding "UTF-8"))
                        (substitute* files
-                         (("^Exec=([^/[:blank:]\r\n]*)(.*)$" _ binary rest)
+                         (("^Exec=([^/[:blank:]\r\n]+)(.*)$" _ binary rest)
                           (string-append "Exec=" (which binary) rest))
-                         (("^TryExec=([^/[:blank:]\r\n]*)(.*)$" _ binary rest)
+                         (("^TryExec=([^/[:blank:]\r\n]+)(.*)$" _ binary rest)
                           (string-append "TryExec="
                                          (which binary) rest)))))))))
             outputs))
