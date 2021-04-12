@@ -709,17 +709,18 @@ model to base your own plug-in on, here it is.")
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
-    (version "1.18.2")
+    (version "1.18.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "06ildd4rl6cynirv3p00d2ddf5is9svj4i7mkahldzhq24pq5mca"))))
+                "0py8k4pbalm9mxkpjbjxis0gp7g74wg5g4yax5q8rccmany0ds3l"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
+     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
+       #:phases
        (modify-phases %standard-phases
          ,@%common-gstreamer-phases
          ,@(if (string-prefix? "arm" (or (%current-target-system)
@@ -746,21 +747,39 @@ model to base your own plug-in on, here it is.")
 
                  ;; FIXME: Why is this failing.
                  ((".*elements/dash_mpd\\.c.*") "")
+                 ((".*elements/line21\\.c.*") "")
 
                  ;; These tests are flaky and occasionally time out:
                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
                  ((".*elements/curlhttpsrc\\.c.*") "")
                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
                  ((".*elements/dtls\\.c.*") ""))
-               #t))))))
+               #t)))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Tests require a running X server.
+             (system "Xvfb :1 +extension GLX &")
+             (setenv "DISPLAY" ":1")
+             ;; Tests write to $HOME.
+             (setenv "HOME" (getcwd))
+             ;; Tests look for $XDG_RUNTIME_DIR.
+             (setenv "XDG_RUNTIME_DIR" (getcwd))
+             ;; For missing '/etc/machine-id'.
+             (setenv "DBUS_FATAL_WARNINGS" "0")
+             #t)))))
     (propagated-inputs
-     `(("gst-plugins-base" ,gst-plugins-base)))
+     `(("gstreamer" ,gstreamer)
+       ("gst-plugins-base" ,gst-plugins-base)))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums, etc.
+     `(("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")         ; for glib-mkenums, etc.
        ("gobject-introspection" ,gobject-introspection)
+       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gst-plugins-good" ,gst-plugins-good) ;for tests
+       ("perl" ,perl)
        ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+       ("python" ,python-wrapper)
+       ("xorg-server" ,xorg-server-for-tests)))
     (inputs
      ;; XXX: The following dependencies are missing:
      ;;  vo-amrwbenc, vo-aacenc, bs2b, chromaprint, directfb, daala, libdts,
