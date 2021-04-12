@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2021 Sebastian Gibb <mail@sebastiangibb.de>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
@@ -696,6 +697,29 @@ are too large to conveniently hard-code them in the tests.")
 wrapper for the Cookiecutter API.  This fixture helps you verify that
 your template is working as expected and takes care of cleaning up after
 running the tests.")
+    (license license:expat)))
+
+(define-public python-pytest-datafiles
+  (package
+    (name "python-pytest-datafiles")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/omarkohl/pytest-datafiles")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wbgfsn4pcdm0bw61pwaaq707mlfnixlff3x8m5mpsf6jhrzql30"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/omarkohl/pytest-datafiles")
+    (synopsis "Pytest plugin to create a tmpdir")
+    (description
+     "A pytest plugin to create a tmpdir containing a preconfigured set of
+files and/or directories.")
     (license license:expat)))
 
 (define-public python-pytest-doctestplus
