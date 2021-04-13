@@ -720,7 +720,7 @@ OpenGL graphics API.")
     (description
      "libglvnd is a vendor-neutral dispatch layer for arbitrating OpenGL
 API calls between multiple vendors.  It allows multiple drivers from
-different vendors to coexist on the same filesystem, and determines which
+different vendors to coexist on the same file system, and determines which
 vendor to dispatch each API call to at runtime.
 
 Both GLX and EGL are supported, in any combination with OpenGL and OpenGL ES.")
@@ -775,7 +775,7 @@ OpenGL.")
 (define-public glfw
   (package
     (name "glfw")
-    (version "3.3.3")
+    (version "3.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/glfw/glfw"
@@ -783,7 +783,7 @@ OpenGL.")
                                   "/glfw-" version ".zip"))
               (sha256
                (base32
-                "0xrrahhbs4sn7sgvdk9sgz5zla4sw3ajq6kxpqrx635l8nnqfc3j"))))
+                "1kcrpl4d6b6h23ib5j9q670d9w3knd07whgbanbmwwhbcqnc9lmv"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; no test target

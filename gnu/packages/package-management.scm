@@ -132,8 +132,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.2.0")
-        (commit "8f9052d5434a3a11e7b4ff14d6b0090256e08aa4")
-        (revision 19))
+        (commit "2d73086262e1fb33cd0f0f16f74a495fe06b38aa")
+        (revision 20))
     (package
       (name "guix")
 
@@ -149,7 +149,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0jqxabl9sqn7dd1l9q62zm9f7w274q44dya24akina8wwfi5yc4k"))
+                  "070frsjcbrdqh68rhrck6w3cprbq1hjpd24z44qd017zaicix1f0"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1049,8 +1049,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "6e7e63f356cb88e3e5fe1a55a0390a1366205c9c")
-        (revision "21"))
+  (let ((commit "6fb5eafc33efa109b220efe71594cfcdb2efe133")
+        (revision "24"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1061,7 +1061,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "01l4f0h9r864dbq4fg38fr2pdm5c7q2dysxcv8bx1clxilm58kd5"))
+                  "1lf7jry18kwglvyakfkmi8bif8ppsdinl0xjgmkgkp4mvmymh2gj"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1088,14 +1088,18 @@ environments.")
                  (for-each
                   (lambda (file)
                     (simple-format (current-error-port) "wrapping: ~A\n" file)
-                    (let ((guile-inputs `("guile-json"
-                                          "guile-gcrypt"
-                                          "guix"
-                                          "guile-prometheus"
-                                          "guile-lib"
-                                          "guile-lzlib"
-                                          "guile-zlib"
-                                          "gnutls")))
+                    (let ((guile-inputs (list
+                                         "guile-json"
+                                         "guile-gcrypt"
+                                         "guix"
+                                         "guile-prometheus"
+                                         "guile-lib"
+                                         "guile-lzlib"
+                                         "guile-zlib"
+                                         "gnutls"
+                                         ,@(if (hurd-target?)
+                                               '()
+                                               '("guile-fibers")))))
                       (wrap-program file
                         `("PATH" ":" prefix
                           (,bin

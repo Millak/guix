@@ -42,6 +42,7 @@
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2020 Hamzeh Nasajpour <h.nasajpour@pantherx.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -448,6 +449,8 @@ performance across unpredictable networks, such as the Internet.")
          (url "https://github.com/sctp/lksctp-tools")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (patches
+        (search-patches "lksctp-tools-1.0.18-fix-header-file-name.patch"))
        (sha256
         (base32 "1x4fwzrlzvfa3vcpja97m8w5g9ir2zrh4zs7zksminrnmdrs0dsr"))))
     (build-system gnu-build-system)
@@ -470,6 +473,38 @@ sockets, and also some helper utilities around SCTP.")
       license:lgpl2.1+
       ;; Others.
       license:gpl2+))))
+
+(define-public python-pysctp
+  (package
+    (name "python-pysctp")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pysctp" version))
+       (sha256
+        (base32 "14h2qlmfi24bizhvvqkfqfa78pzm3911ibrzy9k94i97xy1978dy"))))
+    (build-system python-build-system)
+    (inputs
+     `(("lksctp-tools" ,lksctp-tools)))
+    (arguments
+     `(#:tests? #f  ;; tests require network
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-setup.py
+           (lambda _
+             (substitute* "setup.py"
+               (("include_dirs\\s*=.*")
+                (string-append "include_dirs = ['.'] + '"
+                               (getenv "C_INCLUDE_PATH") "'.split(':'),"))
+               (("library_dirs\\s*=.*")
+                (string-append "library_dirs = '"
+                               (getenv "LIBRARY_PATH") "'.split(':'),"))))))))
+    (home-page "https://github.com/p1sec/pysctp")
+    (synopsis "Python module for the SCTP protocol stack and library")
+    (description "@code{pysctp} implements the SCTP socket API.  You need a
+SCTP-aware kernel (most are).")
+    (license license:lgpl2.1+)))
 
 (define-public knockd
   (package
@@ -2494,7 +2529,7 @@ networks.")
 (define-public speedtest-cli
   (package
     (name "speedtest-cli")
-    (version "2.1.2")
+    (version "2.1.3")
     (source
      (origin
        (method git-fetch)
@@ -2503,7 +2538,7 @@ networks.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1456yly6iym2c9bl6pi4sz8xbw34bm2dxm1vzpydsd6jazwpmy26"))))
+        (base32 "10fazl4kwf41mk7pnwpfms16n0ii0kg9pf8r3mz9xwnl9y04mv9x"))))
     (build-system python-build-system)
     (home-page "https://github.com/sivel/speedtest-cli")
     (synopsis "Internet bandwidth tester")
@@ -3834,14 +3869,14 @@ thousands of connections is clearly realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.9")
+    (version "1.0.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1xa9953hl2c94zi4ngaxyi2yw3dax1ab16118wriwawm4lqynr3b"))
+        (base32 "08kppk49f9wmdf2gw29sm8pi027g54gzrqa07p8fpwvy0dv2sns4"))
        (modules '((guix build utils)))
        (snippet
         '(begin

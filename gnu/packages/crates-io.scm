@@ -13969,7 +13969,7 @@ supported in purely NFA-based implementations.")
     (synopsis "Find the physical space used by a file")
     (description
      "@code{filesize} abstracts platform-specific methods of determining the
-real space used by files, taking into account filesystem compression and
+real space used by files, taking into account file system compression and
 sparse files.")
     (license license:expat)))
 
@@ -18080,8 +18080,8 @@ Hash-based Message Authentication Code}.")
     (home-page "https://github.com/pantsman0/rust-hmac-sha1")
     (synopsis "Minimal implementation of HMAC-SHA1 in Rust")
     (description
-     "This package is a pure Rust implementation of the Hash-based Message
-Authentication Code Algoritm (HMAC) for SHA1.")
+     "This package is a pure Rust implementation of the @acronym{HMAC,
+Hash-based Message Authentication Code algorithm} for SHA1.")
     (license license:bsd-3)))
 
 (define-public rust-hostname-0.3
@@ -35802,8 +35802,9 @@ with one of the implemented strategies.")
        (("rust-fs2" ,rust-fs2-0.4))))
     (home-page "https://github.com/dtolnay/scratch")
     (synopsis "Compile-time temporary directory")
-    (description "This crate exposes a compile-time temporary directory sharable
-by multiple crates in a build graph and erased by @code{cargo clean}.")
+    (description "This crate exposes a compile-time temporary directory
+shareable by multiple crates in a build graph and erased by @code{cargo
+clean}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-scrypt-0.3

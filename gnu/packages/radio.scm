@@ -172,6 +172,53 @@ To install the rtl-sdr udev rules, you must extend 'udev-service-type' with
 this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
     (license license:gpl2+)))
 
+(define-public airspyhf
+  (package
+    (name "airspyhf")
+    (version "1.6.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/airspy/airspyhf")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n699i5a9fzzhf80fcjlqq6p2a013rzlwmwv4nmwfafy6c8cr924"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("libusb" ,libusb)))
+    (arguments
+     '(#:configure-flags '("-DINSTALL_UDEV_RULES=ON")
+       #:tests? #f ; No tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "tools/CMakeLists.txt"
+               (("DESTINATION \"/etc/udev/")
+                (string-append "DESTINATION \""
+                               (assoc-ref outputs "out")
+                               "/lib/udev/")))))
+         (add-after 'fix-paths 'fix-udev-rules
+           (lambda _
+             (substitute* "tools/52-airspyhf.rules"
+               ;; The plugdev group does not exist; use dialout as in
+               ;; the hackrf package.
+               (("GROUP=\"plugdev\"")
+                "GROUP=\"dialout\"")))))))
+    (home-page "https://github.com/airspy/airspyhf")
+    (synopsis "Software defined radio driver for Airspy HF+")
+    (description
+     "This package provides the driver and utilities for controlling the Airspy
+HF+ Software Defined Radio (SDR) over USB.
+
+To install the airspyhf udev rules, you must extend @code{udev-service-type}
+with this package.  E.g.: @code{(udev-rules-service 'airspyhf airspyhf)}")
+    (license license:bsd-3)))
+
 (define-public chirp
   (package
     (name "chirp")
@@ -466,7 +513,8 @@ environment.")
          ("python-mako" ,python-mako)
          ("python-six" ,python-six)))
       (inputs
-       `(("boost" ,boost)
+       `(("airspyhf" ,airspyhf)
+         ("boost" ,boost)
          ("fftwf" ,fftwf)
          ("gmp" ,gmp)
          ("gnuradio" ,gnuradio)

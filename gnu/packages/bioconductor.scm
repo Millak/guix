@@ -619,6 +619,32 @@ as provided by UCSC (hg38, Dec. 2013) and stored in Biostrings objects.")
      "This package exposes an annotation database generated from Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-txdb-dmelanogaster-ucsc-dm6-ensgene
+  (package
+    (name "r-txdb-dmelanogaster-ucsc-dm6-ensgene")
+    (version "3.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "TxDb.Dmelanogaster.UCSC.dm6.ensGene"
+                              version 'annotation))
+       (sha256
+        (base32
+         "0yij7zyqkmmr13389rs2gfa5anvvw648nnl1kjbsgvyxkggif8q4"))))
+    (properties
+     `((upstream-name . "TxDb.Dmelanogaster.UCSC.dm6.ensGene")))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-annotationdbi" ,r-annotationdbi)
+       ("r-genomicfeatures" ,r-genomicfeatures)))
+    (home-page
+     "https://bioconductor.org/packages/TxDb.Dmelanogaster.UCSC.dm6.ensGene")
+    (synopsis "Annotation package for TxDb object(s)")
+    (description
+     "This package exposes an annotation databases generated from UCSC by
+exposing these as TxDb objects.")
+    (license license:artistic2.0)))
+
 (define-public r-txdb-hsapiens-ucsc-hg19-knowngene
   (package
     (name "r-txdb-hsapiens-ucsc-hg19-knowngene")
@@ -1087,7 +1113,7 @@ package @code{affy}.")
     (properties `((upstream-name . "gageData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/gageData")
-    (synopsis "Auxillary data for gage package")
+    (synopsis "Auxiliary data for the gage package")
     (description
      "This is a supportive data package for the software package @code{gage}.
 However, the data supplied here are also useful for gene set or pathway
@@ -10528,8 +10554,8 @@ experiments, and visualize de influence of the involved factors.")
 by spectral counts, to discover differentially expressed proteins between two
 biological conditions.  Three tests are available: Poisson GLM regression,
 quasi-likelihood GLM regression, and the negative binomial of the edgeR
-package.The three models admit blocking factors to control for nuissance
-variables.To assure a good level of reproducibility a post-test filter is
+package.  The three models admit blocking factors to control for nuisance
+variables.  To assure a good level of reproducibility a post-test filter is
 available, where we may set the minimum effect size considered biologicaly
 relevant, and the minimum expression of the most abundant condition.")
     (license license:gpl2)))
@@ -11065,7 +11091,7 @@ the earlier snpMatrix package, allowing for uncertainty in genotypes.")
     (description
      "This package implements functions for combinatorial and differential
 analysis of ChIP-seq data.  It includes uni- and multivariate peak-calling,
-export to genome browser viewable files, and functi ons for enrichment
+export to genome browser viewable files, and functions for enrichment
 analyses.")
     (license license:artistic2.0)))
 

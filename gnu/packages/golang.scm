@@ -3965,7 +3965,7 @@ without requiring a real database connection.")
     (home-page "https://github.com/go-sql-driver/mysql")
     (synopsis "MySQL driver for golang")
     (description
-     "This is a pure Go implementaton of the MySQL API, compatible with
+     "This is a pure Go implementation of the MySQL API, compatible with
 golang's database/sql package.")
     (license license:mpl2.0)))
 
@@ -5827,7 +5827,7 @@ which produce colorized output using github.com/fatih/color.")
     (synopsis "Write handsome command-line tools with glamour")
     (description "@code{glamour} lets you render markdown documents and
 templates on ANSI compatible terminals.  You can create your own stylesheet or
-use one of our glamourous default themes.")
+use one of our glamorous default themes.")
     (license license:expat)))
 
 (define-public go-github-com-coreos-go-semver
@@ -6911,7 +6911,7 @@ atomic access.")
     (propagated-inputs
      `(("go-go-uber-org-atomic" ,go-go-uber-org-atomic)))
     (home-page "https://go.uber.org/multierr")
-    (synopsis "Error combination fo Go")
+    (synopsis "Error combination for Go")
     (description
      "@code{multierr} allows combining one or more Go errors together.")
     (license license:expat)))

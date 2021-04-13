@@ -48,6 +48,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1001,6 +1002,31 @@ as a drop-in replacement of MySQL.")
     (description "The MariaDB Connector/C is used to connect applications
 developed in C/C++ to MariaDB and MySQL databases.")
     (license license:lgpl2.1+)))
+
+(define-public galera
+  (package
+    (name "galera")
+    (version "26.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (commit "bac8171266cb982fe013ce496d78085438c6f23e")
+                    (url "https://github.com/codership/galera")
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0h7s670pcasq8wzprhyxqfca2cghi62b8xz2kikb2a86wd453qil"))))
+    (build-system cmake-build-system)
+    (inputs
+     `(("check" ,check)
+       ("boost" ,boost)
+       ("openssl" ,openssl)))
+    (home-page "https://github.com/codership/galera/")
+    (synopsis "Extension to the MariaDB database server")
+    (description
+     "Galera is a wsrep-provider that is used with MariaDB for load-balancing
+and high-availability (HA).")
+    (license license:gpl2)))                  ;'COPYING' says "version 2" only
 
 ;; Don't forget to update the other postgresql packages when upgrading this one.
 (define-public postgresql-13
@@ -3795,14 +3821,14 @@ PostreSQL, SQLite, ODBC and MySQL.")
 (define-public freetds
   (package
     (name "freetds")
-    (version "1.2.18")
+    (version "1.2.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.freetds.org/files/stable/"
                            "freetds-" version ".tar.gz"))
        (sha256
-        (base32 "1hspvwxwdd1apadsy2b40dpjik8kfwcvdamvhpg3lnm15n02fb50"))))
+        (base32 "11xf2w8gh2p9cq4i38jfvdiwgig8wqbg098xjc08kx4iii8lxy3m"))))
     (build-system gnu-build-system)
     (arguments
      ;; NOTE: (Sharlatan-20210110213908+0000) some tests require DB connection,

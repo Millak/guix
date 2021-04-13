@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Julien Lepiler <julien@lepiller.eu>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020 Masaya Tojo <masaya@tojo.tokyo>
+;;; Copyright © 2020, 2021 Masaya Tojo <masaya@tojo.tokyo>
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357@gmail.com>
 ;;; Copyright © 2020 Mike Rosset <mike.rosset@gmail.com>
 ;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
@@ -2649,8 +2649,8 @@ format is also supported.")
   (deprecated-package "guile3.0-mcron" mcron))
 
 (define-public guile-picture-language
-  (let ((commit "291a746a1d3b4784d38b05239bdd7b8e796ce761")
-        (revision "4"))
+  (let ((commit "a1322bf11945465241ca5b742a70893f24156d12")
+        (revision "5"))
     (package
       (name "guile-picture-language")
       (version (git-version "0.0.1" revision commit))
@@ -2662,7 +2662,7 @@ format is also supported.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0rnhf13ds92sbdicshy4sy4kl2kc431fy9vzm1divw974p7v57sd"))))
+                  "03i528z92ainccgm28shg4haxiav5x4cyhyi5dggq1rm027vbm99"))))
       (build-system gnu-build-system)
       (inputs
        `(("guile" ,guile-3.0)))
@@ -3519,7 +3519,7 @@ feature-set, fully programmable in Guile Scheme.")
                                         texlive-fonts-iwona)))
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
-     `(("guile-lib" ,guile-lib)))
+     `(("guile-lib" ,guile2.2-lib)))
     (home-page "https://www.gnu.org/software/guile-cv/")
     (synopsis "Computer vision library for Guile")
     (description "Guile-CV is a Computer Vision functional programming library
@@ -4449,7 +4449,7 @@ tools.")
     (synopsis "Guile implementation of the Encoding for Robust Immutable Storage (ERIS)")
     (description
      "Guile-ERIS is the reference implementation of the Encoding for Robust
-Immutable Storage (ERIS).  ERIS allows arbirtary content to be encoded into
+Immutable Storage (ERIS).  ERIS allows arbitrary content to be encoded into
 uniformly sized, encrypted blocks that can be reassembled using a short
 read-capability.")
     (home-page "https://inqlab.net/git/eris.git")

@@ -184,7 +184,7 @@ large and/or frequently changing (network) environment.")
     (home-page "https://bindfs.org")
     (synopsis "Bind mount a directory and alter permission bits")
     (description
-     "@command{bindfs} is a FUSE filesystem for mounting a directory to
+     "@command{bindfs} is a FUSE file system for mounting a directory to
 another location, similar to @command{mount --bind}.  It can be used for:
 @itemize
 @item Making a directory read-only.
@@ -251,9 +251,9 @@ another location, similar to @command{mount --bind}.  It can be used for:
     (description
      "The @acronym{WebDAV, Web Distributed Authoring and Versioning} extension
 to the HTTP protocol defines a standard way to author resources on a remote Web
-server.  Davfs2 exposes such resources as a typical filesystem which can be used
-by standard applications with no built-in support for WebDAV, such as the GNU
-coreutils (@command{cp}, @command{mv}, etc.) or a graphical word processor.
+server.  Davfs2 exposes such resources as a typical file system which can be
+used by standard applications with no built-in support for WebDAV, such as the
+GNU coreutils (@command{cp}, @command{mv}, etc.) or a graphical word processor.
 
 Davfs2 works with most WebDAV servers with no or little configuration.  It
 supports TLS (HTTPS), HTTP proxies, HTTP basic and digest authentication, and
@@ -1195,10 +1195,10 @@ local file system using FUSE.")
      `(("go-github-com-mattn-go-sqlite3" ,go-github-com-mattn-go-sqlite3)
        ("go-github-com-hanwen-fuse" ,go-github-com-hanwen-fuse)))
     (home-page "https://github.com/oniony/TMSU")
-    (synopsis "Tag files and access them through a virtual filesystem")
+    (synopsis "Tag files and access them through a virtual file system")
     (description
      "TMSU is a tool for tagging your files.  It provides a simple
-command-line utility for applying tags and a virtual filesystem to give you a
+command-line utility for applying tags and a virtual file system to give you a
 tag-based view of your files from any other program.  TMSU does not alter your
 files in any way: they remain unchanged on disk, or on the network, wherever
 your put them.  TMSU maintains its own database and you simply gain an

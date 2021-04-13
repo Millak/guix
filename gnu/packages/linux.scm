@@ -354,7 +354,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
-(define-public linux-libre-5.11-version "5.11.11")
+(define-public linux-libre-5.11-version "5.11.13")
 (define deblob-scripts-5.11
   (linux-libre-deblob-scripts
    linux-libre-5.11-version
@@ -362,7 +362,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0yvr80g200hdryz54gdnzj4fl38pf7g4qbgj475rhcfwixhp1j7n")))
 (define-public linux-libre-5.11-pristine-source
   (let ((version linux-libre-5.11-version)
-        (hash (base32 "1fc3yl4srzla3cbihgnry0pqmgcc17zv0zlkk9zpx99371hpay0a")))
+        (hash (base32 "0yvgkc1fmmd4g06sydn51q4l3g5785q9yaaq04lv3kgj4hyijqgs")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.11)))
@@ -370,7 +370,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.10-version "5.10.27")
+(define-public linux-libre-5.10-version "5.10.29")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
@@ -378,12 +378,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0hh27ccqimagr3aij7ygwikxw66y63sqwd0xlf49bhpjd090r9a7")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1nb95ll66kxiz702gs903n3gy5ialz8cin58l19rqaai55kck7fr")))
+        (hash (base32 "1v79wylb2kd9gadiqf7dr7jcgynr970bbga09mdn940sq536g30m")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.109")
+(define-public linux-libre-5.4-version "5.4.111")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
    linux-libre-5.4-version
@@ -391,12 +391,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1xghbbnaisjd0k1klbyn1p7r6r4x5a1bpmkm56a3gh2zvw4s7mj8")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1vmpc6yrr2zm4m3naflwik5111jr8hy0mnyddwk31l0p4xbg8smc")))
+        (hash (base32 "00qs4y4d9adffwysdh8sly81hxc3rw7bi9vs3fs4rhwdclr62qi1")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.184")
+(define-public linux-libre-4.19-version "4.19.186")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
    linux-libre-4.19-version
@@ -404,12 +404,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1jiaw0as1ippkrjdpd52657w5mz9qczg3y2hlra7m9k0xawwiqlf")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0z5pgal8775rf7pvpxq47dnghr42al2k9py0s9jl3js2wamgdyix")))
+        (hash (base32 "0cg6ja7plry1l2mg6hx16lsw0gzn4xpj7xdrrs2hwl8l8a2dgifq")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.228")
+(define-public linux-libre-4.14-version "4.14.230")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
    linux-libre-4.14-version
@@ -417,12 +417,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1qij18inijj6c3ma8hv98yjagnzxdxyn134da9fd23ky8q6hbvky")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0nw1jf6x5a990n69aw2da4s4lc1c7mnwiwcda40bl2rkmd24s1qm")))
+        (hash (base32 "1gn5cs1ss4bfsnnv0b2s4g5ibiigpzsx0i3qfswchdbxvdag75cw")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.264")
+(define-public linux-libre-4.9-version "4.9.266")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
    linux-libre-4.9-version
@@ -430,12 +430,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0fxajshb75siq39lj5h8xvhdj8lcmddkslwlyj65rhlwk6g2r4b2")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "1df2dv26c9z6zsdlqzbcc60f2pszh0hx1n94v65jswlb72a2mipc")))
+        (hash (base32 "0qzigcslfp714vaswwlw93xj0h2f8laikppw6krrhfnh5wwrp5dr")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
 
-(define-public linux-libre-4.4-version "4.4.264")
+(define-public linux-libre-4.4-version "4.4.266")
 (define deblob-scripts-4.4
   (linux-libre-deblob-scripts
    linux-libre-4.4-version
@@ -443,7 +443,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0hhin1jpfkd6nwrb6xqxjzl3hdxy4pn8a15hy2d3d83yw6pflbsf")))
 (define-public linux-libre-4.4-pristine-source
   (let ((version linux-libre-4.4-version)
-        (hash (base32 "1b0d735qnk0bcqn9gdsjqxhk8pkb3597ya9f34lv1vjfaqkkxk7l")))
+        (hash (base32 "00x2dmjiiv9zpc0vih9xqmf78kynqzj9q9v1chc2q2hcjpqfj31c")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.4)))
@@ -8026,8 +8026,8 @@ kernel side implementation.")
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)))
     (home-page "https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git/")
-    (synopsis "User-space tools for EROFS filesystem")
+    (synopsis "User-space tools for EROFS file system")
     (description "EROFS (Enhanced Read-Only File System) is a compressed,
-read-only filesystem optimized for resource-scarce devices.  This package
-provides user-space tools for creating EROFS filesystems.")
+read-only file system optimized for resource-scarce devices.  This package
+provides user-space tools for creating EROFS file systems.")
     (license license:gpl2+)))

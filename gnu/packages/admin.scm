@@ -39,6 +39,7 @@
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hyunseok Kim <lasnesne@lagunposprasihopre.org>
+;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1052,6 +1053,36 @@ recursive runs on the generated subnets.  (also IPv6)
 @end itemize\n")
     (license license:bsd-3)))
 
+(define-public prips
+  (package
+    (name "prips")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://devel.ringlet.net/files/sys/"
+                           name "/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1a33vbl4w603mk6mm5r3vhk87fy3dfk5wdpch0yd3ncbkg3fmvqn"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))
+       #:test-target "test"
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (install-file "prips"
+                                      (string-append out "/bin"))))))))
+    (native-inputs `(("perl-test-harness" ,perl-test-harness)))
+    (synopsis "Tool that prints the IP addresses in a given range")
+    (description "Prips can be used to print all of the IP addresses in
+ a given range.  This allows the enhancement of tools only work
+ on one host at a time (e.g. whois).")
+    (home-page "https://devel.ringlet.net/sysutils/prips/")
+    (license license:gpl2+)))
+
 (define-public alive
   (package
     (name "alive")
@@ -1996,7 +2027,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20210105")
+    (version "20210331")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2004,7 +2035,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1gi7qzfywg118g5nlqn5lawxk25pg2sz01gmbz40vvmikks4ri9r"))))
+                "1h98pvc9iy1c49cid0ppjwk5zsy2m1xbvfqb72pkwkrd4rn35arx"))))
     (build-system gnu-build-system)
     (native-inputs `(("flex" ,flex)
                      ("bison" ,bison)))

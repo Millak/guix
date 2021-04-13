@@ -20,6 +20,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,6 +89,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
@@ -1807,6 +1809,42 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public python-sip
   (package
     (name "python-sip")
+    (version "5.5.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (list (pypi-uri "sip" version)
+                   (string-append "https://www.riverbankcomputing.com/static/"
+                                  "Downloads/sip/" version
+                                  "/sip-" version ".tar.gz")))
+        (sha256
+         (base32
+          "1idaivamp1jvbbai9yzv471c62xbqxhaawccvskaizihkd0lq0jx"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python" ,python-wrapper)))
+    (propagated-inputs
+     `(("python-toml" ,python-toml)
+       ("python-packaging" ,python-packaging)))
+    (home-page "https://www.riverbankcomputing.com/software/sip/intro")
+    (synopsis "Python binding creator for C and C++ libraries")
+    (description
+     "SIP is a tool to create Python bindings for C and C++ libraries.  It
+was originally developed to create PyQt, the Python bindings for the Qt
+toolkit, but can be used to create bindings for any C or C++ library.
+
+SIP comprises a code generator and a Python module.  The code generator
+processes a set of specification files and generates C or C++ code, which
+is then compiled to create the bindings extension module.  The SIP Python
+module provides support functions to the automatically generated code.")
+    ;; There is a choice between a python like license, gpl2 and gpl3.
+    ;; For compatibility with pyqt, we need gpl3.
+    (license license:gpl3)))
+
+(define-public python-sip-4
+  (package
+    (inherit python-sip)
+    (name "python-sip")
     (version "4.19.24")
     (source
       (origin
@@ -1821,6 +1859,7 @@ and binaries removed, and adds modular support for using system libraries.")
     (build-system gnu-build-system)
     (native-inputs
      `(("python" ,python-wrapper)))
+    (propagated-inputs `())
     (arguments
      `(#:tests? #f ; no check target
        #:imported-modules ((guix build python-build-system)
@@ -1843,26 +1882,7 @@ and binaries removed, and adds modular support for using system libraries.")
                        "--bindir" bin
                        "--destdir" lib
                        "--incdir" include)))))))
-    (home-page "https://www.riverbankcomputing.com/software/sip/intro")
-    (synopsis "Python binding creator for C and C++ libraries")
-    (description
-     "SIP is a tool to create Python bindings for C and C++ libraries.  It
-was originally developed to create PyQt, the Python bindings for the Qt
-toolkit, but can be used to create bindings for any C or C++ library.
-
-SIP comprises a code generator and a Python module.  The code generator
-processes a set of specification files and generates C or C++ code, which
-is then compiled to create the bindings extension module.  The SIP Python
-module provides support functions to the automatically generated code.")
-    ;; There is a choice between a python like license, gpl2 and gpl3.
-    ;; For compatibility with pyqt, we need gpl3.
     (license license:gpl3)))
-
-(define-public python2-sip
-  (package/inherit python-sip
-    (name "python2-sip")
-    (native-inputs
-     `(("python" ,python-2)))))
 
 (define-public python-pyqt
   (package
@@ -1877,17 +1897,17 @@ module provides support functions to the automatically generated code.")
                    (string-append "https://www.riverbankcomputing.com/static/"
                                   "Downloads/PyQt5/" version "/PyQt5-"
                                   version ".tar.gz")))
-        (file-name (string-append "PyQt5-"version ".tar.gz"))
+        (file-name (string-append "PyQt5-" version ".tar.gz"))
         (sha256
          (base32
           "1z74295i69cha52llsqffzhb5zz7qnbjc64h8qg21l91jgf0harp"))
-       (patches (search-patches "pyqt-configure.patch"
-                                "pyqt-public-sip.patch"))))
+        (patches (search-patches "pyqt-configure.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("qtbase" ,qtbase))) ; for qmake
     (propagated-inputs
-     `(("python-sip" ,python-sip)))
+     `(("python-sip" ,python-sip)
+       ("python-pyqt5-sip" ,python-pyqt5-sip)))
     (inputs
      `(("python" ,python-wrapper)
        ("qtbase" ,qtbase)
@@ -1955,6 +1975,25 @@ module provides support functions to the automatically generated code.")
 framework.  The bindings are implemented as a set of Python modules and
 contain over 620 classes.")
     (license license:gpl3)))
+
+(define-public python-pyqt5-sip
+  (package
+    (name "python-pyqt5-sip")
+    (version "12.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt5_sip" version))
+       (sha256
+        (base32
+         "1gg032ys4pccwkdzmdryadc9a4lq85nr05pag9swrsdykbdl9s9h"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ;; No test code.
+    (home-page "https://www.riverbankcomputing.com/software/sip/")
+    (synopsis "Sip module support for PyQt5")
+    (description "Sip module support for PyQt5")
+    (license license:lgpl2.1+)))
 
 (define-public python-pyqtwebengine
   (package
@@ -2049,38 +2088,28 @@ itself.")
     (inputs
      (alist-delete "qtwebkit" (package-inputs python-pyqt)))))
 
-(define-public python2-pyqt
-  (package/inherit python-pyqt
-    (name "python2-pyqt")
-    (propagated-inputs
-     `(("python-enum34" ,python2-enum34)
-       ("python-sip" ,python2-sip)))
-    (native-inputs
-     `(("python-sip" ,python2-sip)
-       ("qtbase" ,qtbase)))
-    (inputs
-     `(("python" ,python-2)
-       ("python2-enum34" ,python2-enum34)
-       ,@(alist-delete "python" (package-inputs python-pyqt))))))
-
-(define-public python2-pyqtwebengine
-  (package/inherit
-   python-pyqtwebengine
-   (name "python2-pyqtwebengine")
-   (native-inputs
-    `(("python" ,python-2)
-      ("python-sip" ,python2-sip)
-      ;; qtbase is required for qmake
-      ("qtbase" ,qtbase)))
+(define-public python-pyqt-builder
+  (package
+   (name "python-pyqt-builder")
+   (version "1.9.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (pypi-uri "PyQt-builder" version))
+     (sha256
+      (base32
+       "0nh0054c54ji3sm6d268fccf0y5f613spswwgwqd3rnn816hnljl"))))
+   (build-system python-build-system)
    (inputs
-    `(("python" ,python-2)
-      ("python-sip" ,python2-sip)
-      ("python-pyqt" ,python2-pyqt)
-      ("qtbase" ,qtbase)
-      ("qtsvg" ,qtsvg)
-      ("qtdeclarative" ,qtdeclarative)
-      ("qtwebchannel" ,qtwebchannel)
-      ("qtwebengine" ,qtwebengine)))))
+    `(("python-sip" ,python-sip)))
+   (home-page "https://www.riverbankcomputing.com/static/Docs/PyQt-builder/")
+   (synopsis "PEP 517 compliant PyQt build system")
+   (description "PyQt-builder is a tool for generating Python bindings for C++
+libraries that use the Qt application framework.  The bindings are built on
+top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
+   ;; Either version 2 or 3, but no other version. See the file
+   ;; 'pyqtbuild/builder.py' in the source distribution for more information.
+   (license (list license:gpl2 license:gpl3))))
 
 (define-public python-qtpy
   (package

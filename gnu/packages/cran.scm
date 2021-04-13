@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2020 Roel Janssen <roel@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
@@ -1058,6 +1058,25 @@ the embedded @code{RapidXML} C++ library.")
      "Functions for modelling that help you seamlessly integrate modelling
 into a pipeline of data manipulation and visualisation.")
     (license license:gpl3)))
+
+(define-public r-hmm
+  (package
+    (name "r-hmm")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "HMM" version))
+              (sha256
+               (base32
+                "0z0hcqfixx1l2a6d3lpy5hmh0n4gjgs0jnck441akpp3vh37glzw"))))
+    (properties `((upstream-name . "HMM")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/HMM/")
+    (synopsis "Hidden Markov Models")
+    (description "This package provides an easy to use library to setup, apply
+and make inference with discrete time and discrete space hidden Markov
+models.")
+    (license license:gpl2+)))
 
 (define-public r-httpuv
   (package
@@ -9538,10 +9557,10 @@ singular or ill-conditioned Jacobian.")
      `((upstream-name . "PhysicalActivity")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/PhysicalActivity/")
-    (synopsis "Procesing accelerometer data for physical activity measurement")
+    (synopsis "Processing accelerometer data for physical activity measurement")
     (description
      "This @code{r-physicalactivity} package provides a function @code{wearingMarking}
-for classification of monitor wear and nonwear time intervals in accelerometer
+for classification of monitored wear and nonwear time intervals in accelerometer
 data collected to assess physical activity.  The package also contains functions
 for making plots of accelerometer data and obtaining the summary of various
 information including daily monitor wear time and the mean monitor wear time
@@ -16376,7 +16395,7 @@ sets of URLs.")
     (description
      "The aim of the ggplot2 package is to aid in visual data investigations.
 This focus has led to a lack of facilities for composing specialized plots.
-Thi package aims to be a collection of mainly new statistics and geometries
+This package aims to be a collection of mainly new statistics and geometries
 that fills this gap.")
     (license license:expat)))
 
@@ -28317,3 +28336,29 @@ indicator, a quantitative variable or a survival time.")
 differential expression analysis, RNAseq data and related problems.")
     ;; Any version of the LGPL
     (license license:lgpl3+)))
+
+(define-public r-randomforestsrc
+  (package
+    (name "r-randomforestsrc")
+    (version "2.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "randomForestSRC" version))
+       (sha256
+        (base32
+         "05ifvj49jv0n5p6k46milpgj9r10sc5aw23fypyyibdgwpwvwixw"))))
+    (properties
+     `((upstream-name . "randomForestSRC")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/randomForestSRC/")
+    (synopsis "Random forests for survival, regression, and classification")
+    (description
+     "This package implements fast OpenMP parallel computing of Breiman's
+random forests for survival, competing risks, regression and classification
+based on Ishwaran and Kogalur's popular random survival forests (RSF) package.
+It handles missing data and now includes multivariate, unsupervised forests,
+quantile regression and solutions for class imbalanced data.  It provides a
+fast interface using subsampling and confidence regions for variable
+importance.")
+    (license license:gpl3+)))

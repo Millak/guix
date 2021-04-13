@@ -743,7 +743,7 @@ battlestar (explore the world around, starting from dying spaceship),
 phantasia (role-play as an rogue), trek (hunt the Klingons, and save the
 Federation), and wump (hunt the big smelly Wumpus in a dark cave).
 
-Quizes: arithmetic, and quiz.")
+Quizzes: arithmetic and quiz.")
     ;; "Auxiliary and data files, distributed with the games in NetBSD, but
     ;; not bearing copyright notices, probably fall under the terms of the UCB
     ;; or NetBSD copyrights and licences.  The file "fortune/Notes" contains a
@@ -3454,7 +3454,7 @@ match, cannon keep, and grave-itation pit.")
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.4.0")
+    (version "5.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3463,7 +3463,7 @@ match, cannon keep, and grave-itation pit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a17g6cmxrscnqwpwrd4w2ck3dgvplyfq4kzyimilfpqar1q69j9"))
+                "062ilb7s377q3hwfhl8q06vvcw2raydz5ljzlzwy2dmyzmdcndb8"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3551,7 +3551,7 @@ in different ways.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11dz36z0pj2r7i8xm8v5lskzws81ckj6sc0avlmvdl8qdc9x83w5"))))
+                "0i45lbnikvgj9kxdp0yphpjjwjcgp4ibn49xkj78j5ic1s9n8jd4"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("source" ,source)))
@@ -5849,7 +5849,7 @@ for Un*x systems with X11.")
 (define-public freeciv
   (package
    (name "freeciv")
-   (version "2.6.3")
+   (version "2.6.4")
    (source
     (origin
      (method url-fetch)
@@ -5861,7 +5861,7 @@ for Un*x systems with X11.")
                   (version-major+minor version) "/" version
                   "/freeciv-" version ".tar.bz2")))
      (sha256
-      (base32 "1lgq7wcbhwpy2yqdw4biwfmp5q8fh7lhlwxcgm0fpaapfl12whvp"))))
+      (base32 "1kn122f57wn5a8ryxaz73dlbd5m93mqx3bqmmz2lkgdccrvrbns0"))))
    (build-system gnu-build-system)
    (inputs
     `(("curl" ,curl)
@@ -8740,7 +8740,7 @@ where the player draws runes in real time to effect the desired spell.")
 (define-public edgar
   (package
     (name "edgar")
-    (version "1.33")
+    (version "1.34")
     (source
      (origin
        (method url-fetch)
@@ -8748,7 +8748,7 @@ where the player draws runes in real time to effect the desired spell.")
         (string-append "https://github.com/riksweeney/edgar/releases/download/"
                        version "/edgar-" version "-1.tar.gz"))
        (sha256
-        (base32 "1mbx7dvizdca4g1blcv3bdh6yxd13k47rkya4rdzg0nvvz24m175"))))
+        (base32 "1121rq5wk3g8rs413av84s2kcy6qj6maspgy2vsxs36c2jd3yygl"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f            ; there are no tests
                  #:make-flags

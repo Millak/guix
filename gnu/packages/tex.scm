@@ -7948,3 +7948,88 @@ desired for one font family is not available for another font family,
 or if it differs from the weight desired for another font family.  The
 @code{mweights} package provides a solution to these difficulties.")
     (license license:lppl)))
+
+(define-public texlive-cabin
+  (package
+    (inherit (simple-texlive-package
+              "texlive-cabin"
+              (list "/doc/fonts/cabin/"
+                    "/fonts/enc/dvips/cabin/"
+                    "/fonts/map/dvips/cabin/"
+                    "/fonts/opentype/impallari/cabin/"
+                    "/fonts/tfm/impallari/cabin/"
+                    "/fonts/type1/impallari/cabin/"
+                    "/fonts/vf/impallari/cabin/"
+                    "/tex/latex/cabin/")
+              (base32
+               "0dfq9gqch80iyvp58spmpmqfc9h61sjvnddm81ba0af1p8ag8sfg")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/cabin")
+    (synopsis "Humanist Sans Serif font with LaTeX support")
+    (description "Cabin is a humanist sans with four weights, true
+italics and small capitals.  According to its designer, Pablo
+Impallari, Cabin was inspired by the typefaces of Edward Johnston and
+Eric Gill.  Cabin incorporates modern proportions, optical adjustments
+and some elements of the geometric sans.  @code{cabin.sty} supports
+use of the font under LaTeX, pdfLaTeX, XeLaTeX and LuaLaTeX.  It uses
+the @code{mweights} package to manage the user's view of all those
+font weights.  An @code{sfdefault} option is provided to enable Cabin
+as the default text font.  The @code{fontaxes} package is required for
+use with [pdf]LaTeX.")
+    (license (list license:silofl1.1 ;for Cabin
+                   license:lppl))))  ;for support files
+
+(define-public texlive-newtx
+  (package
+    (inherit (simple-texlive-package
+              "texlive-newtx"
+              (list "/doc/fonts/newtx/"
+                    "/fonts/afm/public/newtx/"
+                    "/fonts/enc/dvips/newtx/"
+                    "/fonts/map/dvips/newtx/"
+                    "/fonts/opentype/public/newtx/"
+                    "/fonts/tfm/public/newtx/"
+                    "/fonts/type1/public/newtx/"
+                    "/fonts/vf/public/newtx/"
+                    "/tex/latex/newtx/")
+              (base32
+               "0rqjj33m6xkhrjzjhf24kxdg61az5sqsbcl0m7xqkf4akqybn22d")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/newtx")
+    (synopsis "Repackaging of the TX fonts with improved metrics")
+    (description "The @code{newtx} bundle splits
+@code{txfonts.sty} (from the TX fonts distribution) into two
+independent packages, @code{newtxtext.sty} and @code{newtxmath.sty},
+each with fixes and enhancements.  @code{newtxmath}'s metrics have
+been re-evaluated to provide a less tight appearance and to provide a
+@code{libertine} option that substitutes Libertine italic and Greek
+letters for the existing math italic and Greek glyphs, making a
+mathematics package that matches Libertine text quite well.")
+    (license license:lppl1.3)))
+
+(define-public texlive-xcharter
+  (package
+    (inherit (simple-texlive-package
+              "texlive-xcharter"
+              (list "/doc/fonts/xcharter/"
+                    "/fonts/afm/public/xcharter/"
+                    "/fonts/enc/dvips/xcharter/"
+                    "/fonts/map/dvips/xcharter/"
+                    "/fonts/opentype/public/xcharter/"
+                    "/fonts/tfm/public/xcharter/"
+                    "/fonts/type1/public/xcharter/"
+                    "/fonts/vf/public/xcharter/"
+                    "/tex/latex/xcharter/")
+              (base32
+               "0krm4h53lw7h9jbmv5nc89fm4x7i8l574aig1l4mw8w3ziknwmi7")
+              #:trivial? #t))
+    (home-page "https://www.ctan.org/pkg/xcharter")
+    (synopsis "Extension of the Bitstream Charter fonts")
+    (description "@code{xcharter} repackages Bitstream Charter with an
+extended set of features.  The extension provides small caps, oldstyle
+figures and superior figures in all four styles, accompanied by LaTeX
+font support files.  The fonts themselves are provided in both Adobe
+Type 1 and OTF formats, with supporting files as necessary.")
+    (license (list (license:fsf-free
+                    "http://mirrors.ctan.org/fonts/xcharter/README")
+                   license:lppl1.3))))

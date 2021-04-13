@@ -18,7 +18,7 @@
 ;;; Copyright © 2018 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
@@ -78,6 +78,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet) ; libmicrohttpd
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
@@ -567,11 +568,11 @@ streams from live audio.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "5.12")
+    (version "6.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.ardour.org/ardour/ardour.git")
+                    (url "git://git.ardour.org/ardour/ardour.git")
                     (commit version)))
               (snippet
                ;; Ardour expects this file to exist at build time.  The revision
@@ -581,15 +582,16 @@ streams from live audio.")
                     "libs/ardour/revision.cc"
                   (lambda (port)
                     (format port ,(string-append "#include \"ardour/revision.h\"
-namespace ARDOUR { const char* revision = \"" version "\" ; }"))
+namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }"))
                     #t)))
               (sha256
                (base32
-                "0mla5lm51ryikc2rrk53max2m7a5ds6i1ai921l2h95wrha45nkr"))
+                "0k5rxh8b3d8si3lj01gfqj0pmd448d8sj4asnb205mwhwbfgn0cp"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
      `(#:configure-flags '("--cxx11"          ; required by gtkmm
+                           "--optimize"
                            "--no-phone-home"  ; don't contact ardour.org
                            "--freedesktop"    ; build .desktop file
                            "--test")          ; build unit tests
@@ -619,8 +621,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; }"))
                                             ver ".appdata.xml")
                              (string-append share "/appdata/")))
              #t)))
-       #:test-target "test"
-       #:python ,python-2))
+       #:test-target "test"))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("atkmm" ,atkmm)
@@ -628,6 +629,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; }"))
        ("boost" ,boost)
        ("cairomm" ,cairomm)
        ("curl" ,curl)
+       ("dbus" ,dbus)
        ("eudev" ,eudev)
        ("fftw" ,fftw)
        ("fftwf" ,fftwf)
@@ -644,17 +646,21 @@ namespace ARDOUR { const char* revision = \"" version "\" ; }"))
        ("libsndfile" ,libsndfile)
        ("libusb" ,libusb)
        ("libvorbis" ,libvorbis)
+       ("libwebsockets" ,libwebsockets)
        ("libxml2" ,libxml2)
        ("lilv" ,lilv)
        ("lrdf" ,lrdf)
        ("lv2" ,lv2)
+       ("openssl" ,openssl)  ; Required by libwebsockets.
        ("pangomm" ,pangomm)
        ("python-rdflib" ,python-rdflib)
+       ("pulseaudio" ,pulseaudio)
        ("readline" ,readline)
        ("redland" ,redland)
        ("rubberband" ,rubberband)
        ("serd" ,serd)
        ("sord" ,sord)
+       ("soundtouch" ,soundtouch)
        ("sratom" ,sratom)
        ("suil" ,suil)
        ("taglib" ,taglib)
@@ -4088,7 +4094,7 @@ kbps at 24 bit/96 kHz.")
     (home-page "https://github.com/Arkq/bluez-alsa")
     (synopsis "Bluetooth ALSA backend")
     (description "This project is a rebirth of a direct integration between
-Bluez and ALSA.  Since Bluez >= 5, the build-in integration has been removed
+Bluez and ALSA.  Since Bluez >= 5, the built-in integration has been removed
 in favor of 3rd party audio applications.  From now on, Bluez acts as a
 middleware between an audio application, which implements Bluetooth audio
 profile, and a Bluetooth audio device.  BlueALSA registers all known Bluetooth
@@ -4255,7 +4261,7 @@ the following features:
       (home-page "https://github.com/werman/noise-suppression-for-voice")
       (synopsis "Speech denoise LV2 plugin based on Xiph's RNNoise library")
       (description "RNNoise is a library that uses deep learning to apply
-noise supression to audio sources with voice presence.  This package provides
+noise suppression to audio sources with voice presence.  This package provides
 an LV2 audio plugin.")
       (license license:lgpl3+))))
 
@@ -4460,7 +4466,7 @@ library.")
 (define-public faudio
   (package
     (name "faudio")
-    (version "19.11")
+    (version "21.04")
     (source
      (origin
        (method git-fetch)
@@ -4469,19 +4475,24 @@ library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ckpr6ffz8ssfh1y850dhip5s5jv0j6n90qz5yx1v9d6gpwf08rp"))))
+        (base32 "1g3zp7igh4ns31sqnxddxqhgibijngkbcqqsj23i9d1lah6k4747"))))
     (arguments
      '(#:tests? #f                      ; No tests.
-       #:configure-flags '("-DFFMPEG=ON")))
+       #:configure-flags '("-DGSTREAMER=ON")))
     (build-system cmake-build-system)
     (native-inputs `(("pkg-config" ,pkg-config)))
-    (inputs `(("ffmpeg" ,ffmpeg)
+    (inputs `(("gstreamer" ,gstreamer)
+              ("gst-plugins-base" ,gst-plugins-base)
               ("sdl2" ,sdl2)))
     (home-page "https://github.com/FNA-XNA/FAudio")
     (synopsis "XAudio reimplementation")
     (description "FAudio is an XAudio reimplementation that focuses solely on
 developing fully accurate DirectX Audio runtime libraries.")
-    (license license:zlib)))
+    (license
+     (list license:zlib
+           ;; stb & utils/{ui,wav}common are dual-licenced under either of:
+           license:expat
+           license:public-domain))))
 
 (define-public gnaural
   (package

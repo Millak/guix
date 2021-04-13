@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 Matthew Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021 Cage <cage-dev@twistfold.it>
+;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -159,6 +160,36 @@ collection.")
 
 (define-public cl-bodge-utilities
   (sbcl-package->cl-source-package sbcl-bodge-utilities))
+
+(define-public sbcl-bodge-queue
+  (let ((commit "948c9a501dcd412689952d09eb7453ec2722336a")
+        (revision "0"))
+    (package
+      (name "sbcl-bodge-queue")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/borodust/bodge-queue")
+               (commit commit)))
+         (file-name (git-file-name "bodge-queue" version))
+         (sha256
+          (base32 "148hjikqk8v2m30mj15xh89zni6szf9z3prav580qk9dqr8djjdr"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       `(("fiveam" ,sbcl-fiveam)))
+      (home-page "https://github.com/borodust/bodge-queue")
+      (synopsis "Simple queue for Common Lisp")
+      (description "This Common Lisp library provides a simple FIFO
+implementation with no external dependencies.")
+      (license license:expat))))
+
+(define-public cl-bodge-queue
+  (sbcl-package->cl-source-package sbcl-bodge-queue))
+
+(define-public ecl-bodge-queue
+  (sbcl-package->ecl-package sbcl-bodge-queue))
 
 (define-public sbcl-golden-utils
   (let ((commit "62a5cb948a011eb26e7a89f56d5839a3334b4100")
@@ -7296,10 +7327,10 @@ of C+GObject libraries without the need of writing dedicated bindings.")
       (inputs
        `(("ppcre" ,sbcl-cl-ppcre)))
       (home-page "https://github.com/EuAndreh/cl-slug")
-      (synopsis "Multi-language slug formater")
+      (synopsis "Multi-language slug formatter")
       (description
        "This is a small Common Lisp library to make slugs, mainly for URIs,
-from english and beyond.")
+from English and beyond.")
       (license license:llgpl))))
 
 (define-public ecl-cl-slug
@@ -13315,7 +13346,7 @@ and lean bindings to C libraries.")
       (home-page "https://github.com/borodust/claw-utils")
       (synopsis "Utilities for easier autowrapping")
       (description
-       "This Common Lisp library contains various handy utilties to help
+       "This Common Lisp library contains various handy utilities to help
 autowrapping with @code{claw}.")
       (license license:expat))))
 
@@ -15718,3 +15749,109 @@ shader functions, written with @code{Shadow}.")
 
 (define-public cl-umbra
   (sbcl-package->cl-source-package sbcl-umbra))
+
+(define-public sbcl-abstract-classes
+  (let ((commit "7fa74f1e057f9ba7c1ffecff14f049f979e45267")
+        (revision "1"))
+    (package
+      (name "sbcl-abstract-classes")
+      (version (git-version "1.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://bitbucket.org/eeeickythump/cl-abstract-classes")
+               (commit commit)))
+         (file-name (git-file-name "cl-abstract-classes" version))
+         (sha256
+          (base32 "06lby4i6xbbgs7kgb0f3fqybvyskyg6djhrf967lnysv7hn3zpg9"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       `(("closer-mop" ,sbcl-closer-mop)))
+      (arguments
+       `(#:asd-systems '("abstract-classes" "singleton-classes")))
+      (home-page "https://bitbucket.org/eeeickythump/cl-abstract-classes")
+      (synopsis "Abstract, final, and singleton metaclasses for CLOS")
+      (description
+       "This package provides Common Lisp extension to the MOP to allow
+abstract, final and singleton classes.")
+      (license license:public-domain))))
+
+(define-public ecl-abstract-classes
+  (sbcl-package->ecl-package sbcl-abstract-classes))
+
+(define-public cl-abstract-classes
+  (sbcl-package->cl-source-package sbcl-abstract-classes))
+
+(define-public sbcl-coalton
+  (let ((commit "4a42ffb4222fde3abfd1b50d96e455ff2eef9fe8")
+        (revision "1"))
+    (package
+      (name "sbcl-coalton")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/coalton")
+               (commit commit)))
+         (file-name (git-file-name "coalton" version))
+         (sha256
+          (base32 "0aidwwam7cnhb3p9212zbv5w2dl6kr5iklzanypzr1a9lqaxwdlk"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       `(("fiasco" ,sbcl-fiasco)))
+      (inputs
+       `(("abstract-classes" ,sbcl-abstract-classes)
+         ("alexandria" ,sbcl-alexandria)
+         ("global-vars" ,sbcl-global-vars)
+         ("optima" ,sbcl-optima)
+         ("trivial-garbage" ,sbcl-trivial-garbage)))
+      (home-page "https://github.com/stylewarning/coalton")
+      (synopsis "Dialect of ML in Common Lisp")
+      (description
+       "Coalton is a dialect of ML embedded in Common Lisp.  It emphasizes
+practicality and interoperability with Lisp, and is intended to be a DSL that
+allows one to gradually make their programs safer.")
+      (license license:expat))))
+
+(define-public ecl-coalton
+  (sbcl-package->ecl-package sbcl-coalton))
+
+(define-public cl-coalton
+  (sbcl-package->cl-source-package sbcl-coalton))
+
+(define-public sbcl-clip
+  (let ((commit "7afa68702fbb99c47ed115ea0faccd97a29d9b2e")
+        (revision "1"))
+    (package
+      (name "sbcl-clip")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shinmera/clip")
+               (commit commit)))
+         (file-name (git-file-name "clip" version))
+         (sha256
+          (base32 "13kkajkva2shm19fvn4yashsw18l6imv2rmy3hmpcky7g5ay7bv3"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       `(("array-utils" ,sbcl-array-utils)
+         ("lquery" ,sbcl-lquery)))
+      (home-page "https://shinmera.github.io/clip/")
+      (synopsis "Common Lisp HTML templating engine")
+      (description
+       "Clip is an attempt at a templating library that allows you to write
+templates in a way that is both accessible to direct webdesign and
+flexible.  The main idea is to incorporate transformation commands into an HTML
+file through tags and attributes.  Clip is heavily dependant on Plump and
+lQuery.")
+      (license license:zlib))))
+
+(define-public ecl-clip
+  (sbcl-package->ecl-package sbcl-clip))
+
+(define-public cl-clip
+  (sbcl-package->cl-source-package sbcl-clip))

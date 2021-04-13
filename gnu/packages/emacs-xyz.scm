@@ -85,7 +85,7 @@
 ;;; Copyright © 2020 Adam Kandur <rndd@tuta.io>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
-;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2020 Jonathan Rostran <rostranjj@gmail.com>
 ;;; Copyright © 2020, 2021 Noah Evans <noah@nevans.me>
@@ -96,6 +96,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Eugene Klimov <lipklim@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,6 +141,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
@@ -937,6 +939,29 @@ Additionally, it is able to send GraphQL queries to an end-point URL.
 Files with the @file{.graphql} and @file{.gql} extensions are
 automatically opened with this mode.")
       (license license:gpl3+))))
+
+(define-public emacs-ghq
+  (package
+    (name "emacs-ghq")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rcoedo/emacs-ghq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rh2k93c3a0vl073a3s3a3h6gkw454v1lyd7y8l3pd24vw9hc628"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("ghq" ,ghq)))
+    (home-page "https://github.com/rcoedo/emacs-ghq")
+    (synopsis "Emacs interface for @code{ghq} tool")
+    (description
+     "This package provides a set of functions wrapping @code{ghq}, a tool for
+organizing remote Go repository clones.")
+    (license license:gpl3+)))
 
 (define-public emacs-ghub
   (package
@@ -1783,14 +1808,14 @@ incrementally confined in Isearch manner.")
 (define emacs-emms-print-metadata
   (package
     (name "emacs-emms-print-metadata")
-    (version "6.3")
+    (version "7.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "emms-" version ".tar"))
        (sha256
-        (base32 "12cfq503li0gcqmm5bmqz8yjvfdif5xvz0l9vx3g5jl6ljygwgmf"))))
+        (base32 "1hryagy2mkx9zgc33mb773ckp5p9bisnny0r78l0h2vc43wanmhz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("emms-print-metadata")
@@ -4678,6 +4703,32 @@ as moving between the spec files, and corresponding code files.
 
 Also included are keybindings for spec files and Dired buffers, as well as
 snippets for yasnippet.")
+      (license license:gpl3+))))
+
+(define-public emacs-mode-line-idle
+  ;; Package has no release.  Version is extracted from "Version:" keyword in
+  ;; main file.
+  (let ((commit "02b1da6278e43cc9cc0356110cc6bfbb37eb8241")
+	(revision "1"))
+    (package
+      (name "emacs-mode-line-idle")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (file-name (git-file-name name version))
+         (uri (git-reference
+               (url "https://gitlab.com/ideasman42/emacs-mode-line-idle")
+               (commit commit)))
+         (sha256
+          (base32 "0ky330b2sfbzkbxbfp9b21hdywsjw26bllspglz08hrbni7jmry8"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.com/ideasman42/emacs-mode-line-idle")
+      (synopsis "Simple delayed text evaluation for the mode-line")
+      (description
+       "Mode Line Idle provides a convenient way to defer text evaluation
+which integrates into existing mode-line without requiring a minor mode or
+configuration.")
       (license license:gpl3+))))
 
 (define-public emacs-smart-mode-line
@@ -9183,6 +9234,30 @@ duplicated a lot.  Org-mode makes the book keeping of tags and feeds
 much easier.")
       (license license:gpl3+))))
 
+(define-public emacs-elfeed-protocol
+  (package
+    (name "emacs-elfeed-protocol")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fasheng/elfeed-protocol")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07r1qlldgd0kfikd0y737y5n42ab3nkw2s5jx7frimj41yandbdp"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-elfeed" ,emacs-elfeed)))
+    (home-page "https://github.com/fasheng/elfeed-protocol")
+    (synopsis "Fever/NewsBlur/ownCloud/tt-RSS protocols for Elfeed")
+    (description
+     "Elfeed-protocol provides extra protocols to make self-hosting RSS
+readers like Fever, NewsBlur, ownCloud News and Tiny TIny RSS work
+with Elfeed.")
+    (license license:gpl3+)))
+
 (define-public emacs-elfeed-score
   (package
     (name "emacs-elfeed-score")
@@ -12575,14 +12650,14 @@ shuangpin, wubi and cangjie.")
 (define-public emacs-posframe
   (package
     (name "emacs-posframe")
-    (version "0.9.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "posframe-" version ".tar"))
        (sha256
-        (base32 "14x63713lbvmp24733j7pqkwvcnhpcgv7pprr8sykan3jnjnnzh3"))))
+        (base32 "1k06dbh9xqn2vix5qkcapl57v0c21b344r8dx6j5qr4jxirsn2x5"))))
     (build-system emacs-build-system)
     ;; emacs-minimal does not include the function font-info.
     (arguments
@@ -25435,21 +25510,21 @@ current buffer.")
 (define-public emacs-repl-toggle
   (package
     (name "emacs-repl-toggle")
-    (version "0.6.1")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tomterl/repl-toggle")
+             (url "https://git.sr.ht/~tomterl/repl-toggle")
              (commit version)))
        (sha256
         (base32
-         "12h3xxja3isnhvrqx7m2g7a5d8h68cc85pbqyhiipfxyafyl1yxd"))
+         "0nycm8a4wwkkaif958z4m89slayp17k20lp2h7lvddjx8prn6yfp"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs
      `(("emacs-fullframe" ,emacs-fullframe)))
-    (home-page "https://github.com/tomterl/repl-toggle")
+    (home-page "https://git.sr.ht/~tomterl/repl-toggle")
     (synopsis "Switch to and from current major mode's REPL")
     (description "This package provides a function to switch to and from a
 REPL appropriate to the current major mode.")
@@ -25554,14 +25629,14 @@ interface.")
 (define-public emacs-ivy-posframe
   (package
     (name "emacs-ivy-posframe")
-    (version "0.5.5")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "ivy-posframe-" version ".tar"))
        (sha256
-        (base32 "184730grclxmlw6nfs41d4g6fvz9c6xnclvwgqx1ii0xm7p9xy95"))))
+        (base32 "07dzglrcdl54lkznyphw97xwd9bcwzdcgzkav0vqfk7f5cwh1wkf"))))
     (build-system emacs-build-system)
     (propagated-inputs
      `(("emacs-ivy" ,emacs-ivy)
@@ -27479,7 +27554,7 @@ rules about where space should be left to separate words and parentheses.")
     (description "This mode allows to paste whole buffers or parts of buffers
 to pastebin-like services.  It supports more than one service and will
 failover if one service fails.  More services can easily be added over time
-and prefered services can easily be configured.")
+and preferred services can easily be configured.")
     (license license:gpl3+)))
 
 (define-public emacs-keystore-mode
@@ -27541,6 +27616,39 @@ and prefered services can easily be configured.")
      "This package adds a \"C-'\" binding to Ivy minibuffer that uses Avy.")
     (license license:gpl3+)))
 
+(define-public emacs-vertico
+  (package
+    (name "emacs-vertico")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minad/vertico")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r2p09y3ag14dqd46nyy1pa2j2cvn4gn9pji47mzmwydsm2f8hv1"))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'build-doc
+           (lambda _
+             (invoke "makeinfo" "vertico.texi"))))))
+    (native-inputs
+     `(("texinfo" ,texinfo)))
+    (home-page "https://github.com/minad/vertico")
+    (synopsis "Vertical interactive completion")
+    (description
+     "Vertico provides a minimalistic vertical completion UI, which is based
+on Emacs' default completion system.  By reusing the default system, it
+achieves full compatibility with built-in Emacs commands and completion
+tables.  Vertico is pretty bare-bone and only provides a minimal set of
+commands.  Additional optional enhancements can be provided externally by
+complementary packages.")
+    (license license:gpl3+)))
+
 (define-public emacs-ivy-hydra
   (package
     (name "emacs-ivy-hydra")
@@ -27564,3 +27672,4 @@ and prefered services can easily be configured.")
 quasi-prefix map, with many useful bindings.  These bindings are
 shorter than usual, using mostly unprefixed keys.")
     (license license:gpl3+)))
+

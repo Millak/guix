@@ -40,6 +40,7 @@
 # Copyright © 2020 Malte Frank Gerdes <mate.f.gerdes@gmail.com>
 # Copyright © 2020 Vinicius Monego <monego@posteo.net>
 # Copyright © 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
+# Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 #
 # This file is part of GNU Guix.
 #
@@ -1265,6 +1266,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libffi-float128-powerpc64le.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
   %D%/packages/patches/libziparchive-add-includes.patch		\
+  %D%/packages/patches/lksctp-tools-1.0.18-fix-header-file-name.patch \
   %D%/packages/patches/localed-xorg-keyboard.patch		\
   %D%/packages/patches/kdiagram-Fix-missing-link-libraries.patch \
   %D%/packages/patches/kiki-level-selection-crash.patch		\
@@ -1558,7 +1560,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/pybugz-stty.patch			\
   %D%/packages/patches/pygpgme-disable-problematic-tests.patch  \
   %D%/packages/patches/pyqt-configure.patch			\
-  %D%/packages/patches/pyqt-public-sip.patch			\
   %D%/packages/patches/python-2-deterministic-build-info.patch	\
   %D%/packages/patches/python-2.7-adjust-tests.patch		\
   %D%/packages/patches/python-2.7-search-paths.patch		\
@@ -1638,6 +1639,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
+  %D%/packages/patches/racket-sh-via-rktio.patch		\
   %D%/packages/patches/racket-store-checksum-override.patch	\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/retroarch-LIBRETRO_DIRECTORY.patch	\

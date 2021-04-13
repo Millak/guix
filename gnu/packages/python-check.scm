@@ -10,6 +10,8 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1183,6 +1185,28 @@ any Python VM with basically no runtime overhead.")
     ;; mypyc/lib-rt/getargs.c
     (license (list license:expat license:psfl))))
 
+(define-public python-pyannotate
+  (package
+    (name "python-pyannotate")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyannotate" version))
+       (sha256
+        (base32
+         "16bm0mf7wxvy0lgmcs1p8n1ji8pnvj1jvj8zk3am70dkp825iv84"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-mypy-extensions" ,python-mypy-extensions)
+       ("python-six" ,python-six)))
+    (home-page
+     "https://github.com/dropbox/pyannotate")
+    (synopsis "Auto-generate PEP-484 annotations")
+    (description "This package, PyAnnotate, is used to auto-generate PEP-484
+annotations.")
+    (license license:asl2.0)))
+
 (define-public python-eradicate
   (package
     (name "python-eradicate")
@@ -1286,4 +1310,27 @@ help in debugging failures and optimizing the scheduler to improve speed.")
     (synopsis "Pytest plugin for Sanic")
     (description "A pytest plugin for Sanic.  It helps you to test your
 code asynchronously.")
+    (license license:expat)))
+
+(define-public python-allpairspy
+  (package
+    (name "python-allpairspy")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "allpairspy" version))
+       (sha256
+        (base32 "1c987h13dly9919d15w3h747rgn50ilnv7dginhlprxbj564hn4k"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python-pytest" ,python-pytest)
+       ("python-pytest-runner" ,python-pytest-runner)))
+    (home-page "https://github.com/thombashi/allpairspy")
+    (synopsis "Pairwise test combinations generator")
+    (description
+     "This is a Python library for test combinations generator.  The generator
+allows one to create a set of tests using @emph{pairwise combinations} method,
+reducing a number of combinations of variables into a lesser set that covers
+most situations.")
     (license license:expat)))
