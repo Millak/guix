@@ -11,6 +11,7 @@
 ;;; Copyright © 2020, 2021 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -2179,6 +2180,24 @@ Go.")
     (arguments
      (list
       #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
+
+(define-public go-gopkg-in-cheggaaa-pb-v1
+  (package
+    (inherit go-github-com-cheggaaa-pb-v3)
+    (name "go-gopkg-in-cheggaaa-pb-v1")
+    (version "1.0.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gopkg.in/cheggaaa/pb.v1.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13a66cqbpdif804qj12z9ad8r24va9q41gfk71qbc4zg1wsxs3rh"))))
+    (arguments
+     (list
+      #:import-path "gopkg.in/cheggaaa/pb.v1"))))
 
 (define-public go-gopkg-in-op-go-logging-v1
   (package
