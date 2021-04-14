@@ -1362,6 +1362,30 @@ customized globally.")
 database/sql package.")
     (license license:expat)))
 
+(define-public go-github-com-logrusorgru-aurora
+  (package
+    (name "go-github-com-logrusorgru-aurora")
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/logrusorgru/aurora")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1ck2j2ff2avph07vgq0r1y7hmbqgvk339rvph45dcwgci23lb3pf"))
+       (file-name (git-file-name name version))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/logrusorgru/aurora"))
+    (home-page "https://github.com/logrusorgru/aurora")
+    (synopsis "Ultimate ANSI colors for Golang")
+    (description
+     "This package provides ANSI colors for Golang.  The package supports
+Printf/Sprintf etc.")
+    (license license:unlicense)))
+
 (define-public go-github-com-kballard-go-shellquote
   ;; No release, see <https://github.com/kballard/go-shellquote/issues/13>.
   (let ((commit "95032a82bc518f77982ea72343cc1ade730072f0")
