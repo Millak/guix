@@ -1486,6 +1486,41 @@ word-splitting rules.")
       (home-page "https://github.com/kballard/go-shellquote")
       (license license:expat))))
 
+(define-public go-github-com-marcinbor85-gohex
+  ;; No release, see <https://github.com/marcinbor85/gohex/issues/5>.
+  (let ((commit "baab2527a9a2a4abb3dc06baabedfa5e0268b8d8")
+        (revision "0"))
+    (package
+      (name "go-github-com-marcinbor85-gohex")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcinbor85/gohex")
+               (commit commit)))
+         (sha256
+          (base32 "06v4cc6ld6vvxd4xm9k6l49lhcd9ncq7xfx35mj5b9r96ih49fiz"))
+         (file-name (git-file-name name version))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/marcinbor85/gohex"))
+      (home-page "https://pkg.go.dev/github.com/marcinbor85/gohex")
+      (synopsis "Parse Intel HEX files")
+      (description
+       "This package provides a Golang library for parsing Intel HEX files,
+implementing features like:
+
+@itemize
+@item robust intelhex parsing (full test coverage)
+@item support i32hex format
+@item two-way converting hex<->bin
+@item trivial but powerful api (only the most commonly used functions)
+@item interface-based IO functions
+@end itemize")
+      (license license:expat))))
+
 (define-public go-github-com-matryer-try
   (package
     (name "go-github-com-matryer-try")
