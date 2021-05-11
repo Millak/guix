@@ -328,6 +328,7 @@ or false to signal an error."
      ((string=? system "arm-eabi") "no-ld.so")
      ((string=? system "avr") "no-ld.so")
      ((string=? system "i686-mingw") "no-ld.so")
+     ((string=? system "or1k-elf") "no-ld.so")
      ((string=? system "x86_64-mingw") "no-ld.so")
      ((string-suffix? "-elf" system) "no-ld.so")
 
