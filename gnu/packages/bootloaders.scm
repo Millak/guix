@@ -1010,7 +1010,7 @@ removed so that it fits within common partitioning schemes.")))
 (define-public u-boot-am335x-evm
   (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf"))
 
-(define*-public (make-u-boot-sunxi64-package board triplet
+(define*-public (make-u-boot-sunxi64-package board triplet scp-firmware
                                              #:key defconfig configs)
   (let ((base (make-u-boot-package
                board triplet #:defconfig defconfig #:configs configs)))
@@ -1022,23 +1022,27 @@ removed so that it fits within common partitioning schemes.")))
           #~(modify-phases #$phases
               (add-after 'unpack 'set-environment
                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  ;; Avoid dependency on crust-firmware
-                  ;; https://issues.guix.gnu.org/48371
-                  (setenv "SCP" "/dev/null")
+                  (setenv "SCP" (search-input-file
+                                 native-inputs "libexec/scp.bin"))
                   (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (append scp-firmware)))
       (inputs
        (modify-inputs (package-inputs base)
          (append arm-trusted-firmware-sun50i-a64))))))
 
 (define-public u-boot-pine64-plus
-  (make-u-boot-sunxi64-package "pine64_plus" "aarch64-linux-gnu"))
+  (make-u-boot-sunxi64-package "pine64_plus" "aarch64-linux-gnu"
+                               crust-pine64-plus))
 
 (define-public u-boot-pine64-lts
-  (make-u-boot-sunxi64-package "pine64-lts" "aarch64-linux-gnu"))
+  (make-u-boot-sunxi64-package "pine64-lts" "aarch64-linux-gnu"
+                               crust-pine64-plus))
 
 (define-public u-boot-pinebook
   (make-u-boot-sunxi64-package
-   "pinebook" "aarch64-linux-gnu"
+   "pinebook" "aarch64-linux-gnu" crust-pinebook
    ;; Fix regression with LCD video output introduced in 2020.01
    ;; https://patchwork.ozlabs.org/patch/1225130/
    #:configs '("CONFIG_VIDEO_BPP32=y")))
