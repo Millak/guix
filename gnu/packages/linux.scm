@@ -53,6 +53,7 @@
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020 David Dashyan <mail@davie.li>
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
+;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1888,7 +1889,7 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
 (define-public e2fsprogs
   (package
     (name "e2fsprogs")
-    (version "1.45.6")
+    (version "1.46.2")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1897,7 +1898,7 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
                    "e2fsprogs-" version ".tar.xz"))
              (sha256
               (base32
-               "0mj2yizwygs7xww8jfy5mxjn8ww4pvc0b1hg1p2vsnirailsx9zz"))))
+               "0s216nn0lv7s278v933a44fv1ibi900c94743gpp2kn9jlr0kai3"))))
     (build-system gnu-build-system)
     (inputs `(("util-linux" ,util-linux "lib")))
     (native-inputs `(("pkg-config" ,pkg-config)
