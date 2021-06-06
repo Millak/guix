@@ -1673,7 +1673,7 @@ written in the C programming language.")
 (define-public librdkafka
   (package
     (name "librdkafka")
-    (version "1.4.2")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1682,7 +1682,7 @@ written in the C programming language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05mgrdzacn9kdpr68r5j0cvsvl54s52glnsc1ww9rcxx6p7hq1ly"))))
+                "0i9p85icn53vw4h9m2ryl02bljzsy4zshwn8n2x8i2cb1g3p70qj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
