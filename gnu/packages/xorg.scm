@@ -26,6 +26,7 @@
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
+;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2466,7 +2467,7 @@ XC-APPGROUP, XTEST.")
 (define-public libevdev
   (package
     (name "libevdev")
-    (version "1.9.1")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
@@ -2474,7 +2475,7 @@ XC-APPGROUP, XTEST.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1jvsphdrs1i54ccjcn6ll26jy42am7h28lbsvwa6pmxgqm43qq7m"))))
+         "1l628xblk36vh7aqia1fw6hh62af7va0pd70h28112l5i4afmx33"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")))
