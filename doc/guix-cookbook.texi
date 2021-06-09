@@ -77,6 +77,7 @@ manual}).
 * Packaging::                   Packaging tutorials
 * System Configuration::        Customizing the GNU System
 * Containers::                  Isolated environments and nested systems
+* Virtual Machines::            Virtual machines usage and configuration
 * Advanced package management::  Power to the users!
 * Software Development::        Environments, continuous integration, etc.
 * Environment management::      Control environment
@@ -154,6 +155,11 @@ Guix System Containers
 
 * A Database Container::
 * Container Networking::
+
+Virtual Machines
+
+* Network bridge for QEMU::
+* Routed network for libvirt::
 
 Advanced package management
 
@@ -3702,6 +3708,236 @@ sudo ip netns del $ns
 sudo ip link del $host
 @end example
 
+@c *********************************************************************
+@node Virtual Machines
+@chapter Virtual Machines
+
+Guix can produce disk images (@pxref{Invoking guix system,,, guix, GNU
+Guix Reference Manual}) that can be used with virtual machines solutions
+such as virt-manager, GNOME Boxes or the more bare QEMU, among others.
+
+This chapter aims to provide hands-on, practical examples that relates
+to the usage and configuration of virtual machines on a Guix System.
+
+@menu
+* Network bridge for QEMU::
+* Routed network for libvirt::
+@end menu
+
+@node Network bridge for QEMU
+@section Network bridge for QEMU
+@cindex Network bridge interface
+@cindex networking, bridge
+@cindex qemu, network bridge
+
+By default, QEMU uses a so-called ``user mode'' host network back-end,
+which is convenient as it does not require any configuration.
+Unfortunately, it is also quite limited.  In this mode, the guest
+@abbr{VM, virtual machine} can access the network the same way the host
+would, but it cannot be reached from the host.  Additionally, since the
+QEMU user networking mode relies on ICMP, ICMP-based networking tools
+such as @command{ping} do @emph{not} work in this mode.  Thus, it is
+often desirable to configure a network bridge, which enables the guest
+to fully participate in the network.  This is necessary, for example,
+when the guest is to be used as a server.
+
+@subsection Creating a network bridge interface
+
+There are many ways to create a network bridge.  The following command
+shows how to use NetworkManager and its @command{nmcli} command line
+interface (CLI) tool, which should already be available if your
+operating system declaration is based on one of the desktop templates:
+
+@example sh
+# nmcli con add type bridge con-name br0 ifname br0
+@end example
+
+To have this bridge be part of your network, you must associate your
+network bridge with the Ethernet interface used to connect with the
+network.  Assuming your interface is named @samp{enp2s0}, the following
+command can be used to do so:
+
+@example sh
+# nmcli con add type bridge-slave ifname enp2s0 master br0
+@end example
+
+@quotation Important
+Only Ethernet interfaces can be added to a bridge.  For wireless
+interfaces, consider the routed network approach detailed in
+@xref{Routed network for libvirt}.
+@end quotation
+
+By default, the network bridge will allow your guests to obtain their IP
+address via DHCP, if available on your local network.  For simplicity,
+this is what we will use here.  To easily find the guests, they can be
+configured to advertise their host names via mDNS.
+
+@subsection Configuring the QEMU bridge helper script
+
+QEMU comes with a helper program to conveniently make use of a network
+bridge interface as an unprivileged user @pxref{Network options,,, QEMU,
+QEMU Documentation}.  The binary must be made setuid root for proper
+operation; this can be achieved by adding it to the
+@code{setuid-programs} field of your (host) @code{operating-system}
+definition, as shown below:
+
+@example lisp
+(setuid-programs
+ (cons (file-append qemu "/libexec/qemu-bridge-helper")
+       %setuid-programs))
+@end example
+
+The file @file{/etc/qemu/bridge.conf} must also be made to allow the
+bridge interface, as the default is to deny all.  Add the following to
+your list of services to do so:
+
+@example lisp
+(extra-special-file "/etc/qemu/host.conf" "allow br0\n")
+@end example
+
+@subsection Invoking QEMU with the right command line options
+
+When invoking QEMU, the following options should be provided so that the
+network bridge is used, after having selected a unique MAC address for
+the guest.
+
+@quotation Important
+By default, a single MAC address is used for all guests, unless
+provided.  Failing to provided different MAC addresses to each virtual
+machine making use of the bridge would cause networking issues.
+@end quotation
+
+@example sh
+$ qemu-system-x86_64 [...] \
+    -device virtio-net-pci,netdev=user0,mac=XX:XX:XX:XX:XX:XX \
+    -netdev bridge,id=user0,br=br0 \
+    [...]
+@end example
+
+To generate MAC addresses that have the QEMU registered prefix, the
+following snippet can be employed:
+
+@example sh
+mac_address="52:54:00:$(dd if=/dev/urandom bs=512 count=1 2>/dev/null \
+                           | md5sum \
+                           | sed -E 's/^(..)(..)(..).*$/\1:\2:\3/')"
+echo $mac_address
+@end example
+
+@subsection Networking issues caused by Docker
+
+If you use Docker on your machine, you may experience connectivity
+issues when attempting to use a network bridge, which are caused by
+Docker also relying on network bridges and configuring its own routing
+rules.  The solution is add the following @code{iptables} snippet to
+your @code{operating-system} declaration:
+
+@example lisp
+(service iptables-service-type
+             (iptables-configuration
+              (ipv4-rules (plain-file "iptables.rules" "\
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A FORWARD -i br0 -o br0 -j ACCEPT
+COMMIT
+"))
+@end example
+
+@node Routed network for libvirt
+@section Rounted network for libvirt
+@cindex Virtual network bridge interface
+@cindex networking, virtual bridge
+@cindex libvirt, virtual network bridge
+
+If the machine hosting your virtual machines is connected wirelessly to
+the network, you won't be able to use a true network bridge as explained
+in the preceding section (@pxref{Network bridge for QEMU}).  In this
+case, the next best option is to use a @emph{virtual} bridge with static
+routing and to configure a libvirt-powered virtual machine to use it
+(via the @command{virt-manager} GUI for example).  This is similar to
+the default mode of operation of QEMU/libvirt, except that instead of
+using @abbr{NAT, Network Address Translation}, it relies on static
+routes to join the @abbr{VM, virtual machine} IP address to the
+@abbr{LAN, local area network}.  This provides two-way connectivity to
+and from the virtual machine, which is needed for exposing services
+hosted on the virtual machine.
+
+@subsection Creating a virtual network bridge
+
+A virtual network bridge consists of a few components/configurations,
+such as a @abbr{TUN, network tunnel} interface, DHCP server (dnsmasq)
+and firewall rules (iptables).  The @command{virsh} command, provided by
+the @code{libvirt} package, makes it very easy to create a virtual
+bridge.  You first need to choose a network subnet for your virtual
+bridge; if your home LAN is in the @samp{192.168.1.0/24} network, you
+could opt to use e.g.@: @samp{192.168.2.0/24}.  Define an XML file,
+e.g.@: @file{/tmp/virbr0.xml}, containing the following:
+
+@example
+<network>
+  <name>virbr0</name>
+  <bridge name="virbr0" />
+  <forward mode="route"/>
+  <ip address="192.168.2.0" netmask="255.255.255.0">
+    <dhcp>
+      <range start="192.168.2.1" end="192.168.2.254"/>
+    </dhcp>
+  </ip>
+</network>
+@end example
+
+Then create and configure the interface using the @command{virsh}
+command, as root:
+
+@example
+virsh net-define /tmp/virbr0.xml
+virsh net-autostart virbr0
+virsh net-start virbr0
+@end example
+
+The @samp{virbr0} interface should now be visible e.g.@: via the
+@samp{ip address} command.  It will be automatically started every time
+your libvirt virtual machine is started.
+
+@subsection Configuring the static routes for your virtual bridge
+
+If you configured your virtual machine to use your newly created
+@samp{virbr0} virtual bridge interface, it should already receive an IP
+via DHCP such as @samp{192.168.2.15} and be reachable from the server
+hosting it, e.g.@: via @samp{ping 192.168.2.15}.  There's one last
+configuration needed so that the VM can reach the external network:
+adding static routes to the network's router.
+
+In this example, the LAN network is @samp{192.168.1.0/24} and the router
+configuration web page may be accessible via e.g.@: the
+@url{http://192.168.1.1} page.  On a router running the
+@url{https://librecmc.org/, libreCMC} firmware, you would navigate to
+the @clicksequence{Network @click{} Static Routes} page
+(@url{https://192.168.1.1/cgi-bin/luci/admin/network/routes}), and you
+would add a new entry to the @samp{Static IPv4 Routes} with the
+following information:
+
+@table @samp
+@item Interface
+lan
+@item Target
+192.168.2.0
+@item IPv4-Netmask
+255.255.255.0
+@item IPv4-Gateway
+@var{server-ip}
+@item Route type
+unicast
+@end table
+
+where @var{server-ip} is the IP address of the machine hosting the VMs,
+which should be static.
+
+After saving/applying this new static route, external connectivity
+should work from within your VM; you can e.g.@: run @samp{ping gnu.org}
+to verify that it functions correctly.
 
 @c *********************************************************************
 @node Advanced package management
