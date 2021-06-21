@@ -8,6 +8,7 @@
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
+;;; Copyright © 2021 Aljosha Papsch <ep@stern-data.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -532,6 +533,7 @@ applications.")))
   (bind-address mysql-configuration-bind-address (default "127.0.0.1"))
   (port mysql-configuration-port (default 3306))
   (socket mysql-configuration-socket (default "/run/mysqld/mysqld.sock"))
+  (datadir mysql-configuration-datadir (default "/var/lib/mysql"))
   (extra-content mysql-configuration-extra-content (default ""))
   (extra-environment mysql-configuration-extra-environment (default #~'()))
   (auto-upgrade? mysql-configuration-auto-upgrade? (default #t)))
@@ -549,84 +551,132 @@ applications.")))
 
 (define mysql-configuration-file
   (match-lambda
-    (($ <mysql-configuration> mysql bind-address port socket extra-content)
+    (($ <mysql-configuration> mysql bind-address port socket datadir extra-content)
      (mixed-text-file "my.cnf" "[mysqld]
-datadir=/var/lib/mysql
+datadir=" datadir "
 socket=" socket "
 bind-address=" bind-address "
 port=" (number->string port) "
 " extra-content "
 "))))
 
-(define (%mysql-activation config)
-  "Return an activation gexp for the MySQL or MariaDB database server."
-  (let ((mysql  (mysql-configuration-mysql config))
-        (my.cnf (mysql-configuration-file config)))
-    #~(begin
-        (use-modules (ice-9 popen)
-                     (guix build utils))
-        (let* ((mysqld  (string-append #$mysql "/bin/mysqld"))
-               (user    (getpwnam "mysql"))
-               (uid     (passwd:uid user))
-               (gid     (passwd:gid user))
-               (datadir "/var/lib/mysql")
-               (rundir  "/run/mysqld"))
-          (mkdir-p datadir)
-          (chown datadir uid gid)
-          (mkdir-p rundir)
-          (chown rundir uid gid)
-          ;; Initialize the database when it doesn't exist.
-          (when (not (file-exists? (string-append datadir "/mysql")))
-            (if (string-prefix? "mysql-" (strip-store-file-name #$mysql))
-                ;; For MySQL.
-                (system* mysqld
-                         (string-append "--defaults-file=" #$my.cnf)
-                         "--initialize"
-                         "--user=mysql")
-                ;; For MariaDB.
-                ;; XXX: The 'mysql_install_db' script doesn't work directly
-                ;;      due to missing 'mkdir' in PATH.
-                (let ((p (open-pipe* OPEN_WRITE mysqld
-                                     (string-append
-                                      "--defaults-file=" #$my.cnf)
-                                     "--bootstrap"
-                                     "--user=mysql")))
-                  ;; Create the system database, as does by 'mysql_install_db'.
-                  (display "create database mysql;\n" p)
-                  (display "use mysql;\n" p)
-                  (for-each
-                   (lambda (sql)
-                     (call-with-input-file
-                         (string-append #$mysql:lib "/share/mysql/" sql)
-                       (lambda (in) (dump-port in p))))
-                   '("mysql_system_tables.sql"
-                     "mysql_performance_tables.sql"
-                     "mysql_system_tables_data.sql"
-                     "fill_help_tables.sql"))
-                  ;; Remove the anonymous user and disable root access from
-                  ;; remote machines, as does by 'mysql_secure_installation'.
-                  (display "
+(define (mysql-with-install-lock)
+  "Return a loop function which evals thunk when the install is locked."
+  #~(lambda (thunk)
+      (let loop ((i 0))
+        (let ((timeout   10)
+              (lock-stat (stat "/var/lib/mysql.lock" #f)))
+          (if (and (not (eq? lock-stat #f))
+                   (eq? (stat:type lock-stat) 'regular))
+              (apply thunk '())
+              (if (< i timeout)
+                  (begin
+                    (sleep 1)
+                    (loop (+ 1 i)))
+                  (throw 'timeout-error
+                         "MySQL installation not locked in time!")))))))
+
+(define (mysql-start config)
+  "Start mysqld if install lock file appears"
+  (program-file
+   "mysql-start"
+   (let ((mysql     (mysql-configuration-mysql config))
+         (my.cnf    (mysql-configuration-file config)))
+     #~(let ((mysqld (string-append #$mysql "/bin/mysqld"))
+             (with-lock #$(mysql-with-install-lock)))
+         (with-lock (lambda ()
+                      (execl mysqld mysqld
+                             (string-append "--defaults-file=" #$my.cnf))))))))
+
+(define (mysql-shepherd-service config)
+  (list (shepherd-service
+         (provision '(mysql))
+         (requirement '(mysql-install))
+         (documentation "Run the MySQL server.")
+         (start (let ((mysql (mysql-configuration-mysql config))
+                      (extra-env (mysql-configuration-extra-environment config))
+                      (my.cnf (mysql-configuration-file config)))
+                  #~(make-forkexec-constructor
+                     (list #$(mysql-start config))
+                     #:user "mysql" #:group "mysql"
+                     #:log-file "/var/log/mysqld.log"
+                     #:environment-variables #$extra-env)))
+         (stop #~(make-kill-destructor)))))
+
+(define (mysql-install config)
+  "Install MySQL system database and secure the installation."
+  (let ((mysql   (mysql-configuration-mysql config))
+        (my.cnf  (mysql-configuration-file config))
+        (datadir (mysql-configuration-datadir config))
+        (extra-env (mysql-configuration-extra-environment config)))
+    (program-file
+     "mysql-install"
+     (with-imported-modules (source-module-closure
+                             '((ice-9 popen)
+                               (guix build utils)))
+       #~(begin
+           (use-modules (ice-9 popen)
+                        (guix build utils))
+           (let* ((mysqld  (string-append #$mysql "/bin/mysqld"))
+                  (user    (getpwnam "mysql"))
+                  (uid     (passwd:uid user))
+                  (gid     (passwd:gid user))
+                  (datadir #$datadir)
+                  (rundir  "/run/mysqld"))
+             (mkdir-p datadir)
+             (chown datadir uid gid)
+             (mkdir-p rundir)
+             (chown rundir uid gid)
+             ;; Initialize the database when it doesn't exist.
+             (when (not (file-exists? (string-append datadir "/mysql")))
+               (if (string-prefix? "mysql-" (strip-store-file-name #$mysql))
+                   ;; For MySQL.
+                   (system* mysqld
+                            (string-append "--defaults-file=" #$my.cnf)
+                            "--initialize"
+                            "--user=mysql")
+                   ;; For MariaDB.
+                   ;; XXX: The 'mysql_install_db' script doesn't work directly
+                   ;;      due to missing 'mkdir' in PATH.
+                   (let ((p (open-pipe* OPEN_WRITE mysqld
+                                        (string-append
+                                         "--defaults-file=" #$my.cnf)
+                                        "--bootstrap"
+                                        "--user=mysql")))
+                     ;; Create the system database, as does by 'mysql_install_db'.
+                     (display "create database mysql;\n" p)
+                     (display "use mysql;\n" p)
+                     (for-each
+                      (lambda (sql)
+                        (call-with-input-file
+                            (string-append #$mysql:lib "/share/mysql/" sql)
+                          (lambda (in) (dump-port in p))))
+                      '("mysql_system_tables.sql"
+                        "mysql_performance_tables.sql"
+                        "mysql_system_tables_data.sql"
+                        "fill_help_tables.sql"))
+                     ;; Remove the anonymous user and disable root access from
+                     ;; remote machines, as does by 'mysql_secure_installation'.
+                     (display "
 DELETE FROM user WHERE User='';
 DELETE FROM user WHERE User='root' AND
   Host NOT IN  ('localhost', '127.0.0.1', '::1');
 FLUSH PRIVILEGES;
 " p)
-                  (close-pipe p))))))))
+                     (close-pipe p))))
+             (call-with-output-file "/var/lib/mysql.lock"
+               (lambda (p)
+                 (write #t p)))))))))
 
-(define (mysql-shepherd-service config)
+(define (mysql-install-shepherd-service config)
   (list (shepherd-service
-         (provision '(mysql))
-         (documentation "Run the MySQL server.")
-         (start (let ((mysql  (mysql-configuration-mysql config))
-                      (extra-env (mysql-configuration-extra-environment config))
-                      (my.cnf (mysql-configuration-file config)))
-                  #~(make-forkexec-constructor
-                     (list (string-append #$mysql "/bin/mysqld")
-                           (string-append "--defaults-file=" #$my.cnf))
-                           #:user "mysql" #:group "mysql"
-                           #:log-file "/var/log/mysqld.log"
-                           #:environment-variables #$extra-env)))
-         (stop #~(make-kill-destructor)))))
+         (provision '(mysql-install))
+         (requirement '(file-systems))
+         (one-shot? #t)
+         (documentation "Install MySQL system database and secure installation.")
+         (start #~(make-forkexec-constructor
+                   (list #$(mysql-install config))
+                   #:log-file "/var/log/mysqld-install.log")))))
 
 (define (mysql-upgrade-wrapper mysql socket-file)
   ;; The MySQL socket and PID file may appear before the server is ready to
@@ -636,7 +686,7 @@ FLUSH PRIVILEGES;
    "mysql-upgrade-wrapper"
    #~(begin
        (let ((mysql-upgrade #$(file-append mysql "/bin/mysql_upgrade"))
-             (timeout 10))
+             (timeout 20))
          (begin
            (let loop ((i 0))
              (catch 'system-error
@@ -668,11 +718,14 @@ FLUSH PRIVILEGES;
                      (list #$(mysql-upgrade-wrapper mysql socket))
                      #:user "mysql" #:group "mysql"))))))
 
+
 (define (mysql-shepherd-services config)
-  (if (mysql-configuration-auto-upgrade? config)
-      (append (mysql-shepherd-service config)
+  (let ((min-services (append (mysql-install-shepherd-service config)
+                              (mysql-shepherd-service config))))
+    (if (mysql-configuration-auto-upgrade? config)
+      (append min-services
               (mysql-upgrade-shepherd-service config))
-      (mysql-shepherd-service config)))
+      min-services)))
 
 (define mysql-service-type
   (service-type
@@ -680,8 +733,6 @@ FLUSH PRIVILEGES;
    (extensions
     (list (service-extension account-service-type
                              (const %mysql-accounts))
-          (service-extension activation-service-type
-                             %mysql-activation)
           (service-extension shepherd-root-service-type
                              mysql-shepherd-services)))
    (default-value (mysql-configuration))
