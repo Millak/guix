@@ -23,6 +23,7 @@
 
 (define-module (gnu packages license)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
@@ -150,6 +151,8 @@ statements and serializes in normalized format.")
        ("perl-string-escape" ,perl-string-escape)
        ("perl-try-tiny" ,perl-try-tiny)
        ("perl-module-runtime" ,perl-module-runtime)))
+    (inputs
+     `(("bash" ,bash-minimal))) ; for wrap-program
     (arguments
      `(#:phases
        (modify-phases %standard-phases
