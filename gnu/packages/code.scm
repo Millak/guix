@@ -349,7 +349,8 @@ COCOMO model or user-provided parameters.")
         (base32 "0j7qwc5n1y05jl3rq83mf1d0pavkz9z0waqi8dxblkgw4pwwnjyv"))))
     (build-system gnu-build-system)
     (inputs
-     (list coreutils
+     (list bash-minimal
+           coreutils
            perl
            perl-algorithm-diff
            perl-digest-md5
@@ -575,9 +576,8 @@ expressions, and its ability to generate emacs-style TAGS files.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/geninfo")
-                 `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))
-             #t)))))
-    (inputs (list perl perl-io-compress perl-json))
+                 `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB"))))))))))
+    (inputs (list bash-minimal perl perl-io-compress perl-json))
     (home-page "https://ltp.sourceforge.net/coverage/lcov.php")
     (synopsis "Code coverage tool that enhances GNU gcov")
     (description "LCOV is an extension of @command{gcov}, a tool part of the
