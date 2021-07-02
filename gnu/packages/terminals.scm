@@ -1091,6 +1091,7 @@ usable with any list--including files, command history, processes and more.")
                              (string-append zsh-completion "/_fzf"))))))))))
     (inputs
      `(,@(package-inputs go-github-com-junegunn-fzf)
+       ("bash" ,bash-minimal) ; for wrap-program
        ("findutils" ,findutils)
        ("ncurses" ,ncurses)))))
 
