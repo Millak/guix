@@ -219,6 +219,7 @@ This package contains GUI widgets for baloo.")
      (list akonadi
            akonadi-contacts
            akonadi-mime
+           bash-minimal
            boost
            breeze-icons
            gpgme-1.23
@@ -831,7 +832,8 @@ set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) "))))
            qwt
            vc))
     (inputs
-     (list boost
+     (list bash-minimal
+           boost
            exiv2
            fontconfig
            fftw-cmake
