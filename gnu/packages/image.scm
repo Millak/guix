@@ -2714,20 +2714,19 @@ GIF, TIFF, WEBP, BMP, PNG, XPM formats.")
                     (gtk+ (assoc-ref inputs "gtk+")))
                (wrap-program (string-append out "/bin/mypaint")
                  `("GI_TYPELIB_PATH" ":" prefix
-                   (,(getenv "GI_TYPELIB_PATH"))))
-               #t)))
+                   (,(getenv "GI_TYPELIB_PATH")))))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests need writing access
-             (setenv "HOME" "/tmp")
-             #t)))))
+             (setenv "HOME" "/tmp"))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gobject-introspection" ,gobject-introspection)
-       ("swig" ,swig)
-       ("gettext" ,gettext-minimal)))
+     (list pkg-config
+           gobject-introspection
+           swig
+           gettext-minimal))
     (inputs
-     (list gtk+
+     (list bash-minimal
+           gtk+
            (librsvg-for-system)
            hicolor-icon-theme
            libmypaint
