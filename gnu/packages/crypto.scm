@@ -49,6 +49,7 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -489,7 +490,8 @@ total number of shares generated.")
     (build-system gnu-build-system)
     (native-inputs (list sudo))   ;presence needed for 'check' phase
     (inputs
-     `(("zsh" ,zsh)
+     `(("bash" ,bash-minimal) ; for wrap-program
+       ("zsh" ,zsh)
        ("gnupg" ,gnupg)
        ("cryptsetup" ,cryptsetup)
        ("e2fsprogs" ,e2fsprogs)         ;for mkfs.ext4
