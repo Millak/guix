@@ -710,7 +710,8 @@ the in DocBook SGML DTDs.")
                               "--quiet" "tests/mathml/mmltest2.xml")))))))
     (native-inputs (list docbook-mathml-1.0))
     (inputs
-     (list texlive-bin
+     (list bash-minimal
+           texlive-bin
            (texlive-updmap.cfg (list texlive-amsmath
                                      texlive-anysize
                                      texlive-appendix
