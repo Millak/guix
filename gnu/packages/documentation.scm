@@ -440,7 +440,8 @@ the Net to search for documents which are not on the local system.")
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list libarchive
+     (list bash-minimal
+           libarchive
            sqlite
            qtbase-5
            qtdeclarative-5
