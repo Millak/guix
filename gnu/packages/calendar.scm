@@ -42,6 +42,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages dav)
   #:use-module (gnu packages docbook)
@@ -270,7 +271,7 @@ interface} named 'ikhal'.")
                 (list "bin/cm2rem.tcl"
                       "bin/tkremind"))))))))
     (inputs
-     (list inetutils tcl tcllib tk))
+     (list bash-minimal inetutils tcl tcllib tk))
     (home-page "https://dianne.skoll.ca/projects/remind/")
     (synopsis "Sophisticated calendar and alarm program")
     (description
