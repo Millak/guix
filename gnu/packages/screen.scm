@@ -33,6 +33,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -119,7 +120,8 @@ controlling terminal and attach to it later.")
        (patches (search-patches "byobu-writable-status.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("python" ,python-wrapper)       ; for config and session GUIs
+     `(("bash" ,bash-minimal) ; for wrap-program
+       ("python" ,python-wrapper)       ; for config and session GUIs
        ("python-newt" ,newt "python")))
     (arguments
      `(#:phases
