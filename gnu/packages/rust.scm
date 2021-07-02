@@ -36,6 +36,7 @@
 
 (define-module (gnu packages rust)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages cmake)
@@ -185,7 +186,8 @@
                   (max-silent-time . 18000))) ;5 hours (for armel)
     (build-system gnu-build-system)
     (inputs
-     `(,@(if (or (target-ppc64le?)
+     `(("bash-minimal" ,bash-minimal)
+       ,@(if (or (target-ppc64le?)
                  (target-riscv64?))
              `(("clang" ,clang-13))
              `())
@@ -539,7 +541,8 @@ ar = \"" binutils "/bin/ar" "\"
        ("rustc-bootstrap" ,rust-bootstrap)
        ("cargo-bootstrap" ,rust-bootstrap "cargo")))
     (inputs
-     `(("llvm" ,llvm-13)
+     `(("bash" ,bash-minimal)
+       ("llvm" ,llvm-13)
        ("openssl" ,openssl)))
     ;; rustc invokes gcc, so we need to set its search paths accordingly.
     (native-search-paths
