@@ -132,7 +132,7 @@ specifying desired matches and transformations in the C code.")
          "1va5pzmxbzpi87vdnbjm9qdf9bvzps9xfv0gi4mycgg3bybb0xc8"))))
     (build-system gnu-build-system)
     (inputs
-     (list perl python))
+     (list bash-minimal perl python))
     (arguments
      '(#:parallel-tests? #f
        #:phases
