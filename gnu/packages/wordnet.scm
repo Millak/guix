@@ -23,6 +23,7 @@
   #:use-module (guix licenses)
   #:use-module (guix download)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages tcl))
 
@@ -81,12 +82,11 @@
                                            `("PATH" ":" prefix
                                              (,(string-append out
                                                               "/bin"))))))
-                         '("wishwn" "wnb"))
-               #t))))))
+                         '("wishwn" "wnb"))))))))
     (outputs '("out"
                "tk"))                             ; for the Tcl/Tk GUI
 
-    (inputs (list tk tcl))
+    (inputs (list bash-minimal tk tcl))
     (home-page "https://wordnet.princeton.edu/")
     (synopsis "Lexical database for the English language")
     (description
