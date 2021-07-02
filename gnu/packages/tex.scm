@@ -56941,7 +56941,8 @@ documents as well as DVI output.")
            perl-module-build
            perl-test-differences))
     (inputs
-     (list perl
+     (list bash-minimal
+           perl
            perl-autovivification
            perl-class-accessor
            perl-data-dump
