@@ -1230,7 +1230,8 @@ for wlroots-based Wayland compositors.")
            pkg-config
            xmlto))
     (inputs
-     (list cairo
+     (list bash-minimal
+           cairo
            dbus
            gdk-pixbuf
            glib
@@ -1311,8 +1312,7 @@ for wlroots-based Wayland compositors.")
              (let* ((out (assoc-ref outputs "out"))
                     (awesome (string-append out "/bin/awesome")))
                (substitute* (string-append out "/share/xsessions/awesome.desktop")
-                 (("Exec=awesome") (string-append "Exec=" awesome)))
-               #t)))
+                 (("Exec=awesome") (string-append "Exec=" awesome))))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((awesome (assoc-ref outputs "out"))
@@ -1325,8 +1325,7 @@ for wlroots-based Wayland compositors.")
                  `("LUA_CPATH" ";" suffix
                    (,(format #f "~a/lib/lua/~a/?.so" lua-lgi lua-version)))
                  `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
-                 `("LD_LIBRARY_PATH" suffix (,cairo)))
-               #t))))))
+                 `("LD_LIBRARY_PATH" suffix (,cairo)))))))))
     (home-page "https://awesomewm.org/")
     (synopsis "Highly configurable window manager")
     (description
