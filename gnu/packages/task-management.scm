@@ -31,6 +31,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -334,7 +335,7 @@ a task.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:tests? #f ;the "Validate appstream file" test fails
+       #:tests? #f                   ;the "Validate appstream file" test fails
        #:phases
        (modify-phases %standard-phases
          (add-after 'wrap 'wrap-libs
@@ -346,20 +347,20 @@ a task.")
                (wrap-program (string-append out "/bin/blanket")
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path))))
-             #t)))))
+                 `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           pkg-config))
     (inputs
      (list appstream-glib
+           bash-minimal
            gsettings-desktop-schemas
            gst-plugins-bad
-           gst-plugins-good ;for ScaleTempo plugin
+           gst-plugins-good             ;for ScaleTempo plugin
            gtk+
            libhandy
            python
