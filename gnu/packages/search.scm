@@ -47,6 +47,7 @@
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
@@ -631,7 +632,7 @@ suitable as a default locate on your system.")
     ;; building: xpdf, catdoc, MP3::Tag, Spreadsheet::ParseExcel,
     ;; HTML::Entities.
     (inputs
-     (list perl perl-uri perl-html-parser perl-html-tagset
+     (list bash-minimal perl perl-uri perl-html-parser perl-html-tagset
            perl-mime-types))
     (arguments
      `(;; XXX: This fails to build with zlib (API mismatch) and tests fail
