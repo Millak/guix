@@ -72,6 +72,7 @@
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
@@ -2668,6 +2669,7 @@ synchronous execution of all clients, and low latency operation.")
                  prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
      (list alsa-lib
+           bash-minimal
            dbus
            expat
            libsamplerate
