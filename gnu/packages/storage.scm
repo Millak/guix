@@ -30,6 +30,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages authentication)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
@@ -215,6 +216,7 @@
      (list `(,apache-thrift "lib")
            `(,apache-thrift "include")
            `(,apache-arrow-for-ceph "lib")
+           bash-minimal
            boost
            curl
            cryptsetup
