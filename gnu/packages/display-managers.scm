@@ -386,6 +386,7 @@ experience for your users, your family and yourself")
           (add-before 'check 'pre-check
             (lambda _
               (wrap-program "tests/src/test-python-greeter"
+                #:sh (which "bash")
                 `("GUIX_PYTHONPATH"      ":" prefix (,(getenv "GUIX_PYTHONPATH")))
                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
               ;; Avoid printing locale warnings, which trip up the text
