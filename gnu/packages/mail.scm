@@ -1012,7 +1012,8 @@ mailpack.  What can alterMIME do?
            w3m
            xorg-server-for-tests))
     (inputs
-     (list boost
+     (list bash-minimal
+           boost
            gmime
            gobject-introspection        ; it is referenced
            gtkmm-3
@@ -1409,7 +1410,7 @@ Notmuch.")
          (file-name (string-append name "-" version "-checkout"))))
       (build-system python-build-system)
       (inputs
-       (list python-notmuch python-pygobject gobject-introspection
+       (list bash-minimal python-notmuch python-pygobject gobject-introspection
              libnotify gtk+))
       (arguments
        `(#:phases
@@ -2892,7 +2893,8 @@ DKIM and/or DomainKeys.")
                               "perl-net-dns"
                               "perl-timedate"))))))))
     (inputs
-     (list perl
+     (list bash-minimal
+           perl
            perl-crypt-openssl-rsa
            perl-cryptx
            perl-io-socket-inet6
@@ -3868,7 +3870,11 @@ on the fly.  Both programs are written in C and are very fast.")
         (base32 "131i2b1yxhnbqkfk4kky40pfanqw2c5lcgbnjhfqp5cvpawpk2ai"))))
     (build-system perl-build-system)
     (inputs
-     (list perl-io-socket-inet6 perl-net-dns perl-net-ssleay perl-socket6)) ; used by perl-io-socket-inet6
+     (list bash-minimal
+           perl-io-socket-inet6
+           perl-net-dns
+           perl-net-ssleay
+           perl-socket6)) ; used by perl-io-socket-inet6
     (arguments
      `(#:tests? #f                      ; no tests
        #:phases
@@ -3876,8 +3882,7 @@ on the fly.  Both programs are written in C and are very fast.")
          (add-after 'unpack 'set-build_version
            (lambda _
              (substitute* "swaks"
-               (("\"DEVRELEASE\"") (format #f "\"~a\"" ,version)))
-             #true))
+               (("\"DEVRELEASE\"") (format #f "\"~a\"" ,version)))))
          (delete 'configure)
          (replace 'build
            (lambda _
@@ -3886,14 +3891,12 @@ on the fly.  Both programs are written in C and are very fast.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (install-file "swaks" (string-append out "/bin"))
-               (install-file "swaks.1" (string-append out "/share/man/man1")))
-             #t))
+               (install-file "swaks.1" (string-append out "/share/man/man1")))))
          (add-after 'install 'wrap-program
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
                                           "/bin/swaks")
-               `("PERL5LIB" ":" = (,(getenv "PERL5LIB"))))
-             #t)))))
+               `("PERL5LIB" ":" = (,(getenv "PERL5LIB")))))))))
     (home-page "https://jetmore.org/john/code/swaks/")
     (synopsis "Featureful SMTP test tool")
     (description "Swaks is a flexible, scriptable, transaction-oriented SMTP
