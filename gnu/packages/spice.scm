@@ -194,7 +194,8 @@ which allows users to view a desktop computing environment.")
            python-six
            vala))
     (inputs
-     (list cyrus-sasl
+     (list bash-minimal
+           cyrus-sasl
            glib-networking
            gobject-introspection
            json-glib
