@@ -343,8 +343,7 @@ went to university in the 1990s, this is the library for you.")
                 ;; Allow them to be found.
                 (wrap-program (string-append bin "/pl")
                   `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
-    (inputs
-     (list libpng libx11 zlib))
+    (inputs (list bash-minimal libpng libx11 zlib))
     (home-page "https://ploticus.sourceforge.net/")
     (synopsis "Command-line tool for producing plots and charts")
     (description
