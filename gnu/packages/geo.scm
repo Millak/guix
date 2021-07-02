@@ -2780,39 +2780,40 @@ orienteering sport.")
           (base32 "1gpfbppfajc8d6b9alw9fdzgaa83w26kl6fff1395bc9gal215ms"))))
       (build-system gnu-build-system)
       (inputs
-       `(("bzip2" ,bzip2)
-         ("cairo" ,cairo)
-         ("fftw" ,fftw)
-         ("freetype" ,freetype)
-         ("gdal" ,gdal)
-         ("geos" ,geos)
-         ("glu" ,glu)
-         ("libpng" ,libpng)
-         ("libtiff" ,libtiff)
-         ("mesa" ,mesa)
-         ("mariadb-dev" ,mariadb "dev")
-         ("mariadb-lib" ,mariadb "lib")
-         ("netcdf" ,netcdf)
-         ("openblas" ,openblas)
-         ("perl" ,perl)
-         ("postgresql" ,postgresql)
-         ("proj" ,proj)
-         ("python" ,python)
-         ("python-dateutil" ,python-dateutil)
-         ("python-numpy" ,python-numpy)
-         ("python-wxpython" ,python-wxpython)
-         ("readline" ,readline)
-         ("sqlite" ,sqlite)
-         ("wxwidgets" ,wxwidgets)
-         ("zlib" ,zlib)
-         ("zstd" ,zstd "lib")))
+       (list bash-minimal
+             bzip2
+             cairo
+             fftw
+             freetype
+             gdal
+             geos
+             glu
+             libpng
+             libtiff
+             mesa
+             `(,mariadb "dev")
+             `(,mariadb "lib")
+             netcdf
+             openblas
+             perl
+             postgresql
+             proj
+             python
+             python-dateutil
+             python-numpy
+             python-wxpython
+             readline
+             sqlite
+             wxwidgets
+             zlib
+             `(,zstd "lib")))
       (native-inputs
-       `(("bash" ,bash-minimal)
-         ("bison" ,bison)
-         ("flex" ,flex)
-         ("pkg-config" ,pkg-config)))
+       (list bash-minimal
+             bison
+             flex
+             pkg-config))
       (arguments
-       `(#:tests? #f ; No tests
+       `(#:tests? #f                    ; No tests
          #:modules ((guix build gnu-build-system)
                     ((guix build python-build-system) #:prefix python:)
                     (guix build utils))
@@ -2870,16 +2871,14 @@ orienteering sport.")
                  (symlink (string-append dir "/include")
                           (string-append out "/include"))
                  (symlink (string-append dir "/lib")
-                          (string-append out "/lib")))
-               #t))
+                          (string-append out "/lib")))))
            (add-after 'install-links 'python:wrap
              (assoc-ref python:%standard-phases 'wrap))
            (add-after 'python:wrap 'wrap-with-python-interpreter
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out")))
                  (wrap-program (string-append out "/bin/" ,grassxx)
-                   `("GRASS_PYTHON" = (,(which "python3"))))
-                 #t))))))
+                   `("GRASS_PYTHON" = (,(which "python3"))))))))))
       (synopsis "GRASS Geographic Information System")
       (description
        "GRASS (Geographic Resources Analysis Support System), is a Geographic
