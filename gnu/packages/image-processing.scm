@@ -54,6 +54,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -1483,7 +1484,8 @@ combine the information contained in both.")
                                           "/lib/qt5/plugins"))
                          '("qtbase" "qtdeclarative-5"))))))))))
     (inputs
-     (list curl
+     (list bash-minimal
+           curl
            fftw
            fftwf
            glu
