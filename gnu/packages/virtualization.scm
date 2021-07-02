@@ -1030,7 +1030,8 @@ firmware blobs.  You can
        ("shelltestrunner" ,shelltestrunner)
        ("tzdata" ,tzdata-for-tests)))
     (inputs
-     (list iputils                      ;for 'arping'
+     (list bash-minimal
+           iputils                      ;for 'arping'
            curl
            fping
            iproute
@@ -1758,7 +1759,8 @@ virtualization library.")
                (add-after 'wrap 'glib-or-gtk-wrap
                  (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (inputs
-     (list dconf
+     (list bash-minimal
+           dconf
            gtk+
            gtk-vnc
            gtksourceview-4
@@ -1963,7 +1965,7 @@ client desktops.
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
-       #:tests? #f ; tests require mounting as root
+       #:tests? #f                      ; tests require mounting as root
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
              (string-append "LIBDIR=$(PREFIX)/lib")
@@ -1989,14 +1991,13 @@ client desktops.
                (("ARMV.*:=.*") "ARMV := 7\n"))
              ;; Hard-code the correct PLUGINDIR above.
              (substitute* "criu/include/plugin.h"
-               (("/var") (string-append (assoc-ref outputs "out"))))
-             ))
+               (("/var") (string-append (assoc-ref outputs "out"))))))
          ;; TODO: use
          ;; (@@ (guix build python-build-system) ensure-no-mtimes-pre-1980)
          ;; when it no longer throws due to trying to call UTIME on symlinks.
          (add-after 'unpack 'ensure-no-mtimes-pre-1980
            (lambda _
-             (let ((early-1980 315619200))  ; 1980-01-02 UTC
+             (let ((early-1980 315619200)) ; 1980-01-02 UTC
                (ftw "." (lambda (file stat flag)
                           (unless (or (<= early-1980 (stat:mtime stat))
                                       (eq? (stat:type stat) 'symlink))
@@ -2030,15 +2031,16 @@ client desktops.
              (let ((out (assoc-ref outputs "out")))
                (for-each delete-file (find-files out "\\.a$"))))))))
     (inputs
-     `(("protobuf" ,protobuf)
-       ("python-protobuf" ,python-protobuf)
-       ("iproute" ,iproute)
-       ("libaio" ,libaio)
-       ("libcap" ,libcap)
-       ("libnet" ,libnet)
-       ("libnl" ,libnl)
-       ("libbsd" ,libbsd)
-       ("nftables" ,nftables)))
+     (list bash-minimal
+           protobuf
+           python-protobuf
+           iproute
+           libaio
+           libcap
+           libnet
+           libnl
+           libbsd
+           nftables))
     (native-inputs
      (list pkg-config
            perl
