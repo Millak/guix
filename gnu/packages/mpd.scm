@@ -400,12 +400,12 @@ interface for the Music Player Daemon.")
              (let ((out               (assoc-ref outputs "out"))
                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
                (wrap-program (string-append out "/bin/sonata")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-             #t)))))
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     (list gettext-minimal))
     (inputs
-     (list python-mpd2
+     (list bash-minimal
+           python-mpd2
            gtk+
            gsettings-desktop-schemas
            gobject-introspection
@@ -563,6 +563,7 @@ artists along with albumart.")
                   `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (inputs (list avahi
+                  bash-minimal
                   dconf
                   gsettings-desktop-schemas
                   gtk+
