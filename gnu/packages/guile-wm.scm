@@ -24,6 +24,7 @@
 (define-module (gnu packages guile-wm)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages pkg-config)
@@ -174,7 +175,7 @@ dependencies.")
                                     Type=Application~%"
                              ,name ,synopsis %output)))))))))
       (native-inputs (list guile-2.2 guile-xcb pkg-config texinfo))
-      (inputs (list guile-2.2 guile-xcb))
+      (inputs (list bash-minimal guile-2.2 guile-xcb))
       (home-page "https://github.com/mwitmer/guile-wm/releases")
       (description
        "Guile-WM is a simple window manager that's completely customizable—you
