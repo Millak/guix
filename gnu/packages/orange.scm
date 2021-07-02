@@ -22,6 +22,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages machine-learning)
@@ -143,7 +144,8 @@ GUI based workflow.  It is primarily used in the Orange framework.")
     (native-inputs
      (list python-cython))
     (inputs
-     (list python-anyqt
+     (list bash-minimal
+           python-anyqt
            python-baycomp
            python-bottleneck
            python-chardet
