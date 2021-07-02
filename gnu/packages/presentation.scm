@@ -21,6 +21,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages figlet)
   #:use-module (gnu packages games)
   #:use-module (gnu packages image)
@@ -77,7 +78,8 @@
          ;; XXX: console import test fails to find palette.py from the lib?
          (delete 'sanity-check))))
     (inputs
-     (list cowsay
+     (list bash-minimal
+           cowsay
            figlet
            jp2a
            python-docutils
