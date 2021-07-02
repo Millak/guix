@@ -833,25 +833,27 @@ used by Pidgin and Bitlbee, among others, to access
        (sha256
         (base32 "0jhfg6n9r6fn9ld21pdzdz6210d7dms401zcfdrvhx52il53921f"))))
     (build-system meson-build-system)
-    (native-inputs `(("gettext" ,gettext-minimal)
-                     ("glib:bin" ,glib "bin")       ;need glib-genmarshal
-                     ("perl" ,perl)
-                     ("pkg-config" ,pkg-config)))
-    (inputs `(("dbus-glib" ,dbus-glib)
-              ("dbus" ,dbus)
-              ("enchant" ,enchant)
-              ("gtk" ,gtk+-2)
-              ("libcanberra" ,libcanberra)
-              ("openssl" ,openssl)
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")               ;need glib-genmarshal
+           perl
+           pkg-config))
+    (inputs
+     (list dbus-glib
+           dbus
+           enchant
+           gtk+-2
+           libcanberra
+           openssl
 
-              ;; Bindings for add-on scripts.
-              ("luajit" ,luajit)
-              ("perl-xml-parser" ,perl-xml-parser)
-              ("python" ,python)
-              ("python-cffi" ,python-cffi)
+           ;; Bindings for add-on scripts.
+           luajit
+           perl-xml-parser
+           python
+           python-cffi
 
-              ;; For the ensuing WRAP-PROGRAM.
-              ("bash-minimal" ,bash-minimal)))
+           ;; For the ensuing WRAP-PROGRAM.
+           bash-minimal))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1284,7 +1286,8 @@ of xmpppy.")
            python-setuptools
            xorg-server-for-tests))
     (inputs
-     (list avahi
+     (list bash-minimal
+           avahi
            dbus
            farstream
            geoclue
@@ -1812,58 +1815,59 @@ messenger protocol.")
 
 (define-public utox
   (package
-   (name "utox")
-   (version "0.18.1")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://github.com/uTox/uTox")
-           (commit (string-append "v" version))
-           (recursive? #t))) ;; Needed for 'minini' git submodule.
-     (file-name (string-append name "-" version "-checkout"))
-     (sha256
-      (base32
-       "01rvlf94d4rkrygnnjak3cg16hrrqyi1rn9nx65y17qk2nbyh68g"))))
-   (build-system cmake-build-system)
-   (arguments
-    `(#:configure-flags '("-DENABLE_TESTS=on")
-      #:phases
-      (modify-phases %standard-phases
-        (add-before 'build 'patch-absolute-filename-libgtk-3
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (substitute* "../source/src/xlib/gtk.c"
-                         (("libgtk-3.so")
-                          (search-input-file inputs "/lib/libgtk-3.so")))))
-        (add-after 'install 'wrap-program
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (wrap-program (string-append (assoc-ref outputs "out")
-                                         "/bin/utox")
-            ;; For GtkFileChooserDialog.
-             `("GSETTINGS_SCHEMA_DIR" =
-               (,(string-append (assoc-ref inputs "gtk+")
-                                "/share/glib-2.0/schemas")))))))))
-   (inputs
-    `(("dbus" ,dbus)
-      ("filteraudio" ,filteraudio)
-      ("fontconfig" ,fontconfig)
-      ("freetype" ,freetype)
-      ("c-toxcore" ,c-toxcore)
-      ("gtk+" ,gtk+)
-      ("libvpx" ,libvpx)
-      ("libx11" ,libx11)
-      ("libxext" ,libxext)
-      ("libxrender" ,libxrender)
-      ("openal" ,openal)
-      ("v4l-utils" ,v4l-utils)))
-   (native-inputs
-    (list check pkg-config))
-   (synopsis "Lightweight Tox client")
-   (description
-    "uTox is a lightweight Tox client.  Tox is a distributed and secure
+    (name "utox")
+    (version "0.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uTox/uTox")
+             (commit (string-append "v" version))
+             (recursive? #t))) ;; Needed for 'minini' git submodule.
+       (file-name (string-append name "-" version "-checkout"))
+       (sha256
+        (base32
+         "01rvlf94d4rkrygnnjak3cg16hrrqyi1rn9nx65y17qk2nbyh68g"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DENABLE_TESTS=on")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch-absolute-filename-libgtk-3
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "../source/src/xlib/gtk.c"
+               (("libgtk-3.so")
+                (search-input-file inputs "/lib/libgtk-3.so")))))
+         (add-after 'install 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program (string-append (assoc-ref outputs "out")
+                                          "/bin/utox")
+               ;; For GtkFileChooserDialog.
+               `("GSETTINGS_SCHEMA_DIR" =
+                 (,(string-append (assoc-ref inputs "gtk+")
+                                  "/share/glib-2.0/schemas")))))))))
+    (inputs
+     (list bash-minimal                 ;for wrap-program
+           dbus
+           filteraudio
+           fontconfig
+           freetype
+           c-toxcore
+           gtk+
+           libvpx
+           libx11
+           libxext
+           libxrender
+           openal
+           v4l-utils))
+    (native-inputs
+     (list check pkg-config))
+    (synopsis "Lightweight Tox client")
+    (description
+     "uTox is a lightweight Tox client.  Tox is a distributed and secure
 instant messenger with audio and video chat capabilities.")
-   (home-page "https://github.com/uTox/uTox")
-   (license license:gpl3)))
+    (home-page "https://github.com/uTox/uTox")
+    (license license:gpl3)))
 
 (define-public qtox
   (package
@@ -1905,7 +1909,8 @@ instant messenger with audio and video chat capabilities.")
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
-     (list ffmpeg
+     (list bash-minimal
+           ffmpeg
            filteraudio
            glib
            gtk+-2
@@ -1993,7 +1998,7 @@ into existing applications.")
     (native-inputs
      (list unzip))
     (inputs
-     (list perl-curses perl-io-socket-ssl))
+     (list bash-minimal perl-curses perl-io-socket-ssl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2024,8 +2029,7 @@ into existing applications.")
                (install-file "README.txt" doc)
                (install-file "TODO.txt" doc)
                (copy-recursively "share/man/man1" man1)
-               (copy-recursively "share/man/man3" man3)
-               #t)))
+               (copy-recursively "share/man/man3" man3))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Make sure all executables in "bin" find the Perl modules
@@ -2036,8 +2040,7 @@ into existing applications.")
                (for-each (lambda (file)
                            (wrap-program file
                              `("PERL5LIB" ":" prefix (,path))))
-                         (find-files bin "\\.*$"))
-               #t))))))
+                         (find-files bin "\\.*$"))))))))
     (description
      "@code{Net::PSYC} with support for TCP, UDP, Event.pm, @code{IO::Select} and
 Gtk2 event loops.  This package includes 12 applications and additional scripts:
@@ -2512,7 +2515,8 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
     (build-system qt-build-system)
     (inputs
-     (list blurhash
+     (list bash-minimal
+           blurhash
            brotli
            cmark
            coeurl
@@ -3122,8 +3126,7 @@ social and chat platform.")
                (("qiteaudio.h")
                 "qite/qiteaudio.h")
                (("qiteaudiorecorder.h")
-                "qite/qiteaudiorecorder.h"))
-             #t))
+                "qite/qiteaudiorecorder.h"))))
          (add-after 'install 'wrap-env
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -3135,48 +3138,48 @@ social and chat platform.")
                     (wrap-program file
                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("psi-plus")))
-             #t))
+                '("psi-plus")))))
          (add-after 'wrap-env 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
          (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("ruby" ,ruby)))
+     (list `(,glib "bin")
+           gobject-introspection
+           perl
+           pkg-config
+           python-wrapper
+           ruby))
     (inputs
-     `(("blake2" ,libb2)
-       ("dbus" ,dbus)
-       ("enchant" ,enchant)
-       ("glib" ,glib)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("http-parser" ,http-parser)
-       ("libgcrypt" ,libgcrypt)
-       ("libgpg-error" ,libgpg-error)
-       ("libidn" ,libidn)
-       ("libotr" ,libotr)
-       ("libsignal-protocol-c" ,libsignal-protocol-c)
-       ("libtidy" ,tidy-html)
-       ("openssl" ,openssl)
-       ("qca" ,qca)
-       ("qhttp" ,qhttp)
-       ("qite" ,qite)
-       ("qtbase" ,qtbase-5)
-       ("qtkeychain" ,qtkeychain)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("qtx11extras" ,qtx11extras)
-       ("usrsctp" ,usrsctp)
-       ("x11" ,libx11)
-       ("xext" ,libxext)
-       ("xcb" ,libxcb)
-       ("xss" ,libxscrnsaver)
-       ("zlib" ,zlib)))
+     (list bash-minimal       ; for wrap-program
+           libb2
+           dbus
+           enchant
+           glib
+           gstreamer
+           gst-plugins-base
+           http-parser
+           libgcrypt
+           libgpg-error
+           libidn
+           libotr
+           libsignal-protocol-c
+           tidy-html
+           openssl
+           qca
+           qhttp
+           qite
+           qtbase-5
+           qtkeychain
+           qtmultimedia-5
+           qtsvg-5
+           qtx11extras
+           usrsctp
+           libx11
+           libxext
+           libxcb
+           libxscrnsaver
+           zlib))
     (home-page "https://psi-plus.com/")
     (synopsis "Qt-based XMPP Client")
     (description
