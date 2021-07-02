@@ -596,6 +596,7 @@ and a game metadata scraper.")
      (list pkg-config))
     (inputs
      `(("alsa-lib" ,alsa-lib)
+       ("bash" ,bash-minimal) ; for wrap-program
        ("ao" ,ao)
        ("eudev" ,eudev)
        ("gtk+" ,gtk+-2)
@@ -2160,13 +2161,13 @@ assembler, and debugger for the Intel 8085 microprocessor.
                  ;; For GtkFileChooserDialog.
                  `("GSETTINGS_SCHEMA_DIR" =
                    (,(string-append (assoc-ref inputs "gtk+")
-                                    "/share/glib-2.0/schemas"))))
-               #t)))))
+                                    "/share/glib-2.0/schemas")))))))))
       (native-inputs
        (list pkg-config intltool
              `(,glib "bin")))
       (inputs
-       (list libcdio
+       (list bash-minimal
+             libcdio
              sdl2
              gtk+
              ffmpeg-4
