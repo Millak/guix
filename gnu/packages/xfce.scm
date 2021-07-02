@@ -255,7 +255,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
     (native-inputs
      (list pkg-config python-distutils-extra intltool))
     (inputs
-     (list which xfconf xdg-utils))
+     (list bash-minimal which xfconf xdg-utils))
     (propagated-inputs
      (list gtk+ python-dbus python-pexpect python-pycairo
            python-pygobject))
@@ -1495,7 +1495,7 @@ of data to either CD/DVD/BD.")
            `(,glib "bin") ; for glib-compile-schemas.
            pkg-config))
     (inputs
-     (list gtk+ gtksourceview-4 xfconf))
+     (list bash-minimal gtk+ gtksourceview-4 xfconf))
     (home-page "https://git.xfce.org/apps/mousepad/")
     (synopsis "Simple text editor for Xfce")
     (description
