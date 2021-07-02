@@ -954,7 +954,7 @@ Duperemove can also take input from the @command{fdupes} program.")
                 "0lfjrpv3z4h0knd3v94fijrw2zjba51mrp3mjqx2c98wr428l26f"))))
     (build-system python-build-system)
     (inputs
-     (list w3m))
+     (list bash-minimal w3m))
     (native-inputs
      (list which
            ;; For tests.
@@ -973,8 +973,7 @@ Duperemove can also take input from the @command{fdupes} program.")
                     (w3mimgdisplay (string-append w3m
                                    "/libexec/w3m/w3mimgdisplay")))
                (wrap-program ranger
-                 `("W3MIMGDISPLAY_PATH" ":" prefix (,w3mimgdisplay)))
-               #t)))
+                 `("W3MIMGDISPLAY_PATH" ":" prefix (,w3mimgdisplay))))))
          (replace 'check
            ;; The default check phase simply prints 'Ran 0 tests in 0.000s'.
            (lambda* (#:key test-target #:allow-other-keys)
