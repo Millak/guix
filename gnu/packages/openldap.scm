@@ -28,6 +28,7 @@
 
 (define-module (gnu packages openldap)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
@@ -319,7 +320,8 @@ servers from Python programs.")
                             "/bin/ds-logpipe.py"
                             "/bin/ds-replcheck"))))))))
     (inputs
-     (list bdb
+     (list bash-minimal
+           bdb
            cracklib
            cyrus-sasl
            gnutls
