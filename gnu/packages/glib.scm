@@ -750,7 +750,7 @@ The intltool collection can be used to do these things:
                "1jl7gsr7aclb9nvqazr039m86y7f7ivfhl2pixcrbfqjkb97r6kb"))))
     (build-system gnu-build-system)
     (inputs
-     (list libxml2 python-libxml2 python))
+     (list bash-minimal libxml2 python-libxml2 python))
     (arguments
      (list
       #:phases
