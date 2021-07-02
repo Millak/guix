@@ -143,6 +143,7 @@ program to exhibit a bug.")
     (native-inputs (list flex))
     (inputs
      `(("astyle"          ,astyle)
+       ("bash"            ,bash-minimal) ; for wrap-program
        ("llvm"            ,llvm-9)
        ("clang"           ,clang-9)
        ("indent"          ,indent)
@@ -692,7 +693,8 @@ input.  Zzuf's behaviour is deterministic, making it easy to reproduce bugs.")
            automake
            autoconf))
     (inputs
-     (list readline))
+     (list bash-minimal
+           readline))
     (propagated-inputs
      (list python-pygobject))
     (home-page "https://github.com/scanmem/scanmem")
