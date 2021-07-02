@@ -25,6 +25,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages image)
@@ -56,8 +57,7 @@
                          (,(dirname
                             (search-input-file
                              inputs "bin/wish")))))))))))
-    (inputs
-     (list gd giflib libpng tk))
+    (inputs (list bash-minimal gd giflib libpng tk))
     (native-inputs (list groff))
     (synopsis "Piet interpreter")
     (description
@@ -94,8 +94,7 @@ an Algol-like language
          (snippet
           '(begin
              ;; Remove a bundled fork of Marc Majcher's Piet interpreter.
-             (delete-file-recursively "interpreter")
-             #t))))
+             (delete-file-recursively "interpreter")))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -126,8 +125,7 @@ an Algol-like language
                                                (string-append doc "/" file)))
                            (list "assembler-samples"
                                  "compiler-samples"
-                                 "README.md")) ; includes the licence grant
-                 #t)))
+                                 "README.md"))))) ;includes the licence grant
            (add-after 'install 'check
              (lambda* (#:key outputs tests? #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -149,13 +147,9 @@ an Algol-like language
                    ;; Don't run the interactive one.
                    (delete-file "assembler-samples/quest.piet.png")
                    (for-each (cut invoke "npiet" <>)
-                             (find-files "." "\\.png$"))
-                   #t)))))))
-      (native-inputs
-       ;; For our tests.
-       (list netpbm npiet))
-      (inputs
-       (list perl perl-parse-recdescent))
+                             (find-files "." "\\.png$")))))))))
+      (native-inputs (list netpbm npiet)) ;for tests
+      (inputs (list bash-minimal perl perl-parse-recdescent))
       (home-page "https://www.toothycat.net/wiki/wiki.pl?MoonShadow/Piet")
       (synopsis "Piet compiler and assembler")
       (description
