@@ -472,9 +472,10 @@ programming language.")
                      "0w3kl58y7fq9paaq8ayn5gwylc4n8jbk6lf42kkcj9ar4i8v8myr"))))
    (build-system gnu-build-system)
    (inputs
-    `(("readline" ,readline)
-      ("python" ,python-wrapper)        ;for 'units_cur' script
-      ("python-requests" ,python-requests)))
+     (list bash-minimal       ;for wrap-program
+           readline
+           python-wrapper   ;for 'units_cur' script
+           python-requests))
    (arguments
     `(#:phases (modify-phases %standard-phases
                  (add-after 'install 'wrap-units_cur
@@ -483,8 +484,8 @@ programming language.")
                             (bin (string-append out "/bin")))
                        (wrap-program (string-append bin "/units_cur")
                          `("GUIX_PYTHONPATH" ":" prefix
-                           ,(search-path-as-string->list (getenv "GUIX_PYTHONPATH"))))
-                       #t))))))
+                           ,(search-path-as-string->list
+                             (getenv "GUIX_PYTHONPATH"))))))))))
    (synopsis "Conversion between thousands of scales")
    (description
     "GNU Units converts numeric quantities between units of measure.  It
@@ -492,8 +493,8 @@ can handle scale changes through adaptive usage of standard scale
 prefixes (micro-, kilo-, etc.).  It can also handle nonlinear
 conversions such as Fahrenheit to Celsius.  Its interpreter is powerful
 enough to be used effectively as a scientific calculator.")
-   (license license:gpl3+)
-   (home-page "https://www.gnu.org/software/units/")))
+    (license license:gpl3+)
+    (home-page "https://www.gnu.org/software/units/")))
 
 (define-public double-conversion
   (package
@@ -1360,7 +1361,7 @@ singular value problems.")
                `("PERL5LIB" ":" suffix (,PERL5LIB))
                `("PATH" ":" suffix (,(dirname gnuplot))))))))))
     (inputs
-     (list gnuplot perl-list-moreutils vnlog))
+     (list bash-minimal gnuplot perl-list-moreutils vnlog))
     (native-inputs
      ;; For tests.
      (list perl-ipc-run perl-string-shellquote))
@@ -3440,8 +3441,7 @@ ASCII text files using Gmsh's own scripting language.")
          (add-after 'unpack 'fix-sip-dir
            (lambda _
              (substitute* "pyqtdistutils.py"
-               (("os.path.join\\(sip_dir, 'PyQt5'\\)") "sip_dir"))
-             #t))
+               (("os.path.join\\(sip_dir, 'PyQt5'\\)") "sip_dir"))))
          ;; Now we have to pass the correct sip_dir to setup.py.
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
@@ -3449,8 +3449,7 @@ ASCII text files using Gmsh's own scripting language.")
              ((@@ (guix build python-build-system) call-setuppy)
               "build_ext"
               (list (string-append "--sip-dir="
-                                   (search-input-directory inputs "share/sip")))
-              #t)))
+                                   (search-input-directory inputs "share/sip"))))))
          ;; Ensure that icons are found at runtime.
          (add-after 'install 'wrap-executable
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -3464,7 +3463,8 @@ ASCII text files using Gmsh's own scripting language.")
            ;;("python-astropy" ,python-astropy) ;; FIXME: Package this.
            qttools-5 python-sip-4))
     (inputs
-     (list ghostscript ;optional, for EPS/PS output
+     (list bash-minimal
+           ghostscript ;optional, for EPS/PS output
            python-dbus
            python-h5py ;optional, for HDF5 data
            python-pyqt
@@ -9262,7 +9262,7 @@ symbolic reasoning engines that need to reason about polynomial constraints.")
                        ;; values to construct commands (yes, eww), so we
                        ;; can't easily substitute* them.
                        '("lglddtrace" "lgluntrace" "lingeling" "plingeling"))))))))
-     (inputs (list `(,aiger "static") gzip bzip2 xz p7zip))
+     (inputs (list `(,aiger "static") bash-minimal gzip bzip2 xz p7zip))
      (home-page "http://fmv.jku.at/lingeling")
      (synopsis "SAT solver")
      (description "This package provides a range of SAT solvers, including
