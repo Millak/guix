@@ -822,6 +822,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            xorg-server-for-tests))
     (inputs
      (list alsa-lib
+           bash-minimal
            boost
            cairo
            codec2
