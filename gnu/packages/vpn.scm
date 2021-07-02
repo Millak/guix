@@ -928,8 +928,7 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
                                           "ncurses"
                                           "openvpn"
                                           "procps"
-                                          "which")))))
-             #t))
+                                          "which")))))))
          ;; The `protonvpn' script wants to write to `~user' to initialize its
          ;; logger, so simply setting HOME=/tmp won't cut it.  Remove
          ;; sanity-check.
@@ -937,7 +936,8 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
     (native-inputs
      (list python-docopt))
     (inputs
-     (list dialog
+     (list bash-minimal
+           dialog
            iproute
            iptables
            ncurses
