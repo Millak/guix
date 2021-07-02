@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages moreutils)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages xml)
@@ -64,7 +65,8 @@
                                                       "docbook-xsl")))
                    (string-append "CC=" #$(cc-for-target)))))
     (inputs
-     (list perl
+     (list bash-minimal
+           perl
            perl-ipc-run
            perl-timedate
            perl-time-duration))
