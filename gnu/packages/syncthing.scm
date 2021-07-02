@@ -34,6 +34,7 @@
   #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -186,7 +187,8 @@ Protocol.")
                    `("GI_TYPELIB_PATH" ":" prefix
                      (,(getenv "GI_TYPELIB_PATH"))))))))))
       (inputs
-       (list gtk+
+       (list bash-minimal
+             gtk+
              libappindicator
              libnotify
              python-bcrypt
