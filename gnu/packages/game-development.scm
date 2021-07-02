@@ -2069,6 +2069,7 @@ games.")
      (list pkg-config))
     (inputs
      (list alsa-lib
+           bash-minimal
            bullet
            freetype-with-brotli
            glew
@@ -2312,6 +2313,7 @@ scripted in a Python-like language.")
      (list pkg-config))
     (inputs
      (list alsa-lib
+           bash-minimal
            brotli
            dbus
            embree
