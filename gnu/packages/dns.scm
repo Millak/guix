@@ -1045,7 +1045,8 @@ synthesis, and on-the-fly re-configuration.")
            python-sphinx-rtd-theme
            texinfo))
     (inputs
-     `(("fstrm" ,fstrm)
+     `(("bash" ,bash-minimal)           ;for wrap-program
+       ("fstrm" ,fstrm)
        ("gnutls" ,gnutls)
        ("knot:lib" ,knot "lib")
        ("libuv" ,libuv)
