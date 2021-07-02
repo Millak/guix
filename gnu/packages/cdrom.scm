@@ -45,6 +45,7 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages flex)
@@ -180,8 +181,7 @@ libcdio.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (out-bin (string-append out "/bin")))
-               (install-file "frontend/grub-mkrescue-sed.sh" out-bin)
-               #t)))
+               (install-file "frontend/grub-mkrescue-sed.sh" out-bin))))
          (add-after 'install 'move-gui-to-separate-output
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -195,10 +195,9 @@ libcdio.")
                        "/share/info/xorriso-tcltk.info"
                        "/share/man/man1/xorriso-tcltk.1"))
                (wrap-program (string-append gui "/bin/xorriso-tcltk")
-                 `("PATH" ":" prefix (,(string-append out "/bin"))))
-               #t))))))
+                 `("PATH" ":" prefix (,(string-append out "/bin"))))))))))
     (inputs
-     (list acl readline tk zlib))
+     (list acl bash-minimal readline tk zlib))
     (home-page "https://www.gnu.org/software/xorriso/")
     (synopsis "Create, manipulate, burn ISO-9660 file systems")
     (description
@@ -547,6 +546,7 @@ capacity is user-selectable.")
     (inputs ; TODO package bundled wxvillalib
      `(("wxwidgets" ,wxwidgets)
        ("wssvg" ,wxsvg)
+       ("bash" ,bash-minimal) ; for wrap-program
        ("dbus" ,dbus)
        ("cdrtools" ,cdrtools)
        ("dvd+rw-tools" ,dvd+rw-tools)
@@ -648,8 +648,7 @@ from an audio CD.")
                '(begin
                   (substitute* "Makefile"
                     (("/usr/bin/install")
-                     "install"))
-                  #t))))
+                     "install"))))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -664,8 +663,7 @@ from an audio CD.")
                (("^sysconfdir = .*$")
                 (string-append "sysconfdir = "
                                (assoc-ref outputs "out")
-                               "/etc/\n")))
-             #t))
+                               "/etc/\n")))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((wget   (assoc-ref inputs "wget"))
@@ -698,11 +696,11 @@ from an audio CD.")
 
                (for-each wrap
                          (find-files (string-append out "/bin")
-                                     ".*")))
-             #t)))
+                                     ".*"))))))
        #:tests? #f)) ; no test target
 
-    (inputs (list wget
+    (inputs (list bash-minimal
+                  wget
                   which
                   cdparanoia
                   cd-discid
@@ -796,7 +794,8 @@ information is written to standard error.")
                                      "wavpack"))))))))))
     (native-inputs (list intltool pkg-config))
     ;; TODO: Add the necessary packages for Musepack encoding.
-    (inputs `(("gtk+-2" ,gtk+-2)
+    (inputs `(("bash" ,bash-minimal) ; for wrap-program
+              ("gtk+-2" ,gtk+-2)
               ("glib" ,glib)
               ("libcddb" ,libcddb)
               ("cdparanoia" ,cdparanoia)
@@ -1045,7 +1044,7 @@ drive and disc (including CD-ROMs and DVD-ROMs).")
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list python python-pygobject cdemu-daemon))
+     (list bash-minimal python python-pygobject cdemu-daemon))
     (arguments
      ;; No tests.
      `(#:tests? #f
@@ -1054,15 +1053,13 @@ drive and disc (including CD-ROMs and DVD-ROMs).")
          (add-after 'install 'patch-shebang
            (lambda* (#:key outputs #:allow-other-keys)
              (patch-shebang (string-append (assoc-ref outputs "out")
-                                           "/bin/cdemu"))
-             #t))
+                                           "/bin/cdemu"))))
          (add-after 'patch-shebang 'wrap-program
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((prog (string-append (assoc-ref outputs "out")
                                         "/bin/cdemu")))
                (wrap-program prog
-                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH"))))))))))
     (home-page "https://cdemu.sourceforge.io/")
     (synopsis "Command-line client for controlling cdemu-daemon")
     (description "CDEmu client is a simple command-line client for controlling
