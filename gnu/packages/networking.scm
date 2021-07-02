@@ -983,7 +983,8 @@ systems with no further dependencies.")
            intltool
            pkg-config))
     (inputs
-     (list bluez
+     (list bash-minimal
+           bluez
            dbus
            (librsvg-for-system)
            glib
