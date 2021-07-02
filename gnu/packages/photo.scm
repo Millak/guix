@@ -117,7 +117,8 @@
     (native-inputs
      (list file intltool gobject-introspection))
     (inputs
-     `(("gdk-pixbuf" ,gdk-pixbuf)
+     `(("bash" ,bash-minimal) ; for wrap-program
+       ("gdk-pixbuf" ,gdk-pixbuf)
        ("gexiv2" ,gexiv2)
        ("gst-libav" ,gst-libav)
        ("gst-plugins-base" ,gst-plugins-base)
@@ -331,6 +332,7 @@ MTP, and much more.")
                           (lib (dirname (dirname (car pm)))))
                      (wrap-program (string-append #$output "/bin/exiftool")
                        `("PERL5LIB" prefix (,lib)))))))))
+    (inputs (list bash-minimal))
     (home-page "https://metacpan.org/release/Image-ExifTool")
     (synopsis "Program and Perl library to manipulate EXIF and other metadata")
     (description "This package provides the @code{exiftool} command and the
@@ -727,7 +729,8 @@ such as Batch image processing.")
            perl
            pkg-config))
     (inputs
-     (list gdk-pixbuf
+     (list bash-minimal
+           gdk-pixbuf
            gexiv2
            gst-plugins-base
            gstreamer
