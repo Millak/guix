@@ -4398,6 +4398,8 @@ errors are rethrown automatically.")
                             (,(getenv "PERL5LIB")
                              ,(string-append out "/lib/perl5/site_perl"))))
                         #t))))))
+    (inputs
+     `(("bash" ,bash-minimal))) ; for wrap-program
     (propagated-inputs
      (list perl-moo perl-strictures))
     (home-page "https://metacpan.org/release/Eval-WithLexicals")
@@ -12357,6 +12359,8 @@ spirit of both the SDL and Perl.")
                           (wrap-program "bin/sgmlspl"
                             `("PERL5LIB" suffix (,site))))
                         #t))))))
+    (inputs
+     `(("bash" ,bash-minimal))) ; for wrap-program
     (native-inputs
      (list perl-module-build))
     (home-page "https://metacpan.org/release/RAAB/SGMLSpm-1.1")
