@@ -869,6 +869,7 @@
     (inputs
      (list alsa-lib
            at-spi2-core
+           bash-minimal
            cups
            curl
            dbus
