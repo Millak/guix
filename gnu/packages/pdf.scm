@@ -266,10 +266,10 @@ information.")
                  `("QT_PLUGIN_PATH" ":" =
                    (,(string-append qtbase "/lib/qt5/plugins")))
                  `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
-                   (,(string-append qtbase "/lib/qt5/plugins/platforms"))))
-               #t))))))
+                   (,(string-append qtbase "/lib/qt5/plugins/platforms"))))))))))
     (inputs
-     (list python-poppler-qt5
+     (list bash-minimal
+           python-poppler-qt5
            python-pypdf2
            python-pyqt
            qtbase-5))
@@ -1199,7 +1199,7 @@ vector formats.")
                     (,(search-input-file inputs "bin/xpdf"))))
                 (install-file "impressive.1" man1)))))))
     ;; TODO: Add dependency on pdftk.
-    (inputs (list python-pygame python-pillow sdl xpdf))
+    (inputs (list bash-minimal python-pygame python-pillow sdl xpdf))
     (home-page "https://impressive.sourceforge.net")
     (synopsis "PDF presentation tool with visual effects")
     (description
@@ -1442,7 +1442,7 @@ manage or manipulate PDFs.")
     (native-inputs
      (list intltool python-distutils-extra))
     (inputs
-     (list gtk+ poppler))
+     (list bash-minimal gtk+ poppler))
     (propagated-inputs
      (list img2pdf
            python-dateutil
