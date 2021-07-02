@@ -1609,44 +1609,46 @@ definitions.")
 
 (define-public fontforge
   (package
-   (name "fontforge")
-   (version "20220308")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://github.com/fontforge/fontforge/releases/download/"
-                  version "/fontforge-" version ".tar.xz"))
-            (sha256
-             (base32 "0ncfc4ajwy4ng6b6h79w52jh9z3lngvf3f3ldi1wzkhcg9zh3r01"))))
-   (build-system cmake-build-system)
-   (native-inputs
-    (list pkg-config))
-   (inputs `(("cairo"           ,cairo)
-             ("fontconfig"      ,fontconfig) ;dlopen'd
-             ("freetype"        ,freetype)
-             ("gettext"         ,gettext-minimal)
-             ("libICE"          ,libice)
-             ("libSM"           ,libsm)
-             ("libX11"          ,libx11)
-             ("libXi"           ,libxi)
-             ("libjpeg"         ,libjpeg-turbo)
-             ("libltdl"         ,libltdl)
-             ("libpng"          ,libpng)
-             ("libspiro"        ,libspiro)
-             ("libtiff"         ,libtiff)
-             ("libungif"        ,libungif)
-             ("libxft"          ,libxft)
-             ("libxml2"         ,libxml2)
-             ("pango"           ,pango)
-             ("potrace"         ,potrace)
-             ("python"          ,python)
-             ("zlib"            ,zlib)))
-   (arguments
-    (list
-     #:configure-flags #~'( ;; TODO: Provide GTK+ for the Wayland-friendly GDK
-                           ;; backend, instead of the legacy X11 backend.
-                           ;; Currently it introduces a circular dependency.
-                           "-DENABLE_X11=ON")
+    (name "fontforge")
+    (version "20220308")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/fontforge/fontforge/releases/download/"
+                    version "/fontforge-" version ".tar.xz"))
+              (sha256
+               (base32 "0ncfc4ajwy4ng6b6h79w52jh9z3lngvf3f3ldi1wzkhcg9zh3r01"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list cairo
+           bash-minimal
+           fontconfig                   ;dlopen'd
+           freetype
+           gettext-minimal
+           libice
+           libsm
+           libx11
+           libxi
+           libjpeg-turbo
+           libltdl
+           libpng
+           libspiro
+           libtiff
+           libungif
+           libxft
+           libxml2
+           pango
+           potrace
+           python
+           zlib))
+    (arguments
+     (list
+      #:configure-flags #~'( ;; TODO: Provide GTK+ for the Wayland-friendly GDK
+                            ;; backend, instead of the legacy X11 backend.
+                            ;; Currently it introduces a circular dependency.
+                            "-DENABLE_X11=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'do-not-override-RPATH
@@ -1655,8 +1657,7 @@ definitions.")
               ;; already does the right thing.
               (substitute* "CMakeLists.txt"
                 (("^set_default_rpath\\(\\)")
-                 ""))
-              #t))
+                 ""))))
           #$@(if (target-hurd?)
                  #~((add-after 'unpack 'apply-hurd-patch
                       (lambda _
@@ -1699,15 +1700,14 @@ definitions.")
                             "libxml2" "zlib" "libspiro" "freetype"
                             "pango" "cairo" "fontconfig")))
                   ;; Checks for potrace program at runtime
-                  `("PATH" ":" prefix (,potrace)))
-                #t))))))
-   (synopsis "Outline font editor")
-   (description
-    "FontForge allows you to create and modify postscript, truetype and
+                  `("PATH" ":" prefix (,potrace)))))))))
+    (synopsis "Outline font editor")
+    (description
+     "FontForge allows you to create and modify postscript, truetype and
 opentype fonts.  You can save fonts in many different outline formats, and
 generate bitmaps.")
-   (license license:gpl3+)
-   (home-page "https://fontforge.github.io")))
+    (license license:gpl3+)
+    (home-page "https://fontforge.github.io")))
 
 (define-public python-statmake
   (package
@@ -2002,6 +2002,7 @@ work well with other GTK+ desktop environments.")
        ("gettext" ,gettext-minimal)))
     (inputs
      `(("cairo" ,cairo)
+       ("bash-minimal", bash-minimal)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("glib" ,glib)
