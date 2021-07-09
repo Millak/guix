@@ -589,15 +589,6 @@ upon error."
         (load-linux-modules-from-directory linux-modules
                                            linux-module-directory)
 
-        (unless (or (member "hibernate=noresume" args)
-                    ;; Also handle the equivalent old-style argument.
-                    ;; See Documentation/admin-guide/kernel-parameters.txt.
-                    (member "noresume" args))
-          ;; Try to resume immediately after loading (storage) modules
-          ;; but before any on-disk file systems have been mounted.
-          (false-if-exception           ; failure is not fatal
-           (resume-if-hibernated (find-long-option "resume" args))))
-
         (when keymap-file
           (let ((status (system* "loadkeys" keymap-file)))
             (unless (zero? status)
@@ -630,6 +621,15 @@ the root file system...\n" root-delay)
           ;; return value is false.
           (unless (pre-mount)
             (error "pre-mount actions failed")))
+
+        (unless (or (member "hibernate=noresume" args)
+                    ;; Also handle the equivalent old-style argument.
+                    ;; See Documentation/admin-guide/kernel-parameters.txt.
+                    (member "noresume" args))
+          ;; Try to resume immediately after loading (storage) modules
+          ;; but before any on-disk file systems have been mounted.
+          (false-if-exception           ; failure is not fatal
+           (resume-if-hibernated (find-long-option "resume" args))))
 
         (setenv "EXT2FS_NO_MTAB_OK" "1")
 
