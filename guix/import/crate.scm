@@ -3,6 +3,7 @@
 ;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
@@ -146,14 +147,14 @@ record or #f if it was not found."
     (()
      '())
     ((package-inputs ...)
-     `(#:cargo-inputs ,package-inputs))))
+     `(#:cargo-inputs (,'unquote (list ,@package-inputs))))))
 
 (define (maybe-cargo-development-inputs package-names)
   (match (package-names->package-inputs package-names)
     (()
      '())
     ((package-inputs ...)
-     `(#:cargo-development-inputs ,package-inputs))))
+     `(#:cargo-development-inputs (,'unquote (list ,@package-inputs))))))
 
 (define (maybe-arguments arguments)
   (match arguments
