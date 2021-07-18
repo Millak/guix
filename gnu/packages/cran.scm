@@ -6181,6 +6181,38 @@ to access PostgreSQL database systems.")
     ;; under the PostgreSQL license.
     (license license:gpl2)))
 
+(define-public r-rpostgres
+  (package
+    (name "r-rpostgres")
+    (version "1.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RPostgres" version))
+       (sha256
+        (base32
+         "0a3f7l1c0q732g8shys6g8f3nq2y3q7p840i0wdbyq0i243srfz0"))))
+    (properties `((upstream-name . "RPostgres")))
+    (build-system r-build-system)
+    (inputs (list postgresql))
+    (propagated-inputs
+     (list r-bit64
+           r-blob
+           r-dbi
+           r-hms
+           r-lubridate
+           r-plogr
+           r-rcpp
+           r-withr))
+    (native-inputs
+     (list pkg-config r-knitr))
+    (home-page "https://rpostgres.r-dbi.org")
+    (synopsis "Rcpp Interface to PostgreSQL")
+    (description
+     "This package provides a fully @code{DBI}-compliant @code{Rcpp}-backed
+interface to @code{PostgreSQL}, a relational database.")
+    (license license:gpl3)))
+
 (define-public r-linprog
   (package
     (name "r-linprog")
