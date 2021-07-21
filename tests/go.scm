@@ -389,7 +389,7 @@ require github.com/kr/pretty v0.2.1
      (arguments
       (list #:import-path "github.com/go-check/check"))
      (propagated-inputs
-      `(("go-github-com-kr-pretty" ,go-github-com-kr-pretty)))
+      (list go-github-com-kr-pretty))
      (home-page "https://github.com/go-check/check")
      (synopsis "Instructions")
      (description "Package check is a rich testing extension for Go's testing \
