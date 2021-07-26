@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -1453,3 +1455,50 @@ JSON for post-processing
 
 (define-public go-github-com-aswinkarthik-csvdiff
   (deprecated-package "go-github-com-aswinkarthik-csvdiff" csvdiff))
+
+(define-public ack
+  (package
+    (name "ack")
+    (version "3.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/beyondgrep/ack3")
+                (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "00131vqjbzcn6w22m0h3j6x9kp59dimfnnqhpmi78vbcj0jws1dv"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'patch-generated-file-shebangs 'patch-more-shebangs
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((perl (string-append
+                          (assoc-ref inputs "perl")
+                          "/bin/perl"))
+                   (site-perl
+                    (lambda (input)
+                      (format #false "~a/lib/perl5/site_perl/~a"
+                              input
+                              ,(package-version perl)))))
+               (substitute* "t/ack-type.t"
+                 (("/usr/bin/perl") perl)
+                 (("/usr/bin/env perl") perl))
+               (substitute* "ack"
+                 (("/bin/perl") ;; add @INC include directories to perl calls
+                  (string-append "/bin/perl -I "
+                                 (site-perl
+                                  (assoc-ref inputs "perl-file-next"))
+                                 " -I "
+                                 (site-perl
+                                  (assoc-ref outputs "out")))))))))))
+    (inputs (list perl-file-next))
+    (home-page "https://beyondgrep.com/")
+    (synopsis "Code-searching tool for programmers with large source trees")
+    (description "ack is a tool for finding text inside files.  It is designed for
+hackers and programmers by being fast, ignoring VCS directories, letting a user
+easily specify file types, match highlighting, Perl-Compatible Regular
+Expressions, and being faster to type than grep.")
+    (license license:artistic2.0)))
