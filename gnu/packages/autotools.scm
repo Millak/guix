@@ -317,14 +317,14 @@ output is indexed in many ways to simplify browsing.")
 (define-public automake
   (package
     (name "automake")
-    (version "1.16.3")
+    (version "1.16.4")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/automake/automake-"
                                  version ".tar.xz"))
              (sha256
               (base32
-                "0fmz2fhmzcpacnprl5msphvaflwiy0hvpgmqlgfny72ddijzfazz"))
+                "0v8kbw4fan7apbjwziylyjl5z708w452r5q6kpafcmssi04wryl0"))
              (patches
               (search-patches "automake-skip-amhello-tests.patch"))))
     (build-system gnu-build-system)
