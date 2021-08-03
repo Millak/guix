@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,10 +20,12 @@
 
 (define-module (gnu packages scsi)
   #:use-module ((guix licenses)
-                #:select (gpl2+ bsd-2 bsd-3))
+                #:select (gpl2+ bsd-2 bsd-3 lgpl2.1+))
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix git-download)
+  #:use-module (guix build-system gnu)
+  #:use-module (gnu packages autotools))
 
 (define-public sg3-utils
   (package
@@ -68,3 +71,32 @@ used in C and C++ programs to interact with SCSI devices.")
     ;;   various source code files refer to a file called "BSD_LICENSE" [...]."
     ;; Some files (like sg_compare_and_write.c) retain their 3-clause headers!
     (license (list gpl2+ bsd-2 bsd-3))))
+
+(define-public libiscsi
+  (package
+    (name "libiscsi")
+    (version "1.19.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sahlberg/libiscsi")
+             (commit version)))
+       (sha256
+        (base32
+         "0ajrkkg5awmi8m4b3mha7h07ylg18k252qprvk1sgq0qbyd66zy7"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool))
+    (synopsis "Client-side library for iSCSI")
+    (description "Libiscsi is a client-side library to implement the iSCSI
+protocol that can be used to access the resources of an iSCSI target.  It is
+fully asynchronous with regards to iSCSI commands and SCSI tasks, but a
+synchronous layer is also provided for ease of use for simpler applications.")
+    (home-page "https://github.com/sahlberg/libiscsi")
+    (license (list
+              ;; For the src, examples and test-tool directories, except
+              ;; src/ld_iscsi.c.
+              gpl2+
+              ;; For the lib and include directories.
+              lgpl2.1+))))
