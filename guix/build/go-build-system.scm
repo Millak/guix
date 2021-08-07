@@ -279,9 +279,12 @@ unpacking."
       (invoke "go" "env"))))
 
 ;; Can this also install commands???
-(define* (check #:key tests? import-path #:allow-other-keys)
+(define* (check #:key tests? import-path (parallel-tests? #t)
+                #:allow-other-keys)
   "Run the tests for the package named by IMPORT-PATH."
   (when tests?
+    (let* ((njobs (if parallel-tests? (parallel-job-count) 1)))
+      (setenv "GOMAXPROCS" (number->string njobs)))
     (invoke "go" "test" import-path))
   #t)
 
