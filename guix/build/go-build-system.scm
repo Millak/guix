@@ -256,8 +256,12 @@ unpacking."
                 (_ #f))
               inputs))))
 
-(define* (build #:key import-path build-flags #:allow-other-keys)
+(define* (build #:key import-path build-flags (parallel-build? #t)
+                #:allow-other-keys)
   "Build the package named by IMPORT-PATH."
+  (let* ((njobs (if parallel-build? (parallel-job-count) 1)))
+    (setenv "GOMAXPROCS" (number->string njobs)))
+
   (with-throw-handler
     #t
     (lambda _
