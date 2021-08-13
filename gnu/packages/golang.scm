@@ -1288,11 +1288,6 @@ retry strategies, such as fixed delay, backoff delay, and random delay.")
      `(#:unpack-path "github.com/OperatorFoundation/shapeshifter-transports"
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* (find-files "." "\\.go$")
-               ;; To drop '.git' suffix in import path of goptlib.
-               (("goptlib\\.git") "goptlib"))))
          (replace 'build
            (lambda arguments
              (for-each
@@ -2124,11 +2119,6 @@ protocol from the Pluggable Transports 2.0 specification.")
      `(#:unpack-path "github.com/OperatorFoundation/obfs4"
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda _
-             (substitute* (find-files "." "\\.go$")
-               ;; To drop '.git' suffix in import path of goptlib.
-               (("goptlib\\.git") "goptlib"))))
          (replace 'build
            (lambda arguments
              (for-each
@@ -2397,7 +2387,7 @@ translated keywords and acts.")
         (base32 "1lh938194hvkf8pqgnxwf6hvjv9rv0j3kasi07r2ckrj8sxzk4jc"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "git.torproject.org/pluggable-transports/goptlib"))
+     `(#:import-path "git.torproject.org/pluggable-transports/goptlib.git"))
     (home-page "https://gitweb.torproject.org/pluggable-transports/goptlib.git/")
     (synopsis "Go pluggable transports library")
     (description "GoPtLib is a library for writing Tor pluggable transports in
