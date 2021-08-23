@@ -215,6 +215,18 @@
                ;; fails within the build environment.
                ((".*'test-char':.*" all)
                 (string-append "# " all)))))
+         ,@(if (target-riscv64?)
+             `((add-after 'unpack 'disable-some-tests
+                 (lambda _
+                   ;; qemu.qmp.QMPConnectError: Unexpected empty reply from server
+                   (delete-file "tests/qemu-iotests/040")
+                   (delete-file "tests/qemu-iotests/041")
+                   (delete-file "tests/qemu-iotests/256")
+
+                   ;; No 'PCI' bus found for device 'virtio-scsi-pci'
+                   (delete-file "tests/qemu-iotests/127")
+                   (delete-file "tests/qemu-iotests/267"))))
+             '())
          (add-after 'patch-source-shebangs 'patch-embedded-shebangs
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              ;; Ensure the executables created by these source files reference
