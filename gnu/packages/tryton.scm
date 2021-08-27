@@ -29,6 +29,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -3810,6 +3811,31 @@ packaging information about customer and supplier return shipments.")
     (synopsis "Tryton base module for interacting with shipping services")
     (description "This Tryton module is the Fundamental module required to
 interact with shipping service providers.")
+    (license license:gpl3+)))
+
+(define-public trytond-stock-package-shipping-dpd
+  (package
+    (name "trytond-stock-package-shipping-dpd")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trytond_stock_package_shipping_dpd" version))
+       (sha256
+        (base32 "11jn2i7gkxj4nck5fkp0j8n8r6vhsv26rcnmmmmdh1iqji7cv8yf"))))
+    (build-system python-build-system)
+    (arguments (tryton-arguments "stock_package_shipping_dpd"))
+    (native-inputs (%standard-trytond-native-inputs))
+    (propagated-inputs
+     (list python-pypdf2 trytond trytond-party trytond-product trytond-stock
+           trytond-stock-package trytond-stock-package-shipping
+           trytond-stock-shipment-measurements python-zeep))
+    (home-page
+     "https://docs.tryton.org/projects/modules-stock-package-shipping-dpd")
+    (synopsis "DPD connector for the Tryton application platform")
+    (description "The @emph{Stock Package Shipping DPD} Tryton module allows
+you to generate the DPD label using the DPD webservices.  DPD has many
+different web services, the module supports:")
     (license license:gpl3+)))
 
 (define-public trytond-stock-package-shipping-ups
