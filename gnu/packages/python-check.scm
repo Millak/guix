@@ -2293,3 +2293,34 @@ documentation by parsing them from their source and evaluating the
 parsed examples as part of your normal test run.  Integration is
 provided for the main Python test runners.")
     (license license:expat)))
+
+(define-public python-pytest-httpx
+  (package
+    (name "python-pytest-httpx")
+    (version "0.21.0")
+    (source
+     (origin
+       ;; pypi package doesn't include the tests
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Colin-b/pytest_httpx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12mcy1f5d5cq3rqrqgi2ar0qvzw62ibys17hw6dsdfd0j2syck4r"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "PYTHONPATH" (getcwd))
+               (invoke "pytest" "-vv")))))))
+    (propagated-inputs (list python-httpx))
+    (native-inputs (list python-pytest python-pytest-asyncio))
+    (home-page "https://colin-b.github.io/pytest_httpx/")
+    (synopsis "Pytest plugin to mock httpx")
+    (description "This package provides a pytest fixture to mock httpx
+requests to be replied to with user provided responses.")
+    (license license:expat)))
