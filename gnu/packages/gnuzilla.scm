@@ -418,7 +418,7 @@ in C/C++.")
 (define-public mozjs-78
   (package
     (inherit mozjs-60)
-    (version "78.5.0")
+    (version "78.13.0")
     (source (origin
               (method url-fetch)
               ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
@@ -427,7 +427,7 @@ in C/C++.")
                                   version "esr.source.tar.xz"))
               (sha256
                (base32
-                "1442yjmwz69hkfcvh8kkb60jf4c9ms0pac04nc3xw2da13v4zxai"))))
+                "0v2g5clp9qlsbqfjb6yz614nq8x8c4k1p6m4axyv6g27qbiaky8r"))))
     (arguments
      `(#:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
        #:modules ((guix build cargo-utils)
