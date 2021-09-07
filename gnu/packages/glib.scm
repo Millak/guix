@@ -388,14 +388,14 @@ functions for strings and common data structures.")
 (define gobject-introspection
   (package
     (name "gobject-introspection")
-    (version "1.66.1")
+    (version "1.68.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnome/sources/"
                    "gobject-introspection/" (version-major+minor version)
                    "/gobject-introspection-" version ".tar.xz"))
              (sha256
-              (base32 "078n0q7b6z682mf4irclrksm73cyixq295mqnqifl9plwmgaai6x"))
+              (base32 "09sawnv3xj9pzgy2qrrk87dl3jibfphnswb61i5bh0d2h4j28afj"))
              (patches (search-patches
                        "gobject-introspection-cc.patch"
                        "gobject-introspection-girepository.patch"
