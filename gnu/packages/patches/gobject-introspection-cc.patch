@@ -1,7 +1,4 @@
-From e9b8fa0768a1f0ef7df2659eb559f48433ff82be Mon Sep 17 00:00:00 2001
-From: Raghav Gururajan <rg@raghavgururajan.name>
-Date: Tue, 7 Sep 2021 16:59:16 -0400
-Subject: Use gcc as the default C compiler if CC is not set.
+Use gcc as the default C compiler if CC is not set.
 
 ---
  giscanner/__init__.py | 2 ++
