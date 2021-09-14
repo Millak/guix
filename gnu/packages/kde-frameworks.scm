@@ -1036,6 +1036,30 @@ integration with a custom editor as well as a ready-to-use
     (properties `((upstream-name . "syntax-highlighting")))
     (license license:lgpl2.1+)))
 
+(define-public plasma-wayland-protocols
+  (package
+    (name "plasma-wayland-protocols")
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/" name "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "07zhf2dzacj4xlhackpzaxqnp0d1ldkqlx0f313pw1pgd74zlkxp"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (arguments '(#:tests? #f))          ;no tests
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "KDE Plasma Wayland Protocols")
+    (description
+     "This package contains XML files describing non-standard Wayland
+protocols used in KDE Plasma.")
+    ;; The XML files have varying licenses, open them for details.
+    (license (list license:bsd-3
+                   license:lgpl2.1+
+                   license:expat))))
+
 (define-public kwayland
   (package
     (name "kwayland")
