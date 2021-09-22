@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Gabriel Hondet <gabrielhondet@gmail.com>
+;;; Copyright © 2021 pukkamustard <pukkamustard@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,20 +32,26 @@
 ;; Code:
 
 (define* (build #:key (build-flags '()) (jbuild? #f)
-                (use-make? #f) (package #f) #:allow-other-keys)
+                (use-make? #f) (package #f) (dune-release-flags '())
+                #:allow-other-keys)
   "Build the given package."
   (let ((program (if jbuild? "jbuilder" "dune")))
     (apply invoke program "build" "@install"
-           (append (if package (list "-p" package) '()) build-flags)))
+           (append (if package (list "-p" package)
+                       dune-release-flags)
+                   build-flags)))
   #t)
 
 (define* (check #:key (test-flags '()) (test-target "test") tests?
-                  (jbuild? #f) (package #f) #:allow-other-keys)
+                (jbuild? #f) (package #f) (dune-release-flags '())
+                #:allow-other-keys)
   "Test the given package."
   (when tests?
     (let ((program (if jbuild? "jbuilder" "dune")))
       (apply invoke program "runtest" test-target
-             (append (if package (list "-p" package) '()) test-flags))))
+             (append (if package (list "-p" package)
+                         dune-release-flags)
+                     test-flags))))
   #t)
 
 (define* (install #:key outputs (install-target "install") (jbuild? #f)

@@ -27,6 +27,7 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +62,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages texinfo)
@@ -119,7 +121,13 @@
                 "1217cmmykjgkkim0zr1lv5j13733m4w5vipmy4ivw0ll6rz28xpv"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t))  ; To wrap binaries and/or compile schemas
+     `(#:glib-or-gtk? #t ; To wrap binaries and/or compile schemas
+       ,@(if (%current-target-system)
+             `(#:configure-flags
+               ;; introspection requires running binaries for the host system
+               ;; on the build system.
+               '("-Dintrospection=false"))
+             '())))
     (propagated-inputs `(("glib" ,glib))) ; required by atk.pc
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -174,7 +182,11 @@ tools have full access to view and control running applications.")
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)))
     (inputs
-     `(("drm" ,libdrm)
+     ;; TODO(core-updates): make this unconditional
+     `(,@(if (%current-target-system)
+             `(("bash-minimal" ,bash-minimal)) ; for glib-or-gtk-wrap
+             '())
+       ("drm" ,libdrm)
        ("ghostscript" ,ghostscript)
        ("libspectre" ,libspectre)
        ("poppler" ,poppler)))
@@ -316,7 +328,11 @@ representing trie.  Trie is a kind of digital search tree.")
                        "/share/doc/libthai/html"))))
     (native-inputs
      `(("doxygen" ,doxygen)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ;; TODO(core-updates): Make this input unconditional.
+       ,@(if (%current-target-system)
+             `(("datrie" ,libdatrie)) ; for 'trietool'
+             '())))
     (propagated-inputs
      `(("datrie" ,libdatrie)))
     (synopsis "Thai language support library")
@@ -329,7 +345,7 @@ applications.")
 (define-public pango
   (package
     (name "pango")
-    (version "1.48.7")
+    (version "1.48.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/pango/"
@@ -338,7 +354,7 @@ applications.")
               (patches (search-patches "pango-skip-libthai-test.patch"))
               (sha256
                (base32
-                "1p06sn0jfvk6z3ypp2zym0gk2bddgqch83x9flxslq5bdim2za18"))))
+                "1akj11n0ycqrm1rvi0fdfldqk7l5zk9vb8sq77009ap57xyna4x9"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
@@ -367,7 +383,11 @@ applications.")
        ("libxft" ,libxft)
        ("libxrender" ,libxrender)))
     (inputs
-     `(("zlib" ,zlib)))
+     ;; TODO(core-updates): Unconditionally add "bash-minimal"
+     `(,@(if (%current-target-system)
+             `(("bash-minimal" ,bash-minimal)) ; for glib-or-gtk-wrap
+             '())
+       ("zlib" ,zlib)))
     (native-inputs
      `(("glib" ,glib "bin")             ; glib-mkenums, etc.
        ("gobject-introspection" ,gobject-introspection) ; g-ir-compiler, etc.
@@ -612,15 +632,23 @@ highlighting and other features typical of a source code editor.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
+           ;; TODO(core-updates): Unconditionally look in (or native-inputs inputs)
+           (lambda* (#:key ,@(if (%current-target-system)
+                                 '(native-inputs)
+                                 '())
+                     inputs #:allow-other-keys)
              (with-directory-excursion "docs"
                (substitute* "meson.build"
                  (("http://docbook.sourceforge.net/release/xsl/current/")
-                  (string-append (assoc-ref inputs "docbook-xsl")
+                  (string-append (assoc-ref ,(if (%current-target-system)
+                                                 '(or native-inputs inputs)
+                                                 'inputs) "docbook-xsl")
                                  "/xml/xsl/docbook-xsl-1.79.2/")))
                (substitute* (find-files "." "\\.xml$")
                  (("http://www.oasis-open.org/docbook/xml/4\\.3/")
-                  (string-append (assoc-ref inputs "docbook-xml")
+                  (string-append (assoc-ref ,(if (%current-target-system)
+                                                 '(or native-inputs inputs)
+                                                 'inputs) "docbook-xml")
                                  "/xml/dtd/docbook/"))))
              #t))
          (add-before 'configure 'disable-failing-tests
@@ -644,7 +672,10 @@ highlighting and other features typical of a source code editor.")
        ;; Used for testing and required at runtime.
        ("shared-mime-info" ,shared-mime-info)))
     (inputs
-     `(("jasper" ,jasper)
+     `(,@(if (%current-target-system)
+             `(("bash-minimal" ,bash-minimal)) ; for glib-or-gtk-wrap
+             '())
+       ("jasper" ,jasper)
        ("libjpeg" ,libjpeg-turbo)
        ("libpng"  ,libpng)
        ("libtiff" ,libtiff)))
@@ -708,9 +739,13 @@ scaled, composited, modified, saved, or rendered.")
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     '(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
+     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
        #:configure-flags
-       (list "-Ddocs=true")
+       ;; Generating documentation requires running binaries for the host
+       ;; on the build machine.
+       (list ,(if (%current-target-system)
+                  "-Ddocs=false"
+                  "-Ddocs=true"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-documentation-path
@@ -724,24 +759,33 @@ scaled, composited, modified, saved, or rendered.")
            (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p (string-append (assoc-ref outputs "doc") "/share"))
              #t))
+         ;; TODO(core-updates): Unconditionally use (or native-inputs inputs)
          (add-after 'unpack 'patch-docbook-sgml
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                           "/xml/dtd/docbook")))
+           (lambda* (#:key ,@(if (%current-target-system)
+                                 '(native-inputs)
+                                 '()) inputs #:allow-other-keys)
+             (let* ((xmldoc
+                     (string-append (assoc-ref ,(if (%current-target-system)
+                                                    '(or native-inputs inputs)
+                                                    'inputs)
+                                               "docbook-xml")
+                                    "/xml/dtd/docbook")))
                (substitute* "doc/libatspi/libatspi-docs.sgml"
                  (("http://.*/docbookx\\.dtd")
                   (string-append xmldoc "/docbookx.dtd")))
                #t)))
-         (add-after 'install 'move-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (doc (assoc-ref outputs "doc")))
-               (copy-recursively
-                (string-append out "/share/gtk-doc")
-                (string-append doc "/share/gtk-doc"))
-               (delete-file-recursively
-                (string-append out "/share/gtk-doc")))
-             #t))
+         ,@(if (%current-target-system)
+               '()
+               '((add-after 'install 'move-documentation
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (doc (assoc-ref outputs "doc")))
+                       (copy-recursively
+                        (string-append out "/share/gtk-doc")
+                        (string-append doc "/share/gtk-doc"))
+                       (delete-file-recursively
+                        (string-append out "/share/gtk-doc")))
+                     #t))))
          (add-after 'install 'check
            (lambda _
              (setenv "HOME" (getenv "TMPDIR")) ; xfconfd requires a writable HOME
@@ -752,6 +796,11 @@ scaled, composited, modified, saved, or rendered.")
              (setenv "DBUS_FATAL_WARNINGS" "0") ;
              (invoke "dbus-launch" "ninja" "test")))
          (delete 'check))))
+    (inputs
+     ;; TODO(core-updates): Make this input unconditional.
+     (if (%current-target-system)
+         `(("bash-minimal" ,bash-minimal))
+         '()))
     (propagated-inputs
      ;; atspi-2.pc refers to all these.
      `(("dbus" ,dbus)
@@ -807,6 +856,10 @@ is part of the GNOME accessibility project.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
+       ;; Compiling tests requires "libxml2" to be in 'inputs'.
+       ,@(if (%current-target-system)
+             `(#:configure-flags '("-Dtests=false"))
+             '())
        #:phases
        (modify-phases %standard-phases
          (replace 'check
@@ -937,7 +990,7 @@ application suites.")
   (package
     (inherit gtk+-2)
     (name "gtk+")
-    (version "3.24.27")
+    (version "3.24.30")
     (source
      (origin
        (method url-fetch)
@@ -946,7 +999,7 @@ application suites.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "09ksflq5j257bf5zn8q2nnf2flicg9qqgfy7za79z7rkf1shc77p"))
+         "1a9vg840fjq1mmm403b67k624qrkxh9shaz9pv7z9l8a6bzvyxds"))
        (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
                                 "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     (propagated-inputs
@@ -958,8 +1011,7 @@ application suites.")
        ("freetype" ,freetype)
        ;; SVG support is optional and requires librsvg, which pulls in rust.
        ;; Rust is not supported well on every architecture yet.
-       ("gdk-pixbuf" ,(if (string-prefix? "x86_64" (or (%current-target-system)
-                                                       (%current-system)))
+       ("gdk-pixbuf" ,(if (target-x86-64?)
                           gdk-pixbuf+svg
                           gdk-pixbuf))
        ("glib" ,glib)
@@ -1028,7 +1080,12 @@ application suites.")
                (("notify no-gtk-init object objects-finalize papersize rbtree")
                 "no-gtk-init papersize rbtree")
                (("stylecontext templates textbuffer textiter treemodel treepath")
-                "stylecontext textbuffer textiter treemodel treepath"))
+                "stylecontext textbuffer textiter treemodel treepath")
+               ;; The ‘icontheme’ test needs SVG support.
+               ,@(if (not (target-x86-64?))
+                     '((("floating focus gestures grid gtkmenu icontheme keyhash listbox")
+                        "floating focus gestures grid gtkmenu keyhash listbox"))
+                     '()))
              (substitute* "testsuite/a11y/Makefile.in"
                (("accessibility-dump tree-performance text children derive")
                 "tree-performance text children derive"))
@@ -1998,7 +2055,7 @@ and routines to assist in editing internationalized text.")
 (define-public girara
   (package
     (name "girara")
-    (version "0.3.4")
+    (version "0.3.6")
     (source
      (origin
        (method git-fetch)
@@ -2007,7 +2064,7 @@ and routines to assist in editing internationalized text.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08rpw9hkaprm4r853xy1d35i2af1pji8c3mzzl01mmwmyr9p0x8k"))))
+        (base32 "0whwwj31fxfaf4r4qvxb4kl3mj05xj3n9c6nzdn46r30bkg9z4dw"))))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("check" ,check-0.14)
                      ("gettext" ,gettext-minimal)
@@ -2047,7 +2104,7 @@ information.")
 (define-public gtk-doc
   (package
     (name "gtk-doc")
-    (version "1.32")
+    (version "1.33.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2055,9 +2112,10 @@ information.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0z4h1dggpimygdp719l457jvqilps4qcfpk31jmj3jqpzcsg03ny"))))
-    (build-system glib-or-gtk-build-system)
-    (outputs '("out" "help"))
+                "0hxza8qp52lrq7s1vbilz2vh4170cail560zi8khl0zb42d706yc"))
+              (patches
+               (search-patches "gtk-doc-respect-xml-catalog.patch"))))
+    (build-system meson-build-system)
     (arguments
      `(#:parallel-tests? #f
        #:phases
@@ -2078,24 +2136,9 @@ information.")
              #t))
          (add-after 'unpack 'disable-failing-tests
            (lambda _
-             (substitute* "tests/Makefile.in"
+             (substitute* "tests/Makefile.am"
                (("annotations.sh bugs.sh empty.sh fail.sh gobject.sh program.sh")
                 ""))
-             #t))
-         (add-before 'configure 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "configure"
-               ;; The configure check is overzealous about making sure that
-               ;; things are in place -- it uses the xmlcatalog tool to make
-               ;; sure that docbook-xsl is available, but this tool can only
-               ;; look in one catalog file, unlike the $XML_CATALOG_FILES
-               ;; variable that Guix defines.  Fool the test by using the
-               ;; docbook-xsl catalog explicitly and get on with life.
-               (("\"\\$XML_CATALOG_FILE\" \
-\"http://docbook.sourceforge.net/release/xsl/")
-                (string-append (car (find-files (assoc-ref inputs "docbook-xsl")
-                                                "^catalog.xml$"))
-                               " \"http://docbook.sourceforge.net/release/xsl/")))
              #t))
          (add-after 'install 'wrap-executables
            (lambda* (#:key outputs #:allow-other-keys)
@@ -2103,15 +2146,7 @@ information.")
                (for-each (lambda (prog)
                            (wrap-program prog
                              `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
-                         (find-files (string-append out "/bin")))
-               #t))))
-       #:configure-flags
-       (list (string-append "--with-xml-catalog="
-                            (assoc-ref %build-inputs "docbook-xml")
-                            "/xml/dtd/docbook/catalog.xml")
-             (string-append "--with-help-dir="
-                            (assoc-ref %outputs "help")
-                            "/share/help"))))
+                         (find-files (string-append out "/bin")))))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
@@ -2297,7 +2332,11 @@ Parcellite and adds bugfixes and features.")
      `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
        #:configure-flags
        (list
-        "-Dinstalled_tests=false")))
+        "-Dinstalled_tests=false"
+        ,@(if (%current-target-system)
+              ;; Introspection requires running binaries for 'host' on 'build'.
+              '("-Dintrospection=false")
+              '()))))
     (native-inputs
      `(("git" ,git-minimal)
        ("gobject-introspection" ,gobject-introspection)

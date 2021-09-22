@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2014, 2016 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
@@ -42,7 +42,7 @@
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019 Dan Frumin <dfrumin@cs.ru.nl>
-;;; Copyright © 2019, 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2019 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -52,7 +52,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021 Trevor Hass <thass@okstate.edu>
+;;; Copyright © 2020 Trevor Hass <thass@okstate.edu>
 ;;; Copyright © 2020, 2021 Leo Prikler <leo.prikler@student.tugraz.at>
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
@@ -62,6 +62,8 @@
 ;;; Copyright © 2021 David Pflug <david@pflug.io>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
+;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
+;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -129,6 +131,7 @@
   #:use-module (gnu packages gnu-doc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gnuzilla)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gsasl)
@@ -551,6 +554,47 @@ Playing bastet can be a painful experience, especially if you usually make
 canyons and wait for the long I-shaped block to clear four rows at a time.")
     (license license:gpl3+)))
 
+(define-public tetrinet
+  (package
+    (name "tetrinet")
+    (version "0.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://tetrinet.or.cz/download/tetrinet-" version
+             ".tar.bz2"))
+       (sha256
+        (base32
+         "0b4pddqz6is1771qmvcj8qqlr4in2djdbkk13agvp9yhfah2v8x7"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("ncurses" ,ncurses)))
+    (arguments
+     `(#:tests? #f                      ;no tests
+       #:make-flags '("CC=gcc")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)            ;no configure script
+         (add-after 'unpack 'fix-install-dir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (mkdir-p (string-append out "/bin"))
+               (substitute* "Makefile"
+                 (("/usr/games") (string-append out "/bin"))))))
+         (add-after 'install 'install-documentation
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
+               (for-each (lambda (file)
+                           (install-file file doc))
+                         (list "README" "tetrinet.txt"))))))))
+    (home-page "http://tetrinet.or.cz")
+    (synopsis "Terminal-based multiplayer Tetris clone")
+    (description "Tetrinet is a multiplayer Tetris-like game with powerups and
+attacks you can use on opponents.")
+    (license license:public-domain)))
+
 (define-public vitetris
   (package
     (name "vitetris")
@@ -835,7 +879,7 @@ high a score as possible.")
 (define-public cataclysm-dda
   (package
     (name "cataclysm-dda")
-    (version "0.F")
+    (version "0.F-2")
     (source
      (origin
        (method git-fetch)
@@ -843,7 +887,7 @@ high a score as possible.")
              (url "https://github.com/CleverRaven/Cataclysm-DDA")
              (commit version)))
        (sha256
-        (base32 "1jid8lcl04y768b3psj1ifhx96lmd6fn1j2wzxhl4ic7ra66p2z3"))
+        (base32 "1wzsri6rh2fm7078hw0y4x7lqjs6ak4a66d05szfiinnxyn4w1ph"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -3344,7 +3388,8 @@ exec ~a/bin/freedink -refdir ~a/share/dink\n"
          "1mkh36xnnacnz9r00b5f9ld9309k32jv6mcavklbdnca8bl56bib"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags '("CFLAGS=-fcommon")
+       #:phases
        (modify-phases %standard-phases
          ;; Fixes https://issues.guix.gnu.org/47195.
          (add-after 'unpack 'patch-aplay-path
@@ -3534,158 +3579,6 @@ attractive physics.  Players can battle each other or computer controlled
 enemies in different game modes such as space ball, death match, team death
 match, cannon keep, and grave-itation pit.")
       (license license:gpl3+))))
-
-(define-public minetest
-  (package
-    (name "minetest")
-    (version "5.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/minetest/minetest")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "062ilb7s377q3hwfhl8q06vvcw2raydz5ljzlzwy2dmyzmdcndb8"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Delete bundled libraries.
-                  (delete-file-recursively "lib")
-                  #t))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags
-       (list "-DRUN_IN_PLACE=0"
-             "-DENABLE_FREETYPE=1"
-             "-DENABLE_GETTEXT=1"
-             "-DENABLE_SYSTEM_JSONCPP=TRUE"
-             (string-append "-DIRRLICHT_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "irrlicht")
-                            "/include/irrlicht")
-             (string-append "-DCURL_INCLUDE_DIR="
-                            (assoc-ref %build-inputs "curl")
-                            "/include/curl"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/filesys.cpp"
-               ;; Use store-path for "rm" instead of non-existing FHS path.
-               (("\"/bin/rm\"")
-                (string-append "\"" (assoc-ref inputs "coreutils") "/bin/rm\"")))
-             (substitute* "src/CMakeLists.txt"
-               ;; Let minetest binary remain in build directory.
-               (("set\\(EXECUTABLE_OUTPUT_PATH .*\\)") ""))
-             (substitute* "src/unittest/test_servermodmanager.cpp"
-               ;; do no override MINETEST_SUBGAME_PATH
-               (("(un)?setenv\\(\"MINETEST_SUBGAME_PATH\".*\\);")
-                "(void)0;"))
-             (setenv "MINETEST_SUBGAME_PATH"
-                     (string-append (getcwd) "/games")) ; for check
-             #t))
-         (replace 'check
-           (lambda _
-             ;; Thanks to our substitutions, the tests should also run
-             ;; when invoked on the target outside of `guix build'.
-             (unless ,(%current-target-system)
-               (setenv "HOME" "/tmp")
-               (invoke "src/minetest" "--run-unittests"))
-             #t)))))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "MINETEST_SUBGAME_PATH")
-            (files '("share/minetest/games")))))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (inputs
-     `(("coreutils" ,coreutils)
-       ("curl" ,curl)
-       ("freetype" ,freetype)
-       ("gettext" ,gettext-minimal)
-       ("gmp" ,gmp)
-       ("irrlicht" ,irrlicht)
-       ("jsoncpp" ,jsoncpp)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libogg" ,libogg)
-       ("libvorbis" ,libvorbis)
-       ("libxxf86vm" ,libxxf86vm)
-       ("luajit" ,luajit)
-       ("mesa" ,mesa)
-       ("ncurses" ,ncurses)
-       ("openal" ,openal)
-       ("sqlite" ,sqlite)))
-    (propagated-inputs
-     `(("minetest-data" ,minetest-data)))
-    (synopsis "Infinite-world block sandbox game")
-    (description
-     "Minetest is a sandbox construction game.  Players can create and destroy
-various types of blocks in a three-dimensional open world.  This allows
-forming structures in every possible creation, on multiplayer servers or as a
-single player.  Mods and texture packs allow players to personalize the game
-in different ways.")
-    (home-page "https://www.minetest.net/")
-    (license license:lgpl2.1+)))
-
-(define minetest-data
-  (package
-    (name "minetest-data")
-    (version (package-version minetest))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/minetest/minetest_game")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0i45lbnikvgj9kxdp0yphpjjwjcgp4ibn49xkj78j5ic1s9n8jd4"))))
-    (build-system trivial-build-system)
-    (native-inputs
-     `(("source" ,source)))
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
-                   (let ((install-dir (string-append
-                                       %output
-                                       "/share/minetest/games/minetest_game")))
-                     (mkdir-p install-dir)
-                     (copy-recursively
-                       (assoc-ref %build-inputs "source")
-                       install-dir)
-                     #t))))
-    (synopsis "Main game data for the Minetest game engine")
-    (description
-     "Game data for the Minetest infinite-world block sandbox game.")
-    (home-page "https://www.minetest.net/")
-    (license license:lgpl2.1+)))
-
-(define-public minetest-mineclone
-  (package
-    (name "minetest-mineclone")
-    (version "0.71.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.minetest.land/Wuzzy/MineClone2")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0qm809dqvxc7pa1cr9skmglq9vrbq5hhm4c4m5yi46ldh1v96dgf"))))
-    (build-system copy-build-system)
-    (arguments
-     `(#:install-plan
-       '(("." "share/minetest/games/mineclone"))))
-    (synopsis "Minecraft clone based on Minetest engine")
-    (description
-     "MineClone is a Minetest subgame, that aims to recreate Minecraft as
-closely as the engine allows.")
-    (home-page "https://content.minetest.net/packages/Wuzzy/mineclone2/")
-    (license license:gpl3+)))
 
 (define glkterm
   (package
@@ -4348,7 +4241,7 @@ engine.  When you start it you will be prompted to download a graphics set.")
 (define openttd-opengfx
   (package
     (name "openttd-opengfx")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
@@ -4356,7 +4249,7 @@ engine.  When you start it you will be prompted to download a graphics set.")
                            version "/opengfx-" version "-source.tar.xz"))
        (sha256
         (base32
-         "0qxc6gl2gxcrn1np88dnjgbaaakkkx96b13rcmy1spryc8c09hyr"))))
+         "0jgy8xv7r72m127qn09vr3rxhnbakl2990f7lldsk0d5d8n993vd"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags (list "CC=gcc"
@@ -4407,24 +4300,28 @@ OpenGFX provides you with...
 (define openttd-opensfx
   (package
     (name "openttd-opensfx")
-    (version "0.2.3")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://binaries.openttd.org/extra/opensfx/"
-             version "/opensfx-" version "-source.tar.gz"))
+             "https://cdn.openttd.org/opensfx-releases/"
+             version "/opensfx-" version "-source.tar.xz"))
        (sha256
         (base32
-         "03jxgp02ks31hmsdh4xh0xcpkb70ds8jakc9pfc1y9vdrdavh4p5"))))
+         "06vycppqcxbfdqlxzna5xr303zgcmpcvj6ylw5b2ws0ssph2f1s0"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("catcodec" ,catcodec)
-       ("python" ,python-2)))
+       ("python" ,python-2)
+       ("tar" ,tar)))
     (arguments
      `(#:make-flags
-       (list (string-append "INSTALL_DIR=" %output
-                            "/share/games/openttd/baseset/opensfx"))
+       (list (string-append "DIR_NAME=opensfx")
+             (string-append "TAR=" (assoc-ref %build-inputs "tar")
+                            "/bin/tar"))
+       ;; The check phase only verifies md5sums, see openttd-opengfx.
+       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'make-reproducible
@@ -4434,45 +4331,56 @@ OpenGFX provides you with...
              (substitute* "scripts/Makefile.def"
                (("-cf") " --mtime=@0 -cf"))
              #t))
-         (delete 'configure))))
+         (delete 'configure)
+         (add-before 'build 'prebuild
+           (lambda _ (invoke "make" "opensfx.cat")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (copy-recursively "opensfx"
+                               (string-append (assoc-ref outputs "out")
+                                              "/share/games/openttd/baseset"
+                                              "/opensfx")))))))
     (home-page "http://dev.openttdcoop.org/projects/opensfx")
     (synopsis "Base sounds for OpenTTD")
     (description "OpenSFX is a set of free base sounds for OpenTTD which make
 it possible to play OpenTTD without requiring the proprietary sound files from
 the original Transport Tycoon Deluxe.")
-    (license license:cc-sampling-plus-1.0)))
+    (license license:cc-by-sa3.0)))
 
 (define openttd-openmsx
   (package
     (name "openttd-openmsx")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://binaries.openttd.org/extra/openmsx/"
-             version "/openmsx-" version "-source.tar.gz"))
+             "https://cdn.openttd.org/openmsx-releases/"
+             version "/openmsx-" version "-source.tar.xz"))
        (sha256
         (base32
-         "0nskq97a6fsv1v6d62zf3yb8whzhqnlh3lap3va3nzvj7csjgf7c"))))
+         "0prjljsdgdxqdhhcriqskqha004ybs575xcjq80zha3pqnmrdk0k"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("python" ,python-2)))
+     `(("grfcodec" ,grfcodec)
+       ("python" ,python-2)
+       ("tar" ,tar)))
     (arguments
      `(#:make-flags
-       (list (string-append "INSTALL_DIR=" %output
-                            "/share/games/openttd/baseset"))
+       (list (string-append "DIR_NAME=openmsx")
+             (string-append "TAR=" (assoc-ref %build-inputs "tar")
+                            "/bin/tar"))
+       ;; The check phase only verifies md5sums, see openttd-opengfx.
+       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         (add-after 'install 'post-install
-           ;; Rename openmsx-version to openmsx
+         (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((install-directory (string-append (assoc-ref outputs "out")
-                                                     "/share/games/openttd/baseset")))
-               (rename-file (string-append install-directory "/openmsx-" ,version)
-                            (string-append install-directory "/openmsx"))
-               #t))))))
+             (copy-recursively "openmsx"
+                               (string-append (assoc-ref outputs "out")
+                                              "/share/games/openttd/baseset"
+                                              "/openmsx")))))))
     (home-page "http://dev.openttdcoop.org/projects/openmsx")
     (synopsis "Music set for OpenTTD")
     (description "OpenMSX is a music set for OpenTTD which makes it possible
@@ -6307,7 +6215,7 @@ small robot living in the nano world, repair its maker.")
                   #t))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests included
+     `(#:test-target "run_tests"
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-paths
@@ -6319,9 +6227,17 @@ small robot living in the nano world, repair its maker.")
                                (assoc-ref outputs "out")
                                "/share/teeworlds/data"
                                "\"")))
+             #t))
+         (add-after 'unpack 'replace-font
+           (lambda* (#:key inputs #:allow-other-keys)
+             (delete-file "datasrc/fonts/DejaVuSans.ttf")
+             (symlink (string-append (assoc-ref inputs "font-dejavu")
+                                     "/share/fonts/truetype/DejaVuSans.ttf")
+                      "datasrc/fonts/DejaVuSans.ttf")
              #t)))))
     (inputs
      `(("freetype" ,freetype)
+       ("font-dejavu" ,font-dejavu)
        ("glu" ,glu)
        ("json-parser" ,json-parser)
        ("mesa" ,mesa)
@@ -6333,7 +6249,8 @@ small robot living in the nano world, repair its maker.")
        ("openssl" ,openssl)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("python" ,python-wrapper)
+     `(("googletest" ,googletest)
+       ("python" ,python-wrapper)
        ("pkg-config" ,pkg-config)))
     (home-page "https://www.teeworlds.com")
     (synopsis "2D retro multiplayer shooter game")
@@ -6514,14 +6431,14 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.26.1")
+    (version "0.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/crawl/crawl/releases/download/"
                            version "/stone_soup-" version "-nodeps.tar.xz"))
        (sha256
-        (base32 "1d8p2np2q5951wqphq2f4dyvv976m2lh82b0qp7w9pp1h8zzi1ff"))
+        (base32 "0hzkzpqmydxm1zjkdm7k4w3hldsqin3pwkj7jmfj4jijkr0zg9nq"))
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -6901,7 +6818,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
 (define-public tome4
   (package
     (name "tome4")
-    (version "1.7.3")
+    (version "1.7.4")
     (synopsis "Single-player, RPG roguelike game set in the world of Eyal")
     (source
      (origin
@@ -6909,7 +6826,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
        (uri (string-append "https://te4.org/dl/t-engine/t-engine4-src-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1rik17r01glq3944sdb06xjf0xppgqkjk564wrh22slm4mi3fifz"))
+        (base32 "197jmd99l3w3sig32pvdlq9fcgdjjx7g9csy08kz174cyhrlyly3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -6918,8 +6835,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
               (string-append
                line " || defined(__GNUC__)")))
            (substitute* '("src/tgl.h")
-             (("#include <GL/glext.h>") ""))
-           #t))))
+             (("#include <GL/glext.h>") ""))))))
     (build-system gnu-build-system)
     (native-inputs
      `(("unzip" ,unzip)))
@@ -6942,8 +6858,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
                   (delete 'bootstrap)
                   (replace 'configure
                     (lambda _
-                      (invoke "premake4" "gmake")
-                      #t))
+                      (invoke "premake4" "gmake")))
                   (add-after 'set-paths 'set-sdl-paths
                     (lambda* (#:key inputs #:allow-other-keys)
                       (setenv "CPATH"
@@ -7008,8 +6923,7 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
                          #:comment ,synopsis
                          #:exec ,name
                          #:icon icon
-                         #:categories '("Game" "RolePlaying")))
-                      #t)))))
+                         #:categories '("Game" "RolePlaying"))))))))
     (home-page "https://te4.org")
     (description "Tales of Maj’Eyal (ToME) RPG, featuring tactical turn-based
 combat and advanced character building.  Play as one of many unique races and
@@ -7136,15 +7050,26 @@ some graphical niceities, and numerous bug-fixes and other improvements.")
      `(#:tests? #f
        #:make-flags
        (list "CC=gcc"
-             ;; link openAL instead of using dlopen at runtime
-             "DLOPEN_OPENAL=\"no\""
-             ;; an optional directory where it will look for quake2 data files
-             ;; in addition to the current working directory
+             ;; An optional directory where it will look for quake2 data files
+             ;; in addition to the current working directory.
              "WITH_SYSTEMWIDE=yes"
              "WITH_SYSTEMDIR=\"/opt/quake2\"")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         (add-before 'build 'patch-libraries
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; The game writes paths to openal.so and curl.so to ~/.yq2/...
+             ;; Workaround: hard-code the compiled paths where it loads them;
+             ;; this prevents loading old or garbage collected libraries.
+             (substitute* "src/client/sound/qal.c"
+               (("al_driver->string")
+                (string-append "\"" (assoc-ref inputs "openal")
+                               "/lib/libopenal.so\"")))
+             (substitute* "src/client/curl/qcurl.c"
+               (("cl_libcurl->string")
+                (string-append "\"" (assoc-ref inputs "curl")
+                               "/lib/libcurl.so\"")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -7264,7 +7189,7 @@ elements to achieve a simple goal in the most complex way possible.")
 (define-public pioneer
   (package
     (name "pioneer")
-    (version "20210203")
+    (version "20210723")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7273,7 +7198,7 @@ elements to achieve a simple goal in the most complex way possible.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zyi1xyghj99hz8fa6dywpscj6flp04fspnlgxbivf3rgmnxflg7"))))
+                "1hj99jxb9n3r0bkq87p1c24862xa1xyzjyfdyyx88ckszxb05qf3"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -7336,7 +7261,7 @@ Github or Gitlab.")
 (define-public colobot
   (package
     (name "colobot")
-    (version "0.1.12-alpha")
+    (version "0.2.0-alpha")
     (source
      (origin
        (method git-fetch)
@@ -7346,8 +7271,7 @@ Github or Gitlab.")
              (recursive? #t)))          ;for "data/" subdir
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1c181cclkrnspgs07lvndg2c81cjq3smkv7qim8c470cj88rcrp2"))))
+        (base32 "02z21pw47j2afjsikn5b162gacwgiahdrlhmfxhq4xqlzsvz58z6"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test
@@ -7553,6 +7477,8 @@ online.")
                (base32
                 "1iy8rx7kjvi1zjiw4zh77szzmd1sgpqajvbhprh1sj93fhbxcdfl"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list "CFLAGS=-fcommon")))
     (inputs `(("sdl2-net" ,sdl2-net)
               ("sdl2-mixer" , sdl2-mixer)
               ("sdl2" ,sdl2)))
@@ -7592,7 +7518,8 @@ affect gameplay).")
       `(("automake" ,automake)
         ("autoreconf" ,autoconf))))
     (arguments
-     `(#:phases
+     `(#:configure-flags '("CFLAGS=-fcommon")
+       #:phases
        (modify-phases %standard-phases
          (replace 'bootstrap
            ;; The bundled autogen.sh script unconditionally runs ./configure.
@@ -8316,38 +8243,33 @@ your score gets higher, you level up and the blocks fall faster.")
 (define-public endless-sky
   (package
     (name "endless-sky")
-    (version "0.9.12")
+    (version "0.9.14")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/endless-sky/endless-sky")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "18nkl4s3r5sy3sd9lhbdg9160c7fggklklprx0d5azifc8g6k0wj"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/endless-sky/endless-sky")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12iganf8dxiyrjznnabsarxjsr0h717j3k4mz15p0k67wxyahhmf"))))
     (build-system scons-build-system)
     (arguments
      `(#:scons ,scons-python2
        #:scons-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-resource-locations
+         (add-after 'unpack 'fix-paths
            (lambda* (#:key outputs #:allow-other-keys)
+             ;; Look for resources in the store directory.
              (substitute* "source/Files.cpp"
-               (("/usr/local/")
-                (string-append (assoc-ref outputs "out") "/")))
-             #t))
-         (add-after 'unpack 'patch-scons
-           (lambda _
+               (("/usr/local") (assoc-ref outputs "out")))
+             ;; Install game binary into %out/bin.
              (substitute* "SConstruct"
-               ;; Keep environmental variables
-               (("Environment\\(\\)")
-                "Environment(ENV = os.environ)")
-               ;; Install into %out/bin
-               (("games\"") "bin\""))
-             #t)))))
+               (("games\"") "bin\""))))
+         (add-before 'build 'use-gcc-ar
+           ;; Use gcc-ar to support LTO.
+           (lambda _ (setenv "AR" "gcc-ar"))))))
     (inputs
      `(("glew" ,glew)
        ("libjpeg" ,libjpeg-turbo)
@@ -8717,7 +8639,8 @@ affected by the gravity of the planets.")
          "1nfkhcm0l89jyw8yr65na97g4l385zhjf7whkyg47c3v5sdqq2g7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags '("CFLAGS=-fcommon")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-install-directories
            (lambda* (#:key outputs #:allow-other-keys)
@@ -8734,7 +8657,7 @@ affected by the gravity of the planets.")
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "CPATH"
                      (string-append
-                      (search-input-file inputs "/include/SDL")
+                      (search-input-directory inputs "/include/SDL")
                       ":" (or (getenv "CPATH") ""))))))))
     (inputs
      `(("fontconfig" ,fontconfig)
@@ -8979,7 +8902,7 @@ fight each other on an arena-like map.")
 (define-public flare-engine
   (package
     (name "flare-engine")
-    (version "1.11")
+    (version "1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8988,7 +8911,7 @@ fight each other on an arena-like map.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mqr1s72p5bdh4kq2a8hg72dk8lwnddicjnd2cdp1sbfa9lmjym8"))))
+                "0h4xxj6r194pw68m3ngrnzkh6xgiblyrsc54z8abwba8m0mqbvmk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test
@@ -9007,7 +8930,7 @@ action RPGs.")
 (define-public flare-game
   (package
     (name "flare-game")
-    (version "1.11")
+    (version "1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9016,7 +8939,7 @@ action RPGs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bd5g7sd89a9176ilr408hdqzdfv4j7wj0idd685c1n6s01c3h6p"))))
+                "0h9i128kq6disppbrplkf13zdmsg4cq23nim53mgwpawc4mqz7ga"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test
@@ -9442,10 +9365,65 @@ and bring the war to your enemy.")
                    license:expat license:fdl1.3+ license:public-domain
                    license:zlib))))
 
+(define-public go-github-com-anaseto-gruid
+  (package
+    (name "go-github-com-anaseto-gruid")
+    (version "0.21.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anaseto/gruid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0rvsavkvg2hziwdh8sjk3n5v92m5mfjb8v9m7ch22maxfwq5kv6y"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/anaseto/gruid"))
+    (propagated-inputs
+     `(("go-golang-org-x-image" ,go-golang-org-x-image)))
+    (home-page "https://github.com/anaseto/gruid")
+    (synopsis "Cross-platform grid-based UI and game framework")
+    (description "The gruid module provides packages for easily building
+grid-based applications in Go.  The library abstracts rendering and input for
+different platforms.  There are drivers available for terminal apps, native
+graphical apps and browser apps.  The original application for the library was
+creating grid-based games, but it's also well suited for any grid-based
+application.")
+    (license license:isc)))
+
+(define-public go-github-com-anaseto-gruid-tcell
+  (package
+    (name "go-github-com-anaseto-gruid-tcell")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anaseto/gruid-tcell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09ajr9mbldjfc44qprplbf8dr8yhlbn2nfnas2z62m9wmklc0qiv"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/anaseto/gruid-tcell"))
+    (propagated-inputs
+     `(("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)
+       ("go-github-com-anaseto-gruid" ,go-github-com-anaseto-gruid)))
+    (home-page "https://github.com/anaseto/gruid-tcell")
+    (synopsis "Gruid driver using the tcell library")
+    (description "The gruid-tcell module provides a Gruid driver for building
+terminal full-window applications.")
+    (license license:isc)))
+
 (define-public harmonist
   (package
     (name "harmonist")
-    (version "0.3.0")
+    (version "0.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9454,12 +9432,15 @@ and bring the war to your enemy.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "146wiyanag0zqj6fhyll2sw6sydnnll8mgxhhqf9sjqsl2rx4s5r"))))
+                "17ai39pw9xq4asfvhs0whx07hljlivygazbwrxjrnxwrn06483hr"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "git.tuxfamily.org/harmonist/harmonist"))
     (inputs
-     `(("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)))
+     `(("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)
+       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)
+       ("go-github-com-anaseto-gruid" ,go-github-com-anaseto-gruid)
+       ("go-github-com-anaseto-gruid-tcell" ,go-github-com-anaseto-gruid-tcell)))
     (home-page "https://harmonist.tuxfamily.org/")
     (synopsis "Stealth coffee-break roguelike game")
     (description "Harmonist: Dayoriah Clan Infiltration is a stealth
@@ -9469,26 +9450,6 @@ and cones of view for monsters.  Aiming for a replayable streamlined experience,
 the game avoids complex inventory management and character building, relying
 on items and player adaptability for character progression.")
     (license license:isc)))
-
-(define-public harmonist-tk
-  (package
-    (inherit harmonist)
-    (name "harmonist-tk")
-    (arguments
-      (append
-        (package-arguments harmonist)
-        `(#:phases
-          (modify-phases %standard-phases
-            (replace 'build
-              (lambda _
-                (invoke "go" "install" "-v" "-x" "--tags" "tk"
-                        "git.tuxfamily.org/harmonist/harmonist")))
-            (replace 'check
-              (lambda _
-                (invoke "go" "test" "--tags" "tk"
-                        "git.tuxfamily.org/harmonist/harmonist")))))))
-    (inputs
-     `(("go-github.com-nsf-gothic" ,go-github.com-nsf-gothic)))))
 
 (define-public drascula
   (package
@@ -10100,7 +10061,7 @@ remake of that series or any other game.")
     `(("googletest" ,googletest)))
    (inputs
     `(("boost" ,boost)
-      ("ocl-icd" ,ocl-icd)
+      ("opencl-icd-loader" ,opencl-icd-loader)
       ("openblas" ,openblas)
       ("opencl-headers" ,opencl-headers)
       ("qtbase" ,qtbase-5)
@@ -10161,6 +10122,11 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
               (("qtchooser -run-tool=(.*) -qt=qt5" _ command)
                command))
             #t))
+        (add-after 'unpack 'fix-header
+          (lambda _
+            (substitute* "src/bitarray.h"
+              (("#include <cstring>" all)
+               (string-append all "\n#include <stdexcept>")))))
         (add-after 'unpack 'fix-paths
           (lambda _
             (substitute* '("src/pics/Makefile.in"
@@ -11980,7 +11946,7 @@ etc.  You can also play games on FICS or against an engine.")
                                            ,(match (%current-system)
                                               ("x86_64-linux" "x86-64")
                                               ("i686-linux" "x86-32")
-                                              ("aarch64-linux" "general-64")
+                                              ("aarch64-linux" "armv8")
                                               ("armhf-linux" "armv7")
                                               ("mips64el-linux" "general-64")
                                               (_ "general-32"))))
@@ -12498,3 +12464,35 @@ wreckage.  You're stranded on a desert island and have to survive.  In order to
 do so you need to explore the island, find food, build a shelter and try to
 get attention, so you get found.")
       (license license:cc-by4.0))))
+
+(define-public fheroes2
+  (package
+    (name "fheroes2")
+    (version "0.9.7")
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                      ; no tests
+       #:make-flags '("FHEROES2_STRICT_COMPILATION=1"
+                      "RELEASE=1")))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)))
+    (inputs
+     `(("libpng" ,libpng)
+       ("sdl" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))
+       ("zlib" ,zlib)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ihhub/fheroes2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0v3zh8a8yxfikcr5vkmy36c57l4nmwisz13mjavn5f7yrirf86fn"))))
+    (home-page "https://ihhub.github.io/fheroes2/")
+    (synopsis "Turn-based strategy game engine")
+    (description "@code{fheroes2} is an implementation of Heroes of Might and
+Magic II (aka HOMM2) game engine.  It requires assets and game resources to
+play; it will look for them at @file{~/.local/share/fheroes2} folder.")
+    (license license:gpl2)))

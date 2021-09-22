@@ -26,6 +26,7 @@
 
 (define-module (gnu packages radio)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -72,7 +73,9 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages popt)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -531,7 +534,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        ("python-numpy" ,python-numpy)
        ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
-       ("python-pyqt" ,python-pyqt)
+       ("python-pyqt" ,python-pyqt-without-qtwebkit)
        ("python-pyyaml" ,python-pyyaml)
        ("qtbase" ,qtbase-5)
        ("qwt" ,qwt)
@@ -872,7 +875,7 @@ using GNU Radio and the Qt GUI toolkit.")
 (define-public fldigi
   (package
     (name "fldigi")
-    (version "4.1.19")
+    (version "4.1.20")
     (source
      (origin
        (method git-fetch)
@@ -881,7 +884,7 @@ using GNU Radio and the Qt GUI toolkit.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08rmc7vb2irb67g3sry7md653n9ac0x0b44az729lj6sljqvw3bv"))))
+        (base32 "0y43241s3p8qzn7x6x28v5v2bf934riznj14bb7m6k6vgd849qzl"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -1684,7 +1687,8 @@ intended for people who want to learn receiving and sending morse code.")
        ("osm-gps-map" ,osm-gps-map)
        ("pulseaudio" ,pulseaudio)))
     (arguments
-     `(#:tests? #f ; No test suite
+     `(#:configure-flags '("-DCMAKE_C_FLAGS=-fcommon")
+       #:tests? #f ; No test suite
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-paths
@@ -1782,16 +1786,16 @@ Compatible hardware/software:
                 (string-append "documentation.path = "
                                (assoc-ref outputs "out")
                                "/share/man/man1"))
-               (("/usr/include/pulse/")
-                (search-input-directory inputs "include/pulse"))
+               (("/usr/include/pulse")
+                (search-input-directory inputs "/include/pulse"))
                (("/usr/include/sndfile\\.h")
                 (search-input-file inputs "/include/sndfile.h"))
-               (("/usr/include/opus/")
-                (search-input-directory inputs "include/opus"))
-               (("/usr/include/speex/")
-                (search-input-directory inputs "include/speex"))
-               (("/usr/include/qwt/")
-                (search-input-directory inputs "include/qwt"))
+               (("/usr/include/opus")
+                (search-input-directory inputs "/include/opus"))
+               (("/usr/include/speex")
+                (search-input-directory inputs "/include/speex"))
+               (("/usr/include/qwt")
+                (search-input-directory inputs "/include/qwt"))
                (("\\$\\$OUT_PWD/include/neaacdec\\.h")
                 (search-input-file inputs "/include/neaacdec.h")))))
          (replace 'configure
@@ -2080,20 +2084,20 @@ voice formats.")
     (arguments
      `(#:tests? #f  ; No test suite.
        #:configure-flags
-       (list (string-append "-DAPT_DIR="
-                            (assoc-ref %build-inputs "aptdec"))
-             (string-append "-DDAB_DIR="
-                            (assoc-ref %build-inputs "libdab"))
-             (string-append "-DDSDCC_DIR="
-                            (assoc-ref %build-inputs "dsdcc"))
-             (string-append "-DMBE_DIR="
-                            (assoc-ref %build-inputs "mbelib"))
-             (string-append "-DSERIALDV_DIR="
-                            (assoc-ref %build-inputs "serialdv"))
-             (string-append "-DSGP4_DIR="
-                            (assoc-ref %build-inputs "sgp4"))
-             (string-append "-DSOAPYSDR_DIR="
-                            (assoc-ref %build-inputs "soapysdr")))))
+       ,#~(list (string-append "-DAPT_DIR="
+                               #$(this-package-input "aptdec"))
+                (string-append "-DDAB_DIR="
+                               #$(this-package-input "libdab"))
+                (string-append "-DDSDCC_DIR="
+                               #$(this-package-input "dsdcc"))
+                (string-append "-DMBE_DIR="
+                               #$(this-package-input "mbelib"))
+                (string-append "-DSERIALDV_DIR="
+                               #$(this-package-input "serialdv"))
+                (string-append "-DSGP4_DIR="
+                               #$(this-package-input "sgp4"))
+                (string-append "-DSOAPYSDR_DIR="
+                               #$(this-package-input "soapysdr")))))
     (home-page "https://github.com/f4exb/sdrangel/wiki")
     (synopsis "Software defined radio")
     (description
@@ -2278,3 +2282,74 @@ To install the rfcat udev rules, you must extend @code{udev-service-type} with
 this package.  E.g.: @code{(udev-rules-service 'rfcat rfcat)}")
       (license (list license:bsd-3
                      license:gpl2)))))
+
+(define-public gnss-sdr
+  (package
+    (name "gnss-sdr")
+    (version "0.0.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gnss-sdr/gnss-sdr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kjh9bnf6h9q71bnn8nrwlc80wcnkib97ylzvb102acii4p0fm08"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("gfortran" ,gfortran)
+       ("googletest-source" ,(package-source googletest))
+       ("orc" ,orc)
+       ("pkg-config" ,pkg-config)
+       ("python" ,python)
+       ("python-mako" ,python-mako)))
+    (inputs
+     `(("armadillo" ,armadillo)
+       ("boost" ,boost)
+       ("gflags" ,gflags)
+       ("glog" ,glog)
+       ("gmp" ,gmp)
+       ("gnuradio" ,gnuradio)
+       ("gr-osmosdr" ,gr-osmosdr)
+       ("lapack" ,lapack)
+       ("libpcap" ,libpcap)
+       ("log4cpp" ,log4cpp)
+       ("matio" ,matio)
+       ("openblas" ,openblas)
+       ("openssl" ,openssl)
+       ("protobuf" ,protobuf)
+       ("pugixml" ,pugixml)
+       ("volk" ,volk)))
+    (arguments
+     `(#:configure-flags
+       (list "-DENABLE_GENERIC_ARCH=ON"
+             "-DENABLE_OSMOSDR=ON"
+             (string-append "-DGFLAGS_ROOT="
+                            (assoc-ref %build-inputs "gflags"))
+             (string-append "-DGLOG_ROOT="
+                            (assoc-ref %build-inputs "glog"))
+             (string-append "-DGTEST_DIR="
+                            (assoc-ref %build-inputs "googletest-source")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             ;; Some tests fail to compile when the FILESYSTEM package is
+             ;; available, so we disable it (and the tests will use Boost
+             ;; Filesystem instead).
+             (substitute* "CMakeLists.txt"
+               (("find_package\\(FILESYSTEM COMPONENTS Final Experimental\\)")
+                ""))))
+         (add-before 'check 'set-home
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (home-page "https://gnss-sdr.org/")
+    (synopsis "Global Navigation Satellite Systems software-defined receiver")
+    (description
+     "This program is a software-defined receiver which is able to process
+(that is, to perform detection, synchronization, demodulation and decoding of
+the navigation message, computation of observables and, finally, computation of
+position fixes) the signals of the BeiDou, Galileo, GLONASS and GPS Global
+Navigation Satellite System.")
+    (license license:gpl3+)))

@@ -15,7 +15,7 @@
 ;;; Copyright © 2018, 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2019, 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.com>
@@ -29,6 +29,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,12 +68,734 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
+
+;; According to https://golang.org/doc/install/gccgo, gccgo-4.8.2 includes a
+;; complete go-1.1.2 implementation, gccgo-4.9 includes a complete go-1.2
+;; implementation, and gccgo-5 a complete implementation of go-1.4.  Ultimately
+;; we hope to build go-1.5+ with a bootstrap process using gccgo-5.  As of
+;; go-1.5, go cannot be bootstrapped without go-1.4, so we need to use go-1.4 or
+;; gccgo-5.  Mips is not officially supported, but it should work if it is
+;; bootstrapped.
+
+(define-public go-1.4
+  (package
+    (name "go")
+    ;; The C-language bootstrap of Go:
+    ;; https://golang.org/doc/install/source#go14
+    (version "1.4-bootstrap-20171003")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://storage.googleapis.com/golang/"
+                                  name version ".tar.gz"))
+              (sha256
+               (base32
+                "0liybk5z00hizsb5ypkbhqcawnwwa6mkwgvjjg4y3jm3ndg5pzzl"))))
+    (build-system gnu-build-system)
+    (outputs '("out"
+               "doc"
+               "tests"))
+    (arguments
+     `(#:modules ((ice-9 match)
+                  (guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
+       #:tests? #f ; Tests are run by the all.bash script.
+       ,@(if (string-prefix? "aarch64-linux" (or (%current-system)
+                                                 (%current-target-system)))
+             '(#:system "armhf-linux")
+             '())
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'patch-generated-file-shebangs 'chdir
+           (lambda _
+             (chdir "src")
+             #t))
+         (add-before 'build 'prebuild
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib"))
+                    (ld (string-append (assoc-ref inputs "libc") "/lib"))
+                    (loader (car (find-files ld "^ld-linux.+")))
+                    (net-base (assoc-ref inputs "net-base"))
+                    (tzdata-path
+                     (string-append (assoc-ref inputs "tzdata") "/share/zoneinfo"))
+                    (output (assoc-ref outputs "out")))
+
+               ;; Removing net/ tests, which fail when attempting to access
+               ;; network resources not present in the build container.
+               (for-each delete-file
+                         '("net/multicast_test.go" "net/parse_test.go"
+                           "net/port_test.go"))
+
+               ;; Add libgcc to the RUNPATH.
+               (substitute* "cmd/go/build.go"
+                 (("cgoldflags := \\[\\]string\\{\\}")
+                  (string-append "cgoldflags := []string{"
+                                 "\"-rpath=" gcclib "\"}"))
+                 (("ldflags := buildLdflags")
+                  (string-append
+                   "ldflags := buildLdflags\n"
+                   "ldflags = append(ldflags, \"-r\")\n"
+                   "ldflags = append(ldflags, \"" gcclib "\")\n")))
+
+               (substitute* "os/os_test.go"
+                 (("/usr/bin") (getcwd))
+                 (("/bin/pwd") (which "pwd")))
+
+               ;; Disable failing tests: these tests attempt to access
+               ;; commands or network resources which are neither available or
+               ;; necessary for the build to succeed.
+               (for-each
+                (match-lambda
+                  ((file regex)
+                   (substitute* file
+                     ((regex all before test_name)
+                      (string-append before "Disabled" test_name)))))
+                '(("net/net_test.go" "(.+)(TestShutdownUnix.+)")
+                  ("net/dial_test.go" "(.+)(TestDialTimeout.+)")
+                  ("os/os_test.go" "(.+)(TestHostname.+)")
+                  ("time/format_test.go" "(.+)(TestParseInSydney.+)")
+
+                  ;; XXX: This test fails with tzdata 2020b and newer.  Later
+                  ;; Go releases work fine, so just disable this for the
+                  ;; bootstrap Go.
+                  ("time/example_test.go" "(.+)(ExampleParseInLocation.+)")
+
+                  ("os/exec/exec_test.go" "(.+)(TestEcho.+)")
+                  ("os/exec/exec_test.go" "(.+)(TestCommandRelativeName.+)")
+                  ("os/exec/exec_test.go" "(.+)(TestCatStdin.+)")
+                  ("os/exec/exec_test.go" "(.+)(TestCatGoodAndBadFile.+)")
+                  ("os/exec/exec_test.go" "(.+)(TestExitStatus.+)")
+                  ("os/exec/exec_test.go" "(.+)(TestPipes.+)")
+                  ("os/exec/exec_test.go" "(.+)(TestStdinClose.+)")
+                  ("syscall/syscall_unix_test.go" "(.+)(TestPassFD\\(.+)")
+                  ("os/exec/exec_test.go" "(.+)(TestExtraFiles.+)")))
+
+               (substitute* "net/lookup_unix.go"
+                 (("/etc/protocols") (string-append net-base "/etc/protocols")))
+               (substitute* "time/zoneinfo_unix.go"
+                 (("/usr/share/zoneinfo/") tzdata-path))
+               (substitute* (find-files "cmd" "asm.c")
+                 (("/lib/ld-linux.*\\.so\\.[0-9]") loader))
+               #t)))
+
+         (replace 'build
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; FIXME: Some of the .a files are not bit-reproducible.
+             (let* ((output (assoc-ref outputs "out")))
+               (setenv "CC" (which "gcc"))
+               (setenv "GOOS" "linux")
+               (setenv "GOROOT" (dirname (getcwd)))
+               (setenv "GOROOT_FINAL" output)
+               (setenv "GO14TESTS" "1")
+               (invoke "sh" "all.bash"))))
+
+         (replace 'install
+           (lambda* (#:key outputs inputs #:allow-other-keys)
+             (let* ((output (assoc-ref outputs "out"))
+                    (doc_out (assoc-ref outputs "doc"))
+                    (bash (string-append (assoc-ref inputs "bash") "bin/bash"))
+                    (docs (string-append doc_out "/share/doc/" ,name "-" ,version))
+                    (tests (string-append
+                            (assoc-ref outputs "tests") "/share/" ,name "-" ,version)))
+               (mkdir-p tests)
+               (copy-recursively "../test" (string-append tests "/test"))
+               (delete-file-recursively "../test")
+               (mkdir-p docs)
+               (copy-recursively "../api" (string-append docs "/api"))
+               (delete-file-recursively "../api")
+               (copy-recursively "../doc" (string-append docs "/doc"))
+               (delete-file-recursively "../doc")
+
+               (for-each (lambda (file)
+                           (let ((file (string-append "../" file)))
+                             (install-file file docs)
+                             (delete-file file)))
+                         '("README" "CONTRIBUTORS" "AUTHORS" "PATENTS"
+                           "LICENSE" "VERSION" "robots.txt"))
+               (copy-recursively "../" output)
+               #t))))))
+    (inputs
+     `(("tzdata" ,tzdata)
+       ("pcre" ,pcre)
+       ("gcc:lib" ,(canonical-package gcc) "lib")))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("which" ,which)
+       ("net-base" ,net-base)
+       ("perl" ,perl)))
+
+    (home-page "https://golang.org/")
+    (synopsis "Compiler and libraries for Go, a statically-typed language")
+    (description "Go, also commonly referred to as golang, is an imperative
+programming language designed primarily for systems programming.  Go is a
+compiled, statically typed language in the tradition of C and C++, but adds
+garbage collection, various safety features, and concurrent programming features
+in the style of communicating sequential processes (@dfn{CSP}).")
+    (supported-systems '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux"))
+    (license license:bsd-3)))
+
+(define-public go-1.14
+  (package
+    (inherit go-1.4)
+    (name "go")
+    (version "1.14.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1crh90qkvhlx23hwsi4wxy3l3h8973lr18135y6h1nnzzwr3n3ps"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.4)
+       ((#:system system)
+        (if (string-prefix? "aarch64-linux" (or (%current-system)
+                                                (%current-target-system)))
+          "aarch64-linux"
+          system))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'prebuild
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib"))
+                      (ld (string-append (assoc-ref inputs "libc") "/lib"))
+                      (loader (car (find-files ld "^ld-linux.+")))
+                      (net-base (assoc-ref inputs "net-base"))
+                      (tzdata-path
+                       (string-append (assoc-ref inputs "tzdata") "/share/zoneinfo"))
+                      (output (assoc-ref outputs "out")))
+
+                 ;; Having the patch in the 'patches' field of <origin> breaks
+                 ;; the 'TestServeContent' test due to the fact that
+                 ;; timestamps are reset.  Thus, apply it from here.
+                 (invoke "patch" "-p2" "--force" "-i"
+                         (assoc-ref inputs "go-skip-gc-test.patch"))
+
+                 ;; A side effect of these test scripts is testing
+                 ;; cgo. Attempts at using cgo flags and directives with these
+                 ;; scripts as specified here (https://golang.org/cmd/cgo/)
+                 ;; have not worked. The tests continue to state that they can
+                 ;; not find object files/headers despite being present.
+                 (for-each
+                  delete-file
+                  '("cmd/go/testdata/script/mod_case_cgo.txt"
+                    "cmd/go/testdata/script/list_find.txt"
+                    "cmd/go/testdata/script/list_compiled_imports.txt"
+                    "cmd/go/testdata/script/cgo_syso_issue29253.txt"
+                    "cmd/go/testdata/script/cover_cgo.txt"
+                    "cmd/go/testdata/script/cover_cgo_xtest.txt"
+                    "cmd/go/testdata/script/cover_cgo_extra_test.txt"
+                    "cmd/go/testdata/script/cover_cgo_extra_file.txt"
+                    "cmd/go/testdata/script/cgo_path_space.txt"
+                    "cmd/go/testdata/script/ldflag.txt"
+                    "cmd/go/testdata/script/cgo_path.txt"))
+
+                 (for-each make-file-writable (find-files "."))
+
+                 (substitute* "os/os_test.go"
+                   (("/usr/bin") (getcwd))
+                   (("/bin/pwd") (which "pwd"))
+                   (("/bin/sh") (which "sh")))
+
+                 ;; Backport fix for go-1.14 with GCC 9+
+                 ;; https://github.com/golang/go/issues/39157
+                 (substitute* "cmd/go/note_test.go"
+                   (("cannot find 'ld'") "cannot find [‘']ld[’']"))
+
+                 ;; Add libgcc to runpath
+                 (substitute* "cmd/link/internal/ld/lib.go"
+                   (("!rpath.set") "true"))
+                 (substitute* "cmd/go/internal/work/gccgo.go"
+                   (("cgoldflags := \\[\\]string\\{\\}")
+                    (string-append "cgoldflags := []string{"
+                                   "\"-rpath=" gcclib "\""
+                                   "}"))
+                   (("\"-lgcc_s\", ")
+                    (string-append
+                     "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
+                 (substitute* "cmd/go/internal/work/gc.go"
+                   (("ldflags = setextld\\(ldflags, compiler\\)")
+                    (string-append
+                     "ldflags = setextld(ldflags, compiler)\n"
+                     "ldflags = append(ldflags, \"-r\")\n"
+                     "ldflags = append(ldflags, \"" gcclib "\")\n")))
+
+                 ;; Disable failing tests: these tests attempt to access
+                 ;; commands or network resources which are neither available
+                 ;; nor necessary for the build to succeed.
+                 (for-each
+                  (match-lambda
+                    ((file regex)
+                     (substitute* file
+                       ((regex all before test_name)
+                        (string-append before "Disabled" test_name)))))
+                  '(("net/net_test.go" "(.+)(TestShutdownUnix.+)")
+                    ("net/dial_test.go" "(.+)(TestDialTimeout.+)")
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPort.+)")
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPortWithCancel.+)")
+                    ;; 127.0.0.1 doesn't exist
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTR.+)")
+                    ;; 127.0.0.1 doesn't exist
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTRWithCancel.+)")
+                    ;; /etc/services doesn't exist
+                    ("net/parse_test.go" "(.+)(TestReadLine.+)")
+                    ("os/os_test.go" "(.+)(TestHostname.+)")
+                    ;; The user's directory doesn't exist
+                    ("os/os_test.go" "(.+)(TestUserHomeDir.+)")
+                    ("time/format_test.go" "(.+)(TestParseInSydney.+)")
+                    ("time/format_test.go" "(.+)(TestParseInLocation.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestEcho.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestCommandRelativeName.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestCatStdin.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestCatGoodAndBadFile.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExitStatus.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestPipes.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestStdinClose.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestIgnorePipeErrorOnSuccess.+)")
+                    ("syscall/syscall_unix_test.go" "(.+)(TestPassFD\\(.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles/areturn.+)")
+                    ("cmd/go/go_test.go" "(.+)(TestCoverageWithCgo.+)")
+                    ("cmd/go/go_test.go" "(.+)(TestTwoPkgConfigs.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestOutputStderrCapture.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExtraFilesRace.+)")
+                    ("net/lookup_test.go" "(.+)(TestLookupPort.+)")
+                    ("syscall/exec_linux_test.go"
+                     "(.+)(TestCloneNEWUSERAndRemapNoRootDisableSetgroups.+)")))
+
+                 ;; These tests fail on aarch64-linux
+                 (substitute* "cmd/dist/test.go"
+                   (("t.registerHostTest\\(\"testsanitizers/msan.*") ""))
+
+                 ;; fix shebang for testar script
+                 ;; note the target script is generated at build time.
+                 (substitute* "../misc/cgo/testcarchive/carchive_test.go"
+                   (("#!/usr/bin/env") (string-append "#!" (which "env"))))
+
+                 (substitute* "net/lookup_unix.go"
+                   (("/etc/protocols") (string-append net-base "/etc/protocols")))
+                 (substitute* "net/port_unix.go"
+                   (("/etc/services") (string-append net-base "/etc/services")))
+                 (substitute* "time/zoneinfo_unix.go"
+                   (("/usr/share/zoneinfo/") tzdata-path))
+                 (substitute* (find-files "cmd" "\\.go")
+                   (("/lib(64)?/ld-linux.*\\.so\\.[0-9]") loader))
+                 #t)))
+           (add-before 'build 'set-bootstrap-variables
+             (lambda* (#:key outputs inputs #:allow-other-keys)
+               ;; Tell the build system where to find the bootstrap Go.
+               (let ((go  (assoc-ref inputs "go")))
+                 (setenv "GOROOT_BOOTSTRAP" go)
+                 (setenv "GOGC" "400")
+                 #t)))
+           (replace 'build
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               ;; FIXME: Some of the .a files are not bit-reproducible.
+               (let* ((output (assoc-ref outputs "out")))
+                 (setenv "CC" (which "gcc"))
+                 (setenv "GOOS" "linux")
+                 (setenv "GOROOT" (dirname (getcwd)))
+                 (setenv "GOROOT_FINAL" output)
+                 (setenv "CGO_ENABLED" "1")
+                 (invoke "sh" "all.bash"))))
+           (replace 'install
+             ;; TODO: Most of this could be factorized with Go 1.4.
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((output (assoc-ref outputs "out"))
+                      (doc_out (assoc-ref outputs "doc"))
+                      (docs (string-append doc_out "/share/doc/" ,name "-" ,version))
+                      (src (string-append
+                            (assoc-ref outputs "tests") "/share/" ,name "-" ,version)))
+                 ;; Prevent installation of the build cache, which contains
+                 ;; store references to most of the tools used to build Go and
+                 ;; would unnecessarily increase the size of Go's closure if it
+                 ;; was installed.
+                 (delete-file-recursively "../pkg/obj")
+
+                 (mkdir-p src)
+                 (copy-recursively "../test" (string-append src "/test"))
+                 (delete-file-recursively "../test")
+                 (mkdir-p docs)
+                 (copy-recursively "../api" (string-append docs "/api"))
+                 (delete-file-recursively "../api")
+                 (copy-recursively "../doc" (string-append docs "/doc"))
+                 (delete-file-recursively "../doc")
+
+                 (for-each
+                  (lambda (file)
+                    (let* ((filein (string-append "../" file))
+                           (fileout (string-append docs "/" file)))
+                      (copy-file filein fileout)
+                      (delete-file filein)))
+                  ;; Note the slightly different file names compared to 1.4.
+                  '("README.md" "CONTRIBUTORS" "AUTHORS" "PATENTS"
+                    "LICENSE" "VERSION" "CONTRIBUTING.md" "robots.txt"))
+
+                 (copy-recursively "../" output)
+                 #t)))))))
+    (native-inputs
+     `(("go" ,go-1.4)
+       ("go-skip-gc-test.patch" ,(search-patch "go-skip-gc-test.patch"))
+       ,@(match (%current-system)
+           ((or "armhf-linux" "aarch64-linux")
+            `(("gold" ,binutils-gold)))
+           (_ `()))
+       ,@(package-native-inputs go-1.4)))
+    (supported-systems %supported-systems)))
+
+(define-public go-1.16
+  (package
+    (inherit go-1.14)
+    (name "go")
+    (version "1.16.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "00zv65v09kr2cljxxqypk980r4b4aqjijhbw4ikppn8km68h831n"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.14)
+       ((#:tests? _) #t)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'remove-unused-sourcecode-generators
+             (lambda _
+               ;; Prevent perl from inclusion in closure through unused files
+               (for-each delete-file (find-files "src" "\\.pl$"))))
+           (replace 'prebuild
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib"))
+                      (net-base (assoc-ref inputs "net-base"))
+                      (tzdata-path
+                       (string-append (assoc-ref inputs "tzdata") "/share/zoneinfo")))
+
+                 ;; Having the patch in the 'patches' field of <origin> breaks
+                 ;; the 'TestServeContent' test due to the fact that
+                 ;; timestamps are reset.  Thus, apply it from here.
+                 (invoke "patch" "-p2" "--force" "-i"
+                         (assoc-ref inputs "go-skip-gc-test.patch"))
+                 (invoke "patch" "-p2" "--force" "-i"
+                         (assoc-ref inputs "go-fix-script-tests.patch"))
+
+                 (for-each make-file-writable (find-files "."))
+
+                 (substitute* "os/os_test.go"
+                   (("/usr/bin") (getcwd))
+                   (("/bin/sh") (which "sh")))
+
+                 (substitute* "cmd/go/testdata/script/cgo_path_space.txt"
+                   (("/bin/sh") (which "sh")))
+
+                 ;; Add libgcc to runpath
+                 (substitute* "cmd/link/internal/ld/lib.go"
+                   (("!rpath.set") "true"))
+                 (substitute* "cmd/go/internal/work/gccgo.go"
+                   (("cgoldflags := \\[\\]string\\{\\}")
+                    (string-append "cgoldflags := []string{"
+                                   "\"-Wl,-rpath=" gcclib "\""
+                                   "}"))
+                   (("\"-lgcc_s\", ")
+                    (string-append
+                     "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
+                 (substitute* "cmd/go/internal/work/gc.go"
+                   (("ldflags = setextld\\(ldflags, compiler\\)")
+                    (string-append
+                     "ldflags = setextld(ldflags, compiler)\n"
+                     "ldflags = append(ldflags, \"-r\")\n"
+                     "ldflags = append(ldflags, \"" gcclib "\")\n")))
+
+                 ;; Disable failing tests: these tests attempt to access
+                 ;; commands or network resources which are neither available
+                 ;; nor necessary for the build to succeed.
+                 (for-each
+                  (match-lambda
+                    ((file regex)
+                     (substitute* file
+                       ((regex all before test_name)
+                        (string-append before "Disabled" test_name)))))
+                  '(("net/net_test.go" "(.+)(TestShutdownUnix.+)")
+                    ("net/dial_test.go" "(.+)(TestDialTimeout.+)")
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPort.+)")
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPortWithCancel.+)")
+                    ;; 127.0.0.1 doesn't exist
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTR.+)")
+                    ;; 127.0.0.1 doesn't exist
+                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTRWithCancel.+)")
+                    ;; /etc/services doesn't exist
+                    ("net/parse_test.go" "(.+)(TestReadLine.+)")
+                    ("os/os_test.go" "(.+)(TestHostname.+)")
+                    ;; The user's directory doesn't exist
+                    ("os/os_test.go" "(.+)(TestUserHomeDir.+)")
+                    ("time/format_test.go" "(.+)(TestParseInSydney.+)")
+                    ("time/format_test.go" "(.+)(TestParseInLocation.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestEcho.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestCommandRelativeName.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestCatStdin.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestCatGoodAndBadFile.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExitStatus.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestPipes.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestStdinClose.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestIgnorePipeErrorOnSuccess.+)")
+                    ("syscall/syscall_unix_test.go" "(.+)(TestPassFD\\(.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles/areturn.+)")
+                    ("cmd/go/go_test.go" "(.+)(TestCoverageWithCgo.+)")
+                    ("cmd/go/go_test.go" "(.+)(TestTwoPkgConfigs.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestOutputStderrCapture.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles.+)")
+                    ("os/exec/exec_test.go" "(.+)(TestExtraFilesRace.+)")
+                    ("net/lookup_test.go" "(.+)(TestLookupPort.+)")
+                    ("syscall/exec_linux_test.go"
+                     "(.+)(TestCloneNEWUSERAndRemapNoRootDisableSetgroups.+)")))
+
+                 ;; These tests fail on aarch64-linux
+                 (substitute* "cmd/dist/test.go"
+                   (("t.registerHostTest\\(\"testsanitizers/msan.*") ""))
+
+                 ;; fix shebang for testar script
+                 ;; note the target script is generated at build time.
+                 (substitute* "../misc/cgo/testcarchive/carchive_test.go"
+                   (("#!/usr/bin/env") (string-append "#!" (which "env"))))
+
+                 (substitute* "net/lookup_unix.go"
+                   (("/etc/protocols") (string-append net-base "/etc/protocols")))
+                 (substitute* "net/port_unix.go"
+                   (("/etc/services") (string-append net-base "/etc/services")))
+                 (substitute* "time/zoneinfo_unix.go"
+                   (("/usr/share/zoneinfo/") tzdata-path)))))
+           (replace 'build
+             (lambda* (#:key inputs outputs (parallel-build? #t)
+                       #:allow-other-keys)
+               ;; FIXME: Some of the .a files are not bit-reproducible.
+               ;; (Is this still true?)
+               (let* ((njobs (if parallel-build? (parallel-job-count) 1))
+                      (output (assoc-ref outputs "out"))
+                      (loader (string-append (assoc-ref inputs "libc")
+                                             ,(glibc-dynamic-linker))))
+                 (setenv "CC" (which "gcc"))
+                 (setenv "GO_LDSO" loader)
+                 (setenv "GOOS" "linux")
+                 (setenv "GOROOT" (dirname (getcwd)))
+                 (setenv "GOROOT_FINAL" output)
+                 (setenv "GOCACHE" "/tmp/go-cache")
+                 (setenv "GOMAXPROCS" (number->string njobs))
+                 (invoke "sh" "make.bash" "--no-banner"))))
+           (replace 'check
+             (lambda* (#:key target (tests? (not target)) (parallel-tests? #t)
+                       #:allow-other-keys)
+               (let* ((njobs (if parallel-tests? (parallel-job-count) 1)))
+                 (when tests?
+                   (setenv "GOMAXPROCS" (number->string njobs))
+                   (invoke "sh" "run.bash" "--no-rebuild")))))
+           (add-before 'install 'unpatch-perl-shebangs
+             (lambda _
+               ;; Rewrite references to perl input in test scripts
+               (substitute* "net/http/cgi/testdata/test.cgi"
+                 (("^#!.*") "#!/usr/bin/env perl\n"))))))))
+    (native-inputs
+     `(("go-fix-script-tests.patch" ,(search-patch "go-fix-script-tests.patch"))
+       ,@(if (not (member (%current-system) (package-supported-systems go-1.4)))
+             (alist-replace "go" (list gccgo-10) (package-native-inputs go-1.14))
+             (package-native-inputs go-1.14))))))
+
+(define-public go-1.17
+  (package
+    (inherit go-1.16)
+    (name "go")
+    (version "1.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/go")
+             (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0wk99lwpzp4qwrksl932lm9vb70nyf4vgb5lxwh7gzjcbhlqj992"))))
+    (outputs '("out" "tests")) ; 'tests' contains distribution tests.
+    (arguments
+     `(#:modules ((ice-9 match)
+                  (guix build gnu-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((output (assoc-ref outputs "out"))
+                   (loader (string-append (assoc-ref inputs "libc")
+                                          ,(glibc-dynamic-linker))))
+               (setenv "GOOS" "linux")
+               (setenv "GO_LDSO" loader)
+               (setenv "GOROOT" (getcwd))
+               (setenv "GOROOT_FINAL" (string-append output "/lib/go"))
+               (setenv "GOGC" "400")
+               (setenv "GOCACHE" "/tmp/go-cache"))))
+         (add-after 'unpack 'patch-source
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((net-base (assoc-ref inputs "net-base"))
+                    (tzdata-path (string-append (assoc-ref inputs "tzdata")
+                                                "/share/zoneinfo")))
+               ;; XXX: Remove when #49729 is merged?
+               (for-each make-file-writable (find-files "src"))
+
+               ;; Having the patch in the 'patches' field of <origin> breaks
+               ;; the 'TestServeContent' test due to the fact that
+               ;; timestamps are reset.  Thus, apply it from here.
+               (invoke "patch" "-p1" "--force" "-i"
+                       (assoc-ref inputs "go-skip-gc-test.patch"))
+               (invoke "patch" "-p1" "--force" "-i"
+                       (assoc-ref inputs "go-fix-script-tests.patch"))
+
+               (substitute* "src/os/os_test.go"
+                 (("/usr/bin") (getcwd))
+                 (("/bin/sh") (which "sh")))
+
+               (substitute* "src/cmd/go/testdata/script/cgo_path_space.txt"
+                 (("/bin/sh") (which "sh")))
+
+               ;; fix shebang for testar script
+               ;; note the target script is generated at build time.
+               (substitute* "misc/cgo/testcarchive/carchive_test.go"
+                 (("/usr/bin/env bash") (which "bash")))
+
+               (substitute* "src/net/lookup_unix.go"
+                 (("/etc/protocols")
+                  (string-append net-base "/etc/protocols")))
+               (substitute* "src/net/port_unix.go"
+                 (("/etc/services")
+                  (string-append net-base "/etc/services")))
+               (substitute* "src/time/zoneinfo_unix.go"
+                 (("/usr/share/zoneinfo/") tzdata-path)))))
+         (add-after 'patch-source 'disable-failing-tests
+           (lambda _
+             ;; Disable failing tests: these tests attempt to access
+             ;; commands or network resources which are neither available
+             ;; nor necessary for the build to succeed.
+             (for-each
+              (match-lambda
+                ((file test)
+                 (let ((regex (string-append "^(func\\s+)(" test "\\()")))
+                   (substitute* file
+                     ((regex all before test_name)
+                      (string-append before "Disabled" test_name))))))
+              '(("src/net/cgo_unix_test.go" "TestCgoLookupPort")
+                ("src/net/cgo_unix_test.go" "TestCgoLookupPortWithCancel")
+                ;; 127.0.0.1 doesn't exist
+                ("src/net/cgo_unix_test.go" "TestCgoLookupPTR")
+                ("src/net/cgo_unix_test.go" "TestCgoLookupPTRWithCancel")
+                ;; /etc/services doesn't exist
+                ("src/net/parse_test.go" "TestReadLine")
+                ;; The user's directory doesn't exist
+                ("src/os/os_test.go" "TestUserHomeDir")))
+
+             ;; These tests fail on aarch64-linux
+             (substitute* "src/cmd/dist/test.go"
+               (("t.registerHostTest\\(\"testsanitizers/msan.*") ""))))
+         (add-after 'patch-source 'enable-external-linking
+           (lambda _
+             ;; Invoke GCC to link any archives created with GCC (that is, any
+             ;; packages built using 'cgo'), because Go doesn't know how to
+             ;; handle the runpaths but GCC does.  Use substitute* rather than
+             ;; a patch since these files are liable to change often.
+             ;;
+             ;; XXX: Replace with GO_EXTLINK_ENABLED=1 or similar when
+             ;; <https://github.com/golang/go/issues/31544> and/or
+             ;; <https://github.com/golang/go/issues/43525> are resolved.
+             (substitute* "src/cmd/link/internal/ld/config.go"
+               (("iscgo && externalobj") "iscgo"))
+             (substitute* '("src/cmd/nm/nm_cgo_test.go"
+                            "src/cmd/dist/test.go")
+               (("^func.*?nternalLink\\(\\).*" all)
+                (string-append all "\n\treturn false\n")))))
+         (replace 'build
+           (lambda* (#:key (parallel-build? #t) #:allow-other-keys)
+             (let* ((njobs (if parallel-build? (parallel-job-count) 1)))
+               (with-directory-excursion "src"
+                 (setenv "GOMAXPROCS" (number->string njobs))
+                 (invoke "sh" "make.bash" "--no-banner")))))
+         (replace 'check
+           (lambda* (#:key target (tests? (not target)) (parallel-tests? #t)
+                     #:allow-other-keys)
+             (let* ((njobs (if parallel-tests? (parallel-job-count) 1)))
+               (when tests?
+                 (with-directory-excursion "src"
+                   (setenv "GOMAXPROCS" (number->string njobs))
+                   (invoke "sh" "run.bash" "--no-rebuild"))))))
+         (add-before 'install 'unpatch-perl-shebangs
+           (lambda _
+             ;; Avoid inclusion of perl in closure by rewriting references
+             ;; to perl input in sourcecode generators and test scripts
+             (substitute* (cons "src/net/http/cgi/testdata/test.cgi"
+                                (find-files "src" "\\.pl$"))
+               (("^#!.*") "#!/usr/bin/env perl\n"))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Notably, we do not install archives (180M), which Go will
+             ;; happily recompile quickly (and cache) if needed, almost
+             ;; surely faster than they could be substituted.
+             ;;
+             ;; The main motivation for pre-compiled archives is to use
+             ;; libc-linked `net' or `os' packages without a C compiler,
+             ;; but on Guix a C compiler is necessary to properly link the
+             ;; final binaries anyway.  Many build flags also invalidate
+             ;; these pre-compiled archives, so in practice Go often
+             ;; recompiles them anyway.
+             ;;
+             ;; Upstream is also planning to no longer install these
+             ;; archives: <https://github.com/golang/go/issues/47257>
+             ;;
+             ;; When necessary, a custom pre-compiled library package can
+             ;; be created with `#:import-path "std"' and used with
+             ;; `-pkgdir'.
+             (let* ((out (assoc-ref outputs "out"))
+                    (tests (assoc-ref outputs "tests")))
+               (for-each
+                (lambda (file)
+                  (copy-recursively file (string-append out "/lib/go/" file)))
+                '("lib" "VERSION" "pkg/include" "pkg/tool"))
+
+               (for-each
+                (match-lambda
+                  ((file dest output)
+                   ;; Copy to output/dest and symlink from output/lib/go/file.
+                   (let ((file* (string-append output "/lib/go/" file))
+                         (dest* (string-append output "/" dest)))
+                     (copy-recursively file dest*)
+                     (mkdir-p (dirname file*))
+                     (symlink (string-append "../../" dest) file*))))
+                `(("bin"          "bin"                 ,out)
+                  ("src"          "share/go/src"        ,out)
+                  ("misc"         "share/go/misc"       ,out)
+                  ("doc"          "share/doc/go/doc"    ,out)
+                  ("api"          "share/go/api"        ,tests)
+                  ("test"         "share/go/test"       ,tests))))))
+         (add-after 'install 'install-doc-files
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (for-each
+                (lambda (file)
+                  (install-file file (string-append out "/share/doc/go")))
+                '("AUTHORS" "CONTRIBUTORS" "CONTRIBUTING.md" "PATENTS"
+                  "README.md" "SECURITY.md"))))))))
+    (inputs (alist-delete "gcc:lib" (package-inputs go-1.16)))))
+
+(define-public go go-1.14)
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
@@ -840,6 +1563,12 @@ Go.")
          (url "https://github.com/sevlyar/go-daemon")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        ;; XXX: Remove when updating
+        '(begin
+           (substitute* "compilation_test.go"
+             ((".*\"darwin/386\".*") ""))))
        (sha256
         (base32 "1y3gnxaifykcjcbzx91lz9bc93b95w3xj4rjxjbii26pm3j7gqyk"))))
     (build-system go-build-system)
@@ -879,7 +1608,9 @@ Go.")
                  (("/bin/sleep" command)
                   (string-append
                    (assoc-ref (or native-inputs inputs) "coreutils")
-                   command))))))))
+                   command)))
+               (substitute* "src/github.com/keybase/go-ps/process_openbsd.go"
+                 (("^// \\+build ignore") "")))))))
       (native-inputs
        `(("coreutils" ,coreutils)
          ("go-github-com-stretchr-testify"
@@ -1014,537 +1745,6 @@ for speed on short messages.")
     (description "Statik allows you to embed a directory of static files into
 your Go binary to be later served from an http.FileSystem.")
     (license license:asl2.0)))
-
-;; According to https://golang.org/doc/install/gccgo, gccgo-4.8.2 includes a
-;; complete go-1.1.2 implementation, gccgo-4.9 includes a complete go-1.2
-;; implementation, and gccgo-5 a complete implementation of go-1.4.  Ultimately
-;; we hope to build go-1.5+ with a bootstrap process using gccgo-5.  As of
-;; go-1.5, go cannot be bootstrapped without go-1.4, so we need to use go-1.4 or
-;; gccgo-5.  Mips is not officially supported, but it should work if it is
-;; bootstrapped.
-
-(define-public go-1.4
-  (package
-    (name "go")
-    ;; The C-language bootstrap of Go:
-    ;; https://golang.org/doc/install/source#go14
-    (version "1.4-bootstrap-20171003")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://storage.googleapis.com/golang/"
-                                  name version ".tar.gz"))
-              (sha256
-               (base32
-                "0liybk5z00hizsb5ypkbhqcawnwwa6mkwgvjjg4y3jm3ndg5pzzl"))))
-    (build-system gnu-build-system)
-    (outputs '("out"
-               "doc"
-               "tests"))
-    (arguments
-     `(#:modules ((ice-9 match)
-                  (guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1))
-       #:tests? #f ; Tests are run by the all.bash script.
-       ,@(if (string-prefix? "aarch64-linux" (or (%current-system)
-                                                 (%current-target-system)))
-             '(#:system "armhf-linux")
-             '())
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'patch-generated-file-shebangs 'chdir
-           (lambda _
-             (chdir "src")
-             #t))
-         (add-before 'build 'prebuild
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib"))
-                    (ld (dirname (search-input-file inputs "/lib/libc.so")))
-                    (loader (car (find-files ld "^ld-linux.+")))
-                    (net-base (assoc-ref inputs "net-base"))
-                    (tzdata-path
-                     (search-input-directory inputs "share/zoneinfo"))
-                    (output (assoc-ref outputs "out")))
-
-               ;; Removing net/ tests, which fail when attempting to access
-               ;; network resources not present in the build container.
-               (for-each delete-file
-                         '("net/multicast_test.go" "net/parse_test.go"
-                           "net/port_test.go"))
-
-               ;; Add libgcc to the RUNPATH.
-               (substitute* "cmd/go/build.go"
-                 (("cgoldflags := \\[\\]string\\{\\}")
-                  (string-append "cgoldflags := []string{"
-                                 "\"-rpath=" gcclib "\"}"))
-                 (("ldflags := buildLdflags")
-                  (string-append
-                   "ldflags := buildLdflags\n"
-                   "ldflags = append(ldflags, \"-r\")\n"
-                   "ldflags = append(ldflags, \"" gcclib "\")\n")))
-
-               (substitute* "os/os_test.go"
-                 (("/usr/bin") (getcwd))
-                 (("/bin/pwd") (which "pwd")))
-
-               ;; Disable failing tests: these tests attempt to access
-               ;; commands or network resources which are neither available or
-               ;; necessary for the build to succeed.
-               (for-each
-                (match-lambda
-                  ((file regex)
-                   (substitute* file
-                     ((regex all before test_name)
-                      (string-append before "Disabled" test_name)))))
-                '(("net/net_test.go" "(.+)(TestShutdownUnix.+)")
-                  ("net/dial_test.go" "(.+)(TestDialTimeout.+)")
-                  ("os/os_test.go" "(.+)(TestHostname.+)")
-                  ("time/format_test.go" "(.+)(TestParseInSydney.+)")
-
-                  ;; XXX: This test fails with tzdata 2020b and newer.  Later
-                  ;; Go releases work fine, so just disable this for the
-                  ;; bootstrap Go.
-                  ("time/example_test.go" "(.+)(ExampleParseInLocation.+)")
-
-                  ("os/exec/exec_test.go" "(.+)(TestEcho.+)")
-                  ("os/exec/exec_test.go" "(.+)(TestCommandRelativeName.+)")
-                  ("os/exec/exec_test.go" "(.+)(TestCatStdin.+)")
-                  ("os/exec/exec_test.go" "(.+)(TestCatGoodAndBadFile.+)")
-                  ("os/exec/exec_test.go" "(.+)(TestExitStatus.+)")
-                  ("os/exec/exec_test.go" "(.+)(TestPipes.+)")
-                  ("os/exec/exec_test.go" "(.+)(TestStdinClose.+)")
-                  ("syscall/syscall_unix_test.go" "(.+)(TestPassFD\\(.+)")
-                  ("os/exec/exec_test.go" "(.+)(TestExtraFiles.+)")))
-
-               (substitute* "net/lookup_unix.go"
-                 (("/etc/protocols") (string-append net-base "/etc/protocols")))
-               (substitute* "time/zoneinfo_unix.go"
-                 (("/usr/share/zoneinfo/") tzdata-path))
-               (substitute* (find-files "cmd" "asm.c")
-                 (("/lib/ld-linux.*\\.so\\.[0-9]") loader))
-               #t)))
-
-         (replace 'build
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; FIXME: Some of the .a files are not bit-reproducible.
-             (let* ((output (assoc-ref outputs "out")))
-               (setenv "CC" (which "gcc"))
-               (setenv "GOOS" "linux")
-               (setenv "GOROOT" (dirname (getcwd)))
-               (setenv "GOROOT_FINAL" output)
-               (setenv "GO14TESTS" "1")
-               (invoke "sh" "all.bash"))))
-
-         (replace 'install
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((output (assoc-ref outputs "out"))
-                    (doc_out (assoc-ref outputs "doc"))
-                    (bash (search-input-file inputs "bin/bash"))
-                    (docs (string-append doc_out "/share/doc/" ,name "-" ,version))
-                    (tests (string-append
-                            (assoc-ref outputs "tests") "/share/" ,name "-" ,version)))
-               (mkdir-p tests)
-               (copy-recursively "../test" (string-append tests "/test"))
-               (delete-file-recursively "../test")
-               (mkdir-p docs)
-               (copy-recursively "../api" (string-append docs "/api"))
-               (delete-file-recursively "../api")
-               (copy-recursively "../doc" (string-append docs "/doc"))
-               (delete-file-recursively "../doc")
-
-               (for-each (lambda (file)
-                           (let ((file (string-append "../" file)))
-                             (install-file file docs)
-                             (delete-file file)))
-                         '("README" "CONTRIBUTORS" "AUTHORS" "PATENTS"
-                           "LICENSE" "VERSION" "robots.txt"))
-               (copy-recursively "../" output)
-               #t))))))
-    (inputs
-     `(("tzdata" ,tzdata)
-       ("pcre" ,pcre)
-       ("gcc:lib" ,(canonical-package gcc) "lib")))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)
-       ("net-base" ,net-base)
-       ("perl" ,perl)))
-
-    (home-page "https://golang.org/")
-    (synopsis "Compiler and libraries for Go, a statically-typed language")
-    (description "Go, also commonly referred to as golang, is an imperative
-programming language designed primarily for systems programming.  Go is a
-compiled, statically typed language in the tradition of C and C++, but adds
-garbage collection, various safety features, and concurrent programming features
-in the style of communicating sequential processes (@dfn{CSP}).")
-    (supported-systems '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux"))
-    (license license:bsd-3)))
-
-(define-public go-1.14
-  (package
-    (inherit go-1.4)
-    (name "go")
-    (version "1.14.15")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/golang/go")
-             (commit (string-append "go" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1crh90qkvhlx23hwsi4wxy3l3h8973lr18135y6h1nnzzwr3n3ps"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments go-1.4)
-       ((#:system system)
-        (if (string-prefix? "aarch64-linux" (or (%current-system)
-                                                (%current-target-system)))
-          "aarch64-linux"
-          system))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'prebuild
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib"))
-                      (ld (dirname (search-input-file inputs "/lib/libc.so")))
-                      (loader (car (find-files ld "^ld-linux.+")))
-                      (net-base (assoc-ref inputs "net-base"))
-                      (tzdata-path
-                       (search-input-directory inputs "share/zoneinfo"))
-                      (output (assoc-ref outputs "out")))
-
-                 ;; Having the patch in the 'patches' field of <origin> breaks
-                 ;; the 'TestServeContent' test due to the fact that
-                 ;; timestamps are reset.  Thus, apply it from here.
-                 (invoke "patch" "-p2" "--force" "-i"
-                         (assoc-ref inputs "go-skip-gc-test.patch"))
-
-                 ;; A side effect of these test scripts is testing
-                 ;; cgo. Attempts at using cgo flags and directives with these
-                 ;; scripts as specified here (https://golang.org/cmd/cgo/)
-                 ;; have not worked. The tests continue to state that they can
-                 ;; not find object files/headers despite being present.
-                 (for-each
-                  delete-file
-                  '("cmd/go/testdata/script/mod_case_cgo.txt"
-                    "cmd/go/testdata/script/list_find.txt"
-                    "cmd/go/testdata/script/list_compiled_imports.txt"
-                    "cmd/go/testdata/script/cgo_syso_issue29253.txt"
-                    "cmd/go/testdata/script/cover_cgo.txt"
-                    "cmd/go/testdata/script/cover_cgo_xtest.txt"
-                    "cmd/go/testdata/script/cover_cgo_extra_test.txt"
-                    "cmd/go/testdata/script/cover_cgo_extra_file.txt"
-                    "cmd/go/testdata/script/cgo_path_space.txt"
-                    "cmd/go/testdata/script/ldflag.txt"
-                    "cmd/go/testdata/script/cgo_path.txt"))
-
-                 (for-each make-file-writable (find-files "."))
-
-                 (substitute* "os/os_test.go"
-                   (("/usr/bin") (getcwd))
-                   (("/bin/pwd") (which "pwd"))
-                   (("/bin/sh") (which "sh")))
-
-                 ;; Add libgcc to runpath
-                 (substitute* "cmd/link/internal/ld/lib.go"
-                   (("!rpath.set") "true"))
-                 (substitute* "cmd/go/internal/work/gccgo.go"
-                   (("cgoldflags := \\[\\]string\\{\\}")
-                    (string-append "cgoldflags := []string{"
-                                   "\"-rpath=" gcclib "\""
-                                   "}"))
-                   (("\"-lgcc_s\", ")
-                    (string-append
-                     "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
-                 (substitute* "cmd/go/internal/work/gc.go"
-                   (("ldflags = setextld\\(ldflags, compiler\\)")
-                    (string-append
-                     "ldflags = setextld(ldflags, compiler)\n"
-                     "ldflags = append(ldflags, \"-r\")\n"
-                     "ldflags = append(ldflags, \"" gcclib "\")\n")))
-
-                 ;; Disable failing tests: these tests attempt to access
-                 ;; commands or network resources which are neither available
-                 ;; nor necessary for the build to succeed.
-                 (for-each
-                  (match-lambda
-                    ((file regex)
-                     (substitute* file
-                       ((regex all before test_name)
-                        (string-append before "Disabled" test_name)))))
-                  '(("net/net_test.go" "(.+)(TestShutdownUnix.+)")
-                    ("net/dial_test.go" "(.+)(TestDialTimeout.+)")
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPort.+)")
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPortWithCancel.+)")
-                    ;; 127.0.0.1 doesn't exist
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTR.+)")
-                    ;; 127.0.0.1 doesn't exist
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTRWithCancel.+)")
-                    ;; /etc/services doesn't exist
-                    ("net/parse_test.go" "(.+)(TestReadLine.+)")
-                    ("os/os_test.go" "(.+)(TestHostname.+)")
-                    ;; The user's directory doesn't exist
-                    ("os/os_test.go" "(.+)(TestUserHomeDir.+)")
-                    ("time/format_test.go" "(.+)(TestParseInSydney.+)")
-                    ("time/format_test.go" "(.+)(TestParseInLocation.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestEcho.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestCommandRelativeName.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestCatStdin.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestCatGoodAndBadFile.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExitStatus.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestPipes.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestStdinClose.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestIgnorePipeErrorOnSuccess.+)")
-                    ("syscall/syscall_unix_test.go" "(.+)(TestPassFD\\(.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles/areturn.+)")
-                    ("cmd/go/go_test.go" "(.+)(TestCoverageWithCgo.+)")
-                    ("cmd/go/go_test.go" "(.+)(TestTwoPkgConfigs.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestOutputStderrCapture.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExtraFilesRace.+)")
-                    ("net/lookup_test.go" "(.+)(TestLookupPort.+)")
-                    ("syscall/exec_linux_test.go"
-                     "(.+)(TestCloneNEWUSERAndRemapNoRootDisableSetgroups.+)")))
-
-                 ;; These tests fail on aarch64-linux
-                 (substitute* "cmd/dist/test.go"
-                   (("t.registerHostTest\\(\"testsanitizers/msan.*") ""))
-
-                 ;; fix shebang for testar script
-                 ;; note the target script is generated at build time.
-                 (substitute* "../misc/cgo/testcarchive/carchive_test.go"
-                   (("#!/usr/bin/env") (string-append "#!" (which "env"))))
-
-                 (substitute* "net/lookup_unix.go"
-                   (("/etc/protocols") (string-append net-base "/etc/protocols")))
-                 (substitute* "net/port_unix.go"
-                   (("/etc/services") (string-append net-base "/etc/services")))
-                 (substitute* "time/zoneinfo_unix.go"
-                   (("/usr/share/zoneinfo/") tzdata-path))
-                 (substitute* (find-files "cmd" "\\.go")
-                   (("/lib(64)?/ld-linux.*\\.so\\.[0-9]") loader))
-                 #t)))
-           (add-before 'build 'set-bootstrap-variables
-             (lambda* (#:key outputs inputs #:allow-other-keys)
-               ;; Tell the build system where to find the bootstrap Go.
-               (let ((go  (assoc-ref inputs "go")))
-                 (setenv "GOROOT_BOOTSTRAP" go)
-                 (setenv "GOGC" "400")
-                 #t)))
-           (replace 'build
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               ;; FIXME: Some of the .a files are not bit-reproducible.
-               (let* ((output (assoc-ref outputs "out")))
-                 (setenv "CC" (which "gcc"))
-                 (setenv "GOOS" "linux")
-                 (setenv "GOROOT" (dirname (getcwd)))
-                 (setenv "GOROOT_FINAL" output)
-                 (setenv "CGO_ENABLED" "1")
-                 (invoke "sh" "all.bash"))))
-           (replace 'install
-             ;; TODO: Most of this could be factorized with Go 1.4.
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((output (assoc-ref outputs "out"))
-                      (doc_out (assoc-ref outputs "doc"))
-                      (docs (string-append doc_out "/share/doc/" ,name "-" ,version))
-                      (src (string-append
-                            (assoc-ref outputs "tests") "/share/" ,name "-" ,version)))
-                 ;; Prevent installation of the build cache, which contains
-                 ;; store references to most of the tools used to build Go and
-                 ;; would unnecessarily increase the size of Go's closure if it
-                 ;; was installed.
-                 (delete-file-recursively "../pkg/obj")
-
-                 (mkdir-p src)
-                 (copy-recursively "../test" (string-append src "/test"))
-                 (delete-file-recursively "../test")
-                 (mkdir-p docs)
-                 (copy-recursively "../api" (string-append docs "/api"))
-                 (delete-file-recursively "../api")
-                 (copy-recursively "../doc" (string-append docs "/doc"))
-                 (delete-file-recursively "../doc")
-
-                 (for-each
-                  (lambda (file)
-                    (let* ((filein (string-append "../" file))
-                           (fileout (string-append docs "/" file)))
-                      (copy-file filein fileout)
-                      (delete-file filein)))
-                  ;; Note the slightly different file names compared to 1.4.
-                  '("README.md" "CONTRIBUTORS" "AUTHORS" "PATENTS"
-                    "LICENSE" "VERSION" "CONTRIBUTING.md" "robots.txt"))
-
-                 (copy-recursively "../" output)
-                 #t)))))))
-    (native-inputs
-     `(("go" ,go-1.4)
-       ("go-skip-gc-test.patch" ,(search-patch "go-skip-gc-test.patch"))
-       ,@(match (%current-system)
-           ((or "armhf-linux" "aarch64-linux")
-            `(("gold" ,binutils-gold)))
-           (_ `()))
-       ,@(package-native-inputs go-1.4)))
-    (supported-systems %supported-systems)))
-
-(define-public go-1.16
-  (package
-    (inherit go-1.14)
-    (name "go")
-    (version "1.16.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/golang/go")
-             (commit (string-append "go" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "19a93p217h5xi2sgh34qzv24pkd4df0sw4fc5z6k47lspjp3vx2l"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments go-1.14)
-       ((#:tests? _) #t)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'remove-unused-sourcecode-generators
-             (lambda _
-               ;; Prevent perl from inclusion in closure through unused files
-               (for-each delete-file (find-files "src" "\\.pl$"))))
-           (replace 'prebuild
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib"))
-                      (net-base (assoc-ref inputs "net-base"))
-                      (tzdata-path
-                       (string-append (assoc-ref inputs "tzdata") "/share/zoneinfo")))
-
-                 ;; Having the patch in the 'patches' field of <origin> breaks
-                 ;; the 'TestServeContent' test due to the fact that
-                 ;; timestamps are reset.  Thus, apply it from here.
-                 (invoke "patch" "-p2" "--force" "-i"
-                         (assoc-ref inputs "go-skip-gc-test.patch"))
-                 (invoke "patch" "-p2" "--force" "-i"
-                         (assoc-ref inputs "go-fix-script-tests.patch"))
-
-                 (for-each make-file-writable (find-files "."))
-
-                 (substitute* "os/os_test.go"
-                   (("/usr/bin") (getcwd))
-                   (("/bin/sh") (which "sh")))
-
-                 (substitute* "cmd/go/testdata/script/cgo_path_space.txt"
-                   (("/bin/sh") (which "sh")))
-
-                 ;; Add libgcc to runpath
-                 (substitute* "cmd/link/internal/ld/lib.go"
-                   (("!rpath.set") "true"))
-                 (substitute* "cmd/go/internal/work/gccgo.go"
-                   (("cgoldflags := \\[\\]string\\{\\}")
-                    (string-append "cgoldflags := []string{"
-                                   "\"-Wl,-rpath=" gcclib "\""
-                                   "}"))
-                   (("\"-lgcc_s\", ")
-                    (string-append
-                     "\"-Wl,-rpath=" gcclib "\", \"-lgcc_s\", ")))
-                 (substitute* "cmd/go/internal/work/gc.go"
-                   (("ldflags = setextld\\(ldflags, compiler\\)")
-                    (string-append
-                     "ldflags = setextld(ldflags, compiler)\n"
-                     "ldflags = append(ldflags, \"-r\")\n"
-                     "ldflags = append(ldflags, \"" gcclib "\")\n")))
-
-                 ;; Disable failing tests: these tests attempt to access
-                 ;; commands or network resources which are neither available
-                 ;; nor necessary for the build to succeed.
-                 (for-each
-                  (match-lambda
-                    ((file regex)
-                     (substitute* file
-                       ((regex all before test_name)
-                        (string-append before "Disabled" test_name)))))
-                  '(("net/net_test.go" "(.+)(TestShutdownUnix.+)")
-                    ("net/dial_test.go" "(.+)(TestDialTimeout.+)")
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPort.+)")
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPortWithCancel.+)")
-                    ;; 127.0.0.1 doesn't exist
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTR.+)")
-                    ;; 127.0.0.1 doesn't exist
-                    ("net/cgo_unix_test.go" "(.+)(TestCgoLookupPTRWithCancel.+)")
-                    ;; /etc/services doesn't exist
-                    ("net/parse_test.go" "(.+)(TestReadLine.+)")
-                    ("os/os_test.go" "(.+)(TestHostname.+)")
-                    ;; The user's directory doesn't exist
-                    ("os/os_test.go" "(.+)(TestUserHomeDir.+)")
-                    ("time/format_test.go" "(.+)(TestParseInSydney.+)")
-                    ("time/format_test.go" "(.+)(TestParseInLocation.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestEcho.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestCommandRelativeName.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestCatStdin.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestCatGoodAndBadFile.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExitStatus.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestPipes.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestStdinClose.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestIgnorePipeErrorOnSuccess.+)")
-                    ("syscall/syscall_unix_test.go" "(.+)(TestPassFD\\(.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles/areturn.+)")
-                    ("cmd/go/go_test.go" "(.+)(TestCoverageWithCgo.+)")
-                    ("cmd/go/go_test.go" "(.+)(TestTwoPkgConfigs.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestOutputStderrCapture.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExtraFiles.+)")
-                    ("os/exec/exec_test.go" "(.+)(TestExtraFilesRace.+)")
-                    ("net/lookup_test.go" "(.+)(TestLookupPort.+)")
-                    ("syscall/exec_linux_test.go"
-                     "(.+)(TestCloneNEWUSERAndRemapNoRootDisableSetgroups.+)")))
-
-                 ;; These tests fail on aarch64-linux
-                 (substitute* "cmd/dist/test.go"
-                   (("t.registerHostTest\\(\"testsanitizers/msan.*") ""))
-
-                 ;; fix shebang for testar script
-                 ;; note the target script is generated at build time.
-                 (substitute* "../misc/cgo/testcarchive/carchive_test.go"
-                   (("#!/usr/bin/env") (string-append "#!" (which "env"))))
-
-                 (substitute* "net/lookup_unix.go"
-                   (("/etc/protocols") (string-append net-base "/etc/protocols")))
-                 (substitute* "net/port_unix.go"
-                   (("/etc/services") (string-append net-base "/etc/services")))
-                 (substitute* "time/zoneinfo_unix.go"
-                   (("/usr/share/zoneinfo/") tzdata-path)))))
-           (replace 'build
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               ;; FIXME: Some of the .a files are not bit-reproducible.
-               ;; (Is this still true?)
-               (let* ((output (assoc-ref outputs "out"))
-                      (loader (string-append (assoc-ref inputs "libc")
-                                             ,(glibc-dynamic-linker))))
-                 (setenv "CC" (which "gcc"))
-                 (setenv "GO_LDSO" loader)
-                 (setenv "GOOS" "linux")
-                 (setenv "GOROOT" (dirname (getcwd)))
-                 (setenv "GOROOT_FINAL" output)
-                 (setenv "GOCACHE" "/tmp/go-cache")
-                 (invoke "sh" "make.bash" "--no-banner"))))
-           (replace 'check
-             (lambda* (#:key target (tests? (not target)) (parallel-tests? #t)
-                       #:allow-other-keys)
-               (let* ((njobs (if parallel-tests? (parallel-job-count) 1)))
-                 (when tests?
-                   (setenv "GOMAXPROCS" (number->string njobs))
-                   (invoke "sh" "run.bash" "--no-rebuild")))))
-           (add-before 'install 'unpatch-perl-shebangs
-             (lambda _
-               ;; Rewrite references to perl input in test scripts
-               (substitute* "net/http/cgi/testdata/test.cgi"
-                 (("^#!.*") "#!/usr/bin/env perl\n"))))))))
-    (native-inputs
-     `(("go-fix-script-tests.patch" ,(search-patch "go-fix-script-tests.patch"))
-       ,@(if (not (member (%current-system) (package-supported-systems go-1.4)))
-             (alist-replace "go" (list gccgo-10) (package-native-inputs go-1.14))
-             (package-native-inputs go-1.14))))))
-
-(define-public go go-1.14)
 
 (define-public go-github-com-alsm-ioprogress
   (let ((commit "063c3725f436e7fba0c8f588547bee21ffec7ac5")
@@ -2749,6 +2949,68 @@ developers to use @code{http} methods explicitly and in a way that's consistent
 with the HTTP protocol definition.")
     (license license:expat)))
 
+(define-public go-cloud-google-com-go-compute-metadata
+  (package
+    (name "go-cloud-google-com-go-compute-metadata")
+    (version "0.81.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/google-cloud-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "15jgynqb5pbxqbj3a7ii970yn4srsw1dbxzxnhpkfkmplalpgyh3"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "cloud.google.com/go"
+       #:import-path "cloud.google.com/go/compute/metadata"))
+    (home-page
+     "https://pkg.go.dev/cloud.google.com/go/compute/metadata")
+    (synopsis
+     "Go wrapper for Google Compute Engine metadata service")
+    (description
+     "This package provides access to Google Compute Engine (GCE) metadata and
+API service accounts for Go.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-google-gmail-oauth2-tools-go-sendgmail
+  (let ((commit "e3229155a4037267ce40f1a3a681f53221aa4d8d")
+        (revision "0"))
+    (package
+      (name "go-github-com-google-gmail-oauth2-tools-go-sendgmail")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/google/gmail-oauth2-tools")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1cxpkiaajhq1gjsg47r2b5xgck0r63pvkyrkm7af8c8dw7fyn64f"))))
+      (propagated-inputs
+       `(("go-golang-org-x-oauth2" ,go-golang-org-x-oauth2)
+         ("go-cloud-google-com-go-compute-metadata"
+          ,go-cloud-google-com-go-compute-metadata)))
+      (build-system go-build-system)
+      (arguments
+       '(#:unpack-path "github.com/google/gmail-oauth2-tools"
+         #:import-path "github.com/google/gmail-oauth2-tools/go/sendgmail"))
+      (home-page
+       "https://github.com/google/gmail-oauth2-tools/tree/master/go/sendgmail")
+      (synopsis
+       "Sendmail-compatible tool for using Gmail with @code{git send-email}")
+      (description
+       "The @command{sendgmail} command provides a minimal sendmail-compatible
+front-end that connects to Gmail using OAuth2.  It is specifically designed
+for use with @code{git send-email}.  The command needs a Gmail API key to
+function.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-google-cadvisor
   (let ((commit "2ed7198f77395ee9a172878a0a7ab92ab59a2cfd")
         (revision "0"))
@@ -3192,7 +3454,7 @@ application's http.Handlers.")
 (define-public go-github-com-magiconair-properties
   (package
     (name "go-github-com-magiconair-properties")
-    (version "1.8.4")
+    (version "1.8.5")
     (source
      (origin
        (method git-fetch)
@@ -3202,7 +3464,7 @@ application's http.Handlers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q7d55z0v8y55dyy8nhgdnswf5zkgj3i87irbk294nvzhx01bnxd"))))
+         "0v4agnkhc30fblbmhs0gq2bikhdnnmqmpp4phrnza68m04j5hxbn"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/magiconair/properties"))
@@ -3214,7 +3476,7 @@ application's http.Handlers.")
 (define-public go-github-com-pelletier-go-toml
   (package
     (name "go-github-com-pelletier-go-toml")
-    (version "1.8.0")
+    (version "1.9.3")
     (source
      (origin
        (method git-fetch)
@@ -3224,7 +3486,7 @@ application's http.Handlers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fxmjm85c9h43lvqz71wr93fcc63bhj82nwby80222xx8ja63g7y"))))
+         "0cqwnvlgs1wgdgjxlwv8j52f7d6syniadr51sjh2fya99m5wzvsn"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/pelletier/go-toml"))
@@ -3503,30 +3765,28 @@ which satisfies the cron expression.")
                      license:asl2.0)))))
 
 (define-public go-gopkg-in-check-v1
-  (let ((commit "788fd78401277ebd861206a03c884797c6ec5541")
-        (revision "1"))
-    (package
-      (name "go-gopkg-in-check-v1")
-      (version (git-version "1.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/go-check/check")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0v3bim0j375z81zrpr5qv42knqs0y2qv2vkjiqi5axvb78slki1a"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "gopkg.in/check.v1"))
-      (propagated-inputs
-       `(("go-github-com-kr-pretty" ,go-github-com-kr-pretty)))
-      (home-page "https://gopkg.in/check.v1")
-      (synopsis "Test framework for the Go language")
-      (description "This package provides a test library for the Go language.")
-      (license license:asl2.0))))
+  (package
+    (name "go-gopkg-in-check-v1")
+    (version "1.0.0-20201130134442-10cb98267c6c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-check/check")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jwxndf8rsyx0fgrp47d99rp55yzssmryb92jfj3yf7zd8rjjljn"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "gopkg.in/check.v1"))
+    (propagated-inputs
+     `(("go-github-com-kr-pretty" ,go-github-com-kr-pretty)))
+    (home-page "https://gopkg.in/check.v1")
+    (synopsis "Test framework for the Go language")
+    (description "This package provides a test library for the Go language.")
+    (license license:bsd-2)))
 
 (define-public go-gopkg-in-ini-v1
   (package
@@ -4783,7 +5043,8 @@ as conversion to and from @command{net.Addr}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10mcnvi5qmn00vpyk6si8gjka7p654wr9hac4zc9w5h3ickhvbdc"))))
+         "10mcnvi5qmn00vpyk6si8gjka7p654wr9hac4zc9w5h3ickhvbdc"))
+       (patches (search-patches "go-github-com-urfave-cli-fix-tests.patch"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/urfave/cli"))
@@ -4809,7 +5070,10 @@ fast and distributable command line applications in an expressive way.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08pvn7gyfznni72xrxfh2x6xxa8ykr7l1ka278js8g8qkh71bj8l"))))
+        (base32 "08pvn7gyfznni72xrxfh2x6xxa8ykr7l1ka278js8g8qkh71bj8l"))
+       ;; XXX: Remove patch when updating.
+       (patches
+        (search-patches "go-github-com-urfave-cli-v2-fix-tests.patch"))))
     (arguments
      '(#:import-path "github.com/urfave/cli/v2"))))
 
@@ -5252,7 +5516,38 @@ non-UTF-friendly sources.")
 terminfo capability strings to avoid hard-coding escape strings for
 formatting.  It also favors portability, and includes support for all POSIX
 systems.")
-      (license license:expat))))
+      (license license:asl2.0))))
+
+(define-public go-github-com-gdamore-tcell-v2
+    (package
+      (inherit go-github-com-gdamore-tcell)
+      (name "go-github-com-gdamore-tcell")
+      (version "2.3.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gdamore/tcell")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0ypbl5080q9sd3irad8mv7zlg4242i8pmg5xyhbyq95kymwibaid"))))
+      (arguments
+       `(#:import-path "github.com/gdamore/tcell/v2"
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'reset-gzip-timestamps 'make-files-writable
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; Make sure .gz files are writable so that the
+               ;; 'reset-gzip-timestamps' phase can do its work.
+               (let ((out (assoc-ref outputs "out")))
+                 (for-each make-file-writable
+                           (find-files out "\\.gz$"))))))))
+      (propagated-inputs
+       `(("go-golang-org-x-term" ,go-golang-org-x-term)
+         ("go-golang-org-x-sys" ,go-golang-org-x-sys)
+         ,@(package-inputs go-github-com-gdamore-tcell)))))
 
 (define-public go-github-com-mattn-go-shellwords
   (let ((commit "2444a32a19f450fabaa0bb3e96a703f15d9a97d2")
@@ -6333,7 +6628,7 @@ suffix comparison, rather than the string-based or tree-based approaches.")
 (define-public go-github-com-masterminds-goutils
   (package
     (name "go-github-com-masterminds-goutils")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6342,7 +6637,7 @@ suffix comparison, rather than the string-based or tree-based approaches.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "180px47gj936qyk5bkv5mbbgiil9abdjq6kwkf7sq70vyi9mcfiq"))))
+                "09m4mbcdlv9ng3xcrmjlxi0niavby52y9nl2jhjnbx1xxpjw0jrh"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/Masterminds/goutils"))
@@ -6481,7 +6776,15 @@ template functions.")
                 "0bk5bixl6rqa8znxghyp6zndbccx9kdyrymjahgyp6qsrp7rk144"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/bmatcuk/doublestar"))
+     `(#:import-path "github.com/bmatcuk/doublestar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-incompatible-test
+           ;; This test fails with Go 1.16.
+           (lambda _
+             (substitute* "src/github.com/bmatcuk/doublestar/doublestar_test.go"
+               (("\\{\"a\\[\", \"a\", false, nil, false\\},.*")
+                "")))))))
     (home-page "https://github.com/bmatcuk/doublestar/")
     (synopsis "Path pattern matching and globbing supporting doublestar")
     (description "@code{doublestar} is a Go implementation of path pattern
@@ -6491,7 +6794,7 @@ matching and globbing with support for \"doublestar\" patterns.")
 (define-public go-github-com-dlclark-regexp2
   (package
     (name "go-github-com-dlclark-regexp2")
-    (version "1.2.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6500,7 +6803,7 @@ matching and globbing with support for \"doublestar\" patterns.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "011l1prsywvhhi0yc7qmpsca1cwavmawyyld5kjzi0ff9ghvj4ng"))))
+                "1irfv89b7lfkn7k3zgx610ssil6k61qs1wjj31kvqpxb3pdx4kry"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/dlclark/regexp2"))
@@ -6566,7 +6869,7 @@ can be used almost directly in Go source code.")
 (define-public go-github-com-sergi-go-diff
   (package
     (name "go-github-com-sergi-go-diff")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6575,7 +6878,7 @@ can be used almost directly in Go source code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ir8ali2vx0j7pipmlfd6k8c973akyy2nmbjrf008fm800zcp7z2"))))
+                "0cbj8nshllq102iiav0k1s01b8gwbkzj674g71n938qqna32y2pa"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/sergi/go-diff/diffmatchpatch"
@@ -6682,7 +6985,7 @@ the parse trees produced by the html package.")
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
-    (version "1.5.1")
+    (version "1.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6691,7 +6994,7 @@ the parse trees produced by the html package.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08nf88cg663slzqr51k2jxlm1krnh86nrzwbk6v41ccq5jkfm7fx"))))
+                "0gh1d99l5xc9hvwa4j40pfq3y9vfyq52mnrz6bf1kw2r2zr2gbcc"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/PuerkitoBio/goquery"))
@@ -7465,7 +7768,7 @@ deleting secrets from the system keyring.")
 (define-public go-etcd-io-bbolt
   (package
     (name "go-etcd-io-bbolt")
-    (version "1.3.5")
+    (version "1.3.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7474,10 +7777,12 @@ deleting secrets from the system keyring.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h64gipvcg7060byv5wjlf524kqwj12p3v08kfh4ygv46vpm8p2r"))))
+                "0pj5245d417za41j6p09fmkbv05797vykr1bi9a6rnwddh1dbs8d"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "go.etcd.io/bbolt"))
+    (propagated-inputs
+     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
     (home-page "https://pkg.go.dev/go.etcd.io/bbolt/")
     (synopsis "Low-level key/value store in Go")
     (description "This package implements a low-level key/value store in Go.")
@@ -8058,7 +8363,7 @@ programs that use traditional command lines.")
 (define-public go-go-uber-org-atomic
   (package
     (name "go-go-uber-org-atomic")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -8067,7 +8372,7 @@ programs that use traditional command lines.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yxvb5sixh76cl9j8dpa97gznj0p8pmg2cdw0ypfwhd3ipx9wph1"))))
+        (base32 "0grswsk7nkf7zmmychf6aj6032shyag1kgs6zf7qwxyn55dym1v8"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "go.uber.org/atomic"))
@@ -8223,4 +8528,232 @@ simplifications, and enforces style rules.")
     (description
      "This package provides a library for fast, structured, leveled logging in
 Go.")
+    (license license:expat)))
+
+(define-public go-github-com-davecgh-go-xdr
+  (package
+    (name "go-github-com-davecgh-go-xdr")
+    (version "0.0.0-20161123171359-e6a2ba005892")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/davecgh/go-xdr")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0vifrz4iil4r7k8sz5iqlfbh80ysgs5abp2simgyhsbrkxrrsrrd"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/davecgh/go-xdr/xdr2"
+       #:unpack-path "github.com/davecgh/go-xdr"))
+    (home-page "https://github.com/davecgh/go-xdr")
+    (synopsis "Pure Go implementation of the XDR standard")
+    (description "@code{go-xdr} implements the data representation portion of
+the External Data Representation (XDR) standard protocol as specified in RFC
+4506 (obsoletes RFC 1832 and RFC 1014) in pure Go.")
+    (license license:isc)))
+
+(define-public go-github-com-dustin-go-humanize
+  (package
+    (name "go-github-com-dustin-go-humanize")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dustin/go-humanize")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1kqf1kavdyvjk7f8kx62pnm7fbypn9z1vbf8v2qdh3y7z7a0cbl3"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/dustin/go-humanize"))
+    (home-page "https://github.com/dustin/go-humanize")
+    (synopsis "Humane unit formatter")
+    (description "@code{go-humanize} provides formatters for units to human
+friendly sizes.  It converts boring ugly numbers to human-friendly strings and
+back.")
+    (license license:expat)))
+
+(define-public go-lukechampine-com-blake3
+  (package
+    (name "go-lukechampine-com-blake3")
+    (version "1.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lukechampine/blake3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1yxdwp8dpnnq2wbwsxlkbq570i99sc6781y39czjxi9jh9z5nw55"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "lukechampine.com/blake3"))
+    (propagated-inputs
+     `(("go-github-com-klauspost-cpuid" ,go-github-com-klauspost-cpuid)))
+    (home-page "https://pkg.go.dev/lukechampine.com/blake3")
+    (synopsis "Implementation of the BLAKE3 cryptographic hash function")
+    (description "@code{blake3} implements the BLAKE3 cryptographic hash
+function.  In addition to the pure-Go implementation, this package also
+contains AVX-512 and AVX2 routines (generated by avo) that greatly increase
+performance for large inputs and outputs.")
+    (license license:expat)))
+
+(define-public go-golang-org-x-term
+  (package
+    (name "go-golang-org-x-term")
+    (version "0.0.0-20210615171337-6886f2dfbf5b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/term")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0661w7dp2ak1k4ii90v6chw2x8a6g4sc5j0ba58qlplaj4k5l0xs"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "golang.org/x/term"))
+    (propagated-inputs
+     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+    (home-page "https://pkg.go.dev/golang.org/x/term")
+    (synopsis "Go terminal/console support")
+    (description "@code{term} provides support functions for dealing with
+terminals, as commonly found on Unix systems.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-flynn-noise
+  (package
+    (name "go-github-com-flynn-noise")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flynn/noise")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1j6phxyqx06wcqxjpin696fkp85s76qcp3i2f7fv6q2fb6618f6y"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/flynn/noise"))
+    (propagated-inputs
+     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)
+       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+    (home-page "https://github.com/flynn/noise")
+    (synopsis "Go implementation of the Noise protocol framework")
+    (description "@code{noise} implements the Noise protocol framework.  Noise
+is a low-level framework for building crypto protocols.  Noise protocols
+support mutual and optional authentication, identity hiding, forward secrecy,
+zero round-trip encryption, and other advanced features.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-klauspost-compress
+  (package
+    (name "go-github-com-klauspost-compress")
+    (version "1.13.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/klauspost/compress")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "0ydnf9rizlhm8rilh14674qqx272sbwbkjx06xn9pqvy6mmn2r3r"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/klauspost/compress"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'reset-gzip-timestamps 'fix-permissions
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Provide write permissions on gzip files so that
+             ;; reset-gzip-timestamps has sufficient permissions.
+             (for-each make-file-writable
+                       (find-files (assoc-ref outputs "out") ".gz$")))))))
+    (propagated-inputs
+     `(("go-github-com-golang-snappy" ,go-github-com-golang-snappy)))
+    (home-page "https://github.com/klauspost/compress")
+    (synopsis "Go compression library")
+    (description "@code{compress} provides various compression algorithms.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-oneofone-xxhash
+  (package
+    (name "go-github-com-oneofone-xxhash")
+    (version "1.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OneOfOne/xxhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0f98qk83l2fhpclvrgyxsa9b8m4pipf11fah85bnjl01wy4lvybw"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/OneOfOne/xxhash"))
+    (home-page "https://github.com/OneOfOne/xxhash")
+    (synopsis "Go implementation of xxHash")
+    (description "This is a native Go implementation of the
+@url{https://github.com/Cyan4973/xxHash, xxHash} algorithm, an extremely fast
+non-cryptographic hash algorithm, working at speeds close to RAM limits.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aswinkarthik-csvdiff
+  (package
+    (name "go-github-com-aswinkarthik-csvdiff")
+    (version "1.4.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/aswinkarthik/csvdiff")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "0cd1ikxsypjqisfnmr7zix3g7x8p892w77086465chyd39gpk97b"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/aswinkarthik/csvdiff"))
+    (propagated-inputs
+     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)
+       ("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)
+       ("go-github-com-spf13-cobra" ,go-github-com-spf13-cobra)
+       ("go-github-com-spf13-afero" ,go-github-com-spf13-afero)
+       ("go-github-com-spaolacci-murmur3" ,go-github-com-spaolacci-murmur3)
+       ("go-github-com-mattn-go-colorable" ,go-github-com-mattn-go-colorable)
+       ("go-github-com-fatih-color" ,go-github-com-fatih-color)
+       ("go-github-com-cespare-xxhash" ,go-github-com-cespare-xxhash)
+       ("go-github-com-oneofone-xxhash" ,go-github-com-oneofone-xxhash)))
+    (home-page "https://github.com/aswinkarthik/csvdiff")
+    (synopsis "Fast diff tool for comparing CSV files")
+    (description "@code{csvdiff} is a diff tool to compute changes between two
+CSV files.  It can compare CSV files with a million records in under 2
+seconds.  It is specifically suited for comparing CSV files dumped from
+database tables.  GNU Diff is orders of magnitude faster for comparing line by
+line.  @code{csvdiff} supports
+
+@itemize
+@item Selective comparison of fields in a row
+@item Specifying group of columns as primary-key to uniquely identify a row
+@item Ignoring columns
+@item Several output formats including colored git style output or
+JSON for post-processing
+@end itemize")
     (license license:expat)))

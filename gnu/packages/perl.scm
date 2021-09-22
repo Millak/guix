@@ -17,7 +17,7 @@
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2017, 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2018, 2019 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
@@ -31,6 +31,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -142,15 +143,15 @@
                        (rename-file "Artistic" "Artistic.perl")
                        (rename-file "Copying" "Copying.perl")
                        (copy-recursively cross-checkout "."))
-                     (let ((bash (assoc-ref inputs "bash")))
+                     (let ((bash (search-input-file inputs "bin/bash")))
                        (substitute* '("Makefile.config.SH"
                                       "cnf/config.guess"
                                       "cnf/config.sub"
                                       "cnf/configure"
                                       "cnf/configure_misc.sh"
                                       "miniperl_top")
-                         (("! */bin/sh") (string-append "! " bash "/bin/bash"))
-                         ((" /bin/sh") (string-append bash "/bin/bash")))
+                         (("! */bin/sh") (string-append "! " bash))
+                         ((" /bin/sh") bash))
                        (substitute* '("ext/Errno/Errno_pm.PL")
                          (("\\$cpp < errno.c") "$Config{cc} -E errno.c")))))
                  (replace 'configure
@@ -168,7 +169,7 @@
                                        (lambda (x) (or (string-prefix? "-d" x)
                                                        (string-prefix? "-Dcc=" x))))
                                       configure-flags)))
-                            (bash (assoc-ref inputs "bash")))
+                            (bash (assoc-ref inputs "bash-minimal")))
                        (format (current-error-port)
                                "running ./configure ~a\n"
                                (string-join configure-flags))
@@ -1944,7 +1945,7 @@ and writing of @code{.ini}-style configuration files.")
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Const-Fast")
     (synopsis "Facility for creating read-only scalars, arrays, and hashes")
-    (description "This package provides prodecures to create read-only
+    (description "This package provides procedures to create read-only
 scalars, arrays, and hashes.")
     (license (package-license perl))))
 

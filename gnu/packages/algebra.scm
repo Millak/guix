@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -78,7 +78,7 @@
 (define-public mpfrcx
   (package
    (name "mpfrcx")
-   (version "0.6.2")
+   (version "0.6.3")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -86,7 +86,7 @@
                   version ".tar.gz"))
             (sha256
              (base32
-              "165syd6kihwp6bry9hvr3v0908cgadsz5w5h5ry4mjnchrklnb7w"))))
+              "1545vgizpypqi2rrriad0ybqv0qwbn9zr0ibxpk00gha9ihv7acx"))))
    (build-system gnu-build-system)
    (propagated-inputs
      `(("gmp" ,gmp)
@@ -237,7 +237,7 @@ the real span of the lattice.")
 (define-public pari-gp
   (package
     (name "pari-gp")
-    (version "2.13.1")
+    (version "2.13.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -245,7 +245,7 @@ the real span of the lattice.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1cgwdpw8b797883z9y92ixxjkv72kiy65zsw2qqf5and1kbzgv41"))))
+                "095s7vdlsxmxa0n0l1a082m6gjaypqfqkaj99z8j7dx0ji89hy8n"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("texlive" ,(texlive-updmap.cfg
@@ -343,7 +343,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.7.0-17")
+    (version "1.7.0-31")
     (source
      (origin
        (method url-fetch)
@@ -355,7 +355,7 @@ precision.")
                            "~parisse/debian/dists/stable/main/source/"
                            "giac_" version ".tar.gz"))
        (sha256
-        (base32 "0yh556wlgs9hfyp5j2xz4nlrd2dma63cicrc3dhahyl96y1aw6mr"))))
+        (base32 "19vjyijlm3hb758h6nk70k41zw9wrbg6vwfx4r4rgvrb1myy5kpl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
@@ -368,14 +368,12 @@ precision.")
            (lambda _
              (substitute* (cons "micropython-1.12/xcas/Makefile"
                                 (find-files "doc" "^Makefile"))
-               (("/bin/cp") (which "cp")))
-             #t))
+               (("/bin/cp") (which "cp")))))
          (add-after 'unpack 'disable-failing-test
            ;; FIXME: Test failing.  Not sure why.
            (lambda _
              (substitute* "check/Makefile.in"
-               (("chk_fhan11") ""))
-             #t))
+               (("chk_fhan11") ""))))
          (add-after 'install 'fix-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -388,13 +386,11 @@ precision.")
                ;; Remove duplicate documentation in
                ;; "%out/share/doc/giac/", where Xcas does not expect
                ;; to find it.
-               (delete-file-recursively (string-append out "/share/doc/giac"))
-               #t)))
+               (delete-file-recursively (string-append out "/share/doc/giac")))))
          (add-after 'install 'remove-unnecessary-executable
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (delete-file (string-append out "/bin/xcasnew"))
-               #t))))))
+               (delete-file (string-append out "/bin/xcasnew"))))))))
     (inputs
      ;; TODO: Add libnauty, unbundle "libmicropython.a".
      `(("fltk" ,fltk)
@@ -1074,6 +1070,33 @@ features, and more.")
                       (("add_subdirectory\\(test.*")
                        "# Do not build the tests for unsupported features.\n"))
                     #t)))))))
+
+(define-public eigen-for-tensorflow-lite
+  ;; This commit was taken from
+  ;; tensorflow/lite/tools/cmake/modules/eigen.cmake
+  (let ((commit "d10b27fe37736d2944630ecd7557cefa95cf87c9")
+        (revision "1"))
+    (package (inherit eigen)
+      (name "eigen-for-tensorflow-lite")
+      (version (git-version "3.3.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/libeigen/eigen")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0v8a20cwvwmp3hw4275b37frw33v92z0mr8f4dn6y8k0rz92hrrf"))
+                (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 ;; Ther are test failures in the "unsupported" directory, but
+                 ;; maintainers say it's unsupported anyway, so just skip
+                 ;; them.
+                 '(begin
+                    (substitute* "unsupported/CMakeLists.txt"
+                      (("add_subdirectory\\(test.*")
+                       "# Do not build the tests for unsupported features.\n")))))))))
 
 (define-public xtensor
   (package

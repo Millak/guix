@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2015, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -64,6 +64,8 @@
   #:use-module (gnu packages perl-compression)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages web)
@@ -127,26 +129,35 @@ highlighting your own code that seemed comprehensible when you wrote it.")
 (define-public global                             ; a global variable
   (package
     (name "global")
-    (version "6.6.6")
+    (version "6.6.7")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/global/global-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0pad5p31rdspyrzqky3ppgx7f6gdlfnwg1c7qm8w1m4qzyppi03m"))))
+               "0g4aslm2zajq605py11s4rs1wdnzcqhkh7bc2xl5az42adzzg839"))))
     (build-system gnu-build-system)
-    (inputs `(("coreutils" ,coreutils)
-              ("ncurses" ,ncurses)
-              ("libltdl" ,libltdl)
-              ("sqlite" ,sqlite)
-              ("python-wrapper" ,python-wrapper)))
+    (inputs
+      `(("bash" ,bash-minimal)                    ; for wrap-program
+        ("coreutils" ,coreutils)
+        ("ctags" ,universal-ctags)
+        ("libltdl" ,libltdl)
+        ("ncurses" ,ncurses)
+        ("python-pygments" ,python-pygments)
+        ("python-wrapper" ,python-wrapper)
+        ("sqlite" ,sqlite)))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-ncurses="
                             (assoc-ref %build-inputs "ncurses"))
              (string-append "--with-sqlite3="
                             (assoc-ref %build-inputs "sqlite"))
+             (string-append "--with-universal-ctags="
+                            (assoc-ref %build-inputs "ctags") "/bin/ctags")
+             (string-append "--sysconfdir="
+                            (assoc-ref %outputs "out") "/share/gtags")
+             "--localstatedir=/var"         ; This needs to be a writable location.
              "--disable-static")
 
        #:phases
@@ -157,13 +168,29 @@ highlighting your own code that seemed comprehensible when you wrote it.")
                            (assoc-ref inputs "coreutils") "/bin/echo")))
                (substitute* "globash/globash.in"
                  (("/bin/echo") echo)))))
+         (add-after 'post-install 'install-plugins
+           (lambda _
+             (with-directory-excursion "plugin-factory"
+               (invoke "make" "install"))))
+         (add-before 'install 'dont-install-to-/var
+           (lambda _
+             (substitute* "gozilla/Makefile"
+               (("DESTDIR\\)\\$\\{localstatedir\\}") "TMPDIR)"))))
+         (add-after 'install-plugins 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program
+               (string-append (assoc-ref outputs "out")
+                              "/share/gtags/script/pygments_parser.py")
+               `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))))
         (add-after 'install 'post-install
           (lambda* (#:key outputs #:allow-other-keys)
             ;; Install the plugin files in the right place.
             (let* ((out  (assoc-ref outputs "out"))
                    (data (string-append out "/share/gtags"))
                    (vim  (string-append out "/share/vim/vimfiles/plugin"))
-                   (lisp (string-append out "/share/emacs/site-lisp")))
+                   (lisp (string-append out "/share/emacs/site-lisp/"
+                                        ,(package-name this-package) "-"
+                                        ,(package-version this-package))))
               (mkdir-p lisp)
               (mkdir-p vim)
               (rename-file (string-append data "/gtags.el")
@@ -307,6 +334,10 @@ cloc can handle a greater variety of programming languages.")
                (base32
                 "0w1icjqd8hd45rn1y6nbfznk1a6ip54whwbfbhxp7ws2hn3ilqnr"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; Required since GCC 10, see:
+     ;; https://gcc.gnu.org/gcc-10/porting_to.html.
+     `(#:configure-flags (list "CFLAGS=-fcommon")))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs

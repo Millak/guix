@@ -9,7 +9,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
@@ -26,7 +26,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2015, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2017, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
@@ -733,10 +733,37 @@ generation.")
               (base32
                "0270msj6n7mggh4xqqjp54kswbl7mkcc8px1p5dqdpmw5ngh9fzk"))))))
 
+(define-public googlebenchmark
+  (package
+    (name "googlebenchmark")
+    (version "1.5.3")
+    (home-page "https://github.com/google/benchmark")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name "google-benchmark" version))
+              (sha256
+               (base32
+                "1hls0aqqj5cfldn9jfpvzjhpxkhrydrz9crp477rwllwjsybdxw7"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
+                               (string-append
+                                "-DGOOGLETEST_PATH="
+                                (assoc-ref %build-inputs "googletest")))))
+    (inputs
+     `(("googletest" ,(package-source googletest))))
+    (synopsis "C++ library to support the benchmarking of functions")
+    (description
+     "The googlebenchmark C++ library support the benchmarking of functions,
+similar to unit tests.")
+    (license license:asl2.0)))
+
 (define-public cpputest
   (package
     (name "cpputest")
-    (version "3.8")
+    (version "4.0")
     (source
      (origin
        (method url-fetch)
@@ -744,7 +771,7 @@ generation.")
                            version "/cpputest-" version ".tar.gz"))
        (sha256
         (base32
-         "0mk48xd3klyqi7wf3f4wn4zqxxzmvrhhl32r25jzrixzl72wq7f8"))))
+         "1xslavlb1974y5xvs8n1j9zkk05dlw8imy4saasrjlmibl895ii1"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("googletest" ,googletest)))
@@ -839,7 +866,8 @@ doctest.")
     (description
      "Mock is a library for testing in Python.  It allows you to replace parts
 of your system under test with mock objects and make assertions about how they
-have been used.")
+have been used.  This library is now part of Python (since Python 3.3),
+available via the @code{unittest.mock} module.")
     (properties `((python2-variant . ,(delay python2-mock))))
     (license license:expat)))
 
@@ -994,6 +1022,8 @@ and functions, detailed info on failing assert statements, modular fixtures,
 and many external plugins.")
     (license license:expat)
     (properties `((python2-variant . ,(delay python2-pytest))))))
+
+(define-public python-pytest-6 python-pytest)
 
 ;; Pytest 4.x are the last versions that support Python 2.
 (define-public python2-pytest
@@ -1210,19 +1240,33 @@ contacting the real http server.")
 (define-public python-pytest-mock
   (package
     (name "python-pytest-mock")
-    (version "1.10.1")
+    (version "3.6.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pytest-mock" version))
-        (sha256
-         (base32
-          "1i5mg3ff1qk0wqfcxfz60hwy3q5dskdp36i10ckigkzffg8hc3ad"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-mock" version))
+       (sha256 (base32
+                "0qhfmd05z3g88bnwq6644jl6p5wy01i4yy7h8883z9jjih2pl8a0"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               ;; Skip the assertion rewriting tests, which don't work in the
+               ;; presence of read-only Python modules (a limitation of
+               ;; Pytest).  Also skip the "test_standalone_mock" test, which
+               ;; can only work when 'python-mock' is not available
+               ;; (currently propagated by Pytest 5).
+               (invoke "pytest" "--assert=plain"
+                       "-k" "not test_standalone_mock")))))))
     (native-inputs
      `(("python-setuptools-scm" ,python-setuptools-scm)))
     (propagated-inputs
-     `(("python-pytest" ,python-pytest)))
+     `(("python-pytest" ,python-pytest)
+       ("python-pytest-asyncio" ,python-pytest-asyncio)))
     (home-page "https://github.com/pytest-dev/pytest-mock/")
     (synopsis "Thin-wrapper around the mock package for easier use with py.test")
     (description
@@ -1272,9 +1316,11 @@ same arguments.")
              (substitute* "setup.py"
                (("pytest>=6\\.0\\.0") "pytest"))))
          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "py.test" "-v")))))))
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "-vv"
+                       "-n" (number->string (parallel-job-count)))))))))
     (native-inputs
      `(("python-setuptools-scm" ,python-setuptools-scm)))
     (propagated-inputs
@@ -1298,17 +1344,33 @@ result back.")
 (define-public python2-pytest-xdist
   (package-with-python2 python-pytest-xdist))
 
+(define-public python-pytest-xdist-next
+  (package/inherit python-pytest-xdist
+    (name "python-pytest-xdist")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-xdist" version))
+       (sha256
+        (base32
+         "19cy57jrf3pwi7x6fnbxryjvqagsl0yv736jnynvr3yqhlpxxv78"))))
+    (propagated-inputs
+     `(("python-execnet" ,python-execnet)
+       ("python-pytest" ,python-pytest-6)
+       ("python-pytest-forked" ,python-pytest-forked)))))
+
 (define-public python-pytest-timeout
   (package
     (name "python-pytest-timeout")
-    (version "1.3.4")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-timeout" version))
        (sha256
         (base32
-         "13n42azbvs5slvy2n1a9nw17r4qdq10dd68nln3jp925safa3yl0"))))
+         "0xnsigs0kmpq1za0d4i522sp3f71x5bgpdh3ski0rs74yqy13cr0"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -1318,7 +1380,8 @@ result back.")
                       (add-installed-pythonpath inputs outputs)
                       (invoke "pytest" "-vv"))))))
     (propagated-inputs
-     `(("python-pytest" ,python-pytest)))
+     `(("python-pytest" ,python-pytest)
+       ("python-pytest-cov" ,python-pytest-cov)))
     (native-inputs
      `(("python-pexpect" ,python-pexpect)))
     (home-page "https://github.com/pytest-dev/pytest-timeout")
@@ -1334,22 +1397,42 @@ timeout has been exceeded.")
     (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-forked" version))
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/pytest-dev/pytest-forked")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1jip9qh115zcg1rn7irqx5qycb9k248d5imy86f566md01zaraba"))))
+         "1aip4kx50ynvykl7kq2mlbsi82vx701dvb8mm64lhp69bbv105rc"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-setuptools-scm
+           (lambda _
+             (substitute* "setup.py"
+               (("use_scm_version=True")
+                (format #f "version=~s" ,version))
+               (("setup_requires=\\['setuptools_scm'\\],.*")
+                ""))))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "-vv")))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-setuptools-scm" ,python-setuptools-scm)))
-    (home-page
-     "https://github.com/pytest-dev/pytest-forked")
-    (synopsis
-     "Run tests in isolated forked subprocesses")
-    (description
-     "Pytest plugin which will run each test in a subprocess and will report if
-a test crashed the process.")
+     ;; XXX: The bootstrap variant of Pytest is used to ensure the
+     ;; 'hypothesis' plugin is not in the environment (due to
+     ;; <http://issues.guix.gnu.org/25235>), which would cause the test suite
+     ;; to fail (see: https://github.com/pytest-dev/pytest-forked/issues/54).
+     `(("python-pytest" ,python-pytest-bootstrap)))
+    (home-page "https://github.com/pytest-dev/pytest-forked")
+    (synopsis "Pytest plugin to run tests in isolated forked subprocesses")
+    (description "This package provides a Pytest plugin which enables running
+each test in a subprocess and will report if a test crashed the process.  It
+can be useful to isolate tests against undesirable global environment
+side-effects (such as setting environment variables).")
     (license license:expat)))
 
 (define-public python-scripttest
@@ -1377,25 +1460,20 @@ subprocess and see the output as well as any file modifications.")
 (define-public python-testtools-bootstrap
   (package
     (name "python-testtools-bootstrap")
-    (version "2.3.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "testtools" version))
        (sha256
         (base32
-         "0n8519lk8aaa91vymz842831181wf7fss98hyllhygi3z1nfq9sq"))
-       (patches (search-patches "python-testtools.patch"))))
+         "0gxjbjk93jjqi491k4s9rh3ia37v21yifd35pvizv7sgv4rk9hap"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))
     (propagated-inputs
      `(("python-extras" ,python-extras)
        ("python-fixtures" ,python-fixtures-bootstrap)
-       ("python-mimeparse" ,python-mimeparse)
-       ("python-pbr" ,python-pbr-minimal)
-       ("python-six" ,python-six)
-       ("python-traceback2" ,python-traceback2)
-       ("python-unittest2" ,python-unittest2)))
+       ("python-pbr" ,python-pbr-minimal)))
     (home-page "https://github.com/testing-cabal/testtools")
     (synopsis
      "Extensions to the Python standard library unit testing framework")
@@ -1408,19 +1486,17 @@ subprocess and see the output as well as any file modifications.")
     (inherit python-testtools-bootstrap)
     (name "python-testtools")
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "-m" "testtools.run"
-                              "testtools.tests.test_suite"))))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "testtools.run"
+                       "testtools.tests.test_suite")))))))
     (propagated-inputs
      `(("python-extras" ,python-extras)
        ("python-fixtures" ,python-fixtures)
-       ("python-mimeparse" ,python-mimeparse)
-       ("python-pbr" ,python-pbr)
-       ("python-six" ,python-six)
-       ("python-traceback2" ,python-traceback2)
-       ("python-unittest2" ,python-unittest2)))
+       ("python-pbr" ,python-pbr)))
     (native-inputs
      `(("python-testscenarios" ,python-testscenarios-bootstrap)))
     (description
@@ -1551,12 +1627,14 @@ protocol.")))
   (package
     (name "python-fixtures-bootstrap")
     (version "3.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "fixtures" version))
-              (sha256
-               (base32
-                "1vxj29bzz3rd4pcy51d05wng9q9dh4jq6wx92yklsm7i6h1ddw7w"))))
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "fixtures" version))
+        (sha256
+         (base32
+          "1vxj29bzz3rd4pcy51d05wng9q9dh4jq6wx92yklsm7i6h1ddw7w"))
+        (patches (search-patches "python-fixtures-remove-monkeypatch-test.patch"))))
     (build-system python-build-system)
     (arguments
       `(#:tests? #f
@@ -1582,9 +1660,10 @@ python-fixtures package instead.")
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "python" "-m" "testtools.run"
-                     "fixtures.test_suite"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "testtools.run"
+                       "fixtures.test_suite")))))))
     (propagated-inputs
      ;; Fixtures uses pbr at runtime to check versions, etc.
      `(("python-pbr" ,python-pbr)
@@ -1671,10 +1750,13 @@ executed.")
     (version "0.15.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-asyncio" version))
+       (method git-fetch)               ;for tests
+       (uri (git-reference
+             (url "https://github.com/pytest-dev/pytest-asyncio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0vrzsrg3j1cfd57m0b3r5xf87rslgcs42jya346mdg9bc6wwwr15"))))
+        (base32 "03drs4myv1ik79148xyhli37q6mp931jb14cz65n8qvls2zvvwgx"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-coverage" ,python-coverage)
@@ -1866,22 +1948,23 @@ framework which enables you to test server connections locally.")
 (define-public python-pytest-xprocess
   (package
     (name "python-pytest-xprocess")
-    (version "0.9.1")
+    (version "0.18.1")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "pytest-xprocess" version))
              (sha256
               (base32
-               "17zlql1xqw3ywcgwwbqmw633aly99lab12hm02asr8awvg5603pp"))))
+               "0rm2rchrr63imn44xk5slwydxf8gvy579524qcxq7dc42pnk17zx"))))
     (build-system python-build-system)
+    (native-inputs
+     `(("python-setuptools-scm" ,python-setuptools-scm)))
     (propagated-inputs
      `(("python-pytest" ,python-pytest)
-       ("python-pytest-cache" ,python-pytest-cache)
        ("python-psutil" ,python-psutil)))
     (synopsis "Pytest plugin to manage external processes across test runs")
     (description "Pytest-xprocess is an experimental py.test plugin for managing
 processes across test runs.")
-    (home-page "https://bitbucket.org/pytest-dev/pytest-xprocess")
+    (home-page "https://github.com/pytest-dev/pytest-xprocess/")
     (license license:expat)))
 
 (define-public python-pytest-subtesthack
@@ -2135,42 +2218,25 @@ statements in the module it tests.")
 (define-public python-pylint
   (package
     (name "python-pylint")
-    (version "2.6.0")
+    (version "2.9.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/PyCQA/pylint")
-             (commit (string-append "pylint-" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ws3dz3wm49brnhhfm7v75zq202pwlwfbi3njdd69aqxq912x15z"))))
+        (base32 "15yw69v1cj6zkndk60c2g0dgl0khh8bfm1lrwhjffpdjfc7nkc9a"))))
     (build-system python-build-system)
-    (arguments
-     `(#:tests? #t
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; The following failing tests are skipped (see:
-               ;; https://github.com/PyCQA/pylint/issues/4068).
-               (invoke "pytest" "-k"
-                       (string-append
-                        "not unused_typing_imports "
-                        "and not star_needs_assignment_target_py35 "
-                        "and not regression_property_no_member_2641 "
-                        "and not missing_kwoa_py3"))))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)
        ("python-pytest-benchmark" ,python-pytest-benchmark)
-       ("python-pytest-runner" ,python-pytest-runner)
-       ("python-tox" ,python-tox)))
+       ("python-pytest-runner" ,python-pytest-runner)))
     (propagated-inputs
      `(("python-astroid" ,python-astroid)
        ("python-isort" ,python-isort)
        ("python-mccabe" ,python-mccabe)
-       ("python-six" ,python-six)
        ("python-toml" ,python-toml)))
     (home-page "https://github.com/PyCQA/pylint")
     (synopsis "Python source code analyzer which looks for coding standard
@@ -2687,7 +2753,13 @@ portable to just about any platform.")
 
                         ;; XXX: Without this flag, the CLOCK_REALTIME test hangs
                         ;; indefinitely.  See README.packagers for more information.
-                        (setenv "FAKETIME_COMPILE_CFLAGS" "-DFORCE_MONOTONIC_FIX"))))
+                        ;; There are specific instructions to not enable more flags
+                        ;; than absolutely needed.
+                        ,(if (target-ppc64le?)
+                           `(setenv "FAKETIME_COMPILE_CFLAGS"
+                                    "-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER")
+                           `(setenv "FAKETIME_COMPILE_CFLAGS"
+                                    "-DFORCE_MONOTONIC_FIX")))))
                   (add-before 'check 'pre-check
                     (lambda _
                       (substitute* "test/functests/test_exclude_mono.sh"

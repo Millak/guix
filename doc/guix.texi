@@ -46,8 +46,8 @@ Copyright @copyright{} 2017 Federico Beffa@*
 Copyright @copyright{} 2017, 2018 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
-Copyright @copyright{} 2017, 2021 Christopher Lemmer Webber@*
-Copyright @copyright{} 2017, 2018, 2019, 2020 Marius Bakke@*
+Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
+Copyright @copyright{} 2017, 2018, 2019, 2020, 2021 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020 Hartmut Goebel@*
 Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice@*
@@ -94,6 +94,8 @@ Copyright @copyright{} 2021 Xinglu Chen@*
 Copyright @copyright{} 2021 Raghav Gururajan@*
 Copyright @copyright{} 2021 Domagoj Stolfa@*
 Copyright @copyright{} 2021 Hui Lu@*
+Copyright @copyright{} 2021 pukkamustard@*
+Copyright @copyright{} 2021 Alice Brenon@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -2568,14 +2570,15 @@ in particular:
 
 @itemize
 @item
-Make sure the @code{bootloader-configuration} form refers to the target
-you want to install GRUB on.  It should mention @code{grub-bootloader} if
-you are installing GRUB in the legacy way, or @code{grub-efi-bootloader}
-for newer UEFI systems.  For legacy systems, the @code{target} field
-names a device, like @code{/dev/sda}; for UEFI systems it names a path
-to a mounted EFI partition, like @code{/boot/efi}; do make sure the path is
-currently mounted and a @code{file-system} entry is specified in your
-configuration.
+Make sure the @code{bootloader-configuration} form refers to the targets
+you want to install GRUB on.  It should mention @code{grub-bootloader}
+if you are installing GRUB in the legacy way, or
+@code{grub-efi-bootloader} for newer UEFI systems.  For legacy systems,
+the @code{targets} field contain the names of the devices, like
+@code{(list "/dev/sda")}; for UEFI systems it names the paths to mounted
+EFI partitions, like @code{(list "/boot/efi")}; do make sure the paths
+are currently mounted and a @code{file-system} entry is specified in
+your configuration.
 
 @item
 Be sure that your file system labels match the value of their respective
@@ -7056,9 +7059,10 @@ retrieve.
 The URL of the Git repository to clone.
 
 @item @code{commit}
-This string denotes either the commit to fetch (a hexadecimal string,
-either the full SHA1 commit or a ``short'' commit string; the latter is
-not recommended) or the tag to fetch.
+This string denotes either the commit to fetch (a hexadecimal string),
+or the tag to fetch.  You can also use a ``short'' commit ID or a
+@command{git describe} style identifier such as
+@code{v1.0.1-10-g58d7909c97}.
 
 @item @code{recursive?} (default: @code{#f})
 This Boolean indicates whether to recursively fetch Git sub-modules.
@@ -7801,6 +7805,7 @@ The @code{#:package} parameter can be passed to specify a package name, which
 is useful when a package contains multiple packages and you want to build
 only one of them.  This is equivalent to passing the @code{-p} argument to
 @code{dune}.
+
 @end defvr
 
 @defvr {Scheme Variable} go-build-system
@@ -7824,6 +7829,13 @@ Packages that provide Go libraries should install their source code into
 the built output.  The key @code{#:install-source?}, which defaults to
 @code{#t}, controls whether or not the source code is installed.  It can
 be set to @code{#f} for packages that only provide executable files.
+
+Packages can be cross-built, and if a specific architecture or operating
+system is desired then the keywords @code{#:goarch} and @code{#:goos}
+can be used to force the package to be built for that architecture and
+operating system.  The combinations known to Go can be found
+@url{"https://golang.org/doc/install/source#environment", in their
+documentation}.
 @end defvr
 
 @defvr {Scheme Variable} glib-or-gtk-build-system
@@ -7963,6 +7975,14 @@ The @code{#:maven-plugins} argument is a list of maven plugins used during
 the build, with the same format as the @code{inputs} fields of the package
 declaration.  Its default value is @code{(default-maven-plugins)} which is
 also exported.
+@end defvr
+
+@defvr {Scheme Variable} minetest-mod-build-system
+This variable is exported by @code{(guix build-system minetest)}.  It
+implements a build procedure for @uref{https://www.minetest.net, Minetest}
+mods, which consists of copying Lua code, images and other resources to
+the location Minetest searches for mods.  The build system also minimises
+PNG images and verifies that Minetest can load the mod without errors.
 @end defvr
 
 @defvr {Scheme Variable} minify-build-system
@@ -10743,7 +10763,8 @@ guix build --with-branch=guile-sqlite3=master cuirass
 @item --with-commit=@var{package}=@var{commit}
 This is similar to @option{--with-branch}, except that it builds from
 @var{commit} rather than the tip of a branch.  @var{commit} must be a valid
-Git commit SHA1 identifier or a tag.
+Git commit SHA1 identifier, a tag, or a @command{git describe} style
+identifier such as @code{1.0-3-gabc123}.
 
 @item --with-patch=@var{package}=@var{file}
 Add @var{file} to the list of patches applied to @var{package}, where
@@ -11410,6 +11431,38 @@ and generate package expressions for all those packages that are not yet
 in Guix.
 @end table
 
+@item minetest
+@cindex minetest
+@cindex ContentDB
+Import metadata from @uref{https://content.minetest.net, ContentDB}.
+Information is taken from the JSON-formatted metadata provided through
+@uref{https://content.minetest.net/help/api/, ContentDB's API} and
+includes most relevant information, including dependencies.  There are
+some caveats, however.  The license information is often incomplete.
+The commit hash is sometimes missing.  The descriptions are in the
+Markdown format, but Guix uses Texinfo instead.  Texture packs and
+subgames are unsupported.
+
+The command below imports metadata for the Mesecons mod by Jeija:
+
+@example
+guix import minetest Jeija/mesecons
+@end example
+
+The author name can also be left out:
+
+@example
+guix import minetest mesecons
+@end example
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
 @item cpan
 @cindex CPAN
 Import metadata from @uref{https://www.metacpan.org/, MetaCPAN}.
@@ -11661,6 +11714,10 @@ contained in the GnuPG keyring at
 signatures,, emacs, The GNU Emacs Manual}).
 
 @item
+@uref{https://elpa.nongnu.org/nongnu/, NonGNU}, selected by the
+@code{nongnu} identifier.
+
+@item
 @uref{https://stable.melpa.org/packages, MELPA-Stable}, selected by the
 @code{melpa-stable} identifier.
 
@@ -11716,14 +11773,31 @@ Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
 @item --repo
-Select the given repository (a repository name).  Possible values include:
+By default, packages are searched in the official OPAM repository.  This
+option, which can be used more than once, lets you add other repositories
+which will be searched for packages.  It accepts as valid arguments:
+
 @itemize
-@item @code{opam}, the default opam repository,
-@item @code{coq} or @code{coq-released}, the stable repository for coq packages,
-@item @code{coq-core-dev}, the repository that contains development versions of coq,
-@item @code{coq-extra-dev}, the repository that contains development versions
-      of coq packages.
+@item the name of a known repository - can be one of @code{opam},
+      @code{coq} (equivalent to @code{coq-released}),
+	  @code{coq-core-dev}, @code{coq-extra-dev} or @code{grew}.
+@item the URL of a repository as expected by the
+      @code{opam repository add} command (for instance, the URL equivalent
+	  of the above @code{opam} name would be
+	  @uref{https://opam.ocaml.org}).
+@item the path to a local copy of a repository (a directory containing a
+      @file{packages/} sub-directory).
 @end itemize
+
+Repositories are assumed to be passed to this option by order of
+preference.  The additional repositories will not replace the default
+@code{opam} repository, which is always kept as a fallback.
+
+Also, please note that versions are not compared accross repositories.
+The first repository (from left to right) that has at least one version
+of a given package will prevail over any others, and the version
+imported will be the latest one found @emph{in this repository only}.
+
 @end table
 
 @item go
@@ -13681,7 +13755,7 @@ the @code{bootloader} field should contain something along these lines:
 @lisp
 (bootloader-configuration
   (bootloader grub-efi-bootloader)
-  (target "/boot/efi"))
+  (targets '("/boot/efi")))
 @end lisp
 
 @xref{Bootloader Configuration}, for more information on the available
@@ -14108,8 +14182,8 @@ Linux @dfn{pluggable authentication module} (PAM) services.
 @c FIXME: Add xref to PAM services section.
 
 @item @code{setuid-programs} (default: @code{%setuid-programs})
-List of string-valued G-expressions denoting setuid programs.
-@xref{Setuid Programs}.
+List of @code{<setuid-program>}.  @xref{Setuid Programs}, for more
+information.
 
 @item @code{sudoers-file} (default: @code{%sudoers-specification})
 @cindex sudoers file
@@ -14896,7 +14970,7 @@ configuration would look like:
   (keyboard-layout (keyboard-layout "tr"))  ;for the console
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
-                (target "/boot/efi")
+                (targets '("/boot/efi"))
                 (keyboard-layout keyboard-layout))) ;for GRUB
   (services (cons (set-xorg-configuration
                     (xorg-configuration             ;for Xorg
@@ -16122,7 +16196,8 @@ gexps to introduce job definitions that are passed to mcron
          (lambda ()
            (execl (string-append #$findutils "/bin/updatedb")
                   "updatedb"
-                  "--prunepaths=/tmp /var/tmp /gnu/store"))))
+                  "--prunepaths=/tmp /var/tmp /gnu/store"))
+         "updatedb"))
 
 (define garbage-collector-job
   ;; Collect garbage 5 minutes after midnight every day.
@@ -16150,6 +16225,14 @@ gexps to introduce job definitions that are passed to mcron
                                          idutils-job))
                   %base-services)))
 @end lisp
+
+@quotation Tip
+When providing the action of a job specification as a procedure, you
+should provide an explicit name for the job via the optional 3rd
+argument as done in the @code{updatedb-job} example above.  Otherwise,
+the job would appear as ``Lambda function'' in the output of
+@command{herd schedule mcron}, which is not nearly descriptive enough!
+@end quotation
 
 For more complex jobs defined in Scheme where you need control over the top
 level, for instance to introduce a @code{use-modules} form, you can move your
@@ -18258,6 +18341,14 @@ Data type representing the configuration of @code{slim-service-type}.
 @table @asis
 @item @code{allow-empty-passwords?} (default: @code{#t})
 Whether to allow logins with empty passwords.
+
+@item @code{gnupg?} (default: @code{#f})
+If enabled, @code{pam-gnupg} will attempt to automatically unlock the
+user's GPG keys with the login password via @code{gpg-agent}.  The
+keygrips of all keys to be unlocked should be written to
+@file{~/.pam-gnupg}, and can be queried with @code{gpg -K
+--with-keygrip}.  Presetting passphrases must be enabled by adding
+@code{allow-preset-passphrase} in @file{~/.gnupg/gpg-agent.conf}.
 
 @item @code{auto-login?} (default: @code{#f})
 @itemx @code{default-user} (default: @code{""})
@@ -22735,6 +22826,234 @@ and Error.
 @node Telephony Services
 @subsection Telephony Services
 
+@cindex telephony, services
+The @code{(gnu services telephony)} module contains Guix service
+definitions for telephony services.  Currently it provides the following
+services:
+
+@subsubheading Jami
+
+@cindex jami, service
+
+This section describes how to configure a Jami server that can be used
+to host video (or audio) conferences, among other uses.  The following
+example demonstrates how to specify Jami account archives (backups) to
+be provisioned automatically:
+
+@lisp
+(service jami-service-type
+         (jami-configuration
+          (accounts
+           (list (jami-account
+                  (archive "/etc/jami/unencrypted-account-1.gz"))
+                 (jami-account
+                  (archive "/etc/jami/unencrypted-account-2.gz"))))))
+@end lisp
+
+When the accounts field is specified, the Jami account files of the
+service found under @file{/var/lib/jami} are recreated every time the
+service starts.
+
+Jami accounts and their corresponding backup archives can be generated
+using either the @code{jami-qt} or @code{jami-gnome} Jami clients.  The
+accounts should not be password-protected, but it is wise to ensure
+their files are only readable by @samp{root}.
+
+The next example shows how to declare that only some contacts should be
+allowed to communicate with a given account:
+
+@lisp
+(service jami-service-type
+         (jami-configuration
+          (accounts
+           (list (jami-account
+                  (archive "/etc/jami/unencrypted-account-1.gz")
+                  (peer-discovery? #t)
+                  (rendezvous-point? #t)
+                  (allowed-contacts
+                   '("1dbcb0f5f37324228235564b79f2b9737e9a008f"
+                     "2dbcb0f5f37324228235564b79f2b9737e9a008f")))))))
+@end lisp
+
+In this mode, only the declared @code{allowed-contacts} can initiate
+communication with the Jami account.  This can be used, for example,
+with rendezvous point accounts to create a private video conferencing
+space.
+
+To put the system administrator in full control of the conferences
+hosted on their system, the Jami service supports the following actions:
+
+@example sh
+# herd doc jami list-actions
+(list-accounts
+ list-account-details
+ list-banned-contacts
+ list-contacts
+ list-moderators
+ add-moderator
+ ban-contact
+ enable-account
+ disable-account)
+@end example
+
+The above actions aim to provide the most valuable actions for
+moderation purposes, not to cover the whole Jami API.  Users wanting to
+interact with the Jami daemon from Guile may be interested in
+experimenting with the @code{(gnu build jami-service)} module, which
+powers the above Shepherd actions.
+
+@c TODO: This should be auto-generated from the doc already defined on
+@c the shepherd-actions themselves in (gnu services telephony).
+The @code{add-moderator} and @code{ban-contact} actions accept a contact
+@emph{fingerprint} (40 characters long hash) as first argument and an
+account fingerprint or username as second argument:
+
+@example sh
+# herd add-moderator jami 1dbcb0f5f37324228235564b79f2b9737e9a008f \
+  f3345f2775ddfe07a4b0d95daea111d15fbc1199
+
+# herd list-moderators jami
+Moderators for account f3345f2775ddfe07a4b0d95daea111d15fbc1199:
+  - 1dbcb0f5f37324228235564b79f2b9737e9a008f
+
+@end example
+
+In the case of @code{ban-contact}, the second username argument is
+optional; when omitted, the account is banned from all Jami accounts:
+
+@example sh
+# herd ban-contact jami 1dbcb0f5f37324228235564b79f2b9737e9a008f
+
+# herd list-banned-contacts jami
+Banned contacts for account f3345f2775ddfe07a4b0d95daea111d15fbc1199:
+  - 1dbcb0f5f37324228235564b79f2b9737e9a008f
+
+@end example
+
+Banned contacts are also stripped from their moderation privileges.
+
+The @code{disable-account} action allows to completely disconnect an
+account from the network, making it unreachable, while
+@code{enable-account} does the inverse.  They accept a single account
+username or fingerprint as first argument:
+
+@example sh
+# herd disable-account jami f3345f2775ddfe07a4b0d95daea111d15fbc1199
+
+# herd list-accounts jami
+The following Jami accounts are available:
+  - f3345f2775ddfe07a4b0d95daea111d15fbc1199 (dummy) [disabled]
+
+@end example
+
+The @code{list-account-details} action prints the detailed parameters of
+each accounts in the Recutils format, which means the @command{recsel}
+command can be used to select accounts of interest (@pxref{Selection
+Expressions,,,recutils, GNU recutils manual}).  Note that period
+characters (@samp{.}) found in the account parameter keys are mapped to
+underscores (@samp{_}) in the output, to meet the requirements of the
+Recutils format.  The following example shows how to print the account
+fingerprints for all accounts operating in the rendezvous point mode:
+
+@example sh
+# herd list-account-details jami | \
+  recsel -p Account.username -e 'Account.rendezVous ~ "true"'
+Account_username: f3345f2775ddfe07a4b0d95daea111d15fbc1199
+@end example
+
+The remaining actions should be self-explanatory.
+
+The complete set of available configuration options is detailed below.
+
+@c TODO: Ideally, the following fragments would be auto-generated at
+@c build time, so that they needn't be manually duplicated.
+@c Auto-generated via (configuration->documentation 'jami-configuration)
+@deftp {Data Type} jami-configuration
+Available @code{jami-configuration} fields are:
+
+@table @asis
+@item @code{jamid} (default: @code{libring}) (type: package)
+The Jami daemon package to use.
+
+@item @code{dbus} (default: @code{dbus}) (type: package)
+The D-Bus package to use to start the required D-Bus session.
+
+@item @code{nss-certs} (default: @code{nss-certs}) (type: package)
+The nss-certs package to use to provide TLS certificates.
+
+@item @code{enable-logging?} (default: @code{#t}) (type: boolean)
+Whether to enable logging to syslog.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Whether to enable debug level messages.
+
+@item @code{auto-answer?} (default: @code{#f}) (type: boolean)
+Whether to force automatic answer to incoming calls.
+
+@item @code{accounts} (default: @code{disabled}) (type: maybe-jami-account-list)
+A list of Jami accounts to be (re-)provisioned every time the Jami
+daemon service starts.  When providing this field, the account
+directories under @file{/var/lib/jami/} are recreated every time the
+service starts, ensuring a consistent state.
+
+@end table
+
+@end deftp
+
+@c Auto-generated via (configuration->documentation 'jami-account)
+@deftp {Data Type} jami-account
+Available @code{jami-account} fields are:
+
+@table @asis
+@item @code{archive} (type: string-or-computed-file)
+The account archive (backup) file name of the account.  This is used to
+provision the account when the service starts.  The account archive
+should @emph{not} be encrypted.  It is highly recommended to make it
+readable only to the @samp{root} user (i.e., not in the store), to guard
+against leaking the secret key material of the Jami account it contains.
+
+@item @code{allowed-contacts} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+The list of allowed contacts for the account, entered as their 40
+characters long fingerprint.  Messages or calls from accounts not in
+that list will be rejected.  When unspecified, the configuration of the
+account archive is used as-is with respect to contacts and public
+inbound calls/messaging allowance, which typically defaults to allow any
+contact to communicate with the account.
+
+@item @code{moderators} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+The list of contacts that should have moderation privileges (to ban,
+mute, etc.  other users) in rendezvous conferences, entered as their 40
+characters long fingerprint.  When unspecified, the configuration of the
+account archive is used as-is with respect to moderation, which
+typically defaults to allow anyone to moderate.
+
+@item @code{rendezvous-point?} (default: @code{disabled}) (type: maybe-boolean)
+Whether the account should operate in the rendezvous mode.  In this
+mode, all the incoming audio/video calls are mixed into a conference.
+When left unspecified, the value from the account archive prevails.
+
+@item @code{peer-discovery?} (default: @code{disabled}) (type: maybe-boolean)
+Whether peer discovery should be enabled.  Peer discovery is used to
+discover other OpenDHT nodes on the local network, which can be useful
+to maintain communication between devices on such network even when the
+connection to the the Internet has been lost.  When left unspecified,
+the value from the account archive prevails.
+
+@item @code{bootstrap-hostnames} (default: @code{disabled}) (type: maybe-string-list)
+A list of hostnames or IPs pointing to OpenDHT nodes, that should be
+used to initially join the OpenDHT network.  When left unspecified, the
+value from the account archive prevails.
+
+@item @code{name-server-uri} (default: @code{disabled}) (type: maybe-string)
+The URI of the name server to use, that can be used to retrieve the
+account fingerprint for a registered username.
+
+@end table
+
+@end deftp
+
+@subsubheading Murmur (VoIP server)
+
 @cindex Murmur (VoIP server)
 @cindex VoIP server
 This section describes how to set up and run a Murmur server.  Murmur is
@@ -25042,6 +25361,7 @@ of strings and G-expressions.
 @end table
 @end deffn
 
+@anchor{NGINX}
 @subsubheading NGINX
 
 @deffn {Scheme Variable} nginx-service-type
@@ -27861,6 +28181,11 @@ Use @var{cache} directory to cache build log files.
 Once a substitute is successfully fetched, trigger substitute baking at
 @var{trigger-url}.
 
+@item @code{publish?} (default: @code{#t})
+If set to false, do not start a publish server and ignore the
+@code{publish-port} argument.  This can be useful if there is already a
+standalone publish server standing next to the remote server.
+
 @item @code{public-key}
 @item @code{private-key}
 Use the specific @var{file}s as the public/private key pair used to sign
@@ -27894,6 +28219,9 @@ Location of the log file.
 
 @item @code{publish-port} (default: @code{5558})
 The TCP port of the publish server.  It defaults to @code{5558}.
+
+@item @code{substitute-urls} (default: @code{%default-substitute-urls})
+The list of URLs where to look for substitutes by default.
 
 @item @code{public-key}
 @item @code{private-key}
@@ -31407,6 +31735,19 @@ A value like @code{#o0027} will give read access to the group used by Gitolite
 (by default: @code{git}).  This is necessary when using Gitolite with software
 like cgit or gitweb.
 
+@item @code{unsafe-pattern} (default: @code{#f})
+An optional Perl regular expression for catching unsafe configurations in
+the configuration file.  See
+@uref{https://gitolite.com/gitolite/git-config.html#compensating-for-unsafe_patt,
+Gitolite's documentation} for more information.
+
+When the value is not @code{#f}, it should be a string containing a Perl
+regular expression, such as @samp{"[`~#\$\&()|;<>]"}, which is the default
+value used by gitolite.  It rejects any special character in configuration
+that might be interpreted by a shell, which is useful when sharing the
+administration burden with other people that do not otherwise have shell
+access on the server.
+
 @item @code{git-config-keys} (default: @code{""})
 Gitolite allows you to set git config values using the @samp{config}
 keyword.  This setting allows control over the config keys to accept.
@@ -31417,6 +31758,137 @@ Set the role names allowed to be used by users running the perms command.
 @item @code{enable} (default: @code{'("help" "desc" "info" "perms" "writable" "ssh-authkeys" "git-config" "daemon" "gitweb")})
 This setting controls the commands and features to enable within Gitolite.
 
+@end table
+@end deftp
+
+
+@subsubheading Gitile Service
+
+@cindex Gitile service
+@cindex Git, forge
+@uref{https://git.lepiller.eu/gitile, Gitile} is a Git forge for viewing
+public git repository contents from a web browser.
+
+Gitile works best in collaboration with Gitolite, and will serve the public
+repositories from Gitolite by default.  The service should listen only on
+a local port, and a webserver should be configured to serve static resources.
+The gitile service provides an easy way to extend the Nginx service for
+that purpose (@pxref{NGINX}).
+
+The following example will configure Gitile to serve repositories from a
+custom location, with some default messages for the home page and the
+footers.
+
+@lisp
+(service gitile-service-type
+         (gitile-configuration
+           (repositories "/srv/git")
+           (base-git-url "https://myweb.site/git")
+           (index-title "My git repositories")
+           (intro '((p "This is all my public work!")))
+           (footer '((p "This is the end")))
+           (nginx-server-block
+             (nginx-server-configuration
+               (ssl-certificate
+                 "/etc/letsencrypt/live/myweb.site/fullchain.pem")
+               (ssl-certificate-key
+                 "/etc/letsencrypt/live/myweb.site/privkey.pem")
+               (listen '("443 ssl http2" "[::]:443 ssl http2"))
+               (locations
+                 (list
+                   ;; Allow for https anonymous fetch on /git/ urls.
+                   (git-http-nginx-location-configuration
+                     (git-http-configuration
+                       (uri-path "/git/")
+                       (git-root "/var/lib/gitolite/repositories")))))))))
+@end lisp
+
+In addition to the configuration record, you should configure your git
+repositories to contain some optional information.  First, your public
+repositories need to contain the @file{git-daemon-export-ok} magic file
+that allows Git to export the repository.  Gitile uses the presence of this
+file to detect public repositories it should make accessible.  To do so with
+Gitolite for instance, modify your @file{conf/gitolite.conf} to include
+this in the repositories you want to make public:
+
+@example
+repo foo
+    R = daemon
+@end example
+
+In addition, Gitile can read the repository configuration to display more
+infomation on the repository.  Gitile uses the gitweb namespace for its
+configuration.  As an example, you can use the following in your
+@file{conf/gitolite.conf}:
+
+@example
+repo foo
+    R = daemon
+    desc = A long description, optionally with <i>HTML</i>, shown on the index page
+    config gitweb.name = The Foo Project
+    config gitweb.synopsis = A short description, shown on the main page of the project
+@end example
+
+Do not forget to commit and push these changes once you are satisfied.  You
+may need to change your gitolite configuration to allow the previous
+configuration options to be set.  One way to do that is to add the
+following service definition:
+
+@lisp
+(service gitolite-service-type
+          (gitolite-configuration
+            (admin-pubkey (local-file "key.pub"))
+            (rc-file
+              (gitolite-rc-file
+                (umask #o0027)
+                ;; Allow to set any configuration key
+                (git-config-keys ".*")
+                ;; Allow any text as a valid configuration value
+                (unsafe-patt "^$")))))
+@end lisp
+
+@deftp {Data Type} gitile-configuration
+Data type representing the configuration for @code{gitile-service-type}.
+
+@table @asis
+@item @code{package} (default: @var{gitile})
+Gitile package to use.
+
+@item @code{host} (default: @code{"localhost"})
+The host on which gitile is listening.
+
+@item @code{port} (default: @code{8080})
+The port on which gitile is listening.
+
+@item @code{database} (default: @code{"/var/lib/gitile/gitile-db.sql"})
+The location of the database.
+
+@item @code{repositories} (default: @code{"/var/lib/gitolite/repositories"})
+The location of the repositories.  Note that only public repositories will
+be shown by Gitile.  To make a repository public, add an empty
+@file{git-daemon-export-ok} file at the root of that repository.
+
+@item @code{base-git-url}
+The base git url that will be used to show clone commands.
+
+@item @code{index-title} (default: @code{"Index"})
+The page title for the index page that lists all the available repositories.
+
+@item @code{intro} (default: @code{'()})
+The intro content, as a list of sxml expressions.  This is shown above the list
+of repositories, on the index page.
+
+@item @code{footer} (default: @code{'()})
+The footer content, as a list of sxml expressions.  This is shown on every
+page served by Gitile.
+
+@item @code{nginx-server-block}
+An nginx server block that will be extended and used as a reverse proxy by
+Gitile to serve its pages, and as a normal web server to serve its assets.
+
+You can use this block to add more custom URLs to your domain, such as a
+@code{/git/} URL for anonymous clones, or serving any other files you would
+like to serve.
 @end table
 @end deftp
 
@@ -32598,20 +33070,47 @@ the store, we let the system administrator @emph{declare} which programs
 should be setuid root.
 
 The @code{setuid-programs} field of an @code{operating-system}
-declaration contains a list of G-expressions denoting the names of
-programs to be setuid-root (@pxref{Using the Configuration System}).
-For instance, the @command{passwd} program, which is part of the Shadow
-package, can be designated by this G-expression (@pxref{G-Expressions}):
+declaration contains a list of @code{<setuid-program>} denoting the
+names of programs to have a setuid or setgid bit set (@pxref{Using the
+Configuration System}).  For instance, the @command{passwd} program,
+which is part of the Shadow package, with a setuid root can be
+designated like this:
 
 @example
-#~(string-append #$shadow "/bin/passwd")
+(setuid-program
+  (program (file-append #$shadow "/bin/passwd")))
 @end example
+
+@deftp {Data Type} setuid-program
+This data type represents a program with a setuid or setgid bit set.
+
+@table @asis
+@item @code{program}
+A file-like object having its setuid and/or setgid bit set.
+
+@item @code{setuid?} (default: @code{#t})
+Whether to set user setuid bit.
+
+@item @code{setgid?} (default: @code{#f})
+Whether to set group setgid bit.
+
+@item @code{user} (default: @code{0})
+UID (integer) or user name (string) for the user owner of the program,
+defaults to root.
+
+@item @code{group} (default: @code{0})
+GID (integer) goup name (string) for the group owner of the program,
+defaults to root.
+
+@end table
+@end deftp
 
 A default set of setuid programs is defined by the
 @code{%setuid-programs} variable of the @code{(gnu system)} module.
 
 @defvr {Scheme Variable} %setuid-programs
-A list of G-expressions denoting common programs that are setuid-root.
+A list of @code{<setuid-program>} denoting common programs that are
+setuid-root.
 
 The list includes commands such as @command{passwd}, @command{ping},
 @command{su}, and @command{sudo}.
@@ -33052,11 +33551,11 @@ in ``legacy'' BIOS mode.
 through TFTP@.  In combination with an NFS root file system this allows you to
 build a diskless Guix system.
 
-The installation of the @code{grub-efi-netboot-bootloader} generates the content
-of the TFTP root directory at @code{target}
-(@pxref{Bootloader Configuration, @code{target}}), to be served by a TFTP server.
- You may want to mount your TFTP server directory onto @code{target} to move the
-required files to the TFTP server automatically.
+The installation of the @code{grub-efi-netboot-bootloader} generates the
+content of the TFTP root directory at @code{targets} (@pxref{Bootloader
+Configuration, @code{targets}}), to be served by a TFTP server.  You may
+want to mount your TFTP server directories onto the @code{targets} to
+move the required files to the TFTP server automatically.
 
 If you plan to use an NFS root file system as well (actually if you mount the
 store from an NFS share), then the TFTP server needs to serve the file
@@ -33067,22 +33566,25 @@ files from the store will be accessed by GRUB through TFTP with their normal
 store path, for example as
 @file{tftp://tftp-server/gnu/store/…-initrd/initrd.cpio.gz}.
 
-Two symlinks are created to make this possible.  The first symlink is
-@code{target}@file{/efi/Guix/boot/grub/grub.cfg} pointing to
-@file{../../../boot/grub/grub.cfg},
-where @code{target} may be @file{/boot}.  In this case the link is not leaving
-the served TFTP root directory, but otherwise it does.  The second link is
-@code{target}@file{/gnu/store} and points to @file{../gnu/store}.  This link
-is leaving the served TFTP root directory.
+Two symlinks are created to make this possible.  For each target in the
+@code{targets} field, the first symlink is
+@samp{target}@file{/efi/Guix/boot/grub/grub.cfg} pointing to
+@file{../../../boot/grub/grub.cfg}, where @samp{target} may be
+@file{/boot}.  In this case the link is not leaving the served TFTP root
+directory, but otherwise it does.  The second link is
+@samp{target}@file{/gnu/store} and points to @file{../gnu/store}.  This
+link is leaving the served TFTP root directory.
 
-The assumption behind all this is that you have an NFS server exporting the root
-file system for your Guix system, and additionally a TFTP server exporting your
-@code{target} directory—usually @file{/boot}—from that same root file system for
-your Guix system.  In this constellation the symlinks will work.
+The assumption behind all this is that you have an NFS server exporting
+the root file system for your Guix system, and additionally a TFTP
+server exporting your @code{targets} directories—usually a single
+@file{/boot}—from that same root file system for your Guix system.  In
+this constellation the symlinks will work.
 
-For other constellations you will have to program your own bootloader installer,
-which then takes care to make necessary files from the store accessible through
-TFTP, for example by copying them into the TFTP root directory at @code{target}.
+For other constellations you will have to program your own bootloader
+installer, which then takes care to make necessary files from the store
+accessible through TFTP, for example by copying them into the TFTP root
+directory to your @code{targets}.
 
 It is important to note that symlinks pointing outside the TFTP root directory
 may need to be allowed in the configuration of your TFTP server.  Further the
@@ -33094,18 +33596,19 @@ NFS servers, you also need a properly configured DHCP server to make the booting
 over netboot possible.  For all this we can currently only recommend you to look
 for instructions about @acronym{PXE, Preboot eXecution Environment}.
 
-@item @code{target}
-This is a string denoting the target onto which to install the
+@item @code{targets}
+This is a list of strings denoting the targets onto which to install the
 bootloader.
 
-The interpretation depends on the bootloader in question.  For
-@code{grub-bootloader}, for example, it should be a device name understood by
-the bootloader @command{installer} command, such as @code{/dev/sda} or
-@code{(hd0)} (@pxref{Invoking grub-install,,, grub, GNU GRUB Manual}).  For
-@code{grub-efi-bootloader}, it should be the mount point of the EFI file
-system, usually @file{/boot/efi}.  For @code{grub-efi-netboot-bootloader},
-@code{target} should be the mount point corresponding to the TFTP root
-directory of your TFTP server.
+The interpretation of targets depends on the bootloader in question.
+For @code{grub-bootloader}, for example, they should be device names
+understood by the bootloader @command{installer} command, such as
+@code{/dev/sda} or @code{(hd0)} (@pxref{Invoking grub-install,,, grub,
+GNU GRUB Manual}).  For @code{grub-efi-bootloader}, they should be mount
+points of the EFI file system, usually @file{/boot/efi}.  For
+@code{grub-efi-netboot-bootloader}, @code{targets} should be the mount
+points corresponding to TFTP root directories served by your TFTP
+server.
 
 @item @code{menu-entries} (default: @code{()})
 A possibly empty list of @code{menu-entry} objects (see below), denoting
@@ -33521,7 +34024,7 @@ files, packages, and so on.  It also creates other essential files
 needed for the system to operate correctly---e.g., the @file{/etc},
 @file{/var}, and @file{/run} directories, and the @file{/bin/sh} file.
 
-This command also installs bootloader on the target specified in
+This command also installs bootloader on the targets specified in
 @file{my-os-config}, unless the @option{--no-bootloader} option was
 passed.
 
@@ -33917,7 +34420,7 @@ evaluates to.  As an example, @var{file} might contain a definition like this:
    (timezone "Etc/UTC")
    (bootloader (bootloader-configuration
                 (bootloader grub-bootloader)
-                (target "/dev/vda")
+                (targets '("/dev/vda"))
                 (terminal-outputs '(console))))
    (file-systems (cons (file-system
                         (mount-point "/")

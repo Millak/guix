@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018. 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018. 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Andy Patterson <ajpatter@uwaterloo.ca>
@@ -371,6 +371,7 @@ server and embedded PowerPC, and S390 guests.")
   (package
     (inherit qemu)
     (name "qemu-minimal")
+    (outputs '("out" "doc"))
     (synopsis
      "Machine emulator and virtualizer (without GUI) for the host architecture")
     (arguments
@@ -406,11 +407,16 @@ server and embedded PowerPC, and S390 guests.")
                    "--target-list=riscv32-softmmu,riscv64-softmmu")
                   (else       ; An empty list actually builds all the targets.
                    '()))))
-          `(cons ,target-list-arg ,configure-flags)))))
+          `(cons ,target-list-arg ,configure-flags)))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'configure-user-static)
+           (delete 'build-user-static)
+           (delete 'install-user-static)))))
 
     ;; Remove dependencies on optional libraries, notably GUI libraries.
     (native-inputs (fold alist-delete (package-native-inputs qemu)
-                         '("gettext")))
+                         '("gettext" "glib:static" "pcre:static" "zlib:static")))
     (inputs (fold alist-delete (package-inputs qemu)
                   '("libusb" "mesa" "sdl2" "spice" "virglrenderer" "gtk+"
                     "usbredir" "libdrm" "libepoxy" "pulseaudio" "vde2"
@@ -970,7 +976,8 @@ all common programming languages.  Vala bindings are also provided.")
                 "0qz4l7mlhq7hx53q606qgvkyzyr01glsw290v8ppzvxn1fydlrci"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("pkg-config" ,pkg-config)
+       ("docbook2x" ,docbook2x)))
     (inputs
      `(("gnutls" ,gnutls)
        ("libcap" ,libcap)
@@ -1274,7 +1281,7 @@ virtualization library.")
              #t))
          (add-after 'install 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'install 'glib-or-gtk-wrap
+         (add-after 'wrap 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (inputs
      `(("dconf" ,dconf)
@@ -1769,14 +1776,14 @@ by default and can be made read-only.")
 (define-public bochs
   (package
     (name "bochs")
-    (version "2.6.11")
+    (version "2.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://sourceforge.net/projects/bochs/files/bochs/"
                            version "/bochs-" version ".tar.gz"))
        (sha256
-        (base32 "0ql8q6y1k356li1g9gbvl21448mlxphxxi6kjb2b3pxvzd0pp2b3"))))
+        (base32 "0ymiwnfqg5npq2dk9ngidbbfn3qw8z6i491finhcaan7zldsn450"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -2032,14 +2039,14 @@ administrators and developers in managing the database.")
 (define-public osinfo-db
   (package
     (name "osinfo-db")
-    (version "20201218")
+    (version "20210809")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0ydbindwgw7kg861rqii5036gq0dbbbmv35dzrmmv937ddfsxwh0"))))
+                "16gas6ahxwim1vdjlc4p1gm6q5gfy25h82ngykcm94x69sl6qsan"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))

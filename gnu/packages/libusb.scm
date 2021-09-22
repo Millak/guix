@@ -10,6 +10,7 @@
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -225,14 +226,14 @@ implementing @code{javax.usb} (JSR-80).")
 (define-public python-libusb1
   (package
     (name "python-libusb1")
-    (version "1.6.4")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "libusb1" version))
        (sha256
         (base32
-         "03b7xrz8vqg8w0za5r503jhcmbd1ls5610jcja1rqz833nf0v4wc"))))
+         "0j8p7jb7sibiiib18vyv3w5rrk0f4d2dl99bs18nwkq6pqvwxrk0"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((srfi srfi-1)
@@ -257,7 +258,7 @@ implementing @code{javax.usb} (JSR-80).")
                                    "^libusb.*\\.so\\..*"))
                  "\"")))
              #t)))))
-    (inputs `(("libusb" ,libusb)))
+    (propagated-inputs `(("libusb" ,libusb)))
     (home-page "https://github.com/vpelletier/python-libusb1")
     (synopsis "Pure-python wrapper for libusb-1.0")
     (description "Libusb is a library that gives applications easy access to
@@ -543,6 +544,7 @@ proposed for standardization.")
      '(#:configure-flags
        (let ((libid3tag (assoc-ref %build-inputs "libid3tag")))
          (list
+          "CFLAGS=-fcommon"
           ;; libid3tag provides no .pc file, so pkg-config fails to find them.
           (string-append "ID3TAG_CFLAGS=-I" libid3tag "/include")
           (string-append "ID3TAG_LIBS=-L" libid3tag "/lib -lid3tag -lz")))))

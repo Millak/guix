@@ -272,8 +272,16 @@ into other word processors.")
         (uri (string-append "mirror://sourceforge/libebook/libe-book-"
                             version "/libe-book-" version ".tar.xz"))
         (sha256
-          (base32
-            "1yg1vws1wggzhjw672bpgh2x541g5i9wryf67g51m0r79zrqz3by"))))
+         (base32
+          "1yg1vws1wggzhjw672bpgh2x541g5i9wryf67g51m0r79zrqz3by"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            ;; This can be removed with the next release.
+            ;; Needed for icu4c compatibility >= 68.0.
+            (substitute* "src/lib/EBOOKCharsetConverter.cpp"
+              (("TRUE, TRUE, &status")
+              "true, true, &status"))))))
     (build-system gnu-build-system)
     (native-inputs
      `(("cppunit" ,cppunit)
@@ -545,7 +553,8 @@ library primarily intended for language guessing.")
                "1b1lvqh68rwij1yvmxy02hsmh7i74ma5767mk8mg5nx6chajshhf"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     '(#:configure-flags '("--disable-werror")
+       #:phases (modify-phases %standard-phases
                   (add-before 'build 'adjust-for-ICU-65
                     (lambda _
                       ;; Fix build with ICU 65 and later.  Taken from this
@@ -583,7 +592,15 @@ Aldus/Macromedia/Adobe FreeHand documents.")
       (uri (string-append "https://dev-www.libreoffice.org/src/" name "/"
                           name "-" version ".tar.xz"))
       (sha256 (base32
-               "1fhkn013gzg59f4z7rldpbi0nj7lgdqzxanspsqa6axvmahw2dpg"))))
+               "1fhkn013gzg59f4z7rldpbi0nj7lgdqzxanspsqa6axvmahw2dpg"))
+      (modules '((guix build utils)))
+      (snippet
+       '(begin
+          ;; This can be removed with the next release.
+          ;; https://gerrit.libreoffice.org/c/libmspub/+/73814
+          (substitute* "src/lib/MSPUBMetaData.h"
+            (("include <vector>" all)
+             (string-append all "\n#include <cstdint>")))))))
     (build-system gnu-build-system)
     (native-inputs
      `(("doxygen" ,doxygen)

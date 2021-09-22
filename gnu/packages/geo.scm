@@ -9,13 +9,14 @@
 ;;; Copyright © 2018, 2019, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
+;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -210,7 +211,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "3.36.7")
+    (version "3.38.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -218,7 +219,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "09rgw8hq3ligap1zzjhx25q354ficpbiw1z9ramghhcqbpylsxdh"))))
+                "1llgzm2ni3iy31dznqkc81vadv0fpqgpz2l9zzrj5jshvyq0akgh"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -478,14 +479,12 @@ coverages using a SpatiaLite DBMS.")
        '("--enable-rttopo=yes")
        #:phases
        (modify-phases %standard-phases
-         ;; 3 tests are failing, ignore them:
+         ;; 1 test is failing, ignore it:
          (add-after 'unpack 'ignore-broken-tests
            (lambda _
              (substitute* '("test/Makefile.in")
-               (("\tcheck_sql_stmt.* (check_sql_.*)" all tiny) (string-append "\t" tiny))
-               (("(\tch.*) check_v.*ble2.*$" all vt1) (string-append vt1 " \\\n"))
-               (("\tch.* (check_v.*ble4.*)$" all vt4) (string-append "\t" vt4)))
-             #t)))))
+               (("check_wms\\$\\(EXEEXT\\) check_drop_rename\\$\\(EXEEXT\\) ")
+                "check_wms$(EXEEXT) ")))))))
     (synopsis "Extend SQLite to support Spatial SQL capabilities")
     (description
      "SpatiaLite is a library intended to extend the SQLite core to support
@@ -1218,6 +1217,7 @@ map display.  Downloads map data from a number of websites, including
                      (url "https://github.com/opengribs/XyGrib")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (patches (search-patches "xygrib-fix-finding-data.patch"))
               (sha256
                (base32
                 "0xzsm8pr0zjk3f8j880fg5n82jyxn8xf1330qmmq1fqv7rsrg9ia"))
@@ -1232,18 +1232,15 @@ map display.  Downloads map data from a number of websites, including
                   #t))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags (list "-DGNU_PACKAGE=ON")
+
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-directories
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((jpeg (assoc-ref inputs "openjpeg"))
                    (font (assoc-ref inputs "font-liberation")))
                (substitute* "CMakeLists.txt"
-                 ;; Find libjpeg.
-                 (("/usr") jpeg)
-                 ;; Fix install locations.
-                 (("set\\(PREFIX_BIN.*") "set(PREFIX_BIN \"bin\")\n")
-                 (("set\\(PREFIX_PKGDATA.*") "set(PREFIX_PKGDATA \"share/${PROJECT_NAME}\")\n")
                  ;; Skip looking for the static library.
                  (("\"libnova.a\"") ""))
                ;; Don't use the bundled font-liberation.
@@ -1252,8 +1249,7 @@ map display.  Downloads map data from a number of websites, including
                   (string-append "\"" font "/share/fonts/truetype/\"")))
                (substitute* "src/util/Util.h"
                  (("pathData\\(\\)\\+\"data/fonts/\"")
-                  (string-append "\"" font "/share/fonts/\""))))
-             #t)))
+                  (string-append "\"" font "/share/fonts/\"")))))))
        #:tests? #f)) ; no tests
     (native-inputs
      `(("qttools" ,qttools)))
@@ -1266,6 +1262,10 @@ map display.  Downloads map data from a number of websites, including
        ("proj.4" ,proj.4)
        ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))))
     (synopsis "Weather Forecast Visualization")
     (description
      "XyGrib is a Grib file reader and visualizes meteorological data providing
@@ -1352,7 +1352,7 @@ an independent project by the JOSM team.")
 (define-public java-opening-hours-parser
   (package
     (name "java-opening-hours-parser")
-    (version "0.21.4")
+    (version "0.23.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1361,7 +1361,7 @@ an independent project by the JOSM team.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m8sp0jbjyv1nq3ddj8rk6rf3sva3mkacc6vw7rsj0c2n57k3i50"))))
+                "0yhbd2ix6h506aljh0jkrnp28m4xcqdcdpnqm30fn08kawdgxgsh"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-opening-hours-parser.jar"
@@ -1397,7 +1397,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "17329")
+    (version "18193")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1406,7 +1406,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0bq6mirdsi0kmhjfzfp3innxi5a4395d7mas7ikxaz0cziljrz1i"))
+                "162hdck29bkag1d97nisx8v7395pdw00bl7nf0p02hr30fc1fcrh"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1422,6 +1422,7 @@ to the OSM opening hours specification.")
        ("java-jmapviewer" ,java-jmapviewer)
        ("java-jsonp-api" ,java-jsonp-api)
        ("java-jsonp-impl" ,java-jsonp-impl); runtime dependency
+       ("java-jsr305" ,java-jsr305)
        ("java-metadata-extractor" ,java-metadata-extractor)
        ("java-opening-hours-parser" ,java-opening-hours-parser)
        ("java-openjfx-media" ,java-openjfx-media)
@@ -1451,7 +1452,8 @@ to the OSM opening hours specification.")
              ;; which has renamed its classes to another namespace.  Rename them
              ;; back so they can be used with our version of jcs.
              (substitute* (find-files "." ".*.java$")
-               (("jcs3") "jcs"))
+               (("jcs3") "jcs")
+               (("ICache.NAME_COMPONENT_DELIMITER") "\":\""))
              #t))
          (add-before 'build 'fix-classpath
            (lambda* (#:key inputs #:allow-other-keys)
@@ -1705,22 +1707,7 @@ using the dataset of topographical information collected by
              ;; of QMapShack, but they are not applied by default, for
              ;; some reason...
              (invoke "patch" "-p1" "-i" "FindPROJ4.patch")
-             (invoke "patch" "-p1" "-i" "FindQuaZip5.patch")
-             #t))
-         (add-after 'install 'wrap
-           ;; The program fails to find the QtWebEngineProcess program,
-           ;; so we set QTWEBENGINEPROCESS_PATH to help it.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin"))
-                   (qtwebengineprocess (string-append
-                                        (assoc-ref inputs "qtwebengine")
-                                        "/lib/qt5/libexec/QtWebEngineProcess")))
-               (for-each (lambda (program)
-                           (wrap-program program
-                             `("QTWEBENGINEPROCESS_PATH" =
-                               (,qtwebengineprocess))))
-                         (find-files bin ".*")))
-             #t)))))
+             (invoke "patch" "-p1" "-i" "FindQuaZip5.patch"))))))
     (synopsis "GPS mapping application")
     (description
      "QMapShack can be used to plan your next outdoor trip or to visualize and
@@ -1878,7 +1865,8 @@ exchanged form one Spatial DBMS and the other.")
      `(#:configure-flags '("-DENABLE_PORTAUDIO=ON"
                            "-DENABLE_SNDFILE=ON"
                            "-DBUNDLE_TCDATA=ON"
-                           "-DBUNDLE_GSHHS=CRUDE")
+                           "-DBUNDLE_GSHHS=CRUDE"
+                           "-DCMAKE_C_FLAGS=-fcommon")
        #:tests? #f ; No tests defined
        #:phases
        (modify-phases %standard-phases
@@ -2159,6 +2147,7 @@ growing set of geoscientific methods.")
                              "PyCoreAdittions"
                              "PyQgsAnnotation"
                              "PyQgsAppStartup"
+                             "PyQgsAuthBasicMethod"
                              "PyQgsAuthenticationSystem"
                              "PyQgsAuxiliaryStorage"
                              "PyQgsDBManagerGpkg"
@@ -2412,3 +2401,43 @@ web services.  @code{geopy} makes it easy for Python developers to locate the
 coordinates of addresses, cities, countries, and landmarks across the globe
 using third-party geocoders and other data sources.")
     (license license:expat)))
+
+(define-public marble-qt
+  (let ((release "17.08")
+        (commit "fc7166eeef784732033c999ba605364f9c82d21c")
+        (revision "1"))
+    (package
+      (name "marble-qt")
+      (version (git-version release revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://invent.kde.org/education/marble.git/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0m0sf3sddaib7vc5lhbmh7ziw07p1hahg02f65sgfylyl5f5kj92"))
+         (patches (search-patches
+                   "marble-qt-add-qt-headers.patch"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f ; libmarblewidget-qt5.so.28 not found
+         #:configure-flags
+         '("-DCMAKE_BUILD_TYPE=Release"
+           "-DWITH_KF5=FALSE")))
+      (native-inputs
+       `(("qttools" ,qttools)))
+      (inputs
+       `(("qtbase" ,qtbase-5)
+         ("qtsvg" ,qtsvg)
+         ("qtdeclarative" ,qtdeclarative)
+         ("qtwebkit" ,qtwebkit)
+         ("qtlocation" ,qtlocation)))
+      (home-page "https://marble.kde.org/")
+      (synopsis "Virtual globe and world atlas")
+      (description "Marble is similar to a desktop globe.  At closer scale it
+becomes a world atlas, while OpenStreetMap takes the user to street level.  It
+supports searching for places of interest, viewing Wikipedia articles,
+creating routes by drag and drop and more.")
+      (license license:gpl3))))

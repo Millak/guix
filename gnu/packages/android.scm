@@ -11,6 +11,7 @@
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Sergey Trofimov <sarg@sarg.org.ru>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
 (define-module (gnu packages android)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system android-ndk)
   #:use-module (guix build-system gnu)
@@ -148,6 +150,7 @@ use their packages mostly unmodified in our Android NDK build system.")
                      "libutils-remove-damaging-includes.patch"
                      "libutils-add-includes.patch"
                      "adb-add-libraries.patch"
+                     "adb-libssl_11-compatibility.patch"
                      "libziparchive-add-includes.patch"))))
 
 (define (android-platform-system-extras version)
@@ -360,10 +363,12 @@ various Android core host applications.")
     (arguments
      `(#:tests? #f ; Test failure: sysdeps_poll.fd_count
        #:make-flags
-       (list "CFLAGS=-Wno-error"
-             "CXXFLAGS=-fpermissive -Wno-error -std=gnu++14 -D_Nonnull= -D_Nullable= -I ."
-             (string-append "LDFLAGS=-Wl,-rpath=" (assoc-ref %outputs "out") "/lib "
-                            "-Wl,-rpath=" (assoc-ref %build-inputs "openssl") "/lib -L ."))
+       ,#~(list
+           "CFLAGS=-Wno-error"
+           "CXXFLAGS=-fpermissive -Wno-error -std=gnu++14 -D_Nonnull= -D_Nullable= -I ."
+           (string-append
+            "LDFLAGS=-Wl,-rpath=" #$output "/lib "
+            "-Wl,-rpath=" #$(this-package-input "openssl") "/lib -L ."))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-source
@@ -388,7 +393,7 @@ various Android core host applications.")
      `(("android-libbase" ,android-libbase)
        ("android-libcutils" ,android-libcutils)
        ("android-liblog" ,android-liblog)
-       ("openssl" ,openssl-1.0)))
+       ("openssl" ,openssl)))
     (home-page "https://developer.android.com/studio/command-line/adb.html")
     (synopsis "Android Debug Bridge")
     (description
@@ -530,29 +535,25 @@ the core SELinux management utilities.")
     (build-system android-ndk-build-system)
     (arguments
      `(#:make-flags
-       (list (string-append "CPPFLAGS="
-                            ;"-Wno-error "
-                            "-I "
-                            (assoc-ref %build-inputs "android-libselinux")
-                            "/include "
-                            "-I " (assoc-ref %build-inputs "android-libsparse")
-                            "/include "
-                            "-I " (assoc-ref %build-inputs "android-libcutils")
-                            "/include "
-                            "-I " (assoc-ref %build-inputs "android-liblog") "/include "
-                            "-I ../core/include")
-             "CFLAGS=-Wno-error"
-             "install-libext4_utils_host.a"
-             (string-append "prefix=" (assoc-ref %outputs "out")))
+       ,#~(list
+           (string-append
+            "CPPFLAGS="
+            ;"-Wno-error "
+            "-I " #$(this-package-input "android-libselinux") "/include "
+            "-I " #$(this-package-input "android-libsparse")  "/include "
+            "-I " #$(this-package-input "android-libcutils")  "/include "
+            "-I " #$(this-package-input "android-liblog") "/include "
+            "-I ../core/include")
+           "CFLAGS=-Wno-error"
+           "install-libext4_utils_host.a"
+           (string-append "prefix=" #$output))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'unpack-core
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "core")
-             (with-directory-excursion "core"
-               (invoke "tar" "axf" (assoc-ref inputs "android-core")
-                             "--strip-components=1"))
-             #t))
+             (copy-recursively (assoc-ref inputs "android-core")
+                               "core")))
          (add-after 'unpack-core 'enter-source
            (lambda _ (chdir "ext4_utils") #t))
          (replace 'install
@@ -585,6 +586,9 @@ Android core.")
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-source
            (lambda _ (chdir "f2fs_utils") #t))
+         (add-before 'build 'set-compilation-flags
+           (lambda _
+             (setenv "CFLAGS" "-fcommon")))
          (add-after 'install 'install-headers
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively "." (string-append (assoc-ref outputs "out")

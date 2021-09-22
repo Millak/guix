@@ -178,7 +178,7 @@ shared NFS home directories.")
 (define glib
   (package
     (name "glib")
-    (version "2.68.0")
+    (version "2.68.3")
     (source
      (origin
        (method url-fetch)
@@ -187,7 +187,7 @@ shared NFS home directories.")
                        name "/" (string-take version 4) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1sh3h6b734cxhdd1qlzvhxq6rc7k73dsisap5y3s419s9xc4ywv7"))
+        (base32 "0f1iprj7v0b5wn9njj39dkl25g6filfs7i4ybk20jq821k1a7qg7"))
        (patches
         (search-patches "glib-appinfo-watch.patch"
                         "glib-skip-failing-test.patch"))
@@ -231,6 +231,18 @@ shared NFS home directories.")
                (substitute* '("contenttype.c" "gdbus-address-get-session.c"
                               "gdbus-peer.c" "appinfo.c" "desktop-app-info.c")
                  (("[ \t]*g_test_add_func.*;") "")))
+
+             ,@(if (let ((system (or (%current-target-system)
+                                     (%current-system))))
+                     (or (string-prefix? "i686-" system)
+                         (string-prefix? "i586-" system)))
+                   ;; Add the 'volatile' qualifier for doubles to avoid excess
+                   ;; precision, which leads to test failures:
+                   ;; <https://gitlab.gnome.org/GNOME/glib/-/issues/820>.
+                   '((substitute* "glib/tests/timer.c"
+                       (("gdouble elapsed")
+                        "volatile gdouble elapsed")))
+                   '())
              #t))
          ;; Python references are not being patched in patch-phase of build,
          ;; despite using python-wrapper as input. So we patch them manually.
@@ -291,10 +303,6 @@ shared NFS home directories.")
                  (("bindir=\\$\\{prefix\\}/bin") "")
                  (("=\\$\\{bindir\\}/") "="))
                #t))))))
-    ;; TODO: see above for explanation.
-    ;; #:configure-flags (list (string-append "--bindir="
-    ;;                                        (assoc-ref %outputs "bin")
-    ;;                                        "/bin"))
     (native-inputs
      `(("docbook-xsl" ,docbook-xsl)
        ("gettext" ,gettext-minimal)
@@ -385,6 +393,42 @@ functions for strings and common data structures.")
                   (string-append doc html))
                  #t)))))))))
 
+(define (python-extension-suffix python triplet)
+  "Determine the suffix for C extensions for PYTHON when compiled
+for TRIPLET."
+  ;; python uses strings like 'x86_64-linux-gnu' instead of
+  ;; 'x86_64-unknown-linux-gnu'.
+  (define normalised-system
+    (string-replace-substring triplet "-unknown-" "-"))
+  (define major.minor (version-major+minor (package-version python)))
+  (define majorminor (string-delete #\. major.minor))
+  (string-append
+    ;; If guix' python package used "--with-pydebug", a #\d would
+    ;; need to be added, likewise "--with-pymalloc" and "--with-wide-unicode"
+    ;; would require a #\m and #\u, see cpython's configure.ac.
+    ".cpython-" majorminor "-" normalised-system
+    (if (target-mingw? triplet)
+        ".dll"
+        ".so")))
+
+(define (correct-library-name-phase python name)
+  "Return a G-exp evaluating to a phase renaming the python extension NAME
+from what Meson thinks its name should be to what python expects its name
+to be.  NAME must not include the platform-specific suffix.  This can only
+be used when cross-compiling."
+  #~(lambda _
+      (define name #$name)
+      (define native-suffix
+        #$(python-extension-suffix python
+                                   (nix-system->gnu-triplet (%current-system))))
+      (define target-suffix
+        #$(python-extension-suffix python (%current-target-system)))
+      (define native-name
+        (string-append name native-suffix))
+      (define target-name
+        (string-append name target-suffix))
+      (rename-file native-name target-name)))
+
 (define gobject-introspection
   (package
     (name "gobject-introspection")
@@ -402,21 +446,58 @@ functions for strings and common data structures.")
                        "gobject-introspection-absolute-shlib-path.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
+     `(,@(if (%current-target-system)
+             `(#:configure-flags
+               '("-Dgi_cross_use_prebuilt_gi=true"
+                 ;; Building introspection data requires running binaries
+                 ;; for ‘host’ on ‘build’, so don't do that.
+                 ;;
+                 ;; TODO: it would be nice to have introspection data anyways
+                 ;; as discussed here: https://issues.guix.gnu.org/50201#60.
+                 "-Dbuild_introspection_data=false"))
+             '())
+       #:phases
+       ,#~
        (modify-phases %standard-phases
+         #$@(if (%current-target-system)
+                ;; 'typelibs' is undefined.
+                `((add-after 'unpack 'set-typelibs
+                    (lambda _
+                      (substitute* "meson.build"
+                        (("\\bsources: typelibs\\b")
+                         "sources: []")))))
+                '())
          (add-after 'unpack 'do-not-use-/usr/bin/env
            (lambda _
              (substitute* "tools/g-ir-tool-template.in"
                (("#!@PYTHON_CMD@")
                 (string-append "#!" (which "python3"))))
-             #t)))))
+             #t))
+         #$@(if (%current-target-system)
+               ;; Meson gives python extensions an incorrect name, see
+               ;; <https://github.com/mesonbuild/meson/issues/7049>.
+                #~((add-after 'install 'rename-library
+                     #$(correct-library-name-phase
+                         (this-package-input "python")
+                         #~(string-append #$output
+                                          "/lib/gobject-introspection/giscanner"
+                                          "/_giscanner"))))
+                #~()))))
     (native-inputs
      `(("glib" ,glib "bin")
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ;; TODO(core-updates): Unconditionally place "flex" and "bison"
+       ;; in 'native-inputs'.
+       ,@(if (%current-target-system)
+             `(("bison" ,bison)
+               ("flex" ,flex))
+             '())))
     (inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("python" ,python-wrapper)
+     `(,@(if (%current-target-system)
+             `(("python" ,python))
+             `(("bison" ,bison)
+               ("flex" ,flex)
+               ("python" ,python-wrapper)))
        ("zlib" ,zlib)))
     (propagated-inputs
      `(("glib" ,glib)
@@ -554,6 +635,16 @@ translated.")
               (base32
                "09g8swvc95bk1z6j8sw463p2v0dqmgm2zjfndf7i8sbcyq67dr3w"))))
     (build-system gnu-build-system)
+    (arguments
+     (if (%current-target-system)
+         `(#:configure-flags
+           ;; Run a native 'dbus-binding-tool' instead of a cross-compiled
+           ;; 'dbus-binding-tool' when cross-compiling.
+           ,#~(list
+               (string-append
+                "--with-dbus-binding-tool="
+                #+(file-append this-package "/bin/dbus-binding-tool"))))
+         '()))
     (propagated-inputs ; according to dbus-glib-1.pc
      `(("dbus" ,dbus)
        ("glib" ,glib)))
@@ -805,6 +896,14 @@ useful for C++.")
                        '("test_atoms.py" "test_overrides_gtk.py"))
              #t)))))
     (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; The default 90 seconds can be too low on slower machines.
+               (invoke "meson" "test" "--timeout-multiplier" "5")))))))
     (native-inputs
      `(("glib-bin" ,glib "bin")
        ("pkg-config" ,pkg-config)
@@ -1101,7 +1200,11 @@ Some codes examples can be find at:
            (lambda _
              (substitute* "libappstream-glib/as-self-test.c"
                (("g_test_add_func.*as_test_store_local_appdata_func);") ""))
-             #t)))))
+             #t))
+         (add-before 'check 'set-home
+           (lambda _
+             ;; Some tests want write access there.
+             (setenv "HOME" "/tmp"))))))
     (home-page "https://github.com/hughsie/appstream-glib")
     (synopsis "Library for reading and writing AppStream metadata")
     (description "This library provides objects and helper methods to help

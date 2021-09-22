@@ -15,6 +15,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -223,7 +224,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
 (define-public catfish
   (package
     (name "catfish")
-    (version "1.4.13")
+    (version "4.16.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -231,7 +232,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
                                   "/catfish-" version ".tar.bz2"))
               (sha256
                (base32
-                "0fg89946z6n8njxn4mv29jksw8yavg8vypsljn9031pjwl3fmh2q"))))
+                "0md6ypirr97ch7x8qliwzixzwj6zzd68ivb2dzj90hm2lcn7wc8h"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -263,6 +264,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
        ("intltool" ,intltool)))
     (inputs
      `(("which" ,which)
+       ("xfconf" ,xfconf)
        ("xdg-utils" ,xdg-utils)))
     (propagated-inputs
      `(("gtk+" ,gtk+)
@@ -779,7 +781,7 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "4.16.8")
+    (version "4.16.8")                            ;stable version = even minor
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -795,6 +797,7 @@ like appearance, display, keyboard and mouse settings.")
     (inputs
      `(("exo" ,exo)
        ("gobject-introspection" ,gobject-introspection)
+       ("gvfs" ,gvfs)
        ("libexif" ,libexif)
        ("libgudev" ,libgudev)
        ("libnotify" ,libnotify)
@@ -1242,7 +1245,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.5.5")
+    (version "0.5.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1250,7 +1253,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1qdbch7g8ppwn1rsm8nq9rbvabvx02lvn3dxb45ga3g1w005zhs0"))))
+                "03rmjraxb6a3w7gknmf6mdzkfc0m8shs1vkb2chvv28xn1irhma2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than

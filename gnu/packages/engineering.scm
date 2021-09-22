@@ -524,7 +524,7 @@ featuring various improvements and bug fixes.")))
      ;; FIXME: with texlive-tiny citation references are rendered as question
      ;; marks.  During the build warnings like these are printed:
      ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line 3.
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-fonts-amsfonts)))
+     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts)))
        ("ghostscript" ,ghostscript)))
     (arguments
      `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")
@@ -929,6 +929,16 @@ Emacs).")
                 (string-append "NGSPICE_DLL_FILE=\""
                                (assoc-ref inputs "libngspice")
                                "/lib/libngspice.so\"")))))
+         (add-after 'unpack 'fix-python-detection
+           (lambda _
+             (substitute* "CMakeModules/FindPythonLibs.cmake"
+               (("_PYTHON3_VERSIONS 3\\.8 3\\.7")
+                "_PYTHON3_VERSIONS 3.9 3.8 3.7"))))
+         (add-after 'unpack 'add-missing-include
+           (lambda _
+             (substitute* "common/lib_tree_model.cpp"
+               (("#include <eda_pattern_match.h>" all)
+                (string-append "#include <algorithm>\n" all)))))
          (add-after 'install 'install-translations
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "kicad-i18n")
@@ -1947,11 +1957,12 @@ parallel computing platforms.  It also supports serial execution.")
               (patches
                (list (origin
                        ;; Fix build with GCC 7.  Patch taken from Arch Linux:
-                       ;; https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/freehdl
+                       ;; https://github.com/archlinux/svntogit-community/tree/packages/freehdl/trunk
                        (method url-fetch)
-                       (uri "https://git.archlinux.org/svntogit/community.git\
-/plain/trunk/build-fix.patch?h=packages/freehdl\
-&id=3bb90d64dfe6883e26083cd1fa96226d0d59175a")
+                       (uri (string-append "https://raw.githubusercontent.com"
+                                           "/archlinux/svntogit-community"
+                                           "/3bb90d64dfe6883e26083cd1fa96226d0d59175a"
+                                           "/trunk/build-fix.patch"))
                        (file-name "freehdl-c++-namespace.patch")
                        (sha256
                         (base32
@@ -2406,7 +2417,7 @@ comments.")))
        ("libtheora" ,libtheora)
        ("libtiff" ,libtiff)
        ("libxi" ,libxi)
-       ("libxmlplusplus" ,libxmlplusplus)
+       ("libxml++" ,libxml++)
        ("libxmu" ,libxmu)
        ("lz4" ,lz4)
        ("netcdf" ,netcdf)

@@ -30,6 +30,7 @@
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +62,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gimp)
   #:use-module (gnu packages gl)
@@ -1175,79 +1177,85 @@ graphics image formats like PNG, BMP, JPEG, TIFF and others.")
    (home-page "http://freeimage.sourceforge.net")))
 
 (define-public vigra
-  (package
-   (name "vigra")
-   (version "1.11.1")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/ukoethe/vigra/releases/download/"
-                          "Version-" (string-join (string-split version #\.) "-")
-                          "/vigra-" version "-src.tar.gz"))
-      (patches (search-patches "vigra-python-compat.patch"))
-      (sha256 (base32
-                "1bqs8vx5i1bzamvv563i24gx2xxdidqyxh9iaj46mbznhc84wmm5"))))
-   (build-system cmake-build-system)
-   (inputs
-    `(("boost" ,boost)
-      ("fftw" ,fftw)
-      ("fftwf" ,fftwf)
-      ("hdf5" ,hdf5)
-      ("ilmbase" ,ilmbase) ; propagated by openexr, but needed explicitly
-                           ; to create a configure-flag
-      ("libjpeg" ,libjpeg-turbo)
-      ("libpng" ,libpng)
-      ("libtiff" ,libtiff)
-      ("openexr" ,openexr)
-      ("python" ,python-wrapper)
-      ("python-numpy" ,python-numpy)
-      ("zlib" ,zlib)))
-   (native-inputs
-    `(("doxygen" ,doxygen)
-      ("python-nose" ,python-nose)
-      ("sphinx" ,python-sphinx)))
-   (arguments
-    `(#:test-target "check"
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'disable-broken-tests
-          (lambda _
-            ;; See https://github.com/ukoethe/vigra/issues/432
-            (substitute* "test/fourier/CMakeLists.txt"
-              (("VIGRA_ADD_TEST.*") ""))
-            ;; This test fails with Numpy 1.15:
-            ;; <https://github.com/ukoethe/vigra/issues/436>.
-            (substitute* "vigranumpy/test/CMakeLists.txt"
-              (("test1\\.py") ""))
-            #t)))
-      #:configure-flags
-        (list "-Wno-dev" ; suppress developer mode with lots of warnings
-              (string-append "-DVIGRANUMPY_INSTALL_DIR="
-                             (assoc-ref %outputs "out")
-                             "/lib/python"
-                             ,(version-major+minor (package-version python))
-                             "/site-packages")
-              ;; OpenEXR is not enabled by default.
-              "-DWITH_OPENEXR=1"
-              ;; Fix rounding error on 32-bit machines
-              "-DCMAKE_C_FLAGS=-ffloat-store"
-              ;; The header files of ilmbase are not found when included
-              ;; by the header files of openexr, and an explicit flag
-              ;; needs to be set.
-              (string-append "-DCMAKE_CXX_FLAGS=-I"
-                             (assoc-ref %build-inputs "ilmbase")
-                             "/include/OpenEXR"
-                             " -ffloat-store"))))
-   (synopsis "Computer vision library")
-   (description
-    "VIGRA stands for Vision with Generic Algorithms.  It is an image
-processing and analysis library that puts its main emphasis on customizable
-algorithms and data structures.  It is particularly strong for
-multi-dimensional image processing.")
-   (license license:expat)
-   (home-page "https://ukoethe.github.io/vigra/")
-   (properties '((max-silent-time . 7200))))) ;2 hours, to avoid timing out
-
+    (let ((commit "9b514fa00a136f5fd81bb57ee9f6293c333ffc1f")
+          (revision "0"))
+    (package
+     (name "vigra")
+     (version (git-version "1.11.1" revision commit))
+     (source
+      (origin
+        ;; The last release is 1.11.1, from 2017. It's becoming more and more
+        ;; difficult to build this old release, and the upstream developers
+        ;; suggest on their home page to build from the Git repo, saying "It is
+        ;; generally safe to use the 'master' branch of the development snapshot,
+        ;; as we avoid uploading untested or incompatible changes to this branch."
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/ukoethe/vigra")
+               (commit commit)))
+        (file-name (git-file-name name version))
+        (sha256 (base32
+                  "1vzlypviala109imwxkp46lqhhxszf79ypfb8wxg6z7g02j7mm73"))))
+     (build-system cmake-build-system)
+     (inputs
+      `(("boost" ,boost)
+        ("fftw" ,fftw)
+        ("fftwf" ,fftwf)
+        ("hdf5" ,hdf5)
+        ("ilmbase" ,ilmbase) ; propagated by openexr, but needed explicitly
+                             ; to create a configure-flag
+        ("libjpeg" ,libjpeg-turbo)
+        ("libpng" ,libpng)
+        ("libtiff" ,libtiff)
+        ("openexr" ,openexr)
+        ("python" ,python-wrapper)
+        ("python-numpy" ,python-numpy)
+        ("zlib" ,zlib)))
+     (native-inputs
+      `(("doxygen" ,doxygen)
+        ("python-nose" ,python-nose)
+        ("sphinx" ,python-sphinx)))
+     (arguments
+      `(#:test-target "check"
+        #:phases
+        (modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            (lambda _
+              ;; See https://github.com/ukoethe/vigra/issues/432
+              (substitute* "test/fourier/CMakeLists.txt"
+                (("VIGRA_ADD_TEST.*") ""))
+              ;; This test fails with Numpy 1.15:
+              ;; <https://github.com/ukoethe/vigra/issues/436>.
+              (substitute* "vigranumpy/test/CMakeLists.txt"
+                (("test1\\.py") ""))
+              #t)))
+        #:configure-flags
+          (list "-Wno-dev" ; suppress developer mode with lots of warnings
+                (string-append "-DVIGRANUMPY_INSTALL_DIR="
+                               (assoc-ref %outputs "out")
+                               "/lib/python"
+                               ,(version-major+minor (package-version python))
+                               "/site-packages")
+                ;; OpenEXR is not enabled by default.
+                "-DWITH_OPENEXR=1"
+                ;; Fix rounding error on 32-bit machines
+                "-DCMAKE_C_FLAGS=-ffloat-store"
+                ;; The header files of ilmbase are not found when included
+                ;; by the header files of openexr, and an explicit flag
+                ;; needs to be set.
+                (string-append "-DCMAKE_CXX_FLAGS=-I"
+                               (assoc-ref %build-inputs "ilmbase")
+                               "/include/OpenEXR"
+                               " -ffloat-store"))))
+     (synopsis "Computer vision library")
+     (description
+      "VIGRA stands for Vision with Generic Algorithms.  It is an image
+  processing and analysis library that puts its main emphasis on customizable
+  algorithms and data structures.  It is particularly strong for
+  multi-dimensional image processing.")
+     (license license:expat)
+     (home-page "https://ukoethe.github.io/vigra/")
+     (properties '((max-silent-time . 7200)))))) ;2 hours, to avoid timing out
 
 (define-public vigra-c
   (let* ((commit "66ff4fa5a7d4a77415caa676a45c2c6ea16562e7")
@@ -1352,19 +1360,24 @@ channels.")
 (define-public exiv2
   (package
     (name "exiv2")
-    (version "0.27.3")
+    (version "0.27.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.exiv2.org/builds/exiv2-" version
                            "-Source.tar.gz"))
        (sha256
-        (base32 "0y77wfadjsrcxijdqgkr3q88b6mm9y3rg8kqsmaig8iah49md7x7"))))
+        (base32 "0klhxkxvkzzzcqpzv8jb56pykq0gyhb6rk9vc2kzjahngjx6sdl4"))))
     (build-system cmake-build-system)
-    (arguments '(#:tests? #f))          ; no test suite
+    (arguments
+     '(#:test-target "tests"
+       #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON")))
     (propagated-inputs
      `(("expat" ,expat)
        ("zlib" ,zlib)))
+    (native-inputs
+     `(("googletest" ,googletest)
+       ("python" ,python)))
     (home-page "https://www.exiv2.org/")
     (synopsis "Library and command-line utility to manage image metadata")
     (description
@@ -2044,6 +2057,30 @@ using only text tools.
 SNG is implemented by a compiler/decompiler called sng that
 losslessly translates between SNG and PNG.")
     (license license:zlib)))
+
+(define-public blurhash
+  (package
+    (name "blurhash")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nheko-Reborn/blurhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jy2iigarskwfhskyladbb6l92x1fb3i3vz4bvcks0za4w5hfxk5"))))
+    (build-system meson-build-system)
+    (native-inputs
+     `(("cmake" ,cmake)
+       ("doctest" ,doctest)
+       ("gcc" ,gcc-8)))
+    (home-page "https://github.com/Nheko-Reborn/blurhash")
+    (synopsis "C++ blurhash encoder/decoder")
+    (description "Simple encoder and decoder for blurhashes.  Contains a
+command line program as well as a shared library.")
+    (license license:boost1.0)))
 
 (define-public lodepng
   ;; There are no tags in the repository, so we take the version as defined in

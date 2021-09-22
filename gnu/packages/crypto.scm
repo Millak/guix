@@ -21,6 +21,7 @@
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,8 +47,10 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
@@ -58,6 +61,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
@@ -398,63 +402,6 @@ gain and retain the authorization and encryption keys required to perform
 secure operations. ")
     (license (list license:lgpl2.1+             ; the files keyutils.*
                    license:gpl2+))))            ; the rest
-
-;; There is no release candidate but commits point out a version number,
-;; furthermore no tarball exists.
-(define-public eschalot
-  (let ((commit "0bf31d88a11898c19b1ed25ddd2aff7b35dbac44")
-        (revision "1"))
-    (package
-      (name "eschalot")
-      (version (string-append "1.2.0-" revision "." (string-take commit 7)))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/schnabear/eschalot")
-               (commit commit)))
-         (file-name (string-append name "-" version))
-         (sha256
-          (base32
-           "0lj38ldh8vzi11wp4ghw4k0fkwp0s04zv8k8d473p1snmbh7mx98"))))
-      (inputs
-       `(("openssl" ,openssl-1.0)))     ; for openssl/{bn,pem,rsa,sha}.h
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                            (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                            (string-append "INSTALL=" "install"))
-         ;; XXX: make test would run a !VERY! long hashing of names with the use
-         ;; of a wordlist, the amount of computing time this would waste on build
-         ;; servers is in no relation to the size or importance of this small
-         ;; application, therefore we run our own tests on eschalot and worgen.
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'check
-             (lambda _
-               (invoke "./worgen" "8-12" "top1000.txt" "3-10" "top400nouns.txt"
-                       "3-6" "top150adjectives.txt" "3-6")
-               (invoke "./eschalot" "-r" "^guix|^GuixSystem")
-               (invoke "./eschalot" "-r" "^gnu|^free")
-               (invoke "./eschalot" "-r" "^cyber|^hack")
-               (invoke "./eschalot" "-r" "^troll")))
-           ;; Make install can not create the bin dir, create it.
-           (add-before 'install 'create-bin-dir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (mkdir-p bin)
-                 #t))))))
-      (home-page "https://github.com/schnabear/eschalot")
-      (synopsis "Tor hidden service name generator")
-      (description
-       "Eschalot is a tor hidden service name generator, it allows one to
-produce customized vanity .onion addresses using a brute-force method.  Searches
-for valid names can be run with regular expressions and wordlists.  For the
-generation of wordlists the included tool @code{worgen} can be used.  There is
-no man page, refer to the home page for usage details.")
-      (license (list license:isc license:expat)))))
 
 (define-public ssss
   (package
@@ -1119,7 +1066,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
          ("automake" ,automake)
          ("libtool" ,libtool)))
       ;; WARNING: This package might need additional configure flags to run properly.
-      ;; See https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/libsecp256k1.
+      ;; See https://github.com/archlinux/svntogit-community/blob/packages/libsecp256k1/trunk/PKGBUILD.
       (synopsis "C library for EC operations on curve secp256k1")
       (description
        "Optimized C library for EC operations on curve secp256k1.
@@ -1443,3 +1390,76 @@ them out.  The process will degrade gracefully, so even people without your
 encryption password can safely commit changes to the repository's
 non-encrypted files.")
     (license license:expat)))
+
+(define-public cryfs
+  (package
+    (name "cryfs")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/cryfs/cryfs/releases/download/"
+             version "/cryfs-" version ".tar.xz"))
+       (sha256
+        (base32 "0dxphbj5sssm82rkkdb71algrcki16qlpzlvrjyvvm6b7x7zi0sm"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
+       #:configure-flags
+        ;; Note: This also disables checking for security issues.
+       `("-DCRYFS_UPDATE_CHECKS=OFF"
+         ;; This helps us use some dependencies from Guix instead of conan.
+         ;; crypto++ is still bundled: https://github.com/cryfs/cryfs/issues/369
+         ;; Googletest is also since I wasn't sure how to unbundle that.
+         ,(string-append "-DDEPENDENCY_CONFIG=" (getcwd)
+                         "/cmake-utils/DependenciesFromLocalSystem.cmake"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-configure
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; Remove junk directory that breaks the build
+             (chdir "..") (delete-file-recursively ".circleci")
+             ;; Install documentation with Guix defaults.
+             (substitute* "doc/CMakeLists.txt"
+               (("CONFIGURATIONS Release")
+                "CONFIGURATIONS Release RelWithDebInfo"))
+             (when tests?
+               (substitute* "CMakeLists.txt"
+                 (("option.BUILD_TESTING .build test cases. OFF.")
+                  "option(BUILD_TESTING \"build test cases\" ON)")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (let ((tests (find-files "." "-test$")))
+                 ;; XXX: Disable failing tests. Unfortunately there are a
+                   ;; few. Some only fail in the build environment due to
+                   ;; FUSE not being available.
+                   (for-each invoke
+                             (lset-difference string-contains
+                                              tests
+                                              '("cpp-utils-test"
+                                                "cryfs-cli-test"
+                                                "blobstore-test"
+                                                "fspp-test")))))
+             #t)))))
+    (native-inputs
+     `(("python" ,python-wrapper)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("boost" ,boost)
+       ("curl" ,curl)
+       ("fuse" ,fuse)
+       ("range-v3" ,range-v3)
+       ("spdlog" ,spdlog)))
+    (home-page "https://www.cryfs.org/")
+    (synopsis "Encrypted FUSE filesystem for the cloud")
+    (description "CryFS encrypts your files, so you can safely store them anywhere.
+It works well together with cloud services like Dropbox, iCloud, OneDrive and
+others.  CryFS creates an encrypted userspace filesystem that can be mounted
+via FUSE without root permissions.  It is similar to EncFS, but provides
+additional security and privacy measures such as hiding file sizes and directory
+structure.  However CryFS is not considered stable yet by the developers.")
+    (license license:lgpl3+)))

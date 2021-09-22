@@ -8,6 +8,8 @@
 ;;; Copyright © 2020 shtwzrd <shtwzrd@protonmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +31,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system pam)
+  #:use-module (gnu system setuid)
   #:use-module (gnu system keyboard)
   #:use-module (gnu services base)
   #:use-module (gnu services dbus)
@@ -159,6 +162,7 @@
   xorg-configuration make-xorg-configuration
   xorg-configuration?
   (modules          xorg-configuration-modules    ;list of packages
+                    (thunked)
                     ; filter out modules not supported on current system
                     (default (filter
                               (lambda (p)
@@ -541,6 +545,8 @@ a `service-extension', as used by `set-xorg-configuration'."
         (default slim))
   (allow-empty-passwords? slim-configuration-allow-empty-passwords?
                           (default #t))
+  (gnupg? slim-configuration-gnupg?
+          (default #f))
   (auto-login? slim-configuration-auto-login?
                (default #f))
   (default-user slim-configuration-default-user
@@ -570,7 +576,9 @@ a `service-extension', as used by `set-xorg-configuration'."
          "slim"
          #:login-uid? #t
          #:allow-empty-passwords?
-         (slim-configuration-allow-empty-passwords? config))))
+         (slim-configuration-allow-empty-passwords? config)
+         #:gnupg?
+         (slim-configuration-gnupg? config))))
 
 (define (slim-shepherd-service config)
   (let* ((xinitrc (xinitrc #:fallback-session
@@ -681,7 +689,7 @@ reboot_cmd " shepherd "/sbin/reboot\n"
                              #:allow-empty-passwords? empty?)))))
 
 (define screen-locker-setuid-programs
-  (compose list screen-locker-program))
+  (compose list file-like->setuid-program screen-locker-program))
 
 (define screen-locker-service-type
   (service-type (name 'screen-locker)

@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2017 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -86,7 +86,12 @@
               "0l200a0v7h8bh0cwz6v7hc13ds39cgqsmfrks55b1rbj5vniyiy3"))
             (patches (search-patches "guile-1.8-cpp-4.5.patch"))))
    (build-system gnu-build-system)
-   (arguments '(#:configure-flags '("--disable-error-on-warning")
+   (arguments '(#:configure-flags '("--disable-error-on-warning"
+
+                                    ;; Build with '-O1' to work around GC
+                                    ;; crash on x86_64:
+                                    ;; <https://issues.guix.gnu.org/50427>.
+                                    "CFLAGS=-O1 -g -Wall")
 
                 ;; Insert a phase before `configure' to patch things up.
                 #:phases
@@ -105,8 +110,13 @@
 
                       ;; The usual /bin/sh...
                       (substitute* "ice-9/popen.scm"
-                        (("/bin/sh") (which "sh")))
-                      #t)))))
+                        (("/bin/sh") (which "sh"))))))
+
+                ;; XXX: Several numerical tests and tests related to
+                ;; 'inet-pton' fail on glibc 2.33/GCC 10.  Disable them.
+                ;; TODO: Remove this package when its dependents no longer
+                ;; need it.
+                #:tests? #f))
 
    ;; When cross-compiling, a native version of Guile itself is needed.
    (native-inputs (if (%current-target-system)
@@ -805,7 +815,7 @@ type system, elevating types to first-class status.")
 (define-public guile-git
   (package
     (name "guile-git")
-    (version "0.5.1")
+    (version "0.5.2")
     (home-page "https://gitlab.com/guile-git/guile-git.git")
     (source (origin
               (method git-fetch)
@@ -815,7 +825,7 @@ type system, elevating types to first-class status.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x3wa6la4j1wcfxyhhjlmd7yp85wwpny0y6lrzpz803i9z5fwagc"))))
+                "11a51acibwi2hpaygmrpn6nwbr4lqalc87ihrgj3mhz6swbsk9n7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ; to prevent guild warnings

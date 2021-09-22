@@ -8,7 +8,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
@@ -154,21 +154,16 @@ a focus on simplicity and productivity.")
 (define-public ruby-2.7
   (package
     (inherit ruby-2.6)
-    (version "2.7.2")
+    (version "2.7.4")
     (source
      (origin
-       (method url-fetch)
+       (inherit (package-source ruby-2.6))
        (uri (string-append "https://cache.ruby-lang.org/pub/ruby/"
                            (version-major+minor version)
                            "/ruby-" version ".tar.gz"))
        (sha256
         (base32
-         "1m63461mxi3fg4y3bspbgmb0ckbbb1ldgf9xi0piwkpfsk80cmvf"))
-       (modules '((guix build utils)))
-       (snippet `(begin
-                   ;; Remove bundled libffi
-                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-                   #t))))
+         "0nxwkxh7snmjqf787qsp4i33mxd1rbf9yzyfiky5k230i680jhrh"))))
     (arguments
      `(#:test-target "test"
        #:configure-flags '("--enable-shared") ; dynamic linking
@@ -197,7 +192,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.0
   (package
     (inherit ruby-2.7)
-    (version "3.0.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
@@ -206,12 +201,12 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1cbcixwnr0y8q0lg67wjgplp06kjd6p6hjjh680csv3v0bpsxgv8"))))))
+         "0h2w2ms4gx2s96v3lzdr3add94bd2qqkhdjzaycmaqhg21rpf3jp"))))))
 
 (define-public ruby-2.5
   (package
     (inherit ruby-2.6)
-    (version "2.5.8")
+    (version "2.5.9")
     (source
      (origin
        (method url-fetch)
@@ -220,12 +215,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "0vad5ah1lrdhxsyqr5iqc8c7r7qczpmm76cz8rsf4crimpzv5483"))
-       (modules '((guix build utils)))
-       (snippet `(begin
-                   ;; Remove bundled libffi
-                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-                   #t))))))
+         "1w2qncacm7h3f3il1whghdabwnv9fvwmz9f1a9vcg32006ljyzx8"))))))
 
 (define-public ruby-2.4
   (package
@@ -1183,14 +1173,18 @@ structure.  Supports custom object formatting via plugins.")
                  (("('|\")pandoc" _ quote)
                   (string-append quote pandoc))
                  (("\\^pandoc")
-                  ".*pandoc"))
-               #t)))
+                  ".*pandoc")))))
+         (add-after 'unpack 'adjust-tests
+           ;; The tests expect filenames with spaces.  Because they don't have
+           ;; spaces the quotes around the output are dropped automatically.
+           (lambda _
+             (substitute* "test/test_pandoc_ruby.rb"
+               (("\\\\\"#\\{file\\.path\\}\\\\\"") "#{file.path}"))))
          (add-after 'extract-gemspec 'remove-Gemfile.lock
            (lambda _
              (delete-file "Gemfile.lock")
              (substitute* "pandoc-ruby.gemspec"
-               (("Gemfile\\.lock") ""))
-             #t)))))
+               (("Gemfile\\.lock") "")))))))
     (native-inputs
      `(("ruby-mocha" ,ruby-mocha)))
     (inputs
@@ -1281,7 +1275,7 @@ syntax to the minimum while remaining clear.")
 (define-public ruby-asciidoctor
   (package
     (name "ruby-asciidoctor")
-    (version "2.0.10")
+    (version "2.0.16")
     (source
      (origin
        (method git-fetch)               ;the gem release lacks a Rakefile
@@ -1291,7 +1285,7 @@ syntax to the minimum while remaining clear.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jaxpnsdnx3qyjw5p2lsx1swny12q1i2vxw2kgdp4vlsyjv95z95"))))
+         "086i17v9rxx0sxac26xp8c5v75jqba6rqjlk57x94qjvrh8vzyw2"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "test:all"
@@ -1305,7 +1299,8 @@ syntax to the minimum while remaining clear.")
                 (string-append stripped "\n")))
              #t)))))
     (native-inputs
-     `(("ruby-erubis" ,ruby-erubis)
+     `(("ruby-erubi" ,ruby-erubi)
+       ("ruby-erubis" ,ruby-erubis)
        ("ruby-minitest" ,ruby-minitest)
        ("ruby-nokogiri" ,ruby-nokogiri)
        ("ruby-asciimath" ,ruby-asciimath)
@@ -1942,7 +1937,7 @@ PDF library.  It has features such as:
 (define-public ruby-ast
   (package
     (name "ruby-ast")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
      (origin
        (method git-fetch)               ;no test included in gem from v2.4.1
@@ -1952,7 +1947,7 @@ PDF library.  It has features such as:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0k8vya256chimy473g818gim06m5rjgh6mz5sc5g8xz3csh3rysi"))))
+         "0vm94yml8rknr7z034vg6s3fpx6lml2prz9fn3hr67cx0143bb4h"))))
     (build-system ruby-build-system)
     (arguments
      '(#:phases
@@ -1964,24 +1959,25 @@ PDF library.  It has features such as:
                (("Coveralls::SimpleCov::Formatter") ""))
              #t))
          (add-after 'extract-gemspec 'remove-unnecessary-requirements
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "ast.gemspec"
                ((".*coveralls.*") "\n")
                (("%q<rest-client>.*") "%q<rest-client>.freeze, [\">= 0\"])\n")
                (("%q<mime-types>.*") "%q<mime-types>.freeze, [\">= 0\"])\n")
-               (("%q<rake>.*") "%q<rake>.freeze, [\">= 0\"])\n"))
+               (("%q<rake>.*") "%q<rake>.freeze, [\">= 0\"])\n")
+               (("12\\.3") "13.0"))
              #t)))))
     (native-inputs
      `(("bundler" ,bundler)
-       ("ruby-simplecov" ,ruby-simplecov)
-       ("ruby-json-pure" ,ruby-json-pure)
-       ("ruby-mime-times" ,ruby-mime-types)
-       ("ruby-yard" ,ruby-yard)
-       ("ruby-kramdown" ,ruby-kramdown)
-       ("ruby-rest-client" ,ruby-rest-client)
        ("ruby-bacon" ,ruby-bacon)
        ("ruby-bacon-colored-output" ,ruby-bacon-colored-output)
-       ("ruby-racc" ,ruby-racc)))
+       ("ruby-json-pure" ,ruby-json-pure)
+       ("ruby-kramdown" ,ruby-kramdown)
+       ("ruby-mime-types" ,ruby-mime-types)
+       ("ruby-racc" ,ruby-racc)
+       ("ruby-rest-client" ,ruby-rest-client)
+       ("ruby-simplecov" ,ruby-simplecov)
+       ("ruby-yard" ,ruby-yard)))
     (synopsis "Library for working with Abstract Syntax Trees")
     (description
      "@code{ast} is a Ruby library for working with Abstract Syntax Trees.
@@ -2104,8 +2100,6 @@ value is found.")
                            (invoke "ruby" "-Ilib" "-Itest" "-rrubygems" file))
                          (find-files "test" ".*rb$")))
              #t)))))
-    (propagated-inputs
-     `(("ruby-rexml" ,ruby-rexml)))
     (synopsis "Simple JSON and XML parsing for Ruby")
     (description
      "@code{crack} provides really simple JSON and XML parsing, extracted from
@@ -3755,13 +3749,13 @@ temporary files and directories during tests.")
 (define-public ruby-test-unit
   (package
     (name "ruby-test-unit")
-    (version "3.2.5")
+    (version "3.4.4")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "test-unit" version))
               (sha256
                (base32
-                "05bx36fw01iqz0xqhvjfrwjgnj1zx3b2vn6w1fzp19rchd7zqc52"))))
+                "15isy7vhppbfd0032klirj9gxp65ygkzjdwrmm28xpirlcsk6qpd"))))
     (build-system ruby-build-system)
     (propagated-inputs
      `(("ruby-power-assert" ,ruby-power-assert)))
@@ -4299,13 +4293,13 @@ number, support for interrupted tests, better backtraces, and more.")
 (define-public ruby-mocha
   (package
     (name "ruby-mocha")
-    (version "1.11.2")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "mocha" version))
               (sha256
                (base32
-                "0hxmkm8qxd04vwj8mqnpyrf2dwy7g1k9zipdfhl4y71cw7ijm9n4"))))
+                "15s53ggsykk69kxqvs4416s8yxdhz6caggva55n8sjgy4ixzwp10"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -4324,7 +4318,7 @@ number, support for interrupted tests, better backtraces, and more.")
     (description
      "Mocha is a mocking and stubbing library with JMock/SchMock syntax, which
 allows mocking and stubbing of methods on real (non-mock) classes.")
-    (home-page "http://gofreerange.com/mocha/docs")
+    (home-page "https://mocha.jamesmead.org/")
     ;; Mocha can be used with either license at the users choice.
     (license (list license:expat license:ruby))))
 
@@ -4404,13 +4398,13 @@ client protocol.")
 (define-public ruby-minitest
   (package
     (name "ruby-minitest")
-    (version "5.12.2")
+    (version "5.14.4")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "minitest" version))
               (sha256
                (base32
-                "0zjm24aiz42i9n37mcw8lydd7n0y7wfk27by06jx77ypcld3qvkw"))))
+                "19z7wkhg59y8abginfrm2wzplz7py3va8fyngiigngqvsws6cwgl"))))
     (build-system ruby-build-system)
     (native-inputs
      `(("ruby-hoe" ,ruby-hoe)))
@@ -4628,7 +4622,8 @@ MiniTest @code{Object#stub} with a global @code{stub} method.")
          "1hbq9jk904xkz868yha1bqcm6azm7kmjsll2k4pn2nrcib508h2a"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f          ; Test suite has bitrotted.
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'clean-dependencies
            (lambda _
@@ -4746,17 +4741,20 @@ minitest 5.12, and is planned to be removed from minitest 6.")
 (define-public ruby-minitest-hooks
   (package
     (name "ruby-minitest-hooks")
-    (version "1.4.2")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "minitest-hooks" version))
        (sha256
         (base32
-         "0lnpvzijbjrvxjc43d155jnbk2mkfshrz22an711wh004scavlzc"))))
+         "05z8r6sw3fz4s44fs1150ndlcmcy82vlxmhps5nncg8vk59k3gmf"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"))
+     '(#:test-target "spec"
+       ;; Test suite is incompatible with ruby-2.7.
+       ;; https://github.com/jeremyevans/minitest-hooks/issues/19
+       #:tests? #f))
     (native-inputs
      `(("ruby-sequel" ,ruby-sequel)
        ("ruby-sqlite3" ,ruby-sqlite3)))
@@ -4970,7 +4968,7 @@ net/http library.")
 (define-public ruby-multi-json
   (package
     (name "ruby-multi-json")
-    (version "1.13.1")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
@@ -4982,20 +4980,17 @@ net/http library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18wpb6p01rrkl4v33byh70vxj2a5jxkfxzv3pz8z6pssy4ymwkm4"))))
+         "0mkdvy6i00yyksjvnv6znh7wf89j9506qzzjq6bsbmbkyqrszp4d"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-signing-key-reference
+         (add-before 'check 'pre-check
            (lambda _
-             (substitute* "multi_json.gemspec"
-               ((".*spec.signing_key.*") ""))
-             #t)))))
+             ;; As seen in the .travis.yml file.
+             (setenv "SKIP_ADAPTERS" "gson,jr_jackson,nsjsonserialization"))))))
     (native-inputs
-     `(("bundler" ,bundler)
-       ("ruby-rspec" ,ruby-rspec)
-       ("ruby-yard" ,ruby-yard)
+     `(("ruby-rspec" ,ruby-rspec)
        ("ruby-json-pure" ,ruby-json-pure)
        ("ruby-oj" ,ruby-oj)
        ("ruby-yajl-ruby" ,ruby-yajl-ruby)))
@@ -5971,13 +5966,13 @@ documentation for Ruby code.")
 (define-public ruby-tins
   (package
     (name "ruby-tins")
-    (version "1.15.0")
+    (version "1.29.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "tins" version))
               (sha256
                (base32
-                "09whix5a7ics6787zrkwjmp16kqyh6560p9f317syks785805f7s"))))
+                "0nzp88y19rqlcizp1nw8m44fvfxs9g3bhjpscz44dwfawfrmr0cb"))))
     (build-system ruby-build-system)
     ;; This gem needs gem-hadar at development time, but gem-hadar needs tins
     ;; at runtime.  To avoid the dependency on gem-hadar we disable rebuilding
@@ -5993,6 +5988,8 @@ documentation for Ruby code.")
             (substitute* "tins.gemspec"
               (("\"lib/spruz\", ") ""))
             (invoke "gem" "build" "tins.gemspec"))))))
+    (propagated-inputs
+     `(("ruby-sync" ,ruby-sync)))
     (synopsis "Assorted tools for Ruby")
     (description "Tins is a Ruby library providing assorted tools.")
     (home-page "https://github.com/flori/tins")
@@ -6228,13 +6225,13 @@ a native C extension.")
 (define-public ruby-json-pure
   (package
     (name "ruby-json-pure")
-    (version "2.2.0")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "json_pure" version))
               (sha256
                (base32
-                "0m0j1mfwv0mvw72kzqisb26xjl236ivqypw1741dkis7s63b8439"))))
+                "00pziwkfqwk8vj19s65sdki31q1wvmf5v9b3sfglxm94qfvas1lx"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -6243,28 +6240,13 @@ a native C extension.")
            (lambda _
              (substitute* "Rakefile"
                ;; Since this is not a git repository, do not call 'git'.
-               (("`git ls-files`") "`find . -type f |sort`")
-               ;; Loosen dependency constraint.
-               (("'test-unit', '~> 2.0'") "'test-unit', '>= 2.0'"))
-             #t))
-         (add-after 'replace-git-ls-files 'regenerate-gemspec
-           (lambda _
-             ;; Regenerate gemspec so loosened dependency constraints are
-             ;; propagated.
-             (invoke "rake" "gemspec")))
-         (add-after 'regenerate-gemspec 'fix-json-java.gemspec
-           (lambda _
-             ;; This gemspec doesn't look to be generated by the above
-             ;; command, so patch it separately.
-             (substitute* "json-java.gemspec"
-               (("%q<test-unit>\\.freeze, \\[\"~> 2\\.0\"\\]")
-                "%q<test-unit>.freeze, [\">= 2.0\"]"))
-             #t)))))
+               (("`git ls-files`") "`find . -type f |sort`")))))))
     (native-inputs
      `(("bundler" ,bundler)
        ("ragel" ,ragel)
        ("ruby-simplecov" ,ruby-simplecov)
-       ("ruby-test-unit" ,ruby-test-unit)))
+       ("ruby-test-unit" ,ruby-test-unit)
+       ("which" ,which)))
     (synopsis "JSON implementation in pure Ruby")
     (description
      "This package provides a JSON implementation written in pure Ruby.")
@@ -6531,6 +6513,24 @@ acceptable elements, attributes, and CSS properties, Sanitize will remove all
 unacceptable HTML and/or CSS from a string.")
     (license license:expat)))
 
+(define-public ruby-sync
+  (package
+    (name "ruby-sync")
+    (version "0.5.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "sync" version))
+        (sha256
+         (base32
+          "1z9qlq4icyiv3hz1znvsq1wz2ccqjb1zwd6gkvnwg6n50z65d0v6"))))
+    (build-system ruby-build-system)
+    (synopsis "Ruby module with a two-phase lock and counter")
+    (description "This package provides a Ruby module that provides a two-phase
+lock with a counter.")
+    (home-page "https://github.com/ruby/sync")
+    (license license:bsd-2)))
+
 (define-public ruby-oj
   (package
     (name "ruby-oj")
@@ -6652,31 +6652,6 @@ with PostgreSQL 9.0 and later.")
 (define-public ruby-byebug
   (package
     (name "ruby-byebug")
-    (version "9.0.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "byebug" version))
-       (sha256
-        (base32
-         "1kbfcn65rgdhi72n8x9l393b89rvi5z542459k7d1ggchpb0idb0"))))
-    (build-system ruby-build-system)
-    (arguments
-     '(#:tests? #f)) ; no tests
-    (synopsis "Debugger for Ruby 2")
-    (description "Byebug is a Ruby 2 debugger implemented using the Ruby 2
-TracePoint C API for execution control and the Debug Inspector C API for call
-stack navigation.  The core component provides support that front-ends can
-build on.  It provides breakpoint handling and bindings for stack frames among
-other things and it comes with a command line interface.")
-    (home-page "https://github.com/deivid-rodriguez/byebug")
-    (license license:bsd-2)))
-
-;;; TODO: Make it the default byebug in core-updates.
-(define-public ruby-byebug-11
-  (package
-    (inherit ruby-byebug)
-    (name "ruby-byebug")
     (version "11.1.3")
     (source
      (origin
@@ -6700,9 +6675,9 @@ other things and it comes with a command line interface.")
                (("load File\\.expand_path\\(\"bundle\".*") "")
                (("require \"bundler/setup\".*") "")))
            #t))))
+    (build-system ruby-build-system)
     (arguments
-     `(#:tests? #t
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-tmp-path-sensitive-test
            (lambda _
@@ -6713,6 +6688,12 @@ other things and it comes with a command line interface.")
          (add-before 'build 'compile
            (lambda _
              (invoke "rake" "compile")))
+         (add-before 'check 'disable-misbehaving-test
+           ;; Expects 5, gets 162. From a file containing ~10 lines.
+           (lambda _
+             (substitute* "test/commands/finish_test.rb"
+               (("test_finish_inside_autoloaded_files")
+                "finish_inside_autoloaded_files"))))
          (add-before 'check 'set-home
            (lambda _
              (setenv "HOME" (getcwd))
@@ -6724,7 +6705,15 @@ other things and it comes with a command line interface.")
        ("ruby-pry" ,ruby-pry)
        ("ruby-rake-compiler" ,ruby-rake-compiler)
        ("ruby-rubocop" ,ruby-rubocop)
-       ("ruby-yard" ,ruby-yard)))))
+       ("ruby-yard" ,ruby-yard)))
+    (synopsis "Debugger for Ruby 2")
+    (description "Byebug is a Ruby 2 debugger implemented using the Ruby 2
+TracePoint C API for execution control and the Debug Inspector C API for call
+stack navigation.  The core component provides support that front-ends can
+build on.  It provides breakpoint handling and bindings for stack frames among
+other things and it comes with a command line interface.")
+    (home-page "https://github.com/deivid-rodriguez/byebug")
+    (license license:bsd-2)))
 
 (define-public ruby-netrc
   (package
@@ -6746,8 +6735,11 @@ other things and it comes with a command line interface.")
            (lambda _
              (for-each (lambda (file)
                          (invoke "ruby" "-Itest" file))
-                       (find-files "./test" "test_.*\\.rb"))
-             #t)))))
+                       (find-files "./test" "test_.*\\.rb"))))
+         (add-before 'check 'patch-tests-for-newer-ruby
+           (lambda _
+             (substitute* "test/test_netrc.rb"
+               (("Dir.pwd, '.netrc'") "Netrc.home_path, '.netrc'")))))))
     (native-inputs
      `(("ruby-minitest" ,ruby-minitest)))
     (synopsis "Library to read and update netrc files")
@@ -6850,15 +6842,17 @@ differences (added or removed nodes) between two XML/HTML documents.")
 (define-public ruby-racc
   (package
     (name "ruby-racc")
-    (version "1.4.14")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "racc" version))
        (sha256
         (base32
-         "00yhs2ag7yy5v83mqvkbnhk9bvsh6mx3808k53n61ddzx446v1zl"))))
+         "178k7r0xn689spviqzhvazzvxfq6fyjldxb3ywjbgipbfi4s8j1g"))))
     (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #f))            ; Fails while parsing test instructions.
     (native-inputs
      `(("ruby-hoe" ,ruby-hoe)
        ("ruby-rake-compiler" ,ruby-rake-compiler)))
@@ -7225,35 +7219,38 @@ following: @code{[1, 2, 3, 4, 6, 8, 9, 10]} into @code{[1..4, 6..6, 8..10]}.")
     (license license:expat)))
 
 (define-public ruby-regexp-property-values
-  (package
-    (name "ruby-regexp-property-values")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference              ;no test suite in distributed gem
-             (url "https://github.com/jaynetics/regexp_property_values")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0l3fjmscg1wxn7kc6bl022cc6k5d91pwb7daq1b5w36kvsx52w1j"))))
-    (build-system ruby-build-system)
-    (arguments
-     '(#:test-target "default"))
-    (native-inputs
-     `(("ruby-character-set" ,ruby-character-set)
-       ("ruby-rake-compiler" ,ruby-rake-compiler)
-       ("ruby-range-compressor" ,ruby-range-compressor)
-       ("ruby-rspec" ,ruby-rspec)))
-    (synopsis "Inspect Ruby's regex engine property values")
-    (description "This small library lets you see which property values are
+  (let ((commit "03007a66c912949a7130b973cc0eca109c20811f")
+        (revision "1"))
+    (package
+      (name "ruby-regexp-property-values")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference              ;no test suite in distributed gem
+               (url "https://github.com/jaynetics/regexp_property_values")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1zsax784p16zdkf60lyq9z924zvsafhx9ckxx9srsgkyiqrifi1s"))))
+      (build-system ruby-build-system)
+      (arguments
+       '(#:test-target "default"))
+      (native-inputs
+       `(("ruby-character-set" ,ruby-character-set)
+         ("ruby-rake" ,ruby-rake)
+         ("ruby-rake-compiler" ,ruby-rake-compiler)
+         ("ruby-range-compressor" ,ruby-range-compressor)
+         ("ruby-rspec" ,ruby-rspec)))
+      (synopsis "Inspect Ruby's regex engine property values")
+      (description "This small library lets you see which property values are
 supported by the regular expression engine of the Ruby version you are running
 and can directly read out their code point ranges.  In other words, it
 determines all supported values for @code{\\p{value}} expressions and what
 they match.")
-    (home-page "https://github.com/jaynetics/regexp_property_values")
-    (license license:expat)))
+      (home-page "https://github.com/jaynetics/regexp_property_values")
+      (license license:expat))))
 
 (define-public ruby-regexp-parser
   (package
@@ -7384,7 +7381,6 @@ run.")
        ("ruby-parser" ,ruby-parser)
        ("ruby-rainbow" ,ruby-rainbow)
        ("ruby-regexp-parser" ,ruby-regexp-parser)
-       ("ruby-rexml" ,ruby-rexml)
        ("ruby-rubocop-ast" ,ruby-rubocop-ast)
        ("ruby-progressbar" ,ruby-progressbar)
        ("ruby-unicode-display-width" ,ruby-unicode-display-width)))
@@ -7665,7 +7661,7 @@ notes.")
        ("ruby-rubocop" ,ruby-rubocop)
        ("ruby-simplecov" ,ruby-simplecov)))
     (propagated-inputs
-     `(("ruby-byebug" ,ruby-byebug-11)
+     `(("ruby-byebug" ,ruby-byebug)
        ("ruby-pry" ,ruby-pry)))
     (synopsis "Step-by-step debugging and stack navigation in Pry")
     (description "This package adds step-by-step debugging and stack
@@ -7676,15 +7672,26 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
 (define-public ruby-stackprof
   (package
     (name "ruby-stackprof")
-    (version "0.2.16")
+    (version "0.2.17")
     (source
-      (origin
-        (method url-fetch)
-        (uri (rubygems-uri "stackprof" version))
-        (sha256
-         (base32
-          "147rb66p3n062vc433afqhkd99iazvkrqnghxgh871r62yhha93f"))))
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "stackprof" version))
+       (sha256
+        (base32 "06lz70k8c0r7fyxk1nc3idh14x7nvsr21ydm1bsmbj00jyhmfzsn"))))
     (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'skip-dubious-test
+           ;; This unreliable test can fail with "Expected 0 to be >= 1."
+           (lambda _
+             (substitute* "test/test_stackprof.rb"
+               (("def test_(cputime)" _ name)
+                (string-append "def skip_" name)))))
+         (add-before 'check 'build-tests
+           (lambda _
+             (invoke "rake" "compile"))))))
     (native-inputs
      `(("ruby-mocha" ,ruby-mocha)
        ("ruby-rake-compiler" ,ruby-rake-compiler)))
@@ -7763,14 +7770,14 @@ variable length integers (varint) in Ruby Protocol Buffers.")
 (define-public ruby-ruby-prof
   (package
     (name "ruby-ruby-prof")
-    (version "1.4.1")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ruby-prof" version))
        (sha256
         (base32
-         "12cd91m08ih0imfpy4k87618hd4mhyz291a6bx2hcskza4nf6d27"))))
+         "1r3xalp91l07m0cwllcxjzg6nkviiqnxkcbgg5qnzsdji6rgy65m"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -9942,14 +9949,14 @@ generation.")
 (define-public ruby-sequel
   (package
     (name "ruby-sequel")
-    (version "4.49.0")
+    (version "5.47.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sequel" version))
        (sha256
         (base32
-         "010p4a60npppvgbyw7pq5xia8aydpgxdlhh3qjm2615kwjsw3fl8"))))
+         "03pmhj4kc3ga75wy397l57bvd18jxxmrk3qsznjw93b993qgvj3z"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; Avoid dependency loop with ruby-minitest-hooks.
@@ -10657,7 +10664,8 @@ the @file{spec} directory.")
      `(("ruby-sass-listen" ,ruby-sass-listen)))
     (native-inputs
      `(("ruby-sass-spec" ,ruby-sass-spec)
-       ("ruby-mathn" ,ruby-mathn)))
+       ("ruby-mathn" ,ruby-mathn)
+       ("ruby-cmath" ,ruby-cmath)))
     (home-page "https://sass-lang.com/")
     (synopsis "CSS extension language")
     (description "Sass is a CSS extension language.  It extends CSS with
@@ -12443,3 +12451,28 @@ resource assignment, cost and revenue planning, risk and communication
 management, status tracking and reporting.")
     (home-page "https://taskjuggler.org")
     (license license:gpl2)))
+
+(define-public ruby-cmath
+  (package
+    (name "ruby-cmath")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "cmath" version))
+       (sha256
+        (base32
+         "1xkz6xyhpkjbdvpdib8450w62rls1mjryz0gzbbnadxkxn82nb8m"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:tests? #false))
+    (native-inputs
+     `(("bundler" ,bundler)
+       ("ruby-rake-compiler" ,ruby-rake-compiler)))
+    (synopsis "Trigonometric functions for complex numbers")
+    (description
+     "This gem is a library that provides trigonometric and transcendental
+functions for complex numbers.  The functions in this module accept integers,
+floating-point numbers or complex numbers as arguments.")
+    (home-page "https://github.com/ruby/cmath")
+    (license license:bsd-2)))

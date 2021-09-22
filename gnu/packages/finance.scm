@@ -16,7 +16,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2020 Christopher Lemmer Webber <cwebber@dustycloud.org>
+;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
@@ -55,6 +55,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system qt)
   #:use-module (guix deprecation)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages aidc)
@@ -268,14 +269,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.2")
+    (version "5.5.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1lhyql94zx51vcw9hlc9r26wkm2bn6jdd4xvc95j7y69wiwg77lq"))))
+                "14qhv79a2waqzmf6l571wklgwq8j1pkmjvzkj5vhh44nia8hfdh7"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -501,7 +502,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.0.9")
+    (version "4.1.5")
     (source
      (origin
        (method url-fetch)
@@ -509,7 +510,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1fvjiagi78f32nxgr2rx8jas8hxfvpp1c8fpfcalvykmlhdc2gva"))
+        (base32 "188r4zji985z8pm9b942xhmvv174yndk6jxagxl7ljk03wl2wiwi"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -523,13 +524,16 @@ do so.")
        ("python-protobuf" ,python-protobuf)
        ("python-aiohttp" ,python-aiohttp)
        ("python-aiohttp-socks" ,python-aiohttp-socks)
-       ("python-aiorpcx" ,python-aiorpcx)
+       ("python-aiorpcx" ,python-aiorpcx-0.18)
        ("python-certifi" ,python-certifi)
        ("python-bitstring" ,python-bitstring)
        ("python-attrs" ,python-attrs)
        ("python-cryptography" ,python-cryptography)
        ("python-qdarkstyle" ,python-qdarkstyle)
        ("python-dnspython" ,python-dnspython)
+       ("python-hidapi" ,python-hidapi)
+       ("python-ledgerblue" ,python-ledgerblue)
+       ("python-btchip-python" ,python-btchip-python)
        ("libsecp256k1" ,libsecp256k1)))
     (arguments
      `(#:tests? #f                      ; no tests
@@ -564,7 +568,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.4")
+    (version "4.2.5")
     (source
      (origin
        (method git-fetch)
@@ -573,7 +577,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a4jqsfadv6xr7ydj79my71jyrp0sjlznsbxdxjsjgnsqk8r48w6"))))
+        (base32 "1fj797hbinxsqjwhh4l1vjsx1vzmgzf2apq7fnqqwpv9g0v2pch0"))))
     (build-system python-build-system)
     (inputs
      `(("libevent" ,libevent)
@@ -591,6 +595,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
        ("python-pyaes" ,python-pyaes)
        ("python-pyqt" ,python-pyqt)
        ("python-pysocks" ,python-pysocks)
+       ("python-qdarkstyle" ,python-qdarkstyle)
        ("python-qrcode" ,python-qrcode)
        ("python-requests" ,python-requests)
        ("python-stem" ,python-stem)
@@ -617,6 +622,11 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
                 (string-append "library_paths = ('"
                                (assoc-ref inputs "libsecp256k1")
                                "/lib/libsecp256k1.so.0'")))))
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "contrib/requirements/requirements.txt"
+               (("qdarkstyle==2\\.6\\.8")
+                "qdarkstyle"))))
          (add-after 'install 'wrap-qt
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -639,7 +649,7 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.17.2.0")
+    (version "0.17.2.3")
     (source
      (origin
        (method git-fetch)
@@ -657,9 +667,14 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"
               "external/unbound"))
+           ;; TODO: Remove the following when upgrading to a newer tagged
+           ;; version as it will already contain the fix for Boost 1.76.
+           (substitute* "contrib/epee/include/storages/portable_storage.h"
+             (("#include \"int-util.h\"" all)
+              (string-append all "\n#include <boost/mpl/contains.hpp>")))
            #t))
        (sha256
-        (base32 "0jwlmrpzisvw1c06cvd5b3s3hd4w0pa1qmrypfwah67qj3x6hnb6"))))
+        (base32 "0nax991fshfh51grhh2ryfrwwws35k16gzl1l3niva28zff2xmq6"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("doxygen" ,doxygen)
@@ -749,7 +764,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.17.2.2")
+    (version "0.17.2.3")
     (source
      (origin
        (method git-fetch)
@@ -766,7 +781,7 @@ the Monero command line client and daemon.")
            (delete-file-recursively "monero")
            #t))
        (sha256
-        (base32 "0n7gfhm13y18ffqsqdajl4knd4h8m772fz6lh1lpkh198pwmw8f9"))))
+        (base32 "0qb746z1sxqrja7q9lqhhbm64v83sn67az4k7gs5q90iaw584qfc"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -785,10 +800,10 @@ the Monero command line client and daemon.")
     (arguments
      `(#:tests? #f ; No tests
        #:configure-flags
-       (list "-DARCH=default"
-             "-DENABLE_PASS_STRENGTH_METER=ON"
-             (string-append "-DReadline_ROOT_DIR="
-                            (assoc-ref %build-inputs "readline")))
+       ,#~(list "-DARCH=default"
+                "-DENABLE_PASS_STRENGTH_METER=ON"
+                (string-append "-DReadline_ROOT_DIR="
+                               #$(this-package-input "readline")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'extract-monero-sources
@@ -796,24 +811,18 @@ the Monero command line client and daemon.")
            ;; to build the GUI.
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "monero")
-             (invoke "tar" "-xv" "--strip-components=1"
-                     "-C" "monero"
-                     "-f" (assoc-ref inputs "monero-source"))))
+             (copy-recursively (assoc-ref inputs "monero-source")
+                               "monero")))
          (add-after 'extract-monero-sources 'fix-build
            (lambda _
              (substitute* "src/version.js.in"
                (("@VERSION_TAG_GUI@")
                 ,version))
-             (substitute* "src/zxcvbn-c/makefile"
-               (("\\?=") "="))
              (substitute* "external/CMakeLists.txt"
                (("add_library\\(quirc" all)
                 (string-append
                  "set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\")\n"
                  all)))))
-         (add-before 'configure 'generate-zxcvbn-c-header
-           (lambda _
-             (invoke "make" "-C" "src/zxcvbn-c" "dict-src.h")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
@@ -935,6 +944,30 @@ Ledger Blue/Nano S.")
 (define-public python2-ledgerblue
   (package-with-python2 python-ledgerblue))
 
+(define-public python-btchip-python
+  (package
+    (name "python-btchip-python")
+    (version "0.1.32")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "btchip-python" version))
+        (sha256
+          (base32
+            "0mcg3gfd0qk8lhral3vy9cfd4pii9kzs42q71pf6b3y0c70y1x9l"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ; those require PyQt4
+    (propagated-inputs
+      `(("python-ecdsa" ,python-ecdsa)
+        ("python-hidapi" ,python-hidapi)))
+    (home-page "https://github.com/LedgerHQ/btchip-python")
+    (synopsis "Python library to communicate with Ledger Nano dongle")
+    (description
+      "This package provides a Python library to communicate with Ledger
+Nano dongle.")
+    (license license:asl2.0)))
+
 (define-public python-trezor
   (package
     (name "python-trezor")
@@ -1020,12 +1053,7 @@ the KeepKey Hardware Wallet.")
        ("python-trezor-agent" ,python-trezor-agent)))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Ledger as hardware SSH/GPG agent")
-    (description "This package allows using Ledger as hardware SSH/GPG agent.
-
-Usage for SSH: trezor-agent foo@@example.com --connect
-Usage for GPG: Initialize using trezor-gpg init \"Foo <foo@@example.com>\"
-Then set the environment variable GNUPGHOME to
-\"${HOME}/.gnupg/trezor\".")
+    (description "This package allows using Ledger as hardware SSH/GPG agent.")
     (license license:lgpl3)))
 
 (define-public trezor-agent
@@ -1121,13 +1149,13 @@ Luhn and family of ISO/IEC 7064 check digit algorithms. ")
 (define-public python-duniterpy
   (package
     (name "python-duniterpy")
-    (version "0.62.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "duniterpy" version))
        (sha256
-        (base32 "1ldiw5j2g92cib9v06kgv4z8dw2zi0x1dmpisf8w78h4kg6712w1"))))
+        (base32 "13kp2ph7fb1cdkx1y6j2h8q33fj2akc104l77ng52cy4v8jic9nz"))))
     (build-system python-build-system)
     (arguments
      ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required

@@ -34,6 +34,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
@@ -42,6 +43,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
@@ -88,14 +90,14 @@ low-end hardware and serving many concurrent requests.")
 (define-public bat
   (package
     (name "bat")
-    (version "0.18.1")
+    (version "0.18.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bat" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nvqkddpjxsmd27gqn8czql07faad50mihin5ivb9sxxnni28wnc"))))
+        (base32 "0qlk032dd6zxda1v7clah33nafxygaw3x7f73ajwlvk956nrn1js"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -103,7 +105,6 @@ low-end hardware and serving many concurrent requests.")
         ("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-atty" ,rust-atty-0.2)
         ("rust-bugreport" ,rust-bugreport-0.4)
-        ("rust-clap" ,rust-clap-2)
         ("rust-clap" ,rust-clap-2)
         ("rust-clircle" ,rust-clircle-0.3)
         ("rust-console" ,rust-console-0.14)
@@ -113,6 +114,7 @@ low-end hardware and serving many concurrent requests.")
         ("rust-error-chain" ,rust-error-chain-0.12)
         ("rust-git2" ,rust-git2-0.13)
         ("rust-globset" ,rust-globset-0.4)
+        ("rust-grep-cli" ,rust-grep-cli-0.1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-path-abs" ,rust-path-abs-0.5)
         ("rust-semver" ,rust-semver-0.11)
@@ -124,7 +126,7 @@ low-end hardware and serving many concurrent requests.")
         ("rust-wild" ,rust-wild-2))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-nix" ,rust-nix-0.20)
+        ("rust-nix" ,rust-nix-0.21)
         ("rust-predicates" ,rust-predicates-1)
         ("rust-serial-test" ,rust-serial-test-0.5)
         ("rust-tempfile" ,rust-tempfile-3)
@@ -392,8 +394,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
           "0m5lrvx6wwkxqdc5digm1k4diiaqcg5j4pia77s5nw1aam7k51hy"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:rust ,rust-1.46
-       #:modules ((guix build cargo-build-system)
+     `(#:modules ((guix build cargo-build-system)
                   (guix build utils)
                   (srfi srfi-26))
        #:cargo-inputs
@@ -644,6 +645,60 @@ gitignore rules.")
         (sha256
          (base32
           "13jzbmjz1bmmfr0i80hw6ar484mgabx3hbpb2ynhk0ddqi0yr58m"))))))
+
+(define-public sniffglue
+  (package
+    (name "sniffglue")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sniffglue" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1q1kwkw1hq38qgvc6j4b5l9m85a6lpn1jls4bm27c5kha9cg8l24"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-base64" ,rust-base64-0.13)
+        ("rust-dhcp4r" ,rust-dhcp4r-0.2)
+        ("rust-dirs-next" ,rust-dirs-next-2)
+        ("rust-dns-parser" ,rust-dns-parser-0.8)
+        ("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.20)
+        ("rust-nom" ,rust-nom-6)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-pcap-sys" ,rust-pcap-sys-0.1)
+        ("rust-pktparse" ,rust-pktparse-0.5)
+        ("rust-reduce" ,rust-reduce-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-syscallz" ,rust-syscallz-0.15)
+        ("rust-tls-parser" ,rust-tls-parser-0.10)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-users" ,rust-users-0.11))
+       #:cargo-development-inputs
+       (("rust-boxxy" ,rust-boxxy-0.11))))
+    (inputs
+     `(("libpcap" ,libpcap)
+       ("libseccomp" ,libseccomp)))
+    (home-page "https://github.com/kpcyrd/sniffglue")
+    (synopsis "Secure multithreaded packet sniffer")
+    (description
+     "This package provides a network sniffer written in Rust.  Packets
+are parsed concurrently using a thread pool to utilize all cpu cores.  A goal
+of the project is to be runnable on untrusted networks without crashing.")
+    (license license:gpl3)))
 
 (define-public tectonic
   (package

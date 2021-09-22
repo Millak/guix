@@ -24,6 +24,9 @@
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +48,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -75,6 +79,7 @@
   #:use-module (gnu packages glib)                ;intltool
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -96,7 +101,10 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rdesktop)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
@@ -575,33 +583,41 @@ the freedesktop.org XDG Base Directory specification.")
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (sysconf (string-append out "/etc"))
-              (libexec (string-append out "/libexec/elogind"))
-              (dbuspolicy (string-append out "/etc/dbus-1/system.d"))
-              (shadow (assoc-ref %build-inputs "shadow"))
-              (shepherd (assoc-ref %build-inputs "shepherd"))
-              (halt-path (string-append shepherd "/sbin/halt"))
-              (kexec-path "")           ;not available in Guix yet
-              (nologin-path (string-append shadow "/sbin/nologin"))
-              (poweroff-path (string-append shepherd "/sbin/shutdown"))
-              (reboot-path (string-append shepherd "/sbin/reboot")))
-         (list
-          (string-append "-Drootprefix=" out)
-          (string-append "-Dsysconfdir=" sysconf)
-          (string-append "-Drootlibexecdir=" libexec)
-          (string-append "-Ddbuspolicydir=" dbuspolicy)
-          (string-append "-Dc_link_args=-Wl,-rpath=" libexec)
-          (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
-          (string-append "-Dhalt-path=" halt-path)
-          (string-append "-Dkexec-path=" kexec-path)
-          (string-append "-Dpoweroff-path=" poweroff-path)
-          (string-append "-Dreboot-path=" reboot-path)
-          (string-append "-Dnologin-path=" nologin-path)
-          "-Dcgroup-controller=elogind"
-          "-Dman=true"
-          ;; Disable some tests.
-          "-Dslow-tests=false"))
+       ;; TODO(core-updates): Use #$output unconditionally.
+       ,#~(let* ((out #$(if (%current-target-system)
+                            #~#$output
+                            #~(assoc-ref %outputs "out")))
+                 (sysconf (string-append out "/etc"))
+                 (libexec (string-append out "/libexec/elogind"))
+                 (dbuspolicy (string-append out "/etc/dbus-1/system.d"))
+                 ;; TODO(core-updates): use this-package-input unconditionally.
+                 (shadow #$(if (%current-target-system)
+                               (this-package-input "shadow")
+                               #~(assoc-ref %build-inputs "shadow")))
+                 (shepherd #$(if (%current-target-system)
+                                 (this-package-input "shepherd")
+                                 #~(assoc-ref %build-inputs "shepherd")))
+                 (halt-path (string-append shepherd "/sbin/halt"))
+                 (kexec-path "")           ;not available in Guix yet
+                 (nologin-path (string-append shadow "/sbin/nologin"))
+                 (poweroff-path (string-append shepherd "/sbin/shutdown"))
+                 (reboot-path (string-append shepherd "/sbin/reboot")))
+            (list
+             (string-append "-Drootprefix=" out)
+             (string-append "-Dsysconfdir=" sysconf)
+             (string-append "-Drootlibexecdir=" libexec)
+             (string-append "-Ddbuspolicydir=" dbuspolicy)
+             (string-append "-Dc_link_args=-Wl,-rpath=" libexec)
+             (string-append "-Dcpp_link_args=-Wl,-rpath=" libexec)
+             (string-append "-Dhalt-path=" halt-path)
+             (string-append "-Dkexec-path=" kexec-path)
+             (string-append "-Dpoweroff-path=" poweroff-path)
+             (string-append "-Dreboot-path=" reboot-path)
+             (string-append "-Dnologin-path=" nologin-path)
+             "-Dcgroup-controller=elogind"
+             "-Dman=true"
+             ;; Disable some tests.
+             "-Dslow-tests=false"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-pkttyagent-path
@@ -815,7 +831,8 @@ of a the system to know what users are logged in, and where.")
                                       (install-file map data))
                                     (find-files ".." "^(kbd-model-map|language-fallback-map)$"))
                           #t)))))))
-    (native-inputs (package-native-inputs elogind))
+    (native-inputs `(,@(package-native-inputs elogind)
+                     ("rsync" ,rsync)))
     (inputs `(("libmount" ,util-linux "lib")
               ("xkeyboard-config" ,xkeyboard-config)
               ("kbd" ,kbd)
@@ -966,14 +983,22 @@ Python.")
         #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-docbook-xml
-           (lambda* (#:key inputs #:allow-other-keys)
+           ;; TODO(core-updates): Use 'native-inputs' unconditionally
+           (lambda* (#:key ,@(if (%current-target-system)
+                                 '(native-inputs)
+                                 '())
+                     inputs #:allow-other-keys)
              (with-directory-excursion "doc"
                (substitute* (find-files "." "\\.xml$")
                  (("http://www.oasis-open.org/docbook/xml/4\\.5/")
-                  (string-append (assoc-ref inputs "docbook-xml")
+                  (string-append (assoc-ref ,(if (%current-target-system)
+                                                 '(or native-inputs inputs)
+                                                 'inputs) "docbook-xml")
                                  "/xml/dtd/docbook/"))
                  (("http://www.oasis-open.org/docbook/xml/4\\.2/")
-                  (string-append (assoc-ref inputs "docbook-xml-4.2")
+                  (string-append (assoc-ref ,(if (%current-target-system)
+                                                 '(or native-inputs inputs)
+                                                 'inputs) "docbook-xml-4.2")
                                  "/xml/dtd/docbook/"))))
              #t))
          (add-after 'install 'move-doc
@@ -993,7 +1018,11 @@ Python.")
        ("doxygen" ,doxygen)
        ("pkg-config" ,pkg-config)
        ("xmlto" ,xmlto)
-       ("xsltproc" ,libxslt)))
+       ("xsltproc" ,libxslt)
+       ,@(if (%current-target-system)
+             `(("pkg-config-for-build" ,pkg-config-for-build)
+               ("wayland" ,this-package)) ; for wayland-scanner
+             '())))
     (inputs
      `(("expat" ,expat)
        ("libxml2" ,libxml2)))           ; for XML_CATALOG_FILES
@@ -1065,7 +1094,7 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
 (define-public weston
   (package
     (name "weston")
-    (version "6.0.1")
+    (version "9.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1073,43 +1102,60 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
                     "weston-" version ".tar.xz"))
               (sha256
                (base32
-                "1d2m658ll8x7prlsfk71qgw89c7dz6y7d6nndfxwl49fmrd6sbxz"))))
+                "1zlql0xgiqc3pvgbpnnvj4xvpd91pwva8qf83xfb23if377ddxaw"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("mscgen" ,mscgen)
+       ("pkg-config" ,pkg-config)
        ("xorg-server" ,xorg-server)))
     (inputs
      `(("cairo" ,cairo-xcb)
        ("colord" ,colord)
        ("dbus" ,dbus)
        ("elogind" ,elogind)
+       ("freerdp" ,freerdp)
+       ("glib" ,glib)
+       ("gstreamer" ,gstreamer)
+       ("gst-plugins-base" ,gst-plugins-base)
        ("lcms" ,lcms)
+       ("libdrm" ,libdrm)
        ("libevdev" ,libevdev)
        ("libinput" ,libinput-minimal)
        ("libjpeg" ,libjpeg-turbo)
+       ("libpng" ,libpng)
        ("libunwind" ,libunwind)
        ("libva" ,libva)
        ("libwebp" ,libwebp)
+       ("libx11" ,libx11)
+       ("libxcb" ,libxcb)
        ("libxcursor" ,libxcursor)
-       ("libxkbcommon" ,libxkbcommon)
        ("libxml2" ,libxml2)
        ("mesa" ,mesa)
        ("mtdev" ,mtdev)
        ("linux-pam" ,linux-pam)
        ("pango" ,pango)
-       ("wayland" ,wayland)
+       ("pipewire" ,pipewire)
        ("wayland-protocols" ,wayland-protocols)
        ("xorg-server-xwayland" ,xorg-server-xwayland)))
+    (propagated-inputs
+     `(("libxkbcommon" ,libxkbcommon)
+       ("pixman" ,pixman)
+       ("wayland" ,wayland)))
     (arguments
      `(#:configure-flags
-       (list "-Dbackend-rdp=false" ; TODO: Enable.
-             "-Dremoting=false" ; TODO: Enable.
-             "-Dsimple-dmabuf-drm=auto"
-             "-Dsystemd=false"
-             (string-append "-Dxwayland-path="
-                            (assoc-ref %build-inputs "xorg-server-xwayland")
-                            "/bin/Xwayland"))
-       #:parallel-tests? #f ; Parallel tests cause failures.
+       (list
+        ;; Otherwise, the RUNPATH will lack the final path component.
+        (string-append "-Dc_link_args=-Wl,-rpath="
+                       (assoc-ref %outputs "out") "/lib:"
+                       (assoc-ref %outputs "out") "/lib/weston:"
+                       (assoc-ref %outputs "out") "/lib/libweston-"
+                       ,(version-major (package-version this-package)))
+        "-Dbackend-default=auto"
+        "-Dsystemd=false"
+        (string-append "-Dxwayland-path="
+                       (assoc-ref %build-inputs "xorg-server-xwayland")
+                       "/bin/Xwayland"))
+       #:parallel-tests? #f           ; Parallel tests cause failures.
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'use-elogind
@@ -2190,6 +2236,13 @@ useful with system integration.")
              "https://launchpad.net/libappindicator/"
              (version-major+minor version) "/" version
              "/+download/libappindicator-" version ".tar.gz"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Fix 'multiple definitions' error from GCC 10
+           (substitute* "bindings/python/appindicatormodule.c"
+             (("^#include <pygobject.h>" all)
+              (string-append "#define NO_IMPORT_PYGOBJECT\n" all)))))
        (sha256
         (base32
          "17xlqd60v0zllrxp8bgq3k5a1jkj0svkqn8rzllcyjh8k0gpr46m"))))
@@ -2440,4 +2493,39 @@ interfaces.")
 seeks to add support for the screenshot, screencast, and possibly
 remote-desktop @code{xdg-desktop-portal} interfaces for wlroots based
 compositors.")
+    (license license:expat)))
+
+(define-public waypipe
+  (package
+    (name "waypipe")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/mstoeckl/waypipe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qa47ljfvb1vv3h647xwn1j5j8gfmcmdfaz4j8ygnkvj36y87vnz"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-sleep-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((coreutils (assoc-ref inputs "coreutils")))
+               (substitute* "./test/startup_failure.py"
+                 (("sleep") (string-append coreutils "/bin/sleep")))))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("scdoc" ,scdoc)
+       ;; For tests
+       ("python" ,python)
+       ("coreutils" ,coreutils)))
+    (home-page "https://gitlab.freedesktop.org/mstoeckl/waypipe")
+    (synopsis "Proxy for Wayland protocol applications")
+    (description
+     "Waypipe is a proxy for Wayland clients, with the aim of
+supporting behavior like @samp{ssh -X}.")
     (license license:expat)))

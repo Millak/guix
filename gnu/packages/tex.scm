@@ -385,6 +385,15 @@ files from LOCATIONS with expected checksum HASH.  CODE is not currently in use.
                (("^\\./omfonts -ofm2opl \\$srcdir/tests/check tests/xcheck \\|\\| exit 1")
                 "./omfonts -ofm2opl $srcdir/tests/check tests/xcheck || exit 77"))
              #t))
+         ,@(if (target-ppc32?)
+             ;; Some mendex tests fail on some architectures.
+             `((add-after 'unpack 'skip-mendex-tests
+                 (lambda _
+                   (substitute* '("texk/mendexk/tests/mendex.test"
+                                  "texk/upmendex/tests/upmendex.test")
+                     (("srcdir/tests/pprecA-0.ind pprecA-0.ind1 \\|\\| exit 1")
+                      "srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 77")))))
+             '())
          (add-after 'unpack 'unpack-texlive-extra
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir "texlive-extra")
@@ -561,6 +570,12 @@ This package contains the binaries.")
     (description "kpathsea is a library, whose purpose is to return a filename
 from a list of user-specified directories similar to how shells look up
 executables.  It is maintained as a part of TeX Live.")))
+
+(define-syntax-rule (define-deprecated-package old-name name)
+  "Define OLD-NAME as a deprecated package alias for NAME."
+  (define-deprecated/public old-name name
+    (deprecated-package (symbol->string 'old-name) name)))
+
 
 (define texlive-docstrip
   (package
@@ -598,8 +613,7 @@ set up and one for initializing XeTeX character classes as has been carried
 out to date by @code{unicode-letters.tex}. ")
     (license license:lppl1.3c+)))
 
-(define-public texlive-generic-unicode-data
-  (deprecated-package "texlive-generic-unicode-data" texlive-unicode-data))
+(define-deprecated-package texlive-generic-unicode-data texlive-unicode-data)
 
 (define-public texlive-hyphen-base
   (package
@@ -662,8 +676,7 @@ allow existing format source files to be used with newer engines, for example
 to adapt the plain e-TeX source file to work with XeTeX and LuaTeX.")
     (license license:public-domain)))
 
-(define-public texlive-generic-tex-ini-files
-  (deprecated-package "texlive-generic-tex-ini-files" texlive-tex-ini-files))
+(define-deprecated-package texlive-generic-tex-ini-files texlive-tex-ini-files)
 
 (define-public texlive-metafont
   (package
@@ -723,8 +736,7 @@ to adapt the plain e-TeX source file to work with XeTeX and LuaTeX.")
 build fonts using the Metafont system.")
     (license license:knuth)))
 
-(define-public texlive-metafont-base
-  (deprecated-package "texlive-metafont-base" texlive-metafont))
+(define-deprecated-package texlive-metafont-base texlive-metafont)
 
 (define-public texlive-fontinst
   (let ((template (simple-texlive-package
@@ -814,8 +826,7 @@ metrics (and related information) for a font family that TeX needs to do any
 typesetting in these fonts.")
       (license license:lppl1.1+))))
 
-(define-public texlive-tex-fontinst-base
-  (deprecated-package "texlive-tex-fontinst-base" texlive-fontinst))
+(define-deprecated-package texlive-tex-fontinst-base texlive-fontinst)
 
 (define-public texlive-fontname
   (package
@@ -908,8 +919,7 @@ display, and mathematical fonts in a range of styles, based on Monotype Modern
 8A.")
       (license license:knuth))))
 
-(define-public texlive-fonts-cm
-  (deprecated-package "texlive-fonts-cm" texlive-cm))
+(define-deprecated-package texlive-fonts-cm texlive-cm)
 
 (define-public texlive-cm-super
   (let ((template (simple-texlive-package
@@ -943,8 +953,7 @@ originals.")
       ;; With font exception
       (license license:gpl2+))))
 
-(define-public texlive-fonts-cm-super
-  (deprecated-package "texlive-fonts-cm-super" texlive-cm-super))
+(define-deprecated-package texlive-fonts-cm-super texlive-cm-super)
 
 (define-public texlive-courier
   (package
@@ -1038,8 +1047,7 @@ Computers & Typesetting series.")
     ;; additional but not legally binding clause.
     (license license:lppl1.3c+)))
 
-(define-public texlive-fonts-lm
-  (deprecated-package "texlive-fonts-lm" texlive-lm))
+(define-deprecated-package texlive-fonts-lm texlive-lm)
 
 (define-public texlive-knuth-lib
   (let ((template (simple-texlive-package
@@ -1102,8 +1110,7 @@ from Donald Knuth, including the plain format, plain base, and the MF logo
 fonts.")
       (license license:knuth))))
 
-(define-public texlive-fonts-knuth-lib
-  (deprecated-package "texlive-fonts-knuth-lib" texlive-knuth-lib))
+(define-deprecated-package texlive-fonts-knuth-lib texlive-knuth-lib)
 
 (define-public texlive-fonts-latex
   (package
@@ -1254,8 +1261,7 @@ Knuthian mflogo fonts described in The Metafontbook and to typeset Metafont
 logos in LaTeX documents.")
       (license license:lppl))))
 
-(define-public texlive-latex-mflogo
-  (deprecated-package "texlive-latex-mflogo" texlive-mflogo))
+(define-deprecated-package texlive-latex-mflogo texlive-mflogo)
 
 (define-public texlive-mflogo-font
   (package
@@ -1278,8 +1284,7 @@ source; they have since been autotraced and reissued in Adobe Type 1 format by
 Taco Hoekwater.")
     (license license:knuth)))
 
-(define-public texlive-fonts-mflogo-font
-  (deprecated-package "texlive-fonts-mflogo-font" texlive-mflogo-font))
+(define-deprecated-package texlive-fonts-mflogo-font texlive-mflogo-font)
 
 (define-public texlive-amsfonts
   (let ((template (simple-texlive-package
@@ -1413,11 +1418,9 @@ Modern family of fonts.  The Euler fonts are supported by separate packages;
 details can be found in the documentation.")
       (license license:silofl1.1))))
 
-(define-public texlive-fonts-amsfonts
-  (deprecated-package "texlive-fonts-amsfonts" texlive-amsfonts))
+(define-deprecated-package texlive-fonts-amsfonts texlive-amsfonts)
 
-(define-public texlive-latex-amsfonts
-  (deprecated-package "texlive-latex-amsfonts" texlive-amsfonts))
+(define-deprecated-package texlive-latex-amsfonts texlive-amsfonts)
 
 (define-public texlive-mkpattern
   (package
@@ -2509,8 +2512,7 @@ converters, will completely supplant the older patterns.")
                    license:public-domain
                    license:wtfpl2))))
 
-(define-public texlive-generic-hyph-utf8
-  (deprecated-package "texlive-generic-hyph-utf8" texlive-hyph-utf8))
+(define-deprecated-package texlive-generic-hyph-utf8 texlive-hyph-utf8)
 
 (define-public texlive-dehyph-exptl
   (package
@@ -2534,8 +2536,7 @@ bundle.")
     ;; under LPPL.
     (license (list license:expat license:lppl))))
 
-(define-public texlive-generic-dehyph-exptl
-  (deprecated-package "texlive-generic-dehyph-exptl" texlive-dehyph-exptl))
+(define-deprecated-package texlive-generic-dehyph-exptl texlive-dehyph-exptl)
 
 (define-public texlive-ukrhyph
   (package
@@ -2733,10 +2734,9 @@ formats.")
                           "platex-dev eptex" "uplatex-dev euptex"
                           "csplain pdftex" "mf mf-nowin" "mex pdftex" "pdfmex pdftex"
                           "luacsplain luatex" "optex luatex"
-                          ;; LuaJIT is not ported to powerpc64le* yet.
-                          ,@(if (string-prefix? "powerpc64le"
-                                                (or (%current-target-system)
-                                                    (%current-system)))
+                          ;; LuaJIT is not ported to powerpc64le* yet and
+                          ;; building these fail on powerpc.
+                          ,@(if (target-powerpc?)
                               '("luajittex" "luajithbtex" "mfluajit") '())
                           "cont-en xetex" "cont-en pdftex" "pdfcsplain xetex"
                           "pdfcsplain pdftex" "pdfcsplain luatex" "cslatex pdftex"
@@ -2869,6 +2869,7 @@ formats.")
          ("texlive-ukrhyph" ,texlive-ukrhyph)
          ("texlive-ruhyphen" ,texlive-ruhyphen)
          ("texlive-latex-l3kernel" ,texlive-latex-l3kernel)
+         ("texlive-latex-l3backend" ,texlive-latex-l3backend)
          ;; TODO: This dependency isn't needed for LaTeX version 2021-06-01
          ;; and later. See:
          ;; https://tug.org/pipermail/tex-live/2021-June/047180.html
@@ -2982,8 +2983,7 @@ bundle of packages.  (The latex-graphics bundle is also available to Plain TeX
 users, via its Plain TeX version.)")
     (license license:public-domain)))
 
-(define-public texlive-generic-epsf
-  (deprecated-package "texlive-generic-epsf" texlive-epsf))
+(define-deprecated-package texlive-generic-epsf texlive-epsf)
 
 (define-public texlive-latex-fancyvrb
   (package
@@ -3119,8 +3119,7 @@ row colors plus repeated non-aligned material (like horizontal lines) in
 tables.")
       (license license:lppl1.2+))))
 
-(define-public texlive-latex-xcolor
-  (deprecated-package "texlive-latex-xcolor" texlive-xcolor))
+(define-deprecated-package texlive-latex-xcolor texlive-xcolor)
 
 (define-public texlive-xmltex
   (let ((template (simple-texlive-package
@@ -3245,8 +3244,7 @@ pdf and HTML backends.  The package is distributed with the @code{backref} and
 @code{nameref} packages, which make use of the facilities of @code{hyperref}.")
       (license license:lppl1.3+))))
 
-(define-public texlive-latex-hyperref
-  (deprecated-package "texlive-latex-hyperref" texlive-hyperref))
+(define-deprecated-package texlive-latex-hyperref texlive-hyperref)
 
 (define-public texlive-oberdiek
   (package
@@ -3281,8 +3279,7 @@ better accessibility support for PDF files; extensible chemists reaction
 arrows; record information about document class(es) used; and many more.")
     (license license:lppl1.3+)))
 
-(define-public texlive-latex-oberdiek
-  (deprecated-package "texlive-latex-oberdiek" texlive-oberdiek))
+(define-deprecated-package texlive-latex-oberdiek texlive-oberdiek)
 
 (define-public texlive-latex-rerunfilecheck
   (package
@@ -3367,8 +3364,7 @@ of file names.")
     ;; the latest version is 1.3c.
     (license license:lppl1.3c+)))
 
-(define-public texlive-latex-url
-  (deprecated-package "texlive-latex-url" texlive-url))
+(define-deprecated-package texlive-latex-url texlive-url)
 
 (define-public texlive-tetex
   (package
@@ -3546,8 +3542,7 @@ the NFSS in LaTeX running on XeTeX or LuaTeX engines.  The package requires
 the l3kernel and xparse bundles from the LaTeX 3 development team.")
       (license license:lppl1.3+))))
 
-(define-public texlive-latex-fontspec
-  (deprecated-package "texlive-latex-fontspec" texlive-fontspec))
+(define-deprecated-package texlive-latex-fontspec texlive-fontspec)
 
 (define-public texlive-l3build
   (let ((template (simple-texlive-package
@@ -3664,8 +3659,7 @@ loading fonts by their proper names instead of file names.")
       ;; GPL version 2 only
       (license license:gpl2))))
 
-(define-public texlive-luatex-luaotfload
-  (deprecated-package "texlive-luatex-luaotfload" texlive-luaotfload))
+(define-deprecated-package texlive-luatex-luaotfload texlive-luaotfload)
 
 (define-public texlive-latex-amsmath
   (package
@@ -3724,8 +3718,7 @@ material.  The material is made available as part of the AMS-LaTeX
 distribution.")
       (license license:lppl1.3c+))))
 
-(define-public texlive-latex-amscls
-  (deprecated-package "texlive-latex-amscls" texlive-amscls))
+(define-deprecated-package texlive-latex-amscls texlive-amscls)
 
 (define-public texlive-babel
   (let ((template (simple-texlive-package
@@ -3774,8 +3767,7 @@ what has to be done for each language.  Users of XeTeX are advised to use the
 polyglossia package rather than Babel.")
       (license license:lppl1.3+))))
 
-(define-public texlive-latex-babel
-  (deprecated-package "texlive-latex-babel" texlive-babel))
+(define-deprecated-package texlive-latex-babel texlive-babel)
 
 (define-public texlive-generic-babel-english
   (package
@@ -3995,8 +3987,7 @@ means to select single glyphs from symbol fonts.  The bundle as a whole is
 part of the LaTeX required set of packages.")
       (license license:lppl1.2+))))
 
-(define-public texlive-latex-psnfss
-  (deprecated-package "texlive-latex-psnfss" texlive-psnfss))
+(define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
 ;; For user profiles
 (define-public texlive-base
@@ -4065,7 +4056,7 @@ configuration of a base set of packages plus PACKAGES."
                   (file-name "updmap.cfg")
                   (sha256
                    (base32
-                    "1q3l7yx5sng080ibfb8z3rdah0hhq170j6xw8z1w8i4w9m37lp94"))))
+                    "0zhpyld702im6352fwp41f2hgfkpj2b4j1kfsjqbkijlcmvb6w2c"))))
         (name "texlive-updmap.cfg")
         (build-system copy-build-system)
         (arguments
@@ -4433,8 +4424,7 @@ mode.  The functionality is provided by purely expandable macros or by faster
 but non-expandable ones.")
     (license license:lppl1.3+)))
 
-(define-public texlive-latex-filemod
-  (deprecated-package "texlive-latex-filemod" texlive-filemod))
+(define-deprecated-package texlive-latex-filemod texlive-filemod)
 
 (define-public texlive-latex-hanging
   (package
@@ -4573,7 +4563,7 @@ rotated.")
               #:trivial? #t))
     (propagated-inputs
      `(("texlive-latex-bigfoot" ,texlive-latex-bigfoot) ; for suffix
-       ("texlive-latex-filemod" ,texlive-latex-filemod)
+       ("texlive-filemod" ,texlive-filemod)
        ("texlive-latex-graphics" ,texlive-latex-graphics)
        ("texlive-latex-ifplatform" ,texlive-latex-ifplatform)
        ("texlive-latex-l3kernel" ,texlive-latex-l3kernel) ; for expl3
@@ -4591,8 +4581,7 @@ drastically speeding up compilation time when only a single figure needs
 re-processing.")
     (license license:lppl)))
 
-(define-public texlive-latex-pstool
-  (deprecated-package "texlive-latex-pstool" texlive-pstool))
+(define-deprecated-package texlive-latex-pstool texlive-pstool)
 
 (define-public texlive-latex-refcount
   (package
@@ -4633,8 +4622,7 @@ recent classes such as powerdot or beamer, both of which are tuned to
 21st-century presentation styles.")
     (license license:lppl1.2+)))
 
-(define-public texlive-latex-seminar
-  (deprecated-package "texlive-latex-seminar" texlive-seminar))
+(define-deprecated-package texlive-latex-seminar texlive-seminar)
 
 (define-public texlive-latex-stackengine
   (package
@@ -4758,8 +4746,7 @@ hyperlink to the target of the DOI.")
     ;; Any version of the LPPL.
     (license license:lppl1.3+)))
 
-(define-public texlive-latex-doi
-  (deprecated-package "texlive-latex-doi" texlive-doi))
+(define-deprecated-package texlive-latex-doi texlive-doi)
 
 (define-public texlive-etoolbox
   (package
@@ -4782,8 +4769,7 @@ some LaTeX kernel commands; nevertheless, the package will not modify any part
 of the LaTeX kernel.")
     (license license:lppl1.3+)))
 
-(define-public texlive-latex-etoolbox
-  (deprecated-package "texlive-latex-etoolbox" texlive-etoolbox))
+(define-deprecated-package texlive-latex-etoolbox texlive-etoolbox)
 
 (define-public texlive-latex-fncychap
   (package
@@ -5617,8 +5603,7 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
-(define-public texlive-fonts-adobe-times
-  (deprecated-package "texlive-fonts-adobe-times" texlive-times))
+(define-deprecated-package texlive-fonts-adobe-times texlive-times)
 
 (define-public texlive-palatino
   (package
@@ -5646,8 +5631,7 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
-(define-public texlive-fonts-adobe-palatino
-  (deprecated-package "texlive-fonts-adobe-palatino" texlive-palatino))
+(define-deprecated-package texlive-fonts-adobe-palatino texlive-palatino)
 
 (define-public texlive-zapfding
   (package
@@ -5672,8 +5656,7 @@ Adobe's basic set.")
     ;; No license version specified.
     (license license:gpl3+)))
 
-(define-public texlive-fonts-adobe-zapfding
-  (deprecated-package "texlive-fonts-adobe-zapfding" texlive-zapfding))
+(define-deprecated-package texlive-fonts-adobe-zapfding texlive-zapfding)
 
 (define-public texlive-fonts-rsfs
   (package
@@ -5999,8 +5982,7 @@ use under LaTeX; the package supports the @code{only} option (provided by the
 the whole font.")
       (license license:lppl))))
 
-(define-public texlive-fonts-stmaryrd
-  (deprecated-package "texlive-fonts-stmaryrd" texlive-stmaryrd))
+(define-deprecated-package texlive-fonts-stmaryrd texlive-stmaryrd)
 
 (define-public texlive-latex-subfigure
   (package
@@ -6125,8 +6107,7 @@ TeX metrics (VF and TFM files) and macros for use with LaTeX.")
     ;; Any version of the GPL with font exception.
     (license license:gpl3+)))
 
-(define-public texlive-fonts-txfonts
-  (deprecated-package "texlive-fonts-txfonts" texlive-txfonts))
+(define-deprecated-package texlive-fonts-txfonts texlive-txfonts)
 
 (define-public texlive-fonts-iwona
   (package
@@ -6462,8 +6443,7 @@ CM-Super family of fonts.  The package also offers its own LaTeX support for
 OT2 encoded fonts, CM bright shaped fonts and Concrete shaped fonts.")
       (license license:lppl))))
 
-(define-public texlive-latex-lh
-  (deprecated-package "texlive-latex-lh" texlive-lh))
+(define-deprecated-package texlive-latex-lh texlive-lh)
 
 (define-public texlive-marvosym
   (package
@@ -6619,8 +6599,7 @@ male and female symbols and astronomical symbols, as well as the complete
 implements an easy to use interface for these symbols.")
     (license license:lppl)))
 
-(define-public texlive-latex-wasysym
-  (deprecated-package "texlive-latex-wasysym" texlive-wasysym))
+(define-deprecated-package texlive-latex-wasysym texlive-wasysym)
 
 (define-public texlive-latex-wrapfig
   (package
@@ -6756,19 +6735,28 @@ e-TeX.")
     (inherit (simple-texlive-package
               "texlive-pdftex"
               (list "/doc/pdftex/"
-                    "/doc/man/man1/pdfetex.1"
                     "/doc/man/man1/pdftex.1"
-
+                    "/doc/man/man1/pdfetex.1"
                     "/fonts/map/dvips/dummy-space/dummy-space.map"
                     "/fonts/tfm/public/pdftex/dummy-space.tfm"
                     "/fonts/type1/public/pdftex/dummy-space.pfb"
                     "/scripts/simpdftex/simpdftex"
-
                     "/tex/generic/config/pdftex-dvi.tex"
-                    "/tex/generic/pdftex/")
+                    "/tex/generic/pdftex/glyphtounicode.tex"
+                    "/tex/generic/pdftex/pdfcolor.tex")
               (base32
                "1wx928rqsv0x1a8vc7aq49w3nglr4bmlhl822slqglymfxrmb91b")
               #:trivial? #t))
+    ;; TODO: add this missing package:
+    ;; dehyph
+    (propagated-inputs
+     `(("texlive-cm" ,texlive-cm)
+       ("texlive-etex" ,texlive-etex)
+       ("texlive-fonts-knuth-lib" ,texlive-fonts-knuth-lib)
+       ("texlive-hyphen-base" ,texlive-hyphen-base)
+       ("texlive-kpathsea" ,texlive-kpathsea)
+       ("texlive-tex-ini-files" ,texlive-tex-ini-files)
+       ("texlive-tex-plain" ,texlive-tex-plain)))
     (home-page "https://www.ctan.org/pkg/pdftex")
     (synopsis "TeX extension for direct creation of PDF")
     (description
@@ -6776,8 +6764,7 @@ e-TeX.")
 directly generate PDF documents instead of DVI.")
     (license license:gpl2+)))
 
-(define-public texlive-generic-pdftex
-  (deprecated-package "texlive-generic-pdftex" texlive-pdftex))
+(define-deprecated-package texlive-generic-pdftex texlive-pdftex)
 
 (define texlive-texmf
   (package
@@ -6820,9 +6807,15 @@ directly generate PDF documents instead of DVI.")
                      (share (string-append out "/share"))
                      (texmfroot (string-append share "/texmf-dist/web2c"))
                      (texmfcnf (string-append texmfroot "/texmf.cnf"))
+                     (fmtutilcnf (string-append texmfroot "/fmtutil.cnf"))
                      (texlive-bin (assoc-ref inputs "texlive-bin"))
                      (texbin (string-append texlive-bin "/bin"))
                      (tlpkg (string-append texlive-bin "/share/tlpkg")))
+                ;; LuaJIT is not ported to powerpc64* yet.
+                (if ,(target-ppc64le?)
+                    (substitute* fmtutilcnf
+                      (("^(luajittex|luajithbtex|mfluajit)" m)
+                       (string-append "#! " m))))
                 ;; Register SHARE as TEXMFROOT in texmf.cnf.
                 (substitute* texmfcnf
                   (("TEXMFROOT = \\$SELFAUTOPARENT")
@@ -7150,10 +7143,10 @@ develop documents with LaTeX, in a single application.")
              #t)))))
     (native-inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-fonts-adobe-palatino
-                                        texlive-fonts-adobe-zapfding
+                                        texlive-palatino
+                                        texlive-zapfding
                                         texlive-knuth-lib
-                                        texlive-fonts-mflogo-font
+                                        texlive-mflogo-font
                                         texlive-pdftex)))
        ("automake" ,automake)))
     (home-page "https://www.gnu.org/software/teximpatient/")
@@ -7503,7 +7496,7 @@ striking out (line through words) and crossing out (/// over words).")
             (base32
              "05zdq7y3am109m5534ahqqp9x5iar3ha68v1r4zkrdly2mijxz2j"))))))
     (propagated-inputs
-     `(("texlive-latex-xcolor" ,texlive-latex-xcolor)))
+     `(("texlive-xcolor" ,texlive-xcolor)))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -7983,11 +7976,9 @@ AMS-LaTeX, AMS-TeX, and plain TeX).  The distribution includes Michael Barr's
 @code{diag} package, which was previously distributed stand-alone.")
       (license license:gpl3+))))
 
-(define-public texlive-fonts-xypic
-  (deprecated-package "texlive-fonts-xypic" texlive-xypic))
+(define-deprecated-package texlive-fonts-xypic texlive-xypic)
 
-(define-public texlive-generic-xypic
-  (deprecated-package "texblive-generic-xypic" texlive-xypic))
+(define-deprecated-package texlive-generic-xypic texlive-xypic)
 
 (define-public texlive-bibtex
   (package
@@ -8037,6 +8028,9 @@ package, such as @command{natbib} as well).")
               (base32
                "09l5ymgz48s3hyn776l01g3isk3dnhrj1vdavdw4qq4kfxxpqdn9")
               #:trivial? #t))
+    ;; This provides charter.map.
+    (propagated-inputs
+     `(("texlive-psnfss" ,texlive-psnfss)))
     (home-page "https://www.ctan.org/pkg/charter")
     (synopsis "Charter fonts for TeX")
     (description "This package provides a copy of the Charter Type-1 fonts
@@ -8046,50 +8040,51 @@ Support for use with LaTeX is available in @code{freenfss}, part of
     (license (license:non-copyleft
               "http://mirrors.ctan.org/fonts/charter/readme.charter"))))
 
-(define-public texlive-fonts-charter
-  (deprecated-package "texlive-fonts-charter" texlive-charter))
-
-(define-public texlive-context-base
-  (package
-    (name "texlive-context-base")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (svn-reference
-                    (url (string-append "svn://www.tug.org/texlive/tags/"
-                                        %texlive-tag "/Master/texmf-dist/"
-                                        "/tex/context/base"))
-                    (revision %texlive-revision)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1xprxdy0a5bwhyiyzdffq0q0dd4ijhra8hs39djdjd32r1mk3n8a"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target (string-append (assoc-ref %outputs "out")
-                                      "/share/texmf-dist/tex/context/case")))
-           (mkdir-p target)
-           (copy-recursively (assoc-ref %build-inputs "source") target)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/context")
-    (synopsis "Full featured, parameter driven macro package for TeX")
-    (description "A full featured, parameter driven macro package, which fully
-supports advanced interactive documents.  See the ConTeXt garden for a wealth
-of support information.")
-    (license license:gpl2+)))
+(define-deprecated-package texlive-fonts-charter texlive-charter)
 
 (define-public texlive-context
   (package
     (inherit (simple-texlive-package
               "texlive-context"
               (list "/doc/context/"
-                    ;; XXX Omitting /doc/man/man1/*.pdf
-                    "/bibtex/bst/context/mkii/"
-                    "/context/data/"
+                    "/doc/man/man1/context.1"
+                    "/doc/man/man1/luatools.1"
+                    "/doc/man/man1/mtx-babel.1"
+                    "/doc/man/man1/mtx-base.1"
+                    "/doc/man/man1/mtx-bibtex.1"
+                    "/doc/man/man1/mtx-cache.1"
+                    "/doc/man/man1/mtx-chars.1"
+                    "/doc/man/man1/mtx-check.1"
+                    "/doc/man/man1/mtx-colors.1"
+                    "/doc/man/man1/mtx-context.1"
+                    "/doc/man/man1/mtx-dvi.1"
+                    "/doc/man/man1/mtx-epub.1"
+                    "/doc/man/man1/mtx-evohome.1"
+                    "/doc/man/man1/mtx-fcd.1"
+                    "/doc/man/man1/mtx-flac.1"
+                    "/doc/man/man1/mtx-fonts.1"
+                    "/doc/man/man1/mtx-grep.1"
+                    "/doc/man/man1/mtx-interface.1"
+                    "/doc/man/man1/mtx-metapost.1"
+                    "/doc/man/man1/mtx-modules.1"
+                    "/doc/man/man1/mtx-package.1"
+                    "/doc/man/man1/mtx-pdf.1"
+                    "/doc/man/man1/mtx-plain.1"
+                    "/doc/man/man1/mtx-profile.1"
+                    "/doc/man/man1/mtx-rsync.1"
+                    "/doc/man/man1/mtx-scite.1"
+                    "/doc/man/man1/mtx-server.1"
+                    "/doc/man/man1/mtx-texworks.1"
+                    "/doc/man/man1/mtx-timing.1"
+                    "/doc/man/man1/mtx-tools.1"
+                    "/doc/man/man1/mtx-unicode.1"
+                    "/doc/man/man1/mtx-unzip.1"
+                    "/doc/man/man1/mtx-update.1"
+                    "/doc/man/man1/mtx-watch.1"
+                    "/doc/man/man1/mtx-youless.1"
+
+                    "/bibtex/bst/context/"
+                    "/context/"
 
                     "/fonts/afm/hoekwater/context/contnav.afm"
                     "/fonts/cid/fontforge/Adobe-CNS1-4.cidmap"
@@ -8104,21 +8099,36 @@ of support information.")
                     "/fonts/map/luatex/context/"
                     "/fonts/map/pdftex/context/"
                     "/fonts/misc/xetex/fontmapping/context/"
-                    "/fonts/tfm/hoekwater/context/contnav.tfm"
+                    "/fonts/tfm/hoekwater/context/"
                     "/fonts/type1/hoekwater/context/"
-
                     "/metapost/context/"
                     "/scripts/context/"
-                    "/tex/context/"
-
-                    "/tex/generic/context/luatex/"
-                    "/tex/generic/context/ppchtex/"
+                    "/tex/context/base/"
+                    "/tex/context/bib/"
+                    "/tex/context/colors/"
+                    "/tex/context/fonts/"
+                    "/tex/context/interface/"
+                    "/tex/context/modules/"
+                    "/tex/context/patterns/"
+                    "/tex/context/sample/"
+                    "/tex/context/test/"
+                    "/tex/context/user/"
+                    "/tex/generic/context/"
                     "/tex/latex/context/")
               (base32
-               "0qrc9278h50c9k94jdjlbcbjnsmidxf7pqh10azqf6sgzifx3d7s")
+               "1rsw760f52rj62i7ms89xgxdi0qw6hag5fs5hb667nclr4kdkam8")
               #:trivial? #t))
+    ;; TODO: add these missing packages:
+    ;; xetex, luatex, lm-math, manfnt-font, and mptopdf
+    (propagated-inputs
+     `(("texlive-amsfonts" ,texlive-amsfonts)
+       ("texlive-lm" ,texlive-lm)
+       ("texlive-pdftex" ,texlive-pdftex)
+       ("texlive-metapost" ,texlive-metapost)
+       ("texlive-fonts-stmaryrd" ,texlive-fonts-stmaryrd)
+       ("texlive-mflogo-font" ,texlive-mflogo-font)))
     (home-page "https://www.ctan.org/pkg/context")
-    (synopsis "ConTeXt macro package")
+    (synopsis "Full featured, parameter driven macro package for TeX")
     (description "ConTeXt is a full featured, parameter driven macro package,
 which fully supports advanced interactive documents.  See the ConTeXt garden
 for a wealth of support information.")
@@ -8127,6 +8137,8 @@ for a wealth of support information.")
     (license (list license:lppl1.3c+
                    license:gpl2+
                    license:cc-by-sa4.0))))
+
+(define-deprecated-package texlive-context-base texlive-context)
 
 (define-public texlive-beamer
   (package
@@ -8138,9 +8150,9 @@ for a wealth of support information.")
                "091n27n4l3iac911bvmpp735ffryyzaq46mkclgn3q9jsvc4ngiv")
               #:trivial? #t))
     (propagated-inputs
-     `(("texlive-latex-hyperref" ,texlive-latex-hyperref)
+     `(("texlive-hyperref" ,texlive-hyperref)
        ("texlive-oberdiek" ,texlive-oberdiek)
-       ("texlive-latex-etoolbox" ,texlive-latex-etoolbox)
+       ("texlive-etoolbox" ,texlive-etoolbox)
        ("texlive-latex-pgf" ,texlive-latex-pgf)))
     (home-page "https://www.ctan.org/pkg/beamer")
     (synopsis "LaTeX class for producing presentations and slides")
@@ -8157,8 +8169,7 @@ effects, varying slide transitions and animations.")
     ;; dual-licensed under either FDLv1.3+ or LPPL1.3c+.
     (license (list license:lppl1.3c+ license:gpl2+ license:fdl1.3+))))
 
-(define-public texlive-latex-beamer
-  (deprecated-package "texlive-latex-beamer" texlive-beamer))
+(define-deprecated-package texlive-latex-beamer texlive-beamer)
 
 (define-public texlive-latex-xmpincl
   (package
@@ -8220,8 +8231,7 @@ the file to which it applies.")
 standards-compliant PDF documents with pdfTeX, LuaTeX and XeTeX.")
       (license license:lppl1.2+))))
 
-(define-public texlive-latex-pdfx
-  (deprecated-package "texlive-latex-pdfx" texlive-pdfx))
+(define-deprecated-package texlive-latex-pdfx texlive-pdfx)
 
 (define-public texlive-ydoc
   (let ((template (simple-texlive-package
@@ -8356,11 +8366,9 @@ package also provides the @code{\\RequirePDFTeX}, @code{\\RequireXeTeX}, and
 LuaTeX (respectively) is not the engine in use.")
       (license license:lppl1.3+))))
 
-(define-public texlive-iftex
-  (deprecated-package "texlive-iftex" texlive-generic-iftex))
+(define-deprecated-package texlive-iftex texlive-generic-iftex)
 
-(define-public texlive-generic-ifxetex
-  (deprecated-package "texlive-generic-ifxetex" texlive-generic-iftex))
+(define-deprecated-package texlive-generic-ifxetex texlive-generic-iftex)
 
 (define-public texlive-tools
   (let ((template (simple-texlive-package
@@ -8449,7 +8457,6 @@ are part of the LaTeX required tools distribution, comprising the packages:
                #t))))))
     (native-inputs
      `(("texlive-latex-base" ,texlive-latex-base)
-       ("texlive-latex-l3backend" ,texlive-latex-l3backend)
        ("texlive-cm" ,texlive-cm)
        ("texlive-lm" ,texlive-lm)
        ("texlive-url" ,texlive-url)

@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2021 Christopher Howard <christopher@librehacker.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,37 +148,6 @@ management, extensions such as advertisement blocker and colorful tabs.")
     (home-page "https://www.midori-browser.org")
     (license license:lgpl2.1+)))
 
-(define-public dillo
-  (package
-    (name "dillo")
-    (version "3.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.dillo.org/download/"
-                                  "dillo-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "12ql8n1lypv3k5zqgwjxlw1md90ixz3ag6j1gghfnhjq3inf26yv"))))
-    (build-system gnu-build-system)
-    (arguments `(#:configure-flags '("--enable-ssl" "--enable-ipv6")))
-    (native-inputs `(("pkg-config" ,pkg-config)))
-    (inputs `(("fltk" ,fltk)
-              ("fontconfig" ,fontconfig)
-              ("libjpeg" ,libjpeg-turbo)
-              ("libpng" ,libpng)
-              ("libxcursor" ,libxcursor)
-              ("libxft" ,libxft)
-              ("libxi" ,libxi)
-              ("libxinerama" ,libxinerama)
-              ("openssl" ,openssl-1.0) ;XXX try latest openssl for dillo > 3.0.5
-              ("perl" ,perl)
-              ("zlib" ,zlib)))
-    (synopsis "Very small and fast graphical web browser")
-    (description "Dillo is a minimalistic web browser particularly intended for
-older or slower computers and embedded systems.")
-    (home-page "https://www.dillo.org")
-    (license license:gpl3+)))
-
 (define-public links
   (package
     (name "links")
@@ -303,7 +273,7 @@ and the GTK+ toolkit.")
 (define-public lynx
   (package
     (name "lynx")
-    (version "2.9.0dev.6")
+    (version "2.9.0dev.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -311,7 +281,7 @@ and the GTK+ toolkit.")
                     "/lynx" version ".tar.bz2"))
               (sha256
                (base32
-                "1cjkpwxc1r8x8q73bgh9a4skaph1bwa0anml6f6lvf7lh5zvxw3q"))))
+                "06jhv8ibfw1xkf8d8zrnkc2aw4d462s77hlp6f6xa6k8awzxvmkg"))))
     (build-system gnu-build-system)
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("perl" ,perl)))
@@ -490,7 +460,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.2.2")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
@@ -498,7 +468,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "11vjp20gzmdjj09b7wxzn7ar6viih0bk76y618yqsyqqkffylmbq"))))
+        (base32 "05n64mw9lzzxpxr7lhakbkm9ir3x8p0rwk6vbbg01aqg5iaanyj0"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-attrs" ,python-attrs))) ; for tests
@@ -912,22 +882,20 @@ interface.")
 (define-public telescope
   (package
     (name "telescope")
-    (version "0.3")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://git.omarpolo.com/telescope/snapshot/"
-                           "telescope-" version ".tar.gz"))
+       (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
+                           version "/telescope-" version ".tar.gz"))
        (sha256
-        (base32 "1wg5x04n9iri7jx1lzhmd79j41grhjm3mpxn9qq9nf8n102wlvm3"))))
+        (base32 "1fgv7gg2lwrjcihq6mkraqm10a6a7h430ikrjpcwfcpv1gvj8ckz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("bison"   ,bison)
-       ("gettext" ,gettext-minimal)))
+     `(("gettext" ,gettext-minimal)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("libevent"  ,libevent)
        ("libressl"  ,libressl)
@@ -936,3 +904,31 @@ interface.")
     (synopsis "Gemini client with a terminal interface")
     (description "Telescope is a w3m-like browser for Gemini.")
     (license license:x11)))
+
+(define-public av-98
+  (package
+    (name "av-98")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "AV-98" version))
+       (sha256
+        (base32
+         "02fjnc2rvm010gb3i07p8r4xlhrmnv1wca1qymfjcymr7vm68h0i"))))
+    (build-system python-build-system)
+    (home-page "https://tildegit.org/solderpunk/AV-98/")
+    (synopsis "Command line Gemini client")
+    (description "AV-98 is an experimental client for the Gemini protocol.
+Features include
+@itemize
+@item TOFU or CA server certificate validation;
+@item Extensive client certificate support if an openssl binary is available;
+@item Ability to specify external handler programs for different MIME types;
+@item Gopher proxy support;
+@item Advanced navigation tools like tour and mark (as per VF-1);
+@item Bookmarks;
+@item IPv6 support;
+@item Support for any character encoding recognised by Python.
+@end itemize")
+    (license license:bsd-2)))

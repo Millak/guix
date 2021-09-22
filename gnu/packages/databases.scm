@@ -9,7 +9,7 @@
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
@@ -39,7 +39,7 @@
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
@@ -52,6 +52,7 @@
 ;;; Copyright © 2021 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,11 +89,14 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages jemalloc)
@@ -109,6 +113,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages pantheon)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -130,6 +135,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
@@ -148,6 +154,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
@@ -1032,14 +1039,14 @@ and high-availability (HA).")
 (define-public postgresql-13
   (package
     (name "postgresql")
-    (version "13.3")
+    (version "13.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "18dliq7h2l8irffhyyhdmfwx3si515q6gds3cxdjb9n7m17lbn9w"))
+                "1kf0gcsrl5n25rjlvkh87aywmn28kbwvakm5c7j1qpr4j01y34za"))
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1090,38 +1097,38 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-13)
     (name "postgresql")
-    (version "11.12")
+    (version "11.13")
     (source (origin
               (inherit (package-source postgresql-13))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "016bacpmqxc676ipzc1l8zv1jj44mjz7dv7jhqazg3ibdfqxiyc7"))))))
+                "0j5wnscnxa3sx8d39s55654df8aikmvkihfb0a02hrgmyygnihx0"))))))
 
 (define-public postgresql-10
   (package
     (inherit postgresql-11)
-    (version "10.17")
+    (version "10.18")
     (source (origin
               (inherit (package-source postgresql-11))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0v5jahkqm6gkq67s4bac3h7297bscn2ab6y128idi73cc1qq1wjs"))))))
+                "009qpb02bq0rx0aaw5ck70gk07xwparhfxvlfimgihw2vhp7qisp"))))))
 
 (define-public postgresql-9.6
   (package
     (inherit postgresql-10)
-    (version "9.6.22")
+    (version "9.6.23")
     (source (origin
               (inherit (package-source postgresql-10))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "0c19kzrj5ib5ygmavf5d6qvxdwrxzzz6jz1r2dl5b815208cscix"))))))
+                "1fa735lrmv2vrfiixg73nh024gxlagcbrssklvgwdf0s82cgfjd8"))))))
 
 (define-public postgresql postgresql-13)
 
@@ -1374,6 +1381,15 @@ including field and record folding.")))
          (delete 'configure)
          ;; The default target is only needed for tests and built on demand.
          (delete 'build)
+         (add-before 'check 'mount-tmp
+           ;; Use the provided workspace directory for test files.
+           ;; Otherwise, /tmp is used which is a mount namespace on /gnu/store.
+           ;; This speeds up the build when the host /tmp is a proper tmpfs or
+           ;; other fast filesystem, as opposed to /gnu which may be a HDD.
+           (lambda _
+             (let ((test-dir (string-append (getcwd) "/../test")))
+               (mkdir test-dir)
+               (setenv "TEST_TMPDIR" (canonicalize-path test-dir)))))
          (add-before 'check 'disable-optimizations
            (lambda _
              ;; Prevent the build from passing '-march=native' to the compiler.
@@ -1605,14 +1621,14 @@ changes.")
 (define-public tdb
   (package
     (name "tdb")
-    (version "1.4.3")
+    (version "1.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/tdb/tdb-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "06waz0k50c7v3chd08mzp2rv7w4k4q9isbxx3vhlfpx1vy9q61f8"))))
+                "0h8fkblws3d4vf37yhbrbw2nfxg5vk2v3i5mk04hhcbh9y4fvz5w"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -2466,16 +2482,16 @@ virtual address space — not physical RAM.")
 (define-public lmdbxx
   (package
     (name "lmdbxx")
-    (version "0.9.14.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/drycpp/lmdbxx")
+             (url "https://github.com/hoytech/lmdbxx")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jmb9wg2iqag6ps3z71bh72ymbcjrb6clwlkgrqf1sy80qwvlsn6"))))
+        (base32 "12k5rz74d1l0skcks9apry1svkl96g9lf5dcgylgjmh7v1jm0b7c"))))
     (arguments
      `(#:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
@@ -2484,7 +2500,7 @@ virtual address space — not physical RAM.")
          (delete 'configure))))
     (build-system gnu-build-system)
     (inputs `(("lmdb" ,lmdb)))
-    (home-page "http://lmdbxx.sourceforge.net")
+    (home-page "https://github.com/hoytech/lmdbxx")
     (synopsis "C++11 wrapper for the LMDB embedded B+ tree database library")
     (description "@code{lmdbxx} is a comprehensive @code{C++} wrapper for the
 @code{LMDB} embedded database library, offering both an error-checked
@@ -2920,18 +2936,20 @@ Database API 2.0T.")
 (define-public python-sqlalchemy
   (package
     (name "python-sqlalchemy")
-    (version "1.3.20")
+    (version "1.4.23")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "SQLAlchemy" version))
       (sha256
-       (base32 "18b9am7bsqc4nj3d2h5r93i002apczxfvpfpcqbd6f0385zmrwnj"))))
+       (base32 "10vm8hm8w4yfsab076ak8r4vp5v1jqdi71cky6dhha7mh5l29zvn"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-cython" ,python-cython) ; for C extensions
        ("python-pytest" ,python-pytest)
        ("python-mock"   ,python-mock))) ; for tests
+    (propagated-inputs
+     `(("python-greenlet" ,python-greenlet)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -3066,13 +3084,13 @@ this library provides functions to facilitate such comparisons.")
 (define-public python-alembic
   (package
     (name "python-alembic")
-    (version "1.4.3")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "alembic" version))
        (sha256
-        (base32 "0if2dgb088clk738p26bwk50735h6jpd2kacdgc5capv2hiz6d2k"))))
+        (base32 "1ys0a44gh544xpbzz6r5xvz3msim74f9qklyfnw0bhn9vk9n9adf"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -3084,6 +3102,7 @@ this library provides functions to facilitate such comparisons.")
        ("python-pytest-cov" ,python-pytest-cov)))
     (propagated-inputs
      `(("python-dateutil" ,python-dateutil)
+       ("python-importlib-resources" ,python-importlib-resources) ;Python < 3.9
        ("python-sqlalchemy" ,python-sqlalchemy)
        ("python-mako" ,python-mako)
        ("python-editor" ,python-editor)))
@@ -3093,9 +3112,6 @@ this library provides functions to facilitate such comparisons.")
      "Alembic is a lightweight database migration tool for usage with the
 SQLAlchemy Database Toolkit for Python.")
     (license license:expat)))
-
-(define-public python2-alembic
-  (package-with-python2 python-alembic))
 
 (define-public python-pickleshare
   (package
@@ -3138,7 +3154,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.31.1-r1")
+    (version "3.36.0-r1")
     (source
       (origin
         (method url-fetch)
@@ -3146,7 +3162,7 @@ PickleShare.")
                             "/download/" version "/apsw-" version ".zip"))
         (sha256
           (base32
-           "1gap5lr6c7bp134nzvfwr693i6d0fqyaysg3ms2cayjldv616yfx"))))
+           "0w8q73147hv77dlpqrx6h1gx03acc8xqhvdpfp6vkffdm0wmqd8p"))))
     (build-system python-build-system)
     (native-inputs
      `(("unzip" ,unzip)))
@@ -3285,20 +3301,31 @@ designed to be easy and intuitive to use.")
 (define-public python-sadisplay
   (package
     (name "python-sadisplay")
-    (version "0.4.8")
+    (version "0.4.9")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "sadisplay" version))
       (sha256
         (base32
-          "01d9lxhmgpb68gy8rd6zj6fcwp84n2qq210n1qsk3qbsir79bzh4"))))
+          "15jxwgla3q4xsp6rw8inqaiy1kdzc8l2cixj8amqcf0ji47icrxg"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (begin
+                            (setenv "PYTHONPATH"
+                                    (string-append ".:" (or (getenv "PYTHONPATH")
+                                                           "")))
+                            (invoke "pytest" "-vv"))
+                          (format #t "test suite not run~%")))))))
     (propagated-inputs
       `(("python-sqlalchemy" ,python-sqlalchemy)))
     (native-inputs
      ;; For tests.
-      `(("python-nose" ,python-nose)))
+      `(("python-pytest" ,python-pytest)))
     (home-page "https://bitbucket.org/estin/sadisplay")
     (synopsis "SQLAlchemy schema displayer")
     (description "This package provides a program to build Entity
@@ -3593,13 +3620,13 @@ provides support for parsing, splitting and formatting SQL statements.")
 (define-public python-sql
   (package
     (name "python-sql")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-sql" version))
        (sha256
-        (base32 "05ni936y0ia9xmryl7mlhbj9i80nnvq1bi4zxhb96rv7yvpb3fqb"))))
+        (base32 "0xnimfzlxj1ddrb5xj3s4gaii278a0gpxrvwmdmrdxgjfdi3lq4x"))))
     (build-system python-build-system)
     (home-page "https://python-sql.tryton.org/")
     (synopsis "Library to write SQL queries in a pythonic way")
@@ -3638,7 +3665,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "4.0.1")
+    (version "5.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3648,7 +3675,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1lcd9gdpwlrr92rm812a5p4l6zx0arwd0zj72a4ga699s1psz8yv"))))
+         "0275aayzy78nbxzbj93w5152sv5q2c7020ijxnf8b58v9qwfxzz0"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
@@ -3770,13 +3797,34 @@ algorithm implementations.")
        (modify-phases %standard-phases
          (delete 'build) ; XXX the build is performed again during the install phase
          (add-after 'unpack 'enter-source-directory
-           (lambda _ (chdir "python") #t))
+           (lambda _ (chdir "python")))
          (add-after 'unpack 'make-git-checkout-writable
            (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
+             (for-each make-file-writable (find-files "."))))
+         (add-before 'install 'patch-cmake-variables
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Replace cmake locations with hardcoded guix links for the
+             ;; underlying C++ library and headers.  This is a pretty awful
+             ;; hack.
+             (substitute* "cmake_modules/FindParquet.cmake"
+               (("# Licensed to the Apache Software Foundation" m)
+                (string-append "set(PARQUET_INCLUDE_DIR \""
+                               (assoc-ref inputs "apache-arrow:include")
+                               "/share/include\")\n" m))
+               (("find_package_handle_standard_args" m)
+                (string-append "set(PARQUET_LIB_DIR \""
+                               (assoc-ref inputs "apache-arrow:lib")
+                               "/lib\")\n" m)))))
+         (add-before 'install 'patch-parquet-library
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("parquet_shared") "parquet"))))
+         (add-before 'install 'set-PYARROW_WITH_PARQUET
+           (lambda _
+             (setenv "PYARROW_WITH_PARQUET" "1"))))))
     (propagated-inputs
-     `(("apache-arrow" ,apache-arrow "lib")
+     `(("apache-arrow:lib" ,apache-arrow "lib")
+       ("apache-arrow:include" ,apache-arrow "include")
        ("python-numpy" ,python-numpy)
        ("python-pandas" ,python-pandas)
        ("python-six" ,python-six)))
@@ -3968,3 +4016,54 @@ PostreSQL, SQLite, ODBC and MySQL.")
      "FreeTDS is an implementation of the Tabular DataStream protocol, used for
 connecting to MS SQL and Sybase servers over TCP/IP.")
     (license license:lgpl2.0+)))
+
+(define-public sequeler
+  (package
+    (name "sequeler")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Alecaddd/sequeler")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q1vzc3likpiwfh6blkyiz0wr0aarj9xrm8gbi7m3p1wslkpah7c"))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           ;; Don't create 'icon-theme.cache'.
+           (lambda _
+             (substitute* "build-aux/meson_post_install.py"
+               (("gtk-update-icon-cache") "true")
+               (("update-desktop-database") "true"))
+             #t)))))
+    (native-inputs
+     `(;("appstream-glib" ,appstream-glib)  ; validation fails for lack of network
+       ("gettext-minimal" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")             ; for glib-compile-resources
+       ("gtk+" ,gtk+ "bin")
+       ("pkg-config" ,pkg-config)
+       ("vala" ,vala)))
+    (inputs
+     `(("glib" ,glib)
+       ("granite" ,granite)
+       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gtk+" ,gtk+)
+       ("gtksourceview-3" ,gtksourceview-3)
+       ("libgda" ,libgda)
+       ("libgee" ,libgee)
+       ("libsecret" ,libsecret)
+       ("libssh2" ,libssh2)
+       ("libxml2" ,libxml2)))
+    (synopsis "Friendly SQL Client")
+    (description "Sequeler is a native Linux SQL client built in Vala and
+Gtk.  It allows you to connect to your local and remote databases, write SQL in
+a handy text editor with language recognition, and visualize SELECT results in
+a Gtk.Grid Widget.")
+    (home-page "https://github.com/Alecaddd/sequeler")
+    (license license:gpl2+)))

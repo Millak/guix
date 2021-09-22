@@ -34,6 +34,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages finance)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages python)
@@ -48,13 +49,13 @@
 (define-public python-django
   (package
     (name "python-django")
-    (version "3.2.4")
+    (version "3.2.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "15pjwyvrx4n8gi8n51b14wp54bg4jqapr25p52597zn6ikdxijb6"))))
+                "08p0gf1n548fjba76wspcj1jb3li6lr7xi87w2xq7hylr528azzj"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -79,6 +80,8 @@
            (lambda* (#:key tests? #:allow-other-keys)
              (if tests?
                  (with-directory-excursion "tests"
+                   ;; Tests expect PYTHONPATH to contain the root directory.
+                   (setenv "PYTHONPATH" "..")
                    (invoke "python" "runtests.py"
                            ;; By default tests run in parallel, which may cause
                            ;; various race conditions.  Run sequentially for
@@ -180,6 +183,42 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
      "Django-extensions extends Django providing, for example, management
 commands, additional database fields and admin extensions.")
     (license license:expat)))
+
+(define-public python-django-localflavor
+  (package
+    (name "python-django-localflavor")
+    (version "3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django-localflavor" version))
+       (sha256
+        (base32 "0i1s0ijfd9rv2cp5x174jcyjpwn7fyg7s1wpbvlwm96bpdvs6bxc"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (setenv "PYTHONPATH"
+                       (string-append ".:"
+                                      (getenv "PYTHONPATH")))
+               (invoke "invoke" "test")))))))
+    (native-inputs
+     `(("python-coverage" ,python-coverage)
+       ("python-invoke" ,python-invoke)
+       ("python-pytest-django" ,python-pytest-django)
+       ("which" ,which)))
+    (propagated-inputs
+     `(("python-django" ,python-django)
+       ("python-stdnum" ,python-stdnum)))
+    (home-page "https://django-localflavor.readthedocs.io/en/latest/")
+    (synopsis "Country-specific Django helpers")
+    (description "Django-LocalFlavor is a collection of assorted pieces of code
+that are useful for particular countries or cultures.")
+    (license license:bsd-3)))
 
 (define-public python-django-simple-math-captcha
   (package
@@ -305,16 +344,19 @@ size and quality.")
 (define-public python-pytest-django
   (package
     (name "python-pytest-django")
-    (version "3.10.0")
+    (version "4.4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-django" version))
               (sha256
                (base32
-                "19nvqsb7b9kz3ikpb50m8ppf7mfhzrapdxsqd5hhd1pdfz8dprjd"))))
+                "0mglnz0w6k7dgw1jn6giv56pmdjd6a3zwwkhxb2kyzmzk0viw5xm"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     ;; The test suite is disabled because there are many test failures (see:
+     ;; https://github.com/pytest-dev/pytest-django/issues/943).
+     `(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
@@ -334,9 +376,8 @@ size and quality.")
     (native-inputs
      `(("python-django" ,python-django)
        ("python-setuptools-scm" ,python-setuptools-scm)
-
        ;; For tests.
-       ("python-pytest-xdist" ,python-pytest-xdist)))
+       ("python-pytest-xdist" ,python-pytest-xdist-next)))
     (propagated-inputs
      `(("python-pytest" ,python-pytest)))
     (home-page "https://pytest-django.readthedocs.org/")

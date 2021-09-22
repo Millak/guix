@@ -31,6 +31,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages anthy)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -100,6 +102,16 @@
 
 
 
+;; When cross-compiling certain packages, "--disable-malloc0returnsnull"
+;; needs to be passed.  Otherwise, the configure script will try to run a
+;; binary for the host on the build machine.
+(define (malloc0-flags)
+  (if (%current-target-system)
+      ;; At least on glibc-based systems, malloc(0) evaluates to a non-NULL
+      ;; pointer (except in out-of-memory situations).  On other systems,
+      ;; --enable-malloc0returnsnull might be required instead.
+      '("--disable-malloc0returnsnull")
+      '()))
 
 ;; packages without propagated input
 ;; (rationale for this separation: The packages in PROPAGATED_INPUTS need to
@@ -1518,11 +1530,10 @@ treat it as part of their software base when porting.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
-    (inputs
-      `(("libxext" ,libxext)
-        ("libx11" ,libx11)))
     (propagated-inputs
-      `(("xorgproto" ,xorgproto)))
+      `(("libx11" ,libx11)
+        ("libxext" ,libxext)
+        ("xorgproto" ,xorgproto)))
     (native-inputs
       `(("pkg-config" ,pkg-config)))
     (home-page "https://www.x.org/wiki/")
@@ -2541,7 +2552,7 @@ including most mice, keyboards, tablets and touchscreens.")
 (define-public xf86-input-libinput
   (package
     (name "xf86-input-libinput")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2549,7 +2560,7 @@ including most mice, keyboards, tablets and touchscreens.")
                     name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0nr4r9x8c7y1l0ipivjch5zps093mxmg2nqmfn2934am26fc9ppx"))))
+                "05ldqr10f2rrnshyk3lc773rz0gp3ccdzwa8n7lsc94i850jl7g1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2717,14 +2728,14 @@ as USB mice.")
 (define-public xf86-video-amdgpu
   (package
     (name "xf86-video-amdgpu")
-    (version "19.1.0")
+    (version "21.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/driver/"
                            "xf86-video-amdgpu-" version ".tar.bz2"))
        (sha256
-        (base32 "0pgy4ihnja0vm8504qw7qxh3pdpa3p9k6967nz15m6b1mvha83jg"))))
+        (base32 "125dq85n46yqmnmr2hknxwcqicwlvz2b2phf0m963fpg9l1j6y30"))))
     (build-system gnu-build-system)
     (inputs `(("xorg-server" ,xorg-server)))
     (native-inputs `(("pkg-config" ,pkg-config)))
@@ -2782,27 +2793,36 @@ X server.")
     (license license:x11)))
 
 (define-public xf86-video-ati
-  (package
-    (name "xf86-video-ati")
-    (version "19.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://xorg/individual/driver/"
-                           "xf86-video-ati-" version ".tar.bz2"))
-       (sha256
-        (base32 "0j9w4axsqlycv4v14g53xyhkm9h7d27b2fcv9lrzb9gf54b5m7v5"))))
-    (build-system gnu-build-system)
-    (inputs `(("mesa" ,mesa)
-              ("xorgproto" ,xorgproto)
-              ("xorg-server" ,xorg-server)))
-    (native-inputs `(("pkg-config" ,pkg-config)))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "ATI Radeon video driver for X server")
-    (description
-     "xf86-video-ati is an ATI Radeon video driver for the Xorg
+  ;; The current release is too old to build with our inputs.
+  (let ((commit "5eba006e4129e8015b822f9e1d2f1e613e252cda")
+        (revision "1"))
+    (package
+      (name "xf86-video-ati")
+      (version (git-version "19.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.freedesktop.org/xorg/driver/xf86-video-ati.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1n49wx0v13jh8vv17sxgrmmpi1mk3n2wph07jfmxmzqahpcn4lkn"))))
+      (build-system gnu-build-system)
+      (inputs `(("mesa" ,mesa)
+                ("xorgproto" ,xorgproto)
+                ("xorg-server" ,xorg-server)))
+      (native-inputs
+       `(("pkg-config" ,pkg-config)
+         ("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("libtool" ,libtool)))
+      (home-page "https://www.x.org/wiki/")
+      (synopsis "ATI Radeon video driver for X server")
+      (description
+       "xf86-video-ati is an ATI Radeon video driver for the Xorg
 X server.")
-    (license license:x11)))
+      (license license:x11))))
 
 
 (define-public xf86-video-cirrus
@@ -2910,7 +2930,13 @@ framebuffer device.")
        `(#:configure-flags
          (list (string-append "--with-xorg-conf-dir="
                               (assoc-ref %outputs "out")
-                              "/share/X11/xorg.conf.d"))))
+                              "/share/X11/xorg.conf.d"))
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'bootstrap
+             (lambda _
+               ;; autogen.sh calls configure unconditionally.
+               (invoke "autoreconf" "-vfi"))))))
       (home-page "https://www.x.org/wiki/")
       (synopsis "Adreno video driver for X server")
       (description
@@ -3915,7 +3941,7 @@ alternative implementations like XRandR or TwinView.")
     (license license:x11)))
 
 
-(define xkbcomp-intermediate            ;used as input for xkeyboard-config
+(define-public xkbcomp-intermediate        ;used as input for xkeyboard-config
   (package
     (name "xkbcomp-intermediate")
     (version "1.4.5")
@@ -3948,11 +3974,16 @@ explicitly specify most aspects of keyboard behaviour on per-key basis
 and to more closely track the logical and physical state of the
 keyboard.  It also includes a number of keyboard controls designed to
 make keyboards more accessible to people with physical impairments.")
-    (license license:x11)))
+    (license license:x11)
+
+    ;; The only reason this package is public is to make sure it's built and
+    ;; published by the continuous integration tool.
+    (properties '((hidden? . #t)))))
 
 (define-public xkbcomp ; using xkeyboard-config as input
   (package (inherit xkbcomp-intermediate)
     (name "xkbcomp")
+    (properties '())
     (inputs
       `(,@(package-inputs xkbcomp-intermediate)
         ("xkeyboard-config" ,xkeyboard-config)))
@@ -4413,17 +4444,14 @@ and Reflect (RandR) extension.")
 (define-public xrdb
   (package
     (name "xrdb")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xrdb-"
-               version
-               ".tar.bz2"))
+        (uri (string-append "mirror://xorg/individual/app/xrdb-"
+                            version ".tar.bz2"))
         (sha256
-          (base32
-            "0ik9gh6363c47pr0dp7q22nfs8vmavjg2v4bsr0604ppl77nafpj"))))
+          (base32 "1d78prd8sfszq2rwwlb32ksph4fymf988lp75aj8iysg44f06pag"))))
     (build-system gnu-build-system)
     (inputs
       `(("libxmu" ,libxmu)
@@ -4586,17 +4614,14 @@ extension.")
 (define-public xwd
   (package
     (name "xwd")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xwd-"
-               version
-               ".tar.bz2"))
+        (uri (string-append "mirror://xorg/individual/app/xwd-"
+                            version ".tar.bz2"))
         (sha256
-          (base32
-            "1537i8q8pgf0sjklakzfvjwrq5b246qjywrx9ll8xfg0p6w1as6d"))))
+          (base32 "06q36fh55r62ms0igfxsanrn6gv8lh794q1bw9xzw51p2qs2papv"))))
     (build-system gnu-build-system)
     (inputs
       `(("libxt" ,libxt)
@@ -4776,10 +4801,7 @@ cannot be adequately worked around on the client side of the wire.")
              (string-append "--mandir="
                             (assoc-ref %outputs "doc")
                             "/share/man")
-             ;; Disable zero malloc check that fails when cross-compiling.
-             ,@(if (%current-target-system)
-                   '("--disable-malloc0returnsnull")
-                   '()))))
+             ,@(malloc0-flags))))
     (propagated-inputs
       `(("xorgproto" ,xorgproto)))
     (inputs
@@ -4810,7 +4832,7 @@ cannot be adequately worked around on the client side of the wire.")
             "086p0axqj57nvkaqa6r00dnr9kyrn1m8blgf0zjy25zpxkbxn200"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static" ,@(malloc0-flags))))
     (propagated-inputs
       `(("xorgproto" ,xorgproto)))
     (inputs
@@ -4869,11 +4891,7 @@ cannot be adequately worked around on the client side of the wire.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list "--disable-static"
-             ;; Disable zero malloc check that fails when cross-compiling.
-             ,@(if (%current-target-system)
-                   '("--disable-malloc0returnsnull")
-                   '()))))
+       (list "--disable-static" ,@(malloc0-flags))))
     (propagated-inputs
       `(("xorgproto" ,xorgproto)))
     (inputs
@@ -5189,10 +5207,11 @@ new API's in libXft, or the legacy API's in libX11.")
     (build-system gnu-build-system)
     (outputs '("out" "doc"))             ;man pages represent 28% of the total
     (arguments
-     '(#:configure-flags (list "--disable-static"
+     `(#:configure-flags (list "--disable-static"
                                (string-append "--mandir="
                                               (assoc-ref %outputs "doc")
-                                              "/share/man"))))
+                                              "/share/man")
+                               ,@(malloc0-flags))))
     (propagated-inputs
       `(("xorgproto" ,xorgproto)
         ("libx11" ,libx11)
@@ -5221,7 +5240,7 @@ new API's in libXft, or the legacy API's in libX11.")
             "08z0mqywrm7ij8bxlfrx0d2wy6kladdmkva1nw5k6qix82z0xsla"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static" ,@(malloc0-flags))))
     (propagated-inputs
       ;; In accordance with xrandr.pc.
       `(("libx11" ,libx11)
@@ -5282,7 +5301,7 @@ new API's in libXft, or the legacy API's in libX11.")
             "0mydhlyn72i7brjwypsqrpkls3nm6vxw0li8b2nw0caz7kwjgvmg"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static" ,@(malloc0-flags))))
     (propagated-inputs
       `(("libxext" ,libxext)
         ("xorgproto" ,xorgproto)))
@@ -5546,11 +5565,7 @@ draggable titlebars and borders.")
                             (assoc-ref %outputs "doc")
                             "/share/man")
              "--disable-static"
-
-             ;; Disable zero malloc check that fails when cross-compiling.
-             ,@(if (%current-target-system)
-                   '("--disable-malloc0returnsnull")
-                   '()))))
+             ,@(malloc0-flags))))
     (propagated-inputs
       `(("xorgproto" ,xorgproto)
         ("libxcb" ,libxcb)))
@@ -5628,10 +5643,7 @@ draggable titlebars and borders.")
                             (assoc-ref %outputs "doc")
                             "/share/man")
              "--disable-static"
-             ;; Disable zero malloc check that fails when cross-compiling.
-             ,@(if (%current-target-system)
-                   '("--disable-malloc0returnsnull")
-                   '()))))
+             ,@(malloc0-flags))))
     (propagated-inputs
       `(("libx11" ,libx11)
         ("libice" ,libice)
@@ -6330,18 +6342,18 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.2")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1yg9asi3i3wf73ibc006xv3g77axvbyp81lyinwq27syabh30i1a"))
+        (base32 "0gqdcw5cfk919jk8g0g4xjxbsvr5j9gskn8q3cmrz388pvfvm8x7"))
        (patches (search-patches "xpra-4.2-systemd-run.patch"))))
     (build-system python-build-system)
     ;; see also http://xpra.org/trac/wiki/Dependencies
-    (inputs `(
+    (inputs `(("bash-minimal" ,bash-minimal)    ; for wrap-program
               ;; Essential dependencies.
               ("libjpeg" ,libjpeg-turbo)
               ("libwebp" ,libwebp)
@@ -6473,7 +6485,8 @@ X11 servers, Windows, or macOS.")
      `(("anthy" ,anthy)
        ("libedit" ,libedit)
        ("libxft" ,libxft)
-       ("m17n-lib" ,m17n-lib)))
+       ("m17n-lib" ,m17n-lib)
+       ("ncurses" ,ncurses)))
     (native-inputs
      `(("emacs" ,emacs-minimal)
        ("intltool" ,intltool)
@@ -6924,3 +6937,38 @@ an existing user-specified one, writes a cookie to it, and then starts the
 the server and cleaning up before returning the exit status of the command.")
     (license (list license:x11                    ; the script
                    license:gpl2+))))              ; the man page
+
+(define-public setroot
+  (package
+    (name "setroot")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ttzhou/setroot")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w95828v0splk7bj5kfacp4pq6wxpyamvyjmahyvn5hc3ycq21mq"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "DESTDIR=" (assoc-ref %outputs "out"))
+             "PREFIX="
+             "xinerama=1")
+       #:tests? #f                       ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs
+     `(("imlib2" ,imlib2)
+       ("libx11" ,libx11)
+       ("libxinerama" ,libxinerama)))
+    (home-page "https://github.com/ttzhou/setroot")
+    (synopsis "Simple X background setter inspired by imlibsetroot and feh")
+    (description "Setroot is a lightweight X background setter with feh's
+syntax without its image viewing capabilities.  It supports multiple monitors
+and can restore previously set wallpapers and options.")
+    (license license:gpl3+)))

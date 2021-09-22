@@ -18,6 +18,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -877,6 +878,43 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public clang clang-9)
 (define-public clang-toolchain clang-toolchain-9)
 
+(define-public llvm-for-rocm
+  (package
+    ;; Actually based on LLVM 13 as of v4.3, but llvm-12 works just fine.
+    (inherit llvm-12)
+    (name "llvm-for-rocm")
+    (version "4.3.0")                         ;this must match '%rocm-version'
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/RadeonOpenCompute/llvm-project.git")
+                    (commit (string-append "rocm-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p75nr1qpmy6crymdax5hm40wkimman4lnglz4x5cnbiqindya7s"))
+              (patches
+               (search-patches "llvm-roc-4.2.0-add_Object.patch"
+                               "llvm-roc-3.0.0-add_libraries.patch"
+                               "llvm-roc-4.0.0-remove-isystem-usr-include.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments llvm-12)
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'chdir
+             (lambda _
+               (chdir "llvm")))))
+       ((#:configure-flags flags)
+        ''("-DLLVM_ENABLE_PROJECTS=llvm;clang;lld"
+           "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
+           "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
+           "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
+           "-DBUILD_SHARED_LIBS:BOOL=TRUE"
+           "-DLLVM_VERSION_SUFFIX="))))
+    (properties `((hidden? . #t)
+                  ,@(package-properties llvm-12)))))
+
+
 (define-public lld
   (package
     (name "lld")
@@ -1252,6 +1290,45 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
     (description
      "This package provides a Python binding to LLVM for use in Numba.")
     (license license:bsd-3)))
+
+(define-public (clang-python-bindings clang)
+  "Return a package for the Python bindings of CLANG."
+  (package
+    (inherit clang)
+    (name "python-clang")
+    (build-system python-build-system)
+    (outputs '("out"))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'build 'change-directory
+                    (lambda _
+                      (chdir "bindings/python")))
+                  (add-before 'build 'create-setup-py
+                    (lambda _
+                      ;; Generate a basic "setup.py", enough so it can be
+                      ;; built and installed.
+                      (with-output-to-file "setup.py"
+                        (lambda ()
+                          (display "from setuptools import setup
+setup(name=\"clang\", packages=[\"clang\"])\n")))))
+                  (add-before 'build 'set-libclang-file-name
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      ;; Record the absolute file name of libclang.so.
+                      (let ((clang (assoc-ref inputs "clang")))
+                        (substitute* "clang/cindex.py"
+                          (("libclang\\.so")
+                           (string-append clang "/lib/libclang.so")))))))))
+    (inputs `(("clang" ,clang)))
+    (synopsis "Python bindings to libclang")))
+
+(define-public python-clang-10
+  (clang-python-bindings clang-10))
+
+(define-public python-clang-11
+  (clang-python-bindings clang-11))
+
+(define-public python-clang-12
+  (clang-python-bindings clang-12))
 
 (define-public emacs-clang-format
   (package

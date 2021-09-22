@@ -18,6 +18,7 @@
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,7 +47,6 @@
             cc0
             cc-by2.0 cc-by3.0 cc-by4.0
             cc-by-sa2.0 cc-by-sa3.0 cc-by-sa4.0
-            cc-sampling-plus-1.0
             cddl1.0 cddl1.1
             cecill cecill-b cecill-c
             artistic2.0 clarified-artistic
@@ -233,11 +233,6 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "CC-BY 2.0"
            "http://creativecommons.org/licenses/by/2.0/"
            "Creative Commons Attribution 2.0 Generic"))
-
-(define cc-sampling-plus-1.0
-  (license "CC-Sampling+ 1.0"
-           "https://creativecommons.org/licenses/sampling+/1.0"
-           "Creative Commons Sampling Plus 1.0"))
 
 (define cddl1.0
   (license "CDDL 1.0"

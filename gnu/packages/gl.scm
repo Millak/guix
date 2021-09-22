@@ -15,6 +15,8 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
+;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
+;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -237,7 +239,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "20.2.6")
+    (version "21.1.6")
     (source
       (origin
         (method url-fetch)
@@ -249,7 +251,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   version "/mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "1nw5k2qrlcrp5bljy1lmyybgl525y0h44synkbbirw92qv3a6b7i"))
+          "0dwyk7cxlwna24ap23i8i92a2qcc6xhp16i03zzakpqiz4i03jxi"))
         (patches
          (search-patches "mesa-skip-tests.patch"))))
     (build-system meson-build-system)
@@ -309,7 +311,7 @@ also known as DXTn or DXTC) for Mesa.")
          "-Dglx=dri"        ;Thread Local Storage, improves performance
          ;; "-Dopencl=true"
          ;; "-Domx=true"
-         "-Dosmesa=gallium"
+         "-Dosmesa=true"
          "-Dgallium-xa=enabled"
 
          ;; features required by wayland
@@ -322,9 +324,9 @@ also known as DXTn or DXTC) for Mesa.")
              ((or "i686-linux" "x86_64-linux")
               '("-Dvulkan-drivers=intel,amd"))
              ((or "powerpc64le-linux" "powerpc-linux")
-              '("-Dvulkan-drivers=amd"))
+              '("-Dvulkan-drivers=amd,swrast"))
              ("aarch64-linux"
-              '("-Dvulkan-drivers=freedreno,amd"))
+              '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast"))
              (_
               '("-Dvulkan-drivers=auto")))
 
@@ -363,11 +365,11 @@ also known as DXTn or DXTC) for Mesa.")
          (add-after 'unpack 'disable-failing-test
            (lambda _
              ,@(match (%current-system)
-                 ("powerpc64le"
+                 ("powerpc64le-linux"
                   ;; Disable some of the llvmpipe tests.
                   `((substitute* "src/gallium/drivers/llvmpipe/lp_test_arit.c"
                       (("0\\.5, ") ""))))
-                 ("powerpc"
+                 ("powerpc-linux"
                   ;; There are some tests which fail specifically on powerpc.
                   `((substitute* '(;; LLVM ERROR: Relocation type not implemented yet!
                                    "src/gallium/drivers/llvmpipe/meson.build"
@@ -379,12 +381,20 @@ also known as DXTn or DXTC) for Mesa.")
                       (("'u_format_test', ") ""))
                     ;; It is only this portion of the test which fails.
                     (substitute* "src/mesa/main/tests/meson.build"
-                      ((".*mesa_formats.*") ""))))
+                      ((".*mesa_formats.*") ""))
+                    ;; This test times out and receives SIGTERM.
+                    (substitute* "src/amd/common/meson.build"
+                      (("and not with_platform_windows") "and with_platform_windows"))))
                  ("i686-linux"
                   ;; Disable new test from Mesa 19 that fails on i686.  Upstream
                   ;; report: <https://bugs.freedesktop.org/show_bug.cgi?id=110612>.
                   `((substitute* "src/util/tests/format/meson.build"
                       (("'u_format_test',") ""))))
+                 ("aarch64-linux"
+                  ;; The ir3_disasm test segfaults.
+                  ;; The simplest way to skip it is to run a different test instead.
+                  `((substitute* "src/freedreno/ir3/meson.build"
+                      (("disasm\\.c'") "delay.c',\n    link_args: ld_args_build_id"))))
                  (_
                   '((display "No tests to disable on this architecture.\n"))))))
          (add-after 'unpack 'fix-tests
@@ -417,8 +427,8 @@ also known as DXTn or DXTC) for Mesa.")
              (let ((out (assoc-ref outputs "out"))
                    (bin (assoc-ref outputs "bin")))
                ;; Not all architectures have the Vulkan overlay control script.
-               (mkdir-p (string-append bin "/bin"))
-               (call-with-output-file (string-append bin "/bin/.empty")
+               (mkdir-p (string-append out "/bin"))
+               (call-with-output-file (string-append out "/bin/.empty")
                  (const #t))
                (copy-recursively (string-append out "/bin")
                                  (string-append bin "/bin"))
@@ -469,6 +479,10 @@ from software emulation to complete hardware acceleration for modern GPUs.")
 (define-public mesa-opencl
   (package/inherit mesa
     (name "mesa-opencl")
+    (source (origin
+              (inherit (package-source mesa))
+              (patches (cons (search-patch "mesa-opencl-all-targets.patch")
+                             (origin-patches (package-source mesa))))))
     (arguments
      (substitute-keyword-arguments (package-arguments mesa)
        ((#:configure-flags flags)
@@ -484,10 +498,26 @@ from software emulation to complete hardware acceleration for modern GPUs.")
   (package/inherit mesa-opencl
     (name "mesa-opencl-icd")
     (arguments
-     (substitute-keyword-arguments (package-arguments mesa)
-       ((#:configure-flags flags)
-        `(cons "-Dgallium-opencl=icd"
-               ,(delete "-Dgallium-opencl=standalone" flags)))))))
+      (substitute-keyword-arguments (package-arguments mesa)
+        ((#:configure-flags flags)
+         `(cons "-Dgallium-opencl=icd"
+                ,(delete "-Dgallium-opencl=standalone" flags)))
+        ((#:phases phases)
+         `(modify-phases ,phases
+            (add-after 'install 'mesa-icd-absolute-path
+              (lambda _
+                ;; Use absolute path for OpenCL platform library.
+                ;; Otherwise we would have to set LD_LIBRARY_PATH=LIBRARY_PATH
+                ;; for ICD in our applications to find OpenCL platform.
+                (use-modules (guix build utils)
+                             (ice-9 textual-ports))
+                (let* ((out (assoc-ref %outputs "out"))
+                       (mesa-icd (string-append out "/etc/OpenCL/vendors/mesa.icd"))
+                       (old-path (call-with-input-file mesa-icd get-string-all))
+                       (new-path (string-append out "/lib/" (string-trim-both old-path))))
+                  (if (file-exists? new-path)
+                    (call-with-output-file mesa-icd
+                      (lambda (port) (format port "~a\n" new-path)))))))))))))
 
 (define-public mesa-headers
   (package/inherit mesa
@@ -712,7 +742,7 @@ OpenGL graphics API.")
 (define-public libglvnd
   (package
     (name "libglvnd")
-    (version "1.3.3")
+    (version "1.3.4")
     (home-page "https://gitlab.freedesktop.org/glvnd/libglvnd")
     (source (origin
               (method git-fetch)
@@ -722,7 +752,7 @@ OpenGL graphics API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gjk6m3gkdm12bmih2jflp0v5s1ibkixk7mrzrk0cj884m3hy1z6"))))
+                "0phvgg2h3pcz3x39gaymwb37bnw1s26clq9wsj0zx398zmp3dwpk"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags '("-Dx11=enabled")
@@ -734,8 +764,7 @@ OpenGL graphics API.")
                       ;; require a running Xorg server.
                       (substitute* "tests/meson.build"
                         (("if with_glx")
-                         "if false"))
-                      #t)))))
+                         "if false")))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs

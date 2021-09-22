@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -253,7 +254,7 @@ the ownership of '~a' may be incorrect!~%")
                               #:target target)
           (return
            (info (G_ "bootloader successfully installed on '~a'~%")
-                 (bootloader-configuration-target bootloader))))))))
+                 (bootloader-configuration-targets bootloader))))))))
 
 
 ;;;
@@ -768,14 +769,13 @@ and TARGET arguments."
                          skip-safety-checks?
                          install-bootloader?
                          dry-run? derivations-only?
-                         use-substitutes? bootloader-target target
+                         use-substitutes? target
                          full-boot?
                          container-shared-network?
                          (mappings '())
                          (gc-root #f))
   "Perform ACTION for IMAGE.  INSTALL-BOOTLOADER? specifies whether to install
-bootloader; BOOTLOADER-TAGET is the target for the bootloader; TARGET is the
-target root directory.
+bootloader; TARGET is the target root directory.
 
 FULL-BOOT? is used for the 'vm' action; it determines whether to
 boot directly to the kernel or to the bootloader.  CONTAINER-SHARED-NETWORK?
@@ -856,13 +856,13 @@ static checks."
                                      #:target (or target "/"))
                  (return
                   (info (G_ "bootloader successfully installed on '~a'~%")
-                        (bootloader-configuration-target bootloader))))
+                        (bootloader-configuration-targets bootloader))))
                (with-shepherd-error-handling
-                 (upgrade-shepherd-services local-eval os)
-                 (return (format #t (G_ "\
+                (upgrade-shepherd-services local-eval os)
+                (return (format #t (G_ "\
 To complete the upgrade, run 'herd restart SERVICE' to stop,
 upgrade, and restart each service that was not automatically restarted.\n")))
-                 (return (format #t (G_ "\
+                (return (format #t (G_ "\
 Run 'herd status' to view the list of services on your system.\n"))))))
             ((init)
              (newline)
@@ -1153,6 +1153,13 @@ Some ACTIONS support additional ARGS.\n"))
 ;;; Entry point.
 ;;;
 
+(define actions '("build" "container" "vm" "vm-image" "image" "disk-image"
+                  "reconfigure" "init"
+                  "extension-graph" "shepherd-graph"
+                  "list-generations" "describe"
+                  "delete-generations" "roll-back"
+                  "switch-generation" "search" "docker-image"))
+
 (define (process-action action args opts)
   "Process ACTION, a sub-command, with the arguments are listed in ARGS.
 ACTION must be one of the sub-commands that takes an operating system
@@ -1218,9 +1225,9 @@ resulting from command-line parsing."
          (target-file (match args
                         ((first second) second)
                         (_ #f)))
-         (bootloader-target
+         (bootloader-targets
                       (and bootloader?
-                           (bootloader-configuration-target
+                           (bootloader-configuration-targets
                             (operating-system-bootloader os)))))
 
     (define (graph-backend)
@@ -1269,7 +1276,6 @@ resulting from command-line parsing."
                                                       opts)
                                #:install-bootloader? bootloader?
                                #:target target-file
-                               #:bootloader-target bootloader-target
                                #:gc-root (assoc-ref opts 'gc-root)))))
           #:target target
           #:system system)))
@@ -1337,17 +1343,18 @@ argument list and OPTS is the option alist."
 
   (define (parse-sub-command arg result)
     ;; Parse sub-command ARG and augment RESULT accordingly.
-    (if (assoc-ref result 'action)
-        (alist-cons 'argument arg result)
-        (let ((action (string->symbol arg)))
-          (case action
-            ((build container vm vm-image image disk-image reconfigure init
-              extension-graph shepherd-graph
-              list-generations describe
-              delete-generations roll-back
-              switch-generation search docker-image)
-             (alist-cons 'action action result))
-            (else (leave (G_ "~a: unknown action~%") action))))))
+    (cond ((assoc-ref result 'action)
+           (alist-cons 'argument arg result))
+          ((member arg actions)
+           (let ((action (string->symbol arg)))
+             (alist-cons 'action action result)))
+          (else
+           (let ((hint (string-closest arg actions #:threshold 3)))
+             (report-error (G_ "~a: unknown action~%") arg)
+             (when hint
+               (display-hint
+                (format #f (G_ "Did you mean @code{~a}?~%") hint)))
+             (exit 1)))))
 
   (define (match-pair car)
     ;; Return a procedure that matches a pair with CAR.

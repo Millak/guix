@@ -15,6 +15,8 @@
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -353,7 +355,7 @@ in C/C++.")
   ;; we take the Debian version instead, because it is easier to work with.
   (package
     (inherit mozjs-38)
-    (version "60.2.3-2")
+    (version "60.2.3-4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -362,27 +364,49 @@ in C/C++.")
               (file-name (git-file-name "mozjs" version))
               (sha256
                (base32
-                "091w050rwzrdcbgyi934k2viyccmlqxrp13sm2mql71mabb5dai6"))))
+                "1xl6avsj9gkgma71p56jzs7nasc767k3n1frnmri5pad4rj94bij"))))
     (arguments
      `(#:tests? #f ; FIXME: all tests pass, but then the check phase fails anyway.
        #:test-target "check-jstests"
        #:configure-flags
-       '("--enable-ctypes"
-         "--enable-optimize"
-         "--enable-pie"
-         "--enable-readline"
-         "--enable-shared-js"
-         "--enable-system-ffi"
-         "--with-system-nspr"
-         "--with-system-zlib"
-         "--with-system-icu"
-         "--with-intl-api"
-         ;; This is important because without it gjs will segfault during the
-         ;; configure phase.  With jemalloc only the standalone mozjs console
-         ;; will work.
-         "--disable-jemalloc")
+       ;; TODO(core-updates): unconditionally use 'quasiquote
+       ,#~(#$(if (%current-target-system)
+                 #~quasiquote
+                 #~quote)
+           ("--enable-ctypes"
+            "--enable-optimize"
+            "--enable-pie"
+            "--enable-readline"
+            "--enable-shared-js"
+            "--enable-system-ffi"
+            "--with-system-nspr"
+            #$@(if (%current-target-system)
+                   #~(,(string-append "--with-nspr-prefix="
+                                      #$(this-package-input "nspr")))
+                   #~())
+            "--with-system-zlib"
+            "--with-system-icu"
+            "--with-intl-api"
+            ;; This is important because without it gjs will segfault during the
+            ;; configure phase.  With jemalloc only the standalone mozjs console
+            ;; will work.
+            "--disable-jemalloc"
+            ;; Mozilla deviates from Autotools conventions due to historical
+            ;; reasons.
+            #$@(if (%current-target-system)
+                   #~(#$(string-append
+                         "--host="
+                         (nix-system->gnu-triplet (%current-system)))
+                      #$(string-append "--target=" (%current-target-system)))
+                   #~())))
        #:phases
        (modify-phases %standard-phases
+         ;; Make sure pkg-config will be found.
+         ,@(if (%current-target-system)
+               `((add-before 'configure 'set-PKG-CONFIG
+                   (lambda _
+                     (setenv "PKG_CONFIG" ,(pkg-config-for-target)))))
+               '())
          (replace 'configure
            (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
              ;; The configure script does not accept environment variables as
@@ -691,8 +715,8 @@ from forcing GEXP-PROMISE."
                       #:system system
                       #:guile-for-build guile)))
 
-(define %icecat-version "78.12.0-guix0-preview1")
-(define %icecat-build-id "20210713000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "78.14.0-guix0-preview1")
+(define %icecat-build-id "20210907000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -714,7 +738,7 @@ from forcing GEXP-PROMISE."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "043lplq5i4ax6nh4am3b2bm8dbn4rzzcji1zp0yy1pad4nwahmcb"))))
+              "1ymjlg6p23c510m764pqr4sldrvk0c7g490a29js2cqc2nj2h3ma"))))
 
          (upstream-icecat-base-version "78.7.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
@@ -907,6 +931,7 @@ from forcing GEXP-PROMISE."
        ;; UNBUNDLE-ME! ("nss" ,nss)
        ("shared-mime-info" ,shared-mime-info)
        ;; UNBUNDLE-ME! ("sqlite" ,sqlite)
+       ("eudev" ,eudev)
        ("unzip" ,unzip)
        ("zip" ,zip)
        ;; UNBUNDLE-ME! ("zlib" ,zlib)
@@ -1268,24 +1293,21 @@ from forcing GEXP-PROMISE."
                     (lib (string-append out "/lib"))
                     (gtk (assoc-ref inputs "gtk+"))
                     (gtk-share (string-append gtk "/share"))
-                    (mesa (assoc-ref inputs "mesa"))
-                    (mesa-lib (string-append mesa "/lib"))
-                    (pulseaudio (assoc-ref inputs "pulseaudio"))
-                    (pulseaudio-lib (string-append pulseaudio "/lib"))
-                    (libxscrnsaver (assoc-ref inputs "libxscrnsaver"))
-                    (libxscrnsaver-lib (string-append libxscrnsaver "/lib"))
-                    (mit-krb5 (assoc-ref inputs "mit-krb5"))
-                    (mit-krb5-lib (string-append mit-krb5 "/lib")))
+                    (ld-libs (map (lambda (lib)
+                                    (string-append (assoc-ref inputs lib)
+                                                   "/lib"))
+                              '("libxscrnsaver"
+                                "mesa"
+                                "mit-krb5"
+                                "eudev"
+                                "pulseaudio"))))
                (wrap-program (car (find-files lib "^icecat$"))
                  `("XDG_DATA_DIRS" prefix (,gtk-share))
                  ;; The following line is commented out because the icecat
                  ;; package on guix has been observed to be unstable when
                  ;; using wayland, and the bundled extensions stop working.
                  ;;   `("MOZ_ENABLE_WAYLAND" = ("1"))
-                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib
-                                             ,mesa-lib
-                                             ,libxscrnsaver-lib
-                                             ,mit-krb5-lib)))
+                 `("LD_LIBRARY_PATH" prefix ,ld-libs))
                #t))))))
     (home-page "https://www.gnu.org/software/gnuzilla/")
     (synopsis "Entirely free browser derived from Mozilla Firefox")
@@ -1304,11 +1326,11 @@ standards of the IceCat project.")
        (cpe-version . ,(first (string-split version #\-)))))))
 
 ;; Update this together with icecat!
-(define %icedove-build-id "20210601000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20210810000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
-    (version "78.11.0")
+    (version "78.13.0")
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1592,7 +1614,7 @@ standards of the IceCat project.")
         ;; in the Thunderbird release tarball.  We don't use the release
         ;; tarball because it duplicates the Icecat sources and only adds the
         ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "1717d8d5fbd359aab7a4a0a15f4d15c72a7e6afc"))
+        ,(let ((changeset "adcfedf831da719455116546865f9a5faea848a6"))
            (origin
              (method hg-fetch)
              (uri (hg-reference
@@ -1601,7 +1623,7 @@ standards of the IceCat project.")
              (file-name (string-append "thunderbird-" version "-checkout"))
              (sha256
               (base32
-               "10l042dd7b8rvla0cbiks5kjrz2b28yy7hr8sr169wlx202hxa01")))))
+               "1dahf3y8bm3kh7amf341wnmh82a2r0ksqihc6dwiakh6x86a94cm")))))
        ("autoconf" ,autoconf-2.13)
        ("cargo" ,rust "cargo")
        ("clang" ,clang)

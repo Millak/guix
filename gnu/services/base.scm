@@ -12,9 +12,10 @@
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -311,17 +312,20 @@ FILE-SYSTEM."
 
 (define (file-system-shepherd-service file-system)
   "Return the shepherd service for @var{file-system}, or @code{#f} if
-@var{file-system} is not auto-mounted upon boot."
+@var{file-system} is not auto-mounted or doesn't have its mount point created
+upon boot."
   (let ((target  (file-system-mount-point file-system))
         (create? (file-system-create-mount-point? file-system))
+        (mount?  (file-system-mount? file-system))
         (dependencies (file-system-dependencies file-system))
         (packages (file-system-packages (list file-system))))
-    (and (file-system-mount? file-system)
+    (and (or mount? create?)
          (with-imported-modules (source-module-closure
                                  '((gnu build file-systems)))
            (shepherd-service
             (provision (list (file-system->shepherd-service-name file-system)))
-            (requirement `(root-file-system udev
+            (requirement `(root-file-system
+                           udev
                            ,@(map dependency->shepherd-service-name dependencies)))
             (documentation "Check, mount, and unmount the given file system.")
             (start #~(lambda args
@@ -329,24 +333,26 @@ FILE-SYSTEM."
                              #~(mkdir-p #$target)
                              #t)
 
-                       (let (($PATH (getenv "PATH")))
-                         ;; Make sure fsck.ext2 & co. can be found.
-                         (dynamic-wind
-                           (lambda ()
-                             ;; Don’t display the PATH settings.
-                             (with-output-to-port (%make-void-port "w")
-                               (lambda ()
-                                 (set-path-environment-variable "PATH"
-                                                                '("bin" "sbin")
-                                                                '#$packages))))
-                           (lambda ()
-                             (mount-file-system
-                              (spec->file-system
-                               '#$(file-system->spec file-system))
-                              #:root "/"))
-                           (lambda ()
-                             (setenv "PATH" $PATH)))
-                         #t)))
+                       #$(if mount?
+                             #~(let (($PATH (getenv "PATH")))
+                                 ;; Make sure fsck.ext2 & co. can be found.
+                                 (dynamic-wind
+                                   (lambda ()
+                                     ;; Don’t display the PATH settings.
+                                     (with-output-to-port (%make-void-port "w")
+                                       (lambda ()
+                                         (set-path-environment-variable "PATH"
+                                                                        '("bin" "sbin")
+                                                                        '#$packages))))
+                                   (lambda ()
+                                     (mount-file-system
+                                      (spec->file-system
+                                       '#$(file-system->spec file-system))
+                                      #:root "/"))
+                                   (lambda ()
+                                     (setenv "PATH" $PATH))))
+                             #t)
+                       #t))
             (stop #~(lambda args
                       ;; Normally there are no processes left at this point, so
                       ;; TARGET can be safely unmounted.
@@ -365,7 +371,10 @@ FILE-SYSTEM."
 
 (define (file-system-shepherd-services file-systems)
   "Return the list of Shepherd services for FILE-SYSTEMS."
-  (let* ((file-systems (filter file-system-mount? file-systems)))
+  (let* ((file-systems (filter (lambda (x)
+                                 (or (file-system-mount? x)
+                                     (file-system-create-mount-point? x)))
+                               file-systems)))
     (define sink
       (shepherd-service
        (provision '(file-systems))
@@ -1383,14 +1392,8 @@ information on the configuration file syntax."
   (let ((security-limits
          ;; Create /etc/security containing the provided "limits.conf" file.
          (lambda (limits-file)
-           `(("security"
-              ,(computed-file
-                "security"
-                #~(begin
-                    (mkdir #$output)
-                    (stat #$limits-file)
-                    (symlink #$limits-file
-                             (string-append #$output "/limits.conf"))))))))
+           `(("security/limits.conf"
+              ,limits-file))))
         (pam-extension
          (lambda (pam)
            (let ((pam-limits (pam-entry
@@ -1700,21 +1703,21 @@ proxy of 'guix-daemon'...~%")
 
 (define (guix-activation config)
   "Return the activation gexp for CONFIG."
-  (match config
-    (($ <guix-configuration> guix build-group build-accounts authorize-key? keys)
-     ;; Assume that the store has BUILD-GROUP as its group.  We could
-     ;; otherwise call 'chown' here, but the problem is that on a COW overlayfs,
-     ;; chown leads to an entire copy of the tree, which is a bad idea.
+  (match-record config <guix-configuration>
+    (guix authorize-key? authorized-keys)
+    #~(begin
+        ;; Assume that the store has BUILD-GROUP as its group.  We could
+        ;; otherwise call 'chown' here, but the problem is that on a COW overlayfs,
+        ;; chown leads to an entire copy of the tree, which is a bad idea.
 
-     ;; Generate a key pair and optionally authorize substitute server keys.
-     #~(begin
-         (unless (file-exists? "/etc/guix/signing-key.pub")
-           (system* #$(file-append guix "/bin/guix") "archive"
-                    "--generate-key"))
+        ;; Generate a key pair and optionally authorize substitute server keys.
+        (unless (file-exists? "/etc/guix/signing-key.pub")
+          (system* #$(file-append guix "/bin/guix") "archive"
+                   "--generate-key"))
 
-         #$(if authorize-key?
-               (substitute-key-authorization keys guix)
-               #~#f)))))
+        #$(if authorize-key?
+              (substitute-key-authorization authorized-keys guix)
+              #~#f))))
 
 (define* (references-file item #:optional (name "references"))
   "Return a file that contains the list of references of ITEM."

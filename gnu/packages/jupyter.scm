@@ -25,16 +25,20 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages monitoring)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages rdf)
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages tls)
@@ -247,6 +251,73 @@ Jupyter Python packages that require a pre-build step that may include
 JavaScript build steps.")
     (license license:bsd-3)))
 
+(define-public python-jupyter-server
+  (package
+    (name "python-jupyter-server")
+    (version "1.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_server" version))
+       (sha256
+        (base32
+         "1gvjbsw5nl94hz02rnkr4g4kkvh9fz7i45vz17hzwyvdpj7bd8yk"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (let ((home (string-append (getcwd) "/guix-home")))
+                 (setenv "HOME" home))
+               ;; Add jupyter-server executable to PATH.
+               (setenv "PATH"
+                       (string-append (assoc-ref outputs "out") "/bin:"
+                                      (getenv "PATH")))
+               (with-directory-excursion "jupyter_server"
+                 ;; The pytest fixtures are only loaded when the file is
+                 ;; called conftest.py.
+                 (rename-file "pytest_plugin.py" "conftest.py")
+                 (invoke "pytest" "-vv"
+                         ;; Fails with internal server error
+                         "-k" "not test_list_formats"
+                         ;; Integration tests require a server.
+                         "-m" "not integration_test"))))))))
+    (propagated-inputs
+     `(("python-anyio" ,python-anyio)
+       ("python-argon2-cffi" ,python-argon2-cffi)
+       ("python-ipython-genutils" ,python-ipython-genutils)
+       ("python-jinja2" ,python-jinja2)
+       ("python-jupyter-client" ,python-jupyter-client)
+       ("python-jupyter-core" ,python-jupyter-core)
+       ("python-nbconvert" ,python-nbconvert)
+       ("python-nbformat" ,python-nbformat)
+       ("python-prometheus-client" ,python-prometheus-client)
+       ("python-pyzmq" ,python-pyzmq)
+       ("python-requests-unixsocket" ,python-requests-unixsocket)
+       ("python-send2trash" ,python-send2trash)
+       ("python-terminado" ,python-terminado)
+       ("python-tornado" ,python-tornado-6)
+       ("python-traitlets" ,python-traitlets)
+       ("python-websocket-client" ,python-websocket-client)))
+    (native-inputs
+     `(("python-coverage" ,python-coverage)
+       ("python-ipykernel" ,python-ipykernel)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-console-scripts" ,python-pytest-console-scripts)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ("python-pytest-mock" ,python-pytest-mock)
+       ("python-pytest-tornasync" ,python-pytest-tornasync)
+       ("python-requests" ,python-requests)))
+    (home-page "https://jupyter.org")
+    (synopsis "Core services, APIs, and REST endpoints for Jupyter web applications")
+    (description
+     "This package provides the backend—i.e. core services, APIs, and REST
+endpoints—to Jupyter web applications.")
+    (license license:expat)))
+
 (define-public python-jupyterlab-widgets
   (package
     (name "python-jupyterlab-widgets")
@@ -381,4 +452,125 @@ based on the configuration files found in the repository.  repo2docker can be
 used to explore a repository locally by building and executing the constructed
 image of the repository, or as a means of building images that are pushed to a
 Docker registry.")
+    (license license:bsd-3)))
+
+(define-public python-bash-kernel
+  (package
+   (name "python-bash-kernel")
+   (version "0.7.2")
+   (source (origin
+            (method url-fetch)
+            (uri (pypi-uri "bash_kernel" version))
+            (sha256
+             (base32
+              "0w0nbr3iqqsgpk83rgd0f5b02462bkyj2n0h6i9dwyc1vpnq9350"))))
+   (build-system python-build-system)
+   (arguments
+    `(#:tests? #f
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'bash-references
+          (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "bash_kernel/kernel.py"
+               (("\"bash\"")
+                (string-append "\"" (assoc-ref inputs "bash") "/bin/bash\""))
+               (("\\['bash', ")
+                (string-append "['" (assoc-ref inputs "bash") "/bin/bash', ")))
+             #t))
+        (add-after 'install 'install-kernelspec
+          (lambda* (#:key outputs #:allow-other-keys)
+            (let ((out (assoc-ref outputs "out")))
+              (setenv "HOME" "/tmp")
+              (invoke "python" "-m" "bash_kernel.install" "--prefix" out)
+              #t))))))
+   (inputs
+     `(("bash" ,bash)))
+   (propagated-inputs
+     `(("python-pexpect" ,python-pexpect)
+       ("python-ipykernel" ,python-ipykernel)
+       ("python-jupyter-client" ,python-jupyter-client)))
+   (home-page "https://github.com/takluyver/bash_kernel")
+   (synopsis "Jupyter kernel for Bash")
+   (description "A bash shell kernel for Jupyter.")
+   (license license:expat)))
+
+(define-public python-sparqlkernel
+  (package
+    (name "python-sparqlkernel")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sparqlkernel" version))
+              (sha256
+               (base32
+                "004v22nyi5cnpxq4fiws89p7i5wcnzv45n3n70axdd6prh6rkapx"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'no-custom-css
+           (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "sparqlkernel/install.py"
+                (("install_custom_css\\( destd, PKGNAME \\)") ""))
+              #t))
+         (add-after 'install 'install-kernelspec
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (setenv "HOME" "/tmp")
+               (add-installed-pythonpath inputs outputs)
+               (invoke
+                 (string-append out "/bin/jupyter-sparqlkernel")
+                 "install"
+                 (string-append "--InstallKernelSpec.prefix=" out))
+               #t))))))
+    (native-inputs
+     `(("python-traitlets" ,python-traitlets)
+       ("python-jupyter-client" ,python-jupyter-client)
+       ("python-notebook" ,python-notebook)
+       ("python-ipykernel" ,python-ipykernel)
+       ("python-html5lib" ,python-html5lib-0.9)))
+    (propagated-inputs
+     `(("python-sparqlwrapper" ,python-sparqlwrapper)
+       ("python-pygments" ,python-pygments)))
+    (home-page "https://github.com/paulovn/sparql-kernel")
+    (synopsis "Jupyter kernel for SPARQL")
+    (description "This module installs a Jupyter kernel for SPARQL.  It allows
+sending queries to an SPARQL endpoint and fetching & presenting the results in
+a notebook.")
+    (license license:bsd-3)))
+
+(define-public python-voila
+  (package
+    (name "python-voila")
+    (version "0.2.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "voila" version))
+       (sha256
+        (base32
+         "0krfc95yjlhjdmrsladhy6lpf4xs1zw49nmkyl4pkykndglvwa1m"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-jupyter-client" ,python-jupyter-client)
+       ("python-jupyter-server" ,python-jupyter-server)
+       ("python-nbclient" ,python-nbclient)
+       ("python-nbconvert" ,python-nbconvert)))
+    (native-inputs
+     `(("python-ipywidgets" ,python-ipywidgets)
+       ("python-jupyter-packaging" ,python-jupyter-packaging)
+       ("python-matplotlib" ,python-matplotlib)
+       ("python-mock" ,python-mock)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-tornasync" ,python-pytest-tornasync)
+       ("python-setuptools" ,python-setuptools)
+       ("python-tornado" ,python-tornado-6)))
+    (home-page "https://github.com/voila-dashboards/voila")
+    (synopsis "Render live Jupyter notebooks with interactive widgets")
+    (description
+     "Voilà turns Jupyter notebooks into standalone web applications.  Unlike
+the usual HTML-converted notebooks, each user connecting to the Voilà tornado
+application gets a dedicated Jupyter kernel which can execute the callbacks to
+changes in Jupyter interactive widgets.")
     (license license:bsd-3)))

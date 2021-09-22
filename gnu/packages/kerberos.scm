@@ -11,6 +11,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
 (define-module (gnu packages kerberos)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages perl)
@@ -48,12 +50,14 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu))
 
 (define-public mit-krb5
   (package
     (name "mit-krb5")
+    (replacement mit-krb5-1.19.2)
     (version "1.19.1")
     (source (origin
               (method url-fetch)
@@ -116,6 +120,23 @@ cryptography.")
                                    "See NOTICE in the distribution."))
     (home-page "https://web.mit.edu/kerberos/")
     (properties '((cpe-name . "kerberos")))))
+
+(define mit-krb5-1.19.2
+  (package
+    (inherit mit-krb5)
+    (version "1.19.2")
+    (source (origin
+              (inherit (package-source mit-krb5))
+              (uri (list
+                    (string-append "https://web.mit.edu/kerberos/dist/krb5/"
+                                   (version-major+minor version)
+                                   "/krb5-" version ".tar.gz")
+                    (string-append "https://kerberos.org/dist/krb5/"
+                                   (version-major+minor version)
+                                   "/krb5-" version ".tar.gz")))
+              (sha256
+               (base32
+                "0snz1jm2w4dkk65zcz953jmmv9mqa30fanch2bk8r3rs9vp3yi8h"))))))
 
 (define-public shishi
   (package
@@ -187,30 +208,70 @@ After installation, the system administrator should generate keys using
                   #t))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags (list
-                          ;; Avoid 7 MiB of .a files.
-                          "--disable-static"
+     `(#:configure-flags
+       ,#~(list
+           ;; Avoid 7 MiB of .a files.
+           "--disable-static"
 
-                          ;; Do not build libedit.
-                          (string-append
-                           "--with-readline-lib="
-                           (assoc-ref %build-inputs "readline") "/lib")
-                          (string-append
-                           "--with-readline-include="
-                           (assoc-ref %build-inputs "readline") "/include")
+           ;; Do not build libedit.
+           (string-append
+            "--with-readline-lib="
+            (assoc-ref %build-inputs "readline") "/lib")
+           (string-append
+            "--with-readline-include="
+            (assoc-ref %build-inputs "readline") "/include")
 
-                          ;; Do not build sqlite.
-                          (string-append
-                           "--with-sqlite3="
-                           (assoc-ref %build-inputs "sqlite")))
+           ;; Do not build sqlite.
+           (string-append
+            "--with-sqlite3="
+            (assoc-ref %build-inputs "sqlite"))
 
+           #$@(if (%current-target-system)
+                  ;; The configure script is too pessimistic.
+                  ;; Setting this also resolves a linking error.
+                  #~("ac_cv_func_getpwnam_r_posix=yes"
+                     ;; Allow 'slc' and 'asn1_compile' to be found.
+                     (string-append "--with-cross-tools="
+                                    #+(file-append this-package
+                                                   "/libexec/heimdal")))
+                  #~()))
        #:phases (modify-phases %standard-phases
                   (add-before 'configure 'pre-configure
-                    (lambda _
-                      (substitute* '("appl/afsutil/pagsh.c"
-                                     "tools/Makefile.in")
-                        (("/bin/sh") (which "sh")))
-                      #t))
+                    ;; TODO(core-updates): Unconditionally use the
+                    ;; %current-target-system branch.
+                    (,(if (%current-target-system)
+                          'lambda*
+                          'lambda)
+                     ,(if (%current-target-system)
+                          '(#:key inputs #:allow-other-keys)
+                          '_)
+                     ,@(if (%current-target-system)
+                           `((substitute* "configure"
+                               ;; The e2fsprogs input is included for libcom_err,
+                               ;; let's use it even if cross-compiling.
+                               (("test \"\\$\\{krb_cv_com_err\\}\" = \"yes\"")
+                                ":")
+                               ;; Our 'compile_et' is not in --with-cross-tools,
+                               ;; which confuses heimdal.
+                               (("ac_cv_prog_COMPILE_ET=\\$\\{with_cross_tools\\}compile_et")
+                                "ac_cv_PROG_COMPILE_ET=compile_et")))
+                           '())
+                     ,@(if (%current-target-system)
+                           '((substitute* '("appl/afsutil/pagsh.c" "appl/su/su.c")
+                               (("/bin/sh")
+                                (search-input-file inputs "bin/sh"))
+                               ;; Use the cross-compiled bash instead of the
+                               ;; native bash (XXX shouldn't _PATH_BSHELL point
+                               ;; to a cross-compiled bash?).
+                               (("_PATH_BSHELL")
+                                (string-append
+                                 "\"" (search-input-file inputs "bin/sh") "\"")))
+                             (substitute* '("tools/Makefile.in")
+                               (("/bin/sh") (which "sh"))))
+                           '((substitute* '("appl/afsutil/pagsh.c"
+                                            "tools/Makefile.in")
+                               (("/bin/sh") (which "sh")))
+                             #t))))
                   (add-before 'check 'pre-check
                     (lambda _
                       ;; For 'getxxyyy-test'.
@@ -226,8 +287,15 @@ After installation, the system administrator should generate keys using
        #:parallel-tests? #f))
     (native-inputs `(("e2fsprogs" ,e2fsprogs)     ;for 'compile_et'
                      ("texinfo" ,texinfo)
-                     ("unzip" ,unzip)))           ;for tests
+                     ("unzip" ,unzip)             ;for tests
+                     ,@(if (%current-target-system)
+                           `(("perl" ,perl))
+                           '())))
     (inputs `(("readline" ,readline)
+              ;; TODO(core-updates): Make this input unconditional.
+              ,@(if (%current-target-system)
+                    `(("bash-minimal" ,bash-minimal))
+                    '())
               ("bdb" ,bdb)
               ("e2fsprogs" ,e2fsprogs)            ;for libcom_err
               ("sqlite" ,sqlite)))

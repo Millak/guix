@@ -2,12 +2,14 @@
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2019, 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -372,7 +374,7 @@ This package contains the binary.")
 (define-public mpg123
   (package
     (name "mpg123")
-    (version "1.26.5")
+    (version "1.28.2")
     (source
      (origin
        (method url-fetch)
@@ -382,7 +384,7 @@ This package contains the binary.")
                    "https://www.mpg123.org/download/mpg123-"
                    version ".tar.bz2")))
        (sha256
-        (base32 "01pgcqjbbi2r7nlg5118bkivl0gkv0hq0cw7v4vpxgimv7h9fajh"))))
+        (base32 "006v44nz4nkpgvxz1k2vbbrfpa2m47hyydscs0wf3iysiyvd9vvy"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--with-default-audio=pulse")))
     (native-inputs
@@ -411,7 +413,8 @@ command-line tool as well as a C library, libmpg123.")
               (base32
                "0ki8mh76bbmdh77qsiw682dvi8y468yhbdabqwg05igmwc1wqvq5"))
              (patches
-              (search-patches "mpg321-CVE-2019-14247.patch"))))
+              (search-patches "mpg321-CVE-2019-14247.patch"
+                              "mpg321-gcc-10.patch"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-alsa")))
     (inputs
@@ -543,7 +546,9 @@ format.")
            (lambda _
              (substitute* "Makefile"
                (("CC[[:blank:]]*:=.*")
-                "CC := gcc\n"))))
+                "CC := gcc\n"))
+
+             (setenv "CFLAGS" "-fcommon -g")))  ;allow compilation with GCC 10
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -645,19 +650,34 @@ FFmpeg, etc.")
 (define-public python-pyacoustid
   (package
     (name "python-pyacoustid")
-    (version "1.1.7")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyacoustid" version))
        (sha256
         (base32
-         "1zan6c22ca6sjy0g9ajwjp6mkzw7jv8r3n7jzska09a6x254lf87"))))
+         "0ha15m41r8ckmanc4k9nrlb9hprvhdjxndzw40a1yj3z1b1xjyf2"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chromaprint-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "chromaprint.py"
+               (("libchromaprint.so.1")
+                (string-append (assoc-ref inputs "chromaprint")
+                               "/lib/libchromaprint.so.1")))
+             (substitute* "acoustid.py"
+               (("'fpcalc'")
+                (string-append "'" (assoc-ref inputs "chromaprint")
+                               "/bin/fpcalc'")))
+             #t)))))
+    (inputs `(("chromaprint" ,chromaprint)))
     (propagated-inputs
      `(("python-audioread" ,python-audioread)
        ("python-requests" ,python-requests)))
-    (home-page "https://github.com/sampsyo/pyacoustid")
+    (home-page "https://github.com/beetbox/pyacoustid")
     (synopsis "Bindings for Chromaprint acoustic fingerprinting")
     (description
      "This package provides bindings for the Chromaprint acoustic

@@ -18,6 +18,7 @@
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -494,7 +495,7 @@ change.  GNU make offers many powerful extensions over the standard utility.")
                (base32
                 "12f5zzyq2w56g95nni65hc0g5p7154033y2f3qmjvd016szn5qnn"))))
     (arguments
-     `(#:configure-flags '("CFLAGS=-D__alloca=alloca")
+     `(#:configure-flags '("CFLAGS=-D__alloca=alloca -D__stat=stat")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-default-shell
@@ -510,14 +511,15 @@ change.  GNU make offers many powerful extensions over the standard utility.")
   (package
    (name "binutils")
    (version "2.37")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnu/binutils/binutils-"
-                                version ".tar.bz2"))
-            (sha256
-             (base32
-              "1m3b2rdfv1dmdpd0bzg1hy7i8a2qng53szc6livyi3nh6101mz37"))
-            (patches (search-patches "binutils-loongson-workaround.patch"))))
+   (source
+    (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/binutils/binutils-"
+                          version ".tar.bz2"))
+      (sha256
+       (base32 "1m3b2rdfv1dmdpd0bzg1hy7i8a2qng53szc6livyi3nh6101mz37"))
+      (patches (search-patches "binutils-loongson-workaround.patch"
+                               "binutils-2.37-file-descriptor-leak.patch"))))
    (build-system gnu-build-system)
 
    ;; TODO: Add dependency on zlib + those for Gold.
@@ -944,6 +946,7 @@ with the Linux kernel.")
                (base32
                 "05zxkyz9bv3j9h0xyid1rhvh3klhsmrpkf3bcs6frvlgyr2gwilj"))
               (patches (search-patches
+                        "glibc-skip-c++.patch"
                         "glibc-ldd-powerpc.patch"
                         "glibc-ldd-x86_64.patch"
                         "glibc-dl-cache.patch"
@@ -962,13 +965,19 @@ with the Linux kernel.")
   (package
     (inherit glibc)
     (version "2.30")
+    (native-inputs
+     ;; This fails with a build error in libc-tls.c when using GCC 10.  Use an
+     ;; older compiler.
+     (modify-inputs (package-native-inputs glibc)
+       (prepend gcc-8)))
     (source (origin
               (inherit (package-source glibc))
               (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
               (sha256
                (base32
                 "1bxqpg91d02qnaz837a5kamm0f43pr1il4r9pknygywsar713i72"))
-              (patches (search-patches "glibc-ldd-x86_64.patch"
+              (patches (search-patches "glibc-skip-c++.patch"
+                                       "glibc-ldd-x86_64.patch"
                                        "glibc-CVE-2019-19126.patch"
                                        "glibc-hidden-visibility-ldconfig.patch"
                                        "glibc-versioned-locpath.patch"
@@ -978,7 +987,7 @@ with the Linux kernel.")
 
 (define-public glibc-2.29
   (package
-    (inherit glibc)
+    (inherit glibc-2.30)
     (version "2.29")
     (source (origin
               (inherit (package-source glibc))
@@ -986,7 +995,8 @@ with the Linux kernel.")
               (sha256
                (base32
                 "0jzh58728flfh939a8k9pi1zdyalfzlxmwra7k0rzji5gvavivpk"))
-              (patches (search-patches "glibc-ldd-x86_64.patch"
+              (patches (search-patches "glibc-skip-c++.patch"
+                                       "glibc-ldd-x86_64.patch"
                                        "glibc-CVE-2019-7309.patch"
                                        "glibc-CVE-2019-9169.patch"
                                        "glibc-2.29-git-updates.patch"

@@ -39,7 +39,7 @@
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Alex McGrath <amk@amk.ie>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
@@ -53,6 +53,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -205,6 +206,7 @@
     (arguments
      `(#:configure-flags
        (list
+        "CFLAGS=-fcommon"
         ;; XXX: Broken API.
         ;; Undeclared variables 'sys_nerr' and 'sys_errlist'.
         ;; "--enable-libv4l2"
@@ -676,12 +678,22 @@ stream decoding")
                 "1vkh19gb76agvh4h87ysbrgy82hrw88lnsvhynjf4vng629dmpgv"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("makeinfo" ,texinfo)))
+     `(("config" ,config)
+       ("makeinfo" ,texinfo)))
     (inputs
      `(("ncurses" ,ncurses)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'update-config-scripts
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             ;; Replace outdated config.guess and config.sub.
+             (for-each (lambda (file)
+                         (install-file
+                          (search-input-file
+                           (or native-inputs inputs)
+                           (string-append "/bin/" file)) "."))
+                       '("config.guess" "config.sub"))))
          (replace 'configure
                   (lambda* (#:key build inputs outputs #:allow-other-keys)
                     ;; This old `configure' script doesn't support
@@ -692,17 +704,6 @@ stream decoding")
                       (invoke "./configure"
                               (string-append "--prefix=" out)
                               (string-append "--build=" build)
-                              ;; The ancient config.guess is unable to
-                              ;; guess the host triplet on mips64el.
-                              ,@(if (string=? "mips64el-linux"
-                                              (%current-system))
-                                    '("--host=mips64el-unknown-linux-gnu")
-                                    '())
-                              ;; The same is also true with aarch64.
-                              ,@(if (string=? "aarch64-linux"
-                                              (%current-system))
-                                    '("--host=aarch64-unknown-linux-gnu")
-                                    '())
                               (string-append "--with-ncurses="
                                              ncurses))))))))
     (home-page "http://aa-project.sourceforge.net/aalib/")
@@ -781,7 +782,7 @@ television and DVD.  It is also known as AC-3.")
 (define-public libaom
   (package
     (name "libaom")
-    (version "3.1.1")
+    (version "3.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -790,7 +791,7 @@ television and DVD.  It is also known as AC-3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11fy2xw35ladkjcz71samhcpqlqr3y0n1n17nk90i13aydrll66f"))))
+                "1c7yrhb56qj5c3lz54n1f9cbrvdr32g2yrrdiiy72sib8ycq9hz2"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("perl" ,perl)
@@ -977,7 +978,7 @@ H.264 (MPEG-4 AVC) video streams.")
              #t)))
          (add-before 'configure 'add-googletest
            (lambda* (#:key inputs #:allow-other-keys)
-             (symlink (search-input-file inputs "/include/gtest")
+             (symlink (search-input-directory inputs "/include/gtest")
                       "lib/gtest")))
          (replace 'build
            (lambda _
@@ -1028,7 +1029,7 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public pipe-viewer
   (package
     (name "pipe-viewer")
-    (version "0.1.2")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -1038,7 +1039,7 @@ H.264 (MPEG-4 AVC) video streams.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d2gfkd3nc0c4ah67250lqskkd85wpljrikw8a378ni398ngaq14"))))
+        (base32 "0d8b3gcr9dndw8qlwfrm0wgp4vjmn8fwd151kmzz7kkw57f5jfch"))))
     (build-system perl-build-system)
     (arguments
      `(#:imported-modules
@@ -1057,7 +1058,11 @@ H.264 (MPEG-4 AVC) video streams.")
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "." ".*-viewer$")
+             (substitute* (find-files "lib" "\\.pm$")
+               (("\"youtube-dl\"")
+                (format #f "\"~a/bin/youtube-dl\""
+                        (assoc-ref inputs "youtube-dl"))))
+             (substitute* (find-files "bin" ".*-viewer$")
                (("'ffmpeg'")
                 (format #f "'~a/bin/ffmpeg'"
                         (assoc-ref inputs "ffmpeg")))
@@ -4217,7 +4222,7 @@ tools for styling them, including a built-in real-time video preview.")
 (define-public pitivi
   ;; Pitivi switched to a non-semantic versioning scheme close before 1.0
   (let ((latest-semver "0.999.0")
-        (%version "2021.01.0"))
+        (%version "2021.05.0"))
    (package
      (name "pitivi")
      (version (string-append latest-semver "-" %version))
@@ -4229,7 +4234,7 @@ tools for styling them, including a built-in real-time video preview.")
               (commit %version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1jics10l16ismi5br6wxi4jxz3dd4p0c0xv8l0l3nvksvda4aafi"))))
+         (base32 "08x2fs2bak1fbmkvjijgx1dsawispv91bpv5j5gkqbv5dfgf7wah"))))
      (build-system meson-build-system)
      (inputs
       `(("glib" ,glib)
@@ -4273,8 +4278,7 @@ tools for styling them, including a built-in real-time video preview.")
                   ;; necessary or optional.  Let the user's packages take
                   ;; precedence in case they have e.g. the full gst-plugins-bad.
                   `("GST_PLUGIN_SYSTEM_PATH" suffix
-                    (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))
-                #t)))))
+                    (,(getenv "GST_PLUGIN_SYSTEM_PATH"))))))))))
      (home-page "http://www.pitivi.org")
      (synopsis "Video editor based on GStreamer Editing Services")
      (description "Pitivi is a video editor built upon the GStreamer Editing
@@ -4673,7 +4677,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "21.06.29")
+    (version "21.08.29")
     (source
      (origin
        (method git-fetch)
@@ -4682,7 +4686,7 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0384iv2129mpalia39x8mn5xlbgx9ip994700jzjjxdqfq23a9qm"))))
+        (base32 "0lj3ini0fymvcwxk8l1l8ms5519n5n87gdvh0yfhilwp0zqyqkc6"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -4748,7 +4752,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "0.9.0")
+    (version "0.9.2")
     (source
       (origin
         (method git-fetch)
@@ -4757,7 +4761,7 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0ki3wlyaqr80gl1srbbd18dd5bs1sl9icxym8ar62abpvgzxl5yk"))))
+         (base32 "0bkps488h9s15ylvkm4fmfywgrpbw570glawpnv6khpq9n223dzl"))))
     (build-system meson-build-system)
     (native-inputs `(("nasm" ,nasm)))
     (home-page "https://code.videolan.org/videolan/dav1d")

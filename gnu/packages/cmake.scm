@@ -11,6 +11,7 @@
 ;;; Copyright © 2019, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,7 +92,7 @@ using the CMake build system.")
 
 ;;; Build phases shared between 'cmake-bootstrap' and the later variants
 ;;; that use cmake-build-system.
-(define %common-build-phases
+(define (%common-build-phases)
   `((add-after 'unpack 'split-package
       ;; Remove files that have been packaged in other package recipes.
       (lambda _
@@ -99,6 +100,17 @@ using the CMake build system.")
         (substitute* "Auxiliary/CMakeLists.txt"
           ((".*cmake-mode.el.*") ""))
         #t))
+    ,@(if (target-x86-32?)
+          '((add-after 'unpack 'skip-cpack-txz-test
+              (lambda _
+                ;; In 'RunCMake.CPack_TXZ', the 'TXZ/THREADED_ALL' test
+                ;; would occasionally fail on i686 with "Internal error
+                ;; initializing compression library: Cannot allocate
+                ;; memory": <https://issues.guix.gnu.org/50617>.  Skip it.
+                (substitute* "Tests/RunCMake/CPack/RunCMakeTest.cmake"
+                  (("THREADED_ALL \"TXZ;DEB\"")
+                   "THREADED_ALL \"DEB\"")))))
+          '())
     (add-before 'configure 'patch-bin-sh
       (lambda _
         ;; Replace "/bin/sh" by the right path in... a lot of
@@ -187,7 +199,7 @@ using the CMake build system.")
            " --exclude-regex ^\\(" (string-join skipped-tests "\\|") "\\)$")))
        #:phases
        (modify-phases %standard-phases
-         ,@%common-build-phases
+         ,@(%common-build-phases)
          (add-before 'configure 'set-paths
            (lambda _
              ;; Help cmake's bootstrap process to find system libraries
@@ -294,7 +306,7 @@ and workspaces that can be used in the compiler environment of your choice.")
        #:build-type "Release"
        #:phases
        (modify-phases %standard-phases
-         ,@%common-build-phases
+         ,@(%common-build-phases)
          (add-after 'install 'delete-help-documentation
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file-recursively
@@ -327,6 +339,15 @@ and workspaces that can be used in the compiler environment of your choice.")
   (package
     (inherit cmake-minimal)
     (name "cmake")
+    (version "3.21.1")
+    (source (origin
+              (inherit (package-source cmake-bootstrap))
+              (uri (string-append "https://cmake.org/files/v"
+                                  (version-major+minor version)
+                                  "/cmake-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m7y9j5lafkrfswsg2vkpx2fz6p6fqpp2pcp2dcz5pylf58r3hzs"))))
     (arguments
      (substitute-keyword-arguments (package-arguments cmake-minimal)
        ;; Use cmake-minimal this time.

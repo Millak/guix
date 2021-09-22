@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
@@ -116,7 +116,7 @@ are useful when writing automated tests in Python.")
 (define-public python-coveralls
   (package
     (name "python-coveralls")
-    (version "3.1.0")
+    (version "3.2.0")
     (home-page "https://github.com/coveralls-clients/coveralls-python")
     (source
      (origin
@@ -126,7 +126,7 @@ are useful when writing automated tests in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rpdv7rhs4xy6q4s63krrfhwihli9vla0qsw64vls0naail9yjn3"))))
+         "1915ab77nfb1rfw4i2ps0zy19wpf20lwxn81qxxbwyd2gy7m0fn8"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -537,6 +537,7 @@ internet.")
      `(("python-pytest" ,python-pytest)))
     (propagated-inputs
      `(("python-matplotlib" ,python-matplotlib)
+       ("python-nose" ,python-nose)
        ("python-pillow" ,python-pillow)))
     (home-page "https://github.com/matplotlib/pytest-mpl")
     (synopsis "Pytest plugin to help with testing figures output from Matplotlib")
@@ -727,23 +728,26 @@ compliance.")
 (define-public python-pytest-isort
   (package
     (name "python-pytest-isort")
-    (version "0.3.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-isort" version))
        (sha256
-        (base32 "06myn5hhxs5yp8dqr1yjsgcnnxnsrvsqannm00bvaw0qml6ydzjb"))))
+        (base32 "05wi28zlqk3jafpjal8j523y5jcsx3xl3id9rx93qfjgkif8q6l2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
     (propagated-inputs
      `(("python-isort" ,python-isort)
        ("python-pytest" ,python-pytest)))
+    (native-inputs
+     `(("python-mock" ,python-mock)))
     (home-page "https://github.com/moccu/pytest-isort/")
     (synopsis "Pytest plugin to check import ordering using isort")
     (description
@@ -1095,6 +1099,71 @@ also ensuring that the notebooks are running without errors.")
     (synopsis "Pytest fixtures to test Flask applications")
     (description
      "This pytest plugin provides fixtures to simplify Flask app testing.")
+    (license license:expat)))
+
+(define-public python-pytest-console-scripts
+  (package
+    (name "python-pytest-console-scripts")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-console-scripts" version))
+       (sha256
+        (base32
+         "073l2cz11013dl30zjr575ms78j9b2bsbdl1w0gmig37spbkh8aa"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "--verbose"
+                       ;; This one test fails because of PATH assumptions
+                       "-k" "not test_elsewhere_in_the_path")))))))
+    (propagated-inputs
+     `(("python-mock" ,python-mock)
+       ("python-pytest" ,python-pytest)))
+    (native-inputs
+     `(("python-setuptools-scm" ,python-setuptools-scm)))
+    (home-page "https://github.com/kvas-it/pytest-console-scripts")
+    (synopsis "Pytest plugin for testing console scripts")
+    (description
+     "This package provides a pytest plugin for testing console scripts.")
+    (license license:expat)))
+
+(define-public python-pytest-tornasync
+  (package
+    (name "python-pytest-tornasync")
+    (version "0.6.0.post2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-tornasync" version))
+       (sha256
+        (base32
+         "0pdyddbzppkfqwa7g17sdfl4w2v1hgsky78l8f4c1rx2a7cvd0fp"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #false ; TODO: fails at "from test import MESSAGE, PAUSE_TIME"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "--verbose")))))))
+    (propagated-inputs
+     `(("python-pytest" ,python-pytest)
+       ("python-tornado" ,python-tornado)))
+    (home-page "https://github.com/eukaryote/pytest-tornasync")
+    (synopsis "Pytest plugin for testing Tornado code")
+    (description
+     "This package provides a simple pytest plugin that provides some helpful
+fixtures for testing Tornado (version 5.0 or newer) apps and easy handling of
+plain (undecoratored) native coroutine tests.")
     (license license:expat)))
 
 (define-public python-pytest-env

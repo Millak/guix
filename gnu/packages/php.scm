@@ -36,7 +36,6 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
-  #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -61,7 +60,7 @@
 (define-public php
   (package
     (name "php")
-    (version "7.4.20")
+    (version "7.4.22")
     (home-page "https://secure.php.net/")
     (source (origin
               (method url-fetch)
@@ -69,7 +68,7 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "0db3nqfbfqfd8fkvrw1k8l6698qcbzv1v5j8rgr0ny0dg6k6r90z"))
+                "1s5xjy1cchlg0vfxic73wy2wip8spfjr094hzzyc76plsbbqq1wf"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -146,13 +145,11 @@
              ;; This file has ISO-8859-1 encoding.
              (with-fluids ((%default-port-encoding "ISO-8859-1"))
                (substitute* "main/build-defs.h.in"
-                 (("@CONFIGURE_COMMAND@") "(omitted)")))
-             #t))
+                 (("@CONFIGURE_COMMAND@") "(omitted)")))))
          (add-before 'build 'patch-/bin/sh
            (lambda _
              (substitute* '("run-tests.php" "ext/standard/proc_open.c")
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-before 'check 'prepare-tests
            (lambda _
              ;; Some of these files have ISO-8859-1 encoding, whereas others
@@ -198,6 +195,20 @@
                                 "sapi/cli/tests/cli_process_title_unix.phpt"
                                 "sapi/cli/tests/upload_2G.phpt"
                                 "Zend/tests/concat_003.phpt")))
+                   '())
+
+             ,@(if (target-ppc64le?)
+                   ;; Drop tests known to fail on powerpc64le.
+                   '((for-each delete-file
+                               (list
+                                ;; phpdbg watchpoints don't work.
+                                ;; Bug tracked upstream at:
+                                ;; https://bugs.php.net/bug.php?id=81408
+                                "sapi/phpdbg/tests/watch_001.phpt"
+                                "sapi/phpdbg/tests/watch_003.phpt"
+                                "sapi/phpdbg/tests/watch_004.phpt"
+                                "sapi/phpdbg/tests/watch_005.phpt"
+                                "sapi/phpdbg/tests/watch_006.phpt")))
                    '())
 
              ;; Drop tests that are known to fail.
@@ -329,7 +340,9 @@
                          ;; Expects an empty Array; gets one with " " in it.
                          "ext/pcre/tests/bug80118.phpt"
                          ;; Renicing a process fails in the build environment.
-                         "ext/standard/tests/general_functions/proc_nice_basic.phpt"))
+                         "ext/standard/tests/general_functions/proc_nice_basic.phpt"
+                         ;; Can fail on fast machines?
+                         "Zend/tests/bug74093.phpt"))
 
              ;; Accomodate two extra openssl errors flanking the expected one:
              ;; random number generator:RAND_{load,write}_file:Cannot open file
@@ -345,8 +358,7 @@
              (setenv "REPORT_EXIT_STATUS" "1")
              ;; Skip tests requiring I/O facilities that are unavailable in the
              ;; build environment
-             (setenv "SKIP_IO_CAPTURE_TESTS" "1")
-             #t)))
+             (setenv "SKIP_IO_CAPTURE_TESTS" "1"))))
        #:test-target "test"))
     (inputs
      `(("aspell" ,aspell)
@@ -378,7 +390,7 @@
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("bison" ,bison)
-       ("intltool" ,intltool)
+       ("gettext" ,gettext-minimal)
        ("procps" ,procps)))             ; for tests
     (synopsis "PHP programming language")
     (description

@@ -295,81 +295,6 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
     (license (list license:bsd-2
                    license:public-domain)))) ; third_party/md5
 
-;; This is the latest stable release.
-(define-public libxmlplusplus
-  (package
-    (name "libxmlplusplus")
-    (version "3.2.0")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/libxmlplusplus/libxmlplusplus")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0wjz591rjlgbah7dcq8i0yn0zw9d62b7g6r0pppx81ic0cx8n8ga"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-documentation
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook"))
-                   (xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
-               (substitute* '("examples/dom_xpath/example.xml"
-                              "docs/manual/libxml++_without_code.xml")
-                 (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd")))
-               (setenv "SGML_CATALOG_FILES"
-                       (string-append xmldoc "/catalog.xml"))
-               (substitute* "docs/manual/docbook-customisation.xsl"
-                 (("http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl")
-                  (string-append xsldoc "/html/chunk.xsl"))))
-             #t)))))
-    (propagated-inputs
-     `(("libxml2" ,libxml2)))
-    (inputs
-     `(("glibmm" ,glibmm)))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("doxygen" ,doxygen)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("graphviz" ,graphviz) ; for dot
-       ("libtool" ,libtool)
-       ("libxslt" ,libxslt)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://github.com/libxmlplusplus/libxmlplusplus/")
-    (synopsis "C++ bindings for libxml2")
-    (description
-     "libxml++ (a.k.a. libxmlplusplus) provides a C++ interface to XML files.
-It uses libxml2 to access the XML files.")
-    (license license:lgpl2.1+)))
-
-;; This is the last release providing the 2.6 API, hence the name.
-;; This is needed by tascam-gtk
-(define-public libxmlplusplus-2.6
-  (package
-    (inherit libxmlplusplus)
-    (name "libxmlplusplus")
-    (version "2.40.1")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/libxmlplusplus/libxmlplusplus")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0gbfi4l88w828gmyc9br11l003ylyi4vigp5d1kfgsn0k4cig3y9"))))))
-
 (define-public python-libxml2
   (package/inherit libxml2
     (name "python-libxml2")
@@ -2071,8 +1996,9 @@ advantage of JIT JVMs.")
     (version "2.1.10")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.extreme.indiana.edu/xgws/xsoap/"
-                                  "PullParser/PullParser" version ".tgz"))
+              ;; Unfortunately, archive.org does not have a copy of this file.
+              (uri (string-append "https://ftp.fau.de/gentoo/distfiles/"
+                                  "PullParser" version ".tgz"))
               (sha256
                (base32
                 "1kw9nhyqb7bzhn2zjbwlpi5vp5rzj89amzi3hadw2acyh2dmd0md"))
@@ -2088,7 +2014,8 @@ advantage of JIT JVMs.")
        #:phases
        (modify-phases %standard-phases
          (replace 'install (install-jars "build/lib")))))
-    (home-page "http://www.extreme.indiana.edu/xgws/xsoap/xpp/")
+    (home-page (string-append "https://web.archive.org/web/20210225153105/"
+                              "https://www.extreme.indiana.edu/"))
     (synopsis "Streaming pull XML parser")
     (description "Xml Pull Parser (in short XPP) is a streaming pull XML
 parser and should be used when there is a need to process quickly and

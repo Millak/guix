@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
-;;; Copyright © 2017 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -56,14 +56,14 @@
 (define-public python-sphinx
   (package
     (name "python-sphinx")
-    (version "4.0.1")
+    (version "4.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Sphinx" version))
        (sha256
         (base32
-         "0k0bfjw4f76k2yyz8k2rl3s66ig2mn7y13m8dzqbgckifmvh8lfg"))))
+         "1f7vnk3g135b2zs9yq3kgrczxa91mhrlfw8243dpxsq8lbk5gwyz"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

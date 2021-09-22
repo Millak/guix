@@ -22,6 +22,7 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
   #:use-module (guix utils)
@@ -220,11 +222,11 @@ window managers, that don't provide Qt integration by themselves.")
       (arguments
        `(#:tests? #f                    ; No target
          #:configure-flags
-         (list
-          (string-append "-DCMAKE_CXX_FLAGS=-I"
-                         (assoc-ref %build-inputs "qtbase")
-                         "/include/qt5/QtXkbCommonSupport/"
-                         ,(package-version qtbase-5)))))
+         ,#~(list
+             (string-append "-DCMAKE_CXX_FLAGS=-I"
+                            #$(this-package-input "qtbase")
+                            "/include/qt5/QtXkbCommonSupport/"
+                            #$(package-version qtbase-5)))))
       (native-inputs
        `(("cmake-shared" ,cmake-shared)
          ("extra-cmake-modules" ,extra-cmake-modules)
@@ -1938,7 +1940,9 @@ using the Enchant spell-checking library.")
                (invoke "qmake" "QT_BUILD_PARTS = libs tools" "--"
                        "--webengine-printing-and-pdf=no"
                        "--webengine-ffmpeg=system"
-                       "--webengine-icu=system"
+                       ;; FIXME: Building qtwebengine 5.12.2 with
+                       ;; icu4c >= 68 fails.
+                       ;;"--webengine-icu=system"
                        "--webengine-pepper-plugins=no"
                        "-webengine-proprietary-codecs")))))
        ;; Tests are disabled due to "Could not find QtWebEngineProcess error"
@@ -1957,6 +1961,61 @@ using the Enchant spell-checking library.")
 using the Chromium browser project.  The Chromium source code has Google services
 and binaries removed, and adds modular support for using system libraries.")
     (license license:lgpl2.1+)))
+
+(define-public single-application-qt5
+  ;; Change in function signature, nheko requires at least this commit
+  (let ((commit "dc8042b5db58f36e06ba54f16f38b16c5eea9053"))
+    (package
+      (name "single-application-qt5")
+      (version (string-append "3.2.0-" (string-take commit 7)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/itay-grudev/SingleApplication")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "163aa2x2qb0h8w26si5ql833ilj427jjbdwlz1p2p8iaq6dh0vq1"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f                    ; no check target
+         ;; Projects can decide how to build this library.  You might need to
+         ;; override this flag (QApplication, QGuiApplication or
+         ;; QCoreApplication).
+         #:configure-flags '("-DQAPPLICATION_CLASS=QApplication")
+         #:phases
+         (modify-phases %standard-phases
+           ;; No install target, install things manually
+           (replace 'install
+             (lambda* (#:key inputs outputs source #:allow-other-keys)
+               (let* ((qt (assoc-ref inputs "qtbase"))
+                      (qt-version ,(version-major (package-version qtbase-5)))
+                      (out (assoc-ref outputs "out")))
+                 (install-file
+                  "libSingleApplication.a" (string-append out "/lib"))
+                 (for-each
+                  (lambda (file)
+                    (install-file
+                     (string-append source "/" file)
+                     (string-append out "/include")))
+                  '("SingleApplication"
+                    "singleapplication.h" "singleapplication_p.h"))
+                 #t))))))
+      (inputs
+       `(("qtbase" ,qtbase-5)))
+      (home-page "https://github.com/itay-grudev/SingleApplication")
+      (synopsis "Replacement of QtSingleApplication for Qt5 and Qt6")
+      (description
+       "SingleApplication is a replacement of the QtSingleApplication for Qt5 and Qt6.
+
+It keeps the Primary Instance of your Application and kills each subsequent
+instances.  It can (if enabled) spawn secondary (non-related to the primary)
+instances and can send data to the primary instance from secondary
+instances.")
+      (license license:expat))))
 
 (define-public python-sip
   (package
@@ -2624,7 +2683,11 @@ different kinds of sliders, and much more.")
         (sha256
          (base32
           "1rm9sjkabxna67dl7myx9d9vpdyfxfdhrk9w7b94srkkjbd2d8cw"))
-        (patches (search-patches "qtwebkit-pbutils-include.patch"))))
+        (patches (search-patches "qtwebkit-pbutils-include.patch"
+                                 "qtwebkit-fix-building-with-bison-3.7.patch"
+                                 "qtwebkit-fix-building-with-glib-2.68.patch"
+                                 "qtwebkit-fix-building-with-icu-68.patch"
+                                 "qtwebkit-fix-building-with-python-3.9.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("perl" ,perl)

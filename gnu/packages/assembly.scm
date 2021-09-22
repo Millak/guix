@@ -7,9 +7,10 @@
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
 ;;; Copyright © 2019 Andy Tai <atai@atai.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020 Christopher Lemmer Webber <cwebber@dustycloud.org>
+;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,6 +141,9 @@ debugging information in STABS, DWARF 2, and CodeView 8 formats.")
                "1jgxbq2cm51dzi3zhz38mmgwdcgs328mfl8iviw8dxn6dn36p1gd"))))
     (build-system gnu-build-system)
     (native-inputs `(("zlib" ,zlib)))
+    (arguments
+     ;; Some tests fail when run in parallel.
+     `(#:parallel-tests? #f))
     (synopsis "Library for generating assembly code at runtime")
     (description
      "GNU Lightning is a library that generates assembly language code at

@@ -57,6 +57,7 @@
   #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (guix build-system asdf)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages base)
   #:use-module (gnu packages c)
@@ -91,6 +92,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
@@ -99,7 +101,7 @@
 (define-public sbcl-alexandria
   (package
    (name "sbcl-alexandria")
-   (version "1.2")
+   (version "1.4")
    (source
     (origin
      (method git-fetch)
@@ -108,7 +110,7 @@
            (commit (string-append "v" version))))
      (sha256
       (base32
-       "0bcqs0z9xlqgjz43qzgq9i07vdlnjllpm1wwa37wpkg0w975r712"))
+       "0r1adhvf98h0104vq14q7y99h0hsa8wqwqw92h7ghrjxmsvz2z6l"))
      (file-name (git-file-name name version))))
    (build-system asdf-build-system/sbcl)
    (native-inputs
@@ -8134,8 +8136,8 @@ functions for arrays and vectors.  Originally from Plump.")
   (sbcl-package->ecl-package sbcl-array-utils))
 
 (define-public sbcl-plump
-  (let ((commit "34f890fe46efdebe7bb70d218f1937e98f632bf9")
-        (revision "1"))
+  (let ((commit "3584275f0be9d06c0c51b5c08f89005deafc4ada")
+        (revision "2"))
     (package
       (name "sbcl-plump")
       (version (git-version "2.0.0" revision commit))
@@ -8149,7 +8151,7 @@ functions for arrays and vectors.  Originally from Plump.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0a0x8wn6vv1ylxcwck12k18gy0a366kdm6ddxxk7yynl4mwnqgkh"))))
+           "1w4wz7f6dc2ckdq9wq9r5014bg2nxjifj9yz1zzn41r8h1h5xfcd"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("array-utils" ,sbcl-array-utils)
@@ -16516,11 +16518,11 @@ for Common Lisp.")
   (sbcl-package->cl-source-package sbcl-bknr-datastore))
 
 (define-public sbcl-authentic
-  (let ((commit "d5ff2f4666ce24e41fb4ca22476c782c070e6f6e")
-        (revision "1"))
+  (let ((commit "4e9194dda227b98f56dda1c2a2480efcc2d1f973")
+        (revision "2"))
     (package
       (name "sbcl-authentic")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.1.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -16529,7 +16531,7 @@ for Common Lisp.")
                (commit commit)))
          (file-name (git-file-name "cl-authentic" version))
          (sha256
-          (base32 "1dmi9lw1ickx0i41lh9sfchalvy7km6wc9w3szfjlvny7svwf6qp"))))
+          (base32 "0ncsxrybnx0pjsndv3j8w4lphlpcsld8sxg3c5b46fb3a8nd4ssf"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        `(("fiveam" ,sbcl-fiveam)))
@@ -18228,6 +18230,79 @@ functions allow Lisp programs to explore the web.")
 (define-public cl-aserve
   (sbcl-package->cl-source-package sbcl-aserve))
 
+(define-public sbcl-yxorp
+  (let ((commit "d2e8f9304549e47ae5c7fa35a6b114804603eac9")
+        (revision "1"))
+    (package
+      (name "sbcl-yxorp")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/charJe/cl-yxorp")
+               (commit commit)))
+         (file-name (git-file-name "cl-yxorp" version))
+         (sha256
+          (base32 "1zz1j678vzwkf817h2z0pf0fcyf4mldv4hiv1wyam58hd4bcrjsw"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       `(("cl+ssl" ,sbcl-cl+ssl)
+         ("cl-binding-arrows" ,sbcl-binding-arrows)
+         ("cl-str" ,sbcl-cl-str)
+         ("cl-usocket" ,sbcl-usocket)
+         ("flexi-streams" ,sbcl-flexi-streams)
+         ("trivial-garbage" ,sbcl-trivial-garbage)))
+      (home-page "https://github.com/charje/cl-yxorp")
+      (synopsis
+       "Reverse proxy server written in and configurable in Common Lisp")
+      (description
+       "This is a reverse proxy server written in and configurable in
+Common Lisp.  It supports WebSocket, HTTP, HTTPS, HTTP to HTTPS
+redirecting, port and host forwarding configuration using a real programming
+language, HTTP header and body manipulation (also using a real programming
+language).")
+      (license license:agpl3))))
+
+(define-public ecl-yxorp
+  ;; Note that due to a bug in ECL this package does not build.
+  ;; The bug has already been fixed on the development branch,
+  ;; so this package will work work in the version after 21.2.1.
+  (sbcl-package->ecl-package sbcl-yxorp))
+
+(define-public cl-yxorp
+  (sbcl-package->cl-source-package sbcl-yxorp))
+
+(define-public cl-yxorp-cli
+  (package
+    (inherit sbcl-yxorp)
+    (name "cl-yxorp-cli")
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f
+       #:strip-binaries? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-after 'unpack 'set-home
+           (lambda _
+             (setenv "HOME" "/tmp")))
+         (replace 'build
+           (lambda _
+             (invoke
+              "sbcl" "--noinform"
+              "--non-interactive"
+              "--no-userinit"
+              "--eval" "(require :asdf)"
+              "--eval" "(pushnew (uiop:getcwd) asdf:*central-registry*)"
+              "--load" "build.lisp")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+               (mkdir-p bin)
+               (install-file "cl-yxorp" bin)))))))
+    (inputs (cons (list "sbcl" sbcl) (package-inputs sbcl-yxorp)))))
+
 (define-public sbcl-rss
   ;; No release.
   (let ((commit "51d0145e91b86327ae5c36364f9c3048052e7a58"))
@@ -18543,3 +18618,125 @@ semantics in Lisp and Parenscript.
 
 (define-public cl-spinneret
   (sbcl-package->cl-source-package sbcl-spinneret))
+
+(define-public sbcl-cl-libxml2
+  (let ((commit "8d03110c532c1a3fe15503fdfefe82f60669e4bd"))
+    (package
+      (name "sbcl-cl-libxml2")
+      (version (git-version "0.3.4" "1" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/archimag/cl-libxml2")
+               (commit commit)))
+         (file-name (git-file-name "cl-libxml2" version))
+         (sha256
+          (base32 "09049c13cfp5sc6x9lrw762jd7a9qkfq5jgngqgrzn4kn9qscarw"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       `(("alexandria" ,sbcl-alexandria)
+         ("cffi" ,sbcl-cffi)
+         ("flexi-streams" ,sbcl-flexi-streams)
+         ("garbage-pools" ,sbcl-garbage-pools)
+         ("iterate" ,sbcl-iterate)
+         ("metabang-bind" ,sbcl-metabang-bind)
+         ("puri" ,sbcl-puri)
+         ;; Non-Lisp inputs:
+         ("libxml2" ,libxml2)
+         ("libxslt" ,libxslt)))
+      (native-inputs
+       `(("lift" ,sbcl-lift)))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (substitute* "tree/xtree.lisp"
+                 (("libxml2.so.2")
+                  (string-append (assoc-ref inputs "libxml2") "/lib/libxml2.so")))
+               (let ((libxslt (assoc-ref inputs "libxslt")))
+                 (substitute* "xslt/xslt.lisp"
+                   (("libxslt.so.1")
+                    (string-append libxslt "/lib/libxslt.so"))
+                   (("libexslt.so.0")
+                    (string-append libxslt "/lib/libexslt.so"))
+                   (("cllibxml2.so")
+                    (string-append (assoc-ref outputs "out") "/lib/cllibxml2.so"))))
+               #t))
+           (add-before 'build 'build-helper-library
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((prefix-dir (string-append (assoc-ref outputs "out"))))
+                 (mkdir-p (string-append prefix-dir "/lib"))
+                 (invoke "make" "-C" "foreign" "install"
+                         "INSOPTS="
+                         (string-append "PREFIX=" prefix-dir))
+                 #t)))
+           (add-after 'unpack 'fix-tests
+             (lambda _
+               (substitute* '("cl-libxml2.asd" "cl-libxslt.asd" "xfactory.asd")
+                 ((" :force t") ""))
+               #t)))))
+      (home-page "https://web.archive.org/web/20160121073421/http://cl-libxml2.googlecode.com/svn/doc/index.html")
+      (synopsis "High-level wrapper around libxml2 and libxslt libraries")
+      (description
+       "cl-libxml2 is high-level Common Lisp wrapper around the @code{libxml2}
+and @code{libxslt} libraries.
+
+@itemize
+@item Interfaces for tree manipulation (like @code{cxml-stp}).
+@item Interface for HTML 4.0 non-validating parsers.
+@item Specific APIs to process HTML trees, especially serialization.
+@item XPath API.
+@item XSLT API.
+@item Custom URL resolvers.
+@item XPath extension functions.
+@item XSLT extension elements.
+@item Translates @code{libxml2} and @code{libxslt} errors to Lisp conditions.
+@item Extends the Common Lisp @code{iterate} library with custom drivers for
+child nodes enumeration, etc.
+@item The @code{XFACTORY} system provides a simple and compact syntax for XML generation.
+@end itemize\n")
+      (license license:llgpl))))
+
+(define-public ecl-cl-libxml2
+  (sbcl-package->ecl-package sbcl-cl-libxml2))
+
+(define-public cl-libxml2
+  (sbcl-package->cl-source-package sbcl-cl-libxml2))
+
+(define-public sbcl-feeder
+  ;; No release.
+  (let ((commit "b05f517d7729564575cc809e086c262646a94d34")
+        (revision "1"))
+    (package
+      (name "sbcl-feeder")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/feeder")
+               (commit commit)))
+         (file-name (git-file-name "feeder" version))
+         (sha256
+          (base32 "1dpbzhycg50snl3j01c8dh8gdvhfhz0hnfl54xy55a3wbr3m6rp7"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       `(("documentation-utils" ,sbcl-documentation-utils)
+         ("local-time" ,sbcl-local-time)
+         ("plump" ,sbcl-plump)))
+      (home-page "https://shinmera.github.io/feeder/")
+      (synopsis "RSS, Atom and general feed parsing and generating")
+      (description
+       "Feeder is a syndication feed library.  It presents a general protocol
+for representation of feed items, as well as a framework to translate these
+objects from and to external formats.  It also implements the RSS 2.0 and Atom
+formats within this framework.")
+      (license license:zlib))))
+
+(define-public ecl-feeder
+  (sbcl-package->ecl-package sbcl-feeder))
+
+(define-public cl-feeder
+  (sbcl-package->cl-source-package sbcl-feeder))

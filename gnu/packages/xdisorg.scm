@@ -9,7 +9,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Florian Paul Schmidt <mista.tapas@gmx.net>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
@@ -50,6 +50,8 @@
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
+;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -101,6 +103,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
@@ -638,7 +641,7 @@ rasterisation.")
 (define-public libdrm
   (package
     (name "libdrm")
-    (version "2.4.104")
+    (version "2.4.107")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -646,7 +649,7 @@ rasterisation.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "1jqvx9c23hgwhq109zqj6vg3ng40pcvh3r1k2fn1a424qasxhsnn"))))
+                "127qf1rzhaf13vdd75a58v5q34617hvangjlfnlkcdh37gqcwm65"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -661,9 +664,10 @@ rasterisation.")
 
        #:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda _
-                      (invoke "meson" "test" "--timeout-multiplier" "5"))))))
-    (inputs
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "meson" "test" "--timeout-multiplier" "5")))))))
+    (propagated-inputs
      `(("libpciaccess" ,libpciaccess)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -768,7 +772,7 @@ move windows, switch between desktops, etc.).")
 (define-public scrot
   (package
     (name "scrot")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -778,14 +782,16 @@ move windows, switch between desktops, etc.).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x64b7xqi5cbq29pb8s8r2kzbxaday1f5k0j70n3s2p7sahjxy72"))))
+        (base32 "1qanx2xx9m5l995csqzfcm1ks2nhk90zga1wzbkjjl75ga4iik2h"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
        ("autoconf-archive" ,autoconf-archive)
-       ("automake" ,automake)))
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("giblib" ,giblib)
+       ("imlib2" ,imlib2)
        ("libx11" ,libx11)
        ("libxcomposite" ,libxcomposite)
        ("libxext" ,libxext)
@@ -911,6 +917,55 @@ xedit, for example.  The human factors crowd would agree it should make
 things less distracting.")
     (license license:public-domain)))
 
+(define-public unclutter-xfixes
+  (package
+    (name "unclutter-xfixes")
+    (version "1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Airblader/unclutter-xfixes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "148m4wx8v57s3l2wb69y9imb00y8ca2li27hsxibwnl1wrkb7z4b"))))
+    (build-system gnu-build-system)
+    (arguments `(#:tests? #f
+                 #:make-flags
+                 (list ,(string-append "CC=" (cc-for-target))
+                       (string-append "PREFIX=" (assoc-ref %outputs "out")))
+                 #:phases
+                 (modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs
+     `(("libx11" ,libx11)
+       ("libev" ,libev)
+       ("libxfixes" ,libxfixes)
+       ("libxi" ,libxi)))
+    (native-inputs
+     `(("asciidoc" ,asciidoc)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://github.com/Airblader/unclutter-xfixes")
+    (synopsis "Hide idle mouse cursor")
+    (description
+     "unclutter-xfixes is a rewrite of the popular tool unclutter, but
+using the x11-xfixes extension.  This means that this rewrite doesn't
+use fake windows or pointer grabbing and hence causes less problems
+with window managers and/or applications.
+
+Unclutter is a program which runs permanently in the background of an
+X11 session.  It checks on the X11 pointer (cursor) position every few
+seconds, and when it finds it has not moved (and no buttons are pressed
+on the mouse, and the cursor is not in the root window) it creates a
+small sub-window as a child of the window the cursor is in.  The new
+window installs a cursor of size 1x1 but a mask of all 0, i.e. an
+invisible cursor.  This allows you to see all the text in an xterm or
+xedit, for example.  The human factors crowd would agree it should make
+things less distracting.")
+    (license license:expat)))
+
 (define-public xautomation
   (package
     (name "xautomation")
@@ -978,7 +1033,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.66")
+    (version "5.67")
     (source (origin
              (method url-fetch)
              (uri (list (string-append "http://sillycycle.com/xlock/"
@@ -989,7 +1044,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                                        "xlockmore-" version ".tar.xz")))
              (sha256
               (base32
-               "0wdb7gpyjw3sigmhiplgg1bqxz6wipr0c3n9492x2a18cv1saxjr"))))
+               "0k13gxgnk4i041g1fzixfwlf3l5hrvvkhfvxf27szx0d1qbpwq58"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--enable-appdefaultdir="
@@ -1040,14 +1095,14 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "1vgngcg8wxn6zfg34czn9w55ia0zmhlgnpzf0gh31dc72li9353k"))))
+        (base32 "080pwz8pvqqq068lavzz48dl350iszpdswjd86bjk6zra5h5d10q"))))
     (build-system meson-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -1505,7 +1560,7 @@ protocol.")
              ;; to Python libraries.
              (wrap-program (string-append (assoc-ref outputs "out")
                                           "/bin/gammastep-indicator")
-               `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH")))
+               `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
                `("GI_TYPELIB_PATH" ":" prefix
                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
@@ -1640,30 +1695,45 @@ Saver extension) library.")
     (license license:gpl3+)))
 
 (define-public xsel
-  (package
-    (name "xsel")
-    (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.vergenet.net/~conrad/software"
-                                  "/xsel/download/xsel-" version ".tar.gz"))
-              (sha256
-               (base32
-                "070lbcpw77j143jrbkh0y1v10ppn1jwmjf92800w7x42vh4cw9xr"))))
-    (build-system gnu-build-system)
-    (inputs
-     `(("libxt" ,libxt)))
-    (home-page "http://www.vergenet.net/~conrad/software/xsel/")
-    (synopsis "Manipulate X selection")
-    (description
-     "XSel is a command-line program for getting and setting the contents of
+  ;; The 1.2.0 release no longer compiles with GCC 8 and upper, see:
+  ;; https://github.com/kfish/xsel/commit/d88aa9a8dba9228e6780d6bb5a5720a36f854918.
+  (let ((commit "062e6d373537c60829fa9b5dcddbcd942986b3c3")
+        (revision "1"))
+    (package
+      (name "xsel")
+      (version (git-version "1.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/kfish/xsel")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0fbf80zsc22vcqp59r9fdx4icxhrkv7l3lphw83326jrmkzy6kri"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (replace 'bootstrap
+             (lambda _
+               (invoke "autoreconf" "-vfi"))))))
+      (native-inputs `(("autoconf" ,autoconf)
+                       ("automake" ,automake)
+                       ("libtool" ,libtool)))
+      (inputs
+       `(("libxt" ,libxt)))
+      (home-page "http://www.vergenet.net/~conrad/software/xsel/")
+      (synopsis "Manipulate X selection")
+      (description
+       "XSel is a command-line program for getting and setting the contents of
 the X selection.  Normally this is only accessible by manually highlighting
 information and pasting it with the middle mouse button.
 
 XSel reads from standard input and writes to standard output by default,
 but can also follow a growing file, display contents, delete entries and more.")
-    (license (license:x11-style "file://COPYING"
-                                "See COPYING in the distribution."))))
+      (license (license:x11-style "file://COPYING"
+                                  "See COPYING in the distribution.")))))
 
 (define-public xdpyprobe
   (package
@@ -1690,15 +1760,15 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
 (define-public rofi
   (package
     (name "rofi")
-    (version "1.6.1")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/DaveDavenport/rofi/"
+              (uri (string-append "https://github.com/davatorium/rofi/"
                                   "releases/download/"
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "12p9z8bl1gg8k024m4a6zfz7gf1zbyffardh98raqgabn6knwk22"))))
+                "1929q3dks8fqd3pfkzs0ba06gwzhlgcrfar9fpga43f3byrrbfxa"))))
     (build-system gnu-build-system)
     (inputs
      `(("pango" ,pango)
@@ -1710,6 +1780,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
        ("libxkbcommon" ,libxkbcommon)
        ("libxcb" ,libxcb)
        ("xcb-util" ,xcb-util)
+       ("xcb-util-cursor" ,xcb-util-cursor)
        ("xcb-util-xrm" ,xcb-util-xrm)
        ("xcb-util-wm" ,xcb-util-wm)))
     (native-inputs
@@ -1729,7 +1800,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
                (("~") "")
                (("g_get_home_dir \\(\\)") "\"/\""))
              #t)))))
-    (home-page "https://github.com/DaveDavenport/rofi")
+    (home-page "https://github.com/davatorium/rofi")
     (synopsis "Application launcher")
     (description "Rofi is a minimalist application launcher.  It memorizes which
 applications you regularly use and also allows you to search for an application
@@ -2155,7 +2226,7 @@ to automatically turn it on on login.")
 (define-public xrandr-invert-colors
   (package
     (name "xrandr-invert-colors")
-    (version "0.01")
+    (version "0.02")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2164,7 +2235,7 @@ to automatically turn it on on login.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1br3x9vr6xm4ika06n8cfxx1b3wdchdqvyzjl4y1chmivrml8x9h"))))
+                "0gk1fgxb2kjyr78xn8m0ckjdic99ras7msa67piwnhj3j4scg1ih"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list ,(string-append "CC=" (cc-for-target)))
@@ -2173,11 +2244,14 @@ to automatically turn it on on login.")
        (modify-phases %standard-phases
          (delete 'configure)
          (replace 'install
+           ;; It's simpler to install the single binary ourselves than to patch
+           ;; the Makefile's install target into working.
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
                     (bin  (string-append out "/bin")))
-               (install-file "xrandr-invert-colors.bin" bin)
-               #t))))))
+               (mkdir-p bin)
+               (copy-file "xrandr-invert-colors.bin"
+                          (string-append bin "/xrandr-invert-colors"))))))))
     (inputs
      `(("libxrandr" ,libxrandr)))
     (home-page "https://github.com/zoltanp/xrandr-invert-colors")
@@ -2396,7 +2470,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
 (define-public xwallpaper
   (package
     (name "xwallpaper")
-    (version "0.6.6")
+    (version "0.7.3")
     (source
      (origin
        (method git-fetch)
@@ -2405,7 +2479,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10klm81rs3k3l2i7whpvcsg95x51ja11l86fmwbrvg3kq705p2sr"))))
+        (base32 "1rsv42cl0s149sbpdxz9yqqjip3si95jv3dglwzrcm7pjfg7519v"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -2961,3 +3035,31 @@ System.  This includes such features as MouseKeys, AccessX, StickyKeys,
 BounceKeys, and SlowKeys.  It includes a graphical program to help with
 MouseKeys-acceleration management.")
     (license license:bsd-3)))
+
+(define-public wlsunset
+  (package
+    (name "wlsunset")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~kennylevinsen/wlsunset/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0hhsddh3rs066rbsjksr8kcwg8lvglbvs67dq0r5wx5c1xcwb51w"))))
+    (build-system meson-build-system)
+    (inputs
+     `(("wayland" ,wayland)
+       ("wayland-protocols" ,wayland-protocols)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (synopsis "Day/night gamma adjustments for Wayland compositors")
+    (home-page "https://sr.ht/~kennylevinsen/wlsunset/")
+    (description
+     "wlunset adjusts gamma based on day-night cycles on Wayland compositors
+that support @samp{wlr-gamma-control-unstable-v1}.  It is also known as a blue
+light filter or night light.")
+    (license license:expat)))

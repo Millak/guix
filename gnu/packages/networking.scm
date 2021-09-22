@@ -13,7 +13,7 @@
 ;;; Copyright © 2016 Benz Schenk <benz.schenk@uzh.ch>
 ;;; Copyright © 2016, 2017 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2017, 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2017, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2019 Gábor Boskovits <boskovits@gmail.com>
@@ -24,7 +24,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2018, 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
@@ -43,6 +43,11 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021 Milkey Mouse <milkeymouse@meme.institute>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -302,6 +307,7 @@ Android, and ChromeOS.")
     (native-inputs
      `(("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
+       ("graphviz" ,graphviz)
        ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)))
     (inputs
@@ -382,6 +388,30 @@ supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.")
         license:lgpl2.1+
         ;; Others.
         license:gpl2+)))))
+
+(define-public slurm-monitor
+  (package
+    (name "slurm-monitor")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/mattthias/slurm")
+         (commit (string-append "upstream/" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n6pgrcs8gwrcq5fch1q3yk3jipjwrf21s9a13fbjrl903g5zzv9"))))
+    (build-system cmake-build-system)
+    (arguments `(#:tests? #f)) ;no tests
+    (inputs `(("ncurses" ,ncurses)))
+    (synopsis "Network load monitor")
+    (description
+     "Slurm is a network load monitor.  It shows real-time traffic statistics
+from any network device in any of three ASCII graph formats.")
+    (home-page "https://github.com/mattthias/slurm")
+    (license license:gpl2)))
 
 (define-public srt
   (package
@@ -1027,7 +1057,8 @@ transparently check connection attempts against an access control list.")
        (sha256
         (base32 "1rf3jmi36ms8jh2g5cvi253h43l6xdfq0r7mvp95va7mi4d014y5"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--disable-static")))
+    (arguments '(#:configure-flags '("--disable-static"
+                                     "--enable-drafts")))
     (home-page "https://zeromq.org")
     (synopsis "Library for message-based applications")
     (description
@@ -1441,14 +1472,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "3.4.6")
+    (version "3.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0a26kcj3n1a2kw1f3fc6s1x3rw3f3bj2cq6rp7k0kc4ciwh7i9hj"))))
+        (base32 "09fpvfj4m7glisj6p4zb8wylkrjkqqw69xnwnz4ah410zs6zm9sq"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -1461,8 +1492,7 @@ of the same name.")
            (lambda _
              (substitute* "CMakeLists.txt"
                (("suite_unittests" all) (string-append "# " all))
-               (("suite_extcaps" all) (string-append "# " all)))
-             #t)))
+               (("suite_extcaps" all) (string-append "# " all))))))
        ;; Build process chokes during `validate-runpath' phase.
        ;;
        ;; Errors are like the following:
@@ -1820,7 +1850,8 @@ live network and disk I/O bandwidth monitor.")
        ("zlib" ,zlib)))
     (arguments
      `(#:configure-flags
-       (list "--with-experimental=yes"  ; build wesside-ng, etc.
+       (list "CFLAGS=-fcommon"
+             "--with-experimental=yes"  ; build wesside-ng, etc.
              "--with-gcrypt")           ; openssl's the default
        #:phases (modify-phases %standard-phases
                   (add-before 'bootstrap 'patch-evalrev
@@ -2190,7 +2221,7 @@ It is intended primarily for use in testing.")
     `(("perl-module-build" ,perl-module-build)
       ("perl-test-pod" ,perl-test-pod)
       ("perl-test-pod-coverage" ,perl-test-pod-coverage)))
-  (inputs `(("perl-socket6" ,perl-socket6)))
+  (propagated-inputs `(("perl-socket6" ,perl-socket6)))
   (arguments `(;; Need network socket API
                #:tests? #f))
   (home-page
@@ -2223,8 +2254,13 @@ sockets in Perl.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-                  (lambda _
-                    (invoke "ctest" "-E" "url-test"))))))
+           ;; TODO(core-updates): Make this unconditional.
+           ,(if (%current-target-system)
+                '(lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" "url-test")))
+                '(lambda _
+                   (invoke "ctest" "-E" "url-test")))))))
     (synopsis "Library providing automatic proxy configuration management")
     (description "Libproxy handles the details of HTTP/HTTPS proxy
 configuration for applications across all scenarios.  Applications using
@@ -2589,33 +2625,6 @@ enabled due to license conflicts between the BSD advertising clause and the GPL.
     ;; others under a 4-clause BSD license. Refer to the files in the source
     ;; distribution for clarification.
     (license (list license:bsd-3 license:bsd-4))))
-
-(define-public pidentd
-  (package
-    (name "pidentd")
-    (version "3.0.19")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ptrrkssn/pidentd")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1k4rr0b4ygxssbnsykzjvz4hjhazzz4j5arlilyc1iq7b1wzsk7i"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f)) ; No tests are included
-    (inputs
-     `(("openssl" ,openssl-1.0)))       ;for the DES library
-    (home-page "https://www.lysator.liu.se/~pen/pidentd/")
-    (synopsis "Small Ident Daemon")
-    (description
-     "@dfn{Pidentd} (Peter's Ident Daemon) is an identd, which implements a
-identification server.  Pidentd looks up specific TCP/IP connections and
-returns the user name and other information about the connection.")
-    (license license:public-domain)))
 
 (define-public spiped
   (package
@@ -3396,12 +3405,11 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
     (license license:bsd-3)))
 
 (define-public opendht
-  ;; Jami requires unreleased features of OpenDHT.
-  (let ((commit "c8a0b443f3117e2fa1343d2cb3c091f502b1a24e")
+  (let ((commit "6c58d4f2e9b7f1de15db8d3a736c8cf1ea5f2886")
         (revision "1"))
     (package
       (name "opendht")
-      (version (git-version "2.2.0rc7" revision commit))
+      (version (git-version "2.3.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3410,7 +3418,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "062irb9yii66n2fzbpsjf7v2v53zzvakr1wjmi4l1jaz33fwx5by"))))
+                  "06l0z1dmxyjh8gdrmxyq4vnfnv3x400bhx0lxm7l90f8zc5r2bim"))))
       ;; Since 2.0, the gnu-build-system does not seem to work anymore, upstream bug?
       (outputs '("out" "tools" "debug"))
       (build-system cmake-build-system)
@@ -3532,6 +3540,39 @@ A very simple IM client working over the DHT.
     (synopsis "IP routing protocol suite")
     (description "FRRouting (FRR) is an IP routing protocol suite which includes
 protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP. ")
+    (license license:gpl2+)))
+
+(define-public bird
+  (package
+    (name "bird")
+    (version "2.0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "ftp://bird.network.cz/pub/bird/bird-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1xp7f0im1v8pqqx3xqyfkd1nsxk8vnbqgrdrwnwhg8r5xs1xxlhr"))))
+    (inputs
+     `(("libssh" ,libssh)
+       ("readline" ,readline)))
+    (native-inputs
+     `(("bison" ,bison)
+       ("flex" ,flex)))
+    (arguments
+     `(#:configure-flags '("--localstatedir=/var" "--enable-ipv6")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'dont-create-sysconfdir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "Makefile.in"
+               ((" \\$\\(DESTDIR)/\\$\\(runstatedir)") "")))))))
+    (build-system gnu-build-system)
+    (home-page "http://bird.network.cz")
+    (synopsis "Internet Routing Daemon")
+    (description "BIRD is an Internet routing daemon with full support for all
+the major routing protocols.  It allows redistribution between protocols with a
+powerful route filtering syntax and an easy-to-use configuration interface.")
     (license license:gpl2+)))
 
 (define-public iwd
@@ -3825,22 +3866,31 @@ some traces for unprivileged users.")
                    license:lgpl2.1+)))) ;for the libsupp subdirectory
 
 (define-public vde2
+  (let ((commit "8c65ebc464b2f986d5f1f4e6ae829ef4480c9d5a")
+        (revision "0"))
   (package
     (name "vde2")
-    (version "2.3.2")
+    (version (git-version "2.3.2" revision commit))
     (source
      (origin
-       (method url-fetch)
-       (uri "mirror://sourceforge/vde/vde2/2.3.2/vde2-2.3.2.tar.gz")
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/virtualsquare/vde-2")
+              (commit commit)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14xga0ib6p1wrv3hkl4sa89yzjxv7f1vfqaxsch87j6scdm59pr2"))))
+        (base32 "0l5xf71sv9zm5zw0wg8xgip58c0wh8zck2bazyc2a8gb67gc3s8y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #f))           ; Build fails if #t.
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)))
     (inputs
      `(("python" ,python)
        ("libpcap" ,libpcap)
-       ("openssl" ,openssl-1.0)))       ; Build fails with 1.1.
+       ("wolfssl" ,wolfssl)))
     (home-page "https://github.com/virtualsquare/vde-2")
     (synopsis "Virtual Distributed Ethernet")
     (description "VDE is a set of programs to provide virtual software-defined
@@ -3852,7 +3902,7 @@ cables.")
                    license:lgpl2.1       ; libvdeplug
                    (license:non-copyleft ; slirpvde
                     "file://COPYING.slirpvde"
-                    "See COPYING.slirpvde in the distribution.")))))
+                    "See COPYING.slirpvde in the distribution."))))))
 
 (define-public haproxy
   (package
@@ -3900,14 +3950,14 @@ thousands of connections is clearly realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.11")
+    (version "1.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1r265ns6fh04xwrzj06p2l7kl5rkkns0cdawp1zwpvxs1xq1a7dm"))
+        (base32 "1wfs50b0694dm60ryjfmxgkxxsqpp9sxqbc4laad364wbddwd56i"))
        (modules '((guix build utils)))
        (snippet
         '(begin

@@ -30,6 +30,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages freedesktop)
@@ -37,6 +38,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages mp3)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -47,7 +49,7 @@
 (define-public gpodder
   (package
     (name "gpodder")
-    (version "3.10.20")
+    (version "3.10.21")
     (source
      (origin
        (method git-fetch)
@@ -55,7 +57,7 @@
              (url "https://github.com/gpodder/gpodder")
              (commit version)))
        (sha256
-        (base32 "0lwf1lm20q6i8xbbva1g4arbinyxca10865dn19p5kr1b3gvmxqh"))
+        (base32 "0n73jm5ypsj962gpr0dk10lqh83giqsczm63wchyhmrkyf1wgga1"))
        (file-name (git-file-name name version))
        (patches (search-patches "gpodder-disable-updater.patch"))))
     (build-system python-build-system)
@@ -68,12 +70,14 @@
        ("python-pytest-httpserver" ,python-pytest-httpserver)
        ("which" ,which)))
     (inputs
-     `(("gtk+" ,gtk+)
+     `(("bash-minimal" ,bash-minimal)
+       ("gtk+" ,gtk+)
        ("python-pygobject" ,python-pygobject)
        ("python-pycairo" ,python-pycairo)
        ("python-requests" ,python-requests)
        ("python-dbus" ,python-dbus)
        ("python-html5lib" ,python-html5lib)
+       ("python-mutagen" ,python-mutagen)
        ("python-mygpoclient" ,python-mygpoclient)
        ("python-podcastparser" ,python-podcastparser)
        ("youtube-dl" ,youtube-dl)
@@ -89,8 +93,9 @@
                  (("xdg-open") (string-append xdg-utils "/bin/xdg-open")))
                #t)))
          (replace 'check
-           (lambda _
-             (invoke "make" "unittest")))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "unittest"))))
          ;; 'msgmerge' introduces non-determinism by resetting the
          ;; POT-Creation-Date in .po files.
          (add-before 'install 'do-not-run-msgmerge

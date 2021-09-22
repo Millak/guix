@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2016 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Antero Mejr <antero@kodmin.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
+;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -225,14 +226,14 @@ with a PKCS #11 Cryptographic Token Interface.")
 (define-public pcsc-lite
   (package
     (name "pcsc-lite")
-    (version "1.9.1")
+    (version "1.9.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://pcsclite.apdu.fr/files/"
                                   "pcsc-lite-" version ".tar.bz2"))
               (sha256
                (base32
-                "0fk8bvjpcci43iq2jzlvkml8bzjxclhxlg291ykk7a3ng2dpii3k"))))
+                "0n9y9m1wr5bwanpnylpdza3sf7lawi63jjizrl1aj5yxf4y46mk9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-usbdropdir=/var/lib/pcsc/drivers"
@@ -659,6 +660,23 @@ implementing a Relying Party.")
                (base32
                 "11rsmcaj60k3y5m5gdhr2nbbz0w5dm3m04klyxz0fh5hnpcmr7fm"))))
     (build-system python-build-system)
+    (arguments
+     '(#:modules ((srfi srfi-1)
+                  (guix build utils)
+                  (guix build python-build-system))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-libykpers-reference
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "ykman/driver_otp.py"
+               (("Ykpers\\('ykpers-1', '1'\\)")
+                (string-append
+                 "Ykpers('"
+                 (find (negate symbolic-link?)
+                       (find-files (assoc-ref inputs "yubikey-personalization")
+                                   "^libykpers-.*\\.so\\..*"))
+                 "')")))
+             #t)))))
     (propagated-inputs
      `(("python-six" ,python-six)
        ("python-pyscard" ,python-pyscard)

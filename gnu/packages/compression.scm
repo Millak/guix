@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1319,7 +1320,10 @@ for most inputs, but the resulting compressed files are anywhere from 20% to
                              (find-files  "Utils/file_Codecs_Rar_so.py")))
                   (delete-file-recursively "CPP/7zip/Archive/Rar")
                   (delete-file-recursively "CPP/7zip/Compress/Rar")
-                  #t))
+                  ;; Fix FTBFS with gcc-10.
+                  (substitute* "CPP/Windows/ErrorMsg.cpp"
+                    (("switch\\(errorCode\\) \\{")
+                     "switch(static_cast<HRESULT>(errorCode)) {"))))
               (patches (search-patches "p7zip-CVE-2016-9296.patch"
                                        "p7zip-CVE-2017-17969.patch"
                                        "p7zip-remove-unused-code.patch"))))
@@ -1330,31 +1334,27 @@ for most inputs, but the resulting compressed files are anywhere from 20% to
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key system outputs #:allow-other-keys)
-             (invoke "cp"
-                     (let ((system ,(or (%current-target-system)
-                                        (%current-system))))
-                       (cond
-                        ((string-prefix? "x86_64" system)
-                         "makefile.linux_amd64_asm")
-                        ((string-prefix? "i686" system)
-                         "makefile.linux_x86_asm_gcc_4.X")
-                        (else
-                         "makefile.linux_any_cpu_gcc_4.X")))
-                     "makefile.machine")))
-         (replace 'check
            (lambda _
-             (invoke "make" "test")
-             (invoke "make" "test_7z")
-             (invoke "make" "test_7zr"))))))
+             (copy-file
+               ,(cond ((target-x86-64?)
+                       "makefile.linux_amd64_asm")
+                      ((target-x86-32?)
+                       "makefile.linux_x86_asm_gcc_4.X")
+                      (else
+                        "makefile.linux_any_cpu_gcc_4.X"))
+               "makefile.machine")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "test")
+               (invoke "make" "test_7z")
+               (invoke "make" "test_7zr")))))))
     (native-inputs
-     (let ((system (or (%current-target-system)
-                       (%current-system))))
-       `(,@(cond ((string-prefix? "x86_64" system)
-                  `(("yasm" ,yasm)))
-                 ((string-prefix? "i686" system)
-                  `(("nasm" ,nasm)))
-                 (else '())))))
+      (cond ((target-x86-64?)
+             (list yasm))
+            ((target-x86-32?)
+             (list nasm))
+            (else '())))
     (home-page "http://p7zip.sourceforge.net/")
     (synopsis "Command-line file archiver with high compression ratio")
     (description "p7zip is a command-line port of 7-Zip, a file archiver that
@@ -2277,6 +2277,58 @@ reading from and writing to ZIP archives. ")
     ;; distributed under zlib terms.
     (license (list license:lgpl2.1+ license:zlib))))
 
+(define-public zchunk
+  (package
+    (name "zchunk")
+    (version "1.1.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zchunk/zchunk")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nlzwnv6wh2yjyyv27f81jnvmk7psgpbnw7dsdp7frfkya569hgv"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-paths
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (substitute* "src/zck_gen_zdict.c"
+                        (("/usr/bin/zstd")
+                         (string-append (assoc-ref inputs "zstd")
+                                        "/bin/zstd"))))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("curl" ,curl)
+       ("zstd" ,zstd)))
+    (propagated-inputs
+     `(("zstd:lib" ,zstd "lib")))       ;in Requires.private of zck.pc
+    (home-page "https://github.com/zchunk/zchunk")
+    (synopsis "Compressed file format for efficient deltas")
+    (description "The zchunk compressed file format allows splitting a file
+into independent chunks.  This makes it possible to retrieve only changed
+chunks when downloading a new version of the file, and also makes zchunk files
+efficient over rsync.  Along with the library, this package provides the
+following utilities:
+@table @command
+@item unzck
+To decompress a zchunk file.
+@item zck
+To compress a new zchunk file, or re-compress an existing one.
+@item zck_delta_size
+To calculate the difference between two zchunk files.
+@item zck_gen_zdict
+To create a dictionary for a zchunk file.
+@item zck_read_header
+To read a zchunk header.
+@item zckdl
+To download a zchunk file.
+@end table")
+    (license license:bsd-2)))
+
 (define-public zutils
   (package
     (name "zutils")
@@ -2528,6 +2580,42 @@ computations.")
 with their error correction data losslessly rearranged for better compression,
 to their original, binary CD format.")
     (license license:gpl3+)))
+
+(define-public libdeflate
+  (package
+    (name "libdeflate")
+    (version "1.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ebiggers/libdeflate")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nw1zhr2s6ffcc3s0n5wsshvjb6pmybwapagli135zzn2fx1pdiz"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs
+     `(("zlib" ,zlib)))
+    (home-page "https://github.com/ebiggers/libdeflate")
+    (synopsis "Library for DEFLATE/zlib/gzip compression and decompression")
+    (description "Libdeflate is a library for fast, whole-buffer DEFLATE-based
+compression and decompression.  The supported formats are:
+
+@enumerate
+@item DEFLATE (raw)
+@item zlib (a.k.a. DEFLATE with a zlib wrapper)
+@item gzip (a.k.a. DEFLATE with a gzip wrapper)
+@end enumerate
+")
+    (license license:expat)))
 
 (define-public tarlz
   (package

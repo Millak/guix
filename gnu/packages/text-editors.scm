@@ -9,13 +9,14 @@
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
 ;;; Copyright © 2020 Mark Meyer <mark@ofosos.org>
 ;;; Copyright © 2020 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 aecepoglu <aecepoglu@fastmail.fm>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
 (define-module (gnu packages text-editors)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cargo)
@@ -47,6 +49,7 @@
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
   #:use-module (gnu packages crates-io)
@@ -162,7 +165,7 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2020.09.01")
+    (version "2021.08.28")
     (source
      (origin
        (method url-fetch)
@@ -170,7 +173,7 @@ based command language.")
                            "releases/download/v" version "/"
                            "kakoune-" version ".tar.bz2"))
        (sha256
-        (base32 "0x81rxy7bqnhd9374g5ypy4w4nxmm0vnqw6b52bf62jxdg2qj6l6"))))
+        (base32 "1jvn4b9rma5jjvg3xz8nf224pbq3ry570j6qvc834wn5v3gxfvkg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -193,11 +196,10 @@ based command language.")
          (add-before 'build 'chdir
            (lambda _ (chdir "src") #t)))))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
+     `(("gcc", gcc-10) ; See https://github.com/mawww/kakoune/issues/4318
+       ("asciidoc" ,asciidoc)
        ("pkg-config" ,pkg-config)
        ("ruby" ,ruby)))
-    (inputs
-     `(("ncurses" ,ncurses)))
     (synopsis "Vim-inspired code editor")
     (description
      "Kakoune is a code editor heavily inspired by Vim, as such most of its
@@ -505,7 +507,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 (define-public mg
   (package
     (name "mg")
-    (version "20180927")
+    (version "20210609")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -514,46 +516,37 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14vrm8lvwksf697sqks7xfd1xaqjlqjc9afjk33sksq5p27wr203"))
+                "04c2vqxg31mk15cfrhzrivykis8fmf0m1d8h1qdjdmlfxd4qwaqf"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "GNUmakefile"
-                            (("/usr/bin/") ""))
-                          #t))))
+                            (("/usr/bin/") ""))))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (inputs
-     `(("libbsd" ,libbsd)
-       ("ncurses" ,ncurses)))
+    (native-inputs (list pkg-config))
+    (inputs (list diffutils libbsd ncurses))
     (arguments
      ;; No test suite available.
-     `(#:tests? #f
-       #:make-flags (list (string-append "prefix=" %output)
-                          (string-append "CC=" ,(cc-for-target)))
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)   ; no configure script
-                  (add-before 'build 'correct-location-of-difftool
-                    (lambda _
-                      (substitute* "buffer.c"
-                        (("/usr/bin/diff")
-                         (which "diff")))))
-                  (add-before 'build 'pkg-config-for-cross-compiling-target
-                    (lambda _
-                      (substitute* "GNUmakefile"
-                        (("pkg-config")
-                         (or (which "pkg-config")
-                             (string-append ,(%current-target-system)
-                                            "-pkg-config"))))))
-                  (add-before 'install 'patch-tutorial-location
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (substitute* "mg.1"
-                        (("/usr") (assoc-ref outputs "out")))))
-                  (add-after 'install 'install-tutorial
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (doc (string-append out "/share/doc/mg")))
-                        (install-file "tutorial" doc)))))))
+     (list #:tests? #f
+           #:make-flags
+           #~(list (string-append "prefix=" #$output)
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "PKG_CONFIG=" #$(pkg-config-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ;no configure script
+               (add-before 'build 'correct-location-of-diff
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "buffer.c"
+                     (("/usr/bin/diff")
+                      (search-input-file inputs "/bin/diff")))))
+               (add-before 'install 'patch-tutorial-location
+                 (lambda _
+                   (substitute* "mg.1"
+                     (("/usr") #$output))))
+               (add-after 'install 'install-tutorial
+                 (lambda _
+                   (let ((doc (string-append #$output "/share/doc/mg")))
+                     (install-file "tutorial" doc)))))))
     (home-page "https://homepage.boetes.org/software/mg/")
     (synopsis "Microscopic GNU Emacs clone")
     (description
@@ -932,14 +925,14 @@ Octave.  TeXmacs is completely extensible via Guile.")
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.1.0")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (let ((v (apply string-append (string-split version #\.))))
               (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
        (sha256
-        (base32 "0figd543inpi00yr6han73qd2fzx99r099vzcbg9mhpzsgxfwz4f"))))
+        (base32 "1d0yjx2wlx4fj5bccxdgfmrr7nzazkw4m08i6h4c0a54sb484yif"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list "GTK3=1" "CC=gcc" "-Cgtk")
@@ -1088,7 +1081,7 @@ card.  It offers:
 (define-public ne
   (package
     (name "ne")
-    (version "3.3.0")
+    (version "3.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1097,7 +1090,7 @@ card.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01aglnsfljlvx0wvyvpjfn4y88jf450a06qnj9a8lgdqv1hdkq1a"))))
+                "0sg2f6lxq6cjkpd3dvlxxns82hvq826rjnams5in97pssmknr77g"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("perl" ,perl)
@@ -1113,11 +1106,14 @@ card.  It offers:
                             "/lib"))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'patch-early-shebang
+           (lambda _
+             (substitute* "version.pl"
+               (("/usr/bin/env .*perl") (which "perl")))))
          (replace 'configure
            (lambda _
              (substitute* "src/makefile"
-              (("-lcurses") "-lncurses"))
-             #t)))))
+              (("-lcurses") "-lncurses")))))))
     (home-page "https://ne.di.unimi.it/")
     (synopsis "Text editor with menu bar")
     (description "This package provides a modeless text editor with menu bar.

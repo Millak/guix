@@ -25,6 +25,7 @@
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,6 +45,7 @@
 (define-module (gnu packages python-crypto)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -137,9 +139,6 @@ on the Blowfish password hashing algorithm, as described in
 @url{http://static.usenix.org/events/usenix99/provos.html,\"A Future-Adaptable
 Password Scheme\"} by Niels Provos and David Mazieres.")
     (license license:asl2.0)))
-
-(define-public python2-bcrypt
-  (package-with-python2 python-bcrypt))
 
 (define-public python-passlib
   (package
@@ -259,9 +258,6 @@ providing both client and server functionality.  While it leverages a Python C
 extension for low level cryptography (PyCrypto), Paramiko itself is a pure
 Python interface around SSH networking concepts.")
     (license license:lgpl2.1+)))
-
-(define-public python2-paramiko
-  (package-with-python2 python-paramiko))
 
 (define-public python-ecdsa
   (package
@@ -839,9 +835,6 @@ Networking and Cryptography library.  These libraries have a stated goal
 of improving usability, security and speed.")
     (license license:asl2.0)))
 
-(define-public python2-pynacl
-  (package-with-python2 python-pynacl))
-
 (define-public python-blurhash
   (package
     (name "python-blurhash")
@@ -936,6 +929,22 @@ protocol (Javascript Object Signing and Encryption).")
 (define-public python2-josepy
   (package-with-python2 python-josepy))
 
+(define pycryptodome-unbundle-tomcrypt-snippet
+  #~(begin
+      ;; Unbundle libtomcrypt.
+      (delete-file-recursively "src/libtom")
+      (substitute* "src/DES.c"
+        (("#include \"libtom/tomcrypt_des.c\"")
+         "#include <tomcrypt.h>"))
+      (substitute* "setup.py"
+        (("include_dirs=\\['src/', 'src/libtom/'\\]")
+         ;; FIXME: why does '-ltomcrypt' need to be added
+         ;; manually, even when 'tomcrypt' is added to 'libraries'?
+         ;; This behaviour is not documented at
+         ;; <https://docs.python.org/3/extending/building.html>.
+         "include_dirs=['src/'], libraries=['tomcrypt', 'tommath'],
+ extra_link_args=['-ltomcrypt', '-ltommath']"))))
+
 (define-public python-pycryptodome
   (package
     (name "python-pycryptodome")
@@ -946,8 +955,13 @@ protocol (Javascript Object Signing and Encryption).")
        (uri (pypi-uri "pycryptodome" version))
        (sha256
         (base32
-         "1i4m74f88qj9ci8rpyzrbk2slmsdj5ipmwdkq6qk24byalm203li"))))
+         "1i4m74f88qj9ci8rpyzrbk2slmsdj5ipmwdkq6qk24byalm203li"))
+       (modules '((guix build utils)))
+       (snippet pycryptodome-unbundle-tomcrypt-snippet)))
     (build-system python-build-system)
+    (inputs
+     `(("libtomcrypt" ,libtomcrypt)
+       ("libtommath" ,libtommath)))
     (home-page "https://www.pycryptodome.org")
     (synopsis "Low-level cryptographic Python library")
     (description
@@ -1000,7 +1014,9 @@ PyCryptodome variants, the other being python-pycryptodomex.")
        (method url-fetch)
        (uri (pypi-uri "pycryptodomex" version))
        (sha256
-        (base32 "0lbx4qk3xmwqiidhmkj8qa7bh2lf8bwzg0xjpsh2w5zqjrc7qnvv"))))
+        (base32 "0lbx4qk3xmwqiidhmkj8qa7bh2lf8bwzg0xjpsh2w5zqjrc7qnvv"))
+       (modules '((guix build utils)))
+       (snippet pycryptodome-unbundle-tomcrypt-snippet)))
     (description
      "PyCryptodome is a self-contained Python package of low-level
 cryptographic primitives.  It's not a wrapper to a separate C library like

@@ -105,7 +105,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.22.9")
+    (version "0.22.10")
     (source (origin
               (method url-fetch)
               (uri
@@ -114,7 +114,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "0r5w282klk3d9pgsjjr8lnc77cbsxqvvkx39lpa0n962jwr40dzr"))))
+                "0576z57rgwmnm5djd7rwbc93aikji0n6b3lx1553v74rx4sjbj07"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Ddocumentation=enabled")))
@@ -285,13 +285,13 @@ information about tracks being played to a scrobbler, such as Libre.FM.")
 (define-public python-mpd2
   (package
     (name "python-mpd2")
-    (version "3.0.1")
+    (version "3.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "python-mpd2" version))
               (sha256
                (base32
-                "0fxssbmnv44m03shjyvbqslc69b0160702j2s0flgvdxjggrnbjj"))))
+                "1r8saq1460yfa0sxfrvxqs2r453wz2xchlc9gzbpqznr49786rvs"))))
     (build-system python-build-system)
     (arguments
      '(#:phases

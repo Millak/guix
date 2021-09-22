@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
@@ -16,7 +16,7 @@
 ;;; Copyright © 2016, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2015, 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2015, 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2016 Dylan Jeffers <sapientech@sapientech@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -43,6 +43,7 @@
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system python)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
@@ -281,14 +283,14 @@ using @url{https://github.com/saghul/pycares,pycares}.")
 (define-public python-aiorpcx
   (package
     (name "python-aiorpcx")
-    (version "0.18.3")
+    (version "0.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiorpcX" version))
        (sha256
         (base32
-         "0k545hc7wl6sh1svydzbv6x7sx5pig2pqkl3yxs9riwmvzawx9xp"))))
+         "0lx54bcinp44fmr8q4bbffsqbkg8kdcwykf9i5jj0bj3sfzgf9k0"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-attrs" ,python-attrs)))
@@ -302,6 +304,18 @@ The package includes a module with full coverage of JSON RPC versions 1.0 and
 2.0, JSON RPC protocol auto-detection, and arbitrary message framing.  It also
 comes with a SOCKS proxy client.")
     (license (list license:expat license:bsd-2))))
+
+(define-public python-aiorpcx-0.18
+  (package
+    (inherit python-aiorpcx)
+    (version "0.18.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiorpcX" version))
+       (sha256
+        (base32
+         "1rswrspv27x33xa5bnhrkjqzhv0sknv5kd7pl1vidw9d2z4rx2l0"))))))
 
 (define-public python-asgiref
   (package
@@ -357,13 +371,13 @@ WSGI.  This package includes libraries for implementing ASGI servers.")
 (define-public python-aws-sam-translator
   (package
     (name "python-aws-sam-translator")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aws-sam-translator" version))
               (sha256
                (base32
-                "115mcbb4r205c1hln199llqrvvbijfqz075rwx991l99jc6rj6zs"))))
+                "1djwlsjpbh13m4biglimrm9lq7hmla0k29giay7k3cjsrylxvjhf"))))
     (build-system python-build-system)
     (arguments
      `(;; XXX: Tests are not distributed with the PyPI archive, and would
@@ -457,7 +471,7 @@ emit information from within their applications to the AWS X-Ray service.")
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
-    (version "0.51.0")
+    (version "0.54.1")
     (home-page "https://github.com/aws-cloudformation/cfn-python-lint")
     (source (origin
               (method git-fetch)
@@ -467,7 +481,7 @@ emit information from within their applications to the AWS X-Ray service.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1027s243sik25c6sqw6gla7k7vl3jdicrik5zdsa8pafxh2baja4"))))
+                "161mzzlpbi85q43kwzrj39qb32l6wg6xhnbbd4z860yrfbymsn87"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -480,7 +494,7 @@ emit information from within their applications to the AWS X-Ray service.")
                          "test/unit/module/maintenance/test_update_documentation.py")
                         (delete-file
                          "test/unit/module/maintenance/test_update_resource_specs.py")
-                        (invoke "python" "-m" "unittest" "discover"
+                        (invoke "python" "-m" "unittest" "discover" "-v"
                                 "-s" "test")))))))
     (native-inputs
      `(("python-pydot" ,python-pydot)
@@ -1051,6 +1065,31 @@ Origin Resource Sharing}, making cross-origin AJAX possible.")
 into Jinja2 by default.")
     (license license:bsd-3)))
 
+(define-public python-flask-misaka
+  (package
+    (name "python-flask-misaka")
+    (version "1.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Flask-Misaka" version))
+        (sha256
+          (base32
+            "12gm6hq3lvlj0ddw8p6lk5pky8jk3pw758ihffjl49shnnzc68zl"))))
+    (build-system python-build-system)
+    (native-inputs
+      `(("python-coverage" ,python-coverage)
+        ("python-mock" ,python-mock)))
+    (propagated-inputs
+      `(("python-flask" ,python-flask)
+        ("python-misaka" ,python-misaka)))
+    (home-page "https://github.com/singingwolfboy/flask-misaka/")
+    (synopsis "Flask interface to Misaka, a Markdown parsing library")
+    (description
+      "This package provides an interface between the Flask web framework and
+the Misaka Markdown parser.")
+    (license license:expat)))
+
 (define-public python-flask-session
   (package
     (name "python-flask-session")
@@ -1139,7 +1178,8 @@ and written in Python.")
      `(("libxml2" ,libxml2)))
     (propagated-inputs
      `(("python-lxml" ,python-lxml)
-       ("python-beautifulsoup4" ,python-beautifulsoup4)))
+       ("python-beautifulsoup4" ,python-beautifulsoup4)
+       ("python-chardet" ,python-chardet)))
     (home-page "https://html5-parser.readthedocs.io")
     (synopsis "Fast C-based HTML5 parsing for Python")
     (description "This package provides a fast implementation of the HTML5
@@ -2905,20 +2945,21 @@ minimum of WSGI.")
 (define-public python-flask
   (package
     (name "python-flask")
-    (version "1.1.2")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Flask" version))
               (sha256
                (base32
-                "0q3h295izcil7lswkzfnyg3k5gq4hpmqmpl6i7s5m1n9szi1myjf"))))
+                "0mcgwq7b4qd99mf5bsvs3wphchxarf8kgil4hwww3blj31xjak0w"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv" "tests"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "tests")))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (propagated-inputs
@@ -3476,13 +3517,13 @@ applications.")
 (define-public python-flask-sqlalchemy
   (package
     (name "python-flask-sqlalchemy")
-    (version "2.4.4")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Flask-SQLAlchemy" version))
               (sha256
                (base32
-                "1rgsj49gnx361hnb3vn6c1h17497qh22yc3r70l1r6w0mw71bixz"))))
+                "04jrx4sjrz1b20j38qk4qin975xwz30krzq59rfv3b3w7ss49nib"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-flask" ,python-flask)
@@ -3762,22 +3803,18 @@ CSS tidy.  Also supports URL rewriting in CSS files.")
 (define-public python-elasticsearch
   (package
     (name "python-elasticsearch")
-    (version "7.1.0")
+    (version "7.13.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "elasticsearch" version))
         (sha256
          (base32
-          "0rnjvlhw4v3vg14l519qliy1s1zpmx3827q0xfviwvk42rr7hh01"))))
+          "1q38w9nh2j2yi82d8rhzb57597l4lq5zx7xzfg45xf7ffrgsipaj"))))
     (build-system python-build-system)
-    (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-nosexcover" ,python-nosexcover)
-       ("python-pyaml" ,python-pyaml)
-       ("python-requests" ,python-requests)))
     (propagated-inputs
-     `(("urllib3" ,python-urllib3)))
+     `(("python-certifi" ,python-certifi)
+       ("python-urllib3" ,python-urllib3)))
     (arguments
      ;; tests require the test_elasticsearch module but it is not distributed.
      `(#:tests? #f))
@@ -4023,28 +4060,31 @@ List.  Forked from and using the same API as the publicsuffix package.")
 (define-public python-werkzeug
   (package
     (name "python-werkzeug")
-    (version "1.0.1")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Werkzeug" version))
        (sha256
         (base32
-         "0z74sa1xw5h20yin9faj0vvdbq713cgbj84klc72jr9nmpjv303c"))))
+         "0hlwawnn8c41f254qify5jnjj8xb97n294h09bqimzqhs0qdpq8x"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" "-m" "pytest"))))))
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest"
+                       ;; Test tries to use the network.
+                       "-k not test_reloader_sys_path")))))))
     (propagated-inputs
      `(("python-requests" ,python-requests)))
     (native-inputs
      `(("python-pytest" ,python-pytest)
-       ("python-pytest-timeout" ,python-pytest-timeout)))
+       ("python-pytest-timeout" ,python-pytest-timeout)
+       ("python-pytest-xprocess" ,python-pytest-xprocess)))
     (home-page "https://palletsprojects.com/p/werkzeug/")
     (synopsis "Utilities for WSGI applications")
     (description "One of the most advanced WSGI utility modules.  It includes a
@@ -4076,28 +4116,37 @@ addon modules.")
 (define-public python-wtforms
   (package
     (name "python-wtforms")
-    (version "2.1")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "WTForms" version ".zip"))
+       (uri (pypi-uri "WTForms" version))
        (sha256
         (base32
-         "0vyl26y9cg409cfyj8rhqxazsdnd0jipgjw06civhrd53yyi1pzz"))))
+         "17427m7p9nn9byzva697dkykykwcp2br3bxvi8vciywlmkh5s6c1"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-django-test
-           ;; Don't fail the tests when the inputs for the optional tests cannot be found.
+         (add-after 'unpack 'delete-bundled-test
            (lambda _
-             (substitute*
-               "tests/runtests.py"
-               (("'ext_django.tests', 'ext_sqlalchemy', 'ext_dateutil', 'locale_babel'") "")
-               (("sys.stderr.write(\"### Disabled test '%s', dependency not found\n\" % name)") ""))
-             #t)))))
+             ;; Delete test copied from a third party package that fails
+             ;; with newer SQLAlchemy.  This can be removed for 3.0.
+             ;; See <https://github.com/wtforms/wtforms/issues/696>.
+             (delete-file "tests/ext_sqlalchemy.py")))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "setup.py" "compile_catalog")
+               (invoke "python" "tests/runtests.py")))))))
     (native-inputs
-     `(("unzip" ,unzip)))
+     `(("python-dateutil" ,python-dateutil)
+       ("python-sqlalchemy" ,python-sqlalchemy)))
+    (propagated-inputs
+     `(("python-babel" ,python-babel)
+       ("python-email-validator" ,python-email-validator)
+       ("python-markupsafe" ,python-markupsafe)))
     (home-page "http://wtforms.simplecodes.com/")
     (synopsis
      "Form validation and rendering library for Python web development")
@@ -4106,9 +4155,6 @@ addon modules.")
 for Python web development.  It is very similar to the web form API
 available in Django, but is a standalone package.")
     (license license:bsd-3)))
-
-(define-public python2-wtforms
-  (package-with-python2 python-wtforms))
 
 (define-public python-paste
   (package
@@ -4227,17 +4273,36 @@ name resolutions asynchronously.")
 (define-public python-yarl
   (package
     (name "python-yarl")
-    (version "1.1.1")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yarl" version))
        (sha256
         (base32
-         "1s6z13g8vgxfkkqwhn6imnm7pl7ky9arv4jygnn6bcndcbidg7d6"))))
+         "045z4ssg8g5h0qhz8hnx74hswgkndaldqq1xi5l1n5s0j996d44a"))
+       (modules '((guix build utils)))
+       (snippet
+         #~(begin
+             (delete-file "yarl/_quoting_c.c")))))
     (build-system python-build-system)
+    (arguments
+      (list #:tests? #f     ; test suite can't find yarl._quoting_c
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'cythonize-code
+                  (lambda _
+                    (invoke "cython" "yarl/_quoting_c.pyx")))
+                (replace 'check
+                  (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+                    (when tests?
+                      (substitute* "setup.cfg"
+                        (("--cov=yarl") ""))
+                      (add-installed-pythonpath inputs outputs)
+                      (invoke "python" "-m" "pytest")))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
+     `(("python-cython" ,python-cython)
+       ("python-pytest" ,python-pytest)
        ("python-pytest-runner" ,python-pytest-runner)))
     (propagated-inputs
      `(("python-idna" ,python-idna)
@@ -4280,7 +4345,15 @@ Google search engine.  Its module is called @code{googlesearch}.")
          "1wpbbbxfpy9mwxdy3kn352cb590ladv574j1aa2l4grjdqw3ln05"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f)) ; tests require internet access
+     `(#:tests? #f ; tests require internet access
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-setup-py
+           (lambda _
+             (substitute* "setup.py"
+               (("googleapiclient/discovery_cache")
+                "googleapiclient.discovery_cache"))
+             #t)))))
     (native-inputs
      `(("python-httplib2" ,python-httplib2)
        ("python-six" ,python-six)
@@ -6097,3 +6170,65 @@ your code non-blocking and speedy.")
      "Socks is a library providing core proxy (SOCKS4, SOCKS5, HTTP tunneling)
  functionality.")
     (license license:asl2.0)))
+
+(define-public python-azure-nspkg
+  (package
+    (name "python-azure-nspkg")
+    (version "3.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-nspkg" version ".zip"))
+       (sha256
+        (base32
+         "1l4xwdh0fcnvrv0mzig4g2kgqkfbsy64zjm1ggc6grk3mykcxlz7"))))
+    (build-system python-build-system)
+    (native-inputs `(("unzip" ,unzip)))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Azure namespace internals")
+    (description
+     "This package is an internal Azure namespace package.")
+    (license license:expat)))
+
+(define-public python-azure-storage-nspkg
+  (package
+    (name "python-azure-storage-nspkg")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-storage-nspkg" version))
+       (sha256
+        (base32
+         "049qcmgshz7dj9yaqma0fwcgbxwddgwyfcw4gmv45xfmaa3bwfvg"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-azure-nspkg" ,python-azure-nspkg)))
+    (home-page "https://github.com/Azure/azure-storage-python")
+    (synopsis "Microsoft Azure Storage Namespace package")
+    (description
+     "This project provides a client library in Python that makes it easy to
+communicate with Microsoft Azure Storage services.")
+    (license license:expat)))
+
+(define-public python-w3lib
+  (package
+    (name "python-w3lib")
+    (version "1.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "w3lib" version))
+       (sha256
+        (base32
+         "1pv02lvvmgz2qb61vz1jkjc04fgm4hpfvaj5zm4i3mjp64hd1mha"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python-six" ,python-six)))
+    (home-page "https://github.com/scrapy/w3lib")
+    (synopsis "Python library of web-related functions")
+    (description
+     "This is a Python library of web-related functions, such as: remove comments,
+or tags from HTML snippets, extract base url from HTML snippets, translate entites
+on HTML strings, among other things.")
+    (license license:bsd-3)))

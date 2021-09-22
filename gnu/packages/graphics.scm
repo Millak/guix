@@ -797,7 +797,7 @@ many more.")
 (define-public ilmbase
   (package
     (name "ilmbase")
-    (version "2.5.5")
+    (version "2.5.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -806,7 +806,7 @@ many more.")
               (file-name (git-file-name "ilmbase" version))
               (sha256
                (base32
-                "0mjzb3fd8b9pcqmrgy5cdsmvqd70hmlvjnfypi66v59h3fhrmgd8"))
+                "1vja0rbilcd1wn184w8nbcmck00n7bfwlddwiaxw8dhj64nx4468"))
               (patches (search-patches "ilmbase-fix-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -1138,7 +1138,7 @@ storage of the \"EXR\" file format for storing 16-bit floating-point images.")
 (define-public openimageio
   (package
     (name "openimageio")
-    (version "2.2.10.1")
+    (version "2.2.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1147,7 +1147,7 @@ storage of the \"EXR\" file format for storing 16-bit floating-point images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wzh5n527l7ia1754cf9xmbvv4ya6hj34dy6cbq9xk9372h8gd9q"))))
+                "1i9r6vgz15aj1yzbf5a9lqhlyakjs793yrw5gw720l84lcyigad7"))))
     (build-system cmake-build-system)
     ;; FIXME: To run all tests successfully, test image sets from multiple
     ;; third party sources have to be present.  For details see
@@ -1160,6 +1160,7 @@ storage of the \"EXR\" file format for storing 16-bit floating-point images.")
     (inputs
      `(("boost" ,boost)
        ("fmt" ,fmt)
+       ("libheif" ,libheif)
        ("libpng" ,libpng)
        ("libjpeg" ,libjpeg-turbo)
        ("libtiff" ,libtiff)

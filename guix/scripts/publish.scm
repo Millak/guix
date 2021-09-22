@@ -4,6 +4,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -320,7 +321,7 @@ with COMPRESSION, starting at NAR-PATH."
     (format #f "URL: ~a~%Compression: ~a~%~@[FileSize: ~a~%~]"
             url (compression-type compression) file-size)))
 
-(define* (narinfo-string store store-path key
+(define* (narinfo-string store store-path
                          #:key (compressions (list %no-compression))
                          (nar-path "nar") (file-sizes '()))
   "Generate a narinfo key/value string for STORE-PATH; an exception is raised
@@ -358,23 +359,13 @@ References: ~a~%"
                                                             compression)))
                                   compressions)
                              hash size references))
-         ;; Do not render a "Deriver" or "System" line if we are rendering
-         ;; info for a derivation.
+         ;; Do not render a "Deriver" line if we are rendering info for a
+         ;; derivation.  Also do not render a "System" line that would be
+         ;; expensive to compute and is currently unused.
          (info       (if (not deriver)
                          base-info
-                         (catch 'system-error
-                           (lambda ()
-                             (let ((drv (read-derivation-from-file deriver)))
-                               (format #f "~aSystem: ~a~%Deriver: ~a~%"
-                                       base-info (derivation-system drv)
-                                       (basename deriver))))
-                           (lambda args
-                             ;; DERIVER might be missing, but that's fine:
-                             ;; it's only used for <substitutable> where it's
-                             ;; optional.  'System' is currently unused.
-                             (if (= ENOENT (system-error-errno args))
-                                 base-info
-                                 (apply throw args))))))
+                         (format #f "~aDeriver: ~a~%"
+                                 base-info (basename deriver))))
          (signature  (base64-encode-string
                       (canonical-sexp->string (signed-string info)))))
     (format #f "~aSignature: 1;~a;~a~%" info (gethostname) signature)))
@@ -414,7 +405,7 @@ appropriate duration.  NAR-PATH specifies the prefix for nar URLs."
                         `((cache-control (max-age . ,ttl)))
                         '()))
                 (cut display
-                  (narinfo-string store store-path (%private-key)
+                  (narinfo-string store store-path
                                   #:nar-path nar-path
                                   #:compressions compressions)
                   <>)))))
@@ -566,7 +557,6 @@ requested using POOL."
              (single-baker item
                ;; Check whether CACHED has been produced in the meantime.
                (unless (file-exists? cached)
-                 ;; (format #t "baking ~s~%" item)
                  (bake-narinfo+nar cache item
                                    #:ttl ttl
                                    #:compressions compressions
@@ -654,7 +644,6 @@ requested using POOL."
              (with-store store
                (let ((sizes (filter-map compressed-nar-size compression)))
                  (display (narinfo-string store item
-                                          (%private-key)
                                           #:nar-path nar-path
                                           #:compressions compressions
                                           #:file-sizes sizes)

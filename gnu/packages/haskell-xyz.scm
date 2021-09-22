@@ -27,7 +27,8 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
-;;; Copyright © 2020 Christopher Lemmer Webber <cwebber@dustycloud.org>
+;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
+;;; Copyright © 2021 Alice BRENON <alice.brenon@ens-lyon.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,7 +67,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages sdl)
-  #:use-module (gnu packages web)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system haskell)
@@ -9764,7 +9765,7 @@ version = Version [~a] []
        ("ghc-test-framework-hunit" ,ghc-test-framework-hunit)
        ("ghc-test-framework-quickcheck2" ,ghc-test-framework-quickcheck2)
        ("ghc-hunit" ,ghc-hunit)))
-    (home-page "https://johnmacfarlane.net/pandoc")
+    (home-page "https://pandoc.org")
     (synopsis "Types for representing a structured document")
     (description
      "This module defines the @code{Pandoc} data structure, which is used by

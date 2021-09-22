@@ -140,7 +140,7 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
@@ -148,8 +148,8 @@ of categories with some of the activities available in that category.
              "https://gcompris.net/download/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "08dw1q0h4qz2q0ksa5pbmb9v60hr1zv9skx6z8dlq9b1i7harnds"))))
-    (build-system cmake-build-system)
+        (base32 "1bpjwrv83rhikbycpyfpf6dbqr0xfq6amgdpqfgfph6nzr3zka7h"))))
+    (build-system qt-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -160,23 +160,7 @@ of categories with some of the activities available in that category.
              (setenv "DISPLAY" ":1")
              ;; The test suite wants to write to /homeless-shelter
              (setenv "HOME" (getcwd))
-             #t))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/gcompris-qt")
-                 `("QT_PLUGIN_PATH" ":" prefix
-                   ,(map (lambda (label)
-                           (string-append (assoc-ref inputs label)
-                                          "/lib/qt5/plugins"))
-                         '("qtbase" "qtdeclarative" "qtmultimedia" "qtsvg")))
-                 `("QML2_IMPORT_PATH" ":" prefix
-                   ,(map (lambda (label)
-                           (string-append (assoc-ref inputs label)
-                                          "/lib/qt5/qml"))
-                         '("qtdeclarative" "qtgraphicaleffects"
-                           "qtmultimedia" "qtquickcontrols"))))
-               #t))))
+             #t)))
        #:configure-flags (list "-DQML_BOX2D_MODULE=disabled"
                                "-DBUILD_TESTING=TRUE")))
     (native-inputs
@@ -330,7 +314,7 @@ easy.")
 (define-public snap
   (package
     (name "snap")
-    (version "6.6.0")
+    (version "6.9.0")
     (source
      (origin
        (method git-fetch)
@@ -339,7 +323,7 @@ easy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k0j0sp6zz2hnh7zc7f086zc3sld01h7sk277j6fak914yv6slzy"))))
+        (base32 "1wppz57lrrribrfnaiv6jrrf703w7i6ja0dnz8yx8naxhbsglwyf"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -368,8 +352,7 @@ easy.")
              (call-with-output-file script
                (lambda (port)
                  (format port "#!~a\n~a '~a'" bash xdg-open snap)))
-             (chmod script #o555)))
-         #t)))
+             (chmod script #o555))))))
     (inputs
      `(("bash" ,bash-minimal)
        ("js-filesaver" ,js-filesaver)
@@ -1033,6 +1016,66 @@ TuxMath also includes Factoroids, a game that gives practice in
 factoring numbers and simplifying fractions, as well as zapping rocks
 floating through space.")
     (license license:gpl3+)))
+
+(define-public libeb
+  (package
+    (name "libeb")
+    (version "4.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "ftp://ftp.sra.co.jp/pub/misc/eb/eb-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0psbdzirazfnn02hp3gsx7xxss9f1brv4ywp6a15ihvggjki1rxb"))))
+    (build-system gnu-build-system)
+    (native-inputs ; Required for building docs
+     `(("perl" ,perl)))
+    (inputs
+     `(("zlib" ,zlib)))
+    (synopsis "C library for accessing Japanese CD-ROM books")
+    (description "The EB library is a library for accessing CD-ROM
+books, which are a common way to distribute electronic dictionaries in
+Japan.  It supports the EB, EBG, EBXA, EBXA-C, S-EBXA and EPWING
+formats.")
+    ;; FIXME: I cannot find a real home page
+    (home-page "https://sra.co.jp/")
+    (license license:bsd-3)))
+
+(define-public qolibri
+  (package
+    (name "qolibri")
+    (version "2.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url"https://github.com/ludios/qolibri")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "066y7jcq9vg6hnvn7qxckzhd1qkgfzpzhw69nw5psm43qbaca8lg"))))
+    (build-system qt-build-system)
+    (arguments
+     '(#:tests? #f)) ; no test target
+    (native-inputs
+     `(("qttools", qttools)))
+    (inputs
+     `(("libeb" ,libeb)
+       ("qtbase" ,qtbase-5)
+       ("qtmultimedia" ,qtmultimedia)
+       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtdeclarative" ,qtdeclarative)
+       ("qtwebchannel" ,qtwebchannel)
+       ("qtwebengine" ,qtwebengine)
+       ("zlib" ,zlib)))
+    (synopsis "EPWING dictionary reader")
+    (description "qolibri is a dictionary viewer for the EPWING dictionary
+format.  Most monolingual Japanese dictionaries can only be found in the
+EPWING format.")
+    (home-page "https://github.com/ludios/qolibri")
+    (license license:gpl2)))
 
 (define-public mdk
   (package

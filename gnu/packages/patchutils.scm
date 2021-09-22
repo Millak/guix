@@ -246,7 +246,7 @@ GiB).")
 (define-public meld
   (package
     (name "meld")
-    (version "3.20.3")
+    (version "3.20.4")
     (source
      (origin
        (method url-fetch)
@@ -254,7 +254,7 @@ GiB).")
                            (version-major+minor version)
                            "/meld-" version ".tar.xz"))
        (sha256
-        (base32 "06h52vaghvj5n507mj0hhk9yrca16pyl4l16c00b3bmkplljpqzh"))))
+        (base32 "04vx2mdbcdin0g3w8x910czfch5vyrl8drv1f2l8gxh6qvp113pl"))))
     (build-system python-build-system)
     (native-inputs
      `(("intltool" ,intltool)
@@ -298,6 +298,13 @@ GiB).")
              (invoke "py.test" "-v" "-k"
                      ;; TODO: Those tests fail, why?
                      "not test_classify_change_actions")))
+         (add-after 'install 'copy-styles
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((styles "/share/gtksourceview-3.0/styles"))
+               (copy-recursively
+                (string-append (assoc-ref inputs "gtksourceview") styles)
+                (string-append (assoc-ref outputs "out") styles))
+               #t)))
          (add-after 'wrap 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
          (add-after 'wrap 'wrap-typelib

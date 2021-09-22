@@ -19,7 +19,7 @@
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017, 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -39,7 +39,6 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
@@ -51,6 +50,9 @@
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,6 +98,7 @@
   #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages bittorrent)
   #:use-module (gnu packages boost)
@@ -164,6 +167,7 @@
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -369,15 +373,15 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    ;; Consider updating the nginx-documentation package together with this one.
-    (version "1.21.0")
+    ;; Please update the nginx-documentation package together with this one!
+    (version "1.21.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0w87zhm5nfx88x9hj6drrvm5f3m02kzbjp39x1lsglrbmi5jl6gy"))))
+                "11ail85iw6mg8fxd2qnxhcghi0frjk5r70cfar83dms61rb1qxri"))))
     (build-system gnu-build-system)
     (inputs `(("libxml2" ,libxml2)
               ("libxslt" ,libxslt)
@@ -472,9 +476,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.21.0")
-        (revision 2726)
-        (changeset "a7a36efd10af"))
+  (let ((version "1.21.2")
+        (revision 2764)
+        (changeset "bc9c5d11b67c"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -486,7 +490,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "1fl7rkbfdd26c78h85x4w3kas16rpj4pxzjhc071qvx7znwgm2pn"))))
+                 "05n72q9vqxx37dyw3yl7jssmpqkw3rwxa2y3m6s0c0ih0z2bx58n"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -771,6 +775,64 @@ documentation.")
     (synopsis "NGINX module for Lua programming language support")
     (description "This NGINX module provides a scripting support with Lua
 programming language.")))
+
+(define-public nginx-rtmp-module
+  (package
+    (inherit nginx)
+    (name "nginx-rtmp-module")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arut/nginx-rtmp-module")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y45bswk213yhkc2v1xca2rnsxrhx8v6azxz9pvi71vvxcggqv6h"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("nginx-sources" ,(package-source nginx))
+       ,@(package-inputs nginx)))
+    (arguments
+     (substitute-keyword-arguments
+         `(#:configure-flags '("--add-dynamic-module=.")
+           #:make-flags '("modules")
+           #:modules ((guix build utils)
+                      (guix build gnu-build-system))
+           ,@(package-arguments nginx))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'unpack-nginx-sources
+             (lambda* (#:key inputs native-inputs #:allow-other-keys)
+               (begin
+                 ;; The nginx source code is part of the module’s source.
+                 (format #t "decompressing nginx source code~%")
+                 (invoke "tar" "xvf" (assoc-ref inputs "nginx-sources")
+                         ;; This packages's LICENSE file would be
+                         ;; overwritten with the one from nginx when
+                         ;; unpacking the nginx source, so rename the nginx
+                         ;; one when unpacking.
+                         "--transform=s,/LICENSE$,/LICENSE.nginx,"
+                         "--strip-components=1")
+                 #t)))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((modules-dir (string-append (assoc-ref outputs "out")
+                                                 "/etc/nginx/modules")))
+                 (install-file "objs/ngx_rtmp_module.so" modules-dir)
+                 #t)))
+           (delete 'fix-root-dirs)
+           (delete 'install-man-page)))))
+    (home-page "https://github.com/arut/nginx-rtmp-module")
+    (synopsis "NGINX module for audio and video streaming with RTMP")
+    (description "This NGINX module provides streaming with the @acronym{RTMP,
+Real-Time Messaging Protocol}, @acronym{DASH, Dynamic Adaptive Streaming over HTTP},
+and @acronym{HLS, HTTP Live Streaming} protocols.  It allows NGINX to accept
+incoming RTMP streams for recording or redistribution.  It also supports
+on-demand streaming from a file on disk and pulling from an upstream RTMP
+stream.  Remote control of the module is possible over HTTP.")
+    (license license:bsd-2)))
 
 (define-public lighttpd
   (package
@@ -1321,8 +1383,7 @@ current version of any major web browser.")
                '(begin
                   ;; Remove code using the problematic JSON license (see
                   ;; <https://www.gnu.org/licenses/license-list.html#JSON>).
-                  (delete-file-recursively "bin/jsonchecker")
-                  #t))))
+                  (delete-file-recursively "bin/jsonchecker")))))
     (build-system cmake-build-system)
     (arguments
      (if (string-prefix? "aarch64" (or (%current-target-system)
@@ -1332,10 +1393,8 @@ current version of any major web browser.")
              (add-after 'unpack 'patch-aarch-march-detection
                (lambda _
                  (substitute* (find-files "." "^CMakeLists\\.txt$")
-                   (("native") "armv8-a"))
-                 #t))))
-         ;; Disable CPU optimization for reproducibility.
-         '(#:configure-flags '("-DRAPIDJSON_ENABLE_INSTRUMENTATION_OPT=OFF"))))
+                   (("native") "armv8-a"))))))
+         '()))
     (home-page "https://github.com/Tencent/rapidjson")
     (synopsis "JSON parser/generator for C++ with both SAX/DOM style API")
     (description
@@ -1615,13 +1674,17 @@ used to validate and fix HTML data.")
            #t))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/evanw/esbuild/cmd/esbuild"
+     `(#:import-path "github.com/evanw/esbuild/cmd/esbuild"
        #:unpack-path "github.com/evanw/esbuild"
        #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? unpack-path #:allow-other-keys)
              (when tests?
+               ;; The "Go Race Detector" is only supported on 64-bit
+               ;; platforms, this variable disables it.
+               (unless ,(target-64bit?)
+                 (setenv "ESBUILD_RACE" ""))
                (with-directory-excursion (string-append "src/" unpack-path)
                  (invoke "make" "test-go")))
              #t)))))
@@ -1793,34 +1856,6 @@ requests or verify signatures using either NSS or OpenSSL for calculating the
 hash/signatures.")
     ;; Source code may be distributed under either license.
     (license (list license:expat license:gpl2+))))
-
-(define-public libyaml
-  (package
-    (name "libyaml")
-    (version "0.2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://pyyaml.org/download/libyaml/yaml-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "1x4fcw13r3lqy8ndydr3ili87wicplw2awbcv6r21qgyfndswhn6"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags '("--disable-static")))
-    (home-page "https://pyyaml.org/wiki/LibYAML")
-    (synopsis "YAML 1.1 parser and emitter written in C")
-    (description
-     "LibYAML is a YAML 1.1 parser and emitter written in C.")
-    (license license:expat)))
-
-(define-public libyaml+static
-  (package
-    (inherit libyaml)
-    (name "libyaml+static")
-    (arguments
-     '(#:configure-flags '("--enable-static")))))
 
 (define-public libquvi-scripts
   (package
@@ -3482,14 +3517,14 @@ and multipart/form-data.")
 (define-public perl-http-cookiejar
   (package
     (name "perl-http-cookiejar")
-    (version "0.010")
+    (version "0.012")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/D/DA/DAGOLDEN/"
                            "HTTP-CookieJar-" version ".tar.gz"))
        (sha256
-        (base32 "1l7mqsca4fmls7agzwmp6yq1x16y9jwq4114i6i75n654gl37qsn"))))
+        (base32 "0jk0ps4i67dhhhwaxwwa9nkv3n6n5w44xlnwyzvk59735pwvyjh0"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-test-deep" ,perl-test-deep)
@@ -4729,15 +4764,17 @@ their web site.")
 (define-public python-feedparser
   (package
     (name "python-feedparser")
-    (version "6.0.2")
+    (version "6.0.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "feedparser" version ".tar.gz"))
        (sha256
         (base32
-         "0x0hm9brh3j71645pydvlkrwxaaca9dnwd7xahwjyjaz882s200v"))))
+         "0qcnkyjjfj5gg5rhd1j4zzlqx5h34bma18zwgj68q95b0l543q2w"))))
     (build-system python-build-system)
+    (propagated-inputs
+     `(("python-sgmllib3k" ,python-sgmllib3k)))
     (arguments
      '(#:tests? #f))
     (home-page
@@ -5057,6 +5094,12 @@ fast and flexible way of exploring HTML from the terminal.")
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("libsoup" ,libsoup)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-home-for-tests
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
     (home-page "https://gitlab.com/groups/uhttpmock")
     (synopsis "Library for mocking web service APIs which use HTTP or HTTPS")
     (description
@@ -5354,7 +5397,13 @@ developed as part of the Netsurf project.")
                            "libcss-" version "-src.tar.gz"))
        (sha256
         (base32
-         "1p66sdiiqm7w4jkq23hsf08khsnmq93hshh9f9m8sbirjdpf3p6j"))))
+         "1p66sdiiqm7w4jkq23hsf08khsnmq93hshh9f9m8sbirjdpf3p6j"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; This can be removed with the next release.
+           (substitute* "src/select/computed.c"
+             (("css_unit unit;") "css_unit unit = CSS_UNIT_PX;"))))))
     (build-system gnu-build-system)
     (native-inputs
      `(("netsurf-buildsystem" ,netsurf-buildsystem)
@@ -5370,46 +5419,6 @@ developed as part of the Netsurf project.")
      "LibCSS is a CSS (Cascading Style Sheet) parser and selection engine,
 written in C.  It is developed as part of the NetSurf project.")
     (license license:expat)))
-
-(define-public libcyaml
-  (package
-    (name "libcyaml")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tlsa/libcyaml")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (patches (search-patches "libcyaml-libyaml-compat.patch"))
-       (sha256
-        (base32 "0428p0rwq71nhh5nzcbapsbrjxa0x5l6h6ns32nxv7j624f0zd93"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "CC=gcc"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'check
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "test"))))))
-    (inputs
-     `(("libyaml" ,libyaml)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (synopsis "C library for reading and writing YAML")
-    (description
-     "LibCYAML is a C library written in ISO C11 for reading and writing
-structured YAML documents.  The fundamental idea behind CYAML is to allow
-applications to construct schemas which describe both the permissible
-structure of the YAML documents to read/write, and the C data structure(s)
-in which the loaded data is arranged in memory.")
-    (home-page "https://github.com/tlsa/libcyaml")
-    (license license:isc)))
 
 (define-public libdom
   (package
@@ -6003,16 +6012,17 @@ deployments.")
   (package
     (name "varnish")
     (home-page "https://varnish-cache.org/")
-    (version "6.5.1")
+    (version "7.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "_downloads/varnish-" version ".tgz"))
               (sha256
                (base32
-                "1dfdswri6lkfk6kml3szvffm91y49pajgqy1k5y26llqixl4r5hi"))))
+                "11z0pa618lh925ih67wmp1gqk7i46l486j4spjy71g1n3w5mqylc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
+                               (string-append "CC=" ,(cc-for-target))
                                ;; Use absolute path of GCC so it's found at runtime.
                                (string-append "PTHREAD_CC="
                                               (assoc-ref %build-inputs "gcc")
@@ -6021,23 +6031,26 @@ deployments.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'use-absolute-file-names
-           (lambda _
-             (substitute* '("bin/varnishtest/vtc_varnish.c"
-                            "bin/varnishtest/vtc_process.c"
-                            "bin/varnishd/mgt/mgt_vcc.c"
-                            "bin/varnishtest/tests/u00014.vtc")
-               (("/bin/sh") (which "sh")))
-             (substitute* "bin/varnishd/mgt/mgt_shmem.c"
-               (("rm -rf") (string-append (which "rm") " -rf")))
-             (substitute* "bin/varnishtest/vtc_main.c"
-               (("/bin/rm") (which "rm")))
-             #t))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((bash (assoc-ref inputs "bash-minimal"))
+                    (sh (string-append bash "/bin/sh"))
+                    (coreutils (assoc-ref inputs "coreutils"))
+                    (rm (string-append coreutils "/bin/rm")))
+               (substitute* '("bin/varnishtest/vtc_varnish.c"
+                              "bin/varnishtest/vtc_process.c"
+                              "bin/varnishtest/vtc_haproxy.c"
+                              "bin/varnishtest/tests/u00014.vtc"
+                              "bin/varnishd/mgt/mgt_vcc.c")
+                 (("/bin/sh") sh))
+               (substitute* "bin/varnishd/mgt/mgt_shmem.c"
+                 (("rm -rf") (string-append rm " -rf")))
+               (substitute* "bin/varnishtest/vtc_main.c"
+                 (("/bin/rm") rm)))))
          (add-before 'install 'patch-Makefile
            (lambda _
              (substitute* "Makefile"
                ;; Do not create /var/varnish during install.
-               (("^install-data-am: install-data-local") "install-data-am: "))
-             #t))
+               (("^install-data-am: install-data-local") "install-data-am: "))))
          (add-after 'install 'wrap-varnishd
            ;; Varnish uses GCC to compile VCL, so wrap it with required GCC
            ;; environment variables to avoid propagating them to profiles.
@@ -6050,17 +6063,18 @@ deployments.")
                  ;; Add binutils to PATH so gcc finds the 'as' executable.
                  `("PATH" ":" prefix (,PATH))
                  ;; Make sure 'crti.o' et.al is found.
-                 `("LIBRARY_PATH" ":" prefix (,LIBRARY_PATH)))
-               #t))))))
+                 `("LIBRARY_PATH" ":" prefix (,LIBRARY_PATH)))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python-sphinx" ,python-sphinx)
        ("rst2man" ,python-docutils)))
     (inputs
-     `(("jemalloc" ,jemalloc)
+     `(("bash-minimal" ,bash-minimal)
+       ("coreutils" ,coreutils)
+       ("jemalloc" ,jemalloc)
        ("ncurses" ,ncurses)
-       ("pcre" ,pcre)
-       ("python" ,python-wrapper)
+       ("pcre2" ,pcre2)
+       ("python" ,python)
        ("readline" ,readline)))
     (synopsis "Web application accelerator")
     (description
@@ -6077,14 +6091,14 @@ configuration language.")
   (package
     (name "varnish-modules")
     (home-page "https://github.com/varnish/varnish-modules")
-    (version "0.17.1")
+    (version "0.19.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mzkad9r4rpm1fi7j7skwrsyzzbwcapfnlvvl1ls3rng2djcqb5j"))))
+                "0qq5g6bbd1a1ml1wk8jj9z39a899jzqbf7aizr3pvyz0f4kz8mis"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -6619,42 +6633,10 @@ file links.")
                    license:psfl               ; linkcheck/gzip2.py
                    license:expat))))          ; linkcheck/mem.py
 
-(define-public cadaver
-  (package
-    (name "cadaver")
-    (version "0.23.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://www.webdav.org/cadaver/"
-                           name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1jizq69ifrjbjvz5y79wh1ny94gsdby4gdxwjad4bfih6a5fck7x"))))
-    (build-system gnu-build-system)
-    ;; TODO: Unbundle libneon and make build succeed with new neon.
-    (arguments
-     `(#:configure-flags (list "--with-ssl=openssl")
-       #:tests? #f)) ;No tests included
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
-    (inputs
-     `(("expat" ,expat)
-       ("openssl" ,openssl-1.0)))
-    (home-page "http://www.webdav.org/cadaver/")
-    (synopsis "Command-line WebDAV client")
-    (description
-     "Cadaver is a command-line WebDAV client for Unix.  It supports
-file upload, download, on-screen display, namespace operations (move/copy),
-collection creation and deletion, and locking operations.")
-    (license license:gpl2)))
-
 (define-public castor
   (package
     (name "castor")
-    (version "0.8.16")
+    (version "0.8.18")
     (source
      (origin
        (method git-fetch)
@@ -6663,7 +6645,7 @@ collection creation and deletion, and locking operations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rwg1w7srjwa23mkypl8zk6674nhph4xsc6nc01f6g5k959szylr"))))
+        (base32 "1l72r6a917ymc9pn8dllbal1xdczfai376nvqkiys5fm4j4s3zmj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -7692,87 +7674,83 @@ compressed JSON header blocks.
     (license license:expat)))
 
 (define-public hpcguix-web
-  (let ((commit "9de63562b06b4aef3a3afe5ecb18d3c91e57ee74")
-        (revision "5"))
-    (package
-      (name "hpcguix-web")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/UMCUGenetics/hpcguix-web")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0wjgj2s7v2cyz6dx24c111rxs99i84sfvxl4ch8brnh02j2606jz"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:modules ((guix build gnu-build-system)
-                    (guix build utils)
-                    (srfi srfi-26)
-                    (ice-9 popen)
-                    (ice-9 rdelim))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'set-variables
-             (lambda _
-               ;; This prevents a few warnings
-               (setenv "GUILE_AUTO_COMPILE" "0")
-               (setenv "XDG_CACHE_HOME" (getcwd))
-               #t))
-           (add-after 'install 'wrap-program
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out      (assoc-ref outputs "out"))
-                      (guix     (assoc-ref inputs "guix"))
-                      (guile    (assoc-ref inputs "guile"))
-                      (gcrypt   (assoc-ref inputs "guile-gcrypt"))
-                      (git      (assoc-ref inputs "guile-git"))
-                      (bs       (assoc-ref inputs "guile-bytestructures"))
-                      (json     (assoc-ref inputs "guile-json"))
-                      (guile-cm (assoc-ref inputs
-                                           "guile-commonmark"))
-                      (deps (list guile gcrypt git bs guile-cm guix json))
-                      (effective
-                       (read-line
-                        (open-pipe* OPEN_READ
-                                    (string-append guile "/bin/guile")
-                                    "-c" "(display (effective-version))")))
-                      (path   (string-join
-                               (map (cut string-append <>
-                                         "/share/guile/site/"
-                                         effective)
-                                    deps)
-                               ":"))
-                      (gopath (string-join
-                               (map (cut string-append <>
-                                         "/lib/guile/" effective
-                                         "/site-ccache")
-                                    deps)
-                               ":")))
-                 (wrap-program (string-append out "/bin/run")
-                   `("GUILE_LOAD_PATH" ":" prefix (,path))
-                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,gopath)))
-
-                 #t))))))
-      (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("uglify-js" ,uglify-js)
-         ("pkg-config" ,pkg-config)))
-      (inputs
-       `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
-         ("guix" ,guix)))
-      (propagated-inputs
-       `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
-         ("guile-commonmark" ,guile-commonmark)
-         ("guile-json" ,guile-json-4)))
-      (home-page "https://github.com/UMCUGenetics/hpcguix-web")
-      (synopsis "Web interface for cluster deployments of Guix")
-      (description "Hpcguix-web provides a web interface to the list of packages
+  (package
+    (name "hpcguix-web")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/UMCUGenetics/hpcguix-web")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02lz5k1hhkwfz3nr3lsd69icsz6n0q82z047d3svi09qpxw6y0cj"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:modules ((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26)
+                  (ice-9 popen)
+                  (ice-9 rdelim))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'set-variables
+           (lambda _
+             ;; This prevents a few warnings
+             (setenv "GUILE_AUTO_COMPILE" "0")
+             (setenv "XDG_CACHE_HOME" (getcwd))))
+         (add-after 'install 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out      (assoc-ref outputs "out"))
+                    (guix     (assoc-ref inputs "guix"))
+                    (guile    (assoc-ref inputs "guile"))
+                    (gcrypt   (assoc-ref inputs "guile-gcrypt"))
+                    (git      (assoc-ref inputs "guile-git"))
+                    (bs       (assoc-ref inputs "guile-bytestructures"))
+                    (json     (assoc-ref inputs "guile-json"))
+                    (guile-cm (assoc-ref inputs
+                                         "guile-commonmark"))
+                    (deps (list guile gcrypt git bs guile-cm guix json))
+                    (effective
+                     (read-line
+                      (open-pipe* OPEN_READ
+                                  (string-append guile "/bin/guile")
+                                  "-c" "(display (effective-version))")))
+                    (path   (string-join
+                             (map (cut string-append <>
+                                       "/share/guile/site/"
+                                       effective)
+                                  deps)
+                             ":"))
+                    (gopath (string-join
+                             (map (cut string-append <>
+                                       "/lib/guile/" effective
+                                       "/site-ccache")
+                                  deps)
+                             ":")))
+               (wrap-program (string-append out "/bin/hpcguix-web")
+                 `("GUILE_LOAD_PATH" ":" prefix (,path))
+                 `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,gopath)))))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("uglify-js" ,uglify-js)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
+       ("guix" ,guix)
+       ("bash-minimal" ,bash-minimal)))           ;for 'wrap-program'
+    (propagated-inputs
+     `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
+       ("guile-commonmark" ,guile-commonmark)
+       ("guile-json" ,guile-json-4)))
+    (home-page "https://github.com/UMCUGenetics/hpcguix-web")
+    (synopsis "Web interface for cluster deployments of Guix")
+    (description "Hpcguix-web provides a web interface to the list of packages
 provided by Guix.  The list of packages is searchable and provides
 instructions on how to use Guix in a shared HPC environment.")
-      (license license:agpl3+))))
+    (license license:agpl3+)))
 
 (define-public httrack
   (package
@@ -7967,8 +7945,8 @@ solution for any project's interface needs:
     (license license:expat)))
 
 (define-public gmnisrv
-  (let ((commit "d484ba0ab0020866535a44be5948c9482b8f2b8d")
-        (revision "1"))
+  (let ((commit "32854b79c73b278bf33eb5123abf1c36abdc7c01")
+        (revision "2"))
     (package
       (name "gmnisrv")
       (version (git-version "0" revision commit))
@@ -7980,24 +7958,22 @@ solution for any project's interface needs:
                       (commit commit)))
                 (sha256
                  (base32
-                  "11phipixsxx1jgm42agp76p5s68l0zj65kgb41vzaymgwcq79ivn"))
+                  "0lbb3ablwkdcgm1cjr1hikr55y8gpl420nh8b8g9wn4abhm2xgr9"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'set-variables
-             (lambda _
-               (setenv "CC" "gcc")
-               #t))
-           (delete 'check))))
+       `(#:tests? #f ; no check target
+         #:configure-flags (list "--sysconfdir=/etc"
+                                 (string-append "--with-mimedb="
+                                                (assoc-ref %build-inputs "mailcap")
+                                                "/etc/mime.types"))
+         #:make-flags (list (string-append "CC=" ,(cc-for-target)))))
       (inputs
-       `(("openssl" ,openssl)))
+       `(("mailcap" ,mailcap)
+         ("openssl" ,openssl)))
       (native-inputs
        `(("pkg-config" ,pkg-config)
          ("scdoc" ,scdoc)))
-      (propagated-inputs
-       `(("mailcap" ,mailcap)))
       (synopsis "Simple Gemini protocol server")
       (description "gmnisrv is a simple Gemini protocol server written in C.")
       (license (list license:gpl3+
