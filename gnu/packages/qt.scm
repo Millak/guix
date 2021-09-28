@@ -4091,3 +4091,34 @@ of the InventorXt GUI component toolkit.")
 protocol.  The DBusMenu protocol makes it possible for applications to export
 and import their menus over DBus.")
     (license license:lgpl2.1+)))
+
+(define-public kdsoap
+  (package
+    (name "kdsoap")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/KDAB/KDSoap/releases/download/"
+                           "kdsoap-" version "/kdsoap-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vh4rzb09kks1ilay1y60q7gf64gwzdwsca60hmx1xx69w8672fi"))))
+    (build-system qt-build-system)
+    (inputs `(("qtbase" ,qtbase-5)))
+    (arguments
+     '(#:configure-flags '("-DKDSoap_TESTS=true")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ctest" "-E" ;; These tests try connect to the internet.
+                       "(kdsoap-webcalls|kdsoap-webcalls_wsdl|kdsoap-test_calc)"))
+             #t)))))
+    (home-page "https://www.kdab.com/development-resources/qt-tools/kd-soap/")
+    (synopsis "Qt SOAP component")
+    (description "KD SOAP is a tool for creating client applications for web
+services using the XML based SOAP protocol and without the need for a dedicated
+web server.")
+    (license (list license:gpl2 license:gpl3))))
