@@ -492,14 +492,22 @@ sys_enable_guix_daemon()
 }
 
 sys_authorize_build_farms()
-{ # authorize the public key of the build farm
+{ # authorize the public key(s) of the build farm(s)
+    local hosts=(
+	ci.guix.gnu.org
+	bordeaux.guix.gnu.org
+    )
+
     if prompt_yes_no "Permit downloading pre-built package binaries from the \
-project's build farm?"; then
-        guix archive --authorize \
-             < ~root/.config/guix/current/share/guix/ci.guix.gnu.org.pub \
-            && _msg "${PAS}Authorized public key for ci.guix.gnu.org"
-        else
-            _msg "${INF}Skipped authorizing build farm public keys"
+project's build farms?"; then
+	for host in "${hosts[@]}"; do
+	    local key=~root/.config/guix/current/share/guix/$host.pub
+	    [ -f "$key" ] \
+		&& guix archive --authorize < "$key" \
+		&& _msg "${PAS}Authorized public key for $host"
+	done
+    else
+        _msg "${INF}Skipped authorizing build farm public keys"
     fi
 }
 
