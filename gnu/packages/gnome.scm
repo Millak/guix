@@ -4645,10 +4645,7 @@ configuration storage systems.")
        ("pkg-config" ,pkg-config)
        ("xsltproc" ,libxslt)))
     (inputs
-     ;; TODO(core-updates): Make this input unconditional.
-     (if (%current-target-system)
-         `(("bash-minimal" ,bash-minimal))
-         '()))
+     `(("bash-minimal" ,bash-minimal)))
     (propagated-inputs
      `(("glib" ,glib)))                 ;according to json-glib-1.0.pc
     (home-page "https://wiki.gnome.org/Projects/JsonGlib")
