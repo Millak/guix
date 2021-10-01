@@ -583,20 +583,12 @@ the freedesktop.org XDG Base Directory specification.")
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       ;; TODO(core-updates): Use #$output unconditionally.
-       ,#~(let* ((out #$(if (%current-target-system)
-                            #~#$output
-                            #~(assoc-ref %outputs "out")))
+       ,#~(let* ((out #$output)
                  (sysconf (string-append out "/etc"))
                  (libexec (string-append out "/libexec/elogind"))
                  (dbuspolicy (string-append out "/etc/dbus-1/system.d"))
-                 ;; TODO(core-updates): use this-package-input unconditionally.
-                 (shadow #$(if (%current-target-system)
-                               (this-package-input "shadow")
-                               #~(assoc-ref %build-inputs "shadow")))
-                 (shepherd #$(if (%current-target-system)
-                                 (this-package-input "shepherd")
-                                 #~(assoc-ref %build-inputs "shepherd")))
+                 (shadow #$(this-package-input "shadow"))
+                 (shepherd #$(this-package-input "shepherd"))
                  (halt-path (string-append shepherd "/sbin/halt"))
                  (kexec-path "")           ;not available in Guix yet
                  (nologin-path (string-append shadow "/sbin/nologin"))
