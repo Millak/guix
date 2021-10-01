@@ -1318,7 +1318,7 @@ connection alive.")
                 ;; TODO(core-updates): simply make this unconditional
                 ,@(if (%current-target-system)
                       ;; for wrap-program
-                      `(("bash" ,(canonical-package bash-minimal)))
+                      `(("bash" ,bash-minimal))
                       '())
                 ,@(if (hurd-target?) '()
                       `(("net-tools" ,net-tools)
