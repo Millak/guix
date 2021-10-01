@@ -90,7 +90,7 @@
     '("QTWEBENGINEPROCESS_PATH" = regular
       "/lib/qt5/libexec/QtWebEngineProcess"))))
 
-(define* (wrap-qt-program* program #:key inputs output-dir
+(define* (wrap-qt-program* program #:key sh inputs output-dir
                            qt-wrap-excluded-inputs)
 
   (define input-directories
@@ -105,9 +105,9 @@
                        (cons output-dir input-directories)
                        output-dir)))
     (when (not (null? vars-to-wrap))
-      (apply wrap-program program vars-to-wrap))))
+      (apply wrap-program program #:sh sh vars-to-wrap))))
 
-(define* (wrap-qt-program program-name #:key inputs output
+(define* (wrap-qt-program program-name #:key (sh (which "bash")) inputs output
                           (qt-wrap-excluded-inputs %qt-wrap-excluded-inputs))
   "Wrap the specified programm (which must reside in the OUTPUT's \"/bin\"
 directory) with suitably set environment variables.
@@ -115,10 +115,11 @@ directory) with suitably set environment variables.
 This is like qt-build-systems's phase \"qt-wrap\", but only the named program
 is wrapped."
   (wrap-qt-program* (string-append output "/bin/" program-name)
+                    #:sh sh
                     #:output-dir output #:inputs inputs
                     #:qt-wrap-excluded-inputs qt-wrap-excluded-inputs))
 
-(define* (wrap-all-qt-programs #:key inputs outputs
+(define* (wrap-all-qt-programs #:key (sh (which "bash")) inputs outputs
                                (qt-wrap-excluded-outputs '())
                                (qt-wrap-excluded-inputs %qt-wrap-excluded-inputs)
                                #:allow-other-keys)
@@ -144,6 +145,7 @@ add a dependency of that output on Qt."
      ((output . output-dir)
       (unless (member output qt-wrap-excluded-outputs)
         (for-each (cut wrap-qt-program* <>
+                       #:sh sh
                        #:output-dir output-dir #:inputs inputs
                        #:qt-wrap-excluded-inputs qt-wrap-excluded-inputs)
                   (find-files-to-wrap output-dir))))))
