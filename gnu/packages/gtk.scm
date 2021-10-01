@@ -643,8 +643,7 @@ highlighting and other features typical of a source code editor.")
                 ""))
              #t))
          ;; The slow tests take longer than the specified timeout.
-         ,@(if (any (cute string=? <> (%current-system))
-                    '("armhf-linux" "aarch64-linux"))
+         ,@(if (target-arm? (%current-system))
                '((replace 'check
                    (lambda* (#:key tests? #:allow-other-keys)
                      (when tests?
