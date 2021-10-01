@@ -734,12 +734,11 @@ scaled, composited, modified, saved, or rendered.")
              ;; Ensure that the cross-references point to the "doc" output.
              (substitute* "doc/libatspi/meson.build"
                (("docpath =.*")
-                (string-append "docpath = '" (assoc-ref outputs "doc") "/share/gtk-doc/html'\n")))
-             #t))
+                (string-append "docpath = '" (assoc-ref outputs "doc")
+                               "/share/gtk-doc/html'\n")))))
          (add-before 'install 'prepare-doc-directory
            (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "doc") "/share"))
-             #t))
+             (mkdir-p (string-append (assoc-ref outputs "doc") "/share"))))
          (add-after 'unpack 'patch-docbook-sgml
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (let* ((xmldoc
@@ -748,8 +747,7 @@ scaled, composited, modified, saved, or rendered.")
                                     "/xml/dtd/docbook")))
                (substitute* "doc/libatspi/libatspi-docs.sgml"
                  (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd")))
-               #t)))
+                  (string-append xmldoc "/docbookx.dtd"))))))
          ,@(if (%current-target-system)
                '()
                '((add-after 'install 'move-documentation
@@ -760,8 +758,7 @@ scaled, composited, modified, saved, or rendered.")
                         (string-append out "/share/gtk-doc")
                         (string-append doc "/share/gtk-doc"))
                        (delete-file-recursively
-                        (string-append out "/share/gtk-doc")))
-                     #t))))
+                        (string-append out "/share/gtk-doc")))))))
          (add-after 'install 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (setenv "HOME" (getenv "TMPDIR")) ; xfconfd requires a writable HOME
