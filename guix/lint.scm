@@ -552,13 +552,10 @@ or \"bash-minimal\" is not in its inputs. 'wrap-script' is not supported."
   (define (check-procedure-body body)
     (match body
       ;; Explicitely setting an interpreter is acceptable,
-      ;; #:sh support is added on 'core-updates'.
-      ;; TODO(core-updates): remove mention of core-updates.
       (('wrap-program _ '#:sh . _) '())
       (('wrap-program _ . _)
        (list (report-wrap-program-error package 'wrap-program)))
       ;; Wrapper of 'wrap-program' for Qt programs.
-      ;; TODO #:sh is not yet supported but probably will be.
       (('wrap-qt-program _ '#:sh . _) '())
       (('wrap-qt-program _ . _)
        (list (report-wrap-program-error package 'wrap-qt-program)))
