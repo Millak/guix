@@ -91,10 +91,7 @@
                          (find-files (string-append #$output "/etc/avahi")))))))
              '())))
     (inputs
-     ;; TODO(core-updates): Make this input unconditional.
-     `(,@(if (%current-target-system)
-             `(("bash-minimal" ,bash-minimal))
-             '())
+     `(("bash-minimal" ,bash-minimal)
        ("dbus" ,dbus)
        ("expat" ,expat)
        ("gdbm" ,gdbm)
