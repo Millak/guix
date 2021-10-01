@@ -489,9 +489,7 @@ be used when cross-compiling."
        ("bison" ,bison)
        ("flex" ,flex)))
     (inputs
-     `(,@(if (%current-target-system)
-             `(("python" ,python))
-             `(("python" ,python-wrapper)))
+     `(("python" ,python)
        ("zlib" ,zlib)))
     (propagated-inputs
      `(("glib" ,glib)
