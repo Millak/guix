@@ -634,14 +634,12 @@ highlighting and other features typical of a source code editor.")
                  (("http://www.oasis-open.org/docbook/xml/4\\.3/")
                   (string-append (assoc-ref (or native-inputs inputs)
                                             "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t))
+                                 "/xml/dtd/docbook/"))))))
          (add-before 'configure 'disable-failing-tests
            (lambda _
              (substitute* "tests/meson.build"
                (("\\[ 'pixbuf-fail', \\['conform', 'slow'\\], \\],")
-                ""))
-             #t))
+                ""))))
          ;; The slow tests take longer than the specified timeout.
          ,@(if (target-arm? (%current-system))
                '((replace 'check
