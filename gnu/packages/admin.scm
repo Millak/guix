@@ -1218,8 +1218,7 @@ connection alive.")
                  (("^RELEASETYPE=.*")
                   (format #f "RELEASETYPE=~a\n" ,bind-release-type))
                  (("^RELEASEVER=.*")
-                  (format #f "RELEASEVER=~a\n" ,bind-release-version)))
-               #t))
+                  (format #f "RELEASEVER=~a\n" ,bind-release-version)))))
            ,@(if (%current-target-system)
                  '((add-before 'configure 'fix-bind-cross-compilation
                      (lambda _
@@ -1290,8 +1289,7 @@ connection alive.")
                      ,(map (lambda (dir)
                              (string-append dir "/bin:"
                                             dir "/sbin"))
-                           (list inetutils net-tools coreutils sed))))
-                 #t))))))
+                           (list inetutils net-tools coreutils sed))))))))))
 
       (native-inputs
        `(("perl" ,perl)
