@@ -884,7 +884,7 @@ from forcing GEXP-PROMISE."
     (name "icecat")
     (version %icecat-version)
     (source icecat-source)
-    (build-system gnu-build-system)
+    (build-system mozilla-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("bzip2" ,bzip2)
