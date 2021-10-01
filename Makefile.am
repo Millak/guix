@@ -140,6 +140,7 @@ MODULES =					\
   guix/build-system/font.scm			\
   guix/build-system/go.scm			\
   guix/build-system/meson.scm			\
+  guix/build-system/mozilla.scm			\
   guix/build-system/minify.scm			\
   guix/build-system/minetest.scm		\
   guix/build-system/asdf.scm			\

@@ -8000,6 +8000,15 @@ directory, the parameter @code{#:javascript-files} can be used to
 specify a list of file names to feed to the minifier.
 @end defvr
 
+@defvr {Scheme Variable} mozilla-build-system
+This variable is exported by @code{(guix build-system mozilla)}.  It
+sets the @code{--target} and @code{--host} configuration flags to what
+software developed by Mozilla expects -- due to historical reasons,
+Mozilla software expects @code{--host} to be the system that is
+cross-compiled from and @code{--target} to be the system that is
+cross-compiled to, contrary to the standard Autotools conventions.
+@end defvr
+
 @defvr {Scheme Variable} ocaml-build-system
 This variable is exported by @code{(guix build-system ocaml)}.  It implements
 a build procedure for @uref{https://ocaml.org, OCaml} packages, which consists
