@@ -1315,11 +1315,7 @@ connection alive.")
          ("file" ,file)))
 
       (inputs `(("inetutils" ,inetutils)
-                ;; TODO(core-updates): simply make this unconditional
-                ,@(if (%current-target-system)
-                      ;; for wrap-program
-                      `(("bash" ,bash-minimal))
-                      '())
+                ("bash" ,bash-minimal)
                 ,@(if (hurd-target?) '()
                       `(("net-tools" ,net-tools)
                         ("iproute" ,iproute)))
