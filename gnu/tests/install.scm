@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,8 +36,10 @@
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages commencement)       ;for 'guile-final'
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
+  #:use-module (gnu packages firmware)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages openbox)
@@ -70,9 +72,11 @@
             %test-btrfs-raid-root-os
             %test-jfs-root-os
             %test-f2fs-root-os
+            %test-xfs-root-os
             %test-lvm-separate-home-os
 
             %test-gui-installed-os
+            %test-gui-uefi-installed-os
             %test-gui-installed-os-encrypted
             %test-gui-installed-desktop-os-encrypted))
 
@@ -94,7 +98,7 @@
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
@@ -132,7 +136,7 @@
 
     (bootloader (bootloader-configuration
                  (bootloader extlinux-bootloader-gpt)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
@@ -206,6 +210,15 @@ guix system init /mnt/etc/config.scm /mnt --no-substitutes
 sync
 reboot\n")
 
+(define (uefi-firmware system)
+  "Return the appropriate QEMU OVMF UEFI firmware for the given SYSTEM."
+  (cond
+   ((string-prefix? "x86_64" system)
+    (file-append ovmf "/share/firmware/ovmf_x64.bin"))
+   ((string-prefix? "i686" system)
+    (file-append ovmf "/share/firmware/ovmf_ia32.bin"))
+   (else #f)))
+
 (define* (run-install target-os target-os-source
                       #:key
                       (script %simple-installation-script)
@@ -224,6 +237,7 @@ reboot\n")
                            #:imported-modules '((gnu services herd)
                                                 (gnu installer tests)
                                                 (guix combinators))))
+                      (uefi-support? #f)
                       (installation-image-type 'efi-raw)
                       (install-size 'guess)
                       (target-size (* 2200 MiB)))
@@ -235,6 +249,8 @@ packages defined in installation-os."
   (mlet* %store-monad ((_      (set-grafting #f))
                        (system (current-system))
 
+                       (uefi-firmware -> (and uefi-support?
+                                              (uefi-firmware system)))
                        ;; Since the installation system has no network access,
                        ;; we cheat a little bit by adding TARGET to its GC
                        ;; roots.  This way, we know 'guix system init' will
@@ -273,6 +289,9 @@ packages defined in installation-os."
                `(,(which #$(qemu-command system))
                  "-no-reboot"
                  "-m" "1200"
+                 ,@(if #$uefi-firmware
+                       '("-bios" #$uefi-firmware)
+                       '())
                  #$@(cond
                      ((eq? 'efi-raw installation-image-type)
                       #~("-drive"
@@ -322,10 +341,15 @@ packages defined in installation-os."
     (gexp->derivation "installation" install
                       #:substitutable? #f)))      ;too big
 
-(define* (qemu-command/writable-image image #:key (memory-size 256))
+(define* (qemu-command/writable-image image
+                                      #:key
+                                      (uefi-support? #f)
+                                      (memory-size 256))
   "Return as a monadic value the command to run QEMU on a writable copy of
 IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
-  (mlet %store-monad ((system (current-system)))
+  (mlet* %store-monad ((system (current-system))
+                       (uefi-firmware -> (and uefi-support?
+                                              (uefi-firmware system))))
     (return #~(let ((image #$image))
                 ;; First we need a writable copy of the image.
                 (format #t "creating writable image from '~a'...~%" image)
@@ -342,6 +366,9 @@ IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
                                   #$(qemu-command system))
                   ,@(if (file-exists? "/dev/kvm")
                         '("-enable-kvm")
+                        '())
+                  ,@(if #$uefi-firmware
+                        '("-bios" #$uefi-firmware)
                         '())
                   "-no-reboot" "-m" #$(number->string memory-size)
                   "-drive" "file=disk.img,if=virtio")))))
@@ -392,7 +419,7 @@ per %test-installed-os, this test is expensive in terms of CPU and storage.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vda")))
+                 (targets (list "/dev/vda"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
@@ -468,7 +495,7 @@ reboot\n")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets '("/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons* (file-system
                            (device (file-system-label "my-root"))
@@ -523,7 +550,7 @@ partition.  In particular, home directories must be correctly created (see
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons* (file-system
                            (device (file-system-label "root-fs"))
@@ -600,7 +627,7 @@ where /gnu lives on a separate partition.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
 
     ;; Add a kernel module for RAID-1 (aka. "mirror").
@@ -683,7 +710,7 @@ by 'mdadm'.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets '("/dev/vdb"))))
 
     ;; Note: Do not pass "console=ttyS0" so we can use our passphrase prompt
     ;; detection logic in 'enter-luks-passphrase'.
@@ -816,7 +843,7 @@ build (current-guix) and then store a couple of full system images.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
 
     (mapped-devices (list (mapped-device
@@ -903,7 +930,7 @@ reboot\n")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
 
     (mapped-devices (list (mapped-device
                            (source
@@ -1003,7 +1030,7 @@ store a couple of full system images.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
@@ -1077,7 +1104,7 @@ build (current-guix) and then store a couple of full system images.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
 
     (file-systems (cons (file-system
@@ -1145,7 +1172,7 @@ RAID-0 (stripe) root partition.")
     (locale "en_US.UTF-8")
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons* (file-system
                            (device (file-system-label "btrfs-pool"))
@@ -1238,7 +1265,7 @@ build (current-guix) and then store a couple of full system images.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
@@ -1311,7 +1338,7 @@ build (current-guix) and then store a couple of full system images.")
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vdb")))
+                 (targets (list "/dev/vdb"))))
     (kernel-arguments '("console=ttyS0"))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
@@ -1370,6 +1397,79 @@ build (current-guix) and then store a couple of full system images.")
 
 
 ;;;
+;;; XFS root file system.
+;;;
+
+(define-os-with-source (%xfs-root-os %xfs-root-os-source)
+  ;; The OS we want to install.
+  (use-modules (gnu) (gnu tests) (srfi srfi-1))
+
+  (operating-system
+    (host-name "liberigilo")
+    (timezone "Europe/Paris")
+    (locale "en_US.UTF-8")
+
+    (bootloader (bootloader-configuration
+                 (bootloader grub-bootloader)
+                 (targets (list "/dev/vdb"))))
+    (kernel-arguments '("console=ttyS0"))
+    (file-systems (cons (file-system
+                          (device (file-system-label "my-root"))
+                          (mount-point "/")
+                          (type "xfs"))
+                        %base-file-systems))
+    (users (cons (user-account
+                  (name "charlie")
+                  (group "users")
+                  (supplementary-groups '("wheel" "audio" "video")))
+                 %base-user-accounts))
+    (services (cons (service marionette-service-type
+                             (marionette-configuration
+                              (imported-modules '((gnu services herd)
+                                                  (guix combinators)))))
+                    %base-services))))
+
+(define %xfs-root-installation-script
+  ;; Shell script of a simple installation.
+  "\
+. /etc/profile
+set -e -x
+guix --version
+
+export GUIX_BUILD_OPTIONS=--no-grafts
+ls -l /run/current-system/gc-roots
+parted --script /dev/vdb mklabel gpt \\
+  mkpart primary ext2 1M 3M \\
+  mkpart primary ext2 3M 2G \\
+  set 1 boot on \\
+  set 1 bios_grub on
+mkfs.xfs -L my-root -q /dev/vdb2
+mount /dev/vdb2 /mnt
+herd start cow-store /mnt
+mkdir /mnt/etc
+cp /etc/target-config.scm /mnt/etc/config.scm
+guix system build /mnt/etc/config.scm
+guix system init /mnt/etc/config.scm /mnt --no-substitutes
+sync
+reboot\n")
+
+(define %test-xfs-root-os
+  (system-test
+   (name "xfs-root-os")
+   (description
+    "Test basic functionality of an OS installed like one would do by hand.
+This test is expensive in terms of CPU and storage usage since we need to
+build (current-guix) and then store a couple of full system images.")
+   (value
+    (mlet* %store-monad ((image   (run-install %xfs-root-os
+                                               %xfs-root-os-source
+                                               #:script
+                                               %xfs-root-installation-script))
+                         (command (qemu-command/writable-image image)))
+      (run-basic-test %xfs-root-os command "xfs-root-os")))))
+
+
+;;;
 ;;; Installation through the graphical interface.
 ;;;
 
@@ -1400,7 +1500,9 @@ build (current-guix) and then store a couple of full system images.")
 (define* (gui-test-program marionette
                            #:key
                            (desktop? #f)
-                           (encrypted? #f))
+                           (encrypted? #f)
+                           (uefi-support? #f)
+                           (system (%current-system)))
   #~(let ()
       (define (screenshot file)
         (marionette-control (string-append "screendump " file)
@@ -1466,7 +1568,8 @@ build (current-guix) and then store a couple of full system images.")
 
       (marionette-eval* '(choose-partitioning installer-socket
                                               #:encrypted? #$encrypted?
-                                              #:passphrase #$%luks-passphrase)
+                                              #:passphrase #$%luks-passphrase
+                                              #:uefi-support? #$uefi-support?)
                         #$marionette)
       (screenshot "installer-run.ppm")
 
@@ -1480,9 +1583,43 @@ build (current-guix) and then store a couple of full system images.")
                                    "/dev/vda2")
                           #$marionette))
 
-      (marionette-eval* '(conclude-installation installer-socket)
+      (marionette-eval* '(start-installation installer-socket)
                         #$marionette)
 
+      ;; XXX: The grub-install process uses efibootmgr to add an UEFI Guix
+      ;; boot entry. The corresponding UEFI variable is stored in RAM, and
+      ;; possibly saved persistently on QEMU reboot in a NvVars file, see:
+      ;; https://lists.gnu.org/archive/html/qemu-discuss/2018-04/msg00045.html.
+      ;;
+      ;; As we are running QEMU with the no-reboot flag, this variable is
+      ;; never saved persistently, QEMU fails to boot the installed system and
+      ;; an UEFI shell is displayed instead.
+      ;;
+      ;; To make the installed UEFI system bootable, register Grub as the
+      ;; default UEFI boot entry, in the same way as if grub-install was
+      ;; invoked with the --removable option.
+      (when #$uefi-support?
+        (marionette-eval*
+         '(begin
+            (use-modules (ice-9 match))
+            (let ((targets (cond
+                            ((string-prefix? "x86_64" #$system)
+                             '("grubx64.efi" "BOOTX64.EFI"))
+                            ((string-prefix? "i686" #$system)
+                             '("grubia32.efi" "BOOTIA32.EFI"))
+                            (else #f))))
+              (match targets
+                ((src dest)
+                 (rename-file "/mnt/boot/efi/EFI/Guix"
+                              "/mnt/boot/efi/EFI/BOOT")
+                 (rename-file
+                  (string-append "/mnt/boot/efi/EFI/BOOT/" src)
+                  (string-append "/mnt/boot/efi/EFI/BOOT/" dest)))
+                (_ #f))))
+         #$marionette))
+
+      (marionette-eval* '(complete-installation installer-socket)
+                        #$marionette)
       (sync)
       #t))
 
@@ -1490,7 +1627,7 @@ build (current-guix) and then store a couple of full system images.")
   ;; Packages needed when installing with an encrypted root.
   (list isc-dhcp
         lvm2-static cryptsetup-static e2fsck/static
-        loadkeys-static))
+        loadkeys-static grub-efi fatfsck/static dosfstools))
 
 (define installation-os-for-gui-tests
   ;; Operating system that contains all of %EXTRA-PACKAGES, needed for the
@@ -1509,9 +1646,22 @@ build (current-guix) and then store a couple of full system images.")
                         (guix combinators))))
 
 (define* (installation-target-os-for-gui-tests
-          #:key (encrypted? #f))
+          #:key
+          (encrypted? #f)
+          (uefi-support? #f))
   (operating-system
     (inherit %minimal-os-on-vda)
+    (file-systems `(,(file-system
+                       (device (file-system-label "my-root"))
+                       (mount-point "/")
+                       (type "ext4"))
+                    ,@(if uefi-support?
+                          (list (file-system
+                                  (device (uuid "1234-ABCD" 'fat))
+                                  (mount-point "/boot/efi")
+                                  (type "vfat")))
+                          '())
+                    ,@%base-file-systems))
     (users (append (list (user-account
                           (name "alice")
                           (comment "Bob's sister")
@@ -1569,6 +1719,7 @@ build (current-guix) and then store a couple of full system images.")
                                    #:key
                                    (desktop? #f)
                                    (encrypted? #f)
+                                   (uefi-support? #f)
                                    target-os
                                    (install-size 'guess)
                                    (target-size (* 2200 MiB)))
@@ -1581,6 +1732,7 @@ build (current-guix) and then store a couple of full system images.")
         ((image   (run-install target-os '(this is unused)
                                #:script #f
                                #:os installation-os-for-gui-tests
+                               #:uefi-support? uefi-support?
                                #:install-size install-size
                                #:target-size target-size
                                #:installation-image-type
@@ -1590,8 +1742,11 @@ build (current-guix) and then store a couple of full system images.")
                                  (gui-test-program
                                   marionette
                                   #:desktop? desktop?
-                                  #:encrypted? encrypted?))))
-         (command (qemu-command/writable-image image #:memory-size 512)))
+                                  #:encrypted? encrypted?
+                                  #:uefi-support? uefi-support?))))
+         (command (qemu-command/writable-image image
+                                               #:uefi-support? uefi-support?
+                                               #:memory-size 512)))
       (run-basic-test target-os command name
                       #:initialization (and encrypted? enter-luks-passphrase)
                       #:root-password %root-password
@@ -1601,6 +1756,15 @@ build (current-guix) and then store a couple of full system images.")
   (guided-installation-test
    "gui-installed-os"
    #:target-os (installation-target-os-for-gui-tests)))
+
+;; Test the UEFI installation of Guix System using the graphical installer.
+(define %test-gui-uefi-installed-os
+  (guided-installation-test
+   "gui-uefi-installed-os"
+   #:uefi-support? #t
+   #:target-os (installation-target-os-for-gui-tests
+                #:uefi-support? #t)
+   #:target-size (* 3200 MiB)))
 
 (define %test-gui-installed-os-encrypted
   (guided-installation-test

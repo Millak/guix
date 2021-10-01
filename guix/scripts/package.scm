@@ -9,6 +9,7 @@
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -831,15 +832,14 @@ processed, #f otherwise."
                           (map profile-manifest profiles)))
               (installed (manifest-entries manifest)))
          (leave-on-EPIPE
-          (for-each (match-lambda
-                      (($ <manifest-entry> name version output path _)
-                       (when (or (not regexp)
-                                 (regexp-exec regexp name))
-                         (format #t "~a\t~a\t~a\t~a~%"
-                                 name (or version "?") output path))))
-
-                    ;; Show most recently installed packages last.
-                    (reverse installed))))
+          (let ((rows (filter-map
+                       (match-lambda
+                         (($ <manifest-entry> name version output path _)
+                          (and (regexp-exec regexp name)
+                               (list name (or version "?") output path))))
+                       installed)))
+            ;; Show most recently installed packages last.
+            (pretty-print-table (reverse rows)))))
        #t)
 
       (('list-available regexp)
@@ -862,16 +862,15 @@ processed, #f otherwise."
                                 result))
                           '())))
          (leave-on-EPIPE
-          (for-each (match-lambda
-                      ((name version outputs location)
-                       (format #t "~a\t~a\t~a\t~a~%"
-                               name version
-                               (string-join outputs ",")
-                               (location->string location))))
-                    (sort available
-                          (match-lambda*
-                            (((name1 . _) (name2 . _))
-                             (string<? name1 name2))))))
+          (let ((rows (map (match-lambda
+                             ((name version outputs location)
+                              (list name version (string-join outputs ",")
+                                    (location->string location))))
+                           (sort available
+                                 (match-lambda*
+                                   (((name1 . _) (name2 . _))
+                                    (string<? name1 name2)))))))
+            (pretty-print-table rows)))
          #t))
 
       (('list-profiles _)
@@ -1043,6 +1042,17 @@ processed, #f otherwise."
                                (manifest-entries manifest)))))
 
       (warn-about-old-distro)
+
+      (when (and (null? files) (manifest-transaction-null? trans)
+                 (not (any (match-lambda
+                             ((key . _) (assoc-ref %actions key)))
+                           opts)))
+        ;; We can reach this point because the user did not specify any action
+        ;; (as in "guix package"), did not specify any package (as in "guix
+        ;; install"), or because there's nothing to upgrade (as when running
+        ;; "guix upgrade" on an up-to-date profile).  We cannot distinguish
+        ;; among these here; all we can say is that there's nothing to do.
+        (warning (G_ "nothing to do~%")))
 
       (unless (manifest-transaction-null? trans)
         ;; When '--manifest' is used, display information about TRANS as if we

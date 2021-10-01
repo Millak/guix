@@ -26,12 +26,13 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages cpio)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -175,20 +176,21 @@ as required.")
 (define-public libfilezilla
   (package
     (name "libfilezilla")
-    (version "0.24.1")
+    (version "0.31.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.filezilla-project.org/"
                            "libfilezilla/libfilezilla-" version ".tar.bz2"))
        (sha256
-        (base32 "1zfnqbn14dx0fl45mfaznr5n5xsxy1kx8z9f80fppbqn37pb9mgx"))))
+        (base32 "0vqn6gkwyin9hml39d74vcjcnbwlnk2cpc3msdlkhpq1ns3mhzcr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list "--disable-static")))
     (native-inputs
      `(("cppunit" ,cppunit)
+       ("gcc" ,gcc-8)                   ; XXX remove when it's the default
        ("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
     (inputs
@@ -218,14 +220,14 @@ output.
 (define-public filezilla
   (package
     (name "filezilla")
-    (version "3.50.0")
+    (version "3.55.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.filezilla-project.org/client/"
                            "FileZilla_" version "_src.tar.bz2"))
        (sha256
-        (base32 "042w2f5cf8g9cr7d3m6294ygx7jggcria9502jnql855khk8gnz0"))))
+        (base32 "19bnyx89jg0ll8a8mr4y8gp26gizs11ckgrwglh27zak3zhx1y37"))))
     (build-system gnu-build-system)
     (arguments
       ;; Don't let filezilla phone home to check for updates.
@@ -256,82 +258,53 @@ directory comparison and more.")
     (properties '((upstream-name . "FileZilla")))))
 
 (define-public vsftpd
-  ;; Use a significantly patched CentOS variant with TLSv1.2 support and
-  ;; further bug and security fixes.
-  (let ((upstream-version "3.0.3")
-        (centos-version "8.3.2011")
-        (revision "32.el8"))
-    (package
-      (name "vsftpd")
-      (version (string-append upstream-version "-" revision))
-      (source
-       (origin
-         (method url-fetch)
-         (uri (string-append
-               "https://vault.centos.org/centos/" centos-version
-               "/AppStream/Source/SPackages/vsftpd-" upstream-version "-"
-               revision ".src.rpm"))
-         (sha256
-          (base32 "1xl0kqcismf82hl99klqbvvpylpyk1yr1qjy5hd8f80cj4lyl0f4"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags '("LDFLAGS=-lcrypt -lssl -pie")
-         #:tests? #f                    ; no tests exist
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'unpack
-             (lambda* (#:key source #:allow-other-keys)
-               (invoke "7z" "e" source "-ocpio")
-               (invoke "cpio" "-idmv"
-                       (string-append "--file=cpio/vsftpd-"
-                                      ,upstream-version "-" ,revision
-                                      ".src.cpio"))
-               (invoke "tar" "xvf"
-                       (string-append "vsftpd-" ,upstream-version ".tar.gz"))
-               (chdir (string-append "vsftpd-" ,upstream-version))))
-           (add-after 'unpack 'apply-CentOS-patches
-             ;; Apply all patches as enumerated in vsftpd.spec, in order:
-             ;; simply using FIND-FILES would silently corrupt the result.
-             (lambda _
-               (call-with-input-file "../vsftpd.spec"
-                 (lambda (port)
-                   (use-modules (ice-9 rdelim))
-                   (let loop ()
-                     (let ((line (read-line port)))
-                       (unless (eof-object? line)
-                         (when (string-prefix? "Patch" line)
-                           (let* ((space (string-rindex line #\space))
-                                  (patch (string-drop line (+ 1 space))))
-                             (format #t "Applying '~a'.\n" patch)
-                             (invoke "patch" "-Np1"
-                                     "-i" (string-append "../" patch))))
-                         (loop))))))))
-           (add-after 'unpack 'patch-installation-directory
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "Makefile"
-                 (("/usr") (assoc-ref outputs "out")))
-               #t))
-           (add-before 'install 'mkdir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (mkdir-p out)
-                 (mkdir (string-append out "/sbin"))
-                 (mkdir (string-append out "/man"))
-                 (mkdir (string-append out "/man/man5"))
-                 (mkdir (string-append out "/man/man8"))
-                 #t)))
-           (delete 'configure))))
-      (native-inputs
-       ;; Used to unpack the source RPM.
-       `(("p7zip" ,p7zip)
-         ("cpio" ,cpio)))
-      (inputs
-       `(("libcap" ,libcap)
-         ("linux-pam" ,linux-pam)
-         ("openssl" ,openssl)))
-      (home-page "https://security.appspot.com/vsftpd.html")
-      (synopsis "Share files securely over FTP or FTPS")
-      (description "@command{vsftpd} is a daemon that listens on a TCP socket
-for clients and gives them access to local files via File Transfer
-Protocol.")
-      (license gpl2))))
+  (package
+    (name "vsftpd")
+    (version "3.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://security.appspot.com/downloads/"
+                           "vsftpd-" version ".tar.gz"))
+       (sha256
+        (base32 "1lwipiq8q9qzvwv6f418fbvagpz0p6v0jjplkvcsc2sb8np05di6"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             ;; vsf_findlibs.sh looks only for hard-coded {/usr,}/lib file names
+             ;; that will never exist on Guix.  Manage libraries ourselves.
+             "LDFLAGS=-lcap -lpam"
+             "INSTALL=install -D")
+       #:tests? #f                      ; no test suite
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'build-SSL
+           (lambda _
+             (substitute* "builddefs.h"
+               (("#undef (VSF_BUILD_SSL)" _ symbol)
+                (string-append "#define " symbol)))))
+         (add-after 'unpack 'append-make-flags
+           (lambda _
+             (substitute* "Makefile"
+               (("(CFLAGS|LDFLAGS)[[:blank:]]*=" _ variable)
+                (format #f "UPSTREAM_~a +=" variable))
+               (("\\$\\((CFLAGS|LDFLAGS)\\)" _ variable)
+                (format #f "$(UPSTREAM_~a) $(~@*~a)" variable)))))
+         (add-after 'unpack 'patch-installation-directory
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("/usr") (assoc-ref outputs "out")))))
+         (delete 'configure))))         ; no configure script
+    (inputs
+     `(("libcap" ,libcap)
+       ("linux-pam" ,linux-pam)
+       ("openssl" ,openssl)))
+    (synopsis "Small FTP server with a focus on security")
+    (description
+     "The Very Secure File Transfer Protocol Daemon or @command{vsftpd} is a
+server that listens on a TCP socket for clients and gives them access to local
+files via @acronym{FTP, the File Transfer Protocol}.  Security is a goal; not a
+guarantee.")
+    (home-page "https://security.appspot.com/vsftpd.html")
+    (license gpl2)))                    ; with OpenSSL exception

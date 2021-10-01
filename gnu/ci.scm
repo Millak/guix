@@ -66,9 +66,15 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
-  #:export (%core-packages
+  #:export (derivation->job
+            image->job
+
+            %bootstrap-packages
+            %core-packages
             %cross-targets
             channel-source->package
+
+            arguments->systems
             cuirass-jobs))
 
 ;;; Commentary:
@@ -142,6 +148,14 @@ SYSTEM."
         %gcc-bootstrap-tarball
         %guile-bootstrap-tarball
         %bootstrap-tarballs))
+
+(define %bootstrap-packages
+  ;; Return the list of bootstrap packages from the commencement module.
+  (filter package?
+          (module-map
+           (lambda (sym var)
+             (variable-ref var))
+           (resolve-module '(gnu packages commencement)))))
 
 (define (packages-to-cross-build target)
   "Return the list of packages to cross-build for TARGET."
@@ -235,43 +249,48 @@ SYSTEM."
 (define (hours hours)
   (* 3600 hours))
 
+(define* (image->job store image
+                     #:key name system)
+  "Return the job for IMAGE on SYSTEM.  If NAME is passed, use it as job name,
+otherwise use the IMAGE name."
+  (let* ((image-name (or name
+                         (symbol->string (image-name image))))
+         (name (string-append image-name "." system))
+         (drv (run-with-store store
+                (mbegin %store-monad
+                  (set-guile-for-build (default-guile))
+                  (lower-object (system-image image))))))
+    (parameterize ((%graft? #f))
+      (derivation->job name drv))))
+
 (define (image-jobs store system)
   "Return a list of jobs that build images for SYSTEM."
-  (define (->job name drv)
-    (let ((name (string-append name "." system)))
-      (parameterize ((%graft? #f))
-        (derivation->job name drv))))
-
-  (define (build-image image)
-    (run-with-store store
-      (mbegin %store-monad
-        (set-guile-for-build (default-guile))
-        (lower-object (system-image image)))))
-
   (define MiB
     (expt 2 20))
 
   (if (member system %guix-system-supported-systems)
-      `(,(->job "usb-image"
-                (build-image
-                 (image
-                  (inherit efi-disk-image)
-                  (operating-system installation-os))))
-        ,(->job "iso9660-image"
-                (build-image
-                 (image
-                  (inherit (image-with-label
-                            iso9660-image
-                            (string-append "GUIX_" system "_"
-                                           (if (> (string-length %guix-version) 7)
-                                               (substring %guix-version 0 7)
-                                               %guix-version))))
-                  (operating-system installation-os))))
+      `(,(image->job store
+                     (image
+                      (inherit efi-disk-image)
+                      (operating-system installation-os))
+                     #:name "usb-image"
+                     #:system system)
+        ,(image->job
+          store
+          (image
+           (inherit (image-with-label
+                     iso9660-image
+                     (string-append "GUIX_" system "_"
+                                    (if (> (string-length %guix-version) 7)
+                                        (substring %guix-version 0 7)
+                                        %guix-version))))
+           (operating-system installation-os))
+          #:name "iso9660-image"
+          #:system system)
         ;; Only cross-compile Guix System images from x86_64-linux for now.
         ,@(if (string=? system "x86_64-linux")
-              (map (lambda (image)
-                     (->job (symbol->string (image-name image))
-                            (build-image image)))
+              (map (cut image->job store <>
+                        #:system system)
                    %guix-system-images)
               '()))
       '()))
@@ -357,6 +376,7 @@ SYSTEM."
               (>>= (profile-derivation (packages->manifest (list guix)))
                    (lambda (profile)
                      (self-contained-tarball "guix-binary" profile
+                                             #:profile-name "current-guix"
                                              #:localstatedir? #t
                                              #:compressor
                                              (lookup-compressor "xz")))))
@@ -437,6 +457,13 @@ valid."
                              load-manifest)
                     manifests))))
 
+(define (arguments->systems arguments)
+  "Return the systems list from ARGUMENTS."
+  (match (assoc-ref arguments 'systems)
+    (#f              %cuirass-supported-systems)
+    ((lst ...)       lst)
+    ((? string? str) (call-with-input-string str read))))
+
 
 ;;;
 ;;; Cuirass entry point.
@@ -448,10 +475,7 @@ valid."
     (assoc-ref arguments 'subset))
 
   (define systems
-    (match (assoc-ref arguments 'systems)
-      (#f              %cuirass-supported-systems)
-      ((lst ...)       lst)
-      ((? string? str) (call-with-input-string str read))))
+    (arguments->systems arguments))
 
   (define channels
     (let ((channels (assq-ref arguments 'channels)))
@@ -493,7 +517,7 @@ valid."
            (map (lambda (package)
                   (package-job store (job-name package)
                                package system))
-                %core-packages)
+                (append %bootstrap-packages %core-packages))
            (cross-jobs store system)))
          ('guix
           ;; Build Guix modules only.
@@ -516,6 +540,15 @@ valid."
          ('tarball
           ;; Build Guix tarball only.
           (tarball-jobs store system))
+         (('custom . modules)
+          ;; Build custom modules jobs only.
+          (append-map
+           (lambda (module)
+             (let ((proc (module-ref
+                          (resolve-interface module)
+                          'cuirass-jobs)))
+               (proc store arguments)))
+           modules))
          (('channels . channels)
           ;; Build only the packages from CHANNELS.
           (let ((all (all-packages)))

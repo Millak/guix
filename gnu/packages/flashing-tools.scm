@@ -6,7 +6,8 @@
 ;;; Copyright © 2016, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,22 +29,28 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages flex)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages flex)
+  #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages pciutils)
-  #:use-module (gnu packages qt)
-  #:use-module (gnu packages autotools)
-  #:use-module (gnu packages admin))
+  #:use-module (gnu packages qt))
 
 (define-public flashrom
   (package
@@ -93,7 +100,7 @@ programmer devices.")
 (define-public 0xffff
   (package
     (name "0xffff")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -102,16 +109,19 @@ programmer devices.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a5b7k96vzirb0m8lqp7ldn77ppz4ngf56wslhsj2c6flcyvns4v"))))
+        (base32 "0rl1xzbxl991pm2is98zbryac1lgjrc3zphmbd8agv07av0r6r6n"))))
     (build-system gnu-build-system)
     (inputs
-     `(("libusb" ,libusb-0.1)))         ; doesn't work with libusb-compat
+     ;; Building with libusb-compat will succeed but the result will be broken.
+     ;; See <https://github.com/pali/0xFFFF/issues/3>.
+     `(("libusb" ,libusb-0.1)))
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
          (delete 'configure))           ; no configure
        #:make-flags
-       (list "CC=gcc"
+       (list (string-append "CC=" ,(cc-for-target))
+             "HOST_CC=gcc"
              "BUILD_DATE=GNU Guix"
              (string-append "PREFIX=" %output))
        #:tests? #f))                    ; no 'check' target
@@ -327,7 +337,7 @@ RK3036, RK3066, RK312X, RK3168, RK3188, RK3288, RK3368.")
                #t))))))
     (inputs
      `(("libusb" ,libusb)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)))
     (home-page "https://glassechidna.com.au/heimdall/")
     (synopsis "Flash firmware onto Samsung mobile devices")
@@ -470,9 +480,44 @@ ME as far as possible (it only edits ME firmware image files).")
                                                      "/bin"))
              #t)))))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (home-page "https://github.com/LongSoft/UEFITool/")
     (synopsis "UEFI image editor")
     (description "@code{uefitool} is a graphical image file editor for
 Unifinished Extensible Firmware Interface (UEFI) images.")
     (license license:bsd-2)))
+
+(define-public srecord
+  (package
+    (name "srecord")
+    (version "1.64")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/srecord/srecord/"
+                           version "/srecord-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1qk75q0k5vzmm3932q9hqz2gp8n9rrdfjacsswxc02656f3l3929"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "SH="
+                            (assoc-ref %build-inputs "bash")
+                            "/bin/bash"))))
+    (inputs
+     `(("boost" ,boost)
+       ("libgcrypt" ,libgcrypt)))
+    (native-inputs
+     `(("bison" ,bison)
+       ("diffutils" ,diffutils)
+       ("ghostscript" ,ghostscript)
+       ("groff" ,groff)
+       ("libtool" ,libtool)
+       ("which" ,which)))
+    (home-page "http://srecord.sourceforge.net/")
+    (synopsis "Tools for EPROM files")
+    (description "The SRecord package is a collection of powerful tools for
+manipulating EPROM load files.  It reads and writes numerous EPROM file
+formats, and can perform many different manipulations.")
+    (license license:gpl3+)))

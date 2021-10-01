@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2015, 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2021 Leo Famulari <leo@famulari.name>
@@ -28,7 +28,6 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016, 2017 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2016 Dylan Jeffers <sapientech@sapientech@openmailbox.org>
 ;;; Copyright © 2016, 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
@@ -43,7 +42,6 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2018 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2018 Ethan R. Jones <ethanrjones97@gmail.com
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
@@ -107,7 +105,6 @@
 (define-public python-2.7
   (package
     (name "python2")
-    (replacement python-2.7/fixed)
     (version "2.7.17")
     (source
      (origin
@@ -122,7 +119,8 @@
                                "python-2.7-site-prefixes.patch"
                                "python-2.7-source-date-epoch.patch"
                                "python-2.7-adjust-tests.patch"
-                               "python-cross-compile.patch"))
+                               "python-cross-compile.patch"
+                               "python-2.7-CVE-2021-3177.patch"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -351,14 +349,6 @@ data types.")
     (properties '((cpe-name . "python")))
     (license license:psfl)))
 
-(define python-2.7/fixed
-  (package
-    (inherit python-2.7)
-    (source (origin
-              (inherit (package-source python-2.7))
-              (patches (append (search-patches "python-2.7-CVE-2021-3177.patch")
-                               (origin-patches (package-source python-2.7))))))))
-
 ;; Current 2.x version.
 (define-public python-2 python-2.7)
 
@@ -373,7 +363,6 @@ data types.")
 (define-public python-3.8
   (package (inherit python-2)
     (name "python")
-    (replacement python-3.8/fixed)
     (version "3.8.2")
     (source (origin
               (method url-fetch)
@@ -381,6 +370,7 @@ data types.")
                                   version "/Python-" version ".tar.xz"))
               (patches (search-patches
                         "python-CVE-2020-26116.patch"
+                        "python-3.8-CVE-2021-3177.patch"
                         "python-3-fix-tests.patch"
                         "python-3.8-fix-tests.patch"
                         "python-3-deterministic-build-info.patch"
@@ -531,14 +521,6 @@ data types.")
                                         (version-major+minor version)
                                         "/site-packages"))))))))
 
-(define python-3.8/fixed
-  (package
-    (inherit python-3.8)
-    (source (origin
-              (inherit (package-source python-3.8))
-              (patches (append (search-patches "python-3.8-CVE-2021-3177.patch")
-                               (origin-patches (package-source python-3.8))))))))
-
 (define-public python-3.9
   (package (inherit python-3.8)
     (name "python-next")
@@ -667,7 +649,7 @@ To function properly, this package should not be installed together with the
 (define-public micropython
   (package
     (name "micropython")
-    (version "1.14")
+    (version "1.15")
     (source
       (origin
         (method url-fetch)
@@ -675,7 +657,7 @@ To function properly, this package should not be installed together with the
                             "releases/download/v" version
                             "/micropython-" version ".tar.xz"))
         (sha256
-         (base32 "0k6ri3rxxnnmvcbi7z7x59r21f4vj9dcf9j64jhj1cgazmb62c4p"))
+         (base32 "04sfrfcljhfps340l4wh5ffwkhw1ydraday8nv92nv7gmnrj1l2j"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -732,15 +714,14 @@ ease from the desktop to a microcontroller or embedded system.")
 (define-public pypy3
   (package
     (name "pypy3")
-    (version "7.3.1")
+    (version "7.3.5")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://bitbucket.org/pypy/pypy/downloads/" ;
-                                  "pypy3.6-v" version "-src.tar.bz2"))
+              (uri (string-append "https://downloads.python.org/pypy/"
+                                  "pypy3.7-v" version "-src.tar.bz2"))
               (sha256
                (base32
-                "10zsk8jby8j6visk5mzikpb1cidvz27qq4pfpa26jv53klic6b0c"))
-              (patches (search-patches "pypy3-7.3.1-fix-tests.patch"))))
+                "18lrdmpcczlbk3cfarkgwqdmilrybz56i1dafk8dkjlyk90gw86r"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("python-2" ,python-2)
@@ -762,10 +743,9 @@ ease from the desktop to a microcontroller or embedded system.")
        ("tcl" ,tcl)
        ("tk" ,tk)
        ("glibc" ,glibc)
-       ("bash-minimal" ,bash-minimal)   ; Used as /bin/sh
        ("xz" ,xz)))                     ; liblzma
     (arguments
-     `(#:tests? #f     ;FIXME: Disabled for now, there are many tests failing.
+     `(#:tests? #f                     ;FIXME: 43 out of 364 tests are failing
        #:modules ((ice-9 ftw) (ice-9 match)
                   (guix build utils) (guix build gnu-build-system))
        #:phases (modify-phases %standard-phases
@@ -794,6 +774,12 @@ ease from the desktop to a microcontroller or embedded system.")
                       (substitute* '("lib_pypy/_curses_build.py")
                         ;; Find curses
                         (("/usr/local") (assoc-ref inputs "ncurses")))
+                      (substitute* '("lib_pypy/_dbm.py")
+                        ;; Use gdbm compat library, so we don’t need to pull
+                        ;; in bdb.
+                        (("ctypes.util.find_library\\('db'\\)")
+                         (format #f "'~a/lib/libgdbm_compat.so'"
+                                 (assoc-ref inputs "gdbm"))))
                       (substitute* '("lib_pypy/_sqlite3_build.py")
                         ;; Always use search paths
                         (("sys\\.platform\\.startswith\\('freebsd'\\)") "True")
@@ -805,12 +791,10 @@ ease from the desktop to a microcontroller or embedded system.")
                                         "/lib/libsqlite3.so.0'")))
                       (substitute* '("lib-python/3/subprocess.py")
                         ;; Fix shell path
-                        (("/bin/sh")
-                         (string-append (assoc-ref inputs "bash-minimal") "/bin/sh")))
+                        (("/bin/sh") (which "sh")))
                       (substitute* '("lib-python/3/distutils/unixccompiler.py")
                         ;; gcc-toolchain does not provide symlink cc -> gcc
-                        (("\"cc\"") "\"gcc\""))
-                      #t))
+                        (("\"cc\"") "\"gcc\""))))
                   (add-after
                       'unpack 'set-source-file-times-to-1980
                     ;; copied from python package, required by zip testcase
@@ -818,8 +802,7 @@ ease from the desktop to a microcontroller or embedded system.")
                       (let ((circa-1980 (* 10 366 24 60 60)))
                         (ftw "." (lambda (file stat flag)
                                    (utime file circa-1980 circa-1980)
-                                   #t))
-                        #t)))
+                                   #t)))))
                   (replace 'build
                     (lambda* (#:key inputs #:allow-other-keys)
                       (with-directory-excursion "pypy/goal"
@@ -829,7 +812,8 @@ ease from the desktop to a microcontroller or embedded system.")
                                 (string-append "--make-jobs="
                                                (number->string (parallel-job-count)))
                                 "-Ojit"
-                                "targetpypystandalone"))
+                                "targetpypystandalone"
+                                "--allworkingmodules"))
                       ;; Build c modules and package everything, so tests work.
                       (with-directory-excursion "pypy/tool/release"
                         (unsetenv "PYTHONPATH") ; Do not use the system’s python libs:
@@ -851,44 +835,45 @@ ease from the desktop to a microcontroller or embedded system.")
                              "pypy/test_all.py"
                              "--pypy=pypy/tool/release/pypy-dist/bin/pypy3"
                              "lib-python"))
-                          (format #t "test suite not run~%"))
-                      #t))
+                          (format #t "test suite not run~%"))))
                   (replace 'install
                     (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (with-directory-excursion "pypy/tool/release"
-                        ;; Delete test data.
-                        (for-each
-                         (lambda (x)
-                           (delete-file-recursively (string-append
-                                                     "pypy-dist/lib-python/3/" x)))
-                         '("tkinter/test"
-                           "test"
-                           "sqlite3/test"
-                           "lib2to3/tests"
-                           "idlelib/idle_test"
-                           "distutils/tests"
-                           "ctypes/test"
-                           "unittest/test"))
-                        ;; Patch shebang referencing python2
-                        (substitute* '("pypy-dist/lib-python/3/cgi.py"
-                                       "pypy-dist/lib-python/3/encodings/rot_13.py")
-                          (("#!.+/bin/python")
-                           (string-append "#!" (assoc-ref outputs "out") "/bin/pypy3")))
-                        (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                          (substitute* '("pypy-dist/lib_pypy/_md5.py"
-                                         "pypy-dist/lib_pypy/_sha1.py")
-                            (("#!.+/bin/python")
-                             (string-append "#!" (assoc-ref outputs "out") "/bin/pypy3"))))
-                        (copy-recursively "pypy-dist" (assoc-ref outputs "out")))
-                      #t)))))
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin-pypy3 (string-append out "/bin/pypy3"))
+                             (shebang-match-python "#!.+/bin/python")
+                             (shebang-pypy3 (string-append "#!" bin-pypy3))
+                             (dist-dir "pypy/tool/release/pypy-dist"))
+                        (with-directory-excursion dist-dir
+                          ;; Delete test data.
+                          (for-each
+                           (lambda (x)
+                             (delete-file-recursively (string-append
+                                                       "lib-python/3/" x)))
+                           '("tkinter/test"
+                             "test"
+                             "sqlite3/test"
+                             "lib2to3/tests"
+                             "idlelib/idle_test"
+                             "distutils/tests"
+                             "ctypes/test"
+                             "unittest/test"))
+                          ;; Patch shebang referencing python2
+                          (substitute* '("lib-python/3/cgi.py"
+                                         "lib-python/3/encodings/rot_13.py")
+                            ((shebang-match-python) shebang-pypy3))
+                          (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                            (substitute* '("lib_pypy/_md5.py"
+                                           "lib_pypy/_sha1.py")
+                              ((shebang-match-python) shebang-pypy3))))
+                        (copy-recursively dist-dir out)))))))
     (home-page "https://www.pypy.org/")
     (synopsis "Python implementation with just-in-time compilation")
     (description "PyPy is a faster, alternative implementation of the Python
 programming language employing a just-in-time compiler.  It supports most
 Python code natively, including C extensions.")
-    (license (list license:expat        ; pypy itself; _pytest/
-                   license:psfl ; python standard library in lib-python/
-                   license:asl2.0 ; dotviewer/font/ and some of lib-python/
+    (license (list license:expat     ; pypy itself; _pytest/
+                   license:psfl      ; python standard library in lib-python/
+                   license:asl2.0    ; dotviewer/font/ and some of lib-python/
                    license:gpl3+ ; ./rpython/rlib/rvmprof/src/shared/libbacktrace/dwarf2.*
                    license:bsd-3 ; lib_pypy/cffi/_pycparser/ply/
                    (license:non-copyleft

@@ -51,7 +51,16 @@
   (@@ (guix self) file-append*))
 
 (define translated-texi-manuals
-  (@@ (guix self) translate-texi-manuals))
+  (let ((translated (@@ (guix self) translate-texi-manuals)))
+    (lambda (source)
+      (let ((result (translated source)))
+        ;; Build with 'guile-3.0-latest', which is linked against
+        ;; 'libgc/disable-munmap', to avoid the dreaded "mmap(PROT_NONE)
+        ;; failed" crash: <https://bugs.gnu.org/47428>.
+        (computed-file (computed-file-name result)
+                       (computed-file-gexp result)
+                       #:options (computed-file-options result)
+                       #:guile guile-3.0-latest)))))
 
 (define info-manual
   (@@ (guix self) info-manual))
@@ -63,9 +72,9 @@
       "guix"))
 
 (define %languages
-  ;; The cookbook is currently only translated into German.
+  ;; The cookbook is not translated in the same languages as the manual
   (if (string=? %manual "guix-cookbook")
-      '("de" "en")
+      '("de" "en" "fr")
       '("de" "en" "es" "fr" "ru" "zh_CN")))
 
 (define (texinfo-manual-images source)
@@ -948,7 +957,7 @@ from SOURCE."
                   (div
                    (ul
                     (li (a (@ (href "html_node"))
-                           "HTML, with one page per node"))
+                           "HTML, with a separate page per node"))
                     (li (a (@ (href
                                ,(string-append
                                  #$manual

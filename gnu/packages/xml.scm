@@ -5,15 +5,15 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Raimon Grau <raimonster@gmail.com>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
@@ -31,6 +31,8 @@
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
+;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -120,6 +122,7 @@ the entire document.")
   (package
     (name "expat")
     (version "2.2.9")
+    (replacement expat-2.4.1)
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -142,6 +145,24 @@ the entire document.")
 stream-oriented parser in which an application registers handlers for
 things the parser might find in the XML document (like start tags).")
     (license license:expat)))
+
+;; Replacement package to fix CVE-2013-0340.
+(define expat-2.4.1
+  (package
+    (inherit expat)
+    (version "2.4.1")
+    (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
+              (origin
+                (method url-fetch)
+                (uri (list (string-append "mirror://sourceforge/expat/expat/"
+                                          version "/expat-" version ".tar.xz")
+                           (string-append
+                            "https://github.com/libexpat/libexpat/releases/download/R_"
+                            (string-map dot->underscore version)
+                            "/expat-" version ".tar.xz")))
+                (sha256
+                 (base32
+                  "0spvyb9d3hijs4ys3x64cfmilsynl8kv6clfahv8d4lvp86js0yg")))))))
 
 (define-public libebml
   (package
@@ -218,10 +239,23 @@ hierarchical form with variable field lengths.")
 project (but it is usable outside of the Gnome platform).")
     (license license:x11)))
 
+(define-public libxml2-xpath0
+  (package/inherit libxml2
+    (name "libxml2-xpath0")
+    (source (origin
+              (inherit (package-source libxml2))
+              (patches (append (search-patches
+                                "libxml2-xpath0-Add-option-xpath0.patch")
+                               (origin-patches (package-source libxml2))))))
+    (description
+     "Libxml2-xpath0 is like libxml2 but with a patch applied that
+provides an @code{--xpath0} option to @command{xmllint} that enables it
+to output XPath results with a null delimiter.")))
+
 (define-public libxlsxwriter
   (package
     (name "libxlsxwriter")
-    (version "1.0.1")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -230,7 +264,7 @@ project (but it is usable outside of the Gnome platform).")
          (commit (string-append "RELEASE_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dsqv4qdd582fhwj6m80iz50gkyw4m8n9h4mkd2871csa03sbilf"))
+        (base32 "14c5rgx87nhzasr0j7mcfr1w7ifz0gmdiqy2xq59di5xvcdrpxpv"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled minizip source
@@ -259,81 +293,6 @@ project (but it is usable outside of the Gnome platform).")
 formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
     (license (list license:bsd-2
                    license:public-domain)))) ; third_party/md5
-
-;; This is the latest stable release.
-(define-public libxmlplusplus
-  (package
-    (name "libxmlplusplus")
-    (version "3.2.0")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/libxmlplusplus/libxmlplusplus")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0wjz591rjlgbah7dcq8i0yn0zw9d62b7g6r0pppx81ic0cx8n8ga"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-documentation
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook"))
-                   (xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
-               (substitute* '("examples/dom_xpath/example.xml"
-                              "docs/manual/libxml++_without_code.xml")
-                 (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd")))
-               (setenv "SGML_CATALOG_FILES"
-                       (string-append xmldoc "/catalog.xml"))
-               (substitute* "docs/manual/docbook-customisation.xsl"
-                 (("http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl")
-                  (string-append xsldoc "/html/chunk.xsl"))))
-             #t)))))
-    (propagated-inputs
-     `(("libxml2" ,libxml2)))
-    (inputs
-     `(("glibmm" ,glibmm)))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("doxygen" ,doxygen)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("graphviz" ,graphviz) ; for dot
-       ("libtool" ,libtool)
-       ("libxslt" ,libxslt)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
-    (home-page "https://github.com/libxmlplusplus/libxmlplusplus/")
-    (synopsis "C++ bindings for libxml2")
-    (description
-     "libxml++ (a.k.a. libxmlplusplus) provides a C++ interface to XML files.
-It uses libxml2 to access the XML files.")
-    (license license:lgpl2.1+)))
-
-;; This is the last release providing the 2.6 API, hence the name.
-;; This is needed by tascam-gtk
-(define-public libxmlplusplus-2.6
-  (package
-    (inherit libxmlplusplus)
-    (name "libxmlplusplus")
-    (version "2.40.1")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/libxmlplusplus/libxmlplusplus")
-                   (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0gbfi4l88w828gmyc9br11l003ylyi4vigp5d1kfgsn0k4cig3y9"))))))
 
 (define-public python-libxml2
   (package/inherit libxml2
@@ -522,14 +481,14 @@ the @code{Graph} class and write it out in a specific file format.")
 (define-public perl-xml-atom
   (package
     (name "perl-xml-atom")
-    (version "0.42")
+    (version "0.43")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/M/MI/MIYAGAWA/"
                                   "XML-Atom-" version ".tar.gz"))
               (sha256
                (base32
-                "1wa8kfy1w4mg7kzxim4whyprkn48a2il6fap0b947zywknw4c6y6"))))
+                "0b8bpdnvz9sqwjhjkydbzy4karb7nn6i15b8g4mczrznlsb3hnaf"))))
     (build-system perl-build-system)
     (arguments
      `(#:phases
@@ -696,14 +655,14 @@ XML parser and the high performance DOM implementation.")
 (define-public perl-xml-libxml-simple
   (package
     (name "perl-xml-libxml-simple")
-    (version "0.99")
+    (version "1.01")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/M/MA/MARKOV/"
                                   "XML-LibXML-Simple-" version ".tar.gz"))
               (sha256
                (base32
-                "0i4ybiqdnvnbfxqslw2y392kvy7i752dl8n99bqiqv5kzk4lbzhl"))))
+                "19k50d80i9dipsl6ln0f4awv9wmdg0xm3d16z8mngmvh9c8ci66d"))))
     (build-system perl-build-system)
     (propagated-inputs
      `(("perl-file-slurp-tiny" ,perl-file-slurp-tiny)
@@ -762,14 +721,14 @@ checks.")
 (define-public perl-xml-rss
   (package
     (name "perl-xml-rss")
-    (version "1.61")
+    (version "1.62")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/S/SH/SHLOMIF/"
                                   "XML-RSS-" version ".tar.gz"))
               (sha256
                (base32
-                "03f983l2dnkvcw6iyg1s0xmv5wn793d3kvqlshmhm01ibp7ffvzs"))))
+                "0klb8ghd405pdkmn25lp3i4j2lfydz8w581sk51p3zy788s0c9yk"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-module-build" ,perl-module-build)
@@ -844,7 +803,7 @@ building Perl SAX2 XML parsers, filters, and drivers.")
     (home-page "https://metacpan.org/release/XML-SAX-Base")
     (synopsis "Base class for SAX Drivers and Filters")
     (description "This module has a very simple task - to be a base class for
-PerlSAX drivers and filters.  It's default behaviour is to pass the input
+PerlSAX drivers and filters.  Its default behaviour is to pass the input
 directly to the output unchanged.  It can be useful to use this module as a
 base class so you don't have to, for example, implement the characters()
 callback.")
@@ -962,8 +921,7 @@ This module provide functions which simplify writing tests for
                 "0psr5pwsk2biz2bfkigmx04v2rfhs6ybwcfmcrrg7gvh9bpp222b"))))
     (build-system perl-build-system)
     (propagated-inputs
-     `(("perl-carp" ,perl-carp)
-       ("perl-log-report" ,perl-log-report)
+     `(("perl-log-report" ,perl-log-report)
        ("perl-xml-compile-tester" ,perl-xml-compile-tester)
        ("perl-xml-libxml" ,perl-xml-libxml)
        ("perl-scalar-list-utils" ,perl-scalar-list-utils)
@@ -1057,14 +1015,14 @@ server, collect the answer, and finally decoding the XML to Perl.")
 (define-public perl-xml-feed
   (package
     (name "perl-xml-feed")
-    (version "0.59")
+    (version "0.63")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/D/DA/DAVECROSS/"
                                   "XML-Feed-" version ".tar.gz"))
               (sha256
                (base32
-                "1z1a88bpy64j42bbyl8acbfl3dn9iaz47gx6clkgy5sbn4kr0kgk"))))
+                "04frqhikmyq0i9ldraisbvppyjhqg6gz83l2rqpmp4f2h9n9k2lw"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-module-build" ,perl-module-build)
@@ -1210,14 +1168,14 @@ XSL-T processor.  It also performs any necessary post-processing.")
 (define-public xmlsec
   (package
     (name "xmlsec")
-    (version "1.2.31")
+    (version "1.2.32")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.aleksey.com/xmlsec/download/"
                                   "xmlsec1-" version ".tar.gz"))
               (sha256
                (base32
-                "09hbbaz2d9hw645q27apkjs1mdr6vd85x5z3c9hzgr1iri9bq44v"))))
+                "0hy0nwz57n9r5wwab9xa66gzwlwvzs54nhlfn3jh8q13acl710z3"))))
     (build-system gnu-build-system)
     (propagated-inputs                  ; according to xmlsec1.pc
      `(("libxml2" ,libxml2)
@@ -1252,6 +1210,14 @@ Libxml2).")
      ;; NSS no longer supports MD5 since 3.59, don't attempt to use it.
      '(#:configure-flags '("--disable-md5")))
     (synopsis "XML Security Library (using NSS instead of GnuTLS)")))
+
+(define-public xmlsec-openssl
+  (package/inherit xmlsec
+    (name "xmlsec-openssl")
+    (inputs
+     `(("openssl" ,openssl)
+       ("libltdl" ,libltdl)))
+    (synopsis "XML Security Library (using OpenSSL instead of GnuTLS)")))
 
 (define-public minixml
   (package
@@ -2029,8 +1995,9 @@ advantage of JIT JVMs.")
     (version "2.1.10")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.extreme.indiana.edu/xgws/xsoap/"
-                                  "PullParser/PullParser" version ".tgz"))
+              ;; Unfortunately, archive.org does not have a copy of this file.
+              (uri (string-append "https://ftp.fau.de/gentoo/distfiles/"
+                                  "PullParser" version ".tgz"))
               (sha256
                (base32
                 "1kw9nhyqb7bzhn2zjbwlpi5vp5rzj89amzi3hadw2acyh2dmd0md"))
@@ -2046,7 +2013,8 @@ advantage of JIT JVMs.")
        #:phases
        (modify-phases %standard-phases
          (replace 'install (install-jars "build/lib")))))
-    (home-page "http://www.extreme.indiana.edu/xgws/xsoap/xpp/")
+    (home-page (string-append "https://web.archive.org/web/20210225153105/"
+                              "https://www.extreme.indiana.edu/"))
     (synopsis "Streaming pull XML parser")
     (description "Xml Pull Parser (in short XPP) is a streaming pull XML
 parser and should be used when there is a need to process quickly and
@@ -2546,7 +2514,7 @@ for Python's ElementTree XML data structures, both for the standard
 ElementTree library and for the @uref{http://lxml.de, lxml.etree} library.
 
 For lxml.etree this package can be useful for providing XPath 2.0 selectors,
-because lxml.etree already has it's own implementation of XPath 1.0.")
+because lxml.etree already has its own implementation of XPath 1.0.")
     (license license:expat)))
 
 (define-public python-lxml

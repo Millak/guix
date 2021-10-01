@@ -18,7 +18,7 @@
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse John Gildersleve <jessejohngildersleve@zohomail.eu>
 ;;; Copyright © 2019 Valentin Ignatev <valentignatev@gmail.com>
-;;; Copyright © 2019 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2019 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -59,7 +59,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages linux)     ; alsa-lib
+  #:use-module (gnu packages linux)     ; alsa-lib, gpm
   #:use-module (gnu packages mail)      ; for mailutils
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
@@ -201,6 +201,31 @@
                 (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
                 "bin/emacs")
                #t)))
+         (add-after 'strip-double-wrap 'wrap-emacs-paths
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lisp-dirs (find-files (string-append out "/share/emacs")
+                                           "^lisp$"
+                                           #:directories? #t)))
+               (for-each
+                (lambda (prog)
+                  (wrap-program prog
+                    ;; emacs-next and variants rely on uname being in PATH for
+                    ;; Tramp.  Tramp paths can't be hardcoded, because they
+                    ;; need to be portable.
+                    `("PATH" suffix
+                      ,(map (lambda (in) (string-append in "/bin"))
+                            (list (assoc-ref inputs "gzip")
+                                  (assoc-ref inputs "coreutils"))))
+                    `("EMACSLOADPATH" suffix ,lisp-dirs)))
+                (find-files (string-append out "/bin")
+                            ;; Matches versioned and unversioned emacs binaries.
+                            ;; We don't patch emacsclient, because it takes its
+                            ;; environment variables from emacs.
+                            ;; Likewise, we don't need to patch helper binaries
+                            ;; like etags, ctags or ebrowse.
+                            "^emacs(-[0-9]+(\\.[0-9]+)*)?$"))
+               #t)))
          (add-before 'reset-gzip-timestamps 'make-compressed-files-writable
            ;; The 'reset-gzip-timestamps phase will throw a permission error
            ;; if gzip files aren't writable then.  This phase is needed when
@@ -213,11 +238,16 @@
      `(("gnutls" ,gnutls)
        ("ncurses" ,ncurses)
 
+       ;; Required for "core" functionality, such as dired and compression.
+       ("coreutils" ,coreutils)
+       ("gzip" ,gzip)
+
        ;; Avoid Emacs's limited movemail substitute that retrieves POP3 email
        ;; only via insecure channels.  This is not needed for (modern) IMAP.
        ("mailutils" ,mailutils)
 
        ;; TODO: Add the optional dependencies.
+       ("gpm" ,gpm)
        ("libx11" ,libx11)
        ("gtk+" ,gtk+)
        ("cairo" ,cairo)
@@ -255,9 +285,7 @@
     (native-search-paths
      (list (search-path-specification
             (variable "EMACSLOADPATH")
-            ;; The versioned entry is for the Emacs' builtin libraries.
-            (files (list "share/emacs/site-lisp"
-                         (string-append "share/emacs/" version "/lisp"))))
+            (files '("share/emacs/site-lisp")))
            (search-path-specification
             (variable "INFOPATH")
             (files '("share/info")))))
@@ -278,7 +306,8 @@ languages.")
 (define-public emacs-next
   (let ((commit "2ea34662c20f71d35dd52a5ed996542c7386b9cb")
         (revision "0"))
-    (package/inherit emacs
+    (package
+      (inherit emacs)
       (name "emacs-next")
       (version (git-version "28.0.50" revision commit))
       (source
@@ -294,23 +323,13 @@ languages.")
            "0igjm9kwiswn2dpiy2k9xikbdfc7njs07ry48fqz70anljj8y7y3"))))
       (native-inputs
        `(("autoconf" ,autoconf)
-         ,@(package-native-inputs emacs)))
-      (native-search-paths
-       (list (search-path-specification
-              (variable "EMACSLOADPATH")
-              ;; The versioned entry is for the Emacs' builtin libraries.
-              (files (list "share/emacs/site-lisp"
-                           (string-append "share/emacs/"
-                                          (version-major+minor+point version)
-                                          "/lisp"))))
-             (search-path-specification
-              (variable "INFOPATH")
-              (files '("share/info"))))))))
+         ,@(package-native-inputs emacs))))))
 
 (define-public emacs-next-pgtk
   (let ((commit "ae18c8ec4f0ef37c8c9cda473770ff47e41291e2")
         (revision "1"))
-    (package/inherit emacs-next
+    (package
+      (inherit emacs-next)
       (name "emacs-next-pgtk")
       (version (git-version "28.0.50" revision commit))
       (source
@@ -356,7 +375,9 @@ also enabled and works without glitches even on X server."))))
            (delete 'strip-double-wrap)))))
     (inputs
      `(("guix-emacs.el" ,(search-auxiliary-file "emacs/guix-emacs.el"))
-       ("ncurses" ,ncurses)))
+       ("ncurses" ,ncurses)
+       ("coreutils" ,coreutils)
+       ("gzip" ,gzip)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))))
 
@@ -432,7 +453,8 @@ editor (with wide ints)" )
 (define-public guile-emacs
   (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")
         (revision "0"))
-    (package/inherit emacs
+    (package
+      (inherit emacs)
       (name "guile-emacs")
       (version (git-version "0.0.0" revision commit))
       (source (origin

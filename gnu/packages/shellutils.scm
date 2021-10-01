@@ -8,6 +8,8 @@
 ;;; Copyright © 2019 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 aecepoglu <aecepoglu@fastmail.fm>
+;;; Copyright © 2020 Dion Mendel <guix@dm9.info>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,7 +91,7 @@ text.")
 (define-public zsh-autosuggestions
   (package
     (name "zsh-autosuggestions")
-    (version "0.6.4")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -98,7 +100,7 @@ text.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h52p2waggzfshvy1wvhj4hf06fmzd44bv6j18k3l9rcx6aixzn6"))))
+                "1g3pij5qn2j7v7jjac2a63lxd97mcsgw6xq6k5p7835q9fjiid98"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("ruby" ,ruby)
@@ -111,6 +113,10 @@ text.")
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             ;; Failing tests since tmux-3.2a
+             (delete-file "spec/options/buffer_max_size_spec.rb")))
          (delete 'configure)
          (replace 'check ; Tests use ruby's bundler; instead execute rspec directly.
            (lambda _
@@ -254,6 +260,15 @@ are already there.")
              ;; so delete the extra source code here.
              (delete-file-recursively "src/github.com/direnv/direnv/vendor")
              #t))
+         (add-after 'install 'install-manpages
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (man (string-append out "/share/man/man1")))
+               (mkdir-p man)
+               (with-directory-excursion "src/github.com/direnv/direnv"
+                 (install-file "man/direnv.1" man)
+                 (install-file "man/direnv-stdlib.1" man)
+                 (install-file "man/direnv.toml.1" man)))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?

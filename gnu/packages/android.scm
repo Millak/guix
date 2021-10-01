@@ -4,12 +4,11 @@
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2017 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Sergey Trofimov <sarg@sarg.org.ru>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -148,6 +147,7 @@ use their packages mostly unmodified in our Android NDK build system.")
                      "libutils-remove-damaging-includes.patch"
                      "libutils-add-includes.patch"
                      "adb-add-libraries.patch"
+                     "adb-libssl_11-compatibility.patch"
                      "libziparchive-add-includes.patch"))))
 
 (define (android-platform-system-extras version)
@@ -388,7 +388,7 @@ various Android core host applications.")
      `(("android-libbase" ,android-libbase)
        ("android-libcutils" ,android-libcutils)
        ("android-liblog" ,android-liblog)
-       ("openssl" ,openssl-1.0)))
+       ("openssl" ,openssl)))
     (home-page "https://developer.android.com/studio/command-line/adb.html")
     (synopsis "Android Debug Bridge")
     (description

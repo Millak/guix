@@ -39,6 +39,9 @@
 ;;; Copyright © 2020 Tim Van den Langenbergh <tmt_vdl@gmx.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,30 +120,6 @@ well as other mediums.")
     (description "A monospace font, designed for code listings and the like,
 in print.  With attention to detail for high resolution rendering.")
     (license license:silofl1.1)))
-
-(define-public font-ubuntu
-  (package
-    (name "font-ubuntu")
-    (version "0.83")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://salsa.debian.org/fonts-team/fonts-ubuntu")
-                    (commit (string-append "upstream/" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1d2xrjpxy70f3nsgqiggwv6pj06qglf5vj2847pqx60w3ygi903g"))))
-    (build-system font-build-system)
-    (home-page "http://font.ubuntu.com/")
-    (synopsis "The Ubuntu Font Family")
-    (description "The Ubuntu Font Family is a unique, custom designed font
-that has a very distinctive look and feel.  This package provides the
-TrueType (TTF) files.")
-    (license
-     (license:non-copyleft
-      "http://font.ubuntu.com/ufl/ubuntu-font-licence-1.0.txt"
-      "Ubuntu Font License v1.0"))))
 
 (define-public font-dejavu
   (package
@@ -334,15 +313,15 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
 (define-public font-liberation
   (package
     (name "font-liberation")
-    (version "2.1.3")
+    (version "2.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://github.com/liberationfonts/liberation-fonts/"
-             "files/6060976/liberation-fonts-ttf-" version ".tar.gz"))
+             "files/6418984/liberation-fonts-ttf-" version ".tar.gz"))
        (sha256
-        (base32 "0bv8i47iq2irxkkjlqwdli4zz01sb1qg2n6vbdqjrqqhx912zji2"))))
+        (base32 "1vx5q5bif9d1cn5pvm78203sf4may2mch72aa1hx1a8avl959y16"))))
     (build-system font-build-system)
     (home-page "https://github.com/liberationfonts")
     (synopsis "Fonts compatible with Arial, Times New Roman, and Courier New")
@@ -437,16 +416,17 @@ The unified Libertinus family consists of:
 (define-public font-terminus
   (package
     (name "font-terminus")
-    (version "4.48")
+    (version "4.49.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/terminus-font/terminus-font-"
-                           version "/terminus-font-" version ".tar.gz"))
+                           (version-major+minor version)
+                           "/terminus-font-" version ".tar.gz"))
        (sha256
-        (base32 "1bwlkj39rqbyq57v5yssayav6hzv1n11b9ml2s0dpiyfsn6rqy9l"))))
+        (base32 "0yggffiplk22lgqklfmd2c0rw8gwchynjh5kz4bz8yv2h6vw2qfr"))))
     (build-system gnu-build-system)
-    (outputs (list "out" "pcf-8bit"))
+    (outputs (list "out" "pcf-8bit" "otb"))
     (arguments
      `(#:tests? #f                      ; no test target in tarball
        #:phases
@@ -461,6 +441,15 @@ The unified Libertinus family consists of:
              (let ((pcf-8bit (assoc-ref outputs "pcf-8bit")))
                (apply invoke "make" "install-pcf-8bit" (string-append "prefix="
                                                                       pcf-8bit)
+                      make-flags))))
+         (add-after 'build-more-bits 'build-otb
+           ;; Build Open Type Bitmap
+           (lambda* (#:key make-flags #:allow-other-keys)
+             (apply invoke "make" "otb" make-flags)))
+         (add-after 'install 'install-otb
+           (lambda* (#:key make-flags outputs #:allow-other-keys)
+             (let ((otb (assoc-ref outputs "otb")))
+               (apply invoke "make" "install-otb" (string-append "prefix=" otb)
                       make-flags)))))))
     (native-inputs
      `(("bdftopcf" ,bdftopcf)
@@ -827,6 +816,27 @@ display all Unicode symbols.")
      "Roboto is Google’s signature family of fonts, the default font on Android
 and Chrome OS, and the recommended font for the
 visual language \"Material Design\".")
+    (license license:asl2.0)))
+
+(define-public font-borg-sans-mono
+  (package
+    (name "font-borg-sans-mono")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/charje/borg-sans-mono"
+             "/releases/download/v" version "/borg-sans-mono.zip"))
+       (sha256
+        (base32
+         "0q16gw3ry9hpgbl2636qq00ap59xyx15jf3gzvx2ybz3gja164c4"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/charje/borg-sans-mono")
+    (synopsis "The Borg Sans Mono font")
+    (description "Borg Sans Mono is a monospaced font derived from Droid Sans
+Mono.  It includes additions commonly found in programming fonts such as a
+slashed zero and ligatures for operators.")
     (license license:asl2.0)))
 
 (define-public font-un
@@ -1234,11 +1244,55 @@ later hand-tweaked with the gbdfed(1) editor:
 typeface, by mimicking Comic Sans while fixing its most obvious shortcomings.")
     (license license:silofl1.1)))
 
+;; When updating the version (and hash) of font-iosevka, also update the hash
+;; of the Iosevka variants further below.
+;; The following script downloads all Iosevka variants to the store and prints
+;; their hash at the end.
+#|
+guix repl <<EOF
+(use-modules (guix base32)
+             (guix download)
+             (guix packages)
+             (guix store)
+             (gcrypt hash)
+             (ice-9 string-fun)
+             (gnu packages fonts))
+
+(let ((new-version "7.0.3")
+      (iosevka-hashes #nil)
+      (iosevka-fails #nil))
+  (for-each (lambda (font)
+              (let ((file (download-to-store (open-connection)
+                                             (string-replace-substring
+                                              (origin-uri (package-source font))
+                                              (package-version font)
+                                              new-version))))
+                (if file
+                    (set! iosevka-hashes
+                          (acons file (bytevector->nix-base32-string
+                                       (file-sha256 file))
+                                 iosevka-hashes))
+                    (set! iosevka-fails (cons font iosevka-fails)))))
+            (list font-iosevka
+                  font-iosevka-slab
+                  font-iosevka-term
+                  font-iosevka-term-slab
+                  font-iosevka-aile
+                  font-iosevka-curly
+                  font-iosevka-curly-slab
+                  font-iosevka-etoile))
+  (for-each (lambda (hash)
+              (format #t "~a: ~a~%" (car hash) (cdr hash)))
+            iosevka-hashes)
+  (for-each (lambda (fail)
+              (format #t "~a: failed to download latest version~%" fail))
+            iosevka-fails))
+EOF
+|#
 (define-public font-iosevka
   (package
     (name "font-iosevka")
-    ;; When updating, also update the hash of the Iosevka variant(s) below.
-    (version "4.0.3")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1246,7 +1300,7 @@ typeface, by mimicking Comic Sans while fixing its most obvious shortcomings.")
                            "/releases/download/v" version
                            "/ttc-iosevka-" version ".zip"))
        (sha256
-        (base32 "1xc45rs09aj899wz9ghyizq6ddbgxpkqq5bl1jc89hls5laf7qjb"))))
+        (base32 "08n1c2j38vd1qrf18ilgvq6rl7z9yrsyq9ljf037yiw6zlphx4da"))))
     (build-system font-build-system)
     (home-page "https://be5invis.github.io/Iosevka/")
     (synopsis "Coders' typeface, built from code")
@@ -1254,8 +1308,8 @@ typeface, by mimicking Comic Sans while fixing its most obvious shortcomings.")
      "Iosevka is a slender monospace sans-serif or slab-serif typeface inspired
 by Pragmata Pro, M+, and PF DIN Mono, designed to be the ideal font for
 programming.  Iosevka is completely generated from its source code.")
-    (license (list license:silofl1.1 ; build artifacts (i.e. the fonts)
-                   license:bsd-3)))) ; supporting code
+    (license (list license:silofl1.1    ;build artifacts (i.e., the fonts)
+                   license:bsd-3))))    ;supporting code
 
 (define-public font-iosevka-slab
   (package
@@ -1269,7 +1323,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-slab-" version ".zip"))
        (sha256
-        (base32 "0qpfzyi050zca0bwhb460nvcaarij4srhify0rb8sf9ygpzyvnjh"))))))
+        (base32 "1ggrbl8gi2hv8yiw7vw8cajlv7nkz8i975165cayyzppjlrfs3nr"))))))
 
 (define-public font-iosevka-term
   (package
@@ -1283,7 +1337,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttf-iosevka-term-" version ".zip"))
        (sha256
-        (base32 "092ygzv24wbi8cjjsmq0jkxdf4cm7wqlfj7jkn0cip7nlbyskl3h"))))
+        (base32 "1jmbp3hni99l92653b356nbmj45kd54kbl6c6ws1k5jxydrjglrh"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1304,7 +1358,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version "/"
                            "ttf-iosevka-term-slab-" version ".zip"))
        (sha256
-        (base32 "157kdxrxz981ympd2iww66v50vm2cxd7z98vvb36rii94hf30k7x"))))
+        (base32 "19fc6jbkv0aif6ds9ddxaarz2ambzln7y6k2qjsczwlbznr8cf09"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1325,7 +1379,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-aile-" version ".zip"))
        (sha256
-        (base32 "0n52lfn7awc28a4f5yh4my8q4ikzza705kp69chfw9jm2xx79npc"))))))
+        (base32 "1bkrk4dqkj45fbaac2n61a5kwxs3bk6sdm5hanw7g2h4xb83fi8d"))))))
 
 (define-public font-iosevka-curly
   (package
@@ -1339,7 +1393,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-" version ".zip"))
        (sha256
-        (base32 "0m51r0bc25khllq8nsfgsldhwfs7kzl8kqasivjlm14mpv5080fn"))))))
+        (base32 "12jdb38dlbwa58q0b0sf9sp1dcafzp9dcf71jf1wrlnn8047vxyx"))))))
 
 (define-public font-iosevka-curly-slab
   (package
@@ -1353,7 +1407,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-slab-" version ".zip"))
        (sha256
-        (base32 "0ffiz2kg43kc2dxv48sjji33ra3kc6sy8vlard93c601fqjmrjws"))))))
+        (base32 "0zn21bxyj0ni4vbdarwam2piixzvkdk769vg3k4fl3h03q56cj24"))))))
 
 (define-public font-iosevka-etoile
   (package
@@ -1367,26 +1421,12 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-etoile-" version ".zip"))
        (sha256
-        (base32 "1fj8g7sjp9idjh14iqk4wsz3rdarlmq7amcdsr0dznwyivx8a9wx"))))))
-
-(define-public font-iosevka-sparkle
-  (package
-    (inherit font-iosevka)
-    (name "font-iosevka-sparkle")
-    (version (package-version font-iosevka))
-    (source
-     (origin
-       (method url-fetch/zipbomb)
-       (uri (string-append "https://github.com/be5invis/Iosevka"
-                           "/releases/download/v" version
-                           "/ttc-iosevka-sparkle-" version ".zip"))
-       (sha256
-        (base32 "00dw894930xdikai8bcaimp0a3720diwi0r7ii52jwl4d70w53dx"))))))
+        (base32 "0lnpdvv20g2bg6rwl0gv83bkbgfmkbyfxshhpw9vprfs2g8k6lil"))))))
 
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.12.7")
+    (version "0.31.2")
     (source
      (origin
        (method url-fetch)
@@ -1394,7 +1434,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "09v65k00g8m953s6riz9xjzb2jgr6v5pdhcllalzzl7c1cn2xl3k"))))
+        (base32 "0p67qyhm266s6q17islqvwch807fy5slgp2symrl0z665vp6hycj"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1970,6 +2010,26 @@ always uses Farsi digits, and does not include Latin glyphs from Roboto.
             "file://LICENSE" "Bitstream Vera License")
            license:asl2.0))))           ; Latin glyphs from Roboto
 
+(define-public font-victor-mono
+  (package
+   (name "font-victor-mono")
+   (version "1.4.2")
+   (source (origin
+            (method url-fetch/zipbomb)
+            (uri (string-append
+                       "https://github.com/rubjo/victor-mono/raw/v"
+                       version
+                       "/public/VictorMonoAll.zip"))
+            (sha256 "01260vja0d22mcvkzspf0xnl7b851r0265arqkm12q1vagzyxvkm")))
+   (build-system font-build-system)
+   (synopsis "Font with support for italics and ligatures")
+   (description "Victor Mono is an open-source monospaced font with
+optional semi-connected cursive italics and programming symbol ligatures.
+This package provides only TrueType files (TTF).
+It comes in seven weights and Roman, Italic and Oblique styles.")
+   (home-page "https://rubjo.github.io/victor-mono/")
+   (license license:expat)))
+
 (define-public font-meera-inimai
   (package
     (name "font-meera-inimai")
@@ -2156,3 +2216,54 @@ suitable for a wide range of uses.")
     (description "Cozette is a 6x13px (bounding box) bitmap font based on Dina
 and heavily inspired by Creep.")
     (license license:expat)))
+
+(define-public font-montserrat
+  (package
+    (name "font-montserrat")
+    (version "7.210")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/JulietaUla/Montserrat")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jn1yvfamq5xazw85sfnxgriji60g7mkss9mkf8d0117vdk838bn"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/JulietaUla/Montserrat")
+    (synopsis "The Montserrat font")
+    (description "The old posters and signs in the traditional Montserrat
+neighborhood of Buenos Aires inspired Julieta Ulanovsky to design this
+typeface and rescue the beauty of urban typography that emerged in the first
+half of the twentieth century.")
+    (license license:silofl1.1)))
+
+(define-public font-overpass
+  (package
+    (name "font-overpass")
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/RedHatOfficial/Overpass")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pl7zpwlx0j2xv23ahnpmbb4a5d6ib2cjck5mxqzi3jjk25rk9kb"))))
+    (build-system font-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-webfonts
+           (lambda _
+             (delete-file-recursively "webfonts"))))))
+    (home-page "https://overpassfont.org")
+    (synopsis "Sans serif font family inspired by Highway Gothic")
+    (description
+     "Overpass is a sans-serif typeface based on the U.S. interstate highway
+road signage typefaces, adapted for on-screen display and user interfaces.
+Overpass includes proportional and monospace variants.")
+    (license (list license:silofl1.1
+                   license:lgpl2.1))))

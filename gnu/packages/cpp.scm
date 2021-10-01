@@ -2,11 +2,11 @@
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
-;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
@@ -18,7 +18,6 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Milkey Mouse <milkeymouse@meme.institute>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
-
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +44,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix modules)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
@@ -65,6 +65,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
@@ -273,7 +274,7 @@ combination of these streams.")
 (define-public xsimd
   (package
     (name "xsimd")
-    (version "7.4.10")
+    (version "7.5.0")
     (source
      (origin
        (method git-fetch)
@@ -281,7 +282,7 @@ combination of these streams.")
              (url "https://github.com/QuantStack/xsimd")
              (commit version)))
        (sha256
-        (base32 "097yvxrxdldi5s5m4nsxv8f4gwv9xj42mqig98a1z3hkjj1j2gn5"))
+        (base32 "0c9pq5vz43j99z83w3b9qylfi66mn749k1afpv5cwfxggbxvy63f"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -555,6 +556,66 @@ tools:
 @end itemize\n")
     (license license:bsd-3)))
 
+(define-public cpp-httplib
+  ;; this package is not graftable, as everything is implemented in a single
+  ;; header
+  (package
+    (name "cpp-httplib")
+    (version "0.8.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yhirose/cpp-httplib")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0c0gyfbvm34bgrqy9fhfxw1f8nb9zhf063j7xq91k892flb7qm1c"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       '("-DBUILD_SHARED_LIBS=ON"
+         "-DHTTPLIB_COMPILE=ON"
+         "-DHTTPLIB_REQUIRE_BROTLI=ON"
+         "-DHTTPLIB_REQUIRE_OPENSSL=ON"
+         "-DHTTPLIB_REQUIRE_ZLIB=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-network-tests
+           (lambda _
+             (for-each
+              (lambda (test)
+                (substitute* "test/test.cc"
+                  (((string-append "\\(" test))
+                   (string-append "(DISABLED_" test))))
+              ;; There are tests requiring network access, disable them
+              '("AbsoluteRedirectTest" "BaseAuthTest" "CancelTest"
+                "ChunkedEncodingTest" "ChunkedEncodingTest"
+                "DecodeWithChunkedEncoding" "DefaultHeadersTest"
+                "DigestAuthTest" "HttpsToHttpRedirectTest"
+                "RangeTest" "RedirectTest" "RelativeRedirectTest"
+                "SSLClientTest" "SendAPI" "TooManyRedirectTest" "UrlWithSpace"
+                "YahooRedirectTest" "YahooRedirectTest"))))
+         (replace 'check
+           (lambda* (#:key source tests? #:allow-other-keys)
+             ;; openssl genrsa wants to write a file in the git checkout
+             (when tests?
+               (with-directory-excursion "../source/test"
+                 (invoke "make"))))))))
+    (native-inputs
+     ;; required to build shared lib
+     `(("python" ,python)))
+    (inputs
+     `(("brotli" ,brotli)
+       ("openssl" ,openssl)
+       ("zlib" ,zlib)))
+    (home-page "https://github.com/yhirose/cpp-httplib")
+    (synopsis "C++ HTTP/HTTPS server and client library")
+    (description "cpp-httplib is a C++11 single-file cross platform blocking
+HTTP/HTTPS library, easy to setup.  It can also be used as a single-header
+library.")
+    (license license:expat)))
+
 (define-public cpplint
   (package
     (name "cpplint")
@@ -587,7 +648,7 @@ tools:
     (synopsis "Static code checker for C++")
     (description "@code{cpplint} is a command-line tool to check C/C++ files
 for style issues following Google’s C++ style guide.  While Google maintains
-it's own version of the tool, this is a fork that aims to be more responsive
+its own version of the tool, this is a fork that aims to be more responsive
 and make @code{cpplint} usable in wider contexts.")
     (license license:bsd-3)))
 
@@ -775,7 +836,7 @@ standard GNU style syntax for options.")
 (define-public folly
   (package
     (name "folly")
-    (version "2021.01.25.00")
+    (version "2021.04.26.00")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -784,7 +845,7 @@ standard GNU style syntax for options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14dl1g6vf7mc90mcync5h2lp14fwcx8n9h91pmiq6rfgv1fjjrwz"))))
+                "0s3jb02qjl9f4gfj01pa01cilkfpc4p0gbpn6bg5vcicyj76garg"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests must be explicitly enabled
@@ -898,7 +959,7 @@ provides a number of utilities to make coding with expected cleaner.")
 (define-public magic-enum
   (package
     (name "magic-enum")
-    (version "0.7.2")
+    (version "0.7.3")
     (home-page "https://github.com/Neargye/magic_enum")
     (source (origin
               (method git-fetch)
@@ -908,7 +969,7 @@ provides a number of utilities to make coding with expected cleaner.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07j5zdf3vkliwrcv6k663k35akn7qp23794sz2mnvkj9hbv9s8cx"))))
+                "1x47radgsifgz3vn2561mlvf4cq46ii33cpyqf01znm56iirwq89"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gcc" ,gcc-9)))
@@ -1211,3 +1272,41 @@ of reading and writing XML.")
     ;; incompatible with the GPL v2.  Refer to the file named FLOSSE for the
     ;; details.
     (license license:gpl2+)))
+
+(define-public jsonnet
+  (package
+    (name "jsonnet")
+    (version "0.17.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/jsonnet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ddz14699v5lqx3dh0mb7hfffr6fk5zhmzn3z8yxkqqvriqnciim"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (rename-file "third_party/md5" ".md5")
+            (delete-file-recursively "third_party")
+            (delete-file-recursively "doc/third_party")
+            (substitute* '("core/vm.cpp")
+              (("#include \"json.hpp\"") "#include <nlohmann/json.hpp>"))
+            (mkdir "third_party")
+            (rename-file ".md5" "third_party/md5")))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DUSE_SYSTEM_GTEST=ON" "-DUSE_SYSTEM_JSON=ON"
+                           "-DBUILD_STATIC_LIBS=OFF")))
+    (native-inputs
+     `(("googletest" ,googletest)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("json-modern-cxx" ,json-modern-cxx)))
+    (home-page "https://jsonnet.org/")
+    (synopsis "Data templating language")
+    (description "Jsonnet is a templating language extending JSON
+syntax with variables, conditions, functions and more.")
+    (license license:asl2.0)))

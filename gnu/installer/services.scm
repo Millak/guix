@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,7 +30,6 @@
             system-service-packages
 
             desktop-system-service?
-            networking-system-service?
 
             %system-services
             system-services->configuration))
@@ -38,7 +38,7 @@
   system-service make-system-service
   system-service?
   (name            system-service-name)           ;string
-  (type            system-service-type)           ;'desktop | 'networking
+  (type            system-service-type)           ;'desktop|'networking|…
   (recommended?    system-service-recommended?    ;Boolean
                    (default #f))
   (snippet         system-service-snippet         ;list of sexps
@@ -46,7 +46,6 @@
   (packages        system-service-packages        ;list of sexps
                    (default '())))
 
-;; This is the list of desktop environments supported as services.
 (define %system-services
   (let-syntax ((desktop-environment (syntax-rules ()
                                       ((_ fields ...)
@@ -56,6 +55,7 @@
                (G_ (syntax-rules ()               ;for xgettext
                      ((_ str) str))))
     (list
+     ;; This is the list of desktop environments supported as services.
      (desktop-environment
       (name "GNOME")
       (snippet '((service gnome-desktop-service-type))))
@@ -118,15 +118,17 @@
      (system-service
       (name (G_ "DHCP client (dynamic IP address assignment)"))
       (type 'network-management)
-      (snippet '((service dhcp-client-service-type)))))))
+      (snippet '((service dhcp-client-service-type))))
+
+     ;; Dealing with documents.
+     (system-service
+      (name (G_ "CUPS printing system (no Web interface by default)"))
+      (type 'document)
+      (snippet '((service cups-service-type)))))))
 
 (define (desktop-system-service? service)
   "Return true if SERVICE is a desktop environment service."
   (eq? 'desktop (system-service-type service)))
-
-(define (networking-system-service? service)
-  "Return true if SERVICE is a desktop environment service."
-  (eq? 'networking (system-service-type service)))
 
 (define (system-services->configuration services)
   "Return the configuration field for SERVICES."

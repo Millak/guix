@@ -8,8 +8,9 @@
 ;;; Copyright © 2019 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2020, 2021 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Tissevert <tissevert+guix@marvid.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +43,7 @@
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages enlightenment)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
@@ -139,6 +141,11 @@
                ((".*Test_popup_drag_termwin.*" line)
                 (string-append line "return\n")))
              #t))
+         (add-before 'install 'fix-installman.sh
+           (lambda _
+             (substitute* "src/installman.sh"
+               (("/bin/sh")
+                (which "sh")))))
          (add-after 'install 'install-guix.vim
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((vimdir (string-append (assoc-ref outputs "out") "/share/vim")))
@@ -467,7 +474,7 @@ trouble using them, because you do not have to remember each snippet name.")
 (define-public vim-fugitive
   (package
     (name "vim-fugitive")
-    (version "3.2")
+    (version "3.3")
     (source
       (origin
         (method git-fetch)
@@ -477,7 +484,7 @@ trouble using them, because you do not have to remember each snippet name.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1jbn5jxadccmcz01j94d0i1bp74cixr0fpxxf1h0aqdf1ljk3d7n"))))
+          "1ybmy2dk9zsmd3kyyj40qn20gzgd16n5p77sjxp8bspx3zb7km5y"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -579,6 +586,43 @@ are detected, the user is notified.")
     (home-page "https://github.com/vim-syntastic/syntastic")
     (license license:wtfpl2)))
 
+(define-public vim-solarized
+  (let ((commit "62f656a02f93c5190a8753159e34b385588d5ff3")
+        (revision "1"))
+    (package
+      (name "vim-solarized")
+      (version (git-version "1.0.0beta1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/altercation/solarized")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0001mz5v3a8zvi3gzmxhi3yrsb6hs7qf6i497arsngnvj2cwn61d"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan
+         '(("vim-colors-solarized/colors" "share/vim/vimfiles/")
+           ("vim-colors-solarized/doc" "share/vim/vimfiles/"))))
+      (home-page "https://github.com/altercation/vim-colors-solarized")
+      (synopsis "Solarized color scheme for Vim")
+      (description
+       "This package provides the Solarized theme as a Vim color scheme.
+
+Solarized is a 16-color palette comprising 8 monotones and 8 accent
+colors.  It was designed for use with both terminal and GUI applications, and
+has a dark and a light mode.
+
+Based on CIELAB lightness relationships between colors, this theme reduces
+brightness contrast but retains contrasting hues based on colorwheel relations
+for syntax highlighting readability.
+
+It keeps the same selective contrast relationships and overall feel when
+switching between the light and dark background modes.")
+      (license license:expat))))
+
 (define-public editorconfig-vim
   (package
     (name "editorconfig-vim")
@@ -657,7 +701,7 @@ are detected, the user is notified.")))
                      (lambda (prefix)
                        (let ((path (string-append prefix "/share/lua/" lua-version)))
                          (string-append path "/?.lua;" path "/?/?.lua"))))
-                    (lua-inputs (map (cute assoc-ref %build-inputs <>)
+                    (lua-inputs (map (cute assoc-ref inputs <>)
                                      '("lua"
                                        "lua-luv"
                                        "lua-lpeg"
@@ -708,10 +752,52 @@ refactor Vim in order to:
     ;; except for parts that were contributed under the Vim license.
     (license (list license:asl2.0 license:vim))))
 
+(define-public eovim
+  (package
+    (name "eovim")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jeanguyomarch/eovim/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06b7crmz3wvvq15ncl0jk20s8j1pmna2jin0k5y5n5qxpafbgp3k"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #false ;no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'reference-nvim
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((nvim (string-append (assoc-ref inputs "neovim")
+                                        "/bin/nvim")))
+               ;; This substitution should change one line, and replaces the default
+               ;; value in the struct of options with an absolute store reference.
+               (substitute* "../source/src/main.c"
+                 (("(^[[:blank:]]+\\.nvim = \")nvim" _ start)
+                  (string-append start nvim))))))
+         (add-before 'build 'set-home
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("efl" ,efl)
+       ("msgpack" ,msgpack)
+       ("neovim" ,neovim)))
+    (home-page "https://github.com/jeanguyomarch/eovim/")
+    (synopsis "EFL GUI for Neovim")
+    (description "Graphical Neovim interface based on the @acronym{EFL, Enlightenment
+Foundation Libraries} toolkit.  Its features include customizable appearance
+and support for fonts with ligatures.")
+    (license license:expat)))
+
 (define-public vifm
   (package
     (name "vifm")
-    (version "0.11")
+    (version "0.12")
     (source
       (origin
         (method url-fetch)
@@ -722,7 +808,7 @@ refactor Vim in order to:
                               "vifm-" version ".tar.bz2")))
         (sha256
          (base32
-          "0rqyd424y0g5b5basw2ybb60r9gar4f40d1xgzr3c2dsy4jpwvyh"))))
+          "1h5j4y704nciyzg3aaav8sl3r5h9mpwq8f28cj65nnxk6a7n3a9k"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-build-timestamp")
@@ -815,24 +901,26 @@ through its msgpack-rpc API.")
 (define-public vim-guix-vim
   (package
     (name "vim-guix-vim")
-    (version "0.1.1")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://gitlab.com/Efraim/guix.vim")
+                     (url "https://gitlab.com/Efraim/guix.vim.git/")
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10bfy0dgwizxr56b4272b7sqajpr6lnz332pzx055dis2zzjap8z"))))
+                "0bk2mnvbv1rfr0zzx4m8jjdw98wbbmdffx1h9svrjpg25lcvqv1b"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
-       '(("compiler" "share/vim/vimfiles/")
+       '(("autoload" "share/vim/vimfiles/")
+         ("compiler" "share/vim/vimfiles/")
          ("doc" "share/vim/vimfiles/")
          ("indent" "share/vim/vimfiles/")
          ("ftdetect" "share/vim/vimfiles/")
          ("ftplugin" "share/vim/vimfiles/")
+         ("plugin" "share/vim/vimfiles/")
          ("syntax" "share/vim/vimfiles/"))))
     (home-page "https://gitlab.com/Efraim/guix.vim")
     (synopsis "Guix integration in Vim")
@@ -842,7 +930,7 @@ through its msgpack-rpc API.")
 (define-public vim-asyncrun
   (package
     (name "vim-asyncrun")
-    (version "2.8.5")
+    (version "2.8.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -851,7 +939,7 @@ through its msgpack-rpc API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mxsmjv497h6w8dxw0zvqginlx0yvrvrx4z3jhq2x3y2dfvpcm41"))))
+                "11zcw0sll6qg6ha0rr6n1cw5v73azvf7ycwn9lgiwa5cj7rrqjf4"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -892,6 +980,34 @@ asynchronous adapters (including tmux, screen, and a headless mode), and when
 the job completes, errors will be loaded and parsed automatically.")
     (license license:vim)))
 
+(define-public vim-gemini-vim
+  ;; No releases have been tagged.
+  (let ((commit "f300c54174fc0db8fb68f1bc04307b58612e9630")
+        (revision "1"))
+    (package
+      (name "vim-gemini-vim")
+      (version (git-version "0.0.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://git.sr.ht/~torresjrjr/gemini.vim")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "05ffhhfahjqwxyrqmsinsahrs15wknzl2qbj8mznyv319mn2civ2"))))
+      (build-system copy-build-system)
+      (arguments
+       `(#:install-plan
+         '(("ftdetect" "share/vim/vimfiles/")
+           ("syntax" "share/vim/vimfiles/"))))
+      (home-page "https://git.sr.ht/~torresjrjr/gemini.vim")
+      (synopsis "Vim syntax highlighting plugin for Gemini")
+      (description "This Vim plugin provides a Vim syntax highlighting plugin
+for Gemini Text, the text/gemini media type, as defined in the Gemini protocol
+specification.")
+      (license license:gpl3))))
+
 (define-public vim-eunuch
   (let ((commit "33e875b31c8b811a0a47908884a5e2339106bbe8")
         (revision "1"))
@@ -919,3 +1035,35 @@ the job completes, errors will be loaded and parsed automatically.")
 This package includes commands such as @code{SudoWrite} and @code{SudoEdit} and
 help working on Vim buffers and the files they reference with one command.")
       (license license:vim))))
+
+(define-public vim-slime
+  ;; No tagged releases.
+  (let ((commit "a522fed677e50175f52efc5848cc35209af33216")
+        (revision "1"))
+    (package
+      (name "vim-slime")
+      (version (git-version "0.0.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/jpalardy/vim-slime")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "0k4b629jn6xlxyjxdl3cgm06v9dmx967rqnslv5m82c9kscwpyh4"))))
+      (build-system copy-build-system)
+      (arguments
+       `(#:install-plan
+         '(("autoload" "share/vim/vimfiles/")
+           ("doc" "share/vim/vimfiles/")
+           ("ftplugin" "share/vim/vimfiles/")
+           ("plugin" "share/vim/vimfiles/"))))
+      (home-page "https://technotales.wordpress.com/2007/10/03/like-slime-for-vim/")
+      (synopsis "Vim plugin to give you some slime")
+      (description "SLIME is an Emacs plugin to turn Emacs into a Lisp IDE.  You
+can type text in a file, send it to a live REPL, and avoid having to reload all
+your code every time you make a change.  @code{Vim-slime} is an attempt at
+getting some of these features into Vim.  It works with any REPL and isn't tied
+to Lisp.")
+      (license license:expat))))

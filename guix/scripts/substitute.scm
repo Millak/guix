@@ -45,7 +45,7 @@
                 #:select (uri-abbreviation nar-uri-abbreviation
                           (open-connection-for-uri
                            . guix:open-connection-for-uri)))
-  #:autoload   (gnutls) (error/invalid-session)
+  #:autoload   (gnutls) (error/invalid-session error/again error/interrupted)
   #:use-module (guix progress)
   #:use-module ((guix build syscalls)
                 #:select (set-thread-name))
@@ -163,7 +163,9 @@ if file doesn't exist, and the narinfo otherwise."
 (define (lookup-narinfo caches path authorized?)
   "Return the narinfo for PATH in CACHES, or #f when no substitute for PATH
 was found."
-  (match (lookup-narinfos/diverse caches (list path) authorized?)
+  (match (lookup-narinfos/diverse
+          caches (list path) authorized?
+          #:open-connection open-connection-for-uri/cached)
     ((answer) answer)
     (_        #f)))
 
@@ -417,7 +419,14 @@ server certificates."
         (if (or (and (eq? key 'system-error)
                      (= EPIPE (system-error-errno `(,key ,@args))))
                 (and (eq? key 'gnutls-error)
-                     (eq? (first args) error/invalid-session))
+                     (memq (first args)
+                           (list error/invalid-session
+
+                                 ;; XXX: These two are not properly handled in
+                                 ;; GnuTLS < 3.7.3, in
+                                 ;; 'write_to_session_record_port'; see
+                                 ;; <https://bugs.gnu.org/47867>.
+                                 error/again error/interrupted)))
                 (memq key '(bad-response bad-header bad-header-component)))
             (proc (open-connection-for-uri/cached uri
                                                   #:verify-certificate? #f
@@ -511,8 +520,11 @@ PORT."
                                          (current-error-port)
                                          #:abbreviation nar-uri-abbreviation))))
                      ;; Keep RAW open upon completion so we can later reuse
-                     ;; the underlying connection.
-                     (progress-report-port reporter raw #:close? #f)))
+                     ;; the underlying connection.  Pass the download size so
+                     ;; that this procedure won't block reading from RAW.
+                     (progress-report-port reporter raw
+                                           #:close? #f
+                                           #:download-size dl-size)))
                   ((input pids)
                    ;; NOTE: This 'progress' port of current process will be
                    ;; closed here, while the child process doing the
@@ -631,7 +643,8 @@ found."
     (#f
      ;; This can only happen when this script is not invoked by the
      ;; daemon.
-     '("http://ci.guix.gnu.org"))))
+     '("http://ci.guix.gnu.org"
+       "http://bordeaux.guix.gnu.org"))))
 
 ;; In order to prevent using large number of discovered local substitute
 ;; servers, limit the local substitute urls list size.
@@ -764,7 +777,7 @@ default value."
                (loop))))))
        ((or ("-V") ("--version"))
         (show-version-and-exit "guix substitute"))
-       (("--help")
+       ((or ("-h") ("--help"))
         (show-help))
        (opts
         (leave (G_ "~a: unrecognized options~%") opts))))))

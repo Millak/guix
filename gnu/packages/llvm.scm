@@ -1,13 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Dennis Mungai <dmngaie@gmail.com>
-;;; Copyright © 2016, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -18,6 +18,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -476,21 +477,21 @@ output), and Binutils.")
               ("libc-debug" ,glibc "debug")
               ("libc-static" ,glibc "static")))))
 
-(define-public llvm-11
+(define-public llvm-12
   (package
     (name "llvm")
-    (version "11.0.0")
+    (version "12.0.1")
     (source
      (origin
       (method url-fetch)
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "0s94lwil98w7zb7cjrbnxli0z7gklb312pkw74xs1d6zk346hgwi"))))
+        "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))))
     (build-system cmake-build-system)
     (outputs '("out" "opt-viewer"))
     (native-inputs
-     `(("python" ,python-2) ;bytes->str conversion in clang>=3.7 needs python-2
+     `(("python" ,python)
        ("perl"   ,perl)))
     (inputs
      `(("libffi" ,libffi)))
@@ -537,6 +538,43 @@ front-ends derived from GCC 4.0.1.  A new front-end for the C family of
 languages is in development.  The compiler infrastructure includes mirror sets
 of programming tools as well as libraries with equivalent functionality.")
     (license license:asl2.0)))  ;with LLVM exceptions, see LICENSE.txt
+
+(define-public clang-runtime-12
+  (clang-runtime-from-llvm
+   llvm-12
+   "1950rg294izdwkaasi7yjrmadc9mzdd5paf0q63jjcq2m3rdbj5l"))
+
+(define-public clang-12
+  (clang-from-llvm llvm-12 clang-runtime-12
+                   "0px4gl27az6cdz6adds89qzdwb1cqpjsfvrldbz9qvpmphrj34bf"
+                   #:patches '("clang-11.0-libc-search-path.patch")
+                   #:tools-extra
+                   (origin
+                     (method url-fetch)
+                     (uri (llvm-uri "clang-tools-extra"
+                                    (package-version llvm-12)))
+                     (sha256
+                      (base32
+                       "1r9a4fdz9ci58b5z2inwvm4z4cdp6scrivnaw05dggkxz7yrwrb5")))))
+
+(define-public clang-toolchain-12
+  (make-clang-toolchain clang-12))
+
+(define-public llvm-11
+  (package
+    (inherit llvm-12)
+    (version "11.0.0")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (llvm-uri "llvm" version))
+      (sha256
+       (base32
+        "0s94lwil98w7zb7cjrbnxli0z7gklb312pkw74xs1d6zk346hgwi"))))
+    (native-inputs
+     `(;; TODO: Switch to Python 3 in the next rebuild cycle.
+       ("python" ,python-2)
+       ("perl"   ,perl)))))
 
 (define-public clang-runtime-11
   (clang-runtime-from-llvm
@@ -651,23 +689,23 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public llvm-7
   (package
     (inherit llvm-8)
-    (version "7.0.1")
+    (version "7.1.0")
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "llvm" version))
               (sha256
                (base32
-                "16s196wqzdw4pmri15hadzqgdi926zln3an2viwyq0kini6zr3d3"))))))
+                "0r1p5didv4rkgxyvbkyz671xddg6i3dxvbpsi1xxipkla0l9pk0v"))))))
 
 (define-public clang-runtime-7
   (clang-runtime-from-llvm
    llvm-7
-   "065ybd8fsc4h2hikbdyricj6pyv4r7r7kpcikhb2y5zf370xybkq"
+   "1n48p8gjarihkws0i2bay5w9bdwyxyxxbpwyng7ba58jb30dlyq5"
    '("clang-runtime-9-libsanitizer-mode-field.patch")))
 
 (define-public clang-7
   (clang-from-llvm llvm-7 clang-runtime-7
-                   "067lwggnbg0w1dfrps790r5l6k8n5zwhlsw7zb6zvmfpwpfn4nx4"
+                   "0vc4i87qwxnw9lci4ayws9spakg0z6w5w670snj9f8g5m9rc8zg9"
                    #:patches '("clang-7.0-libc-search-path.patch")))
 
 (define-public clang-toolchain-7
@@ -843,19 +881,88 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public clang clang-9)
 (define-public clang-toolchain clang-toolchain-9)
 
+(define-public llvm-for-rocm
+  (package
+    ;; Actually based on LLVM 13 as of v4.3, but llvm-12 works just fine.
+    (inherit llvm-12)
+    (name "llvm-for-rocm")
+    (version "4.3.0")                         ;this must match '%rocm-version'
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/RadeonOpenCompute/llvm-project.git")
+                    (commit (string-append "rocm-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p75nr1qpmy6crymdax5hm40wkimman4lnglz4x5cnbiqindya7s"))
+              (patches
+               (search-patches "llvm-roc-4.2.0-add_Object.patch"
+                               "llvm-roc-3.0.0-add_libraries.patch"
+                               "llvm-roc-4.0.0-remove-isystem-usr-include.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments llvm-12)
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'chdir
+             (lambda _
+               (chdir "llvm")))))
+       ((#:configure-flags flags)
+        ''("-DLLVM_ENABLE_PROJECTS=llvm;clang;lld"
+           "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
+           "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
+           "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
+           "-DBUILD_SHARED_LIBS:BOOL=TRUE"
+           "-DLLVM_VERSION_SUFFIX="))))
+    (properties `((hidden? . #t)
+                  ,@(package-properties llvm-12)))))
+
+
+
+(define-public libunwind-headers
+  (package
+    (name "libunwind-headers")
+    (version "12.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "libunwind" version))
+              (sha256
+               (base32
+                "192ww6n81lj2mb9pj4043z79jp3cf58a9c2qrxjwm5c3a64n1shb"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:phases (modify-phases (map (lambda (phase)
+                                      (assq phase %standard-phases))
+                                    '(set-paths unpack))
+                  (add-after 'unpack 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (mkdir out)
+                        (copy-recursively "include"
+                                          (string-append out "/include"))))))))
+    (home-page "https://clang.llvm.org/docs/Toolchain.html")
+    (synopsis "LLVM libunwind header files")
+    (description
+     "This package contains header files for the LLVM C++ unwinding library.")
+    (license license:asl2.0)))          ;with LLVM exceptions
+
 (define-public lld
   (package
     (name "lld")
-    (version "11.0.0")
+    (version "12.0.1")
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "lld" version))
               (sha256
                (base32
-                "077xyh7sij6mhp4dc4kdcmp9whrpz332fa12rwxnzp3wgd5bxrzg"))))
+                "0qg3fgc7wj34hdkqn21y03zcmsdd01szhhm1hfki63iifrm3y2v9"))))
     (build-system cmake-build-system)
+    (native-inputs
+     ;; Note: check <https://bugs.llvm.org/show_bug.cgi?id=49228> to see
+     ;; whether this is still necessary.
+     `(("libunwind-headers" ,libunwind-headers)))
     (inputs
-     `(("llvm" ,llvm-11)))
+     `(("llvm" ,llvm-12)))
     (arguments
      `(#:build-type "Release"
        ;; TODO: Tests require the lit tool, which isn't installed by the LLVM
@@ -870,13 +977,13 @@ components which highly leverage existing libraries in the larger LLVM Project."
 (define-public lldb
   (package
     (name "lldb")
-    (version "11.0.0")
+    (version "12.0.1")
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "lldb" version))
               (sha256
                (base32
-                "0wic9lyb2la9bkzdc13szkm4f793w1mddp50xvh237iraygw0w45"))))
+                "0g3pj1m3chafavpr35r9fynm85y2hdyla6klj0h28khxs2613i78"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCMAKE_CXX_COMPILER=clang++")))
@@ -884,8 +991,8 @@ components which highly leverage existing libraries in the larger LLVM Project."
      `(("pkg-config" ,pkg-config)
        ("swig" ,swig)))
     (inputs
-     `(("clang" ,clang-11)
-       ("llvm" ,llvm-11)
+     `(("clang" ,clang-12)
+       ("llvm" ,llvm-12)
 
        ;; Optional (but recommended) inputs.
        ("curses" ,ncurses)
@@ -955,6 +1062,97 @@ use with Clang, targeting C++11, C++14 and above.")
     (native-inputs
      `(("clang" ,clang-6)
        ("llvm" ,llvm-6)))))
+
+(define-public libcxxabi-6
+  (package
+    (name "libcxxabi")
+    (version "6.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/llvm/llvm-project")
+             (commit (string-append "llvmorg-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ki6796b5z08kh3a3rbysr5wwb2dkl6wal5dzd03i4li5xfkvx1g"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "-DLIBCXXABI_LIBCXX_INCLUDES="
+                            (assoc-ref %build-inputs "libcxx")
+                            "/include")
+             "-DCMAKE_C_COMPILER=clang"
+             "-DCMAKE_CXX_COMPILER=clang++")
+       #:phases
+       (modify-phases (@ (guix build cmake-build-system) %standard-phases)
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "libcxxabi")))
+         (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((gcc (assoc-ref inputs  "gcc")))
+               ;; Hide GCC's C++ headers so that they do not interfere with
+               ;; the ones we are attempting to build.
+               (setenv "CPLUS_INCLUDE_PATH"
+                       (string-join
+                        (cons (string-append
+                               (assoc-ref inputs "libcxx") "/include/c++/v1")
+                              (delete (string-append gcc "/include/c++")
+                                      (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                    #\:)))
+                        ":"))
+               (format #true
+                       "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                       (getenv "CPLUS_INCLUDE_PATH")))))
+         (add-after 'install 'install-headers
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((include-dir (string-append
+                                 (assoc-ref outputs "out") "/include")))
+               (install-file "../libcxxabi/include/__cxxabi_config.h" include-dir)
+               (install-file "../libcxxabi/include/cxxabi.h" include-dir)))))))
+    (native-inputs
+     `(("clang" ,clang-6)
+       ("llvm" ,llvm-6)
+       ("libcxx" ,libcxx-6)))
+    (home-page "https://libcxxabi.llvm.org")
+    (synopsis "C++ standard library support")
+    (description
+     "This package provides an implementation of low level support for a
+standard C++ library.")
+    (license license:expat)))
+
+(define-public libcxx+libcxxabi-6
+  (package
+    (inherit libcxx-6)
+    (name "libcxx+libcxxabi")
+    (version (package-version libcxx-6))
+    (arguments
+     `(#:configure-flags
+       (list "-DLIBCXX_CXX_ABI=libcxxabi"
+             (string-append "-DLIBCXX_CXX_ABI_INCLUDE_PATHS="
+                            (assoc-ref %build-inputs "libcxxabi")
+                            "/include"))
+       #:phases
+       (modify-phases (@ (guix build cmake-build-system) %standard-phases)
+         (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((gcc (assoc-ref inputs  "gcc")))
+               ;; Hide GCC's C++ headers so that they do not interfere with
+               ;; the ones we are attempting to build.
+               (setenv "CPLUS_INCLUDE_PATH"
+                       (string-join
+                        (delete (string-append gcc "/include/c++")
+                                (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                              #\:))
+                        ":"))
+               (format #true
+                       "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                       (getenv "CPLUS_INCLUDE_PATH"))))))))
+    (native-inputs
+     `(("clang" ,clang-6)
+       ("llvm" ,llvm-6)
+       ("libcxxabi" ,libcxxabi-6)))))
 
 (define-public libclc
   (package
@@ -1127,6 +1325,45 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
     (description
      "This package provides a Python binding to LLVM for use in Numba.")
     (license license:bsd-3)))
+
+(define-public (clang-python-bindings clang)
+  "Return a package for the Python bindings of CLANG."
+  (package
+    (inherit clang)
+    (name "python-clang")
+    (build-system python-build-system)
+    (outputs '("out"))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'build 'change-directory
+                    (lambda _
+                      (chdir "bindings/python")))
+                  (add-before 'build 'create-setup-py
+                    (lambda _
+                      ;; Generate a basic "setup.py", enough so it can be
+                      ;; built and installed.
+                      (with-output-to-file "setup.py"
+                        (lambda ()
+                          (display "from setuptools import setup
+setup(name=\"clang\", packages=[\"clang\"])\n")))))
+                  (add-before 'build 'set-libclang-file-name
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      ;; Record the absolute file name of libclang.so.
+                      (let ((clang (assoc-ref inputs "clang")))
+                        (substitute* "clang/cindex.py"
+                          (("libclang\\.so")
+                           (string-append clang "/lib/libclang.so")))))))))
+    (inputs `(("clang" ,clang)))
+    (synopsis "Python bindings to libclang")))
+
+(define-public python-clang-10
+  (clang-python-bindings clang-10))
+
+(define-public python-clang-11
+  (clang-python-bindings clang-11))
+
+(define-public python-clang-12
+  (clang-python-bindings clang-12))
 
 (define-public emacs-clang-format
   (package

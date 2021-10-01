@@ -4,9 +4,9 @@
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
+;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2014, 2017, 2021 Eric Bavier <bavier@posteo.net>
@@ -14,9 +14,9 @@
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2015, 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2015, 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2016 Dylan Jeffers <sapientech@sapientech@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -37,10 +37,13 @@
 ;;; Copyright © 2020 Holger Peters <holger.peters@posteo.de>
 ;;; Copyright © 2020 Noisytoot <noisytoot@gmail.com>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -282,14 +285,14 @@ using @url{https://github.com/saghul/pycares,pycares}.")
 (define-public python-aiorpcx
   (package
     (name "python-aiorpcx")
-    (version "0.18.3")
+    (version "0.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiorpcX" version))
        (sha256
         (base32
-         "0k545hc7wl6sh1svydzbv6x7sx5pig2pqkl3yxs9riwmvzawx9xp"))))
+         "0lx54bcinp44fmr8q4bbffsqbkg8kdcwykf9i5jj0bj3sfzgf9k0"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-attrs" ,python-attrs)))
@@ -304,16 +307,28 @@ The package includes a module with full coverage of JSON RPC versions 1.0 and
 comes with a SOCKS proxy client.")
     (license (list license:expat license:bsd-2))))
 
+(define-public python-aiorpcx-0.18
+  (package
+    (inherit python-aiorpcx)
+    (version "0.18.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiorpcX" version))
+       (sha256
+        (base32
+         "1rswrspv27x33xa5bnhrkjqzhv0sknv5kd7pl1vidw9d2z4rx2l0"))))))
+
 (define-public python-asgiref
   (package
     (name "python-asgiref")
-    (version "3.2.10")
+    (version "3.3.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "asgiref" version))
               (sha256
                (base32
-                "06kg3hnnvh7qg0w9amkvk1hd6n6bs055r04b7if6ipa7w4g92lby"))))
+                "0y0vdzldjkbs4pxf10pi6jpxq9b2sfp1rlwm153jcf5nvzxns8fi"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -361,13 +376,13 @@ WSGI.  This package includes libraries for implementing ASGI servers.")
 (define-public python-aws-sam-translator
   (package
     (name "python-aws-sam-translator")
-    (version "1.30.1")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aws-sam-translator" version))
               (sha256
                (base32
-                "0d9ppd94x2kw404m49ajswmmxgdngbs4p5ajyrdvnlivfzqbv7dx"))))
+                "1djwlsjpbh13m4biglimrm9lq7hmla0k29giay7k3cjsrylxvjhf"))))
     (build-system python-build-system)
     (arguments
      `(;; XXX: Tests are not distributed with the PyPI archive, and would
@@ -464,7 +479,7 @@ emit information from within their applications to the AWS X-Ray service.")
 (define-public python-cfn-lint
   (package
     (name "python-cfn-lint")
-    (version "0.41.0")
+    (version "0.54.1")
     (home-page "https://github.com/aws-cloudformation/cfn-python-lint")
     (source (origin
               (method git-fetch)
@@ -474,7 +489,7 @@ emit information from within their applications to the AWS X-Ray service.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nqs0fmj3hd7pnd9hkb4z57jvi2iv82hh6n3xxba6i6p8zgx75q4"))))
+                "161mzzlpbi85q43kwzrj39qb32l6wg6xhnbbd4z860yrfbymsn87"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -485,12 +500,14 @@ emit information from within their applications to the AWS X-Ray service.")
                         ;; to avoid a dependency on 'git'.
                         (delete-file
                          "test/unit/module/maintenance/test_update_documentation.py")
+                        (delete-file
+                         "test/unit/module/maintenance/test_update_resource_specs.py")
                         (setenv "PYTHONPATH"
                                 (string-append "./build/lib:"
                                                (getenv "PYTHONPATH")))
                         (setenv "PATH" (string-append out "/bin:"
                                                       (getenv "PATH")))
-                        (invoke "python" "-m" "unittest" "discover"
+                        (invoke "python" "-m" "unittest" "discover" "-v"
                                 "-s" "test")))))))
     (native-inputs
      `(("python-pydot" ,python-pydot)
@@ -706,7 +723,8 @@ Swartz.")
 
 (define-public python2-html2text
   (let ((base (package-with-python2 python-html2text)))
-    (package/inherit base
+    (package
+      (inherit base)
       ;; This is the last version with support for Python 2.
       (version "2019.8.11")
       (source (origin
@@ -824,9 +842,6 @@ websites.  It automatically stores and sends cookies, follows redirects, and can
 follow links and submit forms.  It doesn’t do JavaScript.")
     (license license:expat)))
 
-(define-public python2-mechanicalsoup
-  (package-with-python2 python-mechanicalsoup))
-
 (define-public python-hyperframe
   (package
     (name "python-hyperframe")
@@ -842,9 +857,10 @@ follow links and submit forms.  It doesn’t do JavaScript.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "test"))))))
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "-vv" "test")))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (home-page "https://github.com/python-hyper/hyperframe")
@@ -874,12 +890,13 @@ into HTTP/2 frames.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "test" "-k"
-                     ;; This test will be fixed in the next version. See:
-                     ;; https://github.com/python-hyper/hpack/issues/168.
-                     "not test_get_by_index_out_of_range"))))))
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "-vv" "test" "-k"
+                       ;; This test will be fixed in the next version. See:
+                       ;; https://github.com/python-hyper/hpack/issues/168.
+                       "not test_get_by_index_out_of_range")))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (home-page "https://hyper.rtfd.org")
@@ -904,8 +921,9 @@ for use in Python programs that implement HTTP/2.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (home-page "https://github.com/python-hyper/h11")
@@ -932,9 +950,10 @@ and that could be anything you want.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "test"))))))
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "-vv" "test")))))))
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (propagated-inputs
@@ -1061,6 +1080,31 @@ Origin Resource Sharing}, making cross-origin AJAX possible.")
      "Flask-Markdown supports several extensions for Markdown and integrates
 into Jinja2 by default.")
     (license license:bsd-3)))
+
+(define-public python-flask-misaka
+  (package
+    (name "python-flask-misaka")
+    (version "1.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Flask-Misaka" version))
+        (sha256
+          (base32
+            "12gm6hq3lvlj0ddw8p6lk5pky8jk3pw758ihffjl49shnnzc68zl"))))
+    (build-system python-build-system)
+    (native-inputs
+      `(("python-coverage" ,python-coverage)
+        ("python-mock" ,python-mock)))
+    (propagated-inputs
+      `(("python-flask" ,python-flask)
+        ("python-misaka" ,python-misaka)))
+    (home-page "https://github.com/singingwolfboy/flask-misaka/")
+    (synopsis "Flask interface to Misaka, a Markdown parsing library")
+    (description
+      "This package provides an interface between the Flask web framework and
+the Misaka Markdown parser.")
+    (license license:expat)))
 
 (define-public python-flask-session
   (package
@@ -1206,8 +1250,7 @@ Amazon S3 compatible object storage server.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://dl.bintray.com/pycurl/pycurl/pycurl-"
-                           version ".tar.gz"))
+       (uri (pypi-uri "pycurl" version))
        (sha256
         (base32 "1cwlb76vddqp2mxqvjbhf367caddzy82rhangddjjhjqaj8x4zgc"))))
     (build-system python-build-system)
@@ -1749,14 +1792,14 @@ web framework, either via the basic or digest authentication schemes.")
 (define-public python-terminado
   (package
     (name "python-terminado")
-    (version "0.9.4")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "terminado" version))
        (sha256
         (base32
-         "1glqyw97rddyzvisz8rihsn3x2nrm5xbyq82nzp3123pqbxvqzcs"))))
+         "1smvra3sc9sg64w49kfn5yhagshq3x55839748ck5dvxvk4hgza6"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-tornado" ,python-tornado-6)
@@ -1772,17 +1815,7 @@ web framework, either via the basic or digest authentication schemes.")
     (synopsis "Terminals served to term.js using Tornado websockets")
     (description "This package provides a Tornado websocket backend for the
 term.js Javascript terminal emulator library.")
-    (license license:bsd-2)
-    (properties `((python2-variant . ,(delay python2-terminado))))))
-
-(define-public python2-terminado
-  (let ((terminado (package-with-python2 (strip-python2-variant python-terminado))))
-    (package/inherit terminado
-      (propagated-inputs
-       `(("python2-backport-ssl-match-hostname"
-          ,python2-backport-ssl-match-hostname)
-         ("python2-futures" ,python2-futures)
-          ,@(package-propagated-inputs terminado))))))
+    (license license:bsd-2)))
 
 (define-public python-wsgi-intercept
   (package
@@ -2784,15 +2817,16 @@ supports url redirection and retries, and also gzip and deflate decoding.")
     (license license:expat)))
 
 (define python-urllib3/fixed
-  (package/inherit python-urllib3
-    (version "1.26.4")
+  (package
+    (inherit python-urllib3)
+    (version "1.26.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urllib3" version))
        (sha256
         (base32
-         "0dw9w9bs3hmr5dp3r3h43jyzzb1g1046ag7lj8pqf58i4kvj3c77"))))))
+         "1kkf6gi8a1fs0dqkf6kpmdpsy97iirvliz8q1krxp8ppaiawd1s9"))))))
 
 ;; Some software requires an older version of urllib3, notably Docker.
 (define-public python-urllib3-1.24
@@ -2804,7 +2838,6 @@ supports url redirection and retries, and also gzip and deflate decoding.")
                      (sha256
                       (base32
                        "1x0slqrv6kixkbcdnxbglvjliwhc1payavxjvk8fvbqjrnasd4r3"))))))
-
 
 (define-public python2-urllib3
   (let ((base (package-with-python2 (strip-python2-variant python-urllib3))))
@@ -2881,9 +2914,6 @@ It also includes code to sign requests and pass private data,
 and to spawn subprocesses to handle requests.")
     (license license:expat)))
 
-(define-public python2-wsgiproxy2
- (package-with-python2 python-wsgiproxy2))
-
 (define-public python-pastedeploy
   (package
     (name "python-pastedeploy")
@@ -2916,14 +2946,13 @@ file.")
 (define-public python-webtest
   (package
     (name "python-webtest")
-    (version "2.0.33")
+    (version "2.0.35")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "WebTest" version))
        (sha256
-        (base32
-         "1l3z0cwqslsf4rcrhi2gr8kdfh74wn2dw76376i4g9i38gz8wd21"))))
+        (base32 "11xhgdj251zkvz5w30fvspii08ki2vrpr1im9sph1wmlnasnihda"))))
     (build-system python-build-system)
     (arguments
      ;; Tests require python-pyquery, which creates a circular dependency.
@@ -3521,13 +3550,13 @@ applications.")
 (define-public python-flask-sqlalchemy
   (package
     (name "python-flask-sqlalchemy")
-    (version "2.4.4")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Flask-SQLAlchemy" version))
               (sha256
                (base32
-                "1rgsj49gnx361hnb3vn6c1h17497qh22yc3r70l1r6w0mw71bixz"))))
+                "04jrx4sjrz1b20j38qk4qin975xwz30krzq59rfv3b3w7ss49nib"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-flask" ,python-flask)
@@ -3811,22 +3840,18 @@ CSS tidy.  Also supports URL rewriting in CSS files.")
 (define-public python-elasticsearch
   (package
     (name "python-elasticsearch")
-    (version "7.1.0")
+    (version "7.13.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "elasticsearch" version))
         (sha256
          (base32
-          "0rnjvlhw4v3vg14l519qliy1s1zpmx3827q0xfviwvk42rr7hh01"))))
+          "1q38w9nh2j2yi82d8rhzb57597l4lq5zx7xzfg45xf7ffrgsipaj"))))
     (build-system python-build-system)
-    (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-nosexcover" ,python-nosexcover)
-       ("python-pyaml" ,python-pyaml)
-       ("python-requests" ,python-requests)))
     (propagated-inputs
-     `(("urllib3" ,python-urllib3)))
+     `(("python-certifi" ,python-certifi)
+       ("python-urllib3" ,python-urllib3)))
     (arguments
      ;; tests require the test_elasticsearch module but it is not distributed.
      `(#:tests? #f))
@@ -3927,7 +3952,7 @@ for Flask programs that are using @code{python-alembic}.")
 (define-public python-genshi
   (package
     (name "python-genshi")
-    (version "0.7.3")
+    (version "0.7.5")
     (source
      (origin
        (method git-fetch)
@@ -3936,7 +3961,9 @@ for Flask programs that are using @code{python-alembic}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04bw7nd4wyn8ixnhik57hny2xpjjpn80k5hp6691inix5gc6rxaf"))))
+        (base32 "04i0caywiwrgw09grz988n15qr9lr31d9n6a529p8v80cy1fv23c"))))
+    (propagated-inputs
+     `(("python-six" ,python-six)))
     (build-system python-build-system)
     (home-page "https://genshi.edgewall.org/")
     (synopsis "Toolkit for generation of output for the web")
@@ -4123,28 +4150,37 @@ addon modules.")
 (define-public python-wtforms
   (package
     (name "python-wtforms")
-    (version "2.1")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "WTForms" version ".zip"))
+       (uri (pypi-uri "WTForms" version))
        (sha256
         (base32
-         "0vyl26y9cg409cfyj8rhqxazsdnd0jipgjw06civhrd53yyi1pzz"))))
+         "17427m7p9nn9byzva697dkykykwcp2br3bxvi8vciywlmkh5s6c1"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-django-test
-           ;; Don't fail the tests when the inputs for the optional tests cannot be found.
+         (add-after 'unpack 'delete-bundled-test
            (lambda _
-             (substitute*
-               "tests/runtests.py"
-               (("'ext_django.tests', 'ext_sqlalchemy', 'ext_dateutil', 'locale_babel'") "")
-               (("sys.stderr.write(\"### Disabled test '%s', dependency not found\n\" % name)") ""))
-             #t)))))
+             ;; Delete test copied from a third party package that fails
+             ;; with newer SQLAlchemy.  This can be removed for 3.0.
+             ;; See <https://github.com/wtforms/wtforms/issues/696>.
+             (delete-file "tests/ext_sqlalchemy.py")))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "setup.py" "compile_catalog")
+               (invoke "python" "tests/runtests.py")))))))
     (native-inputs
-     `(("unzip" ,unzip)))
+     `(("python-dateutil" ,python-dateutil)
+       ("python-sqlalchemy" ,python-sqlalchemy)))
+    (propagated-inputs
+     `(("python-babel" ,python-babel)
+       ("python-email-validator" ,python-email-validator)
+       ("python-markupsafe" ,python-markupsafe)))
     (home-page "http://wtforms.simplecodes.com/")
     (synopsis
      "Form validation and rendering library for Python web development")
@@ -4153,9 +4189,6 @@ addon modules.")
 for Python web development.  It is very similar to the web form API
 available in Django, but is a standalone package.")
     (license license:bsd-3)))
-
-(define-public python2-wtforms
-  (package-with-python2 python-wtforms))
 
 (define-public python-paste
   (package
@@ -4294,6 +4327,25 @@ name resolutions asynchronously.")
     (description "@code{yarl} module provides handy @code{URL} class
 for URL parsing and changing.")
     (license license:asl2.0)))
+
+(define-public python-google
+  (package
+    (name "python-google")
+    (version "3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "google" version))
+              (sha256
+               (base32
+                "1gncv3l11za0mpxvmpaf5n5j3jzp282rz62yml4ha4z55q930d8l"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f)) ; There are no tests.
+    (home-page "https://breakingcode.wordpress.com/")
+    (synopsis "Python bindings to the Google search engine")
+    (description "This package provides Python bindings for using the
+Google search engine.  Its module is called @code{googlesearch}.")
+    (license license:bsd-3)))
 
 (define-public python-google-api-client
   (package
@@ -4557,6 +4609,49 @@ library to create slugs from unicode strings while keeping it DRY.")
     (description "Generate complex HTML+JS pages with Python")
     (license license:expat)))
 
+(define-public python-tinycss
+  (package
+    (name "python-tinycss")
+    (version "0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tinycss" version))
+       (sha256
+        (base32 "0vkifr595h28ymkjhrswwf0bm23lhznh5f44xyp7x7jy1ssnyc0j"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-flake8-isort
+           ;; Flake8 and isort tests fail.
+           (lambda _
+             (substitute* "setup.cfg" ((" --flake8 --isort") ""))
+             #t))
+         (replace 'check
+           (lambda _
+             ;; Disable failing test.
+             (invoke "python" "-m" "pytest" "-k"
+                     "not test_speedups"))))))
+    (native-inputs
+     `(("python-pytest-cov" ,python-pytest-cov)
+       ("python-pytest-flake8" ,python-pytest-flake8)
+       ("python-pytest-isort" ,python-pytest-isort)
+       ("python-pytest-runner" ,python-pytest-runner)))
+    (home-page "https://tinycss.readthedocs.io/")
+    (synopsis "Complete yet simple CSS parser for Python")
+    (description
+     "@code{tinycss} is a complete yet simple CSS parser for Python.  It
+supports the full syntax and error handling for CSS 2.1 as well as some CSS 3
+modules:
+
+@itemize
+@item CSS Color 3
+@item CSS Fonts 3
+@item CSS Paged Media 3
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-tinycss2
   (package
     (name "python-tinycss2")
@@ -4689,14 +4784,14 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
 (define-public gunicorn
   (package
     (name "gunicorn")
-    (version "20.0.4")
+    (version "20.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gunicorn" version))
        (sha256
         (base32
-         "09n6fc019bgrvph1s5h1lwhn2avcsprw6ncd203qhra3i8mvn10r"))))
+         "1s7670qw36x90bgmazmgib170i5gnpyb2ypxzlla7y0mpasniag0"))))
     (outputs '("out" "doc"))
     (build-system python-build-system)
     (arguments
@@ -4709,10 +4804,17 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
              (delete-file "docs/build/texinfo/Gunicorn.texi")
              #t))
          (replace 'check
-           (lambda _
-             (setenv "PYTHONPATH"
-                     (string-append ".:" (getenv "PYTHONPATH")))
-             (invoke "pytest")))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (if tests?
+                 (begin
+                   (setenv "PYTHONPATH"
+                           (string-append ".:" (getenv "PYTHONPATH")))
+                   (invoke "pytest" "-vv"
+                           ;; Disable the geventlet tests because eventlet uses
+                           ;; dnspython, which does not work in the build
+                           ;; container due to lack of /etc/resolv.conf, etc.
+                           "--ignore=tests/workers/test_geventlet.py"))
+                 (format #t "test suite not run~%"))))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((doc (string-append (assoc-ref outputs "doc")
@@ -4728,11 +4830,26 @@ event loop.  It is implemented in Cython and uses libuv under the hood.")
                (copy-recursively "examples" examples)
                (for-each (lambda (file)
                            (copy-file file (string-append doc "/" file)))
-                         '("README.rst" "NOTICE" "LICENSE" "THANKS")))
-             #t)))))
+                         '("README.rst" "NOTICE" "LICENSE" "THANKS")))))
+         ;; XXX: The wrap phase includes native inputs on PYTHONPATH, (see
+         ;; <https://bugs.gnu.org/25235>), leading to an inflated closure
+         ;; size.  Override it to only add the essential entries.
+         (replace 'wrap
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (python (assoc-ref (or native-inputs inputs) "python"))
+                    (sitedir (string-append "/lib/python"
+                                            (python-version python)
+                                            "/site-packages")))
+               (wrap-program (string-append out "/bin/gunicorn")
+                 `("PYTHONPATH" ":" prefix
+                   ,(map (lambda (output)
+                           (string-append output sitedir))
+                         (list python out))))))))))
     (native-inputs
      `(("binutils" ,binutils)  ;; for ctypes.util.find_library()
        ("python-aiohttp" ,python-aiohttp)
+       ("python-gevent" ,python-gevent)
        ("python-pytest" ,python-pytest)
        ("python-pytest-cov" ,python-pytest-cov)
        ("python-sphinx" ,python-sphinx)
@@ -5225,6 +5342,90 @@ Plus all the standard features of requests:
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-wsgiprox
+  (package
+    (name "python-wsgiprox")
+    (version "1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wsgiprox" version))
+       (sha256
+        (base32
+         "11fsm199pvwbmqx2lccznvws65aam1rqqv0w79gal8hispwgd5rs"))))
+    (build-system python-build-system)
+    (arguments
+     ;; The test suite hangs (see:
+     ;; https://github.com/webrecorder/wsgiprox/issues/6).
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-pytest-argument
+           (lambda _
+             ;; See: https://github.com/webrecorder/wsgiprox/issues/7.
+             (substitute* "setup.py"
+               (("--doctest-module")
+                "--doctest-modules")))))))
+    (propagated-inputs
+     `(("python-certauth" ,python-certauth)
+       ("python-gevent" ,python-gevent)
+       ("python-websocket-client" ,python-websocket-client)))
+    (native-inputs
+     `(("python-mock" ,python-mock)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ("python-waitress" ,python-waitress)))
+    (home-page "https://github.com/webrecorder/wsgiprox")
+    (synopsis "HTTP/S proxy with WebSockets over WSGI")
+    (description "@code{wsgiprox} is a Python WSGI (Web Server Gateway
+Interface) middle-ware for adding HTTP and HTTPS proxy support to a WSGI
+application.  The library accepts HTTP and HTTPS proxy connections, and routes
+them to a designated prefix.")
+    (license license:asl2.0)))
+
+(define-public python-warcio
+  ;; The PyPI release is missing some test support files (see:
+  ;; https://github.com/webrecorder/warcio/issues/132).
+  (let ((revision "0")
+        (commit "aa702cb321621b233c6e5d2a4780151282a778be"))
+    (package
+      (name "python-warcio")
+      (version (git-version "1.7.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/webrecorder/warcio")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "11afr6zy3r6rda81010iq496dazg4xid0izg3smg6ighpmvsnzf2"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'skip-problematic-tests
+             (lambda _
+               ;; These tests fail due to networking requirements.
+               (substitute* "setup.py"
+                 (("pytest.main\\(\\[" all)
+                  (string-append all "'-k', '"
+                                 (string-append "not test_post_chunked and "
+                                                "not test_remote") "'"))))))))
+      (native-inputs
+       ;; These inputs are required for the test suite.
+       `(("python-httpbin" ,python-httpbin)
+         ("python-pytest-cov" ,python-pytest-cov)
+         ("python-requests" ,python-requests)
+         ("python-wsgiprox" ,python-wsgiprox)))
+      (home-page "https://github.com/webrecorder/warcio")
+      (synopsis "Streaming web archival archive (WARC) library")
+      (description "warcio is a Python library to read and write the WARC format
+commonly used in Web archives. It is designed for fast, low-level access to
+web archival content, oriented around a stream of WARC records rather than
+files.")
+      (license license:asl2.0))))
+
 (define-public python-websockets
   (package
     (name "python-websockets")
@@ -5430,13 +5631,13 @@ according to the standard set by PasteDeploy ")
 (define-public python-hupper
   (package
     (name "python-hupper")
-    (version "1.10.2")
+    (version "1.10.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "hupper" version))
               (sha256
                (base32
-                "0am0p6g5cz6xmcaf04xq8q6dzdd9qz0phj6gcmpsckf2mcyza61q"))))
+                "1nbc648d110jx6ziji980cdmzsd14p8fqrcarsdvr1vm5jvm2vyd"))))
     (build-system python-build-system)
     (arguments '(#:test-target "pytest"))
     (native-inputs
@@ -5970,3 +6171,65 @@ your code non-blocking and speedy.")
      "Socks is a library providing core proxy (SOCKS4, SOCKS5, HTTP tunneling)
  functionality.")
     (license license:asl2.0)))
+
+(define-public python-azure-nspkg
+  (package
+    (name "python-azure-nspkg")
+    (version "3.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-nspkg" version ".zip"))
+       (sha256
+        (base32
+         "1l4xwdh0fcnvrv0mzig4g2kgqkfbsy64zjm1ggc6grk3mykcxlz7"))))
+    (build-system python-build-system)
+    (native-inputs `(("unzip" ,unzip)))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Azure namespace internals")
+    (description
+     "This package is an internal Azure namespace package.")
+    (license license:expat)))
+
+(define-public python-azure-storage-nspkg
+  (package
+    (name "python-azure-storage-nspkg")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure-storage-nspkg" version))
+       (sha256
+        (base32
+         "049qcmgshz7dj9yaqma0fwcgbxwddgwyfcw4gmv45xfmaa3bwfvg"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-azure-nspkg" ,python-azure-nspkg)))
+    (home-page "https://github.com/Azure/azure-storage-python")
+    (synopsis "Microsoft Azure Storage Namespace package")
+    (description
+     "This project provides a client library in Python that makes it easy to
+communicate with Microsoft Azure Storage services.")
+    (license license:expat)))
+
+(define-public python-w3lib
+  (package
+    (name "python-w3lib")
+    (version "1.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "w3lib" version))
+       (sha256
+        (base32
+         "1pv02lvvmgz2qb61vz1jkjc04fgm4hpfvaj5zm4i3mjp64hd1mha"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python-six" ,python-six)))
+    (home-page "https://github.com/scrapy/w3lib")
+    (synopsis "Python library of web-related functions")
+    (description
+     "This is a Python library of web-related functions, such as: remove
+comments, or tags from HTML snippets, extract base url from HTML snippets,
+translate entities on HTML strings, among other things.")
+    (license license:bsd-3)))

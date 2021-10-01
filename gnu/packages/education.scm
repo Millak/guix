@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
+;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,7 +141,7 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
@@ -148,8 +149,8 @@ of categories with some of the activities available in that category.
              "https://gcompris.net/download/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "08dw1q0h4qz2q0ksa5pbmb9v60hr1zv9skx6z8dlq9b1i7harnds"))))
-    (build-system cmake-build-system)
+        (base32 "1bpjwrv83rhikbycpyfpf6dbqr0xfq6amgdpqfgfph6nzr3zka7h"))))
+    (build-system qt-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -161,23 +162,7 @@ of categories with some of the activities available in that category.
              (setenv "DISPLAY" ":1")
              ;; The test suite wants to write to /homeless-shelter
              (setenv "HOME" (getcwd))
-             #t))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/gcompris-qt")
-                 `("QT_PLUGIN_PATH" ":" prefix
-                   ,(map (lambda (label)
-                           (string-append (assoc-ref inputs label)
-                                          "/lib/qt5/plugins"))
-                         '("qtbase" "qtdeclarative" "qtmultimedia" "qtsvg")))
-                 `("QML2_IMPORT_PATH" ":" prefix
-                   ,(map (lambda (label)
-                           (string-append (assoc-ref inputs label)
-                                          "/lib/qt5/qml"))
-                         '("qtdeclarative" "qtgraphicaleffects"
-                           "qtmultimedia" "qtquickcontrols"))))
-               #t))))
+             #t)))
        #:configure-flags (list "-DQML_BOX2D_MODULE=disabled"
                                "-DBUILD_TESTING=TRUE")))
     (native-inputs
@@ -190,7 +175,7 @@ of categories with some of the activities available in that category.
     (inputs
      `(("openssl" ,openssl)
        ("python" ,python-wrapper)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtmultimedia" ,qtmultimedia)
@@ -216,6 +201,61 @@ Currently available boards include:
 @end enumerate\n")
     (license (list license:silofl1.1    ; bundled fonts
                    license:gpl3+))))
+
+(define-public gotypist
+  (let ((revision "0")
+        (commit "03f8618f8e23acdaa94cda3bcf197da520db8dd4"))
+    (package
+      (name "gotypist")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/KappaDistributive/gotypist")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sjndaspqfzffjxz388m384wqz5lzbiw4cwpi688k5aq7n05jh0f"))))
+      (build-system go-build-system)
+      (arguments
+       `(#:unpack-path "github.com/KappaDistributive/gotypist"
+         #:import-path "github.com/KappaDistributive/gotypist/v1"
+         #:install-source? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'build 'install-data
+             (lambda* (#:key import-path unpack-path outputs #:allow-other-keys)
+               (let* ((out  (assoc-ref outputs "out"))
+                      (data (string-append out "/share/gotypist/data")))
+                 (with-directory-excursion "src"
+                   (with-directory-excursion import-path
+                     (substitute* "lesson.go"
+                       (("\"data/")
+                        (format #f "\"~a/" data))))
+                   (with-directory-excursion unpack-path
+                     (mkdir-p data)
+                     (copy-recursively "data" data))))))
+           (add-after 'install 'rename-executable
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin")))
+                 (with-directory-excursion bin
+                   (rename-file "v1" "gotypist"))))))))
+      (native-inputs
+       `(("go-github-com-gizak-termui" ,go-github-com-gizak-termui)
+         ("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+      (home-page "https://github.com/KappaDistributive/gotypist")
+      (synopsis "Simple typing trainer for text terminals")
+      (description
+       "Gotypist is a simple typing tutor for text terminals, similar to
+gtypist but with no instruction.  Hence it's best suited for people who already
+know how to touch type and wish to improve their typing accuracy and/or speed.
+
+You can provide your own lesson text, choose from the included samples, or ask
+@command{gotypist} to construct a random lesson from a fixed list of the most
+frequently used words in American English.")
+      (license license:expat))))
 
 (define-public tipp10
   (package
@@ -259,7 +299,7 @@ Currently available boards include:
                ;; Recreate Makefile
                (invoke "qmake")))))))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)))
     (home-page "https://www.tipp10.com/")
     (synopsis "Touch typing tutor")
@@ -276,7 +316,7 @@ easy.")
 (define-public snap
   (package
     (name "snap")
-    (version "6.6.0")
+    (version "6.9.0")
     (source
      (origin
        (method git-fetch)
@@ -285,7 +325,7 @@ easy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k0j0sp6zz2hnh7zc7f086zc3sld01h7sk277j6fak914yv6slzy"))))
+        (base32 "1wppz57lrrribrfnaiv6jrrf703w7i6ja0dnz8yx8naxhbsglwyf"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -314,8 +354,7 @@ easy.")
              (call-with-output-file script
                (lambda (port)
                  (format port "#!~a\n~a '~a'" bash xdg-open snap)))
-             (chmod script #o555)))
-         #t)))
+             (chmod script #o555))))))
     (inputs
      `(("bash" ,bash-minimal)
        ("js-filesaver" ,js-filesaver)
@@ -614,14 +653,14 @@ Portuguese, Spanish and Italian.")
 (define-public fet
   (package
     (name "fet")
-    (version "5.49.1")
+    (version "6.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.lalescu.ro/liviu/fet/download/"
                            "fet-" version ".tar.bz2"))
        (sha256
-        (base32 "1aa8xnhwvbhvp7yigcdk7qdwqh59yyfknqbpn3ybgjljc22m8w5n"))))
+        (base32 "16yajwbvm2ain1p2h81qfm8pbrdp70zljck67j9yijwyr6xqdj2a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -653,14 +692,14 @@ hours.")
 (define-public klavaro
   (package
     (name "klavaro")
-    (version "3.11")
+    (version "3.13")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/klavaro/klavaro-"
                             version ".tar.bz2"))
         (sha256
-         (base32 "1rkxaqb62w4mv86fcnmr32lq6y0h4hh92wmsy5ddb9a8jnzx6r7w"))))
+         (base32 "0z6c3lqikk50mkz3ipm93l48qj7b98lxyip8y6ndg9y9k0z0n878"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("intltool" ,intltool)
@@ -669,6 +708,7 @@ hours.")
      `(("cairo" ,cairo)
        ("curl" ,curl)
        ("gtk+" ,gtk+)
+       ("gtkdatabox" ,gtkdatabox)
        ("pango" ,pango)))
     (home-page "https://klavaro.sourceforge.io/en/index.html")
     (synopsis "Touch typing tutor")
@@ -710,7 +750,7 @@ language and very flexible regarding to new or unknown keyboard layouts.")
        ("kxmlgui" ,kxmlgui)
        ("libxcb" ,libxcb)
        ("libxkbfile" ,libxkbfile)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtquickcontrols2" ,qtquickcontrols2)
@@ -725,6 +765,43 @@ each key.  A collection of lessons are included for a wide range of different
 languages and keyboard layouts, and typing statistics are used to dynamically
 adjust the level of difficulty.")
     (license license:gpl2)))
+
+(define-public kanatest
+  ;; Latest release tarball is 0.4.8, which is really old and does not build
+  ;; commit on sourceforge are not tagged, we take the latest
+  (let ((commit "860e790a35f547cc96669f805d371a5ba3d8daff")
+        (revision "0"))
+    (package
+      (name "kanatest")
+      (version (git-version "0.4.10" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.code.sf.net/p/kanatest/code")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dz63m9p4ggzw0yb309qmgnl664qb5q268vaa3i9v0i8qsl66d78"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       `(("gettext" ,gettext-minimal)   ; for msgfmt
+         ("pkg-config" ,pkg-config)))
+      (inputs
+       `(("libxml2" ,libxml2)
+         ("gtk+" ,gtk+)))
+      (home-page "https://kanatest.sourceforge.io/")
+      (synopsis "Hiragana and Katakana simple flashcard tool")
+      (description "Kanatest is a Japanese kana (Hiragana and Katakana) simple
+flashcard tool.
+
+During test the Kanatest displays randomly selected kana char (respecting mode
+and lesson) and waits for user answer expected as romaji equivalent.  This
+process continues until all questions will be answered or all questions will
+be answered correctly (depends on options).  At the end of test a short info
+about drilling time and correctness ratio is displayed.  The results are
+stored and user can review his performance in any time.")
+      (license license:gpl2+))))
 
 (define-public anki
   (package
@@ -941,6 +1018,66 @@ TuxMath also includes Factoroids, a game that gives practice in
 factoring numbers and simplifying fractions, as well as zapping rocks
 floating through space.")
     (license license:gpl3+)))
+
+(define-public libeb
+  (package
+    (name "libeb")
+    (version "4.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "ftp://ftp.sra.co.jp/pub/misc/eb/eb-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0psbdzirazfnn02hp3gsx7xxss9f1brv4ywp6a15ihvggjki1rxb"))))
+    (build-system gnu-build-system)
+    (native-inputs ; Required for building docs
+     `(("perl" ,perl)))
+    (inputs
+     `(("zlib" ,zlib)))
+    (synopsis "C library for accessing Japanese CD-ROM books")
+    (description "The EB library is a library for accessing CD-ROM
+books, which are a common way to distribute electronic dictionaries in
+Japan.  It supports the EB, EBG, EBXA, EBXA-C, S-EBXA and EPWING
+formats.")
+    ;; FIXME: I cannot find a real home page
+    (home-page "https://sra.co.jp/")
+    (license license:bsd-3)))
+
+(define-public qolibri
+  (package
+    (name "qolibri")
+    (version "2.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url"https://github.com/ludios/qolibri")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "066y7jcq9vg6hnvn7qxckzhd1qkgfzpzhw69nw5psm43qbaca8lg"))))
+    (build-system qt-build-system)
+    (arguments
+     '(#:tests? #f)) ; no test target
+    (native-inputs
+     `(("qttools", qttools)))
+    (inputs
+     `(("libeb" ,libeb)
+       ("qtbase" ,qtbase-5)
+       ("qtmultimedia" ,qtmultimedia)
+       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("qtdeclarative" ,qtdeclarative)
+       ("qtwebchannel" ,qtwebchannel)
+       ("qtwebengine" ,qtwebengine)
+       ("zlib" ,zlib)))
+    (synopsis "EPWING dictionary reader")
+    (description "qolibri is a dictionary viewer for the EPWING dictionary
+format.  Most monolingual Japanese dictionaries can only be found in the
+EPWING format.")
+    (home-page "https://github.com/ludios/qolibri")
+    (license license:gpl2)))
 
 (define-public mdk
   (package

@@ -2,12 +2,12 @@
 ;;; Copyright © 2014, 2015, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
@@ -19,6 +19,8 @@
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,12 +82,13 @@
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
   #:use-module (gnu packages xml))
 
 (define-public duplicity
   (package
     (name "duplicity")
-    (version "0.8.17")
+    (version "0.8.20")
     (source
      (origin
       (method url-fetch)
@@ -94,7 +97,7 @@
                           "-series/" version "/+download/duplicity-"
                           version ".tar.gz"))
       (sha256
-       (base32 "114rwkf9b3h4fcagrx013sb7krc4hafbwl9gawjph2wd9pkv2wx2"))))
+       (base32 "0d125mxknpn44xwgqzzak9y5ydigscrpjv9d63126mfc6yfngr5v"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)     ; for msgfmt
@@ -102,6 +105,7 @@
        ("par2cmdline" ,par2cmdline)
        ("python-fasteners" ,python-fasteners)
        ("python-future" ,python-future) ; for tests
+       ("python-paramiko" ,python-paramiko)
        ("python-pexpect" ,python-pexpect)
        ("python-pytest" ,python-pytest)
        ("python-pytest-runner" ,python-pytest-runner)
@@ -130,12 +134,15 @@
                             "testing/overrides/bin/lftp")
                (("/bin/sh") (which "sh")))
              #t))
-         (add-before 'check 'check-setup
+         (add-before 'check 'set-up-tests
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" (getcwd))   ; gpg needs to write to $HOME
              (setenv "TZDIR"            ; some timestamp checks need TZDIR
                      (string-append (assoc-ref inputs "tzdata")
                                     "/share/zoneinfo"))
+             ;; Some things respect TMPDIR, others hard-code /tmp, and the
+             ;; defaults don't match up, breaking test_restart.  Fix it.
+             (setenv "TMPDIR" "/tmp")
              #t)))))
     (home-page "http://duplicity.nongnu.org/index.html")
     (synopsis "Encrypted backup using rsync algorithm")
@@ -378,6 +385,65 @@ file names to standard output.  Auxiliary scripts are needed that act on this
 list and implement the backup strategy.")
     (license license:gpl3+)))
 
+(define-public snapraid
+  (package
+    (name "snapraid")
+    (version "11.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/amadvance/snapraid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dlhdsmq5l208zldfr9z9g0p67wry81dr0r23lpybb5c9fm2f2rm"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "--enable-valgrind"
+             "--with-blkid")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'bootstrap 'set-version
+           (lambda _
+             (setenv "VERSION" ,version)
+             (patch-shebang "autover.sh"))))))
+    (native-inputs
+     `(("automake" ,automake)
+       ("autoconf" ,autoconf)
+
+       ;; For the tests.
+       ("valgrind" ,valgrind)))
+    (inputs
+     `(("util-linux" ,util-linux "lib"))) ; libblkid
+    (home-page "https://www.snapraid.it/")
+    (synopsis "Efficient backups using parity snapshots across disk arrays")
+    (description
+     "SnapRAID backs up files stored across multiple storage devices, such as
+disk arrays, in an efficient way reminiscent of its namesake @acronym{RAID,
+Redundant Array of Independent Disks} level 4.
+
+Instead of creating a complete copy of the data like classic backups do, it
+saves space by calculating one or more sets of parity information that's a
+fraction of the size.  Each parity set is stored on an additional device the
+size of the largest single storage volume, and protects against the loss of any
+one device, up to a total of six.  If more devices fail than there are parity
+sets, (only) the files they contained are lost, not the entire array.  Data
+corruption by unreliable devices can also be detected and repaired.
+
+SnapRAID is distinct from actual RAID in that it operates on files and creates
+distinct snapshots only when run.  It mainly targets large collections of big
+files that rarely change, like home media centers.  One disadvantage is that
+@emph{all} data not in the latest snapshot may be lost if one device fails.  An
+advantage is that accidentally deleted files can be recovered, which is not the
+case with RAID.
+
+It's also more flexible than true RAID: devices can have different sizes and
+more can be added without disturbing others.  Devices that are not in use can
+remain fully idle, saving power and producing less noise.")
+    (license license:gpl3+)))
+
 (define-public btar
   (package
     (name "btar")
@@ -448,7 +514,7 @@ rdiff-backup is easy to use and settings have sensible defaults.")
 (define-public rsnapshot
   (package
     (name "rsnapshot")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
@@ -456,22 +522,13 @@ rdiff-backup is easy to use and settings have sensible defaults.")
              "https://github.com/rsnapshot/rsnapshot/releases/download/"
              version "/rsnapshot-" version ".tar.gz"))
        (sha256
-        (base32 "1lavqmmsf53pim0nvming7fkng6p0nk2a51k2c2jdq0l7snpl31b"))))
+        (base32 "0yc5k2fhm54ypxgm1fsaf8vrg5b7qbvbsqk371n6baf592vprjy1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
-             (substitute* '("t/cmd-post_pre-exec/conf/pre-true-post-true.conf"
-                            "t/backup_exec/conf/backup_exec_fail.conf"
-                            "t/backup_exec/conf/backup_exec.conf")
-               (("/bin/true") (which "true"))
-               (("/bin/false") (which "false")))
-
-             ;; Disable a test that tries to connect to localhost on port 22.
-             (delete-file "t/ssh_args/ssh_args.t.in")
-
              (invoke "make" "test"))))))
     (inputs
      `(("perl" ,perl)
@@ -572,13 +629,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.1.16")
+    (version "1.1.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "0l1dqfwrd9l34rg30cmzmq5bs6yha6kg4vy313jq611jsqj94mmw"))
+        (base32 "0x0ncy0b0bmf586hbdgrif3gjmkdw760vfnfxndr493v07y29fbs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -603,12 +660,7 @@ detection, and lossless compression.")
            ;; Remove bundled shared libraries.
            (with-directory-excursion "src/borg/algorithms"
              (for-each delete-file-recursively
-                       (list "blake2" "lz4" "msgpack" "zstd")))
-           ;; Purge some msgpack references from setup.py or the resulting
-           ;; sources will be unbuildable.
-           (substitute* "setup.py"
-             ((".*Extension\\('borg\\.algorithms\\.msgpack\\..*") "")
-             (("msgpack_packer_source, msgpack_unpacker_source") ""))
+                       (list "blake2" "lz4" "zstd")))
            #t))))
     (build-system python-build-system)
     (arguments
@@ -632,12 +684,6 @@ detection, and lossless compression.")
                ;; HOME=/homeless-shelter.
                (setenv "HOME" "/tmp")
                #t)))
-         (add-after 'unpack 'use-system-msgpack
-           (lambda _
-             (substitute* "src/borg/helpers.py"
-               (("prefer_system_msgpack = False")
-                "prefer_system_msgpack = True"))
-             #t))
          ;; The tests need to be run after Borg is installed.
          (delete 'check)
          (add-after 'install 'check
@@ -701,10 +747,6 @@ detection, and lossless compression.")
        ("lz4" ,lz4)
        ("openssl" ,openssl)
        ("python-llfuse" ,python-llfuse)
-       ;; The Python msgpack library changed its name so Borg requires this
-       ;; transitional package for now:
-       ;; <https://bugs.gnu.org/30662>
-       ("python-msgpack" ,python-msgpack-transitional)
        ("zstd" ,zstd "lib")))
     (synopsis "Deduplicated, encrypted, authenticated and compressed backups")
     (description "Borg is a deduplicating backup program.  Optionally, it
@@ -719,14 +761,14 @@ to not fully trusted targets.  Borg is a fork of Attic.")
 (define-public wimlib
   (package
     (name "wimlib")
-    (version "1.13.3")
+    (version "1.13.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://wimlib.net/downloads/"
                                   "wimlib-" version ".tar.gz"))
               (sha256
                (base32
-                "0zpsbl9iicc6y81xfl6kf8farwfsyrl63shc0idp654kgp8421wa"))))
+                "04ny5s5z05gk6davbwkjkraan781k2xzw6kjwp75h6ncv45dv1sb"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -736,7 +778,9 @@ to not fully trusted targets.  Borg is a fork of Attic.")
        ("ntfs-3g" ,ntfs-3g)
        ("openssl" ,openssl)))
     (arguments
-     `(#:configure-flags (list "--enable-test-support")))
+     `(#:configure-flags
+       (list "--disable-static"
+             "--enable-test-support")))
     (home-page "https://wimlib.net/")
     (synopsis "WIM file manipulation library and utilities")
     (description "wimlib is a C library and set of command-line utilities for
@@ -871,7 +915,9 @@ is like a time machine for your data. ")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1zmh42aah32ah8w5n6ilz9bci0y2xrf8p7qshy3yf1lzm5gnbj0w"))))
+                "1zmh42aah32ah8w5n6ilz9bci0y2xrf8p7qshy3yf1lzm5gnbj0w"))
+              (patches
+               (search-patches "restic-0.9.6-fix-tests-for-go1.15.patch"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/restic/restic"
@@ -888,11 +934,12 @@ is like a time machine for your data. ")
                (invoke "go" "run" "build.go"))))
 
          (replace 'check
-           (lambda _
-             (with-directory-excursion "src/github.com/restic/restic"
-               ;; Disable FUSE tests.
-               (setenv "RESTIC_TEST_FUSE" "0")
-               (invoke "go" "run" "build.go" "--test"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "src/github.com/restic/restic"
+                 ;; Disable FUSE tests.
+                 (setenv "RESTIC_TEST_FUSE" "0")
+                 (invoke "go" "run" "build.go" "--test")))))
 
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -1091,19 +1138,27 @@ backup.")
 (define-public disarchive
   (package
     (name "disarchive")
-    (version "0.2.0")
+    (version "0.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.ngyro.com/disarchive/"
                                   "disarchive-" version ".tar.gz"))
               (sha256
                (base32
-                "12d4r4i7vi8fxilr2aww6kzq56jax5ymhjfm3cpgx26vj4c70kb6"))))
+                "1jypk0gdwxqbqxiblww863nzq0kwnc676q68j32sprqd7ilnq02s"))
+              (patches (search-patches "disarchive-cross-compilation.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'delete-configure
+                    (lambda _
+                      (delete-file "configure"))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
        ("pkg-config" ,pkg-config)
+       ("guile" ,guile-3.0)             ;for cross-compilation
+       ("guile-gcrypt" ,guile-gcrypt)
        ("guile-quickcheck" ,guile-quickcheck)))
     (inputs
      `(("guile" ,guile-3.0)

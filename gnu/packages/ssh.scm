@@ -5,8 +5,8 @@
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
@@ -16,6 +16,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -126,16 +127,15 @@ file names.
 (define-public libssh
   (package
     (name "libssh")
-    (version "0.9.5")
+    (version "0.9.6")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://git.libssh.org/projects/libssh.git")
-                     (commit (string-append "libssh-" version))))
+              (method url-fetch)
+              (uri (string-append "https://www.libssh.org/files/"
+                                  (version-major+minor version)
+                                  "/libssh-" version ".tar.xz"))
               (sha256
                (base32
-                "1b2klflmn0mdkcyjl4dqfg116bf9nhmqm4qla5cqa9xis89a5bn6"))
-              (file-name (git-file-name name version))))
+                "16w2mc7pyv9mijjlgacbz8dgczc7ig2m6m70w1pld04vpn2zig46"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -186,7 +186,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "8.5p1")
+   (version "8.7p1")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
@@ -194,7 +194,7 @@ a server that supports the SSH-2 protocol.")
              (patches (search-patches "openssh-hurd.patch"))
              (sha256
               (base32
-               "09gc8rv7728chxraab85dzkdikaw4aph1wlcwcc9kai9si0kybzm"))))
+               "090yxpi03pxxzb4ppx8g8hdpw7c4nf8p0avr6c7ybsaana5lp8vw"))))
    (build-system gnu-build-system)
    (native-inputs `(("groff" ,groff)
                     ("pkg-config" ,pkg-config)))
@@ -790,14 +790,14 @@ shell services and remote host selection.")
 (define-public python-asyncssh
   (package
     (name "python-asyncssh")
-    (version "2.5.0")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncssh" version))
        (sha256
         (base32
-         "02xpzir9rmw7b7k07m3f912h6jvy9yzan9yn3ckrmqx2ffpy4r8b"))))
+         "0lnhh2h1mj79j66ni883s9f3xldnbjb10vh80g24b7m003mm524c"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-cryptography" ,python-cryptography)
@@ -878,8 +878,8 @@ of existing remote shell facilities such as SSH.")
          (base32 "0ziwr8j1frsp3dajr8h5glkm1dn5cci404kazz5w1jfrp0736x68"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          "CC=gcc")
+     `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
+                          ,(string-append "CC=" (cc-for-target)))
        #:tests? #f                      ; no test target
        #:phases
        (modify-phases %standard-phases

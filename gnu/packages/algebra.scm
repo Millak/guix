@@ -3,11 +3,11 @@
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017, 2019 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2017, 2019, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -34,6 +34,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -59,6 +60,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu)
@@ -76,7 +78,7 @@
 (define-public mpfrcx
   (package
    (name "mpfrcx")
-   (version "0.6")
+   (version "0.6.3")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -84,7 +86,7 @@
                   version ".tar.gz"))
             (sha256
              (base32
-              "0gz5rma9al2jrifpknqkcnd9dkf8l05jcxy3s4ghwhd4y3h5dwia"))))
+              "1545vgizpypqi2rrriad0ybqv0qwbn9zr0ibxpk00gha9ihv7acx"))))
    (build-system gnu-build-system)
    (propagated-inputs
      `(("gmp" ,gmp)
@@ -235,7 +237,7 @@ the real span of the lattice.")
 (define-public pari-gp
   (package
     (name "pari-gp")
-    (version "2.13.1")
+    (version "2.13.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -243,11 +245,11 @@ the real span of the lattice.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1cgwdpw8b797883z9y92ixxjkv72kiy65zsw2qqf5and1kbzgv41"))))
+                "095s7vdlsxmxa0n0l1a082m6gjaypqfqkaj99z8j7dx0ji89hy8n"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("texlive" ,(texlive-union
-                    (list texlive-amsfonts)))))
+                    (list texlive-amsfonts/patched)))))
     (inputs `(("gmp" ,gmp)
               ("libx11" ,libx11)
               ("perl" ,perl)
@@ -341,7 +343,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.7.0-1")
+    (version "1.7.0-33")
     (source
      (origin
        (method url-fetch)
@@ -353,7 +355,7 @@ precision.")
                            "~parisse/debian/dists/stable/main/source/"
                            "giac_" version ".tar.gz"))
        (sha256
-        (base32 "0s926aza2larfz02hrhdlpxn77yjlrhjg844b3fhwz11yj942p9q"))))
+        (base32 "0kz2q5vjynplbybn6j3qk11ww1dr72pqsm9gp9w2hb3h9gv4gk9w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
@@ -366,14 +368,12 @@ precision.")
            (lambda _
              (substitute* (cons "micropython-1.12/xcas/Makefile"
                                 (find-files "doc" "^Makefile"))
-               (("/bin/cp") (which "cp")))
-             #t))
+               (("/bin/cp") (which "cp")))))
          (add-after 'unpack 'disable-failing-test
            ;; FIXME: Test failing.  Not sure why.
            (lambda _
              (substitute* "check/Makefile.in"
-               (("chk_fhan11") ""))
-             #t))
+               (("chk_fhan11") ""))))
          (add-after 'install 'fix-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -386,13 +386,11 @@ precision.")
                ;; Remove duplicate documentation in
                ;; "%out/share/doc/giac/", where Xcas does not expect
                ;; to find it.
-               (delete-file-recursively (string-append out "/share/doc/giac"))
-               #t)))
+               (delete-file-recursively (string-append out "/share/doc/giac")))))
          (add-after 'install 'remove-unnecessary-executable
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (delete-file (string-append out "/bin/xcasnew"))
-               #t))))))
+               (delete-file (string-append out "/bin/xcasnew"))))))))
     (inputs
      ;; TODO: Add libnauty, unbundle "libmicropython.a".
      `(("fltk" ,fltk)
@@ -1071,6 +1069,33 @@ features, and more.")
                        "# Do not build the tests for unsupported features.\n"))
                     #t)))))))
 
+(define-public eigen-for-tensorflow-lite
+  ;; This commit was taken from
+  ;; tensorflow/lite/tools/cmake/modules/eigen.cmake
+  (let ((commit "d10b27fe37736d2944630ecd7557cefa95cf87c9")
+        (revision "1"))
+    (package (inherit eigen)
+      (name "eigen-for-tensorflow-lite")
+      (version (git-version "3.3.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/libeigen/eigen")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0v8a20cwvwmp3hw4275b37frw33v92z0mr8f4dn6y8k0rz92hrrf"))
+                (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 ;; Ther are test failures in the "unsupported" directory, but
+                 ;; maintainers say it's unsupported anyway, so just skip
+                 ;; them.
+                 '(begin
+                    (substitute* "unsupported/CMakeLists.txt"
+                      (("add_subdirectory\\(test.*")
+                       "# Do not build the tests for unsupported features.\n")))))))))
+
 (define-public xtensor
   (package
     (name "xtensor")
@@ -1243,6 +1268,47 @@ objects.")
     ;; means that the gpl2+ licence of GAP itself applies, but to be on the
     ;; safe side, we drop them for now.
     (license license:gpl2+)))
+
+(define-public gappa
+  (package
+   (name "gappa")
+   (version "1.3.5")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "https://gforge.inria.fr/frs/download.php/latestfile/"
+                                "2699/gappa-" version ".tar.gz"))
+            (sha256
+             (base32
+              "0q1wdiwqj6fsbifaayb1zkp20bz8a1my81sqjsail577jmzwi07w"))))
+   (build-system gnu-build-system)
+   (inputs
+    `(("boost" ,boost)
+      ("gmp" ,gmp)
+      ("mpfr" ,mpfr)))
+   (arguments
+    `(#:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'patch-remake-shell
+          (lambda _
+            (substitute* "remake.cpp"
+             (("/bin/sh") (which "sh")))
+            #t))
+        (replace 'build
+          (lambda _ (invoke "./remake" "-s" "-d")))
+        (replace 'install
+          (lambda _ (invoke "./remake" "-s" "-d" "install")))
+        (replace 'check
+          (lambda _ (invoke "./remake" "check"))))))
+   (home-page "http://gappa.gforge.inria.fr/")
+   (synopsis "Proof generator for arithmetic properties")
+   (description "Gappa is a tool intended to help verifying and formally
+proving properties on numerical programs dealing with floating-point or
+fixed-point arithmetic.  It has been used to write robust floating-point
+filters for CGAL and it is used to certify elementary functions in CRlibm.
+While Gappa is intended to be used directly, it can also act as a backend
+prover for the Why3 software verification platform or as an automatic tactic
+for the Coq proof assistant.")
+   (license (list license:gpl3+ license:cecill-c)))) ; either/or
 
 (define-public givaro
   (package
@@ -1607,3 +1673,48 @@ no more than about 20 bits long).")
 (@dfn{DCT}), Discrete Sine Transform (@dfn{DST}) and Discrete Hartley Transform
 (@dfn{DHT}).")
     (license license:gpl2+)))
+
+(define-public sollya
+  (package
+   (name "sollya")
+   (version "7.0")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "https://www.sollya.org/releases/"
+                                "sollya-" version "/sollya-" version ".tar.bz2"))
+            (sha256
+             (base32
+              "11290ivi9h665cxi8f1shlavhy10vzb8s28m57hrcgnxyxqmhx0m"))))
+   (build-system gnu-build-system)
+   (inputs
+    `(("fplll" ,fplll)
+      ("gmp" ,gmp)
+      ("gnuplot" ,gnuplot)
+      ("libxml2" ,libxml2)
+      ("mpfi" ,mpfi)
+      ("mpfr" ,mpfr)))
+   (arguments
+    `(#:configure-flags
+      (list (string-append "--docdir=${datadir}/doc/sollya-" ,version))
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'patch-test-shebang
+          (lambda _
+            (substitute* (list "tests-tool/Makefile.in"
+                               "tests-lib/Makefile.in")
+             (("#!/bin/sh") (string-append "#!" (which "sh"))))
+            #t))
+        (add-before 'build 'patch-gnuplot-reference
+          (lambda _
+            (substitute* "general.c"
+             (("\"gnuplot\"") (string-append "\"" (which "gnuplot") "\"")))
+            #t)))))
+   (home-page "https://www.sollya.org")
+   (synopsis "Development environment for safe floating-point code")
+   (description "Sollya is a computer program whose purpose is to
+provide an environment for safe floating-point code development.  It
+is particularly targeted to the automated implementation of
+mathematical floating-point libraries (libm).  Amongst other features,
+it offers a certified infinity norm, an automatic polynomial
+implementer, and a fast Remez algorithm.")
+   (license license:cecill-c)))

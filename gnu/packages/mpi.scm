@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -151,7 +151,7 @@ bind processes, and much more.")
   ;; Note: 2.x isn't the default yet, see above.
   (package
     (inherit hwloc-1)
-    (version "2.4.1")
+    (version "2.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -159,7 +159,7 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "0qyywmyns2jf3is3axrwmffvdd7ji7liy5axp650q4i6kzk2291r"))))
+                "1j2j9wn39a8v91r23xncm1rzls6rjkgkvdvqghbdsnq8ps491kx9"))))
 
     ;; libnuma is no longer needed.
     (inputs (alist-delete "numactl" (package-inputs hwloc-1)))
@@ -193,7 +193,7 @@ bind processes, and much more.")
 (define-public openmpi
   (package
     (name "openmpi")
-    (version "4.1.0")
+    (version "4.1.1")
     (source
      (origin
       (method url-fetch)
@@ -201,7 +201,7 @@ bind processes, and much more.")
                           (version-major+minor version)
                           "/downloads/openmpi-" version ".tar.bz2"))
       (sha256
-       (base32 "1dfmkyilgml9w9s5p0jmfj3xcdwdccwqbjw5iim9p0chf2vnz1kk"))
+       (base32 "1nkwq123vvmggcay48snm9qqmrh0bdzpln0l1jnp26niidvplkz2"))
       (patches (search-patches "openmpi-mtl-priorities.patch"))))
 
     (properties

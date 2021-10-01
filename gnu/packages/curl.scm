@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@suse.cz>
-;;; Copyright © 2015, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
@@ -11,6 +11,8 @@
 ;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Dale Mellor <guix-devel-0brg6b@rdmp.org>
+;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +36,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (gnu packages)
@@ -46,6 +49,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (srfi srfi-1))
@@ -53,6 +57,7 @@
 (define-public curl
   (package
    (name "curl")
+   (replacement curl-7.77.0)
    (version "7.74.0")
    (source (origin
              (method url-fetch)
@@ -62,7 +67,6 @@
               (base32
                "12w7gskrglg6qrmp822j37fmbr0icrcxv7rib1fy5xiw80n5z7cr"))
              (patches (search-patches "curl-use-ssl-cert-env.patch"))))
-   (replacement curl/fixed)
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                             ;1.2 MiB of man3 pages
@@ -152,19 +156,31 @@ tunneling, and so on.")
     (name "curl-minimal")
     (inputs (alist-delete "openldap" (package-inputs curl))))))
 
-(define-public curl/fixed
+(define-public curl-ssh
+  (package/inherit curl
+    (arguments
+     (substitute-keyword-arguments (package-arguments curl)
+       ((#:configure-flags flags)
+        `(cons "--with-libssh2" ,flags))))
+    (inputs
+     `(("libssh2" ,libssh2)
+       ,@(package-inputs curl)))
+    (properties `((hidden? . #t)))))
+
+(define-public curl-7.77.0
   (package
     (inherit curl)
-    (version "7.76.0")
+    (version "7.77.0")
     (source
      (origin
        (inherit (package-source curl))
        (uri (string-append "https://curl.haxx.se/download/curl-"
                            version ".tar.xz"))
-       (patches (search-patches "curl-7.76-use-ssl-cert-env.patch"))
+       (patches (search-patches "curl-7.76-use-ssl-cert-env.patch"
+                                "curl-7.77-tls-priority-string.patch"))
        (sha256
         (base32
-         "1j2g04m6als6hmqzvddv84c31m0x90bfgyz3bjrwdkarbkby40k3"))))))
+         "0jsrc97vbghvljic997r9nypc9qqddcil2lzvv032br8ahn5hr0g"))))))
 
 (define-public kurly
   (package
@@ -319,4 +335,31 @@ PUT, FTP uploading, kerberos, HTTP form based upload, proxies, cookies,
 user+password authentication, file transfer resume, http proxy tunneling and
 more!")
     (home-page "http://www.curlpp.org")
+    (license license:expat)))
+
+(define-public h2c
+  (package
+    (name "h2c")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/curl/h2c")
+             (commit version)))
+       (sha256
+        (base32
+         "1n8z6avzhg3yb330di2y9zymsps1qp1235p29kidcp4fkmn7fgb2"))
+       (file-name (git-file-name name version))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan
+       '(("./h2c" "bin/"))))
+    (inputs
+     `(("perl" ,perl)))
+    (home-page "https://curl.se/h2c/")
+    (synopsis "Convert HTTP headers to a curl command line")
+    (description
+     "Provided a set of HTTP request headers, h2c outputs how to invoke
+curl to obtain exactly that HTTP request.")
     (license license:expat)))

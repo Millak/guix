@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -183,7 +184,7 @@ library
     ('home-page "http://test.org")
     ('synopsis (? string?))
     ('description (? string?))
-    ('license 'bsd-3)))
+    ('license 'license:bsd-3)))
 
 (define* (eval-test-with-cabal test-cabal matcher #:key (cabal-environment '()))
   (define port (open-input-string test-cabal))
@@ -232,7 +233,7 @@ library
     ('home-page "http://test.org")
     ('synopsis (? string?))
     ('description (? string?))
-    ('license 'bsd-3)))
+    ('license 'license:bsd-3)))
 
 (test-assert "hackage->guix-package test 6"
   (eval-test-with-cabal test-cabal-6 match-ghc-foo-6))
@@ -317,8 +318,6 @@ executable cabal
     mtl        >= 2.0      && < 3
 ")
 
-;; Fails: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25138
-(test-expect-fail 1)
 (test-assert "hackage->guix-package test flag executable"
   (eval-test-with-cabal test-cabal-flag-executable match-ghc-foo))
 
@@ -362,7 +361,7 @@ executable cabal
     ('home-page "http://test.org")
     ('synopsis (? string?))
     ('description (? string?))
-    ('license 'bsd-3)))
+    ('license 'license:bsd-3)))
 
 (test-assert "hackage->guix-package test cabal revision"
   (eval-test-with-cabal test-cabal-revision match-ghc-foo-revision))
@@ -386,5 +385,47 @@ executable cabal
                  ("exposed-modules" ("Test.QuickCheck.Exception")))))
      #t)
     (x (pk 'fail x #f))))
+
+(define test-cabal-import
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+common commons
+  build-depends:
+    HTTP       >= 4000.2.5 && < 4000.3,
+    mtl        >= 2.0      && < 3
+
+executable cabal
+  import: commons
+")
+
+(define-package-matcher match-ghc-foo-import
+  ('package
+    ('name "ghc-foo")
+    ('version "1.0.0")
+    ('source
+     ('origin
+       ('method 'url-fetch)
+       ('uri ('string-append
+              "https://hackage.haskell.org/package/foo/foo-"
+              'version
+              ".tar.gz"))
+       ('sha256
+        ('base32
+         (? string? hash)))))
+    ('build-system 'haskell-build-system)
+    ('inputs
+     ('quasiquote
+      (("ghc-http" ('unquote 'ghc-http)))))
+    ('home-page "http://test.org")
+    ('synopsis (? string?))
+    ('description (? string?))
+    ('license 'license:bsd-3)))
+
+(test-assert "hackage->guix-package test cabal import"
+  (eval-test-with-cabal test-cabal-import match-ghc-foo-import))
 
 (test-end "hackage")

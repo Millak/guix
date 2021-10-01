@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2017 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Taylan Kammer <taylan.kammer@gmail.com>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -269,8 +269,8 @@ without requiring the source code to be rewritten.")
 (define-deprecated guile-2.2/bug-fix guile-2.2)
 
 (define-public guile-2.2.4
-  (package/inherit
-   guile-2.2
+  (package
+    (inherit guile-2.2)
    (version "2.2.4")
    (source (origin
              (inherit (package-source guile-2.2))
@@ -311,19 +311,30 @@ without requiring the source code to be rewritten.")
 
 (define-public guile-3.0-latest
   ;; TODO: Make this 'guile-3.0' on the next rebuild cycle.
-  (package-with-extra-patches
-   (package
-     (inherit guile-3.0)
-     (version "3.0.5")
-     (source (origin
-               (inherit (package-source guile-3.0))
-               (uri (string-append "mirror://gnu/guile/guile-"
-                                   version ".tar.xz"))
-               (sha256
-                (base32
-                 "1wah6fq1h8vmbpdadjych1mq8hyqkd7p015cbxm14ri37l1gnxid")))))
-   ;; Remove on the next rebuild cycle.
-   (search-patches "guile-2.2-skip-so-test.patch")))
+  (package
+    (inherit guile-3.0)
+    (version "3.0.7")
+    (source (origin
+              (inherit (package-source guile-3.0)) ;preserve snippet
+              (patches '())
+              (uri (string-append "mirror://gnu/guile/guile-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1dwiwsrpm4f96alfnz6wibq378242z4f16vsxgy1n9r00v3qczgm"))))
+
+    ;; Build with the bundled mini-GMP to avoid interference with GnuTLS' own
+    ;; use of GMP via Nettle: <https://issues.guix.gnu.org/46330>.  Use
+    ;; LIBGC/DISABLE-MUNMAP to work around <https://bugs.gnu.org/40525>.
+    ;; Remove libltdl, which is no longer used.
+    (propagated-inputs
+     `(("bdw-gc" ,libgc/disable-munmap)
+       ,@(srfi-1:fold srfi-1:alist-delete (package-propagated-inputs guile-3.0)
+                      '("gmp" "libltdl" "bdw-gc"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-3.0)
+       ((#:configure-flags flags ''())
+        `(cons "--enable-mini-gmp" ,flags))))))
 
 (define-public guile-3.0/libgc-7
   ;; Using libgc-7 avoid crashes that can occur, particularly when loading
@@ -360,6 +371,7 @@ without requiring the source code to be rewritten.")
                 (uri (git-reference
                       (url "https://git.savannah.gnu.org/git/guile.git")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "09i1c77h2shygylfk0av31jsc1my6zjl230b2cx6vyl58q8c0cqy"))))
@@ -776,21 +788,25 @@ type system, elevating types to first-class status.")
 (define-public guile-git
   (package
     (name "guile-git")
-    (version "0.4.0")
+    (version "0.5.2")
     (home-page "https://gitlab.com/guile-git/guile-git.git")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://gitlab.com/guile-git/guile-git/uploads/"
-                                  "2600bb0dfdfb00bfbe46811dccad51d8/guile-git-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kxyg9x2aa1pg69cl48wysq0pbxvwfahy1xpl5ab6p8babhf7kic"))))
+                "11a51acibwi2hpaygmrpn6nwbr4lqalc87ihrgj3mhz6swbsk9n7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ; to prevent guild warnings
     (native-inputs
      `(("pkg-config" ,pkg-config)
+       ("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("texinfo" ,texinfo)
        ("guile" ,guile-3.0)
        ("guile-bytestructures" ,guile-bytestructures)))
     (inputs
@@ -852,6 +868,9 @@ Guile's foreign function interface.")
     (home-page "https://notabug.org/guile-zlib/guile-zlib")
     (license license:gpl3+)))
 
+(define-public guile2.2-zlib
+  (package-for-guile-2.2 guile-zlib))
+
 (define-public guile-lzlib
   (package
     (name "guile-lzlib")
@@ -887,6 +906,9 @@ in-memory LZMA compression and decompression.  The bindings are written in
 pure Scheme by using Guile's foreign function interface.")
     (home-page "https://notabug.org/guile-lzlib/guile-lzlib")
     (license license:gpl3+)))
+
+(define-public guile2.2-lzlib
+  (package-for-guile-2.2 guile-lzlib))
 
 (define-public guile-zstd
   (package

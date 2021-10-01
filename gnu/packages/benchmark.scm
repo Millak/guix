@@ -5,11 +5,12 @@
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
@@ -51,14 +53,14 @@
 (define-public fio
   (package
     (name "fio")
-    (version "3.26")
+    (version "3.27")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://brick.kernel.dk/snaps/"
                                   "fio-" version ".tar.bz2"))
               (sha256
                (base32
-                "1114h60vw63bim872an33xpvjfib6sc9dwj9xvk0yw41xjzfpp06"))))
+                "0akaixip86ycbxr13bjff2121rgfbz35fa9l39677wpwzckp4f4d"))))
     (build-system gnu-build-system)
     (arguments
      '(#:test-target "test"
@@ -125,13 +127,9 @@ is to write a job file matching the I/O load one wants to simulate.")
     (license (list license:gpl2 license:gpl2+ license:bsd-2
                    license:public-domain))))
 
-;; Parameterized in anticipation of m(va)pich support
-(define (intel-mpi-benchmarks mpi)
+(define-public intel-mpi-benchmarks/openmpi
   (package
-    (name (string-append "intel-mpi-benchmarks"
-                         (if (string=? (package-name mpi) "openmpi")
-                             ""
-                             (string-append "-" (package-name mpi)))))
+    (name "intel-mpi-benchmarks")
     (version "2019.6")
     (source (origin
               (method git-fetch)
@@ -153,7 +151,7 @@ is to write a job file matching the I/O load one wants to simulate.")
                   #t))))
     (build-system gnu-build-system)
     (inputs
-     `(("mpi" ,mpi)))
+     `(("openmpi" ,openmpi)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -193,9 +191,6 @@ Efficiency of the MPI implementation.
 @end itemize")
     (license license:cpl1.0)))
 
-(define-public intel-mpi-benchmarks/openmpi
-  (intel-mpi-benchmarks openmpi))
-
 (define-public imb-openmpi
   (deprecated-package "imb-openmpi" intel-mpi-benchmarks/openmpi))
 
@@ -227,7 +222,7 @@ This can give a much better understanding of the command's performance.")
 (define-public benchmark
   (package
     (name "benchmark")
-    (version "1.5.2")
+    (version "1.5.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -236,7 +231,7 @@ This can give a much better understanding of the command's performance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13rxagpzw6bal6ajlmrxlh9kgfvcixn6j734b2bvfqz7lch8n0pa"))))
+                "030g4d8vpn2442dsap0qw86lsw7xfl36k0x0x9bn0vvm11qvjn8c"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("googletest-source" ,(package-source googletest))
@@ -247,8 +242,7 @@ This can give a much better understanding of the command's performance.")
          (add-after 'unpack 'unpack-googletest
            (lambda* (#:key inputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "googletest-source")
-                               "googletest")
-             #t)))))
+                               "googletest"))))))
     (home-page "https://github.com/google/benchmark")
     (synopsis "Microbenchmark support library")
     (description
@@ -353,3 +347,69 @@ Note: Locust will complain if the available open file descriptors limit for
 the user is too low.  To raise such limit on a Guix System, refer to
 @samp{info guix --index-search=pam-limits-service}.")
     (license license:expat)))
+
+(define-public interbench
+  (package
+    (name "interbench")
+    (version "0.31")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ckolivas/interbench")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ifnw8vnkcgrksx7g5d9ii4kjppqnk32lvrybdybmibyvag6zfdc"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-broken-makefile
+           (lambda _
+             ;; Remove erroneous "-lm" target
+             (substitute* "Makefile"
+               (("hackbench.o -lm") "hackbench.o"))))
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "interbench" (string-append out "/bin"))
+               (install-file "interbench.8" (string-append out "/share/man/man8"))))))))
+    (home-page "http://users.on.net/~ckolivas/interbench/")
+    (synopsis "Interactivity benchmark")
+    (description "interbench is designed to benchmark interactivity on Linux.
+It is designed to measure the effect of changes in Linux kernel design or
+system configuration changes such as CPU, I/O scheduler and filesystem changes
+and options.  With careful benchmarking, different hardware can be compared.")
+    (license license:gpl2+)))
+
+(define-public clpeak
+  ;; Release 1.1.0 is too old for our opencl-clhpp. This commit supports
+  ;; cl2.hpp.
+  (let ((commit "6d59cb64997a53c35207b77a63d2e9f0e84de5fd"))
+    (package
+      (name "clpeak")
+      (version (git-version "1.1.0" "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/krrishnarraj/clpeak.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                  (base32
+                    "0qmhdjyhwl7gfgyqxsddqn6zpp3b57503m16h7jv6illy3lfvji1"))))
+      (build-system cmake-build-system)
+      (home-page "https://github.com/krrishnarraj/clpeak")
+      (inputs
+        `(("opencl-clhpp" ,opencl-clhpp)
+          ("opencl-icd-loader" ,opencl-icd-loader)))
+      (synopsis "OpenCL benchmark tool")
+      (description
+        "A synthetic benchmarking tool to measure peak capabilities of OpenCL
+        devices.  It only measures the peak metrics that can be achieved using
+        vector operations and does not represent a real-world use case.")
+        (license license:unlicense))))

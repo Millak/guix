@@ -4,7 +4,7 @@
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
-# Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
+# Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 #
 # This file is part of GNU Guix.
 #
@@ -21,14 +21,35 @@
 # You should have received a copy of the GNU General Public License
 # along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+# If adding a language, update the following variables, and info_TEXINFOS.
+MANUAL_LANGUAGES = de es fa fr it ko pt_BR ru sk zh_CN
+COOKBOOK_LANGUAGES = de fa fr ko ru sk zh_Hans
+
+# Arg1: A list of languages codes.
+# Arg2: The file name stem.
+lang_to_texinfo = $(foreach lang,$(1),%D%/$(2).$(lang).texi)
+
+# Automake does not understand GNU Make non-standard extensions,
+# unfortunately, so we cannot use the above patsubst-based function here.
 info_TEXINFOS = %D%/guix.texi			\
   %D%/guix.de.texi				\
   %D%/guix.es.texi				\
+  %D%/guix.fa.texi				\
   %D%/guix.fr.texi				\
+  %D%/guix.it.texi				\
+  %D%/guix.ko.texi				\
+  %D%/guix.pt_BR.texi				\
   %D%/guix.ru.texi				\
+  %D%/guix.sk.texi				\
   %D%/guix.zh_CN.texi				\
   %D%/guix-cookbook.texi			\
-  %D%/guix-cookbook.de.texi
+  %D%/guix-cookbook.de.texi			\
+  %D%/guix-cookbook.fa.texi			\
+  %D%/guix-cookbook.fr.texi			\
+  %D%/guix-cookbook.ko.texi			\
+  %D%/guix-cookbook.ru.texi			\
+  %D%/guix-cookbook.sk.texi			\
+  %D%/guix-cookbook.zh_Hans.texi
 
 %C%_guix_TEXINFOS = \
   %D%/contributing.texi \
@@ -61,18 +82,10 @@ OS_CONFIG_EXAMPLES_TEXI =			\
   %D%/os-config-desktop.texi			\
   %D%/os-config-lightweight-desktop.texi
 
-TRANSLATED_INFO =				\
-  %D%/guix.de.texi				\
-  %D%/guix.es.texi				\
-  %D%/guix.fr.texi				\
-  %D%/guix.ru.texi				\
-  %D%/guix.zh_CN.texi				\
-  %D%/contributing.de.texi			\
-  %D%/contributing.es.texi			\
-  %D%/contributing.fr.texi			\
-  %D%/contributing.ru.texi			\
-  %D%/contributing.zh_CN.texi			\
-  %D%/guix-cookbook.de.texi
+TRANSLATED_INFO = 						\
+  $(call lang_to_texinfo,$(MANUAL_LANGUAGES),guix)		\
+  $(call lang_to_texinfo,$(MANUAL_LANGUAGES),contributing)	\
+  $(call lang_to_texinfo,$(COOKBOOK_LANGUAGES),guix-cookbook)
 
 # Bundle this file so that makeinfo finds it in out-of-source-tree builds.
 BUILT_SOURCES        += $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
@@ -100,7 +113,7 @@ cat "$@.tmp" | egrep '@p?x?ref' -A1 | sed 'N;s|--\n||g;P;D' | sed 's|^| |g' | \
       line=$$(grep -n "^msgid \"$$e\"" "$<" | cut -f1 --delimiter=":") ;\
       ((line++)) ;\
       if [ "$$line" != "1" ]; then \
-	translation=$$(head -n "$$line" "$<" | tail -1 | grep msgstr | sed 's|msgstr "\(.*\)"|\1|') ;\
+	translation=$$(head -n "$$line" "$<" | tail -1 | grep msgstr | sed 's|msgstr "\([^"]*\)"|\1|') ;\
 	if [ "$$translation" != "" ]; then \
 	      sed "N;s@\(p\?x\?ref\){$$(echo $$e | sed 's| |[\\n ]|g')\(,\|}\)@\1{$$translation\2@g;P;D" -i "$@.tmp" ;\
 	fi ;\

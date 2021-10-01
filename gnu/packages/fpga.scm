@@ -289,7 +289,7 @@ Includes the actual FTDI connector.")
          ("eigen" ,eigen)
          ("icestorm" ,icestorm)
          ("python" ,python)
-         ("qtbase" ,qtbase)
+         ("qtbase" ,qtbase-5)
          ("yosys" ,yosys)))
       (build-system cmake-build-system)
       (arguments
@@ -349,7 +349,7 @@ FOSS FPGA place and route tool.")
 (define-public gtkwave
   (package
     (name "gtkwave")
-    (version "3.3.108")
+    (version "3.3.110")
     (source
      (origin
        (method url-fetch)
@@ -359,7 +359,7 @@ FOSS FPGA place and route tool.")
                   (string-append "http://gtkwave.sourceforge.net/"
                                  "gtkwave-" version ".tar.gz")))
        (sha256
-        (base32 "0fzbap72zm4ka6n85j0873fpaarrx199ay0kjw1avrs20hs4gr7c"))))
+        (base32 "1hslmg39j9rays0cyash8zvrrbfyc55jdpq7hwc47ksr7bayvip4"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("gperf" ,gperf)
@@ -432,7 +432,7 @@ a hardware description and verification language. ")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.5.0")
+    (version "1.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -441,18 +441,16 @@ a hardware description and verification language. ")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0dd1xany6qhh2qsfw8ba0ky7y86h19yr4hlk0r5i2bvwsg4355v9"))))
+                "1hjshyliaqi4vrw4q760rwmq6hvbpsvr2h4zl34k5j457004dy9l"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:parallel-build? #f ; https://github.com/nickg/nvc/issues/409
-       #:configure-flags
+     `(#:configure-flags
        '("--enable-vhpi")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'clean-up
            (lambda _
-             (delete-file "autogen.sh")
-             #t)))))
+             (delete-file "autogen.sh"))))))
     (native-inputs
      `(("automake" ,automake)
        ("autoconf" ,autoconf)
@@ -502,7 +500,7 @@ using different abstraction levels.")
 (define-public verilator
   (package
     (name "verilator")
-    (version "4.110")
+    (version "4.204")
     (source
      (origin
        (method git-fetch)
@@ -511,7 +509,7 @@ using different abstraction levels.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lm2nyn7wzxj5y0ffwazhb4ygnmqf4d61sl937vmnmrpvdihsrrq"))))
+        (base32 "0cji5c8870h895l2vxnz8g6z7msv23dzbjaf98va7kva0qlfy2fz"))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)

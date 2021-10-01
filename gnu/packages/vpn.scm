@@ -15,6 +15,9 @@
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ivan Kozlov <kanichos@yandex.ru>
 ;;; Copyright © 2020 David Dashyan <mail@davie.li>
+;;; Copyright © 2021 Domagoj Stolfa <ds815@gmx.com>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,9 +40,12 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system linux-module)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -49,16 +55,22 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
@@ -68,6 +80,201 @@
   #:use-module (gnu packages samba)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml))
+
+(define-public bitmask
+  (package
+    (name "bitmask")
+    (version "0.21.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://0xacab.org/leap/bitmask-vpn")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xmn0pkpn0mcwi1jlgm5skydcnfxk5fawg5hl2inn50m0ikgxk1c"))
+       (modules
+        '((guix build utils)))
+       (snippet
+        `(begin
+           (delete-file-recursively "branding/thirdparty")
+           (call-with-output-file "pkg/config/version/version.go"
+             (lambda (port)
+               (format port "package version\n")
+               (format port "\n")
+               (format port (string-append "var VERSION = \"" ,version "\""))))
+           #t))))
+    (build-system go-build-system)
+    (arguments
+     `(#:imported-modules
+       ((guix build cmake-build-system)
+        (guix build copy-build-system)
+        (guix build python-build-system)
+        (guix build qt-build-system)
+        (guix build qt-utils)
+        ,@%go-build-system-modules)
+       #:modules
+       (((guix build copy-build-system)
+         #:prefix copy:)
+        ((guix build python-build-system)
+         #:prefix python:)
+        ((guix build qt-build-system)
+         #:prefix qt:)
+        (guix build utils)
+        (guix build go-build-system))
+       #:unpack-path "0xacab.org/leap/bitmask-vpn"
+       #:import-path "0xacab.org/leap/bitmask-vpn/cmd/bitmask-helper"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'setup-go-environment 'insert-missing-sources
+           ;; For some reason this package is left out.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((name "go-0xacab-org-leap-shapeshifter")
+                    (shapeshifter (assoc-ref inputs name))
+                    (shapeshifter-src (string-append shapeshifter "/src")))
+               (copy-recursively shapeshifter-src "src"))))
+         (add-after 'unpack 'patch
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (with-directory-excursion "src/0xacab.org/leap/bitmask-vpn"
+               ;; Use 'emersion/go-autostart',
+               ;; instead of 'ProtonMail/go-autostart',
+               ;; as the latter no longer exists.
+               (substitute* (find-files "." "\\.go$")
+                 (("github.com/ProtonMail/go-autostart")
+                  "github.com/emersion/go-autostart"))
+               ;; Use correct paths for referenced items.
+               (let* ((out (assoc-ref outputs "out"))
+                      (policy-dir (string-append out "/share/polkit-1/actions"))
+                      (policy-file "se.leap.bitmask.policy")
+                      (policy-path (string-append policy-dir "/" policy-file))
+                      (ip (string-append (assoc-ref inputs "iproute")
+                                         "/sbin/ip"))
+                      (iptables (string-append (assoc-ref inputs "iptables")
+                                               "/sbin/iptables"))
+                      (ip6tables (string-append (assoc-ref inputs "iptables")
+                                                "/sbin/ip6tables"))
+                      (sysctl (string-append (assoc-ref inputs "procps")
+                                             "/sbin/sysctl"))
+                      (pkttyagent (string-append (assoc-ref inputs "polkit")
+                                                 "/bin/pkttyagent"))
+                      (openvpn (string-append (assoc-ref inputs "openvpn")
+                                              "/sbin/openvpn"))
+                      (bitmask-root (string-append (assoc-ref outputs "out")
+                                                   "/sbin/bitmask-root")))
+                 (substitute* (find-files "." "(\\.go$|\\.policy$|bitmask-root)")
+                   (("swhich\\(\"ip\"\\)")
+                    (string-append "\"" ip "\""))
+                   (("swhich\\(\"iptables\"\\)")
+                    (string-append "\"" iptables "\""))
+                   (("swhich\\(\"ip6tables\"\\)")
+                    (string-append "\"" ip6tables "\""))
+                   (("swhich\\(\"sysctl\"\\)")
+                    (string-append "\"" sysctl "\""))
+                   (("/usr/(bin|lib|libexec)/.*(kit|agent|agent-1)") pkttyagent)
+                   (("/usr/sbin/openvpn") openvpn)
+                   (("/usr/sbin/bitmask-root") bitmask-root)
+                   (("/usr/local/sbin/bitmask-root") bitmask-root)
+                   (("/usr/share.*\\.policy") policy-path)))
+               (substitute* (find-files "." "\\.pro$")
+                 ;; Use correct path for goshim files,
+                 ;; which are generated in 'build-continued phase.
+                 (("-L.*/lib") "-L./lib")
+                 ;; FIXME: Unable to build i18n files.
+                 (("TRANSLATIONS.*i18n.*$") "")
+                 (("RESOURCES.*i18n.*$") "")))))
+         (add-after 'build 'build-continued
+           (lambda _
+             ;; Generate goshim library and header files.
+             (let* ((dir "src/0xacab.org/leap/bitmask-vpn")
+                    (source (string-append dir "/gui/backend.go"))
+                    (target (string-append dir "/lib/libgoshim.a")))
+               (mkdir-p (string-append dir "/lib"))
+               (invoke "go" "build" "-buildmode=c-archive" "-o" target source))
+             ;; Build bitmask application.
+             (with-directory-excursion "src/0xacab.org/leap/bitmask-vpn"
+               (delete-file "Makefile")
+               (invoke "qmake" "bitmask.pro")
+               (invoke "make"))))
+         (add-after 'check 'check-continued
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Run bitmask test-suite.
+               (with-directory-excursion "src/0xacab.org/leap/bitmask-vpn"
+                 (delete-file "Makefile")
+                 (invoke "qmake" "test.pro")
+                 ;; Tests require display-server.
+                 (setenv "QT_QPA_PLATFORM" "offscreen")
+                 ;; Tests look for $XDG_RUNTIME_DIR.
+                 (setenv "XDG_RUNTIME_DIR" (getenv "TEMP"))
+                 ;; Tests write to $HOME.
+                 (setenv "HOME" (getenv "TEMP"))
+                 (invoke "make" "check")))))
+         (add-after 'install 'install-continued
+           (lambda args
+             (apply (assoc-ref copy:%standard-phases 'install)
+                    #:install-plan
+                    ;; Install bitmask program.
+                    '(("src/0xacab.org/leap/bitmask-vpn/release"
+                       "bin"
+                       #:include ("bitmask"))
+                      ;; Install bitmask-root script.
+                      ("src/0xacab.org/leap/bitmask-vpn/helpers"
+                       "sbin"
+                       #:include ("bitmask-root"))
+                      ;; Install polkit-policy.
+                      ("src/0xacab.org/leap/bitmask-vpn/helpers"
+                       "share/polkit-1/actions"
+                       #:include ("se.leap.bitmask.policy")))
+                    args)))
+         (add-after 'install-continued 'post-install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bitmask (string-append out "/bin/bitmask"))
+                    (bitmask-root (string-append out "/sbin/bitmask-root")))
+               ;; Make bitmask-root script executable.
+               (chmod bitmask-root #o777))))
+         (add-after 'post-install 'python-wrap
+           (assoc-ref python:%standard-phases 'wrap))
+         (add-after 'python-wrap 'qt-wrap
+           (assoc-ref qt:%standard-phases 'qt-wrap)))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("iproute" ,iproute)
+       ("iptables" ,iptables)
+       ("mesa" ,mesa)
+       ("openvpn" ,openvpn)
+       ("polkit" ,polkit)
+       ("procps" ,procps)
+       ("python" ,python)
+       ("qtbase" ,qtbase-5)
+       ("qtdeclarative" ,qtdeclarative)
+       ("qtquickcontrols" ,qtquickcontrols)
+       ("qtquickcontrols2" ,qtquickcontrols2)))
+    (propagated-inputs
+     `(("go-0xacab-org-leap-shapeshifter"
+        ,go-0xacab-org-leap-shapeshifter)
+       ("go-github-com-apparentlymart-go-openvpn-mgmt"
+        ,go-github-com-apparentlymart-go-openvpn-mgmt)
+       ("go-github-com-emersion-go-autostart"
+        ,go-github-com-emersion-go-autostart)
+       ("go-github-com-keybase-go-ps"
+        ,go-github-com-keybase-go-ps)
+       ("go-github-com-rakyll-statik"
+        ,go-github-com-rakyll-statik)
+       ("go-github-com-sevlyar-go-daemon"
+        ,go-github-com-sevlyar-go-daemon)
+       ("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+    (synopsis "Generic VPN client by LEAP")
+    (description "Bitmask, by @acronym{LEAP, LEAP Encryption Access Project},
+is an application to provide easy and secure encrypted communication with a
+@acronym{VPN, Virtual Private Network}.  It allows you to select from a variety
+of trusted service provider all from one app.  Current providers include Riseup
+Networks and The Calyx Institute, where the former is default.")
+    (home-page "https://bitmask.net/")
+    (license license:gpl3+)))
 
 (define-public gvpe
   (package
@@ -92,6 +299,138 @@ with multiple nodes using a variety of transport protocols.  It works
 by creating encrypted host-to-host tunnels between multiple
 endpoints.")
     (license license:gpl3+)))
+
+(define-public strongswan
+  (package
+    (name "strongswan")
+    (version "5.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.strongswan.org/strongswan-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "1xy6c9c7bq5a5jmm04r9f9iqn39yrr1dkq81jhvpxsd4l1ban9ck"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch-command-file-names
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/ipsec/_ipsec.in"
+               (("cat|kill|sleep|rm|uname" command)
+                (string-append (assoc-ref inputs "coreutils")
+                               "/bin/" command)))
+             (substitute* "src/libstrongswan/utils/process.c"
+               (("/bin/sh")
+                (string-append (assoc-ref inputs "bash") "/bin/sh")))
+
+             (substitute* "src/libstrongswan/tests/suites/test_process.c"
+               (("/bin/sh") (which "sh"))
+               (("/bin/echo") (which "echo"))
+               (("cat") (which "cat")))
+             #t))
+         (add-before 'check 'set-up-test-environment
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "TZDIR" (string-append (assoc-ref inputs "tzdata")
+                                            "/share/zoneinfo"))
+             #t)))
+       #:configure-flags
+       (list
+        "--disable-ldap"
+        "--disable-mysql"
+        "--disable-systemd"
+
+        ;; Disable BSD-4 licensed plugins.
+        "--disable-blowfish"
+        "--disable-des"
+
+        ;; Make it usable.  The default configuration is far too minimal to be
+        ;; used with most common VPN set-ups.
+        ;; See <https://wiki.strongswan.org/projects/strongswan/wiki/Autoconf>.
+        "--enable-aesni"
+        "--enable-attr-sql"
+        "--enable-chapoly"
+        "--enable-curl"
+        "--enable-dhcp"
+        "--enable-eap-aka"
+        "--enable-eap-aka-3gpp"
+        "--enable-eap-dynamic"
+        "--enable-eap-identity"
+        "--enable-eap-md5"
+        "--enable-eap-mschapv2"
+        "--enable-eap-peap"
+        "--enable-eap-radius"
+        "--enable-eap-sim"
+        "--enable-eap-sim-file"
+        "--enable-eap-simaka-pseudonym"
+        "--enable-eap-simaka-reauth"
+        "--enable-eap-simaka-sql"
+        "--enable-eap-tls"
+        "--enable-eap-tnc"
+        "--enable-eap-ttls"
+        "--enable-ext-auth"
+        "--enable-farp"
+        "--enable-ha"
+        "--enable-led"
+        "--enable-md4"
+        "--enable-mediation"
+        "--enable-openssl"
+        "--enable-soup"
+        "--enable-sql"
+        "--enable-sqlite"
+        "--enable-xauth-eap"
+        "--enable-xauth-noauth"
+        "--enable-xauth-pam"
+
+        ;; Use libcap by default.
+        "--with-capabilities=libcap")))
+    (inputs
+     `(("coreutils" ,coreutils)
+       ("curl" ,curl)
+       ("gmp" ,gmp)
+       ("libcap" ,libcap)
+       ("libgcrypt" ,libgcrypt)
+       ("libsoup" ,libsoup)
+       ("linux-pam" ,linux-pam)
+       ("openssl" ,openssl)))
+    (native-inputs
+     `(("coreutils" ,coreutils)
+       ("pkg-config" ,pkg-config)
+       ("tzdata" ,tzdata-for-tests)))
+    (synopsis "IKEv1/v2 keying daemon")
+    (description "StrongSwan is an IPsec implementation originally based upon
+the FreeS/WAN project.  It contains support for IKEv1, IKEv2, MOBIKE, IPv6,
+NAT-T and more.")
+    (home-page "https://strongswan.org/")
+    (license
+     (list license:gpl2+
+           ;; src/aikgen/*
+           ;; src/libcharon/plugins/dnscert/*
+           ;; src/libcharon/plugins/ext_auth/*
+           ;; src/libcharon/plugins/vici/ruby/*
+           ;; src/libcharon/plugins/xauth_pam/xauth_pam_listener.[ch]
+           license:expat
+           ;; src/inclue/sys/*
+           license:bsd-3
+           ;; src/libstrongswan/plugins/sha3/sha3_keccak.c
+           license:public-domain
+           ;; src/libstrongswan/plugins/pkcs11/pkcs11.h
+           (license:non-copyleft
+            "file://src/libstrongswan/plugins/pkcs11/pkcs11.h"
+            "pkcs11 contains a unknown permissive license. View the specific
+file for more details.")
+           ;; These files are not included in the
+           ;; build, they are disabled through
+           ;; options to ./configure
+           ;;
+           ;; src/libstrongswan/plugins/blowfish/bf_enc.c
+           ;; src/libstrongswan/plugins/blowfish/bf_locl.h
+           ;; src/libstrongswan/plugins/blowfish/bf_pi.h
+           ;; src/libstrongswan/plugins/blowfish/bf_skey.c
+           ;; src/libstrongswan/plugins/blowfish/blowfish_crypter.c
+           ;; src/libstrongswan/plugins/des/des_crypter.c
+           license:bsd-4))))
 
 (define-public vpnc
   (package
@@ -293,14 +632,13 @@ and probably others.")
 (define-public openconnect-sso
   (package
     (name "openconnect-sso")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "openconnect-sso" version))
         (sha256
-         (base32
-          "0nb40zfpp38mz6389y0qvrr4mmak53swpg7578cldnhnk0g15qni"))))
+         (base32 "065s5c8q80jh0psdw7694nlabwpra7aw6yc4jlgsc9vxx8rx2na1"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f  ; Tests not included, building from git requires poetry.
@@ -383,7 +721,7 @@ this process.  It is compatible with Fortinet VPNs.")
 (define-public openvpn
   (package
     (name "openvpn")
-    (version "2.5.1")
+    (version "2.5.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -391,7 +729,7 @@ this process.  It is compatible with Fortinet VPNs.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "157ikzap2bbkzx34hkh33bpk2i14xjx1x3pkadhmzh1pr24h94s0"))))
+                "0zlski66mw10klmwvg445z051mld7xjng4iyl4f9b883qr1rjspv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-iproute2=yes")))
@@ -678,7 +1016,7 @@ WireGuard was added to Linux 5.6.")
 (define-public wireguard-tools
   (package
     (name "wireguard-tools")
-    (version "1.0.20210315")
+    (version "1.0.20210424")
     (source
      (origin
        (method git-fetch)
@@ -687,7 +1025,7 @@ WireGuard was added to Linux 5.6.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1an5gm2dv111n3fylbrnyynxmi2d3iwf2b46zq08hc54kzazxcml"))))
+        (base32 "12v0ykaz7phv1gqin35wf6ndgb9819vai17ynjxssq00xwcbsq43"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

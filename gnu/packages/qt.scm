@@ -7,7 +7,7 @@
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Quiliro <quiliro@fsfla.org>
-;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
@@ -19,8 +19,10 @@
 ;;; Copyright © 2020 TomZ <tomz@freedommail.ch>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -133,31 +135,29 @@
                (chdir "libqite")
                #t)))))
       (inputs
-       `(("qtbase" ,qtbase)
+       `(("qtbase" ,qtbase-5)
          ("qtmultimedia" ,qtmultimedia)))
       (home-page "https://github.com/Ri0n/qite/")
       (synopsis "Qt Interactive Text Elements")
-      (description "Qite allows to manage interactive elements on QTextEdit.")
+      (description "Qite manages interactive elements on QTextEdit.")
       (license license:asl2.0))))
 
 (define-public qt5ct
   (package
     (name "qt5ct")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/qt5ct/qt5ct-" version ".tar.bz2"))
        (sha256
-        (base32 "1lnx4wqk87lbr6lqc64w5g5ppjjv75kq2r0q0bz9gfpryzdw8xxg"))))
+        (base32 "0bl7dc03b7vm435khkr932ybslsbq1nfajd936zlc1sxdmpg1qqx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; No target
        #:imported-modules
-       (,@%gnu-build-system-modules
-        (guix build cmake-build-system)
-        (guix build qt-build-system))
+       (,@%qt-build-system-modules)
        #:modules
        ((guix build gnu-build-system)
         ((guix build qt-build-system)
@@ -186,7 +186,7 @@
     (native-inputs
      `(("qttools" ,qttools)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (synopsis "Qt5 Configuration Tool")
     (description "Qt5CT is a program that allows users to configure Qt5
@@ -227,13 +227,13 @@ window managers, that don't provide Qt integration by themselves.")
           (string-append "-DCMAKE_CXX_FLAGS=-I"
                          (assoc-ref %build-inputs "qtbase")
                          "/include/qt5/QtXkbCommonSupport/"
-                         ,(package-version qtbase)))))
+                         ,(package-version qtbase-5)))))
       (native-inputs
        `(("cmake-shared" ,cmake-shared)
          ("extra-cmake-modules" ,extra-cmake-modules)
          ("pkg-config" ,pkg-config)))
       (inputs
-       `(("qtbase" ,qtbase)
+       `(("qtbase" ,qtbase-5)
          ("qtwayland" ,qtwayland)
          ("wayland" ,wayland)
          ("xkbcommon" ,libxkbcommon)))
@@ -260,7 +260,7 @@ applications on Wayland.")
      ;; Optional: lcov and cccc, both are for code coverage
      `(("doxygen" ,doxygen)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtscript" ,qtscript)))
     (build-system cmake-build-system)
@@ -297,30 +297,29 @@ system, and the core design of Django is reused in Grantlee.")
         (string-append "https://distfiles.macports.org/qt5/"
                        component "-everywhere-src-" version ".tar.xz")))
 
-(define-public qtbase
+(define-public qtbase-5
   (package
     (name "qtbase")
     (version "5.15.2")
     (source (origin
-             (method url-fetch)
-             (uri (qt5-urls name version))
-             (sha256
-              (base32
-               "1y70libf2x52lpbqvhz10lpk7nyl1ajjwzjxly9pjdpfj4jsv7wh"))
-             ;; Use TZDIR to avoid depending on package "tzdata".
-             (patches (search-patches "qtbase-use-TZDIR.patch"
-                                      "qtbase-moc-ignore-gcc-macro.patch"
-                                      "qtbase-absolute-runpath.patch"))
-             (modules '((guix build utils)))
-             (snippet
+              (method url-fetch)
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "1y70libf2x52lpbqvhz10lpk7nyl1ajjwzjxly9pjdpfj4jsv7wh"))
+              ;; Use TZDIR to avoid depending on package "tzdata".
+              (patches (search-patches "qtbase-use-TZDIR.patch"
+                                       "qtbase-moc-ignore-gcc-macro.patch"
+                                       "qtbase-absolute-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
-              '(begin
-                (with-directory-excursion "src/3rdparty"
-                  (for-each delete-file-recursively
-                            (list "double-conversion" "freetype" "harfbuzz-ng"
-                                  "libpng" "libjpeg" "pcre2" "sqlite" "xcb"
-                                  "zlib"))
-                  #t)))))
+               '(begin
+                  (with-directory-excursion "src/3rdparty"
+                    (for-each delete-file-recursively
+                              (list "double-conversion" "freetype" "harfbuzz-ng"
+                                    "libpng" "libjpeg" "pcre2" "sqlite" "xcb"
+                                    "zlib")))))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (propagated-inputs
@@ -337,6 +336,7 @@ system, and the core design of Django is reused in Grantlee.")
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("glib" ,glib)
+       ("gtk+" ,gtk+)                   ;for GTK theme support
        ("harfbuzz" ,harfbuzz)
        ("icu4c" ,icu4c)
        ("libinput" ,libinput-minimal)
@@ -381,7 +381,56 @@ system, and the core design of Django is reused in Grantlee.")
        ("vulkan-headers" ,vulkan-headers)
        ("ruby" ,ruby)))
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (let ((out (assoc-ref %outputs "out")))
+         (list "-verbose"
+               "-prefix" out
+               "-docdir" (string-append out "/share/doc/qt5")
+               "-headerdir" (string-append out "/include/qt5")
+               "-archdatadir" (string-append out "/lib/qt5")
+               "-datadir" (string-append out "/share/qt5")
+               "-examplesdir" (string-append
+                               out "/share/doc/qt5/examples")
+               "-opensource"
+               "-confirm-license"
+
+               ;; Later stripped into the :debug output.
+               "-force-debug-info"
+
+               ;; These features require higher versions of Linux than the
+               ;; minimum version of the glibc.  See
+               ;; src/corelib/global/minimum-linux_p.h.  By disabling these
+               ;; features Qt5 applications can be used on the oldest
+               ;; kernels that the glibc supports, including the RHEL6
+               ;; (2.6.32) and RHEL7 (3.10) kernels.
+               "-no-feature-getentropy" ; requires Linux 3.17
+               "-no-feature-renameat2"  ; requires Linux 3.16
+
+               ;; Do not build examples; if desired, these could go
+               ;; into a separate output, but for the time being, we
+               ;; prefer to save the space and build time.
+               "-no-compile-examples"
+               ;; Most "-system-..." are automatic, but some use
+               ;; the bundled copy by default.
+               "-system-sqlite"
+               "-system-harfbuzz"
+               "-system-pcre"
+               ;; explicitly link with openssl instead of dlopening it
+               "-openssl-linked"
+               ;; explicitly link with dbus instead of dlopening it
+               "-dbus-linked"
+               ;; don't use the precompiled headers
+               "-no-pch"
+               ;; drop special machine instructions that do not have
+               ;; runtime detection
+               ,@(if (string-prefix? "x86_64"
+                                     (or (%current-target-system)
+                                         (%current-system)))
+                     '()
+                     '("-no-sse2"))
+               "-no-mips_dsp"
+               "-no-mips_dspr2"))
+       #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'patch-bin-sh
            (lambda _
@@ -389,18 +438,18 @@ system, and the core design of Django is reused in Grantlee.")
                             "configure"
                             "mkspecs/features/qt_functions.prf"
                             "qmake/library/qmakebuiltins.cpp")
-                          (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-after 'configure 'patch-xdg-open
            (lambda _
              (substitute* '("src/platformsupport/services/genericunix/qgenericunixservices.cpp")
-                          (("^.*const char \\*browsers.*$" all)
-                           (string-append "*browser = QStringLiteral(\""
-                                          (which "xdg-open")
-                                          "\"); return true; \n" all)))
-             #t))
+               (("^.*const char \\*browsers.*$" all)
+                (string-append "*browser = QStringLiteral(\""
+                               (which "xdg-open")
+                               "\"); return true; \n" all)))))
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
+           ;; Overridden to not pass "--enable-fast-install", which makes the
+           ;; configure process fail.
+           (lambda* (#:key outputs configure-flags #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (substitute* "configure"
                  (("/bin/pwd") (which "pwd")))
@@ -413,57 +462,9 @@ system, and the core design of Django is reused in Grantlee.")
                ;; components can be installed in different places.
                (substitute* (find-files "." ".*\\.cmake")
                  (("NO_DEFAULT_PATH") ""))
-               ;; do not pass "--enable-fast-install", which makes the
-               ;; configure process fail
-               (invoke
-                 "./configure"
-                 "-verbose"
-                 "-prefix" out
-                 "-docdir" (string-append out "/share/doc/qt5")
-                 "-headerdir" (string-append out "/include/qt5")
-                 "-archdatadir" (string-append out "/lib/qt5")
-                 "-datadir" (string-append out "/share/qt5")
-                 "-examplesdir" (string-append
-                                  out "/share/doc/qt5/examples")
-                 "-opensource"
-                 "-confirm-license"
-
-                 ;; Later stripped into the :debug output.
-                 "-force-debug-info"
-
-                 ;; These features require higher versions of Linux than the
-                 ;; minimum version of the glibc.  See
-                 ;; src/corelib/global/minimum-linux_p.h.  By disabling these
-                 ;; features Qt5 applications can be used on the oldest
-                 ;; kernels that the glibc supports, including the RHEL6
-                 ;; (2.6.32) and RHEL7 (3.10) kernels.
-                 "-no-feature-getentropy"  ; requires Linux 3.17
-                 "-no-feature-renameat2"   ; requires Linux 3.16
-
-                 ;; Do not build examples; if desired, these could go
-                 ;; into a separate output, but for the time being, we
-                 ;; prefer to save the space and build time.
-                 "-no-compile-examples"
-                 ;; Most "-system-..." are automatic, but some use
-                 ;; the bundled copy by default.
-                 "-system-sqlite"
-                 "-system-harfbuzz"
-                 "-system-pcre"
-                 ;; explicitly link with openssl instead of dlopening it
-                 "-openssl-linked"
-                 ;; explicitly link with dbus instead of dlopening it
-                 "-dbus-linked"
-                 ;; don't use the precompiled headers
-                 "-no-pch"
-                 ;; drop special machine instructions that do not have
-                 ;; runtime detection
-                 ,@(if (string-prefix? "x86_64"
-                                       (or (%current-target-system)
-                                           (%current-system)))
-                     '()
-                     '("-no-sse2"))
-                 "-no-mips_dsp"
-                 "-no-mips_dspr2"))))
+               (format #t "build directory: ~s~%" (getcwd))
+               (format #t "configure flags: ~s~%" configure-flags)
+               (apply invoke "./configure" configure-flags))))
          (add-after 'install 'patch-mkspecs
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -495,8 +496,7 @@ system, and the core design of Django is reused in Grantlee.")
                         '("device_config.prf" "moc.prf" "qt_build_config.prf"
                           "qt_config.prf" "winrt/package_manifest.prf"))
                  (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
-                 (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata))
-               #t)))
+                 (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))
          (add-after 'patch-mkspecs 'patch-prl-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -505,8 +505,7 @@ system, and the core design of Django is reused in Grantlee.")
                ;; on context.  See <https://bugs.gnu.org/38405>
                (substitute* (find-files (string-append out "/lib") "\\.prl$")
                  (("\\$\\$\\[QT_INSTALL_LIBS\\]")
-                  (string-append out "/lib")))
-               #t)))
+                  (string-append out "/lib"))))))
          (add-after 'unpack 'patch-paths
            ;; Use the absolute paths for dynamically loaded libs, otherwise
            ;; the lib will be searched in LD_LIBRARY_PATH which typically is
@@ -518,7 +517,7 @@ system, and the core design of Django is reused in Grantlee.")
                (substitute* '("src/network/kernel/qdnslookup_unix.cpp"
                               "src/network/kernel/qhostinfo_unix.cpp")
                  (("^\\s*(lib.setFileName\\(QLatin1String\\(\")(resolv\"\\)\\);)" _ a b)
-                (string-append a glibc "/lib/lib" b))))
+                  (string-append a glibc "/lib/lib" b))))
              ;; libGL
              (substitute* "src/plugins/platforms/xcb/gl_integrations/xcb_glx/qglxintegration.cpp"
                (("^\\s*(QLibrary lib\\(QLatin1String\\(\")(GL\"\\)\\);)" _ a b)
@@ -528,8 +527,7 @@ system, and the core design of Django is reused in Grantlee.")
                (("^\\s*(QLibrary xcursorLib\\(QLatin1String\\(\")(Xcursor\"\\), 1\\);)" _ a b)
                 (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))
                (("^\\s*(xcursorLib.setFileName\\(QLatin1String\\(\")(Xcursor\"\\)\\);)" _ a b)
-                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b)))
-             #t)))))
+                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "QMAKEPATH")
@@ -552,11 +550,157 @@ system, and the core design of Django is reused in Grantlee.")
 developers using C++ or QML, a CSS & JavaScript like language.")
     (license (list license:lgpl2.1 license:lgpl3))))
 
-;; qt used to refer to the monolithic Qt 5.x package
-(define-deprecated qt qtbase)
+(define-public qtbase
+  (package/inherit qtbase-5
+    (name "qtbase")
+    (version "6.1.1")
+    (source (origin
+              (inherit (package-source qtbase-5))
+              (uri (qt5-urls name version))
+              (sha256
+               (base32
+                "1wizrfiw6h8bk99brbdpdli40vsk6yqchs66f1r083hp0ygsma11"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; corelib uses bundled harfbuzz, md4, md5, sha3
+               '(with-directory-excursion "src/3rdparty"
+                  (for-each delete-file-recursively
+                            ;; The bundled pcre2 copy is kept, as its headers
+                            ;; are required by some internal bootstrap target
+                            ;; used for the tools.
+                            (list "double-conversion" "freetype" "harfbuzz-ng"
+                                  "libpng" "libjpeg" "sqlite" "xcb" "zlib"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments qtbase-5)
+       ;; XXX: There are many test failures, because the test suite
+       ;; requires a real X server (a virtual one such as Xvfb is not
+       ;; enough) or a functional network.  It's also quite expensive to
+       ;; build and run.
+       ((#:tests? _ #f) #f)
+       ;; ((#:cmake _)
+       ;;  cmake)                          ;requires a CMake >= 3.18.4
+       ((#:configure-flags _ ''())
+        `(let ((out (assoc-ref %outputs "out")))
+           (list "-GNinja"              ;the build fails otherwise
+                 (string-append "-DINSTALL_ARCHDATADIR=" out "/lib/qt6")
+                 (string-append "-DINSTALL_DATADIR=" out "/share/qt6")
+                 (string-append "-DINSTALL_DOCDIR=" out "/share/doc/qt6")
+                 (string-append "-DINSTALL_MKSPECSDIR=" out "/lib/qt6/mkspecs")
+                 (string-append "-DINSTALL_EXAMPLESDIR=" out
+                                "/share/doc/qt6/examples")
+                 (string-append "-DINSTALL_INCLUDEDIR=" out "/include/qt6")
+                 ;; Link with DBus and OpenSSL so they don't get dlopen'ed.
+                 "-DINPUT_dbus=linked"
+                 "-DINPUT_openssl=linked"
+                 ;; These features require higher versions of Linux than the
+                 ;; minimum version of the glibc.  See
+                 ;; src/corelib/global/minimum-linux_p.h.  By disabling these
+                 ;; features Qt applications can be used on the oldest kernels
+                 ;; that the glibc supports, including the RHEL6 (2.6.32) and
+                 ;; RHEL7 (3.10) kernels.
+                 "-DFEATURE_getentropy=OFF" ; requires Linux 3.17
+                 "-DFEATURE_renameat2=OFF"  ; requires Linux 3.16
+                 ;; Most system libraries are used by default, except in some
+                 ;; cases such as for those below.
+                 "-DFEATURE_system_pcre2=ON"
+                 "-DFEATURE_system_sqlite=ON"
+                 ;; Don't use the precompiled headers.
+                 "-DBUILD_WITH_PCH=OFF"
+                 ;; Drop special machine instructions that do not have runtime
+                 ;; detection.
+                 ,@(if (string-prefix? "x86_64"
+                                       (or (%current-target-system)
+                                           (%current-system)))
+                       '()              ;implicitly enabled
+                       '("-DFEATURE_sse2=OFF"
+                         "-DFEATURE_sse3=OFF"
+                         "-DFEATURE_ssse3=OFF"
+                         "-DFEATURE_sse4_1=OFF"
+                         "-DFEATURE_sse4_2=OFF"))
+                 "-DFEATURE_mips_dsp=OFF"
+                 "-DFEATURE_mips_dspr2=OFF")))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'patch-bin-sh)
+           (delete 'patch-xdg-open)
+           (add-after 'patch-paths 'patch-more-paths
+             (lambda _
+               (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
+                 (("\"xdg-open\"")
+                  (format #f "~s" (which "xdg-open"))))
+               (substitute* '("mkspecs/features/qt_functions.prf"
+                              "qmake/library/qmakebuiltins.cpp")
+                 (("/bin/sh")
+                  (which "sh")))))
+           (replace 'configure
+             (assoc-ref %standard-phases 'configure))
+           (replace 'build
+             (lambda* (#:key parallel-build? #:allow-other-keys)
+               (apply invoke "cmake" "--build" "."
+                      (if parallel-build?
+                          `("--parallel" ,(number->string (parallel-job-count)))
+                          '()))))
+           (replace 'install
+             (lambda _
+               (invoke "cmake" "--install" ".")))
+           (replace 'patch-mkspecs
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (archdata (string-append out "/lib/qt6"))
+                      (mkspecs (string-append archdata "/mkspecs"))
+                      (qt_config.prf (string-append
+                                      mkspecs "/features/qt_config.prf")))
+                 ;; For each Qt module, let `qmake' uses search paths in the
+                 ;; module directory instead of all in QT_INSTALL_PREFIX.
+                 (substitute* qt_config.prf
+                   (("\\$\\$\\[QT_INSTALL_HEADERS\\]")
+                    "$$clean_path($$replace(dir, mkspecs/modules, ../../include/qt6))")
+                   (("\\$\\$\\[QT_INSTALL_LIBS\\]")
+                    "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                   (("\\$\\$\\[QT_HOST_LIBS\\]")
+                    "$$clean_path($$replace(dir, mkspecs/modules, ../../lib))")
+                   (("\\$\\$\\[QT_INSTALL_BINS\\]")
+                    "$$clean_path($$replace(dir, mkspecs/modules, ../../bin))"))
+
+                 ;; Searches Qt tools in the current PATH instead of QT_HOST_BINS.
+                 (substitute* (string-append mkspecs "/features/qt_functions.prf")
+                   (("cmd = \\$\\$\\[QT_HOST_BINS\\]/\\$\\$2")
+                    "cmd = $$system(which $${2}.pl 2>/dev/null || which $${2})"))
+
+                 ;; Resolve qmake spec files within qtbase by absolute paths.
+                 (substitute*
+                     (map (lambda (file)
+                            (string-append mkspecs "/features/" file))
+                          '("device_config.prf" "moc.prf" "qt_build_config.prf"
+                            "qt_config.prf"))
+                   (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
+                   (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
+    (native-inputs
+     `(("gtk+" ,gtk+)                   ;for GTK theme support
+       ("ninja" ,ninja)
+       ("wayland-protocols" ,wayland-protocols)
+       ("xorg-server" ,xorg-server-for-tests)
+       ,@(package-native-inputs qtbase-5)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "QMAKEPATH")
+            (files '("lib/qt6")))
+           (search-path-specification
+            (variable "QML2_IMPORT_PATH")
+            (files '("lib/qt6/qml")))
+           (search-path-specification
+            (variable "QT_PLUGIN_PATH")
+            (files '("lib/qt6/plugins")))
+           (search-path-specification
+            (variable "XDG_DATA_DIRS")
+            (files '("share")))
+           (search-path-specification
+            (variable "XDG_CONFIG_DIRS")
+            (files '("etc/xdg")))))))
 
 (define-public qtsvg
-  (package (inherit qtbase)
+  (package (inherit qtbase-5)
     (name "qtsvg")
     (version "5.15.2")
     (source (origin
@@ -569,7 +713,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
     (native-inputs `(("perl" ,perl)))
     (inputs
      `(("mesa" ,mesa)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)))
     (arguments
      `(#:phases
@@ -659,7 +803,7 @@ HostData=lib/qt5
        ("libtiff" ,libtiff)
        ("libwebp" ,libwebp)
        ("mesa" ,mesa)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)))
     (synopsis "Additional Image Format plugins for Qt")
     (description "The QtImageFormats module contains plugins for adding
@@ -681,7 +825,7 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
     (native-inputs `(("perl" ,perl)))
     (inputs
      `(("mesa" ,mesa)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (synopsis "Qt Extras for X11")
     (description "The QtX11Extras module includes the library to access X11
 from within Qt 5.")))
@@ -708,7 +852,7 @@ from within Qt 5.")))
                #t))))))
     (native-inputs `(("perl" ,perl)
                      ("qtdeclarative" ,qtdeclarative)))
-    (inputs `(("qtbase" ,qtbase)))
+    (inputs `(("qtbase" ,qtbase-5)))
     (synopsis "Qt XML patterns module")
     (description "The QtXmlPatterns module is a XQuery and XPath engine for
 XML and custom data models.  It contains programs such as xmlpatterns and
@@ -747,7 +891,7 @@ xmlpatternsvalidator.")))
        ("vulkan-headers" ,vulkan-headers)))
     (inputs
      `(("mesa" ,mesa)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (synopsis "Qt QML module (Quick 2)")
     (description "The Qt QML module provides a framework for developing
 applications and libraries with the QML language.  It defines and implements the
@@ -771,7 +915,7 @@ with JavaScript and C++.")))
        ("qtdeclarative" ,qtdeclarative)))
     (inputs
      `(("bluez" ,bluez)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (synopsis "Qt Connectivity module")
     (description "The Qt Connectivity modules provides modules for interacting
 with Bluetooth and NFC.")))
@@ -792,7 +936,7 @@ with Bluetooth and NFC.")))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)))
-    (inputs `(("qtbase" ,qtbase)))
+    (inputs `(("qtbase" ,qtbase-5)))
     (synopsis "Qt Web Sockets module")
     (description "WebSocket is a web-based protocol designed to enable two-way
 communication between a client application and a remote host.  The Qt
@@ -824,7 +968,7 @@ consume data received from the server, or both.")))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)))
-    (inputs `(("qtbase" ,qtbase)))
+    (inputs `(("qtbase" ,qtbase-5)))
     (synopsis "Qt Sensors module")
     (description "The Qt Sensors API provides access to sensor hardware via QML
 and C++ interfaces.  The Qt Sensors API also provides a motion gesture
@@ -869,7 +1013,7 @@ recognition API for devices.")))
      `(("alsa-lib" ,alsa-lib)
        ("mesa" ,mesa)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ;; Gstreamer is needed for the mediaplayer plugin
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)))
@@ -923,7 +1067,7 @@ set of plugins for interacting with pulseaudio and GStreamer.")))
        ("libxrender" ,libxrender)
        ("mesa" ,mesa)
        ("mtdev" ,mtdev)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("vulkan-headers" ,vulkan-headers)
        ("wayland" ,wayland)))
     (synopsis "Qt Wayland module")
@@ -942,7 +1086,7 @@ compositor libraries.")))
                "17gp5qzg4wdg8qlxk2p3mh8x1vk33rf33wic3fy0cws193bmkiar"))))
     (native-inputs `(("perl" ,perl)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("eudev" ,eudev)))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
@@ -986,7 +1130,7 @@ interacting with serial ports from within Qt.")))
                  #t)))))))
     (inputs
      `(("libsocketcan" ,libsocketcan)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtserialport" ,qtserialport)))
     (synopsis "Qt Serial Bus module")
     (description "The Qt Serial Bus API provides classes and functions to
@@ -1007,7 +1151,7 @@ and others.")))
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)
        ("qtwebsockets" ,qtwebsockets)))
-    (inputs `(("qtbase" ,qtbase)))
+    (inputs `(("qtbase" ,qtbase-5)))
     (synopsis "Web communication library for Qt")
     (description "The Qt WebChannel module enables peer-to-peer communication
 between the host (QML/C++ application) and the client (HTML/JavaScript
@@ -1035,7 +1179,7 @@ popular web engines, Qt WebKit 2 and Qt WebEngine.")))
     (native-inputs '())
     (inputs
      `(("mesa" ,mesa)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtwebsockets" ,qtwebsockets)
        ("zlib" ,zlib)))
@@ -1060,7 +1204,7 @@ OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
     (native-inputs
      `(("perl" ,perl)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Display web content in a QML application")
     (description "Qt WebView provides a way to display web content in a QML
@@ -1091,7 +1235,7 @@ native APIs where it makes sense.")))
     (inputs
      `(("icu4c" ,icu4c)
        ("openssl" ,openssl)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)))
     (synopsis "Qt Location and Positioning modules")
     (description "The Qt Location module provides an interface for location,
@@ -1116,7 +1260,7 @@ positioning and geolocation plugins.")))
        ("vulkan-headers" ,vulkan-headers)))
     (inputs
      `(("mesa" ,mesa)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (synopsis "Qt Tools and Designer modules")
     (description "The Qt Tools module provides a set of applications to browse
 the documentation, translate applications, generate help files and other stuff
@@ -1137,7 +1281,7 @@ that helps in Qt development.")))
      `(("perl" ,perl)
        ("qttools" ,qttools)))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (synopsis "Qt Script module")
     (description "Qt provides support for application scripting with ECMAScript.
 The following guides and references cover aspects of programming with
@@ -1157,7 +1301,7 @@ ECMAScript and Qt.")))
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Quick Controls and other Quick modules")
     (description "The QtScript module provides classes for making Qt
@@ -1178,7 +1322,7 @@ can be used to build complete interfaces in Qt Quick.")))
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Quick Controls 2 and other Quick 2 modules")
     (description "The Qt Quick Controls 2 module contains the Qt Labs Platform
@@ -1200,7 +1344,7 @@ not available.")))
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Graphical Effects module")
     (description "The Qt Graphical Effects module provides a set of QML types
@@ -1228,7 +1372,7 @@ coloring, and many more.")))
        ("freetype" ,freetype)
        ("libxrender" ,libxrender)
        ("sdl2" ,sdl2)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Gamepad module")
     (description "The Qt Gamepad module is an add-on library that enables Qt
@@ -1256,7 +1400,7 @@ and mobile applications targeting TV-like form factors.")))
                    (("scion") "#"))
                  #t))))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt SCXML module")
     (description "The Qt SCXML module provides functionality to create state
@@ -1276,7 +1420,7 @@ also contains functionality to support data models and executable content.")))
               (base32
                "09rjx53519dfk4qj2gbn3vlxyriasyb747wpg1p11y7jkwqhs4l7"))))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Purchasing module")
     (description "The Qt Purchasing module provides and in-app API for
@@ -1296,7 +1440,7 @@ purchasing goods and services.")))
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Charts module")
     (description "The Qt Charts module provides a set of easy to use chart
@@ -1320,7 +1464,7 @@ selecting one of the charts themes.")
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Data Visualization module")
     (description "The Qt Data Visualization module provides a way to visualize
@@ -1351,7 +1495,7 @@ customized by using themes or by adding custom items and labels to them.")
                  (("oauth1 ") "# oauth1 "))
                #t))))))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (synopsis "Qt Network Authorization module")
     (description "The Qt Network Authorization module provides an
 implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
@@ -1382,7 +1526,7 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")))
                    "integration_multiprocess"))
                #t))))))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (synopsis "Qt Remote Objects module")
     (description "The Qt Remote Objects module is an @dfn{inter-process
@@ -1405,7 +1549,7 @@ processes or computers.")))
      (substitute-keyword-arguments (package-arguments qtsvg)
        ((#:tests? _ #f) #f))) ; TODO: Enable the tests
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (native-inputs
      `(("perl" ,perl)
        ("qtdeclarative" ,qtdeclarative)
@@ -1441,7 +1585,7 @@ message.")))
        ("qttools" ,qttools)))
     (inputs
      `(("enchant" ,enchant)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://github.com/manisandro/qtspell")
     (synopsis "Spell checking for Qt text widgets")
     (description
@@ -1454,7 +1598,7 @@ using the Enchant spell-checking library.")
   (package
     (inherit qtsvg)
     (name "qtwebengine")
-    (version (package-version qtbase))
+    (version (package-version qtbase-5))
     (source
      (origin
        (method url-fetch)
@@ -1546,6 +1690,7 @@ using the Enchant spell-checking library.")
                     "third_party/modp_b64"
                     "third_party/nasm"
                     "third_party/one_euro_filter"
+                    "third_party/openh264/src/codec/api/svc"
                     "third_party/opus"
                     "third_party/ots"
                     "third_party/pdfium"
@@ -1723,6 +1868,7 @@ using the Enchant spell-checking library.")
        ;; libxml2 configure summary still states "Checking for compatible
        ;; system libxml2... no"
        ("libxml2" ,libxml2)
+       ("openh264" ,openh264)
        ("libxrandr" ,libxrandr)
        ("libxrender" ,libxrender)
        ("libxslt" ,libxslt)
@@ -1734,7 +1880,7 @@ using the Enchant spell-checking library.")
        ("pciutils" ,pciutils)
        ("protobuf" ,protobuf)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtmultimedia" ,qtmultimedia)
        ("qtwebchannel" ,qtwebchannel)
@@ -1746,6 +1892,10 @@ using the Enchant spell-checking library.")
        ("xcb-util" ,xcb-util)))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg)
+       ((#:modules modules '())
+        `((guix build gnu-build-system)
+          (guix build utils)
+          (ice-9 textual-ports)))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-before 'configure 'substitute-source
@@ -1753,6 +1903,10 @@ using the Enchant spell-checking library.")
                (let ((out (assoc-ref outputs "out"))
                      (nss (assoc-ref inputs "nss"))
                      (udev (assoc-ref inputs "udev")))
+                 (with-atomic-file-replacement "src/buildtools/config/linux.pri"
+                   (lambda (in out)
+                     (display (get-string-all in) out)
+                     (display "\ngn_args += use_system_openh264=true\n" out)))
                  ;; Qtwebengine is not installed into the same prefix as
                  ;; qtbase.  Some qtbase QTLibraryInfo constants will not
                  ;; work.  Replace with the full path to the qtwebengine
@@ -1788,7 +1942,8 @@ using the Enchant spell-checking library.")
                        "--webengine-printing-and-pdf=no"
                        "--webengine-ffmpeg=system"
                        "--webengine-icu=system"
-                       "--webengine-pepper-plugins=no")))))
+                       "--webengine-pepper-plugins=no"
+                       "-webengine-proprietary-codecs")))))
        ;; Tests are disabled due to "Could not find QtWebEngineProcess error"
        ;; It's possible this can be fixed by setting QTWEBENGINEPROCESS_PATH
        ;; before running tests.
@@ -1805,6 +1960,61 @@ using the Enchant spell-checking library.")
 using the Chromium browser project.  The Chromium source code has Google services
 and binaries removed, and adds modular support for using system libraries.")
     (license license:lgpl2.1+)))
+
+(define-public single-application-qt5
+  ;; Change in function signature, nheko requires at least this commit
+  (let ((commit "dc8042b5db58f36e06ba54f16f38b16c5eea9053"))
+    (package
+      (name "single-application-qt5")
+      (version (string-append "3.2.0-" (string-take commit 7)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/itay-grudev/SingleApplication")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "163aa2x2qb0h8w26si5ql833ilj427jjbdwlz1p2p8iaq6dh0vq1"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f                    ; no check target
+         ;; Projects can decide how to build this library.  You might need to
+         ;; override this flag (QApplication, QGuiApplication or
+         ;; QCoreApplication).
+         #:configure-flags '("-DQAPPLICATION_CLASS=QApplication")
+         #:phases
+         (modify-phases %standard-phases
+           ;; No install target, install things manually
+           (replace 'install
+             (lambda* (#:key inputs outputs source #:allow-other-keys)
+               (let* ((qt (assoc-ref inputs "qtbase"))
+                      (qt-version ,(version-major (package-version qtbase-5)))
+                      (out (assoc-ref outputs "out")))
+                 (install-file
+                  "libSingleApplication.a" (string-append out "/lib"))
+                 (for-each
+                  (lambda (file)
+                    (install-file
+                     (string-append source "/" file)
+                     (string-append out "/include")))
+                  '("SingleApplication"
+                    "singleapplication.h" "singleapplication_p.h"))
+                 #t))))))
+      (inputs
+       `(("qtbase" ,qtbase-5)))
+      (home-page "https://github.com/itay-grudev/SingleApplication")
+      (synopsis "Replacement of QtSingleApplication for Qt5 and Qt6")
+      (description
+       "SingleApplication is a replacement of the QtSingleApplication for Qt5 and Qt6.
+
+It keeps the Primary Instance of your Application and kills each subsequent
+instances.  It can (if enabled) spawn secondary (non-related to the primary)
+instances and can send data to the primary instance from secondary
+instances.")
+      (license license:expat))))
 
 (define-public python-sip
   (package
@@ -1904,13 +2114,13 @@ module provides support functions to the automatically generated code.")
         (patches (search-patches "pyqt-configure.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("qtbase" ,qtbase))) ; for qmake
+     `(("qtbase" ,qtbase-5))) ; for qmake
     (propagated-inputs
      `(("python-sip" ,python-sip)
        ("python-pyqt5-sip" ,python-pyqt5-sip)))
     (inputs
      `(("python" ,python-wrapper)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtconnectivity" ,qtconnectivity)
        ("qtdeclarative" ,qtdeclarative)
        ("qtlocation" ,qtlocation)
@@ -2016,12 +2226,12 @@ contain over 620 classes.")
      `(("python" ,python)
        ("python-sip" ,python-sip)
        ;; qtbase is required for qmake
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (inputs
      `(("python" ,python-wrapper)
        ("python-sip" ,python-sip)
        ("python-pyqt" ,python-pyqt)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtdeclarative" ,qtdeclarative)
        ("qtwebchannel" ,qtwebchannel)
@@ -2056,7 +2266,7 @@ contain over 620 classes.")
                        "--sipdir" sipdir
                        "--pyqt-sipdir" pyqt-sipdir))))
          ;; Because this has a different prefix than python-pyqt then we need
-         ;; to make this a namespace of it's own
+         ;; to make this a namespace of its own.
          (add-after 'install 'make-namespace
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((__init__.py (string-append
@@ -2168,7 +2378,7 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
                  (("\\$\\$\\[QT_HOST_DATA\\]")
                  (string-append out "/lib/qt$${QT_MAJOR_VERSION}")))
                (invoke "qmake")))))))
-    (native-inputs `(("qtbase" ,qtbase)))
+    (native-inputs `(("qtbase" ,qtbase-5)))
     (home-page "https://www.riverbankcomputing.co.uk/software/qscintilla/intro")
     (synopsis "Qt port of the Scintilla C++ editor control")
     (description "QScintilla is a port to Qt of Neil Hodgson's Scintilla C++
@@ -2266,7 +2476,7 @@ This package provides the Python bindings.")))
      `(("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (arguments
      `(#:tests? #f ; No tests included
        #:phases
@@ -2376,7 +2586,7 @@ securely.  It will not store any data unencrypted unless explicitly requested.")
                          '("qtlockedfile" "qtpropertybrowser" "qtservice"
                            "qtsingleapplication" "qtsoap")))))))
       (inputs
-       `(("qtbase" ,qtbase)))
+       `(("qtbase" ,qtbase-5)))
       (synopsis "Collection of Qt extensions")
       (description "QtSolutions is a set of components extending Qt.
 @itemize
@@ -2409,7 +2619,7 @@ that can be only started once per user.
          (base32 "0hf0mpca248xlqn7xnzkfj8drf19gdyg5syzklvq8pibxiixwxj0"))))
   (build-system gnu-build-system)
   (inputs
-   `(("qtbase" ,qtbase)
+   `(("qtbase" ,qtbase-5)
      ("qtsvg" ,qtsvg)
      ("qttools" ,qttools)))
   (arguments
@@ -2492,7 +2702,7 @@ different kinds of sliders, and much more.")
        ("sqlite" ,sqlite)
        ("fontconfig" ,fontconfig)
        ("libxrender" ,libxrender)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtlocation" ,qtlocation)
        ("qtmultimedia" ,qtmultimedia)
@@ -2557,7 +2767,7 @@ time Web content can be enhanced with native controls.")
     (native-inputs
      `(("qttools" ,qttools)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (home-page "https://filcuc.github.io/DOtherSide/index.html")
     (synopsis "C language library for creating bindings for the Qt QML language")
@@ -2595,7 +2805,7 @@ a binding language:
       (native-inputs
        `(("qttools" ,qttools)))
       (inputs
-       `(("qtbase" ,qtbase)))
+       `(("qtbase" ,qtbase-5)))
       (home-page "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
       (synopsis "Color management widgets")
       (description "QtColorWidgets provides a Qt color dialog that is more
@@ -2604,10 +2814,60 @@ color-related widgets.")
       ;; Includes a license exception for combining with GPL2 code.
       (license license:lgpl3+))))
 
+(define-public qcustomplot
+  (package
+    (name "qcustomplot")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.qcustomplot.com/release/"
+                           version "fixed" "/QCustomPlot.tar.gz"))
+       (sha256
+        (base32 "1324kqyj1v1f8k8d7b15gc3apwz9qxx52p86hvchg33hjdlqhskx"))))
+    (native-inputs
+     `(("qcustomplot-sharedlib"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://www.qcustomplot.com/release/"
+                               version "fixed" "/QCustomPlot-sharedlib.tar.gz"))
+           (sha256
+            (base32 "0vp8lpxvd1nlp4liqrlvslpqrgfn0wpiwizzdsjbj22zzb8vxikc"))))))
+    (inputs
+     `(("qtbase" ,qtbase-5)))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-extra-files
+           (lambda* (#:key inputs #:allow-other-keys)
+             (invoke "tar" "-xvf" (assoc-ref inputs "qcustomplot-sharedlib"))))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (chdir "qcustomplot-sharedlib/sharedlib-compilation")
+             (substitute* "sharedlib-compilation.pro"
+               ;; Don't build debug library.
+               (("debug_and_release")
+                "release"))
+             (invoke "qmake"
+                     (string-append "DESTDIR="
+                                    (assoc-ref outputs "out")
+                                    "/lib"))))
+         (add-after 'install 'install-header
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "../../qcustomplot.h"
+                           (string-append (assoc-ref outputs "out")
+                                          "/include")))))))
+    (home-page "https://www.qcustomplot.com/")
+    (synopsis "Qt widget for plotting and data visualization")
+    (description
+     "QCustomPlot is a Qt C++ widget providing 2D plots, graphs and charts.")
+    (license license:gpl3+)))
+
 (define-public python-shiboken-2
   (package
     (name "python-shiboken-2")
-    (version "5.14.2.3")
+    (version "5.15.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.qt.io/official_releases"
@@ -2616,14 +2876,14 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "08lhqm0n3fjqpblcx9rshsp8g3bvf7yzbai5q99bly2wa04y6b83"))))
+                "060ljj1nzyp4zfz2vasbv2i7gs5rfkkjwxxbisd0fdw01d5m01mk"))))
     (build-system cmake-build-system)
     (inputs
      `(("clang-toolchain" ,clang-toolchain)
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("python-wrapper" ,python-wrapper)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtxmlpatterns" ,qtxmlpatterns)))
     (arguments
      `(#:tests? #f
@@ -2673,7 +2933,7 @@ color-related widgets.")
      `(("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("clang-toolchain" ,clang-toolchain)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdatavis3d" ,qtdatavis3d)
        ("qtlocation" ,qtlocation)
        ("qtmultimedia" ,qtmultimedia)
@@ -2687,9 +2947,10 @@ color-related widgets.")
        ("qtwebsockets" ,qtwebsockets)
        ("qtx11extras" ,qtx11extras)
        ("qtxmlpatterns" ,qtxmlpatterns)))
+    (propagated-inputs
+     `(("python-shiboken-2" ,python-shiboken-2)))
     (native-inputs
      `(("cmake" ,cmake-minimal)
-       ("python-shiboken-2" ,python-shiboken-2)
        ("python" ,python-wrapper)
        ("qttools" ,qttools)
        ("which" ,which)))
@@ -2740,7 +3001,7 @@ generate Python bindings for your C or C++ code.")
     (inputs
      `(("python-pyside-2" ,python-pyside-2)
        ("python-shiboken-2" ,python-shiboken-2)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("python" ,python-wrapper)))
     (arguments
@@ -2784,7 +3045,7 @@ generate Python bindings for your C or C++ code.")
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke (cons "qmake" make-flags)))))))
     (native-inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qttools" ,qttools)))
     (inputs
      `(("glu" ,glu)))
@@ -2827,7 +3088,7 @@ being fully customizable and easy to extend.")
       `(("pkg-config" ,pkg-config)
         ("cmake" ,cmake)))
     (inputs
-      `(("qtbase" ,qtbase)
+      `(("qtbase" ,qtbase-5)
         ("coin3D" ,coin3D-4)))
     (home-page "https://github.com/coin3d/soqt")
     (synopsis "Qt GUI component toolkit library for Coin")

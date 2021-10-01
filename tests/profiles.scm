@@ -279,6 +279,63 @@
                  (string=? (dirname (readlink bindir))
                            (derivation->output-path guile))))))
 
+(test-assertm "profile-derivation, ordering & collisions"
+  ;; ENTRY1 and ENTRY2 both provide 'bin/guile'--a collision.  Make sure
+  ;; ENTRY1 "wins" over ENTRY2.  See <https://bugs.gnu.org/49102>.
+  (mlet* %store-monad
+      ((entry1 ->  (package->manifest-entry %bootstrap-guile))
+       (entry2 ->  (manifest-entry
+                     (name "fake-guile")
+                     (version "0")
+                     (item (computed-file
+                            "fake-guile"
+                            #~(begin
+                                (mkdir #$output)
+                                (mkdir (string-append #$output "/bin"))
+                                (call-with-output-file
+                                    (string-append #$output "/bin/guile")
+                                  (lambda (port)
+                                    (display "Fake!\n" port))))))))
+       (guile      (package->derivation %bootstrap-guile))
+       (drv        (profile-derivation (manifest (list entry1 entry2))
+                                       #:hooks '()
+                                       #:locales? #f))
+       (profile -> (derivation->output-path drv))
+       (bindir ->  (string-append profile "/bin"))
+       (file ->    (string-append bindir "/guile"))
+       (_          (built-derivations (list drv))))
+    (return (string=? (readlink file)
+                      (string-append
+                       (derivation->output-path guile)
+                       "/bin/guile")))))
+
+(test-assertm "load-profile"
+  (mlet* %store-monad
+      ((entry ->   (package->manifest-entry %bootstrap-guile))
+       (guile      (package->derivation %bootstrap-guile))
+       (drv        (profile-derivation (manifest (list entry))
+                                       #:hooks '()
+                                       #:locales? #f))
+       (profile -> (derivation->output-path drv))
+       (bindir ->  (string-append profile "/bin"))
+       (_          (built-derivations (list drv))))
+    (define-syntax-rule (with-environment-excursion exp ...)
+      (let ((env (environ)))
+        (dynamic-wind
+          (const #t)
+          (lambda () exp ...)
+          (lambda () (environ env)))))
+
+    (return (and (with-environment-excursion
+                  (load-profile profile)
+                  (and (string-prefix? (string-append bindir ":")
+                                       (getenv "PATH"))
+                       (getenv "GUILE_LOAD_PATH")))
+                 (with-environment-excursion
+                  (load-profile profile #:pure? #t #:white-list '())
+                  (equal? (list (string-append "PATH=" bindir))
+                          (environ)))))))
+
 (test-assertm "<profile>"
   (mlet* %store-monad
       ((entry ->   (package->manifest-entry %bootstrap-guile))

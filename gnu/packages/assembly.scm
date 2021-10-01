@@ -7,7 +7,7 @@
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
 ;;; Copyright © 2019 Andy Tai <atai@atai.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020 Christopher Lemmer Webber <cwebber@dustycloud.org>
+;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -228,7 +228,7 @@ It has macro abilities and focuses on operating system portability.")
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #f ; They use submakes wrong
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "PREFIX="
                                          (assoc-ref %outputs "out")))
        #:system "i686-linux" ; Standalone ld86 had problems otherwise

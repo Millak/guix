@@ -24,8 +24,13 @@
   #:use-module (gnu installer newt page)
   #:use-module (gnu system uuid)
   #:use-module ((gnu build file-systems)
-                #:select (read-partition-uuid
+                #:select (canonicalize-device-spec
+                          find-partition-by-label
+                          read-partition-uuid
                           read-luks-partition-uuid))
+  #:use-module ((gnu build linux-boot)
+                #:select (linux-command-line
+                          find-long-option))
   #:use-module ((gnu build linux-modules)
                 #:select (missing-modules))
   #:use-module ((gnu system linux-initrd)
@@ -70,6 +75,7 @@
             small-freespace-partition?
             esp-partition?
             boot-partition?
+            efi-installation?
             default-esp-mount-point
 
             with-delay-device-in-use?
@@ -106,6 +112,9 @@
 
             &no-root-mount-point
             no-root-mount-point?
+            &cannot-read-uuid
+            cannot-read-uuid?
+            cannot-read-uuid-partition
 
             check-user-partitions
             set-user-partitions-file-name
@@ -193,12 +202,8 @@ inferior to MAX-SIZE, #f otherwise."
 (define (esp-partition? partition)
   "Return #t if partition has the ESP flag, return #f otherwise."
   (let* ((disk (partition-disk partition))
-         (disk-type (disk-disk-type disk))
-         (has-extended? (disk-type-check-feature
-                         disk-type
-                         DISK-TYPE-FEATURE-EXTENDED)))
+         (disk-type (disk-disk-type disk)))
     (and (data-partition? partition)
-         (not has-extended?)
          (partition-is-flag-available? partition PARTITION-FLAG-ESP)
          (partition-get-flag partition PARTITION-FLAG-ESP))))
 
@@ -226,6 +231,7 @@ inferior to MAX-SIZE, #f otherwise."
     ((fat32) "fat32")
     ((jfs)   "jfs")
     ((ntfs)  "ntfs")
+    ((xfs)   "xfs")
     ((swap)  "linux-swap")))
 
 (define (user-fs-type->mount-type fs-type)
@@ -233,10 +239,11 @@ inferior to MAX-SIZE, #f otherwise."
   (case fs-type
     ((ext4)  "ext4")
     ((btrfs) "btrfs")
-    ((fat16) "fat")
+    ((fat16) "vfat")
     ((fat32) "vfat")
     ((jfs)   "jfs")
-    ((ntfs)  "ntfs")))
+    ((ntfs)  "ntfs")
+    ((xfs)   "xfs")))
 
 (define (partition-filesystem-user-type partition)
   "Return the filesystem type of PARTITION, to be stored in the FS-TYPE field
@@ -251,6 +258,7 @@ of <user-partition> record."
             ((string=? name "fat32") 'fat32)
             ((string=? name "jfs") 'jfs)
             ((string=? name "ntfs") 'ntfs)
+            ((string=? name "xfs") 'xfs)
             ((or (string=? name "swsusp")
                  (string=? name "linux-swap(v0)")
                  (string=? name "linux-swap(v1)"))
@@ -337,16 +345,35 @@ fail. See rereadpt function in wipefs.c of util-linux for an explanation."
   (with-null-output-ports
    (invoke "dmsetup" "remove_all")))
 
+(define (installation-device)
+  "Return the installation device path."
+  (let* ((cmdline (linux-command-line))
+         (root (find-long-option "--root" cmdline)))
+    (and root
+         (canonicalize-device-spec (uuid root)))))
+
 (define (non-install-devices)
-  "Return all the available devices, except the busy one, allegedly the
-install device. DEVICE-IS-BUSY? is a parted call, checking if the device is
-mounted."
-  ;; FIXME: The install image uses an overlayfs so the install device does not
-  ;; appear as mounted and won't be considered as busy.
-  (remove (lambda (device)
-            (let ((file-name (device-path device)))
-              (device-is-busy? device)))
-          (devices)))
+  "Return all the available devices, except the install device."
+  (define (read-only? device)
+    (dynamic-wind
+    (lambda ()
+      (device-open device))
+    (lambda ()
+      (device-read-only? device))
+    (lambda ()
+      (device-close device))))
+
+  ;; If parted reports that a device is read-only it is probably the
+  ;; installation device. However, as this detection does not always work,
+  ;; compare the device path to the installation device path read from the
+  ;; command line.
+  (let ((install-device (installation-device)))
+    (remove (lambda (device)
+              (let ((file-name (device-path device)))
+                (or (read-only? device)
+                    (and install-device
+                         (string=? file-name install-device)))))
+            (devices))))
 
 
 ;;
@@ -871,7 +898,7 @@ partition."
                 (format #f "Unable to create partition ~a~%" name)))))))))
 
 (define (force-user-partitions-formatting user-partitions)
-  "Set the NEED-FORMATING? fields to #t on all <user-partition> records of
+  "Set the NEED-FORMATTING? fields to #t on all <user-partition> records of
 USER-PARTITIONS list and return the updated list."
   (map (lambda (p)
          (user-partition
@@ -918,30 +945,26 @@ exists."
          ;; disk space. Otherwise, set the swap size to 5% of the disk space.
          (swap-size (min default-swap-size five-percent-disk)))
 
-    (if has-extended?
-        ;; msdos - remove everything.
-        (disk-remove-all-partitions disk)
-        ;; gpt - remove everything but esp if it exists.
-        (for-each
-         (lambda (partition)
-           (and (data-partition? partition)
-                (disk-remove-partition* disk partition)))
-         non-boot-partitions))
+    ;; Remove everything but esp if it exists.
+    (for-each
+     (lambda (partition)
+       (and (data-partition? partition)
+            (disk-remove-partition* disk partition)))
+     non-boot-partitions)
 
     (let* ((start-partition
-            (and (not has-extended?)
-                 (if (efi-installation?)
-                     (and (not esp-partition)
-                          (user-partition
-                           (fs-type 'fat32)
-                           (esp? #t)
-                           (size new-esp-size)
-                           (mount-point (default-esp-mount-point))))
+            (if (efi-installation?)
+                (and (not esp-partition)
                      (user-partition
-                      (fs-type 'ext4)
-                      (bootable? #t)
-                      (bios-grub? #t)
-                      (size bios-grub-size)))))
+                      (fs-type 'fat32)
+                      (esp? #t)
+                      (size new-esp-size)
+                      (mount-point (default-esp-mount-point))))
+                (user-partition
+                 (fs-type 'ext4)
+                 (bootable? #t)
+                 (bios-grub? #t)
+                 (size bios-grub-size))))
            (new-partitions
             (cond
              ((or (eq? scheme 'entire-root)
@@ -1013,15 +1036,48 @@ exists."
 (define-condition-type &no-root-mount-point &condition
   no-root-mount-point?)
 
+;; Cannot not read the partition UUID.
+(define-condition-type &cannot-read-uuid &condition
+  cannot-read-uuid?
+  (partition cannot-read-uuid-partition))
+
 (define (check-user-partitions user-partitions)
-  "Return #t if the USER-PARTITIONS lists contains one <user-partition> record
-with a mount-point set to '/', raise &no-root-mount-point condition
-otherwise."
-  (let ((mount-points
-         (map user-partition-mount-point user-partitions)))
-    (or (member "/" mount-points)
-        (raise
-         (condition (&no-root-mount-point))))))
+  "Check the following statements:
+
+The USER-PARTITIONS list contains one <user-partition> record with a
+mount-point set to '/'.  Raise &no-root-mount-point condition otherwise.
+
+All the USER-PARTITIONS with a mount point and that will not be formatted have
+a valid UUID.  Raise a &cannot-read-uuid condition specifying the faulty
+partition otherwise.
+
+Return #t if all the statements are valid."
+  (define (check-root)
+    (let ((mount-points
+           (map user-partition-mount-point user-partitions)))
+      (or (member "/" mount-points)
+          (raise
+           (condition (&no-root-mount-point))))))
+
+  (define (check-uuid)
+    (let ((mount-partitions
+           (filter user-partition-mount-point user-partitions)))
+      (every
+       (lambda (user-partition)
+         (let ((file-name (user-partition-file-name user-partition))
+               (need-formatting?
+                (user-partition-need-formatting? user-partition)))
+           (or need-formatting?
+               (read-partition-uuid file-name)
+               (raise
+                (condition
+                 (&cannot-read-uuid
+                  (partition file-name)))))))
+       mount-partitions)))
+
+  (and (check-root)
+       (check-uuid)
+       #t))
 
 (define (set-user-partitions-file-name user-partitions)
   "Set the partition file-name of <user-partition> records in USER-PARTITIONS
@@ -1072,6 +1128,11 @@ bit bucket."
   (with-null-output-ports
    (invoke "mkfs.ntfs" "-F" "-f" partition)))
 
+(define (create-xfs-file-system partition)
+  "Create an XFS file-system for PARTITION file-name."
+  (with-null-output-ports
+   (invoke "mkfs.xfs" "-f" partition)))
+
 (define (create-swap-partition partition)
   "Set up swap area on PARTITION file-name."
   (with-null-output-ports
@@ -1116,7 +1177,7 @@ USER-PARTITION if it is encrypted, or the plain file-name otherwise."
 
 (define (format-user-partitions user-partitions)
   "Format the <user-partition> records in USER-PARTITIONS list with
-NEED-FORMATING? field set to #t."
+NEED-FORMATTING? field set to #t."
   (for-each
    (lambda (user-partition)
      (let* ((need-formatting?
@@ -1153,6 +1214,10 @@ NEED-FORMATING? field set to #t."
           (and need-formatting?
                (not (eq? type 'extended))
                (create-ntfs-file-system file-name)))
+         ((xfs)
+          (and need-formatting?
+               (not (eq? type 'extended))
+               (create-xfs-file-system file-name)))
          ((swap)
           (create-swap-partition file-name))
          (else
@@ -1303,9 +1368,9 @@ from (gnu system mapped-devices) and return it."
     `((bootloader-configuration
        ,@(if (efi-installation?)
              `((bootloader grub-efi-bootloader)
-               (target ,(default-esp-mount-point)))
+               (targets (list ,(default-esp-mount-point))))
              `((bootloader grub-bootloader)
-               (target ,root-partition-disk)))
+               (targets (list ,root-partition-disk))))
 
        ;; XXX: Assume we defined the 'keyboard-layout' field of
        ;; <operating-system> right above.

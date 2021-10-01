@@ -207,10 +207,10 @@ services as defined by OS."
 
 (define (install-bootloader-program installer disk-installer
                                     bootloader-package bootcfg
-                                    bootcfg-file device target)
+                                    bootcfg-file devices target)
   "Return an executable store item that, upon being evaluated, will install
-BOOTCFG to BOOTCFG-FILE, a target file name, on DEVICE, a file system device,
-at TARGET, a mount point, and subsequently run INSTALLER from
+BOOTCFG to BOOTCFG-FILE, a target file name, on DEVICES, a list of file system
+devices, at TARGET, a mount point, and subsequently run INSTALLER from
 BOOTLOADER-PACKAGE."
   (program-file
    "install-bootloader.scm"
@@ -254,11 +254,17 @@ BOOTLOADER-PACKAGE."
                    ;; The bootloader might not support installation on a
                    ;; mounted directory using the BOOTLOADER-INSTALLER
                    ;; procedure. In that case, fallback to installing the
-                   ;; bootloader directly on DEVICE using the
+                   ;; bootloader directly on DEVICES using the
                    ;; BOOTLOADER-DISK-IMAGE-INSTALLER procedure.
                    (if #$installer
-                       (#$installer #$bootloader-package #$device #$target)
-                       (#$disk-installer #$bootloader-package 0 #$device)))
+                       (for-each (lambda (device)
+                                   (#$installer #$bootloader-package device
+                                                #$target))
+                                 '#$devices)
+                       (for-each (lambda (device)
+                                   (#$disk-installer #$bootloader-package
+                                                     0 device))
+                                 '#$devices)))
                  (lambda args
                    (delete-file new-gc-root)
                    (match args
@@ -284,7 +290,7 @@ additional configurations specified by MENU-ENTRIES can be selected."
          (disk-installer (and run-installer?
                               (bootloader-disk-image-installer bootloader)))
          (package (bootloader-package bootloader))
-         (device (bootloader-configuration-target configuration))
+         (devices (bootloader-configuration-targets configuration))
          (bootcfg-file (bootloader-configuration-file bootloader)))
     (eval #~(parameterize ((current-warning-port (%make-void-port "w")))
               (primitive-load #$(install-bootloader-program installer
@@ -292,7 +298,7 @@ additional configurations specified by MENU-ENTRIES can be selected."
                                                             package
                                                             bootcfg
                                                             bootcfg-file
-                                                            device
+                                                            devices
                                                             target))))))
 
 
@@ -308,12 +314,11 @@ ancestor of COMMIT, unless CHANNEL specifies a commit."
     ('self #t)
     (_
      (raise (make-compound-condition
-             (condition
-              (&message (message
-                         (format #f (G_ "\
+             (formatted-message (G_ "\
 aborting reconfiguration because commit ~a of channel '~a' is not a descendant of ~a")
-                                 commit (channel-name channel)
-                                 start)))
+                                commit (channel-name channel)
+                                start)
+             (condition
               (&fix-hint
                (hint (G_ "Use @option{--allow-downgrades} to force
 this downgrade.")))))))))

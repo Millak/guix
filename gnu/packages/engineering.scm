@@ -17,12 +17,14 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020,2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,6 +96,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)               ;FIXME: for pcb
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages m4)
@@ -112,6 +115,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
@@ -122,6 +127,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xiph)
   #:use-module (gnu packages openkinect)
   #:use-module (gnu packages xorg))
 
@@ -197,7 +203,7 @@
      `(("boost" ,boost)
        ("muparser" ,muparser)
        ("freetype" ,freetype)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -278,14 +284,14 @@ utilities.")
   (package
     (inherit geda-gaf)
     (name "lepton-eda")
-    (version "1.9.13-20201211")
+    (version "1.9.14-20210407")
     (home-page "https://github.com/lepton-eda/lepton-eda")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (sha256
                (base32
-                "0xfx6d0pyfrxr1c0nm4pbmb716hng78rgizaa6vsas9347n4kk1n"))
+                "0kyq0g6271vlwraw98637fn8bq2l6q4rll6748nn8rwsmfz71d0m"))
               (file-name (git-file-name name version))))
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -301,7 +307,7 @@ utilities.")
      `(("glib" ,glib)
        ("gtk" ,gtk+)
        ("gtksheet" ,gtksheet)
-       ("guile" ,guile-2.2)
+       ("guile" ,guile-3.0)
        ("shared-mime-info" ,shared-mime-info)
        ("m4" ,m4)
        ("pcb" ,pcb)))
@@ -329,15 +335,19 @@ utilities.")
                 (string-append (assoc-ref outputs "out")
                                "/lib/libleptongui.so")))
              (substitute* '("libleptongui/scheme/schematic/ffi/gtk.scm.in"
-                            "libleptonattrib/lepton-attrib.scm")
+                            "utils/attrib/lepton-attrib.scm")
                (("@LIBGTK@")
                 (string-append (assoc-ref inputs "gtk")
                                "/lib/libgtk-3.so")))
+             (substitute* '("libleptongui/scheme/schematic/ffi/gobject.scm.in")
+               (("@LIBGOBJECT@")
+                (string-append (assoc-ref inputs "glib")
+                               "/lib/libgobject-2.0.so")))
              (substitute* "liblepton/scheme/lepton/ffi.scm.in"
                (("@LIBLEPTON@")
                 (string-append (assoc-ref outputs "out")
                                "/lib/liblepton.so")))
-             (substitute* "libleptonattrib/lepton-attrib.scm"
+             (substitute* "utils/attrib/lepton-attrib.scm"
                (("@LIBLEPTONATTRIB@")
                 (string-append (assoc-ref outputs "out")
                                "/lib/libleptonattrib.so")))
@@ -693,7 +703,7 @@ multipole-accelerated algorithm.")
                        (string-append "PREFIX=" out)
                        "phoenix.pro")))))))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtserialport" ,qtserialport)
        ("qtsvg" ,qtsvg)
        ("libgit2" ,libgit2)
@@ -826,7 +836,7 @@ fonts to gEDA.")
       (inputs
        `(("boost" ,boost)
          ("libpng" ,libpng)
-         ("qtbase" ,qtbase)
+         ("qtbase" ,qtbase-5)
          ("eigen" ,eigen)
          ("guile" ,guile-3.0)))
       (home-page "https://libfive.com")
@@ -916,6 +926,13 @@ Emacs).")
              "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-ngspice-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "eeschema/CMakeLists.txt"
+               (("NGSPICE_DLL_FILE=\"\\$\\{NGSPICE_DLL_FILE\\}\"")
+                (string-append "NGSPICE_DLL_FILE=\""
+                               (assoc-ref inputs "libngspice")
+                               "/lib/libngspice.so\"")))))
          (add-after 'install 'install-translations
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "kicad-i18n")
@@ -1031,23 +1048,17 @@ translations for KiCad.")
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
+       #:tests? #f                      ; no test suite
        #:phases
        (modify-phases %standard-phases
-         (delete 'build)
-         (add-before 'install 'set-perl-env
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "PERL5LIB"
-                     (string-append (assoc-ref inputs "perl-unicode-linebreak")
-                                    "/lib/perl5/site_perl" ":"
-                                    (getenv "PERL5LIB")))
-             #t))
-         (delete 'check))))
+         (delete 'build))))
     (native-inputs
      `(("asciidoc" ,asciidoc)
        ("gettext" ,gettext-minimal)
        ("git" ,git-minimal)
        ("perl" ,perl)
        ("perl-unicode-linebreak" ,perl-unicode-linebreak)
+       ("perl-yaml-tiny" ,perl-yaml-tiny)
        ("po4a" ,po4a)
        ("source-highlight" ,source-highlight)))
     (home-page "https://kicad.org")
@@ -1218,14 +1229,14 @@ use on a given system.")
 (define-public libredwg
   (package
     (name "libredwg")
-    (version "0.12.3")
+    (version "0.12.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/libredwg/libredwg-"
              version ".tar.xz"))
        (sha256
-        (base32 "1vhm3r3zr8hh0jbvv6qdykh1x14r4c1arl1qj48i4cx2dd3366mk"))))
+        (base32 "05v5k8fkx4z1p81x9kna7nlzmyx09dn686rj2zprnkf337qmg24i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-bindings")))
@@ -1287,6 +1298,36 @@ replacement for the OpenDWG libraries.")
     (synopsis "Serial terminal emulator")
     (description "@code{minicom} is a serial terminal emulator.")
     (license license:gpl2+)))
+
+(define-public sterm
+  (package
+    (name "sterm")
+    (version "20200306")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wentasah/sterm")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "031pd8yz2bfzqbari6za1c3xcqmw94ap4vbrjzb3v6izjcrca58c"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "PREFIX=" %output))
+       #:phases
+       (modify-phases %standard-phases (delete 'configure))))
+    (synopsis "Simple serial terminal")
+    (description "This is a minimalist terminal program like minicom or cu.
+The only thing it does is creating a bidirectional connection between
+stdin/stdout and a terminal device (e.g. serial line).
+It can also set serial line baudrate, manipulate DTR/RTS modem lines,
+send break and throttle transmission speed.")
+    (home-page "https://github.com/wentasah/sterm")
+    (license license:gpl3+)))
 
 (define-public harminv
   (package
@@ -1668,31 +1709,18 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "28")
-    (source (origin
-              (method url-fetch)
-              (uri (list
-                     (string-append "mirror://sourceforge/ngspice/ng-spice-rework/"
-                                    version "/ngspice-" version ".tar.gz")
-                     (string-append "mirror://sourceforge/ngspice/ng-spice-rework/"
-                                    "old-releases/" version
-                                    "/ngspice-" version ".tar.gz")))
-              (sha256
-               (base32
-                "0rnz2rdgyav16w7wfn3sfrk2lwvvgz1fh0l9107zkcldijklz04l"))
-              (modules '((guix build utils)))
-              ;; We remove the non-free cider and build without it.
-              (snippet
-               '(begin
-                  (delete-file-recursively "src/ciderlib")
-                  (delete-file "src/ciderinit")
-                  (substitute* "configure"
-                    (("src/ciderlib/Makefile") "")
-                    (("src/ciderlib/input/Makefile") "")
-                    (("src/ciderlib/support/Makefile") "")
-                    (("src/ciderlib/oned/Makefile") "")
-                    (("src/ciderlib/twod/Makefile") ""))
-                  #t))))
+    (version "35")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list
+             (string-append "mirror://sourceforge/ngspice/ng-spice-rework/"
+                            version "/ngspice-" version ".tar.gz")
+             (string-append "mirror://sourceforge/ngspice/ng-spice-rework/"
+                            "old-releases/" version
+                            "/ngspice-" version ".tar.gz")))
+       (sha256
+        (base32 "1v3ra9p2sc6ash1bbjm6i4i3dd6ymxjgnyha7z5rlmyvfv1gbdy1"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -1703,31 +1731,31 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
          (add-after 'unpack 'patch-timestamps
            (lambda _
              (substitute* "configure"
-               (("`date`") "Thu Jan  1 00:00:01 UTC 1970"))
-             #t))
+               (("`date`") "Thu Jan  1 00:00:01 UTC 1970"))))
          (add-after 'unpack 'delete-program-manuals
            (lambda _
              (substitute* "man/man1/Makefile.in"
                (("^man_MANS = ngspice\\.1 ngnutmeg\\.1 ngsconvert\\.1 ngmultidec\\.1")
-                "man_MANS = "))
-             #t))
-         (add-after 'install 'delete-script-files
+                "man_MANS = "))))
+         (add-after 'install 'delete-scripts
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file-recursively
               (string-append (assoc-ref outputs "out")
                              "/share/ngspice/scripts")))))
        #:configure-flags
        (list "--enable-openmp"
+             "--enable-ciderlib"
              "--enable-xspice"
              "--with-ngshared"
-             "--with-readline=yes")))
+             ;; Readline must be disabled to build KiCad with ngspice 34.  See
+             ;; https://bugs.archlinux.org/task/70563 for reference.
+             "--with-readline=no")))
     (native-inputs
      `(("bison" ,bison)
        ("flex" ,flex)))
     (inputs
      `(("libxaw" ,libxaw)
-       ("mpi" ,openmpi)
-       ("readline" ,readline)))
+       ("mpi" ,openmpi)))
     (home-page "http://ngspice.sourceforge.net/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
@@ -1737,6 +1765,7 @@ provides code modeling support and simulation of digital components through
 an embedded event driven algorithm.")
     (license (list license:lgpl2.0+ ; code in frontend/numparam
                    (license:non-copyleft "file:///COPYING") ; spice3 bsd-style
+                   license:bsd-3 ; ciderlib
                    license:public-domain)))) ; xspice
 
 (define-public ngspice
@@ -1753,16 +1782,7 @@ an embedded event driven algorithm.")
              (lambda _
                (substitute* "src/Makefile.in"
                  (("^SUBDIRS = misc maths frontend spicelib include/ngspice")
-                  "SUBDIRS = misc maths frontend spicelib"))
-               #t))
-           (add-after 'install 'delete-cmpp-dlmain
-             (lambda* (#:key outputs #:allow-other-keys)
-               (for-each (lambda (file)
-                           (delete-file
-                            (string-append (assoc-ref outputs "out")
-                                           file)))
-                         '("/bin/cmpp" "/share/ngspice/dlmain.c"))
-               #t))
+                  "SUBDIRS = misc maths frontend spicelib"))))
            (delete 'delete-program-manuals)
            (delete 'delete-script-files)))))
     (inputs
@@ -1926,11 +1946,12 @@ parallel computing platforms.  It also supports serial execution.")
               (patches
                (list (origin
                        ;; Fix build with GCC 7.  Patch taken from Arch Linux:
-                       ;; https://git.archlinux.org/svntogit/community.git/tree/trunk?h=packages/freehdl
+                       ;; https://github.com/archlinux/svntogit-community/tree/packages/freehdl/trunk
                        (method url-fetch)
-                       (uri "https://git.archlinux.org/svntogit/community.git\
-/plain/trunk/build-fix.patch?h=packages/freehdl\
-&id=3bb90d64dfe6883e26083cd1fa96226d0d59175a")
+                       (uri (string-append "https://raw.githubusercontent.com"
+                                           "/archlinux/svntogit-community"
+                                           "/3bb90d64dfe6883e26083cd1fa96226d0d59175a"
+                                           "/trunk/build-fix.patch"))
                        (file-name "freehdl-c++-namespace.patch")
                        (sha256
                         (base32
@@ -2032,7 +2053,7 @@ parallel computing platforms.  It also supports serial execution.")
         (base32 "1b5dkanz3q0y5ag80w0l85hn7axrachb5m9zvyv4zvzrfy09wa88"))))
     (build-system gnu-build-system)
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("zlib" ,zlib)))
     (native-inputs
@@ -2194,7 +2215,7 @@ simulation.")
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("openssl" ,openssl)
        ;; Depends on radare2 4.5.1 officially, builds and works fine with
@@ -2273,7 +2294,7 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
        ("mpfr" ,mpfr)
        ("opencsg" ,opencsg)
        ("qscintilla" ,qscintilla)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)))
     (native-inputs
      `(("bison" ,bison)
@@ -2354,110 +2375,119 @@ OpenSCAD code.  It supports syntax highlighting, indenting and refilling of
 comments.")))
 
 (define-public freecad
-  (let ((commit-ref "7616153b3c31ace006169cdc2fdafab484498858")
-        (revision "1"))
-    (package
-      (name "freecad")
-      (version (git-version "0.18.5" revision commit-ref))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/FreeCAD/FreeCAD")
-                 (commit commit-ref)))
-          (file-name (git-file-name name version))
-          (sha256
-            (base32
-              "16965yxnp2pq7nm8z3p0pjkzjdyq62vfrj8j3nk26bwc898czyn2"))))
-      (build-system qt-build-system)
-      (native-inputs
-       `(("doxygen" ,doxygen)
-         ("graphviz" ,graphviz)
-         ("qttools" ,qttools)
-         ("pkg-config" ,pkg-config)
-         ("python-pyside-2-tools" ,python-pyside-2-tools)
-         ("swig" ,swig)))
-      (inputs
-       `(("boost" ,boost)
-         ("coin3D" ,coin3D)
-         ("eigen" ,eigen)
-         ("freetype" ,freetype)
-         ("glew" ,glew)
-         ("hdf5" ,hdf5-1.10)
-         ("libarea" ,libarea)
-         ("libmedfile" ,libmedfile)
-         ("libspnav" ,libspnav)
-         ("libxi" ,libxi)
-         ("libxmu" ,libxmu)
-         ("openmpi" ,openmpi)
-         ("opencascade-occt" ,opencascade-occt)
-         ("python-matplotlib" ,python-matplotlib)
-         ("python-pyside-2" ,python-pyside-2)
-         ("python-shiboken-2" ,python-shiboken-2)
-         ("python-pivy" ,python-pivy)
-         ("python-wrapper" ,python-wrapper)
-         ("qtbase" ,qtbase)
-         ("qtsvg" ,qtsvg)
-         ("qtx11extras" ,qtx11extras)
-         ("qtxmlpatterns" ,qtxmlpatterns)
-         ("qtwebkit" ,qtwebkit)
-         ("tbb" ,tbb)
-         ("vtk" ,vtk)
-         ("xerces-c" ,xerces-c)
-         ("zlib" ,zlib)))
-      (arguments
-       `(#:tests? #f
-         #:configure-flags
-         (list
-          "-DBUILD_QT5=ON"
-          (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib")
-          (string-append "-DPYSIDE2UICBINARY="
-                         (assoc-ref %build-inputs "python-pyside-2-tools")
-                         "/bin/uic")
-          (string-append "-DPYSIDE2RCCBINARY="
-                         (assoc-ref %build-inputs "python-pyside-2-tools")
-                         "/bin/rcc")
-          "-DPYSIDE_LIBRARY=PySide2::pyside2"
-          (string-append
-           "-DPYSIDE_INCLUDE_DIR="
-           (assoc-ref %build-inputs "python-pyside-2") "/include;"
-           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2;"
-           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtCore;"
-           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtWidgets;"
-           (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtGui;")
-          "-DSHIBOKEN_LIBRARY=Shiboken2::libshiboken"
-          (string-append "-DSHIBOKEN_INCLUDE_DIR="
-                         (assoc-ref %build-inputs "python-shiboken-2")
-                         "/include/shiboken2"))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'restore-pythonpath
-             (lambda _
-               (substitute* "src/Main/MainGui.cpp"
-                 (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))
-               #t))
-           (add-after 'install 'wrap-pythonpath
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (wrap-program (string-append out "/bin/FreeCAD")
-                   (list "PYTHONPATH"
-                         'prefix (list (getenv "PYTHONPATH")))))
-               #t)))))
-      (home-page "https://www.freecadweb.org/")
-      (synopsis "Your Own 3D Parametric Modeler")
-      (description
-       "FreeCAD is a general purpose feature-based, parametric 3D modeler for
+  (package
+    (name "freecad")
+    (version "0.19.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/FreeCAD/FreeCAD")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0fhjv0x3dix1c7jml91yx63z9xifjlbhjbcdb73lw80smpxrq7mm"))))
+    (build-system qt-build-system)
+    (native-inputs
+     `(("doxygen" ,doxygen)
+       ("graphviz" ,graphviz)
+       ("qttools" ,qttools)
+       ("pkg-config" ,pkg-config)
+       ("python-pyside-2-tools" ,python-pyside-2-tools)
+       ("swig" ,swig)))
+    (inputs
+     `(("boost" ,boost)
+       ("coin3D" ,coin3D)
+       ("double-conversion" ,double-conversion)
+       ("eigen" ,eigen)
+       ("freetype" ,freetype)
+       ("gl2ps" ,gl2ps)
+       ("glew" ,glew)
+       ("hdf5" ,hdf5-1.10)
+       ("jsoncpp" ,jsoncpp)
+       ("libarea" ,libarea)
+       ("libjpeg-turbo" ,libjpeg-turbo)
+       ("libmedfile" ,libmedfile)
+       ("libspnav" ,libspnav)
+       ("libtheora" ,libtheora)
+       ("libtiff" ,libtiff)
+       ("libxi" ,libxi)
+       ("libxml++" ,libxml++)
+       ("libxmu" ,libxmu)
+       ("lz4" ,lz4)
+       ("netcdf" ,netcdf)
+       ("opencascade-occt" ,opencascade-occt)
+       ("openmpi" ,openmpi)
+       ("proj" ,proj)
+       ("python-gitpython" ,python-gitpython)
+       ("python-matplotlib" ,python-matplotlib)
+       ("python-pivy" ,python-pivy)
+       ("python-pyside-2" ,python-pyside-2)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-shiboken-2" ,python-shiboken-2)
+       ("python-wrapper" ,python-wrapper)
+       ("qtbase" ,qtbase-5)
+       ("qtsvg" ,qtsvg)
+       ("qtwebkit" ,qtwebkit)
+       ("qtx11extras" ,qtx11extras)
+       ("qtxmlpatterns" ,qtxmlpatterns)
+       ("sqlite" ,sqlite)
+       ("tbb" ,tbb)
+       ("vtk" ,vtk-8)
+       ("xerces-c" ,xerces-c)
+       ("zlib" ,zlib)))
+    (arguments
+     `(#:tests? #f          ; Project has no tests
+       #:configure-flags
+       (list
+        "-DBUILD_QT5=ON"
+        "-DBUILD_FLAT_MESH:BOOL=ON"
+        (string-append "-DCMAKE_INSTALL_LIBDIR=" (assoc-ref %outputs "out") "/lib")
+        (string-append "-DPYSIDE2UICBINARY="
+                       (assoc-ref %build-inputs "python-pyside-2-tools")
+                       "/bin/uic")
+        (string-append "-DPYSIDE2RCCBINARY="
+                       (assoc-ref %build-inputs "python-pyside-2-tools")
+                       "/bin/rcc")
+        "-DPYSIDE_LIBRARY=PySide2::pyside2"
+        (string-append
+         "-DPYSIDE_INCLUDE_DIR="
+         (assoc-ref %build-inputs "python-pyside-2") "/include;"
+         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2;"
+         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtCore;"
+         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtWidgets;"
+         (assoc-ref %build-inputs "python-pyside-2") "/include/PySide2/QtGui;")
+        "-DSHIBOKEN_LIBRARY=Shiboken2::libshiboken"
+        (string-append "-DSHIBOKEN_INCLUDE_DIR="
+                       (assoc-ref %build-inputs "python-shiboken-2")
+                       "/include/shiboken2"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'restore-pythonpath
+           (lambda _
+             (substitute* "src/Main/MainGui.cpp"
+               (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
+         (add-after 'install 'wrap-pythonpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (wrap-program (string-append out "/bin/FreeCAD")
+                 (list "PYTHONPATH"
+                       'prefix (list (getenv "PYTHONPATH"))))))))))
+    (home-page "https://www.freecadweb.org/")
+    (synopsis "Your Own 3D Parametric Modeler")
+    (description
+     "FreeCAD is a general purpose feature-based, parametric 3D modeler for
 CAD, MCAD, CAx, CAE and PLM, aimed directly at mechanical engineering and
 product design but also fits a wider range of uses in engineering, such as
 architecture or other engineering specialties.  It is 100% Open Source (LGPL2+
 license) and extremely modular, allowing for very advanced extension and
 customization.")
-      (license
-       (list
-        license:lgpl2.1+
-        license:lgpl2.0+
-        license:gpl3+
-        license:bsd-3)))))
+    (license
+     (list
+      license:lgpl2.1+
+      license:lgpl2.0+
+      license:gpl3+
+      license:bsd-3))))
 
 (define-public libmedfile
   (package
@@ -2676,7 +2706,7 @@ export filters.")
                (base32 "1cgx24wxh2ah5pff51rcrk6x8qcdjpkxcdak7s4cfzmxvjlshydd"))))
     (build-system cmake-build-system)
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtscript" ,qtscript)
        ("qtxmlpatterns" ,qtxmlpatterns)
        ("mesa" ,mesa)
@@ -2721,14 +2751,14 @@ GUI.")
 (define-public poke
   (package
     (name "poke")
-    (version "1.1")
+    (version "1.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/poke/poke-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "1mkaq19a8d951n9l6d3f8rwq45a7gkr05snb285idd21qxixys6d"))))
+                "06qgry1pal2vampmbmc1lzlhf1qnjkd8py781r5h020v981n6y5s"))))
     (build-system gnu-build-system)
     ;; The GUI, which we elide, requires tcl and tk.
     (native-inputs `(;; Requires bison 3.6+ but we currently only have 3.5.
@@ -2830,3 +2860,225 @@ for hooking Linux system calls in user space.  This is achieved by
 hot-patching the machine code of the standard C library in the memory of
 a process.")
       (license license:bsd-2))))
+
+(define-public libigl
+  (package
+    (name "libigl")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libigl/libigl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "004a22ifq2vibgkgvrlyihqimpsfizvq5l448204kwfg3lkycajj"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       '("-DLIBIGL_USE_STATIC_LIBRARY=OFF"
+         "-DLIBIGL_BUILD_TESTS=ON"
+         "-DLIBIGL_BUILD_TUTORIALS=OFF"
+         "-DLIBIGL_EXPORT_TARGETS=ON"
+         ;; The following options disable tests for the corresponding libraries.
+         ;; The options do not affect whether the libraries are linked to
+         ;; libigl or not, they are used for tests.
+         "-DLIBIGL_WITH_COMISO=OFF"
+         "-DLIBIGL_WITH_CORK=OFF"
+         "-DLIBIGL_WITH_MATLAB=OFF"
+         "-DLIBIGL_WITH_MOSEK=OFF"
+         "-DLIBIGL_WITH_TRIANGLE=OFF" ;; Undefined reference to "triangulate".
+         "-DLIBIGL_WITH_OPENGL_GLFW_IMGUI=OFF")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-external
+           (lambda _
+             (setenv "HOME" (getcwd)) ;; cmake needs this to export modules
+             (mkdir "external")
+             (copy-recursively (assoc-ref %build-inputs "libigl-glad") "external/glad")
+             (copy-recursively (assoc-ref %build-inputs "libigl-stb") "external/stb")
+             (copy-recursively (assoc-ref %build-inputs "libigl-tetgen") "external/tetgen")
+             (copy-recursively (assoc-ref %build-inputs "libigl-predicates") "external/predicates")))
+         (add-after 'unpack-external 'patch-cmake
+           (lambda _
+             ;; Fix references to external libraries
+             (substitute* "cmake/libigl.cmake"
+               (("if\\(NOT TARGET Eigen3::Eigen\\)" all)
+                (string-append "find_package(Eigen3 CONFIG REQUIRED)\n" all))
+               (("if\\(NOT TARGET CGAL::CGAL\\)" all)
+                (string-append "find_package(CGAL CONFIG COMPONENTS Core)\n" all))
+               (("if\\(NOT TARGET tinyxml2\\)" all)
+                (string-append "find_package(tinyxml2 CONFIG REQUIRED)\n"
+                               "if (NOT TARGET tinyxml2::tinyxml2)"))
+               (("if\\(NOT TARGET embree\\)" all)
+                (string-append "find_package(embree 3 CONFIG REQUIRED)\n" all))
+               (("if\\(NOT TARGET glfw\\)" all)
+                (string-append "find_package(glfw3 CONFIG REQUIRED)\n" all))
+               (("igl_download_glad\\(\\)" all) "")
+               (("igl_download_stb\\(\\)" all) "")
+               (("igl_download_tetgen\\(\\)" all) "")
+               (("igl_download_triangle\\(\\)" all) "")
+               (("igl_download_predicates\\(\\)" all) ""))
+             (substitute* "tests/CMakeLists.txt"
+               (("igl_download_test_data\\(\\)") "")
+               (("set\\(IGL_TEST_DATA.*")
+                (format #f "set(IGL_TEST_DATA ~a)\n"
+                        (assoc-ref %build-inputs "libigl-test-data")))
+               (("igl_download_catch2\\(\\)") "find_package(Catch2 CONFIG REQUIRED)")
+               (("list\\(APPEND CMAKE_MODULE_PATH \\$\\{LIBIGL_EXTERNAL\\}/catch2/contrib\\)")
+                "")
+               (("add_subdirectory\\(\\$\\{LIBIGL_EXTERNAL\\}/catch2 catch2\\)") ""))
+             ;; Install otherwise missing headers
+             (substitute* "cmake/libigl.cmake"
+               (("install_dir_files\\(copyleft\\)" all)
+                (string-join (list all
+                                   "install_dir_files(copyleft/cgal)"
+                                   "install_dir_files(copyleft/opengl)"
+                                   "install_dir_files(copyleft/tetgen)"
+                                   "install_dir_files(embree)"
+                                   "install_dir_files(opengl)"
+                                   "install_dir_files(png)"
+                                   "install_dir_files(predicates)"
+                                   "install_dir_files(xml)")
+                             "\n"))))))))
+    ;; XXX: Inputs are currently only used to build tests.
+    ;;      We would need to patch the CMake recipe to build a shared library
+    ;;      with all of these.
+    (inputs
+     `(("boost" ,boost)
+       ("catch2" ,catch-framework2)
+       ("cgal" ,cgal)
+       ("eigen" ,eigen)
+       ("embree" ,embree)
+       ("glfw" ,glfw)
+       ("gmp" ,gmp)
+       ("mesa" ,mesa)
+       ("mpfr" ,mpfr)
+       ("tinyxml2" ,tinyxml2)
+       ;; When updating this package, update commit fields below according to
+       ;; the hashes listed in "cmake/LibiglDownloadExternal.cmake".
+       ("libigl-test-data"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/libigl/libigl-tests-data")
+                 (commit "19cedf96d70702d8b3a83eb27934780c542356fe")))
+           (file-name (git-file-name "libigl-test-data" version))
+           (sha256 (base32 "1wxglrxw74xw4a4jmmjpm8719f3mnlbxbwygjb4ddfixxxyya4i2"))))
+       ("libigl-glad"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/libigl/libigl-glad")
+                 (commit "09b4969c56779f7ddf8e6176ec1873184aec890f")))
+           (file-name (git-file-name "libigl-glad" version))
+           (sha256 (base32 "0rwrs7513ylp6gxv7crjzflapcg9p7x04nzfvywgl665vl53rawk"))))
+       ("libigl-stb"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/libigl/libigl-stb.git")
+                 (commit "cd0fa3fcd90325c83be4d697b00214e029f94ca3")))
+           (file-name (git-file-name "libigl-stb" version))
+           (sha256 (base32 "0wwlb370z40y63ic3ny6q7lxibhixg2k1pjdkl4ymzv79zld28kj"))))
+       ("libigl-predicates"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/libigl/libigl-predicates.git")
+                 (commit "488242fa2b1f98a9c5bd1441297fb4a99a6a9ae4")))
+           (file-name (git-file-name "libigl-predicates" version))
+           (sha256 (base32 "13bd98g8lgcq37i3crj66433z09grnb2xjrcqpwqmyn147rp5wyh"))))
+       ;; TODO: Package tetgen separately from <http://www.tetgen.org>
+       ("libigl-tetgen"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/libigl/tetgen.git")
+                 (commit "4f3bfba3997f20aa1f96cfaff604313a8c2c85b6")))
+           (file-name (git-file-name "libigl-tetgen" version))
+           (sha256 (base32 "1k724syssw37py7kwmibk3sfwkkgyjyy7qkijnhn6rjm91g8qxsg"))))))
+    (home-page "https://libigl.github.io/")
+    (synopsis "Simple C++ geometry processing library")
+    (description "This library provides functionality for shape modelling,
+visualization, matrix manipulation.")
+    (license (list license:gpl3 license:mpl2.0))))
+
+(define-public prusa-slicer
+  (package
+    (name "prusa-slicer")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/prusa3d/PrusaSlicer")
+         (commit (string-append "version_" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0w0synqi3iz9aigsgv6x1c6sg123fasbx19h4w3ic1l48r8qmpwm"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Prusa slicer bundles a lot of dependencies in src/ directory.
+           ;; Most of them contain prusa-specific modifications (e.g. avrdude),
+           ;; but others do not. Here we replace the latter with Guix packages.
+           ;; Remove bundled libraries that were not modified by Prusa Slicer developers.
+           (delete-file-recursively "src/hidapi")
+           (delete-file-recursively "src/eigen")
+           (delete-file-recursively "src/libigl/igl")
+           (substitute* "src/CMakeLists.txt"
+             (("add_subdirectory\\(libigl\\)" all)
+              (string-append
+               all "\ninclude_directories(libigl INTERFACE libigl::core)"))
+             (("add_subdirectory\\(hidapi\\)")
+              "pkg_check_modules(HIDAPI REQUIRED hidapi-hidraw)")
+             (("include_directories\\(hidapi/include\\)")
+              "include_directories()"))
+           (substitute* "src/slic3r/CMakeLists.txt"
+             (("add_library\\(libslic3r_gui.*" all)
+              (string-append
+               all
+               "\ntarget_include_directories(libslic3r_gui PUBLIC ${HIDAPI_INCLUDE_DIRS})\n"))
+             (("\\bhidapi\\b") "${HIDAPI_LIBRARIES}"))))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       '("-DSLIC3R_FHS=1" ;; Use The Filesystem Hierarchy Standard.
+         "-DSLIC3R_GTK=3" ;; Use GTK+
+         ;; Use wxWidgets 3.0.x.x to prevent GUI crashes when adding support enforcers.
+         "-DSLIC3R_WX_STABLE=1")))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("boost" ,boost)
+       ("cereal" ,cereal)
+       ("cgal" ,cgal)
+       ("curl" ,curl)
+       ("dbus" ,dbus)
+       ("eigen" ,eigen)
+       ("expat" ,expat)
+       ("glew" ,glew)
+       ("glib" ,glib)
+       ("gmp" ,gmp)
+       ("gtk" ,gtk+)
+       ("hidapi" ,hidapi)
+       ("ilmbase" ,ilmbase)
+       ("libigl" ,libigl)
+       ("libpng" ,libpng)
+       ("mesa" ,mesa)
+       ("mpfr" ,mpfr)
+       ("nlopt" ,nlopt)
+       ("openvdb" ,openvdb)
+       ("pango" ,pango)
+       ("tbb" ,tbb)
+       ("udev" ,eudev)
+       ("wxwidgets" ,wxwidgets)
+       ("zlib" ,zlib)))
+    (home-page "https://www.prusa3d.com/prusaslicer/")
+    (synopsis "G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)")
+    (description "PrusaSlicer takes 3D models (STL, OBJ, AMF) and converts them into
+G-code instructions for FFF printers or PNG layers for mSLA 3D printers.")
+    (license license:agpl3)))

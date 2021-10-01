@@ -75,7 +75,7 @@
 (define-public wine
   (package
     (name "wine")
-    (version "6.0")
+    (version "6.16")
     (source
      (origin
        (method url-fetch)
@@ -87,7 +87,7 @@
               (string-append "https://dl.winehq.org/wine/source/" dir
                              "wine-" version ".tar.xz")))
        (sha256
-        (base32 "0micb3l54cc2cl3v5q92hzvkxxiwi9lmiv72caf45vl35xghd4xl"))))
+        (base32 "1s7sz1rimax4kxij1ngkwnx4hcljwjq3q5gksz22k8cq1l2r4l39"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("bison" ,bison)
@@ -194,7 +194,16 @@
                (substitute* "include/config.h"
                  (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
                   (format #f "~a\"~a\"" defso (find-so soname))))
-               #t))))))
+               #t)))
+         (add-after 'patch-generated-file-shebangs 'patch-makefile
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "make" "Makefile") ; Makefile is first regenerated
+             (substitute* "Makefile"
+               (("-lntdll" id)
+                (string-append id
+                               " -Wl,-rpath=" (assoc-ref outputs "out")
+                               "/lib/wine32/wine/$(ARCH)-unix")))
+             #t)))))
     (home-page "https://www.winehq.org/")
     (synopsis "Implementation of the Windows API (32-bit only)")
     (description
@@ -254,6 +263,15 @@ integrate Windows applications into your desktop.")
                       #t)))))
              (_
               `()))
+         (add-after 'patch-generated-file-shebangs 'patch-makefile
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "make" "Makefile") ; Makefile is first regenerated
+             (substitute* "Makefile"
+               (("-lntdll" id)
+                (string-append id
+                               " -Wl,-rpath=" (assoc-ref outputs "out")
+                               "/lib/wine64/wine/$(ARCH)-unix")))
+             #t))
          (add-after 'install 'copy-wine32-binaries
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((wine32 (assoc-ref %build-inputs "wine"))
@@ -334,7 +352,7 @@ integrate Windows applications into your desktop.")
 (define-public wine-staging-patchset-data
   (package
     (name "wine-staging-patchset-data")
-    (version "5.13")
+    (version "6.6")
     (source
      (origin
        (method git-fetch)
@@ -343,7 +361,7 @@ integrate Windows applications into your desktop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sw7790gsi3h08xgc8i1y282rk8xrdhqjlwpvbpvyw5zi0i95cvq"))))
+        (base32 "0d5m9pvafr0iw99ny7rgzfmw7zw45q5wfcw68zj88mvzs47xkgms"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("bash" ,bash)
@@ -394,7 +412,7 @@ integrate Windows applications into your desktop.")
                              "wine-" wine-version ".tar.xz"))
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
-          (base32 "0lh1bqr8xq1acz5d0cb50rvhw3h6h1vqprx5wlyrjhdg58f5qsn4")))))
+          (base32 "1bc4zmqpdqs1ncz3qisp8a313pqzi5a31gq1s99ivb60vk325rcr")))))
     (inputs `(("autoconf" ,autoconf)    ; for autoreconf
               ("ffmpeg" ,ffmpeg)
               ("gtk+" ,gtk+)
@@ -531,6 +549,13 @@ integrated into the main branch.")
                ;; version.
                (copy-file (string-append wine32 "/bin/.wine-preloader-real")
                           (string-append out "/bin/wine-preloader"))
+               #t)))
+         (add-after 'install 'copy-wine32-libraries
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((wine32 (assoc-ref %build-inputs "wine-staging"))
+                    (out (assoc-ref %outputs "out")))
+               (copy-recursively (string-append wine32 "/lib/wine32")
+                                 (string-append out "/lib/wine32"))
                #t)))
          (add-after 'compress-documentation 'copy-wine32-manpage
            (lambda* (#:key outputs #:allow-other-keys)

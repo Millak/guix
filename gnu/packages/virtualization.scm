@@ -19,6 +19,8 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2021 Dion Mendel <guix@dm9.info>
+;;; Copyright © 2021 Andrew Whatson <whatson@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +39,7 @@
 
 (define-module (gnu packages virtualization)
   #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages attr)
@@ -47,6 +50,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cluster)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
@@ -100,6 +104,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sphinx)
@@ -141,7 +146,7 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "5.2.0")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
@@ -149,24 +154,14 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "1g0pvx4qbirpcn9mni704y03n3lvkmw2c0rbcwvydyr8ns4xh66b"))
+         "1f9hz8rf12jm8baa7kda34yl4hyl0xh0c4ap03krfjx23i3img47"))
        (patches (search-patches "qemu-CVE-2021-20203.patch"
+                                "qemu-meson-compat.patch"
+                                "qemu-sphinx-compat.patch"
                                 "qemu-build-info-manual.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Fix a bug in the do_ioctl_ifconf() function of qemu to
-           ;; make ioctl(…, SIOCGIFCONF, …) work for emulated 64 bit
-           ;; architectures.  The size of struct ifreq is handled
-           ;; incorrectly.
-           ;; https://lists.nongnu.org/archive/html/qemu-devel/2021-01/msg01545.html
-           (substitute* '("linux-user/syscall.c")
-             (("^([[:blank:]]*)const argtype ifreq_arg_type.*$" line indent)
-              (string-append line indent "const argtype ifreq_max_type[] = "
-                             "{ MK_STRUCT(STRUCT_ifmap_ifreq) };\n"))
-             (("^([[:blank:]]*)target_ifreq_size[[:blank:]]=.*$" _ indent)
-              (string-append indent "target_ifreq_size = "
-                             "thunk_type_size(ifreq_max_type, 0);")))
            ;; Delete the bundled meson copy.
            (delete-file-recursively "meson")))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
@@ -197,22 +192,6 @@
                   ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
-         (add-after 'set-paths 'hide-glibc
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Work around https://issues.guix.info/issue/36882.  We need to
-             ;; remove glibc from C_INCLUDE_PATH so that the one hardcoded in GCC,
-             ;; at the bottom of GCC include search-path is used.
-             (let* ((filters '("libc"))
-                    (input-directories
-                     (filter-map (lambda (input)
-                                   (match input
-                                     ((name . dir)
-                                      (and (not (member name filters))
-                                           dir))))
-                                 inputs)))
-               (set-path-environment-variable "C_INCLUDE_PATH"
-                                              '("include")
-                                              input-directories))))
          (add-after 'unpack 'extend-test-time-outs
            (lambda _
              ;; These tests can time out on heavily-loaded and/or slow storage.
@@ -222,14 +201,14 @@
                 (string-append match "9")))))
          (add-after 'unpack 'disable-unusable-tests
            (lambda _
-             (substitute* "tests/meson.build"
+             (substitute* "tests/unit/meson.build"
                ;; Comment out the test-qga test, which needs /sys and
                ;; fails within the build environment.
                (("tests.*test-qga.*$" all)
                 (string-append "# " all))
                ;; Comment out the test-char test, which needs networking and
                ;; fails within the build environment.
-               (("check-unit-.* tests/test-char" all)
+               ((".*'test-char':.*" all)
                 (string-append "# " all)))))
          (add-after 'patch-source-shebangs 'patch-embedded-shebangs
            (lambda _
@@ -396,6 +375,7 @@ server and embedded PowerPC, and S390 guests.")
   (package
     (inherit qemu)
     (name "qemu-minimal")
+    (outputs '("out" "doc"))
     (synopsis
      "Machine emulator and virtualizer (without GUI) for the host architecture")
     (arguments
@@ -431,11 +411,16 @@ server and embedded PowerPC, and S390 guests.")
                    "--target-list=riscv32-softmmu,riscv64-softmmu")
                   (else       ; An empty list actually builds all the targets.
                    '()))))
-          `(cons ,target-list-arg ,configure-flags)))))
+          `(cons ,target-list-arg ,configure-flags)))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (delete 'configure-user-static)
+           (delete 'build-user-static)
+           (delete 'install-user-static)))))
 
     ;; Remove dependencies on optional libraries, notably GUI libraries.
     (native-inputs (fold alist-delete (package-native-inputs qemu)
-                         '("gettext")))
+                         '("gettext" "glib:static" "pcre:static" "zlib:static")))
     (inputs (fold alist-delete (package-inputs qemu)
                   '("libusb" "mesa" "sdl2" "spice" "virglrenderer" "gtk+"
                     "usbredir" "libdrm" "libepoxy" "pulseaudio" "vde2"
@@ -1021,7 +1006,7 @@ all common programming languages.  Vala bindings are also provided.")
 (define-public lxc
   (package
     (name "lxc")
-    (version "4.0.6")
+    (version "4.0.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1029,10 +1014,11 @@ all common programming languages.  Vala bindings are also provided.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0qz4l7mlhq7hx53q606qgvkyzyr01glsw290v8ppzvxn1fydlrci"))))
+                "1sgsic9dzj3wv2k5bx2vhcgappivhp1glkqfc2yrgr6jas052351"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("pkg-config" ,pkg-config)
+       ("docbook2x" ,docbook2x)))
     (inputs
      `(("gnutls" ,gnutls)
        ("libcap" ,libcap)
@@ -1065,17 +1051,156 @@ Through a powerful API and simple tools, it lets Linux users easily create and
 manage system or application containers.")
     (license license:lgpl2.1+)))
 
+(define-public lxcfs
+  (package
+    (name "lxcfs")
+    (version "4.0.9")
+    (home-page "https://github.com/lxc/lxcfs")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "lxcfs-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zx58lair8hwi4bxm5h7i8n1j5fcdgw5cr6f4wk9qhks0sr5dip5"))))
+    (arguments
+     '(#:configure-flags '("--localstatedir=/var")))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("fuse" ,fuse)))
+    (build-system gnu-build-system)
+    (synopsis "FUSE-based file system for LXC")
+    (description "LXCFS is a small FUSE file system written with the intention
+of making Linux containers feel more like a virtual machine.
+It started as a side project of LXC but can be used by any run-time.")
+    (license license:lgpl2.1+)))
+
+(define-public lxd
+  (package
+    (name "lxd")
+    (version "4.17")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/lxc/lxd/releases/download/"
+                    "lxd-" version "/lxd-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1kzmgyg5kw3zw9qa6jabld6rmb53b6yy69h7y9znsdlf74jllljl"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/lxc/lxd"
+       #:tests? #f ;; tests fail due to missing /var, cgroups, etc.
+       #:modules ((guix build go-build-system)
+                  (guix build union)
+                  (guix build utils)
+                  (srfi srfi-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-dist
+           (lambda* (#:key import-path #:allow-other-keys)
+             (with-directory-excursion (string-append "src/" import-path)
+               ;; remove the link back to the top level
+               (delete-file (string-append "_dist/src/" import-path))
+               ;; move all the deps into the src directory
+               (copy-recursively "_dist/src" "../../.."))
+             #t))
+         (replace 'build
+           (lambda* (#:key import-path #:allow-other-keys)
+             (with-directory-excursion (string-append "src/" import-path)
+               (invoke "make" "build" "CC=gcc" "TAG_SQLITE3=libsqlite3")
+               #t)))
+         (replace 'check
+           (lambda* (#:key tests? import-path #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion (string-append "src/" import-path)
+                 (invoke "make" "check" "CC=gcc" "TAG_SQLITE3=libsqlite3")))
+             #t))
+         (replace 'install
+           (lambda* (#:key inputs outputs import-path #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin-dir
+                     (string-append out "/bin/"))
+                    (doc-dir
+                     (string-append out "/share/doc/lxd-" ,version))
+                    (completions-dir
+                     (string-append out "/share/bash-completion/completions")))
+               (with-directory-excursion (string-append "src/" import-path)
+                 ;; wrap lxd with runtime dependencies
+                 (wrap-program (string-append bin-dir "lxd")
+                   `("PATH" ":" prefix
+                     ,(fold (lambda (input paths)
+                              (let* ((in (assoc-ref inputs input))
+                                     (bin (string-append in "/bin"))
+                                     (sbin (string-append in "/sbin")))
+                                (append (filter file-exists?
+                                                (list bin sbin)) paths)))
+                            '()
+                            '("bash" "acl" "rsync" "tar" "xz" "btrfs-progs"
+                              "gzip" "dnsmasq" "squashfs-tools" "iproute2"
+                              "criu" "iptables"))))
+                 ;; remove unwanted binaries
+                 (for-each (lambda (prog)
+                             (delete-file (string-append bin-dir prog)))
+                           '("deps" "macaroon-identity" "generate"))
+                 ;; install documentation
+                 (for-each (lambda (file)
+                             (install-file file doc-dir))
+                           (find-files "doc"))
+                 ;; install bash completion
+                 (rename-file "scripts/bash/lxd-client" "scripts/bash/lxd")
+                 (install-file "scripts/bash/lxd" completions-dir)))
+             #t)))))
+    (native-inputs
+     `(;; test dependencies:
+       ;; ("go-github-com-rogpeppe-godeps" ,go-github-com-rogpeppe-godeps)
+       ;; ("go-github-com-tsenart-deadcode" ,go-github-com-tsenart-deadcode)
+       ;; ("go-golang-org-x-lint" ,go-golang-org-x-lint)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("acl" ,acl)
+       ("eudev" ,eudev)
+       ("libdqlite" ,libdqlite)
+       ("libraft" ,libraft)
+       ("libcap" ,libcap)
+       ("lxc" ,lxc)
+       ;; runtime dependencies:
+       ("bash" ,bash-minimal)
+       ("rsync" ,rsync)
+       ("tar" ,tar)
+       ("xz" ,xz)
+       ("btrfs-progs" ,btrfs-progs)
+       ("gzip" ,gzip)
+       ("dnsmasq" ,dnsmasq)
+       ("squashfs-tools" ,squashfs-tools)
+       ("iproute2" ,iproute)
+       ("criu" ,criu)
+       ("iptables" ,iptables)))
+    (synopsis "Daemon based on liblxc offering a REST API to manage containers")
+    (home-page "https://linuxcontainers.org/lxd/")
+    (description "LXD is a next generation system container manager.  It
+offers a user experience similar to virtual machines but using Linux
+containers instead.  It's image based with pre-made images available for a
+wide number of Linux distributions and is built around a very powerful, yet
+pretty simple, REST API.")
+    (license license:asl2.0)))
+
 (define-public libvirt
   (package
     (name "libvirt")
-    (version "7.2.0")
+    (version "7.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/libvirt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1l6i1rz1v9rnp61sgzlrlbsfh03208dbm3b259i0jl5sqz85kx01"))
+        (base32 "15987ihnsjvcgi11dzcf1k3zp1si2d4wcxj0r0i30brc0d4pn44h"))
        (patches (search-patches "libvirt-add-install-prefix.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -1086,6 +1211,9 @@ manage system or application containers.")
              "-Dstorage_disk=enabled"
              "-Dstorage_dir=enabled"
              "-Dpolkit=enabled"
+             ;; XXX The default, but required to make -Dsasl ‘stick’.
+             ;; See <https://gitlab.com/libvirt/libvirt/-/issues/185>
+             "-Ddriver_remote=enabled"
              "-Dnls=enabled"            ;translations
              (string-append "-Ddocdir=" (assoc-ref %outputs "out") "/share/doc/"
                             ,name "-" ,version)
@@ -1096,6 +1224,12 @@ manage system or application containers.")
        #:meson ,meson-0.55
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-directory-confusion
+           (lambda _
+             ;; Don't try to install an (unused) /var outside of the store.
+             (substitute* "scripts/meson-install-dirs.py"
+               (("destdir = .*")
+                "destdir = '/tmp'"))))
          (add-before 'configure 'disable-broken-tests
            (lambda _
              (let ((tests (list "commandtest"           ; hangs idly
@@ -1103,15 +1237,12 @@ manage system or application containers.")
                                 "virnetsockettest")))   ; tries to network
                (substitute* "tests/meson.build"
                  (((format #f ".*'name': '(~a)'.*" (string-join tests "|")))
-                  ""))
-               #t)))
-         (add-before 'install 'no-polkit-magic
-           ;; Meson ‘magically’ invokes pkexec, which fails (not setuid).
-           (lambda _
-             (setenv "PKEXEC_UID" "something")
-             #t)))))
+                  ""))))))))
     (inputs
-     `(("libxml2" ,libxml2)
+     `(("acl" ,acl)
+       ("attr" ,attr)
+       ("fuse" ,fuse)
+       ("libxml2" ,libxml2)
        ("eudev" ,eudev)
        ("libpciaccess" ,libpciaccess)
        ("gnutls" ,gnutls)
@@ -1197,41 +1328,39 @@ three libraries:
 (define-public python-libvirt
   (package
     (name "python-libvirt")
-    (version "7.2.0")
+    (version "7.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/python/libvirt-python-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1ryfimhf47s9k4n0gys233bh15l68fccs2bvj8bjwqjm9k2vmhy0"))))
+        (base32 "15pn8610ybf03xff3vbz3apz2ph42k2kh6k19r020l9nvc6jcv37"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-nosetests-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               (("\"/usr/bin/nosetests\"")
-                (string-append "\"" (which "nosetests") "\""))
-               (("self\\.spawn\\(\\[sys\\.executable, nose\\]\\)")
-                (format #f "self.spawn([\"~a\", nose])" (which "bash"))))
-             #t)))))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               ;; No reason to explicity invoke Python on a wrapped pytest.
+               (substitute* "setup.py"
+                 (("sys\\.executable, pytest") "pytest"))
+               (add-installed-pythonpath inputs outputs)
+               (setenv "LIBVIRT_API_COVERAGE" "whynot")
+               (invoke "python" "setup.py" "test")))))))
     (inputs
      `(("libvirt" ,libvirt)))
     (propagated-inputs
      `(("python-lxml" ,python-lxml)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("python-nose" ,python-nose)))
+       ("python-pytest" ,python-pytest)))
     (home-page "https://libvirt.org")
     (synopsis "Python bindings to libvirt")
     (description "This package provides Python bindings to the libvirt
 virtualization library.")
     (license license:lgpl2.1+)))
-
-(define-public python2-libvirt
-  (package-with-python2 python-libvirt))
 
 (define-public virt-manager
   (package
@@ -1651,7 +1780,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
 (define-public skopeo
   (package
     (name "skopeo")
-    (version "1.2.2")
+    (version "1.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1660,7 +1789,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03sznybn3rqjyplc6w4b7mfa6gas8db15p5vnmfm1xqw72ldylgc"))))
+                "0n22sdif437ddg5ch0ipwim3fg0n6ihc9bfi52qkhy3r1grz04hs"))))
     (build-system go-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -1801,14 +1930,14 @@ by default and can be made read-only.")
 (define-public bochs
   (package
     (name "bochs")
-    (version "2.6.11")
+    (version "2.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://sourceforge.net/projects/bochs/files/bochs/"
                            version "/bochs-" version ".tar.gz"))
        (sha256
-        (base32 "0ql8q6y1k356li1g9gbvl21448mlxphxxi6kjb2b3pxvzd0pp2b3"))))
+        (base32 "0ymiwnfqg5npq2dk9ngidbbfn3qw8z6i491finhcaan7zldsn450"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -2064,14 +2193,14 @@ administrators and developers in managing the database.")
 (define-public osinfo-db
   (package
     (name "osinfo-db")
-    (version "20201218")
+    (version "20210809")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0ydbindwgw7kg861rqii5036gq0dbbbmv35dzrmmv937ddfsxwh0"))))
+                "16gas6ahxwim1vdjlc4p1gm6q5gfy25h82ngykcm94x69sl6qsan"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))

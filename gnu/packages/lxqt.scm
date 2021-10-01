@@ -10,6 +10,7 @@
 ;;; Copyright © 2019, 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2020 Fakhri Sajadi <f.sajadi@pantherx.org>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,7 +90,7 @@
     (native-inputs
      `(("doxygen" ,doxygen)))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (home-page "https://launchpad.net/libdbusmenu-qt")
     (synopsis "Qt implementation of the DBusMenu spec")
     (description "This library provides a Qt implementation of the DBusMenu
@@ -127,7 +128,7 @@ to statistics about the system on which it's run.")
 (define-public lxqt-build-tools
   (package
     (name "lxqt-build-tools")
-    (version "0.7.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
@@ -135,7 +136,7 @@ to statistics about the system on which it's run.")
                            "/download/" version
                            "/lxqt-build-tools-" version ".tar.xz"))
        (sha256
-        (base32 "147vdkc25mrlr0fy785yzwhm4gwjxa5xl3n3hljz4c97m531kzl5"))))
+        (base32 "0kayad5l72h8n90zkf3hy8fxy72n4b1mrkjglpa9dj0cdj6qg0lp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -149,18 +150,21 @@ to statistics about the system on which it's run.")
      `(("pkg-config" ,pkg-config)
        ("glib" ,glib)))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
+    (propagated-inputs
+     ;; Dependent projects require Perl via the CMake files.
+     `(("perl" ,perl)))
     (synopsis "LXQt Build tools")
     (description
      "Lxqt-build-tools is providing several tools needed to build LXQt
 itself as well as other components maintained by the LXQt project.")
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (license license:lgpl2.1+)))
 
 (define-public libqtxdg
   (package
     (name "libqtxdg")
-    (version "3.5.0")
+    (version "3.7.1")
     (source
      (origin
        (method url-fetch)
@@ -168,7 +172,7 @@ itself as well as other components maintained by the LXQt project.")
              "https://github.com/lxqt/libqtxdg/releases/download/"
              version "/libqtxdg-" version ".tar.xz"))
        (sha256
-        (base32 "0g2mwipgl8737jhgqymjixvk745svh2rlini3qr92lrg60v9paa1"))))
+        (base32 "16wav2b948c837cpbvdr6hs1zifwrpdk3yjvbzzp2l1hndvbwz27"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -184,7 +188,7 @@ itself as well as other components maintained by the LXQt project.")
     (propagated-inputs
      ;; required by Qt5XdgIconLoader.pc
      `(("glib" ,glib)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)
@@ -198,7 +202,7 @@ in Qt.")
 (define-public liblxqt
   (package
     (name "liblxqt")
-    (version "0.15.1")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
@@ -206,7 +210,7 @@ in Qt.")
              "https://github.com/lxqt/" name "/releases/download/"
              version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0mg62gypjpmpjd3lr7rrvzmkkhli1vf5pri47hg76byz84vng4a9"))))
+        (base32 "0ay3j6zdgffw3mzaq3wdq96la7fnn2dw52ij6987slv31563nknl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -235,7 +239,7 @@ in Qt.")
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)
        ("qttools" ,qttools)))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Core utility library for all LXQt components")
     (description "liblxqt provides the basic libraries shared by the
 components of the LXQt desktop environment.")
@@ -244,21 +248,21 @@ components of the LXQt desktop environment.")
 (define-public libsysstat
   (package
     (name "libsysstat")
-    (version "0.4.3")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1s5s7skzy3sh4rlnfy7r0cg3r1scvp35ldd28bhnqjya99m7ip37"))))
+        (base32 "1ljy5ggvqvpm3k6kfy03dn47ygr9lzi8hmqws4dcqfc9sx86b6zi"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))          ; no tests
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Library used to query system info and statistics")
     (description "libsysstat is a library to query system information like CPU
 and memory usage or network traffic.")
@@ -270,20 +274,20 @@ and memory usage or network traffic.")
 (define-public lxqt-about
   (package
     (name "lxqt-about")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0p24z1vykyp8dkhwaxxi4hw5150yv9a2ncc55vbwx4c6bmmibmsh"))))
+        (base32 "04riqf2xgbcnq67l5zb0dfnnmc4a2zljx8zfn3jlvxirnd73l0zm"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -304,7 +308,7 @@ and memory usage or network traffic.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Provides information about LXQt and the system")
     (description "lxqt-about is a dialogue window providing information about
 LXQt and the system it's running on.")
@@ -313,14 +317,14 @@ LXQt and the system it's running on.")
 (define-public lxqt-admin
   (package
     (name "lxqt-admin")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1zal37hyzqimwsymmi3w15n1iq78g53754s8abc9ylkzc236xpfc"))))
+        (base32 "07fkn3zmpfxjzzsv1hyv50sx0359n10lxjil35qn266nz165wj43"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
@@ -338,7 +342,8 @@ LXQt and the system it's running on.")
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
            (lambda _
-             (substitute* "lxqt-admin-user/CMakeLists.txt"
+             (substitute* '("lxqt-admin-user/CMakeLists.txt"
+                            "lxqt-admin-time/CMakeLists.txt")
                (("DESTINATION \"\\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
                 "DESTINATION \"share/polkit-1/actions"))
              #t))
@@ -350,7 +355,7 @@ LXQt and the system it's running on.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "LXQt system administration tool")
     (description "lxqt-admin is providing two GUI tools to adjust settings of
 the operating system LXQt is running on.")
@@ -359,24 +364,23 @@ the operating system LXQt is running on.")
 (define-public lxqt-config
   (package
     (name "lxqt-config")
-    (version "0.15.0")
+    (version "0.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "18fagd6ynmx74qw0pjkkg2n3v6s18n6lcsbj7lvfd4lkbcfnzqpb"))))
+        (base32 "0nr43d6fyc5zg4b3iwpca2cy58ry8q0rahrk6ixm7wrvmaiwkh93"))))
     (build-system cmake-build-system)
     (inputs
      `(("eudev" ,eudev)
        ("kwindowsystem" ,kwindowsystem)
-       ("libkscreen" ,libkscreen)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
        ("libxcursor" ,libxcursor)
        ("libxi" ,libxi)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
        ("solid" ,solid)
@@ -387,6 +391,10 @@ the operating system LXQt is running on.")
      `(("pkg-config" ,pkg-config)
        ("lxqt-build-tools" ,lxqt-build-tools)
        ("qttools" ,qttools)))
+    ;; XXX: This is a workaround so libkscreen can find the backends as we
+    ;; dont have a way specify them. We may want to  patch like Nix does.
+    (propagated-inputs
+     `(("libkscreen" ,libkscreen)))
     (arguments
      '(#:tests? #f                      ; no tests
        #:phases
@@ -419,7 +427,7 @@ the operating system LXQt is running on.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Tools to configure LXQt and the underlying operating system")
     (description "lxqt-config is providing several tools involved in the
 configuration of both LXQt and the underlying operating system.")
@@ -428,7 +436,7 @@ configuration of both LXQt and the underlying operating system.")
 (define-public lxqt-globalkeys
   (package
     (name "lxqt-globalkeys")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
@@ -436,13 +444,13 @@ configuration of both LXQt and the underlying operating system.")
                            "releases/download/" version "/"
                            "lxqt-globalkeys-" version ".tar.xz"))
        (sha256
-        (base32 "1wfvpvy32p60j7xibfa30skzxx2187qrsqxm1npabj1y5bva2m6f"))))
+        (base32 "0pnyqiqhaawrnyvw3ljp850d911abaalnl4rgvl2xyzybvlhki4h"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -467,7 +475,7 @@ configuration of both LXQt and the underlying operating system.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Daemon used to register global keyboard shortcuts")
     (description "lxqt-globalkeys is providing tools to set global keyboard
 shortcuts in LXQt sessions, that is shortcuts which apply to the LXQt session
@@ -477,20 +485,20 @@ as a whole and are not limited to distinct applications.")
 (define-public lxqt-notificationd
   (package
     (name "lxqt-notificationd")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "01fva6q2vb0aframxgm0jslvb3z0dcwmhz0yr239bskvdwpn885w"))))
+        (base32 "1dyal7brmfnydfgb6lpxnqww8fj5gzixs7s3wf5nn2ihsz1wm4nk"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -514,7 +522,7 @@ as a whole and are not limited to distinct applications.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "The LXQt notification daemon")
     (description "lxqt-notificationd is LXQt's implementation of a daemon
 according to the Desktop Notifications Specification.")
@@ -523,20 +531,20 @@ according to the Desktop Notifications Specification.")
 (define-public lxqt-openssh-askpass
   (package
     (name "lxqt-openssh-askpass")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1h8nhj4ig8419kfdqjsig16ayf2byrzgrk698aiym544n5ayjwak"))))
+        (base32 "0gdcy8c21sbfrlfz9c3zqw4dvdwf309flkjgqanwwl9i8hr26chr"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -553,7 +561,7 @@ according to the Desktop Notifications Specification.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "GUI to query passwords on behalf of SSH agents")
     (description "lxqt-openssh-askpass is a GUI to query credentials on behalf
 of other programs.")
@@ -562,14 +570,14 @@ of other programs.")
 (define-public lxqt-panel
   (package
     (name "lxqt-panel")
-    (version "0.15.1")
+    (version "0.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1b40l9p31nz96q38vwgd1zj142xcwqnjwljsird4nnzs2smjn1c6"))))
+        (base32 "1k2cfs1mhad486kh93vbxma3jpjksp4hzjv1xmp1g5alb5dgnc0q"))))
     (build-system cmake-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -587,7 +595,7 @@ of other programs.")
        ("lxqt-globalkeys" ,lxqt-globalkeys)
        ("pcre" ,pcre)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
        ("solid" ,solid)
@@ -629,7 +637,7 @@ of other programs.")
                       (("/usr/share/X11/xkb/rules/evdev.xml")
                        (string-append xkb "/share/X11/xkb/rules/evdev.xml")))
                   #t))))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "The LXQt desktop panel")
     (description "lxqt-panel represents the taskbar of LXQt.")
     (license license:lgpl2.1+)))
@@ -637,14 +645,14 @@ of other programs.")
 (define-public lxqt-policykit
   (package
     (name "lxqt-policykit")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0kzc9mxl47bz6mifmk4xi9sxh7jl31d55j7cq8vijqg3w1yb5rp2"))))
+        (base32 "119bjhx208g7wxmr8r0ajb3wl6vagq1aks6zz07df4bgjs3nnpli"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
@@ -652,7 +660,7 @@ of other programs.")
        ("libqtxdg" ,libqtxdg)
        ("pcre" ,pcre)
        ("polkit-qt" ,polkit-qt)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -677,7 +685,7 @@ of other programs.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "The LXQt PolicyKit agent")
     (description "lxqt-policykit is the polkit authentication agent of
 LXQt.")
@@ -686,21 +694,22 @@ LXQt.")
 (define-public lxqt-powermanagement
   (package
     (name "lxqt-powermanagement")
-    (version "0.15.0")
+    (version "0.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1kal7w6ngs9yrg309p4wacmabpynsrysmbpfkpphg158z548wwl0"))))
+        (base32 "00njx8a8cs0zzpz798qc9j16k7i4y0ydy1xmmcq9yv0wawh4gqck"))))
     (build-system cmake-build-system)
     (inputs
      `(("kidletime" ,kidletime)
        ("kwindowsystem" ,kwindowsystem)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("lxqt-globalkeys" ,lxqt-globalkeys)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
        ("solid" ,solid)))
@@ -725,7 +734,7 @@ LXQt.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Power management module for LXQt")
     (description "lxqt-powermanagement is providing tools to monitor power
 management events and optionally trigger actions like e. g. shut down a system
@@ -735,20 +744,20 @@ when laptop batteries are low on power.")
 (define-public lxqt-qtplugin
   (package
     (name "lxqt-qtplugin")
-    (version "0.15.1")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "17kmpm3nn07xyxz21f86y3hqi6s0jvqyhsc703zy0463sc58vvys"))))
+        (base32 "14c6abxfg3vda333wrvb5lk45c45hnb66jclbs3vsmrjxdb13vv5"))))
     (build-system cmake-build-system)
     (inputs
      `(("libdbusmenu-qt" ,libdbusmenu-qt)
        ("libfm-qt" ,libfm-qt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -764,7 +773,7 @@ when laptop batteries are low on power.")
                (("DESTINATION \"\\$\\{QT_PLUGINS_DIR\\}")
                 "DESTINATION \"lib/qt5/plugins"))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "LXQt Qt platform integration plugin")
     (description "lxqt-qtplugin is providing a library libqtlxqt to integrate
 Qt with LXQt.")
@@ -773,14 +782,14 @@ Qt with LXQt.")
 (define-public lxqt-runner
   (package
     (name "lxqt-runner")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "02xxpflhh6a8qpnjhl5mrl07ikzl5x21mf0rj8nmm0v28rpkqjk1"))))
+        (base32 "0n53jbvkmp4vgi21a720gsvi407m4ybqk8xrpnm5f48yjr88r9i4"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
@@ -789,7 +798,7 @@ Qt with LXQt.")
        ("lxqt-globalkeys" ,lxqt-globalkeys)
        ("muparser" ,muparser)
        ("pcre" ,pcre)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -813,7 +822,7 @@ Qt with LXQt.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Tool used to launch programs quickly by typing their names")
     (description "lxqt-runner provides a GUI that comes up on the desktop and
 allows for launching applications or shutting down the system.")
@@ -822,21 +831,22 @@ allows for launching applications or shutting down the system.")
 (define-public lxqt-session
   (package
     (name "lxqt-session")
-    (version "0.15.0")
+    (version "0.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "17y6l1l2m2hzxlzvr7wbixnldbr7waky97vj6lx72r81l45wqkz4"))))
+        (base32 "0iwwfyngpbhs2dwvbw0cci0bf3qbqcpjjw7h5vm46nimvgp8q1fr"))))
     (build-system cmake-build-system)
     (inputs
      `(("eudev" ,eudev)
        ("kwindowsystem" ,kwindowsystem)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("procps" ,procps)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
        ("xdg-user-dirs" ,xdg-user-dirs)))
@@ -884,7 +894,7 @@ allows for launching applications or shutting down the system.")
                  `("XDG_CONFIG_DIRS" ":" suffix ("/run/current-system/profile/share"
                                                  "/run/current-system/profile/share/pcmanfm-qt")))
                #t))))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Session manager for LXQt")
     (description "lxqt-session provides the standard session manager
 for the LXQt desktop environment.")
@@ -893,20 +903,20 @@ for the LXQt desktop environment.")
 (define-public lxqt-sudo
   (package
     (name "lxqt-sudo")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1v4gzmld3zqi3y9pdy3hb8lq81jwbgi4ia00lbzccg8cm0m8n55w"))))
+        (base32 "02s38m0ywp0gjkjczvrc4r1ignshbajlj084xd61d3rcm7vahhic"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
        ("sudo" ,sudo)))
@@ -925,7 +935,7 @@ for the LXQt desktop environment.")
                 (string-append (assoc-ref outputs "out")
                                "/share/lxqt/translations")))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "GUI frontend for sudo/su")
     (description "lxqt-sudo is a graphical front-end of commands sudo and su
 respectively.  As such it enables regular users to launch applications with
@@ -935,14 +945,14 @@ permissions of other users including root.")
 (define-public lxqt-themes
   (package
     (name "lxqt-themes")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1dzv60q1dhi666ajh218smkp3ybh5vl2mxyvlbyc9zwvhgx3f0d1"))))
+        (base32 "0kmvcz6rxghxxgb0m264zbvycc1zjma8mr4cpwg5kyrzb47rdw9z"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)))
@@ -959,7 +969,7 @@ permissions of other users including root.")
                (("DESTINATION \"\\$\\{LXQT_SHARE_DIR\\}")
                 "DESTINATION \"share/lxqt"))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Themes, graphics and icons for LXQt")
     (description "This package comprises a number of graphic files and themes
 for LXQt.")
@@ -973,14 +983,14 @@ for LXQt.")
 (define-public libfm-qt
   (package
     (name "libfm-qt")
-    (version "0.15.1")
+    (version "0.17.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "034kc8i571m31fksprih6iiykxj85j98fmm6nrkmlwql45kr6rvs"))))
+        (base32 "1991lm1gnw9s5wwn1yf3vba63bfmrrgsxc70h3nhdl9mh16qygxa"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no tests
@@ -991,13 +1001,13 @@ for LXQt.")
        ("libxcb" ,libxcb)
        ("menu-cache" ,menu-cache)
        ("pcre" ,pcre)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("lxqt-build-tools" ,lxqt-build-tools)
        ("qttools" ,qttools)))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Qt binding for libfm")
     (description "libfm-qt is the Qt port of libfm, a library providing
 components to build desktop file managers which belongs to LXDE.")
@@ -1006,18 +1016,18 @@ components to build desktop file managers which belongs to LXDE.")
 (define-public pcmanfm-qt
   (package
     (name "pcmanfm-qt")
-    (version "0.15.1")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1izc60hrc16sv2ig9psr3br9iq8nln6a2ycfspzycgpk8rh0f6jd"))))
+        (base32 "1axs7dnh2z08ygy28iipfbgfck15k2i2pwlf0v8d8axjrmavzb3l"))))
     (build-system cmake-build-system)
     (inputs
      `(("libfm-qt" ,libfm-qt)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -1036,7 +1046,7 @@ components to build desktop file managers which belongs to LXDE.")
                (("@LXQT_SHARE_DIR@")
                 "/run/current-system/profile/share/lxqt" ))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "File manager and desktop icon manager")
     (description "PCManFM-Qt is the Qt port of PCManFM, the file manager of
 LXDE.")
@@ -1048,18 +1058,18 @@ LXDE.")
 (define-public compton-conf
   (package
     (name "compton-conf")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1ii1bans7wdafm9rmxvsdqp3ad4cj0pa8kf92plbmbm3nycpf1q9"))))
+        (base32 "0haarzhndjp0wndfhcdy6zl2whpdn3w0qzr3rr137kfqibc58lvx"))))
     (build-system cmake-build-system)
     (inputs
      `(("libconfig" ,libconfig)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)
        ("pkg-config" ,pkg-config)
@@ -1074,7 +1084,7 @@ LXDE.")
                (("DESTINATION \"\\$\\{LXQT_ETC_XDG_DIR\\}")
                 "DESTINATION \"etc/xdg"))
              #t)))))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "GUI configuration tool for compton X composite manager")
     (description "@code{compton-conf} is a configuration tool for X composite
 manager Compton.")
@@ -1083,19 +1093,19 @@ manager Compton.")
 (define-public lximage-qt
   (package
     (name "lximage-qt")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "02iyymb8ywlzvv69lga5a86b7kh4v78zw6qzq5kcnjp1rpj2rjrk"))))
+        (base32 "0g6hs41xfw2ghhwpj0rqr2ciri0x9v984689yrnmnvah88zlya1f"))))
     (build-system cmake-build-system)
     (inputs
      `(("libexif" ,libexif)
        ("libfm-qt" ,libfm-qt)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -1104,7 +1114,7 @@ manager Compton.")
        ("qttools" ,qttools)))
     (arguments
      '(#:tests? #f))                    ; no tests
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "The image viewer and screenshot tool for lxqt")
     (description "LXImage-Qt is the Qt port of LXImage, a simple and fast
 image viewer.")
@@ -1113,14 +1123,14 @@ image viewer.")
 (define-public obconf-qt
   (package
     (name "obconf-qt")
-    (version "0.15.0")
+    (version "0.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1vcv2y54hgxcf76cr775632kajmvz3v4x1q3r6p1lzs9s7lmrh6q"))))
+        (base32 "0hlbivdbiw7wjhwrp8qfmq50ks19v0q21m3pyjj0k2na7nv9d3a5"))))
     (build-system cmake-build-system)
     (inputs
      `(("imlib2" ,imlib2)
@@ -1131,7 +1141,7 @@ image viewer.")
        ("openbox" ,openbox)
        ("pango" ,pango)
        ("pcre" ,pcre)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)
@@ -1139,7 +1149,7 @@ image viewer.")
        ("qttools" ,qttools)))
     (arguments
      '(#:tests? #f))                    ; no tests
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Openbox configuration tool")
     (description "ObConf-Qt is a Qt port of ObConf, a configuration editor for
 window manager OpenBox.")
@@ -1148,20 +1158,20 @@ window manager OpenBox.")
 (define-public pavucontrol-qt
   (package
     (name "pavucontrol-qt")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "15wknwmb4640r5fm4wiq6xa70qa2djay2806wyvajh11xjmqy566"))))
+        (base32 "0w51dpjayav78lmhw966fz3gvypkmv64xgsd7x5rqs8am39lq9vc"))))
     (build-system cmake-build-system)
     (inputs
      `(("glib" ,glib)
        ("pcre" ,pcre)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -1169,7 +1179,7 @@ window manager OpenBox.")
        ("qttools" ,qttools)))
     (arguments
      '(#:tests? #f))                    ; no tests
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Pulseaudio mixer in Qt")
     (description "@code{pavucontrol-qt} is the Qt port of volume control
 @code{pavucontrol} of sound server @code{PulseAudio}.")
@@ -1178,28 +1188,28 @@ window manager OpenBox.")
 (define-public qps
   (package
     (name "qps")
-    (version "2.1.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0yym1bpglz8vha28x7k21fxx1vlsq19m3fyhk2cq3pwq3nqijwp7"))))
+        (base32 "0zg0czrh3dlbnl5smxamhkdbj1g0szm47w1c0fwpaplgc1vv5lfq"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
        ("libxrender" ,libxrender)
        ("liblxqt" ,liblxqt)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)
        ("qttools" ,qttools)))
     (arguments
      '(#:tests? #f))                    ; no tests
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Qt-based visual process status monitor")
     (description "@code{qps} is a monitor that displays the status of the
 processes currently in existence, much like code{top} or code{ps}.")
@@ -1208,24 +1218,24 @@ processes currently in existence, much like code{top} or code{ps}.")
 (define-public qtermwidget
   (package
     (name "qtermwidget")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1vn3bbc99py0ak7z9s6p71n9cacpckz57a1p97iwb0p23g4zgjkf"))))
+        (base32 "10lv475qj0x3c3vl4yhjyr6y10qj5pq8n5pal5k24f6pf7xv412f"))))
     (build-system cmake-build-system)
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("utf8proc" ,utf8proc)))
     (native-inputs
      `(("lxqt-build-tools" ,lxqt-build-tools)
        ("qttools" ,qttools)))
     (arguments
      '(#:tests? #f))                    ; no tests
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "The terminal widget for QTerminal")
     (description "QTermWidget is a terminal emulator widget for Qt 5.")
     (license license:gpl2+)))
@@ -1233,17 +1243,17 @@ processes currently in existence, much like code{top} or code{ps}.")
 (define-public qterminal
   (package
     (name "qterminal")
-    (version "0.15.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0r7xmwjpak47ayj7cj37bwrdlv1mx5nhqpccb5pbn2fh8slp8zsm"))))
+        (base32 "0rfv7a6ncm8fs8aicinh9l29w4636gxzcqz735jmch2r41v9i1d9"))))
     (build-system cmake-build-system)
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)
        ("qtermwidget" ,qtermwidget)))
     (native-inputs
@@ -1251,7 +1261,7 @@ processes currently in existence, much like code{top} or code{ps}.")
        ("qttools" ,qttools)))
     (arguments
      '(#:tests? #f))                      ; no tests
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Lightweight Qt-based terminal emulator")
     (description "QTerminal is a lightweight Qt terminal emulator based on
 QTermWidget.")
@@ -1260,27 +1270,28 @@ QTermWidget.")
 (define-public screengrab
   (package
     (name "screengrab")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/screengrab/releases/download/"
                            version "/screengrab-" version ".tar.xz"))
        (sha256
-        (base32 "14znjw3d3gw02fsmhrjcj86l173m2ypl1x8hhba9ld23icr1gqwf"))))
+        (base32 "0cilzw7rz5m2klzpax7rrs5rr6whfda2svwzsn2jvmrirmh5by7r"))))
     (build-system cmake-build-system)
     (inputs
      `(("kwindowsystem" ,kwindowsystem)
        ("libqtxdg" ,libqtxdg)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
+       ("perl" ,perl)
        ("qttools" ,qttools)))
     (arguments
      '(#:tests? #f))                    ; no tests
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Crossplatform tool for fast making screenshots")
     (description "ScreenGrab is a program for fast creating screenshots, and
 easily publishing them on internet image hosting services.")
@@ -1290,20 +1301,20 @@ easily publishing them on internet image hosting services.")
 (define-public lxqt-archiver
   (package
     (name "lxqt-archiver")
-    (version "0.2.0")
+    (version "0.4.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
         (sha256
-          (base32 "1i725zaah0wv18j5fchg6isbh4b601filx549cq2hkzf2sylh9ff"))))
+          (base32 "0fzgq7cyr7hx8qmq84xfgbsdx04mc1r7vzq5mz79j7bp2ysh134z"))))
     (build-system cmake-build-system)
     (inputs
       `(("glib" ,glib)
         ("json-glib" ,json-glib)
         ("libfm-qt" ,libfm-qt)
-        ("qtbase" ,qtbase)
+        ("qtbase" ,qtbase-5)
         ("qtx11extras" ,qtx11extras)))
     (native-inputs
       `(("pkg-config" ,pkg-config)
@@ -1311,7 +1322,7 @@ easily publishing them on internet image hosting services.")
         ("qttools" ,qttools)))
     (arguments
       '(#:tests? #f))
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (synopsis "Simple & lightweight desktop-agnostic Qt file archiver")
     (description
      "This package provides a Qt graphical interface to archiving programs
@@ -1321,7 +1332,7 @@ like @command{tar} and @command{zip}.")
 (define-public lxqt-connman-applet
   ;; since the main developers didn't release any version yet,  their 
   ;; latest commit on `master` branch at the moment used for this version.
-  (let ((commit "8a6cc14371a2f18f963e6a2996446082bb60f17d")
+  (let ((commit "db1618d58fd3439142c4e44b24cba0dbb68b7141")
         (revision "0"))
     (package
       (name "lxqt-connman-applet")
@@ -1333,11 +1344,12 @@ like @command{tar} and @command{zip}.")
             (url (string-append "https://github.com/lxqt/" name))
             (commit commit)))
           (file-name (git-file-name name version))
-          (sha256 (base32 "0br4bxfrl8k7lq84aq4grznlk8xzzjgkmd19bf9mwjr0a87gg72v"))))
+          (sha256
+           (base32 "087641idpg7n8yhh5biis4wv52ayw3rddirwqb34bf5fwj664pw9"))))
       (build-system cmake-build-system)
       (inputs
         `(("kwindowsystem" ,kwindowsystem)
-          ("qtbase" ,qtbase)
+          ("qtbase" ,qtbase-5)
           ("qtsvg" ,qtsvg)
           ("liblxqt" ,liblxqt)
           ("qtx11extras" ,qtx11extras)
@@ -1357,13 +1369,13 @@ like @command{tar} and @command{zip}.")
                                     "/share/lxqt/translations"))
                     (("\\$\\{LXQT_ETC_XDG_DIR\\}") "etc/xdg"))
                   #t))
-	      (add-after 'unpack 'remove-definitions
-		(lambda _
-		  (substitute* "CMakeLists.txt"
-		    (("include\\(LXQtCompilerSettings NO_POLICY_SCOPE\\)")
-		     "include(LXQtCompilerSettings NO_POLICY_SCOPE)
+              (add-after 'unpack 'remove-definitions
+                (lambda _
+                  (substitute* "CMakeLists.txt"
+                    (("include\\(LXQtCompilerSettings NO_POLICY_SCOPE\\)")
+                     "include(LXQtCompilerSettings NO_POLICY_SCOPE)
 remove_definitions(-DQT_NO_CAST_TO_ASCII -DQT_NO_CAST_FROM_ASCII)"))
-		  #t)))))
+                  #t)))))
       (home-page "https://github.com/lxqt/lxqt-connman-applet")
       (synopsis "System-tray applet for connman")
       (description "This package provides a Qt-based system-tray applet for
@@ -1376,7 +1388,7 @@ desktop.")
 (define-public lxqt
   (package
     (name "lxqt")
-    (version (package-version lxqt-session))
+    (version "17.0")
     (source #f)
     (build-system trivial-build-system)
     (arguments '(#:builder (begin (mkdir %output) #t)))
@@ -1407,8 +1419,7 @@ desktop.")
        ("lxqt-themes" ,lxqt-themes)
        ("pcmanfm-qt" ,pcmanfm-qt)
        ;; Extra
-       ("compton" ,compton)
-       ("compton-conf" ,compton-conf)
+       ("picom" ,picom)
        ("font-dejavu" ,font-dejavu)
        ("lximage-qt" ,lximage-qt)
        ("obconf-qt" ,obconf-qt)
@@ -1419,5 +1430,5 @@ desktop.")
        ("qterminal" ,qterminal)))
     (synopsis "The Lightweight Qt Desktop Environment")
     (description "LXQt is a lightweight Qt desktop environment.")
-    (home-page "https://lxqt.github.io")
+    (home-page "https://lxqt-project.org")
     (license license:gpl2+)))

@@ -38,7 +38,6 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages gnupg)
-  #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
@@ -48,18 +47,37 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu))
 
+(define-public guile-squee-dev
+  (let ((commit "e0614273ad4067af82f508db51c8a100131151ea")
+        (revision "3"))
+    (package
+      (inherit guile-squee)
+      (name "guile-squee")
+      (version (string-append "0-" revision "." (string-take commit 7)))
+      (home-page "https://notabug.org/mothacehe/guile-squee.git")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1jps14z8653ah2kr367iayzyi3ql2s55l77xrafz7gk3mzcvgrrg"))
+                (file-name (string-append name "-" version "-checkout")))))))
+
 (define-public cuirass
-  (let ((commit "d601fe0e4c85ab7b37f0571e898448c9fadde715")
-        (revision "9"))
+  (let ((commit "60190401ce4ccc890629ec3cb22a84a8ab8c2645")
+        (revision "4"))
     (package
       (name "cuirass")
-      (version (git-version "1.0.0" revision commit))
+      (version (git-version "1.1.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -69,7 +87,7 @@
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "09d05bqy7wqz9175b4nv3sqasibx4175kmiz75id05ipr0vn0j12"))))
+           "0b0bs32lzk5ck7lw8ac9dj2h70sqc5y430vhi7rcnwj48mdrchma"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build utils)
@@ -123,7 +141,7 @@
                       (guix   (assoc-ref inputs "guix"))
                       (deps   (list avahi gcrypt json zmq squee git bytes
                                     fibers zlib matd tls mail guix))
-                      (guile  (assoc-ref %build-inputs "guile"))
+                      (guile  (assoc-ref inputs "guile"))
                       (effective
                        (read-line
                         (open-pipe* OPEN_READ
@@ -156,7 +174,7 @@
          ("guile-gcrypt" ,guile-gcrypt)
          ("guile-json" ,guile-json-4)
          ("guile-simple-zmq" ,guile-simple-zmq)
-         ("guile-squee" ,guile-squee)
+         ("guile-squee" ,guile-squee-dev)
          ("guile-git" ,guile-git)
          ("guile-zlib" ,guile-zlib)
          ("guile-mastodon" ,guile-mastodon)
@@ -234,7 +252,7 @@ intended as a replacement for Hydra.")
                          (let* ((file
                                  (assoc-ref inputs (string-append name ".js")))
                                 (port
-                                 (open-pipe* OPEN_READ "uglify-js" file))
+                                 (open-pipe* OPEN_READ "uglifyjs" file))
                                 (destination
                                  (string-append
                                   "../build/js/" name ".min.js")))
@@ -245,7 +263,7 @@ intended as a replacement for Hydra.")
 
                            (let ((exit (close-pipe port)))
                              (unless (zero? exit)
-                               (error "uglify-js failed" exit)))))
+                               (error "uglifyjs failed" exit)))))
 
                        '("vue"
                          "vue-router"
@@ -264,7 +282,7 @@ intended as a replacement for Hydra.")
        ("zlib" ,zlib)))
     (native-inputs
      `(("googletest" ,googletest)
-       ("uglify-js" ,uglify-js)
+       ("uglifyjs" ,node-uglify-js)
 
        ("vue.js"
         ,(origin (method url-fetch)

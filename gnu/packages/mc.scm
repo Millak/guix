@@ -20,39 +20,41 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages mc)
-  #:use-module (guix packages)
-  #:use-module (guix licenses)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
-  #:use-module (gnu packages)
   #:use-module (gnu packages aspell)
-  #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages glib)
-  #:use-module (gnu packages ssh)
-  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages compression))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages ssh)
+  #:use-module (gnu packages)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix licenses)
+  #:use-module (guix packages))
 
 (define-public mc
   (package
     (name "mc")
-    (version "4.8.26")
+    (version "4.8.27")
     (source
      (origin
       (method url-fetch)
-      (uri (string-append "https://ftp.midnight-commander.org/mc-"
+      (uri (string-append "https://ftp.osuosl.org/pub/midnightcommander/mc-"
                           version ".tar.xz"))
       (sha256
-       (base32 "09vc2vf6k12a8k5gdss6hcskwfcbyalrkhn65nidkwlm0p2svpn6"))))
+       (base32 "1x2g5ahgzg951y4ldbsgkv8icni2mgh3p2wsds0j16gsbwi5kgii"))))
     (build-system gnu-build-system)
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("perl" ,perl)))
+    (native-inputs `(("perl" ,perl)
+                     ("pkg-config" ,pkg-config)))
     (inputs `(("aspell" ,aspell)
-              ("ncurses" ,ncurses)
-              ("libssh2" ,libssh2)
-              ("glib" ,glib)
               ("check" ,check)
+              ("glib" ,glib)
+              ("gpm" ,gpm)
+              ("libssh2" ,libssh2)
+              ("ncurses" ,ncurses)
               ("unzip" ,unzip)))
     (arguments
      `(#:configure-flags
@@ -95,6 +97,8 @@
                (("usr/bin") "/"))
              #t)))))
     (home-page "https://www.midnight-commander.org")
+    (properties
+      `((release-monitoring-url . "https://ftp.osuosl.org/pub/midnightcommander/")))
     (synopsis "Graphical file manager")
     (description
      "GNU Midnight Commander is a command-line file manager laid out in a

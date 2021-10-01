@@ -23,7 +23,9 @@
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +45,7 @@
 (define-module (gnu packages python-crypto)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -113,13 +116,13 @@ with what is used by the Bitcoin network.")
 (define-public python-bcrypt
   (package
     (name "python-bcrypt")
-    (version "3.1.7")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bcrypt" version))
        (sha256
-        (base32 "0hhywhxx301cxivgxrpslrangbfpccc8y83qbwn1f57cab3nj00b"))))
+        (base32 "0agvzdn7r7jx5y4scl5gjmrmr6njvizwmr9n7h1kmaahdrrc34sv"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-pycparser" ,python-pycparser)
@@ -137,9 +140,6 @@ on the Blowfish password hashing algorithm, as described in
 Password Scheme\"} by Niels Provos and David Mazieres.")
     (license license:asl2.0)))
 
-(define-public python2-bcrypt
-  (package-with-python2 python-bcrypt))
-
 (define-public python-passlib
   (package
     (name "python-passlib")
@@ -154,13 +154,13 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
     (native-inputs
      `(("python-nose" ,python-nose)))
     (propagated-inputs
-     `(("python-py-bcrypt" ,python-py-bcrypt)))
+     `(("python-bcrypt" ,python-bcrypt)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-PYTHON_EGG_CACHE
            ;; Some tests require access to "$HOME/.cython".
-           (lambda _ (setenv "PYTHON_EGG_CACHE" "/tmp") #t)))))
+           (lambda _ (setenv "PYTHON_EGG_CACHE" "/tmp"))))))
     (home-page "https://bitbucket.org/ecollins/passlib")
     (synopsis "Comprehensive password hashing framework")
     (description
@@ -170,41 +170,6 @@ as a framework for managing existing password hashes.  It's designed to be
 useful for a wide range of tasks, from verifying a hash found in /etc/shadow,
 to providing full-strength password hashing for multi-user application.")
     (license license:bsd-3)))
-
-(define-public python2-passlib
-  (package-with-python2 python-passlib))
-
-(define-public python-py-bcrypt
-  (package
-    (name "python-py-bcrypt")
-    (version "0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "py-bcrypt" version))
-       (sha256
-        (base32
-         "0y6smdggwi5s72v6p1nn53dg6w05hna3d264cq6kas0lap73p8az"))))
-    (build-system python-build-system)
-    (home-page "https://code.google.com/p/py-bcrypt")
-    (synopsis
-     "Bcrypt password hashing and key derivation")
-    (description
-     "A python wrapper of OpenBSD's Blowfish password hashing code.  This
-system hashes passwords using a version of Bruce Schneier's Blowfish block
-cipher with modifications designed to raise the cost of off-line password
-cracking and frustrate fast hardware implementation.  The computation cost of
-the algorithm is parametrised, so it can be increased as computers get faster.
-The intent is to make a compromise of a password database less likely to
-result in an attacker gaining knowledge of the plaintext passwords (e.g. using
-John the Ripper).")
-    ;; "sha2.c" is under BSD-3;
-    ;; "blowfish.c" and "bcrypt.c" are under BSD-4;
-    ;; the rest is under ISC.
-    (license (list license:isc license:bsd-3 license:bsd-4))))
-
-(define-public python2-py-bcrypt
-  (package-with-python2 python-py-bcrypt))
 
 (define-public python-pyblake2
   (package
@@ -258,9 +223,6 @@ providing both client and server functionality.  While it leverages a Python C
 extension for low level cryptography (PyCrypto), Paramiko itself is a pure
 Python interface around SSH networking concepts.")
     (license license:lgpl2.1+)))
-
-(define-public python2-paramiko
-  (package-with-python2 python-paramiko))
 
 (define-public python-ecdsa
   (package
@@ -466,6 +428,32 @@ implications.  These backends were extracted from the main keyring project to
 make them available for those who wish to employ them, but are discouraged for
 general production use.  Include this module and use its backends at your own
 risk.")
+    (license license:expat)))
+
+(define-public python-certauth
+  (package
+    (name "python-certauth")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "certauth" version))
+       (sha256
+        (base32
+         "1yxqfb5131wahjyw9pxz03bq476rcfx62s6k53xx4cqbzzgdaqkq"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-pyopenssl" ,python-pyopenssl)
+       ("python-tldextract" ,python-tldextract)))
+    (native-inputs
+     `(("python-pytest-cov" ,python-pytest-cov)))
+    (home-page "https://github.com/ikreymer/certauth")
+    (synopsis "Certificate authority creation tool")
+    (description "This package provides a small library, built on top of
+pyOpenSSL, which allows for creating a custom certificate authority (CA)
+certificate, and generating on-demand dynamic host certs using that CA
+certificate.  It is most useful for use with a man-in-the-middle HTTPS proxy,
+for example, for recording or replaying web content.")
     (license license:expat)))
 
 (define-public python-certifi
@@ -823,78 +811,6 @@ Networking and Cryptography library.  These libraries have a stated goal
 of improving usability, security and speed.")
     (license license:asl2.0)))
 
-(define-public python2-pynacl
-  (package-with-python2 python-pynacl))
-
-(define-public python2-pgpdump
-  (package
-    (name "python2-pgpdump")
-    (version "1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pgpdump" version))
-       (sha256
-        (base32
-         "0s4nh8h7qsdj2yf29bspjs1zvxd4lcd11r6g11dp7fppgf2h0iqw"))))
-    (build-system python-build-system)
-
-    ;; Currently fails to build with Python 3.
-    (arguments `(#:python ,python-2))
-
-    (home-page "https://github.com/toofishes/python-pgpdump")
-    (synopsis "Python library for parsing PGP packets")
-    (description
-     "Python-pgpdump is an OpenPGP packet parser based on
-@uref{http://www.mew.org/~kazu/proj/pgpdump/, pgpdump}.  It notably supports:
-
-@itemize
-@item signature packets;
-@item public key packets;
-@item secret key packets;
-@item trust, user ID, and user attribute packets;
-@item ASCII-armor decoding and CRC check.
-@end itemize\n")
-    (license license:bsd-3)))
-
-(define-public python2-roca-detect
-  (package
-    (name "python2-roca-detect")
-    (version "1.0.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "roca-detect" version))
-       (sha256
-        (base32
-         "1di4akyw2lf5r8zfwvyhkilz8jv8g4b66rgaqwfabmjwma6gnw27"))))
-    (build-system python-build-system)
-    (native-inputs
-     ;; TODO: apk_parse_ph4, pyjks
-     `(("python2-dateutil" ,python2-dateutil)
-       ("python2-six" ,python2-six)
-       ("python2-cryptography" ,python2-cryptography)
-       ("python2-future" ,python2-future)
-       ("python2-coloredlogs" ,python2-coloredlogs)
-       ("python2-pgpdump" ,python2-pgpdump)))
-    (arguments
-     `(;; Basic testing routine is quite simple and works with Py3
-       ;; but the rest of the code that processes the different
-       ;; key formats and extracts the modulus for inspection is
-       ;; not yet fully py3 ready.
-       #:python ,python-2))
-    (home-page "https://github.com/crocs-muni/roca")
-    (synopsis "ROCA detection tool")
-    (description
-     "This tool is related to the paper entitled @i{Return of the
-Coppersmith’s Attack: Practical Factorization of Widely Used RSA Moduli}.  It
-enables you to test public RSA keys for a presence of the described
-vulnerability.  Currently the tool supports the following key formats: X.509
-Certificate (DER encoded, PEM encoded), RSA PEM (encoded private key, public
-key), SSH public key, ASC-encoded OpenPGP key, APK Android application, LDIFF
-file, and more.")
-    (license license:gpl3)))
-
 (define-public python-blurhash
   (package
     (name "python-blurhash")
@@ -989,6 +905,22 @@ protocol (Javascript Object Signing and Encryption).")
 (define-public python2-josepy
   (package-with-python2 python-josepy))
 
+(define pycryptodome-unbundle-tomcrypt-snippet
+  #~(begin
+      ;; Unbundle libtomcrypt.
+      (delete-file-recursively "src/libtom")
+      (substitute* "src/DES.c"
+        (("#include \"libtom/tomcrypt_des.c\"")
+         "#include <tomcrypt.h>"))
+      (substitute* "setup.py"
+        (("include_dirs=\\['src/', 'src/libtom/'\\]")
+         ;; FIXME: why does '-ltomcrypt' need to be added
+         ;; manually, even when 'tomcrypt' is added to 'libraries'?
+         ;; This behaviour is not documented at
+         ;; <https://docs.python.org/3/extending/building.html>.
+         "include_dirs=['src/'], libraries=['tomcrypt', 'tommath'],
+ extra_link_args=['-ltomcrypt', '-ltommath']"))))
+
 (define-public python-pycryptodome
   (package
     (name "python-pycryptodome")
@@ -999,8 +931,13 @@ protocol (Javascript Object Signing and Encryption).")
        (uri (pypi-uri "pycryptodome" version))
        (sha256
         (base32
-         "1i4m74f88qj9ci8rpyzrbk2slmsdj5ipmwdkq6qk24byalm203li"))))
+         "1i4m74f88qj9ci8rpyzrbk2slmsdj5ipmwdkq6qk24byalm203li"))
+       (modules '((guix build utils)))
+       (snippet pycryptodome-unbundle-tomcrypt-snippet)))
     (build-system python-build-system)
+    (inputs
+     `(("libtomcrypt" ,libtomcrypt)
+       ("libtommath" ,libtommath)))
     (home-page "https://www.pycryptodome.org")
     (synopsis "Low-level cryptographic Python library")
     (description
@@ -1053,7 +990,9 @@ PyCryptodome variants, the other being python-pycryptodomex.")
        (method url-fetch)
        (uri (pypi-uri "pycryptodomex" version))
        (sha256
-        (base32 "0lbx4qk3xmwqiidhmkj8qa7bh2lf8bwzg0xjpsh2w5zqjrc7qnvv"))))
+        (base32 "0lbx4qk3xmwqiidhmkj8qa7bh2lf8bwzg0xjpsh2w5zqjrc7qnvv"))
+       (modules '((guix build utils)))
+       (snippet pycryptodome-unbundle-tomcrypt-snippet)))
     (description
      "PyCryptodome is a self-contained Python package of low-level
 cryptographic primitives.  It's not a wrapper to a separate C library like

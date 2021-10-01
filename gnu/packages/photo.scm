@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
@@ -318,7 +318,7 @@ MTP, and much more.")
 (define-public perl-image-exiftool
   (package
     (name "perl-image-exiftool")
-    (version "12.00")
+    (version "12.16")
     (source
      (origin
        (method url-fetch)
@@ -328,9 +328,10 @@ MTP, and much more.")
              ;; New releases may take a while to hit CPAN.
              (string-append "https://www.sno.phy.queensu.ca/~phil/exiftool/"
                             "Image-ExifTool-" version ".tar.gz")))
+       (patches (search-patches "perl-image-exiftool-CVE-2021-22204.patch"))
        (sha256
         (base32
-         "0nl5djf6hs6brnp7qnqvj3xwhj1qnjwcv35ih4yqp2mm9b4jqyfh"))))
+         "0skm22b3gg1bfk0amklrprpva41m6mkrhqp0gi7z1nmcf9ypjh61"))))
     (build-system perl-build-system)
     (arguments
      '(#:phases
@@ -470,7 +471,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "3.4.1")
+    (version "3.6.1")
     (source
      (origin
        (method url-fetch)
@@ -478,13 +479,20 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "07llfhhz5dhh43smhv4ax4xi1diym8hrzl7cad87rkcvv98zihvz"))))
+        (base32 "051dwhdqa9q3zyrvr78g0cfzl1zhaagfvgx9axa9895q0g0wggx2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
                            "-DBUILD_TESTING=On")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'libOpenCL-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Statically link to libOpenCL.
+             (substitute* "./src/common/dlopencl.c"
+               (("\"libOpenCL\"")
+                (string-append "\"" (assoc-ref inputs "opencl-icd-loader")
+                               "/lib/libOpenCL.so\"")))))
          (add-before 'configure 'prepare-build-environment
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Rawspeed fails to build with GCC due to OpenMP error:
@@ -494,8 +502,7 @@ photographic equipment.")
              ;; it to the Clang dir. We fix this by patching CMakeLists.txt.
              (substitute* "CMakeLists.txt"
                (("\\$\\{LLVM_INSTALL_PREFIX\\}")
-                (assoc-ref %build-inputs "clang")))
-             #t))
+                (assoc-ref %build-inputs "clang")))))
          (add-before 'configure 'set-LDFLAGS-and-CPATH
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (setenv "LDFLAGS"
@@ -506,8 +513,8 @@ photographic equipment.")
              ;; Ensure the OpenEXR headers are found.
              (setenv "CPATH"
                      (string-append (assoc-ref inputs "ilmbase")
-                                    "/include/OpenEXR:" (or (getenv "CPATH") "")))
-             #t))
+                                    "/include/OpenEXR:"
+                                    (or (getenv "CPATH") "")))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
@@ -515,12 +522,7 @@ photographic equipment.")
                ;; For GtkFileChooserDialog.
                `("GSETTINGS_SCHEMA_DIR" =
                  (,(string-append (assoc-ref inputs "gtk+")
-                                  "/share/glib-2.0/schemas")))
-               ;; For libOpenCL.so.
-               `("LD_LIBRARY_PATH" =
-                 (,(string-append (assoc-ref inputs "ocl-icd")
-                                  "/lib"))))
-             #t)))))
+                                  "/share/glib-2.0/schemas")))))))))
     (native-inputs
      `(("clang" ,clang-11)
        ("cmocka" ,cmocka)
@@ -565,7 +567,7 @@ photographic equipment.")
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("lua" ,lua) ;optional, for plugins
-       ("ocl-icd" ,ocl-icd) ;optional, for OpenCL support
+       ("opencl-icd-loader" ,opencl-icd-loader) ;optional, for OpenCL support
        ("openexr" ,openexr) ;optional, for EXR import/export
        ("openjpeg" ,openjpeg) ;optional, for JPEG2000 export
        ("osm-gps-map" ,osm-gps-map) ;optional, for geotagging view
@@ -579,14 +581,14 @@ developer.  It manages your digital negatives in a database, lets you view
 them through a zoomable lighttable and enables you to develop raw images
 and enhance them.")
     ;; See src/is_supported_platform.h for supported platforms.
-    (supported-systems '("x86_64-linux" "aarch64-linux"))
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
     (license (list license:gpl3+ ;; Darktable itself.
                    license:lgpl2.1+)))) ;; Rawspeed library.
 
 (define-public photoflare
   (package
     (name "photoflare")
-    (version "1.6.7")
+    (version "1.6.9")
     (source
      (origin
        (method git-fetch)
@@ -595,7 +597,7 @@ and enhance them.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rh5gvnc1zwx4p9h599s82m69gsxp19nnfcxsblx3b2ddwzxh78v"))))
+        (base32 "121fhbggsh6jhrr7m41f27fd34ql7libdr2v0ig5bj6nc2ddwd40"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ;no tests
@@ -616,7 +618,7 @@ and enhance them.")
     (inputs
      `(("graphicsmagick" ,graphicsmagick)
        ("libomp" ,libomp)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://photoflare.io")
     (synopsis "Quick, simple but powerful image editor")
     (description "Photoflare is a cross-platform image editor with an aim
@@ -768,7 +770,7 @@ a complete panorama and stitch any series of overlapping pictures.")
     (version "5.8")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://rawtherapee.com/shared/source/"
+              (uri (string-append "https://rawtherapee.com/shared/source/"
                                   "rawtherapee-" version ".tar.xz"))
               (sha256
                (base32
@@ -808,7 +810,7 @@ a complete panorama and stitch any series of overlapping pictures.")
        ("libsigc++" ,libsigc++)
        ("libtiff" ,libtiff)
        ("zlib" ,zlib)))
-    (home-page "http://rawtherapee.com")
+    (home-page "https://rawtherapee.com")
     (synopsis "Raw image developing and processing")
     (description "RawTherapee is a raw image processing suite.  It comprises a
 subset of image editing operations specifically aimed at non-destructive raw

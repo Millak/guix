@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015, 2019 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -29,14 +29,14 @@
 (define-public mtools
   (package
     (name "mtools")
-    (version "4.0.26")
+    (version "4.0.35")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mtools/mtools-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "06pabnjc4r2vv3dzfm6q97g6jbp2k5bhmcdwv2cf25ka8y5ir7sk"))
+                "0ja7lkbw6v36p0cq0hs3xsw2ks970k47d350j7cg1lji6wbrwxil"))
               (patches
                (search-patches "mtools-mformat-uninitialized.patch"))))
     (build-system gnu-build-system)
@@ -48,24 +48,3 @@ or Unix system.  It supports long file names and multiple disk formats.  It
 also supports some FAT-specific features such as volume labels and
 FAT-specific file attributes.")
     (license gpl3+)))
-
-(define-public exfat-utils
-  (package
-    (name "exfat-utils")
-    (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/relan/exfat/releases/download/v"
-                    version "/" name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0da8f8mm1sbwqp7prh78qk33xm0b8kk2d5is7mh2szlhgdxd1syz"))))
-    (build-system gnu-build-system)
-    (home-page "https://github.com/relan/exfat")
-    (synopsis "Utilities to manipulate exFAT file systems")
-    (description
-     "This package provides an implementation of the exFAT file system,
-including command-line tools to validate exFAT file systems and to create new
-ones.")
-    (license gpl2+)))

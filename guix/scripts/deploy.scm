@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 David Thompson <davet@gnu.org>
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
-;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +28,8 @@
   #:use-module (guix utils)
   #:use-module (guix grafts)
   #:use-module (guix status)
+  #:use-module (guix diagnostics)
+  #:use-module (guix i18n)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -125,16 +127,20 @@ Perform the deployment specified by FILE.\n"))
            ;; and include a '&message'.  However, that message only contains
            ;; the format string.  Thus, special-case it here to avoid
            ;; displaying a bare format string.
-           ((cond-expand
-              (guile-3
-               ((exception-predicate &exception-with-kind-and-args) c))
-              (else #f))
+           (((exception-predicate &exception-with-kind-and-args) c)
             (raise c))
 
            ((message-condition? c)
-            (report-error (G_ "failed to deploy ~a: ~a~%")
-                          (machine-display-name machine)
-                          (condition-message c)))
+            (leave (G_ "failed to deploy ~a: ~a~%")
+                   (machine-display-name machine)
+                   (condition-message c)))
+           ((formatted-message? c)
+            (leave (G_ "failed to deploy ~a: ~a~%")
+                   (machine-display-name machine)
+                   (apply format #f
+                          (gettext (formatted-message-string c)
+                                   %gettext-domain)
+                          (formatted-message-arguments c))))
            ((deploy-error? c)
             (when (deploy-error-should-roll-back c)
               (info (G_ "rolling back ~a...~%")
@@ -156,7 +162,10 @@ Perform the deployment specified by FILE.\n"))
     (let* ((opts (parse-command-line args %options (list %default-options)
                                      #:argument-handler handle-argument))
            (file (assq-ref opts 'file))
-           (machines (or (and file (load-source-file file)) '())))
+           (machines (and file (load-source-file file))))
+      (unless file
+        (leave (G_ "missing deployment file argument~%")))
+
       (show-what-to-deploy machines)
 
       (with-status-verbosity (assoc-ref opts 'verbosity)

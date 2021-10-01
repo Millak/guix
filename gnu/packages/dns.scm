@@ -101,7 +101,7 @@
         (base32 "0ac242n7996fswq1a3nlh1bbbhrsdwsq4mx7xq8ffq6aplb4rj4a"))
        (patches
         (search-patches
-         ;; To create make-flag vairables,
+         ;; To create make-flag variables,
          ;; for splitting installation of drill and examples.
          "ldns-drill-examples.patch"))))
     (build-system gnu-build-system)
@@ -320,7 +320,7 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.13")
+    (version "9.16.16")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -328,7 +328,7 @@ and BOOTP/TFTP for network booting of diskless machines.")
                     "/bind-" version ".tar.xz"))
               (sha256
                (base32
-                "026cliyj570wxvvij96mrzsxyf421xv9a80gc5gv6savza9wfk55"))))
+                "0yqxfq7qc26x7qhk0nkp8h7x9jggzaafm712bvfffy7qml13k4bc"))))
     (build-system gnu-build-system)
     (outputs `("out" "utils"))
     (inputs
@@ -539,14 +539,14 @@ asynchronous fashion.")
 (define-public nsd
   (package
     (name "nsd")
-    (version "4.3.6")
+    (version "4.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.nlnetlabs.nl/downloads/nsd/nsd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "062zwx4k5rgpg2c0b4721ldj36aj8clrxv79mlfw9b15ap7w1rmy"))))
+        (base32 "1bg87g0i66hw16fm7gbqmzyi2rcn1hadzz0bg9b8s5mx7g2rwfzx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -609,14 +609,14 @@ to result in system-wide compromise.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.13.1")
+    (version "1.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1f2hky62f4xxnjr0lncrzz4gipg01rp12pf98mrqkgf5ixxxj145"))))
+        (base32 "10qs1q26lzw18ljggnbz0cc5f7lr9ksj615xbrmh4amryd3va4qa"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -625,12 +625,15 @@ to result in system-wide compromise.")
     (inputs
      `(("expat" ,expat)
        ("libevent" ,libevent)
+       ("nghttp2" ,nghttp2 "lib")
        ("protobuf" ,protobuf)
        ("python-wrapper" ,python-wrapper)
        ("openssl" ,openssl)))
     (arguments
      `(#:configure-flags
        (list "--disable-static" ; save space and non-determinism in libunbound.a
+             (string-append
+              "--with-libnghttp2=" (assoc-ref %build-inputs "nghttp2"))
              (string-append
               "--with-ssl=" (assoc-ref %build-inputs "openssl"))
              (string-append
@@ -766,16 +769,16 @@ served by AS112.  Stub and forward zones are supported.")
 (define-public yadifa
   (package
     (name "yadifa")
-    (version "2.4.2")
+    (version "2.5.0")
     (source
-     (let ((build "9997"))
+     (let ((build "10188"))
        (origin
          (method url-fetch)
          (uri
           (string-append "https://www.yadifa.eu/sites/default/files/releases/"
                          "yadifa-" version "-" build ".tar.gz"))
          (sha256
-          (base32 "0f1by2c7l39qpsar5nh98f3xypmn2ikv7wr557wmva6m0lwbl3q0")))))
+          (base32 "05ps6fif3sqn6yzkprnp1cm81f3ja4vqc0r6vh7nvzl73gv4rp2w")))))
     (build-system gnu-build-system)
     (native-inputs
      `(("which" ,which)))
@@ -800,7 +803,8 @@ served by AS112.  Stub and forward zones are supported.")
        (list "--sysconfdir=/etc"
              "--localstatedir=/var"
              "--enable-shared" "--disable-static"
-             "--disable-build-timestamp"))) ; build reproducibly
+             "--disable-build-timestamp"    ; build reproducibly
+             "--enable-tcp-manager")))
     (home-page "https://www.yadifa.eu/")
     (synopsis "Authoritative DNS name server")
     (description "YADIFA is an authoritative name server for the @dfn{Domain
@@ -813,7 +817,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.0.5")
+    (version "3.0.7")
     (source
      (origin
        (method git-fetch)
@@ -822,7 +826,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16rgcmgj21w2niyz45d3zjlci9i22gxcvfzqw7g5zwsjdy9610nx"))
+        (base32 "0ihd0lfh0r1nzz2di2rqkrx5j1017xv7m54irlhccx21inwv6g3y"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -943,14 +947,14 @@ synthesis, and on-the-fly re-configuration.")
 (define-public knot-resolver
   (package
     (name "knot-resolver")
-    (version "5.3.1")
+    (version "5.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://secure.nic.cz/files/knot-resolver/"
                                   "knot-resolver-" version ".tar.xz"))
               (sha256
                (base32
-                "1j99sz6r1hdvvd8rffx1917r9cyb7z46ivp5934sq57irmxnnkcx"))))
+                "0rixiqfj53rfabrz8qpnq4whx8y29d2m5w64a4jlwx7gv4nrd2zv"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1233,7 +1237,7 @@ known public suffixes.")
 (define-public maradns
   (package
     (name "maradns")
-    (version "3.5.0007")
+    (version "3.5.0020")
     (source
      (origin
        (method url-fetch)
@@ -1241,7 +1245,7 @@ known public suffixes.")
                            (version-major+minor version) "/"
                            version "/maradns-" version ".tar.xz"))
        (sha256
-        (base32 "0bc19xylg4whww9qaj5i4izwxcrh0c0ja7l1pfcn2la02hlvg1a6"))))
+        (base32 "1qgabw6y2bwy6y88dikis62k789i0xh7iwxan8jmqpzvksqwjfgw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; need to be root to run tests

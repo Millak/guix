@@ -172,18 +172,16 @@ application-facing EGL functions.")
 (define-public egl-wayland
   (package
     (name "egl-wayland")
-    (version "1.1.6")
+    (version "1.1.7")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/NVIDIA/egl-wayland")
-         (commit version)))
-       (file-name
-        (git-file-name name version))
+       (uri (git-reference
+             (url "https://github.com/NVIDIA/egl-wayland")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n9lg8hpjgxlf7dpddkjhbslsfd0symla2wk6jjmnl9n9jv2gmzk"))))
+        (base32 "0xcx1132zwyp4qps074m72ngjlfmysi1jc2d0lp1ml1r9bllkam6"))))
     (build-system meson-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -394,6 +392,7 @@ objects!")
                       (url "https://github.com/autotrace/autotrace")
                       (commit commit)))
                 (file-name (git-file-name name version))
+                (patches (search-patches "autotrace-glib-compat.patch"))
                 (sha256
                  (base32
                   "0mk4yavy42dj0pszr1ggnggpvmzs4ds46caa9wr55cqsypn7bq6s"))))
@@ -503,14 +502,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "2.91.0")
+    (version "2.92.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "0x396lgmk0dq9115yrc36s8zwxzmjr490sr5n2y6w27y17yllyjm"))))
+                "15a5vffn18a920286x0avbc2rap56k6y531wgibq68r90g2cz4g7"))))
     (build-system cmake-build-system)
     (arguments
       (let ((python-version (version-major+minor (package-version python))))
@@ -527,6 +526,7 @@ typically encountered in feature film production.")
                "-DWITH_INSTALL_PORTABLE=OFF"
                "-DWITH_JACK=ON"
                "-DWITH_MOD_OCEANSIM=ON"
+               "-DWITH_OPENVDB=ON"
                "-DWITH_OPENSUBDIV=ON"
                "-DWITH_PYTHON_INSTALL=OFF"
                (string-append "-DPYTHON_LIBRARY=python" ,python-version)
@@ -535,6 +535,9 @@ typically encountered in feature film production.")
                (string-append "-DPYTHON_INCLUDE_DIR=" (assoc-ref %build-inputs "python")
                               "/include/python" ,python-version)
                (string-append "-DPYTHON_VERSION=" ,python-version)
+               (string-append "-DPYTHON_NUMPY_INCLUDE_DIRS="
+                              (assoc-ref %build-inputs "python-numpy")
+                              "/lib/python" ,python-version "/site-packages/numpy/core/include/")
                (string-append "-DPYTHON_NUMPY_PATH="
                               (assoc-ref %build-inputs "python-numpy")
                               "/lib/python" ,python-version "/site-packages/"))
@@ -582,6 +585,7 @@ typically encountered in feature film production.")
        ("pugixml" ,pugixml)
        ("python" ,python)
        ("python-numpy" ,python-numpy)
+       ("openvdb" ,openvdb)
        ("tbb" ,tbb)
        ("zlib" ,zlib)
        ("embree" ,embree)))
@@ -695,7 +699,7 @@ OpenGL 3.  It is retained for use with older computers.")
 (define-public goxel
   (package
     (name "goxel")
-    (version "0.10.7")
+    (version "0.10.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -704,7 +708,7 @@ OpenGL 3.  It is retained for use with older computers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v6m6nhl1if8ik5bmblhq46bip6y2qz18a04s8a9awb4yh9ls039"))))
+                "0qvz566awhp03yp696fn3c80hnky41fpbi4sqg4lx69ibx4zvl9k"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f
@@ -755,7 +759,7 @@ more.")
 (define-public cgal
   (package
     (name "cgal")
-    (version "5.2.1")
+    (version "5.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -763,10 +767,15 @@ more.")
                     "/CGAL-" version ".tar.xz"))
               (sha256
                (base32
-                "1rhrpjsp4081nn2q215h78kc4msrj0081zg65k1gfp5hl88bg03y"))))
+                "0yjzq12ivizp23y7zqm30x20psv9gzwbcdrhyd3f7h0ds94m1c40"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f))                    ; no test target
+     `(#:configure-flags
+       ;; Prevent two mostly-duplicate directories.  Use Guix's versioned
+       ;; default for licences instead of CGAL's unversioned one.
+       (list (string-append "-DCGAL_INSTALL_DOC_DIR=share/doc/"
+                            ,name "-" ,version))
+       #:tests? #f))                    ; no test target
     (inputs
      `(("mpfr" ,mpfr)
        ("gmp" ,gmp)
@@ -790,7 +799,7 @@ many more.")
 (define-public ilmbase
   (package
     (name "ilmbase")
-    (version "2.5.5")
+    (version "2.5.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -799,7 +808,7 @@ many more.")
               (file-name (git-file-name "ilmbase" version))
               (sha256
                (base32
-                "0mjzb3fd8b9pcqmrgy5cdsmvqd70hmlvjnfypi66v59h3fhrmgd8"))
+                "1vja0rbilcd1wn184w8nbcmck00n7bfwlddwiaxw8dhj64nx4468"))
               (patches (search-patches "ilmbase-fix-tests.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -820,8 +829,8 @@ exception-handling library.")
 
 (define-public lib2geom
   ;; Use the latest master commit, as the 1.0 release suffer build problems.
-  (let ((revision "3")
-        (commit "17e0d21f0afc8489656f9184bff7ad024a42394a"))
+  (let ((revision "4")
+        (commit "b29d60e49a58f4e8069544b44863b1a623e4ee59"))
     (package
       (name "lib2geom")
       (version (git-version "1.0" revision commit))
@@ -833,7 +842,7 @@ exception-handling library.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0waskrmdrrdjw8pr5cvlkrxywgf376viggpc2jzdqxxpy2k78fpr"))
+                  "0xd8f3cgfnipdav4w8j54r7hzy9f3m7xk42ppcfhdjz2hriggyk6"))
                 (patches
                  ;; Patch submitted to upstream (see:
                  ;; https://gitlab.com/inkscape/lib2geom/-/merge_requests/32).
@@ -1494,7 +1503,7 @@ exec -a \"$0\" ~a/.brdf-real~%"
       (native-inputs
        `(("qttools" ,qttools))) ;for 'qmake'
       (inputs
-       `(("qtbase" ,qtbase)
+       `(("qtbase" ,qtbase-5)
          ("mesa" ,mesa)
          ("glew" ,glew)
          ("freeglut" ,freeglut)
@@ -1561,8 +1570,8 @@ and understanding different BRDFs (and other component functions).")
     (synopsis "High-quality 2D graphics rendering engine for C++")
     (description
      "Anti-Grain Geometry is a high quality rendering engine written in C++.
-It supports sub-pixel resolutions and anti-aliasing.  It is also library for
-rendering SVG graphics.")
+It supports sub-pixel resolutions and anti-aliasing.  It is also a library for
+rendering @acronym{SVG, Scalable Vector Graphics}.")
     (license license:gpl2+)))
 
 (define-public python-pastel
@@ -1930,7 +1939,7 @@ Automated palette selection is supported.")
          ("libvpx" ,libvpx)
          ("libxi" ,libxi)
          ;; ("miniupnpc" ,miniupnpc) ;segfaults for some reason
-         ("qtbase" ,qtbase)
+         ("qtbase" ,qtbase-5)
          ("qtkeychain" ,qtkeychain)
          ("qtmultimedia" ,qtmultimedia)
          ("qtsvg" ,qtsvg)

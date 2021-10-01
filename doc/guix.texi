@@ -10,15 +10,16 @@
 @include version.texi
 
 @c Identifier of the OpenPGP key used to sign tarballs and such.
-@set OPENPGP-SIGNING-KEY-ID 3CE464558A84FDC69DB40CFB090B11993D9AEBB5
-@set OPENPGP-SIGNING-KEY-URL https://sv.gnu.org/people/viewgpg.php?user_id=15145
+@set OPENPGP-SIGNING-KEY-ID 27D586A4F8900854329FF09F1260E46482E63562
+@set OPENPGP-SIGNING-KEY-URL https://sv.gnu.org/people/viewgpg.php?user_id=127547
 
 @c Base URL for downloads.
 @set BASE-URL https://ftp.gnu.org/gnu/guix
 
 @c The official substitute server used by default.
-@set SUBSTITUTE-SERVER ci.guix.gnu.org
-@set SUBSTITUTE-URL https://@value{SUBSTITUTE-SERVER}
+@set SUBSTITUTE-SERVER-1 ci.guix.gnu.org
+@set SUBSTITUTE-SERVER-2 bordeaux.guix.gnu.org
+@set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
 Copyright @copyright{} 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès@*
@@ -36,7 +37,7 @@ Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020 Jan Nieuwenhuizen@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020 Julien Lepiller@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*
 Copyright @copyright{} 2016 Alex ter Weele@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*
 Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@*
@@ -45,8 +46,8 @@ Copyright @copyright{} 2017 Federico Beffa@*
 Copyright @copyright{} 2017, 2018 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
-Copyright @copyright{} 2017, 2021 Christopher Lemmer Webber@*
-Copyright @copyright{} 2017, 2018, 2019, 2020 Marius Bakke@*
+Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
+Copyright @copyright{} 2017, 2018, 2019, 2020, 2021 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020 Hartmut Goebel@*
 Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice@*
@@ -68,15 +69,15 @@ Copyright @copyright{} 2019 Ivan Petkov@*
 Copyright @copyright{} 2019 Jakob L. Kreuze@*
 Copyright @copyright{} 2019 Kyle Andrews@*
 Copyright @copyright{} 2019 Alex Griffin@*
-Copyright @copyright{} 2019, 2020 Guillaume Le Vaillant@*
-Copyright @copyright{} 2020 Leo Prikler@*
+Copyright @copyright{} 2019, 2020, 2021 Guillaume Le Vaillant@*
+Copyright @copyright{} 2020 Liliana Marie Prikler@*
 Copyright @copyright{} 2019, 2020 Simon Tournier@*
 Copyright @copyright{} 2020 Wiktor Żelazny@*
 Copyright @copyright{} 2020 Damien Cassou@*
 Copyright @copyright{} 2020 Jakub Kądziołka@*
 Copyright @copyright{} 2020 Jack Hill@*
 Copyright @copyright{} 2020 Naga Malleswari@*
-Copyright @copyright{} 2020 Brice Waegeneire@*
+Copyright @copyright{} 2020, 2021 Brice Waegeneire@*
 Copyright @copyright{} 2020 R Veera Kumar@*
 Copyright @copyright{} 2020 Pierre Langlois@*
 Copyright @copyright{} 2020 pinoaffe@*
@@ -88,6 +89,14 @@ Copyright @copyright{} 2020 John Soo@*
 Copyright @copyright{} 2020 Jonathan Brielmaier@*
 Copyright @copyright{} 2020 Edgar Vincent@*
 Copyright @copyright{} 2021 Maxime Devos@*
+Copyright @copyright{} 2021 B. Wilson@*
+Copyright @copyright{} 2021 Xinglu Chen@*
+Copyright @copyright{} 2021 Raghav Gururajan@*
+Copyright @copyright{} 2021 Domagoj Stolfa@*
+Copyright @copyright{} 2021 Hui Lu@*
+Copyright @copyright{} 2021 pukkamustard@*
+Copyright @copyright{} 2021 Alice Brenon@*
+Copyright @copyright{} 2021 Andrew Tropin@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -146,7 +155,7 @@ Spanish (@pxref{Top,,, guix.es, Manual de referencia de GNU Guix}), and
 Russian (@pxref{Top,,, guix.ru, Руководство GNU Guix}).  If you
 would like to translate it in your native language, consider joining
 @uref{https://translate.fedoraproject.org/projects/guix/documentation-manual,
-Weblate}.
+Weblate} (@pxref{Translating Guix}).
 
 @menu
 * Introduction::                What is Guix about?
@@ -159,6 +168,7 @@ Weblate}.
 * Programming Interface::       Using Guix in Scheme.
 * Utilities::                   Package management commands.
 * System Configuration::        Configuring the operating system.
+* Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
 * Installing Debugging Files::  Feeding the debugger.
 * Security Updates::            Deploying security fixes quickly.
@@ -227,7 +237,7 @@ Package Management
 
 Substitutes
 
-* Official Substitute Server::  One particular source of substitutes.
+* Official Substitute Servers::  One particular source of substitutes.
 * Substitute Server Authorization::  How to enable or disable substitutes.
 * Getting Substitutes from Other Servers::  Substitute diversity.
 * Substitute Authentication::   How Guix verifies substitutes.
@@ -319,6 +329,10 @@ System Configuration
 * Invoking guix deploy::        Deploying a system configuration to a remote host.
 * Running Guix in a VM::        How to run Guix System in a virtual machine.
 * Defining Services::           Adding new service definitions.
+
+Home Environment Configuration
+
+* Invoking guix home::          Instantiating a home environment configuration.
 
 Services
 
@@ -735,6 +749,18 @@ with these commands:
 # systemctl enable --now gnu-store.mount guix-daemon
 @end example
 
+You may also want to arrange for @command{guix gc} to run periodically:
+
+@example
+# cp ~root/.config/guix/current/lib/systemd/system/guix-gc.service \
+     ~root/.config/guix/current/lib/systemd/system/guix-gc.timer \
+     /etc/systemd/system/
+# systemctl enable --now guix-gc.timer
+@end example
+
+You may want to edit @file{guix-gc.service} to adjust the command line
+options to fit your needs (@pxref{Invoking guix gc}).
+
 If your host distro uses the Upstart init system:
 
 @example
@@ -778,13 +804,23 @@ Info search path).
 
 @item
 @cindex substitutes, authorization thereof
-To use substitutes from @code{@value{SUBSTITUTE-SERVER}} or one of its mirrors
-(@pxref{Substitutes}), authorize them:
+To use substitutes from @code{@value{SUBSTITUTE-SERVER-1}},
+@code{@value{SUBSTITUTE-SERVER-2}} or a mirror (@pxref{Substitutes}),
+authorize them:
 
 @example
 # guix archive --authorize < \
-     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER}.pub
+     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub
+# guix archive --authorize < \
+     ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub
 @end example
+
+@quotation Note
+If you do not enable substitutes, Guix will end up building
+@emph{everything} from source on your machine, making each installation
+and upgrade very expensive.  @xref{On Trusting Binaries}, for a
+discussion of reasons why one might want do disable substitutes.
+@end quotation
 
 @item
 Each user may need to perform a few additional steps to make their Guix
@@ -832,8 +868,7 @@ GNU Guix is available for download from its website at
 GNU Guix depends on the following packages:
 
 @itemize
-@item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x or
-2.2.x;
+@item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x;
 @item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
 0.1.0 or later;
 @item
@@ -848,8 +883,7 @@ version 0.1.0 or later;
 @item @uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib};
 @item @uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};
 @item
-@c FIXME: Specify a version number once a release has been made.
-@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.3.0
+@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.5.0
 or later;
 @item @uref{https://savannah.nongnu.org/projects/guile-json/, Guile-JSON}
 4.3.0 or later;
@@ -1540,7 +1574,7 @@ remote procedure call (@pxref{The Store}).
 @item --substitute-urls=@var{urls}
 Consider @var{urls} the default whitespace-separated list of substitute
 source URLs.  When this option is omitted,
-@indicateurl{https://@value{SUBSTITUTE-SERVER}} is used.
+@indicateurl{@value{SUBSTITUTE-URLS}} is used.
 
 This means that substitutes may be downloaded from @var{urls}, as long
 as they are signed by a trusted signature (@pxref{Substitutes}).
@@ -2098,7 +2132,7 @@ about their support in GNU/Linux.
 
 An ISO-9660 installation image that can be written to a USB stick or
 burnt to a DVD can be downloaded from
-@indicateurl{@value{BASE-URL}/guix-system-install-@value{VERSION}.x86_64-linux.iso.xz},
+@indicateurl{@value{BASE-URL}/guix-system-install-@value{VERSION}.x86_64-linux.iso},
 where you can replace @code{x86_64-linux} with one of:
 
 @table @code
@@ -2114,8 +2148,8 @@ Make sure to download the associated @file{.sig} file and to verify the
 authenticity of the image against it, along these lines:
 
 @example
-$ wget @value{BASE-URL}/guix-system-install-@value{VERSION}.x86_64-linux.iso.xz.sig
-$ gpg --verify guix-system-install-@value{VERSION}.x86_64-linux.iso.xz.sig
+$ wget @value{BASE-URL}/guix-system-install-@value{VERSION}.x86_64-linux.iso.sig
+$ gpg --verify guix-system-install-@value{VERSION}.x86_64-linux.iso.sig
 @end example
 
 If that command fails because you do not have the required public key,
@@ -2139,17 +2173,6 @@ It is meant to be copied @emph{as is} to a large-enough USB stick or DVD.
 
 @unnumberedsubsec Copying to a USB Stick
 
-To copy the image to a USB stick, follow these steps:
-
-@enumerate
-@item
-Decompress the image using the @command{xz} command:
-
-@example
-xz -d guix-system-install-@value{VERSION}.x86_64-linux.iso.xz
-@end example
-
-@item
 Insert a USB stick of 1@tie{}GiB or more into your machine, and determine
 its device name.  Assuming that the USB stick is known as @file{/dev/sdX},
 copy the image with:
@@ -2160,21 +2183,9 @@ sync
 @end example
 
 Access to @file{/dev/sdX} usually requires root privileges.
-@end enumerate
 
 @unnumberedsubsec Burning on a DVD
 
-To copy the image to a DVD, follow these steps:
-
-@enumerate
-@item
-Decompress the image using the @command{xz} command:
-
-@example
-xz -d guix-system-install-@value{VERSION}.x86_64-linux.iso.xz
-@end example
-
-@item
 Insert a blank DVD into your machine, and determine
 its device name.  Assuming that the DVD drive is known as @file{/dev/srX},
 copy the image with:
@@ -2184,7 +2195,6 @@ growisofs -dvd-compat -Z /dev/srX=guix-system-install-@value{VERSION}.x86_64-lin
 @end example
 
 Access to @file{/dev/srX} usually requires root privileges.
-@end enumerate
 
 @unnumberedsubsec Booting
 
@@ -2449,7 +2459,7 @@ bootloaders.
 
 Once you are done partitioning the target hard disk drive, you have to
 create a file system on the relevant partition(s)@footnote{Currently
-Guix System only supports ext4, btrfs, JFS, and F2FS file systems.  In
+Guix System only supports ext4, btrfs, JFS, F2FS, and XFS file systems.  In
 particular, code that reads file system UUIDs and labels only works for these
 file system types.}.  For the ESP, if you have one and assuming it is
 @file{/dev/sda1}, run:
@@ -2553,7 +2563,7 @@ provide the declaration of the operating system to be installed.  To
 that end, the installation system comes with three text editors.  We
 recommend GNU nano (@pxref{Top,,, nano, GNU nano Manual}), which
 supports syntax highlighting and parentheses matching; other editors
-include GNU Zile (an Emacs clone), and
+include mg (an Emacs clone), and
 nvi (a clone of the original BSD @command{vi} editor).
 We strongly recommend storing that file on the target root file system, say,
 as @file{/mnt/etc/config.scm}.  Failing to do that, you will have lost your
@@ -2577,14 +2587,15 @@ in particular:
 
 @itemize
 @item
-Make sure the @code{bootloader-configuration} form refers to the target
-you want to install GRUB on.  It should mention @code{grub-bootloader} if
-you are installing GRUB in the legacy way, or @code{grub-efi-bootloader}
-for newer UEFI systems.  For legacy systems, the @code{target} field
-names a device, like @code{/dev/sda}; for UEFI systems it names a path
-to a mounted EFI partition, like @code{/boot/efi}; do make sure the path is
-currently mounted and a @code{file-system} entry is specified in your
-configuration.
+Make sure the @code{bootloader-configuration} form refers to the targets
+you want to install GRUB on.  It should mention @code{grub-bootloader}
+if you are installing GRUB in the legacy way, or
+@code{grub-efi-bootloader} for newer UEFI systems.  For legacy systems,
+the @code{targets} field contain the names of the devices, like
+@code{(list "/dev/sda")}; for UEFI systems it names the paths to mounted
+EFI partitions, like @code{(list "/boot/efi")}; do make sure the paths
+are currently mounted and a @code{file-system} entry is specified in
+your configuration.
 
 @item
 Be sure that your file system labels match the value of their respective
@@ -2650,7 +2661,7 @@ root's login shell, you'll need to @command{guix pull} separately.
 @end quotation
 
 Now, @pxref{Getting Started}, and
-join us on @code{#guix} on the Freenode IRC network or on
+join us on @code{#guix} on the Libera Chat IRC network or on
 @email{guix-devel@@gnu.org} to share your experience!
 
 
@@ -3702,7 +3713,7 @@ pre-built package binaries, but source tarballs, for instance, which
 also result from derivation builds, can be available as substitutes.
 
 @menu
-* Official Substitute Server::  One particular source of substitutes.
+* Official Substitute Servers::  One particular source of substitutes.
 * Substitute Server Authorization::  How to enable or disable substitutes.
 * Getting Substitutes from Other Servers::  Substitute diversity.
 * Substitute Authentication::   How Guix verifies substitutes.
@@ -3711,14 +3722,15 @@ also result from derivation builds, can be available as substitutes.
 * On Trusting Binaries::        How can you trust that binary blob?
 @end menu
 
-@node Official Substitute Server
-@subsection Official Substitute Server
+@node Official Substitute Servers
+@subsection Official Substitute Servers
 
 @cindex build farm
-The @code{@value{SUBSTITUTE-SERVER}} server is a front-end to an official build farm
-that builds packages from Guix continuously for some
-architectures, and makes them available as substitutes.  This is the
-default source of substitutes; it can be overridden by passing the
+@code{@value{SUBSTITUTE-SERVER-1}} and
+@code{@value{SUBSTITUTE-SERVER-2}} are both front-ends to official build
+farms that build packages from Guix continuously for some architectures,
+and make them available as substitutes.  These are the default source of
+substitutes; which can be overridden by passing the
 @option{--substitute-urls} option either to @command{guix-daemon}
 (@pxref{daemon-substitute-urls,, @code{guix-daemon --substitute-urls}})
 or to client tools such as @command{guix package}
@@ -3731,7 +3743,7 @@ using HTTP makes all communications visible to an eavesdropper, who
 could use the information gathered to determine, for instance, whether
 your system has unpatched security vulnerabilities.
 
-Substitutes from the official build farm are enabled by default when
+Substitutes from the official build farms are enabled by default when
 using Guix System (@pxref{GNU Distribution}).  However,
 they are disabled by default when using Guix on a foreign distribution,
 unless you have explicitly enabled them via one of the recommended
@@ -3747,27 +3759,28 @@ other substitute server.
 @cindex substitutes, authorization thereof
 @cindex access control list (ACL), for substitutes
 @cindex ACL (access control list), for substitutes
-To allow Guix to download substitutes from @code{@value{SUBSTITUTE-SERVER}} or a
-mirror thereof, you
-must add its public key to the access control list (ACL) of archive
+To allow Guix to download substitutes from @code{@value{SUBSTITUTE-SERVER-1}}, @code{@value{SUBSTITUTE-SERVER-2}} or a mirror, you
+must add the relevant public key to the access control list (ACL) of archive
 imports, using the @command{guix archive} command (@pxref{Invoking guix
-archive}).  Doing so implies that you trust @code{@value{SUBSTITUTE-SERVER}} to not
+archive}).  Doing so implies that you trust the substitute server to not
 be compromised and to serve genuine substitutes.
 
 @quotation Note
 If you are using Guix System, you can skip this section: Guix System
-authorizes substitutes from @code{@value{SUBSTITUTE-SERVER}} by default.
+authorizes substitutes from @code{@value{SUBSTITUTE-SERVER-1}} and
+@code{@value{SUBSTITUTE-SERVER-2}} by default.
 @end quotation
 
-The public key for @code{@value{SUBSTITUTE-SERVER}} is installed along with Guix, in
-@code{@var{prefix}/share/guix/@value{SUBSTITUTE-SERVER}.pub}, where @var{prefix} is
-the installation prefix of Guix.  If you installed Guix from source,
-make sure you checked the GPG signature of
+The public keys for each of the project maintained substitute servers
+are installed along with Guix, in @code{@var{prefix}/share/guix/}, where
+@var{prefix} is the installation prefix of Guix.  If you installed Guix
+from source, make sure you checked the GPG signature of
 @file{guix-@value{VERSION}.tar.gz}, which contains this public key file.
 Then, you can run something like this:
 
 @example
-# guix archive --authorize < @var{prefix}/share/guix/@value{SUBSTITUTE-SERVER}.pub
+# guix archive --authorize < @var{prefix}/share/guix/@value{SUBSTITUTE-SERVER-1}.pub
+# guix archive --authorize < @var{prefix}/share/guix/@value{SUBSTITUTE-SERVER-2}.pub
 @end example
 
 Once this is in place, the output of a command like @code{guix build}
@@ -3799,8 +3812,8 @@ $ guix build emacs --dry-run
 @noindent
 The text changed from ``The following derivations would be built'' to
 ``112.3 MB would be downloaded''.  This indicates that substitutes from
-@code{@value{SUBSTITUTE-SERVER}} are usable and will be downloaded, when
-possible, for future builds.
+the configured substitute servers are usable and will be downloaded,
+when possible, for future builds.
 
 @cindex substitutes, how to disable
 The substitute mechanism can be disabled globally by running
@@ -3834,8 +3847,9 @@ its configuration and add the URLs and substitute keys that you want
 
 As an example, suppose you want to fetch substitutes from
 @code{guix.example.org} and to authorize the signing key of that server,
-in addition to the default @code{@value{SUBSTITUTE-SERVER}}.  The
-resulting operating system configuration will look something like:
+in addition to the default @code{@value{SUBSTITUTE-SERVER-1}} and
+@code{@value{SUBSTITUTE-SERVER-2}}.  The resulting operating system
+configuration will look something like:
 
 @lisp
 (operating-system
@@ -3879,7 +3893,7 @@ line and list the URLs of interest (@pxref{daemon-substitute-urls,
 @code{guix-daemon --substitute-urls}}):
 
 @example
-@dots{} --substitute-urls='https://guix.example.org https://@value{SUBSTITUTE-SERVER}'
+@dots{} --substitute-urls='https://guix.example.org @value{SUBSTITUTE-URLS}'
 @end example
 
 @item
@@ -3902,10 +3916,12 @@ Again this assumes @file{key.pub} contains the public key that
 @end enumerate
 
 Now you're all set!  Substitutes will be preferably taken from
-@code{https://guix.example.org}, using @code{@value{SUBSTITUTE-SERVER}}
-as a fallback.  Of course you can list as many substitute servers as you
-like, with the caveat that substitute lookup can be slowed down if too
-many servers need to be contacted.
+@code{https://guix.example.org}, using
+@code{@value{SUBSTITUTE-SERVER-1}} then
+@code{@value{SUBSTITUTE-SERVER-2}} as fallback options.  Of course you
+can list as many substitute servers as you like, with the caveat that
+substitute lookup can be slowed down if too many servers need to be
+contacted.
 
 Note that there are also situations where one may want to add the URL of
 a substitute server @emph{without} authorizing its key.
@@ -3993,12 +4009,12 @@ by a server.
 Today, each individual's control over their own computing is at the
 mercy of institutions, corporations, and groups with enough power and
 determination to subvert the computing infrastructure and exploit its
-weaknesses.  While using @code{@value{SUBSTITUTE-SERVER}} substitutes can be
-convenient, we encourage users to also build on their own, or even run
-their own build farm, such that @code{@value{SUBSTITUTE-SERVER}} is less of an
-interesting target.  One way to help is by publishing the software you
-build using @command{guix publish} so that others have one more choice
-of server to download substitutes from (@pxref{Invoking guix publish}).
+weaknesses.  While using substitutes can be convenient, we encourage
+users to also build on their own, or even run their own build farm, such
+that the project run substitute servers are less of an interesting
+target.  One way to help is by publishing the software you build using
+@command{guix publish} so that others have one more choice of server to
+download substitutes from (@pxref{Invoking guix publish}).
 
 Guix has the foundations to maximize build reproducibility
 (@pxref{Features}).  In most cases, independent builds of a given
@@ -4962,11 +4978,11 @@ Read a single-item archive as served by substitute servers
 low-level operation needed in only very narrow use cases; see below.
 
 For example, the following command extracts the substitute for Emacs
-served by @code{@value{SUBSTITUTE-SERVER}} to @file{/tmp/emacs}:
+served by @code{@value{SUBSTITUTE-SERVER-1}} to @file{/tmp/emacs}:
 
 @example
 $ wget -O - \
-  https://@value{SUBSTITUTE-SERVER}/nar/gzip/@dots{}-emacs-24.5 \
+  https://@value{SUBSTITUTE-SERVER-1}/nar/gzip/@dots{}-emacs-24.5 \
   | gunzip | guix archive -x /tmp/emacs
 @end example
 
@@ -4988,7 +5004,7 @@ this example:
 
 @example
 $ wget -O - \
-  https://@value{SUBSTITUTE-SERVER}/nar/lzip/@dots{}-emacs-26.3 \
+  https://@value{SUBSTITUTE-SERVER-1}/nar/lzip/@dots{}-emacs-26.3 \
   | lzip -d | guix archive -t
 @end example
 
@@ -5935,7 +5951,7 @@ For example, to create a bundle containing Guile, Emacs, Geiser, and all
 their dependencies, you can run:
 
 @example
-$ guix pack guile emacs geiser
+$ guix pack guile emacs emacs-geiser
 @dots{}
 /gnu/store/@dots{}-pack.tar.gz
 @end example
@@ -5953,7 +5969,7 @@ find inconvenient.  To work around it, you can create, say, a
 @file{/opt/gnu/bin} symlink to the profile:
 
 @example
-guix pack -S /opt/gnu/bin=bin guile emacs geiser
+guix pack -S /opt/gnu/bin=bin guile emacs emacs-geiser
 @end example
 
 @noindent
@@ -5997,7 +6013,7 @@ Yet another option is to produce a SquashFS image with the following
 command:
 
 @example
-guix pack -f squashfs bash guile emacs geiser
+guix pack -f squashfs bash guile emacs emacs-geiser
 @end example
 
 @noindent
@@ -6047,6 +6063,35 @@ If you forget the @code{bash} (or similar) package, @command{singularity
 run} and @command{singularity exec} will fail with an unhelpful ``no
 such file or directory'' message.
 @end quotation
+
+@item deb
+This produces a Debian archive (a package with the @samp{.deb} file
+extension) containing all the specified binaries and symbolic links,
+that can be installed on top of any dpkg-based GNU(/Linux) distribution.
+Advanced options can be revealed via the @option{--help-deb-format}
+option.  They allow embedding control files for more fine-grained
+control, such as activating specific triggers or providing a maintainer
+configure script to run arbitrary setup code upon installation.
+
+@example
+guix pack -f deb -C xz -S /usr/bin/hello=bin/hello hello
+@end example
+
+@quotation Note
+Because archives produced with @command{guix pack} contain a collection
+of store items and because each @command{dpkg} package must not have
+conflicting files, in practice that means you likely won't be able to
+install more than one such archive on a given system.
+@end quotation
+
+@quotation Warning
+@command{dpkg} will assume ownership of any files contained in the pack
+that it does @emph{not} know about.  It is unwise to install
+Guix-produced @samp{.deb} files on a system where @file{/gnu/store} is
+shared by other software, such as a Guix installation or other, non-deb
+packs.
+@end quotation
+
 @end table
 
 @cindex relocatable binaries
@@ -6673,7 +6718,8 @@ This is the data type representing a package recipe.
 The name of the package, as a string.
 
 @item @code{version}
-The version of the package, as a string.
+The version of the package, as a string.  @xref{Version Numbers}, for
+guidelines.
 
 @item @code{source}
 An object telling how the source code for the package should be
@@ -6982,9 +7028,10 @@ retrieve.
 The URL of the Git repository to clone.
 
 @item @code{commit}
-This string denotes either the commit to fetch (a hexadecimal string,
-either the full SHA1 commit or a ``short'' commit string; the latter is
-not recommended) or the tag to fetch.
+This string denotes either the commit to fetch (a hexadecimal string),
+or the tag to fetch.  You can also use a ``short'' commit ID or a
+@command{git describe} style identifier such as
+@code{v1.0.1-10-g58d7909c97}.
 
 @item @code{recursive?} (default: @code{#f})
 This Boolean indicates whether to recursively fetch Git sub-modules.
@@ -7360,7 +7407,7 @@ the @code{RUNPATH} of ELF binaries (@code{.so} shared libraries as well
 as executables) previously installed by the @code{install} phase.
 
 This validation step consists in making sure that all the shared
-libraries needed by an ELF binaries, which are listed as
+libraries needed by an ELF binary, which are listed as
 @code{DT_NEEDED} entries in its @code{PT_DYNAMIC} segment, appear in the
 @code{DT_RUNPATH} entry of that binary.  In other words, it ensures that
 running or using those binaries will not result in a ``file not found''
@@ -7706,6 +7753,7 @@ The @code{#:package} parameter can be passed to specify a package name, which
 is useful when a package contains multiple packages and you want to build
 only one of them.  This is equivalent to passing the @code{-p} argument to
 @code{dune}.
+
 @end defvr
 
 @defvr {Scheme Variable} go-build-system
@@ -7729,6 +7777,13 @@ Packages that provide Go libraries should install their source code into
 the built output.  The key @code{#:install-source?}, which defaults to
 @code{#t}, controls whether or not the source code is installed.  It can
 be set to @code{#f} for packages that only provide executable files.
+
+Packages can be cross-built, and if a specific architecture or operating
+system is desired then the keywords @code{#:goarch} and @code{#:goos}
+can be used to force the package to be built for that architecture and
+operating system.  The combinations known to Go can be found
+@url{"https://golang.org/doc/install/source#environment", in their
+documentation}.
 @end defvr
 
 @defvr {Scheme Variable} glib-or-gtk-build-system
@@ -7823,7 +7878,7 @@ MbedTLS package:
 Some older packages that aren't using @file{Package.toml} yet, will require
 this file to be created, too.  The function @code{julia-create-package-toml}
 helps creating the file.  You need to pass the outputs and the source of the
-package, it's name (the same as the @code{file-name} parameter), the package
+package, its name (the same as the @code{file-name} parameter), the package
 uuid, the package version, and a list of dependencies specified by their name
 and their uuid.
 @end defvr
@@ -7868,6 +7923,14 @@ The @code{#:maven-plugins} argument is a list of maven plugins used during
 the build, with the same format as the @code{inputs} fields of the package
 declaration.  Its default value is @code{(default-maven-plugins)} which is
 also exported.
+@end defvr
+
+@defvr {Scheme Variable} minetest-mod-build-system
+This variable is exported by @code{(guix build-system minetest)}.  It
+implements a build procedure for @uref{https://www.minetest.net, Minetest}
+mods, which consists of copying Lua code, images and other resources to
+the location Minetest searches for mods.  The build system also minimises
+PNG images and verifies that Minetest can load the mod without errors.
 @end defvr
 
 @defvr {Scheme Variable} minify-build-system
@@ -10045,6 +10108,16 @@ corresponding to @var{obj} for @var{system}, cross-compiling for
 has an associated gexp compiler, such as a @code{<package>}.
 @end deffn
 
+@deffn {Procedure} gexp->approximate-sexp @var{gexp}
+Sometimes, it may be useful to convert a G-exp into a S-exp.  For
+example, some linters (@pxref{Invoking guix lint}) peek into the build
+phases of a package to detect potential problems.  This conversion can
+be achieved with this procedure.  However, some information can be lost
+in the process.  More specifically, lowerable objects will be silently
+replaced with some arbitrary object -- currently the list
+@code{(*approximate*)}, but this may change.
+@end deffn
+
 @node Invoking guix repl
 @section Invoking @command{guix repl}
 
@@ -10200,7 +10273,7 @@ Similarly, the following command builds all the available packages:
 
 @example
 guix build --quiet --keep-going \
-  $(guix package -A | cut -f1,2 --output-delimiter=@@)
+  $(guix package -A | awk '@{ print $1 "@@" $2 @}')
 @end example
 
 @var{package-or-derivation} may be either the name of a package found in
@@ -10604,7 +10677,8 @@ guix build --with-branch=guile-sqlite3=master cuirass
 @item --with-commit=@var{package}=@var{commit}
 This is similar to @option{--with-branch}, except that it builds from
 @var{commit} rather than the tip of a branch.  @var{commit} must be a valid
-Git commit SHA1 identifier or a tag.
+Git commit SHA1 identifier, a tag, or a @command{git describe} style
+identifier such as @code{1.0-3-gabc123}.
 
 @item --with-patch=@var{package}=@var{file}
 Add @var{file} to the list of patches applied to @var{package}, where
@@ -10921,7 +10995,7 @@ but you are actually on an @code{x86_64} machine:
 
 @example
 $ guix build --log-file gdb -s aarch64-linux
-https://@value{SUBSTITUTE-SERVER}/log/@dots{}-gdb-7.10
+https://@value{SUBSTITUTE-SERVER-1}/log/@dots{}-gdb-7.10
 @end example
 
 You can freely access a huge library of build logs!
@@ -11271,6 +11345,38 @@ and generate package expressions for all those packages that are not yet
 in Guix.
 @end table
 
+@item minetest
+@cindex minetest
+@cindex ContentDB
+Import metadata from @uref{https://content.minetest.net, ContentDB}.
+Information is taken from the JSON-formatted metadata provided through
+@uref{https://content.minetest.net/help/api/, ContentDB's API} and
+includes most relevant information, including dependencies.  There are
+some caveats, however.  The license information is often incomplete.
+The commit hash is sometimes missing.  The descriptions are in the
+Markdown format, but Guix uses Texinfo instead.  Texture packs and
+subgames are unsupported.
+
+The command below imports metadata for the Mesecons mod by Jeija:
+
+@example
+guix import minetest Jeija/mesecons
+@end example
+
+The author name can also be left out:
+
+@example
+guix import minetest mesecons
+@end example
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
 @item cpan
 @cindex CPAN
 Import metadata from @uref{https://www.metacpan.org/, MetaCPAN}.
@@ -11416,36 +11522,6 @@ and outputs a package expression:
 guix import json hello.json
 @end example
 
-@item nix
-Import metadata from a local copy of the source of the
-@uref{https://nixos.org/nixpkgs/, Nixpkgs distribution}@footnote{This
-relies on the @command{nix-instantiate} command of
-@uref{https://nixos.org/nix/, Nix}.}.  Package definitions in Nixpkgs are
-typically written in a mixture of Nix-language and Bash code.  This
-command only imports the high-level package structure that is written in
-the Nix language.  It normally includes all the basic fields of a
-package definition.
-
-When importing a GNU package, the synopsis and descriptions are replaced
-by their canonical upstream variant.
-
-Usually, you will first need to do:
-
-@example
-export NIX_REMOTE=daemon
-@end example
-
-@noindent
-so that @command{nix-instantiate} does not try to open the Nix database.
-
-As an example, the command below imports the package definition of
-LibreOffice (more precisely, it imports the definition of the package
-bound to the @code{libreoffice} top-level attribute):
-
-@example
-guix import nix ~/path/to/nixpkgs libreoffice
-@end example
-
 @item hackage
 @cindex hackage
 Import metadata from the Haskell community's central package archive
@@ -11552,6 +11628,10 @@ contained in the GnuPG keyring at
 signatures,, emacs, The GNU Emacs Manual}).
 
 @item
+@uref{https://elpa.nongnu.org/nongnu/, NonGNU}, selected by the
+@code{nongnu} identifier.
+
+@item
 @uref{https://stable.melpa.org/packages, MELPA-Stable}, selected by the
 @code{melpa-stable} identifier.
 
@@ -11607,14 +11687,31 @@ Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
 @item --repo
-Select the given repository (a repository name).  Possible values include:
+By default, packages are searched in the official OPAM repository.  This
+option, which can be used more than once, lets you add other repositories
+which will be searched for packages.  It accepts as valid arguments:
+
 @itemize
-@item @code{opam}, the default opam repository,
-@item @code{coq} or @code{coq-released}, the stable repository for coq packages,
-@item @code{coq-core-dev}, the repository that contains development versions of coq,
-@item @code{coq-extra-dev}, the repository that contains development versions
-      of coq packages.
+@item the name of a known repository - can be one of @code{opam},
+      @code{coq} (equivalent to @code{coq-released}),
+	  @code{coq-core-dev}, @code{coq-extra-dev} or @code{grew}.
+@item the URL of a repository as expected by the
+      @code{opam repository add} command (for instance, the URL equivalent
+	  of the above @code{opam} name would be
+	  @uref{https://opam.ocaml.org}).
+@item the path to a local copy of a repository (a directory containing a
+      @file{packages/} sub-directory).
 @end itemize
+
+Repositories are assumed to be passed to this option by order of
+preference.  The additional repositories will not replace the default
+@code{opam} repository, which is always kept as a fallback.
+
+Also, please note that versions are not compared across repositories.
+The first repository (from left to right) that has at least one version
+of a given package will prevail over any others, and the version
+imported will be the latest one found @emph{in this repository only}.
+
 @end table
 
 @item go
@@ -11645,6 +11742,28 @@ recursively depend on former versions of themselves to build.  When
 using this mode, the symbol of the package is made by appending the
 version to its name, so that multiple versions of the same package can
 coexist.
+@end table
+
+@item egg
+@cindex egg
+Import metadata for @uref{https://wiki.call-cc.org/eggs, CHICKEN eggs}.
+The information is taken from @file{PACKAGE.egg} files found in the
+@uref{git://code.call-cc.org/eggs-5-latest, eggs-5-latest} Git
+repository.  However, it does not provide all the information that we
+need, there is no ``description'' field, and the licenses used are not
+always precise (BSD is often used instead of BSD-N).
+
+@example
+guix import egg sourcehut
+@end example
+
+Additional options include:
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
 @end table
 @end table
 
@@ -11800,6 +11919,8 @@ the updater for KDE packages;
 the updater for X.org packages;
 @item kernel.org
 the updater for packages hosted on kernel.org;
+@item egg
+the updater for @uref{https://wiki.call-cc.org/eggs/, Egg} packages;
 @item elpa
 the updater for @uref{https://elpa.gnu.org/, ELPA} packages;
 @item cran
@@ -11825,6 +11946,40 @@ the updater for @uref{https://launchpad.net, Launchpad} packages.
 @item generic-html
 a generic updater that crawls the HTML page where the source tarball of
 the package is hosted, when applicable.
+
+@item generic-git
+a generic updater for packages hosted on Git repositories.  It tries to
+be smart about parsing Git tag names, but if it is not able to parse the
+tag name and compare tags correctly, users can define the following
+properties for a package.
+
+@itemize
+@item @code{release-tag-prefix}: a regular expression for matching a prefix of
+the tag name.
+
+@item @code{release-tag-suffix}: a regular expression for matching a suffix of
+the tag name.
+
+@item @code{release-tag-version-delimiter}: a string used as the delimiter in
+the tag name for separating the numbers of the version.
+
+@item @code{accept-pre-releases}: by default, the updater will ignore
+pre-releases; to make it also look for pre-releases, set the this
+property to @code{#t}.
+
+@end itemize
+
+@lisp
+(package
+  (name "foo")
+  ;; ...
+  (properties
+    '((release-tag-prefix . "^release0-")
+      (release-tag-suffix . "[a-z]?$")
+      (release-tag-version-delimiter . ":"))))
+@end lisp
+
+
 @end table
 
 For instance, the following command only checks for updates of Emacs
@@ -11887,7 +12042,7 @@ an upgrade.  More rebuilds might be required under some circumstances.
 @example
 $ guix refresh --list-dependent flex
 Building the following 120 packages would ensure 213 dependent packages are rebuilt:
-hop@@2.4.0 geiser@@0.4 notmuch@@0.18 mu@@0.9.9.5 cflow@@1.4 idutils@@4.6 @dots{}
+hop@@2.4.0 emacs-geiser@@0.13 notmuch@@0.18 mu@@0.9.9.5 cflow@@1.4 idutils@@4.6 @dots{}
 @end example
 
 The command above lists a set of packages that could be built to check
@@ -12495,6 +12650,20 @@ $ guix graph --path -t references emacs libunistring
 /gnu/store/@dots{}-libunistring-0.9.10
 @end example
 
+Sometimes you still want to visualize the graph but would like to trim
+it so it can actually be displayed.  One way to do it is via the
+@option{--max-depth} (or @option{-M}) option, which lets you specify the
+maximum depth of the graph.  In the example below, we visualize only
+@code{libreoffice} and the nodes whose distance to @code{libreoffice} is
+at most 2:
+
+@example
+guix graph -M 2 libreoffice | xdot -f fdp -
+@end example
+
+Mind you, that's still a big ball of spaghetti, but at least
+@command{dot} can render it quickly and it can be browsed somewhat.
+
 The available options are the following:
 
 @table @option
@@ -12580,7 +12749,7 @@ When @command{guix publish} runs, it spawns an HTTP server which allows
 anyone with network access to obtain substitutes from it.  This means
 that any machine running Guix can also act as if it were a build farm,
 since the HTTP interface is compatible with Cuirass, the software behind
-the @code{@value{SUBSTITUTE-SERVER}} build farm.
+the @code{@value{SUBSTITUTE-SERVER-1}} build farm.
 
 For security, each substitute is signed, allowing recipients to check
 their authenticity and integrity (@pxref{Substitutes}).  Because
@@ -12755,6 +12924,16 @@ Additionally, when @option{--cache} is used, cached entries that have
 not been accessed for @var{ttl} and that no longer have a corresponding
 item in the store, may be deleted.
 
+@item --negative-ttl=@var{ttl}
+Similarly produce @code{Cache-Control} HTTP headers to advertise the
+time-to-live (TTL) of @emph{negative} lookups---missing store items, for
+which the HTTP 404 code is returned.  By default, no negative TTL is
+advertised.
+
+This parameter can help adjust server load and substitute latency by
+instructing cooperating clients to be more or less patient when a store
+item is missing.
+
 @item --cache-bypass-threshold=@var{size}
 When used in conjunction with @option{--cache}, store items smaller than
 @var{size} are immediately available, even when they are not yet in
@@ -12859,12 +13038,12 @@ any given store item.
 The command output looks like this:
 
 @smallexample
-$ guix challenge --substitute-urls="https://@value{SUBSTITUTE-SERVER} https://guix.example.org"
-updating list of substitutes from 'https://@value{SUBSTITUTE-SERVER}'... 100.0%
+$ guix challenge --substitute-urls="https://@value{SUBSTITUTE-SERVER-1} https://guix.example.org"
+updating list of substitutes from 'https://@value{SUBSTITUTE-SERVER-1}'... 100.0%
 updating list of substitutes from 'https://guix.example.org'... 100.0%
 /gnu/store/@dots{}-openssl-1.0.2d contents differ:
   local hash: 0725l22r5jnzazaacncwsvp9kgf42266ayyp814v7djxs7nk963q
-  https://@value{SUBSTITUTE-SERVER}/nar/@dots{}-openssl-1.0.2d: 0725l22r5jnzazaacncwsvp9kgf42266ayyp814v7djxs7nk963q
+  https://@value{SUBSTITUTE-SERVER-1}/nar/@dots{}-openssl-1.0.2d: 0725l22r5jnzazaacncwsvp9kgf42266ayyp814v7djxs7nk963q
   https://guix.example.org/nar/@dots{}-openssl-1.0.2d: 1zy4fmaaqcnjrzzajkdn3f5gmjk754b43qkq47llbyak9z0qjyim
   differing files:
     /lib/libcrypto.so.1.1
@@ -12872,14 +13051,14 @@ updating list of substitutes from 'https://guix.example.org'... 100.0%
 
 /gnu/store/@dots{}-git-2.5.0 contents differ:
   local hash: 00p3bmryhjxrhpn2gxs2fy0a15lnip05l97205pgbk5ra395hyha
-  https://@value{SUBSTITUTE-SERVER}/nar/@dots{}-git-2.5.0: 069nb85bv4d4a6slrwjdy8v1cn4cwspm3kdbmyb81d6zckj3nq9f
+  https://@value{SUBSTITUTE-SERVER-1}/nar/@dots{}-git-2.5.0: 069nb85bv4d4a6slrwjdy8v1cn4cwspm3kdbmyb81d6zckj3nq9f
   https://guix.example.org/nar/@dots{}-git-2.5.0: 0mdqa9w1p6cmli6976v4wi0sw9r4p5prkj7lzfd1877wk11c9c73
   differing file:
     /libexec/git-core/git-fsck
 
 /gnu/store/@dots{}-pius-2.1.1 contents differ:
   local hash: 0k4v3m9z1zp8xzzizb7d8kjj72f9172xv078sq4wl73vnq9ig3ax
-  https://@value{SUBSTITUTE-SERVER}/nar/@dots{}-pius-2.1.1: 0k4v3m9z1zp8xzzizb7d8kjj72f9172xv078sq4wl73vnq9ig3ax
+  https://@value{SUBSTITUTE-SERVER-1}/nar/@dots{}-pius-2.1.1: 0k4v3m9z1zp8xzzizb7d8kjj72f9172xv078sq4wl73vnq9ig3ax
   https://guix.example.org/nar/@dots{}-pius-2.1.1: 1cy25x1a4fzq5rk0pmvc8xhwyffnqz95h2bpvqsz2mpvlbccy0gs
   differing file:
     /share/man/man1/pius.1.gz
@@ -12901,7 +13080,7 @@ the servers obtained a result different from the local build.
 
 @cindex non-determinism, in package builds
 As an example, @code{guix.example.org} always gets a different answer.
-Conversely, @code{@value{SUBSTITUTE-SERVER}} agrees with local builds, except in the
+Conversely, @code{@value{SUBSTITUTE-SERVER-1}} agrees with local builds, except in the
 case of Git.  This might indicate that the build process of Git is
 non-deterministic, meaning that its output varies as a function of
 various things that Guix does not fully control, in spite of building
@@ -12917,7 +13096,7 @@ to run:
 @example
 guix challenge git \
   --diff=diffoscope \
-  --substitute-urls="https://@value{SUBSTITUTE-SERVER} https://guix.example.org"
+  --substitute-urls="https://@value{SUBSTITUTE-SERVER-1} https://guix.example.org"
 @end example
 
 This automatically invokes @command{diffoscope}, which displays detailed
@@ -12927,14 +13106,14 @@ Alternatively, we can do something along these lines (@pxref{Invoking guix
 archive}):
 
 @example
-$ wget -q -O - https://@value{SUBSTITUTE-SERVER}/nar/lzip/@dots{}-git-2.5.0 \
+$ wget -q -O - https://@value{SUBSTITUTE-SERVER-1}/nar/lzip/@dots{}-git-2.5.0 \
    | lzip -d | guix archive -x /tmp/git
 $ diff -ur --no-dereference /gnu/store/@dots{}-git.2.5.0 /tmp/git
 @end example
 
 This command shows the difference between the files resulting from the
 local build, and the files resulting from the build on
-@code{@value{SUBSTITUTE-SERVER}} (@pxref{Overview, Comparing and Merging Files,,
+@code{@value{SUBSTITUTE-SERVER-1}} (@pxref{Overview, Comparing and Merging Files,,
 diffutils, Comparing and Merging Files}).  The @command{diff} command
 works great for text files.  When binary files differ, a better option
 is @uref{https://diffoscope.org/, Diffoscope}, a tool that helps
@@ -12949,7 +13128,7 @@ In the meantime, @command{guix challenge} is one tool to help address
 the problem.
 
 If you are writing packages for Guix, you are encouraged to check
-whether @code{@value{SUBSTITUTE-SERVER}} and other substitute servers obtain the
+whether @code{@value{SUBSTITUTE-SERVER-1}} and other substitute servers obtain the
 same build result as you did with:
 
 @example
@@ -13230,14 +13409,14 @@ on @var{a} and @var{a} has no substitutes, only @var{a} is listed, even though
 @var{b} usually lacks substitutes as well.  The result looks like this:
 
 @example
-$ guix weather --substitute-urls=@value{SUBSTITUTE-URL} -c 10
+$ guix weather --substitute-urls=@value{SUBSTITUTE-URLS} -c 10
 computing 8,983 package derivations for x86_64-linux...
-looking for 9,343 store items on @value{SUBSTITUTE-URL}...
-updating substitutes from '@value{SUBSTITUTE-URL}'... 100.0%
-@value{SUBSTITUTE-URL}
+looking for 9,343 store items on @value{SUBSTITUTE-URLS}...
+updating substitutes from '@value{SUBSTITUTE-URLS}'... 100.0%
+@value{SUBSTITUTE-URLS}
   64.7% substitutes available (6,047 out of 9,343)
 @dots{}
-2502 packages are missing from '@value{SUBSTITUTE-URL}' for 'x86_64-linux', among which:
+2502 packages are missing from '@value{SUBSTITUTE-URLS}' for 'x86_64-linux', among which:
     58  kcoreaddons@@5.49.0      /gnu/store/@dots{}-kcoreaddons-5.49.0
     46  qgpgme@@1.11.1           /gnu/store/@dots{}-qgpgme-1.11.1
     37  perl-http-cookiejar@@0.008  /gnu/store/@dots{}-perl-http-cookiejar-0.008
@@ -13246,7 +13425,7 @@ updating substitutes from '@value{SUBSTITUTE-URL}'... 100.0%
 
 What this example shows is that @code{kcoreaddons} and presumably the 58
 packages that depend on it have no substitutes at
-@code{@value{SUBSTITUTE-SERVER}}; likewise for @code{qgpgme} and the 46
+@code{@value{SUBSTITUTE-SERVER-1}}; likewise for @code{qgpgme} and the 46
 packages that depend on it.
 
 If you are a Guix developer, or if you are taking care of this build farm,
@@ -13439,7 +13618,7 @@ the @code{bootloader} field should contain something along these lines:
 @lisp
 (bootloader-configuration
   (bootloader grub-efi-bootloader)
-  (target "/boot/efi"))
+  (targets '("/boot/efi")))
 @end lisp
 
 @xref{Bootloader Configuration}, for more information on the available
@@ -13454,7 +13633,7 @@ environment variable---in addition to the per-user profiles
 (@pxref{Invoking guix package}).  The @code{%base-packages} variable
 provides all the tools one would expect for basic user and administrator
 tasks---including the GNU Core Utilities, the GNU Networking Utilities,
-the GNU Zile lightweight text editor, @command{find}, @command{grep},
+the @command{mg} lightweight text editor, @command{find}, @command{grep},
 etc.  The example above adds GNU@tie{}Screen to those,
 taken from the @code{(gnu packages screen)}
 module (@pxref{Package Modules}).  The
@@ -13467,12 +13646,12 @@ of a package:
 
 (operating-system
   ;; ...
-  (packages (cons (list bind "utils")
+  (packages (cons (list isc-bind "utils")
                   %base-packages)))
 @end lisp
 
 @findex specification->package
-Referring to packages by variable name, like @code{bind} above, has
+Referring to packages by variable name, like @code{isc-bind} above, has
 the advantage of being unambiguous; it also allows typos and such to be
 diagnosed right away as ``unbound variables''.  The downside is that one
 needs to know which module defines which package, and to augment the
@@ -13511,10 +13690,11 @@ Occasionally, instead of using the base services as is, you will want to
 customize them.  To do this, use @code{modify-services} (@pxref{Service
 Reference, @code{modify-services}}) to modify the list.
 
-For example, suppose you want to modify @code{guix-daemon} and Mingetty
-(the console log-in) in the @code{%base-services} list (@pxref{Base
-Services, @code{%base-services}}).  To do that, you can write the
-following in your operating system declaration:
+@anchor{auto-login to TTY} For example, suppose you want to modify
+@code{guix-daemon} and Mingetty (the console log-in) in the
+@code{%base-services} list (@pxref{Base Services,
+@code{%base-services}}).  To do that, you can write the following in
+your operating system declaration:
 
 @lisp
 (define %my-services
@@ -13540,7 +13720,9 @@ following in your operating system declaration:
 
 This changes the configuration---i.e., the service parameters---of the
 @code{guix-service-type} instance, and that of all the
-@code{mingetty-service-type} instances in the @code{%base-services} list.
+@code{mingetty-service-type} instances in the @code{%base-services} list
+(@pxref{Auto-Login to a Specific TTY, see the cookbook for how to
+auto-login one user to a specific TTY,, guix-cookbook, GNU Guix Cookbook})).
 Observe how this is accomplished: first, we arrange for the original
 configuration to be bound to the identifier @code{config} in the
 @var{body}, and then we write the @var{body} so that it evaluates to the
@@ -13863,8 +14045,8 @@ Linux @dfn{pluggable authentication module} (PAM) services.
 @c FIXME: Add xref to PAM services section.
 
 @item @code{setuid-programs} (default: @code{%setuid-programs})
-List of string-valued G-expressions denoting setuid programs.
-@xref{Setuid Programs}.
+List of @code{<setuid-program>}.  @xref{Setuid Programs}, for more
+information.
 
 @item @code{sudoers-file} (default: @code{%sudoers-specification})
 @cindex sudoers file
@@ -14011,8 +14193,38 @@ initial RAM disk (initrd) is loaded.  This is always the case, for
 instance, for the root file system.
 
 @item @code{check?} (default: @code{#t})
-This Boolean indicates whether the file system needs to be checked for
-errors before being mounted.
+This Boolean indicates whether the file system should be checked for
+errors before being mounted.  How and when this happens can be further
+adjusted with the following options.
+
+@item @code{skip-check-if-clean?} (default: @code{#t})
+When true, this Boolean indicates that a file system check triggered
+by @code{check?} may exit early if the file system is marked as
+``clean'', meaning that it was previously correctly unmounted and
+should not contain errors.
+
+Setting this to false will always force a full consistency check when
+@code{check?} is true.  This may take a very long time and is not
+recommended on healthy systems---in fact, it may reduce reliability!
+
+Conversely, some primitive file systems like @code{fat} do not keep
+track of clean shutdowns and will perform a full scan regardless of the
+value of this option.
+
+@item @code{repair} (default: @code{'preen})
+When @code{check?} finds errors, it can (try to) repair them and
+continue booting.  This option controls when and how to do so.
+
+If false, try not to modify the file system at all.  Checking certain
+file systems like @code{jfs} may still write to the device to replay
+the journal.  No repairs will be attempted.
+
+If @code{#t}, try to repair any errors found and assume ``yes'' to
+all questions.  This will fix the most errors, but may be risky.
+
+If @code{'preen}, repair only errors that are safe to fix without
+human interaction.  What that means is left up to the developers of
+each file system and may be equivalent to ``none'' or ``all''.
 
 @item @code{create-mount-point?} (default: @code{#f})
 When true, the mount point is created if it does not exist yet.
@@ -14651,7 +14863,7 @@ configuration would look like:
   (keyboard-layout (keyboard-layout "tr"))  ;for the console
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
-                (target "/boot/efi")
+                (targets '("/boot/efi"))
                 (keyboard-layout keyboard-layout))) ;for GRUB
   (services (cons (set-xorg-configuration
                     (xorg-configuration             ;for Xorg
@@ -15283,6 +15495,14 @@ Font engine used in Kmscon.
 @item @code{font-size} (default: @code{12})
 Font size used in Kmscon.
 
+@item @code{keyboard-layout} (default: @code{#f})
+If this is @code{#f}, Kmscon uses the default keyboard layout---usually US
+English (``qwerty'') for a 105-key PC keyboard.
+
+Otherwise this must be a @code{keyboard-layout} object specifying the
+keyboard layout.  @xref{Keyboard Layout}, for more information on how to
+specify the keyboard layout.
+
 @item @code{kmscon} (default: @var{kmscon})
 The Kmscon package to use.
 
@@ -15453,7 +15673,9 @@ Number of build user accounts to create.
 @item @code{authorize-key?} (default: @code{#t})
 @cindex substitutes, authorization thereof
 Whether to authorize the substitute keys listed in
-@code{authorized-keys}---by default that of @code{@value{SUBSTITUTE-SERVER}}
+@code{authorized-keys}---by default that of
+@code{@value{SUBSTITUTE-SERVER-1}} and
+@code{@value{SUBSTITUTE-SERVER-2}}
 (@pxref{Substitutes}).
 
 When @code{authorize-key?} is true, @file{/etc/guix/acl} cannot be
@@ -15474,8 +15696,9 @@ allowed for in-place modifications to @file{/etc/guix/acl}.
 @item @code{authorized-keys} (default: @code{%default-authorized-guix-keys})
 The list of authorized key files for archive imports, as a list of
 string-valued gexps (@pxref{Invoking guix archive}).  By default, it
-contains that of @code{@value{SUBSTITUTE-SERVER}} (@pxref{Substitutes}).
-See @code{substitute-urls} below for an example on how to change it.
+contains that of @code{@value{SUBSTITUTE-SERVER-1}} and
+@code{@value{SUBSTITUTE-SERVER-2}} (@pxref{Substitutes}).  See
+@code{substitute-urls} below for an example on how to change it.
 
 @item @code{use-substitutes?} (default: @code{#t})
 Whether to use substitutes.
@@ -15484,7 +15707,7 @@ Whether to use substitutes.
 The list of URLs where to look for substitutes by default.
 
 Suppose you would like to fetch substitutes from @code{guix.example.org}
-in addition to @code{@value{SUBSTITUTE-SERVER}}.  You will need to do
+in addition to @code{@value{SUBSTITUTE-SERVER-1}}.  You will need to do
 two things: (1) add @code{guix.example.org} to @code{substitute-urls},
 and (2) authorize its signing key, having done appropriate checks
 (@pxref{Substitute Server Authorization}).  The configuration below does
@@ -15866,7 +16089,8 @@ gexps to introduce job definitions that are passed to mcron
          (lambda ()
            (execl (string-append #$findutils "/bin/updatedb")
                   "updatedb"
-                  "--prunepaths=/tmp /var/tmp /gnu/store"))))
+                  "--prunepaths=/tmp /var/tmp /gnu/store"))
+         "updatedb"))
 
 (define garbage-collector-job
   ;; Collect garbage 5 minutes after midnight every day.
@@ -15894,6 +16118,14 @@ gexps to introduce job definitions that are passed to mcron
                                          idutils-job))
                   %base-services)))
 @end lisp
+
+@quotation Tip
+When providing the action of a job specification as a procedure, you
+should provide an explicit name for the job via the optional 3rd
+argument as done in the @code{updatedb-job} example above.  Otherwise,
+the job would appear as ``Lambda function'' in the output of
+@command{herd schedule mcron}, which is not nearly descriptive enough!
+@end quotation
 
 For more complex jobs defined in Scheme where you need control over the top
 level, for instance to introduce a @code{use-modules} form, you can move your
@@ -15955,9 +16187,9 @@ This is the type of the @code{mcron} service, whose value is an
 @code{mcron-configuration} object.
 
 This service type can be the target of a service extension that provides
-it additional job specifications (@pxref{Service Composition}).  In
-other words, it is possible to define services that provide additional
-mcron jobs to run.
+additional job specifications (@pxref{Service Composition}).  In other
+words, it is possible to define services that provide additional mcron
+jobs to run.
 @end defvr
 
 @deftp {Data Type} mcron-configuration
@@ -16462,6 +16694,7 @@ configuration rejecting all incoming connections except those to the ssh port
 :INPUT ACCEPT
 :FORWARD ACCEPT
 :OUTPUT ACCEPT
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 -A INPUT -p tcp --dport 22 -j ACCEPT
 -A INPUT -j REJECT --reject-with icmp-port-unreachable
 COMMIT
@@ -16470,6 +16703,7 @@ COMMIT
 :INPUT ACCEPT
 :FORWARD ACCEPT
 :OUTPUT ACCEPT
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 -A INPUT -p tcp --dport 22 -j ACCEPT
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
 COMMIT
@@ -16730,6 +16964,99 @@ must be @code{'()} or @code{'("internal")}.
 detailed discussion of each configuration field.
 @end deftp
 
+@cindex opendht, distributed hash table network service
+@cindex dhtproxy, for use with jami
+@defvr {Scheme Variable} opendht-service-type
+This is the type of the service running a @uref{https://opendht.net,
+OpenDHT} node, @command{dhtnode}.  The daemon can be used to host your
+own proxy service to the distributed hash table (DHT), for example to
+connect to with Jami, among other applications.
+
+@quotation Important
+When using the OpenDHT proxy server, the IP addresses it ``sees'' from
+the clients should be addresses reachable from other peers.  In practice
+this means that a publicly reachable address is best suited for a proxy
+server, outside of your private network.  For example, hosting the proxy
+server on a IPv4 private local network and exposing it via port
+forwarding could work for external peers, but peers local to the proxy
+would have their private addresses shared with the external peers,
+leading to connectivity problems.
+@end quotation
+
+The value of this service is a @code{opendht-configuration} object, as
+described below.
+@end defvr
+
+@deftp {Data Type} opendht-configuration
+This is the data type for the OpenDHT service configuration.
+
+@c The fields documentation has been auto-generated using the
+@c configuration->documentation procedure from
+@c (gnu services configuration).
+Available @code{opendht-configuration} fields are:
+
+@deftypevr {@code{opendht-configuration} parameter} package opendht
+The @code{opendht} package to use.
+
+@end deftypevr
+
+@deftypevr {@code{opendht-configuration} parameter} boolean peer-discovery?
+Whether to enable the multicast local peer discovery mechanism.
+
+Defaults to @samp{#f}.
+
+@end deftypevr
+
+@deftypevr {@code{opendht-configuration} parameter} boolean enable-logging?
+Whether to enable logging messages to syslog.  It is disabled by default
+as it is rather verbose.
+
+Defaults to @samp{#f}.
+
+@end deftypevr
+
+@deftypevr {@code{opendht-configuration} parameter} boolean debug?
+Whether to enable debug-level logging messages.  This has no effect if
+logging is disabled.
+
+Defaults to @samp{#f}.
+
+@end deftypevr
+
+@deftypevr {@code{opendht-configuration} parameter} maybe-string bootstrap-host
+The node host name that is used to make the first connection to the
+network.  A specific port value can be provided by appending the
+@code{:PORT} suffix.  By default, it uses the Jami bootstrap nodes, but
+any host can be specified here.  It's also possible to disable
+bootsrapping by setting this to the @code{'disabled} symbol.
+
+Defaults to @samp{"bootstrap.jami.net:4222"}.
+
+@end deftypevr
+
+@deftypevr {@code{opendht-configuration} parameter} maybe-number port
+The UDP port to bind to.  When set to @code{'disabled}, an available
+port is automatically selected.
+
+Defaults to @samp{4222}.
+
+@end deftypevr
+
+@deftypevr {@code{opendht-configuration} parameter} maybe-number proxy-server-port
+Spawn a proxy server listening on the specified port.
+
+Defaults to @samp{disabled}.
+
+@end deftypevr
+
+@deftypevr {@code{opendht-configuration} parameter} maybe-number proxy-server-port-tls
+Spawn a proxy server listening to TLS connections on the specified port.
+
+Defaults to @samp{disabled}.
+
+@end deftypevr
+@end deftp
+
 @cindex Tor
 @defvr {Scheme Variable} tor-service-type
 This is the type for a service that runs the @uref{https://torproject.org,
@@ -16975,7 +17302,7 @@ shell daemon, @command{sshd}.  Its value must be an
 (service openssh-service-type
          (openssh-configuration
            (x11-forwarding? #t)
-           (permit-root-login 'without-password)
+           (permit-root-login 'prohibit-password)
            (authorized-keys
              `(("alice" ,(local-file "alice.pub"))
                ("bob" ,(local-file "bob.pub"))))))
@@ -17009,7 +17336,7 @@ TCP port on which @command{sshd} listens for incoming connections.
 @item @code{permit-root-login} (default: @code{#f})
 This field determines whether and when to allow logins as root.  If
 @code{#f}, root logins are disallowed; if @code{#t}, they are allowed.
-If it's the symbol @code{'without-password}, then root logins are
+If it's the symbol @code{'prohibit-password}, then root logins are
 permitted but not with password-based authentication.
 
 @item @code{allow-empty-passwords?} (default: @code{#f})
@@ -17908,6 +18235,14 @@ Data type representing the configuration of @code{slim-service-type}.
 @item @code{allow-empty-passwords?} (default: @code{#t})
 Whether to allow logins with empty passwords.
 
+@item @code{gnupg?} (default: @code{#f})
+If enabled, @code{pam-gnupg} will attempt to automatically unlock the
+user's GPG keys with the login password via @code{gpg-agent}.  The
+keygrips of all keys to be unlocked should be written to
+@file{~/.pam-gnupg}, and can be queried with @code{gpg -K
+--with-keygrip}.  Presetting passphrases must be enabled by adding
+@code{allow-preset-passphrase} in @file{~/.gnupg/gpg-agent.conf}.
+
 @item @code{auto-login?} (default: @code{#f})
 @itemx @code{default-user} (default: @code{""})
 When @code{auto-login?} is false, SLiM presents a log-in screen.
@@ -18604,12 +18939,6 @@ Specifies whether to support HTTP keep-alive connections.
 Defaults to @samp{#t}.
 @end deftypevr
 
-@deftypevr {@code{cups-configuration} parameter} non-negative-integer keep-alive-timeout
-Specifies how long an idle client connection remains open, in seconds.
-
-Defaults to @samp{30}.
-@end deftypevr
-
 @deftypevr {@code{cups-configuration} parameter} non-negative-integer limit-request-body
 Specifies the maximum size of print files, IPP requests, and HTML form
 data.  A limit of 0 disables the limit check.
@@ -18836,7 +19165,7 @@ Specifies an access list for a job's private values.  @code{@@ACL} maps
 to the printer's requesting-user-name-allowed or
 requesting-user-name-denied values.  @code{@@OWNER} maps to the job's
 owner.  @code{@@SYSTEM} maps to the groups listed for the
-@code{system-group} field of the @code{files-config} configuration,
+@code{system-group} field of the @code{files-configuration},
 which is reified into the @code{cups-files.conf(5)} file.  Other
 possible elements of the access list include specific user names, and
 @code{@@@var{group}} to indicate members of a specific group.  The
@@ -18858,7 +19187,7 @@ Specifies an access list for a subscription's private values.
 @code{@@ACL} maps to the printer's requesting-user-name-allowed or
 requesting-user-name-denied values.  @code{@@OWNER} maps to the job's
 owner.  @code{@@SYSTEM} maps to the groups listed for the
-@code{system-group} field of the @code{files-config} configuration,
+@code{system-group} field of the @code{files-configuration},
 which is reified into the @code{cups-files.conf(5)} file.  Other
 possible elements of the access list include specific user names, and
 @code{@@@var{group}} to indicate members of a specific group.  The
@@ -19155,7 +19484,7 @@ The MATE package to use.
 @end deftp
 
 @deffn {Scheme Variable} lxqt-desktop-service-type
-This is the type of the service that runs the @uref{https://lxqt.github.io,
+This is the type of the service that runs the @uref{https://lxqt-project.org,
 LXQt desktop environment}.  Its value is a @code{lxqt-desktop-configuration}
 object (see below).
 
@@ -19947,6 +20276,9 @@ Socket file to use for local (non-network) connections.
 @item @code{extra-content} (default: @code{""})
 Additional settings for the @file{my.cnf} configuration file.
 
+@item @code{extra-environment} (default: @code{#~'()})
+List of environment variables passed to the @command{mysqld} process.
+
 @item @code{auto-upgrade?} (default: @code{#t})
 Whether to automatically run @command{mysql_upgrade} after starting the
 service.  This is necessary to upgrade the @dfn{system schema} after
@@ -20093,6 +20425,38 @@ The name of the protocol.
 UNIX socket path to the master authentication server to find users.
 This is used by imap (for shared users) and lda.
 It defaults to @samp{"/var/run/dovecot/auth-userdb"}.
+@end deftypevr
+
+@deftypevr {@code{protocol-configuration} parameter} boolean imap-metadata?
+Whether to enable the @code{IMAP METADATA} extension as defined in
+@uref{https://tools.ietf.org/html/rfc5464,RFC@tie{}5464}, which provides
+a means for clients to set and retrieve per-mailbox, per-user metadata
+and annotations over IMAP.
+
+If this is @samp{#t}, you must also specify a dictionary @i{via} the
+@code{mail-attribute-dict} setting.
+
+Defaults to @samp{#f}.
+
+@end deftypevr
+
+@deftypevr {@code{protocol-configuration} parameter} space-separated-string-list managesieve-notify-capabilities
+Which NOTIFY capabilities to report to clients that first connect to
+the ManageSieve service, before authentication.  These may differ from the
+capabilities offered to authenticated users.  If this field is left empty,
+report what the Sieve interpreter supports by default.
+
+Defaults to @samp{()}.
+@end deftypevr
+
+@deftypevr {@code{protocol-configuration} parameter} space-separated-string-list managesieve-sieve-capability
+Which SIEVE capabilities to report to clients that first connect to
+the ManageSieve service, before authentication.  These may differ from the
+capabilities offered to authenticated users.  If this field is left empty,
+report what the Sieve interpreter supports by default.
+
+Defaults to @samp{()}.
+
 @end deftypevr
 
 @deftypevr {@code{protocol-configuration} parameter} space-separated-string-list mail-plugins
@@ -20791,6 +21155,17 @@ that it may be dangerous to set these if users can create symlinks
 could allow a user to delete others' mailboxes, or @code{ln -s
 /secret/shared/box ~/mail/mybox} would allow reading it).  Defaults to
 @samp{""}.
+@end deftypevr
+
+@deftypevr {@code{dovecot-configuration} parameter} string mail-attribute-dict
+The location of a dictionary used to store @code{IMAP METADATA}
+as defined by @uref{https://tools.ietf.org/html/rfc5464, RFC@tie{}5464}.
+
+The IMAP METADATA commands are available only if the ``imap''
+protocol configuration's @code{imap-metadata?} field is @samp{#t}.
+
+Defaults to @samp{""}.
+
 @end deftypevr
 
 @deftypevr {@code{dovecot-configuration} parameter} boolean mail-full-filesystem-access?
@@ -21626,7 +22001,7 @@ Available @code{getmail-options-configuration} fields are:
 If set to @samp{0}, getmail will only print warnings and errors.  A
 value of @samp{1} means that messages will be printed about retrieving
 and deleting messages.  If set to @samp{2}, getmail will print messages
-about each of it's actions.
+about each of its actions.
 
 Defaults to @samp{1}.
 
@@ -22337,6 +22712,234 @@ and Error.
 
 @node Telephony Services
 @subsection Telephony Services
+
+@cindex telephony, services
+The @code{(gnu services telephony)} module contains Guix service
+definitions for telephony services.  Currently it provides the following
+services:
+
+@subsubheading Jami
+
+@cindex jami, service
+
+This section describes how to configure a Jami server that can be used
+to host video (or audio) conferences, among other uses.  The following
+example demonstrates how to specify Jami account archives (backups) to
+be provisioned automatically:
+
+@lisp
+(service jami-service-type
+         (jami-configuration
+          (accounts
+           (list (jami-account
+                  (archive "/etc/jami/unencrypted-account-1.gz"))
+                 (jami-account
+                  (archive "/etc/jami/unencrypted-account-2.gz"))))))
+@end lisp
+
+When the accounts field is specified, the Jami account files of the
+service found under @file{/var/lib/jami} are recreated every time the
+service starts.
+
+Jami accounts and their corresponding backup archives can be generated
+using either the @code{jami-qt} or @code{jami-gnome} Jami clients.  The
+accounts should not be password-protected, but it is wise to ensure
+their files are only readable by @samp{root}.
+
+The next example shows how to declare that only some contacts should be
+allowed to communicate with a given account:
+
+@lisp
+(service jami-service-type
+         (jami-configuration
+          (accounts
+           (list (jami-account
+                  (archive "/etc/jami/unencrypted-account-1.gz")
+                  (peer-discovery? #t)
+                  (rendezvous-point? #t)
+                  (allowed-contacts
+                   '("1dbcb0f5f37324228235564b79f2b9737e9a008f"
+                     "2dbcb0f5f37324228235564b79f2b9737e9a008f")))))))
+@end lisp
+
+In this mode, only the declared @code{allowed-contacts} can initiate
+communication with the Jami account.  This can be used, for example,
+with rendezvous point accounts to create a private video conferencing
+space.
+
+To put the system administrator in full control of the conferences
+hosted on their system, the Jami service supports the following actions:
+
+@example sh
+# herd doc jami list-actions
+(list-accounts
+ list-account-details
+ list-banned-contacts
+ list-contacts
+ list-moderators
+ add-moderator
+ ban-contact
+ enable-account
+ disable-account)
+@end example
+
+The above actions aim to provide the most valuable actions for
+moderation purposes, not to cover the whole Jami API.  Users wanting to
+interact with the Jami daemon from Guile may be interested in
+experimenting with the @code{(gnu build jami-service)} module, which
+powers the above Shepherd actions.
+
+@c TODO: This should be auto-generated from the doc already defined on
+@c the shepherd-actions themselves in (gnu services telephony).
+The @code{add-moderator} and @code{ban-contact} actions accept a contact
+@emph{fingerprint} (40 characters long hash) as first argument and an
+account fingerprint or username as second argument:
+
+@example sh
+# herd add-moderator jami 1dbcb0f5f37324228235564b79f2b9737e9a008f \
+  f3345f2775ddfe07a4b0d95daea111d15fbc1199
+
+# herd list-moderators jami
+Moderators for account f3345f2775ddfe07a4b0d95daea111d15fbc1199:
+  - 1dbcb0f5f37324228235564b79f2b9737e9a008f
+
+@end example
+
+In the case of @code{ban-contact}, the second username argument is
+optional; when omitted, the account is banned from all Jami accounts:
+
+@example sh
+# herd ban-contact jami 1dbcb0f5f37324228235564b79f2b9737e9a008f
+
+# herd list-banned-contacts jami
+Banned contacts for account f3345f2775ddfe07a4b0d95daea111d15fbc1199:
+  - 1dbcb0f5f37324228235564b79f2b9737e9a008f
+
+@end example
+
+Banned contacts are also stripped from their moderation privileges.
+
+The @code{disable-account} action allows to completely disconnect an
+account from the network, making it unreachable, while
+@code{enable-account} does the inverse.  They accept a single account
+username or fingerprint as first argument:
+
+@example sh
+# herd disable-account jami f3345f2775ddfe07a4b0d95daea111d15fbc1199
+
+# herd list-accounts jami
+The following Jami accounts are available:
+  - f3345f2775ddfe07a4b0d95daea111d15fbc1199 (dummy) [disabled]
+
+@end example
+
+The @code{list-account-details} action prints the detailed parameters of
+each accounts in the Recutils format, which means the @command{recsel}
+command can be used to select accounts of interest (@pxref{Selection
+Expressions,,,recutils, GNU recutils manual}).  Note that period
+characters (@samp{.}) found in the account parameter keys are mapped to
+underscores (@samp{_}) in the output, to meet the requirements of the
+Recutils format.  The following example shows how to print the account
+fingerprints for all accounts operating in the rendezvous point mode:
+
+@example sh
+# herd list-account-details jami | \
+  recsel -p Account.username -e 'Account.rendezVous ~ "true"'
+Account_username: f3345f2775ddfe07a4b0d95daea111d15fbc1199
+@end example
+
+The remaining actions should be self-explanatory.
+
+The complete set of available configuration options is detailed below.
+
+@c TODO: Ideally, the following fragments would be auto-generated at
+@c build time, so that they needn't be manually duplicated.
+@c Auto-generated via (configuration->documentation 'jami-configuration)
+@deftp {Data Type} jami-configuration
+Available @code{jami-configuration} fields are:
+
+@table @asis
+@item @code{jamid} (default: @code{libring}) (type: package)
+The Jami daemon package to use.
+
+@item @code{dbus} (default: @code{dbus}) (type: package)
+The D-Bus package to use to start the required D-Bus session.
+
+@item @code{nss-certs} (default: @code{nss-certs}) (type: package)
+The nss-certs package to use to provide TLS certificates.
+
+@item @code{enable-logging?} (default: @code{#t}) (type: boolean)
+Whether to enable logging to syslog.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Whether to enable debug level messages.
+
+@item @code{auto-answer?} (default: @code{#f}) (type: boolean)
+Whether to force automatic answer to incoming calls.
+
+@item @code{accounts} (default: @code{disabled}) (type: maybe-jami-account-list)
+A list of Jami accounts to be (re-)provisioned every time the Jami
+daemon service starts.  When providing this field, the account
+directories under @file{/var/lib/jami/} are recreated every time the
+service starts, ensuring a consistent state.
+
+@end table
+
+@end deftp
+
+@c Auto-generated via (configuration->documentation 'jami-account)
+@deftp {Data Type} jami-account
+Available @code{jami-account} fields are:
+
+@table @asis
+@item @code{archive} (type: string-or-computed-file)
+The account archive (backup) file name of the account.  This is used to
+provision the account when the service starts.  The account archive
+should @emph{not} be encrypted.  It is highly recommended to make it
+readable only to the @samp{root} user (i.e., not in the store), to guard
+against leaking the secret key material of the Jami account it contains.
+
+@item @code{allowed-contacts} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+The list of allowed contacts for the account, entered as their 40
+characters long fingerprint.  Messages or calls from accounts not in
+that list will be rejected.  When unspecified, the configuration of the
+account archive is used as-is with respect to contacts and public
+inbound calls/messaging allowance, which typically defaults to allow any
+contact to communicate with the account.
+
+@item @code{moderators} (default: @code{disabled}) (type: maybe-account-fingerprint-list)
+The list of contacts that should have moderation privileges (to ban,
+mute, etc.  other users) in rendezvous conferences, entered as their 40
+characters long fingerprint.  When unspecified, the configuration of the
+account archive is used as-is with respect to moderation, which
+typically defaults to allow anyone to moderate.
+
+@item @code{rendezvous-point?} (default: @code{disabled}) (type: maybe-boolean)
+Whether the account should operate in the rendezvous mode.  In this
+mode, all the incoming audio/video calls are mixed into a conference.
+When left unspecified, the value from the account archive prevails.
+
+@item @code{peer-discovery?} (default: @code{disabled}) (type: maybe-boolean)
+Whether peer discovery should be enabled.  Peer discovery is used to
+discover other OpenDHT nodes on the local network, which can be useful
+to maintain communication between devices on such network even when the
+connection to the the Internet has been lost.  When left unspecified,
+the value from the account archive prevails.
+
+@item @code{bootstrap-hostnames} (default: @code{disabled}) (type: maybe-string-list)
+A list of hostnames or IPs pointing to OpenDHT nodes, that should be
+used to initially join the OpenDHT network.  When left unspecified, the
+value from the account archive prevails.
+
+@item @code{name-server-uri} (default: @code{disabled}) (type: maybe-string)
+The URI of the name server to use, that can be used to retrieve the
+account fingerprint for a registered username.
+
+@end table
+
+@end deftp
+
+@subsubheading Murmur (VoIP server)
 
 @cindex Murmur (VoIP server)
 @cindex VoIP server
@@ -24645,6 +25248,7 @@ of strings and G-expressions.
 @end table
 @end deffn
 
+@anchor{NGINX}
 @subsubheading NGINX
 
 @deffn {Scheme Variable} nginx-service-type
@@ -25373,7 +25977,7 @@ directives} for comprehensive documentation on the acceptable
 @deftp {Data type} php-fpm-dynamic-process-manager-configuration
 Data Type for the @code{dynamic} php-fpm process manager.  With the
 @code{dynamic} process manager, spare worker processes are kept around
-based on it's configured limits.
+based on its configured limits.
 @table @asis
 @item @code{max-children} (default: @code{5})
 Maximum of worker processes.
@@ -25798,6 +26402,14 @@ manual plugin (see @code{authentication-hook}, @code{cleanup-hook} and
 the documentation at @url{https://certbot.eff.org/docs/using.html#hooks}),
 and gives Let's Encrypt permission to log the public IP address of the
 requesting machine.
+
+@item @code{csr} (default: @code{#f})
+File name of Certificate Signing Request (CSR) in DER or PEM format.
+If @code{#f} is specified, this argument will not be passed to certbot.
+If a value is specified, certbot will use it to obtain a certificate, instead of
+using a self-generated CSR.
+The domain-name(s) mentioned in @code{domains}, must be consistent with the
+domain-name(s) mentioned in CSR file.
 
 @item @code{authentication-hook} (default: @code{#f})
 Command to be run in a shell once for each certificate challenge to be
@@ -26584,6 +27196,15 @@ Defaults to @samp{()}.
 The @code{(gnu services vpn)} module provides services related to
 @dfn{virtual private networks} (VPNs).
 
+@subsubheading Bitmask
+
+@defvr {Scheme Variable} bitmask-service-type
+A service type for the @uref{https://bitmask.net, Bitmask} VPN client.  It makes
+the client available in the system and loads its polkit policy.  Please note that
+the client expects an active polkit-agent, which is either run by your
+desktop-environment or should be run manually.
+@end defvr
+
 @subsubheading OpenVPN
 
 It provides a @emph{client} service for your machine to connect to a
@@ -26963,8 +27584,44 @@ Defaults to @samp{#f}.
 
 @end deftypevr
 
-
 @c %end of automatic openvpn-server documentation
+
+@subheading strongSwan
+
+Currently, the strongSwan service only provides legacy-style configuration with
+@file{ipsec.conf} and @file{ipsec.secrets} files.
+
+@defvr {Scheme Variable} strongswan-service-type
+A service type for configuring strongSwan for IPsec @acronym{VPN,
+Virtual Private Networking}.  Its value must be a
+@code{strongswan-configuration} record as in this example:
+
+@lisp
+(service strongswan-service-type
+         (strongswan-configuration
+          (ipsec-conf "/etc/ipsec.conf")
+          (ipsec-secrets "/etc/ipsec.secrets")))
+@end lisp
+
+@end defvr
+
+@deftp {Data Type} strongswan-configuration
+Data type representing the configuration of the StrongSwan service.
+
+@table @asis
+@item @code{strongswan}
+The strongSwan package to use for this service.
+
+@item @code{ipsec-conf} (default: @code{#f})
+The file name of your @file{ipsec.conf}.  If not @code{#f}, then this and
+@code{ipsec-secrets} must both be strings.
+
+@item @code{ipsec-secrets} (default @code{#f})
+The file name of your @file{ipsec.secrets}.  If not @code{#f}, then this and
+@code{ipsec-conf} must both be strings.
+
+@end table
+@end deftp
 
 @subsubheading Wireguard
 
@@ -26999,6 +27656,9 @@ The interface name for the VPN.
 @item @code{addresses} (default: @code{'("10.0.0.1/32")})
 The IP addresses to be assigned to the above interface.
 
+@item @code{port} (default: @code{51820})
+The port on which to listen for incoming connections.
+
 @item @code{private-key} (default: @code{"/etc/wireguard/private.key"})
 The private key file for the interface.  It is automatically generated if
 the file does not exist.
@@ -27027,6 +27687,12 @@ The peer public-key represented as a base64 string.
 @item @code{allowed-ips}
 A list of IP addresses from which incoming traffic for this peer is
 allowed and to which incoming traffic for this peer is directed.
+
+@item @code{keep-alive} (default: @code{#f})
+An optional time interval in seconds.  A packet will be sent to the
+server endpoint once per time interval.  This helps receiving
+incoming connections from this peer when you are behind a NAT or
+a firewall.
 
 @end table
 @end deftp
@@ -27405,6 +28071,11 @@ Use @var{cache} directory to cache build log files.
 Once a substitute is successfully fetched, trigger substitute baking at
 @var{trigger-url}.
 
+@item @code{publish?} (default: @code{#t})
+If set to false, do not start a publish server and ignore the
+@code{publish-port} argument.  This can be useful if there is already a
+standalone publish server standing next to the remote server.
+
 @item @code{public-key}
 @item @code{private-key}
 Use the specific @var{file}s as the public/private key pair used to sign
@@ -27438,6 +28109,9 @@ Location of the log file.
 
 @item @code{publish-port} (default: @code{5558})
 The TCP port of the publish server.  It defaults to @code{5558}.
+
+@item @code{substitute-urls} (default: @code{%default-substitute-urls})
+The list of URLs where to look for substitutes by default.
 
 @item @code{public-key}
 @item @code{private-key}
@@ -29050,10 +29724,11 @@ By default, it produces
 
 @lisp
 '("--device" "rtl8139,netdev=net0"
-  "--netdev" "user,id=net0\
-              ,hostfwd=tcp:127.0.0.1:@var{secrets-port}-:1004\
-              ,hostfwd=tcp:127.0.0.1:@var{ssh-port}-:2222\
-              ,hostfwd=tcp:127.0.0.1:@var{vnc-port}-:5900")
+  "--netdev" (string-append
+              "user,id=net0,"
+              "hostfwd=tcp:127.0.0.1:@var{secrets-port}-:1004,"
+              "hostfwd=tcp:127.0.0.1:@var{ssh-port}-:2222,"
+              "hostfwd=tcp:127.0.0.1:@var{vnc-port}-:5900"))
 @end lisp
 
 with forwarded ports:
@@ -29185,7 +29860,7 @@ cluster node that supports multiple storage backends, and installs the
                  ;; Ganeti uses SSH to communicate between nodes.
                  (service openssh-service-type
                           (openssh-configuration
-                           (permit-root-login 'without-password)))
+                           (permit-root-login 'prohibit-password)))
 
                  (service ganeti-service-type
                           (ganeti-configuration
@@ -30950,6 +31625,19 @@ A value like @code{#o0027} will give read access to the group used by Gitolite
 (by default: @code{git}).  This is necessary when using Gitolite with software
 like cgit or gitweb.
 
+@item @code{unsafe-pattern} (default: @code{#f})
+An optional Perl regular expression for catching unsafe configurations in
+the configuration file.  See
+@uref{https://gitolite.com/gitolite/git-config.html#compensating-for-unsafe_patt,
+Gitolite's documentation} for more information.
+
+When the value is not @code{#f}, it should be a string containing a Perl
+regular expression, such as @samp{"[`~#\$\&()|;<>]"}, which is the default
+value used by gitolite.  It rejects any special character in configuration
+that might be interpreted by a shell, which is useful when sharing the
+administration burden with other people that do not otherwise have shell
+access on the server.
+
 @item @code{git-config-keys} (default: @code{""})
 Gitolite allows you to set git config values using the @samp{config}
 keyword.  This setting allows control over the config keys to accept.
@@ -30960,6 +31648,137 @@ Set the role names allowed to be used by users running the perms command.
 @item @code{enable} (default: @code{'("help" "desc" "info" "perms" "writable" "ssh-authkeys" "git-config" "daemon" "gitweb")})
 This setting controls the commands and features to enable within Gitolite.
 
+@end table
+@end deftp
+
+
+@subsubheading Gitile Service
+
+@cindex Gitile service
+@cindex Git, forge
+@uref{https://git.lepiller.eu/gitile, Gitile} is a Git forge for viewing
+public git repository contents from a web browser.
+
+Gitile works best in collaboration with Gitolite, and will serve the public
+repositories from Gitolite by default.  The service should listen only on
+a local port, and a webserver should be configured to serve static resources.
+The gitile service provides an easy way to extend the Nginx service for
+that purpose (@pxref{NGINX}).
+
+The following example will configure Gitile to serve repositories from a
+custom location, with some default messages for the home page and the
+footers.
+
+@lisp
+(service gitile-service-type
+         (gitile-configuration
+           (repositories "/srv/git")
+           (base-git-url "https://myweb.site/git")
+           (index-title "My git repositories")
+           (intro '((p "This is all my public work!")))
+           (footer '((p "This is the end")))
+           (nginx-server-block
+             (nginx-server-configuration
+               (ssl-certificate
+                 "/etc/letsencrypt/live/myweb.site/fullchain.pem")
+               (ssl-certificate-key
+                 "/etc/letsencrypt/live/myweb.site/privkey.pem")
+               (listen '("443 ssl http2" "[::]:443 ssl http2"))
+               (locations
+                 (list
+                   ;; Allow for https anonymous fetch on /git/ urls.
+                   (git-http-nginx-location-configuration
+                     (git-http-configuration
+                       (uri-path "/git/")
+                       (git-root "/var/lib/gitolite/repositories")))))))))
+@end lisp
+
+In addition to the configuration record, you should configure your git
+repositories to contain some optional information.  First, your public
+repositories need to contain the @file{git-daemon-export-ok} magic file
+that allows Git to export the repository.  Gitile uses the presence of this
+file to detect public repositories it should make accessible.  To do so with
+Gitolite for instance, modify your @file{conf/gitolite.conf} to include
+this in the repositories you want to make public:
+
+@example
+repo foo
+    R = daemon
+@end example
+
+In addition, Gitile can read the repository configuration to display more
+information on the repository.  Gitile uses the gitweb namespace for its
+configuration.  As an example, you can use the following in your
+@file{conf/gitolite.conf}:
+
+@example
+repo foo
+    R = daemon
+    desc = A long description, optionally with <i>HTML</i>, shown on the index page
+    config gitweb.name = The Foo Project
+    config gitweb.synopsis = A short description, shown on the main page of the project
+@end example
+
+Do not forget to commit and push these changes once you are satisfied.  You
+may need to change your gitolite configuration to allow the previous
+configuration options to be set.  One way to do that is to add the
+following service definition:
+
+@lisp
+(service gitolite-service-type
+          (gitolite-configuration
+            (admin-pubkey (local-file "key.pub"))
+            (rc-file
+              (gitolite-rc-file
+                (umask #o0027)
+                ;; Allow to set any configuration key
+                (git-config-keys ".*")
+                ;; Allow any text as a valid configuration value
+                (unsafe-patt "^$")))))
+@end lisp
+
+@deftp {Data Type} gitile-configuration
+Data type representing the configuration for @code{gitile-service-type}.
+
+@table @asis
+@item @code{package} (default: @var{gitile})
+Gitile package to use.
+
+@item @code{host} (default: @code{"localhost"})
+The host on which gitile is listening.
+
+@item @code{port} (default: @code{8080})
+The port on which gitile is listening.
+
+@item @code{database} (default: @code{"/var/lib/gitile/gitile-db.sql"})
+The location of the database.
+
+@item @code{repositories} (default: @code{"/var/lib/gitolite/repositories"})
+The location of the repositories.  Note that only public repositories will
+be shown by Gitile.  To make a repository public, add an empty
+@file{git-daemon-export-ok} file at the root of that repository.
+
+@item @code{base-git-url}
+The base git url that will be used to show clone commands.
+
+@item @code{index-title} (default: @code{"Index"})
+The page title for the index page that lists all the available repositories.
+
+@item @code{intro} (default: @code{'()})
+The intro content, as a list of sxml expressions.  This is shown above the list
+of repositories, on the index page.
+
+@item @code{footer} (default: @code{'()})
+The footer content, as a list of sxml expressions.  This is shown on every
+page served by Gitile.
+
+@item @code{nginx-server-block}
+An nginx server block that will be extended and used as a reverse proxy by
+Gitile to serve its pages, and as a normal web server to serve its assets.
+
+You can use this block to add more custom URLs to your domain, such as a
+@code{/git/} URL for anonymous clones, or serving any other files you would
+like to serve.
 @end table
 @end deftp
 
@@ -31178,6 +31997,15 @@ will use the current system it's running on as the default.
 @item @code{max-parallel-builds} (default: @code{1})
 The number of builds to perform in parallel.
 
+@item @code{max-1min-load-average} (default: @code{#f})
+Load average value to look at when considering starting new builds, if
+the 1 minute load average exceeds this value, the agent will wait before
+starting new builds.
+
+This will be unspecified if the value is @code{#f}, and the agent will
+use the number of cores reported by the system as the max 1 minute load
+average.
+
 @item @code{derivation-substitute-urls} (default: @code{#f})
 URLs from which to attempt to fetch substitutes for derivations, if the
 derivations aren't already available.
@@ -31281,7 +32109,7 @@ The Guix Build Coordinator package to use.
 @item @code{user} (default: @code{"guix-build-coordinator-queue-builds"})
 The system user to run the service as.
 
-@item @code{coordinator} (default: @code{"http://localhost:8745"})
+@item @code{coordinator} (default: @code{"http://localhost:8746"})
 The URI to use when connecting to the coordinator.
 
 @item @code{systems} (default: @code{#f})
@@ -31425,7 +32253,7 @@ notifications.
 
 The kernel module loader service allows one to load loadable kernel
 modules at boot.  This is especially useful for modules that don't
-autoload and need to be manually loaded, as it's the case with
+autoload and need to be manually loaded, as is the case with
 @code{ddcci}.
 
 @deffn {Scheme Variable} kernel-module-loader-service-type
@@ -31455,6 +32283,86 @@ parameters, can be done as follow:
   (kernel-loadable-modules (list ddcci-driver-linux)))
 @end lisp
 @end deffn
+
+@cindex rasdaemon
+@cindex Platform Reliability, Availability and Serviceability daemon
+@subsubheading Rasdaemon Service
+
+The Rasdaemon service provides a daemon which monitors platform
+@acronym{RAS, Reliability@comma{} Availability@comma{} and Serviceability} reports from
+Linux kernel trace events, logging them to syslogd.
+
+Reliability, Availability and Serviceability is a concept used on servers meant
+to measure their robustness.
+
+@strong{Relability} is the probability that a system will produce correct
+outputs:
+
+@itemize @bullet
+@item Generally measured as Mean Time Between Failures (MTBF), and
+@item Enhanced by features that help to avoid, detect and repair hardware
+faults
+@end itemize
+
+@strong{Availability} is the probability that a system is operational at a
+given time:
+
+@itemize @bullet
+@item Generally measured as a percentage of downtime per a period of time, and
+@item Often uses mechanisms to detect and correct hardware faults in runtime.
+@end itemize
+
+@strong{Serviceability} is the simplicity and speed with which a system can be
+repaired or maintained:
+
+@itemize @bullet
+@item Generally measured on Mean Time Between Repair (MTBR).
+@end itemize
+
+
+Among the monitoring measures, the most usual ones include:
+
+@itemize @bullet
+@item CPU – detect errors at instruction execution and at L1/L2/L3 caches;
+@item Memory – add error correction logic (ECC) to detect and correct errors;
+@item I/O – add CRC checksums for transferred data;
+@item Storage – RAID, journal file systems, checksums, Self-Monitoring,
+Analysis and Reporting Technology (SMART).
+@end itemize
+
+By monitoring the number of occurrences of error detections, it is possible to
+identify if the probability of hardware errors is increasing, and, on such
+case, do a preventive maintenance to replace a degraded component while those
+errors are correctable.
+
+For detailed information about the types of error events gathered and how to
+make sense of them, see the kernel administrator's guide at
+@url{https://www.kernel.org/doc/html/latest/admin-guide/ras.html}.
+
+@defvr {Scheme Variable} rasdaemon-service-type
+Service type for the @command{rasdaemon} service.  It accepts a
+@code{rasdaemon-configuration} object.  Instantiating like
+
+@lisp
+(service rasdaemon-service-type)
+@end lisp
+
+will load with a default configuration, which monitors all events and logs to
+syslogd.
+@end defvr
+
+@deftp {Data Type} rasdaemon-configuration
+The data type representing the configuration of @command{rasdaemon}.
+
+@table @asis
+@item @code{record?} (default: @code{#f})
+
+A boolean indicating whether to record the events in an SQLite database.  This
+provides a more structured access to the information contained in the log file.
+The database location is hard-coded to @file{/var/lib/rasdaemon/ras-mc_event.db}.
+
+@end table
+@end deftp
 
 @cindex zram
 @cindex compressed swap
@@ -31825,10 +32733,10 @@ This is the data type representing the configuration of Docker and Containerd.
 
 @table @asis
 
-@item @code{package} (default: @code{docker})
+@item @code{docker} (default: @code{docker})
 The Docker daemon package to use.
 
-@item @code{package} (default: @code{docker-cli})
+@item @code{docker-cli} (default: @code{docker-cli})
 The Docker client package to use.
 
 @item @code{containerd} (default: @var{containerd})
@@ -32052,20 +32960,47 @@ the store, we let the system administrator @emph{declare} which programs
 should be setuid root.
 
 The @code{setuid-programs} field of an @code{operating-system}
-declaration contains a list of G-expressions denoting the names of
-programs to be setuid-root (@pxref{Using the Configuration System}).
-For instance, the @command{passwd} program, which is part of the Shadow
-package, can be designated by this G-expression (@pxref{G-Expressions}):
+declaration contains a list of @code{<setuid-program>} denoting the
+names of programs to have a setuid or setgid bit set (@pxref{Using the
+Configuration System}).  For instance, the @command{passwd} program,
+which is part of the Shadow package, with a setuid root can be
+designated like this:
 
 @example
-#~(string-append #$shadow "/bin/passwd")
+(setuid-program
+  (program (file-append #$shadow "/bin/passwd")))
 @end example
+
+@deftp {Data Type} setuid-program
+This data type represents a program with a setuid or setgid bit set.
+
+@table @asis
+@item @code{program}
+A file-like object having its setuid and/or setgid bit set.
+
+@item @code{setuid?} (default: @code{#t})
+Whether to set user setuid bit.
+
+@item @code{setgid?} (default: @code{#f})
+Whether to set group setgid bit.
+
+@item @code{user} (default: @code{0})
+UID (integer) or user name (string) for the user owner of the program,
+defaults to root.
+
+@item @code{group} (default: @code{0})
+GID (integer) goup name (string) for the group owner of the program,
+defaults to root.
+
+@end table
+@end deftp
 
 A default set of setuid programs is defined by the
 @code{%setuid-programs} variable of the @code{(gnu system)} module.
 
 @defvr {Scheme Variable} %setuid-programs
-A list of G-expressions denoting common programs that are setuid-root.
+A list of @code{<setuid-program>} denoting common programs that are
+setuid-root.
 
 The list includes commands such as @command{passwd}, @command{ping},
 @command{su}, and @command{sudo}.
@@ -32359,6 +33294,25 @@ name like @code{/dev/sda1}, a file system label, or a file system UUID.
 When unspecified, the device name from the root file system of the
 operating system declaration is used.
 
+@item fsck.mode=@var{mode}
+Whether to check the @var{root} file system for errors before mounting
+it.  @var{mode} is one of @code{skip} (never check), @code{force} (always
+check), or @code{auto} to respect the root file-system object's 'check?'
+setting (@pxref{File Systems}) and run a full scan only if the file system
+was not cleanly shut down.
+
+@code{auto} is the default if this option is not present or if @var{mode}
+is not one of the above.
+
+@item fsck.repair=@var{level}
+The level of repairs to perform automatically if errors are found in the
+@var{root} file system.  @var{level} is one of @code{no} (do not write to
+@var{root} at all if possible), @code{yes} (repair as much as possible),
+or @code{preen} to repair problems considered safe to repair automatically.
+
+@code{preen} is the default if this option is not present or if @var{level}
+is not one of the above.
+
 @item --system=@var{system}
 Have @file{/run/booted-system} and @file{/run/current-system} point to
 @var{system}.
@@ -32446,7 +33400,7 @@ program.  That gives a lot of flexibility.  The
 program to run in that initrd.
 
 @deffn {Scheme Procedure} expression->initrd @var{exp} @
-       [#:guile %guile-3.0-static-stripped] [#:name "guile-initrd"]
+       [#:guile %guile-static-stripped] [#:name "guile-initrd"]
 Return as a file-like object a Linux initrd (a gzipped cpio archive)
 containing @var{guile} and that evaluates @var{exp}, a G-expression,
 upon booting.  All the derivations referenced by @var{exp} are
@@ -32506,11 +33460,11 @@ in ``legacy'' BIOS mode.
 through TFTP@.  In combination with an NFS root file system this allows you to
 build a diskless Guix system.
 
-The installation of the @code{grub-efi-netboot-bootloader} generates the content
-of the TFTP root directory at @code{target}
-(@pxref{Bootloader Configuration, @code{target}}), to be served by a TFTP server.
- You may want to mount your TFTP server directory onto @code{target} to move the
-required files to the TFTP server automatically.
+The installation of the @code{grub-efi-netboot-bootloader} generates the
+content of the TFTP root directory at @code{targets} (@pxref{Bootloader
+Configuration, @code{targets}}), to be served by a TFTP server.  You may
+want to mount your TFTP server directories onto the @code{targets} to
+move the required files to the TFTP server automatically.
 
 If you plan to use an NFS root file system as well (actually if you mount the
 store from an NFS share), then the TFTP server needs to serve the file
@@ -32521,22 +33475,25 @@ files from the store will be accessed by GRUB through TFTP with their normal
 store path, for example as
 @file{tftp://tftp-server/gnu/store/…-initrd/initrd.cpio.gz}.
 
-Two symlinks are created to make this possible.  The first symlink is
-@code{target}@file{/efi/Guix/boot/grub/grub.cfg} pointing to
-@file{../../../boot/grub/grub.cfg},
-where @code{target} may be @file{/boot}.  In this case the link is not leaving
-the served TFTP root directory, but otherwise it does.  The second link is
-@code{target}@file{/gnu/store} and points to @file{../gnu/store}.  This link
-is leaving the served TFTP root directory.
+Two symlinks are created to make this possible.  For each target in the
+@code{targets} field, the first symlink is
+@samp{target}@file{/efi/Guix/boot/grub/grub.cfg} pointing to
+@file{../../../boot/grub/grub.cfg}, where @samp{target} may be
+@file{/boot}.  In this case the link is not leaving the served TFTP root
+directory, but otherwise it does.  The second link is
+@samp{target}@file{/gnu/store} and points to @file{../gnu/store}.  This
+link is leaving the served TFTP root directory.
 
-The assumption behind all this is that you have an NFS server exporting the root
-file system for your Guix system, and additionally a TFTP server exporting your
-@code{target} directory—usually @file{/boot}—from that same root file system for
-your Guix system.  In this constellation the symlinks will work.
+The assumption behind all this is that you have an NFS server exporting
+the root file system for your Guix system, and additionally a TFTP
+server exporting your @code{targets} directories—usually a single
+@file{/boot}—from that same root file system for your Guix system.  In
+this constellation the symlinks will work.
 
-For other constellations you will have to program your own bootloader installer,
-which then takes care to make necessary files from the store accessible through
-TFTP, for example by copying them into the TFTP root directory at @code{target}.
+For other constellations you will have to program your own bootloader
+installer, which then takes care to make necessary files from the store
+accessible through TFTP, for example by copying them into the TFTP root
+directory to your @code{targets}.
 
 It is important to note that symlinks pointing outside the TFTP root directory
 may need to be allowed in the configuration of your TFTP server.  Further the
@@ -32548,18 +33505,19 @@ NFS servers, you also need a properly configured DHCP server to make the booting
 over netboot possible.  For all this we can currently only recommend you to look
 for instructions about @acronym{PXE, Preboot eXecution Environment}.
 
-@item @code{target}
-This is a string denoting the target onto which to install the
+@item @code{targets}
+This is a list of strings denoting the targets onto which to install the
 bootloader.
 
-The interpretation depends on the bootloader in question.  For
-@code{grub-bootloader}, for example, it should be a device name understood by
-the bootloader @command{installer} command, such as @code{/dev/sda} or
-@code{(hd0)} (@pxref{Invoking grub-install,,, grub, GNU GRUB Manual}).  For
-@code{grub-efi-bootloader}, it should be the mount point of the EFI file
-system, usually @file{/boot/efi}.  For @code{grub-efi-netboot-bootloader},
-@code{target} should be the mount point corresponding to the TFTP root
-directory of your TFTP server.
+The interpretation of targets depends on the bootloader in question.
+For @code{grub-bootloader}, for example, they should be device names
+understood by the bootloader @command{installer} command, such as
+@code{/dev/sda} or @code{(hd0)} (@pxref{Invoking grub-install,,, grub,
+GNU GRUB Manual}).  For @code{grub-efi-bootloader}, they should be mount
+points of the EFI file system, usually @file{/boot/efi}.  For
+@code{grub-efi-netboot-bootloader}, @code{targets} should be the mount
+points corresponding to TFTP root directories served by your TFTP
+server.
 
 @item @code{menu-entries} (default: @code{()})
 A possibly empty list of @code{menu-entry} objects (see below), denoting
@@ -32975,7 +33933,7 @@ files, packages, and so on.  It also creates other essential files
 needed for the system to operate correctly---e.g., the @file{/etc},
 @file{/var}, and @file{/run} directories, and the @file{/bin/sh} file.
 
-This command also installs bootloader on the target specified in
+This command also installs bootloader on the targets specified in
 @file{my-os-config}, unless the @option{--no-bootloader} option was
 passed.
 
@@ -33000,7 +33958,7 @@ below, which enables networking and requests 1@tie{}GiB of RAM for the
 emulated machine:
 
 @example
-$ /gnu/store/@dots{}-run-vm.sh -m 1024 -smp 2 -net user,model=virtio-net-pci
+$ /gnu/store/@dots{}-run-vm.sh -m 1024 -smp 2 -nic user,model=virtio-net-pci
 @end example
 
 The VM shares its store with the host system.
@@ -33371,7 +34329,7 @@ evaluates to.  As an example, @var{file} might contain a definition like this:
    (timezone "Etc/UTC")
    (bootloader (bootloader-configuration
                 (bootloader grub-bootloader)
-                (target "/dev/vda")
+                (targets '("/dev/vda"))
                 (terminal-outputs '(console))))
    (file-systems (cons (file-system
                         (mount-point "/")
@@ -33542,12 +34500,11 @@ Whether or not the droplet should be created with IPv6 networking.
 @section Running Guix in a Virtual Machine
 
 @cindex virtual machine
-To run Guix in a virtual machine (VM), one can use the pre-built Guix VM image
-distributed at
-@url{@value{BASE-URL}/guix-system-vm-image-@value{VERSION}.x86_64-linux.xz}.
-This image is a compressed image in QCOW format.  You will first need to
-decompress with @command{xz -d}, and then you can pass it to an emulator such
-as QEMU (see below for details).
+To run Guix in a virtual machine (VM), one can use the pre-built Guix VM
+image distributed at
+@url{@value{BASE-URL}/guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2}.
+This image is a compressed image in QCOW format.  You can pass it to an
+emulator such as @uref{https://qemu.org/, QEMU} (see below for details).
 
 This image boots the Xfce graphical environment and it contains some
 commonly used tools.  You can install more software in the image by running
@@ -33556,10 +34513,8 @@ also reconfigure the system based on its initial configuration file available
 as @file{/run/current-system/configuration.scm} (@pxref{Using the
 Configuration System}).
 
-Instead of using this pre-built image, one can also build their own virtual
-machine image using @command{guix system vm-image} (@pxref{Invoking guix
-system}).  The returned image is in qcow2 format, which the
-@uref{https://qemu.org/, QEMU emulator} can efficiently use.
+Instead of using this pre-built image, one can also build their own
+image using @command{guix system image} (@pxref{Invoking guix system}).
 
 @cindex QEMU
 If you built your own image, you must copy it out of the store
@@ -33647,6 +34602,13 @@ The @command{-p} tells @command{ssh} the port you want to connect to.
 every time you modify your @command{config.scm} file and the
 @command{-o StrictHostKeyChecking=no} prevents you from having to allow a
 connection to an unknown host every time you connect.
+
+@quotation Note
+If you find the above @samp{hostfwd} example not to be working (e.g.,
+your SSH client hangs attempting to connect to the mapped port of your
+VM), make sure that your Guix System VM has networking support, such as
+by using the @code{dhcp-client-service-type} service type.
+@end quotation
 
 @subsection Using @command{virt-viewer} with Spice
 
@@ -34166,6 +35128,25 @@ configuration when you use @command{guix system reconfigure},
 @command{guix system init}, or @command{guix deploy}.
 @end defvr
 
+@defvr {Scheme Variable} linux-loadable-module-service-type
+Type of the service that collects lists of packages containing
+kernel-loadable modules, and adds them to the set of kernel-loadable
+modules.
+
+This service type is intended to be extended by other service types,
+such as below:
+
+@lisp
+(simple-service 'installing-module
+                linux-loadable-module-service-type
+                (list module-to-install-1
+                      module-to-install-2))
+@end lisp
+
+This does not actually load modules at bootup, only adds it to the
+kernel profile so that it @emph{can} be loaded by other means.
+@end defvr
+
 @node Shepherd Services
 @subsection Shepherd Services
 
@@ -34385,6 +35366,732 @@ system:
 This service represents PID@tie{}1.
 @end defvr
 
+@node Home Configuration
+@chapter Home Configuration
+@cindex home configuration
+Guix supports declarative configuration of @dfn{home environments} by
+utilizing the configuration mechanism described in the previous chapter
+(@pxref{Defining Services}), but for user's dotfiles and packages.  It
+works both on Guix System and foreign distros and allows users to
+declare all the packages and services that should be installed and
+configured for the user.  Once a user has written a file containing
+@code{home-environment} record, such a configuration can be
+@dfn{instantiated} by an unprivileged user with the @command{guix home}
+command (@pxref{Invoking guix home}).
+@c Maybe later, it will be possible to make home configuration a part of
+@c system configuration to make everything managed by guix system.
+
+@quotation Note
+The functionality described in this section is still under development
+and is subject to change.  Get in touch with us on
+@email{guix-devel@@gnu.org}!
+@end quotation
+
+The user's home environment usually consists of three basic parts:
+software, configuration, and state.  Software in mainstream distros are
+usually installed system-wide, but with GNU Guix most software packages
+can be installed on a per-user basis without needing root privileges,
+and are thus considered part of the user’s @dfn{home environment}.
+Packages on their own not very useful in many cases, because often they
+require some additional configuration, usually config files that reside
+in @env{XDG_CONFIG_HOME} (@file{~/.config} by default) or other
+directories.  Everything else can be considered state, like media files,
+application databases, and logs.
+
+Using Guix for managing home environments provides a number of
+advantages:
+
+@itemize
+
+@item All software can be configured in one language (Guile Scheme),
+this gives users the ability to share values between configurations of
+different programs.
+
+@item A well-defined home environment is self-contained and can be
+created in a declarative and reproducible way---there is no need to grab
+external binaries or manually edit some configuration file.
+
+@item After every @command{guix home reconfigure} invocation, a new home
+environment generation will be created.  This means that users can
+rollback to a previous home environment generation so they don’t have to
+worry about breaking their configuration.
+
+@item It is possible to manage stateful data with Guix Home, this
+includes the ability to automatically clone Git repositories on the
+initial setup of the machine, and periodically running commands like
+@command{rsync} to sync data with another host.  This functionality is
+still in an experimental stage, though.
+
+@end itemize
+
+@menu
+* Declaring the Home Environment::  Customizing your Home.
+* Configuring the Shell::     Enabling home environment.
+* Home Services::             Specifying home services.
+* Invoking guix home::        Instantiating a home configuration.
+@end menu
+
+@node Declaring the Home Environment
+@section Declaring the Home Environment
+The home environment is configured by providing a
+@code{home-environment} declaration in a file that can be passed to the
+@command{guix home} command (@pxref{Invoking guix home}).  A simple
+setup can include Bash and a custom text configuration, like in the
+example below.  Don't be afraid to declare home environment parts, which
+overlaps with your current dotfiles, before installing any configuration
+files, Guix Home will back up existing config files to a separate place
+in the home folder.
+
+@quotation Note
+It is highly recommended that you manage your shell or shells with Guix
+Home, because it will make sure that all the necessary scripts are
+sourced by the shell configuration file.  Otherwise you will need to do
+it manually. (@pxref{Configuring the Shell}).
+@end quotation
+
+@findex home-environment
+@lisp
+@include he-config-bare-bones.scm
+@end lisp
+
+The @code{packages} field should be self-explanatory, it will install
+the list of packages into the user's profile.  The most important field
+is @code{services}, it contains a list of @dfn{home services}, which are
+the basic building blocks of a home environment.
+
+There is no daemon (at least not necessarily) related to a home service,
+a home service is just an element that is used to declare part of home
+environment and extend other parts of it.  The extension mechanism
+discussed in the previous chapter (@pxref{Defining Services}) should not
+be confused with @ref{Shepherd Services}.  Using this extension
+mechanism and some Scheme code that glues things together gives the user
+the freedom to declare their own, very custom, home environments.
+
+@node Configuring the Shell
+@section Configuring the Shell
+This section is safe to skip if your shell or shells are managed by
+Guix Home.  Otherwise, read it carefully.
+
+There are a few scripts that must be evaluated by a login shell to
+activate the home environment.  The shell startup files only read by
+login shells often have @code{profile} suffix.  For more information
+about login shells see @ref{Invoking Bash,,, bash, The GNU Bash
+Reference Manual} and see @ref{Bash Startup Files,,, bash, The GNU Bash
+Reference Manual}.
+
+The first script that needs to be sourced is @file{setup-environment},
+which sets all the necessary environment variables (including variables
+declared by the user) and the second one is @file{on-first-login}, which
+starts Shepherd for the current user and performs actions declared by
+other home services that extends
+@code{home-run-on-first-login-service-type}.
+
+Guix Home will always create @file{~/.profile}, which contains the
+following lines:
+
+@example
+HOME_ENVIRONMENT=$HOME/.guix-home
+. $HOME_ENVIRONMENT/setup-environment
+$HOME_ENVIRONMENT/on-first-login
+@end example
+
+This makes POSIX compliant login shells activate the home environment.
+However, in most cases this file won't be read by most modern shells,
+because they are run in non POSIX mode by default and have their own
+@file{*profile} startup files.  For example Bash will prefer
+@file{~/.bash_profile} in case it exists and only if it doesn't will it
+fallback to @file{~/.profile}.  Zsh (if no additional options are
+specified) will ignore @file{~/.profile}, even if @file{~/.zprofile}
+doesn't exist.
+
+To make your shell respect @file{~/.profile}, add @code{. ~/.profile} or
+@code{source ~/profile} to the startup file for the login shell.  In
+case of Bash, it is @file{~/.bash_profile}, and in case of Zsh, it is
+@file{~/.zprofile}.
+
+@quotation Note
+This step is only required if your shell is NOT managed by Guix Home.
+Otherwise, everything will be done automatically.
+@end quotation
+
+@node Home Services
+@section Home Services
+@cindex home services
+
+A @dfn{home service} is not necessarily something that has a daemon and
+is managed by Shepherd (@pxref{Jump Start,,, shepherd, The GNU Shepherd
+Manual}), in most cases it doesn't.  It's a simple building block of the
+home environment, often declaring a set of packages to be installed in
+the home environment profile, a set of config files to be symlinked into
+@env{XDG_CONFIG_HOME} (@file{~/.config} by default), and environment
+variables to be set by a login shell.
+
+There is a service extension mechanism (@pxref{Service Composition})
+which allows home services to extend other home services and utilize
+capabilities they provide; for example: declare mcron jobs
+(@pxref{Top,,, mcron, GNU@tie{}Mcron}) by extending @ref{Mcron Home
+Service}; declare daemons by extending @ref{Shepherd Home Service}; add
+commands, which will be invoked on by the Bash by extending
+@ref{Shells Home Services, @code{home-bash-service-type}}.
+
+A good way to discover avaliable home services is using the
+@command{guix home search} command (@pxref{Invoking guix home}).  After
+the required home services are found, include its module with the
+@code{use-modules} form (@pxref{use-modules,, Using Guile Modules,
+guile, The GNU Guile Reference Manual}), or the @code{#:use-modules}
+directive (@pxref{define-module,, Creating Guile Modules, guile, The GNU
+Guile Reference Manual}) and declare a home service using the
+@code{service} function, or extend a service type by declaring a new
+service with the @code{simple-service} procedure from @code{(gnu
+services)}.
+
+@menu
+* Essential Home Services::  Environment variables, packages, on-* scripts.
+* Shells: Shells Home Services.          POSIX shells, Bash, Zsh.
+* Mcron: Mcron Home Service.             Scheduled User's Job Execution.
+* Shepherd: Shepherd Home Service.       Managing User's Daemons.
+@end menu
+@c In addition to that Home Services can provide
+
+@node Essential Home Services
+@subsection Essential Home Services
+There are a few essential services defined in @code{(gnu
+home-services)}, they are mostly for internal use and are required to
+build a home environment, but some of them will be useful for the end
+user.
+
+@cindex environment variables
+
+@defvr {Scheme Variable} home-environment-variables-service-type
+The service of this type will be instantiated by every home environment
+automatically by default, there is no need to define it, but someone may
+want to extend it with a list of pairs to set some environment
+variables.
+
+@lisp
+(list ("ENV_VAR1" . "value1")
+      ("ENV_VAR2" . "value2"))
+@end lisp
+
+The easiest way to extend a service type, without defining new service
+type is to use the @code{simple-service} helper from @code{(gnu
+services)}.
+
+@lisp
+(simple-service 'some-useful-env-vars-service
+		home-environment-variables-service-type
+		`(("LESSHISTFILE" . "$XDG_CACHE_HOME/.lesshst")
+                  ("SHELL" . ,(file-append zsh "/bin/zsh"))
+                  ("USELESS_VAR" . #f)
+                  ("_JAVA_AWT_WM_NONREPARENTING" . #t)))
+@end lisp
+
+If you include such a service in you home environment definition, it
+will add the following content to the @file{setup-environment} script
+(which is expected to be sourced by the login shell):
+
+@example
+export LESSHISTFILE=$XDG_CACHE_HOME/.lesshst
+export SHELL=/gnu/store/2hsg15n644f0glrcbkb1kqknmmqdar03-zsh-5.8/bin/zsh
+export _JAVA_AWT_WM_NONREPARENTING
+@end example
+
+@quotation Note
+Make sure that module @code{(gnu packages shells)} is imported with
+@code{use-modules} or any other way, this namespace contains the
+definition of the @code{zsh} packages, which is used in the example
+above.
+@end quotation
+
+The association list (@pxref{Association Lists, alists, Association
+Lists, guile, The GNU Guile Reference manual}) is a data structure
+containing key-value pairs, for
+@code{home-environment-variables-service-type} the key is always a
+string, the value can be a string, string-valued gexp
+(@pxref{G-Expressions}), file-like object (@pxref{G-Expressions,
+file-like object}) or boolean.  For gexps, the variable will be set to
+the value of the gexp; for file-like objects, it will be set to the path
+of the file in the store (@pxref{The Store}); for @code{#t}, it will
+export the variable without any value; and for @code{#f}, it will omit
+variable.
+
+@end defvr
+
+@defvr {Scheme Variable} home-profile-service-type
+The service of this type will be instantiated by every home environment
+automatically, there is no need to define it, but you may want to extend
+it with a list of packages if you want to install additional packages
+into your profile.  Other services, which need to make some programs
+avaliable to the user will also extend this service type.
+
+The extension value is just a list of packages:
+
+@lisp
+(list htop vim emacs)
+@end lisp
+
+The same approach as @code{simple-service} (@pxref{Service Reference,
+simple-service}) for @code{home-environment-variables-service-type} can
+be used here, too.  Make sure that modules containing the specified
+packages are imported with @code{use-modules}.  To find a package or
+information about its module use @command{guix search} (@pxref{Invoking
+guix package}).  Alternatively, @code{specification->package} can be
+used to get the package record from string without importing related
+module.
+@end defvr
+
+There are few more essential services, but users are not expected to
+extend them.
+
+@defvr {Scheme Variable} home-service-type
+The root of home services DAG, it generates a folder, which later will be
+symlinked to @file{~/.guix-home}, it contains configurations,
+profile with binaries and libraries, and some necessary scripts to glue
+things together.
+@end defvr
+
+@defvr {Scheme Variable} home-run-on-first-login-service-type
+The service of this type generates a Guile script, which is expected to
+be executed by the login shell.  It is only executed if the special flag
+file inside @env{XDG_RUNTIME_DIR} hasn't been created, this prevents
+redundant executions of the script if multiple login shells are spawned.
+
+It can be extended with a gexp.  However, to autostart an application,
+users @emph{should not} use this service, in most cases it's better to extend
+@code{home-shpeherd-service-type} with a Shepherd service
+(@pxref{Shepherd Services}), or extend the shell's startup file with
+required command using the appropriate service type.
+@end defvr
+
+@defvr {Scheme Variable} home-activation-service-type
+The service of this type generates a guile script, which runs on every
+@command{guix home reconfigure} invocation or any other action, which
+leads to the activation of the home environment.
+@end defvr
+
+@node Shells Home Services
+@subsection Shells
+
+@cindex shell
+@cindex login shell
+@cindex interactive shell
+@cindex bash
+@cindex zsh
+
+Shells play a quite important role in the environment initialization
+process, you can configure them manually as described in section
+@ref{Configuring the Shell}, but the recommended way is to use home services
+listed below.  It's both easier and more reliable.
+
+Each home environment instantiates
+@code{home-shell-profile-service-type}, which creates a
+@file{~/.profile} startup file for all POSIX-compatible shells.  This
+file contains all the necessary steps to properly initialize the
+environment, but many modern shells like Bash or Zsh prefer their own
+startup files, that's why the respective home services
+(@code{home-bash-service-type} and @code{home-zsh-service-type}) ensure
+that @file{~/.profile} is sourced by @file{~/.bash_profile} and
+@file{~/.zprofile}, respectively.
+
+@subsubheading Shell Profile Service
+
+@deftp {Data Type} home-shell-profile-configuration
+Available @code{home-shell-profile-configuration} fields are:
+
+@table @asis
+@item @code{profile} (default: @code{()}) (type: text-config)
+@code{home-shell-profile} is instantiated automatically by
+@code{home-environment}, DO NOT create this service manually, it can
+only be extended.  @code{profile} is a list of strings or gexps, which
+will go to @file{~/.profile}.  By default @file{~/.profile} contains the
+initialization code, which have to be evaluated by login shell to make
+home-environment's profile avaliable to the user, but other commands can
+be added to the file if it is really necessary.  In most cases shell's
+configuration files are preferred places for user's customizations.
+Extend home-shell-profile service only if you really know what you do.
+
+@end table
+
+@end deftp
+
+@subsubheading Bash Home Service
+
+@deftp {Data Type} home-bash-configuration
+Available @code{home-bash-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{bash}) (type: package)
+The Bash package to use.
+
+@item @code{guix-defaults?} (default: @code{#t}) (type: boolean)
+Add sane defaults like reading @file{/etc/bashrc}, coloring output for
+@code{ls} provided by guix to @file{.bashrc}.
+
+@item @code{environment-variables} (default: @code{()}) (type: alist)
+Association list of environment variables to set for the Bash session.
+
+@item @code{bash-profile} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.bash_profile}.
+Used for executing user's commands at start of login shell (In most
+cases the shell started on tty just after login).  @file{.bash_login}
+won't be ever read, because @file{.bash_profile} always present.
+
+@item @code{bashrc} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.bashrc}.  Used
+for executing user's commands at start of interactive shell (The shell
+for interactive usage started by typing @code{bash} or by terminal app
+or any other program).
+
+@item @code{bash-logout} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.bash_logout}.
+Used for executing user's commands at the exit of login shell.  It won't
+be read in some cases (if the shell terminates by exec'ing another
+process for example).
+
+@end table
+
+@end deftp
+
+@subsubheading Zsh Home Service
+
+@deftp {Data Type} home-zsh-configuration
+Available @code{home-zsh-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{zsh}) (type: package)
+The Zsh package to use.
+
+@item @code{xdg-flavor?} (default: @code{#t}) (type: boolean)
+Place all the configs to @file{$XDG_CONFIG_HOME/zsh}.  Makes
+@file{~/.zshenv} to set @env{ZDOTDIR} to @file{$XDG_CONFIG_HOME/zsh}.
+Shell startup process will continue with
+@file{$XDG_CONFIG_HOME/zsh/.zshenv}.
+
+@item @code{environment-variables} (default: @code{()}) (type: alist)
+Association list of environment variables to set for the Zsh session.
+
+@item @code{zshenv} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.zshenv}.  Used
+for setting user's shell environment variables.  Must not contain
+commands assuming the presence of tty or producing output.  Will be read
+always.  Will be read before any other file in @env{ZDOTDIR}.
+
+@item @code{zprofile} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.zprofile}.  Used
+for executing user's commands at start of login shell (In most cases the
+shell started on tty just after login).  Will be read before
+@file{.zlogin}.
+
+@item @code{zshrc} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.zshrc}.  Used
+for executing user's commands at start of interactive shell (The shell
+for interactive usage started by typing @code{zsh} or by terminal app or
+any other program).
+
+@item @code{zlogin} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.zlogin}.  Used
+for executing user's commands at the end of starting process of login
+shell.
+
+@item @code{zlogout} (default: @code{()}) (type: text-config)
+List of strings or gexps, which will be added to @file{.zlogout}.  Used
+for executing user's commands at the exit of login shell.  It won't be
+read in some cases (if the shell terminates by exec'ing another process
+for example).
+
+@end table
+
+@end deftp
+
+@node Mcron Home Service
+@subsection Scheduled User's Job Execution
+
+@cindex cron
+@cindex mcron
+@cindex scheduling jobs
+
+The @code{(gnu home-services mcron)} module provides an interface to
+GNU@tie{}mcron, a daemon to run jobs at scheduled times (@pxref{Top,,,
+mcron, GNU@tie{}mcron}).  The information about system's mcron is
+applicable here (@pxref{Scheduled Job Execution}), the only difference
+for home services is that they have to be declared in a
+@code{home-envirnoment} record instead of an @code{operating-system}
+record.
+
+@defvr {Scheme Variable} home-mcron-service-type
+This is the type of the @code{mcron} home service, whose value is an
+@code{home-mcron-configuration} object.  It allows to manage scheduled
+tasks.
+
+This service type can be the target of a service extension that provides
+additional job specifications (@pxref{Service Composition}).  In other
+words, it is possible to define services that provide additional mcron
+jobs to run.
+@end defvr
+
+@deftp {Data Type} home-mcron-configuration
+Data type representing the configuration of mcron.
+
+@table @asis
+@item @code{mcron} (default: @var{mcron})
+The mcron package to use.
+
+@item @code{jobs}
+This is a list of gexps (@pxref{G-Expressions}), where each gexp
+corresponds to an mcron job specification (@pxref{Syntax, mcron job
+specifications,, mcron, GNU@tie{}mcron}).
+@end table
+@end deftp
+
+@node Shepherd Home Service
+@subsection Managing User's Daemons
+
+@cindex shepherd services
+
+@defvr {Scheme Variable} home-shepherd-service-type
+The service type for the userland Shepherd, which allows one to manage
+long-running processes or one-shot tasks.  User's Shepherd is not an
+init process (PID 1), but almost all other information described in
+(@pxref{Shepherd Services}) is applicable here too.
+
+This is the service type that extensions target when they want to create
+shepherd services (@pxref{Service Types and Services}, for an example).
+Each extension must pass a list of @code{<shepherd-service>}.  Its
+value must be a @code{shepherd-configuration}, as described below.
+@end defvr
+
+@deftp {Data Type} shepherd-configuration
+This data type represents the Shepherd's configuration.
+
+@table @code
+@item shepherd (default: @code{shepherd})
+The Shepherd package to use.
+
+@item auto-start? (default: @code{#t})
+Whether or not to start Shepherd on first login.
+
+@item services (default: @code{'()})
+A list of @code{<shepherd-service>} to start.
+You should probably use the service extension
+mechanism instead (@pxref{Shepherd Services}).
+@end table
+@end deftp
+
+@node Invoking guix home
+@section Invoking @code{guix home}
+
+Once you have written a home environment declaration (@pxref{Declaring
+the Home Environment,,,,}, it can be @dfn{instantiated} using the
+@command{guix home} command.  The synopsis is:
+
+@example
+guix home @var{options}@dots{} @var{action} @var{file}
+@end example
+
+@var{file} must be the name of a file containing a
+@code{home-environment} declaration.  @var{action} specifies how the
+home environment is instantiated, but there are few auxuliary actions
+which don't instantiate it.  Currently the following values are
+supported:
+
+@table @code
+@item search
+Display available home service type definitions that match the given
+regular expressions, sorted by relevance:
+
+@cindex shell
+@cindex shell-profile
+@cindex bash
+@cindex zsh
+@example
+$ guix home search shell
+name: home-shell-profile
+location: gnu/home-services/shells.scm:73:2
+extends: home-files
+description: Create `~/.profile', which is used for environment initialization
++ of POSIX compatible login shells.  Can be extended with a list of strings or
++ gexps.
+relevance: 6
+
+name: home-zsh-plugin-manager
+location: gnu/home-services/shellutils.scm:28:2
+extends: home-zsh home-profile
+description: Install plugins in profile and configure Zsh to load them.
+relevance: 1
+
+name: home-zsh-direnv
+location: gnu/home-services/shellutils.scm:69:2
+extends: home-profile home-zsh
+description: Enables `direnv' for `zsh'.  Adds hook to `.zshrc' and installs a
++ package in the profile.
+relevance: 1
+
+name: home-zsh-autosuggestions
+location: gnu/home-services/shellutils.scm:43:2
+extends: home-zsh-plugin-manager home-zsh
+description: Enables Fish-like fast/unobtrusive autosuggestions for `zsh' and
++ sets reasonable default values for some plugin's variables to improve perfomance
++ and adjust behavior: `(history completion)' is set for strategy, manual rebind
++ and async are enabled.
+relevance: 1
+
+name: home-zsh
+location: gnu/home-services/shells.scm:236:2
+extends: home-files home-profile
+description: Install and configure Zsh.
+relevance: 1
+
+name: home-bash
+location: gnu/home-services/shells.scm:388:2
+extends: home-files home-profile
+description: Install and configure Bash.
+relevance: 1
+
+@dots{}
+@end example
+
+As for @command{guix package --search}, the result is written in
+@code{recutils} format, which makes it easy to filter the output
+(@pxref{Top, GNU recutils databases,, recutils, GNU recutils manual}).
+
+@item reconfigure
+Build the home environment described in @var{file}, and switch to it.
+Switching means that the activation script will be evaluated and (in
+basic scenario) symlinks to configuration files generated from
+@code{home-environment} declaration will be created in @file{~}.  If the
+file with the same path already exists in home folder it will be moved
+to @file{~/TIMESTAMP-guix-home-legacy-configs-backup}, where TIMESTAMP
+is a current UNIX epoch time.
+
+@quotation Note
+It is highly recommended to run @command{guix pull} once before you run
+@command{guix home reconfigure} for the first time (@pxref{Invoking guix
+pull}).
+@end quotation
+
+This effects all the configuration specified in @var{file}.  The command
+starts Shepherd services specified in @var{file} that are not currently
+running; if a service is currently running, this command will arrange
+for it to be upgraded the next time it is stopped (e.g.@: by @code{herd
+stop X} or @code{herd restart X}).
+
+This command creates a new generation whose number is one greater than
+the current generation (as reported by @command{guix home
+list-generations}).  If that generation already exists, it will be
+overwritten.  This behavior mirrors that of @command{guix package}
+(@pxref{Invoking guix package}).
+
+@cindex provenance tracking, of the home environment
+Upon completion, the new home is deployed under @file{~/.guix-home}.
+This directory contains @dfn{provenance meta-data}: the list of channels
+in use (@pxref{Channels}) and @var{file} itself, when available.  You
+can view the provenance information by running:
+
+@example
+guix home describe
+@end example
+
+This information is useful should you later want to inspect how this
+particular generation was built.  In fact, assuming @var{file} is
+self-contained, you can later rebuild generation @var{n} of your
+home environment with:
+
+@example
+guix time-machine \
+  -C /var/guix/profiles/per-user/@var{USER}/guix-home-@var{n}-link/channels.scm -- \
+  home reconfigure \
+  /var/guix/profiles/per-user/@var{USER}/guix-home-@var{n}-link/configuration.scm
+
+@end example
+
+You can think of it as some sort of built-in version control!  Your
+home is not just a binary artifact: @emph{it carries its own source}.
+@c @xref{Service Reference, @code{provenance-service-type}}, for more
+@c information on provenance tracking.
+
+@c @footnote{This action (and the related actions
+@c @code{switch-generation} and @code{roll-back}) are usable after the
+@c home environment is initialized.}.
+
+@item switch-generation
+@cindex home generations
+Switch to an existing home generation.  This action atomically switches
+the home profile to the specified home generation.
+
+The target generation can be specified explicitly by its generation
+number.  For example, the following invocation would switch to home
+generation 7:
+
+@example
+guix home switch-generation 7
+@end example
+
+The target generation can also be specified relative to the current
+generation with the form @code{+N} or @code{-N}, where @code{+3} means
+``3 generations ahead of the current generation,'' and @code{-1} means
+``1 generation prior to the current generation.''  When specifying a
+negative value such as @code{-1}, you must precede it with @code{--} to
+prevent it from being parsed as an option.  For example:
+
+@example
+guix home switch-generation -- -1
+@end example
+
+This action will fail if the specified generation does not exist.
+
+@item roll-back
+@cindex rolling back
+Switch to the preceding home generation.  This is the inverse
+of @command{reconfigure}, and it is exactly the same as invoking
+@command{switch-generation} with an argument of @code{-1}.
+
+@item delete-generations
+@cindex deleting home generations
+@cindex saving space
+Delete home generations, making them candidates for garbage collection
+(@pxref{Invoking guix gc}, for information on how to run the ``garbage
+collector'').
+
+This works in the same way as @samp{guix package --delete-generations}
+(@pxref{Invoking guix package, @option{--delete-generations}}).  With no
+arguments, all home generations but the current one are deleted:
+
+@example
+guix home delete-generations
+@end example
+
+You can also select the generations you want to delete.  The example below
+deletes all the home generations that are more than two month old:
+
+@example
+guix home delete-generations 2m
+@end example
+
+@item build
+Build the derivation of the home environment, which includes all the
+configuration files and programs needed.  This action does not actually
+install anything.
+
+@item describe
+Describe the current home generation: its file name, as well as
+provenance information when available.
+
+@item list-generations
+List a summary of each generation of the home environment available on
+disk, in a human-readable way.  This is similar to the
+@option{--list-generations} option of @command{guix package}
+(@pxref{Invoking guix package}).
+
+Optionally, one can specify a pattern, with the same syntax that is used
+in @command{guix package --list-generations}, to restrict the list of
+generations displayed.  For instance, the following command displays
+generations that are up to 10 days old:
+
+@example
+$ guix home list-generations 10d
+@end example
+
+@end table
 
 @node Documentation
 @chapter Documentation

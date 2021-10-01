@@ -2,7 +2,8 @@
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Google LLC
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,8 @@
             file-system-mount?
             file-system-mount-may-fail?
             file-system-check?
+            file-system-skip-check-if-clean?
+            file-system-repair
             file-system-create-mount-point?
             file-system-dependencies
             file-system-location
@@ -123,6 +126,10 @@
                     (default #f))
   (check?           file-system-check?            ; Boolean
                     (default #t))
+  (skip-check-if-clean? file-system-skip-check-if-clean? ; Boolean
+                        (default #t))
+  (repair           file-system-repair            ; symbol or #f
+                    (default 'preen))
   (create-mount-point? file-system-create-mount-point? ; Boolean
                        (default #f))
   (dependencies     file-system-dependencies      ; list of <file-system>
@@ -231,8 +238,11 @@
   (char-set-complement (char-set #\/)))
 
 (define (file-prefix? file1 file2)
-  "Return #t if FILE1 denotes the name of a file that is a parent of FILE2,
-where both FILE1 and FILE2 are absolute file name.  For example:
+  "Return #t if FILE1 denotes the name of a file that is a parent of FILE2.
+FILE1 and FILE2 must both be either absolute or relative file names, else #f
+is returned.
+
+For example:
 
   (file-prefix? \"/gnu\" \"/gnu/store\")
   => #t
@@ -240,19 +250,27 @@ where both FILE1 and FILE2 are absolute file name.  For example:
   (file-prefix? \"/gn\" \"/gnu/store\")
   => #f
 "
-  (and (string-prefix? "/" file1)
-       (string-prefix? "/" file2)
-       (let loop ((file1 (string-tokenize file1 %not-slash))
-                  (file2 (string-tokenize file2 %not-slash)))
-         (match file1
-           (()
-            #t)
-           ((head1 tail1 ...)
-            (match file2
-              ((head2 tail2 ...)
-               (and (string=? head1 head2) (loop tail1 tail2)))
-              (()
-               #f)))))))
+  (define (absolute? file)
+    (string-prefix? "/" file))
+
+  (if (or (every absolute? (list file1 file2))
+          (every (negate absolute?) (list file1 file2)))
+      (let loop ((file1 (string-tokenize file1 %not-slash))
+                 (file2 (string-tokenize file2 %not-slash)))
+        (match file1
+          (()
+           #t)
+          ((head1 tail1 ...)
+           (match file2
+             ((head2 tail2 ...)
+              (and (string=? head1 head2) (loop tail1 tail2)))
+             (()
+              #f)))))
+      ;; FILE1 and FILE2 are a mix of absolute and relative file names.
+      #f))
+
+(define (file-name-depth file-name)
+  (length (string-tokenize file-name %not-slash)))
 
 (define* (file-system-device->string device #:key uuid-type)
   "Return the string representations of the DEVICE field of a <file-system>
@@ -307,19 +325,22 @@ store--e.g., if FS is the root file system."
 initrd code."
   (match fs
     (($ <file-system> device mount-point type flags options mount?
-                      mount-may-fail? needed-for-boot? check?)
+                      mount-may-fail? needed-for-boot?
+                      check? skip-check-if-clean? repair)
      ;; Note: Add new fields towards the end for compatibility.
      (list (cond ((uuid? device)
                   `(uuid ,(uuid-type device) ,(uuid-bytevector device)))
                  ((file-system-label? device)
                   `(file-system-label ,(file-system-label->string device)))
                  (else device))
-           mount-point type flags options mount-may-fail? check?))))
+           mount-point type flags options mount-may-fail?
+           check? skip-check-if-clean? repair))))
 
 (define (spec->file-system sexp)
   "Deserialize SEXP, a list, to the corresponding <file-system> object."
   (match sexp
-    ((device mount-point type flags options mount-may-fail? check?
+    ((device mount-point type flags options mount-may-fail?
+             check? skip-check-if-clean? repair
              _ ...)                               ;placeholder for new fields
      (file-system
        (device (match device
@@ -332,7 +353,9 @@ initrd code."
        (mount-point mount-point) (type type)
        (flags flags) (options options)
        (mount-may-fail? mount-may-fail?)
-       (check? check?)))))
+       (check? check?)
+       (skip-check-if-clean? skip-check-if-clean?)
+       (repair repair)))))
 
 (define (specification->file-system-mapping spec writable?)
   "Read the SPEC and return the corresponding <file-system-mapping>.  SPEC is
@@ -623,9 +646,6 @@ store is located, else #f."
     (if (string=? "/" (string-take s 1))
         s
         (string-append "/" s)))
-
-  (define (file-name-depth file-name)
-    (length (string-tokenize file-name %not-slash)))
 
   (and-let* ((btrfs-subvolume-fs (filter btrfs-subvolume? file-systems))
              (btrfs-subvolume-fs*

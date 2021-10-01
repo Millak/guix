@@ -2,6 +2,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
+;;; Copyright © 2021 Charles <charles.b.jackson@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,32 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system node))
+
+(define-public node-acorn
+  (package
+    (name "node-acorn")
+    (version "8.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/acornjs/acorn")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "068h5gysz8bbslq31dva8f223rdf8l7w6nxcxjnv4zdprwkzkhaa"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'change-directory
+           (lambda _
+             (chdir "acorn"))))))
+    (home-page "https://github.com/acornjs/acorn/tree/master/acorn")
+    (synopsis "Javascript-based Javascript parser")
+    (description "Acornjs is a Javascript parser with many options and an
+architecture supporting plugins.")
+    (license license:expat)))
 
 (define-public node-color-name
   (package
@@ -298,3 +325,93 @@ function with browser support.")
     (synopsis "Callback wrapping utility")
     (description "@code{wrappy} is a utility for Node.js to wrap callbacks.")
     (license license:isc)))
+
+(define-public node-once
+  (package
+    (name "node-once")
+    (version "1.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/isaacs/once")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1z8dcbf28dqdcp4wb0c53wrs90a07nkrax2c9kk26dsk1dhrnxav"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f                      ; FIXME: tests depend on node-tap
+       #:phases
+       (modify-phases %standard-phases
+         ;; The default configure phase fails due to tap being missing, as we do
+         ;; not have tap packaged yet.  It is used only for tests.  This package
+         ;; still works as a dependency of node-glob and node-inflight.
+         (delete 'configure))))
+    (inputs
+     `(("node-wrappy" ,node-wrappy)))
+    (home-page "https://github.com/isaacs/once")
+    (synopsis "Node.js module to call a function only once")
+    (description
+     "@code{once} is a Node.js module to call a function exactly one time.
+Subsequent calls will either return the cached previous value or throw an error
+if desired.")
+    (license license:isc)))
+
+(define-public node-irc-colors
+  (package
+    (name "node-irc-colors")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fent/irc-colors.js")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0q3y34rbnlc55jcakmdxkicwazyvyph9r6gaf6hi8k7wj2nfwfli"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f                      ; FIXME: tests depend on node-istanbul
+       #:phases
+       (modify-phases %standard-phases
+         ;; The default configure phase fails due to various packages
+         ;; being missing, as we don't have them packaged yet.
+         (delete 'configure))))
+    (home-page "https://github.com/fent/irc-colors.js")
+    (synopsis "Node.js module providing color and formatting for IRC")
+    (description "@code{node-irc-colors} is a Node.js module that
+allows you to easily use colored output and formatting in IRC bots.
+It contains functions for colours as well as more complex formatting
+such as rainbows.")
+    (license license:expat)))
+
+(define-public node-irc
+  (package
+    (name "node-irc")
+    (version "0.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martynsmith/node-irc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ln4qfx20jbwg4cp8lp0vf27m5281z2sz16d15xd6150n26cbi4x"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f                      ; FIXME: tests depend on node-faucet
+       #:phases
+       (modify-phases %standard-phases
+         ;; The default configure phase fails due to various packages
+         ;; being missing, as we don't have them packaged yet.
+         (delete 'configure))))
+    (inputs
+     `(("node-irc-colors" ,node-irc-colors)))
+    (home-page "https://github.com/martynsmith/node-irc")
+    (synopsis "IRC client library for Node.js")
+    (description "@code{node-irc} is an IRC client library for Node.js.
+It has functions for joining, parting, talking, and many other IRC commands.")
+    (license license:gpl3+)))

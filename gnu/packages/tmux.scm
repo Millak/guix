@@ -6,8 +6,9 @@
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
+;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,7 +44,7 @@
 (define-public tmux
   (package
     (name "tmux")
-    (version "3.1c")
+    (version "3.2a")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -51,12 +52,12 @@
                     version "/tmux-" version ".tar.gz"))
              (sha256
               (base32
-               "11l3r337ly2wxwdrgjg19bdxkbqpagqaykrdj2hk7vvv8hh753wi"))))
+               "0pyhmipg6vxvxjk7mr410007qk98rh5q0mljvkdaisibz2j565am"))))
     (build-system gnu-build-system)
     (inputs
      `(("libevent" ,libevent)
        ("ncurses" ,ncurses)))
-    (home-page "https://tmux.github.io/")
+    (home-page "https://github.com/tmux/tmux/wiki")
     (synopsis "Terminal multiplexer")
     (description
      "tmux is a terminal multiplexer: it enables a number of terminals (or
@@ -66,36 +67,39 @@ continue running in the background, then later reattached.")
     (license license:isc)))
 
 (define-public tmux-themepack
-  (let ((commit "03a372866f7677f7fe63bcee140b48b9fd372c48")
-        (revision "1"))
-    (package
-      (name "tmux-themepack")
-      (version (git-version "0.0.0" revision commit)) ; no version tags
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/jimeh/tmux-themepack")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1d3k87mq5lca042jbap5kxskjy3kg79wjhhpnm6jacbn3anc67zl"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f                    ; no test suite
-         #:phases (modify-phases %standard-phases
-                    (delete 'configure)
-                    (delete 'build)
-                    (replace 'install
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        (let* ((out (string-append
-                                     (assoc-ref outputs "out")
-                                     "/share/" ,name "-" ,version)))
-                          (copy-recursively "." out)))))))
-      (home-page "https://github.com/jimeh/tmux-themepack")
-      (synopsis "Collection of themes for Tmux")
-      (description "A collection of various themes for Tmux.")
-      (license license:wtfpl2))))
+  (package
+    (name "tmux-themepack")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jimeh/tmux-themepack")
+                    (commit version)))
+              (sha256
+               (base32
+                "00dmd16ngyag3n46rbnl9vy82ih6g0y02yfwkid32a1c8vdbvb3z"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                    ; no test suite
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (delete 'build)
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (string-append
+                                   (assoc-ref outputs "out")
+                                   "/share/" ,name)))
+                        (copy-recursively "powerline" (string-append out "/powerline"))
+                        (for-each (lambda (file) (copy-file file (string-append out "/" file)))
+                                  '("basic.tmuxtheme"
+                                    "default.tmuxtheme"
+                                    "themepack.tmux"))))))))
+    (home-page "https://github.com/jimeh/tmux-themepack")
+    (synopsis "Collection of themes for Tmux")
+    (description
+     "This package provides several themes for Tmux, the terminal multiplexer.")
+    (license license:wtfpl2)))
 
 (define-public tmuxifier
   (package
@@ -145,7 +149,7 @@ windows.")
 (define-public python-libtmux
   (package
     (name "python-libtmux")
-    (version "0.8.5")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -155,7 +159,7 @@ windows.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vrd99kl2gsk49mvbp6k7l1k7r96vf1fczsqclb62yd4hdpp7zaa"))))
+        (base32 "068vy92f2668vrjvd3laqvxd48cmna66f2msdmwk2hm9qxklgf51"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("procps" ,procps)))             ;tests need top

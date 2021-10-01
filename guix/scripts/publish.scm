@@ -1,9 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 by Amar M. Singh <nly@disroot.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (ice-9 binary-ports)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 poll)
   #:use-module (ice-9 regex)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 threads)
@@ -33,6 +35,7 @@
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
+  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -101,6 +104,8 @@ Publish ~a over HTTP.\n") %store-directory)
       --workers=N        use N workers to bake items"))
   (display (G_ "
       --ttl=TTL          announce narinfos can be cached for TTL seconds"))
+  (display (G_ "
+      --negative-ttl=TTL announce missing narinfos can be cached for TTL seconds"))
   (display (G_ "
       --nar-path=PATH    use PATH as the prefix for nar URLs"))
   (display (G_ "
@@ -224,6 +229,13 @@ usage."
                       (leave (G_ "~a: invalid duration~%") arg))
                     (alist-cons 'narinfo-ttl (time-second duration)
                                 result))))
+        (option '("negative-ttl") #t #f
+                (lambda (opt name arg result)
+                  (let ((duration (string->duration arg)))
+                    (unless duration
+                      (leave (G_ "~a: invalid duration~%") arg))
+                    (alist-cons 'narinfo-negative-ttl (time-second duration)
+                                result))))
         (option '("nar-path") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'nar-path arg result)))
@@ -309,7 +321,7 @@ with COMPRESSION, starting at NAR-PATH."
     (format #f "URL: ~a~%Compression: ~a~%~@[FileSize: ~a~%~]"
             url (compression-type compression) file-size)))
 
-(define* (narinfo-string store store-path key
+(define* (narinfo-string store store-path
                          #:key (compressions (list %no-compression))
                          (nar-path "nar") (file-sizes '()))
   "Generate a narinfo key/value string for STORE-PATH; an exception is raised
@@ -347,23 +359,13 @@ References: ~a~%"
                                                             compression)))
                                   compressions)
                              hash size references))
-         ;; Do not render a "Deriver" or "System" line if we are rendering
-         ;; info for a derivation.
+         ;; Do not render a "Deriver" line if we are rendering info for a
+         ;; derivation.  Also do not render a "System" line that would be
+         ;; expensive to compute and is currently unused.
          (info       (if (not deriver)
                          base-info
-                         (catch 'system-error
-                           (lambda ()
-                             (let ((drv (read-derivation-from-file deriver)))
-                               (format #f "~aSystem: ~a~%Deriver: ~a~%"
-                                       base-info (derivation-system drv)
-                                       (basename deriver))))
-                           (lambda args
-                             ;; DERIVER might be missing, but that's fine:
-                             ;; it's only used for <substitutable> where it's
-                             ;; optional.  'System' is currently unused.
-                             (if (= ENOENT (system-error-errno args))
-                                 base-info
-                                 (apply throw args))))))
+                         (format #f "~aDeriver: ~a~%"
+                                 base-info (basename deriver))))
          (signature  (base64-encode-string
                       (canonical-sexp->string (signed-string info)))))
     (format #f "~aSignature: 1;~a;~a~%" info (gethostname) signature)))
@@ -390,20 +392,20 @@ References: ~a~%"
 
 (define* (render-narinfo store request hash
                          #:key ttl (compressions (list %no-compression))
-                         (nar-path "nar"))
+                         (nar-path "nar") negative-ttl)
   "Render metadata for the store path corresponding to HASH.  If TTL is true,
 advertise it as the maximum validity period (in seconds) via the
 'Cache-Control' header.  This allows 'guix substitute' to cache it for an
 appropriate duration.  NAR-PATH specifies the prefix for nar URLs."
   (let ((store-path (hash-part->path store hash)))
     (if (string-null? store-path)
-        (not-found request #:phrase "")
+        (not-found request #:phrase "" #:ttl negative-ttl)
         (values `((content-type . (application/x-nix-narinfo))
                   ,@(if ttl
                         `((cache-control (max-age . ,ttl)))
                         '()))
                 (cut display
-                  (narinfo-string store store-path (%private-key)
+                  (narinfo-string store store-path
                                   #:nar-path nar-path
                                   #:compressions compressions)
                   <>)))))
@@ -512,7 +514,7 @@ interpreted as the basename of a store item."
 
 (define* (render-narinfo/cached store request hash
                                 #:key ttl (compressions (list %no-compression))
-                                (nar-path "nar")
+                                (nar-path "nar") negative-ttl
                                 cache pool)
   "Respond to the narinfo request for REQUEST.  If the narinfo is available in
 CACHE, then send it; otherwise, return 404 and \"bake\" that nar and narinfo
@@ -536,7 +538,7 @@ requested using POOL."
                                                 #:compression
                                                 (first compressions)))))
     (cond ((string-null? item)
-           (not-found request))
+           (not-found request #:ttl negative-ttl))
           ((file-exists? cached)
            ;; Narinfo is in cache, send it.
            (values `((content-type . (application/x-nix-narinfo))
@@ -555,7 +557,6 @@ requested using POOL."
              (single-baker item
                ;; Check whether CACHED has been produced in the meantime.
                (unless (file-exists? cached)
-                 ;; (format #t "baking ~s~%" item)
                  (bake-narinfo+nar cache item
                                    #:ttl ttl
                                    #:compressions compressions
@@ -584,7 +585,7 @@ requested using POOL."
                           #:phrase "We're baking it"
                           #:ttl 300)))          ;should be available within 5m
           (else
-           (not-found request #:phrase "")))))
+           (not-found request #:phrase "" #:ttl negative-ttl)))))
 
 (define (compress-nar cache item compression)
   "Save in directory CACHE the nar for ITEM compressed with COMPRESSION."
@@ -643,7 +644,6 @@ requested using POOL."
              (with-store store
                (let ((sizes (filter-map compressed-nar-size compression)))
                  (display (narinfo-string store item
-                                          (%private-key)
                                           #:nar-path nar-path
                                           #:compressions compressions
                                           #:file-sizes sizes)
@@ -860,60 +860,115 @@ example: \"/foo/bar\" yields '(\"foo\" \"bar\")."
       exp ...)
     (const #f)))
 
-(define (nar-response-port response compression)
-  "Return a port on which to write the body of RESPONSE, the response of a
-/nar request, according to COMPRESSION."
+(define (nar-compressed-port port compression)
+  "Return a port on which to write the body of the response of a /nar request,
+according to COMPRESSION."
   (match compression
     (($ <compression> 'gzip level)
      ;; Note: We cannot used chunked encoding here because
      ;; 'make-gzip-output-port' wants a file port.
-     (make-gzip-output-port (response-port response)
+     (make-gzip-output-port port
                             #:level level
                             #:buffer-size %default-buffer-size))
     (($ <compression> 'lzip level)
-     (make-lzip-output-port (response-port response)
+     (make-lzip-output-port port
                             #:level level))
     (($ <compression> 'zstd level)
-     (make-zstd-output-port (response-port response)
+     (make-zstd-output-port port
                             #:level level))
     (($ <compression> 'none)
-     (response-port response))
+     port)
     (#f
-     (response-port response))))
+     port)))
 
 (define (http-write server client response body)
   "Write RESPONSE and BODY to CLIENT, possibly in a separate thread to avoid
 blocking."
+  ;; XXX: The default Guile web server implementation supports the keep-alive
+  ;; mechanism.  However, as we run our own modified version of the http-write
+  ;; procedure, we need to access a few server implementation details to keep
+  ;; it functional.
+  (define *error-events*
+    (logior POLLHUP POLLERR))
+
+  (define *read-events*
+    POLLIN)
+
+  (define *events*
+    (logior *error-events* *read-events*))
+
+  ;; Access the server poll set variable.
+  (define http-poll-set
+    (@@ (web server http) http-poll-set))
+
+  ;; Copied from (web server http).
+  (define (keep-alive? response)
+    (let ((v (response-version response)))
+      (and (or (< (response-code response) 400)
+               (= (response-code response) 404))
+           (case (car v)
+             ((1)
+              (case (cdr v)
+                ((1) (not (memq 'close (response-connection response))))
+                ((0) (memq 'keep-alive (response-connection response)))))
+             (else #f)))))
+
+  (define (keep-alive port)
+    "Add the given PORT the server poll set."
+    (force-output port)
+    (poll-set-add! (http-poll-set server) port *events*))
+
+  (define compression
+    (assoc-ref (response-headers response) 'x-nar-compression))
+
   (match (response-content-type response)
     (('application/x-nix-archive . _)
-     ;; Sending the the whole archive can take time so do it in a separate
-     ;; thread so that the main thread can keep working in the meantime.
-     (call-with-new-thread
-      (lambda ()
-        (set-thread-name "publish nar")
-        (let* ((compression (assoc-ref (response-headers response)
-                                       'x-nar-compression))
-               (response    (write-response (sans-content-length response)
-                                            client))
-               (port        (begin
-                              (force-output client)
-                              (configure-socket client)
-                              (nar-response-port response compression))))
-          ;; XXX: Given our ugly workaround for <http://bugs.gnu.org/21093> in
-          ;; 'render-nar', BODY here is just the file name of the store item.
-          ;; We call 'write-file' from here because we know that's the only
-          ;; way to avoid building the whole nar in memory, which could
-          ;; quickly become a real problem.  As a bonus, we even do
-          ;; sendfile(2) directly from the store files to the socket.
-          (swallow-zlib-error
-           (swallow-EPIPE
-            (write-file (utf8->string body) port)))
-          (swallow-zlib-error
-           (close-port port))
-          (values)))))
+     ;; When compressing the NAR on the go, we cannot announce its size
+     ;; beforehand to the client. Hence, the keep-alive mechanism cannot work
+     ;; here.
+     (let ((keep-alive? (and (eq? (compression-type compression) 'none)
+                             (keep-alive? response))))
+       ;; Add the client to the server poll set, so that we can receive
+       ;; further requests without closing the connection.
+       (when keep-alive?
+         (keep-alive client))
+       ;; Sending the the whole archive can take time so do it in a separate
+       ;; thread so that the main thread can keep working in the meantime.
+       (call-with-new-thread
+        (lambda ()
+          (set-thread-name "publish nar")
+          (let* ((response    (write-response (sans-content-length response)
+                                              client))
+                 (port        (begin
+                                (force-output client)
+                                (configure-socket client)
+                                ;; Duplicate the response port, so that it is
+                                ;; not automatically closed when closing the
+                                ;; returned port.  This is needed for the
+                                ;; keep-alive mechanism.
+                                (nar-compressed-port
+                                 (duplicate-port
+                                  (response-port response) "w+0b")
+                                 compression))))
+            ;; XXX: Given our ugly workaround for <http://bugs.gnu.org/21093>
+            ;; in 'render-nar', BODY here is just the file name of the store
+            ;; item.  We call 'write-file' from here because we know that's
+            ;; the only way to avoid building the whole nar in memory, which
+            ;; could quickly become a real problem.  As a bonus, we even do
+            ;; sendfile(2) directly from the store files to the socket.
+            (swallow-zlib-error
+             (swallow-EPIPE
+              (write-file (utf8->string body) port)))
+            (swallow-zlib-error
+             (close-port port)
+             (unless keep-alive?
+               (close-port client)))
+            (values))))))
     (_
      (match (assoc-ref (response-headers response) 'x-raw-file)
        ((? string? file)
+        (when (keep-alive? response)
+          (keep-alive client))
         ;; Send a raw file in a separate thread.
         (call-with-new-thread
          (lambda ()
@@ -923,19 +978,20 @@ blocking."
                (call-with-input-file file
                  (lambda (input)
                    (let* ((size     (stat:size (stat input)))
-                          (response (write-response (with-content-length response
-                                                                         size)
-                                                    client))
+                          (response (write-response
+                                     (with-content-length response size)
+                                     client))
                           (output   (response-port response)))
                      (configure-socket client)
                      (if (file-port? output)
                          (sendfile output input size)
                          (dump-port input output))
-                     (close-port output)
+                     (unless (keep-alive? response)
+                       (close-port output))
                      (values)))))
              (lambda args
-               ;; If the file was GC'd behind our back, that's fine.  Likewise if
-               ;; the client closes the connection.
+               ;; If the file was GC'd behind our back, that's fine.  Likewise
+               ;; if the client closes the connection.
                (unless (memv (system-error-errno args)
                              (list ENOENT EPIPE ECONNRESET))
                  (apply throw args))
@@ -971,10 +1027,22 @@ methods, return the applicable compression."
             compressions)
       (default-compression requested-type)))
 
+(define (preserve-connection-headers request response)
+  "Add REQUEST's 'connection' header, if any, to HEADERS, a list of response
+headers."
+  (if (pair? response)
+      (let ((connection
+             (assq 'connection (request-headers request))))
+        (append response
+                (if connection
+                    (list connection)
+                    '())))
+      response))
+
 (define* (make-request-handler store
                                #:key
                                cache pool
-                               narinfo-ttl
+                               narinfo-ttl narinfo-negative-ttl
                                (nar-path "nar")
                                (compressions (list %no-compression)))
   (define compression-type?
@@ -984,7 +1052,7 @@ methods, return the applicable compression."
     (let ((expected (split-and-decode-uri-path nar-path)))
       (cut equal? expected <>)))
 
-  (lambda (request body)
+  (define (handle request body)
     (format #t "~a ~a~%"
             (request-method request)
             (uri-path (request-uri request)))
@@ -1006,10 +1074,12 @@ methods, return the applicable compression."
                                       #:cache cache
                                       #:pool pool
                                       #:ttl narinfo-ttl
+                                      #:negative-ttl narinfo-negative-ttl
                                       #:nar-path nar-path
                                       #:compressions compressions)
                (render-narinfo store request hash
                                #:ttl narinfo-ttl
+                               #:negative-ttl narinfo-negative-ttl
                                #:nar-path nar-path
                                #:compressions compressions)))
           ;; /nar/file/NAME/sha256/HASH
@@ -1054,7 +1124,15 @@ methods, return the applicable compression."
                (not-found request)))
 
           (x (not-found request)))
-        (not-found request))))
+        (not-found request)))
+
+  ;; Preserve the request's 'connection' header in the response, so that the
+  ;; server can close the connection if this is requested by the client.
+  (lambda (request body)
+    (let-values (((response response-body)
+                  (handle request body)))
+      (values (preserve-connection-headers request response)
+              response-body))))
 
 (define (service-name)
   "Return the Avahi service name of the server."
@@ -1068,7 +1146,7 @@ methods, return the applicable compression."
                              #:key
                              advertise? port
                              (compressions (list %no-compression))
-                             (nar-path "nar") narinfo-ttl
+                             (nar-path "nar") narinfo-ttl narinfo-negative-ttl
                              cache pool)
   (when advertise?
     (let ((name (service-name)))
@@ -1084,6 +1162,7 @@ methods, return the applicable compression."
                                     #:pool pool
                                     #:nar-path nar-path
                                     #:narinfo-ttl narinfo-ttl
+                                    #:narinfo-negative-ttl narinfo-negative-ttl
                                     #:compressions compressions)
               concurrent-http-server
               `(#:socket ,socket)))
@@ -1127,6 +1206,7 @@ methods, return the applicable compression."
            (user        (assoc-ref opts 'user))
            (port        (assoc-ref opts 'port))
            (ttl         (assoc-ref opts 'narinfo-ttl))
+           (negative-ttl (assoc-ref opts 'narinfo-negative-ttl))
            (compressions (match (filter-map (match-lambda
                                               (('compression . compression)
                                                compression)
@@ -1192,6 +1272,7 @@ consider using the '--user' option!~%")))
                                                            "publish worker"))
                               #:nar-path nar-path
                               #:compressions compressions
+                              #:narinfo-negative-ttl negative-ttl
                               #:narinfo-ttl ttl))))))
 
 ;;; Local Variables:

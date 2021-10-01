@@ -7,12 +7,13 @@
 ;;; Copyright © 2019 Meiyo Peng <meiyo.peng@gmail.com>
 ;;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <jannek@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,7 +63,8 @@
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages zile)
+  #:use-module (gnu packages text-editors)
+  #:use-module (gnu packages wget)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services base)
@@ -72,6 +74,7 @@
   #:use-module (gnu system locale)
   #:use-module (gnu system pam)
   #:use-module (gnu system linux-initrd)
+  #:use-module (gnu system setuid)
   #:use-module (gnu system uuid)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system mapped-devices)
@@ -266,7 +269,8 @@
   (pam-services operating-system-pam-services     ; list of PAM services
                 (default (base-pam-services)))
   (setuid-programs operating-system-setuid-programs
-                   (default %setuid-programs))    ; list of string-valued gexps
+                   (default %setuid-programs)     ; list of <setuid-program>
+                   (sanitize ensure-setuid-program-list))
 
   (sudoers-file operating-system-sudoers-file     ; file-like
                 (default %sudoers-specification))
@@ -601,16 +605,6 @@ OS."
       (file-append (operating-system-kernel os)
                       "/" (system-linux-image-file-name))))
 
-(define (package-for-kernel target-kernel module-package)
-  "Return a package like MODULE-PACKAGE, adapted for TARGET-KERNEL, if
-possible (that is if there's a LINUX keyword argument in the build system)."
-  (package
-    (inherit module-package)
-    (arguments
-     (substitute-keyword-arguments (package-arguments module-package)
-       ((#:linux kernel #f)
-        target-kernel)))))
-
 (define %default-modprobe-blacklist
   ;; List of kernel modules to blacklist by default.
   '("usbmouse" ;races with bcm5974, see <https://bugs.gnu.org/35574>
@@ -628,23 +622,12 @@ value of the SYSTEM-SERVICE-TYPE service."
   (let* ((locale  (operating-system-locale-directory os))
          (kernel  (operating-system-kernel os))
          (hurd    (operating-system-hurd os))
-         (modules (operating-system-kernel-loadable-modules os))
-         (kernel  (if hurd
-                      kernel
-                      (profile
-                       (content (packages->manifest
-                                 (cons kernel
-                                       (map (lambda (module)
-                                              (if (package? module)
-                                                  (package-for-kernel kernel
-                                                                      module)
-                                                  module))
-                                            modules))))
-                       (hooks (list linux-module-database)))))
          (initrd  (and (not hurd) (operating-system-initrd-file os)))
          (params  (operating-system-boot-parameters-file os)))
-    `(("kernel" ,kernel)
-      ,@(if hurd `(("hurd" ,hurd)) '())
+    `(,@(if hurd
+          `(("hurd" ,hurd)
+            ("kernel" ,kernel))
+          '())
       ("parameters" ,params)
       ,@(if initrd `(("initrd" ,initrd)) '())
       ("locale" ,locale))))   ;used by libc
@@ -664,6 +647,10 @@ bookkeeping."
          (host-name (host-name-service (operating-system-host-name os)))
          (entries   (operating-system-directory-base-entries os)))
     (cons* (service system-service-type entries)
+           (service linux-builder-service-type
+                    (linux-builder-configuration
+                      (kernel   (operating-system-kernel os))
+                      (modules  (operating-system-kernel-loadable-modules os))))
            %boot-service
 
            ;; %SHEPHERD-ROOT-SERVICE must come last so that the gexp that
@@ -790,7 +777,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
 
 (define %base-packages-interactive
   ;; Default set of common interactive packages.
-  (list less zile nano
+  (list less mg nano
         nvi
         man-db
         info-reader                     ;the standalone Info reader (no Perl)
@@ -806,6 +793,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
   ;; Default set of networking packages.
   (list inetutils isc-dhcp
         iproute
+        wget
         ;; wireless-tools is deprecated in favor of iw, but it's still what
         ;; many people are familiar with, so keep it around.
         iw wireless-tools))
@@ -821,7 +809,8 @@ of PROVENANCE-SERVICE-TYPE to its services."
         dosfstools
         btrfs-progs
         f2fs-tools
-        jfsutils))
+        jfsutils
+        xfsprogs))
 
 (define %base-packages
   ;; Default set of packages globally visible.  It should include anything
@@ -981,7 +970,12 @@ fi\n")))
        ;; Some programs (e.g., GLib) look at /etc/timezone to find the
        ;; name of the current timezone.  For details, see
        ;; https://lists.gnu.org/archive/html/guix-devel/2019-07/msg00166.html
-       ("timezone" ,(plain-file "timezone" (operating-system-timezone os)))
+       ;; Some programs expect a terminating newline.
+       ("timezone" ,(plain-file "timezone"
+                                (string-append
+                                 (string-trim-both
+                                  (operating-system-timezone os))
+                                 "\n")))
        ("localtime" ,(file-append tzdata "/share/zoneinfo/"
                                   (operating-system-timezone os)))
        ,@(if sudoers
@@ -1079,25 +1073,50 @@ use 'plain-file' instead~%")
     ;; TODO: Remove when glibc@2.23 is long gone.
     ("GUIX_LOCPATH" . "/run/current-system/locale")))
 
+(define-syntax-rule (ensure-setuid-program-list lst)
+  "Ensure LST is a list of <setuid-program> records and warn otherwise."
+  (%ensure-setuid-program-list lst (current-source-location)))
+
+(define (%ensure-setuid-program-list lst location)
+  (define warned? #f)
+
+  (define (warn-once)
+    (unless warned?
+      (warning (source-properties->location location)
+               (G_ "representing setuid programs with file-like objects is \
+deprecated; use 'setuid-program' instead~%"))
+      (set! warned? #t)))
+
+  (map (match-lambda
+         ((? setuid-program? program)
+          program)
+         (program
+          ;; PROGRAM is a file-like or a gexp like #~(string-append #$foo
+          ;; "/bin/bar").
+          (warn-once)
+          (setuid-program (program program))))
+       lst))
+
 (define %setuid-programs
   ;; Default set of setuid-root programs.
   (let ((shadow (@ (gnu packages admin) shadow)))
-    (list (file-append shadow "/bin/passwd")
-          (file-append shadow "/bin/sg")
-          (file-append shadow "/bin/su")
-          (file-append shadow "/bin/newgrp")
-          (file-append shadow "/bin/newuidmap")
-          (file-append shadow "/bin/newgidmap")
-          (file-append inetutils "/bin/ping")
-          (file-append inetutils "/bin/ping6")
-          (file-append sudo "/bin/sudo")
-          (file-append sudo "/bin/sudoedit")
-          (file-append fuse "/bin/fusermount")
+    (map file-like->setuid-program
+         (list (file-append shadow "/bin/passwd")
+               (file-append shadow "/bin/sg")
+               (file-append shadow "/bin/su")
+               (file-append shadow "/bin/newgrp")
+               (file-append shadow "/bin/newuidmap")
+               (file-append shadow "/bin/newgidmap")
+               (file-append inetutils "/bin/ping")
+               (file-append inetutils "/bin/ping6")
+               (file-append sudo "/bin/sudo")
+               (file-append sudo "/bin/sudoedit")
+               (file-append fuse "/bin/fusermount")
 
-          ;; To allow mounts with the "user" option, "mount" and "umount" must
-          ;; be setuid-root.
-          (file-append util-linux "/bin/mount")
-          (file-append util-linux "/bin/umount"))))
+               ;; To allow mounts with the "user" option, "mount" and "umount" must
+               ;; be setuid-root.
+               (file-append util-linux "/bin/mount")
+               (file-append util-linux "/bin/umount")))))
 
 (define %sudoers-specification
   ;; Default /etc/sudoers contents: 'root' and all members of the 'wheel'

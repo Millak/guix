@@ -17,6 +17,8 @@
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,12 +42,11 @@
             apsl2
             asl1.1 asl2.0
             boost1.0
-            bsd-0 bsd-2 bsd-3 bsd-4
+            bsd-0 bsd-1 bsd-2 bsd-3 bsd-4
             non-copyleft
             cc0
             cc-by2.0 cc-by3.0 cc-by4.0
             cc-by-sa2.0 cc-by-sa3.0 cc-by-sa4.0
-            cc-sampling-plus-1.0
             cddl1.0 cddl1.1
             cecill cecill-b cecill-c
             artistic2.0 clarified-artistic
@@ -55,6 +56,7 @@
             edl1.0
             epl1.0
             epl2.0
+            eupl1.2
             expat
             freetype
             freebsd-doc
@@ -166,6 +168,11 @@
            "https://spdx.org/licenses/0BSD.html"
            "https://opensource.org/licenses/0BSD"))
 
+(define bsd-1
+  (license "BSD 1-Clause"
+           "https://spdx.org/licenses/BSD-1-Clause.html"
+           "https://opensource.org/licenses/BSD-1-Clause"))
+
 (define bsd-2
   (license "FreeBSD"
            "http://directory.fsf.org/wiki/License:FreeBSD"
@@ -226,11 +233,6 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "CC-BY 2.0"
            "http://creativecommons.org/licenses/by/2.0/"
            "Creative Commons Attribution 2.0 Generic"))
-
-(define cc-sampling-plus-1.0
-  (license "CC-Sampling+ 1.0"
-           "https://creativecommons.org/licenses/sampling+/1.0"
-           "Creative Commons Sampling Plus 1.0"))
 
 (define cddl1.0
   (license "CDDL 1.0"
@@ -300,6 +302,11 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "EPL 2.0"
            "https://www.eclipse.org/legal/epl-2.0/"
            "https://www.gnu.org/licenses/license-list#EPL2"))
+
+(define eupl1.2
+  (license "EUPL 1.2"
+           "https://directory.fsf.org/wiki/License:EUPL-1.2"
+           "https://www.gnu.org/licenses/license-list#EUPL-1.2"))
 
 (define expat
   (license "Expat"

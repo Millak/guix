@@ -17,6 +17,8 @@
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,12 +48,15 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages bootstrap)          ;for 'bootstrap-guile-origin'
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages file)
@@ -64,12 +69,14 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages hurd)
+  #:use-module (gnu packages less)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages man)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages perl)
@@ -77,11 +84,13 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -90,6 +99,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages version-control)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -131,9 +141,9 @@
   ;; Latest version of Guix, which may or may not correspond to a release.
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
-  (let ((version "1.2.0")
-        (commit "2d73086262e1fb33cd0f0f16f74a495fe06b38aa")
-        (revision 20))
+  (let ((version "1.3.0")
+        (commit "ff775440218c4f576d51aa01ce419b1fb786170a")
+        (revision 7))
     (package
       (name "guix")
 
@@ -149,7 +159,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "070frsjcbrdqh68rhrck6w3cprbq1hjpd24z44qd017zaicix1f0"))
+                  "1fy5d2nyc1zk847bmc8jhs7nswdlddg090vsnm733x9gka01xj8j"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -261,11 +271,9 @@ $(prefix)/etc/openrc\n")))
                           (intern (assoc-ref inputs "boot-guile") #f)
 
                           ;; On x86_64 some tests need the i686 Guile.
-                          ,@(if (and (not (%current-target-system))
-                                     (string=? (%current-system)
-                                               "x86_64-linux"))
-                                '((intern (assoc-ref inputs "boot-guile/i686") #f))
-                                '())
+                          (when (and (not target)
+                                     (string=? system "x86_64-linux"))
+                            (intern (assoc-ref inputs "boot-guile/i686") #f))
 
                           ;; Copy the bootstrap executables.
                           (for-each (lambda (input)
@@ -299,9 +307,8 @@ $(prefix)/etc/openrc\n")))
                         ;; Make sure the 'guix' command finds GnuTLS,
                         ;; Guile-JSON, and Guile-Git automatically.
                         (let* ((out    (assoc-ref outputs "out"))
-                               (guile  ,@(if (%current-target-system)
-                                             '((assoc-ref native-inputs "guile"))
-                                             '((assoc-ref inputs "guile"))))
+                               (guile  (assoc-ref (or native-inputs inputs)
+                                                  "guile"))
                                (avahi  (assoc-ref inputs "guile-avahi"))
                                (gcrypt (assoc-ref inputs "guile-gcrypt"))
                                (guile-lib   (assoc-ref inputs "guile-lib"))
@@ -315,42 +322,49 @@ $(prefix)/etc/openrc\n")))
                                                   "guile-bytestructures"))
                                (ssh    (assoc-ref inputs "guile-ssh"))
                                (gnutls (assoc-ref inputs "gnutls"))
+                               (disarchive (assoc-ref inputs "disarchive"))
                                (locales (assoc-ref inputs "glibc-utf8-locales"))
                                (deps   (list gcrypt json sqlite gnutls git
-                                             bs ssh zlib lzlib zstd))
-                               (deps*  ,@(if (%current-target-system)
-                                             '(deps)
-                                             '((cons avahi deps))))
+                                             bs ssh zlib lzlib zstd guile-lib
+                                             disarchive))
+                               (deps*  (if avahi (cons avahi deps) deps))
                                (effective
                                 (read-line
                                  (open-pipe* OPEN_READ
                                              (string-append guile "/bin/guile")
                                              "-c" "(display (effective-version))")))
-                               (path   (string-join
-                                        (map (cut string-append <>
-                                                  "/share/guile/site/"
-                                                  effective)
-                                             (delete #f deps*))
-                                        ":"))
-                               (gopath (string-join
-                                        (map (cut string-append <>
-                                                  "/lib/guile/" effective
-                                                  "/site-ccache")
-                                             (delete #f deps*))
-                                        ":"))
+                               (path   (map (cut string-append <>
+                                                 "/share/guile/site/"
+                                                 effective)
+                                            (delete #f deps*)))
+                               (gopath (map (cut string-append <>
+                                                 "/lib/guile/" effective
+                                                 "/site-ccache")
+                                            (delete #f deps*)))
                                (locpath (string-append locales "/lib/locale")))
 
-                          (wrap-program (string-append out "/bin/guix")
-                            `("GUILE_LOAD_PATH" ":" prefix (,path))
-                            `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,gopath))
-                            `("GUIX_LOCPATH" ":" suffix (,locpath)))
-
-                          (when target
-                            ;; XXX Touching wrap-program rebuilds world
-                            (let ((bash (assoc-ref inputs "bash")))
-                              (substitute* (string-append out "/bin/guix")
-                                (("^#!.*/bash") (string-append "#! " bash "/bin/bash")))))
-                          #t)))
+                          ;; Modify 'guix' directly instead of using
+                          ;; 'wrap-program'.  This avoids the indirection
+                          ;; through Bash, which in turn avoids getting Bash's
+                          ;; own locale warnings.
+                          (substitute* (string-append out "/bin/guix")
+                            (("!#")
+                             (string-append
+                              "!#\n\n"
+                              (object->string
+                               `(set! %load-path (append ',path %load-path)))
+                              "\n"
+                              (object->string
+                               `(set! %load-compiled-path
+                                  (append ',gopath %load-compiled-path)))
+                              "\n"
+                              (object->string
+                               `(let ((path (getenv "GUIX_LOCPATH")))
+                                  (setenv "GUIX_LOCPATH"
+                                          (if path
+                                              (string-append path ":" ,locpath)
+                                              ,locpath))))
+                              "\n\n"))))))
 
                     ;; The 'guix' executable has 'OUT/libexec/guix/guile' as
                     ;; its shebang; that should remain unchanged, thus remove
@@ -405,8 +419,7 @@ $(prefix)/etc/openrc\n")))
                `(("boot-guile/i686" ,(bootstrap-guile-origin "i686-linux")))
                '())
          ,@(if (%current-target-system)
-               `(("bash" ,bash-minimal)
-                 ("xz" ,xz))
+               `(("xz" ,xz))
                '())
 
          ;; Tests also rely on these bootstrap executables.
@@ -414,6 +427,8 @@ $(prefix)/etc/openrc\n")))
          ("bootstrap/mkdir" ,(bootstrap-executable "mkdir" (%current-system)))
          ("bootstrap/tar" ,(bootstrap-executable "tar" (%current-system)))
          ("bootstrap/xz" ,(bootstrap-executable "xz" (%current-system)))
+
+         ("disarchive" ,disarchive)               ;for 'guix perform-download'
 
          ("glibc-utf8-locales" ,glibc-utf8-locales)))
       (propagated-inputs
@@ -513,33 +528,6 @@ the Nix package manager.")
                (invoke "make" "install-binPROGRAMS")))
            (delete 'wrap-program)))))))
 
-
-(define-public guile2.2-guix
-  (package
-    (inherit guix)
-    (name "guile2.2-guix")
-    (native-inputs
-     `(("guile" ,guile-2.2)
-       ("gnutls" ,guile2.2-gnutls)
-       ("guile-gcrypt" ,guile2.2-gcrypt)
-       ("guile-json" ,guile2.2-json)
-       ("guile-sqlite3" ,guile2.2-sqlite3)
-       ("guile-ssh" ,guile2.2-ssh)
-       ("guile-git" ,guile2.2-git)
-       ,@(fold alist-delete (package-native-inputs guix)
-               '("guile" "gnutls" "guile-gcrypt" "guile-json"
-                 "guile-sqlite3" "guile-ssh" "guile-git"))))
-    (inputs
-     `(("guile" ,guile-2.2)
-       ,@(alist-delete "guile" (package-inputs guix))))
-    (propagated-inputs
-     `(("gnutls" ,gnutls)
-       ("guile-gcrypt" ,guile2.2-gcrypt)
-       ("guile-json" ,guile2.2-json)
-       ("guile-sqlite3" ,guile2.2-sqlite3)
-       ("guile-ssh" ,guile2.2-ssh)
-       ("guile-git" ,guile2.2-git)))))
-
 (define-public guile3.0-guix
   (deprecated-package "guile3.0-guix" guix))
 
@@ -608,14 +596,14 @@ out) and returning a package that uses that as its 'source'."
 (define-public nix
   (package
     (name "nix")
-    (version "2.3.10")
+    (version "2.3.13")
     (source (origin
              (method url-fetch)
-             (uri (string-append "https://nixos.org/releases/nix/nix-"
+             (uri (string-append "https://releases.nixos.org/nix/nix-"
                                  version "/nix-" version ".tar.xz"))
              (sha256
               (base32
-               "1axphwkx270c10bjyn4icq9wlx46npgnw0qkpymigl23vramxa58"))))
+               "0631qk2lgd76y6g2z45wy6lcpv647r2a08jd2dagzzpwniy68d3h"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--sysconfdir=/etc" "--enable-gc")
@@ -758,7 +746,7 @@ transactions from C or Python.")
 (define-public python-anaconda-client
   (package
     (name "python-anaconda-client")
-    (version "1.6.3")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -768,18 +756,20 @@ transactions from C or Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0w1bfxnydjl9qp53r2gcvr6vlpdqqilcrzqxrll9sgg6vwdyiyyp"))))
+         "1vyk0g0gci4z9psisb8h50zi3j1nwfdg1jw3j76cxv0brln0v3fw"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-pyyaml" ,python-pyyaml)
-       ("python-requests" ,python-requests)
-       ("python-clyent" ,python-clyent)))
+     `(("python-clyent" ,python-clyent)
+       ("python-nbformat" ,python-nbformat)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-requests" ,python-requests)))
     (native-inputs
-     `(("python-pytz" ,python-pytz)
+     `(("python-coverage" ,python-coverage)
        ("python-dateutil" ,python-dateutil)
+       ("python-freezegun" ,python-freezegun)
        ("python-mock" ,python-mock)
-       ("python-coverage" ,python-coverage)
-       ("python-pillow" ,python-pillow)))
+       ("python-pillow" ,python-pillow)
+       ("python-pytz" ,python-pytz)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -808,13 +798,10 @@ Anaconda Cloud.  Anaconda Cloud is useful for sharing packages, notebooks and
 environments.")
     (license license:bsd-3)))
 
-(define-public python2-anaconda-client
-  (package-with-python2 python-anaconda-client))
-
 (define-public python-conda-package-handling
   (package
     (name "python-conda-package-handling")
-    (version "1.6.0")
+    (version "1.7.3")
     (source
      (origin
        (method git-fetch)
@@ -824,7 +811,7 @@ environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bqbs6a8jbjmbn47n5n1p529cx7pf4vgfnhqca9mflgidfb5i0jf"))))
+         "1dq6f5ks3cinb355x712bls9bvv6bli6x3c43sdkqvawdw8xgv9j"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -832,22 +819,11 @@ environments.")
          (add-after 'unpack 'use-unmodified-libarchive
            (lambda _
              (substitute* "setup.py"
-               (("archive_and_deps") "archive"))
-             #t))
+               (("archive_and_deps") "archive"))))
          (replace 'check
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "tests"
-                     "-k"
-                     (string-append
-                      ;; TODO: these three fail because the mocker fixture
-                      ;; cannot be found
-                      "not test_rename_to_trash"
-                      " and not test_api_extract_tarball_with_libarchive_import_error"
-                      " and not test_delete_trash"
-                      ;; TODO: this one does not raise an exception when it
-                      ;; should.
-                      " and not test_secure_refusal_to_extract_abs_paths")))))))
+             (invoke "pytest" "-vv" "tests"))))))
     (propagated-inputs
      `(("python-six" ,python-six)
        ("python-tqdm" ,python-tqdm)))
@@ -857,6 +833,7 @@ environments.")
      `(("python-cython" ,python-cython)
        ("python-pytest" ,python-pytest)
        ("python-pytest-cov" ,python-pytest-cov)
+       ("python-pytest-mock" ,python-pytest-mock)
        ("python-mock" ,python-mock)))
     (home-page "https://conda.io")
     (synopsis "Create and extract conda packages of various formats")
@@ -868,7 +845,7 @@ extracting, creating, and converting between formats.")
 (define-public conda
   (package
     (name "conda")
-    (version "4.8.3")
+    (version "4.10.3")
     (source
      (origin
        (method git-fetch)
@@ -878,7 +855,7 @@ extracting, creating, and converting between formats.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0iv1qzk21jsk6vdp3106xvpvl68zgfdqb3kyzpya87jhkl204l7r"))))
+         "1w4yy62bsvkybjvcm5fspck4ns5j16nplzpbx6bxv7zhx69pcp4n"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -888,8 +865,11 @@ extracting, creating, and converting between formats.")
              ;; This file is no longer writable after downloading with
              ;; 'git-fetch'
              (make-file-writable
-              "tests/conda_env/support/saved-env/environment.yml")
-             #t))
+              "tests/conda_env/support/saved-env/environment.yml")))
+         (add-after 'unpack 'fix-ruamel-yaml-dependency
+           (lambda _
+             (substitute* "setup.py"
+               (("ruamel_yaml_conda") "ruamel.yaml"))))
          (add-after 'unpack 'correct-python-executable-name
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((python (assoc-ref inputs "python-wrapper")))
@@ -947,6 +927,14 @@ extracting, creating, and converting between formats.")
                       ;; This fails because we patched the default root
                       ;; prefix.
                       " and not test_default_target_is_root_prefix"
+
+                      ;; These fail because ...
+                      ;; TODO: conda patches its own shebang to
+                      ;; $conda-prefix/bin/python, which is obviously wrong.
+                      " and not test_run_returns_int"
+                      " and not test_run_returns_zero_errorlevel"
+                      " and not test_run_returns_nonzero_errorlevel"
+
                       ;; TODO: I don't understand what this failure means
                       " and not test_PrefixData_return_value_contract"
                       ;; TODO: same here
@@ -962,16 +950,6 @@ extracting, creating, and converting between formats.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
              (setenv "HOME" "/tmp")
-
-             ;; "conda init" insists on using sudo, because it is hell-bent on
-             ;; modifying system files.
-             (mkdir-p "/tmp/fake-sudo")
-             (with-output-to-file "/tmp/fake-sudo/sudo"
-               (lambda () (format #t "#!~/bin/sh~%exec $@" (which "sh"))))
-             (chmod "/tmp/fake-sudo/sudo" #o700)
-             (setenv "PATH" (string-append "/tmp/fake-sudo:"
-                                           (getenv "PATH")))
-
              (invoke (string-append (assoc-ref outputs "out")
                                     "/bin/conda")
                      "init"))))))
@@ -990,6 +968,8 @@ extracting, creating, and converting between formats.")
        ("python-tqdm" ,python-tqdm)
        ;; XXX: This is dragged in by libarchive and is needed at runtime.
        ("zstd" ,zstd)))
+    (native-inputs
+     `(("python-pytest-timeout" ,python-pytest-timeout)))
     (home-page "https://github.com/conda/conda")
     (synopsis "Cross-platform, OS-agnostic, system-level binary package manager")
     (description
@@ -1002,6 +982,164 @@ written entirely in Python.")
 
 (define-public python-conda
   (deprecated-package "python-conda" conda))
+
+(define-public conan
+  (package
+    (name "conan")
+    (version "1.40.2")
+    (source
+     (origin
+       (method git-fetch)               ;no tests in PyPI archive
+       (uri (git-reference
+             (url "https://github.com/conan-io/conan")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0hp8qs54l4cw043f1kycjwgdr7f388lsyxqcbzfaayr6xg1d3dw0"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "conans/requirements.txt"
+               (("node-semver==0.6.1")
+                "node-semver>=0.6.1"))))
+         (add-after 'unpack 'patch-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((coreutils (assoc-ref inputs "coreutils")))
+               ;; It seems that PATH is manipulated, as printenv is not found
+               ;; during tests.  Patch in its exact location.
+               (substitute* "conan/tools/env/environment.py"
+                 (("printenv")
+                  (string-append coreutils "/bin/printenv")))
+               (substitute* "conans/client/envvars/environment.py"
+                 (("#!/usr/bin/env")
+                  (string-append "#!" coreutils "/bin/env"))))))
+         (add-before 'check 'set-home
+           (lambda _
+             (setenv "HOME" "/tmp")))
+         (replace 'check
+           (lambda* (#:key tests? outputs #:allow-other-keys)
+             (define system ,(or (%current-target-system)
+                                 (%current-system)))
+             (when tests?
+               (setenv "PATH" (string-append (getenv "PATH") ":"
+                                             (assoc-ref outputs "out") "/bin"))
+               (invoke "python" "-m" "pytest"
+                       "-n" "auto"      ;parallelize tests
+                       "-m" "not slow and not tool_svn"
+                       ;; Disable problematic tests.
+                       "-k"
+                       (string-append
+                        ;; These tests rely on networking.
+                        "not shallow_clone_remote "
+                        "and not remote_build "
+                        "and not download_retries_errors "
+                        "and not ftp "
+                        "and not build_local_different_folders "
+                        ;; These expect CMake available at fixed versions.
+                        "and not custom_cmake "
+                        "and not default_cmake "
+                        "and not bazel " ;bazel is not packaged
+                        ;; Guix sets PKG_CONFIG_PATH itself, which is not
+                        ;; expected by the following test.
+                        "and not pkg_config_path "
+                        "and not compare " ;caused by newer node-semver?
+                        ;; Guix is not currently a supported package manager.
+                        "and not system_package_tool "
+                        ;; These expect GCC 5 to be available.
+                        "and not test_reuse "
+                        "and not test_install "
+                        ;; The installed configure script trips on the /bin/sh
+                        ;; shebang.  We'd have to patch it in the Python code.
+                        "and not test_autotools "
+                        "and not test_use_build_virtualenv "
+                        ;; This test is architecture-dependent.
+                        "and not test_toolchain_linux "
+                        ;; This one fails for unknown reasons (see:
+                        ;; https://github.com/conan-io/conan/issues/9671).
+                        "and not test_build "
+                        (if (not (string-prefix? "x86_64" system))
+                            ;; These tests either assume the machine is
+                            ;; x86_64, or require a cross-compiler to target
+                            ;; it.
+                            (string-append
+                             "and not cpp_package "
+                             "and not exclude_code_analysis "
+                             "and not cmakedeps_multi "
+                             "and not locally_build_linux "
+                             "and not custom_configuration "
+                             "and not package_from_system "
+                             "and not cross_build_command "
+                             "and not test_package "
+                             "and not test_deleted_os "
+                             "and not test_same ")
+                            "")
+                        (if (not (or (string-prefix? "x86_64" system)
+                                     (string-prefix? "i686" system)))
+                            ;; These tests either assume the machine is i686,
+                            ;; or require a cross-compiler to target it.
+                            (string-append
+                             "and not vcvars_raises_when_not_found "
+                             "and not conditional_generators "
+                             "and not test_folders "
+                             "and not settings_as_a_dict_conanfile ")
+                            "")))))))))
+    (propagated-inputs
+     `(("python-bottle" ,python-bottle)
+       ("python-colorama" ,python-colorama)
+       ("python-dateutil" ,python-dateutil)
+       ("python-distro" ,python-distro)
+       ("python-fasteners" ,python-fasteners)
+       ("python-future" ,python-future)
+       ("python-jinja2" ,python-jinja2)
+       ("python-node-semver" ,python-node-semver)
+       ("python-patch-ng" ,python-patch-ng)
+       ("python-pluginbase" ,python-pluginbase)
+       ("python-pygments" ,python-pygments)
+       ("python-pyjwt" ,python-pyjwt)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-requests" ,python-requests)
+       ("python-six" ,python-six)
+       ("python-tqdm" ,python-tqdm)
+       ("python-urllib3" ,python-urllib3)))
+    (inputs
+     `(("coreutils" ,coreutils)))       ;for printenv
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("cmake" ,cmake)                 ;requires cmake >= 3.17
+       ("git" ,git-minimal)
+       ("meson" ,meson-0.55)
+       ("ninja",ninja)
+       ("pkg-config" ,pkg-config)
+       ("python-bottle" ,python-bottle)
+       ("python-mock" ,python-mock)
+       ("python-parameterized" ,python-parameterized)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-xdist" ,python-pytest-xdist)
+       ("python-webtest" ,python-webtest)
+       ("which" ,which)))
+    (home-page "https://conan.io")
+    (synopsis "Decentralized C/C++ package manager")
+    (description "Conan is a package manager for C and C++ developers that
+boasts the following features:
+@itemize
+@item
+It is fully decentralized.  Users can host their packages on their own private
+servers.
+@item
+It can create, upload and download binaries for any configuration and
+platform, including cross-compiled ones.
+@item
+It integrates with any build system, including CMake, Makefiles, Meson, etc.
+@item
+It is extensible; its Python-based recipes, together with extensions points
+allow for great power and flexibility.
+@end itemize")
+    (license license:expat)))
 
 (define-public gwl
   (package
@@ -1049,8 +1187,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "6fb5eafc33efa109b220efe71594cfcdb2efe133")
-        (revision "24"))
+  (let ((commit "c2f0c5b36f8294bb4c699806f9e8c576ae9b9f90")
+        (revision "33"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1061,7 +1199,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1lf7jry18kwglvyakfkmi8bif8ppsdinl0xjgmkgkp4mvmymh2gj"))
+                  "0nlh1cyvpbsfy9pk22xmgx0vb625j7qgv79y527q91c9fjn7g37v"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1096,6 +1234,7 @@ environments.")
                                          "guile-lib"
                                          "guile-lzlib"
                                          "guile-zlib"
+                                         "guile-sqlite3"
                                          "gnutls"
                                          ,@(if (hurd-target?)
                                                '()
@@ -1183,7 +1322,7 @@ outputs of those builds.")
 (define-public guix-jupyter
   (package
     (name "guix-jupyter")
-    (version "0.2.1")
+    (version "0.2.2")
     (home-page "https://gitlab.inria.fr/guix-hpc/guix-kernel")
     (source (origin
               (method git-fetch)
@@ -1191,7 +1330,7 @@ outputs of those builds.")
                                   (commit (string-append "v" version))))
               (sha256
                (base32
-                "1kqwfp5h95s6mirq5nbydsbmlhsinn32grz1ld5mbxvhl6sn2i0j"))
+                "17m6970wnvwlbarq4gxz5bakhzyhq5ch8qd8jw55ydccpv6473kq"))
               (file-name (string-append "guix-jupyter-" version "-checkout"))))
     (build-system gnu-build-system)
     (arguments
@@ -1330,7 +1469,7 @@ for packaging and deployment of cross-compiled Windows applications.")
 (define-public libostree
   (package
     (name "libostree")
-    (version "2020.8")
+    (version "2021.3")
     (source
      (origin
        (method url-fetch)
@@ -1338,7 +1477,7 @@ for packaging and deployment of cross-compiled Windows applications.")
              "https://github.com/ostreedev/ostree/releases/download/v"
              (version-major+minor version) "/libostree-" version ".tar.xz"))
        (sha256
-        (base32 "16v73v63h16ika73kgh2cvgm0v27r2d48m932mbj3xm6s295kapx"))))
+        (base32 "1cyhr3s7xsgnsais5m4cjwdwcq46naf25r1k042c4n1y1jgs798g"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -1522,3 +1661,116 @@ It is mainly meant for programmers who develop portable programs or libraries in
 but could potentially work for end-users of those programs.  It also has a translator
 from R7RS, which allows most R7RS code to run on R6RS implementations.")
     (license license:gpl3+)))
+
+(define-public modules
+  (package
+    (name "modules")
+    (version "4.8.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://sourceforge/modules/Modules/modules-"
+                            version "/modules-" version ".tar.bz2"))
+        (sha256 (base32 "1amz8qdqbvfdc8jv0j4720vywbz2gi7l3sr1lh37ilfbxy9lq9g9"))))
+    (build-system gnu-build-system)
+    (arguments
+      `(#:configure-flags
+        (list (string-append "--with-bin-search-path="
+                             (assoc-ref %build-inputs "tcl") "/bin" ":"
+                             (assoc-ref %build-inputs "procps") "/bin" ":"
+                             (assoc-ref %build-inputs "less") "/bin" ":"
+                             (assoc-ref %build-inputs "coreutils") "/bin")
+              (string-append "--with-tcl=" (assoc-ref %build-inputs "tcl") "/lib")
+              "--disable-compat-version")
+        #:test-target "test"
+        #:phases
+        (modify-phases %standard-phases
+          (add-before 'configure 'patch-add-modules
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((coreutils (assoc-ref inputs "coreutils")))
+                (substitute* "script/add.modules.in"
+                  (("/bin/(cat|cp|rm)" _ command)
+                   (string-append coreutils "/bin/" command))
+                  (("/bin/echo")
+                   "echo")))))
+          (add-before 'configure 'patch-scripts-for-python-3
+            (lambda _
+              ;; Patch the script for python-3.
+              (substitute* "script/createmodule.py.in"
+                (("pathkeys.sort\\(\\)") "pathkeys = sorted(pathkeys)")
+                (("print\\(\"\\\\t\"\\*") "print(\"\\t\"*int")
+                (("@PYTHON@") (which "python3")))))
+          (add-before 'check 'patch-/bin/sh-and-nixbld-groups-in-tests
+            (lambda _
+              (use-modules (srfi srfi-1))
+              (let* ((groups-file (string-append (getcwd) "/nixbld-groups"))
+                     (groups-file-z (string-append groups-file "-z"))
+                     (nixbld-groups
+                       (fold
+                         (lambda (id prev)
+                           (catch #t
+                             (lambda () (cons (group:name (getgrnam id)) prev))
+                             (lambda _ prev)))
+                         '()
+                         (vector->list (getgroups)))))
+                ;; Simulate "id -G -n" command output.
+                (call-with-output-file groups-file
+                  (lambda (port)
+                    (display (string-join nixbld-groups " ") port)
+                    (display #\newline port)))
+                ;; Simulate "id -G -n -z" command output.
+                (call-with-output-file groups-file-z
+                  (lambda (port)
+                    (for-each
+                      (lambda (group-name)
+                        (display group-name port)
+                        (display #\null port))
+                      nixbld-groups)))
+                ;; Generate "modulecmd-test.tcl" before running "make test".
+                (invoke "make" "modulecmd-test.tcl")
+                ;; Substitute shell.
+                (substitute*
+                  '("modulecmd-test.tcl"
+                    "modulecmd.tcl"
+                    "testsuite/modules.70-maint/380-edit.exp"
+                    "compat/init/filter")
+                  (("/bin/sh") (which "sh")))
+                ;; Skip tests that use supplementary groups.
+                (for-each
+                  delete-file
+                  '("testsuite/modules.20-locate/112-hide-user-group.exp"
+                    "testsuite/modules.20-locate/117-forbid-user-group.exp"
+                    "testsuite/modules.20-locate/119-hide-cascading.exp"
+                    "testsuite/modules.50-cmds/140-system.exp"
+                    "testsuite/modules.50-cmds/287-info-usergroups.exp"
+                    "testsuite/modules.50-cmds/440-module-tag.exp"
+                    "testsuite/modules.70-maint/220-config.exp"))
+                (for-each
+                  (lambda (file)
+                    (substitute* file
+                      (("/bin/sh") (which "bash"))
+                      ;; For some reason "kvm" group cannot be resolved for
+                      ;; "nixbld" user. We replace "id ..." commands with
+                      ;; "cat ..." that simulates them.
+                      (("exec id -G -n -z") (string-append "exec cat " groups-file-z))
+                      (("exec id -G -n") (string-append "exec cat " groups-file))))
+                  '("testsuite/modules.00-init/005-init_ts.exp"
+                    "testsuite/install.00-init/005-init_ts.exp"
+                    "modulecmd-test.tcl"))))))))
+    (native-inputs
+      `(("dejagnu" ,dejagnu)
+        ("autoconf" ,autoconf)
+        ("which" ,which)))
+    (inputs
+      `(("tcl" ,tcl)
+        ("less" ,less)
+        ("procps" ,procps)
+        ("coreutils" ,coreutils)
+        ("python" ,python-3)))
+    (home-page "http://modules.sourceforge.net/")
+    (synopsis "Shell environment variables and aliases management")
+    (description "Modules simplify shell initialization and let users
+modify their environment during the session with modulefiles.  Modules are
+used on high-performance clusters to dynamically add and remove paths
+to specific versions of applications.")
+    (license license:gpl2+)))

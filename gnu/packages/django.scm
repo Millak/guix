@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +33,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages finance)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages python)
@@ -47,13 +48,13 @@
 (define-public python-django
   (package
     (name "python-django")
-    (version "3.1.8")
+    (version "3.2.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1b0ymqv09b523k3c2jnpb2gjy2fsy6irbfyc2g9x5hjyw41k2fgq"))))
+                "08p0gf1n548fjba76wspcj1jb3li6lr7xi87w2xq7hylr528azzj"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -87,15 +88,23 @@
 
              #t))
          (replace 'check
-           (lambda _
-             (with-directory-excursion "tests"
-               (setenv "PYTHONPATH"
-                       (string-append "..:" (getenv "PYTHONPATH")))
-               (invoke "python" "runtests.py"
-                       ;; By default tests run in parallel, which may cause
-                       ;; various race conditions.  Run sequentially for
-                       ;; consistent results.
-                       "--parallel=1")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (if tests?
+                 (with-directory-excursion "tests"
+                   (setenv "PYTHONPATH"
+                           (string-append "..:" (getenv "PYTHONPATH")))
+                   (invoke "python" "runtests.py"
+                           ;; By default tests run in parallel, which may cause
+                           ;; various race conditions.  Run sequentially for
+                           ;; consistent results.
+                           "--parallel=1"))
+                 (format #t "test suite not run~%"))))
+         ;; XXX: The 'wrap' phase adds native inputs as runtime dependencies,
+         ;; see <https://bugs.gnu.org/25235>.  The django-admin script typically
+         ;; runs in an environment that has Django and its dependencies on
+         ;; PYTHONPATH, so just disable the wrapper to reduce the size from
+         ;; ~710 MiB to ~203 MiB.
+         (delete 'wrap))))
     ;; TODO: Install extras/django_bash_completion.
     (native-inputs
      `(("tzdata" ,tzdata-for-tests)
@@ -103,7 +112,6 @@
        ;; tests/requirements/py3.txt
        ("python-docutils" ,python-docutils)
        ;; optional for tests: ("python-geoip2" ,python-geoip2)
-       ("python-jinja2" ,python-jinja2)           ; >= 2.7
        ;; optional for tests: ("python-memcached" ,python-memcached)
        ("python-numpy" ,python-numpy)
        ("python-pillow" ,python-pillow)
@@ -111,14 +119,17 @@
        ;; optional for tests: ("python-selenium" ,python-selenium)
        ("python-tblib" ,python-tblib)))
     (propagated-inputs
-     `(("python-argon2-cffi" ,python-argon2-cffi)
-       ("python-asgiref" ,python-asgiref)
-       ("python-bcrypt" ,python-bcrypt)
+     `(("python-asgiref" ,python-asgiref)
        ("python-pytz" ,python-pytz)
+       ("python-sqlparse" ,python-sqlparse)
+
+       ;; Optional dependencies.
+       ("python-argon2-cffi" ,python-argon2-cffi)
+       ("python-bcrypt" ,python-bcrypt)
 
        ;; This input is not strictly required, but in practice many Django
        ;; libraries need it for test suites and similar.
-       ("python-sqlparse" ,python-sqlparse)))
+       ("python-jinja2" ,python-jinja2)))
     (home-page "https://www.djangoproject.com/")
     (synopsis "High-level Python Web framework")
     (description
@@ -132,13 +143,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-2.2
   (package
     (inherit python-django)
-    (version "2.2.20")
+    (version "2.2.24")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "0r3a6gbhwngxl172yy6n0sq5knibl2vxc0wbk1g8licfbzfgjs95"))))
+                "1dvx3x85lggm91x7mpvaf9nmpxyz7r97pbpnmr2k1qfy0c7gyf9k"))))
     (native-inputs
      `(;; XXX: In 2.2 and 3.0, selenium is required for the test suite.
        ("python-selenium" ,python-selenium)
@@ -183,6 +194,42 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
      "Django-extensions extends Django providing, for example, management
 commands, additional database fields and admin extensions.")
     (license license:expat)))
+
+(define-public python-django-localflavor
+  (package
+    (name "python-django-localflavor")
+    (version "3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django-localflavor" version))
+       (sha256
+        (base32 "0i1s0ijfd9rv2cp5x174jcyjpwn7fyg7s1wpbvlwm96bpdvs6bxc"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (setenv "PYTHONPATH"
+                       (string-append ".:"
+                                      (getenv "PYTHONPATH")))
+               (invoke "invoke" "test")))))))
+    (native-inputs
+     `(("python-coverage" ,python-coverage)
+       ("python-invoke" ,python-invoke)
+       ("python-pytest-django" ,python-pytest-django)
+       ("which" ,which)))
+    (propagated-inputs
+     `(("python-django" ,python-django)
+       ("python-stdnum" ,python-stdnum)))
+    (home-page "https://django-localflavor.readthedocs.io/en/latest/")
+    (synopsis "Country-specific Django helpers")
+    (description "Django-LocalFlavor is a collection of assorted pieces of code
+that are useful for particular countries or cultures.")
+    (license license:bsd-3)))
 
 (define-public python-django-simple-math-captcha
   (package
@@ -308,16 +355,19 @@ size and quality.")
 (define-public python-pytest-django
   (package
     (name "python-pytest-django")
-    (version "3.10.0")
+    (version "4.4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-django" version))
               (sha256
                (base32
-                "19nvqsb7b9kz3ikpb50m8ppf7mfhzrapdxsqd5hhd1pdfz8dprjd"))))
+                "0mglnz0w6k7dgw1jn6giv56pmdjd6a3zwwkhxb2kyzmzk0viw5xm"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     ;; The test suite is disabled because there are many test failures (see:
+     ;; https://github.com/pytest-dev/pytest-django/issues/943).
+     `(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
@@ -342,12 +392,11 @@ size and quality.")
     (native-inputs
      `(("python-django" ,python-django)
        ("python-setuptools-scm" ,python-setuptools-scm)
-
        ;; For tests.
-       ("python-pytest-xdist" ,python-pytest-xdist)))
+       ("python-pytest-xdist" ,python-pytest-xdist-next)))
     (propagated-inputs
      `(("python-pytest" ,python-pytest-6)))
-    (home-page "https://pytest-django.readthedocs.org/")
+    (home-page "https://pytest-django.readthedocs.io/")
     (synopsis "Django plugin for py.test")
     (description "Pytest-django is a plugin for py.test that provides a set of
 useful tools for testing Django applications and projects.")
@@ -469,7 +518,7 @@ account authentication.")
 (define-public python-django-debug-toolbar
   (package
     (name "python-django-debug-toolbar")
-    (version "2.2")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -479,7 +528,7 @@ account authentication.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14069rlgjd5g724iaglai0nc636g9km4ba56r4j3k84chibqzn03"))))
+         "1m1j2sx7q0blma0miswj3c8hrfi5q4y5cq2b816v8gagy89xgc57"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-sqlparse" ,python-sqlparse)))
@@ -663,7 +712,10 @@ conn_max_age argument to easily enable Django’s connection pool.")
                     (lambda _
                       (invoke "python" "-m" "django" "test" "-v2"
                               "--settings=tests.settings"))))))
-    (native-inputs `(("python-django" ,python-django)))
+    (native-inputs
+     ;; XXX: Picklefield has not been updated in 10+ years and fails tests
+     ;; with Django 3.2.
+     `(("python-django@2.2" ,python-django-2.2)))
     (synopsis "Pickled object field for Django")
     (description "Pickled object field for Django")
     (license license:expat)))
@@ -948,7 +1000,7 @@ name is purely coincidental.")
 (define-public python-django-statici18n
   (package
     (name "python-django-statici18n")
-    (version "1.9.0")
+    (version "2.1.0")
     (home-page "https://github.com/zyegfryed/django-statici18n")
     (source (origin
               (method git-fetch)
@@ -958,7 +1010,7 @@ name is purely coincidental.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p3myp2im6c87yc05alh91jyahqws5lcw3zzdsj4dh8lx9s9cgpf"))))
+                "0x0xvfqd40is2ks43d65awgqkx3wk10lvdim15scvbjhkh301b6v"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -1012,18 +1064,36 @@ Django projects, which allows association of a number of tags with any
 (define-public python-djangorestframework
   (package
     (name "python-djangorestframework")
-    (version "3.12.1")
+    (version "3.12.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "djangorestframework" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/encode/django-rest-framework")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jb22psb823vh5fj9az63p5lgyax9ygjy2faah16ajxvvsp54i6m"))))
+         "16n17dw35wqv47m8k8fixn0yywrvd6v4r573yr4nx6lbbiyi2cqn"))))
     (build-system python-build-system)
     (arguments
-     '(;; No included tests
-       #:tests? #f))
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; Add a fix from the master branch for compatibility with Django
+             ;; 3.2: https://github.com/encode/django-rest-framework/pull/7911
+             ;; Remove for versions > 3.12.4.
+             (substitute* "tests/test_fields.py"
+               (("class MockTimezone:")
+                "class MockTimezone(pytz.BaseTzInfo):"))
+             (if tests?
+                 (invoke "python" "runtests.py" "--nolint")
+                 (format #t "test suite not run~%")))))))
+    (native-inputs
+     `(("python-django" ,python-django)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-django" ,python-pytest-django)))
     (home-page "https://www.django-rest-framework.org")
     (synopsis "Toolkit for building Web APIs with Django")
     (description
@@ -1089,14 +1159,13 @@ forms using your favorite CSS framework, without writing template code.")
 (define-public python-django-compressor
   (package
     (name "python-django-compressor")
-    (version "2.4")
+    (version "2.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "django_compressor" version))
         (sha256
-         (base32
-          "0kx7bclfa0sxlsz6ka70zr9ra00lks0hmv1kc99wbanx6xhirvfj"))))
+         (base32 "1q0m0hfg7sqmj5km924g4dgy3nx51aszzsprlp6gsin10mv0fn1k"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -1163,13 +1232,13 @@ FileFields during tests.")
 (define-public python-django-auth-ldap
   (package
     (name "python-django-auth-ldap")
-    (version "2.2.0")
+    (version "2.4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-auth-ldap" version))
               (sha256
                (base32
-                "1gq49l5lv6ar6yf73c8pix8n7md4109yq31s5jfk64w6n1rigbqi"))))
+                "0xk6cxiqz5j3q79bd54x64f26alrlc8p7k9wkp2c768w2k1vzz30"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -1236,8 +1305,7 @@ to ElasticSearch.")
     (native-inputs
      `(("python-django" ,python-django)))
     (propagated-inputs
-     `(("python-ipaddress" ,python-ipaddress)
-       ("python-netaddr" ,python-netaddr)
+     `(("python-netaddr" ,python-netaddr)
        ("python-six" ,python-six)))
     (home-page "https://github.com/jimfunk/django-postgresql-netfields")
     (synopsis "PostgreSQL netfields implementation for Django")

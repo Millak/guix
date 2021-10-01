@@ -18,7 +18,7 @@
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Reza Alizadeh Majd <r.majd@pantherx.org>
@@ -28,6 +28,7 @@
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -72,6 +73,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
@@ -123,6 +125,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -136,6 +139,45 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public omemo-wget
+  (package
+    (name "omemo-wget")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/roobre/omemo-wget")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s3vfaicw5xbjl9yiyr4ckrzhzqbvfh1w2ih1igavlfpgw4v7kva"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/roobre/omemo-wget"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((xdg-utils (assoc-ref inputs "xdg-utils"))
+                    (xdg-open (string-append xdg-utils "/bin/xdg-open")))
+               (substitute* (find-files "." "\\.go$")
+                 ;; Correct the import path of 'aesgcm' package.
+                 (("roob\\.re/omemo-wget/aesgcm")
+                  "github.com/roobre/omemo-wget/aesgcm")
+                 ;; Use absolute path of 'xdg-open' program.
+                 (("xdg-open") xdg-open))))))))
+    (inputs
+     `(("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
+       ("xdg-utils" ,xdg-utils)))
+    (home-page "https://roob.re/omemo-wget")
+    (synopsis "Program to download and decrypt @code{aesgcm://} URLs")
+    (description "OMEMO-wget is a tool to handle cryptographic URLs, generated
+by @acronym{OMEMO, OMEMO Multi-End Message and Object Encryption}, during
+XMPP-based sessions.")
+    (license license:lgpl3+)))
 
 (define-public psi
   (package
@@ -178,7 +220,7 @@
        ("hunspell" ,hunspell)
        ("libidn" ,libidn)
        ("qca" ,qca)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)
        ("qtsvg" ,qtsvg)
        ("qtwebkit" ,qtwebkit)
@@ -478,7 +520,7 @@ your private keys, no previous conversation is compromised.")
 (define-public libsignal-protocol-c
   (package
   (name "libsignal-protocol-c")
-  (version "2.3.2")
+  (version "2.3.3")
   (source (origin
            (method git-fetch)
            (uri (git-reference
@@ -487,7 +529,7 @@ your private keys, no previous conversation is compromised.")
            (file-name (git-file-name name version))
            (sha256
             (base32
-             "1qj2w4csy6j9jg1jy66n1qwysx7hgjywk4n35hlqcnh1kpa14k3p"))))
+             "0z5p03vk15i6h870azfjgyfgxhv31q2vq6rfhnybrnkxq2wqzwhk"))))
   (arguments
    `(;; Required for proper linking and for tests to run.
      #:configure-flags '("-DBUILD_SHARED_LIBS=on" "-DBUILD_TESTING=1")))
@@ -578,7 +620,7 @@ identi.ca and status.net).")
 (define-public bitlbee-discord
   (package
     (name "bitlbee-discord")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -587,23 +629,20 @@ identi.ca and status.net).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02pigk2vbz0jdz11f96sygdvp1j762yjn62h124fkcsc070g7a2f"))))
+        (base32 "00qgdvrp7hv02n0ns685igp810zxmv3adsama8601122al6x041n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (let ((out (assoc-ref %outputs "out")))
+         (list (string-append "--with-bdatadir=" out "/share/bitlbee/")
+               (string-append "--with-plugindir=" out "/lib/bitlbee/")))
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-autogen
            (lambda _
              (let ((sh (which "sh")))
                (substitute* "autogen.sh" (("/bin/sh") sh))
-               (setenv "CONFIG_SHELL" sh))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (invoke "./configure"
-                     (string-append "--with-plugindir="
-                                    (assoc-ref outputs "out")
-                                    "/lib/bitlbee/")))))))
+               (setenv "CONFIG_SHELL" sh)))))))
     (inputs `(("glib" ,glib)))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("autoconf" ,autoconf)
@@ -675,6 +714,7 @@ used by Pidgin and Bitlbee, among others, to access
               (method url-fetch)
               (uri (string-append "https://dl.hexchat.net/hexchat/hexchat-"
                                   version ".tar.xz"))
+              (patches (search-patches "hexchat-add-libera-chat.patch"))
               (sha256
                (base32
                 "10p829jm1r6kidkgf5lhqhyqc5mxdcq96q3zhadsckasvc9rs6lh"))))
@@ -788,7 +828,7 @@ authentication.")
 (define-public pidgin
   (package
     (name "pidgin")
-    (version "2.14.3")
+    (version "2.14.5")
     (source
      (origin
        (method url-fetch)
@@ -796,7 +836,7 @@ authentication.")
         (string-append "mirror://sourceforge/pidgin/Pidgin/"
                        version "/pidgin-" version ".tar.gz"))
        (sha256
-        (base32 "0vdfnm96m1kh4gm6xn6i7s9c5zjh1p18jg4595k4p5bplvd6fmm8"))
+        (base32 "12llip3r8126gph82r638xjv2v2rg34qgggn1nbwfmc3s7halimr"))
        (patches
         (search-patches "pidgin-add-search-path.patch"))
        (modules '((guix build utils)))
@@ -863,7 +903,7 @@ authentication.")
                        (assoc-ref %build-inputs "gst-plugins-base")
                        "/include/gstreamer-1.0")
         "--disable-gtkspell"
-        ;; "--enable-gevolution"
+        "--disable-gevolution"
         "--enable-cap"
         "--enable-mono"
         "--enable-cyrus-sasl"
@@ -875,16 +915,7 @@ authentication.")
                        "/lib")
         (string-append "--with-tkconfig="
                        (assoc-ref %build-inputs "tk")
-                       "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'eat-leftovers
-           ;; XXX Remove when updating beyond 2.14.3.  Equivalent to
-           ;; <https://keep.imfreedom.org/pidgin/pidgin/rev/d4d72fde60c2>.
-           (lambda _
-             ;; Remove a lingering [broken] oscar reference.
-             (substitute* "libpurple/tests/check_libpurple.c"
-               ((".*oscar_util_suite.*") "")))))))
+                       "/lib"))))
     (native-search-paths
      (list
       (search-path-specification
@@ -1030,7 +1061,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
@@ -1039,7 +1070,7 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "070h1n3miq99z6ln77plk3jlisgfqfs2yyn4rhchpf25zd8is1ba"))
+        (base32 "1vjzv8zg9s393xw81klcgbkn4h6j2blzla9iil5kqfrw7wmldskh"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
@@ -1153,7 +1184,7 @@ and OpenPGP) and available in 29 languages.")
 (define-public gajim-omemo
   (package
     (name "gajim-omemo")
-    (version "2.7.13")
+    (version "2.7.14")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1162,7 +1193,7 @@ and OpenPGP) and available in 29 languages.")
          "https://ftp.gajim.org/plugins_releases/omemo_"
          version ".zip"))
        (sha256
-        (base32 "1msr71rvik05wjpa2inpkadddad2rxaqbqcww5qrdrcz75pm8brn"))))
+        (base32 "0jmyjqfc4vimvq5vdqsvz25dsij6bh92alml8qnn59p5farnf86v"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -1226,7 +1257,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
@@ -1234,7 +1265,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "0iigh7bkil6prf02dqcl6lmd89jxz685h8lqr3ni4x39zkcransn"))))
+        (base32 "13rk8b0sj35az32c0ii173g9ww231awmyb4jlk56jy38hpyp7x1g"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1248,30 +1279,49 @@ Encryption to Gajim.")
                            (guix build glib-or-gtk-build-system))
        #:phases
        (modify-phases %standard-phases
+         ;; To be enabled in v0.3.0, for A/V support.
+         ;;(add-after 'install 'wrap
+           ;;(lambda* (#:key outputs #:allow-other-keys)
+             ;;(let* ((out (assoc-ref outputs "out"))
+                    ;;(dino (string-append out "/bin/dino"))
+                    ;;(gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               ;;(wrap-program dino
+                 ;;`("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
+       ("gobject-introspection" ,gobject-introspection)
        ("gtk+:bin" ,gtk+ "bin")
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
     (inputs
-     `(("glib" ,glib)
+     ;; NOTE: Commented-out lines are to be enabled in v0.3.0.
+     `(("atk" ,atk)
+       ("cairo" ,cairo)
+       ("gdk-pixbuf" ,gdk-pixbuf+svg)
+       ("glib" ,glib)
        ("glib-networking" ,glib-networking)
        ("gpgme" ,gpgme)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gspell" ,gspell)               ;for spell-check support
+       ;;("gstreamer" ,gstreamer)         ;for A/V support
+       ;;("gst-plugins-base" ,gst-plugins-base)
+       ;;("gst-plugins-good" ,gst-plugins-good)
        ("gtk+" ,gtk+)
+       ("icu4c" ,icu4c)                 ;for emoji support
+       ;;("libcanberra" ,libcanberra)    ;for sound-notification support
        ("libgcrypt" ,libgcrypt)
        ("libgee" ,libgee)
+       ("libnice" ,libnice)
        ("libsignal-protocol-c" ,libsignal-protocol-c)
        ("libsoup" ,libsoup)
+       ;;("libsrtp" ,libsrtp)             ;for calls support
+       ("pango" ,pango)
        ("qrencode" ,qrencode)
-       ("sqlite" ,sqlite)
-       ("gpgme" ,gpgme)
-       ("gtk+" ,gtk+)
-       ("glib-networking" ,glib-networking)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)))
+       ("sqlite" ,sqlite)))
+       ;;("webrtc-audio-processing" ,webrtc-audio-processing))) ;for A/V support
     (synopsis "Graphical Jabber/XMPP Client using GTK+/Vala")
     (description "Dino is a chat client for the desktop.  It focuses on providing
 a minimal yet reliable Jabber/XMPP experience and having encryption enabled by
@@ -1282,14 +1332,14 @@ default.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.11.3")
+    (version "0.11.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "11xz4milv2962qf75vrdwsvd8sy2332nf69202rmvz5989pvvnng"))))
+                "02gzvsaq0l5lx608sfh7hfz14s6yfsr4sr4kzcsqd1cxljp35h6c"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
@@ -1613,7 +1663,7 @@ instant messenger with audio and video chat capabilities.")
        ("sqlite" ,sqlite)
        ("openal" ,openal)
        ("qrencode" ,qrencode)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("sqlcipher" ,sqlcipher)))
     (native-inputs
@@ -1788,79 +1838,6 @@ core aspects of PSYC, useful for all kinds of clients and servers
 including psyced.")
     (synopsis "PSYC library in C")
     (license license:agpl3+)))
-
-;; This commit removes the historic bundled pcre and makes psyclpc reproducible.
-(define-public psyclpc
-  (let* ((commit "61cf9aa81297085e5c40170fd01221c752f8deba")
-         (revision "2"))
-  (package
-    (name "psyclpc")
-    (version (string-append "20160821-" revision "." (string-take commit 7)))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "git://git.psyced.org/git/psyclpc")
-                    (commit commit)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1viwqymbhn3cwvx0zl58rlzl5gw47zxn0ldg2nbi55ghm5zxl1z5"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; There are no tests/checks.
-       #:configure-flags
-       ;; If you have questions about this part, look at
-       ;; "src/settings/psyced" and the ebuild.
-       (list
-        "--enable-use-tls=yes"
-        "--enable-use-mccp" ; Mud Client Compression Protocol, leave this enabled.
-        (string-append "--prefix="
-                       (assoc-ref %outputs "out"))
-        ;; src/Makefile: Set MUD_LIB to the directory which contains
-        ;; the mud data. defaults to MUD_LIB = @libdir@
-        (string-append "--libdir="
-                       (assoc-ref %outputs "out")
-                       "/opt/psyced/world")
-        (string-append "--bindir="
-                       (assoc-ref %outputs "out")
-                       "/opt/psyced/bin")
-        ;; src/Makefile: Set ERQ_DIR to directory which contains the
-        ;; stuff which ERQ can execute (hopefully) savely.  Was formerly
-        ;; defined in config.h. defaults to ERQ_DIR= @libexecdir@
-        (string-append "--libexecdir="
-                       (assoc-ref %outputs "out")
-                       "/opt/psyced/run"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'chdir-to-src
-           ;; We need to pass this as env variables
-           ;; and manually change the directory.
-           (lambda _
-             (chdir "src")
-             (setenv "CONFIG_SHELL" (which "sh"))
-             (setenv "SHELL" (which "sh"))
-             #t)))
-       #:make-flags (list "install-all")))
-    (inputs
-     `(("zlib" ,zlib)
-       ("openssl" ,openssl-1.0)
-       ("pcre" ,pcre)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("bison" ,bison)
-       ("gettext" ,gettext-minimal)
-       ("help2man" ,help2man)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)))
-    (home-page "http://lpc.psyc.eu/")
-    (synopsis "psycLPC is a multi-user network server programming language")
-    (description
-     "LPC is a bytecode language, invented to specifically implement
-multi user virtual environments on the internet.  This technology is used for
-MUDs and also the psyced implementation of the Protocol for SYnchronous
-Conferencing (PSYC).  psycLPC is a fork of LDMud with some new features and
-many bug fixes.")
-    (license license:gpl2))))
 
 (define-public loudmouth
   (package
@@ -2234,7 +2211,7 @@ notifications, and Python scripting support.")
         (base32 "0gkwr3yw6k2m0j8cc085b5p2q788rf5nhp1p5hc5d55pc7mci2qs"))))
     (build-system cmake-build-system)
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)))
     (arguments
      `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")
@@ -2250,7 +2227,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.3.1")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -2259,7 +2236,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dg4dq20g0ah62j5s3gpsxqq4ny7lxkxdxa9q6g54hdwkrb9ms7x"))))
+        (base32 "1xznfx2bhw0ahwmkxm0rs05vz05ijk5k4190rj6qp3bvb9byiajh"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2272,12 +2249,6 @@ QMatrixClient project.")
              (substitute* "CMakeLists.txt"
                (("add_test\\((BasicConnectivity|ClientAPI|MediaAPI|Encryption|Pushrules)")
                 "# add_test"))
-             #t))
-         (add-before 'configure 'set-home
-           (lambda _
-             ;; Tries to create package registry file
-             ;; So, set HOME.
-             (setenv "HOME" "/tmp")
              #t)))))
     (build-system cmake-build-system)
     (inputs
@@ -2300,7 +2271,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.7.2")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2309,46 +2280,79 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cbhgaf9klgxdirrxj571fqwspm0byl75c1xc40l727a6qswvp7s"))))
+        (base32 "0362hkbprc6jqlgmvzwxyvify4b1ldjakyqdz55m25xsypbpv2f3"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "third_party")))))
     (arguments
      `(#:tests? #f                      ;no test target
        #:configure-flags
-       (list
-        "-DCMAKE_BUILD_TYPE=Release"
-        "-DCMAKE_CXX_FLAGS=-fpermissive")
+       '("-DCMAKE_BUILD_TYPE=Release"
+         "-DBUILD_DOCS=ON"
+         ;; Fix required because we are using a static SingleApplication
+         "-DCMAKE_CXX_FLAGS= \"-DQAPPLICATION_CLASS=QApplication\" "
+         ;; Compile Qml will make Nheko faster, but you will need to recompile
+         ;; it, when you update Qt.  That's fine for us.
+         "-DCOMPILE_QML=ON")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-Werror
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("-Werror") ""))
-             #t))
+         (add-after 'unpack 'unbundle-dependencies
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((single-app (assoc-ref inputs "single-application")))
+               (substitute* "CMakeLists.txt"
+                 ;; Remove include and source dirs,replace with the correct one
+                 (("third_party/blurhash/blurhash.cpp") "")
+                 (("third_party/cpp-httplib-0.5.12")
+                  (string-append "\"" single-app "/include\""))
+                 (("add_subdirectory.*third_party/SingleApplication.*") "")
+                 ;; Link using the correct static/shared libs
+                 (("SingleApplication::SingleApplication")
+                  (string-append
+                   ;; Dynamic libraries
+                   "httplib" "\n" "blurhash" "\n"
+                   ;; Static library
+                   single-app "/lib/libSingleApplication.a"))))))
          (add-after 'unpack 'fix-determinism
            (lambda _
              ;; Make Qt deterministic.
-             (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")
-             #t)))))
+             (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
+         (add-after 'install 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               (wrap-program (string-append out "/bin/nheko")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
     (build-system qt-build-system)
     (inputs
      `(("boost" ,boost)
+       ("blurhash" ,blurhash)
+       ("cpp-httplib" ,cpp-httplib)
        ("cmark" ,cmark)
+       ("gst-plugins-base" ,gst-plugins-base)
+       ("gst-plugins-bad" ,gst-plugins-bad)   ; sdp & webrtc for voip
+       ("gst-plugins-good" ,gst-plugins-good) ; rtpmanager for voip
        ("json-modern-cxx" ,json-modern-cxx)
+       ("libnice" ,libnice)                   ; for voip
        ("libolm" ,libolm)
        ("lmdb" ,lmdb)
        ("lmdbxx" ,lmdbxx)
        ("mtxclient" ,mtxclient)
        ("openssl" ,openssl)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
+       ("qtkeychain" ,qtkeychain)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtmultimedia" ,qtmultimedia)
        ("qtquickcontrols2" ,qtquickcontrols2)
        ("qtsvg" ,qtsvg)
        ("spdlog" ,spdlog)
-       ("tweeny" ,tweeny)
+       ("single-application" ,single-application-qt5)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("doxygen" ,doxygen)
+       ("graphviz" ,graphviz)
+       ("pkg-config" ,pkg-config)
        ("qtlinguist" ,qttools)))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
@@ -2356,22 +2360,8 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 Matrix protocol that feels more like a mainstream chat app and less like an IRC
 client.
 
-There is support for:
-@itemize
-@item E2E encryption (text messages only: attachments are currently sent unencrypted).
-@item User registration.
-@item Creating, joining & leaving rooms.
-@item Sending & receiving invites.
-@item Sending & receiving files and emoji.
-@item Typing notifications.
-@item Username auto-completion.
-@item Message & mention notifications.
-@item Redacting messages.
-@item Read receipts.
-@item Basic communities support.
-@item Room switcher (@key{ctrl-K}).
-@item Light, Dark & System themes.
-@end itemize")
+Many matrix features are supported, including user registration, rooms, typing
+notification, emojis, E2E encryption, and voip calls.")
     (license license:gpl3+)))
 
 (define-public quaternion
@@ -2391,7 +2381,7 @@ There is support for:
     (build-system qt-build-system)
     (inputs
      `(("libqmatrixclient" ,libqmatrixclient)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtmultimedia" ,qtmultimedia)
        ("qtquickcontrols" ,qtquickcontrols)
@@ -2413,13 +2403,13 @@ QMatrixClient project.")
 (define-public hangups
   (package
     (name "hangups")
-    (version "0.4.13")
+    (version "0.4.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hangups" version))
        (sha256
-        (base32 "015g635vnrxk5lf9n80rdcmh6chv8kmla1k2j7m1iijijs519ngn"))))
+        (base32 "15qbbafcrdkx73xz9y30qa3d8nj6mgrp2m41749i5nn1qywmikk8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2464,7 +2454,7 @@ messaging that aren’t available to clients that connect over XMPP.")
 (define-public telegram-purple
   (package
     (name "telegram-purple")
-    (version "1.4.2")
+    (version "1.4.7")
     (home-page "https://github.com/majn/telegram-purple")
     (source (origin
               (method git-fetch)
@@ -2474,7 +2464,7 @@ messaging that aren’t available to clients that connect over XMPP.")
                     (recursive? #t)))
               (sha256
                (base32
-                "0imbzhhq9qbj6gvkckrnjhls2vvmmy8db7l6gsd7lng2pbfcn522"))
+                "14h8lvj0kjvy1b5i84ha2w9rl3akxjwwvsp5j4dcxwfghrkzqgf2"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2537,7 +2527,10 @@ messaging that aren’t available to clients that connect over XMPP.")
     (description
      "Telegram-purple is a plugin for Libpurple, the communication library
 used by the Pidgin instant messaging client, that adds support for the
-Telegram messenger.")
+Telegram messenger.
+
+This package is on ``life support'' until @code{tdlib-purple} is a full
+replacement.")
 
     ;; Code under tgl/ (the Telegram library) is LGPLv2.1+, but the plugin
     ;; itself is GPLv2+.
@@ -2728,7 +2721,7 @@ as phones, embedded computers or microcontrollers.")
                   "\"../build"))
                #t)))))
       (inputs
-       `(("qtbase" ,qtbase)
+       `(("qtbase" ,qtbase-5)
          ("qtdeclarative" ,qtdeclarative)
          ("qtwebchannel" ,qtwebchannel)))
       (propagated-inputs
@@ -2743,7 +2736,7 @@ social and chat platform.")
 (define-public psi-plus
   (package
     (name "psi-plus")
-    (version "1.5.1482")
+    (version "1.5.1484")
     (source
      (origin
        (method git-fetch)
@@ -2757,7 +2750,7 @@ social and chat platform.")
         `(begin
            (delete-file-recursively "3rdparty")))
        (sha256
-        (base32 "0lcx616hchwf492m1dm8ddb4qd2pmgf703ajnnb0y9ky99kgg8q2"))))
+        (base32 "1jsm39nzzbqkp3zc0xqx7jid6p4q1ra28xad38wjr2l1jb8qjn24"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -2857,7 +2850,7 @@ social and chat platform.")
        ("qca" ,qca)
        ("qhttp" ,qhttp)
        ("qite" ,qite)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtkeychain" ,qtkeychain)
        ("qtmultimedia" ,qtmultimedia)
        ("qtsvg" ,qtsvg)
@@ -2971,6 +2964,33 @@ designed for experienced users.")
     (home-page "https://github.com/zulip/zulip-terminal")
     (synopsis "Zulip's official terminal client")
     (description "This package contains Zulip's official terminal client.")
+    (license license:asl2.0)))
+
+(define-public matterbridge
+  (package
+    (name "matterbridge")
+    (version "1.22.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/42wim/matterbridge")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "07rgdc4v043fhzsalmlhickqizk6xjlpjkzn6l5v9ryp5gmv580z"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/42wim/matterbridge"
+       #:unpack-path "github.com/42wim/matterbridge"))
+    (synopsis "Bridge together various messaging networks and protocols")
+    (description "Relays messages between different channels from various
+messaging networks and protocols.  So far it supports mattermost, IRC, gitter,
+xmpp, slack, discord, telegram, rocketchat, twitch, ssh-chat, zulip, whatsapp,
+keybase, matrix, microsoft teams, nextcloud, mumble, vk and more with REST
+API.  Mattermost is not required.")
+    (home-page "https://github.com/42wim/matterbridge")
     (license license:asl2.0)))
 
 ;;; messaging.scm ends here

@@ -252,6 +252,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
   (package
     (name "cups-minimal")
     (version "2.3.3")
+    (replacement cups-minimal/fixed)
     (source
      (origin
        (method url-fetch)
@@ -311,6 +312,11 @@ describe printer capabilities and features, and a wide variety of generic and
 device-specific programs to convert and print many types of files.")
     ;; CUPS is Apache 2.0 with exceptions, see the NOTICE file.
     (license license:asl2.0)))
+
+(define cups-minimal/fixed
+  (package-with-extra-patches
+   cups-minimal
+   (search-patches "cups-CVE-2020-10001.patch")))
 
 (define-public cups
   (package/inherit cups-minimal
@@ -484,16 +490,15 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.21.2")
+    (version "3.21.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "0hbwx9d4c8177vi0gavz9pxi7rc97jciacndp90ms8327shj2121"))
+                "076fjzgw86q817c660h1vzwdp00cyjr49b9bfi7qkhphq6am4gpi"))
               (modules '((guix build utils)))
-              (patches (search-patches "hplip-remove-imageprocessor.patch"))
               (snippet
                '(begin
                   ;; Delete non-free blobs: .so files, pre-compiled
@@ -502,7 +507,14 @@ should only be used as part of the Guix cups-pk-helper service.")
                             (find-files "."
                                         (lambda (file stat)
                                           (elf-file? file))))
+
+                  ;; Now remove some broken references to them.
                   (delete-file "prnt/hpcups/ImageProcessor.h")
+                  (substitute* "Makefile.in"
+                    ((" -lImageProcessor ") " ")
+                    (("(\\@HPLIP_BUILD_TRUE\\@[[:blank:]]*).*libImageProcessor.*"
+                      _ prefix)
+                     (string-append prefix ":; \\\n")))
 
                   ;; Install binaries under libexec/hplip instead of
                   ;; share/hplip; that'll at least ensure they get stripped.
@@ -528,7 +540,8 @@ should only be used as part of the Guix cups-pk-helper service.")
     ;; TODO install apparmor profile files eventually.
     (arguments
      `(#:configure-flags
-       `("--disable-network-build"
+       `("--disable-imageProcessor-build"
+         "--disable-network-build"
          ,(string-append "--prefix=" (assoc-ref %outputs "out"))
          ,(string-append "--sysconfdir=" (assoc-ref %outputs "out") "/etc")
          ,(string-append "LDFLAGS=-Wl,-rpath="
@@ -855,7 +868,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
 (define-public epson-inkjet-printer-escpr
   (package
     (name "epson-inkjet-printer-escpr")
-    (version "1.7.9")
+    (version "1.7.17")
     ;; XXX: This currently works.  But it will break as soon as a newer
     ;; version is available since the URLs for older versions are not
     ;; preserved.  An alternative source will be added as soon as
@@ -863,11 +876,11 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/12/50/95/"
-                           "322b8d6b915ab85add33d41f04ba5130866aadbe/"
-                           "epson-inkjet-printer-escpr-1.7.9-1lsb3.2.tar.gz"))
+       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/12/99/"
+                           "78/73605b3f8aac63694fdabee6bd43389731696cd9/"
+                           "epson-inkjet-printer-escpr-1.7.17-1lsb3.2.tar.gz"))
        (sha256
-        (base32 "136hhvhimxfnrdn3ksbiswjxgsifrwlp3zz8h0v63w4k1vkzpgc0"))))
+        (base32 "1d7ckrl5kya98h27mx4pgnaz5sbrsd5vhwc8kva9nfah9wsga4wg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules

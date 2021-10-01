@@ -35,6 +35,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (%mirrors
+            %disarchive-mirrors
             (url-fetch* . url-fetch)
             url-fetch/executable
             url-fetch/tarbomb
@@ -87,10 +88,8 @@
        "ftp://ftp.ring.gr.jp/pub/net/gnupg/"
        "ftp://ftp.gnupg.org/gcrypt/")
       (gnome
-       "http://ftp.belnet.be/ftp.gnome.org/"
-       "http://ftp.linux.org.uk/mirrors/ftp.gnome.org/"
-       "http://ftp.gnome.org/pub/GNOME/"
        "https://download.gnome.org/"
+       "http://ftp.gnome.org/pub/GNOME/"
        "http://mirror.yandex.ru/mirrors/ftp.gnome.org/")
       (hackage
        "http://hackage.haskell.org/")
@@ -370,7 +369,7 @@
   ;; procedure that takes a file name, an algorithm (symbol) and a hash
   ;; (bytevector), and returns a URL or #f.
   '(begin
-     (use-modules (guix base32))
+     (use-modules (guix base16) (guix base32))
 
      (define (guix-publish host)
        (lambda (file algo hash)
@@ -379,12 +378,6 @@
          (string-append "https://" host "/file/"
                         file "/" (symbol->string algo) "/"
                         (bytevector->nix-base32-string hash))))
-
-     ;; XXX: (guix base16) appeared in March 2017 (and thus 0.13.0) so old
-     ;; installations of the daemon might lack it.  Thus, load it lazily to
-     ;; avoid gratuitous errors.  See <https://bugs.gnu.org/33542>.
-     (module-autoload! (current-module)
-                       '(guix base16) '(bytevector->base16-string))
 
      (list (guix-publish "ci.guix.gnu.org")
            (lambda (file algo hash)
@@ -406,12 +399,21 @@
   (plain-file "content-addressed-mirrors"
               (object->string %content-addressed-mirrors)))
 
+(define %disarchive-mirrors
+  ;; TODO: Eventually turn into a procedure that takes a hash algorithm
+  ;; (symbol) and hash (bytevector).
+  '("https://disarchive.ngyro.com/"))
+
+(define %disarchive-mirror-file
+  (plain-file "disarchive-mirrors" (object->string %disarchive-mirrors)))
+
 (define built-in-builders*
   (store-lift built-in-builders))
 
 (define* (built-in-download file-name url
                             #:key system hash-algo hash
                             mirrors content-addressed-mirrors
+                            disarchive-mirrors
                             executable?
                             (guile 'unused))
   "Download FILE-NAME from URL using the built-in 'download' builder.  When
@@ -422,13 +424,16 @@ explicitly depend on Guile, GnuTLS, etc.  Instead, the daemon performs the
 download by itself using its own dependencies."
   (mlet %store-monad ((mirrors (lower-object mirrors))
                       (content-addressed-mirrors
-                       (lower-object content-addressed-mirrors)))
+                       (lower-object content-addressed-mirrors))
+                      (disarchive-mirrors (lower-object disarchive-mirrors)))
     (raw-derivation file-name "builtin:download" '()
                     #:system system
                     #:hash-algo hash-algo
                     #:hash hash
                     #:recursive? executable?
-                    #:sources (list mirrors content-addressed-mirrors)
+                    #:sources (list mirrors
+                                    content-addressed-mirrors
+                                    disarchive-mirrors)
 
                     ;; Honor the user's proxy and locale settings.
                     #:leaked-env-vars '("http_proxy" "https_proxy"
@@ -439,6 +444,7 @@ download by itself using its own dependencies."
                                  ("mirrors" . ,mirrors)
                                  ("content-addressed-mirrors"
                                   . ,content-addressed-mirrors)
+                                 ("disarchive-mirrors" . ,disarchive-mirrors)
                                  ,@(if executable?
                                        '(("executable" . "1"))
                                        '()))
@@ -492,7 +498,9 @@ name in the store."
                              #:executable? executable?
                              #:mirrors %mirror-file
                              #:content-addressed-mirrors
-                             %content-addressed-mirror-file)))))
+                             %content-addressed-mirror-file
+                             #:disarchive-mirrors
+                             %disarchive-mirror-file)))))
 
 (define* (url-fetch/executable url hash-algo hash
                                #:optional name

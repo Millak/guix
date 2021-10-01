@@ -36,6 +36,7 @@
   #:use-module (rnrs bytevectors)
   #:use-module (ice-9 binary-ports)
   #:use-module ((ice-9 control) #:select (let/ec))
+  #:use-module (ice-9 atomic)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
@@ -47,7 +48,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 popen)
-  #:use-module (ice-9 threads)
+  #:autoload   (ice-9 threads) (current-processor-count)
   #:use-module (ice-9 format)
   #:use-module (web uri)
   #:export (%daemon-socket-uri
@@ -68,6 +69,7 @@
             nix-server-socket
 
             current-store-protocol-version        ;for internal use
+            cache-lookup-recorder                 ;for internal use
             mcached
 
             &store-error store-error?
@@ -87,9 +89,15 @@
             nix-protocol-error-message
             nix-protocol-error-status
 
+            allocate-store-connection-cache
+            store-connection-cache
+            set-store-connection-cache
+            set-store-connection-cache!
+
             hash-algo
             build-mode
 
+            connect-to-daemon
             open-connection
             port->connection
             close-connection
@@ -140,7 +148,6 @@
             built-in-builders
             references
             references/cached
-            references/substitutes
             references*
             query-path-info*
             requisites
@@ -382,8 +389,8 @@
   ;; the session.
   (ats-cache    store-connection-add-to-store-cache)
   (atts-cache   store-connection-add-text-to-store-cache)
-  (object-cache store-connection-object-cache
-                (default vlist-null))             ;vhash
+  (caches       store-connection-caches
+                (default '#()))                   ;vector
   (built-in-builders store-connection-built-in-builders
                      (default (delay '()))))      ;promise
 
@@ -501,7 +508,10 @@
 
 (define (connect-to-daemon uri)
   "Connect to the daemon at URI, a string that may be an actual URI or a file
-name."
+name, and return an input/output port.
+
+This is a low-level procedure that does not perform the initial handshake with
+the daemon.  Use 'open-connection' for that."
   (define (not-supported)
     (raise (condition (&store-connection-error
                        (file uri)
@@ -548,13 +558,16 @@ space on the file system so that the garbage collector can still operate,
 should the disk become full.  When CPU-AFFINITY is true, it must be an integer
 corresponding to an OS-level CPU number to which the daemon's worker process
 for this connection will be pinned.  Return a server object."
+  (define (handshake-error)
+    (raise (condition
+            (&store-connection-error (file (or port uri))
+                                     (errno EPROTO))
+            (&message (message "build daemon handshake failed")))))
+
   (guard (c ((nar-error? c)
              ;; One of the 'write-' or 'read-' calls below failed, but this is
              ;; really a connection error.
-             (raise (condition
-                     (&store-connection-error (file (or port uri))
-                                              (errno EPROTO))
-                     (&message (message "build daemon handshake failed"))))))
+             (handshake-error)))
     (let*-values (((port)
                    (or port (connect-to-daemon uri)))
                   ((output flush)
@@ -562,32 +575,39 @@ for this connection will be pinned.  Return a server object."
                                           (make-bytevector 8192))))
       (write-int %worker-magic-1 port)
       (let ((r (read-int port)))
-        (and (= r %worker-magic-2)
-             (let ((v (read-int port)))
-               (and (= (protocol-major %protocol-version)
-                       (protocol-major v))
-                    (begin
-                      (write-int %protocol-version port)
-                      (when (>= (protocol-minor v) 14)
-                        (write-int (if cpu-affinity 1 0) port)
-                        (when cpu-affinity
-                          (write-int cpu-affinity port)))
-                      (when (>= (protocol-minor v) 11)
-                        (write-int (if reserve-space? 1 0) port))
-                      (letrec* ((built-in-builders
-                                 (delay (%built-in-builders conn)))
-                                (conn
-                                 (%make-store-connection port
-                                                         (protocol-major v)
-                                                         (protocol-minor v)
-                                                         output flush
-                                                         (make-hash-table 100)
-                                                         (make-hash-table 100)
-                                                         vlist-null
-                                                         built-in-builders)))
-                        (let loop ((done? (process-stderr conn)))
-                          (or done? (process-stderr conn)))
-                        conn)))))))))
+        (unless (= r %worker-magic-2)
+          (handshake-error))
+
+        (let ((v (read-int port)))
+          (unless (= (protocol-major %protocol-version)
+                     (protocol-major v))
+            (handshake-error))
+
+          (write-int %protocol-version port)
+          (when (>= (protocol-minor v) 14)
+            (write-int (if cpu-affinity 1 0) port)
+            (when cpu-affinity
+              (write-int cpu-affinity port)))
+          (when (>= (protocol-minor v) 11)
+            (write-int (if reserve-space? 1 0) port))
+          (letrec* ((built-in-builders
+                     (delay (%built-in-builders conn)))
+                    (caches
+                     (make-vector
+                      (atomic-box-ref %store-connection-caches)
+                      vlist-null))
+                    (conn
+                     (%make-store-connection port
+                                             (protocol-major v)
+                                             (protocol-minor v)
+                                             output flush
+                                             (make-hash-table 100)
+                                             (make-hash-table 100)
+                                             caches
+                                             built-in-builders)))
+            (let loop ((done? (process-stderr conn)))
+              (or done? (process-stderr conn)))
+            conn))))))
 
 (define* (port->connection port
                            #:key (version %protocol-version))
@@ -606,7 +626,9 @@ connection.  Use with care."
                               output flush
                               (make-hash-table 100)
                               (make-hash-table 100)
-                              vlist-null
+                              (make-vector
+                               (atomic-box-ref %store-connection-caches)
+                               vlist-null)
                               (delay (%built-in-builders connection))))
 
     connection))
@@ -638,18 +660,10 @@ connection.  Use with care."
             (close-connection store)
             (apply values results)))))
 
-    (cond-expand
-      (guile-3
-       (with-exception-handler (lambda (exception)
-                                 (close-connection store)
-                                 (raise-exception exception))
-         thunk))
-      (else                                       ;Guile 2.2
-       (catch #t
-         thunk
-         (lambda (key . args)
-           (close-connection store)
-           (apply throw key args)))))))
+    (with-exception-handler (lambda (exception)
+                              (close-connection store)
+                              (raise-exception exception))
+      thunk)))
 
 (define-syntax-rule (with-store store exp ...)
   "Bind STORE to an open connection to the store and evaluate EXPs;
@@ -773,7 +787,8 @@ encoding conversion errors."
   (map (if (false-if-exception (resolve-interface '(gnutls)))
            (cut string-append "https://" <>)
            (cut string-append "http://" <>))
-       '("ci.guix.gnu.org")))
+       '("ci.guix.gnu.org"
+         "bordeaux.guix.gnu.org")))
 
 (define (current-user-name)
   "Return the name of the calling user."
@@ -1340,14 +1355,33 @@ on the build output of a previous derivation."
       (unresolved things continue)
       (continue #t)))
 
-(define (map/accumulate-builds store proc lst)
+(define* (map/accumulate-builds store proc lst
+                                #:key (cutoff 30))
   "Apply PROC over each element of LST, accumulating 'build-things' calls and
-coalescing them into a single call."
-  (define result
-    (map (lambda (obj)
-           (with-build-handler build-accumulator
-             (proc obj)))
-         lst))
+coalescing them into a single call.
+
+CUTOFF is the threshold above which we stop accumulating unresolved nodes."
+
+  ;; The CUTOFF parameter helps avoid pessimal behavior where we keep
+  ;; stumbling upon the same .drv build requests with many incoming edges.
+  ;; See <https://bugs.gnu.org/49439>.
+
+  (define-values (result rest)
+    (let loop ((lst lst)
+               (result '())
+               (unresolved 0))
+      (match lst
+        ((head . tail)
+         (match (with-build-handler build-accumulator
+                  (proc head))
+           ((? unresolved? obj)
+            (if (>= unresolved cutoff)
+                (values (reverse (cons obj result)) tail)
+                (loop tail (cons obj result) (+ 1 unresolved))))
+           (obj
+            (loop tail (cons obj result) unresolved))))
+        (()
+         (values (reverse result) lst)))))
 
   (match (append-map (lambda (obj)
                        (if (unresolved? obj)
@@ -1355,19 +1389,23 @@ coalescing them into a single call."
                            '()))
                      result)
     (()
+     ;; REST is necessarily empty.
      result)
     (to-build
-     ;; We've accumulated things TO-BUILD.  Actually build them and resume the
-     ;; corresponding continuations.
+     ;; We've accumulated things TO-BUILD; build them.
      (build-things store (delete-duplicates to-build))
-     (map/accumulate-builds store
-                            (lambda (obj)
-                              (if (unresolved? obj)
-                                  ;; Pass #f because 'build-things' is now
-                                  ;; unnecessary.
-                                  ((unresolved-continuation obj) #f)
-                                  obj))
-                            result))))
+
+     ;; Resume the continuations corresponding to TO-BUILD, and then process
+     ;; REST.
+     (append (map/accumulate-builds store
+                                    (lambda (obj)
+                                      (if (unresolved? obj)
+                                          ;; Pass #f because 'build-things' is now
+                                          ;; unnecessary.
+                                          ((unresolved-continuation obj) #f)
+                                          obj))
+                                    result #:cutoff cutoff)
+         (map/accumulate-builds store proc rest #:cutoff cutoff)))))
 
 (define build-things
   (let ((build (operation (build-things (string-list things)
@@ -1461,73 +1499,6 @@ error if there is no such root."
   (operation (query-references (store-path path))
              "Return the list of references of PATH."
              store-path-list))
-
-(define %reference-cache
-  ;; Brute-force cache mapping store items to their list of references.
-  ;; Caching matters because when building a profile in the presence of
-  ;; grafts, we keep calling 'graft-derivation', which in turn calls
-  ;; 'references/substitutes' many times with the same arguments.  Ideally we
-  ;; would use a cache associated with the daemon connection instead (XXX).
-  (make-hash-table 100))
-
-(define (references/cached store item)
-  "Like 'references', but cache results."
-  (or (hash-ref %reference-cache item)
-      (let ((references (references store item)))
-        (hash-set! %reference-cache item references)
-        references)))
-
-(define (references/substitutes store items)
-  "Return the list of list of references of ITEMS; the result has the same
-length as ITEMS.  Query substitute information for any item missing from the
-store at once.  Raise a '&store-protocol-error' exception if reference
-information for one of ITEMS is missing."
-  (let* ((requested  items)
-         (local-refs (map (lambda (item)
-                            (or (hash-ref %reference-cache item)
-                                (guard (c ((store-protocol-error? c) #f))
-                                  (references store item))))
-                          items))
-         (missing    (fold-right (lambda (item local-ref result)
-                                   (if local-ref
-                                       result
-                                       (cons item result)))
-                                 '()
-                                 items local-refs))
-
-         ;; Query all the substitutes at once to minimize the cost of
-         ;; launching 'guix substitute' and making HTTP requests.
-         (substs     (if (null? missing)
-                         '()
-                         (substitutable-path-info store missing))))
-    (when (< (length substs) (length missing))
-      (raise (condition (&store-protocol-error
-                         (message "cannot determine \
-the list of references")
-                         (status 1)))))
-
-    ;; Intersperse SUBSTS and LOCAL-REFS.
-    (let loop ((items       items)
-               (local-refs  local-refs)
-               (result      '()))
-      (match items
-        (()
-         (let ((result (reverse result)))
-           (for-each (cut hash-set! %reference-cache <> <>)
-                     requested result)
-           result))
-        ((item items ...)
-         (match local-refs
-           ((#f tail ...)
-            (loop items tail
-                  (cons (any (lambda (subst)
-                               (and (string=? (substitutable-path subst) item)
-                                    (substitutable-references subst)))
-                             substs)
-                        result)))
-           ((head tail ...)
-            (loop items tail
-                  (cons head result)))))))))
 
 (define* (fold-path store proc seed paths
                     #:optional (relatives (cut references store <>)))
@@ -1799,6 +1770,77 @@ This makes sense only when the daemon was started with '--cache-failures'."
 
 
 ;;;
+;;; Per-connection caches.
+;;;
+
+;; Number of currently allocated store connection caches--things that go in
+;; the 'caches' vector of <store-connection>.
+(define %store-connection-caches (make-atomic-box 0))
+
+(define (allocate-store-connection-cache name)
+  "Allocate a new cache for store connections and return its identifier.  Said
+identifier can be passed as an argument to "
+  (let loop ((current (atomic-box-ref %store-connection-caches)))
+    (let ((previous (atomic-box-compare-and-swap! %store-connection-caches
+                                                  current (+ current 1))))
+      (if (= previous current)
+          current
+          (loop current)))))
+
+(define %object-cache-id
+  ;; The "object cache", mapping lowerable objects such as <package> records
+  ;; to derivations.
+  (allocate-store-connection-cache 'object-cache))
+
+(define (vector-set vector index value)
+  (let ((new (vector-copy vector)))
+    (vector-set! new index value)
+    new))
+
+(define (store-connection-cache store cache)
+  "Return the cache of STORE identified by CACHE, an identifier as returned by
+'allocate-store-connection-cache'."
+  (vector-ref (store-connection-caches store) cache))
+
+(define (set-store-connection-cache store cache value)
+  "Return a copy of STORE where CACHE has the given VALUE.  CACHE must be a
+value returned by 'allocate-store-connection-cache'."
+  (store-connection
+   (inherit store)
+   (caches (vector-set (store-connection-caches store) cache value))))
+
+(define set-store-connection-caches!              ;private
+  (record-modifier <store-connection> 'caches))
+
+(define (set-store-connection-cache! store cache value)
+  "Set STORE's CACHE to VALUE.
+
+This is a mutating version that should be avoided.  Prefer the functional
+'set-store-connection-cache' instead, together with using %STORE-MONAD."
+  (vector-set! (store-connection-caches store) cache value))
+
+
+(define %reference-cache-id
+  ;; Cache mapping store items to their list of references.  Caching matters
+  ;; because when building a profile in the presence of grafts, we keep
+  ;; calling 'graft-derivation', which in turn calls 'references/cached' many
+  ;; times with the same arguments.
+  (allocate-store-connection-cache 'reference-cache))
+
+(define (references/cached store item)
+  "Like 'references', but cache results."
+  (let ((cache (store-connection-cache store %reference-cache-id)))
+    (match (vhash-assoc item cache)
+      ((_ . references)
+       references)
+      (#f
+       (let* ((references (references store item))
+              (cache      (vhash-cons item references cache)))
+         (set-store-connection-cache! store %reference-cache-id cache)
+         references)))))
+
+
+;;;
 ;;; Store monad.
 ;;;
 
@@ -1817,7 +1859,9 @@ This makes sense only when the daemon was started with '--cache-failures'."
 (template-directory instantiations %store-monad)
 
 (define* (cache-object-mapping object keys result
-                               #:key (vhash-cons vhash-consq))
+                               #:key
+                               (cache %object-cache-id)
+                               (vhash-cons vhash-consq))
   "Augment the store's object cache with a mapping from OBJECT/KEYS to RESULT.
 KEYS is a list of additional keys to match against, for instance a (SYSTEM
 TARGET) tuple.  Use VHASH-CONS to insert OBJECT into the cache.
@@ -1826,26 +1870,29 @@ OBJECT is typically a high-level object such as a <package> or an <origin>,
 and RESULT is typically its derivation."
   (lambda (store)
     (values result
-            (store-connection
-             (inherit store)
-             (object-cache (vhash-cons object (cons result keys)
-                                       (store-connection-object-cache store)))))))
+            (set-store-connection-cache
+             store cache
+             (vhash-cons object (cons result keys)
+                         (store-connection-cache store cache))))))
 
-(define record-cache-lookup!
-  (if (profiled? "object-cache")
+(define (cache-lookup-recorder component title)
+  "Return a procedure of two arguments to record cache lookups, hits, and
+misses for COMPONENT.  The procedure must be passed a Boolean indicating
+whether the cache lookup was a hit, and the actual cache (a vhash)."
+  (if (profiled? component)
       (let ((fresh    0)
             (lookups  0)
             (hits     0)
             (size     0))
         (register-profiling-hook!
-         "object-cache"
+         component
          (lambda ()
-           (format (current-error-port) "Store object cache:
+           (format (current-error-port) "~a:
   fresh caches: ~5@a
   lookups:      ~5@a
   hits:         ~5@a (~,1f%)
   cache size:   ~5@a entries~%"
-                   fresh lookups hits
+                   title fresh lookups hits
                    (if (zero? lookups)
                        100.
                        (* 100. (/ hits lookups)))
@@ -1853,9 +1900,9 @@ and RESULT is typically its derivation."
 
         (lambda (hit? cache)
           (set! fresh
-            (if (eq? cache vlist-null)
-                (+ 1 fresh)
-                fresh))
+                (if (eq? cache vlist-null)
+                    (+ 1 fresh)
+                    fresh))
           (set! lookups (+ 1 lookups))
           (set! hits (if hit? (+ hits 1) hits))
           (set! size (+ (if hit? 0 1)
@@ -1863,13 +1910,16 @@ and RESULT is typically its derivation."
       (lambda (x y)
         #t)))
 
+(define record-cache-lookup!
+  (cache-lookup-recorder "object-cache" "Store object cache"))
+
 (define-inlinable (lookup-cached-object object keys vhash-fold*)
   "Return the cached object in the store connection corresponding to OBJECT
 and KEYS; use VHASH-FOLD* to look for OBJECT in the cache.  KEYS is a list of
 additional keys to match against, and which are compared with 'equal?'.
 Return #f on failure and the cached result otherwise."
   (lambda (store)
-    (let* ((cache (store-connection-object-cache store))
+    (let* ((cache (store-connection-cache store %object-cache-id))
 
            ;; Escape as soon as we find the result.  This avoids traversing
            ;; the whole vlist chain and significantly reduces the number of
@@ -2046,9 +2096,6 @@ the store."
   ;; when using 'gexp->derivation' and co.
   (make-parameter #f))
 
-(define set-store-connection-object-cache!
-  (record-modifier <store-connection> 'object-cache))
-
 (define* (run-with-store store mval
                          #:key
                          (guile-for-build (%guile-for-build))
@@ -2068,8 +2115,8 @@ connection, and return the result."
         (when (and store new-store)
           ;; Copy the object cache from NEW-STORE so we don't fully discard
           ;; the state.
-          (let ((cache (store-connection-object-cache new-store)))
-            (set-store-connection-object-cache! store cache)))
+          (let ((caches (store-connection-caches new-store)))
+            (set-store-connection-caches! store caches)))
         result))))
 
 

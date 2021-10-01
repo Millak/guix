@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -45,17 +45,12 @@
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages less)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages disk)
-  #:use-module (gnu packages zile)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages admin)
 
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
-  #:use-module (gnu system shadow)
-  #:use-module (gnu system pam)
   #:use-module (gnu system linux-container)
   #:use-module (gnu system linux-initrd)
   #:use-module (gnu bootloader)
@@ -635,7 +630,7 @@ environment with the store shared with the host.  MAPPINGS is a list of
     (bootloader (bootloader-configuration
                   (inherit (operating-system-bootloader os))
                   (bootloader grub-bootloader)
-                  (target "/dev/vda")))
+                  (targets '("/dev/vda"))))
 
     (initrd (lambda (file-systems . rest)
               (apply (operating-system-initrd os)
@@ -718,7 +713,7 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
 
      #$@(map virtfs-option shared-fs)
      "-vga std"
-     (format #f "-drive file=~a,if=virtio,cache=writeback,werror=report,readonly"
+     (format #f "-drive file=~a,if=virtio,cache=writeback,werror=report,readonly=on"
              #$image)))
 
 (define* (system-qemu-image/shared-store-script os

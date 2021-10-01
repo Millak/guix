@@ -14,6 +14,9 @@
 ;;; Copyright © 2020 Mark Meyer <mark@ofosos.org>
 ;;; Copyright © 2020 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 aecepoglu <aecepoglu@fastmail.fm>
+;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +48,7 @@
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
   #:use-module (gnu packages crates-io)
@@ -160,7 +164,7 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2020.09.01")
+    (version "2021.08.28")
     (source
      (origin
        (method url-fetch)
@@ -168,7 +172,7 @@ based command language.")
                            "releases/download/v" version "/"
                            "kakoune-" version ".tar.bz2"))
        (sha256
-        (base32 "0x81rxy7bqnhd9374g5ypy4w4nxmm0vnqw6b52bf62jxdg2qj6l6"))))
+        (base32 "1jvn4b9rma5jjvg3xz8nf224pbq3ry570j6qvc834wn5v3gxfvkg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -191,11 +195,10 @@ based command language.")
          (add-before 'build 'chdir
            (lambda _ (chdir "src") #t)))))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
+     `(("gcc", gcc-10) ; See https://github.com/mawww/kakoune/issues/4318
+       ("asciidoc" ,asciidoc)
        ("pkg-config" ,pkg-config)
        ("ruby" ,ruby)))
-    (inputs
-     `(("ncurses" ,ncurses)))
     (synopsis "Vim-inspired code editor")
     (description
      "Kakoune is a code editor heavily inspired by Vim, as such most of its
@@ -250,6 +253,40 @@ competitive (as in keystroke count) with Vim.")
 Rust.")
     (license license:unlicense)))
 
+(define-public parinfer-rust
+  (package
+    (name "parinfer-rust")
+    (version "0.4.3")
+    (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eraserhd/parinfer-rust")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0hj5in5h7pj72m4ag80ing513fh65q8xlsf341qzm3vmxm3y3jgd"))
+       (file-name (git-file-name name version))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-getopts" ,rust-getopts-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-emacs" ,rust-emacs-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (inputs
+     `(("clang" ,clang)))
+    (home-page "https://github.com/justinbarclay/parinfer-rust")
+    (synopsis "Infer parentheses for Clojure, Lisp and Scheme")
+    (description
+     "Parinfer is a plugin for Kakoune, Vim, Neovim and Emacs that infers
+parentheses and indentation.  This library can be called from other editors that
+can load dynamic libraries.")
+    (license license:expat)))
+
 (define-public joe
   (package
     (name "joe")
@@ -276,7 +313,7 @@ bindings and many of the powerful features of GNU Emacs.")
 (define-public jucipp
   (package
     (name "jucipp")
-    (version "1.6.2")
+    (version "1.6.3")
     (home-page "https://gitlab.com/cppit/jucipp")
     (source (origin
               (method git-fetch)
@@ -288,7 +325,7 @@ bindings and many of the powerful features of GNU Emacs.")
                                   (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "10idv2kyw2dg45wfcnh7nybs8qys7kfvif90sjrff3541k97pm5y"))))
+               (base32 "1gy2xb5rm7q4zx9rl23h96b1i46fz27v25nklj50fvqp8ax2gxqy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_TESTING=ON"
@@ -358,11 +395,11 @@ bindings and many of the powerful features of GNU Emacs.")
        ("ctags" ,universal-ctags)
        ("gtkmm" ,gtkmm)
        ("gtksourceviewmm" ,gtksourceviewmm)
-       ("libclang" ,clang-10)     ;XXX: must be the same version as Mesas LLVM
+       ("libclang" ,clang-11)     ;XXX: must be the same version as Mesas LLVM
        ("libgit2" ,libgit2)))
     (synopsis "Lightweight C++ IDE")
     (description
-     "juCi++ is a small @dfn{IDE} (Integrated Development Environment)
+     "juCi++ is a small @acronym{IDE, Integrated Development Environment}
 designed especially towards libclang with speed, stability, and ease of use
 in mind.
 
@@ -395,6 +432,38 @@ development focuses on keeping weight down to a minimum, only the most essential
 features are implemented in the editor.  Leafpad is simple to use, is easily
 compiled, requires few libraries, and starts up quickly. ")
     (license license:gpl2+)))
+
+(define-public l3afpad
+  (let ((commit "5235c9e13bbf0d31a902c6776918c2d7cdbb61ff")
+        (revision "0"))
+    (package
+      (name "l3afpad")
+      (version (git-version "0.8.18.1.11" revision commit))
+      (source (origin
+                (method git-fetch)
+                (file-name (git-file-name name version))
+                (uri (git-reference
+                       (url "https://github.com/stevenhoneyman/l3afpad")
+                       (commit commit)))
+                (sha256
+                 (base32
+                  "1alyghm2wpakzdfag0g4g8gb1h9l4wdg7mnhq8bk0iq5ryqia16a"))))
+      (build-system glib-or-gtk-build-system)
+      (native-inputs
+       `(("intltool" ,intltool)
+         ("autoconf" ,autoconf)
+         ("automake" ,automake)
+         ("pkg-config" ,pkg-config)))
+      (inputs
+       `(("gtk+" ,gtk+)))
+      (home-page "http://tarot.freeshell.org/leafpad/")
+      (synopsis "GTK+ 3 based text editor")
+      (description "L3afpad is a GTK+ 3 text editor that emphasizes simplicity.  As
+  development focuses on keeping weight down to a minimum, only the most essential
+  features are implemented in the editor.  L3afpad is simple to use, is easily
+  compiled, requires few libraries, and starts up quickly.  L3afpad is a
+  fork of Leafpad that uses GTK+ 3 instead of GTK+ 2.")
+      (license license:gpl2+))))
 
 (define-public e3
   (package
@@ -437,7 +506,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 (define-public mg
   (package
     (name "mg")
-    (version "20180927")
+    (version "20210609")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -446,42 +515,41 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14vrm8lvwksf697sqks7xfd1xaqjlqjc9afjk33sksq5p27wr203"))
+                "04c2vqxg31mk15cfrhzrivykis8fmf0m1d8h1qdjdmlfxd4qwaqf"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "GNUmakefile"
-                            (("/usr/bin/") ""))
-                          #t))))
+                            (("/usr/bin/") ""))))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("libbsd" ,libbsd)
+     `(("diffutils" ,diffutils)
+       ("libbsd" ,libbsd)
        ("ncurses" ,ncurses)))
     (arguments
      ;; No test suite available.
-     '(#:tests? #f
+     `(#:tests? #f
        #:make-flags (list (string-append "prefix=" %output)
-                          "CC=gcc")
+                          (string-append "CC=" ,(cc-for-target))
+                          (string-append "PKG_CONFIG=" ,(pkg-config-for-target)))
        #:phases (modify-phases %standard-phases
                   (delete 'configure)   ; no configure script
-                  (add-before 'build 'correct-location-of-difftool
-                    (lambda _
+                  (add-before 'build 'correct-location-of-diff
+                    (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "buffer.c"
                         (("/usr/bin/diff")
-                         (which "diff")))
-                      #t))
+                         (string-append (assoc-ref inputs "diffutils")
+                                        "/bin/diff")))))
                   (add-before 'install 'patch-tutorial-location
                     (lambda* (#:key outputs #:allow-other-keys)
                       (substitute* "mg.1"
-                        (("/usr") (assoc-ref outputs "out")))
-                      #t))
+                        (("/usr") (assoc-ref outputs "out")))))
                   (add-after 'install 'install-tutorial
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
                              (doc (string-append out "/share/doc/mg")))
-                        (install-file "tutorial" doc)
-                        #t))))))
+                        (install-file "tutorial" doc)))))))
     (home-page "https://homepage.boetes.org/software/mg/")
     (synopsis "Microscopic GNU Emacs clone")
     (description
@@ -524,13 +592,14 @@ OpenBSD team.")
                #t)))
          (add-after 'install 'install-extra-documentation
            ;; Install sample configuration file, Info, and HTML manual.
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let* ((share (string-append (assoc-ref outputs "out") "/share"))
                     (doc (string-append share "/doc/" ,name "-" ,version))
                     (html (string-append share "/html"))
                     (info (string-append share "/info"))
-                    (makeinfo (string-append (assoc-ref %build-inputs "texinfo")
-                                             "/bin/makeinfo")))
+                    (makeinfo (string-append
+                               (assoc-ref (or native-inputs inputs) "texinfo")
+                               "/bin/makeinfo")))
                ;; First fix Texinfo documentation, create appropriate
                ;; directories, then generate Info and HTML files there.
                (substitute* "qe-doc.texi"
@@ -600,8 +669,7 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
 (define-public ghostwriter
   (package
     (name "ghostwriter")
-    ;; XXX We use a release candidate to fix incompatibility with Qt 5.15.
-    (version "2.0.0-rc4")
+    (version "2.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -610,14 +678,14 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07547503a209hc0fcg902w3x0s1m899c10nj3gqz3hak0cmrasi3"))))
+                "19cf55b86yj2b5hdazbyw4iyp6xq155243aiyg4m0vhwh0h79nwh"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))           ; for lrelease
     (inputs
      `(("hunspell" ,hunspell)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtmultimedia" ,qtmultimedia)
        ("qtquickcontrols" ,qtquickcontrols)
@@ -657,7 +725,7 @@ environment with Markdown markup.")
 (define-public manuskript
   (package
     (name "manuskript")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -666,7 +734,7 @@ environment with Markdown markup.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l6l9k6k69yv8xqpll0zv9cwdqqg4zvxy90l6sx5nv2yywh5crla"))))
+        (base32 "0gfwwnpjslb0g8y3v9ha4sd8in6bpy6bhi4rn4hmfd2vmq2flpbd"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ;no test
@@ -755,7 +823,7 @@ in plain text file format.")
 (define-public editorconfig-core-c
   (package
     (name "editorconfig-core-c")
-    (version "0.12.4")
+    (version "0.12.5")
     (source
       (origin
         (method git-fetch)
@@ -764,7 +832,7 @@ in plain text file format.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1311fhh2jfsja2hhk3nwb6nijlq03jw8dk35cwbrac0p9jvy03jx"))))
+         (base32 "073sh18y0v8wm10iphaia54pkdmwylalccpn1k5i9dwyfjzgj7yg"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
@@ -806,14 +874,14 @@ editors.")
 (define-public texmacs
   (package
     (name "texmacs")
-    (version "1.99.19")
+    (version "2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.texmacs.org/Download/ftp/tmftp/"
                            "source/TeXmacs-" version "-src.tar.gz"))
        (sha256
-        (base32 "1izwqb0z4gqiglv57mjswk6sjivny73kd2sxrf3nmj7wr12pn5m8"))))
+        (base32 "1gl6k1bwrk1y7hjyl4xvlqvmk5crl4jvsk8wrfp7ynbdin6n2i48"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -823,7 +891,7 @@ editors.")
        ("guile" ,guile-1.8)
        ("perl" ,perl)
        ("python" ,python-wrapper)
-       ("qt" ,qtbase)
+       ("qt" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (arguments
      `(#:tests? #f                      ; no check target
@@ -834,16 +902,14 @@ editors.")
              (let ((out (assoc-ref outputs "out")))
                (substitute* "packages/linux/icons.sh"
                  (("/usr/share")
-                  (string-append out "/share")))
-               #t)))
+                  (string-append out "/share"))))))
          (add-after 'install 'install-desktop-file
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Install desktop file.
              (let* ((out (assoc-ref outputs "out"))
                     (apps (string-append out "/share/applications"))
                     (source "TeXmacs/misc/mime/texmacs.desktop"))
-               (install-file source apps)
-               #t)))
+               (install-file source apps))))
          (add-before 'configure 'gzip-flags
            (lambda _
              (substitute* "Makefile.in"
@@ -861,14 +927,14 @@ Octave.  TeXmacs is completely extensible via Guile.")
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.0.1")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (let ((v (apply string-append (string-split version #\.))))
               (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
        (sha256
-        (base32 "0w5550fijkhmzvdydd8770qq9dgnbq1sd0a8rn4g6mwyfpcyhbfy"))))
+        (base32 "1d0yjx2wlx4fj5bccxdgfmrr7nzazkw4m08i6h4c0a54sb484yif"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list "GTK3=1" "CC=gcc" "-Cgtk")
@@ -885,8 +951,7 @@ Octave.  TeXmacs is completely extensible via Guile.")
                (for-each (lambda (f) (install-file f lib))
                          (find-files "bin/" "\\.so$"))
                (for-each (lambda (f) (install-file f include))
-                         (find-files "include/" "."))
-               #t))))))
+                         (find-files "include/" "."))))))))
     (native-inputs
      `(("gcc" ,gcc-9)                   ;Code has C++17 requirements
        ("pkg-config" ,pkg-config)
@@ -1018,7 +1083,7 @@ card.  It offers:
 (define-public ne
   (package
     (name "ne")
-    (version "3.3.0")
+    (version "3.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1027,7 +1092,7 @@ card.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01aglnsfljlvx0wvyvpjfn4y88jf450a06qnj9a8lgdqv1hdkq1a"))))
+                "0sg2f6lxq6cjkpd3dvlxxns82hvq826rjnams5in97pssmknr77g"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("perl" ,perl)
@@ -1043,11 +1108,14 @@ card.  It offers:
                             "/lib"))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'patch-early-shebang
+           (lambda _
+             (substitute* "version.pl"
+               (("/usr/bin/env .*perl") (which "perl")))))
          (replace 'configure
            (lambda _
              (substitute* "src/makefile"
-              (("-lcurses") "-lncurses"))
-             #t)))))
+              (("-lcurses") "-lncurses")))))))
     (home-page "https://ne.di.unimi.it/")
     (synopsis "Text editor with menu bar")
     (description "This package provides a modeless text editor with menu bar.

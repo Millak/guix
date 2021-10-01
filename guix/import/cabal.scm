@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -145,7 +146,7 @@ to the stack."
   (lalr-parser
    ;; --- token definitions
    (CCURLY VCCURLY OPAREN CPAREN TEST ID VERSION RELATION TRUE FALSE -ANY -NONE
-           (right: IF FLAG EXEC TEST-SUITE CUSTOM-SETUP SOURCE-REPO BENCHMARK LIB OCURLY)
+           (right: IF FLAG EXEC TEST-SUITE CUSTOM-SETUP SOURCE-REPO BENCHMARK LIB COMMON OCURLY)
            (left: OR)
            (left: PROPERTY AND)
            (right: ELSE NOT))
@@ -155,6 +156,7 @@ to the stack."
                 (sections source-repo)  : (append $1 (list $2))
                 (sections executables)  : (append $1 $2)
                 (sections test-suites)  : (append $1 $2)
+                (sections common)       : (append $1 $2)
                 (sections custom-setup) : (append $1 $2)
                 (sections benchmarks)   : (append $1 $2)
                 (sections lib-sec)      : (append $1 (list $2))
@@ -178,6 +180,10 @@ to the stack."
                 (ts-sec)                : (list $1))
    (ts-sec      (TEST-SUITE OCURLY exprs CCURLY) : `(section test-suite ,$1 ,$3)
                 (TEST-SUITE open exprs close)    : `(section test-suite ,$1 ,$3))
+   (common      (common common-sec)     : (append $1 (list $2))
+                (common-sec)            : (list $1))
+   (common-sec  (COMMON OCURLY exprs CCURLY)     : `(section common ,$1 ,$3)
+                (COMMON open exprs close)        : `(section common ,$1 ,$3))
    (custom-setup (CUSTOM-SETUP exprs) : (list `(section custom-setup ,$1 ,$2)))
    (benchmarks  (benchmarks bm-sec)     : (append $1 (list $2))
                 (bm-sec)                : (list $1))
@@ -367,6 +373,9 @@ matching a string against the created regexp."
 (define is-test-suite (make-rx-matcher "^test-suite +([a-z0-9_-]+)"
                                        regexp/icase))
 
+(define is-common (make-rx-matcher "^common +([a-z0-9_-]+)"
+                                   regexp/icase))
+
 (define is-custom-setup (make-rx-matcher "^(custom-setup)"
                                          regexp/icase))
 
@@ -391,14 +400,20 @@ matching a string against the created regexp."
 
 (define (is-or s) (string=? s "||"))
 
-(define (is-id s port)
+(define (is-id s port loc)
   (let ((cabal-reserved-words
          '("if" "else" "library" "flag" "executable" "test-suite" "custom-setup"
-           "source-repository" "benchmark"))
+           "source-repository" "benchmark" "common"))
         (spaces (read-while (cut char-set-contains? char-set:blank <>) port))
         (c (peek-char port)))
     (unread-string spaces port)
-    (and (every (cut string-ci<> s <>) cabal-reserved-words)
+    ;; Sometimes the name of an identifier is the same as one of the reserved
+    ;; words, which would normally lead to an error, see
+    ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25138>.  Unless the word
+    ;; is at the beginning of a line (excluding whitespace), treat is as just
+    ;; another identifier instead of a reserved word.
+    (and (or (not (= (source-location-column loc) (current-indentation)))
+             (every (cut string-ci<> s <>) cabal-reserved-words))
          (and (not (char=? (last (string->list s)) #\:))
               (not (char=? #\: c))))))
 
@@ -468,6 +483,8 @@ string with the read characters."
 (define (lex-exec exec-rx-res loc) (lex-rx-res exec-rx-res 'EXEC loc))
 
 (define (lex-test-suite ts-rx-res loc) (lex-rx-res ts-rx-res 'TEST-SUITE loc))
+
+(define (lex-common common-rx-res loc) (lex-rx-res common-rx-res 'COMMON loc))
 
 (define (lex-custom-setup ts-rx-res loc) (lex-rx-res ts-rx-res 'CUSTOM-SETUP loc))
 
@@ -558,7 +575,7 @@ LOC is the current port location."
           ((is-none w) (lex-none loc))
           ((is-and w) (lex-and loc))
           ((is-or w) (lex-or loc))
-          ((is-id w port) (lex-id w loc))
+          ((is-id w port loc) (lex-id w loc))
           (else (unread-string w port) #f))))
 
 (define (lex-line port loc)
@@ -570,6 +587,7 @@ the current port location."
      ((is-src-repo s) => (cut lex-src-repo <> loc))
      ((is-exec s) => (cut lex-exec <> loc))
      ((is-test-suite s) => (cut lex-test-suite <> loc))
+     ((is-common s) => (cut lex-common <> loc))
      ((is-custom-setup s) => (cut lex-custom-setup <> loc))
      ((is-benchmark s) => (cut lex-benchmark <> loc))
      ((is-lib s) (lex-lib loc))
@@ -796,7 +814,16 @@ the ordering operation and the version."
     (let ((value (or (assoc-ref env name)
                      (assoc-ref (cabal-flags->alist (cabal-flags)) name))))
       (if (eq? value 'false) #f #t)))
+
+  (define common-stanzas
+    (filter-map (match-lambda
+                  (('section 'common common-name common)
+                   (cons common-name common))
+                  (_ #f))
+                cabal-sexp))
+
   (define (eval sexp)
+    "Given an SEXP and an ENV, return the evaluated (SEXP . ENV)."
     (match sexp
       (() '())
       ;; nested 'if'
@@ -831,6 +858,9 @@ the ordering operation and the version."
        (list 'section type name (eval parameters)))
       (((? string? name) values)
        (list name values))
+      ((("import" imports) rest ...)
+       (eval (append (append-map (cut assoc-ref common-stanzas <>) imports)
+                     rest)))
       ((element rest ...)
        (cons (eval element) (eval rest)))
       (_ (raise (condition

@@ -2,6 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,8 @@
   #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-26)
   #:autoload   (ice-9 ftw) (scandir)
+  #:autoload   (guix base16) (bytevector->base16-string)
+  #:autoload   (guix swh) (swh-download-directory)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:export (open-socket-for-uri
@@ -278,21 +281,27 @@ host name without trailing dot."
     ;;(set-log-level! 10)
     ;;(set-log-procedure! log)
 
-    (catch 'gnutls-error
-      (lambda ()
-        (handshake session))
-      (lambda (key err proc . rest)
-        (cond ((eq? err error/warning-alert-received)
-               ;; Like Wget, do no stop upon non-fatal alerts such as
-               ;; 'alert-description/unrecognized-name'.
-               (format (current-error-port)
-                       "warning: TLS warning alert received: ~a~%"
-                       (alert-description->string (alert-get session)))
-               (handshake session))
-              (else
-               ;; XXX: We'd use 'gnutls_error_is_fatal' but (gnutls) doesn't
-               ;; provide a binding for this.
-               (apply throw key err proc rest)))))
+    (let loop ((retries 5))
+      (catch 'gnutls-error
+        (lambda ()
+          (handshake session))
+        (lambda (key err proc . rest)
+          (cond ((eq? err error/warning-alert-received)
+                 ;; Like Wget, do no stop upon non-fatal alerts such as
+                 ;; 'alert-description/unrecognized-name'.
+                 (format (current-error-port)
+                         "warning: TLS warning alert received: ~a~%"
+                         (alert-description->string (alert-get session)))
+                 (handshake session))
+                (else
+                 (if (or (fatal-error? err) (zero? retries))
+                     (apply throw key err proc rest)
+                     (begin
+                       ;; We got 'error/again' or similar; try again.
+                       (format (current-error-port)
+                               "warning: TLS non-fatal error: ~a~%"
+                               (error->string err))
+                       (loop (- retries 1)))))))))
 
     ;; Verify the server's certificate if needed.
     (when verify-certificate?
@@ -626,10 +635,66 @@ Return a list of URIs."
     (else
      (list uri))))
 
+(define* (disarchive-fetch/any uris file
+                               #:key (timeout 10) (verify-certificate? #t))
+  "Fetch a Disarchive specification from any of URIS, assemble it,
+and write the output to FILE."
+  (define (fetch-specification uris)
+    (any (lambda (uri)
+           (false-if-exception*
+            (let-values (((port size) (http-fetch uri
+                                                  #:verify-certificate?
+                                                  verify-certificate?
+                                                  #:timeout timeout)))
+              (let ((specification (read port)))
+                (close-port port)
+                specification))))
+         uris))
+
+  (define (resolve addresses output)
+    (any (match-lambda
+           (('swhid swhid)
+            (match (string-split swhid #\:)
+              (("swh" "1" "dir" id)
+               (format #t "Downloading ~a from Software Heritage...~%" file)
+               (false-if-exception*
+                (swh-download-directory id output)))
+              (_ #f)))
+           (_ #f))
+         addresses))
+
+  (format #t "Trying to use Disarchive to assemble ~a...~%" file)
+  (match (and=> (resolve-module '(disarchive) #:ensure #f)
+                (lambda (disarchive)
+                  (cons (module-ref disarchive '%disarchive-log-port)
+                        (module-ref disarchive 'disarchive-assemble))))
+    (#f (format #t "could not load Disarchive~%")
+        #f)
+    ((%disarchive-log-port . disarchive-assemble)
+     (match (fetch-specification uris)
+       (#f (format #t "could not find its Disarchive specification~%")
+           #f)
+       (spec (parameterize ((%disarchive-log-port (current-output-port)))
+               (false-if-exception*
+                (disarchive-assemble spec file #:resolver resolve))))))))
+
+(define (internet-archive-uri uri)
+  "Return a URI corresponding to an Internet Archive backup of URI, or #f if
+URI does not denote a Web URI."
+  (and (memq (uri-scheme uri) '(http https))
+       (let* ((now  (time-utc->date (current-time time-utc)))
+              (date (date->string now "~Y~m~d~H~M~S")))
+         ;; Note: the date in the URL can be anything and web.archive.org
+         ;; automatically redirects to the closest date.
+         (build-uri 'https #:host "web.archive.org"
+                    #:path (string-append "/web/" date "/"
+                                          (uri->string uri))))))
+
 (define* (url-fetch url file
                     #:key
                     (timeout 10) (verify-certificate? #t)
                     (mirrors '()) (content-addressed-mirrors '())
+                    (disarchive-mirrors '())
                     (hashes '())
                     print-build-trace?)
   "Fetch FILE from URL; URL may be either a single string, or a list of
@@ -693,27 +758,54 @@ otherwise simply ignore them."
                               hashes))
                 content-addressed-mirrors))
 
+  (define disarchive-uris
+    (append-map (lambda (mirror)
+                  (let ((make-url (match mirror
+                                    ((? string?)
+                                     (lambda (hash-algo hash)
+                                       (string-append
+                                        mirror
+                                        (symbol->string hash-algo) "/"
+                                        (bytevector->base16-string hash))))
+                                    ((? procedure?)
+                                     mirror))))
+                    (map (match-lambda
+                           ((hash-algo . hash)
+                            (string->uri (make-url hash-algo hash))))
+                         hashes)))
+                disarchive-mirrors))
+
   ;; Make this unbuffered so 'progress-report/file' works as expected.  'line
   ;; means '\n', not '\r', so it's not appropriate here.
   (setvbuf (current-output-port) 'none)
 
   (setvbuf (current-error-port) 'line)
 
-  (let try ((uri (append uri content-addressed-uris)))
+  (let try ((uri (append uri content-addressed-uris
+                   (match uri
+                     ((first . _)
+                      (or (and=> (internet-archive-uri first) list)
+                          '()))
+                     (() '())))))
     (match uri
       ((uri tail ...)
        (or (fetch uri file)
            (try tail)))
       (()
-       (format (current-error-port) "failed to download ~s from ~s~%"
-               file url)
-
-       ;; Remove FILE in case we made an incomplete download, for example due
-       ;; to ENOSPC.
-       (catch 'system-error
-         (lambda ()
-           (delete-file file))
-         (const #f))
-       #f))))
+       ;; If we are looking for a software archive, one last thing we
+       ;; can try is to use Disarchive to assemble it.
+       (or (disarchive-fetch/any disarchive-uris file
+                                 #:verify-certificate? verify-certificate?
+                                 #:timeout timeout)
+           (begin
+             (format (current-error-port) "failed to download ~s from ~s~%"
+                     file url)
+             ;; Remove FILE in case we made an incomplete download, for
+             ;; example due to ENOSPC.
+             (catch 'system-error
+               (lambda ()
+                 (delete-file file))
+               (const #f))
+             #f))))))
 
 ;;; download.scm ends here

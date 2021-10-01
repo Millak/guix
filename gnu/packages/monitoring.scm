@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2021, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -8,6 +8,8 @@
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -375,32 +377,29 @@ recent data to degrade into lower resolutions for long-term retention of
 historical data.")
     (license license:asl2.0)))
 
-(define-public python2-whisper
-  (package-with-python2 python-whisper))
-
-(define-public python2-carbon
+(define-public python-carbon
   (package
-    (name "python2-carbon")
-    (version "1.0.2")
+    (name "python-carbon")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "carbon" version))
        (sha256
         (base32
-         "142smpmgbnjinvfb6s4ijazish4vfgzyd8zcmdkh55y051fkixkn"))))
+         "1wb91fipk1niciffq5xwqbh8g7rl7ghdam4m97cjbig12i5qr4cm"))))
     (build-system python-build-system)
     (arguments
-     `(#:python ,python-2   ; only supports Python 2
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          ;; Don't install to /opt
          (add-after 'unpack 'do-not-install-to-/opt
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
     (propagated-inputs
-     `(("python2-whisper" ,python2-whisper)
-       ("python2-configparser" ,python2-configparser)
-       ("python2-txamqp" ,python2-txamqp)))
+     `(("python-cachetools" ,python-cachetools)
+       ("python-txamqp" ,python-txamqp)
+       ("python-urllib3" ,python-urllib3)
+       ("python-whisper" ,python-whisper)))
     (home-page "http://graphiteapp.org/")
     (synopsis "Backend data caching and persistence daemon for Graphite")
     (description "Carbon is a backend data caching and persistence daemon for
@@ -482,9 +481,6 @@ service.
 Metrics can be exposed through a standalone web server, or through Twisted,
 WSGI and the node exporter textfile collector.")
     (license license:asl2.0)))
-
-(define-public python2-prometheus-client
-  (package-with-python2 python-prometheus-client))
 
 (define-public go-github-com-prometheus-node-exporter
   (package
@@ -622,3 +618,62 @@ future system load (i.e., capacity planning).")
     ;; license:gpl2 for other plugins
     (license (list license:expat license:gpl2))))
 
+(define-public hostscope
+  (package
+    (name "hostscope")
+    (version "8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://www.maier-komor.de/hostscope/hostscope-V"
+                    version ".tgz"))
+              (sha256
+               (base32
+                "0jw6yij8va0f292g4xkf9lp9sxkzfgv67ajw49g3vq42q47ld7cv"))))
+    (build-system gnu-build-system)
+    (inputs `(("ncurses" ,ncurses)))
+    (arguments '(#:tests? #f)) ;; No included tests.
+    (home-page "http://www.maier-komor.de/hostscope.html")
+    (properties `((release-monitoring-url . ,home-page)))
+    (synopsis
+     "System monitoring tool for multiple hosts")
+    (description
+     "HostScope displays key system metrics of Linux hosts, such as detailed
+CPU load, speed and temperature, I/O rates of network interfaces, I/O rates of
+disks, and user process summary information.  All metrics are multicast on the
+LAN, if wanted, and clients can switch between multiple hosts on the network.
+Hostscope features a bridge to Influx DB.  So Grafana can be used to visualize
+the recorded data over time.")
+    (license license:gpl3+)))
+
+(define-public fatrace
+  (package
+    (name "fatrace")
+    (version "0.16.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martinpitt/fatrace")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bxz6v1z0icp716jnv3knjyqp8bv6xnkz8gqd8z3g2b6yxj5xff3"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         ;; tests need root to run as root,
+         ;; and there is no make target for them:
+         (delete 'check))
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "PREFIX=" %output))))
+    (synopsis "File access events monitor")
+    (description "This package provides a utility to report system wide file
+access events from all running processes.  Its main purpose is to find
+processes which keep waking up the disk unnecessarily and thus prevent some
+power saving.")
+    (home-page "https://github.com/martinpitt/fatrace")
+    (license license:gpl3+)))

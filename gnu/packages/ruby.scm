@@ -8,7 +8,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
@@ -27,6 +27,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
+;;; Copyright © 2021 Giovanni Biscuolo <g@xelera.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
 (define-module (gnu packages ruby)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
@@ -152,21 +154,16 @@ a focus on simplicity and productivity.")
 (define-public ruby-2.7
   (package
     (inherit ruby)
-    (version "2.7.2")
+    (version "2.7.4")
     (source
      (origin
-       (method url-fetch)
+       (inherit (package-source ruby))
        (uri (string-append "https://cache.ruby-lang.org/pub/ruby/"
                            (version-major+minor version)
                            "/ruby-" version ".tar.gz"))
        (sha256
         (base32
-         "1m63461mxi3fg4y3bspbgmb0ckbbb1ldgf9xi0piwkpfsk80cmvf"))
-       (modules '((guix build utils)))
-       (snippet `(begin
-                   ;; Remove bundled libffi
-                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-                   #t))))
+         "0nxwkxh7snmjqf787qsp4i33mxd1rbf9yzyfiky5k230i680jhrh"))))
     (arguments
      `(#:test-target "test"
        #:configure-flags '("--enable-shared") ; dynamic linking
@@ -195,7 +192,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.0
   (package
     (inherit ruby-2.7)
-    (version "3.0.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
@@ -204,12 +201,12 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1cbcixwnr0y8q0lg67wjgplp06kjd6p6hjjh680csv3v0bpsxgv8"))))))
+         "0h2w2ms4gx2s96v3lzdr3add94bd2qqkhdjzaycmaqhg21rpf3jp"))))))
 
 (define-public ruby-2.5
   (package
     (inherit ruby)
-    (version "2.5.8")
+    (version "2.5.9")
     (source
      (origin
        (method url-fetch)
@@ -218,12 +215,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "0vad5ah1lrdhxsyqr5iqc8c7r7qczpmm76cz8rsf4crimpzv5483"))
-       (modules '((guix build utils)))
-       (snippet `(begin
-                   ;; Remove bundled libffi
-                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-                   #t))))))
+         "1w2qncacm7h3f3il1whghdabwnv9fvwmz9f1a9vcg32006ljyzx8"))))))
 
 (define-public ruby-2.4
   (package
@@ -2833,6 +2825,33 @@ same log file.")
 Cryptography (NaCl) library, also known as libsodium.  This provides a
 high-level toolkit for building cryptographic systems and protocols.")
     (home-page "https://github.com/crypto-rb/rbnacl")
+    (license license:expat)))
+
+(define-public ruby-hkdf
+  (package
+    (name "ruby-hkdf")
+    (version "1.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/jtdowney/hkdf")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "1xqwdmxfnhagivwgb5v9ilwpb4jxlsqwj7pnj43d65zzg5m8p9r5"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:test-target "default"))
+    (native-inputs
+     `(("ruby-rspec" ,ruby-rspec)))
+    (synopsis "HMAC-based Key Derivation Function")
+    (description
+     "This package provides a Ruby implementation of RFC5869: @acronym{HKDF,
+HMAC-based Extract-and-Expand Key Derivation Function}.  The goal of HKDF is to
+take some source key material and generate suitable cryptographic keys from it.")
+    (home-page "https://github.com/jtdowney/hkdf")
     (license license:expat)))
 
 (define-public ruby-nenv
@@ -6094,13 +6113,13 @@ Ruby's large and slower test/unit.")
 (define-public ruby-term-ansicolor
   (package
     (name "ruby-term-ansicolor")
-    (version "1.6.0")
+    (version "1.7.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "term-ansicolor" version))
               (sha256
                (base32
-                "1b1wq9ljh7v3qyxkk8vik2fqx2qzwh5lval5f92llmldkw7r7k7b"))))
+                "1xq5kci9215skdh27npyd3y55p812v4qb4x2hv3xsjvwqzz9ycwj"))))
     (build-system ruby-build-system)
     ;; Rebuilding the gemspec seems to require git, even though this is not a
     ;; git repository, so we just build the gem from the existing gemspec.
@@ -7691,15 +7710,26 @@ navigation capabilities to @code{pry}, using @code{byebug}.")
 (define-public ruby-stackprof
   (package
     (name "ruby-stackprof")
-    (version "0.2.16")
+    (version "0.2.17")
     (source
-      (origin
-        (method url-fetch)
-        (uri (rubygems-uri "stackprof" version))
-        (sha256
-         (base32
-          "147rb66p3n062vc433afqhkd99iazvkrqnghxgh871r62yhha93f"))))
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "stackprof" version))
+       (sha256
+        (base32 "06lz70k8c0r7fyxk1nc3idh14x7nvsr21ydm1bsmbj00jyhmfzsn"))))
     (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'skip-dubious-test
+           ;; This unreliable test can fail with "Expected 0 to be >= 1."
+           (lambda _
+             (substitute* "test/test_stackprof.rb"
+               (("def test_(cputime)" _ name)
+                (string-append "def skip_" name)))))
+         (add-before 'check 'build-tests
+           (lambda _
+             (invoke "rake" "compile"))))))
     (native-inputs
      `(("ruby-mocha" ,ruby-mocha)
        ("ruby-rake-compiler" ,ruby-rake-compiler)))
@@ -10156,6 +10186,24 @@ are doing, you can fiddle with every last bit of your email directly.")
     (home-page "https://github.com/mikel/mail")
     (license license:expat)))
 
+(define-public ruby-email-reply-trimmer
+  (package
+    (name "ruby-email-reply-trimmer")
+    (version "0.1.13")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (rubygems-uri "email_reply_trimmer" version))
+        (sha256
+         (base32
+          "1jgcxifm48xq5dz9k47q43pqm5bfnf14l62l3bqhmv8f6z8dw4ki"))))
+    (build-system ruby-build-system)
+    (synopsis "Trim replies from plain text email")
+    (description "EmailReplyTrimmer is a Ruby small library to trim replies
+from plain text email.")
+    (home-page "https://github.com/discourse/email_reply_trimmer")
+    (license license:expat)))
+
 (define-public ruby-mathn
   (package
     (name "ruby-mathn")
@@ -11294,6 +11342,40 @@ indentation will probably be an issue and hence this gem.")
 YAML.load suitable for accepting user input in Ruby applications.")
     (license license:expat)))
 
+(define-public ruby-yaml-lint
+  (package
+    (name "ruby-yaml-lint")
+    (version "0.0.10")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/Pryz/yaml-lint")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "1jz26mxjkdyjbgqp7f9isnzd1i6vkizsswyj1v639nmq31hwfh0d"))))
+    (build-system ruby-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "rspec"))
+             #t)))))
+    (native-inputs
+     `(("ruby-coveralls" ,ruby-coveralls)
+       ("ruby-rspec" ,ruby-rspec)
+       ("ruby-simplecov" ,ruby-simplecov)))
+    (synopsis "Simple YAML check tool")
+    (description
+     "@code{yaml-lint} will simply try to load the YAML file with the built-in
+Ruby yaml library.")
+    (home-page "https://github.com/Pryz/yaml-lint")
+    (license license:expat)))
+
 (define-public ruby-mercenary
   (package
     (name "ruby-mercenary")
@@ -12354,3 +12436,55 @@ and social networks to better index and display your site's content.")
    (home-page
     "https://github.com/jekyll/jekyll-seo-tag")
    (license license:expat)))
+
+(define-public ruby-taskjuggler
+  (package
+    (name "ruby-taskjuggler")
+    (version "3.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "taskjuggler" version))
+       (sha256
+        (base32
+         "1jrsajzhzpnfa8hj6lbf7adn8hls56dz3yw1gvzgz9y4zkka3k9v"))))
+    (build-system ruby-build-system)
+    (native-inputs `(("tzdata" ,tzdata-for-tests)))
+    (propagated-inputs
+     `(("ruby-mail" ,ruby-mail)
+       ("ruby-term-ansicolor" ,ruby-term-ansicolor)))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'replace-git-ls-files
+                    (lambda _
+                      (substitute* "tasks/rdoc.rake"
+                        (("`git ls-files -- lib`")
+                         "`find lib/ -type f |sort`"))
+                      #t))
+                  (add-before 'check 'tzdir-setup
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (setenv "TZDIR"
+                              (string-append (assoc-ref inputs "tzdata")
+                                             "/share/zoneinfo"))
+                      #t))
+                  (add-before 'check 'delete-test-BatchProcessor
+                    ;; test_BatchProcessor fails with exeption:
+                    ;; run> terminated with exception (report_on_exception is true)
+                    (lambda _
+                      (delete-file "test/test_BatchProcessor.rb")
+                      #t)))))
+    (synopsis
+     "Project management command line tool with a domain specific language")
+    (description
+     "TaskJuggler (tj3) is a project management tool for project planning and
+tracking using a domain specific language; projects are plain text files
+written using your favourite text editor.  It includes reporting in HTML, CSV
+or iCalendar format and an email based status tracking system to send and
+receive time sheets from collaborators.
+
+It covers the complete spectrum of project management tasks from the first
+idea to the completion of the project.  It assists you during project scoping,
+resource assignment, cost and revenue planning, risk and communication
+management, status tracking and reporting.")
+    (home-page "https://taskjuggler.org")
+    (license license:gpl2)))

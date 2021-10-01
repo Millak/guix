@@ -1,6 +1,7 @@
 *.eps
 *.go
 *.log
+*.mo
 *.pdf
 *.png
 *.tar.xz
@@ -73,9 +74,10 @@
 /etc/guix-daemon.service
 /etc/guix-publish.conf
 /etc/guix-publish.service
+/etc/guix-gc.service
 /etc/init.d/guix-daemon
 /etc/openrc/guix-daemon
-/guix-daemon
+/guix-*
 /guix/config.scm
 /libformat.a
 /libstore.a
@@ -93,6 +95,7 @@
 /nix/config.h
 /nix/config.h.in
 /po/doc/*.mo
+/po/doc/*.pot
 /po/guix/*.gmo
 /po/guix/*.insert-header
 /po/guix/*.mo
@@ -128,6 +131,7 @@
 /po/packages/remove-potcdate.sin
 /po/packages/stamp-po
 /pre-inst-env
+/release-*
 /scripts/guix
 /test-env
 /test-tmp
@@ -145,8 +149,9 @@ stamp-h[0-9]
 tmp
 /doc/os-config-lightweight-desktop.texi
 /nix/scripts/download
+/.tarball-version
 /.version
-/doc/stamp-[0-9]
+/doc/stamp-*
 /gnu/packages/bootstrap
 /gnu/packages/aux-files/guile-guile-launcher.o
 /guile

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
@@ -37,7 +37,8 @@
   #:use-module ((guix build utils) #:select (mkdir-p dump-port))
   #:use-module ((guix build download)
                 #:select ((open-connection-for-uri
-                           . guix:open-connection-for-uri)))
+                           . guix:open-connection-for-uri)
+                          resolve-uri-reference))
   #:use-module (guix progress)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
@@ -72,11 +73,11 @@
 
 (define %narinfo-negative-ttl
   ;; Likewise, but for negative lookups---i.e., cached lookup failures (404).
-  (* 1 3600))
+  (* 10 60))
 
 (define %narinfo-transient-error-ttl
   ;; Likewise, but for transient errors such as 504 ("Gateway timeout").
-  (* 10 60))
+  (* 5 60))
 
 (define %narinfo-cache-directory
   ;; A local cache of narinfos, to avoid going to the network.  Most of the
@@ -155,10 +156,12 @@ indicates that PATH is unavailable at CACHE-URL."
 
 (define (narinfo-request cache-url path)
   "Return an HTTP request for the narinfo of PATH at CACHE-URL."
-  (let ((url (string-append cache-url "/" (store-path-hash-part path)
-                            ".narinfo"))
-        (headers '((User-Agent . "GNU Guile"))))
-    (build-request (string->uri url) #:method 'GET #:headers headers)))
+  (let* ((base (string->uri cache-url))
+         (ref (build-relative-ref
+               #:path (string-append (store-path-hash-part path) ".narinfo")))
+         (url (resolve-uri-reference ref base))
+         (headers '((User-Agent . "GNU Guile"))))
+    (build-request url #:method 'GET #:headers headers)))
 
 (define (narinfo-from-file file url)
   "Attempt to read a narinfo from FILE, using URL as the cache URL.  Return #f

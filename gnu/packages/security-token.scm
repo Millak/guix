@@ -9,6 +9,9 @@
 ;;; Copyright © 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Raphaël Mélotte <raphael.melotte@mind.be>
+;;; Copyright © 2021 Antero Mejr <antero@kodmin.com>
+;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
+;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +35,8 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system python)
@@ -39,6 +44,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages dns)
@@ -53,6 +59,7 @@
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages perl)
@@ -362,7 +369,7 @@ and other operations.  It includes a library and a command-line tool.")
 (define-public yubikey-personalization
   (package
     (name "yubikey-personalization")
-    (version "1.19.3")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -370,7 +377,14 @@ and other operations.  It includes a library and a command-line tool.")
                     "/Releases/ykpers-" version ".tar.gz"))
               (sha256
                (base32
-                "0jhvnavjrpwzmmjcw486df5s48j53njqgyz36yz3dskbaz3kwlfr"))))
+                "14wvlwqnwj0gllkpvfqiy8ns938bwvjsz8x1hmymmx32m074vj0f"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix build with GCC 10, remove for versions > 1.20.0.
+               '(begin
+                  (substitute* "ykpers-args.h"
+                    (("^const char")
+                     "extern const char"))))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--with-udevrulesdir="
@@ -644,6 +658,23 @@ implementing a Relying Party.")
                (base32
                 "11rsmcaj60k3y5m5gdhr2nbbz0w5dm3m04klyxz0fh5hnpcmr7fm"))))
     (build-system python-build-system)
+    (arguments
+     '(#:modules ((srfi srfi-1)
+                  (guix build utils)
+                  (guix build python-build-system))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-libykpers-reference
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "ykman/driver_otp.py"
+               (("Ykpers\\('ykpers-1', '1'\\)")
+                (string-append
+                 "Ykpers('"
+                 (find (negate symbolic-link?)
+                       (find-files (assoc-ref inputs "yubikey-personalization")
+                                   "^libykpers-.*\\.so\\..*"))
+                 "')")))
+             #t)))))
     (propagated-inputs
      `(("python-six" ,python-six)
        ("python-pyscard" ,python-pyscard)
@@ -667,3 +698,93 @@ that after installing this package, you might still need to add appropriate
 udev rules to your system configuration to be able to configure the YubiKey as
 an unprivileged user.")
     (license license:bsd-2)))
+
+(define-public nitrocli
+  (package
+    (name "nitrocli")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nitrocli" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1djspfvcqjipg17v8hkph8xrhkdg1xqjhq5jk1sr8vr750yavidy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;; 2/164 tests fail, nitrocli-ext tests failing
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-base32" ,rust-base32-0.4)
+        ("rust-directories" ,rust-directories-3)
+        ("rust-envy" ,rust-envy-0.4)
+        ("rust-libc-0.2" ,rust-libc-0.2)
+        ("rust-merge" ,rust-merge-0.1)
+        ("rust-nitrokey" ,rust-nitrokey-0.9)
+        ("rust-progressing" ,rust-progressing-3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-termion" ,rust-termion-1)
+        ("rust-toml" ,rust-toml-0.5))
+       #:cargo-development-inputs
+       (("rust-nitrokey-test" ,rust-nitrokey-test-0.5)
+        ("rust-nitrokey-test-state" ,rust-nitrokey-test-state-0.1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (inputs
+     `(("hidapi" ,hidapi)
+       ("gnupg" ,gnupg)))
+    (home-page "https://github.com/d-e-s-o/nitrocli")
+    (synopsis "Command line tool for Nitrokey devices")
+    (description
+     "nitrocli is a program that provides a command line interface
+for interaction with Nitrokey Pro, Nitrokey Storage, and Librem Key
+devices.")
+    (license license:gpl3+)))
+
+(define-public ausweisapp2
+  (package
+    (name "ausweisapp2")
+    (version "1.22.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/Governikus/AusweisApp2/releases"
+                                  "/download/" version "/AusweisApp2-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qh1m057va7njs3yk0s31kwsvv44fjlsdac6lhiw5npcwssgjn8l"))))
+
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("qttools" ,qttools)))
+    (inputs
+     `(("qtbase" ,qtbase-5)
+       ("qtsvg" ,qtsvg)
+       ("qtdeclarative" ,qtdeclarative)
+       ("qtwebsockets" ,qtwebsockets)
+       ("qtgraphicaleffects" ,qtgraphicaleffects)
+       ("qtquickcontrols2" ,qtquickcontrols2)
+       ("pcsc-lite" ,pcsc-lite)
+       ("openssl" ,openssl)))
+    (arguments
+     `(#:modules ((guix build cmake-build-system)
+                  (guix build qt-utils)
+                  (guix build utils))
+       #:imported-modules (,@%cmake-build-system-modules
+                           (guix build qt-utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-qt
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (wrap-qt-program "AusweisApp2" #:output out #:inputs inputs)))))))
+    (home-page "https://github.com/Governikus/AusweisApp2")
+    (synopsis
+     "Authentication program for German ID cards and residence permits")
+    (description
+     "This application is developed and issued by the German government to be
+used for online authentication with electronic German ID cards and residence
+titles.  To use this app, a supported RFID card reader or NFC-enabled smart
+phone is required.")
+    (license license:eupl1.2)))

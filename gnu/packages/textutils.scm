@@ -20,6 +20,8 @@
 ;;; Copyright © 2019 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
+;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +65,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages slang)
   #:use-module (gnu packages web))
 
@@ -201,6 +204,46 @@ normalization, case-folding, and other operations for data in the UTF-8
 encoding, supporting Unicode version 9.0.0.")
     (license license:expat)))
 
+(define-public utf8proc-2.6.1
+  (package
+    (inherit utf8proc)
+    (name "utf8proc")
+    (version "2.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaStrings/utf8proc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zqc6airkzkssbjxanx5v8blfk90180gc9id0dx8ncs54f1ib8w7"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments utf8proc)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'check-data
+             (lambda* (#:key inputs native-inputs #:allow-other-keys)
+               (display native-inputs)
+               (for-each (lambda (i)
+                           (copy-file (assoc-ref (or native-inputs inputs) i)
+                                      (string-append "data/" i)))
+                         '("NormalizationTest.txt" "GraphemeBreakTest.txt"
+                           "DerivedCoreProperties.txt"))))))))
+    (native-inputs
+     (append
+      (package-native-inputs utf8proc)
+      (let ((UNICODE_VERSION "13.0.0"))
+        `(("DerivedCoreProperties.txt"
+           ,(origin
+              (method url-fetch)
+              (uri (string-append "https://www.unicode.org/Public/"
+                                  UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
+              (sha256
+               (base32 "0j12x112cd8fpgazkc8izxnhhpia44p1m36ff8yapslxndcmzm55"))))
+          ;; For tests
+          ("ruby" ,ruby)))))))
+
 (define-public libconfuse
   (package
     (name "libconfuse")
@@ -315,7 +358,7 @@ input bits thoroughly but are not suitable for cryptography.")
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
-       (list "CC=gcc"
+       (list (string-append "CC=" ,(cc-for-target))
              "HIDE="
              ;; Override "/sbin/ldconfig" with "echo" because we don't need
              ;; "ldconfig".
@@ -324,6 +367,23 @@ input bits thoroughly but are not suitable for cryptography.")
              "all-shared")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-cross-compilation
+           ;; The Makefile contains more insults than cross-compilation support.
+           ;; It poorly reinvents autotools by compiling C programmes with $CC,
+           ;; then tries to run them during the build.  Hard-code the results.
+           (lambda _
+             (substitute* "Makefile"
+               (("\\./autoconf_64b")
+                ,(if (target-64bit? (or (%current-target-system)
+                                        (%current-system)))
+                     "echo 1"
+                     "echo 0"))
+               (("\\./autoconf_vsnprintf") "echo 0"))))
+         (add-after 'unpack 'omit-static-libraries
+           ;; These are needed to build & test ustr, but don't install them.
+           (lambda _
+             (substitute* "Makefile"
+               ((".*install.*LIB_STATIC.*") ""))))
          (add-after 'unpack 'disable-check-for-stdint
            (lambda _
              ;; Of course we have stdint.h, just not in /usr/include
@@ -453,7 +513,7 @@ character-by-character.
 (define-public libconfig
   (package
     (name "libconfig")
-    (version "1.7.2")
+    (version "1.7.3")
     (home-page "https://hyperrealm.github.io/libconfig/")
     (source (origin
               (method url-fetch)
@@ -461,7 +521,7 @@ character-by-character.
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1ngs2qx3cx5cbwinc5mvadly0b5n7s86zsc68c404czzfff7lg3w"))))
+                "1rqynfxl1zxwk4b42sniz9xlw285aidcrsfih51p8dy0rbb6clal"))))
     (build-system gnu-build-system)
     (synopsis "C/C++ configuration file library")
     (description
@@ -1010,6 +1070,43 @@ indentation.
 @end itemize\n")
     (home-page "http://docx2txt.sourceforge.net")
     (license license:gpl3+)))
+
+(define-public html2text
+  ;; Use commit directly to get the fixes to the installation phase
+  ;; that are not in a release yet.
+  (let ((commit "05364c1028026a87d6f45130a8e86e1ee67704d2")
+        (revision "1"))
+    (package
+      (name "html2text")
+      (version (git-version "2.0.1_pre" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/grobian/html2text")
+               (commit (string-append commit))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0n6pl0nijcn4z3p0dvf3gmvvpjq261pagnk84s9f78c4c55bw5cm"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags
+         (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'configure
+             ;; The configure script is not from autotools and does not accept
+             ;; ‘--style’ options.  There is no proper error handling.
+             (lambda* (#:key outputs #:allow-other-keys)
+               (invoke "./configure"
+                       (string-append "CXX=" ,(cxx-for-target))))))))
+      (home-page "https://github.com/grobian/html2text")
+      (synopsis "HTML to plain text converter")
+      (description
+       "@code{html2text} is a command line utility that converts HTML
+documents into plain text.")
+      (license (list license:bsd-4      ; cmp_nocase.cpp & sgml.h
+                     license:gpl2+))))) ; everything else
 
 (define-public odt2txt
   (package

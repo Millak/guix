@@ -588,7 +588,8 @@ language.")
          ("automake" ,automake)
          ("libtool" ,libtool)
          ("which" ,base:which)
-         ("pkg-config" ,pkg-config)))
+         ("pkg-config" ,pkg-config)
+         ("texinfo" ,texinfo)))
       (inputs
        `(("hidapi" ,hidapi)
          ("jimtcl" ,jimtcl)
@@ -1219,14 +1220,14 @@ SPI, I2C, JTAG.")
 (define-public fc-host-tools
   (package
     (name "fc-host-tools")
-    (version "14")
+    (version "15")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://ftp.freecalypso.org/pub/GSM/"
                                   "FreeCalypso/fc-host-tools-r" version ".tar.bz2"))
               (sha256
                (base32
-                "09ccd76khfvlx4dwi9dhrzl5mm68402mlych0g7f9ncfr5jzyf26"))))
+                "17v3xc44mmlvp0irwm1p55zdgzd31ic3nsjxnv8y28a1i85103cv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; No tests exist.
@@ -1237,17 +1238,13 @@ SPI, I2C, JTAG.")
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-installation-paths
            (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("Makefile"
-                            "rvinterf/etmsync/fsiomain.c"
-                            "rvinterf/etmsync/fsnew.c"
-                            "rvinterf/asyncshell/help.c"
-                            "rvinterf/libinterf/launchrvif.c"
-                            "loadtools/defpath.c"
-                            "loadtools/Makefile"
-                            "miscutil/c139explore"
-                            "miscutil/pirexplore"
-                            "ffstools/tiffs-wrappers/installpath.c"
-                            "uptools/atcmd/atinterf.c")
+             (substitute* (cons* "miscutil/c139explore"
+                                 "miscutil/pirexplore"
+                                 (find-files "." "^(.*\\.[ch]|Makefile)$"))
+               (("/opt/freecalypso/bin/fc-simtool")
+                "fc-simtool")
+               (("/opt/freecalypso/bin/fc-uicc-tool")
+                "fc-uicc-tool")
                (("/opt/freecalypso/loadtools")
                 (string-append (assoc-ref outputs "out") "/lib/freecalypso/loadtools"))
                (("\\$\\{INSTALL_PREFIX\\}/loadtools")
@@ -1301,6 +1298,9 @@ to flash storage.
 @item fc-iram: Allows running programs on the device without writing them
 to flash storage.
 @item fc-loadtool: Writes programs to the device's flash storage.
+@item fc-simint: Loads and runs simagent on the phone, then calls fc-simtool
+(see @url{https://www.freecalypso.org/hg/fc-sim-tools,fc-sim-tools
+repository}) on the host to connect to it.
 @item pirffs: Allows listing and extracting FFS content captured as a raw
 flash image from Pirelli phones.
 @item mokoffs: Allows listing and extracting FFS content captured as a raw
@@ -1467,7 +1467,7 @@ handling communication with eBUS devices connected to a 2-wire bus system
 (define-public ucsim
   (package
     (name "ucsim")
-    (version "0.6-pre67")
+    (version "0.6-pre68")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1475,7 +1475,7 @@ handling communication with eBUS devices connected to a 2-wire bus system
                     "devel/ucsim-" version ".tar.gz"))
               (sha256
                (base32
-                "0aahj9pbfjphjrm4hgs9pfmp6d5aikaq4yvxlrvhywjinnnf0qp1"))))
+                "1bfj21f5pcfcg1xqqynlcfr8mn6qj5705cgc2lfr2s3n97qsd9df"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-avr-port"
@@ -1547,6 +1547,12 @@ and Zilog Z80 families, plus many of their variants.")
            (lambda _
              (substitute* (find-files "." "(\\.mk$|\\.in$)")
                (("/bin/sh") (which "sh")))
+             ;; --disable-ucsim disables sdcc-misc, patch it back in.
+             (substitute* "Makefile.in"
+               (("debugger/mcs51" line)
+                (string-append line  "\n"
+                               "TARGETS += sdcc-misc\n"
+                               "PKGS += $(SDCC_MISC)")))
              #t)))))
     (home-page "http://sdcc.sourceforge.net")
     (synopsis "C compiler suite for 8-bit microcontrollers")

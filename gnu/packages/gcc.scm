@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -554,28 +555,29 @@ It also includes runtime support libraries for these languages.")))
 (define-public gcc-8
   (package
     (inherit gcc-7)
-    (version "8.4.0")
+    (version "8.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gcc/gcc-"
                                   version "/gcc-" version ".tar.xz"))
               (sha256
                (base32
-                "1m1d3gfix56w4aq8myazzfffkl8bqcrx4jhhapnjf7qfs596w2p3"))
+                "0l7d4m9jx124xsk6xardchgy2k5j5l2b15q322k31f0va4d8826k"))
               (patches (search-patches "gcc-8-strmov-store-file-names.patch"
-                                       "gcc-5.0-libvtv-runpath.patch"))))))
+                                       "gcc-5.0-libvtv-runpath.patch"
+                                       "gcc-8-sort-libtool-find-output.patch"))))))
 
 (define-public gcc-9
   (package
    (inherit gcc-8)
-   (version "9.3.0")
+   (version "9.4.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "1la2yy27ziasyf0jvzk58y1i5b5bq2h176qil550bxhifs39gqbi"))
+              "13l3p6g2krilaawbapmn9zmmrh3zdwc36mfr3msxfy038hps6pf9"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-9-asan-fix-limits-include.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))))))
@@ -591,6 +593,20 @@ It also includes runtime support libraries for these languages.")))
             (sha256
              (base32
               "0i6378ig6h397zkhd7m4ccwjx5alvzrf2hm27p1pzwjhlv0h9x34"))
+            (patches (search-patches "gcc-9-strmov-store-file-names.patch"
+                                     "gcc-5.0-libvtv-runpath.patch"))))))
+
+(define-public gcc-11
+  (package
+   (inherit gcc-8)
+   (version "11.2.0")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "mirror://gnu/gcc/gcc-"
+                                version "/gcc-" version ".tar.xz"))
+            (sha256
+             (base32
+              "12zs6vd2rapp42x154m479hg3h3lsafn3xhg06hp5hsldd9xr3nh"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))))))
 
@@ -730,6 +746,42 @@ as the 'native-search-paths' field."
                                      ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|gcc-.*)"))
                #t))))))))
 
+(define* (custom-gcc-gccgo gcc name languages
+                           #:optional
+                           (search-paths (package-native-search-paths gcc))
+                           #:key (separate-lib-output? #t))
+  ;; TODO: remove CUSTOM-GCC-GCCGO when regex changes for CUSTOM-GCC are
+  ;; merged into master <https://issues.guix.gnu.org/49010>
+  "Return a custom version of GCC that supports LANGUAGES.  Use SEARCH-PATHS
+as the 'native-search-paths' field."
+  (package (inherit gcc)
+    (name name)
+    (outputs (if separate-lib-output?
+                 (package-outputs gcc)
+                 (delete "lib" (package-outputs gcc))))
+    (native-search-paths search-paths)
+    (properties (alist-delete 'hidden? (package-properties gcc)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gcc)
+       ((#:modules modules %gnu-build-system-modules)
+        `(,@modules
+          (srfi srfi-1)
+          (srfi srfi-26)
+          (ice-9 regex)))
+       ((#:configure-flags flags)
+        `(cons (string-append "--enable-languages="
+                              ,(string-join languages ","))
+               (remove (cut string-match "--enable-languages.*" <>)
+                       ,flags)))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'install 'remove-broken-or-conflicting-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               (for-each
+                delete-file
+                (find-files (string-append (assoc-ref outputs "out") "/bin")
+                            ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))))
+
 (define %generic-search-paths
   ;; This is the language-neutral search path for GCC.  Entries in $CPATH are
   ;; not considered "system headers", which means GCC can raise warnings for
@@ -756,6 +808,11 @@ as the 'native-search-paths' field."
 (define-public gdc-10
   (hidden-package
    (custom-gcc gcc-10 "gdc" '("d")
+               %generic-search-paths)))
+
+(define-public gdc-11
+  (hidden-package
+   (custom-gcc gcc-11 "gdc" '("d")
                %generic-search-paths)))
 
 (define-public libgccjit
@@ -794,6 +851,43 @@ It can also be used for ahead-of-time code generation for building standalone
 compilers.  The just-in-time (jit) part of the name is now something of a
 misnomer.")))
 
+(define (make-gccgo gcc)
+  "Return a gccgo package based on GCC."
+  (let ((gccgo (custom-gcc-gccgo gcc "gccgo" '("go") %generic-search-paths)))
+    (package
+      (inherit gccgo)
+      (synopsis "Go frontend to GCC")
+      (description
+        "This package is part of the GNU Compiler Collection and
+provides the GNU compiler for the Go programming language.")
+      (arguments
+       (substitute-keyword-arguments (package-arguments gccgo)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'install 'wrap-go-with-tool-path
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (exedir (string-append out "/libexec/gcc"))
+                        (tooldir (dirname (car (find-files exedir "^cgo$")))))
+                   (wrap-program (string-append out "/bin/go")
+                     `("GCCGOTOOLDIR" =
+                       (,(string-append "${GCCGOTOOLDIR-" tooldir "}")))
+                     `("GOROOT" =
+                       (,(string-append "${GOROOT-" out "}")))))))
+             (add-before 'configure 'fix-gotools-runpath
+               (lambda _
+                 (substitute* "gotools/Makefile.in"
+                   (("AM_LDFLAGS =" all)
+                    (string-append all " -Wl,-rpath=$(libdir) ")))))
+             (add-before 'configure 'remove-tool-reference-from-libgo
+               (lambda _
+                 (substitute* "libgo/Makefile.in"
+                   (("(GccgoToolDir = \\\")[^\\\"]+" _ start)
+                    (string-append start "/nonexistent"))
+                   (("(DefaultGoroot = \\\")[^\\\"]+" _ start)
+                    (string-append start "/nonexistent"))
+                   (("(defaultGOROOTValue.*?return `)[^`]+" _ start)
+                    (string-append start "/nonexistent"))))))))))))
 
 (define-public gccgo-4.9
   (custom-gcc (package
@@ -808,6 +902,9 @@ provides the GNU compiler for the Go programming language."))
               ;; "lib" and "out" outputs would refer to each other, creating
               ;; a cyclic dependency.  <http://debbugs.gnu.org/18101>
               #:separate-lib-output? #f))
+
+(define-public gccgo-10
+  (make-gccgo gcc-10))
 
 (define %objc-search-paths
   (list (search-path-specification

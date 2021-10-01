@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
@@ -15,6 +15,7 @@
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -681,21 +682,11 @@ in C/C++.")
    ("1j6l66v1xw27z8w78mpsnmqgv8m277mf4r0hgqcrb4zx7xc2vqyy" "527e5e090608" "zh-CN")
    ("1frwx35klpyz3sdwrkz7945ivb2dwaawhhyfnz4092h9hn7rc4ky" "6cd366ad2947" "zh-TW")))
 
-(define* (computed-origin-method gexp-promise hash-algo hash
-                                 #:optional (name "source")
-                                 #:key (system (%current-system))
-                                 (guile (default-guile)))
-  "Return a derivation that executes the G-expression that results
-from forcing GEXP-PROMISE."
-  (mlet %store-monad ((guile (package->derivation guile system)))
-    (gexp->derivation (or name "computed-origin")
-                      (force gexp-promise)
-                      #:graft? #f       ;nothing to graft
-                      #:system system
-                      #:guile-for-build guile)))
+;; XXXX: Workaround 'snippet' limitations.
+(define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "78.9.0-guix0-preview1")
-(define %icecat-build-id "20210323000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "78.14.0-guix0-preview1")
+(define %icecat-build-id "20210907000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -717,7 +708,7 @@ from forcing GEXP-PROMISE."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0r28wrsk2k6pc922zfs5wljh8ziqm4a98lisn7409j2szhfsq0wf"))))
+              "1ymjlg6p23c510m764pqr4sldrvk0c7g490a29js2cqc2nj2h3ma"))))
 
          (upstream-icecat-base-version "78.7.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
@@ -910,6 +901,7 @@ from forcing GEXP-PROMISE."
        ;; UNBUNDLE-ME! ("nss" ,nss)
        ("shared-mime-info" ,shared-mime-info)
        ;; UNBUNDLE-ME! ("sqlite" ,sqlite)
+       ("eudev" ,eudev)
        ("unzip" ,unzip)
        ("zip" ,zip)
        ;; UNBUNDLE-ME! ("zlib" ,zlib)
@@ -947,12 +939,6 @@ from forcing GEXP-PROMISE."
     (arguments
      `(#:tests? #f          ; no check target
        #:out-of-source? #t  ; must be built outside of the source directory
-
-       ;; XXX: There are RUNPATH issues such as
-       ;; $prefix/lib/icecat-31.6.0/plugin-container NEEDing libmozalloc.so,
-       ;; which is not in its RUNPATH, but they appear to be harmless in
-       ;; practice somehow.  See <http://hydra.gnu.org/build/378133>.
-       #:validate-runpath? #f
 
        #:configure-flags `("--enable-default-toolkit=cairo-gtk3-wayland"
 
@@ -1201,6 +1187,9 @@ from forcing GEXP-PROMISE."
                (setenv "AUTOCONF" (which "autoconf")) ; must be autoconf-2.13
                (setenv "CC" "gcc")  ; apparently needed when Stylo is enabled
                (setenv "MOZ_BUILD_DATE" ,%icecat-build-id) ; avoid timestamp
+               (setenv "LDFLAGS" (string-append "-Wl,-rpath="
+                                                (assoc-ref outputs "out")
+                                                "/lib/icecat"))
                (mkdir "../build")
                (chdir "../build")
                (format #t "build directory: ~s~%" (getcwd))
@@ -1274,19 +1263,21 @@ from forcing GEXP-PROMISE."
                     (lib (string-append out "/lib"))
                     (gtk (assoc-ref inputs "gtk+"))
                     (gtk-share (string-append gtk "/share"))
-                    (mesa (assoc-ref inputs "mesa"))
-                    (mesa-lib (string-append mesa "/lib"))
-                    (pulseaudio (assoc-ref inputs "pulseaudio"))
-                    (pulseaudio-lib (string-append pulseaudio "/lib"))
-                    (libxscrnsaver (assoc-ref inputs "libxscrnsaver"))
-                    (libxscrnsaver-lib (string-append libxscrnsaver "/lib")))
+                    (ld-libs (map (lambda (lib)
+                                    (string-append (assoc-ref inputs lib)
+                                                   "/lib"))
+                              '("libxscrnsaver"
+                                "mesa"
+                                "mit-krb5"
+                                "eudev"
+                                "pulseaudio"))))
                (wrap-program (car (find-files lib "^icecat$"))
                  `("XDG_DATA_DIRS" prefix (,gtk-share))
                  ;; The following line is commented out because the icecat
                  ;; package on guix has been observed to be unstable when
                  ;; using wayland, and the bundled extensions stop working.
                  ;;   `("MOZ_ENABLE_WAYLAND" = ("1"))
-                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,mesa-lib ,libxscrnsaver-lib)))
+                 `("LD_LIBRARY_PATH" prefix ,ld-libs))
                #t))))))
     (home-page "https://www.gnu.org/software/gnuzilla/")
     (synopsis "Entirely free browser derived from Mozilla Firefox")
@@ -1305,11 +1296,11 @@ standards of the IceCat project.")
        (cpe-version . ,(first (string-split version #\-)))))))
 
 ;; Update this together with icecat!
-(define %icedove-build-id "20210323000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20210810000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
-    (version "78.9.0")
+    (version "78.13.0")
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1499,7 +1490,9 @@ standards of the IceCat project.")
                      "ac_add_options --with-system-nspr\n"
                      "ac_add_options --with-system-nss\n"
                      "ac_add_options --with-system-zlib\n"
-                     "ac_add_options --with-user-appdir=\\.icedove\n"))))
+                     "ac_add_options --with-user-appdir=\\.icedove\n"
+                     "mk_add_options MOZ_MAKE_FLAGS=-j"
+                     (number->string (parallel-job-count)) "\n"))))
                (display (getcwd))
                (newline)
                (display "mach configure")
@@ -1541,10 +1534,12 @@ standards of the IceCat project.")
                     (gtk (assoc-ref inputs "gtk+"))
                     (gtk-share (string-append gtk "/share"))
                     (pulseaudio (assoc-ref inputs "pulseaudio"))
-                    (pulseaudio-lib (string-append pulseaudio "/lib")))
+                    (pulseaudio-lib (string-append pulseaudio "/lib"))
+                    (eudev (assoc-ref inputs "eudev"))
+                    (eudev-lib (string-append eudev "/lib")))
                (wrap-program (car (find-files lib "^icedove$"))
                  `("XDG_DATA_DIRS" prefix (,gtk-share))
-                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib)))
+                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib ,eudev-lib)))
                #t))))))
     (inputs
      `(("bzip2" ,bzip2)
@@ -1580,6 +1575,7 @@ standards of the IceCat project.")
        ("pulseaudio" ,pulseaudio)
        ("sqlite" ,sqlite)
        ("startup-notification" ,startup-notification)
+       ("eudev" ,eudev)
        ("unzip" ,unzip)
        ("zip" ,zip)
        ("zlib" ,zlib)))
@@ -1589,7 +1585,7 @@ standards of the IceCat project.")
         ;; in the Thunderbird release tarball.  We don't use the release
         ;; tarball because it duplicates the Icecat sources and only adds the
         ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "1a5cd2aa11de609116f258b413afcf113ed72f3a"))
+        ,(let ((changeset "adcfedf831da719455116546865f9a5faea848a6"))
            (origin
              (method hg-fetch)
              (uri (hg-reference
@@ -1598,7 +1594,7 @@ standards of the IceCat project.")
              (file-name (string-append "thunderbird-" version "-checkout"))
              (sha256
               (base32
-               "0qgz9qj8gbn2ccmhvk3259ahs9p435ipvkzsysn3xj8a6klbz02w")))))
+               "1dahf3y8bm3kh7amf341wnmh82a2r0ksqihc6dwiakh6x86a94cm")))))
        ("autoconf" ,autoconf-2.13)
        ("cargo" ,rust-1.41 "cargo")
        ("clang" ,clang)
@@ -1621,25 +1617,40 @@ Thunderbird.  It supports email, news feeds, chat, calendar and contacts.")
     (license license:mpl2.0)))
 
 (define-public icedove/wayland
-  (package/inherit icedove
+  (package
+    (inherit icedove)
     (name "icedove-wayland")
+    (native-inputs '())
+    (inputs
+     `(("bash" ,bash-minimal)
+       ("icedove" ,icedove)))
+    (build-system trivial-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments icedove)
-       ((#:phases phases)
-        `(modify-phases ,phases
-          (replace 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (gtk (assoc-ref inputs "gtk+"))
-                    (gtk-share (string-append gtk "/share"))
-                    (pulseaudio (assoc-ref inputs "pulseaudio"))
-                    (pulseaudio-lib (string-append pulseaudio "/lib")))
-               (wrap-program (car (find-files lib "^icedove$"))
-                 `("MOZ_ENABLE_WAYLAND" = ("1"))
-                 `("XDG_DATA_DIRS" prefix (,gtk-share))
-                 `("LD_LIBRARY_PATH" prefix (,pulseaudio-lib)))
-               #t)))))))))
+      '(#:modules ((guix build utils))
+        #:builder
+        (begin
+          (use-modules (guix build utils))
+          (let* ((bash    (assoc-ref %build-inputs "bash"))
+                 (icedove (assoc-ref %build-inputs "icedove"))
+                 (out     (assoc-ref %outputs "out"))
+                 (exe     (string-append out "/bin/icedove")))
+            (mkdir-p (dirname exe))
+
+            (call-with-output-file exe
+              (lambda (port)
+                (format port "#!~a
+ MOZ_ENABLE_WAYLAND=1 exec ~a $@"
+                        (string-append bash "/bin/bash")
+                        (string-append icedove "/bin/icedove"))))
+            (chmod exe #o555)
+
+            ;; Provide the manual and .desktop file.
+            (copy-recursively (string-append icedove "/share")
+                              (string-append out "/share"))
+            (substitute* (string-append
+                          out "/share/applications/icedove.desktop")
+              ((icedove) out))
+            #t))))))
 
 (define-public firefox-decrypt
   (package

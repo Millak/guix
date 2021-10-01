@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -20,6 +20,8 @@
 ;;; Copyright © 2020 Hendur Saga <hendursaga@yahoo.com>
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,8 +47,10 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnupg)
@@ -57,6 +61,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
@@ -214,7 +219,7 @@ communication, encryption, decryption, signatures, etc.")
     ;; like OpenBSD's pledge().
     (arguments
      `(#:make-flags
-       (list "CC=gcc"
+       (list ,(string-append "CC=" (cc-for-target))
              (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
@@ -376,7 +381,7 @@ the wrong hands.")
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (delete 'configure))          ; no configure script
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           "RPATH=-Wl,-rpath,$(DESTDIR)$(LIBDIR)"
                           (string-append "DESTDIR="
                                          (assoc-ref %outputs "out"))
@@ -397,63 +402,6 @@ secure operations. ")
     (license (list license:lgpl2.1+             ; the files keyutils.*
                    license:gpl2+))))            ; the rest
 
-;; There is no release candidate but commits point out a version number,
-;; furthermore no tarball exists.
-(define-public eschalot
-  (let ((commit "0bf31d88a11898c19b1ed25ddd2aff7b35dbac44")
-        (revision "1"))
-    (package
-      (name "eschalot")
-      (version (string-append "1.2.0-" revision "." (string-take commit 7)))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/schnabear/eschalot")
-               (commit commit)))
-         (file-name (string-append name "-" version))
-         (sha256
-          (base32
-           "0lj38ldh8vzi11wp4ghw4k0fkwp0s04zv8k8d473p1snmbh7mx98"))))
-      (inputs
-       `(("openssl" ,openssl-1.0)))     ; for openssl/{bn,pem,rsa,sha}.h
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                            (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                            (string-append "INSTALL=" "install"))
-         ;; XXX: make test would run a !VERY! long hashing of names with the use
-         ;; of a wordlist, the amount of computing time this would waste on build
-         ;; servers is in no relation to the size or importance of this small
-         ;; application, therefore we run our own tests on eschalot and worgen.
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'check
-             (lambda _
-               (invoke "./worgen" "8-12" "top1000.txt" "3-10" "top400nouns.txt"
-                       "3-6" "top150adjectives.txt" "3-6")
-               (invoke "./eschalot" "-r" "^guix|^guixsd")
-               (invoke "./eschalot" "-r" "^gnu|^free")
-               (invoke "./eschalot" "-r" "^cyber|^hack")
-               (invoke "./eschalot" "-r" "^troll")))
-           ;; Make install can not create the bin dir, create it.
-           (add-before 'install 'create-bin-dir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (mkdir-p bin)
-                 #t))))))
-      (home-page "https://github.com/schnabear/eschalot")
-      (synopsis "Tor hidden service name generator")
-      (description
-       "Eschalot is a tor hidden service name generator, it allows one to
-produce customized vanity .onion addresses using a brute-force method.  Searches
-for valid names can be run with regular expressions and wordlists.  For the
-generation of wordlists the included tool @code{worgen} can be used.  There is
-no man page, refer to the home page for usage details.")
-      (license (list license:isc license:expat)))))
-
 (define-public ssss
   (package
     (name "ssss")
@@ -469,7 +417,7 @@ no man page, refer to the home page for usage details.")
     (arguments
      `(#:tests? #f ; No test suite
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          "CC=gcc")
+                          ,(string-append "CC=" (cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure) ; no configuration to be done
@@ -629,7 +577,7 @@ attacks than alternative functions such as @code{PBKDF2} or @code{bcrypt}.")
     (outputs (list "out" "static"))
     (arguments
      `(#:make-flags (list (string-append "PREFIX=" %output)
-                          "CC=gcc")
+                          ,(string-append "CC=" (cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
@@ -782,6 +730,7 @@ data on your platform, so the seed itself will be as random as possible.
                 (commit
                  (string-append "CRYPTOPP_"
                                 (string-replace-substring version "." "_")))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0in7rlazq91vfi519g9wr7bh87hii47cimxv7fmj0f88vhjaidq3"))))
@@ -943,14 +892,14 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
 (define-public botan
   (package
     (name "botan")
-    (version "2.17.3")
+    (version "2.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://botan.randombit.net/releases/"
                                   "Botan-" version ".tar.xz"))
               (sha256
                (base32
-                "121vn1aryk36cpks70kk4c4cfic5g0qs82bf92xap9258ijkn4kr"))))
+                "0adf53drhk1hlpfih0175c9081bqpclw6p2afn51cmx849ib9izq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -975,7 +924,9 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
          (add-before 'check 'library-path-for-tests
            (lambda _ (setenv "LD_LIBRARY_PATH" (getcwd))))
          (replace 'check
-           (lambda _ (invoke "./botan-test"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (if tests?
+                 (invoke "./botan-test")))))))
     (native-inputs
      `(("python" ,python-wrapper)
        ("python-docutils" ,python-docutils)))
@@ -1069,8 +1020,9 @@ cannot sign messages in OpenBSD format yet.")
                 (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; no check target         '
-       #:make-flags (list "CC=gcc" "PREFIX=$(out)")
+     `(#:tests? #f                      ; no check target         '
+       #:make-flags (list ,(string-append "CC=" (cc-for-target))
+                          "PREFIX=$(out)")
        #:phases (modify-phases %standard-phases
                   (delete 'configure)
                   (add-after 'install 'post-install
@@ -1113,7 +1065,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
          ("automake" ,automake)
          ("libtool" ,libtool)))
       ;; WARNING: This package might need additional configure flags to run properly.
-      ;; See https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/libsecp256k1.
+      ;; See https://github.com/archlinux/svntogit-community/blob/packages/libsecp256k1/trunk/PKGBUILD.
       (synopsis "C library for EC operations on curve secp256k1")
       (description
        "Optimized C library for EC operations on curve secp256k1.
@@ -1295,7 +1247,7 @@ Trusted comments are signed, thus verified, before being displayed.")
 (define-public libolm
   (package
     (name "libolm")
-    (version "3.2.2")
+    (version "3.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1303,16 +1255,21 @@ Trusted comments are signed, thus verified, before being displayed.")
                     (commit version)))
               (sha256
                (base32
-                "0qji25wiwmkxyfpraxj96c54hyayqmjkvwh0gsy5gb5pz5bp4mcy"))
-              (file-name (git-file-name name version))))
+                "0bixly6jqpwfx3p37c1qp1j685yg6m429r1nazwh43w4n527bs3y"))
+              (file-name (git-file-name name version))
+              ;; Delete the bundled blob.  It's free, but unauditable,
+              ;; and apparently only required for android.
+              (snippet '(delete-file
+                         "android/gradle/wrapper/gradle-wrapper.jar"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (with-directory-excursion "tests"
-               (invoke "ctest" ".")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "tests"
+                 (invoke "ctest" "."))))))))
     (synopsis "Implementation of the olm and megolm cryptographic ratchets")
     (description "The libolm library implements the Double Ratchet
 cryptographic ratchet.  It is written in C and C++11, and exposed as a C
@@ -1432,3 +1389,76 @@ them out.  The process will degrade gracefully, so even people without your
 encryption password can safely commit changes to the repository's
 non-encrypted files.")
     (license license:expat)))
+
+(define-public cryfs
+  (package
+    (name "cryfs")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/cryfs/cryfs/releases/download/"
+             version "/cryfs-" version ".tar.xz"))
+       (sha256
+        (base32 "0dxphbj5sssm82rkkdb71algrcki16qlpzlvrjyvvm6b7x7zi0sm"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
+       #:configure-flags
+        ;; Note: This also disables checking for security issues.
+       `("-DCRYFS_UPDATE_CHECKS=OFF"
+         ;; This helps us use some dependencies from Guix instead of conan.
+         ;; crypto++ is still bundled: https://github.com/cryfs/cryfs/issues/369
+         ;; Googletest is also since I wasn't sure how to unbundle that.
+         ,(string-append "-DDEPENDENCY_CONFIG=" (getcwd)
+                         "/cmake-utils/DependenciesFromLocalSystem.cmake"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-configure
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; Remove junk directory that breaks the build
+             (chdir "..") (delete-file-recursively ".circleci")
+             ;; Install documentation with Guix defaults.
+             (substitute* "doc/CMakeLists.txt"
+               (("CONFIGURATIONS Release")
+                "CONFIGURATIONS Release RelWithDebInfo"))
+             (when tests?
+               (substitute* "CMakeLists.txt"
+                 (("option.BUILD_TESTING .build test cases. OFF.")
+                  "option(BUILD_TESTING \"build test cases\" ON)")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (let ((tests (find-files "." "-test$")))
+                 ;; XXX: Disable failing tests. Unfortunately there are a
+                   ;; few. Some only fail in the build environment due to
+                   ;; FUSE not being available.
+                   (for-each invoke
+                             (lset-difference string-contains
+                                              tests
+                                              '("cpp-utils-test"
+                                                "cryfs-cli-test"
+                                                "blobstore-test"
+                                                "fspp-test")))))
+             #t)))))
+    (native-inputs
+     `(("python" ,python-wrapper)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("boost" ,boost)
+       ("curl" ,curl)
+       ("fuse" ,fuse)
+       ("range-v3" ,range-v3)
+       ("spdlog" ,spdlog)))
+    (home-page "https://www.cryfs.org/")
+    (synopsis "Encrypted FUSE filesystem for the cloud")
+    (description "CryFS encrypts your files, so you can safely store them anywhere.
+It works well together with cloud services like Dropbox, iCloud, OneDrive and
+others.  CryFS creates an encrypted userspace filesystem that can be mounted
+via FUSE without root permissions.  It is similar to EncFS, but provides
+additional security and privacy measures such as hiding file sizes and directory
+structure.  However CryFS is not considered stable yet by the developers.")
+    (license license:lgpl3+)))

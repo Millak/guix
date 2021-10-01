@@ -1,8 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Steve Sprang <scs@stevesprang.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Jessica Tallon <tsyesika@tsyesika.se>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
@@ -31,6 +31,9 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -126,7 +129,7 @@ human.")
 (define-public keepassxc
   (package
     (name "keepassxc")
-    (version "2.6.4")
+    (version "2.6.6")
     (source
      (origin
        (method url-fetch)
@@ -134,23 +137,22 @@ human.")
                            "/releases/download/" version "/keepassxc-"
                            version "-src.tar.xz"))
        (sha256
-        (base32 "0azq20rqsx7axrigha4qh81ipvhqnnlb27w3xdjg5z4h3jky4dp5"))))
+        (base32 "1qm4a1k11vy35mrzbzcc7lwlpmjzw18a2zy7z93rqa4vqcdb20rn"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DWITH_XC_ALL=YES"
+     `(#:modules ((guix build cmake-build-system)
+                  (guix build qt-utils)
+                  (guix build utils))
+       #:imported-modules (,@%cmake-build-system-modules
+                            (guix build qt-utils))
+       #:configure-flags '("-DWITH_XC_ALL=YES"
                            "-DWITH_XC_UPDATECHECK=NO")
        #:phases
        (modify-phases %standard-phases
-         (add-after 'install 'wrap-bin
-           (lambda* (#:key outputs inputs #:allow-other-keys)
+         (add-after 'install 'wrap-qt
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/keepassxc")
-                 `("QT_PLUGIN_PATH" ":" prefix
-                   ,(map (lambda (label)
-                           (string-append (assoc-ref inputs label)
-                                          "/lib/qt5/plugins"))
-                         '("qtbase" "qtsvg")))))
-             #t)))))
+               (wrap-qt-program "keepassxc" #:output out #:inputs inputs)))))))
     (native-inputs
      `(("asciidoctor" ,ruby-asciidoctor)
        ("qttools" ,qttools)))
@@ -162,7 +164,7 @@ human.")
        ("libxi" ,libxi)
        ("libxtst" ,libxtst)
        ("qrencode" ,qrencode)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
        ("quazip" ,quazip)               ; XC_KEESHARE
@@ -486,100 +488,101 @@ any X11 window.")
     (license license:gpl3+)))
 
 (define-public password-store
-  ;; The 1.7.3 release does not include support for wl-clipboard, which was
-  ;; added in b0b784b1a57c0b06936e6f5d6560712b4b810cd3. Instead, use the
-  ;; latest commit on master at the time of writing.
-  (let ((commit "918992c19231b33b3d4a3288a7288a620e608cb4")
-        (revision "1"))
-    (package
-      (name "password-store")
-      (version (git-version "1.7.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "git://git.zx2c4.com/password-store")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0ni62f4pq96g0i0q66bch1dl9k4zqwhg7xaf746k3gbbqxcdh3vi"))
-                (file-name (git-file-name name version)) ))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'build)
-           (add-before 'install 'patch-system-extension-dir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (extension-dir (string-append out "/lib/password-store/extensions")))
-                 (substitute* "src/password-store.sh"
-                   (("^SYSTEM_EXTENSION_DIR=.*$")
-                    ;; lead with whitespace to prevent 'make install' from
-                    ;; overwriting it again
-                    (string-append " SYSTEM_EXTENSION_DIR=\""
-                                   "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
-                                   extension-dir
-                                   "}\"\n"))))
-               #t))
-           (add-before 'install 'patch-passmenu-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "contrib/dmenu/passmenu"
-                 (("dmenu") (string-append (assoc-ref inputs "dmenu")
-                                           "/bin/dmenu"))
-                 (("xdotool") (string-append (assoc-ref inputs "xdotool")
-                                             "/bin/xdotool")))
-               #t))
-           (add-after 'install 'install-passmenu
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (install-file "contrib/dmenu/passmenu" bin)
-                 #t)))
-           (add-after 'install 'wrap-path
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (path (map (lambda (pkg)
-                                  (string-append (assoc-ref inputs pkg) "/bin"))
-                                '("coreutils" "getopt" "git" "gnupg" "qrencode"
-                                  "sed" "tree" "which" "wl-clipboard" "xclip"))))
-                 (wrap-program (string-append out "/bin/pass")
-                   `("PATH" ":" prefix (,(string-join path ":"))))
-                 #t))))
-         #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output)
-                            "WITH_ALLCOMP=yes"
-                            (string-append "BASHCOMPDIR="
-                                           %output "/etc/bash_completion.d"))
-         ;; Parallel tests may cause a race condition leading to a
-         ;; timeout in some circumstances.
-         #:parallel-tests? #f
-         #:test-target "test"))
-      (native-search-paths
-       (list (search-path-specification
-              (variable "PASSWORD_STORE_SYSTEM_EXTENSION_DIR")
-              (separator #f)                        ;single entry
-              (files '("lib/password-store/extensions")))))
-      (inputs
-       `(("dmenu" ,dmenu)
-         ("getopt" ,util-linux)
-         ("git" ,git)
-         ("gnupg" ,gnupg)
-         ("qrencode" ,qrencode)
-         ("sed" ,sed)
-         ("tree" ,tree)
-         ("which" ,which)
-         ("wl-clipboard" ,wl-clipboard)
-         ("xclip" ,xclip)
-         ("xdotool" ,xdotool)))
-      (home-page "https://www.passwordstore.org/")
-      (synopsis "Encrypted password manager")
-      (description "Password-store is a password manager which uses GnuPG to
+  (package
+    (name "password-store")
+    (version "1.7.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "git://git.zx2c4.com/password-store")
+                    (commit version)))
+              (sha256
+               (base32
+                "17zp9pnb3i9sd2zn9qanngmsywrb7y495ngcqs6313pv3gb83v53"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'build)
+         (add-before 'install 'patch-system-extension-dir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (extension-dir (string-append out "/lib/password-store/extensions")))
+               (substitute* "src/password-store.sh"
+                 (("^SYSTEM_EXTENSION_DIR=.*$")
+                  ;; lead with whitespace to prevent 'make install' from
+                  ;; overwriting it again
+                  (string-append " SYSTEM_EXTENSION_DIR=\""
+                                 "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
+                                 extension-dir
+                                 "}\"\n"))))
+             #t))
+         (add-before 'install 'patch-passmenu-path
+           ;; FIXME Wayland support requires ydotool and dmenu-wl packages
+           ;; We are ignoring part of the script that gets executed if
+           ;; WAYLAND_DISPLAY env variable is set, leaving dmenu-wl and ydotool
+           ;; commands as is.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "contrib/dmenu/passmenu"
+               (("dmenu=dmenu\n")
+                (string-append "dmenu="
+                               (assoc-ref inputs "dmenu") "/bin/dmenu\n"))
+               (("xdotool=\"xdotool")
+                (string-append "xdotool=\""
+                               (assoc-ref inputs "xdotool") "/bin/xdotool")))
+             #t))
+         (add-after 'install 'install-passmenu
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "contrib/dmenu/passmenu" bin)
+               #t)))
+         (add-after 'install 'wrap-path
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (path (map (lambda (pkg)
+                                (string-append (assoc-ref inputs pkg) "/bin"))
+                              '("coreutils" "getopt" "git" "gnupg" "qrencode"
+                                "sed" "tree" "which" "wl-clipboard" "xclip"))))
+               (wrap-program (string-append out "/bin/pass")
+                 `("PATH" ":" prefix (,(string-join path ":"))))
+               #t))))
+       #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output)
+                          "WITH_ALLCOMP=yes"
+                          (string-append "BASHCOMPDIR="
+                                         %output "/etc/bash_completion.d"))
+       ;; Parallel tests may cause a race condition leading to a
+       ;; timeout in some circumstances.
+       #:parallel-tests? #f
+       #:test-target "test"))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "PASSWORD_STORE_SYSTEM_EXTENSION_DIR")
+            (separator #f)             ;single entry
+            (files '("lib/password-store/extensions")))))
+    (inputs
+     `(("dmenu" ,dmenu)
+       ("getopt" ,util-linux)
+       ("git" ,git)
+       ("gnupg" ,gnupg)
+       ("qrencode" ,qrencode)
+       ("sed" ,sed)
+       ("tree" ,tree)
+       ("which" ,which)
+       ("wl-clipboard" ,wl-clipboard)
+       ("xclip" ,xclip)
+       ("xdotool" ,xdotool)))
+    (home-page "https://www.passwordstore.org/")
+    (synopsis "Encrypted password manager")
+    (description "Password-store is a password manager which uses GnuPG to
 store and retrieve passwords.  The tool stores each password in its own
 GnuPG-encrypted file, allowing the program to be simple yet secure.
 Synchronization is possible using the integrated git support, which commits
 changes to your password database to a git repository that can be managed
 through the pass command.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public pass-otp
   (package
@@ -700,7 +703,7 @@ key URIs using the standard otpauth:// scheme.")
     (native-inputs
      `(("qttools" ,qttools)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (home-page "https://qtpass.org")
     (synopsis "GUI for password manager password-store")

@@ -75,6 +75,7 @@
    (eval . (put 'origin 'scheme-indent-function 0))
    (eval . (put 'build-system 'scheme-indent-function 0))
    (eval . (put 'bag 'scheme-indent-function 0))
+   (eval . (put 'gexp->derivation 'scheme-indent-function 1))
    (eval . (put 'graft 'scheme-indent-function 0))
    (eval . (put 'operating-system 'scheme-indent-function 0))
    (eval . (put 'file-system 'scheme-indent-function 0))
@@ -139,6 +140,8 @@
    (eval . (put 'with-fresh-gnupg-setup 'scheme-indent-function 1))
 
    (eval . (put 'with-paginated-output-port 'scheme-indent-function 1))
+
+   (eval . (put 'with-shepherd-action 'scheme-indent-function 3))
 
    ;; This notably allows '(' in Paredit to not insert a space when the
    ;; preceding symbol is one of these.

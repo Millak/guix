@@ -2,9 +2,10 @@
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,9 +45,9 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.15.1")
+    (version "1.16.1")
     ; XXX After the go-build-system can use "Go modules", stop using bundled
-    ; dependenices for Syncthing.
+    ; dependencies for Syncthing.
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -54,11 +55,11 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "04b90zwinl7frxrpjliq41mkbhpnkszmhdc5j2vbqwyhd82warxq"))))
+                "0m5k37sp3px8acs3y9an5wzy1wbcbdvqq74jy0pwzfk4bjbr999j"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
-    ;; of "out" by ~80 MiB.
+    ;; of "out" by ~144 MiB.
     (outputs '("out" "utils"))
     (arguments
      `(#:modules ((srfi srfi-26) ; for cut
@@ -87,9 +88,11 @@
                (invoke "go" "run" "build.go" "-no-upgrade" "build" "syncthing"))))
 
          (replace 'check
-           (lambda _
-             (with-directory-excursion "src/github.com/syncthing/syncthing"
-               (invoke "go" "run" "build.go" "test"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "src/github.com/syncthing/syncthing"
+                 (invoke "go" "run" "build.go" "test")))
+             #t))
 
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -101,7 +104,7 @@
                            '("stcompdirs" "stcrashreceiver"
                              "stdisco" "stdiscosrv" "stevents" "stfileinfo"
                              "stfinddevice" "stfindignored" "stgenfiles"
-                             "stindex" "strelaypoolsrv" "strelaysrv" "stsigtool"
+                             "strelaypoolsrv" "strelaysrv" "stsigtool"
                              "stvanity" "stwatchfile" "uraggregate" "ursrv"))
                  #t))))
 
@@ -398,28 +401,26 @@ processes.")
       (license asl2.0))))
 
 (define-public go-github-com-golang-snappy
-  (let ((commit "553a641470496b2327abcac10b36396bd98e45c9")
-        (revision "0"))
-    (package
-      (name "go-github-com-golang-snappy")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/golang/snappy")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0kssxnih1l722hx9219c7javganjqkqhvl3i0hp0hif6xm6chvqk"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/golang/snappy"))
-      (synopsis "Snappy compression format in the Go programming language")
-      (description "This package provides a Go implementation of the Snappy
+  (package
+    (name "go-github-com-golang-snappy")
+    (version "0.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/golang/snappy")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "004cw699yz3pdpawhjhpa0y94c4w479nw1rf39zj6h6027kpwv2j"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/golang/snappy"))
+    (synopsis "Snappy compression format in the Go programming language")
+    (description "This package provides a Go implementation of the Snappy
 compression format.")
-      (home-page "https://github.com/golang/snappy")
-      (license bsd-3))))
+    (home-page "https://github.com/golang/snappy")
+    (license bsd-3)))
 
 (define-public go-github-com-jackpal-gateway
   (package

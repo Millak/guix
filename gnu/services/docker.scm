@@ -1,9 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (gnu services base)
   #:use-module (gnu services dbus)
   #:use-module (gnu services shepherd)
+  #:use-module (gnu system setuid)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages linux)               ;singularity
@@ -36,11 +38,6 @@
   #:export (docker-configuration
             docker-service-type
             singularity-service-type))
-
-;;; We're not using serialize-configuration, but we must define this because
-;;; the define-configuration macro validates it exists.
-(define (serialize-boolean field-name val)
-  "")
 
 (define-configuration docker-configuration
   (docker
@@ -64,7 +61,8 @@ loop-back communications.")
    "Enable or disable debug output.")
   (enable-iptables?
    (boolean #t)
-   "Enable addition of iptables rules (enabled by default)."))
+   "Enable addition of iptables rules (enabled by default).")
+  (no-serialization))
 
 (define %docker-accounts
   (list (user-group (name "docker") (system? #t))))
@@ -199,9 +197,10 @@ bundles in Docker containers.")
                                                            "-helper")))
                                  '("action" "mount" "start")))))
 
-  (list (file-append helpers "/singularity-action-helper")
-        (file-append helpers "/singularity-mount-helper")
-        (file-append helpers "/singularity-start-helper")))
+  (map file-like->setuid-program
+       (list (file-append helpers "/singularity-action-helper")
+             (file-append helpers "/singularity-mount-helper")
+             (file-append helpers "/singularity-start-helper"))))
 
 (define singularity-service-type
   (service-type (name 'singularity)

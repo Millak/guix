@@ -1,8 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,7 +33,7 @@
 (define-public less
   (package
     (name "less")
-    (version "563")
+    (version "590")
     (source
      (origin
        (method url-fetch)
@@ -43,7 +43,7 @@
                                  version ".tar.gz")))
        (patches (search-patches "less-hurd-path-max.patch"))
        (sha256
-        (base32 "16lsvk88vwjwp5ax1wnll44wxwnzs8lb2fn90xx2si64kwmnsnyf"))))
+        (base32 "044fl3izmsi8n1vqzsqdp65q0qyyn5kmsg4sk7id0mxzx15zbbba"))))
     (build-system gnu-build-system)
     (inputs `(("ncurses" ,ncurses)))
     (home-page "https://www.gnu.org/software/less/")
@@ -59,7 +59,7 @@ text editors.")
 (define-public lesspipe
   (package
     (name "lesspipe")
-    (version "1.85")
+    (version "1.89")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -68,7 +68,7 @@ text editors.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v1jdkdq1phc93gdr6mjlk98gipxrkkq4bj8kks0kfdvjgdwkdaa"))))
+                "0lxf0m4bgwhpwmwa5q2vklk31yhiaz049kpm4n2hqiyb5mlpa94a"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no tests

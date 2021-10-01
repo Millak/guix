@@ -3,6 +3,7 @@
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021 Dion Mendel <guix@dm9.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,12 +28,14 @@
   #:use-module (guix packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls))
 
@@ -186,7 +189,7 @@ independently or together to provide resilient infrastructures.")
 (define-public libraft
   (package
     (name "libraft")
-    (version "0.9.11")
+    (version "0.11.2")
     (home-page "https://github.com/canonical/raft")
     (source (origin
               (method git-fetch)
@@ -195,7 +198,7 @@ independently or together to provide resilient infrastructures.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00rsq4z9nykmf7r5rlpv1y6bvckcmg3zv57vh1h681y5pij6cch1"))))
+                "050dwy34jh8dihfwfm0r1by2i3sy9crapipp9idw32idm79y4izb"))))
     (arguments '(#:configure-flags '("--enable-uv")
                  #:phases
                  (modify-phases %standard-phases
@@ -205,7 +208,8 @@ independently or together to provide resilient infrastructures.")
                          ((".*test_uv_append.c.*") ""))
                        #t)))))
     (inputs
-     `(("libuv" ,libuv)))
+     `(("libuv" ,libuv)
+       ("lz4" ,lz4)))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -220,3 +224,42 @@ that, a pluggable interface defines the I/O implementation for networking
 (send/receive RPC messages) and disk persistence (store log entries and
 snapshots).")
     (license license:asl2.0)))
+
+(define-public libdqlite
+  (package
+    (name "libdqlite")
+    (version "1.9.0")
+    (home-page "https://github.com/canonical/dqlite")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zalsvr0vy7632nhm96a29lrfy18iqsmbxpyz2lvq80mrjlbrzsn"))))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-failing-tests
+           (lambda _
+             (substitute* "Makefile.am"
+               ;; Test client/query sometimes fails.
+               ;; The actual tested asserts succeed, but there appears to be a
+               ;; race condition when tearing down the test server.
+               ((".*test_client.c.*") "")))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("libraft" ,libraft)
+       ("libuv" ,libuv)))
+    (propagated-inputs
+     `(("sqlite" ,sqlite)))  ; dqlite.h includes sqlite3.h
+    (build-system gnu-build-system)
+    (synopsis "Distributed SQLite")
+    (description "dqlite is a C library that implements an embeddable and replicated
+SQL database engine with high-availability and automatic failover.")
+    (license license:lgpl3)))

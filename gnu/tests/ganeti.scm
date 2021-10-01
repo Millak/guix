@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>.
+;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,7 +38,7 @@
 
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
-                 (target "/dev/vda")))
+                 (targets '("/dev/vda"))))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
                           (mount-point "/")
@@ -65,7 +66,7 @@
 
                    (service openssh-service-type
                             (openssh-configuration
-                             (permit-root-login 'without-password)))
+                             (permit-root-login 'prohibit-password)))
 
                    (service ganeti-service-type
                             (ganeti-configuration

@@ -3,6 +3,7 @@
 ;;; Copyright © 2015, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,18 +53,19 @@
 (define-public patchutils
   (package
     (name "patchutils")
-    (version "0.3.4")
+    (version "0.4.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "http://cyberelk.net/tim/data/patchutils/stable/"
-                          name "-" version ".tar.xz"))
-      (sha256
-       (base32
-        "0xp8mcfyi5nmb5a2zi5ibmyshxkb1zv1dgmnyn413m7ahgdx8mfg"))
-      (patches (search-patches "patchutils-test-perms.patch"))))
+       (method url-fetch)
+       (uri (string-append "http://cyberelk.net/tim/data/patchutils/stable/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1va5pzmxbzpi87vdnbjm9qdf9bvzps9xfv0gi4mycgg3bybb0xc8"))))
     (build-system gnu-build-system)
-    (inputs `(("perl" ,perl)))
+    (inputs
+     `(("perl" ,perl)
+       ("python" ,python)))
     (arguments
      '(#:parallel-tests? #f
        #:phases
@@ -71,8 +73,7 @@
          (add-before 'check 'patch-test-scripts
            (lambda _
              (substitute* (find-files "tests" "^run-test$")
-               (("/bin/echo") (which "echo")))
-             #t))
+               (("/bin/echo") (which "echo")))))
          (add-after 'install 'wrap-program
            ;; Point installed scripts to the utilities they need.
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -87,8 +88,7 @@
                       ,(map (lambda (dir)
                               (string-append dir "/bin"))
                             (list diffutils sed gawk)))))
-                '("dehtmldiff" "editdiff" "espdiff")))
-             #t)))))
+                '("dehtmldiff" "editdiff" "espdiff"))))))))
     (home-page "http://cyberelk.net/tim/software/patchutils")
     (synopsis "Collection of tools for manipulating patch files")
     (description
@@ -246,7 +246,7 @@ GiB).")
 (define-public meld
   (package
     (name "meld")
-    (version "3.20.3")
+    (version "3.20.4")
     (source
      (origin
        (method url-fetch)
@@ -254,7 +254,7 @@ GiB).")
                            (version-major+minor version)
                            "/meld-" version ".tar.xz"))
        (sha256
-        (base32 "06h52vaghvj5n507mj0hhk9yrca16pyl4l16c00b3bmkplljpqzh"))))
+        (base32 "04vx2mdbcdin0g3w8x910czfch5vyrl8drv1f2l8gxh6qvp113pl"))))
     (build-system python-build-system)
     (native-inputs
      `(("intltool" ,intltool)
@@ -298,6 +298,13 @@ GiB).")
              (invoke "py.test" "-v" "-k"
                      ;; TODO: Those tests fail, why?
                      "not test_classify_change_actions")))
+         (add-after 'install 'copy-styles
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((styles "/share/gtksourceview-3.0/styles"))
+               (copy-recursively
+                (string-append (assoc-ref inputs "gtksourceview") styles)
+                (string-append (assoc-ref outputs "out") styles))
+               #t)))
          (add-after 'wrap 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
          (add-after 'wrap 'wrap-typelib

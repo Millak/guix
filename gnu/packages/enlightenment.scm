@@ -36,6 +36,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
@@ -370,7 +371,10 @@ Libraries with some extra bells and whistles.")
     (propagated-inputs
      `(("efl" ,efl)
        ("libxkbcommon" ,libxkbcommon)
-       ("wayland-protocols" ,wayland-protocols)))
+       ("wayland-protocols" ,wayland-protocols)
+
+       ;; Default font that applications such as IceCat require.
+       ("font-dejavu" ,font-dejavu)))
     (home-page "https://www.enlightenment.org/about-enlightenment")
     (synopsis "Lightweight desktop environment")
     (description
@@ -567,17 +571,22 @@ directories.
 (define-public evisum
   (package
     (name "evisum")
-    (version "0.5.11")
+    (version "0.5.13")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://download.enlightenment.org/rel/apps/"
                             "evisum/evisum-" version ".tar.xz"))
         (sha256
-         (base32 "0cbfg393nlf0k91a2hdlyakns3dpzvs3isd95dm3zizydyf9h8wc"))))
+         (base32 "1rjqvida4anh7gqjp6xrpk6kmhqb66r733yyr2ixphgxn33p3iac"))))
     (build-system meson-build-system)
     (arguments
-     '(#:tests? #f))                    ; no tests
+     '(#:tests? #f                      ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-homedir
+           (lambda _
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))

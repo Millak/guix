@@ -14,6 +14,8 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021 André A. Gomes <andremegafone@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +38,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -48,6 +51,7 @@
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages mate)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages photo)
@@ -185,7 +189,7 @@ storage system.")
 (define-public libxfce4ui
   (package
     (name "libxfce4ui")
-    (version "4.16.0")
+    (version "4.16.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -193,7 +197,7 @@ storage system.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1anfj3n28abv9kbcpybs7q3k5g3c3d0r4xf4hyfqms2b9zlwj1lb"))))
+                "1xl52pjh7xi67qpv8800xrizf28r0bh1jm21va6hggznbap4csfr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -220,7 +224,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
 (define-public catfish
   (package
     (name "catfish")
-    (version "1.4.13")
+    (version "4.16.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -228,7 +232,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
                                   "/catfish-" version ".tar.bz2"))
               (sha256
                (base32
-                "0fg89946z6n8njxn4mv29jksw8yavg8vypsljn9031pjwl3fmh2q"))))
+                "0md6ypirr97ch7x8qliwzixzwj6zzd68ivb2dzj90hm2lcn7wc8h"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -260,6 +264,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
        ("intltool" ,intltool)))
     (inputs
      `(("which" ,which)
+       ("xfconf" ,xfconf)
        ("xdg-utils" ,xdg-utils)))
     (propagated-inputs
      `(("gtk+" ,gtk+)
@@ -313,7 +318,7 @@ upstream occasionally.")
 (define-public exo
   (package
     (name "exo")
-    (version "4.16.1")
+    (version "4.16.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -321,7 +326,7 @@ upstream occasionally.")
                                   "exo-" version ".tar.bz2"))
               (sha256
                (base32
-                "0fxm2aczzbi0z4y6x24934964y9jg4cl4frvlnjc5zqmccjsr3aj"))))
+                "17cybaml221jnw99aig3zajg2kbnn87p5sycj68wpwgvd99zb2af"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -413,7 +418,7 @@ management D-Bus specification.")
 (define-public xfce4-panel
   (package
     (name "xfce4-panel")
-    (version "4.16.2")
+    (version "4.16.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -421,7 +426,7 @@ management D-Bus specification.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kxm905z6m0mvnki7qxwz638kfa93lvy5xv3qfp8sc8ldxp1cd46"))
+                "14p0y6d3frphv67vsvnx6c1l4m82c1wwsk3kkg155nknibnyld2r"))
               (patches (search-patches "xfce4-panel-plugins.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -492,7 +497,7 @@ applications menu, workspace switcher and more.")
 (define-public xfce4-clipman-plugin
   (package
     (name "xfce4-clipman-plugin")
-    (version "1.6.1")
+    (version "1.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -500,7 +505,7 @@ applications menu, workspace switcher and more.")
                                   "xfce4-clipman-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1d6fxdzy9b511hqcyj7825fx67q6zqk6cln4g3x9d498jrvk3s5k"))))
+                "1f4rjdvyplfkrdqg9179chzxx18k3lx29674j28piccgyvk5z2mb"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("intltool" ,intltool)
@@ -570,7 +575,7 @@ keys for controlling the audio volume.")
 (define-public xfce4-whiskermenu-plugin
   (package
     (name "xfce4-whiskermenu-plugin")
-    (version "2.5.2")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
@@ -578,7 +583,7 @@ keys for controlling the audio volume.")
                            "xfce4-whiskermenu-plugin/" (version-major+minor version) "/"
                            "xfce4-whiskermenu-plugin-" version ".tar.bz2"))
        (sha256
-        (base32 "05f53ycbszvw23g76pbdszfnqfk4f8w4imwfgljj140wzl50gxx6"))))
+        (base32 "0rnlhcfsbjj0n8m84jgqihp783hrkjdjfapqr7ia53mr0fjgcw9j"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -704,7 +709,14 @@ your system in categories, so you can quickly find and launch them.")
        (list (string-append "--with-xsession-prefix=" %output))
        ;; Disable icon cache update.
        #:make-flags
-       '("gtk_update_icon_cache=true")))
+       '("gtk_update_icon_cache=true")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-xflock
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((xset (assoc-ref inputs "xset")))
+               (substitute* "scripts/xflock4"
+                 (("xset") (string-append xset "/bin/xset")))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("intltool" ,intltool)))
@@ -714,7 +726,8 @@ your system in categories, so you can quickly find and launch them.")
        ("polkit" ,polkit)
        ("libsm" ,libsm)
        ("libwnck" ,libwnck)
-       ("libxfce4ui" ,libxfce4ui)))
+       ("libxfce4ui" ,libxfce4ui)
+       ("xset" ,xset)))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce session manager")
     (description
@@ -725,7 +738,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.16.0")
+    (version "4.16.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -733,7 +746,7 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1hnx88a8xmi38mdf5gxdvx7n8yax1vzah8hy8g37bijlqx7l18b7"))
+                "0zixl1yiksavp3a824hqczxx5q3l09f0ng37gxl5wlv0111cpmsd"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -755,6 +768,10 @@ allows you to shut down the computer from Xfce.")
        ("upower" ,upower) ;; TODO needs upower-glib
        ("python" ,python) ;; for xfce4-compose-mail
        ("xf86-input-libinput" ,xf86-input-libinput)))
+    (propagated-inputs
+     ;; Some operations, such as changing icon themes, require these schemas
+     ;; to be in the search path.
+     `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas)))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce settings manager")
     (description
@@ -765,7 +782,7 @@ like appearance, display, keyboard and mouse settings.")
 (define-public thunar
   (package
     (name "thunar")
-    (version "4.16.6")
+    (version "4.16.10")                           ;stable version = even minor
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -773,7 +790,7 @@ like appearance, display, keyboard and mouse settings.")
                                   "thunar-" version ".tar.bz2"))
               (sha256
                (base32
-                "1dq238m2bh938gpb058cr2xmhy6f3qkyyya9l0ya95kiwqzislyb"))))
+                "14lwi4ax0wj77980kkfhdf18b97339b17y8qc8gl2365mgswh1gi"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -781,6 +798,7 @@ like appearance, display, keyboard and mouse settings.")
     (inputs
      `(("exo" ,exo)
        ("gobject-introspection" ,gobject-introspection)
+       ("gvfs" ,gvfs)
        ("libexif" ,libexif)
        ("libgudev" ,libgudev)
        ("libnotify" ,libnotify)
@@ -892,7 +910,8 @@ on the screen.")
                                   (copy-file "/tmp/final.jpg" image))
                                 '(;; "backgrounds/xfce-blue.jpg"
                                   "backgrounds/xfce-stripes.png"
-                                  "backgrounds/xfce-teal.jpg"))
+                                  "backgrounds/xfce-teal.jpg"
+                                  "backgrounds/xfce-verticals.png"))
                       #t)))
 
        #:disallowed-references (,inkscape ,imagemagick)))
@@ -948,6 +967,23 @@ menubar and the window decorations are hidden) that helps you to save space
 on your desktop.")
     (license gpl2+)))
 
+(define-public mate-polkit-for-xfce
+  (package/inherit mate-polkit
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'patch-desktop
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((common (string-append
+                             (assoc-ref outputs "out") "/etc/xdg/autostart/"
+                             "polkit-mate-authentication-agent-"))
+                    (old (string-append common "1.desktop"))
+                    (new (string-append common "for-xfce-1.desktop")))
+               (substitute* old (("MATE;") "XFCE;"))
+               ;; To avoid a conflict if both MATE and XFCE are installed.
+               (rename-file old new)))))))
+    (properties `((hidden? . #t)))))
+
 (define-public xfce
   (package
     (name "xfce")
@@ -971,6 +1007,7 @@ on your desktop.")
        ("gnome-icon-theme"     ,gnome-icon-theme)
        ("gtk-xfce-engine"      ,gtk-xfce-engine)
        ("hicolor-icon-theme"   ,hicolor-icon-theme)
+       ("mate-polkit-for-xfce" ,mate-polkit-for-xfce)
        ("ristretto"            ,ristretto)
        ("shared-mime-info"     ,shared-mime-info)
        ("thunar"               ,thunar)
@@ -990,6 +1027,9 @@ on your desktop.")
        ("xfce4-clipman-plugin"    ,xfce4-clipman-plugin)
        ("xfce4-pulseaudio-plugin" ,xfce4-pulseaudio-plugin)
        ("xfce4-xkb-plugin"        ,xfce4-xkb-plugin)))
+    (propagated-inputs
+     ;; Default font that applications such as IceCat require.
+     `(("font-dejavu"             ,font-dejavu)))
     (native-search-paths
      ;; For finding panel plugins.
      (package-native-search-paths xfce4-panel))
@@ -1037,7 +1077,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.10.0")
+    (version "0.11.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/ristretto/"
@@ -1045,7 +1085,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
                                   "ristretto-" version ".tar.bz2"))
               (sha256
                (base32
-                "0sa75m1w6yvv4xvzrwqiif6vnqgi29hjrixrh87nxss58bbms8hn"))))
+                "08w8nw6cl8kpvjnp7dxgpqlmi3s73amhrb7l0sbzmjy82ba30zl7"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("intltool" ,intltool)
@@ -1206,7 +1246,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.5.4")
+    (version "0.5.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/mousepad/"
@@ -1214,7 +1254,7 @@ of data to either CD/DVD/BD.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "189aljqgkrspqk9498izgvssw08pgkyvf7hc7ddmzfhcblp4j3yr"))))
+                "03rmjraxb6a3w7gknmf6mdzkfc0m8shs1vkb2chvv28xn1irhma2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '(;; Use the GSettings keyfile backend rather than
@@ -1248,7 +1288,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.9.8")
+   (version "1.9.9")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1258,7 +1298,7 @@ of data to either CD/DVD/BD.")
                                 version ".tar.bz2"))
             (sha256
              (base32
-              "0l1cyrb4ym7d95yliyl8gn701wvnr734v622yyy3zdnk99hrs0kg"))))
+              "196swmc4amab8xcwv4q9p8b43fzzi9xagg20gnyjvf5x7yssxj1k"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("pkg-config" ,pkg-config)

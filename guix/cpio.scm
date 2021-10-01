@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,6 +18,8 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix cpio)
+  #:use-module ((guix build syscalls) #:select (device-number
+                                                device-number->major+minor))
   #:use-module ((guix build utils) #:select (dump-port))
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-11)
@@ -128,8 +131,8 @@
                            (nlink 1) (mtime 0) (size 0)
                            (dev 0) (rdev 0) (name-size 0))
   "Return a new cpio file header."
-  (let-values (((major minor)   (device->major+minor dev))
-               ((rmajor rminor) (device->major+minor rdev)))
+  (let-values (((major minor)   (device-number->major+minor dev))
+               ((rmajor rminor) (device-number->major+minor rdev)))
     (%make-cpio-header MAGIC
                        inode mode uid gid
                        nlink mtime
@@ -152,16 +155,6 @@ denotes, similar to 'stat:type'."
           ((= C_ISCHR fmt) 'char-special)
           (else
            (error "unsupported file type" mode)))))
-
-(define (device-number major minor)               ;see <sys/sysmacros.h>
-  "Return the device number for the device with MAJOR and MINOR, for use as
-the last argument of `mknod'."
-  (+ (* major 256) minor))
-
-(define (device->major+minor device)
-  "Return two values: the major and minor device numbers that make up DEVICE."
-  (values (ash device -8)
-          (logand device #xff)))
 
 (define* (file->cpio-header file #:optional (file-name file)
                             #:key (stat lstat))

@@ -9,12 +9,14 @@
 ;;; Copyright © 2018, 2019, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
+;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,6 +93,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -208,7 +211,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "3.34.2")
+    (version "3.38.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -216,7 +219,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "00xslcnhhwslqglgfv2im7vq3awa49y2jxzr8wsby7f713k28vf5"))))
+                "1llgzm2ni3iy31dznqkc81vadv0fpqgpz2l9zzrj5jshvyq0akgh"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -234,6 +237,15 @@ topology functions.")
                (("@pkgdatadir@/org.gnome.Maps")
                 (string-append  (assoc-ref outputs "out") "/bin/gnome-maps")))
              #t))
+         (add-after 'unpack 'fix-broken-tests
+           (lambda _
+             ;; For some reason setting LC_ALL=C and LANG=C as done in the
+             ;; build system does not prevent these gratuitous commas from
+             ;; being inserted.
+             (substitute* "tests/utilsTest.js"
+               (("1001 m") "1,001 m")
+               (("1000 ft") "1,000 ft")
+               (("5282 ft") "5,282 ft"))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -637,78 +649,6 @@ development.")
                    ;; deps/agg
                    (license:non-copyleft "file://deps/agg/copying")))))
 
-(define-public python2-mapnik
-  (package
-    (name "python2-mapnik")
-    (version "3.0.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/mapnik/python-mapnik/archive/v"
-                           version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0w7wg72gnwmbjani9sqk42p2jwqkrl9hsdkawahni5m05xsifcb4"))))
-    (build-system python-build-system)
-    (inputs
-     `(("boost" ,boost)
-       ("harfbuzz" ,harfbuzz)
-       ("icu4c" ,icu4c)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("mapnik" ,mapnik)
-       ("proj.4" ,proj.4)
-       ("python2-pycairo" ,python2-pycairo)))
-    (native-inputs
-     (let ((test-data-input
-            (lambda (repository version hash)
-              (origin
-                (method url-fetch)
-                (uri (string-append "https://github.com/mapnik/" repository
-                                    "/archive/v" version ".tar.gz"))
-                (file-name (string-append "python-mapnik-" repository
-                                          "-" version ".tar.gz"))
-                (sha256 (base32 hash))))))
-       `(("python2-nose" ,python2-nose)
-         ;; Test data is released as separate tarballs
-         ("test-data"
-          ,(test-data-input "test-data" "3.0.18"
-                            "10cvgn5gxn8ldrszj24zr1vzm5w76kqk4s7bl2zzp5yvkhh8lj1n"))
-         ("test-data-visual"
-          ,(test-data-input "test-data-visual" "3.0.18"
-                            "1cb9ghy8sis0w5fkp0dvwxdqqx44rhs9a9w8g9r9i7md1c40r80i")))))
-    (arguments
-     `(#:python ,python-2 ; Python 3 support is incomplete, and the build fails
-       #:phases
-       (modify-phases %standard-phases
-         ;; Unpack test data into the source tree
-         (add-after 'unpack 'unpack-submodules
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((unpack (lambda (source target)
-                             (with-directory-excursion target
-                               (invoke "tar" "xvf" (assoc-ref inputs source)
-                                       "--strip-components=1")))))
-               (unpack "test-data" "test/data")
-               (unpack "test-data-visual" "test/data-visual"))))
-         ;; Skip failing tests
-         (add-after 'unpack 'skip-tests
-           (lambda _
-             (let ((skipped-tests (list "test_vrt_referring_to_missing_files"
-                                        "test_unicode_regex_replace"
-                                        "test_proj_antimeridian_bbox"
-                                        "test_render_with_scale_factor")))
-               (substitute* "setup.cfg"
-                 (("\\[nosetests\\]" all)
-                  (string-append all "\nexclude=^("
-                                 (string-join skipped-tests "|") ")$")))))))))
-    (home-page "https://github.com/mapnik/python-mapnik")
-    (synopsis "Python bindings for Mapnik")
-    (description "This package provides Python bindings for Mapnik.")
-    (license license:lgpl2.1+)))
-
 (define-public spatialite-gui
   (package
     (name "spatialite-gui")
@@ -881,17 +821,104 @@ utilities for data translation and processing.")
      `(("gdal" ,gdal)))
     (synopsis "GDAL (Geospatial Data Abstraction Library) python bindings")))
 
+(define-public python-pyshp
+  (package
+    (name "python-pyshp")
+    (version "2.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GeospatialPython/pyshp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jsraqzq82pw19wvx84x7w5cs8agr44a9b5y0jjw540wim4xa73r"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; This is the only test file.
+               (invoke "python" "-m" "pytest" "test_shapefile.py")))))))
+    (native-inputs
+     `(("python-pytest" ,python-pytest)
+       ("python-pytest-runner" ,python-pytest-runner)))
+    (home-page "https://github.com/GeospatialPython/pyshp")
+    (synopsis "Read/write support for ESRI Shapefile format")
+    (description
+      "The Python Shapefile Library (PyShp) reads and writes ESRI Shapefiles.")
+    (license license:expat)))
+
+(define-public python-cartopy
+  (package
+    (name "python-cartopy")
+    ;; This is a post-release fix that adds build_ext to setup.py.
+    (version "0.19.0.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Cartopy" version))
+       (sha256
+        (base32 "0xnm8z3as3hriivdfd26s6vn5b63gb46x6vxw6gh1mwfm5rlg2sb"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest" "--pyargs" "cartopy"
+                       ;; These tests require online data.
+                       "-m" "not natural_earth and not network"
+                       ;; This one too but it's not marked as such.
+                       "-k" "not test_gridliner_labels_bbox_style")))))))
+    (propagated-inputs
+     `(("python-matplotlib" ,python-matplotlib)
+       ("python-numpy" ,python-numpy)
+       ("python-pykdtree" ,python-pykdtree)
+       ("python-pyshp" ,python-pyshp)
+       ("python-scipy" ,python-scipy)
+       ("python-shapely" ,python-shapely)))
+    (inputs
+     `(("geos" ,geos)
+       ("proj" ,proj)))
+    (native-inputs
+     `(("python-cython" ,python-cython)
+       ("python-flufl-lock" ,python-flufl-lock)
+       ("python-pytest" ,python-pytest)))
+    (home-page "https://scitools.org.uk/cartopy/docs/latest/")
+    (synopsis "Cartographic library for visualisation")
+    (description
+     "Cartopy is a Python package designed to make drawing maps for data
+analysis and visualisation easy.
+
+It features:
+
+@itemize
+@item object oriented projection definitions
+@item point, line, polygon and image transformations between projections
+@item integration to expose advanced mapping in Matplotlib with a simple and
+intuitive interface
+@item powerful vector data handling by integrating shapefile reading with
+Shapely capabilities
+@end itemize")
+    (license license:lgpl3+)))
+
 (define-public postgis
   (package
     (name "postgis")
-    (version "3.1.1")
+    (version "3.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.osgeo.org/postgis/source/postgis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0z9a39243fv37mansbbjq5mmxpnhr7xzn8pv92fr7dkdb3psz5hf"))))
+                "0ch7gry8a1i9114mlhklxryn7ja3flsz6pxj9r5p09k92xh3gp9c"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -1247,7 +1274,7 @@ map display.  Downloads map data from a number of websites, including
        ("libpng" ,libpng)
        ("openjpeg" ,openjpeg)
        ("proj.4" ,proj.4)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)))
     (synopsis "Weather Forecast Visualization")
     (description
@@ -1335,7 +1362,7 @@ an independent project by the JOSM team.")
 (define-public java-opening-hours-parser
   (package
     (name "java-opening-hours-parser")
-    (version "0.21.4")
+    (version "0.23.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1344,7 +1371,7 @@ an independent project by the JOSM team.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m8sp0jbjyv1nq3ddj8rk6rf3sva3mkacc6vw7rsj0c2n57k3i50"))))
+                "0yhbd2ix6h506aljh0jkrnp28m4xcqdcdpnqm30fn08kawdgxgsh"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-opening-hours-parser.jar"
@@ -1380,7 +1407,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "17329")
+    (version "18193")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1389,7 +1416,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0bq6mirdsi0kmhjfzfp3innxi5a4395d7mas7ikxaz0cziljrz1i"))
+                "162hdck29bkag1d97nisx8v7395pdw00bl7nf0p02hr30fc1fcrh"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1405,6 +1432,7 @@ to the OSM opening hours specification.")
        ("java-jmapviewer" ,java-jmapviewer)
        ("java-jsonp-api" ,java-jsonp-api)
        ("java-jsonp-impl" ,java-jsonp-impl); runtime dependency
+       ("java-jsr305" ,java-jsr305)
        ("java-metadata-extractor" ,java-metadata-extractor)
        ("java-opening-hours-parser" ,java-opening-hours-parser)
        ("java-openjfx-media" ,java-openjfx-media)
@@ -1434,7 +1462,8 @@ to the OSM opening hours specification.")
              ;; which has renamed its classes to another namespace.  Rename them
              ;; back so they can be used with our version of jcs.
              (substitute* (find-files "." ".*.java$")
-               (("jcs3") "jcs"))
+               (("jcs3") "jcs")
+               (("ICache.NAME_COMPONENT_DELIMITER") "\":\""))
              #t))
          (add-before 'build 'fix-classpath
            (lambda* (#:key inputs #:allow-other-keys)
@@ -1495,14 +1524,17 @@ to the OSM opening hours specification.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
                    (share-directories '("applications" "icons" "man" "menu"
-                                        "metainfo" "mime" "pixmaps")))
+                                        "metainfo" "mime" "pixmaps"))
+                   (desktop "org.openstreetmap.josm.desktop"))
                (for-each (lambda (directory)
                            (copy-recursively (string-append
                                               "native/linux/tested/usr/share/"
                                               directory)
                                              (string-append
                                               out "/share/" directory)))
-                         share-directories))
+                         share-directories)
+               (substitute* (string-append out "/share/applications/" desktop)
+                 (("josm-MainApplication") "josm-gui-MainApplication")))
              #t))
          (add-after 'install 'install-bin
            (lambda* (#:key outputs inputs #:allow-other-keys)
@@ -1663,7 +1695,7 @@ using the dataset of topographical information collected by
      `(("gdal" ,gdal)
        ("libjpeg-turbo" ,libjpeg-turbo)
        ("proj" ,proj)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtlocation" ,qtlocation)
        ("qtwebchannel" ,qtwebchannel)
@@ -2283,7 +2315,7 @@ growing set of geoscientific methods.")
        ("python-urllib3" ,python-urllib3)
        ("qca" ,qca)
        ("qscintilla" ,qscintilla)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtkeychain" ,qtkeychain)
        ("qtlocation" ,qtlocation)
@@ -2397,3 +2429,43 @@ web services.  @code{geopy} makes it easy for Python developers to locate the
 coordinates of addresses, cities, countries, and landmarks across the globe
 using third-party geocoders and other data sources.")
     (license license:expat)))
+
+(define-public marble-qt
+  (let ((release "17.08")
+        (commit "fc7166eeef784732033c999ba605364f9c82d21c")
+        (revision "1"))
+    (package
+      (name "marble-qt")
+      (version (git-version release revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://invent.kde.org/education/marble.git/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0m0sf3sddaib7vc5lhbmh7ziw07p1hahg02f65sgfylyl5f5kj92"))
+         (patches (search-patches
+                   "marble-qt-add-qt-headers.patch"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:tests? #f ; libmarblewidget-qt5.so.28 not found
+         #:configure-flags
+         '("-DCMAKE_BUILD_TYPE=Release"
+           "-DWITH_KF5=FALSE")))
+      (native-inputs
+       `(("qttools" ,qttools)))
+      (inputs
+       `(("qtbase" ,qtbase-5)
+         ("qtsvg" ,qtsvg)
+         ("qtdeclarative" ,qtdeclarative)
+         ("qtwebkit" ,qtwebkit)
+         ("qtlocation" ,qtlocation)))
+      (home-page "https://marble.kde.org/")
+      (synopsis "Virtual globe and world atlas")
+      (description "Marble is similar to a desktop globe.  At closer scale it
+becomes a world atlas, while OpenStreetMap takes the user to street level.  It
+supports searching for places of interest, viewing Wikipedia articles,
+creating routes by drag and drop and more.")
+      (license license:gpl3))))

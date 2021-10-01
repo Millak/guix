@@ -10,13 +10,14 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021 Christopher Lemmer Webber <cwebber@dustycloud.org>
+;;; Copyright © 2021 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,7 +74,6 @@
   #:re-export (static-networking-service
                static-networking-service-type)
   #:export (%facebook-host-aliases
-            dhcp-client-service
             dhcp-client-service-type
 
             dhcpd-service-type
@@ -99,7 +99,6 @@
             ntp-server-address
             ntp-server-options
 
-            ntp-service
             ntp-service-type
 
             %openntpd-servers
@@ -111,10 +110,21 @@
             inetd-entry
             inetd-service-type
 
+            opendht-configuration
+            opendht-configuration-peer-discovery?
+            opendht-configuration-verbose?
+            opendht-configuration-bootstrap-host
+            opendht-configuration-port
+            opendht-configuration-proxy-server-port
+            opendht-configuration-proxy-server-port-tls
+            opendht-configuration->command-line-arguments
+
+            opendht-shepherd-service
+            opendht-service-type
+
             tor-configuration
             tor-configuration?
             tor-hidden-service
-            tor-service
             tor-service-type
 
             wicd-service-type
@@ -298,12 +308,6 @@ fe80::1%lo0 apps.facebook.com\n")
    (description "Run @command{dhcp}, a Dynamic Host Configuration
 Protocol (DHCP) client, on all the non-loopback network interfaces.")))
 
-(define-deprecated (dhcp-client-service #:key (dhcp isc-dhcp))
-  dhcp-client-service-type
-  "Return a service that runs @var{dhcp}, a Dynamic Host Configuration
-Protocol (DHCP) client, on all the non-loopback network interfaces."
-  (service dhcp-client-service-type dhcp))
-
 (define-record-type* <dhcpd-configuration>
   dhcpd-configuration make-dhcpd-configuration
   dhcpd-configuration?
@@ -360,8 +364,9 @@ Protocol (DHCP) client, on all the non-loopback network interfaces."
                (lambda _ (display ""))))
            ;; Validate the config.
            (invoke/quiet
-            #$(file-append package "/sbin/dhcpd") "-t" "-cf"
-            #$config-file))))))
+            #$(file-append package "/sbin/dhcpd")
+            #$(string-append "-" version)
+            "-t" "-cf" #$config-file))))))
 
 (define dhcpd-service-type
   (service-type
@@ -489,7 +494,8 @@ restrict source notrap nomodify noquery\n"))
                                 "-c" #$ntpd.conf "-u" "ntpd"
                                 #$@(if allow-large-adjustment?
                                        '("-g")
-                                       '()))))
+                                       '()))
+                          #:log-file "/var/log/ntpd.log"))
                 (stop #~(make-kill-destructor)))))))))
 
 (define %ntp-accounts
@@ -528,21 +534,6 @@ restrict source notrap nomodify noquery\n"))
 daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon
 will keep the system clock synchronized with that of the given servers.")
                 (default-value (ntp-configuration))))
-
-(define-deprecated (ntp-service #:key (ntp ntp)
-                                (servers %ntp-servers)
-                                allow-large-adjustment?)
-  ntp-service-type
-  "Return a service that runs the daemon from @var{ntp}, the
-@uref{http://www.ntp.org, Network Time Protocol package}.  The daemon will
-keep the system clock synchronized with that of @var{servers}.
-@var{allow-large-adjustment?} determines whether @command{ntpd} is allowed to
-make an initial adjustment of more than 1,000 seconds."
-  (service ntp-service-type
-           (ntp-configuration (ntp ntp)
-                              (servers servers)
-                              (allow-large-adjustment?
-                               allow-large-adjustment?))))
 
 
 ;;;
@@ -742,6 +733,127 @@ demand.")))
 
 
 ;;;
+;;; OpenDHT, the distributed hash table network used by Jami
+;;;
+
+(define-maybe/no-serialization number)
+(define-maybe/no-serialization string)
+
+;;; To generate the documentation of the following configuration record, you
+;;; can evaluate: (configuration->documentation 'opendht-configuration)
+(define-configuration/no-serialization opendht-configuration
+  (opendht
+   (package opendht)
+   "The @code{opendht} package to use.")
+  (peer-discovery?
+   (boolean #false)
+   "Whether to enable the multicast local peer discovery mechanism.")
+  (enable-logging?
+   (boolean #false)
+   "Whether to enable logging messages to syslog.  It is disabled by default
+as it is rather verbose.")
+  (debug?
+   (boolean #false)
+   "Whether to enable debug-level logging messages.  This has no effect if
+logging is disabled.")
+  (bootstrap-host
+   (maybe-string "bootstrap.jami.net:4222")
+   "The node host name that is used to make the first connection to the
+network.  A specific port value can be provided by appending the @code{:PORT}
+suffix.  By default, it uses the Jami bootstrap nodes, but any host can be
+specified here.  It's also possible to disable bootstrapping by setting this
+to the @code{'disabled} symbol.")
+  (port
+   (maybe-number 4222)
+   "The UDP port to bind to.  When set to @code{'disabled}, an available port
+is automatically selected.")
+  (proxy-server-port
+   (maybe-number 'disabled)
+   "Spawn a proxy server listening on the specified port.")
+  (proxy-server-port-tls
+   (maybe-number 'disabled)
+   "Spawn a proxy server listening to TLS connections on the specified
+port."))
+
+(define %opendht-accounts
+  ;; User account and groups for Tor.
+  (list (user-group (name "opendht") (system? #t))
+        (user-account
+         (name "opendht")
+         (group "opendht")
+         (system? #t)
+         (comment "OpenDHT daemon user")
+         (home-directory "/var/empty")
+         (shell (file-append shadow "/sbin/nologin")))))
+
+(define (opendht-configuration->command-line-arguments config)
+  "Derive the command line arguments used to launch the OpenDHT daemon from
+CONFIG, an <opendht-configuration> object."
+  (match-record config <opendht-configuration>
+    (opendht bootstrap-host enable-logging? port debug? peer-discovery?
+             proxy-server-port proxy-server-port-tls)
+    (let ((dhtnode #~(string-append #$opendht:tools "/bin/dhtnode")))
+      `(,dhtnode
+        "--service"                     ;non-forking mode
+        ,@(if (string? bootstrap-host)
+              (list "--bootstrap" bootstrap-host))
+        ,@(if enable-logging?
+              (list "--syslog")
+              '())
+        ,@(if (number? port)
+              (list "--port" (number->string port))
+              '())
+        ,@(if debug?
+              (list "--verbose")
+              '())
+        ,@(if peer-discovery?
+              (list "--peer-discovery")
+              '())
+        ,@(if (number? proxy-server-port)
+              (list "--proxyserver" (number->string proxy-server-port))
+              '())
+        ,@(if (number? proxy-server-port-tls)
+              (list "--proxyserverssl" (number->string proxy-server-port-tls))
+              '())))))
+
+(define (opendht-shepherd-service config)
+  "Return a <shepherd-service> running OpenDHT."
+  (with-imported-modules (source-module-closure
+                          '((gnu build shepherd)
+                            (gnu system file-systems)))
+    (shepherd-service
+     (documentation "Run an OpenDHT node.")
+     (provision '(opendht dhtnode dhtproxy))
+     (requirement '(networking syslogd))
+     (modules '((gnu build shepherd)
+                (gnu system file-systems)))
+     (start #~(make-forkexec-constructor/container
+               (list #$@(opendht-configuration->command-line-arguments config))
+               #:mappings (list (file-system-mapping
+                                 (source "/dev/log") ;for syslog
+                                 (target source)))
+               #:user "opendht"
+               #:group "opendht"))
+     (stop #~(make-kill-destructor)))))
+
+(define opendht-service-type
+  (service-type
+   (name 'opendht)
+   (default-value (opendht-configuration))
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             (compose list opendht-shepherd-service))
+          (service-extension account-service-type
+                             (const %opendht-accounts))))
+   (description "Run the OpenDHT @command{dhtnode} command that allows
+participating in the distributed hash table based OpenDHT network.  The
+service can be configured to act as a proxy to the distributed network, which
+can be useful for portable devices where minimizing energy consumption is
+paramount.  OpenDHT was originally based on Kademlia and adapted for
+applications in communication.  It is used by Jami, for example.")))
+
+
+;;;
 ;;; Tor.
 ;;;
 
@@ -851,6 +963,7 @@ HiddenServicePort ~a ~a~%"
                 (start #~(make-forkexec-constructor/container
                           (list #$(file-append tor "/bin/tor") "-f" #$torrc)
 
+                          #:log-file "/var/log/tor.log"
                           #:mappings (list (file-system-mapping
                                             (source "/var/lib/tor")
                                             (target source)
@@ -925,21 +1038,6 @@ HiddenServicePort ~a ~a~%"
                 (description
                  "Run the @uref{https://torproject.org, Tor} anonymous
 networking daemon.")))
-
-(define-deprecated (tor-service #:optional
-                                (config-file (plain-file "empty" ""))
-                                #:key (tor tor))
-  tor-service-type
-  "Return a service to run the @uref{https://torproject.org, Tor} anonymous
-networking daemon.
-
-The daemon runs as the @code{tor} unprivileged user.  It is passed
-@var{config-file}, a file-like object, with an additional @code{User tor} line
-and lines for hidden services added via @code{tor-hidden-service}.  Run
-@command{man tor} for information about the configuration file."
-  (service tor-service-type
-           (tor-configuration (tor tor)
-                              (config-file config-file))))
 
 (define tor-hidden-service-type
   ;; A type that extends Tor with hidden services.
@@ -1458,7 +1556,8 @@ extra-settings "\n"))))
          (requirement `(user-processes ,@requirement))
          (documentation "Run the hostapd WiFi access point daemon.")
          (start #~(make-forkexec-constructor
-                   (list #$(file-append hostapd "/sbin/hostapd")
+                   (list #$(file-append (hostapd-configuration-package config)
+                                        "/sbin/hostapd")
                          #$(hostapd-configuration-file config))
                    #:log-file "/var/log/hostapd.log"))
          (stop #~(make-kill-destructor)))))

@@ -78,6 +78,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -177,7 +178,7 @@ information.")
      `(("python-pypdf2" ,python-pypdf2)
        ("python-pyqt" ,python-pyqt)
        ("python-poppler-qt5" ,python-poppler-qt5)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "http://crazy-compilers.com/flyer-composer")
     (synopsis "Rearrange PDF pages to print as flyers on one sheet")
     (description "@command{flyer-composer} can be used to prepare one- or
@@ -302,7 +303,7 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 (define-public poppler-qt5
   (package/inherit poppler
    (name "poppler-qt5")
-   (inputs `(("qtbase" ,qtbase)
+   (inputs `(("qtbase" ,qtbase-5)
              ,@(package-inputs poppler)))
    (synopsis "Qt5 frontend for the Poppler PDF rendering library")))
 
@@ -342,7 +343,7 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
      `(("python-sip" ,python-sip-4)
        ("python-pyqt" ,python-pyqt)
        ("poppler-qt5" ,poppler-qt5)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://pypi.org/project/python-poppler-qt5/")
     (synopsis "Python bindings for Poppler-Qt5")
     (description
@@ -400,7 +401,7 @@ reading and editing of existing PDF files.")
    (inputs `(("cups" ,cups)
              ("freetype" ,freetype)
              ("libpng" ,libpng)
-             ("qtbase" ,qtbase)
+             ("qtbase" ,qtbase-5)
              ("zlib" ,zlib)))
    (arguments
     `(#:tests? #f))                   ; there is no check target
@@ -605,7 +606,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.4.7")
+    (version "0.4.8")
     (source (origin
               (method url-fetch)
               (uri
@@ -613,7 +614,7 @@ by using the poppler rendering engine.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "1rx1fk9s556fk59lmqgvhwrmv71ashh89bx9adjq46wq5gzdn4p0"))))
+                "1nr0ym1mi2afk4ycdf1ppmkcv7i7hyzwn4p3r4m0j2qm3nvaiami"))))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gettext" ,gettext-minimal)
                      ("glib:bin" ,glib "bin")
@@ -839,7 +840,7 @@ program capable of converting PDF into other formats.")
        (sha256
         (base32 "0v1rl126hvblajnph2hkansgi0s8vjdc5yxrm4y3faa0lxzjwr6c"))
        (patches (search-patches "qpdfview-qt515-compat.patch"))))
-    (build-system gnu-build-system)
+    (build-system qt-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
@@ -847,25 +848,17 @@ program capable of converting PDF into other formats.")
        ("djvulibre" ,djvulibre)
        ("libspectre" ,libspectre)
        ("poppler-qt5" ,poppler-qt5)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (arguments
-     `(#:imported-modules ((guix build qt-build-system)
-                           (guix build cmake-build-system)
-                           ,@%gnu-build-system-modules)
-       #:modules ((guix build utils)
-                  (guix build gnu-build-system)
-                  ((guix build qt-build-system) #:prefix qt:))
+     `(#:tests? #f ; no tests
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
            (lambda _
              (substitute* "qpdfview.pri"
                (("/usr") (assoc-ref %outputs "out")))
-             (invoke "qmake" "qpdfview.pro")))
-         ;; Otherwise, the user interface will not display any icons.
-         (add-after 'install 'qt-wrap
-           (assoc-ref qt:%standard-phases 'qt-wrap)))))
+             (invoke "qmake" "qpdfview.pro"))))))
     (home-page "https://launchpad.net/qpdfview")
     (synopsis "Tabbed document viewer")
     (description "@command{qpdfview} is a document viewer for PDF, PS and DJVU
@@ -905,7 +898,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.0.20")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -914,7 +907,7 @@ using a stylus.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c7n03xm3m4lwcwxgplkn25i8c6s3i7rijbkcx86br1j4jadcs3k"))))
+        (base32 "0ldf58l5sqy52x5dqfpdjdh7ldjilj9mw42jzsl5paxg0md2k0hl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DENABLE_CPPUNIT=ON") ;enable tests
@@ -928,31 +921,31 @@ using a stylus.")
          (add-after 'unpack 'fix-permissions-on-po-files
            (lambda _
              ;; Make sure 'msgmerge' can modify the PO files.
-             (for-each (lambda (po) (chmod po #o666))
-                       (find-files "." "\\.po$"))
-             #t))
+             (for-each make-file-writable
+                       (find-files "." "\\.po$"))))
          ;; Fix path to addr2line utility, which the crash reporter uses.
          (add-after 'unpack 'fix-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/util/Stacktrace.cpp"
                ;; Match only the commandline.
                (("\"addr2line ")
-                (string-append "\"" (which "addr2line") " ")))
-             #t))
+                (string-append "\"" (which "addr2line") " ")))))
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
      `(("cppunit" ,cppunit)
+       ("gcc" ,gcc-8)
        ("gettext" ,gettext-minimal)
+       ("help2man" ,help2man)
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("glib" ,glib)
        ("gtk+" ,gtk+)
+       ("librsvg" ,librsvg)
        ("libsndfile" ,libsndfile)
        ("libxml2" ,libxml2)
        ("libzip" ,libzip)
-       ("lua" ,lua)                    ;FIXME: It cannot find the Lua library.
+       ("lua" ,lua)
        ("poppler" ,poppler)
        ("portaudio" ,portaudio)
        ("texlive-bin" ,texlive-bin)))
@@ -1101,13 +1094,13 @@ the PDF pages.")
 (define-public img2pdf
   (package
     (name "img2pdf")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "img2pdf" version))
        (sha256
-        (base32 "1jdhmpzgj8815bhargb3xp3ydlqxwkz0mcadrflx2ga0p056kvpa"))))
+        (base32 "0ljmxp7myxccfdy4kxpn4jzq35qs4pbmmmnih9vis8abm2f2589q"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-pikepdf" ,python-pikepdf)
@@ -1135,7 +1128,7 @@ information for every pixel as the input.")
                 "0f242mix20rgsqz1llibhsz4r2pbvx6k32rmky0zjvnbaqaw1dwm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-FHS-file-names
            (lambda _
@@ -1144,7 +1137,7 @@ information for every pixel as the input.")
                (("/sbin/ldconfig -p") "echo lib")) #t))
          (delete 'configure))
         #:tests? #f
-        #:make-flags (list "CC=gcc"
+        #:make-flags (list ,(string-append "CC=" (cc-for-target))
                            (string-append "prefix=" (assoc-ref %outputs "out")))))
     (inputs `(("libjpeg" ,libjpeg-turbo)
               ("curl" ,curl)

@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,21 +30,128 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
   #:use-module (gnu packages cmake)
-  #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages fltk)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages spice)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
+
+(define-public remmina
+  (package
+    (name "remmina")
+    (version "1.4.20")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.com/Remmina/Remmina")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0apm4lqcmqskdp2fjxl8dbg3686cm4w0b5806fqj7w43hdmd8w4v"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                      ; No target
+       #:configure-flags
+       (list
+        ;; Disable online version checking.
+        "-DWITH_NEWS=OFF")
+       #:imported-modules
+       ((guix build glib-or-gtk-build-system)
+        ,@%cmake-build-system-modules)
+       #:modules
+       (((guix build glib-or-gtk-build-system)
+         #:prefix glib-or-gtk:)
+        (guix build cmake-build-system)
+        (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'glib-or-gtk-compile-schemas
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+         (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
+           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+         (add-after 'glib-or-gtk-wrap 'wrap-typelibs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (for-each
+                (lambda (name)
+                  (let ((file (string-append out "/bin/" name))
+                        (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                    (wrap-program file
+                      `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
+                '("remmina" "remmina-file-wrapper")))
+             #t)))))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("gobject-introspection" ,gobject-introspection)
+       ("gtk+:bin" ,gtk+ "bin")
+       ("intl" ,intltool)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("app-indicator" ,libappindicator)
+       ("atk" ,atk)
+       ("avahi" ,avahi)
+       ("cairo" ,cairo)
+       ("cups" ,cups)
+       ("ffmpeg" ,ffmpeg)
+       ("freerdp" ,freerdp)             ; for rdp plugin
+       ("gcrypt" ,libgcrypt)
+       ("gdk-pixbuf" ,gdk-pixbuf+svg)
+       ("glib" ,glib)
+       ("gnome-keyring" ,gnome-keyring)
+       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gtk+" ,gtk+)
+       ("harfbuzz" ,harfbuzz)
+       ("json-glib" ,json-glib)
+       ("libsecret" ,libsecret)         ; for secret plugin
+       ("libsoup" ,libsoup)
+       ("libssh" ,libssh)               ; for ssh plugin
+       ("libvnc" ,libvnc)               ; for vnc plugin
+       ("openssl" ,openssl)
+       ("pango" ,pango)
+       ("pcre2" ,pcre2)                 ; for exec plugin
+       ("shared-mime-info" ,shared-mime-info)
+       ("sodium" ,libsodium)
+       ("spice-client-gtk" ,spice-gtk)  ; for spice plugin
+       ("telepathy" ,telepathy-glib)
+       ("vte" ,vte)                     ; for st plugin
+       ("wayland" ,wayland)
+       ("webkitgtk" ,webkitgtk)         ; for www plugin
+       ("x11" ,libx11)
+       ("xext" ,libxext)                ; for xdmcp plugin
+       ("xdg-utils" ,xdg-utils)
+       ("xkbfile" ,libxkbfile)))        ; for nx plugin
+    (propagated-inputs
+     `(("dconf" ,dconf)))
+    (home-page "https://remmina.org/")
+    (synopsis "Remote Desktop Client")
+    (description "Remmina is a client to use other desktops remotely.
+RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
+    (license license:gpl2+)))
 
 (define-public tigervnc-client
   (package
@@ -115,7 +223,6 @@ application which is needed to connect to VNC servers.")
        ("gettext-minimal" ,gettext-minimal)
        ("font-util" ,font-util)
        ("cmake" ,cmake)
-       ("gcc-toolchain" ,gcc-toolchain)
        ("perl" ,perl)
        ,@(package-native-inputs tigervnc-client)
        ,@(package-inputs tigervnc-client)

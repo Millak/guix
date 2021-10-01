@@ -51,6 +51,7 @@ then
     # This must not succeed.
     exit 1
 else
+    cat "$errorfile"
     grep "$tmpfile:2:3:.*missing.* initializers" "$errorfile"
 fi
 
@@ -66,7 +67,12 @@ then
     # This must not succeed.
     exit 1
 else
-    grep "$tmpfile:4:1: missing closing paren" "$errorfile"
+    cat "$errorfile"
+
+    # Guile 3.0.6 gets line/column numbers for 'read-error' wrong
+    # (zero-indexed): <https://bugs.gnu.org/48089>.
+    grep "$tmpfile:4:1: missing closing paren" "$errorfile" || \
+    grep "$tmpfile:3:0: missing closing paren" "$errorfile"
 fi
 
 
@@ -109,7 +115,7 @@ cat > "$tmpfile" <<EOF
   (timezone "Europe/Paris")                           ; 6
   (locale "en_US.UTF-8")                              ; 7
 
-  (bootloader (GRUB-config (target "/dev/sdX")))      ; 9
+  (bootloader (GRUB-config (targets (list "/dev/sdX"))))        ; 9
   (file-systems (cons (file-system
                         (device (file-system-label "root"))
                         (mount-point "/")
@@ -162,7 +168,7 @@ OS_BASE='
 
   (bootloader (bootloader-configuration
                (bootloader grub-bootloader)
-               (target "/dev/sdX")))
+               (targets (list "/dev/sdX"))))
   (file-systems (cons (file-system
                         (device (file-system-label "root"))
                         (mount-point "/")
@@ -235,7 +241,7 @@ make_user_config ()
 
   (bootloader (bootloader-configuration
                 (bootloader grub-bootloader)
-                (target "/dev/sdX")))
+                (targets (list "/dev/sdX"))))
   (file-systems (cons (file-system
                         (device (file-system-label "root"))
                         (mount-point "/")

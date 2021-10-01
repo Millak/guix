@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,8 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:autoload   (guix build-system gnu) (standard-packages)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
@@ -32,9 +35,10 @@
             hg-reference?
             hg-reference-url
             hg-reference-changeset
-            hg-reference-recursive?
             hg-predicate
-            hg-fetch))
+            hg-fetch
+            hg-version
+            hg-file-name))
 
 ;;; Commentary:
 ;;;
@@ -62,26 +66,61 @@
   "Return a fixed-output derivation that fetches REF, a <hg-reference>
 object.  The output is expected to have recursive hash HASH of type
 HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
+  (define inputs
+    ;; The 'swh-download' procedure requires tar and gzip.
+    `(("gzip" ,(module-ref (resolve-interface '(gnu packages compression))
+                           'gzip))
+      ("tar" ,(module-ref (resolve-interface '(gnu packages base))
+                          'tar))))
+
   (define guile-zlib
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-zlib))
+
+  (define guile-json
+    (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
+
+  (define gnutls
+    (module-ref (resolve-interface '(gnu packages tls)) 'gnutls))
 
   (define modules
     (delete '(guix config)
             (source-module-closure '((guix build hg)
-                                     (guix build download-nar)))))
+                                     (guix build download-nar)
+                                     (guix swh)))))
 
   (define build
     (with-imported-modules modules
-      (with-extensions (list guile-zlib)
+      (with-extensions (list guile-json gnutls ;for (guix swh)
+                             guile-zlib)
         #~(begin
             (use-modules (guix build hg)
-                         (guix build download-nar))
+                         (guix build utils) ;for `set-path-environment-variable'
+                         (guix build download-nar)
+                         (guix swh)
+                         (ice-9 match))
+
+            (set-path-environment-variable "PATH" '("bin")
+                                           (match '#+inputs
+                                             (((names dirs outputs ...) ...)
+                                              dirs)))
+
+            (setvbuf (current-output-port) 'line)
+            (setvbuf (current-error-port) 'line)
 
             (or (hg-fetch '#$(hg-reference-url ref)
                           '#$(hg-reference-changeset ref)
                           #$output
                           #:hg-command (string-append #+hg "/bin/hg"))
-                (download-nar #$output))))))
+                (download-nar #$output)
+                ;; As a last resort, attempt to download from Software Heritage.
+                ;; Disable X.509 certificate verification to avoid depending
+                ;; on nss-certs--we're authenticating the checkout anyway.
+                (parameterize ((%verify-swh-certificate? #f))
+                  (format (current-error-port)
+                          "Trying to download from Software Heritage...~%")
+                  (swh-download #$(hg-reference-url ref)
+                                #$(hg-reference-changeset ref)
+                                #$output)))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "hg-checkout") build
@@ -94,6 +133,23 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                       #:hash hash
                       #:recursive? #t
                       #:guile-for-build guile)))
+
+(define (hg-version version revision changeset)
+  "Return the version string for packages using hg-download."
+  ;; hg-version is almost exclusively executed while modules are being loaded.
+  ;; This makes any errors hide their backtrace. Avoid the mysterious error
+  ;; "Value out of range 0 to N: 7" when the commit ID is too short, which
+  ;; can happen, for example, when the user swapped the revision and commit
+  ;; arguments by mistake.
+  (when (< (string-length changeset) 7)
+    (raise
+     (condition
+      (&message (message "hg-version: changeset ID unexpectedly short")))))
+  (string-append version "-" revision "." (string-take changeset 7)))
+
+(define (hg-file-name name version)
+  "Return the file-name for packages using hg-download."
+  (string-append name "-" version "-checkout"))
 
 (define (hg-file-list directory)
   "Evaluates to a list of files contained in the repository at path

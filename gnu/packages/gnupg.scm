@@ -6,7 +6,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016 Mike Gerwitz <mtg@gnu.org>
@@ -18,6 +18,7 @@
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Fredrik Salomonsson <plattfot@posteo.net>
+;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,12 +71,16 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages popt)
+  #:use-module (gnu packages xdisorg)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system meson)
   #:use-module (srfi srfi-1))
 
 (define-public libgpg-error
@@ -406,7 +411,7 @@ and every application benefits from this.")
        ,@(package-native-inputs gpgme)))
     (inputs
      `(("gpgme" ,gpgme)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ,@(package-inputs gpgme)))
     (synopsis "Qt API bindings for gpgme")
     (description "QGpgme provides a very high level Qt API around GpgMEpp.
@@ -859,7 +864,7 @@ software.")))
     (arguments
      `(#:configure-flags '("--enable-fallback-curses")))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ,@(package-inputs pinentry-tty)))
   (description
    "Pinentry provides a console and a Qt GUI that allows users to enter a
@@ -942,6 +947,33 @@ with @code{rofi-pass} a good front end for @code{password-store}.")
     (home-page "https://github.com/plattfot/pinentry-rofi/")
     (license license:gpl3+)))
 
+(define-public pinentry-bemenu
+  (package
+    (name "pinentry-bemenu")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/t-8ch/pinentry-bemenu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1faxaydhc9lr97b2r3sylcy320bn54g4a5p727y3227mz3gg1mn1"))))
+    (build-system meson-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("bemenu" ,bemenu)
+       ("libassuan" ,libassuan)
+       ("libgpg-error" ,libgpg-error)
+       ("popt" ,popt)))
+    (home-page "https://github.com/t-8ch/pinentry-bemenu")
+    (synopsis "Pinentry implementation based on @code{bemenu}")
+    (description
+     "This package provides a Pinentry implementation based on Bemenu.")
+    (license license:gpl3+)))
+
 (define-public pinentry
   (package (inherit pinentry-gtk2)
     (name "pinentry")))
@@ -993,7 +1025,7 @@ them to transform your existing public key into a secret key.")
     (arguments
      `(#:tests? #f ; no make check
        #:configure-flags (list "--prefix=/")
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "DESTDIR=" (assoc-ref %outputs "out")))))
     (inputs
      `(("zlib" ,zlib)))

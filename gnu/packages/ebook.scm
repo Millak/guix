@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -55,6 +57,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages music)
+  #:use-module (gnu packages pantheon)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -115,7 +118,7 @@ with Microsoft Compiled HTML (CHM) files")
 (define-public calibre
   (package
     (name "calibre")
-    (version "5.14.0")
+    (version "5.21.0")
     (source
       (origin
         (method url-fetch)
@@ -124,7 +127,7 @@ with Microsoft Compiled HTML (CHM) files")
                             version ".tar.xz"))
         (sha256
          (base32
-          "0w8j9r9qa56r8gm9b10dwh8zrzqlv79s2br82jqg02lrnrbwwv0q"))
+          "0mq2w8blq6ykaml812axakwkqcw85qcpfwijdikn7kvbrhnnp2s5"))
         (modules '((guix build utils)))
         (snippet
           '(begin
@@ -146,7 +149,7 @@ with Microsoft Compiled HTML (CHM) files")
     (build-system python-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("qtbase" ,qtbase) ; for qmake
+       ("qtbase" ,qtbase-5) ; for qmake
        ("python-flake8" ,python-flake8)
        ("python-pyqt-builder" ,python-pyqt-builder)
        ("xdg-utils" ,xdg-utils)))
@@ -474,7 +477,7 @@ following formats:
 (define-public cozy
   (package
     (name "cozy")
-    (version "0.7.8")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -483,7 +486,7 @@ following formats:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z2wj9g32aa5g9pw81q49iv1smb6yvlv9zs0vrzbx6mw8cj3c5d2"))))
+        (base32 "0hifzzhhf0ww6iar9gswjfndy3i54s6jc41zaazlx4scc7r6fhs0"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -492,14 +495,12 @@ following formats:
          (add-after 'unpack 'patch-desktop-file
            (lambda _
              (substitute* "data/com.github.geigi.cozy.desktop"
-               (("Exec=com.github.geigi.cozy") "Exec=cozy"))
-             #t))
+               (("Exec=com.github.geigi.cozy") "Exec=cozy"))))
          (add-after 'install 'patch-executable-name
            (lambda* (#:key outputs #:allow-other-keys)
              (with-directory-excursion
                  (string-append (assoc-ref outputs "out") "/bin")
-               (rename-file "com.github.geigi.cozy" "cozy"))
-             #t))
+               (rename-file "com.github.geigi.cozy" "cozy"))))
          (add-after 'wrap 'wrap-libs
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out               (assoc-ref outputs "out"))
@@ -518,8 +519,7 @@ following formats:
                  `("LD_LIBRARY_PATH" ":" prefix (,libmagic-path))
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                 `("PYTHONPATH" ":" prefix (,python-path ,pylib))))
-             #t)))))
+                 `("PYTHONPATH" ":" prefix (,python-path ,pylib)))))))))
     (native-inputs
      `(("desktop-file-utils" ,desktop-file-utils)
        ("gettext" ,gettext-minimal)
@@ -530,12 +530,15 @@ following formats:
        ("python" ,python-wrapper)))
     (inputs
      `(("file" ,file)
+       ("granite" ,granite)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gst-libav" ,gst-libav)
        ("gst-plugins-bad" ,gst-plugins-bad)
        ("gst-plugins-good" ,gst-plugins-good)
        ("gst-plugins-ugly" ,gst-plugins-ugly)
        ("gtk+" ,gtk+)
+       ("libdazzle" ,libdazzle)
+       ("libgee" ,libgee)
        ("libhandy" ,libhandy)
        ("python-distro" ,python-distro)
        ("python-gst" ,python-gst)
@@ -593,3 +596,47 @@ Some of the current features:
     (description "xCHM is a graphical CHM file viewer.  It is a frontend to
 the CHM library CHMLIB.")
     (license license:gpl2+)))
+
+(define-public libmobi
+  (package
+    (name "libmobi")
+    (version "0.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bfabiszewski/libmobi/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yps72cm609xn2k7alflkdhp9kgr1w7zzyxjygz0n1kqrdcplihh"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)))
+    (inputs
+     `(("zlib" ,zlib)
+       ("libxml2" ,libxml2)))
+    (home-page "https://github.com/bfabiszewski/libmobi/")
+    (synopsis "C library for handling MOBI formats")
+    (description "Libmobi is a C library for handling MOBI ebook
+format documents, with the following features:
+
+@itemize
+@item reading and parsing:
+@itemize
+@item some older text Palmdoc formats (pdb),
+@item Mobipocket files (prc, mobi),
+@item newer MOBI files including KF8 format (azw, azw3),
+@item Replica Print files (azw4)
+@end itemize
+@item recreating source files using indices
+@item reconstructing references (links and embedded) in html files
+@item reconstructing source structure that can be fed back to kindlegen
+@item reconstructing dictionary markup (orth, infl tags)
+@item writing back loaded documents
+@item metadata editing
+@item handling encrypted documents
+@end itemize\n")
+    (license license:lgpl3+)))

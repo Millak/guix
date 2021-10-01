@@ -308,42 +308,6 @@
          (null? (references %store t1))
          (null? (referrers %store t2)))))
 
-(test-assert "references/substitutes missing reference info"
-  (with-store s
-    (set-build-options s #:use-substitutes? #f)
-    (guard (c ((store-protocol-error? c) #t))
-      (let* ((b  (add-to-store s "bash" #t "sha256"
-                               (search-bootstrap-binary "bash"
-                                                        (%current-system))))
-             (d  (derivation s "the-thing" b '("--help")
-                             #:inputs `((,b)))))
-        (references/substitutes s (list (derivation->output-path d) b))
-        #f))))
-
-(test-assert "references/substitutes with substitute info"
-  (with-store s
-    (set-build-options s #:use-substitutes? #t)
-    (let* ((t1 (add-text-to-store s "random1" (random-text)))
-           (t2 (add-text-to-store s "random2" (random-text)
-                                  (list t1)))
-           (t3 (add-text-to-store s "build" "echo -n $t2 > $out"))
-           (b  (add-to-store s "bash" #t "sha256"
-                             (search-bootstrap-binary "bash"
-                                                      (%current-system))))
-           (d  (derivation s "the-thing" b `("-e" ,t3)
-                           #:inputs `((,b) (,t3) (,t2))
-                           #:env-vars `(("t2" . ,t2))))
-           (o  (derivation->output-path d)))
-      (with-derivation-narinfo d
-        (sha256 => (gcrypt:sha256 (string->utf8 t2)))
-        (references => (list t2))
-
-        (equal? (references/substitutes s (list o t3 t2 t1))
-                `((,t2)                           ;refs of O
-                  ()                              ;refs of T3
-                  (,t1)                           ;refs of T2
-                  ()))))))                        ;refs of T1
-
 (test-equal "substitutable-path-info when substitutes are turned off"
   '()
   (with-store s
@@ -489,6 +453,42 @@
                                              #t "sha256"
                                              (derivation->output-path drv)))
                              (list d1 d2)))))
+
+(test-equal "map/accumulate-builds cutoff" ;https://issues.guix.gnu.org/50264
+  (iota 20)
+
+  ;; Make sure that, when the cutoff is reached, 'map/accumulate-builds' still
+  ;; returns the right result and calls the build handler by batches.
+  (let* ((b  (add-text-to-store %store "build" "echo $foo > $out" '()))
+         (s  (add-to-store %store "bash" #t "sha256"
+                           (search-bootstrap-binary "bash"
+                                                    (%current-system))))
+         (d  (map (lambda (i)
+                    (derivation %store (string-append "the-thing-"
+                                                      (number->string i))
+                                s `("-e" ,b)
+                                #:env-vars `(("foo" . ,(random-text)))
+                                #:sources (list b s)
+                                #:properties `((n . ,i))))
+                  (iota 20)))
+         (calls '()))
+    (define lst
+      (with-build-handler (lambda (continue store things mode)
+                            (set! calls (cons things calls))
+                            (continue #f))
+        (map/accumulate-builds %store
+                               (lambda (d)
+                                 (build-derivations %store (list d))
+                                 (assq-ref (derivation-properties d) 'n))
+                               d
+                               #:cutoff 7)))
+
+    (match (reverse calls)
+      (((batch1 ...) (batch2 ...) (batch3 ...))
+       (and (equal? (map derivation-file-name (take d 8)) batch1)
+            (equal? (map derivation-file-name (take (drop d 8) 8)) batch2)
+            (equal? (map derivation-file-name (drop d 16)) batch3)
+            lst)))))
 
 (test-assert "mapm/accumulate-builds"
   (let* ((d1 (run-with-store %store

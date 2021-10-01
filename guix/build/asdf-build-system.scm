@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,12 +52,13 @@
   (string-append %source-install-prefix "/systems"))
 
 (define (main-system-name output)
-  (let ((package-name (package-name->name+version
-                       (strip-store-file-name output)))
-        (lisp-prefix (string-append (%lisp-type) "-")))
-    (if (string-prefix? lisp-prefix package-name)
-        (string-drop package-name (string-length lisp-prefix))
-        package-name)))
+  ;; FIXME: Find a more reliable way to get the main system name.
+  (let* ((full-name (strip-store-file-name output))
+         (lisp-prefix (string-append (%lisp-type) "-"))
+         (package-name (if (string-prefix? lisp-prefix full-name)
+                           (string-drop full-name (string-length lisp-prefix))
+                           full-name)))
+    (package-name->name+version package-name)))
 
 (define (lisp-source-directory output name)
   (string-append output (%lisp-source-install-prefix) "/" name))
@@ -71,8 +72,7 @@
 
 (define (output-translation source-path
                             object-output)
-  "Return a translation for the system's source path
-to it's binary output."
+  "Return a translation for the system's source path to its binary output."
   `((,source-path
      :**/ :*.*.*)
     (,(library-directory object-output)

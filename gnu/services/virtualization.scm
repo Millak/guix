@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
-;;; Copyright © 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -131,6 +131,10 @@
   (libvirt
    (package libvirt)
    "Libvirt package.")
+  (qemu
+   (package qemu)
+   "Qemu package.")
+
   (listen-tls?
    (boolean #t)
    "Flag listening for secure TLS connections on the public TCP/IP port.
@@ -168,7 +172,7 @@ stopping the Avahi daemon.")
    "Default mDNS advertisement name. This must be unique on the
 immediate broadcast network.")
   (unix-sock-group
-   (string "root")
+   (string "libvirt")
    "UNIX domain socket group ownership. This can be used to
 allow a 'trusted' set of users access to management capabilities
 without becoming root.")
@@ -485,7 +489,7 @@ potential infinite waits blocking libvirt."))
                                      (lambda (config)
                                        (list
                                         (libvirt-configuration-libvirt config)
-                                        qemu)))
+                                        (libvirt-configuration-qemu config))))
                   (service-extension activation-service-type
                                      %libvirt-activation)
                   (service-extension shepherd-root-service-type
@@ -561,7 +565,17 @@ potential infinite waits blocking libvirt."))
   (family   qemu-platform-family)                 ;string
   (magic    qemu-platform-magic)                  ;bytevector
   (mask     qemu-platform-mask)                   ;bytevector
-  (flags    qemu-platform-flags (default "F")))   ;string
+
+  ;; Default flags:
+  ;;
+  ;;   "F": fix binary.  Open the qemu-user binary (statically linked) as soon
+  ;;   as binfmt_misc interpretation is handled.
+  ;;
+  ;;   "P": preserve argv[0].  QEMU 6.0 detects whether it's started with this
+  ;;   flag and automatically does the right thing.  Without this flag,
+  ;;   argv[0] is replaced by the absolute file name of the executable, an
+  ;;   observable difference that can cause discrepancies.
+  (flags    qemu-platform-flags (default "FP")))  ;string
 
 (define-syntax bv
   (lambda (s)
@@ -582,13 +596,6 @@ potential infinite waits blocking libvirt."))
    (name "i386")
    (family "i386")
    (magic (bv "\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x03\x00"))
-   (mask (bv "\xff\xff\xff\xff\xff\xfe\xfe\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff"))))
-
-(define %i486
-  (qemu-platform
-   (name "i486")
-   (family "i386")
-   (magic (bv "\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x06\x00"))
    (mask (bv "\xff\xff\xff\xff\xff\xfe\xfe\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff"))))
 
 (define %alpha
@@ -747,7 +754,7 @@ potential infinite waits blocking libvirt."))
    (mask (bv "\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff"))))
 
 (define %qemu-platforms
-  (list %i386 %i486 %alpha %arm %sparc32plus %ppc %ppc64 %ppc64le %m68k
+  (list %i386 %alpha %arm %sparc32plus %ppc %ppc64 %ppc64le %m68k
         %mips %mipsel %mipsn32 %mipsn32el %mips64 %mips64el
         %riscv32 %riscv64 %sh4 %sh4eb %s390x %aarch64 %hppa))
 
@@ -891,7 +898,7 @@ that will be listening to receive secret keys on port 1004, TCP."
     (timezone "Europe/Amsterdam")
     (bootloader (bootloader-configuration
                  (bootloader grub-minimal-bootloader)
-                 (target "/dev/vda")
+                 (targets '("/dev/vda"))
                  (timeout 0)))
     (packages (cons* gdb-minimal
                      (operating-system-packages

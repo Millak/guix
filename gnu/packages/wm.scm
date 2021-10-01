@@ -45,6 +45,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools) ;for meson-0.55
   #:use-module (gnu packages calendar)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
@@ -163,14 +165,14 @@ the leaves of a full binary tree.")
 (define-public herbstluftwm
   (package
     (name "herbstluftwm")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://herbstluftwm.org/tarballs/herbstluftwm-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0avfhr68f6fjnafjdcyxcx7dkg38f2nadmhpj971qyqzfq2f6i38"))
+        (base32 "01f1bv9axjhw1l2gwhdwahljssj0h8q7a1bqwbpnwvln0ayv39qb"))
        (file-name (string-append "herbstluftwm-" version ".tar.gz"))))
     (build-system cmake-build-system)
     (inputs
@@ -334,7 +336,7 @@ commands would.")
      `(("which" ,which)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
-       ("asciidoc-py3" ,asciidoc-py3)
+       ("asciidoc" ,asciidoc)
        ;; For building the documentation.
        ("libxml2" ,libxml2)
        ("docbook-xsl" ,docbook-xsl)))
@@ -383,14 +385,14 @@ from many programming languages.")
 (define-public i3lock
   (package
     (name "i3lock")
-    (version "2.11.1")
+    (version "2.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/i3lock/i3lock-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "015dn534m7cxjvqdncpvaq9p8b2r4w5hp1yanbdy2abmhbcc7a7j"))))
+                "02szjsaz7rqrdkd0r2nwgwa85c4hwfrcskxw7ryk695kmjcfhzv3"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -409,6 +411,43 @@ from many programming languages.")
      "i3lock is a simple X11 screen locker developed alongside the i3 project.
 Despite the name it should work with any X11 window manager.")
     (license license:bsd-3)))
+
+(define-public i3lock-blur
+  (package
+    (name "i3lock-blur")
+    (version "2.10")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/karulont/i3lock-blur")
+                (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bd5nrlga5g1sz1f64gnc3dqy8yfrr4q1ss59krymbpxa1hhf55c"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("automake" ,automake)
+       ("autoconf" ,autoconf)))
+    (inputs
+     `(("cairo" ,cairo)
+       ("mesa" ,mesa)
+       ("libev" ,libev)
+       ("linux-pam" ,linux-pam)
+       ("libxcb" ,libxcb)
+       ("libxkbcommon" ,libxkbcommon)
+       ("xcb-util" ,xcb-util)
+       ("xcb-util-image" ,xcb-util-image)
+       ("xcb-util-xrm" ,xcb-util-xrm)))
+    (home-page "https://github.com/karulont/i3lock-blur")
+    (synopsis "Lightweight screen locker with transparent blurring background")
+    (description
+     "Simple X11 screen locker with transparent blurring background developed
+alongside the i3 project.  Despite the name it should work with any X11 window
+manager.")
+    (license license:expat)))
 
 (define-public i3blocks
   (package
@@ -644,6 +683,7 @@ Features include:
     (inputs
      `(("imagemagick" ,imagemagick)
        ("wmctrl" ,wmctrl)
+       ("i3lock" ,i3lock)
        ("gawk" ,gawk)))
     (home-page "https://github.com/meskarune/i3lock-fancy")
     (synopsis "Screen locker with screenshot function")
@@ -906,6 +946,41 @@ drags, snap-to-border support, and virtual desktops.")
 and easy to handle yet full of features to make an easy and fast desktop
 experience.")
     (home-page "http://fluxbox.org/")
+    (license license:expat)))
+
+(define-public fnott
+  (package
+    (name "fnott")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/dnkl/fnott")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xaz13iry3fdjhqk9xzg29kbv7hqj8dzzqxr5mhrj8f2m013jdc3"))))
+    (build-system meson-build-system)
+    (arguments
+     `( #:meson ,meson-0.55
+        #:build-type "release"))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("wayland-protocols" ,wayland-protocols)
+       ("tllist" ,tllist)
+       ("gcc" ,gcc-10)     ;TODO: Remove when the default compiler is > GCC 7.
+       ("scdoc" ,scdoc)))
+    (inputs
+     `(("wlroots" ,wlroots)
+       ("wayland" ,wayland)
+       ("fcft" ,fcft)
+       ("dbus" ,dbus)
+       ("libpng" ,libpng)))
+    (home-page "https://codeberg.org/dnkl/fnott")
+    (synopsis "Keyboard driven and lightweight Wayland notification daemon")
+    (description "Fnott is a keyboard driven and lightweight notification daemon
+for wlroots-based Wayland compositors.")
     (license license:expat)))
 
 (define-public awesome
@@ -1509,7 +1584,7 @@ modules for building a Wayland compositor.")
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("scdoc" ,scdoc)
                      ("wayland-protocols" ,wayland-protocols)))
-    (home-page "https://github.com/swaywm/sway")
+    (home-page "https://github.com/swaywm/swayidle")
     (synopsis "Idle management daemon for Wayland compositors")
     (description "Swayidle is a idle management daemon for Wayland compositors.")
     (license license:expat))) ; MIT license
@@ -1542,6 +1617,38 @@ modules for building a Wayland compositor.")
     (description "Swaylock is a screen locking utility for Wayland compositors.")
     (license license:expat))) ; MIT license
 
+(define-public swaylock-effects
+  ;; Latest release is from November 2020, but doesn't support disabling SSE.
+  (let ((commit "5cb9579faaf5662b111f5722311b701eff1c1d00")
+        (revision "1"))
+    (package
+      (inherit swaylock)
+      (name "swaylock-effects")
+      (version (git-version "1.6-3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mortie/swaylock-effects")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "036dkhfqgk7g9vbr5pxgrs66h5fz0rwdsc67i1w51aa9v01r35ca"))))
+      (arguments
+       `(#:configure-flags '("-Dsse=false")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-meson
+             (lambda _
+               (substitute* "meson.build"
+                 (("'-mtune=native',") "")))))))
+      (synopsis "Screen locking utility for Wayland compositors with effects")
+      (description "@code{Swaylock-effects} is a fork of swaylock with additional
+features, such as the ability to take a screenshot as the background image,
+display a clock or apply image manipulation techniques to the background image.")
+      (home-page "https://github.com/mortie/swaylock-effects"))))
+
 (define-public swaybg
   (package
     (name "swaybg")
@@ -1570,7 +1677,7 @@ modules for building a Wayland compositor.")
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.5")
+    (version "0.9.7")
     (source
      (origin
        (method git-fetch)
@@ -1579,7 +1686,7 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kzrgqaclfk6gcwhknxn28xl74gm5swipgn8kk8avacb4nsw1l9q"))))
+        (base32 "17cn4d3dx92v40jd9vl41smp8hh3gf5chd1j2f7l1lrpfpnllg5x"))))
     (build-system meson-build-system)
     (inputs `(("date" ,date)
               ("fmt" ,fmt)
@@ -2222,7 +2329,7 @@ button is pressed on the root window.")
 (define-public xmenu
   (package
     (name "xmenu")
-    (version "4.4.1")
+    (version "4.5.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2231,7 +2338,7 @@ button is pressed on the root window.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s70zvsaqnsjqs298vw3py0vcvia68xlks1wcz37pb88bwligz1x"))))
+                "0qgxkrv9jnnnf3px7zh0paf8xsr4bcpf0f2nq9zy012m214223hs"))))
     (build-system gnu-build-system)
     (inputs
      `(("libx11" ,libx11)

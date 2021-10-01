@@ -16,7 +16,8 @@ Copyright @copyright{} 2020 Matthew Brooks@*
 Copyright @copyright{} 2020 Marcin Karpezo@*
 Copyright @copyright{} 2020 Brice Waegeneire@*
 Copyright @copyright{} 2020 André Batista@*
-Copyright @copyright{} 2020 Christopher Lemmer Webber
+Copyright @copyright{} 2020 Christine Lemmer-Webber@*
+Copyright @copyright{} 2021 Joshua Branson@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -85,8 +86,8 @@ Packaging
 
 System Configuration
 
-* Customizing the Kernel::      Creating and using a custom Linux kernel
-
+* Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
+* Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
 
 @end detailmenu
 @end menu
@@ -590,7 +591,7 @@ packages.
 Guix makes it possible to streamline the process by adding as many ``package
 declaration directories'' as you want.
 
-Create a directory, say @file{~./guix-packages} and add it to the @samp{GUIX_PACKAGE_PATH}
+Create a directory, say @file{~/guix-packages} and add it to the @samp{GUIX_PACKAGE_PATH}
 environment variable:
 
 @example
@@ -1353,6 +1354,7 @@ chapter is to demonstrate some advanced configuration concepts.
 reference.
 
 @menu
+* Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
 * Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
 * Guix System Image API::        Customizing images to target specific platforms.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
@@ -1362,6 +1364,51 @@ reference.
 * Getting substitutes from Tor:: Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua:: Configuring NGINX web-server to load Lua modules.
 @end menu
+
+@node Auto-Login to a Specific TTY
+@section Auto-Login to a Specific TTY
+
+While the Guix manual explains auto-login one user to @emph{all} TTYs (
+@pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), some
+might prefer a situation, in which one user is logged into one TTY with
+the other TTYs either configured to login different users or no one at
+all.  Note that one can auto-login one user to any TTY, but it is
+usually advisable to avoid @code{tty1}, which, by default, is used to
+log warnings and errors.
+
+Here is how one might set up auto login for one user to one tty:
+
+@lisp
+(define (auto-login-to-tty config tty user)
+  (if (string=? tty (mingetty-configuration-tty config))
+        (mingetty-configuration
+         (inherit config)
+         (auto-login user))
+        config))
+
+(define %my-services
+  (modify-services %base-services
+    ;; @dots{}
+    (mingetty-service-type config =>
+                           (auto-login-to-tty
+                            config "tty3" "alice"))))
+
+(operating-system
+  ;; @dots{}
+  (services %my-services))
+@end lisp
+
+One could also @code{compose} (@pxref{Higher-Order Functions,,, guile,
+The Guile Reference Manual}) @code{auto-login-to-tty} to login multiple
+users to multiple ttys.
+
+Finally, here is a note of caution.  Setting up auto login to a TTY,
+means that anyone can turn on your computer and run commands as your
+regular user.
+However, if you have an encrypted root partition, and thus already need
+to enter a passphrase when the system boots, auto-login might be a
+convenient option.
+
 
 @node Customizing the Kernel
 @section Customizing the Kernel
@@ -1671,7 +1718,7 @@ operating-system dedicated to the @b{Pine A64 LTS} board.
    (locale "en_US.utf8")
    (bootloader (bootloader-configuration
                 (bootloader u-boot-pine64-lts-bootloader)
-                (target "/dev/vda")))
+                (targets '("/dev/vda"))))
    (initrd-modules '())
    (kernel linux-libre-arm64-generic)
    (file-systems (cons (file-system
@@ -2003,10 +2050,12 @@ Copy into it the output of:
 cat ~/.ssh/<username>_rsa.pub
 @end example
 
-Power the Linode down. In the Linode's Disks/Configurations tab, resize
-the Debian disk to be smaller. 30 GB is recommended.
+Power the Linode down.
 
-In the Linode settings, "Add a disk", with the following:
+In the Linode's Storage tab, resize the Debian disk to be smaller.
+30 GB free space is recommended.  Then click "Add a disk", and fill
+out the form with the following:
+
 @itemize @bullet
 @item
 Label: "Guix"
@@ -2018,9 +2067,9 @@ Filesystem: ext4
 Set it to the remaining size
 @end itemize
 
-On the "configuration" field that comes with the default image, press
-"..." and select "Edit", then on that menu add to @file{/dev/sdc} the "Guix"
-label.
+In the Configurations tab, press "Edit" on the default Debian profile.
+Under "Block Device Assignment" click "Add a Device". It should be
+@file{/dev/sdc} and you can select the "Guix" disk. Save Changes.
 
 Now "Add a Configuration", with the following:
 @itemize @bullet
@@ -2046,8 +2095,8 @@ Root device: @file{/dev/sda}
 Turn off all the filesystem/boot helpers
 @end itemize
 
-Now power it back up, picking the Debian configuration.  Once it's
-booted up, ssh in your server via @code{ssh
+Now power it back up, booting with the Debian configuration.  Once it's
+running, ssh to your server via @code{ssh
 root@@@var{<your-server-IP-here>}}. (You can find your server IP address in
 your Linode Summary section.) Now you can run the "install guix from
 @pxref{Binary Installation,,, guix, GNU Guix}" steps:
@@ -2136,19 +2185,20 @@ Replace the following fields in the above configuration:
 @end lisp
 
 The last line in the above example lets you log into the server as root
-and set the initial root password.  After you have done this, you may
+and set the initial root password (see the note at the end of this
+recipe about root login).  After you have done this, you may
 delete that line from your configuration and reconfigure to prevent root
 login.
 
-Save your ssh public key (eg: @file{~/.ssh/id_rsa.pub}) as
-@file{@var{<your-username-here>}_rsa.pub} and your
+Copy your ssh public key (eg: @file{~/.ssh/id_rsa.pub}) as
+@file{@var{<your-username-here>}_rsa.pub} and put
 @file{guix-config.scm} in the same directory.  In a new terminal run
 these commands.
 
 @example
 sftp root@@<remote server ip address>
-put /home/<username>/ssh/id_rsa.pub .
-put /path/to/linode/guix-config.scm .
+put /path/to/files/<username>_rsa.pub .
+put /path/to/files/guix-config.scm .
 @end example
 
 In your first terminal, mount the guix drive:
@@ -2158,9 +2208,9 @@ mkdir /mnt/guix
 mount /dev/sdc /mnt/guix
 @end example
 
-Due to the way we set things up above, we do not install GRUB
-completely.  Instead we install only our grub configuration file.  So we
-need to copy over some of the other GRUB stuff that is already there:
+Due to the way we set up the bootloader section of the guix-config.scm,
+only the grub configuration file will be installed.  So, we need to copy
+over some of the other GRUB stuff already installed on the Debian system:
 
 @example
 mkdir -p /mnt/guix/boot/grub
@@ -2213,7 +2263,7 @@ still need to set your root and user password initially by clicking on
 the ``Launch Console'' option in your linode.  Choose the ``Glish''
 instead of ``Weblish''.  Now you should be able to ssh into the machine.
 
-Horray!  At this point you can shut down the server, delete the
+Hooray!  At this point you can shut down the server, delete the
 Debian disk, and resize the Guix to the rest of the size.
 Congratulations!
 

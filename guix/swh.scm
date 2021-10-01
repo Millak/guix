@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,11 @@
             visit-number
             visit-snapshot
 
+            snapshot?
+            snapshot-id
+            snapshot-branches
+            lookup-snapshot-branch
+
             branch?
             branch-name
             branch-target
@@ -98,16 +104,16 @@
             vault-reply?
             vault-reply-id
             vault-reply-fetch-url
-            vault-reply-object-id
-            vault-reply-object-type
             vault-reply-progress-message
             vault-reply-status
+            vault-reply-swhid
             query-vault
             request-cooking
             vault-fetch
 
             commit-id?
 
+            swh-download-directory
             swh-download))
 
 ;;; Commentary:
@@ -180,6 +186,12 @@ Software Heritage."
                                  (- (ref 10))
                                  (ref 10))))))
       str))                                       ;oops!
+
+(define (maybe-null proc)
+  (match-lambda
+    ((? null?) #f)
+    ('null #f)
+    (obj (proc obj))))
 
 (define string*
   ;; Converts "string or #nil" coming from JSON to "string or #f".
@@ -285,6 +297,7 @@ FALSE-IF-404? is true, return #f upon 404 responses."
 ;; <https://archive.softwareheritage.org/api/1/snapshot/4334c3ed4bb208604ed780d8687fe523837f1bd1/>
 (define-json-mapping <snapshot> make-snapshot snapshot?
   json->snapshot
+  (id       snapshot-id)
   (branches snapshot-branches "branches" json->branches))
 
 ;; This is used for the "branches" field of snapshots.
@@ -314,10 +327,13 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   (target-url  release-target-url "target_url"))
 
 ;; <https://archive.softwareheritage.org/api/1/revision/359fdda40f754bbf1b5dc261e7427b75463b59be/>
+;; Note: Some revisions, such as those for "nixguix" origins (e.g.,
+;; <https://archive.softwareheritage.org/api/1/revision/b8dbc65475bbedde8e015d4730ade8864c38fad3/>),
+;; have their 'date' field set to null.
 (define-json-mapping <revision> make-revision revision?
   json->revision
   (id            revision-id)
-  (date          revision-date "date" string->date*)
+  (date          revision-date "date" (maybe-null string->date*))
   (directory     revision-directory)
   (directory-url revision-directory-url "directory_url"))
 
@@ -374,10 +390,9 @@ FALSE-IF-404? is true, return #f upon 404 responses."
   json->vault-reply
   (id             vault-reply-id)
   (fetch-url      vault-reply-fetch-url "fetch_url")
-  (object-id      vault-reply-object-id "obj_id")
-  (object-type    vault-reply-object-type "obj_type" string->symbol)
   (progress-message vault-reply-progress-message "progress_message")
-  (status         vault-reply-status "status" string->symbol))
+  (status         vault-reply-status "status" string->symbol)
+  (swhid          vault-reply-swhid))
 
 
 ;;;
@@ -424,6 +439,32 @@ available."
        (call (swh-url (visit-snapshot-url visit))
              json->snapshot)))
 
+(define (snapshot-url snapshot branch-count first-branch)
+  "Return the URL of SNAPSHOT such that it contains information for
+BRANCH-COUNT branches, starting at FIRST-BRANCH."
+  (string-append (swh-url "/api/1/snapshot" (snapshot-id snapshot))
+                 "?branches_count=" (number->string branch-count)
+                 "&branches_from=" (uri-encode first-branch)))
+
+(define (lookup-snapshot-branch snapshot name)
+  "Look up branch NAME on SNAPSHOT.  Return the branch, or return #f if it
+could not be found."
+  (or (find (lambda (branch)
+              (string=? (branch-name branch) name))
+            (snapshot-branches snapshot))
+
+      ;; There's no API entry point to look up a snapshot branch by name.
+      ;; Work around that by using the paginated list of branches provided by
+      ;; the /api/1/snapshot API: ask for one branch, and start pagination at
+      ;; NAME.
+      (let ((snapshot (call (snapshot-url snapshot 1 name)
+                            json->snapshot)))
+        (match (snapshot-branches snapshot)
+          ((branch)
+           (and (string=? (branch-name branch) name)
+                branch))
+          (_ #f)))))
+
 (define (branch-target branch)
   "Return the target of BRANCH, either a <revision> or a <release>."
   (match (branch-target-type branch)
@@ -446,12 +487,21 @@ URL could not be found."
   (match (lookup-origin url)
     (#f #f)
     (origin
-      (match (filter visit-snapshot-url (origin-visits origin))
+      (match (filter (lambda (visit)
+                       ;; Return #f if (visit-snapshot VISIT) would return #f.
+                       (and (visit-snapshot-url visit)
+                            (eq? 'full (visit-status visit))))
+                     (origin-visits origin))
         ((visit . _)
          (let ((snapshot (visit-snapshot visit)))
            (match (and=> (find (lambda (branch)
-                                 (string=? (string-append "refs/tags/" tag)
-                                           (branch-name branch)))
+                                 (or
+                                  ;; Git specific.
+                                  (string=? (string-append "refs/tags/" tag)
+                                            (branch-name branch))
+                                  ;; Hg specific.
+                                  (string=? tag
+                                            (branch-name branch))))
                                (snapshot-branches snapshot))
                          branch-target)
              ((? release? release)
@@ -488,35 +538,57 @@ directory entries; if it has type 'file, return its <content> object."
   (path "/api/1/origin/save" type "url" url)
   json->save-reply)
 
-(define-query (query-vault id kind)
-  "Ask the availability of object ID and KIND to the vault, where KIND is
-'directory or 'revision.  Return #f if it could not be found, or a
-<vault-reply> on success."
-  ;; <https://docs.softwareheritage.org/devel/swh-vault/api.html#vault-api-ref>
-  ;; There's a single format supported for directories and revisions and for
-  ;; now, the "/format" bit of the URL *must* be omitted.
-  (path "/api/1/vault" (symbol->string kind) id)
-  json->vault-reply)
+(define* (vault-url id kind #:optional (archive-type 'flat))
+  "Return the vault query/cooking URL for ID and KIND.  Normally, ID is an
+SWHID and KIND is #f; the deprecated convention is to set ID to a raw
+directory or revision ID and KIND to 'revision or 'directory."
+  ;; Note: /api/1/vault/directory/ID was deprecated in favor of
+  ;; /api/1/vault/flat/SWHID; this procedure "converts" automatically.
+  (let ((id (match kind
+              ('directory (string-append "swh:1:dir:" id))
+              ('revision  (string-append "swh:1:rev:" id))
+              (#f         id))))
+    (swh-url "/api/1/vault" (symbol->string archive-type) id)))
 
-(define (request-cooking id kind)
-  "Request the cooking of object ID and KIND (one of 'directory or 'revision)
-to the vault.  Return a <vault-reply>."
-  (call (swh-url "/api/1/vault" (symbol->string kind) id)
+(define* (query-vault id #:optional kind #:key (archive-type 'flat))
+  "Ask the availability of object ID (an SWHID) to the vault.  Return #f if it
+could not be found, or a <vault-reply> on success.  ARCHIVE-TYPE can be 'flat
+for a tarball containing a directory, or 'git-bare for a tarball containing a
+bare Git repository corresponding to a revision.
+
+Passing KIND (one of 'directory or 'revision) together with a raw revision or
+directory identifier is deprecated."
+  (call (vault-url id kind archive-type)
+        json->vault-reply))
+
+(define* (request-cooking id #:optional kind #:key (archive-type 'flat))
+  "Request the cooking of object ID, an SWHID.  Return a <vault-reply>.
+ARCHIVE-TYPE can be 'flat for a tarball containing a directory, or 'git-bare
+for a tarball containing a bare Git repository corresponding to a revision.
+
+Passing KIND (one of 'directory or 'revision) together with a raw revision or
+directory identifier is deprecated."
+  (call (vault-url id kind archive-type)
         json->vault-reply
         http-post*))
 
-(define* (vault-fetch id kind
-                      #:key (log-port (current-error-port)))
-  "Return an input port from which a bundle of the object with the given ID
-and KIND (one of 'directory or 'revision) can be retrieved, or #f if the
-object could not be found.
+(define* (vault-fetch id
+                      #:optional kind
+                      #:key
+                      (archive-type 'flat)
+                      (log-port (current-error-port)))
+  "Return an input port from which a bundle of the object with the given ID,
+an SWHID, or #f if the object could not be found.
 
-For a directory, the returned stream is a gzip-compressed tarball.  For a
-revision, it is a gzip-compressed stream for 'git fast-import'."
-  (let loop ((reply (query-vault id kind)))
+ARCHIVE-TYPE can be 'flat for a tarball containing a directory, or 'git-bare
+for a tarball containing a bare Git repository corresponding to a revision."
+  (let loop ((reply (query-vault id kind
+                                 #:archive-type archive-type)))
     (match reply
       (#f
-       (and=> (request-cooking id kind) loop))
+       (and=> (request-cooking id kind
+                               #:archive-type archive-type)
+              loop))
       (_
        (match (vault-reply-status reply)
          ('done
@@ -536,7 +608,8 @@ revision, it is a gzip-compressed stream for 'git fast-import'."
           (format log-port "SWH vault: failure: ~a~%"
                   (vault-reply-progress-message reply))
           (format log-port "SWH vault: retrying...~%")
-          (loop (request-cooking id kind)))
+          (loop (request-cooking id kind
+                                 #:archive-type archive-type)))
          ((and (or 'new 'pending) status)
           ;; Wait until the bundle shows up.
           (let ((message (vault-reply-progress-message reply)))
@@ -551,18 +624,13 @@ requested bundle cooking, waiting for completion...~%"))
             ;; requests per hour per IP address.)
             (sleep (if (eq? status 'new) 60 30))
 
-            (loop (query-vault id kind)))))))))
+            (loop (query-vault id kind
+                               #:archive-type archive-type)))))))))
 
 
 ;;;
 ;;; High-level interface.
 ;;;
-
-(define (commit-id? reference)
-  "Return true if REFERENCE is likely a commit ID, false otherwise---e.g., if
-it is a tag name.  This is based on a simple heuristic so use with care!"
-  (and (= (string-length reference) 40)
-       (string-every char-set:hex-digit reference)))
 
 (define (call-with-temporary-directory proc)      ;FIXME: factorize
   "Call PROC with a name of a temporary directory; close the directory and
@@ -577,9 +645,62 @@ delete it when leaving the dynamic extent of this call."
       (lambda ()
         (false-if-exception (delete-file-recursively tmp-dir))))))
 
+(define* (swh-download-archive swhid output
+                               #:key
+                               (archive-type 'flat)
+                               (log-port (current-error-port)))
+  "Download from Software Heritage the directory or revision with the given
+SWID, in the ARCHIVE-TYPE format (one of 'flat or 'git-bare), and unpack it to
+OUTPUT.  Return #t on success and #f on failure."
+  (call-with-temporary-directory
+   (lambda (directory)
+     (match (vault-fetch swhid
+                         #:archive-type archive-type
+                         #:log-port log-port)
+       (#f
+        (format log-port
+                "SWH: object ~a could not be fetched from the vault~%"
+                swhid)
+        #f)
+       ((? port? input)
+        (let ((tar (open-pipe* OPEN_WRITE "tar" "-C" directory
+                               (match archive-type
+                                 ('flat "-xzvf")     ;gzipped
+                                 ('git-bare "-xvf")) ;uncompressed
+                               "-")))
+          (dump-port input tar)
+          (close-port input)
+          (let ((status (close-pipe tar)))
+            (unless (zero? status)
+              (error "tar extraction failure" status)))
+
+          (match (scandir directory)
+            (("." ".." sub-directory)
+             (copy-recursively (string-append directory "/" sub-directory)
+                               output
+                               #:log (%make-void-port "w"))
+             #t))))))))
+
+(define* (swh-download-directory id output
+                                 #:key (log-port (current-error-port)))
+  "Download from Software Heritage the directory with the given ID, and
+unpack it to OUTPUT.  Return #t on success and #f on failure."
+  (swh-download-archive (string-append "swh:1:dir:" id) output
+                        #:archive-type 'flat
+                        #:log-port log-port))
+
+(define (commit-id? reference)
+  "Return true if REFERENCE is likely a commit ID, false otherwise---e.g., if
+it is a tag name.  This is based on a simple heuristic so use with care!"
+  (and (= (string-length reference) 40)
+       (string-every char-set:hex-digit reference)))
+
 (define* (swh-download url reference output
-                       #:key (log-port (current-error-port)))
-  "Download from Software Heritage a checkout of the Git tag or commit
+                       #:key
+                       (archive-type 'flat)
+                       (log-port (current-error-port)))
+  "Download from Software Heritage a checkout (if ARCHIVE-TYPE is 'flat) or a
+full Git repository (if ARCHIVE-TYPE is 'git-bare) of the Git tag or commit
 REFERENCE originating from URL, and unpack it in OUTPUT.  Return #t on success
 and #f on failure.
 
@@ -593,28 +714,18 @@ wait until it becomes available, which could take several minutes."
      (format log-port "SWH: found revision ~a with directory at '~a'~%"
              (revision-id revision)
              (swh-url (revision-directory-url revision)))
-     (call-with-temporary-directory
-      (lambda (directory)
-        (match (vault-fetch (revision-directory revision) 'directory
-                            #:log-port log-port)
-          (#f
-           (format log-port
-                   "SWH: directory ~a could not be fetched from the vault~%"
-                   (revision-directory revision))
-           #f)
-          ((? port? input)
-           (let ((tar (open-pipe* OPEN_WRITE "tar" "-C" directory "-xzvf" "-")))
-             (dump-port input tar)
-             (close-port input)
-             (let ((status (close-pipe tar)))
-               (unless (zero? status)
-                 (error "tar extraction failure" status)))
-
-             (match (scandir directory)
-               (("." ".." sub-directory)
-                (copy-recursively (string-append directory "/" sub-directory)
-                                  output
-                                  #:log (%make-void-port "w"))
-                #t))))))))
+     (swh-download-archive (match archive-type
+                             ('flat
+                              (string-append
+                               "swh:1:dir:" (revision-directory revision)))
+                             ('git-bare
+                              (string-append
+                               "swh:1:rev:" (revision-id revision))))
+                           output
+                           #:archive-type archive-type
+                           #:log-port log-port))
     (#f
+     (format log-port
+             "SWH: revision ~s originating from ~a could not be found~%"
+             reference url)
      #f)))

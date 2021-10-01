@@ -1,8 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,16 +54,18 @@
 
 (define (all-packages)
   "Return the list of public packages we are going to query."
-  (fold-packages (lambda (package result)
-                   (match (package-replacement package)
-                     ((? package? replacement)
-                      (cons* replacement package result))
-                     (#f
-                      (cons package result))))
-                 '()
+  (delete-duplicates
+   (fold-packages (lambda (package result)
+                    (match (package-replacement package)
+                      ((? package? replacement)
+                       (cons* replacement package result))
+                      (#f
+                       (cons package result))))
+                  '()
 
-                 ;; Dismiss deprecated packages but keep hidden packages.
-                 #:select? (negate package-superseded)))
+                  ;; Dismiss deprecated packages but keep hidden packages.
+                  #:select? (negate package-superseded))
+   eq?))
 
 (define (call-with-progress-reporter reporter proc)
   "This is a variant of 'call-with-progress-reporter' that works with monadic
@@ -171,13 +174,26 @@ about the derivations queued, as is the case with Hydra."
       #f                                          ;no derivation information
       (lset-intersection string=? queued items)))
 
+(define (store-item-system store item)
+  "Return the system (a string such as \"aarch64-linux\")) ITEM targets,
+or #f if it could not be determined."
+  (match (valid-derivers store item)
+    ((drv . _)
+     (and=> (false-if-exception (read-derivation-from-file drv))
+            derivation-system))
+    (()
+     #f)))
+
 (define* (report-server-coverage server items
                                  #:key display-missing?)
   "Report the subset of ITEMS available as substitutes on SERVER.
 When DISPLAY-MISSING? is true, display the list of missing substitutes.
-Return the coverage ratio, an exact number between 0 and 1."
+Return the coverage ratio, an exact number between 0 and 1.
+In case ITEMS is an empty list, return 1 instead."
   (define MiB (* (expt 2 20) 1.))
 
+  ;; TRANSLATORS: it is quite possible zero store items are
+  ;; looked for.
   (format #t (G_ "looking for ~h store items on ~a...~%")
           (length items) server)
 
@@ -198,9 +214,10 @@ Return the coverage ratio, an exact number between 0 and 1."
                                  narinfos))
           (time      (+ (time-second time)
                         (/ (time-nanosecond time) 1e9))))
-      (format #t (G_ "  ~,1f% substitutes available (~h out of ~h)~%")
-              (* 100. (/ obtained requested 1.))
-              obtained requested)
+      (when (> requested 0)
+        (format #t (G_ "  ~,1f% substitutes available (~h out of ~h)~%")
+                (* 100. (/ obtained requested 1.))
+                obtained requested))
       (let ((total (/ (reduce + 0 sizes) MiB)))
         (match (length sizes)
           ((? zero?)
@@ -270,11 +287,28 @@ are queued~%")
       (when (and display-missing? (not (null? missing)))
         (newline)
         (format #t (G_ "Substitutes are missing for the following items:~%"))
-        (format #t "~{  ~a~%~}" missing))
+
+        ;; Display two columns: store items, and their system type.
+        (format #t "~:{  ~a ~a~%~}"
+                (zip (map (let ((width (max (- (current-terminal-columns)
+                                               20)
+                                            0)))
+                            (lambda (item)
+                              (if (> (string-length item) width)
+                                  item
+                                  (string-pad-right item width))))
+                          missing)
+                     (with-store store
+                       (map (lambda (item)
+                              (or (store-item-system store item)
+                                  (G_ "unknown system")))
+                            missing)))))
 
       ;; Return the coverage ratio.
       (let ((total (length items)))
-        (/ (- total (length missing)) total)))))
+        (if (> total 0)
+            (/ (- total (length missing)) total)
+            1)))))
 
 
 ;;;

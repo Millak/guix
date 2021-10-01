@@ -56,6 +56,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
@@ -64,12 +65,15 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages parallel)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
@@ -85,6 +89,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -580,20 +585,68 @@ tools.  This enables both rapid prototyping of data pipelines and extensibility
 in terms of new algorithms.")
     (license license:gpl3+)))
 
-(define-public python-onnx
+(define-public onnx
   (package
-    (name "python-onnx")
-    (version "1.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "onnx" version))
-       ;; ONNX will build googletest from a git checkout.  Patch CMake
-       ;; to use googletest from Guix and enable tests by default.
-       (patches (search-patches "python-onnx-use-system-googletest.patch"))
-       (sha256
-        (base32 "1ys5f4kqkabm4mgivsw80zz8xj1svanfbpszqbw9j15914hcarcx"))))
+    (name "onnx")
+    (version "1.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/onnx/onnx")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1xnii361f68x0masxgfc4ai7hh3wlxxk56aznwf4m4yr6wqx47ml"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "onnx-use-system-googletest.patch"
+                                       "onnx-shared-libraries.patch"
+                                       "onnx-skip-model-downloads.patch"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "third_party"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'build 'pass-cmake-arguments
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; Pass options to the CMake-based build process.
+                      (define out
+                        (assoc-ref outputs "out"))
+
+                      (define args
+                        ;; Copy arguments from 'cmake-build-system', plus ask
+                        ;; for shared libraries.
+                        (list "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+                              (string-append "-DCMAKE_INSTALL_PREFIX=" out)
+                              "-DCMAKE_INSTALL_LIBDIR=lib"
+                              "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE"
+                              (string-append "-DCMAKE_INSTALL_RPATH=" out
+                                             "/lib")
+                              "-DCMAKE_VERBOSE_MAKEFILE=ON"
+
+                              "-DBUILD_SHARED_LIBS=ON"))
+
+                      ;; This environment variable is honored by 'setup.py',
+                      ;; which passes it down to 'cmake'.
+                      (setenv "CMAKE_ARGS" (string-join args))
+
+                      ;; This one is honored by 'setup.py' and passed to 'make
+                      ;; -j'.
+                      (setenv "MAX_JOBS"
+                              (number->string (parallel-job-count)))))
+                  (add-before 'check 'make-test-directory-writable
+                    (lambda _
+                      ;; Make things writable for tests.
+                      (setenv "HOME" (getcwd))
+                      (for-each make-file-writable
+                                (find-files "onnx/examples" "."
+                                            #:directories? #t))))
+                  (add-after 'install 'install-from-cmake
+                    (lambda _
+                      ;; Run "make install" in the build tree 'setup.py'
+                      ;; created for CMake so that libonnx.so,
+                      ;; libonnx_proto.so, etc. are installed.
+                      (invoke "make" "install"
+                              "-C" ".setuptools-cmake-build"))))))
     (native-inputs
      `(("cmake" ,cmake)
        ("googletest" ,googletest)
@@ -618,6 +671,56 @@ in terms of new algorithms.")
 AI models, both deep learning and traditional ML.  It defines an extensible
 computation graph model, as well as definitions of built-in operators and
 standard data types.")
+    (license license:expat)))
+
+(define-public python-onnx
+  ;; This used to be called "python-onnx" because it provided nothing but
+  ;; Python bindings.  The package now provides shared libraries and C++
+  ;; headers, hence the name change.
+  (deprecated-package "python-onnx" onnx))
+
+(define-public onnx-optimizer
+  (package
+    (name "onnx-optimizer")
+    ;; Note: 0.2.x is *more* recent than 1.5.0.
+    (version "0.2.6")
+    (home-page "https://github.com/onnx/optimizer")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1wkqqdxcxpfbf8zpbdfdd3zz5jkw775g31gyykj11z4y6pp659l6"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "onnx-optimizer-system-library.patch"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "third_party"))))
+    (build-system python-build-system)
+    (arguments (package-arguments onnx))          ;reuse build system tweaks
+    (native-inputs
+     `(("cmake" ,cmake)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-runner" ,python-pytest-runner)
+       ("python-nbval" ,python-nbval)
+       ("python-coverage" ,python-coverage)))
+    (inputs
+     `(("onnx" ,onnx)
+       ("protobuf" ,protobuf)
+       ("pybind11" ,pybind11)))
+    (propagated-inputs
+     `(("python-numpy" ,python-numpy)))
+    (synopsis "Library to optimize ONNX models")
+    (description
+     "This package provides a C++ and Python library for performing arbitrary
+optimizations on ONNX models, as well as a growing list of prepackaged
+optimization passes.
+
+Not all possible optimizations can be directly implemented on ONNX graphs---
+some will need additional backend-specific information---but many can, and the
+aim is to provide all such passes along with ONNX so that they can be re-used
+with a single function call.")
     (license license:expat)))
 
 (define-public rxcpp
@@ -661,23 +764,22 @@ synchronization, thread-safety, concurrent data structures, and non-blocking
 I/O.")
     (license license:asl2.0)))
 
-(define-public gemmlowp-for-tensorflow
-  ;; The commit hash is taken from "tensorflow/workspace.bzl".
-  (let ((commit "38ebac7b059e84692f53e5938f97a9943c120d98")
-        (revision "2"))
+
+(define-public gemmlowp
+  (let ((commit "f9959600daa42992baace8a49544a00a743ce1b6")
+        (version "0.1")
+        (revision "1"))
     (package
       (name "gemmlowp")
-      (version (git-version "0" revision commit))
+      (version (git-version version revision commit))
+      (home-page "https://github.com/google/gemmlowp")
       (source (origin
-                (method url-fetch)
-                (uri (string-append "https://mirror.bazel.build/"
-                                    "github.com/google/gemmlowp/archive/"
-                                    commit ".zip"))
-                (file-name (string-append "gemmlowp-" version ".zip"))
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0n56s2g8hrssm4w8qj1v58gfm56a04n9v992ixkmvk6zjiralzxq"))))
-      (build-system cmake-build-system)
+                  "1hzfhlhzcb827aza6a7drydc67dw5fm3qfqilb9ibskan8dsf0c6"))))
       (arguments
        `(#:configure-flags
          (list ,@(match (%current-system)
@@ -697,18 +799,15 @@ I/O.")
                       (inc (string-append out "/include/")))
                  (install-file "../build/libeight_bit_int_gemm.so" lib)
                  (for-each (lambda (dir)
-                             (let ((target (string-append inc "/" dir)))
-                               (mkdir-p target)
+                             (let ((target
+                                    (string-append inc "/gemmlowp/" dir)))
                                (for-each (lambda (h)
                                            (install-file h target))
                                          (find-files (string-append "../" dir)
                                                      "\\.h$"))))
                            '("meta" "profiling" "public" "fixedpoint"
-                             "eight_bit_int_gemm" "internal"))
-                 #t))))))
-      (native-inputs
-       `(("unzip" ,unzip)))
-      (home-page "https://github.com/google/gemmlowp")
+                             "eight_bit_int_gemm" "internal"))))))))
+      (build-system cmake-build-system)
       (synopsis "Small self-contained low-precision GEMM library")
       (description
        "This is a small self-contained low-precision @dfn{general matrix
@@ -717,6 +816,46 @@ Low-precision means that the input and output matrix entries are integers on
 at most 8 bits.  To avoid overflow, results are internally accumulated on more
 than 8 bits, and at the end only some significant 8 bits are kept.")
       (license license:asl2.0))))
+
+(define-public gemmlowp-for-tensorflow
+  ;; The commit hash is taken from "tensorflow/workspace.bzl".
+  (let ((commit "38ebac7b059e84692f53e5938f97a9943c120d98")
+        (revision "2"))
+    (package
+      (inherit gemmlowp)
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://mirror.bazel.build/"
+                                    "github.com/google/gemmlowp/archive/"
+                                    commit ".zip"))
+                (file-name (string-append "gemmlowp-" version ".zip"))
+                (sha256
+                 (base32
+                  "0n56s2g8hrssm4w8qj1v58gfm56a04n9v992ixkmvk6zjiralzxq"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments gemmlowp)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'install
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (lib (string-append out "/lib/"))
+                        (inc (string-append out "/include/")))
+                   (install-file "../build/libeight_bit_int_gemm.so" lib)
+                   (for-each (lambda (dir)
+                               ;; Note: Install headers straight into
+                               ;; $includedir instead of $includedir/gemmlowp.
+                               (let ((target (string-append inc "/" dir)))
+                                 (for-each (lambda (h)
+                                             (install-file h target))
+                                           (find-files (string-append "../" dir)
+                                                       "\\.h$"))))
+                             '("meta" "profiling" "public" "fixedpoint"
+                               "eight_bit_int_gemm" "internal")))))))))
+      (native-inputs
+       `(("unzip" ,unzip)))
+      (properties '((hidden? . #t))))))
 
 (define-public dlib
   (package
@@ -802,7 +941,7 @@ computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "0.24.1")
+    (version "0.24.2")
     (source
      (origin
        (method git-fetch)
@@ -812,13 +951,13 @@ computing environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dd854hi9h81pa3y6gwa6r4qjwrwq5fndi312h6dkqzfh7jbvgvd"))))
+         "0hm92biqwwc87bqnr56lwa5bz77lr7k9q21rdwksnfzq3vsdp2nm"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-ext
-           (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace") #t))
+           (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace")))
          (replace 'check
            (lambda _
              ;; Restrict OpenBLAS threads to prevent segfaults while testing!
@@ -834,8 +973,7 @@ computing environments.")
              ;; 'reset-gzip-timestamps' phase can do its work.
              (let ((out (assoc-ref outputs "out")))
                (for-each make-file-writable
-                         (find-files out "\\.gz$"))
-               #t))))))
+                         (find-files out "\\.gz$"))))))))
     (inputs
      `(("openblas" ,openblas)))
     (native-inputs
@@ -915,13 +1053,13 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.4.8")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "0li1fclif50v6xrq7wh3lif9vv5jpj7xhrb0z6g89wwjnp9b9833"))))
+        (base32 "0w87c2v0li2rdbx6qfc2lb6y6bxpdy3jwfgzfs1kcr4d1chj5zfr"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-nose" ,python-nose)))
@@ -941,7 +1079,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "0.4.4")
+    (version "0.5.2")
     (source
      (origin
        ;; No tests in the PyPI tarball.
@@ -951,7 +1089,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
              (commit (string-append "v" version))))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "08wamsssmyf6511cbmglm67dp48i6xazs89m1cskdk219v90bc76"))))
+        (base32 "1hl42wmafydk4fxdx05l180k3canmqw8h9r20fsqq2aq440b09gh"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1010,6 +1148,31 @@ for Machine Learning.  These algorithms excel at identifying features that are
 predictive of the outcome in supervised learning problems, and are especially
 good at identifying feature interactions that are normally overlooked by
 standard feature selection algorithms.")
+    (license license:expat)))
+
+(define-public python-cmaes
+  (package
+    (name "python-cmaes")
+    (version "0.8.2")
+    (source
+     (origin
+       (method git-fetch) ;no tests in PyPI
+       (uri (git-reference
+             (url "https://github.com/CyberAgent/cmaes")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1jyckaifir528dz6m95nvky8hvqmz5gz6dlp65baahhbca0danzb"))
+       (file-name (git-file-name name version))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("python-setuptools" ,python-setuptools) ;build fails without this
+       ("python-wheel" ,python-wheel)))
+    (propagated-inputs
+     `(("python-numpy" ,python-numpy)))
+    (home-page "https://github.com/CyberAgent/cmaes")
+    (synopsis "CMA-ES implementation for Python")
+    (description "This package provides provides an implementation of the
+Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
     (license license:expat)))
 
 (define-public python-autograd
@@ -1178,6 +1341,57 @@ interactive learning.")
 Models, is a program for performing both single-SNP and SNP-set genome-wide
 association studies (GWAS) on extremely large data sets.")
     (license license:asl2.0)))
+
+(define-public python-hyperopt
+  (package
+    (name "python-hyperopt")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hyperopt" version))
+       (sha256
+        (base32 "1k4ma8ci0bxghw7g4ms944zak1pi83yv2d6bxd7fcslm1zalfq5w"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest" "--ignore"
+                       ;; Needs python-pyspark.
+                       "hyperopt/tests/test_spark.py"
+                       ;; Needs both python-scikit-learn and python-lightgbm.
+                       "--ignore" "hyperopt/tests/test_atpe_basic.py"
+                       ;; The tests below need python-lightgbm.
+                       "-k" (string-append "not test_branin"
+                                           " and not test_distractor"
+                                           " and not test_q1lognormal"
+                                           " and not test_quadratic1"
+                                           " and not test_twoarms"))))))))
+    (propagated-inputs
+     `(("python-cloudpickle" ,python-cloudpickle)
+       ("python-future" ,python-future)
+       ("python-networkx" ,python-networkx)
+       ("python-numpy" ,python-numpy)
+       ("python-scipy" ,python-scipy)
+       ("python-six" ,python-six)
+       ("python-tqdm" ,python-tqdm)))
+    (native-inputs
+     `(("python-black" ,python-black)
+       ("python-ipython" ,python-ipython)
+       ("python-ipyparallel" ,python-ipyparallel)
+       ("python-nose" ,python-nose)
+       ("python-pymongo" ,python-pymongo)
+       ("python-pytest" ,python-pytest)))
+    (home-page "https://hyperopt.github.io/hyperopt/")
+    (synopsis "Library for hyperparameter optimization")
+    (description "Hyperopt is a Python library for serial and parallel
+optimization over awkward search spaces, which may include real-valued,
+discrete, and conditional dimensions.")
+    (license license:bsd-3)))
 
 ;; There have been no proper releases yet.
 (define-public kaldi
@@ -1927,6 +2141,304 @@ together building blocks and a subclassing API with an imperative style for
 advanced research.")
     (license license:asl2.0)))
 
+(define-public tensorflow-lite
+  (package
+    (name "tensorflow-lite")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tensorflow/tensorflow")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jdw2i1rq06zqd6aabh7bbm0avsg4pygnfmd7gviv0blhih9054l"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #false                  ; no "check" target
+       #:build-type "Release"
+       #:configure-flags
+       (list
+        "-DTFLITE_ENABLE_GPU=OFF"
+        "-DTFLITE_ENABLE_RUY=OFF"
+
+        ;; TODO: The build system attempts to build xnnpack from source.  We
+        ;; would like to use our xnnpack package here, but this requires more
+        ;; work.
+        "-DTFLITE_ENABLE_XNNPACK=OFF"
+
+        ;; Pretend we've already fetched abseil.  We won't actually build it
+        ;; but use the existing package.
+        "-Dabseil-cpp_POPULATED=TRUE"
+
+        ;; Don't fetch the sources.  We have already built flatbuffers.
+        "-Dflatbuffers_POPULATED=TRUE"
+
+        "-DFFT2D_SOURCE_DIR=/tmp/fft2d"
+        "-Dneon2sse_SOURCE_DIR=/tmp/neon2sse"
+        "-Dneon2sse_BINARY_DIR=/tmp/neon2sse-bin"
+        "-DFARMHASH_SOURCE_DIR=/tmp/farmhash"
+        "-Dgemmlowp_SOURCE_DIR=/tmp/gemmlowp"
+        (string-append "-DRUY_SOURCE_DIR="
+                       (assoc-ref %build-inputs "ruy-src")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "tensorflow/lite")))
+         (add-after 'chdir 'copy-sources
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Use external cmake finders instead of these stubs that won't
+             ;; find anything but the bundled sources.
+             (delete-file "tools/cmake/modules/Findabsl.cmake")
+             (delete-file "tools/cmake/modules/Findeigen.cmake")
+
+             (substitute* "CMakeLists.txt"
+               (("find_package\\(eigen REQUIRED")
+                "find_package(eigen REQUIRED NAMES Eigen3"))
+             (substitute* "tools/cmake/modules/Findflatbuffers.cmake"
+               (("get_target_property.*")
+                (format #false "set(FLATBUFFERS_INCLUDE_DIRS ~a/include)\n"
+                        (assoc-ref inputs "flatbuffers"))))
+
+             ;; Don't fetch source code; we already have everything we need.
+             (substitute* '("tools/cmake/modules/fft2d.cmake"
+                            "tools/cmake/modules/ruy.cmake"
+                            "tools/cmake/modules/farmhash.cmake"
+                            "tools/cmake/modules/neon2sse.cmake"
+                            "tools/cmake/modules/gemmlowp.cmake")
+               (("OverridableFetchContent_Populate.*") ""))
+
+             (mkdir-p "/tmp/farmhash")
+             (with-directory-excursion "/tmp/farmhash"
+               (invoke "tar" "--strip-components=1"
+                       "-xf" (assoc-ref inputs "farmhash-src")))
+
+             (mkdir-p "/tmp/fft2d")
+             (with-directory-excursion "/tmp/fft2d"
+               (invoke "tar" "--strip-components=1"
+                       "-xf" (assoc-ref inputs "fft2d-src")))
+
+             (copy-recursively (assoc-ref inputs "neon2sse-src")
+                               "/tmp/neon2sse/")
+             (copy-recursively (assoc-ref inputs "gemmlowp-src")
+                               "/tmp/gemmlowp/")))
+         (add-after 'copy-sources 'prepare-shared-library-build
+           (lambda _ (chdir "c")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib"))
+                    (headers (string-append out "/include/tensorflow/lite")))
+               (install-file "../build/libtensorflowlite_c.so" lib)
+               (with-directory-excursion ".."
+                 (for-each
+                  (lambda (file)
+                    (let ((target-dir (string-append headers "/" (dirname file))))
+                      (install-file file target-dir)))
+                  (find-files "." "\\.h$")))))))))
+    (inputs
+     `(("abseil-cpp" ,abseil-cpp)
+       ("eigen" ,eigen-for-tensorflow-lite)
+       ("flatbuffers" ,flatbuffers)
+       ("python" ,python)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("gemmlowp-src"
+        ;; The commit hash is taken from
+        ;; "tensorflow/lite/tools/cmake/modules/gemmlowp.cmake".
+        ,(let ((commit "fda83bdc38b118cc6b56753bd540caa49e570745"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/google/gemmlowp")
+                   (commit commit)))
+             (file-name (git-file-name "gemmlowp" (string-take commit 8)))
+             (sha256
+              (base32
+               "1sbp8kmr2azwlvfbzryy1frxi99jhsh1nc93bdbxdf8zdgpv0kxl")))))
+       ("neon2sse-src"
+        ,(let ((commit "a1652fd5253afbf3e39357b012974f93511f6108"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/intel/ARM_NEON_2_x86_SSE")
+                   (commit commit)))
+             (file-name (git-file-name "neon2sse" (string-take commit 8)))
+             (sha256
+              (base32
+               "1q8gkxag9wlnwdwad2pclsrkwzrdjy94hyrkayrsvxyj7szb5y8i")))))
+       ("farmhash-src"
+        ,(let ((commit "816a4ae622e964763ca0862d9dbd19324a1eaf45"))
+           (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://mirror.bazel.build/github.com/google/farmhash/archive/"
+                   commit ".tar.gz"))
+             (file-name (git-file-name "farmhash" (string-take commit 8)))
+             (sha256
+              (base32
+               "185b2xdxl4d4cnsnv6abg8s22gxvx8673jq2yaq85bz4cdy58q35")))))
+       ("fft2d-src"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://storage.googleapis.com/"
+                               "mirror.tensorflow.org/"
+                               "www.kurims.kyoto-u.ac.jp/~ooura/fft2d.tgz"))
+           (file-name "fft2d.tar.gz")
+           (sha256
+            (base32
+             "1jfflzi74fag9z4qmgwvp90aif4dpbr1657izmxlgvf4hy8fk9xd"))))
+       ("ruy-src"
+        ,(let ((commit "9c56af3fce210a8a103eda19bd6f47c08a9e3d90"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/google/ruy")
+                   (commit commit)
+                   (recursive? #true)))
+             (file-name (git-file-name "ruy" (string-take commit 8)))
+             (sha256
+              (base32
+               "1cfd5gk6kaj8kbl3h98gx1ap8czd59y6p8qq8nr28fklpyzf5cis")))))))
+    (home-page "https://tensorflow.org")
+    (synopsis "Machine learning framework")
+    (description
+     "TensorFlow is a flexible platform for building and training machine
+learning models.  This package provides the \"lite\" variant for mobile
+devices.")
+    (license license:asl2.0)))
+
+(define-public dmlc-core
+  (package
+    (name "dmlc-core")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dmlc/dmlc-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x4ad1jhn84fywlk031fmv1kxyiscclmrqn9hhj8gz0mh7z9vcrh"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "-DGOOGLE_TEST=ON")))
+    (native-inputs
+     `(("googletest" ,googletest)
+       ("python" ,python-wrapper)))
+    (home-page "https://github.com/dmlc/dmlc-core")
+    (synopsis "Common bricks library for machine learning")
+    (description
+     "DMLC-Core is the backbone library to support all DMLC projects,
+offers the bricks to build efficient and scalable distributed machine
+learning libraries.")
+    (license license:asl2.0)))
+
+(define-public xgboost
+  (package
+    (name "xgboost")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dmlc/xgboost")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (patches (search-patches "xgboost-use-system-dmlc-core.patch"))
+       (sha256
+        (base32 "00liz816ahk9zj3jv3m2fqwlf6xxfbgvpmpl72iklx32vl192w5d"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DGOOGLE_TEST=ON")))
+    (native-inputs
+     `(("googletest" ,googletest)
+       ("python" ,python-wrapper)))
+    (inputs
+     `(("dmlc-core" ,dmlc-core)))
+    (home-page "https://xgboost.ai/")
+    (synopsis "Gradient boosting (GBDT, GBRT or GBM) library")
+    (description
+     "XGBoost is an optimized distributed gradient boosting library designed
+to be highly efficient, flexible and portable.  It implements machine learning
+algorithms under the Gradient Boosting framework.  XGBoost provides a parallel
+tree boosting (also known as GBDT, GBM) that solve many data science problems
+in a fast and accurate way.")
+    (license license:asl2.0)))
+
+(define-public python-xgboost
+  (package
+    (inherit xgboost)
+    (name "python-xgboost")
+    (source (package-source xgboost))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'preparations
+           (lambda _
+             ;; Move python-package content to parent directory to silence
+             ;; some warnings about files not being found if we chdir.
+             (rename-file "python-package/xgboost" "xgboost")
+             (rename-file "python-package/README.rst" "README.rst")
+             (rename-file "python-package/setup.cfg" "setup.cfg")
+             (rename-file "python-package/setup.py" "setup.py")
+             ;; Skip rebuilding libxgboost.so.
+             (substitute* "setup.py"
+               (("ext_modules=\\[CMakeExtension\\('libxgboost'\\)\\],") "")
+               (("'install_lib': InstallLib,") ""))))
+         (add-after 'install 'install-version-and-libxgboost
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (pylib (string-append out "/lib/python"
+                                          ,(version-major+minor
+                                            (package-version python))
+                                          "/site-packages"))
+                    (xgbdir (string-append pylib "/xgboost"))
+                    (version-file (string-append xgbdir "/VERSION"))
+                    (libxgboost (string-append (assoc-ref inputs "xgboost")
+                                               "/lib/libxgboost.so")))
+               (with-output-to-file version-file
+                 (lambda ()
+                   (display ,(package-version xgboost))))
+               (mkdir-p (string-append xgbdir "/lib"))
+               (symlink libxgboost (string-append xgbdir "/lib"
+                                                  "/libxgboost.so")))))
+         (replace 'check
+           ;; Python-specific tests are located in tests/python.
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "tests/python"
+                       ;; FIXME: CLI tests fail with PermissionError.
+                       "--ignore" "tests/python/test_cli.py" "-k"
+                       (string-append
+                        "not test_cli_regression_demo"
+                        ;; The tests below open a network connection.
+                        " and not test_model_compatibility"
+                        " and not test_get_group"
+                        " and not test_cv_no_shuffle"
+                        " and not test_cv"
+                        " and not test_training"
+                        ;; FIXME: May pass in the next version.
+                        " and not test_pandas"
+                        ;; "'['./runexp.sh']' returned non-zero exit status 1"
+                        " and not test_cli_binary_classification"))))))))
+    (native-inputs
+     `(("python-pandas" ,python-pandas)
+       ("python-pytest" ,python-pytest)
+       ("python-scikit-learn" ,python-scikit-learn)))
+    (inputs
+     `(("xgboost" ,xgboost)))
+    (propagated-inputs
+     `(("python-numpy" ,python-numpy)
+       ("python-scipy" ,python-scipy)))
+    (synopsis "Python interface for the XGBoost library")))
+
 (define-public python-iml
   (package
     (name "python-iml")
@@ -2091,8 +2603,8 @@ that:
 
 (define-public gloo
   (let ((version "0.0.0") ; no proper version tag
-        (commit "ca528e32fea9ca8f2b16053cff17160290fc84ce")
-        (revision "0"))
+        (commit "c22a5cfba94edf8ea4f53a174d38aa0c629d070f")
+        (revision "1"))
     (package
       (name "gloo")
       (version (git-version version revision commit))
@@ -2105,18 +2617,20 @@ that:
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1q9f80zy75f6njrzrqkmhc0g3qxs4gskr7ns2jdqanxa2ww7a99w"))))
+           "1crmqgybzkgkpbmcx16912gsl5qsj49swa0ikx6mhqgph0chrh11"))))
       (build-system cmake-build-system)
       (native-inputs
        `(("googletest" ,googletest)))
+      (inputs
+       `(("openssl" ,openssl)))
       (arguments
        `(#:configure-flags '("-DBUILD_TEST=1")
          #:phases
          (modify-phases %standard-phases
            (replace 'check
-             (lambda _
-               (invoke "make" "gloo_test")
-               #t)))))
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "make" "gloo_test")))))))
       (synopsis "Collective communications library")
       (description
        "Gloo is a collective communications library.  It comes with a
@@ -2152,4 +2666,271 @@ These include a barrier, broadcast, and allreduce.")
      "Uniform Manifold Approximation and Projection is a dimension reduction
 technique that can be used for visualisation similarly to t-SNE, but also for
 general non-linear dimension reduction.")
+    (license license:bsd-3)))
+
+(define-public nnpack
+  (let ((version "0.0")
+        (commit "c07e3a0400713d546e0dea2d5466dd22ea389c73")
+        (revision "1"))
+    (package
+      (name "nnpack")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/Maratyszcza/NNPACK")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0s0kk3a35w3yzf0q447p72350sbsh4qhg6vm3y2djbj4xpg7jc8v"))
+                (patches (search-patches "nnpack-system-libraries.patch"))))
+      (build-system cmake-build-system)
+      ;; XXX: The test suite runs but it's very expensive, and on x86_64 CPUs
+      ;; that lack the right ISA extensions, tests fail with:
+      ;;
+      ;; Expected equality of these values:
+      ;;   nnp_status_success
+      ;;     Which is: 0
+      ;;   status
+      ;;     Which is: 51
+      ;;
+      ;; where 51 is 'nnp_status_unsupported_hardware'.
+      (arguments '(#:tests? #f))
+      (synopsis "Acceleration package for neural network computations")
+      (description
+       "NNPACK is an acceleration package for neural network computations.
+NNPACK aims to provide high-performance implementations of convnet layers for
+multi-core CPUs.
+
+NNPACK is not intended to be directly used by machine learning researchers;
+instead it provides low-level performance primitives leveraged in leading deep
+learning frameworks, such as PyTorch, Caffe2, MXNet, tiny-dnn, Caffe, Torch,
+and Darknet.")
+      (inputs
+       `(("cpuinfo" ,cpuinfo)
+         ("fp16" ,fp16)
+         ("fxdiv" ,fxdiv)
+         ("psimd" ,psimd)
+         ("pthreadpool" ,pthreadpool)
+         ("googletest" ,googletest)))
+      (native-inputs
+       `(("python" ,python)
+         ("python-peachpy" ,python-peachpy)
+         ("python-six" ,python-six)))
+      (license license:bsd-2))))
+
+(define-public xnnpack
+  ;; There's currently no tag on this repo.
+  (let ((version "0.0")
+        (commit "bbe88243aba847f6a3dd86defec0fea4a0e415a1")
+        (revision "1"))
+    (package
+      (name "xnnpack")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/google/XNNPACK") ;fork of QNNPACK
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19j605x1l2h95mjhcj90zwjh1153pdgmqggl35ya5w0wll628iiz"))
+                (patches (search-patches "xnnpack-system-libraries.patch"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags '("-DXNNPACK_USE_SYSTEM_LIBS=YES"
+                             "-DBUILD_SHARED_LIBS=ON"
+                             "-DXNNPACK_LIBRARY_TYPE=shared"
+                             "-DXNNPACK_BUILD_TESTS=FALSE" ;FIXME: see below
+                             "-DXNNPACK_BUILD_BENCHMARKS=FALSE")
+
+         ;; FIXME: Building tests leads to a CMake error:
+         ;;
+         ;;   ADD_LIBRARY cannot create target "all_microkernels" because
+         ;;   another target with the same name already exists.
+         #:tests? #f))
+      (inputs
+       `(("cpuinfo" ,cpuinfo)
+         ("pthreadpool" ,pthreadpool)
+         ("googletest" ,googletest)
+         ("googlebenchmark" ,googlebenchmark)
+         ("fxdiv" ,fxdiv)
+         ("fp16" ,fp16)
+         ("psimd" ,psimd)))
+      (synopsis "Optimized floating-point neural network inference operators")
+      (description
+       "XNNPACK is a highly optimized library of floating-point neural network
+inference operators for ARM, WebAssembly, and x86 platforms.  XNNPACK is not
+intended for direct use by deep learning practitioners and researchers;
+instead it provides low-level performance primitives for accelerating
+high-level machine learning frameworks, such as TensorFlow Lite,
+TensorFlow.js, PyTorch, and MediaPipe.")
+      (license license:bsd-3))))
+
+(define-public python-pytorch
+  (package
+    (name "python-pytorch")
+    (version "1.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cznsh68hwk5761gv7iijb4g6jgjpvs3bbixwpzzmkbkbn2q96c1"))
+              (patches (search-patches "python-pytorch-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-enum" "python-peachpy"
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+
+                  ;; Adjust references to the onnx-optimizer headers.
+                  (substitute* "caffe2/onnx/backend.cc"
+                    (("onnx/optimizer/")
+                     "onnxoptimizer/"))))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'build 'use-system-libraries
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; Tell 'setup.py' to let 'CMakeLists.txt' know that we
+                      ;; want to use "system libraries" instead of the bundled
+                      ;; ones.
+                      (setenv "USE_SYSTEM_LIBS" "1")
+
+                      ;; XXX: Disable that for simplicity for now.
+                      (setenv "USE_FBGEMM" "0")))
+                  (add-before 'build 'make-things-writable
+                    (lambda _
+                      ;; The 'build_caffe2' function in
+                      ;; 'tools/build_pytorch_libs.py', called from the
+                      ;; top-level 'setup.py', needs write access to this
+                      ;; directory.
+                      (for-each make-file-writable
+                                (find-files "caffe2/proto" "."
+                                            #:directories? #t))))
+                  (replace 'check
+                    (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                      ;; Run the test suite following the instructions in
+                      ;; 'CONTRIBUTING.md'.  XXX: Unfortunately this doesn't
+                      ;; work, unless you set PYTHONPATH presumably.
+                      (when tests?
+                        (let ((python-site (site-packages inputs outputs)))
+                          (setenv "PYTHONPATH"
+                                  (string-append python-site ":"
+                                                 (getenv "PYTHONPATH")))
+                          (invoke "python" "test/run_test.py")))))
+                  (add-after 'install 'remove-test-executables
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      ;; Remove test executables, but keep other executables
+                      ;; such as 'torch_shm_manager' and and .so files such as
+                      ;; 'libtorch_global_deps.so'.
+                      (let ((python-site (site-packages inputs outputs)))
+                        (for-each delete-file
+                                  (find-files python-site
+                                              "(^test_cpp_rpc|_test)$"))))))
+
+       ;; XXX: Tests attempt to download data such as
+       ;; <https://raw.githubusercontent.com/pytorch/test-infra/master/stats/slow-tests.json>.
+       #:tests? #f))
+    (native-inputs
+     `(("cmake" ,cmake)
+       ("ninja" ,ninja)))
+    (inputs
+     `(("eigen" ,eigen)
+       ;; ("fmt" ,fmt)
+       ("fp16" ,fp16)
+       ("gemmlowp" ,gemmlowp)
+       ("googletest" ,googletest)
+       ("googlebenchmark" ,googlebenchmark)
+       ("gloo" ,gloo)
+       ("nnpack" ,nnpack)
+       ("openblas" ,openblas)
+       ("openmpi" ,openmpi)
+       ("pthreadpool" ,pthreadpool)
+       ("protobuf" ,protobuf)
+       ("pybind11" ,pybind11)
+       ("sleef" ,sleef)
+       ("xnnpack" ,xnnpack)
+       ("zstd" ,zstd)))
+    (propagated-inputs
+     `(("python-astunparse" ,python-astunparse)
+       ("python-numpy" ,python-numpy)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-cffi" ,python-cffi)
+       ("python-typing-extensions" ,python-typing-extensions)
+       ("python-future" ,python-future)
+       ("python-six" ,python-six)
+       ("python-requests" ,python-requests)
+       ("onnx" ,onnx)                       ;propagated for its Python modules
+       ("onnx-optimizer" ,onnx-optimizer)
+       ("cpuinfo" ,cpuinfo)))
+    (home-page "https://pytorch.org/")
+    (synopsis "Python library for tensor computation and deep neural networks")
+    (description
+     "PyTorch is a Python package that provides two high-level features:
+
+@itemize
+@item tensor computation (like NumPy) with strong GPU acceleration;
+@item deep neural networks (DNNs) built on a tape-based autograd system.
+@end itemize
+
+You can reuse Python packages such as NumPy, SciPy, and Cython to extend
+PyTorch when needed.
+
+Note: currently this package does not provide GPU support.")
+    (license license:bsd-3)))
+
+(define-public python-hmmlearn
+  (package
+    (name "python-hmmlearn")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hmmlearn" version))
+       (sha256
+        (base32
+         "1my0j3rzp17438idr32ssh0j969a98yjblx5igx5kgiiigr9qa1a"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (with-directory-excursion (string-append (assoc-ref outputs "out") "/lib")
+                 (invoke "python" "-m" "pytest"))))))))
+    (propagated-inputs
+     `(("python-cython" ,python-cython)
+       ("python-numpy" ,python-numpy)
+       ("python-scikit-learn" ,python-scikit-learn)
+       ("python-scipy" ,python-scipy)
+       ("python-setuptools-scm" ,python-setuptools-scm)))
+    (native-inputs
+     `(("python-pytest" ,python-pytest)))
+    (home-page "https://github.com/hmmlearn/hmmlearn")
+    (synopsis "Hidden Markov Models with scikit-learn like API")
+    (description
+     "Hmmlearn is a set of algorithms for unsupervised learning and inference
+of Hidden Markov Models.")
     (license license:bsd-3)))

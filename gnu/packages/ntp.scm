@@ -4,8 +4,10 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,14 +45,14 @@
 (define-public chrony
   (package
     (name "chrony")
-    (version "4.0")
+    (version "4.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.tuxfamily.org/chrony/"
                            "chrony-" version ".tar.gz"))
        (sha256
-        (base32 "09f6w2x5h5kamb4rhcbaz911q1f730qdalgsn8s48yjyqlafl9xy"))))
+        (base32 "0k0nf5qqzl01106lkmwc32n6a1fxagalpbci38iccyilz79z4xpd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
@@ -122,6 +124,16 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
                    "/ntp-" version ".tar.gz")))
        (sha256
         (base32 "06cwhimm71safmwvp6nhxp6hvxsg62whnbgbgiflsqb8mgg40n7n"))
+       ;; Add an upstream patch to fix build with GCC 10.  Taken from
+       ;; <https://bugs.ntp.org/show_bug.cgi?id=3688>.
+       (patches (list (origin
+                        (method url-fetch)
+                        (uri "https://bugs.ntp.org/attachment.cgi?id=1760\
+&action=diff&context=patch&collapsed=&headers=1&format=raw")
+                        (file-name "ntp-gcc-compat.patch")
+                        (sha256
+                         (base32
+                          "13d28sg45rflc7kqiv30asrhna8n69wlpwx16l65rravgpvp90h2")))))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -176,11 +188,16 @@ computers over a network.")
                 "0ijsylc7a4jlpxsqa0jq1w1c7333id8pcakzl7a5749ria1xp0l5"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags `( "--with-privsep-user=ntpd"
-                            "--localstatedir=/var"
-                            ,(string-append "--with-cacert="
-                                            (assoc-ref %build-inputs "libressl")
-                                            "/etc/ssl/cert.pem"))
+     `(#:configure-flags
+       (let* ((libressl (assoc-ref %build-inputs "libressl"))
+              (libressl-version ,(package-version
+                                  (car (assoc-ref (package-inputs this-package)
+                                                  "libressl")))))
+         (list "--with-privsep-user=ntpd"
+               "--localstatedir=/var"
+               (string-append "--with-cacert=" libressl
+                              "/share/libressl-" libressl-version
+                              "/cert.pem")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'modify-install-locations
@@ -199,54 +216,3 @@ secure, easy to configure, and accurate enough for most purposes, so it's more
 minimalist than ntpd.")
     ;; A few of the source files are under bsd-3.
     (license (list l:isc l:bsd-3))))
-
-(define-public tlsdate
-  (package
-    (name "tlsdate")
-    (version "0.0.13")
-    (home-page "https://github.com/ioerror/tlsdate")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (commit (string-append "tlsdate-" version))
-                    (url home-page)))
-              (sha256
-               (base32
-                "0w3v63qmbhpqlxjsvf4k3zp90k6mdzi8cdpgshan9iphy1f44xgl"))
-              (file-name (string-append name "-" version "-checkout"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(;; Disable seccomp when it's not supported--e.g., on aarch64.  See
-       ;; 'src/seccomp.c' for the list of supported systems.
-       #:configure-flags ,(if (any (lambda (system)
-                                     (string-contains (or
-                                                       (%current-target-system)
-                                                       (%current-system))
-                                                      system))
-                                   '("x86_64" "i686" "arm"))
-                              ''()
-                              ''("--disable-seccomp-filter"))
-
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'autogen
-                    (lambda _
-                      ;; The ancestor of 'SOURCE_DATE_EPOCH'; it contains the
-                      ;; date that is recorded in binaries.  It must be a
-                      ;; "recent date" since it is used to detect bogus dates
-                      ;; received from servers.
-                      (setenv "COMPILE_DATE" (number->string 1530144000))
-                      (invoke "sh" "autogen.sh"))))))
-    (inputs `(("openssl" ,openssl-1.0)
-              ("libevent" ,libevent)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("autoconf" ,autoconf)
-                     ("automake" ,automake)
-                     ("libtool" ,libtool)))
-    (synopsis "Extract remote time from TLS handshakes")
-    (description
-     "@command{tlsdate} sets the local clock by securely connecting with TLS
-to remote servers and extracting the remote time out of the secure handshake.
-Unlike ntpdate, @command{tlsdate} uses TCP, for instance connecting to a
-remote HTTPS or TLS enabled service, and provides some protection against
-adversaries that try to feed you malicious time information.")
-    (license l:bsd-3)))

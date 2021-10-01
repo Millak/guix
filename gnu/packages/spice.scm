@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;;
@@ -21,6 +21,7 @@
 
 (define-module (gnu packages spice)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
@@ -53,19 +54,22 @@
   (package
     (name "usbredir")
     (home-page "https://spice-space.org")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "/download/" name "/" name "-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "002yik1x7kn0427xahvnhjby2np14a6xqw7c3dx530n9h5d9rg47"))))
+                "19jnpzlanq0a1m5lmlcsp50wxf7icxvpvclx7hnf0zxw8azngqd3"))))
     (build-system gnu-build-system)
     (propagated-inputs
      `(("libusb" ,libusb)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
     (synopsis "Tools for sending USB device traffic over a network")
     (description
      "Usbredir is a network protocol for sending USB device traffic over a
@@ -212,7 +216,7 @@ which allows users to view a desktop computing environment.")
 (define-public spice
   (package
     (name "spice")
-    (version "0.14.3")
+    (version "0.15.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -220,7 +224,7 @@ which allows users to view a desktop computing environment.")
                 "spice-server/spice-" version ".tar.bz2"))
               (sha256
                (base32
-                "05512vkfayw18ypg4acqbbpr72nsnsz9bj7k8c2wyrvnl3j4n7am"))))
+                "1xd0xffw0g5vvwbq4ksmm3jjfq45f9dw20xpmi82g1fj9f7wy85k"))))
     (build-system gnu-build-system)
     (propagated-inputs
       `(("openssl" ,openssl)
@@ -261,7 +265,7 @@ Internet and from a wide variety of machine architectures.")
 (define-public spice-vdagent
   (package
     (name "spice-vdagent")
-    (version "0.20.0")
+    (version "0.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -269,11 +273,14 @@ Internet and from a wide variety of machine architectures.")
                 "spice-vdagent-" version ".tar.bz2"))
               (sha256
                (base32
-                "0n9k2kna2gd1zi6jv45zsp2jlv439nz5l5jjijirxqaycwi74srf"))))
+                "0n8jlc1pv6mkry161y656b1nk9hhhminjq6nymzmmyjl7k95ymzx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        '("--localstatedir=/var")
+       ;; The test-session-info test fails for unknown reasons (see:
+       ;; https://gitlab.freedesktop.org/spice/linux/vd_agent/-/issues/24).
+       #:make-flags '("XFAIL_TESTS=tests/test-session-info")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-makefile.in
@@ -281,19 +288,27 @@ Internet and from a wide variety of machine architectures.")
              (substitute* "Makefile.in"
                (((string-append "\\$\\(mkdir_p\\) \\$\\(DESTDIR\\)"
                                 "\\$\\(localstatedir\\)/run/spice-vdagentd"))
-                 "-$(mkdir_p) $(DESTDIR)$(localstatedir)/run/spice-vdagentd"))
-             #t))
+                 "-$(mkdir_p) $(DESTDIR)$(localstatedir)/run/spice-vdagentd"))))
          (add-after 'unpack 'patch-spice-vdagent.desktop
            (lambda* (#:key outputs #:allow-other-keys)
             (substitute* "data/spice-vdagent.desktop"
               (("Exec=/usr/bin/spice-vdagent")
                (string-append "Exec=" (assoc-ref outputs "out")
-                              "/bin/spice-vdagent")))
-             #t)))))
+                              "/bin/spice-vdagent")))))
+         (add-after 'unpack 'fix-test-termination
+           (lambda _
+             ;; The termination tests depend on finding the socket file name
+             ;; in the spice-vdagent command line it launched, but by default
+             ;; ps truncates its output, which causes the test to fail (see:
+             ;; https://gitlab.freedesktop.org/spice/linux/vd_agent/-/merge_requests/36).
+             (substitute* "tests/test-termination.c"
+               (("ps -ef")
+                "ps -efww")))))))
     (inputs
       `(("alsa-lib" ,alsa-lib)
         ("dbus" ,dbus)
         ("glib" ,glib)
+        ("gtk+" ,gtk+)
         ("libdrm" ,libdrm)
         ("libpciaccess" ,libpciaccess)
         ("libx11" ,libx11)
@@ -303,7 +318,8 @@ Internet and from a wide variety of machine architectures.")
         ("libxrandr" ,libxrandr)
         ("spice-protocol" ,spice-protocol)))
     (native-inputs
-      `(("pkg-config" ,pkg-config)))
+     `(("pkg-config" ,pkg-config)
+       ("procps" ,procps)))             ;tests use 'ps'
     (synopsis "Spice agent for Linux")
     (description "Spice-vdagent enables sharing the clipboard and guest display
 resolution scaling on graphical console window resize.")
@@ -313,17 +329,18 @@ resolution scaling on graphical console window resize.")
 (define-public libcacard
   (package
     (name "libcacard")
-    (version "2.7.0")
+    (version "2.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://gitlab.freedesktop.org/spice/libcacard/uploads/"
-                    "56cb2499198e78e560a1d4c716cd8ab1"
+                    "9d8f24b131bcbbd7846727ea92952cb5"
                     "/libcacard-" version ".tar.xz"))
+              (patches (search-patches "libcacard-unknown-variable.patch"))
               (sha256
                (base32
-                "0vyvkk4b6xjwq1ccggql13c1x7g4y90clpkqw28257azgn2a1c8n"))))
-    (build-system gnu-build-system)
+                "0azj3rqr2smg0lai24xrn3zr628xmjfrzcggay877zrr64ybj1c0"))))
+    (build-system meson-build-system)
     (arguments
      '(#:tests? #f                      ; TODO Tests require gnutls built with
                                         ; p11-kit
@@ -334,12 +351,11 @@ resolution scaling on graphical console window resize.")
              (substitute* "tests/setup-softhsm2.sh"
                (("\\/usr\\/lib64\\/pkcs11\\/libsofthsm2\\.so")
                 (string-append (assoc-ref inputs "softhsm")
-                               "/lib/softhsm/libsofthsm2.so")))
-             #t)))))
+                               "/lib/softhsm/libsofthsm2.so"))))))))
     (propagated-inputs
      `(("glib" ,glib)                   ; Requires: in the pkg-config file
-       ("nss" ,nss)))                   ; Requires.private: in the pkg-config
-                                        ; file
+       ("nss" ,nss)                     ; Requires.private: in the pkg-config
+       ("pcsc-lite" ,pcsc-lite)))       ; file
     (native-inputs
      `(("openssl" ,openssl)
        ("nss" ,nss "bin")

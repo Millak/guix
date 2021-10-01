@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
+;;; Copyright © 2021 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,8 +42,10 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -54,14 +57,14 @@
 (define-public tor
   (package
     (name "tor")
-    (version "0.4.5.7")
+    (version "0.4.6.7")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dist.torproject.org/tor-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0x7hhl0svfc4yh9xvq7kkzgmwjcw1ak9i0794wjg4biy2fmclzs4"))))
+               "16hga7195va8v0x062dc05nbz4sm3dscifcqpl8235dj47hmqrpz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -224,7 +227,7 @@ networks.")
 (define-public onionshare-cli
   (package
     (name "onionshare-cli")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
       (origin
         (method git-fetch)
@@ -233,13 +236,14 @@ networks.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1llvnvb676s2cs6a4y7isxdj75ddfvskw1p93v5m35vsw7f72kqz"))))
+         (base32 "1qk0zvbaws9md1lmi0al1jc8v86l65nf7n3w1s36iwsfzazc6clv"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-pytest" ,python-pytest)))
     (inputs
      ;; TODO: obfs4proxy
      `(("python-click" ,python-click)
+       ("python-colorama" ,python-colorama)
        ("python-eventlet" ,python-eventlet)
        ("python-flask" ,python-flask)
        ("python-flask-httpauth" ,python-flask-httpauth)
@@ -301,10 +305,14 @@ OnionShare.")
              ;; - test_autostart_timer_too_short
              ;; - test_autostop_timer_too_short
              (substitute* "desktop/tests/test_gui_share.py"
+               (("import os" &)
+                (string-append "import pytest\n" &))
                (("( *)def test_autost(art|op)_(timer(_too_short)?|and_[^(]*)\\(" & >)
                 (string-append > "@pytest.mark.skip\n" &)))
              ;; - test_13_quit_with_server_started_should_warn
              (substitute* "desktop/tests/test_gui_tabs.py"
+               (("import os" &)
+                (string-append "import pytest\n" &))
                (("( *)def test_13" & >)
                 (string-append > "@pytest.mark.skip\n" &)))
              ;; Remove multiline load-path adjustment, so that onionshare-cli
@@ -422,4 +430,48 @@ statistics and status reports on:
 @end enumerate
 
 Potential client and exit connections are scrubbed of sensitive information.")
+    (license license:gpl3+)))
+
+(define-public tractor
+  (package
+    (name "tractor")
+    (version "3.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "traxtor" version))
+       (sha256
+        (base32
+         "0bwj4l6szvx7hpjr8va3hlv0g79sxz02hsb60l61hb314c6d4r3q"))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("glib:bin" ,glib "bin")))       ; for glib-compile-schemas.
+    (inputs
+     `(("python-fire" ,python-fire)
+       ("python-psutil" ,python-psutil)
+       ("python-pygobject" ,python-pygobject)
+       ("python-requests" ,python-requests)
+       ("python-stem" ,python-stem)
+       ("python-termcolor" ,python-termcolor)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-man-page
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (man1 (string-append out "/share/man/man1")))
+               (install-file "tractor/man/tractor.1" man1)
+               #t)))
+         (add-after 'install 'install-gschema
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (schemas (string-append out "/share/glib-2.0/schemas")))
+               (install-file "tractor/tractor.gschema.xml" schemas)
+               #t))))))
+    (home-page "https://framagit.org/tractor")
+    (synopsis "Setup an onion routing proxy")
+    (description
+     "This package uses Python stem library to provide a connection through
+the onion proxy and sets up proxy in user session, so you don't have to mess
+up with TOR on your system anymore.")
     (license license:gpl3+)))

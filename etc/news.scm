@@ -14,6 +14,8 @@
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -21,6 +23,199 @@
 
 (channel-news
  (version 0)
+(entry (commit "a2324d8b56eabf8117bca220a507cc791edffd2e")
+        (title
+         (en "Guix Home is a part of GNU Guix")
+         (de "Guix Home ist jetzt Teil von GNU Guix")
+         (ru "Guix Home теперь поставляется в составе GNU Guix"))
+        (body
+         (en "Guix Home splitted out from rde project and now is a part of
+Guix proper.  It is available as a @emph{technology preview} and thus subject
+to change.
+
+The new @command{guix home} command with its actions allows users to
+manage their packages and configurations (aka. dotfiles) in a declarative way,
+similar to how many people manage their system with @command{guix system}.
+
+Take a look at available actions and arguments:
+@example
+guix home --help
+@end example
+
+See @command{info \"(guix) Home Configuration\"} for more information.")
+         (de "Guix Home ist aus dem rde-Projekt ins offizielle Guix übernommen
+worden. Es ist als @emph{Technologievorschau} bereits verfügbar, aber die
+Schnittstelle kann sich in Zukunft noch ändern.
+
+Der neue Befehl @command{guix home} ermöglicht es, die Pakete und
+Konfigurationsdateien (Dotfiles) für ein Benutzerkonto im deklarativen Stil zu
+verwalten. Es ist analog dazu, wie man @command{guix system} benutzen kann, um
+sein System zu verwalten.
+
+Werfen Sie einen Blick auf die verfügbaren Aktionen und Argumente:
+@example
+guix home --help
+@end example
+
+Führen Sie für mehr Informationen @command{info \"(guix) Home Configuration\"}
+aus.")
+         (ru "Guix Home отделился от проекта rde и теперь является частью
+Guix.  Новая команда @command{guix home} даёт возможность пользователям
+управлять их пакетами и конфигурациями (дотфайлами) для них в декларативном
+стиле, аналогично тому, как многие люди управляют своими системами с помощью
+@command{guix system}.
+
+Чтобы получить список доступных действий и аргументов:
+@example
+guix home --help
+@end example
+
+Смотрите @command{info \"(guix) Home Configuration\"} для получения более
+детальных сведений.")))
+
+ (entry (commit "5b32ad4f6f555d305659cee825879df075b06331")
+        (title
+         (en "New @option{--max-depth} option for @command{guix graph}")
+         (de "Neue Option @option{--max-depth} für @command{guix graph}")
+         (fr "Nouvelle option @option{--max-depth} pour @command{guix graph}"))
+        (body
+         (en "The @command{guix graph} command has a new @option{--max-depth}
+(or @option{-M}) option, which allows you to restrict a graph to the given
+depth---very useful when visualizing large graphs.  For example, the command
+below displays, using the @code{xdot} package, the dependency graph of
+LibreOffice, including only nodes that are at most at distance 2 of
+LibreOffice itself:
+
+@example
+guix graph -M 2 libreoffice | xdot -
+@end example
+
+See @command{info \"(guix) Invoking guix graph\"} for more information.")
+         (de "Der Befehl @command{guix graph} verfügt über eine neue
+Befehlszeilenoption @option{--max-depth} (oder @option{-M}), mit der
+Sie einen Graphen auf die angegebene Tiefe einschränken. Das ist vor
+allem bei großen Graphen nützlich; zum Beispiel zeigt der folgende
+Befehl, unter Verwendung des Pakets @code{xdot}, den
+Abhängigkeitsgraphen von LibreOffice unter Ausschluss der Knoten, die
+eine Distanz größer als 2 von LibreOffice selbst haben:
+
+@example
+guix graph -M 2 libreoffice | xdot -
+@end example
+
+Führen Sie @code{info \"(guix.de) Aufruf von guix graph\"} aus, um mehr zu
+erfahren.")
+         (fr "La commande @command{guix graph} dispose d'une nouvelle option
+@option{--max-depth} (ou @option{-M}) pour restreindre la profondeur d'un
+graphe---très utile pour visualiser des gros graphes.  Par exemple, la
+commande ci-dessous affiche, en utilisant @code{xdot}, le graphe de dépendance
+de LibreOffice en n'incluant que les nœuds qui sont au plus à distance 2 de
+LibreOffice soi-même :
+
+@example
+guix graph -M 2 libreoffice | xdot -
+@end example
+
+Voir @command{info \"(guix.fr) Invoquer guix graph\"} pour plus
+d'informations.")))
+
+ (entry (commit "05f44c2d858a1e7b13c90362c35fa86bdc4d5a24")
+        (title
+         (en "Channel clones fall back to Software Heritage")
+         (de "Zum Klonen von Kanälen wird notfalls auf Software Heritage zurückgegriffen")
+         (fr "Les clones de canaux peuvent recourir à Software Heritage"))
+        (body
+         (en "When @command{guix time-machine} or @command{guix pull} fetches
+a channel pinned to a specific commit, it now automatically falls back to
+cloning it from the Software Heritage archive if the original URL is
+unreachable.  This contributes to long-term reproducibility.  See
+@command{info \"(guix) Replicating Guix\"}.
+
+Automatic fallback also works for other Git clones made on your behalf, such
+as when using @option{--with-commit} and related package transformation
+options.")
+         (de "Wenn bei @command{guix time-machine} oder @command{guix
+pull} ein bestimmter Commit eines Kanals bezogen werden soll, wird
+jetzt für den Fall, dass die ursprüngliche URL unerreichbar ist,
+automatisch vom Software-Heritage-Archiv geklont. Das trägt zur
+langfristigen Reproduzierbarkeit bei. Siehe @command{info \"(guix.de)
+Guix nachbilden\"}.
+
+Der automatische Rückgriff auf Software Heritage findet auch
+Verwendung bei anderen Arten von Git-Klon, die Guix durchführt, z.B.@:
+wenn Sie @option{--with-commit} und ähnliche Paketumwandlungsoptionen
+einsetzen.")
+         (fr "Quand la commande @command{guix time-machine} ou @command{guix
+pull} récupère un canal fixé à une révision spécifique, elle est maintenant
+capable de le cloner depuis l'archive Software Heritage si l'URL initiale
+n'est plus disponible.  Cela contribue à la reproductibilité à long terme.
+Voir @command{info \"(guix.fr) Répliquer Guix\"}.
+
+Ce recours à Software Heritage fonctionne aussi pour les autres clones Git que
+Guix peut faire, comme lorsqu'on utilise @option{--with-commit} et les options
+de transformation de paquet similaires.")))
+
+ (entry (commit "82daab42811a2e3c7684ebdf12af75ff0fa67b99")
+        (title
+         (en "New @samp{deb} format for the @command{guix pack} command")
+         (de "Neues Format @samp{deb} für den Befehl @command{guix pack}"))
+        (body
+         (en "Debian archives (with the .deb file extension) can now be
+produced via the @command{guix pack --format=deb} command, providing an
+alternative distribution path for software built with Guix.  Here is a simple
+example that generates a Debian archive for the @code{hello} package:
+
+@example
+guix pack --format=deb --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+See @command{info \"(guix) Invoking guix pack\"} for more information.")
+         (de "Debian-Archive (mit der Dateinamenserweiterung .deb) können
+jetzt auch mit dem Befehl @command{guix pack --format=deb} erzeugt werden, um
+mit Guix erstellte Software auf andere Art anzubieten.  Hier sehen Sie ein
+einfaches Beispiel, wie ein Debian-Archiv für das Paket @code{hello} angelegt
+wird:
+
+@example
+guix pack --format=deb --symlink=/usr/bin/hello=bin/hello hello
+@end example
+
+Siehe @command{info \"(guix.de) Aufruf von guix pack\"} für mehr
+Informationen.")))
+
+ (entry (commit "bdc298ecee15283451d3aa20a849dd7bb22c8538")
+        (title
+         (en "New @command{guix import egg} command")
+         (de "Neuer Befehl @command{guix import egg}")
+         (zh "新的 @command{guix import egg} 命令"))
+        (body
+         (en "The new @command{guix import egg} command allows packagers to
+generate a package definition or a template thereof given the name of a
+CHICKEN egg package, like so:
+
+@example
+guix import egg sourcehut
+@end example
+
+Run @command{info \"(guix) Invoking guix import\"} for more info.")
+         (de "Mit dem neuen Befehl @command{guix import egg} können
+Paketautoren eine Paketdefinition oder eine Vorlage dafür anhand des Namens
+eines „Egg“-Pakets für CHICKEN erzeugen, etwa so:
+
+@example
+guix import egg sourcehut
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix import\"} aus, um mehr
+Informationen zu bekommen.")
+         (zh "新的 @command{guix import egg} 命令能让贡献者从一个CHICKEN egg生
+成一个包装或包装样板。
+
+@example
+guix import egg sourcehut
+@end example
+
+想了解更多可以运行 @command{info \"(guix) Invoking guix import\"}。")))
 
  (entry (commit "2161820ebbbab62a5ce76c9101ebaec54dc61586")
         (title

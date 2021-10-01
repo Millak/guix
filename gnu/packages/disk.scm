@@ -13,12 +13,14 @@
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +47,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -68,6 +71,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
@@ -357,14 +361,14 @@ output without any plausibility checks.")
 (define-public gptfdisk
   (package
     (name "gptfdisk")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/gptfdisk/gptfdisk/"
                           version "/gptfdisk-" version ".tar.gz"))
       (sha256
-       (base32 "1h1871gwlq05gdc2wym98ghfmq6pn5lh8g5cqy3r49svz2vh8h3m"))))
+       (base32 "1py6klp1b7rni1qjj110snyyxafhx092carlii5vrnh4y1b9ilcm"))))
     (build-system gnu-build-system)
     (inputs
      `(("gettext" ,gettext-minimal)
@@ -494,14 +498,14 @@ and a @command{fsck.vfat} compatibility symlink for use in an initrd.")
 (define-public sdparm
   (package
     (name "sdparm")
-    (version "1.11")
+    (version "1.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://sg.danny.cz/sg/p/"
                            "sdparm-" version ".tar.xz"))
        (sha256
-        (base32 "1nqjc4w2w47zavcbf5xmm53x1zbwgljaw1lpajcdi537cgy32fa8"))))
+        (base32 "1gmdxr36allrgap2j4dv238d8awkj327ww0jjwpjwrpbvfpyzjf4"))))
     (build-system gnu-build-system)
     (home-page "http://sg.danny.cz/sg/sdparm.html")
     (synopsis "Provide access to SCSI device parameters")
@@ -551,14 +555,14 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
 (define-public gparted
   (package
     (name "gparted")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gparted/gparted/gparted-"
                            version "/gparted-" version ".tar.gz"))
        (sha256
-        (base32 "06f72hqx5jf2irzsmi7lgpxxj38ncixh0acb4307wyjd4mfp343c"))))
+        (base32 "02g1s6hrhnias7kj241l0f72kllfhq6338mk2dmzjpmifinjxvjy"))))
     (build-system glib-or-gtk-build-system)
     (arguments
       ;; Tests require access to paths outside the build container, such
@@ -684,7 +688,7 @@ a card with a smaller capacity than stated.")
 (define-public duperemove
   (package
     (name "duperemove")
-    (version "0.11.2")
+    (version "0.11.3")
     (source
      (origin
        (method git-fetch)
@@ -692,7 +696,7 @@ a card with a smaller capacity than stated.")
              (url "https://github.com/markfasheh/duperemove")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1a87mka2sfzhbch2jip6wlvvs0glxq9lqwmyrp359d1rmwwmqiw9"))
+        (base32 "0jwxmhadv2f1mx7gan4gk0xwrjr5g2xa71z1rp0knc1acbkhqdas"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
@@ -924,6 +928,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
               (uri (string-append "https://github.com/storaged-project/"
                                   "libblockdev/releases/download/"
                                   version "-1/libblockdev-" version ".tar.gz"))
+              (patches (search-patches "libblockdev-glib-compat.patch"))
               (sha256
                (base32
                 "0s0nazkpzpn4an00qghjkk9n7gdm5a8dqfr5hfnlk5mk5lma8njm"))))
@@ -1067,19 +1072,27 @@ since they are better handled by external tools.")
 (define-public xfe
   (package
     (name "xfe")
-    (version "1.43.2")
+    (version "1.44")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/xfe/xfe/" version "/"
-                       "xfe-" version ".tar.gz"))
+                       "xfe-" version ".tar.xz"))
        (sha256
-        (base32 "1fl51k5jm2vrfc2g66agbikzirmp0yb0lqhmsssixfb4mky3hpzs"))))
+        (base32 "1dihq03jqjllb69r78d9ihjjadi39v7sgzdf68qpxz5xhp8i8k2r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-potfiles
+           (lambda _
+             ;; To add missing entry 'intl/plural.c' to potfiles list.
+             ;; Refer to https://sourceforge.net/p/xfe/bugs/257/
+             (substitute* "po/POTFILES.in"
+               (("src/help.h")
+                (string-append "src/help.h\n"
+                               "intl/plural.c")))))
          (add-after 'unpack 'patch-bin-dirs
            (lambda* (#:key inputs #:allow-other-keys)
              (let* ((bash (assoc-ref inputs "bash"))
@@ -1134,15 +1147,18 @@ of choice for all light thinking Unix addicts!")
 (define-public hddtemp
   (package
     (name "hddtemp")
-    (version "0.3-beta15")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/hddtemp/hddtemp-"
-                                  version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "0nzgg4nl8zm9023wp4dg007z6x3ir60rwbcapr9ks2al81c431b1"))))
+    ;; <https://savannah.nongnu.org/projects/hddtemp/> advertises the project as
+    ;; ‘orphaned/unmaintained’.  Use a maintained fork/continuation.
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vitlav/hddtemp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04kylb2ka0jimi238zpfq1yii2caidpmj3ck51rvxz03y5lpq8fw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append
@@ -1151,19 +1167,20 @@ of choice for all light thinking Unix addicts!")
                                 "/share/hddtemp/hddtemp.db"))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'delete-autogen.sh
+           (lambda _
+             ;; The default 'bootstrap phase works better.
+             (delete-file "autogen.sh")))
          (add-after 'install 'install-db
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((target (string-append (assoc-ref outputs "out")
-                                          "/share/hddtemp/hddtemp.db")))
-               (mkdir-p (dirname target))
-               (copy-file (assoc-ref inputs "db") target)))))))
-    (inputs
-     `(("db" ,(origin
-                (method url-fetch)
-                (uri "mirror://savannah/hddtemp/hddtemp.db")
-                (sha256
-                 (base32 "1fr6qgns6qv7cr40lic5yqwkkc7yjmmgx8j0z6d93csg3smzhhya"))))))
-    (home-page "https://savannah.nongnu.org/projects/hddtemp/")
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "data/hddtemp.db"
+                             (string-append out "/share/hddtemp"))))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("gettext" ,gettext-minimal)))
+    (home-page "https://github.com/vitlav/hddtemp")
     (synopsis "Report the temperature of hard drives from S.M.A.R.T. information")
     (description "@command{hddtemp} is a small utility that gives you the
 temperature of your hard drive by reading S.M.A.R.T. information (for drives
@@ -1216,3 +1233,126 @@ that support this feature).")
 built on top of jemalloc which enables control of memory characteristics
 and a partitioning of the heap between kinds of memory (for NUMA).")
     (license license:bsd-3)))
+
+(define-public mmc-utils
+  (let ((commit "e9654ebc4a6a48642848822c4a1355a9de4958d1")
+        (revision "0"))
+    (package
+      (name "mmc-utils")
+      (version (git-version "0.1" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc-utils.git")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "1dbsppsmky0r4z6kxwczrw8pih8bhc2pb61gsvs986r4xy6jr17a"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ; No test suite
+         #:make-flags (list (string-append "prefix=" (assoc-ref %outputs "out"))
+                            (string-append "CC=" ,(cc-for-target)))
+         #:phases
+         (modify-phases %standard-phases
+           ;; No ./configure script
+           (delete 'configure)
+           ;; The Makefile's "install-man" target is a no-op.
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (man1 (string-append out "/share/man/man1")))
+                 (install-file "man/mmc.1" man1)))))))
+      (home-page "https://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc-utils.git/")
+      (synopsis "Configure MMC storage devices from userspace")
+      (description "mmc-utils is a command-line tool for configuring and
+inspecting MMC storage devices from userspace.")
+      (license license:gpl2))))
+
+(define-public bmaptools
+  (package
+    (name "bmaptools")
+    (version "3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/intel/bmap-tools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01xzrv5nvd2nvj91lz4x9s91y9825j9pj96z0ap6yvy3w2dgvkkl"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             ;; XXX: Remove failing test.
+             (invoke "nosetests" "-v"
+                     "--exclude" "test_bmap_helpers"))))))
+    (native-inputs
+     `(("python-mock" ,python-mock)
+       ("python-nose" ,python-nose)))
+    (propagated-inputs
+     `(("python-six" ,python-six)))
+    (home-page "https://github.com/intel/bmap-tools")
+    (synopsis "Create block map for a file or copy a file using block map")
+    (description "Bmaptool is a tool for creating the block map (bmap) for a
+file and copying files using the block map.  The idea is that large files,
+like raw system image files, can be copied or flashed a lot faster and more
+reliably with @code{bmaptool} than with traditional tools, like @code{dd} or
+@code{cp}.")
+    (license license:gpl2)))
+
+(define-public duc
+  (package
+    (name "duc")
+    (version "1.4.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zevv/duc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i7ry25xzy027g6ysv6qlf09ax04q4vy0kikl8h0aq5jbxsl9q52"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out")))
+               (substitute* "src/duc/cmd-ui.c"
+                 (("ncursesw/ncurses.h") "ncurses.h"))
+               (substitute* "examples/index.cgi"
+                 (("/usr/local/bin/duc")
+                  (string-append out "/bin/duc"))))))
+         (add-after 'install 'install-examples
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
+               (copy-recursively "examples" (string-append doc "/examples"))))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("cairo" ,cairo)
+       ("pango" ,pango)
+       ("tokyocabinet" ,tokyocabinet)
+       ("ncurses" ,ncurses)))
+    (home-page "http://duc.zevv.nl")
+    (synopsis "Library and suite of tools for inspecting disk usage")
+    (description "Duc maintains a database of accumulated sizes of
+directories of the file system, and allows you to query this database with
+some tools, or create fancy graphs showing you where your bytes are.
+
+Duc comes with console utilities, ncurses and X11 user interfaces and a CGI
+wrapper for disk usage querying and visualisation.")
+    (license license:lgpl3+)))

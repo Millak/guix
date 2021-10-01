@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
@@ -23,6 +23,11 @@
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
+;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +69,7 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -324,7 +330,7 @@ compatibility to existing emulators like xterm, gnome-terminal, konsole, etc.")
          ("libxkbcommon" ,libxkbcommon)
          ("logind" ,elogind)
          ;; MESA can be used for accelerated video output via OpenGLESv2, but
-         ;; it's a bit dependency that we'd rather avoid in the installation
+         ;; it's a big dependency that we'd rather avoid in the installation
          ;; image.
          ;; ("mesa" ,mesa)
          ("pango" ,pango)
@@ -385,6 +391,47 @@ multi-seat support, a replacement for @command{mingetty}, and more.")
 combining, and so on, with a simple interface.")
     (home-page "http://www.leonerd.org.uk/code/libtermkey")
     (license license:expat)))
+
+(define-public mlterm
+  (package
+    (name "mlterm")
+    (version "3.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/mlterm/01release/mlterm-"
+                           version "/mlterm-" version ".tar.gz"))
+       (sha256
+        (base32 "03fnynwv7d1aicwk2rp31sgncv5m65agvygqvsgn59v9di40gnnb"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no tests
+       #:configure-flags
+       (list (string-append "--prefix=" (assoc-ref %outputs "out"))
+             "--disable-static"
+             "--enable-optimize-redrawing"
+             "--with-imagelib=gdk-pixbuf")))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("cairo" ,cairo)
+       ("fontconfig" ,fontconfig)
+       ("freetype" ,freetype)
+       ("fribidi" ,fribidi)
+       ("gdk-pixbuf" ,gdk-pixbuf)
+       ("gtk+" ,gtk+)
+       ("libx11" ,libx11)
+       ("libxext" ,libxext)
+       ("libxft" ,libxft)))
+    (home-page "http://mlterm.sourceforge.net/")
+    (synopsis "Multi-Lingual TERMinal emulator")
+    (description
+     "mlterm is a multi-lingual terminal emulator.  It supports various complex
+character sets and encodings from around the world.  It can display double-width
+(e.g.  East Asian) glyphs, combining characters used for, e.g., Thai and
+Vietnamese, and bi-directional scripts like Arabic and Hebrew.")
+    (license license:bsd-3)))
 
 (define-public picocom
   (package
@@ -643,7 +690,7 @@ embedded kernel situations.")
                     #t))))
       (build-system gnu-build-system)
       (inputs
-       `(("qtbase" ,qtbase)
+       `(("qtbase" ,qtbase-5)
          ("qtdeclarative" ,qtdeclarative)
          ("qtgraphicaleffects" ,qtgraphicaleffects)
          ("qtquickcontrols" ,qtquickcontrols)))
@@ -738,7 +785,7 @@ a server/client mode.")
 (define-public sakura
   (package
     (name "sakura")
-    (version "3.7.1")
+    (version "3.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://launchpad.net/sakura/trunk/"
@@ -746,7 +793,7 @@ a server/client mode.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "12wjmckf03qbnm8cb7qma0980anzajn3l92rj2yr8hhafl74x6kj"))))
+                "1r2kpvxx21r407s07m5p5x0dam6x863991nmcv6k5ap873fxqh2h"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no check phase
@@ -831,7 +878,8 @@ usable with any list--including files, command history, processes and more.")
     (arguments
      (ensure-keyword-arguments
       (package-arguments go-github-com-junegunn-fzf)
-      `(#:phases
+      `(#:install-source? #f
+        #:phases
         (modify-phases %standard-phases
           (add-after 'install 'copy-binaries
             (lambda* (#:key outputs #:allow-other-keys)
@@ -849,11 +897,16 @@ usable with any list--including files, command history, processes and more.")
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
                      (bash-completion (string-append out "/etc/bash_completion.d"))
+                     (fish-completion
+                       (string-append out "/share/fish/vendor_completions.d"))
                      (zsh-completion (string-append out "/share/zsh/site-functions")))
                 (with-directory-excursion "src/github.com/junegunn/fzf"
                   (mkdir-p bash-completion)
                   (copy-file "shell/completion.bash"
                              (string-append bash-completion "/fzf"))
+                  (mkdir-p fish-completion)
+                  (copy-file "shell/key-bindings.fish"
+                             (string-append fish-completion "/fzf.fish"))
                   (mkdir-p zsh-completion)
                   (copy-file "shell/completion.zsh"
                              (string-append zsh-completion "/_fzf"))))))))))
@@ -1029,7 +1082,7 @@ tmux.")
 (define-public kitty
   (package
     (name "kitty")
-    (version "0.19.3")
+    (version "0.20.3")
     (home-page "https://sw.kovidgoyal.net/kitty/")
     (source
      (origin
@@ -1039,7 +1092,7 @@ tmux.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r49bybqy6c0n1lz6yc85py80wb40w757m60f5rszjf200wnyl6s"))
+        (base32 "13qv4469q9q2xdrb77lbyw4dz491zf1qvqx4adp0dd9annnlir5c"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1240,10 +1293,30 @@ an st fork using wld. st is a simple terminal emulator for X originally
 made by suckless.")
     (license license:x11)))
 
+(define-public tio
+  (package
+    (name "tio")
+    (version "1.32")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/tio/tio/releases/download/v"
+             version "/tio-" version ".tar.xz"))
+       (sha256
+        (base32 "0i5fhi4xdk4yznj8wahniizddmx6wlcnnhda1dw9djyajilyvxd8"))))
+    (build-system gnu-build-system)
+    (home-page "https://tio.github.io/")
+    (synopsis "Simple TTY terminal I/O application")
+    (description "tio is a simple TTY terminal application which features a
+straightforward commandline interface to easily connect to TTY devices for
+basic input/output.")
+    (license license:gpl2+)))
+
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.7.1")
+    (version "0.9.0")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1254,18 +1327,18 @@ made by suckless.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b9hy3ya72hhpl8nkayc7dy4f97xp75np48dm5na5pgyv8b45agi"))))
+        (base32 "068y0b1a0m33r7a3j2xf6k602sc8062gm4d5568ynfx6w5n481lj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
        #:cargo-test-flags '("--release" "--" "--skip=config_read_eof")
        #:cargo-inputs
        (("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.1)
-        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.12)
+        ("rust-alacritty-terminal" ,rust-alacritty-terminal-0.15)
         ("rust-clap" ,rust-clap-2)
         ("rust-cocoa" ,rust-cocoa-0.24)
         ("rust-copypasta" ,rust-copypasta-0.7)
-        ("rust-crossfont" ,rust-crossfont-0.2)
+        ("rust-crossfont" ,rust-crossfont-0.3)
         ("rust-embed-resource" ,rust-embed-resource-1)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-gl-generator" ,rust-gl-generator-0.14)
@@ -1378,7 +1451,7 @@ made by suckless.")
        ("libxxf86vm" ,libxxf86vm)
        ("mesa" ,mesa)
        ("rust-bitflags" ,rust-bitflags-1)
-       ("rust-dirs" ,rust-dirs-2)
+       ("rust-dirs" ,rust-dirs-3)
        ("rust-libc" ,rust-libc-0.2)
        ("rust-unicode-width" ,rust-unicode-width-0.1)
        ("rust-wayland-client" ,rust-wayland-client-0.28)
@@ -1408,8 +1481,8 @@ terminal.  Note that you need support for OpenGL 3.2 or higher.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/wtarreau/bootterm")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/wtarreau/bootterm")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32

@@ -3,7 +3,7 @@
 
 This project is a cooperative effort, and we need your help to make it
 grow!  Please get in touch with us on @email{guix-devel@@gnu.org} and
-@code{#guix} on the Freenode IRC network.  We welcome ideas, bug
+@code{#guix} on the Libera Chat IRC network.  We welcome ideas, bug
 reports, patches, and anything that may be helpful to the project.  We
 particularly welcome help on packaging (@pxref{Packaging Guidelines}).
 
@@ -26,9 +26,10 @@ choice.
 * Packaging Guidelines::        Growing the distribution.
 * Coding Style::                Hygiene of the contributor.
 * Submitting Patches::          Share your work.
-* Tracking Bugs and Patches::   Using Debbugs.
+* Tracking Bugs and Patches::   Keeping it all organized.
 * Commit Access::               Pushing to the official repository.
 * Updating the Guix Package::   Updating the Guix package definition.
+* Translating Guix::            Make Guix speak your native language.
 @end menu
 
 @node Building from Git
@@ -241,7 +242,7 @@ Manual}).  First, you need more than an editor, you need
 wonderful @url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:
 
 @example
-guix package -i emacs guile emacs-geiser
+guix package -i emacs guile emacs-geiser emacs-geiser-guile
 @end example
 
 Geiser allows for interactive and incremental development from within
@@ -375,12 +376,12 @@ Once your package builds correctly, please send us a patch
 (@pxref{Submitting Patches}).  Well, if you need help, we will be happy to
 help you too.  Once the patch is committed in the Guix repository, the
 new package automatically gets built on the supported platforms by
-@url{@value{SUBSTITUTE-URL}, our continuous integration system}.
+@url{https://@value{SUBSTITUTE-SERVER-1}, our continuous integration system}.
 
 @cindex substituter
 Users can obtain the new package definition simply by running
 @command{guix pull} (@pxref{Invoking guix pull}).  When
-@code{@value{SUBSTITUTE-SERVER}} is done building the package, installing the
+@code{@value{SUBSTITUTE-SERVER-1}} is done building the package, installing the
 package automatically downloads binaries from there
 (@pxref{Substitutes}).  The only place where human intervention is
 needed is to review and apply the patch.
@@ -531,9 +532,11 @@ It is a good idea to strip commit identifiers in the @code{version}
 field to, say, 7 digits.  It avoids an aesthetic annoyance (assuming
 aesthetics have a role to play here) as well as problems related to OS
 limits such as the maximum shebang length (127 bytes for the Linux
-kernel).  It is best to use the full commit identifiers in
-@code{origin}s, though, to avoid ambiguities.  A typical package
-definition may look like this:
+kernel).  There are helper functions for doing this for packages using
+@code{git-fetch} or @code{hg-fetch} (see below).  It is best to use the
+full commit identifiers in @code{origin}s, though, to avoid ambiguities.
+A typical package definition may look like this:
+
 
 @lisp
 (define my-package
@@ -551,6 +554,20 @@ definition may look like this:
       ;; @dots{}
       )))
 @end lisp
+
+@deffn {Scheme Procedure} git-version @var{VERSION} @var{REVISION} @var{COMMIT}
+Return the version string for packages using @code{git-fetch}.
+
+@lisp
+(git-version "0.2.3" "0" "93818c936ee7e2f1ba1b315578bde363a7d43d05")
+@result{} "0.2.3-0.93818c9"
+@end lisp
+@end deffn
+
+@deffn {Scheme Procedure} hg-version @var{VERSION} @var{REVISION} @var{CHANGESET}
+Return the version string for packages using @code{hg-fetch}.  It works
+in the same way as @code{git-version}.
+@end deffn
 
 @node Synopses and Descriptions
 @subsection Synopses and Descriptions
@@ -994,6 +1011,12 @@ Before submitting a patch that adds or modifies a package definition,
 please run through this check list:
 
 @enumerate
+@cindex @code{git format-patch}
+@cindex @code{git-format-patch}
+@item
+We recommend to use the command @code{git format-patch --base} to
+include the commit where your patch applies.
+
 @item
 If the authors of the packaged software provide a cryptographic
 signature for the release tarball, make an effort to verify the
@@ -1017,20 +1040,21 @@ Make sure the package builds on your platform, using @code{guix build
 We recommend you also try building the package on other supported
 platforms.  As you may not have access to actual hardware platforms, we
 recommend using the @code{qemu-binfmt-service-type} to emulate them.  In
-order to enable it, add the following service to the list of services in
-your @code{operating-system} configuration:
+order to enable it, add the @code{virtualization} service module and the
+following service to the list of services in your @code{operating-system}
+configuration:
 
 @lisp
 (service qemu-binfmt-service-type
  (qemu-binfmt-configuration
-   (platforms (lookup-qemu-platforms "arm" "aarch64"))
+   (platforms (lookup-qemu-platforms "arm" "aarch64"))))
 @end lisp
 
 Then reconfigure your system.
 
 You can then build packages for different platforms by specifying the
 @code{--system} option.  For example, to build the "hello" package for
-the armhf, aarch64, or mips64 architectures, you would run the following
+the armhf or aarch64 architectures, you would run the following
 commands, respectively:
 @example
 guix build --system=armhf-linux --rounds=2 hello
@@ -1061,7 +1085,7 @@ and which optional dependencies should be used.  In particular, avoid adding
 the @code{texlive-tiny} package or @code{texlive-union} procedure instead.
 
 @item
-For important changes, check that dependent package (if applicable) are
+For important changes, check that dependent packages (if applicable) are
 not affected by the change; @code{guix refresh --list-dependent
 @var{package}} will help you do that (@pxref{Invoking guix refresh}).
 
@@ -1079,15 +1103,17 @@ rebuilding induced, commits go to different branches, along these lines:
 @code{staging} branch (non-disruptive changes).  This branch is intended
 to be merged in @code{master} every 6 weeks or so.  Topical changes
 (e.g., an update of the GNOME stack) can instead go to a specific branch
-(say, @code{gnome-updates}).
+(say, @code{gnome-updates}).  This branch is not expected to be
+buildable or usable until late in its development process.
 
 @item more than 1,800 dependent packages
 @code{core-updates} branch (may include major and potentially disruptive
 changes).  This branch is intended to be merged in @code{master} every
-6 months or so.
+6 months or so.  This branch is not expected to be buildable or usable
+until late in its development process.
 @end table
 
-All these branches are @uref{@value{SUBSTITUTE-URL},
+All these branches are @uref{https://@value{SUBSTITUTE-SERVER-1},
 tracked by our build farm} and merged into @code{master} once
 everything has been successfully built.  This allows us to fix issues
 before they hit users, and to reduce the window during which pre-built
@@ -1121,7 +1147,7 @@ as timestamps or randomly-generated output in the build result.
 
 Another option is to use @command{guix challenge} (@pxref{Invoking guix
 challenge}).  You may run it once the package has been committed and
-built by @code{@value{SUBSTITUTE-SERVER}} to check whether it obtains the same
+built by @code{@value{SUBSTITUTE-SERVER-1}} to check whether it obtains the same
 result as you did.  Better yet: Find another machine that can build it
 and run @command{guix publish}.  Since the remote build machine is
 likely different from yours, this can catch non-determinism issues
@@ -1177,6 +1203,11 @@ MIME attachments.  You are advised to pay attention if your email client
 changes anything like line breaks or indentation which could potentially
 break the patches.
 
+Expect some delay when you submit your very first patch to
+@email{guix-patches@@gnu.org}. You have to wait until you get an
+acknowledgement with the assigned tracking number. Future acknowledgements
+should not be delayed.
+
 When a bug is resolved, please close the thread by sending an email to
 @email{@var{NNN}-done@@debbugs.gnu.org}.
 
@@ -1198,6 +1229,18 @@ for more information.  You can install @command{git send-email} with
 @node Tracking Bugs and Patches
 @section Tracking Bugs and Patches
 
+This section describes how the Guix project tracks its bug reports and
+patch submissions.
+
+@menu
+* The Issue Tracker::           The official bug and patch tracker.
+* Debbugs User Interfaces::     Ways to interact with Debbugs.
+* Debbugs Usertags::            Tag reports with custom labels.
+@end menu
+
+@node The Issue Tracker
+@subsection The Issue Tracker
+
 @cindex bug reports, tracking
 @cindex patch submissions, tracking
 @cindex issue tracking
@@ -1208,6 +1251,9 @@ against the @code{guix} ``package'' (in Debbugs parlance), by sending
 email to @email{bug-guix@@gnu.org}, while patch submissions are filed
 against the @code{guix-patches} package by sending email to
 @email{guix-patches@@gnu.org} (@pxref{Submitting Patches}).
+
+@node Debbugs User Interfaces
+@subsection Debbugs User Interfaces
 
 A web interface (actually @emph{two} web interfaces!) are available to
 browse issues:
@@ -1246,12 +1292,72 @@ For example, to list all open issues on @code{guix-patches}, hit:
 @xref{Top,,, debbugs-ug, Debbugs User Guide}, for more information on
 this nifty tool!
 
+@node Debbugs Usertags
+@subsection Debbugs Usertags
+
+@cindex usertags, for debbugs
+@cindex Debbugs usertags
+Debbugs provides a feature called @dfn{usertags} that allows any user to
+tag any bug with an arbitrary label.  Bugs can be searched by usertag,
+so this is a handy way to organize bugs@footnote{The list of usertags is
+public information, and anyone can modify any user's list of usertags,
+so keep that in mind if you choose to use this feature.}.
+
+For example, to view all the bug reports (or patches, in the case of
+@code{guix-patches}) tagged with the usertag @code{powerpc64le-linux}
+for the user @code{guix}, open a URL like the following in a web
+browser:
+@url{https://debbugs.gnu.org/cgi-bin/pkgreport.cgi?tag=powerpc64le-linux;users=guix}.
+
+For more information on how to use usertags, please refer to the
+documentation for Debbugs or the documentation for whatever tool you use
+to interact with Debbugs.
+
+In Guix, we are experimenting with usertags to keep track of
+architecture-specific issues.  To facilitate collaboration, all our
+usertags are associated with the single user @code{guix}.  The following
+usertags currently exist for that user:
+
+@table @code
+
+@item powerpc64le-linux
+The purpose of this usertag is to make it easy to find the issues that
+matter most for the @code{powerpc64le-linux} system type.  Please assign
+this usertag to bugs or patches that affect @code{powerpc64le-linux} but
+not other system types.  In addition, you may use it to identify issues
+that for some reason are particularly important for the
+@code{powerpc64le-linux} system type, even if the issue affects other
+system types, too.
+
+@item reproducibility
+For issues related to reproducibility.  For example, it would be
+appropriate to assign this usertag to a bug report for a package that
+fails to build reproducibly.
+
+@end table
+
+If you're a committer and you want to add a usertag, just start using it
+with the @code{guix} user.  If the usertag proves useful to you,
+consider updating this section of the manual so that others will know
+what your usertag means.
+
 @node Commit Access
 @section Commit Access
 
 @cindex commit access, for developers
-For frequent contributors, having write access to the repository is
-convenient.  When you deem it necessary, consider applying for commit
+Everyone can contribute to Guix without having commit access
+(@pxref{Submitting Patches}).  However, for frequent contributors,
+having write access to the repository can be convenient.  Commit access
+should not be thought of as a ``badge of honor'' but rather as a
+responsibility a contributor is willing to take to help the project.
+
+The following sections explain how to get commit access, how to be ready
+to push commits, and the policies and community expectations for commits
+pushed upstream.
+
+@subsection Applying for Commit Access
+
+When you deem it necessary, consider applying for commit
 access by following these steps:
 
 @enumerate
@@ -1323,6 +1429,29 @@ review and merging system, which, as a consequence, may lead us to have
 fewer people with commit access to the main repository.  Stay tuned!
 @end quotation
 
+All commits that are pushed to the central repository on Savannah must
+be signed with an OpenPGP key, and the public key should be uploaded to
+your user account on Savannah and to public key servers, such as
+@code{keys.openpgp.org}.  To configure Git to automatically sign
+commits, run:
+
+@example
+git config commit.gpgsign true
+
+# Substitute the fingerprint of your public PGP key.
+git config user.signingkey CABBA6EA1DC0FF33
+@end example
+
+You can prevent yourself from accidentally pushing unsigned commits to
+Savannah by using the pre-push Git hook located at
+@file{etc/git/pre-push}:
+
+@example
+cp etc/git/pre-push .git/hooks/pre-push
+@end example
+
+@subsection Commit Policy
+
 If you get commit access, please make sure to follow
 the policy below (discussions of the policy can take place on
 @email{guix-devel@@gnu.org}).
@@ -1340,25 +1469,6 @@ a lot of rebuilds (for example, upgrading GnuTLS or GLib).  We have a
 mailing list for commit notifications (@email{guix-commits@@gnu.org}),
 so people can notice.  Before pushing your changes, make sure to run
 @code{git pull --rebase}.
-
-All commits that are pushed to the central repository on Savannah must
-be signed with an OpenPGP key, and the public key should be uploaded to
-your user account on Savannah and to public key servers, such as
-@code{keys.openpgp.org}.  To configure Git to automatically sign
-commits, run:
-
-@example
-git config commit.gpgsign true
-git config user.signingkey CABBA6EA1DC0FF33
-@end example
-
-You can prevent yourself from accidentally pushing unsigned commits to
-Savannah by using the pre-push Git hook called located at
-@file{etc/git/pre-push}:
-
-@example
-cp etc/git/pre-push .git/hooks/pre-push
-@end example
 
 When pushing a commit on behalf of somebody else, please add a
 @code{Signed-off-by} line at the end of the commit log message---e.g.,
@@ -1381,11 +1491,75 @@ you're confident, it's OK to commit.
 That last part is subject to being adjusted, allowing individuals to commit
 directly on non-controversial changes on parts they’re familiar with.
 
+@subsection Addressing Issues
+
+Peer review (@pxref{Submitting Patches}) and tools such as
+@command{guix lint} (@pxref{Invoking guix lint}) and the test suite
+(@pxref{Running the Test Suite}) should catch issues before they are
+pushed.  Yet, commits that ``break'' functionality might occasionally
+go through.  When that happens, there are two priorities: mitigating
+the impact, and understanding what happened to reduce the chance of
+similar incidents in the future.  The responsibility for both these
+things primarily lies with those involved, but like everything this is
+a group effort.
+
+Some issues can directly affect all users---for instance because they
+make @command{guix pull} fail or break core functionality, because they
+break major packages (at build time or run time), or because they
+introduce known security vulnerabilities.
+
+@cindex reverting commits
+The people involved in authoring, reviewing, and pushing such
+commit(s) should be at the forefront to mitigate their impact in a
+timely fashion: by pushing a followup commit to fix it (if possible),
+or by reverting it to leave time to come up with a proper fix, and by
+communicating with other developers about the problem.
+
+If these persons are unavailable to address the issue in time, other
+committers are entitled to revert the commit(s), explaining in the
+commit log and on the mailing list what the problem was, with the goal
+of leaving time to the original committer, reviewer(s), and author(s)
+to propose a way forward.
+
+Once the problem has been dealt with, it is the responsibility of
+those involved to make sure the situation is understood.  If you are
+working to understand what happened, focus on gathering information
+and avoid assigning any blame.  Do ask those involved to describe what
+happened, do not ask them to explain the situation---this would
+implicitly blame them, which is unhelpful.  Accountability comes from
+a consensus about the problem, learning from it and improving
+processes so that it's less likely to reoccur.
+
+@subsection Commit Revocation
+
 In order to reduce the possibility of mistakes, committers will have
 their Savannah account removed from the Guix Savannah project and their
 key removed from @file{.guix-authorizations} after 12 months of
 inactivity; they can ask to regain commit access by emailing the
 maintainers, without going through the vouching process.
+
+Maintainers@footnote{See @uref{https://guix.gnu.org/en/about} for the
+current list of maintainers.  You can email them privately at
+@email{guix-maintainers@@gnu.org}.} may also revoke an individual's
+commit rights, as a last resort, if cooperation with the rest of the
+community has caused too much friction---even within the bounds of the
+project's code of conduct (@pxref{Contributing}).  They would only do so
+after public or private discussion with the individual and a clear
+notice.  Examples of behavior that hinders cooperation and could lead to
+such a decision include:
+
+@itemize
+@item repeated violation of the commit policy stated above;
+@item repeated failure to take peer criticism into account;
+@item breaching trust through a series of grave incidents.
+@end itemize
+
+When maintainers resort to such a decision, they notify developers on
+@email{guix-devel@@gnu.org}; inquiries may be sent to
+@email{guix-maintainers@@gnu.org}.  Depending on the situation, the
+individual may still be welcome to contribute.
+
+@subsection Helping Out
 
 One last thing: the project keeps moving forward because committers not
 only push their own awesome changes, but also offer some of their time
@@ -1429,3 +1603,266 @@ This check can be disabled, @emph{at your own peril}, by setting the
 @code{GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT} environment variable.  When
 this variable is set, the updated package source is also added to the
 store.  This is used as part of the release process of Guix.
+
+@cindex translation
+@cindex l10n
+@cindex i18n
+@cindex native language support
+@node Translating Guix
+@section Translating Guix
+
+Writing code and packages is not the only way to provide a meaningful
+contribution to Guix.  Translating to a language you speak is another
+example of a valuable contribution you can make.  This section is designed
+to describe the translation process.  It gives you advice on how you can
+get involved, what can be translated, what mistakes you should avoid and
+what we can do to help you!
+
+Guix is a big project that has multiple components that can be translated.
+We coordinate the translation effort on a
+@uref{https://translate.fedoraproject.org/projects/guix/,Weblate instance}
+hosted by our friends at Fedora.  You will need an account to submit
+translations.
+
+Some of the software packaged in Guix also contain translations.  We do not
+host a translation platform for them.  If you want to translate a package
+provided by Guix, you should contact their developers or find the information
+on their website.  As an example, you can find the homepage of the
+@code{hello} package by typing @code{guix show hello}.  On the ``homepage''
+line, you will see @url{https://www.gnu.org/software/hello/} as the homepage.
+
+Many GNU and non-GNU packages can be translated on the
+@uref{https://translationproject.org,Translation Project}.  Some projects
+with multiple components have their own platform.  For instance, GNOME has
+its own platform, @uref{https://l10n.gnome.org/,Damned Lies}.
+
+Guix has five components hosted on Weblate.
+
+@itemize
+@item @code{guix} contains all the strings from the Guix software (the
+      guided system installer, the package manager, etc), excluding packages.
+@item @code{packages} contains the synopsis (single-sentence description
+      of a package) and description (longer description) of packages in Guix.
+@item @code{website} contains the official Guix website, except for
+      blog posts and multimedia content.
+@item @code{documentation-manual} corresponds to this manual.
+@item @code{documentation-cookbook} is the component for the cookbook.
+@end itemize
+
+@subsubheading General Directions
+
+Once you get an account, you should be able to select a component from
+@uref{https://translate.fedoraproject.org/projects/guix/,the guix project},
+and select a language.  If your language does not appear in the list, go
+to the bottom and click on the ``Start new translation'' button.  Select
+the language you want to translate to from the list, to start your new
+translation.
+
+Like lots of other free software packages, Guix uses
+@uref{https://www.gnu.org/software/gettext,GNU Gettext} for its translations,
+with which translatable strings are extracted from the source code to so-called
+PO files.
+
+Even though PO files are text files, changes should not be made with a text
+editor but with PO editing software.  Weblate integrates PO editing
+functionality.  Alternatively, translators can use any of various
+free-software tools for filling in translations, of which
+@uref{https://poedit.net/,Poedit} is one example, and (after logging in)
+@uref{https://docs.weblate.org/en/latest/user/files.html,upload} the changed
+file.  There is also a special
+@uref{https://www.emacswiki.org/emacs/PoMode,PO editing mode} for users of GNU
+Emacs.  Over time translators find out what software they are happy with and
+what features they need.
+
+On Weblate, you will find various links to the editor, that will show various
+subsets (or all) of the strings.  Have a look around and at the
+@uref{https://docs.weblate.org/en/latest/,documentation} to familiarize
+yourself with the platform.
+
+@subsubheading Translation Components
+
+In this section, we provide more detailed guidance on the translation
+process, as well as details on what you should or should not do.  When in
+doubt, please contact us, we will be happy to help!
+
+@table @asis
+@item guix
+Guix is written in the Guile programming language, and some strings contain
+special formatting that is interpreted by Guile.  These special formatting
+should be highlighted by Weblate.  They start with @code{~} followed by one
+or more characters.
+
+When printing the string, Guile replaces the special formatting symbols with
+actual values.  For instance, the string @samp{ambiguous package specification
+`~a'} would be substituted to contain said package specification instead of
+@code{~a}.  To properly translate this string, you must keep the formatting
+code in your translation, although you can place it where it makes sense in
+your language.  For instance, the French translation says @samp{spécification
+du paquet « ~a » ambiguë} because the adjective needs to be placed in the
+end of the sentence.
+
+If there are multiple formatting symbols, make sure to respect the order.
+Guile does not know in which order you intended the string to be read, so it
+will substitute the symbols in the same order as the English sentence.
+
+As an example, you cannot translate @samp{package '~a' has been superseded by
+'~a'} by @samp{'~a' superseeds package '~a'}, because the meaning would be
+reversed.  If @var{foo} is superseded by @var{bar}, the translation would read
+@samp{'foo' superseeds package 'bar'}.  To work around this problem, it
+is possible to use more advanced formatting to select a given piece of data,
+instead of following the default English order.  @xref{Formatted Output,,,
+guile, GNU Guile Reference Manual}, for more information on formatting in Guile.
+
+@item packages
+
+Package descriptions occasionally contain Texinfo markup (@pxref{Synopses
+and Descriptions}).   Texinfo markup looks like @samp{@@code@{rm -rf@}},
+@samp{@@emph@{important@}}, etc.  When translating, please leave markup as is.
+
+The characters after ``@@'' form the name of the markup, and the text between
+``@{'' and ``@}'' is its content.  In general, you should not translate the
+content of markup like @code{@@code}, as it contains literal code that do not
+change with language.  You can translate the content of formatting markup such
+as @code{@@emph}, @code{@@i}, @code{@@itemize}, @code{@@item}.  However, do
+not translate the name of the markup, or it will not be recognized.  Do
+not translate the word after @code{@@end}, it is the name of the markup that
+is closed at this position (e.g.@: @code{@@itemize ... @@end itemize}).
+
+@item documentation-manual and documentation-cookbook
+
+The first step to ensure a successful translation of the manual is to find
+and translate the following strings @emph{first}:
+
+@itemize
+@item @code{version.texi}: Translate this string as @code{version-xx.texi},
+      where @code{xx} is your language code (the one shown in the URL on
+      weblate).
+@item @code{contributing.texi}: Translate this string as
+      @code{contributing.xx.texi}, where @code{xx} is the same language code.
+@item @code{Top}: Do not translate this string, it is important for Texinfo.
+      If you translate it, the document will be empty (missing a Top node).
+      Please look for it, and register @code{Top} as its translation.
+@end itemize
+
+Translating these strings first ensure we can include your translation in
+the guix repository without breaking the make process or the
+@command{guix pull} machinery.
+
+The manual and the cookbook both use Texinfo.  As for @code{packages}, please
+keep Texinfo markup as is.  There are more possible markup types in the manual
+than in the package descriptions.  In general, do not translate the content
+of @code{@@code}, @code{@@file}, @code{@@var}, @code{@@value}, etc.  You
+should translate the content of formatting markup such as @code{@@emph},
+@code{@@i}, etc.
+
+The manual contains sections that can be referred to by name by @code{@@ref},
+@code{@@xref} and @code{@@pxref}.  We have a mechanism in place so you do
+not have to translate their content.  If you keep the English title, we will
+automatically replace it with your translation of that title.  This ensures
+that Texinfo will always be able to find the node. If you decide to change
+the translation of the title, the references will automatically be updated
+and you will not have to update them all yourself.
+
+When translating references from the cookbook to the manual, you need to
+replace the name of the manual and the name of the section.  For instance,
+to translate @code{@@pxref@{Defining Packages,,, guix, GNU Guix Reference
+Manual@}}, you would replace @code{Defining Packages} with the title of that
+section in the translated manual @emph{only} if that title is translated.
+If the title is not translated in your language yet, do not translate it here,
+or the link will be broken.  Replace @code{guix} with @code{guix.xx} where
+@code{xx} is your language code.  @code{GNU Guix Reference Manual} is the
+text of the link.  You can translate it however you wish.
+
+@item website
+
+The website pages are written using SXML, an s-expression version of HTML,
+the basic language of the web.  We have a process to extract translatable
+strings from the source, and replace complex s-expressions with a more familiar
+XML markup, where each markup is numbered.  Translators can arbitrarily change
+the ordering, as in the following example.
+
+@example
+#. TRANSLATORS: Defining Packages is a section name
+#. in the English (en) manual.
+#: apps/base/templates/about.scm:64
+msgid "Packages are <1>defined<1.1>en</1.1><1.2>Defining-Packages.html</1.2></1> as native <2>Guile</2> modules."
+msgstr "Pakete werden als reine <2>Guile</2>-Module <1>definiert<1.1>de</1.1><1.2>Pakete-definieren.html</1.2></1>."
+@end example
+
+Note that you need to include the same markups.  You cannot skip any.
+@end table
+
+In case you make a mistake, the component might fail to build properly with your
+language, or even make guix pull fail.  To prevent that, we have a process
+in place to check the content of the files before pushing to our repository.
+We will not be able to update the translation for your language in Guix, so
+we will notify you (through weblate and/or by email) so you get a chance to
+fix the issue.
+
+@subsubheading Outside of Weblate
+
+Currently, some parts of Guix cannot be translated on Weblate, help wanted!
+
+@itemize
+@item @command{guix pull} news can be translated in @file{news.scm}, but is not
+      available from Weblate.  If you want to provide a translation, you
+      can prepare a patch as described above, or simply send us your
+      translation with the name of the news entry you translated and your
+      language. @xref{Writing Channel News}, for more information about
+      channel news.
+@item Guix blog posts cannot currently be translated.
+@item The installer script (for foreign distributions) is entirely in English.
+@item Some of the libraries Guix uses cannot be translated or are translated
+      outside of the Guix project.  Guile itself is not internationalized.
+@item Other manuals linked from this manual or the cookbook might not be
+      translated.
+@end itemize
+
+@subsubheading Translation Infrastructure
+
+Weblate is backed by a git repository from which it discovers new strings to
+translate and pushes new and updated translations.  Normally, it would be
+enough to give it commit access to our repositories.  However, we decided
+to use a separate repository for two reasons.  First, we would have to give
+Weblate commit access and authorize its signing key, but we do not trust it
+in the same way we trust guix developers, especially since we do not manage
+the instance ourselves.  Second, if translators mess something up, it can
+break the generation of the website and/or guix pull for all our users,
+independently of their language.
+
+For these reasons, we use a dedicated repository to host translations, and we
+synchronize it with our guix and artworks repositories after checking no issue
+was introduced in the translation.
+
+Developers can download the latest PO files from weblate in the Guix
+repository by running the @command{make download-po} command.  It will
+automatically download the latest files from weblate, reformat them to a
+canonical form, and check they do not contain issues.  The manual needs to be
+built again to check for additional issues that might crash Texinfo.
+
+Before pushing new translation files, developers should add them to the
+make machinery so the translations are actually available.  The process
+differs for the various components.
+
+@itemize
+@item New po files for the @code{guix} and @code{packages} components must
+      be registered by adding the new language to @file{po/guix/LINGUAS} or
+      @file{po/packages/LINGUAS}.
+@item New po files for the @code{documentation-manual} component must be
+      registered by adding the file name to @code{DOC_PO_FILES} in
+      @file{po/doc/local.mk}, the generated @file{%D%/guix.xx.texi} manual to
+      @code{info_TEXINFOS} in @file{doc/local.mk} and the generated
+      @file{%D%/guix.xx.texi} and @file{%D%/contributing.xx.texi} to
+      @code{TRANSLATED_INFO} also in @file{doc/local.mk}.
+@item New po files for the @code{documentation-cookbook} component must be
+      registered by adding the file name to @code{DOC_COOKBOOK_PO_FILES} in
+      @file{po/doc/local.mk}, the generated @file{%D%/guix-cookbook.xx.texi}
+      manual to @code{info_TEXINFOS} in @file{doc/local.mk} and the generated
+      @file{%D%/guix-cookbook.xx.texi} to @code{TRANSLATED_INFO} also
+      in @file{doc/local.mk}.
+@item New po files for the @code{website} component must be added to the
+      @code{guix-artwork} repository, in @file{website/po/}.
+      @file{website/po/LINGUAS} and @file{website/po/ietf-tags.scm} must
+      be updated accordingly (see @file{website/i18n-howto.txt} for more
+      information on the process).
+@end itemize

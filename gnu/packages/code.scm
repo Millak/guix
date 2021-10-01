@@ -1,20 +1,20 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@goebel-consult.de>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 lu hui <luhuins@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +63,8 @@
   #:use-module (gnu packages perl-compression)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages web)
@@ -126,36 +128,68 @@ highlighting your own code that seemed comprehensible when you wrote it.")
 (define-public global                             ; a global variable
   (package
     (name "global")
-    (version "6.6.5")
+    (version "6.6.7")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/global/global-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "10vvsgx8v54whb4j9mk5qqyb5h3rdd9da0il3wir8pcpksyk0dww"))))
+               "0g4aslm2zajq605py11s4rs1wdnzcqhkh7bc2xl5az42adzzg839"))))
     (build-system gnu-build-system)
-    (inputs `(("ncurses" ,ncurses)
-              ("libltdl" ,libltdl)
-              ("sqlite" ,sqlite)
-              ("python-wrapper" ,python-wrapper)))
+    (inputs
+      `(("bash" ,bash-minimal)                    ; for wrap-program
+        ("coreutils" ,coreutils)
+        ("ctags" ,universal-ctags)
+        ("libltdl" ,libltdl)
+        ("ncurses" ,ncurses)
+        ("python-pygments" ,python-pygments)
+        ("python-wrapper" ,python-wrapper)
+        ("sqlite" ,sqlite)))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-ncurses="
                             (assoc-ref %build-inputs "ncurses"))
              (string-append "--with-sqlite3="
                             (assoc-ref %build-inputs "sqlite"))
+             (string-append "--with-universal-ctags="
+                            (assoc-ref %build-inputs "ctags") "/bin/ctags")
+             (string-append "--sysconfdir="
+                            (assoc-ref %outputs "out") "/share/gtags")
+             "--localstatedir=/var"         ; This needs to be a writable location.
              "--disable-static")
 
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-globash
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((echo (string-append
+                           (assoc-ref inputs "coreutils") "/bin/echo")))
+               (substitute* "globash/globash.in"
+                 (("/bin/echo") echo)))))
+         (add-after 'post-install 'install-plugins
+           (lambda _
+             (with-directory-excursion "plugin-factory"
+               (invoke "make" "install"))))
+         (add-before 'install 'dont-install-to-/var
+           (lambda _
+             (substitute* "gozilla/Makefile"
+               (("DESTDIR\\)\\$\\{localstatedir\\}") "TMPDIR)"))))
+         (add-after 'install-plugins 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program
+               (string-append (assoc-ref outputs "out")
+                              "/share/gtags/script/pygments_parser.py")
+               `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH"))))))
         (add-after 'install 'post-install
           (lambda* (#:key outputs #:allow-other-keys)
             ;; Install the plugin files in the right place.
             (let* ((out  (assoc-ref outputs "out"))
                    (data (string-append out "/share/gtags"))
                    (vim  (string-append out "/share/vim/vimfiles/plugin"))
-                   (lisp (string-append out "/share/emacs/site-lisp")))
+                   (lisp (string-append out "/share/emacs/site-lisp/"
+                                        ,(package-name this-package) "-"
+                                        ,(package-version this-package))))
               (mkdir-p lisp)
               (mkdir-p vim)
               (rename-file (string-append data "/gtags.el")
@@ -234,16 +268,16 @@ COCOMO model or user-provided parameters.")
 (define-public cloc
   (package
     (name "cloc")
-    (version "1.88")
+    (version "1.90")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/AlDanial/cloc")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ixgswzbzv63bl50gb2kgaqr0jcicjz6w610hi9fal1i7744zraw"))))
+        (base32 "0ic9q6qqw5f1wafp9lpmhr0miasbdb9zr59c0jlymnzffdmnliyc"))))
     (build-system gnu-build-system)
     (inputs
      `(("coreutils" ,coreutils)
@@ -341,7 +375,7 @@ features that are not supported by the standard @code{stdio} implementation.")
 (define-public universal-ctags
   (package
     (name "universal-ctags")
-    (version "5.9.20201018.0")
+    (version "5.9.20210509.0")
     (source
      (origin
        (method git-fetch)
@@ -351,64 +385,44 @@ features that are not supported by the standard @code{stdio} implementation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "174p1w20pl25k996hfw61inw4mqhskmmic1lyw2m65firmkyvs7x"))
+         "1sq94bnbzr40zwihfnsna759bbak0lw27j0yn12iwpg4xgb4hhwp"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove the bundled PackCC and associated build rules.
            (substitute* "Makefile.am"
-             (("\\$\\(packcc_verbose\\)\\$\\(PACKCC\\)")
-              "packcc")
-             (("\\$\\(PEG_SRCS\\) \\$\\(PEG_HEADS\\): packcc\\$\\(EXEEXT\\)")
-              "$(PEG_SRCS) $(PEG_HEADS):")
-             (("noinst_PROGRAMS \\+= packcc")
-              ""))
-           (delete-file-recursively "misc/packcc")
-           #t))))
+             (("^PACKCC = .*")
+              "PACKCC = packcc")
+             (("\\$\\(PACKCC_FILES\\)")
+              "")
+             (("\\$\\(PEG_SRCS\\) \\$\\(PEG_HEADS\\): \\$\\(PACKCC\\)")
+              "$(PEG_SRCS) $(PEG_HEADS):"))
+           (delete-file-recursively "misc/packcc")))))
     (build-system gnu-build-system)
     (arguments
      '(;; Don't use the build-time TMPDIR (/tmp/guix-build-...) at runtime.
        #:configure-flags '("--enable-tmpdir=/tmp")
+       #:test-target "units"
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'make-files-writable
                     (lambda _
-                      (for-each make-file-writable (find-files "."))
-                      #t))
-                  (add-before 'bootstrap 'patch-optlib2c
+                      (for-each make-file-writable (find-files "."))))
+                  (add-before 'bootstrap 'patch-misc
                     (lambda _
-                      ;; The autogen.sh script calls out to optlib2c to
-                      ;; generate translations, so we can not wait for the
-                      ;; patch-source-shebangs phase.
-                      (patch-shebang "misc/optlib2c")
-                      #t))
+                      ;; The autogen.sh script calls out to these scripts, so
+                      ;; we cannot wait for the patch-source-shebangs phase.
+                      (for-each patch-shebang (find-files "misc"))))
                   (add-before 'check 'patch-tests
                     (lambda _
                       (substitute* "misc/units"
                         (("SHELL=/bin/sh")
                          (string-append "SHELL=" (which "sh"))))
                       (substitute* "Tmain/utils.sh"
-                        (("/bin/echo") (which "echo")))
-                      #t)))))
+                        (("/bin/echo") (which "echo"))))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
-       ;; XXX: Use ctags' own packcc fork even though we meticolously unbundle
-       ;; it above.  Mainly for historical reasons, and perhaps their changes
-       ;; get upstreamed in the future.
-       ("packcc"
-        ,(let ((commit "03402b79505dc0024f90d5bebfd7e5d3fb62da9a"))
-           (package
-             (inherit packcc)
-             (source (origin
-                       (method git-fetch)
-                       (uri (git-reference
-                             (url "https://github.com/universal-ctags/packcc")
-                             (commit commit)))
-                       (file-name (git-file-name "packcc-for-ctags"
-                                                 (string-take commit 7)))
-                       (sha256
-                        (base32
-                         "0vxpdk9l2lf7f32nx1p3b3xmw2kw2wp95vnf9bc4lyqrg69pblm0")))))))
+       ("packcc" ,packcc)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)))
     (inputs

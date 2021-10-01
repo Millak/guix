@@ -48,6 +48,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages web)
@@ -88,7 +89,8 @@
      `(#:imported-modules
        (,@%glib-or-gtk-build-system-modules
         (guix build cmake-build-system)
-        (guix build qt-build-system))
+        (guix build qt-build-system)
+        (guix build qt-utils))
        #:modules
        ((guix build glib-or-gtk-build-system)
         ((guix build qt-build-system)
@@ -184,7 +186,7 @@
        ("hangul" ,libhangul)
        ("m17n-db" ,m17n-db)
        ("m17n-lib" ,m17n-lib)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("rime" ,librime)
        ("rsvg" ,librsvg)
        ("wayland" ,wayland)
@@ -223,7 +225,8 @@ focuses especially on Korean input (Hangul, Hanja, ...).")
        #:imported-modules
        (,@%glib-or-gtk-build-system-modules
         (guix build cmake-build-system)
-        (guix build qt-build-system))
+        (guix build qt-build-system)
+        (guix build qt-utils))
        #:modules
        ((guix build glib-or-gtk-build-system)
         ((guix build qt-build-system)
@@ -255,7 +258,7 @@ focuses especially on Korean input (Hangul, Hanja, ...).")
        ("appindicator" ,libappindicator)
        ("chewing" ,libchewing)
        ("gtk+" ,gtk+)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("xtst" ,libxtst)))
     (synopsis "HIME Input Method Editor")
     (description "Hime is an extremely easy-to-use input method framework.  It

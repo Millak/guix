@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
-;;; Copyright © 2017 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -15,6 +15,8 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,7 +49,9 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages time))
+  #:use-module (gnu packages time)
+  #:use-module (gnu packages python-science)
+  #:use-module (gnu packages graph))
 
 (define-public python-sphinx
   (package
@@ -409,33 +413,45 @@ integrate Sphinx documents in web templates and to handle searches.")
 (define-public python-sphinx-gallery
   (package
     (name "python-sphinx-gallery")
-    (version "0.1.13")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/sphinx-gallery/sphinx-gallery")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "14nbqh9krx2l2y2ylbln6l6w8iak3wac1lngvaf278y1cx7685kg"))))
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinx-gallery" version))
+       (sha256
+        (base32 "14zyhr7m92nafhhnzfvnbgkf5m91krd9mjyi24zn59bjq6zyr8hl"))))
     (build-system python-build-system)
     (arguments
-     ;; FIXME: Tests attempt to download <https://docs.python.org/3/objects.inv>,
-     ;; <https://docs.scipy.org/doc/numpy/objects.inv>, and
-     ;; <https://matplotlib.org/objects.inv>.
-     `(#:tests? #f))
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'writable-files-for-tests
+           (lambda _
+             (for-each make-file-writable (find-files "."))))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest" "--pyargs" "sphinx_gallery" "-k"
+                       (string-append
+                        ;; These tests require online data.
+                        "not test_embed_code_links_get_data"
+                        " and not test_run_sphinx"
+                        ;; AssertionError.
+                        " and not test_embed_links_and_styles"))))))))
     (native-inputs
-     `(("python-pytest-runner" ,python-pytest-runner)))
-    (home-page "https://sphinx-gallery.github.io/")
+     `(("python-joblib" ,python-joblib)
+       ("python-matplotlib" ,python-matplotlib)
+       ("python-numpy" ,python-numpy)
+       ("python-pillow" ,python-pillow)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ("python-sphinx" ,python-sphinx)))
+    (home-page "https://sphinx-gallery.github.io/stable/index.html")
     (synopsis "Generate an examples gallery automatically")
     (description
      "@code{sphinx_gallery} is a Sphinx extension that builds an HTML version
 from any set of Python scripts and puts it into an examples gallery.")
     (license license:bsd-3)))
-
-(define-public python2-sphinx-gallery
-  (package-with-python2 python-sphinx-gallery))
 
 (define-public python-sphinx-me
   (package
@@ -606,18 +622,17 @@ and several other projects.")
 (define-public python-breathe
   (package
     (name "python-breathe")
-    (version "4.22.1")
+    (version "4.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "breathe" version))
        (sha256
         (base32
-         "0snk538xv60z4vfhl3f7v5g658za7257hddkg07cknkn33k6cjvf"))))
+         "055h95fkdld7s49878fqjx1nri1drj1czc184vrb7i60mf2yqg9n"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-docutils" ,python-docutils)
-       ("python-six" ,python-six)
        ("python-sphinx" ,python-sphinx)))
     (home-page "https://github.com/michaeljones/breathe")
     (synopsis "ReStructuredText and Sphinx bridge to Doxygen")
@@ -771,3 +786,93 @@ executed during the Sphinx build process.")
     (synopsis "Sphinx cross-reference tool")
     (description "Sphinx objects.inv inspection/manipulation tool.")
     (license license:expat)))
+
+(define-public python-jupyter-sphinx
+  (package
+    (name "python-jupyter-sphinx")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyter_sphinx" version))
+       (sha256
+        (base32
+         "1wma60787m2451nn4bc4jw7bzqksplplb84wqxm34iaw70499z1p"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-ipython" ,python-ipython)
+       ("python-ipywidgets" ,python-ipywidgets)
+       ("python-nbconvert" ,python-nbconvert)
+       ("python-nbformat" ,python-nbformat)))
+    (native-inputs
+     `(("python-sphinx" ,python-sphinx)))
+    (home-page "https://github.com/jupyter/jupyter-sphinx/")
+    (synopsis "Jupyter Sphinx Extensions")
+    (description
+     "Jupyter-sphinx is a Sphinx extension that executes embedded code in a
+Jupyter kernel, and embeds outputs of that code in the document.  It has
+support for rich output such as images, LaTeX math and even JavaScript
+widgets, and supports thebelab for live code execution with minimal effort.")
+    (license license:bsd-3)))
+
+(define-public python-sphinxcontrib-autoprogram
+  (package
+    (name "python-sphinxcontrib-autoprogram")
+    (version "0.1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib-autoprogram" version))
+       (sha256
+        (base32
+         "06hzim0d3fd72kf30fyjbbm5n8ibyybic0kf62gm79qp50zjwr5w"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-six" ,python-six)))
+    (native-inputs
+     `(("python-sphinx" ,python-sphinx)))
+    (home-page "https://github.com/sphinx-contrib/autoprogram")
+    (synopsis "Documenting CLI programs")
+    (description
+     "This Sphinx extension, @code{sphinxcontrib.autoprogram}, provides an
+automated way to document command-line programs.  It scans
+@code{argparse.ArgumentParser} object, and then expands it into a set of
+@code{.. program::} and @code{.. option::} directives.")
+    (license license:bsd-2)))
+
+(define-public python-pydata-sphinx-theme
+  (package
+    (name "python-pydata-sphinx-theme")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydata-sphinx-theme" version))
+       (sha256
+        (base32
+         "055bh3hyh72pafiylvgpsjlk18wm15gg4azc5rjlsww5z475iq1j"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-beautifulsoup4" ,python-beautifulsoup4)))
+    (native-inputs
+     `(("python-beautifulsoup4" ,python-beautifulsoup4)
+       ("python-docutils" ,python-docutils)
+       ("python-jupyter-sphinx" ,python-jupyter-sphinx)
+       ("python-numpy" ,python-numpy)
+       ("python-numpydoc" ,python-numpydoc)
+       ("python-pandas" ,python-pandas)
+       ("python-plotly" ,python-plotly)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-regressions"
+        ,python-pytest-regressions)
+       ("python-recommonmark" ,python-recommonmark)
+       ("python-sphinx" ,python-sphinx)
+       ("python-xarray" ,python-xarray)
+       ("python-docutils" ,python-docutils)
+       ("python-sphinx" ,python-sphinx)))
+    (home-page "https://github.com/pydata/pydata-sphinx-theme")
+    (synopsis "Bootstrap-based Sphinx theme")
+    (description
+     "This package provides a Bootstrap-based Sphinx theme from the PyData
+community.")
+    (license license:bsd-3)))

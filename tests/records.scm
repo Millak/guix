@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +28,16 @@
   (let ((module (make-fresh-user-module)))
     (module-use! module (resolve-interface '(guix records)))
     module))
+
+(define (location-alist loc)
+  ;; Return a location alist.  In Guile < 3.0.6, LOC is always an alist, but
+  ;; starting with 3.0.6, LOC is a vector (at least when it comes from
+  ;; 'syntax-error' exceptions), hence this conversion.
+  (match loc
+    (#(file line column)
+     `((line . ,line) (column . ,column)
+       (filename . ,file)))
+    (_ loc)))
 
 
 (test-begin "records")
@@ -273,6 +283,44 @@
              (equal? (foo-bar y) 1))              ;promise was already forced
            (eq? (foo-baz y) 'b)))))
 
+(test-assert "define-record-type* & sanitize"
+  (begin
+    (define-record-type* <foo> foo make-foo
+      foo?
+      (bar foo-bar
+           (default "bar")
+           (sanitize (lambda (x) (string-append x "!")))))
+
+    (let* ((p (foo))
+           (q (foo (inherit p)))
+           (r (foo (inherit p) (bar "baz")))
+           (s (foo (bar "baz"))))
+      (and (string=? (foo-bar p) "bar!")
+           (equal? q p)
+           (string=? (foo-bar r) "baz!")
+           (equal? s r)))))
+
+(test-assert "define-record-type* & sanitize & thunked"
+  (let ((sanitized 0))
+    (define-record-type* <foo> foo make-foo
+      foo?
+      (bar foo-bar
+           (default "bar")
+           (sanitize (lambda (x)
+                       (set! sanitized (+ 1 sanitized))
+                       (string-append x "!")))))
+
+    (let ((p (foo)))
+      (and (string=? (foo-bar p) "bar!")
+           (string=? (foo-bar p) "bar!")          ;twice
+           (= sanitized 1)             ;sanitizer was called at init time only
+           (let ((q (foo (bar "baz"))))
+             (and (string=? (foo-bar q) "baz!")
+                  (string=? (foo-bar q) "baz!")   ;twice
+                  (= sanitized 2)
+                  (let ((r (foo (inherit q))))
+                    (and (string=? (foo-bar r) "baz!")
+                         (= sanitized 2)))))))))  ;no re-sanitization
 (test-assert "define-record-type* & wrong field specifier"
   (let ((exp '(begin
                 (define-record-type* <foo> foo make-foo
@@ -298,7 +346,7 @@
                     (pk 'expected-loc
                         `((line . ,(- (assq-ref loc 'line) 1))
                           ,@(alist-delete 'line loc)))
-                    (pk 'actual-loc location)))))))
+                    (pk 'actual-loc (location-alist location))))))))
 
 (test-assert "define-record-type* & wrong field specifier, identifier"
   (let ((exp '(begin
@@ -325,7 +373,7 @@
                     (pk 'expected-loc
                         `((line . ,(- (assq-ref loc 'line) 2))
                           ,@(alist-delete 'line loc)))
-                    (pk 'actual-loc location)))))))
+                    (pk 'actual-loc (location-alist location))))))))
 
 (test-assert "define-record-type* & missing initializers"
   (catch 'syntax-error
@@ -396,7 +444,7 @@
                     (pk 'expected-loc
                         `((line . ,(- (assq-ref loc 'line) 1))
                           ,@(alist-delete 'line loc)))
-                    (pk 'actual-loc location)))))))
+                    (pk 'actual-loc (location-alist location))))))))
 
 (test-assert "ABI checks"
   (let ((module (test-module)))

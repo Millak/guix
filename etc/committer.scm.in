@@ -4,6 +4,8 @@
 
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,7 +38,43 @@
         (ice-9 popen)
         (ice-9 match)
         (ice-9 rdelim)
-        (ice-9 textual-ports))
+        (ice-9 regex)
+        (ice-9 textual-ports)
+        (guix gexp))
+
+(define* (break-string str #:optional (max-line-length 70))
+  "Break the string STR into lines that are no longer than MAX-LINE-LENGTH.
+Return a single string."
+  (define (restore-line words)
+    (string-join (reverse words) " "))
+  (if (<= (string-length str) max-line-length)
+      str
+      (let ((words+lengths (map (lambda (word)
+                                  (cons word (string-length word)))
+                                (string-tokenize str))))
+        (match (fold (match-lambda*
+                       (((word . length)
+                         (count current lines))
+                        (let ((new-count (+ count length 1)))
+                          (if (< new-count max-line-length)
+                              (list new-count
+                                    (cons word current)
+                                    lines)
+                              (list length
+                                    (list word)
+                                    (cons (restore-line current) lines))))))
+                     '(0 () ())
+                     words+lengths)
+          ((_ last-words lines)
+           (string-join (reverse (cons (restore-line last-words) lines))
+                        "\n"))))))
+
+(define* (break-string-with-newlines str #:optional (max-line-length 70))
+  "Break the lines of string STR into lines that are no longer than
+MAX-LINE-LENGTH. Return a single string."
+  (string-join (map (cut break-string <> max-line-length)
+                    (string-split str #\newline))
+               "\n"))
 
 (define (read-excursion port)
   "Read an expression from PORT and reset the port position before returning
@@ -204,18 +242,19 @@ corresponding to the top-level definition containing the staged changes."
                           (added (lset-difference equal? new-values old-values)))
                       (format port
                               "[~a]: ~a~%" field
-                              (match (list (map symbol->string removed)
-                                           (map symbol->string added))
-                                ((() added)
-                                 (format #f "Add ~a."
-                                         (listify added)))
-                                ((removed ())
-                                 (format #f "Remove ~a."
-                                         (listify removed)))
-                                ((removed added)
-                                 (format #f "Remove ~a; add ~a."
-                                         (listify removed)
-                                         (listify added)))))))))
+                              (break-string
+                               (match (list (map symbol->string removed)
+                                            (map symbol->string added))
+                                 ((() added)
+                                  (format #f "Add ~a."
+                                          (listify added)))
+                                 ((removed ())
+                                  (format #f "Remove ~a."
+                                          (listify removed)))
+                                 ((removed added)
+                                  (format #f "Remove ~a; add ~a."
+                                          (listify removed)
+                                          (listify added))))))))))
             '(inputs propagated-inputs native-inputs)))
 
 (define* (add-commit-message file-name variable-name #:optional (port (current-output-port)))
@@ -223,6 +262,41 @@ corresponding to the top-level definition containing the staged changes."
   (format port
           "gnu: Add ~a.~%~%* ~a (~a): New variable.~%"
           variable-name file-name variable-name))
+
+(define* (custom-commit-message file-name variable-name message changelog
+                                #:optional (port (current-output-port)))
+  "Print custom commit message for a change to VARIABLE-NAME in FILE-NAME, using
+MESSAGE as the commit message and CHANGELOG as the body of the ChangeLog
+entry. If CHANGELOG is #f, the commit message is reused. If CHANGELOG already
+contains ': ', no colon is inserted between the location and body of the
+ChangeLog entry."
+  (define (trim msg)
+    (string-trim-right (string-trim-both msg) (char-set #\.)))
+
+  (define (changelog-has-location? changelog)
+    (->bool (string-match "^[[:graph:]]+:[[:blank:]]" changelog)))
+
+  (let* ((message (trim message))
+         (changelog (if changelog (trim changelog) message))
+         (message/f (format #f "gnu: ~a: ~a." variable-name message))
+         (changelog/f (if (changelog-has-location? changelog)
+                          (format #f "* ~a (~a)~a."
+                                  file-name variable-name changelog)
+                          (format #f "* ~a (~a): ~a."
+                                  file-name variable-name changelog))))
+    (format port
+            "~a~%~%~a~%"
+            (break-string-with-newlines message/f 72)
+            (break-string-with-newlines changelog/f 72))))
+
+(define (add-copyright-line line)
+  "Add the copyright line on LINE to the previous commit."
+  (let ((author (match:substring
+                 (string-match "^\\+;;; Copyright ©[^[:alpha:]]+(.*)$" line)
+                 1)))
+    (format
+     (current-output-port) "Amend and add copyright line for ~a~%" author)
+    (system* "git" "commit" "--amend" "--no-edit")))
 
 (define (group-hunks-by-sexp hunks)
   "Return a list of pairs associating all hunks with the S-expression they are
@@ -252,6 +326,15 @@ modifying."
 (define %delay 1000)
 
 (define (main . args)
+  (define* (change-commit-message* file-name old new #:rest rest)
+    (let ((changelog #f))
+      (match args
+        ((or (message changelog) (message))
+         (apply custom-commit-message
+                file-name (second old) message changelog rest))
+        (_
+         (apply change-commit-message file-name old new rest)))))
+
   (match (diff-info)
     (()
      (display "Nothing to be done.\n" (current-error-port)))
@@ -297,18 +380,25 @@ modifying."
                                     (error "Cannot apply")))
                                 (usleep %delay))
                               hunks)
-                    (change-commit-message (hunk-file-name (first hunks))
-                                           old new
-                                           (current-output-port))
-                    (let ((port (open-pipe* OPEN_WRITE "git" "commit" "-F" "-")))
-                      (change-commit-message (hunk-file-name (first hunks))
-                                             old new
-                                             port)
+                    (define copyright-line
+                      (any (lambda (line) (and=> (string-prefix? "+;;; Copyright ©" line)
+                                              (const line)))
+                                (hunk-diff-lines (first hunks))))
+                    (cond
+                     (copyright-line
+                      (add-copyright-line copyright-line))
+                     (else
+                      (let ((port (open-pipe* OPEN_WRITE "git" "commit" "-F" "-")))
+                        (change-commit-message* (hunk-file-name (first hunks))
+                                                old new)
+                      (change-commit-message* (hunk-file-name (first hunks))
+                                              old new
+                                              port)
                       (usleep %delay)
                       (unless (eqv? 0 (status:exit-val (close-pipe port)))
-                        (error "Cannot commit")))))
+                        (error "Cannot commit")))))))
                  ;; XXX: we recompute the hunks here because previous
                  ;; insertions lead to offsets.
                  (new+old+hunks (diff-info)))))))
 
-(main)
+(apply main (cdr (command-line)))

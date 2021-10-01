@@ -8,7 +8,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -551,6 +551,7 @@ This package provides the core library and elements.")
       (method url-fetch)
       (uri (string-append "https://gstreamer.freedesktop.org/src/" name "/"
                           name "-" version ".tar.xz"))
+      (patches (search-patches "gst-plugins-base-fix-id3v2-invalid-read.patch"))
       (sha256
        (base32
         "08w3ivbc6n4vdds2ap6q7l8zdk9if8417nznyqidf0adm0lk5r99"))))
@@ -634,7 +635,9 @@ for the GStreamer multimedia library.")
         (string-append
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
-       (patches (search-patches "gst-plugins-good-fix-test.patch"))
+       (patches (search-patches "gst-plugins-good-fix-test.patch"
+                                "gst-plugins-good-CVE-2021-3497.patch"
+                                "gst-plugins-good-CVE-2021-3498.patch"))
        (sha256
         (base32 "1c1rpq709cy8maaykyn1n0kckj9c6fl3mhvixkk6xmdwkcx0xrdn"))))
     (build-system meson-build-system)
@@ -722,6 +725,7 @@ model to base your own plug-in on, here it is.")
               (method url-fetch)
               (uri (string-append "https://gstreamer.freedesktop.org/src/"
                                   name "/" name "-" version ".tar.xz"))
+              (patches (search-patches "gst-plugins-bad-fix-overflow.patch"))
               (sha256
                (base32
                 "0py8k4pbalm9mxkpjbjxis0gp7g74wg5g4yax5q8rccmany0ds3l"))))
@@ -906,6 +910,7 @@ par compared to the rest.")
        (uri
         (string-append "https://gstreamer.freedesktop.org/src/"
                        name "/" name "-" version ".tar.xz"))
+       (patches (search-patches "gst-plugins-ugly-fix-out-of-bound-reads.patch"))
        (sha256
         (base32 "0g6i4db1883q3j0l2gdv46fcqwiiaw63n6mhvsfcms1i1p7g1391"))))
     (build-system meson-build-system)
@@ -966,6 +971,7 @@ think twice about shipping them.")
         (string-append
          "https://gstreamer.freedesktop.org/src/" name "/"
          name "-" version ".tar.xz"))
+       (patches (search-patches "gst-libav-64channels-stack-corruption.patch"))
        (sha256
         (base32 "15n3x3vhshqa3icw93g4vqmqd46122anzqvfxwn6q8famlxlcjil"))))
     (build-system meson-build-system)

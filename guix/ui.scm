@@ -16,6 +16,7 @@
 ;;; Copyright © 2019, 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018 Steve Sprang <scs@stevesprang.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,7 +74,6 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 regex)
   #:autoload   (ice-9 popen) (open-pipe* close-pipe)
-  #:autoload   (system base compile) (compile-file)
   #:autoload   (system repl repl)  (start-repl)
   #:autoload   (system repl debug) (make-debug stack->vector)
   #:autoload   (web uri) (encode-and-join-uri-path)
@@ -197,6 +197,12 @@ information, or #f if it could not be found."
                            (stack-ref stack 1)    ;skip the 'throw' frame
                            last))))
 
+(define-syntax-rule (without-compiler-optimizations exp)
+  ;; Compile with the baseline compiler (-O1), which is much less expensive
+  ;; than -O2.
+  (parameterize (((@ (system base compile) default-optimization-level) 1))
+    exp))
+
 (define* (load* file user-module
                 #:key (on-error 'nothing-special))
   "Load the user provided Scheme source code FILE."
@@ -211,17 +217,7 @@ information, or #f if it could not be found."
   (catch #t
     (lambda ()
       ;; XXX: Force a recompilation to avoid ABI issues.
-      ;;
-      ;; In 2.2.3, the bogus answer to <https://bugs.gnu.org/29226> was to
-      ;; ignore all available .go, not just those from ~/.cache, which in turn
-      ;; meant that we had to rebuild *everything*.  Since this is too costly,
-      ;; we have to turn off '%fresh-auto-compile' with that version, so to
-      ;; avoid ABI breakage in the user's config file, we explicitly compile
-      ;; it (the problem remains if the user's config is spread on several
-      ;; modules.)  See <https://bugs.gnu.org/29881>.
-      (unless (string=? (version) "2.2.3")
-        (set! %fresh-auto-compile #t))
-
+      (set! %fresh-auto-compile #t)
       (set! %load-should-auto-compile #t)
 
       (save-module-excursion
@@ -232,17 +228,12 @@ information, or #f if it could not be found."
          (parameterize ((current-warning-port (%make-void-port "w")))
            (call-with-prompt tag
              (lambda ()
-               (when (string=? (version) "2.2.3")
-                 (catch 'system-error
-                   (lambda ()
-                     (compile-file file #:env user-module))
-                   (const #f)))              ;EACCES maybe, let's interpret it
-
                ;; Give 'load' an absolute file name so that it doesn't try to
                ;; search for FILE in %LOAD-PATH.  Note: use 'load', not
                ;; 'primitive-load', so that FILE is compiled, which then allows
                ;; us to provide better error reporting with source line numbers.
-               (load (canonicalize-path file)))
+               (without-compiler-optimizations
+                (load (canonicalize-path file))))
              (const #f))))))
     (lambda _
       ;; XXX: Errors are reported from the pre-unwind handler below, but
@@ -376,12 +367,14 @@ ARGS is the list of arguments received by the 'throw' handler."
     (('system-error . rest)
      (let ((err (system-error-errno args)))
        (report-error (G_ "failed to load '~a': ~a~%") file (strerror err))))
-    (('read-error "scm_i_lreadparen" message _ ...)
+    (('read-error _ message args ...)
      ;; Guile's missing-paren messages are obscure so we make them more
      ;; intelligible here.
-     (if (string-suffix? "end of file" message)
-         (let ((location (string-drop-right message
-                                            (string-length "end of file"))))
+     (if (or (string-suffix? "end of file" message) ;Guile < 3.0.6
+             (and (string-contains message "unexpected end of input")
+                  (member '(#\)) args)))
+         (let ((location (string-take message
+                                      (+ 2 (string-contains message ": ")))))
            (format (current-error-port) (G_ "~amissing closing parenthesis~%")
                    location))
          (apply throw args)))
@@ -490,12 +483,11 @@ part."
     (lambda _
       (setlocale LC_ALL ""))
     (lambda args
-      (display-hint (G_ "Consider installing the @code{glibc-utf8-locales} or
-@code{glibc-locales} package and defining @code{GUIX_LOCPATH}, along these
-lines:
+      (display-hint (G_ "Consider installing the @code{glibc-locales} package
+and defining @code{GUIX_LOCPATH}, along these lines:
 
 @example
-guix install glibc-utf8-locales
+guix install glibc-locales
 export GUIX_LOCPATH=\"$HOME/.guix-profile/lib/locale\"
 @end example
 
@@ -677,22 +669,17 @@ or variants of @code{~a} in the same profile.")
 or remove one of them from the profile.")
                               name1 name2)))))
 
-(cond-expand
-  (guile-3
-   ;; On Guile 3.0, in 'call-with-error-handling' we need to re-raise.  To
-   ;; preserve useful backtraces in case of unhandled errors, we want that to
-   ;; happen before the stack has been unwound, hence 'guard*'.
-   (define-syntax-rule (guard* (var clauses ...) exp ...)
-     "This variant of SRFI-34 'guard' does not unwind the stack before
+;; On Guile 3.0, in 'call-with-error-handling' we need to re-raise.  To
+;; preserve useful backtraces in case of unhandled errors, we want that to
+;; happen before the stack has been unwound, hence 'guard*'.
+(define-syntax-rule (guard* (var clauses ...) exp ...)
+  "This variant of SRFI-34 'guard' does not unwind the stack before
 evaluating the tests and bodies of CLAUSES."
-     (with-exception-handler
-         (lambda (var)
-           (cond clauses ... (else (raise var))))
-       (lambda () exp ...)
-       #:unwind? #f)))
-  (else
-   (define-syntax-rule (guard* (var clauses ...) exp ...)
-     (guard (var clauses ...) exp ...))))
+  (with-exception-handler
+      (lambda (var)
+        (cond clauses ... (else (raise var))))
+    (lambda () exp ...)
+    #:unwind? #f))
 
 (define (call-with-error-handling thunk)
   "Call THUNK within a user-friendly error handler."
@@ -825,11 +812,13 @@ directories:~{ ~a~}~%")
              ;; Furthermore, use of 'guard*' ensures that the stack has not
              ;; been unwound when we re-raise, since that would otherwise show
              ;; useless backtraces.
-             ((cond-expand
-                (guile-3
-                 ((exception-predicate &exception-with-kind-and-args) c))
-                (else #f))
-              (raise c))
+             (((exception-predicate &exception-with-kind-and-args) c)
+              (if (eq? 'system-error (exception-kind c)) ;EPIPE & co.
+                  (match (exception-args c)
+                    ((proc format-string format-args . _)
+                     (leave (G_ "~a: ~a~%") proc
+                            (apply format #f format-string format-args))))
+                  (raise c)))
 
              ((message-condition? c)
               ;; Normally '&message' error conditions have an i18n'd message.
@@ -839,12 +828,7 @@ directories:~{ ~a~}~%")
               (when (fix-hint? c)
                 (display-hint (condition-fix-hint c)))
               (exit 1)))
-      ;; Catch EPIPE and the likes.
-      (catch 'system-error
-        thunk
-        (lambda (key proc format-string format-args . rest)
-          (leave (G_ "~a: ~a~%") proc
-                 (apply format #f format-string format-args))))))
+      (thunk)))
 
 (define-syntax-rule (leave-on-EPIPE exp ...)
   "Run EXP... in a context where EPIPE errors are caught and lead to 'exit'
@@ -1906,10 +1890,10 @@ DURATION-RELATION with the current time."
   (define (equal-entry? first second)
     (string= (manifest-entry-item first) (manifest-entry-item second)))
 
-  (define (display-entry entry prefix)
+  (define (make-row entry prefix)
     (match entry
       (($ <manifest-entry> name version output location _)
-       (format #t " ~a ~a\t~a\t~a\t~a~%" prefix name version output location))))
+       (list (format #f " ~a ~a" prefix name) version output location))))
 
   (define (list-entries number)
     (manifest-entries (profile-manifest (generation-file-name profile number))))
@@ -1920,8 +1904,8 @@ DURATION-RELATION with the current time."
                   equal-entry? (list-entries new) (list-entries old)))
           (removed (lset-difference
                     equal-entry? (list-entries old) (list-entries new))))
-      (for-each (cut display-entry <> "+") added)
-      (for-each (cut display-entry <> "-") removed)
+      (pretty-print-table (append (map (cut make-row <> "+") added)
+                                  (map (cut make-row <> "-") removed)))
       (newline)))
 
   (display-diff profile gen1 gen2))
@@ -1949,15 +1933,17 @@ already taken."
 (define (display-profile-content profile number)
   "Display the packages in PROFILE, generation NUMBER, in a human-readable
 way."
-  (for-each (match-lambda
-              (($ <manifest-entry> name version output location _)
-               (format #t "  ~a\t~a\t~a\t~a~%"
-                       name version output location)))
 
-            ;; Show most recently installed packages last.
-            (reverse
-             (manifest-entries
-              (profile-manifest (generation-file-name profile number))))))
+  (define entry->row
+    (match-lambda
+      (($ <manifest-entry> name version output location _)
+       (list (string-append "  " name) version output location))))
+
+  (let* ((manifest (profile-manifest (generation-file-name profile number)))
+         (entries  (manifest-entries manifest))
+         (rows     (map entry->row entries)))
+    ;; Show most recently installed packages last.
+    (pretty-print-table (reverse rows))))
 
 (define (display-generation-change previous current)
   (format #t (G_ "switched from generation ~a to ~a~%") previous current))
@@ -2156,16 +2142,14 @@ found."
   (let ((command-main (module-ref module
                                   (symbol-append 'guix- command))))
     (parameterize ((program-name command))
-      ;; Disable canonicalization so we don't don't stat unreasonably.
-      (with-fluids ((%file-port-name-canonicalization #f))
-        (dynamic-wind
-          (const #f)
-          (lambda ()
-            (apply command-main args))
-          (lambda ()
-            ;; Abuse 'exit-hook' (which is normally meant to be used by the
-            ;; REPL) to run things like profiling hooks upon completion.
-            (run-hook exit-hook)))))))
+      (dynamic-wind
+        (const #f)
+        (lambda ()
+          (apply command-main args))
+        (lambda ()
+          ;; Abuse 'exit-hook' (which is normally meant to be used by the
+          ;; REPL) to run things like profiling hooks upon completion.
+          (run-hook exit-hook))))))
 
 (define (run-guix . args)
   "Run the 'guix' command defined by command line ARGS.
@@ -2177,28 +2161,30 @@ and signal handling have already been set up."
   ;; number of 'stat' calls per entry in %LOAD-PATH.  Shamelessly remove it.
   (set! %load-extensions '(".scm"))
 
-  (match args
-    (()
-     (format (current-error-port)
-             (G_ "guix: missing command name~%"))
-     (show-guix-usage))
-    ((or ("-h") ("--help"))
-     (leave-on-EPIPE (show-guix-help)))
-    ((or ("-V") ("--version"))
-     (show-version-and-exit "guix"))
-    (((? option? o) args ...)
-     (format (current-error-port)
-             (G_ "guix: unrecognized option '~a'~%") o)
-     (show-guix-usage))
-    (("help" command)
-     (apply run-guix-command (string->symbol command)
-            '("--help")))
-    (("help" args ...)
-     (leave-on-EPIPE (show-guix-help)))
-    ((command args ...)
-     (apply run-guix-command
-            (string->symbol command)
-            args))))
+  ;; Disable canonicalization so we don't don't stat unreasonably.
+  (with-fluids ((%file-port-name-canonicalization #f))
+    (match args
+      (()
+       (format (current-error-port)
+               (G_ "guix: missing command name~%"))
+       (show-guix-usage))
+      ((or ("-h") ("--help"))
+       (leave-on-EPIPE (show-guix-help)))
+      ((or ("-V") ("--version"))
+       (show-version-and-exit "guix"))
+      (((? option? o) args ...)
+       (format (current-error-port)
+               (G_ "guix: unrecognized option '~a'~%") o)
+       (show-guix-usage))
+      (("help" command)
+       (apply run-guix-command (string->symbol command)
+              '("--help")))
+      (("help" args ...)
+       (leave-on-EPIPE (show-guix-help)))
+      ((command args ...)
+       (apply run-guix-command
+              (string->symbol command)
+              args)))))
 
 (define (guix-main arg0 . args)
   (initialize-guix)

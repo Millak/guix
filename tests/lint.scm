@@ -1,13 +1,16 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
+;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,7 +40,7 @@
   #:use-module (guix lint)
   #:use-module (guix ui)
   #:use-module (guix swh)
-  #:use-module ((guix gexp) #:select (local-file))
+  #:use-module ((guix gexp) #:select (gexp local-file gexp?))
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module ((guix import hackage) #:select (%hackage-url))
   #:use-module ((guix import stackage) #:select (%stackage-url))
@@ -45,6 +48,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-xyz)
+  #:use-module ((gnu packages bash) #:select (bash bash-minimal))
   #:use-module (web uri)
   #:use-module (web server)
   #:use-module (web server http)
@@ -159,6 +163,20 @@
                              (description "This is a 'quoted' thing."))))
      (check-description-style pkg))))
 
+(test-equal "description: leading whitespace"
+  "description contains leading whitespace"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "x"
+                              (description " Whitespace."))))
+     (check-description-style pkg))))
+
+(test-equal "description: trailing whitespace"
+  "description contains trailing whitespace"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "x"
+                              (description "Whitespace. "))))
+     (check-description-style pkg))))
+
 (test-equal "synopsis: not a string"
   "invalid synopsis: #f"
   (single-lint-warning-message
@@ -270,6 +288,42 @@
                             (description "Imagine this is Taylor UUCP."))))
     (check-synopsis-style pkg)))
 
+(test-equal "synopsis: contains trailing whitespace"
+  "synopsis contains trailing whitespace"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "x"
+                             (synopsis "Whitespace "))))
+     (check-synopsis-style pkg))))
+
+(test-equal "name: use underscore in package name"
+  "name should use hyphens instead of underscores"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "under_score")))
+     (check-name pkg))))
+
+(test-equal "tests-true: #:tests? must not be set to #t"
+  "#:tests? must not be explicitly set to #t"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "x" (arguments '(#:tests? #t)))))
+     (check-tests-true pkg))))
+
+(test-equal "tests-true: absent #:tests? is acceptable"
+  '()
+  (let ((pkg (dummy-package "x")))
+    (check-tests-true pkg)))
+
+(test-equal "tests-true: #:tests? #f is acceptable"
+  '()
+  (let ((pkg (dummy-package "x" (arguments '(#:tests? #f)))))
+    (check-tests-true pkg)))
+
+(test-equal "tests-true: #:tests? #t acceptable when compiling natively"
+  '()
+  (let ((pkg (dummy-package "x"
+                            (arguments
+                             `(#:tests? ,(not (%current-target-system)))))))
+    (check-tests-true pkg)))
+
 (test-equal "inputs: pkg-config is probably a native input"
   "'pkg-config' should probably be a native input"
   (single-lint-warning-message
@@ -311,6 +365,92 @@
                              (propagated-inputs
                               `(("python-setuptools" ,python-setuptools))))))
      (check-inputs-should-not-be-an-input-at-all pkg))))
+
+(test-equal "explicit #:sh argument to 'wrap-program' is acceptable"
+  '()
+  (let* ((phases
+          ;; Loosely based on the "catfish" package
+          `(modify-phases %standard-phases
+             (add-after 'install 'wrap
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                 (define catfish (string-append (assoc-ref outputs "out")
+                                                "/bin/catfish"))
+                 (define hsab (string-append (assoc-ref inputs "hsab")
+                                             "/bin/hsab"))
+                 (wrap-program catfish #:sh hsab
+                               `("PYTHONPATH" = (,"blabla")))))))
+         (pkg (dummy-package "x" (arguments `(#:phases ,phases)))))
+    (check-wrapper-inputs pkg)))
+
+(test-equal
+    "'check-wrapper-inputs' detects 'wrap-program' without \"bash\" in inputs"
+  "\"bash-minimal\" should be in 'inputs' when 'wrap-program' is used"
+  (let* ((phases
+          `(modify-phases %standard-phases
+             (add-after 'install 'wrap
+               (lambda _
+                 (wrap-program the-binary bla-bla)))))
+         (pkg (dummy-package "x" (arguments `(#:phases ,phases)))))
+    (single-lint-warning-message (check-wrapper-inputs pkg))))
+
+(test-equal
+    "'check-wrapper-inputs' detects 'wrap-qt-program' without \"bash\" in inputs"
+  "\"bash-minimal\" should be in 'inputs' when 'wrap-qt-program' is used"
+  (let* ((phases
+          `(modify-phases %standard-phases
+             (add-after 'install 'qtwrap
+               (lambda _
+                 (wrap-qt-program the-binary bla-bla)))))
+         (pkg (dummy-package "x" (arguments `(#:phases ,phases)))))
+    (single-lint-warning-message (check-wrapper-inputs pkg))))
+
+(test-equal "\"bash\" in 'inputs' satisfies 'check-wrapper-inputs'"
+  '()
+  (let* ((phases
+          `(modify-phases %standard-phases
+             (add-after 'install 'wrap
+               (lambda _
+                 (wrap-program the-binary bla-bla)))))
+         (pkg (dummy-package "x" (arguments `(#:phases ,phases))
+                             (inputs `(("bash" ,bash))))))
+    (check-wrapper-inputs pkg)))
+
+(test-equal "\"bash-minimal\" in 'inputs' satisfies 'check-wrapper-inputs'"
+  '()
+  (let* ((phases
+          `(modify-phases %standard-phases
+             (add-after 'install 'wrap
+               (lambda _
+                 (wrap-program THE-BINARY bla-bla)))))
+         (pkg (dummy-package "x" (arguments `(#:phases ,phases))
+                             (inputs `(("bash-minimal" ,bash-minimal))))))
+    (check-wrapper-inputs pkg)))
+
+(test-equal "'cut' doesn't hide bad usages of 'wrap-program'"
+  "\"bash-minimal\" should be in 'inputs' when 'wrap-program' is used"
+  (let* ((phases
+          ;; Taken from the "straw-viewer" package
+          `(modify-phases %standard-phases
+             (add-after 'install 'wrap-program
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (bin-dir (string-append out "/bin/"))
+                        (site-dir (string-append out "/lib/perl5/site_perl/"))
+                        (lib-path (getenv "PERL5LIB")))
+                   (for-each (cut wrap-program <>
+                                  `("PERL5LIB" ":" prefix
+                                    (,lib-path ,site-dir)))
+                             (find-files bin-dir)))))))
+         (pkg (dummy-package "x" (arguments `(#:phases ,phases)))))
+    (single-lint-warning-message (check-wrapper-inputs pkg))))
+
+(test-equal "bogus phase specifications don't crash the linter"
+  "invalid phase clause"
+  (let* ((phases
+          `(modify-phases %standard-phases
+             (add-invalid)))
+         (pkg (dummy-package "x" (arguments `(#:phases ,phases)))))
+    (single-lint-warning-message (check-wrapper-inputs pkg))))
 
 (test-equal "file patches: different file name -> warning"
   "file names of patches should start with the package name"
@@ -700,6 +840,80 @@
                                (sha256 %null-sha256))))))
     (check-source-unstable-tarball pkg)))
 
+(define (package-with-phase-changes changes)
+  (dummy-package "x"
+                 (arguments `(#:phases
+                              ,(if (gexp? changes)
+                                   #~(modify-phases %standard-phases
+                                       #$@changes)
+                                   `(modify-phases %standard-phases
+                                      ,@changes))))))
+
+(test-equal "optional-tests: no check phase"
+  '()
+  (let ((pkg (package-with-phase-changes '())))
+    (check-optional-tests pkg)))
+
+(test-equal "optional-tests: check phase respects #:tests?"
+  '()
+  (let ((pkg (package-with-phase-changes
+              '((replace 'check
+                  (lambda* (#:key tests? #:allow-other-keys?)
+                    (when tests?
+                      (invoke "./the-test-suite"))))))))
+    (check-optional-tests pkg)))
+
+(test-equal "optional-tests: check phase ignores #:tests?"
+  "the 'check' phase should respect #:tests?"
+  (let ((pkg (package-with-phase-changes
+              '((replace 'check
+                  (lambda _
+                    (invoke "./the-test-suite")))))))
+    (single-lint-warning-message
+     (check-optional-tests pkg))))
+
+(test-equal "optional-tests: do not crash when #:phases is invalid"
+  "incorrect call to ‘modify-phases’"
+  (let ((pkg (package-with-phase-changes 'this-is-not-a-list)))
+    (single-lint-warning-message
+     (check-optional-tests pkg))))
+
+(test-equal "optional-tests: allow G-exps (no warning)"
+  '()
+  (let ((pkg (package-with-phase-changes #~())))
+    (check-optional-tests pkg)))
+
+(test-equal "optional-tests: allow G-exps (warning)"
+  "the 'check' phase should respect #:tests?"
+  (let ((pkg (package-with-phase-changes
+              #~((replace 'check
+                   (lambda _
+                     (invoke "/the-test-suite")))))))
+    (single-lint-warning-message
+     (check-optional-tests pkg))))
+
+(test-equal "optional-tests: complicated 'check' phase"
+  "the 'check' phase should respect #:tests?"
+  (let ((pkg (package-with-phase-changes
+              '((replace 'check
+                  (lambda* (#:key inputs tests? #:allow-other-keys)
+                    (let ((something (stuff from inputs or native-inputs)))
+                      (delete-file "dateutil/test/test_utils.py")
+                      (invoke "pytest" "-vv"))))))))
+    (single-lint-warning-message
+     (check-optional-tests pkg))))
+
+(test-equal "optional-tests: 'check' phase is not first phase"
+  "the 'check' phase should respect #:tests?"
+  (let ((pkg (package-with-phase-changes
+              '((add-after 'unpack
+                    (lambda _
+                      (chdir "libtestcase-0.0.0")))
+                (replace 'check
+                  (lambda _ (invoke "./test-suite")))))))
+    (single-lint-warning-message
+     (check-optional-tests pkg))))
+
 (test-equal "source: 200"
   '()
   (with-http-server `((200 ,%long-string))
@@ -1001,10 +1215,13 @@
                      (method url-fetch)
                      (uri "http://example.org/foo.tgz")
                      (sha256 (make-bytevector 32))))
-         (warnings (with-http-server '((404 "Not archived."))
+         (warnings (with-http-server '((404 "Not archived.")
+                                       (404 "Not in Disarchive database."))
                      (parameterize ((%swh-base-url (%local-url)))
-                       (check-archival (dummy-package "x"
-                                                      (source origin)))))))
+                       (mock ((guix download) %disarchive-mirrors
+                              (list (%local-url)))
+                             (check-archival (dummy-package "x"
+                                                            (source origin))))))))
     (warning-contains? "not archived" warnings)))
 
 (test-equal "archival: content available"
@@ -1019,6 +1236,29 @@
     (with-http-server `((200 ,content))
       (parameterize ((%swh-base-url (%local-url)))
         (check-archival (dummy-package "x" (source origin)))))))
+
+(test-equal "archival: content unavailable but disarchive available"
+  '()
+  (let* ((origin   (origin
+                     (method url-fetch)
+                     (uri "http://example.org/foo.tgz")
+                     (sha256 (make-bytevector 32))))
+         (disarchive (object->string
+                      '(disarchive (version 0)
+                                   ...
+                                   "swh:1:dir:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")))
+         ;; https://archive.softwareheritage.org/api/1/directory/
+         (directory "[ { \"checksums\": {},
+                         \"dir_id\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",
+                         \"type\": \"file\",
+                         \"name\": \"README\"
+                         \"length\": 42 } ]"))
+    (with-http-server `((404 "")                  ;lookup-content
+                        (200 ,disarchive)         ;Disarchive database lookup
+                        (200 ,directory))         ;lookup-directory
+      (mock ((guix download) %disarchive-mirrors (list (%local-url)))
+            (parameterize ((%swh-base-url (%local-url)))
+              (check-archival (dummy-package "x" (source origin))))))))
 
 (test-assert "archival: missing revision"
   (let* ((origin   (origin
@@ -1077,29 +1317,30 @@
 
 (test-assert "haskell-stackage"
   (let* ((stackage (string-append "{ \"packages\": [{"
-                                  "    \"name\":\"x\","
+                                  "    \"name\":\"pandoc\","
+                                  "    \"synopsis\":\"synopsis\","
                                   "    \"version\":\"1.0\" }]}"))
          (packages (map (lambda (version)
                           (dummy-package
-                           (string-append "ghc-x")
+                           "ghc-pandoc"
                            (version version)
                            (source
                             (dummy-origin
                              (method url-fetch)
                              (uri (string-append
                                    "https://hackage.haskell.org/package/"
-                                   "x-" version "/x-" version ".tar.gz"))))))
-                        '("0.9" "1.0" "2.0")))
+                                   "pandoc-" version "/pandoc-" version ".tar.gz"))))))
+                        '("0.9" "1.0" "100.0")))
          (warnings (pk (with-http-server `((200 ,stackage) ; memoized
-                                           (200 "name: x\nversion: 1.0\n")
-                                           (200 "name: x\nversion: 1.0\n")
-                                           (200 "name: x\nversion: 1.0\n"))
+                                           (200 "name: pandoc\nversion: 1.0\n")
+                                           (200 "name: pandoc\nversion: 1.0\n")
+                                           (200 "name: pandoc\nversion: 1.0\n"))
                          (parameterize ((%hackage-url (%local-url))
                                         (%stackage-url (%local-url)))
                            (append-map check-haskell-stackage packages))))))
     (match warnings
       (((? lint-warning? warning))
-       (and (string=? (package-version (lint-warning-package warning)) "2.0")
+       (and (string=? (package-version (lint-warning-package warning)) "100.0")
             (string-contains (lint-warning-message warning)
                              "ahead of Stackage LTS version"))))))
 

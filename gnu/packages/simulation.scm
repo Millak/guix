@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +41,8 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages tls)
@@ -48,6 +50,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix svn-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -792,3 +795,181 @@ areas in the model.  A semi-implicit method is used to advance the
 solution in time.  The tool is typically applied to the modelling of
 river flooding.")
       (license license:cecill))))
+
+(define-public python-meshio
+  (package
+    (name "python-meshio")
+    (version "4.4.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "meshio" version))
+        (sha256
+          (base32
+           "0kv832s2vyff30zz8yqypw5jifwdanvh5x56d2bzkvy94h4jlddy"))
+        (snippet
+         '(begin
+            (let ((file (open-file "setup.py" "a")))
+              (display "from setuptools import setup\nsetup()" file)
+              (close-port file))
+            #t))))
+    (build-system python-build-system)
+    (inputs
+     `(("h5py" ,python-h5py)
+       ("netcdf4" ,python-netcdf4)))
+    (native-inputs
+     `(("pytest" ,python-pytest)))
+    (propagated-inputs
+     `(("importlib-metadata" ,python-importlib-metadata)
+       ("numpy" ,python-numpy)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key outputs inputs #:allow-other-keys)
+             (add-installed-pythonpath inputs outputs)
+             (invoke "python" "-m" "pytest" "-v" "tests")
+             #t)))))
+    (home-page "https://github.com/nschloe/meshio")
+    (synopsis "I/O for mesh files")
+    (description "There are various file formats available for
+representing unstructured meshes and mesh data.  The @code{meshio}
+package is able to read and write mesh files in many formats and to
+convert files from one format to another.  Formats such as cgns, h5m,
+gmsh, xdmf and vtk are supported.  The package provides command-line
+tools and a collection of Python modules for programmatic use.")
+    (license license:expat)))
+
+(define-public python-pygmsh
+  (package
+    (name "python-pygmsh")
+    (version "7.1.11")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/nschloe/pygmsh")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+           "0g4yllmxks7yb50vild5xi1cma0yl16vsq6rfvdwmqaj4hwxcabk"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            (let ((file (open-file "setup.py" "a")))
+              (display "from setuptools import setup\nsetup()" file)
+              (close-port file))
+            ;; A reference to setuptools in the configuration file
+            ;; triggers an attempt to download the package from pypi.
+            ;; The reference is not needed since the package is
+            ;; provided by the build system.
+            (substitute* "setup.cfg"
+              (("^[[:blank:]]+setuptools>=42\n") ""))
+            #t))))
+    (build-system python-build-system)
+    (native-inputs
+     `(("pytest" ,python-pytest)
+       ("wheel" ,python-wheel)))
+    (propagated-inputs
+     `(("importlib-metadata" ,python-importlib-metadata)
+       ("gmsh" ,gmsh)
+       ("meshio" ,python-meshio)
+       ("numpy" ,python-numpy)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest" "-v" "tests"))
+             #t)))))
+    (home-page "https://github.com/nschloe/pygmsh")
+    (synopsis "Python frontend for Gmsh")
+    (description "The goal of @code{pygmsh} is to combine the power of
+Gmsh with the versatility of Python.  The package generalises many of
+the methods and functions that comprise the Gmsh Python API.  In this
+way the meshing of complex geometries using high-level abstractions is
+made possible.  The package provides a Python library together with a
+command-line utility for mesh optimisation.")
+    (license license:lgpl3)))
+
+(define-public python-dolfin-adjoint
+  (package
+    (name "python-dolfin-adjoint")
+    (version "2019.1.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/dolfin-adjoint/pyadjoint")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+           "0xhy76a5f33hz94wc9g2mc5qmwkxfccbbc6yxl7psm130afp8lhn"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            ;; One of the migration tests attempts to call openmpi
+            ;; recursively and fails.  See
+            ;; https://bitbucket.org/mpi4py/mpi4py/issues/95.  Run the
+            ;; test sequentially instead.
+            (with-directory-excursion "tests/migration/optimal_control_mms"
+              (substitute* "test_optimal_control_mms.py"
+                (("\\\"mpirun\\\", \\\"-n\\\", \\\"2\\\", ") "")))
+            ;; Result files are regenerated in the check phase.
+            (delete-file-recursively
+             "tests/migration/viscoelasticity/test-results")
+            #t))))
+    (build-system python-build-system)
+    (inputs
+     `(("fenics" ,fenics)
+       ("openmpi" ,openmpi)
+       ("pybind11" ,pybind11)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("python-coverage" ,python-coverage)
+       ("python-decorator" ,python-decorator)
+       ("python-flake8" ,python-flake8)
+       ("python-pkgconfig" ,python-pkgconfig)
+       ("python-pytest" ,python-pytest)))
+    (propagated-inputs
+     `(("scipy" ,python-scipy)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'mpi-setup
+                    ,%openmpi-setup)
+         (add-after 'install 'install-doc
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((doc (string-append (assoc-ref outputs "out")
+                                        "/share/doc/" ,name "-"
+                                        ,version))
+                    (examples (string-append doc "/examples")))
+               (mkdir-p examples)
+               (copy-recursively "examples" examples))
+             #t))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (setenv "HOME" (getcwd))
+               (and (invoke "py.test" "-v" "tests/fenics_adjoint")
+                    (invoke "py.test" "-v" "tests/migration")
+                    (invoke "py.test" "-v" "tests/pyadjoint")))
+             #t)))))
+    (home-page "http://www.dolfin-adjoint.org")
+    (synopsis "Automatic differentiation library")
+    (description "@code{python-dolfin-adjoint} is a solver of
+differential equations associated with a governing system and a
+functional of interest.  Working from the forward model the solver
+automatically derives the discrete adjoint and tangent linear models.
+These additional models are key ingredients in many algorithms such as
+data assimilation, optimal control, sensitivity analysis, design
+optimisation and error estimation.  The dolfin-adjoint project
+provides the necessary tools and data structures for cases where the
+forward model is implemented in @code{fenics} or
+@url{https://firedrakeproject.org,firedrake}.")
+    (license license:lgpl3)))

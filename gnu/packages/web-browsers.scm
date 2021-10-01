@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Timo Eisenmann <eisenmann@fn.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -19,6 +19,8 @@
 ;;; Copyright © 2021 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Alexander Krotov <krotov@iitp.ru>
+;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2021 Christopher Howard <christopher@librehacker.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,7 +50,9 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
@@ -145,48 +149,17 @@ management, extensions such as advertisement blocker and colorful tabs.")
     (home-page "https://www.midori-browser.org")
     (license license:lgpl2.1+)))
 
-(define-public dillo
-  (package
-    (name "dillo")
-    (version "3.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.dillo.org/download/"
-                                  "dillo-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "12ql8n1lypv3k5zqgwjxlw1md90ixz3ag6j1gghfnhjq3inf26yv"))))
-    (build-system gnu-build-system)
-    (arguments `(#:configure-flags '("--enable-ssl" "--enable-ipv6")))
-    (native-inputs `(("pkg-config" ,pkg-config)))
-    (inputs `(("fltk" ,fltk)
-              ("fontconfig" ,fontconfig)
-              ("libjpeg" ,libjpeg-turbo)
-              ("libpng" ,libpng)
-              ("libxcursor" ,libxcursor)
-              ("libxft" ,libxft)
-              ("libxi" ,libxi)
-              ("libxinerama" ,libxinerama)
-              ("openssl" ,openssl-1.0) ;XXX try latest openssl for dillo > 3.0.5
-              ("perl" ,perl)
-              ("zlib" ,zlib)))
-    (synopsis "Very small and fast graphical web browser")
-    (description "Dillo is a minimalistic web browser particularly intended for
-older or slower computers and embedded systems.")
-    (home-page "https://www.dillo.org")
-    (license license:gpl3+)))
-
 (define-public links
   (package
     (name "links")
-    (version "2.22")
+    (version "2.23")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "0k88qbmq0mf6zmk2v158c0rxvqbi7ysn58xyf4qqw7kz79mrhr03"))))
+                "0idcwryfbf6ds5x2fx1k21m459qz5mrz3hw4a6ziiz91yl1d4q36"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -232,7 +205,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
 (define-public luakit
   (package
     (name "luakit")
-    (version "2.2")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -241,7 +214,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0km5nxn6innzn8pfsvlkxvfj2z5g46fp6dy5bnmaklbn13mqlcrn"))))
+                "1khbn7dpizkznnwkw7rcfhf72dnd1nazk7dwb4rkh9i97b53mf1y"))))
     (inputs
      `(("lua-5.1" ,lua-5.1)
        ("gtk+" ,gtk+)
@@ -255,7 +228,7 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
      `(("pkg-config" ,pkg-config)))
     (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:make-flags
+     `(#:make-flags
        (let ((out (assoc-ref %outputs "out")))
          (list
           "CC=gcc"
@@ -271,6 +244,10 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
                      (string-append
                       (assoc-ref %build-inputs "lua5.1-filesystem")
                       "/lib/lua/5.1/?.so;;"))
+             #t))
+         (add-before 'build 'set-version
+           (lambda _
+             (setenv "VERSION_FROM_GIT" ,(package-version this-package))
              #t))
          (delete 'configure)
          (delete 'check)
@@ -297,7 +274,7 @@ and the GTK+ toolkit.")
 (define-public lynx
   (package
     (name "lynx")
-    (version "2.9.0dev.6")
+    (version "2.9.0dev.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -305,7 +282,7 @@ and the GTK+ toolkit.")
                     "/lynx" version ".tar.bz2"))
               (sha256
                (base32
-                "1cjkpwxc1r8x8q73bgh9a4skaph1bwa0anml6f6lvf7lh5zvxw3q"))))
+                "06jhv8ibfw1xkf8d8zrnkc2aw4d462s77hlp6f6xa6k8awzxvmkg"))))
     (build-system gnu-build-system)
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("perl" ,perl)))
@@ -468,7 +445,7 @@ access.")
          ("font-google-noto" ,font-google-noto)
          ("font-openmoji" ,font-openmoji)
          ("openssl" ,openssl)
-         ("qtbase" ,qtbase)
+         ("qtbase" ,qtbase-5)
          ("qtmultimedia" ,qtmultimedia)
          ("qtsvg" ,qtsvg)))
       (home-page "https://kristall.random-projects.net")
@@ -484,7 +461,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.0.2")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
@@ -492,7 +469,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "0fxkazz4ykmkiww27l92yr96hq00qn5vvjmknxcy4cl97d2pxa28"))))
+        (base32 "05n64mw9lzzxpxr7lhakbkm9ir3x8p0rwk6vbbg01aqg5iaanyj0"))))
     (build-system python-build-system)
     (native-inputs
      `(("python-attrs" ,python-attrs))) ; for tests
@@ -600,20 +577,16 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    ;; Package the pre-release because latest stable 1.5.0 does not build
-    ;; anymore.
-    (version "2-pre-release-6")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             ;; TODO: Mirror seems to hang, let's fallback to GitHub for now.
-             ;; (url "https://source.atlas.engineer/public/nyxt")
              (url "https://github.com/atlas-engineer/nyxt")
              (commit version)))
        (sha256
         (base32
-         "0kcqp3p070i6x2jj27h8pxzvmhrzsl4kl3vkc8m76abkxc9lvn03"))
+         "0l8x32fsvk2gbymcda1yc0ggnsymjazqd58vmi05ifiiv7jwxyjw"))
        (file-name (git-file-name "nyxt" version))))
     (build-system gnu-build-system)
     (arguments
@@ -627,10 +600,6 @@ driven and does not detract you from your daily work.")
          (add-before 'build 'fix-common-lisp-cache-folder
            (lambda _
              (setenv "HOME" "/tmp")
-             #t))
-         (add-before 'build 'set-version
-           (lambda _
-             (setenv "NYXT_VERSION" ,version)
              #t))
          (add-before 'check 'configure-tests
            (lambda _
@@ -647,12 +616,7 @@ driven and does not detract you from your daily work.")
                                   (string-append (assoc-ref inputs lib) "/lib"))
                                 libs)
                            ":"))
-                    (gi-path (string-join
-                              (map (lambda (lib)
-                                     (string-append (assoc-ref inputs lib)
-                                                    "/lib/girepository-1.0"))
-                                   libs)
-                              ":"))
+                    (gi-path (getenv "GI_TYPELIB_PATH"))
                     (xdg-path (string-join
                                (map (lambda (lib)
                                       (string-append (assoc-ref inputs lib) "/share"))
@@ -671,32 +635,36 @@ driven and does not detract you from your daily work.")
     (inputs
      `(("alexandria" ,sbcl-alexandria)
        ("bordeaux-threads" ,sbcl-bordeaux-threads)
+       ("cl-base64" ,sbcl-cl-base64)
        ("cl-calispel" ,sbcl-calispel)
        ("cl-containers" ,sbcl-cl-containers)
        ("cl-css" ,sbcl-cl-css)
        ("cl-custom-hash-table" ,sbcl-custom-hash-table)
        ("cl-html-diff" ,sbcl-cl-html-diff)
        ("cl-json" ,sbcl-cl-json)
-       ("cl-markup" ,sbcl-cl-markup)
        ("cl-ppcre" ,sbcl-cl-ppcre)
        ("cl-prevalence" ,sbcl-cl-prevalence)
+       ("cl-qrencode" ,sbcl-cl-qrencode)
        ("closer-mop" ,sbcl-closer-mop)
        ("cluffer" ,sbcl-cluffer)
        ("dexador" ,sbcl-dexador)
        ("enchant" ,sbcl-enchant)
-       ("file-attributes" ,sbcl-file-attributes)
+       ("flexi-streams" ,cl-flexi-streams)
        ("fset" ,sbcl-fset)
        ("hu.dwim.defclass-star" ,sbcl-hu.dwim.defclass-star)
        ("iolib" ,sbcl-iolib)
        ("local-time" ,sbcl-local-time)
        ("log4cl" ,sbcl-log4cl)
+       ("lparallel" ,sbcl-lparallel)
        ("mk-string-metrics" ,sbcl-mk-string-metrics)
        ("moptilities" ,sbcl-moptilities)
        ("named-readtables" ,sbcl-named-readtables)
        ("parenscript" ,sbcl-parenscript)
        ("plump" ,sbcl-plump)
+       ("clss" ,sbcl-clss)
        ("quri" ,sbcl-quri)
        ("serapeum" ,sbcl-serapeum)
+       ("spinneret" ,sbcl-spinneret)
        ("str" ,sbcl-cl-str)
        ("swank" ,sbcl-slime-swank)
        ("trivia" ,sbcl-trivia)
@@ -709,12 +677,17 @@ driven and does not detract you from your daily work.")
        ("cl-cffi-gtk" ,sbcl-cl-cffi-gtk)
        ("cl-webkit" ,sbcl-cl-webkit)
        ("glib-networking" ,glib-networking)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)))
+       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ;; GObjectIntrospection
+       ("cl-gobject-introspection" ,sbcl-cl-gobject-introspection)
+       ("gtk" ,gtk+)                    ; For the main loop.
+       ("webkitgtk" ,webkitgtk)         ; Required when we use its typelib.
+       ("gobject-introspection" ,gobject-introspection)))
     (synopsis "Extensible web-browser in Common Lisp")
     (home-page "https://nyxt.atlas.engineer")
-    (description "Nyxt is a keyboard-oriented, extensible web-browser
-designed for power users.  The application has familiar Emacs and VI
-key-bindings and is fully configurable and extensible in Common Lisp.")
+    (description "Nyxt is a keyboard-oriented, extensible web browser designed
+for power users.  Conceptually inspired by Emacs and Vim, it has familiar
+key-bindings (Emacs, vi, CUA), and is fully configurable in Common Lisp.")
     (license license:bsd-3)))
 
 (define-public next
@@ -726,7 +699,7 @@ key-bindings and is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.3.2")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
@@ -734,10 +707,11 @@ key-bindings and is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "14yj3l3h6i6ygdhyiwdg2cg6y5imlkql09r7dm5v7xm1ja0sr9lp"))))
+        (base32 "0gqaipgs16kw711ijhshmbhhvlyjvh37wxdz059p4vvjhfrxbr1v"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #false))                ;no tests
+     `(#:tests? #false                  ;no tests
+       #:configure-flags (list "-DTFDN_ENABLE_SSE41=OFF")))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
@@ -838,7 +812,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.5.9")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -847,7 +821,7 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zdra4q4mkrldv7dpag9p1bsma2k9pvp9pp9k7qsbm0alj7xwqpr"))))
+        (base32 "117p1wxi5swmqw429qrswxz2zvp1dcaw2145gk6zxlgwln48qxl8"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("curl" ,curl)
@@ -908,3 +882,59 @@ http, and https via third-party applications.")
 interface.")
     (home-page "https://www.autistici.org/interzona/tinmop.html")
     (license license:gpl3+)))
+
+(define-public telescope
+  (package
+    (name "telescope")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
+                           version "/telescope-" version ".tar.gz"))
+       (sha256
+        (base32 "0phvwhxvm63y68cyvzw5dk60yjzfv6bpxf5c4bl08daj3ia48fbk"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f))                    ;no tests
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("libevent"  ,libevent)
+       ("libressl"  ,libressl)
+       ("ncurses"   ,ncurses)))
+    (home-page "https://git.omarpolo.com/telescope/about/")
+    (synopsis "Gemini client with a terminal interface")
+    (description "Telescope is a w3m-like browser for Gemini.")
+    (license license:x11)))
+
+(define-public av-98
+  (package
+    (name "av-98")
+    (version "1.0.1")
+    (properties
+     '((upstream-name . "AV-98")))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "AV-98" version))
+       (sha256
+        (base32
+         "02fjnc2rvm010gb3i07p8r4xlhrmnv1wca1qymfjcymr7vm68h0i"))))
+    (build-system python-build-system)
+    (home-page "https://tildegit.org/solderpunk/AV-98/")
+    (synopsis "Command line Gemini client")
+    (description "AV-98 is an experimental client for the Gemini protocol.
+Features include
+@itemize
+@item TOFU or CA server certificate validation;
+@item Extensive client certificate support if an openssl binary is available;
+@item Ability to specify external handler programs for different MIME types;
+@item Gopher proxy support;
+@item Advanced navigation tools like tour and mark (as per VF-1);
+@item Bookmarks;
+@item IPv6 support;
+@item Support for any character encoding recognised by Python.
+@end itemize")
+    (license license:bsd-2)))

@@ -3,7 +3,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
@@ -878,7 +878,7 @@ useful for C++.")
     (native-inputs
      `(("perl-extutils-depends" ,perl-extutils-depends)
        ("perl-extutils-pkgconfig" ,perl-extutils-pkgconfig)))
-    (inputs
+    (propagated-inputs
      `(("glib" ,glib)))
     (home-page "https://metacpan.org/release/Glib")
     (synopsis "Perl wrappers for the GLib utility and Object libraries")
@@ -887,6 +887,32 @@ libraries.  GLib is a portability and utility library; GObject provides a
 generic type system with inheritance and a powerful signal system.  Together
 these libraries are used as the foundation for many of the libraries that make
 up the Gnome environment, and are used in many unrelated projects.")
+    (license license:lgpl2.1+)))
+
+(define-public perl-glib-object-introspection
+  (package
+    (name "perl-glib-object-introspection")
+    (version "0.049")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/X/XA/XAOC/"
+                           "Glib-Object-Introspection-" version ".tar.gz"))
+       (sha256
+        (base32 "0mxg6pz8qfyipw0ypr54alij0c4adzg94f62702b2a6hkp5jhij6"))))
+    (build-system perl-build-system)
+    (native-inputs
+     `(("perl-extutils-depends" ,perl-extutils-depends)
+       ("perl-extutils-pkgconfig" ,perl-extutils-pkgconfig)))
+    (propagated-inputs
+     `(("gobject-introspection" ,gobject-introspection)
+       ("perl-cairo-gobject" ,perl-cairo-gobject)
+       ("perl-glib" ,perl-glib)))
+    (home-page "https://metacpan.org/dist/Glib-Object-Introspection")
+    (synopsis "Dynamically create Perl language bindings")
+    (description "Glib::Object::Introspection uses the gobject-introspection and
+libffi projects to dynamically create Perl bindings for a wide variety of
+libraries.  Examples include gtk+, webkit, libsoup and many more.")
     (license license:lgpl2.1+)))
 
 (define telepathy-glib
@@ -1056,6 +1082,7 @@ Some codes examples can be find at:
     (build-system meson-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
+       ("gsettings" ,gsettings-desktop-schemas) ; for ‘org.gnome.system.proxy’
        ("glib:bin" ,glib "bin")         ; for glib-compile-resources
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
@@ -1081,7 +1108,11 @@ Some codes examples can be find at:
            (lambda _
              (substitute* "libappstream-glib/as-self-test.c"
                (("g_test_add_func.*as_test_store_local_appdata_func);") ""))
-             #t)))))
+             #t))
+         (add-before 'check 'set-home
+           (lambda _
+             ;; Some tests want write access there.
+             (setenv "HOME" "/tmp"))))))
     (home-page "https://github.com/hughsie/appstream-glib")
     (synopsis "Library for reading and writing AppStream metadata")
     (description "This library provides objects and helper methods to help
@@ -1092,7 +1123,7 @@ metadata.")
 (define perl-net-dbus
   (package
     (name "perl-net-dbus")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
@@ -1100,7 +1131,7 @@ metadata.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0sg2w147b9r9ykfzjs7y9qxry73xkjnhnk4qf95kfv79p5nnk4c3"))))
+         "1g0w8i5scmh7kfy9mmvv8q326627qf38z26mvczmn8x1yjgar8g7"))))
     (build-system perl-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)

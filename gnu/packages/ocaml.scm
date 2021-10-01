@@ -17,9 +17,11 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 divoplade <d@divoplade.fr>
-;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
+;;; Copyright © 2020, 2021 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 aecepoglu <aecepoglu@fastmail.fm>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +63,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -74,6 +77,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web)
   #:use-module (gnu packages web-browsers)
@@ -200,8 +204,7 @@ This package produces a native @command{ocamlc} and a bytecode @command{ocamllex
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("libx11" ,libx11)
-       ;; For libiberty, needed for objdump support.
-       ("gcc:lib" ,(canonical-package gcc) "lib")
+       ("libiberty" ,libiberty)               ;needed for objdump support
        ("zlib" ,zlib)))                       ;also needed for objdump support
     (arguments
      `(#:phases
@@ -646,7 +649,14 @@ underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
        #:make-flags
        (list (string-append "LIBDIR="
                             (assoc-ref %outputs "out")
-                            "/lib/ocaml/site-lib"))))
+                            "/lib/ocaml/site-lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-test-script
+           (lambda _
+             (substitute* "applications/dose-tests.py"
+               (("warning\\(")
+                "from warnings import warn\nwarn(")))))))
     (propagated-inputs
       `(("ocaml-graph" ,ocaml-graph)
         ("ocaml-cudf" ,ocaml-cudf)
@@ -738,7 +748,7 @@ let () = String.split_on_char ':' (Sys.getenv \"OCAMLPATH\")
 (define-public ocaml-opam-file-format
   (package
     (name "ocaml-opam-file-format")
-    (version "2.0.0")
+    (version "2.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -747,7 +757,7 @@ let () = String.split_on_char ':' (Sys.getenv \"OCAMLPATH\")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fqb99asnair0043hhc8r158d6krv5nzvymd0xwycr5y72yrp0hv"))))
+                "1fxhppdmrysr2nb5z3c448h17np48f3ga9jih33acj78r4rdblcs"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; No tests
@@ -766,7 +776,7 @@ the opam file format.")
 (define-public opam
   (package
     (name "opam")
-    (version "2.0.8")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -775,78 +785,99 @@ the opam file format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z0ls6xxa4ws5xw0am5gxmh5apnmyhgkcphrncp53w34j8sfydsj"))))
-    (build-system ocaml-build-system)
+                "12l7l4pbzy71k1yc7ym5aczajszvc9bqkdnfg8xhqc8ch8j1h1lj"))))
+    (build-system dune-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "SHELL="
-                            (assoc-ref %build-inputs "bash")
-                            "/bin/sh"))
+     `(#:test-target "."
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'pre-build
+           (lambda* (#:key inputs make-flags #:allow-other-keys)
+             (let ((bash (assoc-ref inputs "bash"))
+                   (bwrap (string-append (assoc-ref inputs "bubblewrap")
+                                         "/bin/bwrap")))
+               (substitute* "src/core/opamSystem.ml"
+                 (("\"/bin/sh\"")
+                  (string-append "\"" bash "/bin/sh\""))
+                 (("getconf")
+                  (which "getconf")))
+               ;; Use bwrap from the store directly.
+               (substitute* "src/state/shellscripts/bwrap.sh"
+                 (("-v bwrap") (string-append "-v " bwrap))
+                 (("exec bwrap") (string-append "exec " bwrap))
+                 ;; Mount /gnu and /run/current-system in the
+                 ;; isolated environment when building with opam.
+                 ;; This is necessary for packages to find external
+                 ;; dependencies, such as a C compiler, make, etc...
+                 (("^add_sys_mounts /usr")
+                  (string-append "add_sys_mounts "
+                                 (%store-directory)
+                                 " /run/current-system /usr")))
+               (substitute* "src/client/opamInitDefaults.ml"
+                 (("\"bwrap\"") (string-append "\"" bwrap "\""))))))
+         (add-before 'check 'prepare-checks
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Opam tests need to run an isolated environment from a writable
+             ;; home directory.
+             (mkdir-p "test-home")
+             (setenv "HOME" (string-append (getcwd) "/test-home"))
 
-       ;; For some reason, 'ocp-build' needs $TERM to be set.
-       #:make-flags
-       (list "TERM=screen"
-             (string-append "SHELL="
-                            (assoc-ref %build-inputs "bash")
-                            "/bin/sh"))
-
-       #:test-target "tests"
-
-       #:phases (modify-phases %standard-phases
-                 (add-before 'build 'pre-build
-                   (lambda* (#:key inputs make-flags #:allow-other-keys)
-                     (let ((bash (assoc-ref inputs "bash"))
-                           (bwrap (string-append (assoc-ref inputs "bubblewrap")
-                                                 "/bin/bwrap")))
-                       (substitute* "src/core/opamSystem.ml"
-                         (("\"/bin/sh\"")
-                          (string-append "\"" bash "/bin/sh\""))
-                         (("getconf")
-                          (which "getconf")))
-                       ;; Use bwrap from the store directly.
-                       (substitute* "src/state/shellscripts/bwrap.sh"
-                         (("-v bwrap") (string-append "-v " bwrap))
-                         (("exec bwrap") (string-append "exec " bwrap))
-                         ;; Mount /gnu and /run/current-system in the
-                         ;; isolated environment when building with opam.
-                         ;; This is necessary for packages to find external
-                         ;; dependencies, such as a C compiler, make, etc...
-                         (("^add_sys_mounts /usr")
-                          "add_sys_mounts /gnu /run/current-system /usr"))
-                       (substitute* "src/client/opamInitDefaults.ml"
-                         (("\"bwrap\"") (string-append "\"" bwrap "\"")))
-                       ;; Generating the documentation needs write access
-                       (for-each
-                         (lambda (f) (chmod f #o644))
-                         (find-files "doc" "."))
-                       #t)))
-                 (add-before 'check 'pre-check
-                   (lambda _
-                     ;; The "repo" test attempts to open some of these files O_WRONLY
-                     ;; and fails with a bogus "OpamSystem.File_not_found" otherwise.
-                     (for-each
-                      (lambda (f) (chmod f #o644))
-                      (find-files "tests/packages" "\\.opam$"))
-
-                     (substitute* "tests/Makefile"
-                       (("/usr/bin/printf")
-                        (which "printf"))
-                       ;; By default tests run twice: once with a "local" repository
-                       ;; and once with a git repository: disable the git tests to
-                       ;; avoid the dependency.
-                       (("all: local git")
-                        "all: local"))
-                     #t)))))
+             ;; Opam tests require data from opam-repository. Instead of
+             ;; downloading them with wget from the guix environment, copy the
+             ;; content to the expected directory.
+             (substitute* "tests/reftests/dune.inc"
+               (("tar -C.*opam-archive-([0-9a-f]*)[^)]*" _ commit)
+                (string-append "rmdir %{targets}) (run cp -r "
+                               (assoc-ref inputs (string-append "opam-repo-" commit))
+                               "/ %{targets}) (run chmod +w -R %{targets}"))
+               (("wget[^)]*") "touch %{targets}")
+               ;; Disable a failing test because of different line wrapping
+               (("diff cli-versioning.test cli-versioning.out") "run true")
+               ;; Disable a failing test because it tries to clone a git
+               ;; repository from inside bwrap
+               (("diff upgrade-format.test upgrade-format.out") "run true"))
+             (substitute* "tests/reftests/dune"
+               ;; Because of our changes to the previous file, we cannot check
+               ;; it can be regenerated
+               (("diff dune.inc dune.inc.gen") "run true"))
+             ;; Ensure we can run the generated build.sh (no /bin/sh)
+             (substitute* '("tests/reftests/legacy-local.test"
+                            "tests/reftests/legacy-git.test")
+               (("#! ?/bin/sh") (string-append "#!" (assoc-ref inputs "bash")
+                                               "/bin/sh")))
+             (substitute* "tests/reftests/testing-env"
+               (("OPAMSTRICT=1")
+                (string-append "OPAMSTRICT=1\nLIBRARY_PATH="
+                               (assoc-ref inputs "libc") "/lib"))))))))
     (native-inputs
-     `(("dune" ,dune)
-       ("ocaml-cppo" ,ocaml-cppo)
+      (let ((opam-repo (lambda (commit hash)
+                         (origin
+                           (method git-fetch)
+                           (uri (git-reference
+                                  (url "https://github.com/ocaml/opam-repository")
+                                  (commit commit)))
+                           (file-name (git-file-name "opam-repo" commit))
+                           (sha256 (base32 hash))))))
+       `(("dune" ,dune)
+         ("ocaml-cppo" ,ocaml-cppo)
 
-       ;; For tests.
-       ("openssl" ,openssl)
-       ("python" ,python-wrapper)
-       ("rsync" ,rsync)
-       ("unzip" ,unzip)
-       ("which" ,which)))
+         ;; For tests.
+         ("git" ,git-minimal)
+         ("openssl" ,openssl)
+         ("python" ,python-wrapper)
+         ("rsync" ,rsync)
+         ("unzip" ,unzip)
+         ("which" ,which)
+
+         ;; Data for tests
+         ("opam-repo-009e00fa" ,(opam-repo "009e00fa86300d11c311309a2544e5c6c3eb8de2"
+                                           "1wwy0rwrsjf4q10j1rh1dazk32fbzhzy6f7zl6qmndidx9b1bq7w"))
+         ("opam-repo-ad4dd344" ,(opam-repo "ad4dd344fe5cd1cab49ced49d6758a9844549fb4"
+                                           "1a1qj47kj8xjdnc4zc50ijrix1kym1n7k20n3viki80a7518baw8"))
+         ("opam-repo-c1d23f0e" ,(opam-repo "c1d23f0e17ec83a036ebfbad1c78311b898a2ca0"
+                                           "0j9abisx3ifzm66ci3p45mngmz4f0fx7yd9jjxrz3f8w5jffc9ii"))
+         ("opam-repo-f372039d" ,(opam-repo "f372039db86a970ef3e662adbfe0d4f5cd980701"
+                                           "0ld7fcry6ss6fmrpswvr6bikgx299w97h0gwrjjh7kd7rydsjdws")))))
     (inputs
      `(("ocaml" ,ocaml)
        ("ncurses" ,ncurses)
@@ -925,14 +956,14 @@ concrete syntax of the language (Quotations, Syntax Extensions).")
 (define-public hevea
   (package
     (name "hevea")
-    (version "2.34")
+    (version "2.35")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://hevea.inria.fr/old/"
                                   "hevea-" version ".tar.gz"))
               (sha256
                (base32
-                "1pzyszxw90klpcmhjqrjfc8cw6c0gm4w2blim8ydyxb6rq6qml1s"))))
+                "1jwydkb9ldb1sx815c364dxgr569f2rbbzgxbn2kanrybpdbm2gi"))))
     (build-system gnu-build-system)
     (inputs
      `(("ocaml" ,ocaml)))
@@ -958,7 +989,7 @@ written in Objective Caml.")
 (define-public ocaml-num
   (package
     (name "ocaml-num")
-    (version "1.1")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
@@ -967,33 +998,8 @@ written in Objective Caml.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a4mhxgs5hi81d227aygjx35696314swas0vzy3ig809jb7zq4h0"))))
-    (build-system ocaml-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'fix-makefile
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; This package supposes we install to the same directory as
-             ;; the ocaml package.
-             (substitute* "src/META"
-               (("\"\\^\"") (string-append "\"" (assoc-ref outputs "out")
-                                           "/lib/ocaml/site-lib\"")))
-             (substitute* "src/Makefile"
-               (("\\) \\$\\(STDLIBDIR\\)")
-                (string-append ") " (assoc-ref outputs "out")
-                               "/lib/ocaml/site-lib")))
-             #t))
-         (add-after 'install 'fix-stubslib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (format #t "~a~%" (find-files "." ".*.so"))
-             (let ((stubdir (string-append (assoc-ref outputs "out")
-                                           "/lib/ocaml/site-lib/stublibs")))
-               (delete-file stubdir)
-               (mkdir-p stubdir)
-               (install-file "src/dllnums.so" stubdir))
-             #t)))))
+        (base32 "1vzdnvpj5dbj3ifx03v25pj2jj1ccav072v4d29pk1czdba2lzfc"))))
+    (build-system dune-build-system)
     (home-page "https://github.com/ocaml/num")
     (synopsis "Arbitrary-precision integer and rational arithmetic")
     (description "OCaml-Num contains the legacy Num library for
@@ -1054,7 +1060,7 @@ Emacs.")
 (define-public ocaml-menhir
   (package
     (name "ocaml-menhir")
-    (version "20200211")
+    (version "20210419")
     (source
      (origin
        (method git-fetch)
@@ -1063,7 +1069,7 @@ Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "019izf51kdc7pzkw68zg8a2alc8lxw1gwdp7in970mr90n16b5zj"))))
+        (base32 "0jcbr7s3iwfr7xxfybs3h407g76yfp5yq5r9i0wg2ahvvbqh03ky"))))
     (build-system dune-build-system)
     (inputs
      `(("ocaml" ,ocaml)))
@@ -1342,9 +1348,6 @@ compilers that can directly deal with packages.")
                (base32
                 "0gxjw1bhmjcjzri6x6psqrkbbyq678b69bqfl9i1zswp7cj2lryg"))))
     (build-system dune-build-system)
-    (inputs
-     ;; XXX Should libev be a propagated-input of ocaml-lwt?
-     `(("libev" ,libev)))
     (propagated-inputs
      `(("lwt" ,ocaml-lwt)
        ("ocaml-stdlib-shims" ,ocaml-stdlib-shims)))
@@ -1448,7 +1451,7 @@ files in these formats.")
 (define-public ocaml-zarith
   (package
     (name "ocaml-zarith")
-    (version "1.9.1")
+    (version "1.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1457,7 +1460,7 @@ files in these formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hv5ywz1q2cgn8apfz490clwk5hcynr937g2v8i13x2ax4bnv0lz"))))
+                "1jslm1rv1j0ya818yh23wf3bb6hz7qqj9pn5fwl45y9mqyqa01s9"))))
     (build-system ocaml-build-system)
     (native-inputs
      `(("perl" ,perl)))
@@ -1468,7 +1471,14 @@ files in these formats.")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda _ (invoke "./configure"))))))
+           (lambda _ (invoke "./configure")))
+         (add-after 'install 'move-sublibs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib/ocaml/site-lib")))
+               (mkdir-p (string-append lib "/stublibs"))
+               (rename-file (string-append lib "/zarith/dllzarith.so")
+                            (string-append lib "/stublibs/dllzarith.so"))))))))
     (home-page "https://forge.ocamlcore.org/projects/zarith/")
     (synopsis "Implements arbitrary-precision integers")
     (description "Implements arithmetic and logical operations over
@@ -1617,7 +1627,7 @@ full_split, cut, rcut, etc..")
 (define dune-bootstrap
   (package
     (name "dune")
-    (version "2.7.1")
+    (version "2.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1626,7 +1636,7 @@ full_split, cut, rcut, etc..")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10qgx83fq8b522y9mpllrp0l5cgmr2bs5s7aix5img21hlbm34in"))))
+                "01np4jy0f3czkpzkl38k9b4lsh41qk52ldaqxl98mgigyzhx4w0b"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; require odoc
@@ -1774,32 +1784,51 @@ module of this library is parameterised by the type of S-expressions.")
 (define-public ocaml-migrate-parsetree
   (package
     (name "ocaml-migrate-parsetree")
-    (version "1.7.3")
+    (version "2.1.0")
     (home-page "https://github.com/ocaml-ppx/ocaml-migrate-parsetree")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append home-page ".git"))
+             (url home-page)
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0336vz0galjnsazbmkxjwdv1qvdqsx2rgrvp778xgq2fzasz45cx"))))
+         "1cpgdqcs624nd1p271ddakgyibl0ia4f6dzivnz9qdwszsinwr89"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:tests? #f))
+    (arguments `(#:tests? #f))
     (propagated-inputs
      `(("ocaml-ppx-derivers" ,ocaml-ppx-derivers)
        ("ocamlbuild" ,ocamlbuild)
        ("ocaml-result" ,ocaml-result)))
-    (properties `((upstream-name . "ocaml-migrate-parsetree")))
+    (properties `((upstream-name . "ocaml-migrate-parsetree")
+                  ;; OCaml 4.07 packages require version 1.*
+                  (ocaml4.07-variant . ,(delay (package-with-ocaml4.07 ocaml-migrate-parsetree-1)))))
     (synopsis "OCaml parsetree converter")
     (description "This library converts between parsetrees of different OCaml
 versions.  For each version, there is a snapshot of the parsetree and conversion
 functions to the next and/or previous version.")
     (license license:lgpl2.1+)))
- 
+
+(define-public ocaml-migrate-parsetree-1
+  (package
+    (inherit ocaml-migrate-parsetree)
+    (name "ocaml-migrate-parsetree-1")
+    (version "1.8.0")
+    (home-page "https://github.com/ocaml-ppx/ocaml-migrate-parsetree")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "16x8sxc4ygxrr1868qpzfqyrvjf3hfxvjzmxmf6ibgglq7ixa2nq"))))
+    (properties '((upstream-name . "ocaml-migrate-parsetree")))))
+
 (define-public ocaml-ppx-tools-versioned
   (package
     (name "ocaml-ppx-tools-versioned")
@@ -1818,7 +1847,7 @@ functions to the next and/or previous version.")
      `(#:test-target "."
        #:package "ppx_tools_versioned"))
     (propagated-inputs
-     `(("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)))
+     `(("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree-1)))
     (properties `((upstream-name . "ppx_tools_versioned")))
     (home-page "https://github.com/let-def/ppx_tools_versioned")
     (synopsis "Variant of ppx_tools")
@@ -1960,10 +1989,10 @@ to operate on the result type available from OCaml 4.03 in the standard
 library.")
     (license license:isc)))
 
-(define-public ocaml4.07-sqlite3
+(define-public ocaml-sqlite3
   (package
-    (name "ocaml4.07-sqlite3")
-    (version "4.4.1")
+    (name "ocaml-sqlite3")
+    (version "5.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1973,18 +2002,16 @@ library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1536agm5fgcqysszhpd3kmw7lkc5n5ni7gmlyglrbvmnmrwf3av2"))))
+         "15mmq7ak5facpfawfrc6hjz211gli7jab52iqdsihfvh790xm55f"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sqlite3))))
+    (propagated-inputs
+     `(("dune-configurator" ,dune-configurator)
+       ("ocaml-odoc" ,ocaml-odoc)))
     (native-inputs
-     `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-       ("ocaml-stdio" ,ocaml4.07-stdio)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     `(("sqlite" ,sqlite)))
+     `(("ocaml-ppx-inline-test" ,ocaml-ppx-inline-test)
+       ("pkg-config" ,pkg-config)
+       ("sqlite" ,sqlite)))
     (home-page "https://mmottl.github.io/sqlite3-ocaml")
     (synopsis "SQLite3 Bindings for OCaml")
     (description
@@ -1995,6 +2022,21 @@ cases.  These bindings are written in a way that enables a friendly
 coexistence with the old (version 2) SQLite and its OCaml wrapper
 @code{ocaml-sqlite}.")
     (license license:expat)))
+
+(define-public ocaml4.07-sqlite3
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-sqlite3)
+     (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+         (add-before 'build 'chmod
+           (lambda _
+             (for-each (lambda (file) (chmod file #o644)) (find-files "." ".*"))
+             #t)))))
+     (propagated-inputs
+      `(("ocaml-odoc" ,ocaml-odoc)))
+     (properties '()))))
 
 (define-public ocaml-csv
   (package
@@ -2053,6 +2095,55 @@ manipulate such data.")
     (description "Access monotonic wall-clock time.  It measures time
 spans without being subject to operating system calendar time adjustments.")
     (license license:isc)))
+
+(define-public ocaml-calendar
+  ;; No tags.
+  ;; Commit from 2019-02-03.
+  (let ((commit "a447a88ae3c1e9873e32d2a95d3d3e7c5ed4a7da")
+        (revision "0"))
+    (package
+      (name "ocaml-calendar")
+      ;; Makefile.in says 2.04.
+      (version (git-version "2.04" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ocaml-community/calendar")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "09d9gyqm3zkf3z2m9fx87clqihx6brf8rnzm4yq7c8kf1p572hmc"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:test-target "tests"
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'make-deterministic
+             (lambda _
+               (substitute* "Makefile.in"
+                 (("`date`") "no date for reproducibility"))))
+           (add-before 'install 'set-environment-variables
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (setenv "OCAMLFIND_DESTDIR"
+                         (string-append out "/lib/ocaml/site-lib"))
+                 (setenv "OCAMLFIND_LDCONF" "ignore")
+                 (mkdir-p (string-append
+                           out "/lib/ocaml/site-lib/calendar"))))))))
+      (native-inputs
+       `(("autoconf" ,autoconf)
+         ("automake" ,automake)))
+      (propagated-inputs
+       `(("ocaml" ,ocaml)
+         ("ocamlfind" ,ocaml-findlib)))
+      (home-page "https://github.com/ocaml-community/calendar")
+      (synopsis "OCaml library for handling dates and times")
+      (description "This package provides types and operations over
+dates and times.")
+      ;; With linking exception.
+      (license license:lgpl2.1+))))
 
 (define-public ocaml-cmdliner
   (package
@@ -2128,14 +2219,14 @@ functions.")
 (define-public ocaml-astring
   (package
     (name "ocaml-astring")
-    (version "0.8.3")
+    (version "0.8.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "http://erratique.ch/software/astring/releases/astring-"
                             version ".tbz"))
         (sha256 (base32
-                  "0ixjwc3plrljvj24za3l9gy0w30lsbggp8yh02lwrzw61ls4cri0"))))
+                  "1ykhg9gd3iy7zsgyiy2p9b1wkpqg9irw5pvcqs3sphq71iir4ml6"))))
     (build-system ocaml-build-system)
     (native-inputs
      `(("ocamlbuild" ,ocamlbuild)
@@ -2300,7 +2391,7 @@ for mapping files in memory.  This function is the same as the
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
-    (version "5.1.1")
+    (version "5.4.0")
     (source
       (origin
         (method git-fetch)
@@ -2309,7 +2400,7 @@ for mapping files in memory.  This function is the same as the
                (commit version)))
         (file-name (git-file-name name version))
         (sha256 (base32
-                 "1nl7rdnwfdhwcsm5zpay1nr9y5cbapd9x1qzily7zk9ab4v52m8g"))))
+                 "1ay1zgadnw19r9hl2awfjr22n37l7rzxd9v73pjbahavwm2ay65d"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "lwt"))
@@ -2318,13 +2409,13 @@ for mapping files in memory.  This function is the same as the
        ("ocaml-cppo" ,ocaml-cppo)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("libev" ,libev)
-       ("glib" ,glib)))
+     `(("glib" ,glib)))
     (propagated-inputs
      `(("ocaml-mmap" ,ocaml-mmap)
        ("ocaml-ocplib-endian" ,ocaml-ocplib-endian)
        ("ocaml-result" ,ocaml-result)
-       ("ocaml-seq" ,ocaml-seq)))
+       ("ocaml-seq" ,ocaml-seq)
+       ("libev" ,libev)))
     (home-page "https://github.com/ocsigen/lwt")
     (synopsis "Cooperative threads and I/O in monadic style")
     (description "Lwt provides typed, composable cooperative threads.  These
@@ -2511,10 +2602,10 @@ format.  It can process XML documents without a complete in-memory
 representation of the data.")
     (license license:isc)))
 
-(define-public ocaml4.07-gen
+(define-public ocaml-gen
   (package
-    (name "ocaml4.07-gen")
-    (version "0.5.2")
+    (name "ocaml-gen")
+    (version "0.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2523,29 +2614,26 @@ representation of the data.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h9g508rnj2j8va5nvhamzscp954vrkh0hdf4pn3d10pcfyslfg2"))))
+                "1jzrs0nsdk55annkd2zrk5svi61i3b1nk6qyqdc2y26vnzqvzfg8"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f; no tests
-       #:package "gen"
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:package "gen"
+       #:test-target "."))
     (propagated-inputs
-     `(("ocaml-odoc" ,(package-with-ocaml4.07 ocaml4.07-odoc))))
+     `(("ocaml-odoc" ,ocaml-odoc)))
     (native-inputs
-     `(("ocaml-qtest" ,(package-with-ocaml4.07 ocaml-qtest))
-       ("ocaml-qcheck" ,(package-with-ocaml4.07 ocaml-qcheck))))
+     `(("ocaml-qtest" ,ocaml-qtest)
+       ("ocaml-qcheck" ,ocaml-qcheck)))
     (home-page "https://github.com/c-cube/gen/")
     (synopsis "Iterators for OCaml, both restartable and consumable")
     (description "Gen implements iterators of OCaml, that are both restartable
 and consumable.")
     (license license:bsd-2)))
 
-(define-public ocaml4.07-sedlex
+(define-public ocaml-sedlex
   (package
-    (name "ocaml4.07-sedlex")
-    (version "2.1")
+    (name "ocaml-sedlex")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2554,36 +2642,37 @@ and consumable.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05f6qa8x3vhpdz1fcnpqk37fpnyyq13icqsk2gww5idjnh6kng26"))))
+                "0iw3phlaqr27jdf857hmj5v5hdl0vngbb2h37p2ll18sw991fxar"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f; no tests
+     `(#:tests? #f                      ; no tests
        #:package "sedlex"
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'copy-resources
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "src/generator/data"
+               ;; Newer versions of dune emit an error if files it wants to
+               ;; build already exist. Delete the dune file so dune doesn't
+               ;; complain.
+               (delete-file "dune")
                (for-each
-                 (lambda (file)
-                   (copy-file (assoc-ref inputs file) file))
-                 '("DerivedCoreProperties.txt" "DerivedGeneralCategory.txt"
-                   "PropList.txt")))
+                (lambda (file)
+                  (copy-file (assoc-ref inputs file) file))
+                '("DerivedCoreProperties.txt" "DerivedGeneralCategory.txt"
+                  "PropList.txt")))
              #t))
          (add-before 'build 'chmod
            (lambda _
              (for-each (lambda (file) (chmod file #o644)) (find-files "." ".*"))
-             #t)))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+             #t)))))
     (native-inputs
-     `(("ocamlbuild" ,(package-with-ocaml4.07 ocamlbuild))))
+     `(("ocamlbuild" ,ocamlbuild)))
     (propagated-inputs
-     `(("ocaml-gen" ,ocaml4.07-gen)
-       ("ocaml-ppx-tools-versioned"
-        ,(package-with-ocaml4.07 ocaml-ppx-tools-versioned))
-       ("ocaml-uchar" ,(package-with-ocaml4.07 ocaml-uchar))))
+     `(("ocaml-gen" ,ocaml-gen)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)
+       ("ocaml-ppx-tools-versioned" ,ocaml-ppx-tools-versioned)
+       ("ocaml-uchar" ,ocaml-uchar)))
     ;; These three files are needed by src/generator/data/dune, but would be
     ;; downloaded using curl at build time.
     (inputs
@@ -2608,10 +2697,28 @@ and consumable.")
            (sha256
             (base32
              "0gsb1jpj3mnqbjgbavi4l95gl6g4agq58j82km22fdfg63j3w3fk"))))))
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sedlex))))
     (home-page "https://www.cduce.org/download.html#side")
     (synopsis "Lexer generator for Unicode and OCaml")
     (description "Lexer generator for Unicode and OCaml.")
     (license license:expat)))
+
+(define-public ocaml4.07-sedlex
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-sedlex)
+     (name "ocaml-sedlex")
+     (version "2.1")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/ocaml-community/sedlex")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "05f6qa8x3vhpdz1fcnpqk37fpnyyq13icqsk2gww5idjnh6kng26"))))
+     (properties '()))))
 
 (define-public ocaml-uchar
   (package
@@ -2676,6 +2783,51 @@ Functions are also provided to fold over the characters of UTF encoded OCaml
 string values and to directly encode characters in OCaml Buffer.t values.")
     (license license:isc)))
 
+(define-public ocaml-uunf
+  (package
+    (name "ocaml-uunf")
+    (version "13.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://erratique.ch/software/uunf/releases/uunf-13.0.0.tbz")
+       (sha256
+        (base32
+         "1qci04nkp24kdls1z4s8kz5dzgky4nwd5r8345nwdrgwmxhw7ksm"))))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:build-flags (list "build" "--tests" "true")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-before 'check 'check-data
+           (lambda* (#:key inputs #:allow-other-keys)
+             (copy-file (assoc-ref inputs "NormalizationTest.txt")
+                        "test/NormalizationTest.txt")
+             #t)))))
+    (native-inputs
+     `(("ocamlbuild" ,ocamlbuild)
+       ("opam" ,opam)
+       ("topkg" ,ocaml-topkg)
+       ;; Test data is otherwise downloaded wit curl
+       ("NormalizationTest.txt"
+        ,(origin
+           (method url-fetch)
+           (uri (string-append "https://www.unicode.org/Public/"
+                               version
+                               "/ucd/NormalizationTest.txt"))
+           (sha256
+              (base32 "07g0ya4f6zfzvpp24ccxkb2yq568kh83gls85rjl950nv5fya3nn"))))))
+    (propagated-inputs `(("ocaml-uutf" ,ocaml-uutf)))
+    (home-page "https://erratique.ch/software/uunf")
+    (synopsis "Unicode text normalization for OCaml")
+    (description
+     "Uunf is an OCaml library for normalizing Unicode text.  It supports all
+Unicode normalization forms.  The library is independent from any
+IO mechanism or Unicode text data structure and it can process text
+without a complete in-memory representation.")
+    (license license:isc)))
+
 (define-public ocaml-jsonm
   (package
     (name "ocaml-jsonm")
@@ -2724,8 +2876,7 @@ without a complete in-memory representation of the data.")
           "1dvcl108ir9nqkk4mjm9xhhj4p9dx9bmg8bnms54fizs1x3x8ar3"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "tests"
-       #:build-flags (list "--profile=release")))
+     `(#:test-target "tests"))
     (propagated-inputs
      `(("ocaml-cmdliner" ,ocaml-cmdliner)))
     (home-page "https://www.typerex.org/ocp-indent.html")
@@ -2984,39 +3135,41 @@ every compliant installation of OCaml and organize these libraries into a
 hierarchy of modules.")
     (license license:lgpl2.1+)))
 
-(define-public ocaml4.07-pcre
+(define-public ocaml-pcre
   (package
-    (name "ocaml4.07-pcre")
-    (version "7.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/mmottl/pcre-ocaml")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "11sd8g668h48790lamz0riw9jgnfkaif5qdfa0akcndwa6aj07jf"))))
+    (name "ocaml-pcre")
+    (version "7.4.6")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/mmottl/pcre-ocaml")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "11mck879p5zvkghps4ky8yslm0isgz52d84adl0dmcfxv2ibvcym"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     ;; No tests.
+     '(#:tests? #f))
+    (propagated-inputs
+     `(("dune-configurator" ,dune-configurator)
+       ("pcre" ,pcre)))
     (native-inputs
-     `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-       ("pcre:bin" ,pcre "bin")))
-    (propagated-inputs `(("pcre" ,pcre)))
+     `(("pcre:bin" ,pcre "bin")))
     (home-page "https://mmottl.github.io/pcre-ocaml")
-    (synopsis "Bindings to the Perl Compatibility Regular Expressions library")
-    (description "Pcre-ocaml offers library functions for string pattern
-matching and substitution, similar to the functionality offered by the Perl
-language.")
-    (license license:lgpl2.1+))); with the OCaml link exception
+    (synopsis
+      "Bindings to the Perl Compatibility Regular Expressions library")
+    (description "Pcre-ocaml offers library functions for string
+pattern matching and substitution, similar to the functionality
+offered by the Perl language.")
+    ;; With static linking exception
+    (license license:lgpl2.1+)))
 
-(define-public ocaml4.07-expect
+(define-public ocaml-expect
   (package
-    (name "ocaml4.07-expect")
+    (name "ocaml-expect")
     (version "0.0.6")
     (source (origin
               (method url-fetch)
@@ -3025,21 +3178,20 @@ language.")
                (base32
                 "098qvg9d4yrqzr5ax291y3whrpax0m3sx4gi6is0mblc96r9yqk0"))))
     (arguments
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib))
+     `(#:tests? #f))
     (build-system ocaml-build-system)
     (native-inputs
-     `(("ocamlbuild" ,(package-with-ocaml4.07 ocamlbuild))
-       ("ocaml-num" ,(package-with-ocaml4.07 ocaml-num))
-       ("ocaml-pcre" ,ocaml4.07-pcre)
-       ("ounit" ,(package-with-ocaml4.07 ocaml-ounit))))
+     `(("ocamlbuild" ,ocamlbuild)
+       ("ocaml-num" ,ocaml-num)
+       ("ocaml-pcre" ,ocaml-pcre)
+       ("ounit" ,ocaml-ounit)))
     (propagated-inputs
-     `(("batteries" ,(package-with-ocaml4.07 ocaml-batteries))))
+     `(("batteries" ,ocaml-batteries)))
     (home-page "https://forge.ocamlcore.org/projects/ocaml-expect/")
     (synopsis "Simple implementation of expect")
-    (description "Help building unitary testing of interactive program.  You
-can match the question using a regular expression or a timeout.")
+    (description "This package provides utilities for building unitary testing
+of interactive program.  You can match the question using a regular expression
+or a timeout.")
     (license license:lgpl2.1+))) ; with the OCaml static compilation exception
 
 (define-public ocaml-stdlib-shims
@@ -3142,8 +3294,7 @@ build system and allows external tools to analyse your project easily.")
                   "1smcc0l6fh2n0y6bp96c69j5nw755jja99w0b206wx3yb2m4w2hs"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f
-       #:build-flags (list "--profile" "release")))
+     `(#:tests? #f))
     (native-inputs
      `(("ocamlbuild" ,ocamlbuild)))
     (home-page "https://github.com/mjambon/cppo")
@@ -3199,7 +3350,7 @@ standard iterator type starting from 4.07.")
 (define-public ocaml-re
   (package
     (name "ocaml-re")
-    (version "1.9.0")
+    (version "1.10.3")
     (source
      (origin
        (method git-fetch)
@@ -3208,11 +3359,10 @@ standard iterator type starting from 4.07.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07ycb103mr4mrkxfd63cwlsn023xvcjp0ra0k7n2gwrg0mwxmfss"))))
+        (base32 "1lj94y3zj6qff1yizf311h5ww15djbmnb1g43wd0jz3afa9gk59m"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f
-       #:build-flags (list "--profile" "release")))
+     `(#:test-target "."))
     (propagated-inputs
      `(("ocaml-seq" ,ocaml-seq)))
     (native-inputs
@@ -3258,7 +3408,7 @@ big- and little-endian, with their unsafe counter-parts.")
 (define-public ocaml-cstruct
   (package
     (name "ocaml-cstruct")
-    (version "4.0.0")
+    (version "6.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3267,11 +3417,13 @@ big- and little-endian, with their unsafe counter-parts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m4bz0digcsc8l2msfikwcbi1y371kccx6xnkwrz212mf5mp98bv"))))
+                "0gpyr3cf393j1ir7i2m2qhx75l21w6ad7imdd73xn0jy3pjg4wsj"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "cstruct"
        #:test-target "."))
+    (propagated-inputs
+     `(("ocaml-bigarray-compat" ,ocaml-bigarray-compat)))
     (native-inputs
      `(("ocaml-alcotest" ,ocaml-alcotest)))
     (home-page "https://github.com/mirage/ocaml-cstruct")
@@ -3339,6 +3491,36 @@ the need to write signal code, which is useful for quick scripts that manipulate
 JSON.")
     (license license:isc)))
 
+(define-public ocaml-uri
+  (package
+    (name "ocaml-uri")
+    (version "4.2.0")
+    (home-page "https://github.com/mirage/ocaml-uri")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1bgkc66cq00mgnkz3i535srwzwc4cpdsv0mly5dzvvq33451xwf0"))))
+    (build-system dune-build-system)
+    (arguments '(#:package "uri"
+                 #:test-target "."))
+    (propagated-inputs
+     `(("ocaml-stringext" ,ocaml-stringext)
+       ("ocaml-angstrom" ,ocaml-angstrom)))
+    (native-inputs
+     `(("ocaml-ounit" ,ocaml-ounit)
+       ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)))
+    (properties `((upstream-name . "uri")
+                  (ocaml4.07-variant ,(delay ocaml4.07-uri))))
+    (synopsis "RFC3986 URI/URL parsing library")
+    (description "OCaml-uri is a library for parsing URI/URL in the RFC3986 format.")
+    (license license:isc)))
+
 (define-public ocaml4.07-uri
   (package
     (name "ocaml4.07-uri")
@@ -3366,11 +3548,12 @@ JSON.")
        #:dune ,ocaml4.07-dune))
     (native-inputs
      `(("ocaml-ounit" ,(package-with-ocaml4.07 ocaml-ounit))
-       ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)))
+       ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))))
     (propagated-inputs
      `(("ocaml-re" ,(package-with-ocaml4.07 ocaml-re))
        ("ocaml-sexplib0" ,(package-with-ocaml4.07 ocaml-sexplib0))
        ("ocaml-stringext" ,(package-with-ocaml4.07 ocaml-stringext))))
+    (properties `((upstream-name . "uri")))
     (home-page "https://github.com/mirage/ocaml-uri")
     (synopsis "RFC3986 URI/URL parsing library")
     (description "OCaml-uri is a library for parsing URI/URL in the RFC3986 format.")
@@ -3460,7 +3643,7 @@ Format module of the OCaml standard library.")
      `(("which" ,which)))
     (propagated-inputs
      `(("ocaml-xmlm" ,(package-with-ocaml4.07 ocaml-xmlm))
-       ("ocaml-sedlex" ,ocaml4.07-sedlex)
+       ("ocaml-sedlex" ,(package-with-ocaml4.07 ocaml-sedlex))
        ("ocaml-easy-format" ,(package-with-ocaml4.07 ocaml-easy-format))
        ("ocaml-base64" ,(package-with-ocaml4.07 ocaml-base64))))
     (home-page "http://piqi.org")
@@ -3658,9 +3841,8 @@ the plugins facilitate extensibility, and the frontends serve as entry points.")
                 "0chn7ldqb3wyf95yhmsxxq65cif56smgz1mhhc7m0dpwmyq1k97h"))))
     (build-system dune-build-system)
     (arguments
-     `(#:build-flags (list "--profile" "release")
-       #:test-target "camomile-test"
-       #:tests? #f; Tests fail, see https://github.com/yoriyuki/Camomile/issues/82
+     `(#:test-target "camomile-test"
+       #:tests? #f ; Tests fail, see https://github.com/yoriyuki/Camomile/issues/82
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-usr-share
@@ -3697,7 +3879,7 @@ library is currently designed for Unicode Standard 3.2.")
      `(("ocaml-result" ,(package-with-ocaml4.07 ocaml-result))
        ("ocaml-camomile" ,(package-with-ocaml4.07 ocaml-camomile))))
     (native-inputs
-     `(("ocaml-ppx-expect" ,ocaml4.07-ppx-expect)))
+     `(("ocaml-ppx-expect" ,(package-with-ocaml4.07 ocaml-ppx-expect))))
     (properties
      `((upstream-name . "charInfo_width")))
     (home-page "https://bitbucket.org/zandoye/charinfo_width/")
@@ -3751,8 +3933,7 @@ connect an engine to your inputs and rendering functions to get an editor.")
         (base32 "0zcjy6fvf0d3i2ssz96asl889n3r6bplyzk7xvb2s3dkxbgcisyy"))))
     (build-system dune-build-system)
     (arguments
-     `(#:build-flags (list "--profile" "release")
-       #:tests? #f
+     `(#:tests? #f
        #:ocaml ,ocaml-4.07
        #:findlib ,ocaml4.07-findlib
        #:dune ,ocaml4.07-dune))
@@ -3761,8 +3942,6 @@ connect an engine to your inputs and rendering functions to get an editor.")
        ("ocaml-lwt-log" ,(package-with-ocaml4.07 ocaml-lwt-log))
        ("ocaml-lwt-react" ,(package-with-ocaml4.07 ocaml-lwt-react))
        ("ocaml-zed" ,ocaml4.07-zed)))
-    (inputs
-     `(("libev" ,libev)))
     (home-page "https://github.com/diml/lambda-term")
     (synopsis "Terminal manipulation library for OCaml")
     (description "Lambda-Term is a cross-platform library for manipulating the
@@ -3810,29 +3989,20 @@ sensitive completion, colors, and more.")
 (define-public ocaml-integers
   (package
     (name "ocaml-integers")
-    (version "0.3.0")
+    (version "0.4.0")
     (home-page "https://github.com/ocamllabs/ocaml-integers")
     (source (origin
-              (method url-fetch)
-              (uri (string-append home-page
-                                  "/releases/download/v0.2.2/integers-"
-                                  version ".tbz"))
-              (file-name (string-append name "-" version ".tbz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "08b1ljw88ny3l0mdq6xmffjk8anfc77igryva5jz1p6f4f746ywk"))))
-    (build-system ocaml-build-system)
+                "0yp3ab0ph7mp5741g7333x4nx8djjvxzpnv3zvsndyzcycspn9dd"))))
+    (build-system dune-build-system)
     (arguments
-     `(#:tests? #f; no tests
-       #:build-flags (list "build")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
-    (native-inputs
-     `(("ocamlbuild" ,ocamlbuild)))
-    (inputs
-     `(("topkg" ,ocaml-topkg)
-       ("opam" ,opam)))
+     `(#:tests? #f)) ; no tests
     (synopsis "Various signed and unsigned integer types for OCaml")
     (description "The ocaml-integers library provides a number of 8-, 16-, 32-
 and 64-bit signed and unsigned integer types, together with aliases such as
@@ -3842,7 +4012,7 @@ long and size_t whose sizes depend on the host platform.")
 (define-public ocaml-ctypes
   (package
    (name "ocaml-ctypes")
-   (version "0.14.0")
+   (version "0.18.0")
    (home-page "https://github.com/ocamllabs/ocaml-ctypes")
    (source (origin
              (method git-fetch)
@@ -3852,7 +4022,7 @@ long and size_t whose sizes depend on the host platform.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1b2q3h63ngf4x9qp65qwapf2dg9q0mcdah6qjm2q0c7v2p5vysv9"))))
+               "03zrbnl16m67ls0yfhq7a4k4238x6x6b3m456g4dw2yqwc153vks"))))
    (build-system ocaml-build-system)
    (arguments
     `(#:tests? #f; require an old lwt
@@ -3871,10 +4041,12 @@ long and size_t whose sizes depend on the host platform.")
         (delete 'configure))))
    (native-inputs
     `(("pkg-config" ,pkg-config)))
+   (propagated-inputs
+    `(("bigarray-compat" ,ocaml-bigarray-compat)
+      ("integers" ,ocaml-integers)))
    (inputs
     `(("libffi" ,libffi)
       ("ounit" ,ocaml-ounit)
-      ("integers" ,ocaml-integers)
       ("lwt" ,ocaml-lwt)
       ("topkg" ,ocaml-topkg)
       ("opam" ,opam)))
@@ -4073,10 +4245,75 @@ Dedukti files.")
 syntax checking on dedukti files.")
       (license license:cecill-b))))
 
-(define-public ocaml4.07-ppx-inline-test
+(define-public ocaml-jst-config
   (package
-    (name "ocaml4.07-ppx-inline-test")
-    (version "0.12.0")
+    (name "ocaml-jst-config")
+    (version "0.14.0")
+    (source
+     (janestreet-origin
+      "jst-config" version
+      "1fppr29vn91zpqda8jlnp8bcssd4bf3rn36ig8fnd1yhjrsvz8f6"))
+    (build-system dune-build-system)
+    (arguments '(#:tests? #f))           ; no tests
+    (propagated-inputs
+      `(("ocaml-base" ,ocaml-base)
+        ("ocaml-ppx-assert" ,ocaml-ppx-assert)
+        ("ocaml-stdio" ,ocaml-stdio)
+        ("dune-configurator" ,dune-configurator)))
+    (home-page "https://github.com/janestreet/jst-config")
+    (synopsis "Compile-time configuration for Jane Street libraries")
+    (description "Defines compile-time constants used in Jane Street libraries
+such as Base, Core, and Async.  This package has an unstable interface; it is
+intended only to share configuration between different packages from Jane
+Street.  Future updates may not be backward-compatible, and we do not
+recommend using this package directly.")
+    (license license:expat)))
+
+(define-public ocaml-jane-street-headers
+  (package
+    (name "ocaml-jane-street-headers")
+    (version "0.14.0")
+    (source
+     (janestreet-origin
+      "jane-street-headers" version
+      "028yxb4h3iy025iy89v8653m5brh7flrjshghs4x99pd690pmfs7"))
+    (build-system dune-build-system)
+    (arguments '(#:tests? #f))           ; no tests
+    (home-page "https://github.com/janestreet/jane-street-headers")
+    (synopsis "Jane Street C header files")
+    (description "C header files shared between the various Jane Street
+packages.")
+    (license license:expat)))
+
+(define-public ocaml-time-now
+  (package
+    (name "ocaml-time-now")
+    (version "0.14.0")
+    (source
+     (janestreet-origin
+      "time_now" version
+      "0hkn2jw4dz5gflnsblskl5wp6z7zbrahwjmaxmsskfviwjg82cqh"))
+    (build-system dune-build-system)
+    (arguments '(#:tests? #f))           ; no tests
+    (propagated-inputs
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-jane-street-headers" ,ocaml-jane-street-headers)
+       ("ocaml-jst-config" ,ocaml-jst-config)
+       ("ocaml-ppx-base" ,ocaml-ppx-base)
+       ("ocaml-ppx-optcomp" ,ocaml-ppx-optcomp)))
+    (properties `((upstream-name . "time_now")))
+    (home-page
+     "https://github.com/janestreet/time_now")
+    (synopsis "Reports the current time")
+    (description
+     "Provides a single function to report the current time in nanoseconds
+since the start of the Unix epoch.")
+    (license license:expat)))
+
+(define-public ocaml-ppx-inline-test
+  (package
+    (name "ocaml-ppx-inline-test")
+    (version "0.14.1")
     (home-page "https://github.com/janestreet/ppx_inline_test")
     (source
      (origin
@@ -4087,28 +4324,51 @@ syntax checking on dedukti files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0nyz411zim94pzbxm2l2v2l9jishcxwvxhh142792g2s18r4vn50"))))
+         "1ajdna1m9l1l3nfigyy33zkfa3yarfr6s086jdw2pcfwlq1fhhl4"))))
     (build-system dune-build-system)
     (arguments
-     ;see home page README for further information
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (inputs
-     `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-       ("ocaml-migrate-parsetree"
-        ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-       ("ocaml-compiler-libs" ,ocaml4.07-compiler-libs)
-       ("ocaml-sexplib0" ,(package-with-ocaml4.07 ocaml-sexplib0))
-       ("ocaml-stdio" ,ocaml4.07-stdio)
-       ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_inline_test")))
+     `(#:tests? #f)) ;see home page README for further information
+    (propagated-inputs
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-compiler-libs" ,ocaml-compiler-libs)
+       ("ocaml-sexplib0" ,ocaml-sexplib0)
+       ("ocaml-stdio" ,ocaml-stdio)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)
+       ("ocaml-time-now" ,ocaml-time-now)))
+    (properties `((upstream-name . "ppx_inline_test")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-inline-test))))
     (synopsis "Syntax extension for writing in-line tests in ocaml code")
     (description "This package contains a syntax extension for writing
 in-line tests in ocaml code.  It is part of Jane Street's PPX rewriters
 collection.")
     (license license:expat)))
+
+(define-public ocaml4.07-ppx-inline-test
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-inline-test)
+     (name "ocaml-ppx-inline-test")
+     (version "0.12.0")
+     (home-page "https://github.com/janestreet/ppx_inline_test")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url (string-append home-page ".git"))
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "0nyz411zim94pzbxm2l2v2l9jishcxwvxhh142792g2s18r4vn50"))))
+    (propagated-inputs
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-compiler-libs" ,ocaml-compiler-libs)
+       ("ocaml-sexplib0" ,ocaml-sexplib0)
+       ("ocaml-stdio" ,ocaml-stdio)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_inline_test"))))))
 
 (define-public ocaml-bindlib
   (package
@@ -4126,7 +4386,7 @@ collection.")
          "1f8kr81w8vsi4gv61xn1qbc6zrzkjp8l9ix0942vjh4gjxc74v75"))))
     (build-system ocaml-build-system)
     (arguments
-     `(#:tests? #f ;no tests
+     `(#:tests? #f                      ;no tests
        #:use-make? #t
        #:phases
        (modify-phases %standard-phases
@@ -4148,10 +4408,10 @@ for programming languages, but also for manipulating terms of the λ-calculus
 or quantified formulas.")
     (license license:gpl3+)))
 
-(define-public ocaml4.07-earley
+(define-public ocaml-earley
   (package
-    (name "ocaml4.07-earley")
-    (version "2.0.0")
+    (name "ocaml-earley")
+    (version "3.0.0")
     (home-page "https://github.com/rlepigre/ocaml-earley")
     (source
      (origin
@@ -4162,13 +4422,12 @@ or quantified formulas.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18k7bi7krc4bvqnhijz1q0pfr0nfahghfjifci8rh1q4i5zd0xz5"))))
+         "1vi58zdxchpw6ai0bz9h2ggcmg8kv57yk6qbx82lh47s5wb3mz5y"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:test-target "."))
+    (propagated-inputs
+     `(("ocaml-stdlib-shims" ,ocaml-stdlib-shims)))
     (synopsis "Parsing library based on Earley Algorithm")
     (description "Earley is a parser combinator library base on Earley's
 algorithm.  It is intended to be used in conjunction with an OCaml syntax
@@ -4237,12 +4496,7 @@ than the first one.")
     `(#:phases
       (modify-phases %standard-phases
         (add-before 'build 'make-writable
-          (lambda _
-            (for-each
-              (lambda (file)
-                (chmod file #o644))
-              (find-files "." "."))
-            #t)))))
+          (lambda _ (for-each make-file-writable (find-files "." ".")))))))
    (inputs
     `(("ocaml-easy-format" ,ocaml-easy-format)))
    (native-inputs
@@ -4328,7 +4582,7 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
 (define-public ocaml-dot-merlin-reader
   (package
     (name "ocaml-dot-merlin-reader")
-    (version "3.4.2")
+    (version "4.2-411")
     (source
      (origin
        (method git-fetch)
@@ -4338,7 +4592,7 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0i2nwkdh6cfzmnsdsr8aw86vs8j1k5jkjzrs61b9384wnffdbbmj"))))
+         "1vl6p8m2pag5j283h5g2gzxxfm599k6qhyrjkdf3kyc476fc9lw8"))))
     (build-system dune-build-system)
     (arguments '(#:package "dot-merlin-reader"
                  #:tests? #f))          ; no tests
@@ -4354,21 +4608,16 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
 
 (define-public ocaml-merlin
   (package
+    (inherit ocaml-dot-merlin-reader)
     (name "ocaml-merlin")
-    (version "3.4.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ocaml/merlin")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0i2nwkdh6cfzmnsdsr8aw86vs8j1k5jkjzrs61b9384wnffdbbmj"))))
-    (build-system dune-build-system)
-    (arguments '(#:package "merlin"
-                 #:test-target "tests"))
+    (arguments
+     '(#:package "merlin"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
     (inputs
      `(("ocaml-yojson" ,ocaml-yojson)
        ("ocaml-csexp" ,ocaml-csexp)
@@ -4377,7 +4626,6 @@ format}.  @code{craml} is released as a single binary (called @code{craml}).")
      `(("ocaml-dot-merlin-reader" ,ocaml-dot-merlin-reader) ; required for tests
        ("ocaml-mdx" ,ocaml-mdx)
        ("jq" ,jq)))
-    (home-page "https://ocaml.github.io/merlin/")
     (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
     (description "Merlin is an editor service that provides modern IDE
 features for OCaml.  Emacs and Vim support is provided out-of-the-box.
@@ -4444,7 +4692,7 @@ Atom.")
      `(("gsl" ,gsl)))
     (propagated-inputs
      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-       ("ocaml-stdio" ,ocaml4.07-stdio)))
+       ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))))
     (home-page "https://mmottl.github.io/gsl-ocaml")
     (synopsis "Bindings to the GNU Scientific Library")
     (description
@@ -4499,6 +4747,10 @@ the OCaml language.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'make-deterministic
+           (lambda _
+             (substitute* "Makefile.in"
+               (("`date`") "no date for reproducibility"))))
          (add-before 'configure 'configure-for-release
            (lambda _
              (substitute* "Makefile.in"
@@ -4517,10 +4769,13 @@ the OCaml language.")
          (add-before 'configure 'fix-ocaml-num
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Makefile.in"
+               (("nums.cma") "num.cma num_core.cma")
                (("= \\$\\(FUNCTORYLIB\\)")
                 (string-append "= -I "
                                (assoc-ref inputs "ocaml-num")
-                               "/lib/ocaml/site-lib"
+                               "/lib/ocaml/site-lib/num/core -I "
+                               (assoc-ref inputs "ocaml-num")
+                               "/lib/ocaml/site-lib/num"
                                " $(FUNCTORYLIB)")))
              #t)))))
     (home-page "http://cubicle.lri.fr/")
@@ -4689,76 +4944,82 @@ provided by companion libraries such as
         (sha256
          (base32
           "0j6xb4265jr41vw4fjzak6yr8s30qrnzapnc6rl1dxy8bjai0nir"))))
-     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (replace 'build
-            ;; make warnings non fatal (jbuilder behaviour)
-            (lambda _
-              (invoke "dune" "build" "@install" "--profile=release"))))
-        #:ocaml ,ocaml-4.07
-        #:findlib ,ocaml4.07-findlib
-        #:dune ,ocaml4.07-dune))
      (properties '()))))
 
-(define-public ocaml4.07-compiler-libs
+(define-public ocaml-compiler-libs
   (package
-    (name "ocaml4.07-compiler-libs")
-    (version "0.11.0")
+    (name "ocaml-compiler-libs")
+    (version "0.12.3")
     (home-page "https://github.com/janestreet/ocaml-compiler-libs")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append home-page ".git"))
+             (url home-page)
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03jds7bszh8wwpfwxb3dg0gyr1j1872wxwx1xqhry5ir0i84bg0s"))))
+         "00nrar7h2pyflbdiq6wwwrb4k5jh9iff0jllihzm6ms8d5pspsg5"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:tests? #f ;no tests
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (properties `((upstream-name . "ocaml-compiler-libs")))
+    (arguments `(#:tests? #f)) ;no tests
+    (properties `((upstream-name . "ocaml-compiler-libs")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-compiler-libs))))
     (synopsis "Compiler libraries repackaged")
     (description "This package simply repackages the OCaml compiler libraries
 so they don't expose everything at toplevel.  For instance, @code{Ast_helper}
 is now @code{Ocaml_common.Ast_helper}.")
     (license license:expat)))
 
-(define-public ocaml4.07-stdio
+(define-public ocaml4.07-compiler-libs
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-compiler-libs)
+     (name "ocaml-compiler-libs")
+     (version "0.11.0")
+     (home-page "https://github.com/janestreet/ocaml-compiler-libs")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "03jds7bszh8wwpfwxb3dg0gyr1j1872wxwx1xqhry5ir0i84bg0s"))))
+     (properties `((upstream-name . "ocaml-compiler-libs"))))))
+
+(define-public ocaml-stdio
   (package
-    (name "ocaml4.07-stdio")
-    (version "0.11.0")
+    (name "ocaml-stdio")
+    (version "0.14.0")
     (home-page "https://github.com/janestreet/stdio")
     (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url (string-append home-page ".git"))
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1facajqhvq34g2wrg368y0ajxd6lrj5b3lyzyj0jhdmraxajjcwn"))))
+     (janestreet-origin "stdio" version
+                        "1hj5hraprqy2i90a690l11yjszvb99j818q3d684ryx6p2lddk0l"))
     (build-system dune-build-system)
     (propagated-inputs
-     `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-       ("ocaml-sexplib0" ,(package-with-ocaml4.07 ocaml-sexplib0))))
-    (arguments
-     `(#:tests? #f ;no tests
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-sexplib0" ,ocaml-sexplib0)))
+    (arguments `(#:tests? #f)) ;no tests
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-stdio))))
     (synopsis "Standard IO library for OCaml")
     (description
      "Stdio implements simple input/output functionalities for OCaml.  It
 re-exports the input/output functions of the OCaml standard libraries using
 a more consistent API.")
     (license license:expat)))
+
+(define-public ocaml4.07-stdio
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-stdio)
+     (version "0.11.0")
+     (source
+      (janestreet-origin "stdio" version
+                         "0pqbp2wy5fgmc38irwvmj9nlcvclb1ix1mp4y7l39bgvvlz303h9"))
+     (properties '()))))
 
 (define-public ocaml-ppx-derivers
   (package
@@ -4787,54 +5048,32 @@ ppx_deriving and ppx_type_conv to inter-operate gracefully when linked
 as part of the same ocaml-migrate-parsetree driver.")
     (license license:bsd-3)))
 
-(define-public ocaml4.07-ppxlib
+(define-public ocaml-ppxlib
   (package
-    (name "ocaml4.07-ppxlib")
-    (version "0.6.0")
+    (name "ocaml-ppxlib")
+    (version "0.23.0")
     (home-page "https://github.com/ocaml-ppx/ppxlib")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append home-page ".git"))
+             (url home-page)
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0my9x7sxb329h0lzshppdaawiyfbaw6g5f41yiy7bhl071rnlvbv"))))
+         "0jg5v4pssbl66hn5davpin1i57a0r3r54l96vpz5y99xk5w70xi1"))))
     (build-system dune-build-system)
     (propagated-inputs
-     `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-       ("ocaml-compiler-libs" ,ocaml4.07-compiler-libs)
-       ("ocaml-migrate-parsetree"
-        ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-       ("ocaml-ppx-derivers" ,(package-with-ocaml4.07 ocaml-ppx-derivers))
-       ("ocaml-stdio" ,ocaml4.07-stdio)
-       ("ocaml-result" ,(package-with-ocaml4.07 ocaml-result))
-       ("ocaml-sexplib0" ,(package-with-ocaml4.07 ocaml-sexplib0))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-topfind
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; add the line #directory ".." at the top of each file
-             ;; using #use "topfind";; to be able to find topfind
-             (let* ((findlib-path (assoc-ref inputs "findlib"))
-                    (findlib-libdir
-                     (string-append findlib-path "/lib/ocaml/site-lib")))
-               (substitute* '("test/base/test.ml"
-                              "test/code_path/test.ml"
-                              "test/deriving/test.ml"
-                              "test/driver/attributes/test.ml"
-                              "test/driver/non-compressible-suffix/test.ml"
-                              "test/driver/transformations/test.ml")
-                 (("#use \"topfind\";;" all)
-                  (string-append "#directory \"" findlib-libdir "\"\n"
-                                 all))))
-             #t)))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-compiler-libs" ,ocaml-compiler-libs)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-stdlib-shims" ,ocaml-stdlib-shims)
+       ("ocaml-ppx-derivers" ,ocaml-ppx-derivers)
+       ("ocaml-stdio" ,ocaml-stdio)
+       ("ocaml-result" ,ocaml-result)
+       ("ocaml-sexplib0" ,ocaml-sexplib0)))
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-ppxlib))))
     (synopsis
      "Base library and tools for ppx rewriters")
     (description
@@ -4852,30 +5091,64 @@ OCaml AST in the OCaml syntax;
 @end itemize")
     (license license:expat)))
 
-(define-public ocaml4.07-ppx-compare
+(define-public ocaml4.07-ppxlib
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppxlib)
+     (name "ocaml-ppxlib")
+     (version "0.6.0")
+     (home-page "https://github.com/ocaml-ppx/ppxlib")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url home-page)
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "0my9x7sxb329h0lzshppdaawiyfbaw6g5f41yiy7bhl071rnlvbv"))))
+     (build-system dune-build-system)
+     (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (add-before 'check 'set-topfind
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; add the line #directory ".." at the top of each file
+              ;; using #use "topfind";; to be able to find topfind
+              (let* ((findlib-path (assoc-ref inputs "findlib"))
+                     (findlib-libdir
+                      (string-append findlib-path "/lib/ocaml/site-lib")))
+                (substitute* '("test/base/test.ml"
+                               "test/code_path/test.ml"
+                               "test/deriving/test.ml"
+                               "test/driver/attributes/test.ml"
+                               "test/driver/non-compressible-suffix/test.ml"
+                               "test/driver/transformations/test.ml")
+                  (("#use \"topfind\";;" all)
+                   (string-append "#directory \"" findlib-libdir "\"\n"
+                                  all))))
+              #t)))))
+     (properties '()))))
+
+(define-public ocaml-ppx-compare
   (package
-    (name "ocaml4.07-ppx-compare")
-    (version "0.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_compare")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "06bq4m1bsm4jlx4g7wh5m99qky7xm4c2g52kaz6pv25hdn5agi2m"))))
+    (name "ocaml-ppx-compare")
+    (version "0.14.0")
+    (source
+     (janestreet-origin "ppx_compare" version
+                        "0mqxa2s194nif7x4fjn1p5gd9i3bakr8nv27gf8x1g5nmi8q9pmp"))
     (build-system dune-build-system)
-    (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
     (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (properties `((upstream-name . "ppx_compare")))
+     ;; Tests are currenlty failing
+     ;; (see https://github.com/janestreet/ppx_compare/issues/10)
+     '(#:tests? #f))
+    (propagated-inputs
+     `(("ocaml-base" ,ocaml-base)
+        ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+        ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_compare")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-compare))))
     (home-page "https://github.com/janestreet/ppx_compare")
     (synopsis "Generation of comparison functions from types")
     (description "Generation of fast comparison functions from type expressions
@@ -4886,31 +5159,39 @@ flexibility by allowing you to override them for a specific type and more safety
 by making sure that you only compare comparable values.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-fieldslib
+(define-public ocaml4.07-ppx-compare
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-compare)
+     (name "ocaml-ppx-compare")
+     (version "0.11.1")
+     (home-page "https://github.com/janestreet/ppx_compare")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url home-page)
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "06bq4m1bsm4jlx4g7wh5m99qky7xm4c2g52kaz6pv25hdn5agi2m"))))
+     (properties `((upstream-name . "ppx_compare"))))))
+
+(define-public ocaml-fieldslib
   (package
-    (name "ocaml4.07-fieldslib")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version) "/files/"
-                                  "fieldslib-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "12948pzxrl360lybm9fzyvplgcl87zjbn4m3sk1aw75zk85p1388"))))
+    (name "ocaml-fieldslib")
+    (version "0.14.0")
+    (source (janestreet-origin
+             "fieldslib" version
+             "10n5y376fb5jgqk9h8vq158rm1b36h9lzh6p11q33h6xgvb1v6n3"))
     (build-system dune-build-system)
-    (arguments
-     ;; No tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+    (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "fieldslib")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "fieldslib")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-fieldslib))))
     (home-page "https://github.com/janestreet/fieldslib")
     (synopsis "Syntax extension to record fields")
     (description "Syntax extension to define first class values representing
@@ -4918,62 +5199,78 @@ record fields, to get and set record fields, iterate and fold over all fields
 of a record and create new record values.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-variantslib
+(define-public ocaml4.07-fieldslib
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-fieldslib)
+     (version "0.11.0")
+     (source (janestreet-origin
+              "fieldslib" version
+              "12948pzxrl360lybm9fzyvplgcl87zjbn4m3sk1aw75zk85p1388"))
+     (properties `((upstream-name . "fieldslib"))))))
+
+(define-public ocaml-variantslib
   (package
-    (name "ocaml4.07-variantslib")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/variantslib-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1hsdwmkslvk4cznqr4lyyiy7vvk5spil226k0z2in26fxq6y0hf3"))))
+    (name "ocaml-variantslib")
+    (version "0.14.0")
+    (source
+     (janestreet-origin "variantslib" version
+              "11zp27gh282dx9ifbhcp6i7fkc97fvk8amaj58mf1g1hwklc0lm3"))
     (build-system dune-build-system)
     (arguments
      ;; No tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:tests? #f))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "variantslib")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "variantslib")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-variantslib))))
     (home-page "https://github.com/janestreet/variantslib")
     (synopsis "OCaml variants as first class values")
     (description "The Core suite of libraries is an alternative to OCaml's
 standard library.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-fields-conv
+(define-public ocaml4.07-variantslib
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-variantslib)
+     (name "ocaml-variantslib")
+     (version "0.11.0")
+     (source (origin
+               (method url-fetch)
+               (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
+                                   (version-major+minor version)
+                                   "/files/variantslib-v" version ".tar.gz"))
+               (sha256
+                (base32
+                 "1hsdwmkslvk4cznqr4lyyiy7vvk5spil226k0z2in26fxq6y0hf3"))))
+     (properties `((upstream-name . "variantslib"))))))
+
+(define-public ocaml-ppx-fields-conv
   (package
-    (name "ocaml4.07-ppx-fields-conv")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_fields_conv-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "07zrd3qky2ppbfl55gpm90rvqa5860xgwcsvihrjmkrw6d0jirkc"))))
+    (name "ocaml-ppx-fields-conv")
+    (version "0.14.2")
+    (home-page "https://github.com/janestreet/ppx_fields_conv")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1zwirwqry24b48bg7d4yc845hvcirxyymzbw95aaxdcck84d30n8"))))
     (build-system dune-build-system)
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-fieldslib" ,ocaml4.07-fieldslib)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (properties `((upstream-name . "ppx_fields_conv")))
-    (home-page "https://github.com/janestreet/ppx_fields_conv")
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-fieldslib" ,ocaml-fieldslib)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_fields_conv")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-fields-conv))))
     (synopsis "Generation of accessor and iteration functions for ocaml records")
     (description "Ppx_fields_conv is a ppx rewriter that can be used to define
 first class values representing record fields, and additional routines, to get
@@ -4981,99 +5278,151 @@ and set record fields, iterate and fold over all fields of a record and create
 new record values.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-sexp-conv
+(define-public ocaml4.07-ppx-fields-conv
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-fields-conv)
+    (version "0.11.0")
+    (source (janestreet-origin
+             "ppx_fields_conv" version
+             "07zrd3qky2ppbfl55gpm90rvqa5860xgwcsvihrjmkrw6d0jirkc"))
+    (properties `((upstream-name . "ppx_fields_conv"))))))
+
+(define-public ocaml-ppx-sexp-conv
   (package
-    (name "ocaml4.07-ppx-sexp-conv")
-    (version "0.11.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_sexp_conv")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0pqwnqy1xp309wvdcaax4lg02yk64lq2w03mbgfvf6ps5ry4gis9"))))
+    (name "ocaml-ppx-sexp-conv")
+    (version "0.14.3")
+    (home-page "https://github.com/janestreet/ppx_sexp_conv")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0dbri9d00ydi0dw1cavswnqdmhjaaz80vap29ns2lr6mhhlvyjmj"))))
     (build-system dune-build-system)
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (properties `((upstream-name . "ppx_sexp_conv")))
-    (home-page "https://github.com/janestreet/ppx_sexp_conv")
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_sexp_conv")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-sexp-conv))))
     (synopsis "Generation of S-expression conversion functions from type definitions")
     (description "This package generates S-expression conversion functions from type
 definitions.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-variants-conv
-  (package
-    (name "ocaml4.07-ppx-variants-conv")
-    (version "0.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_variants_conv")
+(define-public ocaml4.07-ppx-sexp-conv
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-sexp-conv)
+     (name "ocaml-ppx-sexp-conv")
+     (version "0.11.2")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/janestreet/ppx_sexp_conv")
                      (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yc0gsds5m2nv39zga8nnrca2n75rkqy5dz4xj1635ybz20hhbjd"))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0pqwnqy1xp309wvdcaax4lg02yk64lq2w03mbgfvf6ps5ry4gis9"))))
+     (properties `((upstream-name . "ppx_sexp_conv"))))))
+
+(define-public ocaml-ppx-variants-conv
+  (package
+    (name "ocaml-ppx-variants-conv")
+    (version "0.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/janestreet/ppx_variants_conv")
+             (commit (string-append "v" version))))
+       (patches
+        (search-patches
+         ;; Fix build when building with ocaml-ppxlib@0.23.0.
+         "ocaml-ppx-variants-ppxlib-api-change.patch"))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0q6a43zrwqzdz7aja0k44a2llyjjj5xzi2kigwhsnww3g0r5ig84"))))
     (build-system dune-build-system)
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-variantslib" ,ocaml4.07-variantslib)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-variantslib" ,ocaml-variantslib)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
     (properties
-      `((upstream-name . "ppx_variants_conv")))
+     `((upstream-name . "ppx_variants_conv")
+       (ocaml4.07-variant . ,(delay ocaml4.07-ppx-variants-conv))))
     (home-page
-      "https://github.com/janestreet/ppx_variants_conv")
+     "https://github.com/janestreet/ppx_variants_conv")
     (synopsis "Generation of accessor and iteration functions for OCaml variant types")
     (description
-      "This package generates accessors and iteration functions for OCaml
+     "This package generates accessors and iteration functions for OCaml
 variant types.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-custom-printf
+(define-public ocaml4.07-ppx-variants-conv
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-variants-conv)
+     (name "ocaml-ppx-variants-conv")
+     (version "0.11.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/janestreet/ppx_variants_conv")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "1yc0gsds5m2nv39zga8nnrca2n75rkqy5dz4xj1635ybz20hhbjd"))))
+    (properties `((upstream-name . "ppx_variants_conv"))))))
+
+(define-public ocaml-ppx-custom-printf
   (package
-    (name "ocaml4.07-ppx-custom-printf")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_custom_printf-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "11b73smf3g3bpd9lg014pr4rx285nk9mnk6g6464ph51jv0sqzhj"))))
+    (name "ocaml-ppx-custom-printf")
+    (version "0.14.1")
+    (home-page "https://github.com/janestreet/ppx_custom_printf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0c1m65kn27zvwmfwy7kk46ga76yw2a3ik9jygpy1b6nn6pi026w9"))))
     (build-system dune-build-system)
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (properties `((upstream-name . "ppx_custom_printf")))
-    (home-page "https://github.com/janestreet/ppx_custom_printf")
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_custom_printf")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-custom-printf))))
     (synopsis "Printf-style format-strings for user-defined string conversion")
     (description "Extensions to printf-style format-strings for user-defined
 string conversion.")
     (license license:asl2.0)))
+
+(define-public ocaml4.07-ppx-custom-printf
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-custom-printf)
+     (version "0.11.0")
+     (source
+      (janestreet-origin
+       "ppx_custom_printf" version
+       "11b73smf3g3bpd9lg014pr4rx285nk9mnk6g6464ph51jv0sqzhj"))
+     (properties `((upstream-name . "ppx_custom_printf"))))))
 
 (define-public ocaml4.07-bin-prot
   (package
@@ -5090,11 +5439,11 @@ string conversion.")
     (build-system dune-build-system)
     (inputs
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-compare" ,ocaml4.07-ppx-compare)
-        ("ocaml-ppx-custom-printf" ,ocaml4.07-ppx-custom-printf)
-        ("ocaml-ppx-fields-conv" ,ocaml4.07-ppx-fields-conv)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
-        ("ocaml-ppx-variants-conv" ,ocaml4.07-ppx-variants-conv)
+        ("ocaml-ppx-compare" ,(package-with-ocaml4.07 ocaml-ppx-compare))
+        ("ocaml-ppx-custom-printf" ,(package-with-ocaml4.07 ocaml-ppx-custom-printf))
+        ("ocaml-ppx-fields-conv" ,(package-with-ocaml4.07 ocaml-ppx-fields-conv))
+        ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))
+        ("ocaml-ppx-variants-conv" ,(package-with-ocaml4.07 ocaml-ppx-variants-conv))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))))
     (arguments
@@ -5143,69 +5492,87 @@ storage of large amounts of data.")
     (description "Octavius is a library to parse the `ocamldoc` comment syntax.")
     (license license:isc)))
 
-(define-public ocaml4.07-ppx-hash
+(define-public ocaml-ppx-hash
   (package
-    (name "ocaml4.07-ppx-hash")
-    (version "0.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_hash")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1p0ic6aijxlrdggpmycj12q3cy9xksbq2vq727215maz4snvlf5p"))))
+    (name "ocaml-ppx-hash")
+    (version "0.14.0")
+    (source
+     (janestreet-origin "ppx_hash" version
+                "0x4wgdvhgd8a49bzari52jpkykxpv6ncgp5ncda3xgg0a9r49s8n"))
     (build-system dune-build-system)
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-compare" ,ocaml4.07-ppx-compare)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (properties `((upstream-name . "ppx_hash")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-ppx-compare" ,ocaml-ppx-compare)
+       ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+        ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+        ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_hash")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-hash))))
     (home-page "https://github.com/janestreet/ppx_hash")
     (synopsis "Generation of hash functions from type expressions and definitions")
     (description "This package is a collection of ppx rewriters that generate
 hash functions from type exrpessions and definitions.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-enumerate
-  (package
-    (name "ocaml4.07-ppx-enumerate")
-    (version "0.11.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_enumerate")
+(define-public ocaml4.07-ppx-hash
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-hash)
+     (name "ocaml-ppx-hash")
+     (home-page "https://github.com/janestreet/ppx_hash")
+     (version "0.11.1")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url home-page)
                      (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0spx9k1v7vjjb6sigbfs69yndgq76v114jhxvzjmffw7q989cyhr"))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "1p0ic6aijxlrdggpmycj12q3cy9xksbq2vq727215maz4snvlf5p"))))
+     (properties `((upstream-name . "ppx_hash"))))))
+
+(define-public ocaml-ppx-enumerate
+  (package
+    (name "ocaml-ppx-enumerate")
+    (version "0.14.0")
+    (source
+     (janestreet-origin
+      "ppx_enumerate" version
+      "1ij6sffgqhnjwnj9brhrrw1c6xgxlh0s6r17x1qkgnyrc73gfsz8"))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f; no test suite
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:tests? #f)) ; no test suite
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_enumerate")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_enumerate")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-enumerate))))
     (home-page "https://github.com/janestreet/ppx_enumerate")
     (synopsis "Generate a list containing all values of a finite type")
     (description "Ppx_enumerate is a ppx rewriter which generates a definition
 for the list of all values of a type (for a type which only has finitely
 many values).")
     (license license:asl2.0)))
+
+(define-public ocaml4.07-ppx-enumerate
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-enumerate)
+     (name "ocaml-ppx-enumerate")
+     (version "0.11.1")
+     (home-page "https://github.com/janestreet/ppx_enumerate")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url home-page)
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0spx9k1v7vjjb6sigbfs69yndgq76v114jhxvzjmffw7q989cyhr"))))
+     (properties `((upstream-name . "ppx_enumerate"))))))
 
 (define-public ocaml4.07-ppx-bench
   (package
@@ -5227,46 +5594,48 @@ many values).")
        #:findlib ,ocaml4.07-findlib
        #:dune ,ocaml4.07-dune))
     (propagated-inputs
-      `(("ocaml-ppx-inline-test" ,ocaml4.07-ppx-inline-test)
+     `(("ocaml-ppx-inline-test" ,(package-with-ocaml4.07 ocaml-ppx-inline-test))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_bench")))
     (home-page "https://github.com/janestreet/ppx_bench")
     (synopsis "Syntax extension for writing in-line benchmarks in ocaml code")
     (description "Syntax extension for writing in-line benchmarks in ocaml code.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-here
+(define-public ocaml-ppx-here
   (package
-    (name "ocaml4.07-ppx-here")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_here-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0wxcak3ay4jpigm3pfdcpr65qw4hxfa8whhkryhcd8gy71x056z5"))))
+    (name "ocaml-ppx-here")
+    (version "0.14.0")
+    (source
+     (janestreet-origin "ppx_here" version
+                        "0b444djy68v6ji0ypwv5l02pkl151qzrgg96lyhl8dxfrzvj1zkj"))
     (build-system dune-build-system)
     (arguments
      ;; broken tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:tests? #f))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_here")))
+     `(("ocaml-base" ,ocaml-base)
+        ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+        ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_here")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-here))))
     (home-page "https://github.com/janestreet/ppx_here")
     (synopsis "Expands [%here] into its location")
     (description
       "Part of the Jane Street's PPX rewriters collection.")
     (license license:asl2.0)))
+
+(define-public ocaml4.07-ppx-here
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-here)
+     (version "0.11.0")
+     (source
+      (janestreet-origin "ppx_here" version
+                         "0wxcak3ay4jpigm3pfdcpr65qw4hxfa8whhkryhcd8gy71x056z5"))
+     (properties `((upstream-name . "ppx_here"))))))
 
 (define-public ocaml4.07-typerep
   (package
@@ -5311,11 +5680,11 @@ many values).")
        #:dune ,ocaml4.07-dune))
     (propagated-inputs
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-here" ,ocaml4.07-ppx-here)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
+        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
+        ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_sexp_value")))
     (home-page "https://github.com/janestreet/ppx_sexp_value")
     (synopsis "Simplify building s-expressions from ocaml values")
@@ -5342,11 +5711,11 @@ ocaml values.")
        #:dune ,ocaml4.07-dune))
     (propagated-inputs
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-here" ,ocaml4.07-ppx-here)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
+        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
+        ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_sexp_message")))
     (home-page "https://github.com/janestreet/ppx_sexp_message")
     (synopsis "A ppx rewriter for easy construction of s-expressions")
@@ -5378,7 +5747,7 @@ context such as function arguments.")
     (propagated-inputs
       `(("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_pipebang")))
     (home-page "https://github.com/janestreet/ppx_pipebang")
     (synopsis "Inline reverse application operators `|>` and `|!`")
@@ -5386,31 +5755,22 @@ context such as function arguments.")
 @code{|>} and @code{|!}.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-optional
+(define-public ocaml-ppx-optional
   (package
-    (name "ocaml4.07-ppx-optional")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_optional-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1z8z2bga95k2vksljljfglg10vygkjd24kn1b37sk4z3nmp47x0h"))))
+    (name "ocaml-ppx-optional")
+    (version "0.14.0")
+    (source
+     (janestreet-origin
+      "ppx_optional" version
+      "1hh6ivlp1qpvyn8l0vhrahkkcp3scf7km254sgplprmk10wnyidz"))
     (build-system dune-build-system)
-    (arguments
-     ;; No tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+    (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_optional")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_optional")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-optional))))
     (home-page "https://github.com/janestreet/ppx_optional")
     (synopsis "Pattern matching on flat options")
     (description
@@ -5418,63 +5778,86 @@ context such as function arguments.")
 else expression.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-optcomp
+(define-public ocaml4.07-ppx-optional
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-optional)
+     (version "0.11.0")
+     (source
+      (janestreet-origin
+       "ppx_optional" version
+       "1z8z2bga95k2vksljljfglg10vygkjd24kn1b37sk4z3nmp47x0h"))
+     (properties `((upstream-name . "ppx_optional"))))))
+
+(define-public ocaml-ppx-optcomp
   (package
-    (name "ocaml4.07-ppx-optcomp")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_optcomp-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1bb52p2j2h4s9f06vrcpla80rj93jinnzq6jzilapyx9q068929i"))))
-    (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-stdio" ,ocaml4.07-stdio)
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_optcomp")))
+    (name "ocaml-ppx-optcomp")
+    (version "0.14.3")
     (home-page "https://github.com/janestreet/ppx_optcomp")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1iflgfzs23asw3k6098v84al5zqx59rx2qjw0mhvk56avlx71pkw"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-stdio" ,ocaml-stdio)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_optcomp")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-optcomp))))
     (synopsis "Optional compilation for OCaml")
     (description "Ppx_optcomp stands for Optional Compilation.  It is a tool
 used to handle optional compilations of pieces of code depending of the word
 size, the version of the compiler, ...")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-let
+(define-public ocaml4.07-ppx-optcomp
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-optcomp)
+     (version "0.11.0")
+     (source
+      (janestreet-origin
+       "ppx_optcomp" version
+       "1bb52p2j2h4s9f06vrcpla80rj93jinnzq6jzilapyx9q068929i"))
+     (properties `((upstream-name . "ppx_optcomp"))))))
+
+(define-public ocaml-ppx-let
   (package
-    (name "ocaml4.07-ppx-let")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_let-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "1wdfw6w4xbg97a35yg6bif9gggxniy9ddnrjfw1a0inkl2yamxkj"))))
+    (name "ocaml-ppx-let")
+    (version "0.14.0")
+    (source
+     (janestreet-origin "ppx_let" version
+                        "1qcrnd86pbr1di5m6z4ps4p15qawwa02jxwz3xfd82hdbjmdwf1s"))
     (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_let")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_let")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-let))))
     (home-page "https://github.com/janestreet/ppx_let")
     (synopsis "Monadic let-bindings")
     (description "A ppx rewriter for monadic and applicative let bindings,
 match expressions, and if expressions.")
     (license license:asl2.0)))
+
+(define-public ocaml4.07-ppx-let
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-let)
+     (version "0.11.0")
+     (source
+      (janestreet-origin "ppx_let" version
+                         "1wdfw6w4xbg97a35yg6bif9gggxniy9ddnrjfw1a0inkl2yamxkj"))
+
+     (properties `(upstream-name . "ppx_let")))))
 
 (define-public ocaml4.07-ppx-fail
   (package
@@ -5495,10 +5878,10 @@ match expressions, and if expressions.")
        #:dune ,ocaml4.07-dune))
     (propagated-inputs
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-here" ,ocaml4.07-ppx-here)
+        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_fail")))
     (home-page "https://github.com/janestreet/ppx_fail")
     (synopsis "Add location to calls to failwiths")
@@ -5506,72 +5889,94 @@ match expressions, and if expressions.")
 position.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-assert
+(define-public ocaml-ppx-cold
   (package
-    (name "ocaml4.07-ppx-assert")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_assert-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "17kd311n0l9f72gblf9kv8i5rghr106w37x4f0m5qwh6nlgl0j9k"))))
+    (name "ocaml-ppx-cold")
+    (version "0.14.0")
+    (home-page "https://github.com/janestreet/ppx_cold")
+    (source
+     (janestreet-origin "ppx_cold" version
+                        "1madfzhpir9amnxmg530n70vll0jrl59vyp71miji73i6b9sy6n2"))
     (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+    (arguments `(#:test-target "tests"))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-compare" ,ocaml4.07-ppx-compare)
-        ("ocaml-ppx-here" ,ocaml4.07-ppx-here)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_assert")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_cold")))
+    (synopsis "Syntax extension for indicating cold path")
+    (description
+     "This package contains an syntax extension to indicate that the code is
+on the cold path and should be kept out of the way to avoid polluting the
+instruction cache on the hot path.  See also
+https://github.com/ocaml/ocaml/issues/8563.")
+    (license license:expat)))
+
+(define-public ocaml-ppx-assert
+  (package
+    (name "ocaml-ppx-assert")
+    (version "0.14.0")
+    (source
+     (janestreet-origin "ppx_assert" version
+                        "1l2rr4jz2q5b35ryn2z146z7m9v6k8krp5gpn8ilib66mnz5zx15"))
+    (build-system dune-build-system)
+    (propagated-inputs
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-ppx-cold" ,ocaml-ppx-cold)
+       ("ocaml-ppx-compare" ,ocaml-ppx-compare)
+       ("ocaml-ppx-here" ,ocaml-ppx-here)
+       ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_assert")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-assert))))
     (home-page "https://github.com/janestreet/ppx_assert")
     (synopsis "Assert-like extension nodes that raise useful errors on failure")
     (description "This package contains assert-like extension nodes that raise
 useful errors on failure.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-expect
+(define-public ocaml4.07-ppx-assert
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-assert)
+     (version "0.11.0")
+     (source
+      (janestreet-origin "ppx_assert" version
+                         "17kd311n0l9f72gblf9kv8i5rghr106w37x4f0m5qwh6nlgl0j9k"))
+     (propagated-inputs
+      `(("ocaml-base" ,ocaml-base)
+        ("ocaml-ppx-compare" ,ocaml-ppx-compare)
+        ("ocaml-ppx-here" ,ocaml-ppx-here)
+        ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+        ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+        ("ocaml-ppxlib" ,ocaml-ppxlib)))
+     (properties `((upstream-name . "ppx_assert"))))))
+
+(define-public ocaml-ppx-expect
   (package
-    (name "ocaml4.07-ppx-expect")
-    (version "0.12.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_expect")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1wawsbjfkri4sw52n8xqrzihxc3xfpdicv3ahz83a1rsn4lb8j5q"))))
+    (name "ocaml-ppx-expect")
+    (version "0.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/janestreet/ppx_expect")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0vbbnjrzpyk5p0js21lafr6fcp2wqka89p1876rdf472cmg0l7fv"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-ppx-assert" ,ocaml4.07-ppx-assert)
-        ("ocaml-ppx-compare" ,ocaml4.07-ppx-compare)
-        ("ocaml-ppx-custom-printf" ,ocaml4.07-ppx-custom-printf)
-        ("ocaml-ppx-fields-conv" ,ocaml4.07-ppx-fields-conv)
-        ("ocaml-ppx-here" ,ocaml4.07-ppx-here)
-        ("ocaml-ppx-inline-test" ,ocaml4.07-ppx-inline-test)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
-        ("ocaml-ppx-variants-conv" ,ocaml4.07-ppx-variants-conv)
-        ("ocaml-stdio" ,ocaml4.07-stdio)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)
-        ("ocaml-re" ,(package-with-ocaml4.07 ocaml-re))))
-    (properties `((upstream-name . "ppx_expect")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-ppx-here" ,ocaml-ppx-here)
+       ("ocaml-ppx-inline-test" ,ocaml-ppx-inline-test)
+       ("ocaml-stdio" ,ocaml-stdio)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-re" ,ocaml-re)))
+    (properties `((upstream-name . "ppx_expect")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-expect))))
     (home-page "https://github.com/janestreet/ppx_expect")
     (synopsis "Cram like framework for OCaml")
     (description "Expect-test is a framework for writing tests in OCaml, similar
@@ -5581,38 +5986,62 @@ output-generating code, interleaved with @code{%expect} extension expressions
 to denote the expected output.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-js-style
+(define-public ocaml4.07-ppx-expect
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-expect)
+     (version "0.12.0")
+     (source
+      (janestreet-origin "ppx_expect" version
+                         "1zpci8c49yn2ixchmwjx1kf9pwybv3dnn4l2dgnd6m36qnkralfk"))
+     (propagated-inputs
+      `(("ocaml-base" ,ocaml-base)
+        ("ocaml-ppx-assert" ,ocaml-ppx-assert)
+        ("ocaml-ppx-compare" ,ocaml-ppx-compare)
+        ("ocaml-ppx-custom-printf" ,ocaml-ppx-custom-printf)
+        ("ocaml-ppx-fields-conv" ,ocaml-ppx-fields-conv)
+        ("ocaml-ppx-here" ,ocaml-ppx-here)
+        ("ocaml-ppx-inline-test" ,ocaml-ppx-inline-test)
+        ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+        ("ocaml-ppx-variants-conv" ,ocaml-ppx-variants-conv)
+        ("ocaml-stdio" ,ocaml-stdio)
+        ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+        ("ocaml-ppxlib" ,ocaml-ppxlib)
+        ("ocaml-re" ,ocaml-re)))
+     (properties `((upstream-name . "ppx_expect"))))))
+
+(define-public ocaml-ppx-js-style
   (package
-    (name "ocaml4.07-ppx-js-style")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_js_style-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0z3fc55jdjhhsblla6z4fqc13kljpcz29q79rvs5h2vsraqrldr2"))))
+    (name "ocaml-ppx-js-style")
+    (version "0.14.0")
+    (source
+     (janestreet-origin "ppx_js_style" version
+      "141fgxfipfn5jdaxc946dmp5y4fcnbhxms9maji9ddywgx82ya7l"))
     (build-system dune-build-system)
-    (arguments
-     ;; No tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+    (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-octavius" ,(package-with-ocaml4.07 ocaml-octavius))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_js_style")))
+     `(("ocaml-base" ,ocaml-base)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-octavius" ,ocaml-octavius)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_js_style")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-js-style))))
     (home-page "https://github.com/janestreet/ppx_js_style")
     (synopsis "Code style checker for Jane Street Packages")
     (description "This package is a no-op ppx rewriter.  It is used as a
 @code{lint} tool to enforce some coding conventions across all Jane Street
 packages.")
     (license license:asl2.0)))
+
+(define-public ocaml4.07-ppx-js-style
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-js-style)
+     (version "0.11.0")
+     (source
+      (janestreet-origin "ppx_js_style" version
+                         "0z3fc55jdjhhsblla6z4fqc13kljpcz29q79rvs5h2vsraqrldr2"))
+     (properties `((upstream-name . "ppx_js_style"))))))
 
 (define-public ocaml4.07-ppx-typerep-conv
   (package
@@ -5638,7 +6067,7 @@ packages.")
         ("ocaml-typerep" ,ocaml4.07-typerep)
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_typerep_conv")))
     (home-page "https://github.com/janestreet/ppx_typerep_conv")
     (synopsis "Generation of runtime types from type declarations")
@@ -5646,34 +6075,28 @@ packages.")
 from type definitions.")
     (license license:asl2.0)))
 
-(define-public ocaml4.07-ppx-base
+(define-public ocaml-ppx-base
   (package
-    (name "ocaml4.07-ppx-base")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/ppx_base-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0aq206pg330jmj7lhcagiiwm3a0b3gsqm801m8ajd4ysyw7idkym"))))
+    (name "ocaml-ppx-base")
+    (version "0.14.0")
+    (source
+     (janestreet-origin
+      "ppx_base" version
+      "0b7a3fmi90jk8paz0g36yzaq670fbnrbi1j8r5ibh9wbcfli7ji6"))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
+     `(#:test-target "."))
     (propagated-inputs
-      `(("ocaml-ppx-compare" ,ocaml4.07-ppx-compare)
-        ("ocaml-ppx-enumerate" ,ocaml4.07-ppx-enumerate)
-        ("ocaml-ppx-hash" ,ocaml4.07-ppx-hash)
-        ("ocaml-ppx-js-style" ,ocaml4.07-ppx-js-style)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
-        ("ocaml-migrate-parsetree"
-         ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
-    (properties `((upstream-name . "ppx_base")))
+     `(("ocaml-ppx-compare" ,ocaml-ppx-compare)
+       ("ocaml-ppx-cold" ,ocaml-ppx-cold)
+       ("ocaml-ppx-enumerate" ,ocaml-ppx-enumerate)
+       ("ocaml-ppx-hash" ,ocaml-ppx-hash)
+       ("ocaml-ppx-js-style" ,ocaml-ppx-js-style)
+       ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_base")
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-base))))
     (home-page "https://github.com/janestreet/ppx_base")
     (synopsis "Base set of ppx rewriters")
     (description "Ppx_base is the set of ppx rewriters used for Base.
@@ -5681,6 +6104,25 @@ from type definitions.")
 Note that Base doesn't need ppx to build, it is only used as a
 verification tool.")
     (license license:asl2.0)))
+
+(define-public ocaml4.07-ppx-base
+  (package-with-ocaml4.07
+   (package
+     (inherit ocaml-ppx-base)
+     (version "0.11.0")
+     (source
+      (janestreet-origin
+       "ppx_base" version
+       "0aq206pg330jmj7lhcagiiwm3a0b3gsqm801m8ajd4ysyw7idkym"))
+    (propagated-inputs
+     `(("ocaml-ppx-compare" ,ocaml-ppx-compare)
+       ("ocaml-ppx-enumerate" ,ocaml-ppx-enumerate)
+       ("ocaml-ppx-hash" ,ocaml-ppx-hash)
+       ("ocaml-ppx-js-style" ,ocaml-ppx-js-style)
+       ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-ppxlib" ,ocaml-ppxlib)))
+    (properties `((upstream-name . "ppx_base"))))))
 
 (define-public ocaml4.07-ppx-bin-prot
   (package
@@ -5705,10 +6147,10 @@ verification tool.")
     (propagated-inputs
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
         ("ocaml-bin-prot" ,ocaml4.07-bin-prot)
-        ("ocaml-ppx-here" ,ocaml4.07-ppx-here)
+        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_bin_prot")))
     (home-page "https://github.com/janestreet/ppx_bin_prot")
     (synopsis "Generation of bin_prot readers and writers from types")
@@ -5735,27 +6177,27 @@ functions from type definitions.")
        #:findlib ,ocaml4.07-findlib
        #:dune ,ocaml4.07-dune))
     (propagated-inputs
-      `(("ocaml-ppx-assert" ,ocaml4.07-ppx-assert)
-        ("ocaml-ppx-base" ,ocaml4.07-ppx-base)
+     `(("ocaml-ppx-assert" ,(package-with-ocaml4.07 ocaml-ppx-assert))
+       ("ocaml-ppx-base" ,(package-with-ocaml4.07 ocaml-ppx-base))
         ("ocaml-ppx-bench" ,ocaml4.07-ppx-bench)
         ("ocaml-ppx-bin-prot" ,ocaml4.07-ppx-bin-prot)
-        ("ocaml-ppx-custom-printf" ,ocaml4.07-ppx-custom-printf)
-        ("ocaml-ppx-expect" ,ocaml4.07-ppx-expect)
+        ("ocaml-ppx-custom-printf" ,(package-with-ocaml4.07 ocaml-ppx-custom-printf))
+        ("ocaml-ppx-expect" ,(package-with-ocaml4.07 ocaml-ppx-expect))
         ("ocaml-ppx-fail" ,ocaml4.07-ppx-fail)
-        ("ocaml-ppx-fields-conv" ,ocaml4.07-ppx-fields-conv)
-        ("ocaml-ppx-here" ,ocaml4.07-ppx-here)
-        ("ocaml-ppx-inline-test" ,ocaml4.07-ppx-inline-test)
-        ("ocaml-ppx-let" ,ocaml4.07-ppx-let)
-        ("ocaml-ppx-optcomp" ,ocaml4.07-ppx-optcomp)
-        ("ocaml-ppx-optional" ,ocaml4.07-ppx-optional)
+        ("ocaml-ppx-fields-conv" ,(package-with-ocaml4.07 ocaml-ppx-fields-conv))
+        ("ocaml-ppx-here" ,(package-with-ocaml4.07 ocaml-ppx-here))
+        ("ocaml-ppx-inline-test" ,(package-with-ocaml4.07 ocaml-ppx-inline-test))
+        ("ocaml-ppx-let" ,(package-with-ocaml4.07 ocaml-ppx-let))
+        ("ocaml-ppx-optcomp" ,(package-with-ocaml4.07 ocaml-ppx-optcomp))
+        ("ocaml-ppx-optional" ,(package-with-ocaml4.07 ocaml-ppx-optional))
         ("ocaml-ppx-pipebang" ,ocaml4.07-ppx-pipebang)
         ("ocaml-ppx-sexp-message" ,ocaml4.07-ppx-sexp-message)
         ("ocaml-ppx-sexp-value" ,ocaml4.07-ppx-sexp-value)
         ("ocaml-ppx-typerep-conv" ,ocaml4.07-ppx-typerep-conv)
-        ("ocaml-ppx-variants-conv" ,ocaml4.07-ppx-variants-conv)
+        ("ocaml-ppx-variants-conv" ,(package-with-ocaml4.07 ocaml-ppx-variants-conv))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (properties `((upstream-name . "ppx_jane")))
     (home-page "https://github.com/janestreet/ppx_jane")
     (synopsis "Standard Jane Street ppx rewriters")
@@ -5842,7 +6284,7 @@ various Jane Street packages.")
        #:dune ,ocaml4.07-dune))
     (propagated-inputs
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-stdio" ,ocaml4.07-stdio)))
+        ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))))
     (home-page "https://github.com/janestreet/configurator")
     (synopsis "Helper library for gathering system configuration")
     (description "Configurator is a small library that helps writing OCaml
@@ -5885,7 +6327,7 @@ Configurator allows one to:
        #:findlib ,ocaml4.07-findlib
        #:dune ,ocaml4.07-dune))
     (native-inputs
-     `(("ocaml-ppx-expect" ,ocaml4.07-ppx-expect)))
+     `(("ocaml-ppx-expect" ,(package-with-ocaml4.07 ocaml-ppx-expect))))
     (home-page "https://github.com/janestreet/spawn")
     (synopsis "Spawning sub-processes")
     (description
@@ -5931,14 +6373,14 @@ thousands of times faster than fork.
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
         ("ocaml-configurator" ,ocaml4.07-configurator)
         ("ocaml-core-kernel" ,ocaml4.07-core-kernel)
-        ("ocaml-ppx-assert" ,ocaml4.07-ppx-assert)
+        ("ocaml-ppx-assert" ,(package-with-ocaml4.07 ocaml-ppx-assert))
         ("ocaml-ppx-jane" ,ocaml4.07-ppx-jane)
         ("ocaml-sexplib" ,(package-with-ocaml4.07 ocaml-sexplib))
         ("ocaml-spawn" ,ocaml4.07-spawn)
-        ("ocaml-stdio" ,ocaml4.07-stdio)
+        ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))
-        ("ocaml-ppxlib" ,ocaml4.07-ppxlib)))
+        ("ocaml-ppxlib" ,(package-with-ocaml4.07 ocaml-ppxlib))))
     (home-page "https://github.com/janestreet/core")
     (synopsis "Alternative to OCaml's standard library")
     (description "The Core suite of libraries is an alternative to OCaml's
@@ -5971,20 +6413,20 @@ standard library that was developed by Jane Street.")
       `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
         ("ocaml-bin-prot" ,ocaml4.07-bin-prot)
         ("ocaml-configurator" ,ocaml4.07-configurator)
-        ("ocaml-fieldslib" ,ocaml4.07-fieldslib)
+        ("ocaml-fieldslib" ,(package-with-ocaml4.07 ocaml-fieldslib))
         ("ocaml-jane-street-headers" ,ocaml4.07-jane-street-headers)
-        ("ocaml-ppx-assert" ,ocaml4.07-ppx-assert)
-        ("ocaml-ppx-base" ,ocaml4.07-ppx-base)
-        ("ocaml-ppx-hash" ,ocaml4.07-ppx-hash)
-        ("ocaml-ppx-inline-test" ,ocaml4.07-ppx-inline-test)
+        ("ocaml-ppx-assert" ,(package-with-ocaml4.07 ocaml-ppx-assert))
+        ("ocaml-ppx-base" ,(package-with-ocaml4.07 ocaml-ppx-base))
+        ("ocaml-ppx-hash" ,(package-with-ocaml4.07 ocaml-ppx-hash))
+        ("ocaml-ppx-inline-test" ,(package-with-ocaml4.07 ocaml-ppx-inline-test))
         ("ocaml-ppx-jane" ,ocaml4.07-ppx-jane)
-        ("ocaml-ppx-sexp-conv" ,ocaml4.07-ppx-sexp-conv)
+        ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))
         ("ocaml-ppx-sexp-message" ,ocaml4.07-ppx-sexp-message)
         ("ocaml-sexplib" ,(package-with-ocaml4.07 ocaml-sexplib))
         ("ocaml-splittable-random" ,ocaml4.07-splittable-random)
-        ("ocaml-stdio" ,ocaml4.07-stdio)
+        ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))
         ("ocaml-typerep" ,ocaml4.07-typerep)
-        ("ocaml-variantslib" ,ocaml4.07-variantslib)
+        ("ocaml-variantslib" ,(package-with-ocaml4.07 ocaml-variantslib))
         ("ocaml-migrate-parsetree"
          ,(package-with-ocaml4.07 ocaml-migrate-parsetree))))
     (properties `((upstream-name . "core_kernel")))
@@ -6003,7 +6445,7 @@ the full Core is not available, such as in Javascript.")
 (define-public ocaml-markup
   (package
     (name "ocaml-markup")
-    (version "1.0.0")
+    (version "1.0.2")
     (home-page "https://github.com/aantron/markup.ml")
     (source
      (origin
@@ -6014,12 +6456,10 @@ the full Core is not available, such as in Javascript.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09hkrf9pw6hpb9j06p5bddklpnjwdjpqza3bx2179l970yl67an9"))))
+         "1kvqwrrcrys5d0kzdwxcj66jpi6sdhfas4pcg02pixx92q87vhqm"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "markup"))
-    (inputs
-     `(("libev" ,libev)))
     (propagated-inputs
      `(("ocaml-bisect-ppx" ,ocaml-bisect-ppx)
        ("ocaml-uchar" ,ocaml-uchar)
@@ -6069,6 +6509,9 @@ stream, and convert everything to UTF-8.")
        (sha256
         (base32
          "0aif4abvfmi9xc1pvw5n5rbm6rzkkpsxyvdn0lanr33rjpvkwdlm"))))
+    (native-inputs
+     `(("ocaml-ounit" ,ocaml-ounit)
+       ("pkg-config" ,pkg-config)))
     (properties '())))
 
 (define-public ocaml-tyxml
@@ -6109,7 +6552,7 @@ combinators.")
 (define-public ocaml-bisect-ppx
   (package
     (name "ocaml-bisect-ppx")
-    (version "1.4.2")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -6119,24 +6562,14 @@ combinators.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0900vli5kw7s5kdam0n4cqsfsfqb7mdb3azn3i55595gilg1vyn8"))))
+         "1knglw1b2kjr9jnd8cpfzmm581abxxdcx9l3cd2balg6gnac7qk1"))))
     (build-system dune-build-system)
     (propagated-inputs
-     `(("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
-       ("ocaml-ppx-tools-versioned" ,ocaml-ppx-tools-versioned)
-       ("ocaml-ounit" ,ocaml-ounit)))
+     `(("ocaml-ppxlib" ,ocaml-ppxlib)
+       ("ocaml-cmdliner" ,ocaml-cmdliner)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-deprecated
-           (lambda _
-             ;; Fixed upstream in 22dd1ad9a0c9629f60599c22d82c6488394d6d32, but
-             ;; not in a release yet.
-             (substitute* "src/ppx/instrument.ml"
-               (("module Ast = Ast_405")
-                "module Ast = Migrate_parsetree.Ast_405
-module Ast_405 = Ast"))
-             #t)))))
+     ;; Tests require ocamlformat which would lead to circular dependencies
+     '(#:tests? #f))
     (home-page "https://github.com/aantron/bisect_ppx")
     (synopsis "Code coverage for OCaml")
     (description "Bisect_ppx helps you test thoroughly.  It is a small
@@ -6187,6 +6620,34 @@ then run the Bisect_ppx report tool on the generated visitation files.")
 Text inside doc comments is marked up in ocamldoc syntax.  Odoc's main
 advantage over ocamldoc is an accurate cross-referencer, which handles the
 complexity of the OCaml module system.")
+    (license license:isc)))
+
+(define-public ocaml-odoc-parser
+  (package
+    (name "ocaml-odoc-parser")
+    (version "0.9.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/ocaml-doc/odoc-parser")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+           "1jlc6dp3v90r1ra7r0jfw0xs8rylwdz9gymw4rd53h0p17cw1wnj"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+      `(("ocaml-astring" ,ocaml-astring)
+        ("ocaml-result" ,ocaml-result)))
+    (native-inputs
+      `(("ocaml-ppx-expect" ,ocaml-ppx-expect)))
+    (home-page "https://github.com/ocaml-doc/odoc-parser")
+    (synopsis "Parser for ocaml documentation comments")
+    (description
+     "This package provides a library for parsing the contents of OCaml
+documentation comments, formatted using Odoc syntax, an extension of the
+language understood by ocamldoc.")
     (license license:isc)))
 
 ;; version 1.5.2 requires ocaml-markdown 1.0.0 which does not compile
@@ -6268,7 +6729,7 @@ library FFTW.")
      `(("openblas" ,openblas)
        ("lapack" ,lapack)
        ("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-       ("ocaml-stdio" ,ocaml4.07-stdio)))
+       ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))))
     (home-page "https://mmottl.github.io/lacaml/")
     (synopsis
      "OCaml-bindings to BLAS and LAPACK")
@@ -6343,7 +6804,7 @@ variants.")
 (define-public ocaml-mdx
   (package
     (name "ocaml-mdx")
-    (version "1.7.0")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6352,7 +6813,7 @@ variants.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10avyv99xkfqdq3gmq8gps770jpibbfslg97sbhgmp0dpwikz49d"))))
+                "1w2vx4my9z6n57vjvsa3b9vwkbdzs1kq0cc58rf088qrh2lrx2ba"))))
     (build-system dune-build-system)
     (inputs
      `(("ocaml-fmt" ,ocaml-fmt)
@@ -6361,8 +6822,9 @@ variants.")
        ("ocaml-cmdliner" ,ocaml-cmdliner)
        ("ocaml-re" ,ocaml-re)
        ("ocaml-result" ,ocaml-result)
-       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
+       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree-1)
        ("ocaml-odoc" ,ocaml-odoc)
+       ("ocaml-odoc-parser" ,ocaml-odoc-parser)
        ("ocaml-version" ,ocaml-version)))
     (native-inputs
      `(("ocaml-cppo" ,ocaml-cppo)
@@ -6373,21 +6835,79 @@ variants.")
     (synopsis
      "Executable code blocks inside markdown files")
     (description
-     "@code{ocaml-mdx} allows to execute code blocks inside markdown files.
+     "@code{ocaml-mdx} executes code blocks inside markdown files.
 There are (currently) two sub-commands, corresponding
 to two modes of operations: pre-processing (@code{ocaml-mdx pp})
 and tests (@code{ocaml-mdx test}]).
 
-The pre-processor mode allows to mix documentation and code,
+The pre-processor mode allows mixing documentation and code,
 and to practice @dfn{literate programming} using markdown and OCaml.
 
-The test mode allows to ensure that shell scripts and OCaml fragments
+The test mode ensures that shell scripts and OCaml fragments
 in the documentation always stays up-to-date.
 
 @code{ocaml-mdx} is released as two binaries called @code{ocaml-mdx} and
 @code{mdx} which are the same, mdx being the deprecated name, kept for now for
 compatibility.")
     (license license:isc)))
+
+(define-public ocaml-mparser
+  (package
+    (name "ocaml-mparser")
+    (version "1.3")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/murmour/mparser")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "16j19v16r42gcsii6a337zrs5cxnf12ig0vaysxyr7sq5lplqhkx"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; No tests.
+     '(#:package "mparser"
+       #:tests? #f))
+    (home-page "https://github.com/murmour/mparser")
+    (synopsis "Simple monadic parser combinator library")
+    (description
+      "This library implements a rather complete and efficient monadic parser
+combinator library similar to the Parsec library for Haskell by Daan Leijen and
+the FParsec library for FSharp by Stephan Tolksdorf.")
+    ;; With static linking exception.
+    (license license:lgpl2.1+)))
+
+(define-public ocaml-mparser-re
+  (package
+    (inherit ocaml-mparser)
+    (name "ocaml-mparser-re")
+    (arguments
+     ;; No tests.
+     '(#:package "mparser-re"
+       #:tests? #f))
+    (propagated-inputs
+     `(("ocaml-mparser" ,ocaml-mparser)
+       ("ocaml-re" ,ocaml-re)))
+    (synopsis "MParser plugin for RE-based regular expressions")
+    (description "This package provides RE-based regular expressions
+support for Mparser.")))
+
+(define-public ocaml-mparser-pcre
+  (package
+    (inherit ocaml-mparser)
+    (name "ocaml-mparser-pcre")
+    (arguments
+     ;; No tests.
+     '(#:package "mparser-pcre"
+       #:tests? #f))
+    (propagated-inputs
+     `(("ocaml-mparser" ,ocaml-mparser)
+       ("ocaml-pcre" ,ocaml-pcre)))
+    (synopsis "MParser plugin for PCRE-based regular expressions")
+    (description "This package provides PCRE-based regular expressions
+support for Mparser.")))
 
 (define-public lablgtk3
   (package
@@ -6412,8 +6932,12 @@ compatibility.")
            (lambda _
              (for-each (lambda (file)
                          (chmod file #o644))
-                       (find-files "." "."))
-             #t)))))
+                       (find-files "." "."))))
+         (add-before 'build 'set-version
+           (lambda _
+             (substitute* "dune-project"
+               (("\\(name lablgtk3\\)")
+                (string-append "(name lablgtk3)\n(version " ,version ")"))))))))
     (propagated-inputs
      `(("ocaml-cairo2" ,ocaml-cairo2)))
     (inputs
@@ -6478,3 +7002,439 @@ provides support to program with time varying values: declarative events and
  signals.  React doesn't define any primitive event or signal, it lets the
 client chooses the concrete timeline.")
     (license license:lgpl2.1+)))
+
+(define-public ocaml-uucd
+  (package
+    (name "ocaml-uucd")
+    (version "13.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://erratique.ch/software/uucd/releases/"
+                           "uucd-" version ".tbz"))
+       (sha256
+        (base32
+         "1fg77hg4ibidkv1x8hhzl8z3rzmyymn8m4i35jrdibb8adigi8v2"))))
+    (build-system ocaml-build-system)
+    (arguments
+     '(#:build-flags '("build" "--tests" "true")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (propagated-inputs
+     `(("ocaml-xmlm" ,ocaml-xmlm)))
+    (native-inputs
+     `(("opam" ,opam)
+       ("ocaml-findlib" ,ocaml-findlib)
+       ("ocamlbuild" ,ocamlbuild)
+       ("ocaml-topkg" ,ocaml-topkg)))
+    (home-page "https://erratique.ch/software/uucd")
+    (synopsis "Unicode character database decoder for OCaml")
+    (description "Uucd is an OCaml module to decode the data of the Unicode
+character database from its XML representation.  It provides high-level (but
+not necessarily efficient) access to the data so that efficient
+representations can be extracted.")
+    (license license:isc)))
+
+(define-public ocaml-uucp
+  (package
+    (name "ocaml-uucp")
+    (version "13.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://erratique.ch/software/uucp/releases/"
+                           "uucp-" version ".tbz"))
+       (sha256
+        (base32
+         "19kf8ypxaakacgg1dwwfzkc2zicaj88cmw11fw2z7zl24dn4gyiq"))))
+    (build-system ocaml-build-system)
+    (arguments
+     '(#:build-flags '("build" "--tests" "true")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (native-inputs
+     `(("opam" ,opam)
+       ("ocaml-findlib" ,ocaml-findlib)
+       ("ocamlbuild" ,ocamlbuild)
+       ("ocaml-topkg" ,ocaml-topkg)
+       ("ocaml-uucd" ,ocaml-uucd)
+       ("ocaml-uunf" ,ocaml-uunf)
+       ("ocaml-uutf" ,ocaml-uutf)))
+    (home-page "https://erratique.ch/software/uucp")
+    (synopsis "Unicode character properties for OCaml")
+    (description "Uucp is an OCaml library providing efficient access to a
+selection of character properties of the Unicode character database.")
+    (license license:isc)))
+
+(define-public ocaml-uuseg
+  (package
+    (name "ocaml-uuseg")
+    (version "13.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://erratique.ch/software/uuseg/releases/"
+                           "uuseg-" version ".tbz"))
+       (sha256
+        (base32
+         "1a635j8ra6p27g1ivfln3387lhwqmf6vq4r6bn7b6n1qsqyi1rls"))))
+    (build-system ocaml-build-system)
+    (arguments
+     '(#:build-flags '("build" "--tests" "true")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (propagated-inputs
+     `(("ocaml-uucp" ,ocaml-uucp)
+       ("ocaml-uutf" ,ocaml-uutf)
+       ("ocaml-cmdliner" ,ocaml-cmdliner)))
+    (native-inputs
+     `(("opam" ,opam)
+       ("ocaml-findlib" ,ocaml-findlib)
+       ("ocamlbuild" ,ocamlbuild)
+       ("ocaml-topkg" ,ocaml-topkg)))
+    (home-page "https://erratique.ch/software/uuseg")
+    (synopsis "Unicode text segmentation for OCaml")
+    (description "Uuseg is an OCaml library for segmenting Unicode text.  It
+implements the locale independent Unicode text segmentation algorithms to
+detect grapheme cluster, word and sentence boundaries and the Unicode line
+breaking algorithm to detect line break opportunities.
+
+The library is independent from any IO mechanism or Unicode text data
+structure and it can process text without a complete in-memory
+representation.")
+    (license license:isc)))
+
+(define-public ocaml-fix
+  (package
+    (name "ocaml-fix")
+    (version "20201120")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://gitlab.inria.fr/fpottier/fix")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "1j40mg1gy03c0djzx3nzmpvnl984s14n04zwcmp2xnlidq48kvs4"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; No tests.
+     '(#:tests? #f))
+    (home-page "https://gitlab.inria.fr/fpottier/fix")
+    (synopsis "Facilities for memoization and fixed points")
+    (description "This package provides helpers with various constructions
+that involve memoization and recursion.")
+    (license license:lgpl2.0)))
+
+(define-public ocaml-dune-build-info
+  (package
+    (inherit dune)
+    (name "ocaml-dune-build-info")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "dune-build-info"
+       ;; No separate test suite from dune.
+       #:tests? #f))
+    (propagated-inputs
+     `(("ocaml-odoc" ,ocaml-odoc)))
+    (synopsis "Embed build information inside an executable")
+    (description "This package allows one to access information about how the
+executable was built, such as the version of the project at which it was built
+or the list of statically linked libraries with their versions.  It supports
+reporting the version from the version control system during development to
+get an precise reference of when the executable was built.")))
+
+(define-public ocamlformat
+  (package
+    (name "ocamlformat")
+    (version "0.19.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/ocaml-ppx/ocamlformat")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "0dp4pkznz9yvqx9gxwbid1z2b8ajkr8i27zay9ghx69624hz3i4z"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "ocamlformat"
+       ;; FIXME: The expected format is slightly different than what the
+       ;; produced format is for test/cli/stdin.t
+       #:tests? #f))
+    (propagated-inputs
+      `(("ocaml-version" ,ocaml-version)
+        ("ocaml-base" ,ocaml-base)
+        ("ocaml-cmdliner" ,ocaml-cmdliner)
+        ("ocaml-dune-build-info" ,ocaml-dune-build-info)
+        ("ocaml-fix" ,ocaml-fix)
+        ("ocaml-fpath" ,ocaml-fpath)
+        ("ocaml-menhir" ,ocaml-menhir)
+        ("ocaml-odoc" ,ocaml-odoc)
+        ("ocaml-ppxlib" ,ocaml-ppxlib)
+        ("ocaml-re" ,ocaml-re)
+        ("ocaml-odoc-parser" ,ocaml-odoc-parser)
+        ("ocaml-stdio" ,ocaml-stdio)
+        ("ocaml-uuseg" ,ocaml-uuseg)
+        ("ocaml-uutf" ,ocaml-uutf)))
+    (native-inputs
+      `(("ocaml-alcotest" ,ocaml-alcotest)
+        ("ocaml-ocp-indent" ,ocaml-ocp-indent)
+        ("ocaml-bisect-ppx" ,ocaml-bisect-ppx)))
+    (home-page "https://github.com/ocaml-ppx/ocamlformat")
+    (synopsis "Auto-formatter for OCaml code")
+    (description "OCamlFormat is a tool to automatically format OCaml code in
+a uniform style.")
+    (license license:expat)))
+
+(define-public ocaml-bigstringaf
+  (package
+    (name "ocaml-bigstringaf")
+    (version "0.7.0")
+    (home-page "https://github.com/inhabitedtype/bigstringaf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1q1sqxzdnlrpl95ccrhl7lwy3zswgd9rbn19ildclh0lyi2vazbj"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:test-target "."))
+    (propagated-inputs
+     `(("ocaml-bigarray-compat" ,ocaml-bigarray-compat)))
+    (native-inputs
+     `(("ocaml-alcotest" ,ocaml-alcotest)
+       ("pkg-config" ,pkg-config)))
+    (synopsis
+     "Bigstring intrinsics and fast blits based on memcpy/memmove")
+    (description
+     "The OCaml compiler has a bunch of intrinsics for Bigstrings, but they're
+not widely-known, sometimes misused, and so programs that use Bigstrings are
+slower than they have to be.  And even if a library got that part right and
+exposed the intrinsics properly, the compiler doesn't have any fast blits
+between Bigstrings and other string-like types.  @code{bigstringaf} provides
+these missing pieces.")
+    (license license:bsd-3)))
+
+(define-public ocaml-syntax-shims
+  (package
+    (name "ocaml-syntax-shims")
+    (version "1.0.0")
+    (home-page "https://github.com/ocaml-ppx/ocaml-syntax-shims")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0l1i8z95qgb0lxlrv3yb5nkp391hqsiyi4r91p12k3xmggqixagf"))))
+    (build-system dune-build-system)
+    (properties
+     `((upstream-name . "ocaml-syntax-shims")))
+    (synopsis
+     "Backport new syntax to older OCaml versions")
+    (description
+     "This packages backports new features of the language to older
+compilers, such as let+.")
+    (license license:expat)))
+
+(define-public ocaml-angstrom
+  (package
+    (name "ocaml-angstrom")
+    (version "0.15.0")
+    (home-page "https://github.com/inhabitedtype/angstrom")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1hmrkdcdlkwy7rxhngf3cv3sa61cznnd9p5lmqhx20664gx2ibrh"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; Only build the base angstrom package.
+     '(#:package "angstrom"
+       #:test-target "."))
+    (propagated-inputs
+     `(("ocaml-bigstringaf" ,ocaml-bigstringaf)))
+    (native-inputs
+     `(("ocaml-alcotest" ,ocaml-alcotest)
+       ("ocaml-ppx-let" ,ocaml-ppx-let)
+       ("ocaml-syntax-shims" ,ocaml-syntax-shims)))
+    (synopsis "Parser combinators built for speed and memory-efficiency")
+    (description
+     "Angstrom is a parser-combinator library that makes it easy to write
+efficient, expressive, and reusable parsers suitable for high-performance
+applications.  It exposes monadic and applicative interfaces for composition,
+and supports incremental input through buffered and unbuffered interfaces.
+Both interfaces give the user total control over the blocking behavior of
+their application, with the unbuffered interface enabling zero-copy IO.
+Parsers are backtracking by default and support unbounded lookahead.")
+    (license license:bsd-3)))
+
+(define-public ocaml-graphics
+  (package
+    (name "ocaml-graphics")
+    (version "5.1.1")
+    (home-page "https://github.com/ocaml/graphics")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14w07ydji2nbdk366nfp2pzs9484xp9vqv63n345id13v48z8bfi"))))
+    (build-system dune-build-system)
+    (propagated-inputs
+     `(("libx11" ,libx11)))
+    (synopsis "The OCaml graphics library")
+    (description
+     "The graphics library provides a set of portable drawing primitives.
+Drawing takes place in a separate window that is created when
+Graphics.open_graph is called.  This library used to be distributed with OCaml
+up to OCaml 4.08.")
+    (license license:lgpl2.1+)))
+
+(define-public ocaml-uri-sexp
+  (package
+    (inherit ocaml-uri)
+    (name "ocaml-uri-sexp")
+    (arguments
+     '(#:package "uri-sexp"
+       #:test-target "."))
+    (propagated-inputs
+      `(("ocaml-uri" ,ocaml-uri)
+        ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+        ("ocaml-sexplib0" ,ocaml-sexplib0)))
+    (native-inputs `(("ocaml-ounit" ,ocaml-ounit)))
+    (synopsis "RFC3986 URI/URL parsing library")
+    (description "This package adds S-exp support to @code{ocaml-uri}.")))
+
+(define-public ocaml-cohttp
+  (package
+    (name "ocaml-cohttp")
+    (version "4.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/mirage/ocaml-cohttp")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "02d7417yy1i62by368w3wyw3756047pbrw69spcvz3cd1z7vqaci"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "cohttp"
+       #:test-target "cohttp_test/src"))
+    (propagated-inputs
+      `(("ocaml-re" ,ocaml-re)
+        ("ocaml-uri" ,ocaml-uri)
+        ("ocaml-uri-sexp" ,ocaml-uri-sexp)
+        ("ocaml-sexplib0" ,ocaml-sexplib0)
+        ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
+        ("ocaml-stringext" ,ocaml-stringext)
+        ("ocaml-base64" ,ocaml-base64)))
+    (native-inputs
+      `(("ocaml-fmt" ,ocaml-fmt)
+        ("ocaml-jsonm" ,ocaml-jsonm)
+        ("ocaml-alcotest" ,ocaml-alcotest)))
+    (home-page "https://github.com/mirage/ocaml-cohttp")
+    (synopsis "OCaml library for HTTP clients and servers")
+    (description
+      "Cohttp is an OCaml library for creating HTTP daemons.  It has a portable
+HTTP parser, and implementations using various asynchronous programming
+libraries.")
+    (license license:isc)))
+
+(define-public js-of-ocaml
+  (package
+    (name "js-of-ocaml")
+    (version "3.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocsigen/js_of_ocaml")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00hdjaj94j3nc6f6wbbpx59h4yc79siphs34i1hry11r56paaqyk"))))
+    (build-system dune-build-system)
+    (arguments `(#:test-target "."))
+    (propagated-inputs
+     `(("ocaml-ppxlib" ,ocaml-ppxlib)
+       ("ocaml-uchar" ,ocaml-uchar)
+       ("ocaml-menhir" ,ocaml-menhir)
+       ("ocaml-reactivedata" ,ocaml-reactivedata)
+       ("ocaml-cmdliner" ,ocaml-cmdliner)
+       ("ocaml-lwt" ,ocaml-lwt)
+       ("ocaml-tyxml" ,ocaml-tyxml)
+       ("ocaml-re" ,ocaml-re)
+       ("ocaml-uutf" ,ocaml-uutf)
+       ("ocaml-graphics" ,ocaml-graphics)
+       ("ocaml-yojson" ,ocaml-yojson)))
+    (native-inputs
+     ;; for tests
+     `(("node" ,node)
+       ("ocaml-ppx-expect" ,ocaml-ppx-expect)
+       ("ocaml-num" ,ocaml-num)))
+    (properties `((upstream-name . "js_of_ocaml")))
+    (home-page "https://ocsigen.org/js_of_ocaml/")
+    (synopsis "Compiler from OCaml bytecode to Javascript")
+    (description "Js_of_ocaml is a compiler from OCaml bytecode to JavaScript.
+It makes it possible to run pure OCaml programs in JavaScript environment like
+browsers and Node.js.")
+    (license license:lgpl2.1+)))
+
+(define-public ocaml-bibtex2html
+  (package
+    (name "ocaml-bibtex2html")
+    (version "1.99")
+    (source
+      (origin
+        (method url-fetch)
+        (uri "https://www.lri.fr/~filliatr/ftp/bibtex2html/bibtex2html-1.99.tar.gz")
+        (sha256 (base32 "07gzrs4lfrkvbn48cgn2gn6c7cx3jsanakkrb2irj0gmjzfxl96j"))))
+    (build-system ocaml-build-system)
+    (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (add-after 'unpack 'patch-/bin/sh
+            (lambda _
+              (substitute* "configure" (("/bin/sh") (which "bash")))
+              (setenv "HOME" (getcwd)) ;; mktexfmt needs writable home directory
+              #t)))))
+    (native-inputs
+     `(("which" ,which)
+       ("texlive" ,(texlive-union (list texlive-fonts-ec texlive-preprint
+                                        texlive-latex-hyperref texlive-bibtex)))))
+    (propagated-inputs
+     `(("hevea" ,hevea)))
+    (home-page "https://www.lri.fr/~filliatr/bibtex2html/")
+    (synopsis "BibTeX to HTML translator")
+    (description "This package allows you to produce, from a set of
+bibliography files in BibTeX format, a bibliography in HTML format.")
+    (license license:gpl2)))

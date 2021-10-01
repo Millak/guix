@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
@@ -31,6 +31,7 @@
 (define-module (gnu packages parallel)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
@@ -41,8 +42,11 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages freeipmi)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -57,14 +61,14 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20210322")
+    (version "20210922")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "152np0jg4n94sbl2p2fzxjfnssiyp5sg7r5wx6s8p893b921pxwq"))))
+       (base32 "0rjd9636sgmnhaww2q8rbnpwhpq1aqg3df6rmpdm880zqi7skp6y"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -135,10 +139,37 @@ execution is also possible.")
     (home-page "https://github.com/leahneukirchen/xe")
     (license license:public-domain)))
 
+(define-public xjobs
+  (package
+    (name "xjobs")
+    (version "20200726")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://www.maier-komor.de/xjobs/xjobs-"
+                    version ".tgz"))
+              (sha256
+               (base32
+                "0ay6gn43pnm7r1jamwgpycl67bjg5n87ncl27jb01w2x6x70z0i3"))))
+    (build-system gnu-build-system)
+    (arguments `(#:tests? #f)) ;; No tests
+    (native-inputs
+     `(("flex" ,flex)
+       ("which" ,which)))
+    (home-page "http://www.maier-komor.de/xjobs.html")
+    (properties `((release-monitoring-url . ,home-page)))
+    (synopsis
+     "Parallel execution of jobs with several useful options")
+    (description
+     "xjobs reads job descriptions line by line and executes them in
+parallel.  It limits the number of parallel executing jobs and starts new jobs
+when jobs finish.")
+    (license license:gpl2+)))
+
 (define-public slurm
   (package
    (name "slurm")
-   (version "20.11.3")
+   (version "20.11.7")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -146,7 +177,7 @@ execution is also possible.")
                   version ".tar.bz2"))
             (sha256
              (base32
-              "1s70x6yh60sx63dgmp5rlhq8jcz7kxv9pk8gbs9v1jg8zps5h5bk"))
+              "1fdjihg1x7ks5l77yjv14a4mg6r0v8c3zk1dcxkhrhq3n4dc9nbs"))
             (modules '((guix build utils)))
             (snippet
              '(begin
@@ -198,7 +229,12 @@ execution is also possible.")
             ,@(if (target-64bit?) '() '("--enable-deprecated")))
       #:phases
       (modify-phases %standard-phases
-        (add-after 'unpack 'autoconf
+        (add-after 'unpack 'patch-plugin-linker-flags
+          (lambda _
+            (substitute* (find-files "src/plugins/" "Makefile.in")
+              (("_la_LDFLAGS = ")
+               "_la_LDFLAGS = ../../../api/libslurm.la "))))
+        (add-after 'patch-plugin-linker-flags 'autoconf
           (lambda _ (invoke "autoconf")))         ;configure.ac was patched
         (add-after 'install 'install-libpmi
           (lambda _
@@ -345,3 +381,88 @@ and output captured in the notebook.  Whatever arguments are accepted by a
 SLURM command line executable are also accepted by the corresponding magic
 command---e.g., @code{%salloc}, @code{%sbatch}, etc.")
       (license license:bsd-3))))
+
+(define-public pthreadpool
+  ;; This repository has only one tag, 0.1, which is older than what users
+  ;; such as XNNPACK expect.
+  (let ((commit "1787867f6183f056420e532eec640cba25efafea")
+        (version "0.1")
+        (revision "1"))
+    (package
+      (name "pthreadpool")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/Maratyszcza/pthreadpool")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02hdvxfn5krw8zivkgjx3b4rk9p02yr4mpdjlp75lsv6z1xf5yrx"))
+                (patches (search-patches "pthreadpool-system-libraries.patch"))))
+      (build-system cmake-build-system)
+      (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+      (inputs
+       `(("googletest" ,googletest)
+         ("googlebenchmark" ,googlebenchmark)
+         ("fxdiv" ,fxdiv)))
+      (synopsis "Efficient thread pool implementation")
+      (description
+       "The pthreadpool library implements an efficient and portable thread
+pool, similar to those implemented by OpenMP run-time support libraries for
+constructs such as @code{#pragma omp parallel for}, with additional
+features.")
+      (license license:bsd-2))))
+
+(define-public cpuinfo
+  ;; There's currently no tag on this repo.
+  (let ((version "0.0")
+        (revision "1")
+        (commit "866ae6e5ffe93a1f63be738078da94cf3005cce2"))
+    (package
+      (name "cpuinfo")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/pytorch/cpuinfo")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lmsf4bpkm19a31i40qwcjn46qf7prggziv4pbsi695bkx5as71p"))
+                (patches (search-patches "cpuinfo-system-libraries.patch"))))
+      (build-system cmake-build-system)
+      (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+      (inputs
+       `(("googletest" ,googletest)
+         ("googlebenchmark" ,googlebenchmark)))
+      (synopsis "C/C++ library to obtain information about the CPU")
+      (description
+       "The cpuinfo library provides a C/C++ and a command-line interface to
+obtain information about the CPU being used: supported instruction set,
+processor name, cache information, and topology information.")
+      (license license:bsd-2))))
+
+(define-public psimd
+  ;; There is currently no tag in this repo.
+  (let ((commit "072586a71b55b7f8c584153d223e95687148a900")
+        (version "0.0")
+        (revision "1"))
+    (package
+      (name "psimd")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/Maratyszcza/Psimd")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "16mslhvqs0gpqbg7kkq566a8gkn58cgjpqca8ljj9qcv5mk9apwm"))))
+      (build-system cmake-build-system)
+      (arguments '(#:tests? #f))                  ;there are no tests
+      (synopsis "Portable 128-bit SIMD intrinsics")
+      (description
+       "This header-only C++ library provides a portable interface to
+single-instruction multiple-data (SIMD) intrinsics.")
+      (license license:expat))))

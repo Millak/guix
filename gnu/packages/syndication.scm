@@ -23,6 +23,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -36,6 +37,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -50,6 +52,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -57,20 +60,173 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
+
+(define-public cawbird
+  (package
+    (name "cawbird")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/IBBoard/cawbird")
+             (commit (string-append "v"version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lmrgcj1ky1vhzynl36k6ba3ws089x4qdrnkjk3lbr334kicx9na"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:configure-flags
+       ;; Cawbirds's default key and secret for OAuth process with twitter.
+       (list
+        "-Dconsumer_key_base64=VmY5dG9yRFcyWk93MzJEZmhVdEk5Y3NMOA=="
+        "-Dconsumer_secret_base64=MThCRXIxbWRESDQ2Y0podzVtVU13SGUyVGlCRXhPb3BFRHhGYlB6ZkpybG5GdXZaSjI=")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-failing-tests
+           (lambda _
+             ;; These tests require networking.
+             (substitute* "tests/meson.build"
+               (("[ \t]*.*avatardownload.*$") "")
+               (("[ \t]*.*filters.*$") "")
+               (("[ \t]*.*friends.*$") "")
+               (("[ \t]*.*inlinemediadownloader.*$") "")
+               (("[ \t]*.*tweetparsing.*$") "")
+               (("[ \t]*.*usercounter.*$") ""))))
+         (delete 'check)
+         (add-after 'install 'custom-check
+           (lambda* (#:key outputs tests? #:allow-other-keys)
+             (when tests?
+               ;; Tests require a running X server.
+               (system "Xvfb :1 +extension GLX &")
+               (setenv "DISPLAY" ":1")
+               ;; Tests write to $HOME.
+               (setenv "HOME" (getcwd))
+               ;; Tests look for gsettings-schemas installed by the package.
+               (setenv "XDG_DATA_DIRS"
+                       (string-append (getenv "XDG_DATA_DIRS")
+                                      ":" (assoc-ref outputs "out") "/share"))
+               (invoke "meson" "test"))
+             #t))
+         (add-after 'glib-or-gtk-wrap 'wrap-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin/"))
+                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
+                    (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+               (wrap-program (string-append bin "cawbird")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+             #t)))))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("gobject-introspection" ,gobject-introspection)
+       ("gtk+:bin" ,gtk+ "bin")
+       ("pkg-config" ,pkg-config)
+       ("vala" ,vala)
+       ("xmllint" ,libxml2)
+       ("xorg-server" ,xorg-server-for-tests)))
+    (inputs
+     `(("glib" ,glib)
+       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
+       ("gspell" ,gspell)
+       ("gstreamer" ,gstreamer)
+       ("gst-libav" ,gst-libav)
+       ("gst-plugins-bad" ,gst-plugins-bad)
+       ("gst-plugins-base" ,gst-plugins-base)
+       ("gst-plugins-good" ,gst-plugins-good)
+       ("gtk+" ,gtk+)
+       ("json-glib" ,json-glib)
+       ("liboauth" ,liboauth)
+       ("libsoup" ,libsoup)
+       ("rest" ,rest)
+       ("sqlite" ,sqlite)
+       ("x11" ,libx11)))
+    (propagated-inputs
+     `(("dconf" ,dconf)))
+    (synopsis "Client for Twitter")
+    (description "Cawbird is a Twitter client built with GTK and Vala.
+It supports all features except non-mention notifications, polls, threads and
+cards.")
+    (home-page "https://ibboard.co.uk/cawbird/")
+    (license license:gpl3+)))
+
+(define-public giara
+  (package
+    (name "giara")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/World/giara")
+             (commit version)))
+       (file-name (git-file-name name version))
+       ;; To fix authentication while adding accounts.
+       (patches (search-patches "giara-fix-login.patch"))
+       (sha256
+        (base32 "004qmkfrgd37axv0b6hfh6v7nx4pvy987k5yv4bmlmkj9sbqm6f9"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'glib-or-gtk-wrap 'wrap-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin/"))
+                    (lib (string-append out "/lib/python"
+                                        ,(version-major+minor
+                                          (package-version python))
+                                        "/site-packages")))
+               (wrap-program (string-append bin "giara")
+                 `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH") ,lib))
+                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))
+             #t)))))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("gobject-introspection" ,gobject-introspection)
+       ("gtk+:bin" ,gtk+ "bin")
+       ("pkg-config" ,pkg-config)
+       ("xmllint" ,libxml2)))
+    (inputs
+     `(("glib" ,glib)
+       ("gtk+" ,gtk+)
+       ("gtksourceview" ,gtksourceview)
+       ("libhandy" ,libhandy)
+       ("python" ,python)
+       ("python-beautifulsoup" ,python-beautifulsoup4)
+       ("python-dateutil" ,python-dateutil)
+       ("python-mistune" ,python-mistune)
+       ("python-pillow" ,python-pillow)
+       ("python-praw" ,python-praw)
+       ("python-pycairo" ,python-pycairo)
+       ("python-pygobject" ,python-pygobject)
+       ("python-requests" ,python-requests)
+       ("webkitgtk" ,webkitgtk)))
+    (propagated-inputs
+     `(("dconf" ,dconf)))
+    (synopsis "Client for Reddit")
+    (description "Giara is a reddit app, built with Python, GTK and Handy.")
+    (home-page "https://giara.gabmus.org/")
+    (license license:gpl3+)))
 
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.22.1")
+    (version "2.24")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32
-         "1476fmfw2hkrjwyr3f7k9316lzwnn2b1dbc51rybcxipqlfg8849"))))
+        (base32 "1yvggkb29qykxlvrysb6yyf5piwsvzv0zla8jn2ihmm2rj40chk2"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -90,6 +246,7 @@
                   (guix build utils)
                   ((guix build gnu-build-system) #:prefix gnu:))
        #:vendor-dir "vendor"
+       #:rust ,rust-1.48    ; or newer
        #:install-source? #f
        #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
@@ -97,18 +254,20 @@
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-2)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
-        ("rust-cxx" ,rust-cxx-0.5)
-        ("rust-cxx-build" ,rust-cxx-build-0.5)
-        ("rust-gettext-rs" ,rust-gettext-rs-0.5)
+        ("rust-cxx" ,rust-cxx-1)
+        ("rust-gettext-rs" ,rust-gettext-rs-0.7)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-natord" ,rust-natord-1)
         ("rust-nom" ,rust-nom-6)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-rand" ,rust-rand-0.7)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-url" ,rust-url-2)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3)
+       (("rust-cxx-build" ,rust-cxx-build-1)
+        ("rust-tempfile" ,rust-tempfile-3)
         ("rust-proptest" ,rust-proptest-0.9)
         ("rust-section-testing" ,rust-section-testing-0.0))
        #:phases
@@ -316,9 +475,10 @@ a simple interface that makes it easy to organize and browse feeds.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
-             (invoke "pytest"))))))
+             (when tests?
+               (invoke "pytest")))))))
     (inputs
      `(("python-beautifulsoup4" ,python-beautifulsoup4)
        ("python-decorator" ,python-decorator)
@@ -410,14 +570,14 @@ formats, including all versions of RSS and Atom.")
        ("qttools" ,qttools)))
     (inputs
      `(("qtwebkit" ,qtwebkit)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)
        ("phonon" ,phonon)
        ("sqlite" ,sqlite)))
     (home-page "https://quiterss.org/")
     (synopsis "RSS/Atom news feeds reader written on Qt/C++")
     (description "QuiteRSS is an RSS/Atom news feeds reader written on Qt/C++
-that aims to be quite fast and comfortable to it's user.")
+that aims to be quite fast and comfortable to its user.")
     (license license:gpl3+)))
 
 (define-public gfeeds

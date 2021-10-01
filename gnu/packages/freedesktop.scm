@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
 ;;; Copyright © 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -11,8 +11,8 @@
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2017, 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2020, 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019 Reza Alizadeh Majd <r.majd@pantherx.org>
@@ -22,7 +22,8 @@
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Anders Thuné <asse.97@gmail.com>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
+;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (gnu packages glib)                ;intltool
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -95,6 +97,9 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rdesktop)
+  #:use-module (gnu packages samba)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
@@ -534,7 +539,7 @@ other applications that need to directly deal with input devices.")
 (define-public libxdg-basedir
   (package
     (name "libxdg-basedir")
-    (version "1.2.0")
+    (version "1.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -543,10 +548,12 @@ other applications that need to directly deal with input devices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12yz53ny5bi2dii3zwcr6b9ay0yy1g1xv13jg097k7gjligcq11m"))))
+                "0j8fgp41kxipzdnqsdy83d7w6kadbc45n98qyr84zsj46wl582vv"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     '(#:configure-flags
+       (list "--disable-static")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-autogen
            (lambda _
@@ -835,6 +842,36 @@ GNOME Shell.  The @command{localectl} command-line tool allows you to interact
 with localed.  This package is extracted from the broader systemd package.")
     (license license:lgpl2.1+)))
 
+(define-public seatd
+  (package
+    (name "seatd")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~kennylevinsen/seatd")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1kglq8v4rnr3415mfaghyv2s2f8mxsy5s881gmm2908ig4n4j297"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags '("-Dlogind=enabled")))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("scdoc" ,scdoc)))
+    (inputs
+     `(("elogind" ,elogind)))
+    (home-page "https://sr.ht/~kennylevinsen/seatd")
+    (synopsis "Seat management daemon and library")
+    (description
+     "This package provides a minimal seat management daemon whose task is to
+mediate access to shared devices, such as graphics and input, for applications
+that require it.  It also provides a universal seat management library that
+allows applications to use whatever seat management is available.")
+    (license license:expat)))
+
 (define-public packagekit
   (package
     (name "packagekit")
@@ -1013,7 +1050,7 @@ applications, X servers (rootless or fullscreen) or other display servers.")
 (define-public weston
   (package
     (name "weston")
-    (version "6.0.1")
+    (version "9.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1021,43 +1058,60 @@ applications, X servers (rootless or fullscreen) or other display servers.")
                     "weston-" version ".tar.xz"))
               (sha256
                (base32
-                "1d2m658ll8x7prlsfk71qgw89c7dz6y7d6nndfxwl49fmrd6sbxz"))))
+                "1zlql0xgiqc3pvgbpnnvj4xvpd91pwva8qf83xfb23if377ddxaw"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("mscgen" ,mscgen)
+       ("pkg-config" ,pkg-config)
        ("xorg-server" ,xorg-server)))
     (inputs
      `(("cairo" ,cairo-xcb)
        ("colord" ,colord)
        ("dbus" ,dbus)
        ("elogind" ,elogind)
+       ("freerdp" ,freerdp)
+       ("glib" ,glib)
+       ("gstreamer" ,gstreamer)
+       ("gst-plugins-base" ,gst-plugins-base)
        ("lcms" ,lcms)
+       ("libdrm" ,libdrm)
        ("libevdev" ,libevdev)
        ("libinput" ,libinput-minimal)
        ("libjpeg" ,libjpeg-turbo)
+       ("libpng" ,libpng)
        ("libunwind" ,libunwind)
        ("libva" ,libva)
        ("libwebp" ,libwebp)
+       ("libx11" ,libx11)
+       ("libxcb" ,libxcb)
        ("libxcursor" ,libxcursor)
-       ("libxkbcommon" ,libxkbcommon)
        ("libxml2" ,libxml2)
        ("mesa" ,mesa)
        ("mtdev" ,mtdev)
        ("linux-pam" ,linux-pam)
        ("pango" ,pango)
-       ("wayland" ,wayland)
+       ("pipewire" ,pipewire)
        ("wayland-protocols" ,wayland-protocols)
        ("xorg-server-xwayland" ,xorg-server-xwayland)))
+    (propagated-inputs
+     `(("libxkbcommon" ,libxkbcommon)
+       ("pixman" ,pixman)
+       ("wayland" ,wayland)))
     (arguments
      `(#:configure-flags
-       (list "-Dbackend-rdp=false" ; TODO: Enable.
-             "-Dremoting=false" ; TODO: Enable.
-             "-Dsimple-dmabuf-drm=auto"
-             "-Dsystemd=false"
-             (string-append "-Dxwayland-path="
-                            (assoc-ref %build-inputs "xorg-server-xwayland")
-                            "/bin/Xwayland"))
-       #:parallel-tests? #f ; Parallel tests cause failures.
+       (list
+        ;; Otherwise, the RUNPATH will lack the final path component.
+        (string-append "-Dc_link_args=-Wl,-rpath="
+                       (assoc-ref %outputs "out") "/lib:"
+                       (assoc-ref %outputs "out") "/lib/weston:"
+                       (assoc-ref %outputs "out") "/lib/libweston-"
+                       ,(version-major (package-version this-package)))
+        "-Dbackend-default=auto"
+        "-Dsystemd=false"
+        (string-append "-Dxwayland-path="
+                       (assoc-ref %build-inputs "xorg-server-xwayland")
+                       "/bin/Xwayland"))
+       #:parallel-tests? #f           ; Parallel tests cause failures.
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'use-elogind
@@ -2015,7 +2069,7 @@ Its features include:
 (define-public plymouth
   (package
     (name "plymouth")
-    (version "0.9.4")
+    (version "0.9.5")
     (source
      (origin
        (method url-fetch)
@@ -2023,7 +2077,7 @@ Its features include:
                            "plymouth/releases/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0l8kg7b2vfxgz9gnrn0v2w4jvysj2cirp0nxads5sy05397pl6aa"))))
+         "11nfgw8yzmdbnbmyd1zfvhj4qh19w1nw0nraai08628x6mzjbbpc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2049,8 +2103,7 @@ Its features include:
          (add-after 'unpack 'make-reproducible
            (lambda _
              (substitute* "src/main.c"
-               (("__DATE__") "\"guix\""))
-             #t))
+               (("__DATE__") "\"guix\""))))
          (add-before 'configure 'fix-docbook
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "docs/Makefile.in"
@@ -2061,8 +2114,7 @@ Its features include:
                                "/manpages/docbook.xsl")))
              (setenv "XML_CATALOG_FILES"
                      (string-append (assoc-ref inputs "docbook-xml")
-                                    "/xml/dtd/docbook/catalog.xml"))
-             #t)))))
+                                    "/xml/dtd/docbook/catalog.xml")))))))
     (inputs
      `(("glib" ,glib)
        ("pango" ,pango)
@@ -2070,7 +2122,8 @@ Its features include:
        ("libpng" ,libpng)
        ("eudev" ,eudev)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("gettext" ,gettext-minimal)
+       ("pkg-config" ,pkg-config)
        ("libxslt" ,libxslt)
        ("docbook-xsl" ,docbook-xsl)
        ("docbook-xml" ,docbook-xml)))
@@ -2245,7 +2298,7 @@ fallback to generic Systray support if none of those are available.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.7.2")
+    (version "1.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2254,7 +2307,7 @@ fallback to generic Systray support if none of those are available.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rkwpsmbn3d3spkzc2zsd50l2r8pp4la390zcpsawaav8w7ql7xm"))))
+                "0pq0kmvzk56my396vh97pzw4wizwmlmzvv2kr2xv047x3044mr5n"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -2274,6 +2327,21 @@ fallback to generic Systray support if none of those are available.")
        ("geoclue" ,geoclue)
        ("pipewire" ,pipewire-0.3)
        ("fuse" ,fuse)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'po-chmod
+           (lambda _
+             ;; Make sure 'msgmerge' can modify the PO files.
+             (for-each (lambda (po)
+                         (chmod po #o666))
+                       (find-files "po" "\\.po$"))
+             #t)))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "XDG_DESKTOP_PORTAL_DIR")
+            (separator #f)
+            (files '("share/xdg-desktop-portal/portals")))))
     (home-page "https://github.com/flatpak/xdg-desktop-portal")
     (synopsis "Desktop integration portal for sandboxed apps")
     (description
@@ -2338,3 +2406,75 @@ which uses GTK+ and various pieces of GNOME infrastructure, such as the
 @code{org.gnome.Shell.Screenshot} or @code{org.gnome.SessionManager} D-Bus
 interfaces.")
     (license license:lgpl2.1+)))
+
+(define-public xdg-desktop-portal-wlr
+  (package
+    (name "xdg-desktop-portal-wlr")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/emersion/xdg-desktop-portal-wlr")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13fbzh8bjnhk4xs8j9bpc01q3hy27zpbf0gkk1fnh3hm5pnyfyiv"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:configure-flags
+       '("-Dsystemd=disabled"
+         "-Dsd-bus-provider=libelogind")))
+    (native-inputs
+     `(("cmake" ,cmake)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("elogind" ,elogind)
+       ("iniparser" ,iniparser)
+       ("pipewire" ,pipewire-0.3)
+       ("inih" ,libinih)
+       ("wayland" ,wayland)
+       ("wayland-protocols" ,wayland-protocols)))
+    (home-page "https://github.com/emersion/xdg-desktop-portal-wlr")
+    (synopsis "@code{xdg-desktop-portal} backend for wlroots")
+    (description
+     "This package provides @code{xdg-desktop-portal-wlr}.  This project
+seeks to add support for the screenshot, screencast, and possibly
+remote-desktop @code{xdg-desktop-portal} interfaces for wlroots based
+compositors.")
+    (license license:expat)))
+
+(define-public waypipe
+  (package
+    (name "waypipe")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/mstoeckl/waypipe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qa47ljfvb1vv3h647xwn1j5j8gfmcmdfaz4j8ygnkvj36y87vnz"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-sleep-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((coreutils (assoc-ref inputs "coreutils")))
+               (substitute* "./test/startup_failure.py"
+                 (("sleep") (string-append coreutils "/bin/sleep")))))))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("scdoc" ,scdoc)
+       ;; For tests
+       ("python" ,python)
+       ("coreutils" ,coreutils)))
+    (home-page "https://gitlab.freedesktop.org/mstoeckl/waypipe")
+    (synopsis "Proxy for Wayland protocol applications")
+    (description
+     "Waypipe is a proxy for Wayland clients, with the aim of
+supporting behavior like @samp{ssh -X}.")
+    (license license:expat)))

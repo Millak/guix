@@ -1,13 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2017 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
-;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -1163,7 +1162,7 @@ a webserver.")
        (provision     '(hpcguix-web))
        (requirement   '(networking))
        (start #~(make-forkexec-constructor
-                 (list #$(file-append hpcguix-web "/bin/run")
+                 (list #$(file-append hpcguix-web "/bin/hpcguix-web")
                        (string-append "--config="
                                       #$(scheme-file "hpcguix-web.scm" specs)))
                  #:user "hpcguix-web"

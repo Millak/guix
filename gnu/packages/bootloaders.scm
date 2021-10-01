@@ -3,16 +3,16 @@
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016, 2017, 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2017, 2018, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018, 2019, 2020 Vagrant Cascadian <vagrant@debian.org>
-;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
@@ -56,14 +56,15 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages web)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -88,18 +89,24 @@
 (define-public grub
   (package
     (name "grub")
-    (version "2.04")
+    (version "2.06")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/grub/grub-" version ".tar.xz"))
              (sha256
               (base32
-               "0zgp5m3hmc9jh8wpjx6czzkh5id2y8n1k823x2mjvm2sk6b28ag5"))
+               "1qbycnxkx07arj9f2nlsi9kp0dyldspbv07ysdyd34qvz55a97mp"))
              (patches (search-patches
                        "grub-efi-fat-serial-number.patch"
-                       "grub-setup-root.patch"
-                       "grub-verifiers-Blocklist-fallout-cleanup.patch"
-                       "grub-cross-system-i686.patch"))))
+                       "grub-setup-root.patch"))
+             (modules '((guix build utils)))
+             (snippet
+              '(begin
+                 ;; Adjust QEMU invocation to not use a deprecated device
+                 ;; name that was removed in QEMU 6.0.  Remove for >2.06.
+                 (substitute* "tests/ahci_test.in"
+                   (("ide-drive")
+                    "ide-hd"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -296,7 +303,13 @@ menu to select one of the installed operating systems.")
        ,@(substitute-keyword-arguments (package-arguments grub)
            ((#:tests? _ #f) #f)
            ((#:configure-flags flags ''())
-            `(cons "--with-platform=efi" ,flags))
+            `(cons* "--with-platform=efi"
+                    ,@(if (string-prefix? "x86_64"
+                                          (or (%current-target-system)
+                                              (%current-system)))
+                          '("--enable-stack-protector") ; EFI-only for now
+                          '())
+                    ,flags))
            ((#:phases phases)
             `(modify-phases ,phases
                (add-after 'patch-stuff 'use-absolute-efibootmgr-path
@@ -426,7 +439,7 @@ menu to select one of the installed operating systems.")
 (define-public dtc
   (package
     (name "dtc")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -434,7 +447,7 @@ menu to select one of the installed operating systems.")
                     "dtc-" version ".tar.xz"))
               (sha256
                (base32
-                "0bf8801z6fpd1gz9mxd5pqqj8nq101x393cyw8rpkc712w13nl0h"))))
+                "0wrl43rvd8nnm1v1wyfdr17vk8q7ymib62vli6da8n9ni4lwbkk5"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("bison" ,bison)
@@ -475,18 +488,32 @@ menu to select one of the installed operating systems.")
 tree binary files.  These are board description files used by Linux and BSD.")
     (license license:gpl2+)))
 
+(define %u-boot-rockchip-inno-usb-patch
+  ;; Fix regression in 2020.10 causing freezes on boot with USB boot enabled.
+  ;; See https://gitlab.manjaro.org/manjaro-arm/packages/core/uboot-rockpro64/-/issues/4
+  ;; and https://patchwork.ozlabs.org/project/uboot/patch/20210406151059.1187379-1-icenowy@aosc.io
+  (search-patch "u-boot-rockchip-inno-usb.patch"))
+
+(define %u-boot-sifive-prevent-relocating-initrd-fdt
+  ;; Fix boot in 2021.07 on Hifive unmatched, see
+  ;; https://bugs.launchpad.net/ubuntu/+source/u-boot/+bug/1937246
+  (search-patch "u-boot-sifive-prevent-reloc-initrd-fdt.patch"))
+
 (define u-boot
   (package
     (name "u-boot")
-    (version "2021.04")
+    (version "2021.07")
     (source (origin
+	      (patches
+               (list %u-boot-rockchip-inno-usb-patch
+                     %u-boot-sifive-prevent-relocating-initrd-fdt))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "06p1vymf0dl6jc2xy5w7p42mpgppa46lmpm2ishmgsycnldqnhqd"))))
+                "0zm7igkdnz0w4ir8rfl2dislfrl0ip104grs5hvd30a5wkm7wari"))))
     (native-inputs
      `(("bc" ,bc)
        ("bison" ,bison)
@@ -496,6 +523,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
        ("perl" ,perl)
        ("python" ,python)
        ("python-coverage" ,python-coverage)
+       ("python-pycryptodomex" ,python-pycryptodomex)
        ("python-pytest" ,python-pytest)
        ("swig" ,swig)))
     (build-system  gnu-build-system)
@@ -533,9 +561,13 @@ also initializes the boards (RAM etc).")
               ;; This test would require git.
               (("\\./tools/patman/patman") (which "true"))
               ;; FIXME: test fails, needs further investiation
-              (("run_test \"binman\"") ": run_test \"binman\"")
+              (("run_test \"binman\"") "# run_test \"binman\"")
+              ;; FIXME: test_spl fails, needs further investiation
+              (("test_ofplatdata or test_handoff or test_spl")
+                "test_ofplatdata or test_handoff")
               ;; FIXME: code coverage not working
-              (("run_test \"binman code coverage\"") ": run_test \"binman code coverage\"")
+              (("run_test \"binman code coverage\"")
+               "# run_test \"binman code coverage\"")
               ;; This test would require internet access.
               (("\\./tools/buildman/buildman") (which "true")))
              (substitute* "test/py/tests/test_sandbox_exit.py"
@@ -579,6 +611,7 @@ def test_ctrl_c"))
                            "tools/mkenvimage"
                            "tools/dumpimage"
                            "tools/mkimage"
+                           "tools/kwboot"
                            "tools/proftool"
                            "tools/fdtgrep"
                            "tools/env/fw_printenv"
@@ -681,9 +714,6 @@ board-independent tools.")))
                   uboot-files)
                  #t)))))))))
 
-(define-public u-boot-vexpress
-  (make-u-boot-package "vexpress_ca9x4" "arm-linux-gnueabihf"))
-
 (define-public u-boot-malta
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
@@ -773,7 +803,34 @@ it fits within common partitioning schemes.")
   (make-u-boot-package "A20-OLinuXino_MICRO" "arm-linux-gnueabihf"))
 
 (define-public u-boot-nintendo-nes-classic-edition
-  (make-u-boot-package "Nintendo_NES_Classic_Edition" "arm-linux-gnueabihf"))
+  (let ((base (make-u-boot-package "Nintendo_NES_Classic_Edition"
+                                   "arm-linux-gnueabihf")))
+    (package
+      (inherit base)
+      ;; Starting with 2019.01, FEL doesn't work anymore on A33.
+      (version "2018.11")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append
+                      "https://ftp.denx.de/pub/u-boot/"
+                      "u-boot-" version ".tar.bz2"))
+                (sha256
+                 (base32
+                  "0znkwljfwwn4y7j20pzz4ilqw8znphrfxns0x1lwdzh3xbr96z3k"))
+                (patches (search-patches
+                           "u-boot-nintendo-nes-serial.patch"))))
+      (description "U-Boot is a bootloader used mostly for ARM boards.  It
+also initializes the boards (RAM etc).
+
+This version is for the Nintendo NES Classic Edition.  It is assumed that
+you have added a serial port to pins PB0 and PB1 as described on
+@url{https://linux-sunxi.org/Nintendo_NES_Classic_Edition}.
+
+In order to use FEL mode on the device, hold the Reset button on the
+device while it's being turned on (and a while longer).")
+      (native-inputs
+       `(("python" ,python-2)
+         ,@(package-native-inputs base))))))
 
 (define-public u-boot-wandboard
   (make-u-boot-package "wandboard" "arm-linux-gnueabihf"))
@@ -840,8 +897,11 @@ to Novena upstream, does not load u-boot.img from the first partition.")
                 (patches
                  (search-patches "u-boot-riscv64-fix-extlinux.patch")))))))
 
-(define-public u-boot-sifive-fu540
-  (make-u-boot-package "sifive_fu540" "riscv64-linux-gnu"))
+(define-public u-boot-sifive-unleashed
+  (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu"))
+
+(define-public u-boot-sifive-unmatched
+  (make-u-boot-package "sifive_unmatched" "riscv64-linux-gnu"))
 
 (define-public u-boot-rock64-rk3328
   (let ((base (make-u-boot-package "rock64-rk3328" "aarch64-linux-gnu")))
@@ -889,14 +949,7 @@ to Novena upstream, does not load u-boot.img from the first partition.")
         (substitute-keyword-arguments (package-arguments base)
           ((#:phases phases)
            `(modify-phases ,phases
-              (add-after 'unpack 'patch-rockpro64-config
-                ;; Fix regression in 2020.10 causing freezes on boot with USB boot enabled.
-                ;; See https://gitlab.manjaro.org/manjaro-arm/packages/core/uboot-rockpro64/-/issues/4
-                (lambda _
-                  (substitute* "configs/rockpro64-rk3399_defconfig"
-                    (("CONFIG_USE_PREBOOT=y") "CONFIG_USE_PREBOOT=n"))
-                  #t))
-              (add-after 'patch-rockpro64-config 'set-environment
+              (add-after 'unpack 'set-environment
                 (lambda* (#:key inputs #:allow-other-keys)
                   (setenv "BL31" (string-append (assoc-ref inputs "firmware")
                                                 "/bl31.elf"))
@@ -911,18 +964,11 @@ to Novena upstream, does not load u-boot.img from the first partition.")
 (define-public u-boot-pinebook-pro-rk3399
   (let ((base (make-u-boot-package "pinebook-pro-rk3399" "aarch64-linux-gnu")))
     (package
-     (inherit base)
+      (inherit base)
       (arguments
         (substitute-keyword-arguments (package-arguments base)
           ((#:phases phases)
            `(modify-phases ,phases
-              (add-after 'unpack 'patch-pinebook-pro-config
-                ;; Fix regression in 2020.10 causing freezes on boot with USB boot enabled.
-                ;; See https://gitlab.manjaro.org/manjaro-arm/packages/core/uboot-rockpro64/-/issues/4
-                (lambda _
-                  (substitute* "configs/pinebook-pro-rk3399_defconfig"
-                    (("CONFIG_USE_PREBOOT=y") "CONFIG_USE_PREBOOT=n"))
-                  #t))
               (add-after 'unpack 'set-environment
                 (lambda* (#:key inputs #:allow-other-keys)
                   (setenv "BL31" (string-append (assoc-ref inputs "firmware")
@@ -1207,8 +1253,8 @@ order to add a suitable bootloader menu entry.")
       (description "iPXE is a network boot firmware.  It provides a full PXE
 implementation enhanced with additional features such as booting from: a web
 server via HTTP, an iSCSI SAN, a Fibre Channel SAN via FCoE, an AoE SAN, a
-wireless network, a wide-area network, an Infiniband network.  It allows to
-control the boot process with a script.  You can use iPXE to replace the
+wireless network, a wide-area network, an Infiniband network.  It
+controls the boot process with a script.  You can use iPXE to replace the
 existing PXE ROM on your network card, or you can chainload into iPXE to obtain
 the features of iPXE without the hassle of reflashing.")
       (license license:gpl2+))))

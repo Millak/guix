@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -10,6 +10,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
+;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -52,10 +54,82 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages perl))
 
+(define-public avro-cpp-1.9
+  (package
+    (name "avro-cpp")
+    (version "1.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://archive.apache.org/dist/avro/avro-" version
+                    "/avro-src-" version ".tar.gz"))
+              (sha256
+               (base32 "0i3fpm7r72yw397qc8yw9ybzk2mxjkv0yk5hnn00ylc1wbd0np73"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "lang/c++"))))))
+    (inputs
+     `(("boost" ,boost)
+       ("snappy" ,snappy)))
+    (home-page "https://avro.apache.org/")
+    (synopsis "Data serialization system")
+    (description "Apache Avro is a data serialization system.  Avro provides:
+@enumerate
+@item Rich data structures;
+@item a compact, fast, binary data format;
+@item a container file, to store persistent data;
+@item remote procedure call (RPC); and
+@item simple integration with dynamic languages.
+@end enumerate
+
+Code generation is not required to read or write data files nor to use or
+implement RPC protocols.")
+    (license license:asl2.0)))
+
+(define-public avro-cpp-1.9-for-irods
+  (package
+    (inherit avro-cpp-1.9)
+    (properties `((hidden? . #true)))
+    (arguments
+     `(#:configure-flags
+       '("-DCMAKE_CXX_COMPILER=clang++"
+         "-DCMAKE_CXX_FLAGS=-stdlib=libc++"
+         "-DCMAKE_EXE_LINKER_FLAGS=-lc++abi -lz")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "lang/c++")))
+         (add-after 'set-paths 'adjust-CPLUS_INCLUDE_PATH
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((gcc (assoc-ref inputs  "gcc")))
+               (setenv "CPLUS_INCLUDE_PATH"
+                       (string-join
+                        (cons* (string-append (assoc-ref inputs "libcxx+libcxxabi")
+                                              "/include/c++/v1")
+                               ;; Hide GCC's C++ headers so that they do not interfere with
+                               ;; the Clang headers.
+                               (delete (string-append gcc "/include/c++")
+                                       (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                     #\:)))
+                        ":"))
+               (format #true
+                       "environment variable `CPLUS_INCLUDE_PATH' changed to ~a~%"
+                       (getenv "CPLUS_INCLUDE_PATH"))))))))
+    (inputs
+     `(("boost" ,boost-for-irods)
+       ("clang" ,clang-toolchain-6)
+       ("libcxx+libcxxabi" ,libcxx+libcxxabi-6)
+       ("libcxxabi" ,libcxxabi-6)
+       ("snappy" ,snappy-with-clang6)
+       ("zlib" ,zlib)))))
+
 (define-public cereal
   (package
     (name "cereal")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -64,35 +138,23 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vxkrsnxkiblzi1z61vfix167c184fy868sgwj2dxxgbgjcq2nrh"))))
+        (base32
+         "0hc8wh9dwpc1w1zf5lfss4vg5hmgpblqxbrpp1rggicpx9ar831p"))))
     (build-system cmake-build-system)
     (arguments
-     `(;; The only included tests are portability tests requiring
-       ;; cross-compilation and boost.  Since we are building cereal on more
-       ;; platforms anyway, there is no compelling reason to build the tests.
-       #:tests? #f
-       #:out-of-source? #f
+     `(#:configure-flags '("-DSKIP_PORTABILITY_TEST=ON")
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-          (lambda _
-            (substitute* "doc/doxygen.in"
-              (("@CMAKE_CURRENT_SOURCE_DIR@") "."))
-            (invoke "doxygen" "doc/doxygen.in")
-            #t))
-         ;; There is no "install" target, so we have to provide our own
-         ;; "install" phase.
-         (replace 'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out     (assoc-ref outputs "out"))
-                   (doc     (string-append out "/share/cereal/docs"))
-                   (include (string-append out "/include/cereal")))
-              (mkdir-p doc)
-              (mkdir-p include)
-              (copy-recursively "include/cereal" include)
-              (copy-recursively "doc/html" doc))
-            #t)))))
+         (add-before 'configure 'skip-sandbox
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("add_subdirectory\\(sandbox\\)") ""))))
+         (add-after 'install 'install-doc
+           (lambda _
+             (let ((doc (string-append %output "/share/doc/html")))
+               (invoke "make" "doc")
+               (mkdir-p doc)
+               (copy-recursively "doc/html" doc)))))))
     (native-inputs
      `(("doxygen" ,doxygen)))
     (home-page "https://uscilab.github.io/cereal/")
@@ -106,7 +168,7 @@ such as compact binary encodings, XML, or JSON.")
 (define-public msgpack
   (package
     (name "msgpack")
-    (version "3.2.1")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
@@ -121,7 +183,7 @@ such as compact binary encodings, XML, or JSON.")
            (close-output-port p)
            #t))
        (sha256
-        (base32 "1ljqmgscdb0f8w8kx2lnswnisyxchcmijbjbmswkv0g187bvqg23"))))
+        (base32 "0yzhq50ijvwrfkr97knhvn54lj3f4hr3zy39yq8wpf6xll94s4bf"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("googletest" ,googletest-1.8)
@@ -259,6 +321,74 @@ that implements both the msgpack and msgpack-rpc specifications.")
     (inputs
      `(("lua" ,lua-5.2)))))
 
+(define-public libyaml
+  (package
+    (name "libyaml")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://pyyaml.org/download/libyaml/yaml-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1x4fcw13r3lqy8ndydr3ili87wicplw2awbcv6r21qgyfndswhn6"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--disable-static")))
+    (home-page "https://pyyaml.org/wiki/LibYAML")
+    (synopsis "YAML 1.1 parser and emitter written in C")
+    (description
+     "LibYAML is a YAML 1.1 parser and emitter written in C.")
+    (license license:expat)))
+
+(define-public libyaml+static
+  (package
+    (inherit libyaml)
+    (name "libyaml+static")
+    (arguments
+     '(#:configure-flags '("--enable-static")))))
+
+(define-public libcyaml
+  (package
+    (name "libcyaml")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tlsa/libcyaml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (patches (search-patches "libcyaml-libyaml-compat.patch"))
+       (sha256
+        (base32 "0428p0rwq71nhh5nzcbapsbrjxa0x5l6h6ns32nxv7j624f0zd93"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
+             (string-append "CC=gcc"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)            ; no configure script
+         (replace 'check
+           (lambda _
+             (setenv "CC" "gcc")
+             (invoke "make" "test"))))))
+    (inputs
+     `(("libyaml" ,libyaml)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (synopsis "C library for reading and writing YAML")
+    (description
+     "LibCYAML is a C library written in ISO C11 for reading and writing
+structured YAML documents.  The fundamental idea behind CYAML is to allow
+applications to construct schemas which describe both the permissible
+structure of the YAML documents to read/write, and the C data structure(s)
+in which the loaded data is arranged in memory.")
+    (home-page "https://github.com/tlsa/libcyaml")
+    (license license:isc)))
+
 (define-public yaml-cpp
   (package
     (name "yaml-cpp")
@@ -350,9 +480,9 @@ it a convenient format to store user input files.")
              ;; /etc/services, which is not present in build environment.
              (substitute* "src/kj/async-io-test.c++" ((":http") ":80"))
              #t))
-         (add-before 'check 'use-tmp-for-tempory-files
+         (add-before 'check 'use-tmp-for-temporary-files
            (lambda _
-             ;; Use /tmp for tempory files, as the default /var/tmp directory
+             ;; Use /tmp for temporary files, as the default /var/tmp directory
              ;; doesn't exist.
              (substitute* "src/kj/filesystem-disk-test.c++"
                (("VAR\\_TMP \"/var/tmp\"")
@@ -441,22 +571,28 @@ to generate and parse.  The two primary functions are @code{cbor.loads} and
 (define-public flatbuffers
   (package
     (name "flatbuffers")
-    (version "1.10.0")
+    (version "2.0.0")
     (source
       (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/google/flatbuffers/archive/v"
-                            version ".tar.gz"))
-        (file-name (string-append name "-" version ".tar.gz"))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/google/flatbuffers")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
          (base32
-          "0z4swldxs0s31hnkqdhsbfmc8vx3p7zsvmqaw4l31r2iikdy651p"))))
+          "1zbf6bdpps8369r1ql00irxrp58jnalycc8jcapb8iqg654vlfz8"))))
     (build-system cmake-build-system)
     (arguments
      '(#:build-type "Release"
        #:configure-flags
-       (list (string-append "-DCMAKE_INSTALL_LIBDIR="
-                            (assoc-ref %outputs "out") "/lib"))))
+       (list "-DFLATBUFFERS_BUILD_SHAREDLIB=ON"
+             (string-append "-DCMAKE_INSTALL_LIBDIR="
+                            (assoc-ref %outputs "out") "/lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'make-writable
+           (lambda _ (for-each make-file-writable (find-files ".")))))))
     (home-page "https://google.github.io/flatbuffers/")
     (synopsis "Memory-efficient serialization library")
     (description "FlatBuffers is a cross-platform serialization library for C++,

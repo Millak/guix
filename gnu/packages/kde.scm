@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +43,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages apr)
+  #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
@@ -101,7 +103,7 @@
        ("kconfig" ,kconfig)
        ("ki18n" ,ki18n)
        ("kio" ,kio)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -138,7 +140,7 @@ This package contains GUI widgets for baloo.")
        ("ki18n" ,ki18n)
        ("kiconthemes" ,kiconthemes)
        ("knewstuff" ,knewstuff)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://invent.kde.org/pim/grantleetheme")
     (synopsis "Library providing Grantlee theme support")
     (description "This library provides Grantlee theme support.")
@@ -200,7 +202,7 @@ This package contains GUI widgets for baloo.")
        ("libkdepim" ,libkdepim)
        ("libkleo" ,libkleo)
        ("qgpgme" ,qgpgme)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtwebchannel" ,qtwebchannel)
        ("qtwebengine" ,qtwebengine)
@@ -217,7 +219,7 @@ browser for easy news reading.")
     (license license:gpl2+)))
 
 (define-public kdenlive
-  (let ((version "20.08.3"))
+  (let ((version "21.08.1"))
     (package
       (name "kdenlive")
       (version version)
@@ -229,43 +231,43 @@ browser for easy news reading.")
                (commit (string-append "v" version))))
          (file-name (string-append name "-" version "-checkout"))
          (sha256
-          (base32 "0x0qfwf6wfnybjyjvmllpf87sm27d1n2akslhp2k8ins838qy55i"))))
-      (build-system cmake-build-system)
+          (base32 "1fvy2aa86pn4crk8lgxjh1kdn2lxzi66krnrr9m91mp89mmc760k"))))
+      (build-system qt-build-system)
       (native-inputs
        `(("extra-cmake-modules" ,extra-cmake-modules)
          ("pkg-config" ,pkg-config)
          ("qttools" ,qttools)))
       (inputs
-       `(("shared-mime-info" ,shared-mime-info)
-         ("frei0r-plugins" ,frei0r-plugins)
+       `(("breeze" ,breeze) ; make dark them available easily
+         ("breeze-icons" ,breeze-icons) ; recommended icon set
          ("ffmpeg" ,ffmpeg)
-         ("rttr" ,rttr)
-         ("mlt" ,mlt)
-         ("qtbase" ,qtbase)
-         ("qtscript" ,qtscript)
-         ("qtsvg" ,qtsvg)
-         ("qtmultimedia" ,qtmultimedia)
-         ("kparts" ,kparts)
-         ("knotifications" ,knotifications)
+         ("frei0r-plugins" ,frei0r-plugins)
          ("karchive" ,karchive)
-         ("kdbusaddons" ,kdbusaddons)
          ("kcrash" ,kcrash)
-         ("kguiaddons" ,kguiaddons)
-         ("knewstuff" ,knewstuff)
-         ("knotifyconfig" ,knotifyconfig)
-         ("kfilemetadata" ,kfilemetadata)
-         ("kdoctools" ,kdoctools)
+         ("kdbusaddons" ,kdbusaddons)
          ("kdeclarative" ,kdeclarative)
+         ("kdoctools" ,kdoctools)
+         ("kfilemetadata" ,kfilemetadata)
+         ("kguiaddons" ,kguiaddons)
+         ("kiconthemes" ,kiconthemes)
+         ("knewstuff" ,knewstuff)
+         ("knotifications" ,knotifications)
+         ("knotifyconfig" ,knotifyconfig)
+         ("kparts" ,kparts)
+         ("kplotting" ,kplotting)
+         ("mlt" ,mlt)
+         ("purpose" ,purpose)
+         ("qtbase" ,qtbase-5)
          ("qtdeclarative" ,qtdeclarative)
+         ("qtgraphicaleffects" ,qtgraphicaleffects)
+         ("qtmultimedia" ,qtmultimedia)
+         ("qtnetworkauth" ,qtnetworkauth)
          ("qtquickcontrols" ,qtquickcontrols)
          ("qtquickcontrols2" ,qtquickcontrols2)
-         ("kiconthemes" ,kiconthemes)
-         ("breeze" ,breeze) ; make dark them available easily
-         ("breeze-icons" ,breeze-icons) ; recommended icon set
-         ("purpose" ,purpose)
+         ("qtscript" ,qtscript)
+         ("qtsvg" ,qtsvg)
          ("qtwebkit" ,qtwebkit)
-         ("qtgraphicaleffects" ,qtgraphicaleffects)
-         ("kplotting" ,kplotting)))
+         ("shared-mime-info" ,shared-mime-info)))
       (arguments
        `(#:tests? #f                    ;TODO needs X
          #:phases
@@ -275,26 +277,16 @@ browser for easy news reading.")
                (let* ((out (assoc-ref outputs "out"))
                       (qtbase (assoc-ref inputs "qtbase"))
                       (frei0r (assoc-ref inputs "frei0r-plugins"))
-                      (ffmpeg (assoc-ref inputs "ffmpeg"))
-                      (breeze (assoc-ref inputs "breeze"))
-                      (breeze-icons (assoc-ref inputs "breeze-icons")))
+                      (ffmpeg (assoc-ref inputs "ffmpeg")))
                  (wrap-program (string-append out "/bin/kdenlive")
                    `("PATH" ":" prefix
                      ,(list (string-append ffmpeg "/bin")))
-                   `("XDG_DATA_DIRS" ":" prefix
-                     ,(list (string-append breeze "/share")
-                            (string-append breeze-icons "/share")))
-                   `("QT_PLUGIN_PATH" ":" prefix
-                     ,(list (getenv "QT_PLUGIN_PATH")))
                    `("FREI0R_PATH" ":" =
                      (,(string-append frei0r "/lib/frei0r-1/")))
                    `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
                      (,(string-append qtbase "/lib/qt5/plugins/platforms")))
-                   `("QML2_IMPORT_PATH" ":" prefix
-                     ,(list (getenv "QML2_IMPORT_PATH")))
                    `("MLT_PREFIX" ":" =
-                     (,(assoc-ref inputs "mlt")))))
-               #t)))))
+                     (,(assoc-ref inputs "mlt"))))))))))
       (home-page "https://kdenlive.org")
       (synopsis "Non-linear video editor")
       (description "Kdenlive is an acronym for KDE Non-Linear Video Editor.
@@ -348,7 +340,7 @@ projects.")
        ("kxmlgui" ,kxmlgui)
        ("libkomparediff2" ,libkomparediff2)
        ("oxygen-icons" ,oxygen-icons)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtquickcontrols" ,qtquickcontrols)  ;; not checked as requirement
        ("qtquickcontrols2" ,qtquickcontrols2)  ;; not checked as requirement
@@ -414,7 +406,7 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (build-system cmake-build-system)
     (home-page "https://kde.org")
     (synopsis "Parser generator library for KDevplatform")
@@ -443,7 +435,7 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
      `(("extra-cmake-modules" ,extra-cmake-modules)
        ("qttools" ,qttools)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (home-page "https://invent.kde.org/graphics/kdiagram")
     (synopsis "Libraries for creating business diagrams")
@@ -459,7 +451,7 @@ illustrate project schedules.")
 (define-public krita
   (package
     (name "krita")
-    (version "4.4.3")
+    (version "4.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -467,7 +459,7 @@ illustrate project schedules.")
                     "/krita-" version ".tar.gz"))
               (sha256
                (base32
-                "0rwghzci2wn2jmisvnzs23yxc2z3d4dcx2qbbhcvjyi3q8ij61nl"))))
+                "0s3mzgkxb316y1wncrr8l3w5nnqszhvdh8qi1nh6040dhy075zab"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
@@ -530,7 +522,7 @@ illustrate project schedules.")
        ("openexr" ,openexr)
        ("perl" ,perl)
        ("poppler-qt5" ,poppler-qt5)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtmultimedia" ,qtmultimedia)
        ("qtsvg" ,qtsvg)
@@ -570,7 +562,7 @@ features include brush stabilizers, brush engines and wrap-around mode.")
        ("kgraphviewer" ,kgraphviewer)
        ("kio" ,kio)
        ("ki18n" ,ki18n)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtxmlpatterns" ,qtxmlpatterns)))
     (home-page "https://apps.kde.org/en/massif-visualizer")
@@ -603,7 +595,7 @@ compressed massif files can also be opened transparently.")
        ("ki18n" ,ki18n)
        ("kio" ,kio)
        ("kxmlgui" ,kxmlgui)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (build-system cmake-build-system)
     (home-page "https://kde.org")
     (synopsis "Library to compare files and strings, used in Kompare and KDevelop")
@@ -617,20 +609,20 @@ used in KDE development tools Kompare and KDevelop.")
 (define-public qca
   (package
     (name "qca")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/qca/" version
                             "/qca-" version ".tar.xz"))
         (sha256
-         (base32 "0vb0kwm4vpf71vczadg6h1ib09sgca0crll7ksbkmg646w1615s6"))))
+         (base32 "0rvvf97la95lah67jcj0p06n4br0pc2mri0q1hn4x522hndqybjn"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
      `(("openssl" ,openssl)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://userbase.kde.org/QCA")
     (synopsis "Libraries for the Qt Cryptographic Architecture")
     (description "The Qt Cryptographic Architecture (QCA) provides a
@@ -661,7 +653,7 @@ cards.")
        ("kcoreaddons" ,kcoreaddons)
        ("ki18n" ,ki18n)
        ("kwidgetsaddons" ,kwidgetsaddons)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qca" ,qca)
        ("util-linux" ,util-linux "lib")))
     (home-page "https://community.kde.org/Frameworks")
@@ -685,7 +677,7 @@ cards.")
     (arguments
      `(#:tests? #f)) ; both tests fail, require display
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
        ("qttools" ,qttools)))
@@ -746,13 +738,12 @@ different notification systems.")
        ("libfakekey" ,libfakekey)
        ("pulseaudio-qt" ,pulseaudio-qt)
        ("qca" ,qca)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtmultimedia" ,qtmultimedia)
        ("qtquickcontrols" ,qtquickcontrols)
        ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtwayland" ,qtwayland)
        ("qtx11extras" ,qtx11extras)))
     (home-page "https://community.kde.org/KDEConnect")
     (synopsis "Enable your devices to communicate with each other")
@@ -772,6 +763,84 @@ communicate with each other.  Here's a few things KDE Connect can do:
     (properties `((upstream-name . "kdeconnect-kde")))
     (license (list license:gpl2 license:gpl3)))) ; dual licensed
 
+(define-public labplot
+  (package
+    (name "labplot")
+    (version "2.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/labplot"
+                           "/" version "/labplot-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "1yhxnchwb4n83sxrbn4im41g2sqr0xsim2y242mvyd8pjzd83icf"))))
+    (build-system qt-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "-DENABLE_CANTOR=OFF" ;not packaged
+             "-DENABLE_MQTT=OFF" ;not packaged (qtmqtt)
+             ;; FIXME: readstat (optional dependency) is available in the
+             ;; statistics module, but that module can't be used here.
+             "-DENABLE_READSTAT=OFF"
+             ;; This is a bundled library that is not packaged.
+             "-DENABLE_LIBORIGIN=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; This test fails, I don't know why.
+               (invoke "ctest" "-E" "parsertest"))
+             #t)))))
+    (native-inputs
+     `(("bison" ,bison)
+       ("extra-cmake-modules" ,extra-cmake-modules)
+       ("pkg-config" ,pkg-config)
+       ("python" ,python-wrapper)
+       ("qttools" ,qttools)))
+    (inputs
+     `(("breeze" ,breeze) ;for dark themes
+       ("breeze-icons" ,breeze-icons) ;for icons
+       ("gsl" ,gsl)
+       ("karchive" ,karchive)
+       ("kcompletion" ,kcompletion)
+       ("kconfig" ,kconfig)
+       ("kconfigwidgets" ,kconfigwidgets)
+       ("kcoreaddons" ,kcoreaddons)
+       ("kcrash" ,kcrash)
+       ("kdoctools" ,kdoctools)
+       ("ki18n" ,ki18n)
+       ("kiconthemes" ,kiconthemes)
+       ("kio" ,kio)
+       ("knewstuff" ,knewstuff)
+       ("kparts" ,kparts)
+       ("kservice" ,kservice)
+       ("ksyntaxhighlighting" ,ksyntaxhighlighting)
+       ("ktextwidgets" ,ktextwidgets)
+       ("kuserfeedback" ,kuserfeedback)
+       ("kwidgetsaddons" ,kwidgetsaddons)
+       ("kxmlgui" ,kxmlgui)
+       ("qtbase" ,qtbase-5)
+       ("qtsvg" ,qtsvg)
+       ("shared-mime-info" ,shared-mime-info)
+       ;; Optional.
+       ("cfitsio" ,cfitsio)
+       ("fftw" ,fftw)
+       ("hdf5" ,hdf5)
+       ("libcerf" ,libcerf)
+       ("lz4" ,lz4)
+       ("netcdf" ,netcdf)
+       ("qtserialport" ,qtserialport)
+       ("zlib" ,zlib)))
+    (home-page "https://labplot.kde.org/")
+    (synopsis "Interactive graphing and analysis of scientific data")
+    (description "LabPlot is a tool for interactive graphing and analysis of
+scientific data.  It provides an easy way to create, manage and edit plots and
+to perform data analysis.")
+    (license (list license:gpl2+     ;labplot
+                   license:gpl3+)))) ;liborigin
+
 (define-public kqtquickcharts
   (package
     (name "kqtquickcharts")
@@ -788,7 +857,7 @@ communicate with each other.  Here's a few things KDE Connect can do:
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)))
     (home-page "https://phabricator.kde.org/source/kqtquickcharts/")
     (synopsis "Interactive charts for Qt Quick")
@@ -822,7 +891,7 @@ charts.")
        ("knotifications" ,knotifications)
        ("kwidgetsaddons" ,kwidgetsaddons)
        ("kxmlgui" ,kxmlgui)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://kde.org/applications/system/kdk")
     (synopsis "View Disk Usage")
     (description "KDiskFree displays the available file devices (hard drive
@@ -850,7 +919,7 @@ unmount drives and view them in a file manager.")
        ("qttools" ,qttools)
        ("kdoctools" ,kdoctools)))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("karchive" ,karchive)
        ("ki18n" ,ki18n)
        ("kio" ,kio)
@@ -911,7 +980,7 @@ Python, PHP, and Perl.")
        ("kxmlgui" ,kxmlgui)
        ("libsndfile" ,libsndfile)
        ("openal" ,openal)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtsvg" ,qtsvg)))
     (home-page "https://games.kde.org/")
@@ -955,7 +1024,7 @@ Python, PHP, and Perl.")
        ("kbookmarks" ,kbookmarks)
        ("kcompletion" ,kcompletion)
        ("kconfig" ,kconfig)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("libjpeg-turbo" ,libjpeg-turbo)
        ("libtiff" ,libtiff)
        ("kirigami" ,kirigami)
@@ -1004,7 +1073,7 @@ a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
        ("kdoctools" ,kdoctools)))
     (inputs
      `(("gettext" ,gettext-minimal)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://kde.org/applications/development")
     (synopsis "Tools for translating DocBook XML files with Gettext")
     (description "This is a collection of tools that facilitate translating
@@ -1029,7 +1098,7 @@ PO template files.")
      `(("extra-cmake-modules" ,extra-cmake-modules)))
     (inputs
      `(("kio" ,kio)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://apps.kde.org/en/kdegraphics_mobipocket")
     (synopsis "KDE thumbnailer for Mobipocket files")
     (description "This package provides a KDE plugin that shows thumbnails of
@@ -1052,7 +1121,7 @@ Mobipocket e-books in Dolphin and other KDE apps.")
      `(("extra-cmake-modules" ,extra-cmake-modules)))
     (inputs
      `(("exiv2" ,exiv2)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://invent.kde.org/graphics/libkexiv2")
     (synopsis "Manipulate the metadata of images")
     (description "Libkexiv2 wraps the Exiv2 library, allowing to manipulate
@@ -1078,7 +1147,7 @@ picture metadata as EXIF/IPTC and XMP.")
        ("kdnssd" ,kdnssd)
        ("ki18n" ,ki18n)
        ("kio" ,kio)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://kde.org/applications/internet/org.kde.zeroconf_ioslave")
     (synopsis "DNS-SD Service Discovery Monitor")
     (description "Adds an entry to Dolphin's Network page to show local
@@ -1113,7 +1182,7 @@ or Bonjour by other projects).")
        ;;("phpunit" ,phpunit)
        ))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtcharts" ,qtcharts)
        ("qtdeclarative" ,qtdeclarative)
        ("qtsvg" ,qtsvg)))

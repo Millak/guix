@@ -33,9 +33,16 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen0@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2021 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
+;;; Copyright © 2021 Rovanion Luckey <rovanion.luckey@gmail.com>
+;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,15 +73,18 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system waf)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base) ;libbdf
   #:use-module (gnu packages bash)
@@ -136,6 +146,8 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio) ;libsndfile
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -143,6 +155,8 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages tcl)
@@ -167,18 +181,19 @@
 (define-public audacious
   (package
     (name "audacious")
-    (version "4.0.5")
+    (version "4.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://distfiles.audacious-media-player.org/"
                            "audacious-" version ".tar.bz2"))
        (sha256
-        (base32 "028zjgz0p7ys15lk2a30m5zcv9xrx3ga50wjsh4m4zxilgkakbji"))))
+        (base32 "0p734psjjvjcmla2hg5h6a9v1prvy63jj9xm2g2ngs49jy7qan0z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
-       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
+       (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
+             "--disable-gtk")
        #:tests? #f                      ; no check target
        #:phases
        (modify-phases %standard-phases
@@ -218,13 +233,13 @@
            (uri (string-append "https://distfiles.audacious-media-player.org/"
                                "audacious-plugins-" version ".tar.bz2"))
            (sha256
-            (base32 "0ny5w1agr9jaz5w3wyyxf1ygmzmd1sivaf97lcm4z4w6529520lz"))))
+            (base32 "0k0xnqmxi5lna034i2cnzvfzrykxmv4fbs1nkrc9sd2ma1igrmns"))))
        ("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for gdbus-codegen
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("dbus" ,dbus)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)
        ;; Plugin dependencies
        ("alsa-lib" ,alsa-lib)
@@ -238,9 +253,9 @@
        ("libcddb" ,libcddb)
        ("libcdio-paranoia" ,libcdio-paranoia)
        ("libcue" ,libcue)
-       ("libmodplug" ,libmodplug)
        ("libnotify" ,libnotify)
        ("libogg" ,libogg)
+       ("libopenmpt" ,libopenmpt)
        ("libsamplerate" ,libsamplerate)
        ("libsndfile" ,libsndfile)
        ("libvorbis" ,libvorbis)
@@ -427,7 +442,7 @@ score, keyboard, guitar, drum and controller views.")
        ("libxml2" ,libxml2)
        ("protobuf" ,protobuf)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)
        ("sqlite" ,sqlite)
        ("sparsehash" ,sparsehash)
@@ -450,7 +465,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "0.9.2")
+    (version "0.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -459,7 +474,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d9asg21j9ai23sb35cimws8bd8fsnpha777rgscraa7i09q0rx2"))
+                "0lby5zi66i08s0mcygja8l3rbd97inhaxqbhahj8lfxs52r4grrq"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -520,7 +535,7 @@ playing your music.")
        ("libmtp" ,libmtp)
        ("protobuf" ,protobuf)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)
        ("sqlite" ,sqlite)
        ("taglib" ,taglib)))
@@ -539,7 +554,7 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
 (define-public cmus
   (package
     (name "cmus")
-    (version "2.8.0")
+    (version "2.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -548,7 +563,7 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ydnvq13ay8b8mfmmgwi5qsgyf220yi1d01acbnxqn775dghmwar"))))
+                "0zjkimni2fhv4yskrjrgj6b74f33rfj58zgd7khwrz4z8nf88j0w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; cmus does not include tests
@@ -752,7 +767,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
        ("libsndfile" ,libsndfile)
        ("lrdf" ,lrdf)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtxmlpatterns" ,qtxmlpatterns)
        ("zlib" ,zlib)))
     (home-page "http://www.hydrogen-music.org")
@@ -840,7 +855,7 @@ MusePack, Monkey's Audio, and WavPack files.")
 (define-public extempore
   (package
     (name "extempore")
-    (version "0.8.6")
+    (version "0.8.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -848,7 +863,7 @@ MusePack, Monkey's Audio, and WavPack files.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "182jy23qv115dipny7kglwbn21z55dp253w1ykm0kh8n6vkgs7gp"))
+                "16i12zl3g1zpx6lhg5pg821xirdf9rxx5m11b68inf83wn6hknhb"))
               (file-name (git-file-name name version))
               (patches (search-patches
                         "extempore-unbundle-external-dependencies.patch"))
@@ -857,16 +872,12 @@ MusePack, Monkey's Audio, and WavPack files.")
                '(begin
                   ;; Remove bundled sources.
                   (map delete-file-recursively
-                       '("src/portaudio"
-                         "src/pcre"))
+                       '("src/pcre"))
                   #t))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DJACK=ON"
                                "-DPACKAGE=ON"
-                               "-DEXTERNAL_SHLIBS_AUDIO=OFF"
-                               "-DEXTERNAL_SHLIBS_GRAPHICS=OFF"
-                               "-DCMAKE_BUILD_TYPE=Release"
                                (string-append "-DEXT_SHARE_DIR="
                                               (assoc-ref %outputs "out")
                                               "/share"))
@@ -951,7 +962,12 @@ MusePack, Monkey's Audio, and WavPack files.")
                (("COMMAND extempore" prefix)
                 (string-append prefix " --sharedir " (getcwd)
                                " --mcpu=generic --attr=none")))
-             #t)))))
+             #t))
+         (add-after 'unpack 'symlink-assets
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((assets (assoc-ref inputs "extempore-assets")))
+               (symlink assets "assets")
+               #t))))))
     (inputs
      `(("llvm"
         ,(package
@@ -965,6 +981,19 @@ MusePack, Monkey's Audio, and WavPack files.")
               (sha256
                (base32
                 "1svdl6fxn8l01ni8mpm0bd5h856ahv3h9sdzgmymr6fayckjvqzs"))))))
+       ("extempore-assets"
+        ,(let ((commit "0c9f32c18169b3fbc24bc1ad66283125b54a0c85")
+               (revision "0")
+               (version "0.0.0"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/extemporelang/extempore-assets")
+                   (commit commit)))
+             (file-name (git-file-name "extempore-assets"
+                                       (git-version version revision commit)))
+             (sha256
+              (base32 "1pxmcbngd9qx8m71d5rfsmf4h31jnsnd3wjh8vb0rwskif22xz8l")))))
        ("libffi" ,libffi)
        ("jack" ,jack-1)
        ("libsndfile" ,libsndfile)
@@ -1335,6 +1364,47 @@ Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro
                    ;; demo and player directories are under the Expat license
                    license:expat))))
 
+(define-public lingot
+  (package
+    (name "lingot")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ibancg/lingot")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04lcjzfhddbyskxr2068z609y6x0s2gjx1wl78w0dkxdi459zrn9"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("cunit" ,cunit)
+       ("glib" ,glib "bin")             ; for glib-compile-resources
+       ("intltool" ,intltool)
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("alsa-lib" ,alsa-lib)
+       ("fftw" ,fftw)
+       ("gtk+" ,gtk+)
+       ("jack" ,jack-2)
+       ("json-c" ,json-c)
+       ("pulseaudio" ,pulseaudio)))
+    (home-page "http://lingot.nongnu.org/")
+    (synopsis "Accurate & configurable musical instrument tuner")
+    (description
+     "LINGOT is a musical instrument tuner.  It's accurate, easy to use, and
+highly configurable.  Originally conceived to tune electric guitars, it can now
+be used to tune other instruments.
+
+It looks like an analogue tuner, with a gauge indicating the relative shift to a
+certain note, determined automatically as the closest note to the estimated
+frequency.")
+    (license license:gpl2+)))
+
 (define-public ninjas2
   (package
     (name "ninjas2")
@@ -1499,6 +1569,193 @@ Guile.")
     ;; more than an hour of silence, so double the max silent time.
     (properties `((max-silent-time . 7200)))))
 
+(define-public abjad
+  (package
+    (name "abjad")
+    (version "3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://github.com/Abjad/abjad")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1dzf5v7pawbzkb4qxp4s5z4r3gibkk705pag83yvgzkx6fd6jf2g"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; See: https://stackoverflow.com/a/34140498
+               (invoke "python" "-m" "pytest" "tests")
+               #t))))))
+    (native-inputs
+     `(("python-black" ,python-black)
+       ("python-flake8" ,python-flake8)
+       ("python-iniconfig" ,python-iniconfig)
+       ("python-isort" ,python-isort)
+       ("python-mypy" ,python-mypy)
+       ("python-pytest" ,python-pytest-6)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ("python-sphinx-autodoc-typehints" ,python-sphinx-autodoc-typehints)))
+    (inputs
+     `(("lilypond" ,lilypond)))
+    (propagated-inputs
+     `(("python-ply" ,python-ply)
+       ("python-quicktions" ,python-quicktions)
+       ("python-roman" ,python-roman)
+       ("python-six" ,python-six)
+       ("python-uqbar" ,python-uqbar)))
+    (home-page "https://abjad.github.io")
+    (synopsis "Python API for building LilyPond files")
+    (description
+     "Abjad helps composers build up complex pieces of music notation in iterative
+and incremental ways.  Use Abjad to create a symbolic representation of all the notes,
+rests, chords, tuplets, beams and slurs in any score.  Because Abjad extends the Python
+programming language, you can use Abjad to make systematic changes to music as you work.
+Because Abjad wraps the LilyPond music notation package, you can use Abjad to control the
+typographic detail of symbols on the page.")
+     (license license:expat)))
+
+(define-public python-abjad
+  (deprecated-package "python-abjad" abjad))
+
+(define-public abjad-ext-rmakers
+  (package
+    (name "abjad-ext-rmakers")
+    (version "3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://github.com/Abjad/abjad-ext-rmakers")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "03nry8lzh3s81yq4lw8y6j63m7zdsl20q7rvx9cfmp3rmbvlaycs"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "pytest" ".")
+               #t))))))
+    (native-inputs
+     `(("lilypond" ,lilypond)
+       ("python-black" ,python-black)
+       ("python-flake8" ,python-flake8)
+       ("python-iniconfig" ,python-iniconfig)
+       ("python-isort" ,python-isort)
+       ("python-mypy" ,python-mypy)
+       ("python-pytest" ,python-pytest-6)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ("python-pytest-helpers-namespace" ,python-pytest-helpers-namespace)))
+    (propagated-inputs
+     `(("abjad" ,abjad)))
+    (home-page "https://abjad.github.io")
+    (synopsis "Abjad rhythm-maker extension package")
+    (description
+     "@code{abjad-ext-rmakers} includes a collection of classes for creating and
+and manipulating rhythms such as accelerandi, taleas, and more.")
+    (license license:expat)))
+
+(define-public abjad-ext-nauert
+  (package
+    (name "abjad-ext-nauert")
+    (version "3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://github.com/Abjad/abjad-ext-nauert")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "07vgfjh32vmf652lcl2vrbzr0h6nld00qbgwbf9i1kk3xwhvklc9"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "pytest" "tests")
+               #t))))))
+    (native-inputs
+     `(("lilypond" ,lilypond)
+       ("python-black" ,python-black)
+       ("python-flake8" ,python-flake8)
+       ("python-iniconfig" ,python-iniconfig)
+       ("python-isort" ,python-isort)
+       ("python-mypy" ,python-mypy)
+       ("python-pytest" ,python-pytest-6)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ("python-pytest-helpers-namespace" ,python-pytest-helpers-namespace)))
+    (propagated-inputs
+     `(("abjad" ,abjad)))
+    (home-page "https://abjad.github.io")
+    (synopsis "Abjad quantization extension, based on Paul Nauert's Q-Grids")
+    (description
+     "@code{abjad-ext-nauert} provides classes for dealing with composer and
+music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
+    (license license:expat)))
+
+(define-public abjad-ext-ipython
+  (package
+    (name "abjad-ext-ipython")
+    (version "3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://github.com/Abjad/abjad-ext-ipython")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1vv0alpiz0gf5lgjfvlh4km72dvrxfqkwzxl3k4amzci3i0jzbs2"))))
+    (build-system python-build-system)
+    (arguments
+     ;; UnboundLocalError: local variable 'output_path' referenced before assignment
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               (add-installed-pythonpath inputs outputs)
+               ;; From 'make jupyter-test'
+               (invoke "jupyter" "nbconvert" "--to=html"
+               "--ExecutePreprocessor.enabled=True" "tests/test.ipynb")))))))
+    (native-inputs
+     `(("lilypond" ,lilypond)
+       ("python-black" ,python-black)
+       ("python-flake8" ,python-flake8)
+       ("python-iniconfig" ,python-iniconfig)
+       ("python-isort" ,python-isort)
+       ("python-mypy" ,python-mypy)
+       ("python-pytest" ,python-pytest-6)
+       ("python-pytest-cov" ,python-pytest-cov)
+       ("python-pytest-helpers-namespace" ,python-pytest-helpers-namespace)))
+    (propagated-inputs
+     `(("abjad" ,abjad)
+       ("jupyter" ,jupyter)))
+    (home-page "https://abjad.github.io")
+    (synopsis "Abjad IPython Extension")
+    (description
+     "@code{abjad-ext-ipython} makes it possible to embed music notation in
+@code{jupyter} notebooks.")
+    (license license:expat)))
+
 (define-public non-sequencer
   ;; The latest tagged release is three years old and uses a custom build
   ;; system, so we take the last commit.
@@ -1638,7 +1895,7 @@ complete studio.")
        `(("liblo" ,liblo)
          ("gtkmm" ,gtkmm)
          ("alsa-lib" ,alsa-lib)
-         ("libxmlplusplus" ,libxmlplusplus-2.6)))
+         ("libxml++" ,libxml++-2)))
       (native-inputs
        `(("glib:bin" ,glib "bin")
          ("pkg-config" ,pkg-config)))
@@ -1900,7 +2157,7 @@ your own lessons.")
        ("boost" ,boost)
        ("minizip" ,minizip)
        ("pugixml" ,pugixml)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("rapidjson" ,rapidjson)
        ("rtmidi" ,rtmidi)
        ("timidity" ,timidity++)
@@ -1965,7 +2222,7 @@ users to select LV2 plugins and run them with jalv.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.21")
+    (version "0.9.23")
     (source (origin
               (method url-fetch)
               (uri
@@ -1973,7 +2230,7 @@ users to select LV2 plugins and run them with jalv.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0wg4ywkqf307vln0y923p083xacb5ahr2ghzvb9gmqyszd7k2v15"))))
+                "03lvq84pg0agdn16i7ng6j7lp1ii3inf4pzjypnkywb2km7zcpni"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -1983,7 +2240,7 @@ users to select LV2 plugins and run them with jalv.")
        ("alsa-lib" ,alsa-lib)
        ("non-session-manager" ,non-session-manager)
        ("liblo" ,liblo)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))
@@ -1997,7 +2254,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.21")
+    (version "0.9.23")
     (source (origin
               (method url-fetch)
               (uri
@@ -2005,7 +2262,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1ym7kns7hfgxdwm2nzvpdm5vjxpkwb9dssjiic6rrpicv1p2v59m"))))
+                "1jgsml9wxzwnqyb6wjn9zk94qvxs6c898hyj10sza4d9l6r1rnw0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2016,7 +2273,7 @@ oscillators and stereo effects.")
        ("alsa-lib" ,alsa-lib)
        ("non-session-manager" ,non-session-manager)
        ("liblo" ,liblo)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))
@@ -2030,7 +2287,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.21")
+    (version "0.9.23")
     (source (origin
               (method url-fetch)
               (uri
@@ -2038,7 +2295,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1kz8hcpzhrkvxpah6irz5gbah4m7knjhi4rk5hs1kwiikn7p6vgk"))))
+                "1bgyz530mpmlabvy592zickrzk4x4rm2i0ixf3z6plgn265km43q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2049,7 +2306,7 @@ effects.")
        ("alsa-lib" ,alsa-lib)
        ("non-session-manager" ,non-session-manager)
        ("liblo" ,liblo)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))
@@ -2063,7 +2320,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.21")
+    (version "0.9.23")
     (source (origin
               (method url-fetch)
               (uri
@@ -2071,7 +2328,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0s28l8vp9b85s4bdm18qm57dh8dx8rx7659r05p44828g4053ipl"))))
+                "0222n74kykirkhq4va09hr37rybxs0nxjbmamp38jf94bfz5y8gp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2082,7 +2339,7 @@ effects.")
        ("non-session-manager" ,non-session-manager)
        ("liblo" ,liblo)
        ("fftwf" ,fftwf)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))
@@ -2639,14 +2896,14 @@ browser.")
 (define-public drumstick
   (package
     (name "drumstick")
-    (version "2.1.1")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/drumstick/"
                                   version "/drumstick-" version ".tar.bz2"))
               (sha256
                (base32
-                "06lz4kzpgg5lalcjb14pi35jxca5f4j6ckqf6mdxs1k42dfhjpjp"))))
+                "1rs248pkgn6d29nkvw9ab6dvi1vsz220jdmz1ddzr29cpyc0adfh"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no test target
@@ -2662,7 +2919,7 @@ browser.")
                                "/manpages/docbook.xsl")))
              #t)))))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qttools" ,qttools)
        ("alsa-lib" ,alsa-lib)))
@@ -2686,14 +2943,14 @@ backends, including ALSA, OSS, Network and FluidSynth.")
 (define-public vmpk
   (package
     (name "vmpk")
-    (version "0.8.2")
+    (version "0.8.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/vmpk/vmpk/"
                                   version "/vmpk-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kv256j13adk4ib7r464gsl4vjhih820bq37ddhqfyfd07wh53a2"))))
+                "0kh8pns9pla9c47y2nwckjpiihczg6rpg96aignsdsd7vkql69s9"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f  ; no test target
@@ -2710,7 +2967,7 @@ backends, including ALSA, OSS, Network and FluidSynth.")
              #t)))))
     (inputs
      `(("drumstick" ,drumstick)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
@@ -3038,19 +3295,19 @@ from the command line.")
 (define-public qtractor
   (package
     (name "qtractor")
-    (version "0.9.21")
+    (version "0.9.23")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.sourceforge.net/qtractor/"
                                   "qtractor-" version ".tar.gz"))
               (sha256
                (base32
-                "12hn17hqs3jndv6238wj8yhw07n99s0zachab4kfvhwa0qfflsbl"))))
+                "1d2d884x5kfa41skwyh0ihyx5jgc9467617gmfjm379qcgnxq00s"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" target
     (inputs
-     `(("qt" ,qtbase)
+     `(("qt" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)
        ("alsa-lib" ,alsa-lib)
        ("jack" ,jack-1)
@@ -3336,7 +3593,7 @@ formats, looking up tracks through metadata and audio fingerprints.")
      `(("python-pytest" ,python-pytest)
        ("python-hypothesis" ,python-hypothesis)
        ("python-flake8" ,python-flake8)))
-    (home-page "https://bitbucket.org/lazka/mutagen")
+    (home-page "https://mutagen.readthedocs.io/")
     (synopsis "Read and write audio tags")
     (description "Mutagen is a Python module to handle audio metadata.  It
 supports ASF, FLAC, M4A, Monkey’s Audio, MP3, Musepack, Ogg FLAC, Ogg Speex, Ogg
@@ -3350,20 +3607,18 @@ streams on an individual packet/page level.")
 (define-public python-mediafile
   (package
     (name "python-mediafile")
-    (version "0.6.0")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mediafile" version))
-       (patches (search-patches "python-mediafile-wavpack.patch"))
        (sha256
         (base32
-         "0jmsp3f57xj35ayp8b6didk85nxgl3viw34s5px3l5dwgc055yx3"))))
+         "0ipb001j19s9wvssmrj8wz0nrkbl0k3zr3dgzyp1bd9cjc6vklnp"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("python-mutagen" ,python-mutagen)
-       ("python-six" ,python-six)
-       ("python-tox" ,python-tox)))
+       ("python-six" ,python-six)))
     (home-page "https://github.com/beetbox/mediafile")
     (synopsis "Read and write audio file tags")
     (description
@@ -3376,18 +3631,14 @@ of tags.")
 (define-public python-musicbrainzngs
   (package
     (name "python-musicbrainzngs")
-    (version "0.6")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "musicbrainzngs" version))
               (sha256
                (base32
-                "1dddarpjawryll2wss65xq3v9q8ln8dan7984l5dxzqx88d2dvr8"))))
+                "09z6k07pxncfgfc8clfmmxl2xqbd7h8x8bjzwr95hc0bzl00275b"))))
     (build-system python-build-system)
-    (arguments
-     '(;; The tests fail suffer from race conditions:
-       ;; https://github.com/alastair/python-musicbrainzngs/issues/211
-       #:tests? #f))
     (home-page "https://python-musicbrainzngs.readthedocs.org/")
     (synopsis "Python bindings for MusicBrainz NGS webservice")
     (description "Musicbrainzngs implements Python bindings of the MusicBrainz
@@ -3457,36 +3708,28 @@ detailed track info including timbre, pitch, rhythm and loudness information.
 (define-public python-pylast
   (package
     (name "python-pylast")
-    (version "2.0.0")
+    (version "4.2.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pylast" version))
               (sha256
                (base32
-                "0r9h7g8i8l2mgqjwkda3v6prfbkb2im5kap1az9ppmhjm9i4jkcf"))))
+                "0pzzhr4mlwpvfhy9gzq86ppz29fmf5z0w3xkl5if1fm59r1afms7"))))
     (build-system python-build-system)
     ;; Tests require network access.  See
     ;; https://github.com/pylast/pylast/issues/105
     (arguments '(#:tests? #f))
     (native-inputs
      `(("python-coverage" ,python-coverage)
-       ("python-pycodestyle" ,python-pycodestyle)
-       ("python-mock" ,python-mock)
-       ("python-pep8" ,python-pep8)
        ("python-pytest" ,python-pytest)
        ("python-flaky" ,python-flaky)
-       ("python-pyflakes" ,python-pyflakes)
-       ("python-pyyaml" ,python-pyyaml)))
-    (propagated-inputs
-     `(("python-six" ,python-six)))
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-setuptools-scm" ,python-setuptools-scm)))
     (home-page "https://github.com/pylast/pylast")
     (synopsis "Python interface to Last.fm and Libre.fm")
     (description "A Python interface to Last.fm and other API-compatible
 websites such as Libre.fm.")
     (license license:asl2.0)))
-
-(define-public python2-pylast
-  (package-with-python2 python-pylast))
 
 (define-public instantmusic
   (let ((commit "300891d09c703525215fa5a116b9294af1c923c8")
@@ -3533,34 +3776,27 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "1.4.9")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "beets" version))
-              (patches (search-patches "beets-werkzeug-compat.patch"))
               (sha256
                (base32
-                "0m40rjimvfgy1dv04p8f8d5dvi2855v4ix99a9xr900cmcn476yj"))))
+                "0arl4nc3y8iwa331hf6ggai19y8ns9pl03g5d6ac857wq2x7nzw8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; Reported upstream: <https://github.com/beetbox/beets/issues/3771>.
-         ;; Disable the faulty test as the fix is unclear.
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "test/test_mediafile.py"
-               (("def test_read_audio_properties") "def _test_read_audio_properties"))
-             #t))
          (add-after 'unpack 'set-HOME
            (lambda _
              (setenv "HOME" (string-append (getcwd) "/tmp"))
              #t))
          (replace 'check
-           (lambda _
-             (invoke "nosetests" "-v")))
-         ;; Wrap the executable, so it can find python-gi (aka pygobject) and
-         ;; gstreamer plugins.
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v" "test"))))
+         ;; Wrap the executable, so it can find python-gi (aka
+         ;; pygobject) and gstreamer plugins.
          (add-after 'wrap 'wrap-typelib
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((prog (string-append (assoc-ref outputs "out")
@@ -3572,112 +3808,68 @@ websites such as Libre.fm.")
                  `("GI_TYPELIB_PATH" ":" prefix (,types)))
                #t))))))
     (native-inputs
-     `(("python-beautifulsoup4" ,python-beautifulsoup4)
+     `(("gobject-introspection" ,gobject-introspection)
        ("python-flask" ,python-flask)
        ("python-mock" ,python-mock)
-       ("python-mpd2" ,python-mpd2)
-       ("python-nose" ,python-nose)
-       ("python-pathlib" ,python-pathlib)
-       ("python-pyxdg" ,python-pyxdg)
-       ("python-pylast" ,python-pylast)
-       ("python-rarfile" ,python-rarfile)
+       ("python-py7zr" ,python-py7zr)
+       ("python-pytest" ,python-pytest-6)
        ("python-responses" ,python-responses)))
-    ;; TODO: Install optional plugins and dependencies.
     (inputs
-     `(("python-discogs-client" ,python-discogs-client)
-       ("python-jellyfish" ,python-jellyfish)
-       ("python-munkres" ,python-munkres)
-       ("python-musicbrainzngs" ,python-musicbrainzngs)
-       ("python-mutagen" ,python-mutagen)
-       ("python-pyacoustid" ,python-pyacoustid)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-unidecode" ,python-unidecode)
-       ;; For plugin replaygain.
-       ("python-pygobject" ,python-pygobject)
-       ("gobject-introspection" ,gobject-introspection)
+     `(("bash-minimal" ,bash-minimal)
        ("gst-plugins-base" ,gst-plugins-base)
        ("gst-plugins-good" ,gst-plugins-good)
-       ("gstreamer" ,gstreamer)))
+       ("gstreamer" ,gstreamer)
+       ("python-confuse" ,python-confuse)
+       ("python-jellyfish" ,python-jellyfish)
+       ("python-mediafile" ,python-mediafile)
+       ("python-munkres" ,python-munkres)
+       ("python-musicbrainzngs" ,python-musicbrainzngs)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-six" ,python-six)
+       ("python-unidecode" ,python-unidecode)
+       ;; Optional dependencies for plugins. Some of these are also required by tests.
+       ("python-beautifulsoup4" ,python-beautifulsoup4) ; For lyrics.
+       ("python-discogs-client" ,python-discogs-client) ; For discogs.
+       ("python-mpd2" ,python-mpd2) ; For mpdstats.
+       ("python-mutagen" ,python-mutagen) ; For scrub.
+       ("python-langdetect" ,python-langdetect) ; For lyrics.
+       ("python-pillow" ,python-pillow) ; For fetchart, embedart, thumbnails.
+       ("python-pyacoustid" ,python-pyacoustid) ; For chroma.
+       ("python-pygobject" ,python-pygobject) ; For bpd, replaygain.
+       ("python-pylast" ,python-pylast) ; For lastgenre, lastimport.
+       ("python-pyxdg" ,python-pyxdg) ; For thumbnails.
+       ("python-rarfile" ,python-rarfile) ; For import.
+       ("python-reflink" ,python-reflink) ; For reflink.
+       ("python-requests" ,python-requests)
+       ("python-requests-oauthlib" ,python-requests-oauthlib))) ; For beatport.
     (home-page "https://beets.io")
     (synopsis "Music organizer")
-    (description "The purpose of beets is to get your music collection right
-    once and for all.  It catalogs your collection, automatically improving its
-    metadata as it goes using the MusicBrainz database.  Then it provides a variety
-    of tools for manipulating and accessing your music.")
+    (description "The purpose of beets is to get your music collection
+right once and for all.  It catalogs your collection, automatically
+improving its metadata as it goes using the MusicBrainz database.
+Then it provides a variety of tools for manipulating and accessing
+your music.")
     (license license:expat)))
 
 (define-public beets-next
-  (let ((commit "04ea754d00e2873ae9aa2d9e07c5cefd790eaee2")
-        (revision "1"))
-    (package
-      (inherit beets)
-      (name "beets-next")
-      (version (git-version (package-version beets) revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/beetbox/beets")
-                      (commit commit)))
-                (file-name (git-file-name "beets" version))
-                (sha256
-                 (base32
-                  "092a9sss2shhcjmpgbwvscv8brpm5970i5hddkhi81xcff3bg1h4"))))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           ;; XXX: unclear why this fails
-           (add-after 'unpack 'disable-failing-tests
-             (lambda _
-               (substitute* "test/test_zero.py"
-                 (("def test_album_art") "def _test_album_art"))
-               #t))
-           (add-after 'unpack 'set-HOME
-             (lambda _
-               (setenv "HOME" (string-append (getcwd) "/tmp"))
-               #t))
-           (replace 'check
-             (lambda _
-               ;; Resources must be writable.
-               (for-each make-file-writable
-                         (find-files "test/rsrc" "."))
-               (invoke "nosetests" "-v")))
-           ;; Wrap the executable, so it can find python-gi (aka pygobject) and
-           ;; gstreamer plugins.
-           (add-after 'wrap 'wrap-typelib
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((prog (string-append (assoc-ref outputs "out")
-                                          "/bin/beet"))
-                     (plugins (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                     (types (getenv "GI_TYPELIB_PATH")))
-                 (wrap-program prog
-                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,plugins))
-                   `("GI_TYPELIB_PATH" ":" prefix (,types)))
-                 #t))))))
-      (inputs
-       `(("python-confuse" ,python-confuse)
-         ("python-mediafile" ,python-mediafile)
-         ("python-reflink" ,python-reflink)
-         ("python-requests-oauthlib" ,python-requests-oauthlib)
-         ("opusfile" ,opusfile)
-         ,@(package-inputs beets))))))
+  (deprecated-package "beets-next" beets))
 
 (define-public beets-bandcamp
   (package
     (name "beets-bandcamp")
-    (version "0.1.3")
+    (version "0.1.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "beets-bandcamp" version))
               (sha256
                (base32
-                "04awg0zdhhg5h510fc1p3qkvr2l1qm6nf85hlr9z8im8a7xlka0i"))))
+                "0dwbdkrb9c0ppzm5s78h47ndpr88cw1k0z8fgfhkl706wazx2ddg"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; there are no tests
     (propagated-inputs
      `(("beets" ,beets)
-       ("python-isodate" ,python-isodate)))
-    (inputs
-     `(("python-beautifulsoup4" ,python-beautifulsoup4)
+       ("python-isodate" ,python-isodate)
+       ("python-beautifulsoup4" ,python-beautifulsoup4)
        ("python-requests" ,python-requests)
        ("python-six" ,python-six)))
     (home-page "https://github.com/unrblt/beets-bandcamp")
@@ -4368,7 +4560,7 @@ develop custom plugins for use in other applications without programming.")
      `(#:configure-flags
        (list "--enable-qt5")))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("alsa-lib" ,alsa-lib)
        ("jack" ,jack-1)
        ("liblo" ,liblo)
@@ -4399,7 +4591,7 @@ modules running in parallel.")
      `(#:configure-flags
        (list "--enable-qt5")))
     (inputs
-     `(("qtbase" ,qtbase)
+     `(("qtbase" ,qtbase-5)
        ("alsa-lib" ,alsa-lib)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -4442,26 +4634,26 @@ provide a very simple interface for editing and playing MIDI loops.")
 (define-public python-discogs-client
   (package
     (name "python-discogs-client")
-    (version "2.2.1")
+    (version "2.3.12")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "discogs-client" version))
+              (uri (pypi-uri "python3-discogs-client" version))
               (sha256
                (base32
-                "053ld2psh0yj3z0kg6z5bn4y3cr562m727494n0ayhgzbkjbacly"))))
+                "1zmib0i9jicv9fyphgkcrk418qmpv3l4p38ibl31sh237ki5xqw9"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-oauthlib" ,python-oauthlib)
+     `(("python-dateutil" ,python-dateutil)
+       ("python-oauthlib" ,python-oauthlib)
        ("python-requests" ,python-requests)))
-    (native-inputs
-     `(("python-six" ,python-six)))
-    (home-page "https://github.com/discogs/discogs_client")
-    (synopsis "Official Python client for the Discogs API")
-    (description "This is the official Discogs API client for Python. It enables
-you to query the Discogs database for information on artists, releases, labels,
-users, Marketplace listings, and more.  It also supports OAuth 1.0a
-authorization, which allows you to change user data such as profile information,
-collections and wantlists, inventory, and orders.")
+    (home-page "https://github.com/joalla/discogs_client")
+    (synopsis "Python client for the Discogs API")
+    (description "This is the continuation of the official Discogs API
+client for Python. It enables you to query the Discogs database for
+information on artists, releases, labels, users, Marketplace listings,
+and more.  It also supports OAuth 1.0a authorization, which allows you to
+change user data such as profile information, collections and wantlists,
+inventory, and orders.")
     (license license:bsd-2)))
 
 (define-public python2-discogs-client
@@ -4582,7 +4774,7 @@ are a C compiler and glib.  Full API documentation and examples are included.")
              "0g9pls46iggg7rdm65vzfj8nyr3v2n5xkp54c4qbh9hhalpsw4ay"))))))
     (inputs
      `(("sdl" ,sdl)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)
        ("fltk" ,fltk)
        ("libogg" ,libogg)
@@ -4627,13 +4819,58 @@ audio samples and various soft sythesizers.  It can receive input from a MIDI ke
      `(("jack" ,jack-2)
        ("lv2" ,lv2)
        ("readline" ,readline)
-       ("libsndfile" ,libsndfile)))
+       ("libsndfile" ,libsndfile/fixed)))
     (home-page "https://github.com/swesterfeld/liquidsfz")
     (synopsis "Sampler library")
     (description "The main goal of liquidsfz is to provide an SFZ sampler
 implementation library that is easy to integrate into other projects.  A
 standalone JACK client and an LV2 plugin is also available.")
     (license license:lgpl2.1+)))
+
+(define-public sfizz
+  (package
+    (name "sfizz")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/sfztools/sfizz"
+                                  "/releases/download/" version
+                                  "/sfizz-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pk67xvyqkvhjz2q5hbj5v0mnfvdvvl8vl5bsh6ymwiq3glkd41l"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; TODO: pugixml is bundled, but can only be removed in
+               ;; versions after 1.0.0.
+               '(for-each delete-file-recursively
+                          '("external/abseil-cpp"
+                            "external/simde"
+                            "plugins/editor/external/vstgui4"
+                            "plugins/vst")))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "-DSFIZZ_LV2_UI=OFF"
+             "-DSFIZZ_VST=OFF"
+             "-DSFIZZ_VST2=OFF"
+             "-DSFIZZ_TESTS=ON"
+             "-DSFIZZ_USE_SYSTEM_ABSEIL=ON")))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (inputs
+     `(("abseil-cpp" ,abseil-cpp)
+       ("glib" ,glib)
+       ("jack" ,jack-2)
+       ("lv2" ,lv2)
+       ("libsamplerate" ,libsamplerate)
+       ("pugixml" ,pugixml)
+       ("simde" ,simde)))
+    (home-page "https://sfz.tools/sfizz/")
+    (synopsis "SFZ parser and synth library")
+    (description "Sfizz provides an SFZ parser and synth C++ library.  It
+includes LV2 plugins and a JACK standalone client.")
+    (license license:bsd-2)))
 
 (define-public musescore
   (package
@@ -4658,7 +4895,7 @@ standalone JACK client and an LV2 plugin is also available.")
                        "thirdparty/portmidi"
                        "thirdparty/qt-google-analytics"))
            #t))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      `(#:configure-flags
        `("-DBUILD_TELEMETRY_MODULE=OFF" ;don't phone home
@@ -4687,8 +4924,9 @@ standalone JACK client and an LV2 plugin is also available.")
        ("portaudio" ,portaudio)
        ("portmidi" ,portmidi)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
+       ("qtgraphicaleffects" ,qtgraphicaleffects)
        ("qtquickcontrols2" ,qtquickcontrols2)
        ("qtscript" ,qtscript)
        ("qtsvg" ,qtsvg)
@@ -4715,25 +4953,21 @@ sample library.")
 (define-public muse-sequencer
   (package
     (name "muse-sequencer")
-    (version "3.1.1")
+    (version "4.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/muse-sequencer/muse")
-                    (commit (string-append "muse_"
-                                           (string-map (lambda (c)
-                                                         (if (char=? c #\.)
-                                                             #\_ c)) version)))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rasp2v1ds2aw296lbf27rzw0l9fjl0cvbvw85d5ycvh6wkm301p"))))
-    (build-system cmake-build-system)
+                "1gamr9ln10l26wwyin1a4grrqy6h05qzcgp28wsp85yczkpsh02c"))))
+    (build-system qt-build-system)
     (arguments
      `(#:tests? #f ; there is no test target
        #:configure-flags
-       (list "-DENABLE_INSTPATCH=OFF"  ; FIXME: not packaged
-             "-DENABLE_VST_NATIVE=OFF"
+       (list "-DENABLE_VST_NATIVE=OFF"
              (string-append "-DCMAKE_EXE_LINKER_FLAGS="
                             "-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib/muse-"
@@ -4745,34 +4979,33 @@ sample library.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "muse3") #t))
-         (add-after 'chdir 'fix-include
-           (lambda _
-             (substitute* "muse/driver/rtaudio.h"
-               (("rtaudio/RtAudio.h") "RtAudio.h"))
-             #t)))))
+           (lambda _ (chdir "src"))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("lash" ,lash)
-       ("jack" ,jack-1)
-       ("liblo" ,liblo)
        ("dssi" ,dssi)
-       ("ladspa" ,ladspa)
-       ("lv2" ,lv2)
-       ("lilv" ,lilv)
-       ("sord" ,sord)
-       ("libsndfile" ,libsndfile)
-       ("libsamplerate" ,libsamplerate)
-       ("lrdf" ,lrdf)
        ("fluidsynth" ,fluidsynth)
+       ("glib" ,glib)
+       ("jack" ,jack-1)
+       ("ladspa" ,ladspa)
+       ("lash" ,lash)
+       ("libinstpatch" ,libinstpatch)
+       ("liblo" ,liblo)
+       ("libsamplerate" ,libsamplerate)
+       ("libsndfile" ,libsndfile)
+       ("lilv" ,lilv)
+       ("lrdf" ,lrdf)
+       ("lv2" ,lv2)
        ("pcre" ,pcre)
        ("pulseaudio" ,pulseaudio) ; required by rtaudio
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("rtaudio" ,rtaudio)
-       ("rubberband" ,rubberband)))
+       ("rubberband" ,rubberband)
+       ("sord" ,sord)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("perl" ,perl)
+       ("pkg-config" ,pkg-config)
+       ("python" ,python-wrapper)
        ("qttools" ,qttools)))
     (home-page "https://muse-sequencer.github.io/")
     (synopsis "MIDI/Audio sequencer")
@@ -4786,7 +5019,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "3.7.48")
+    (version "3.10.18")
     (source
      (origin
        (method git-fetch)
@@ -4795,16 +5028,15 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pqaj09x3lzcj0zbbkqpyaky9i1w462bhhvg1akh73nzwvyy46zd"))))
-    (build-system gnu-build-system)
+        (base32 "126kbvdkxy82mmkl19qhp9k6iz5xclar06chbj7lf580x96c899c"))))
+    (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'build 'prepare-x-for-test
            (lambda _
              (system "Xvfb &")
-             (setenv "DISPLAY" ":0")
-             #t)))))
+             (setenv "DISPLAY" ":0"))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -4881,14 +5113,15 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "20.12")
+    (version "21.06.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/rosegarden/rosegarden/"
-                           version "/rosegarden-" version ".tar.bz2"))
+                           (version-major+minor version) "/"
+                           "rosegarden-" version ".tar.bz2"))
        (sha256
-        (base32 "0nqw2caxmv6mqh485wzvywa024yvi18q87sd4dw9b2l5qnpq8rl8"))))
+        (base32 "0yir279gxc5b298sr0fg9jxgdi75bb1gvvy4mh3pxqjsnp00sxc7"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCMAKE_BUILD_TYPE=Release")
@@ -4899,8 +5132,7 @@ specification and header.")
              (substitute* "CMakeLists.txt"
                (("BUILD_TESTING OFF") "BUILD_TESTING ON")
                ;; Make tests work.
-               ((" -fvisibility=hidden") ""))
-             #t))
+               ((" -fvisibility=hidden") ""))))
          (add-after 'unpack 'fix-references
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/gui/general/ProjectPackager.cpp"
@@ -4918,8 +5150,7 @@ specification and header.")
                (("\"convert-ly\\>")
                 (string-append "\"" (assoc-ref inputs "lilypond") "/bin/convert-ly"))
                (("\"lilypond\\>")
-                (string-append "\"" (assoc-ref inputs "lilypond") "/bin/lilypond")))
-             #t))
+                (string-append "\"" (assoc-ref inputs "lilypond") "/bin/lilypond")))))
          (add-after 'unpack 'make-reproducible
            (lambda _
              ;; Prevent Last-Modified from being written.
@@ -4934,16 +5165,14 @@ specification and header.")
                ;; "qt5_add_resources(rg_SOURCES ../data/data.qrc OPTIONS --format-version 1)")
                )
              ;; Make hashtable traversal order predicable.
-             (setenv "QT_RCC_TEST" "1") ; important
-             #t))
+             (setenv "QT_RCC_TEST" "1"))) ; important
          (add-before 'check 'prepare-check
            (lambda _
              (setenv "QT_QPA_PLATFORM" "offscreen")
              ;; Tests create files in $HOME/.local/share/rosegarden .
              (mkdir-p "/tmp/foo")
              (setenv "HOME" "/tmp/foo")
-             (setenv "XDG_RUNTIME_DIR" "/tmp/foo")
-             #t)))))
+             (setenv "XDG_RUNTIME_DIR" "/tmp/foo"))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("bash" ,bash)
@@ -4956,14 +5185,14 @@ specification and header.")
        ("libsamplerate" ,libsamplerate)
        ("lilypond" ,lilypond)
        ("lrdf" ,lrdf)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("tar" ,tar)
        ("lirc" ,lirc)
        ("wavpack" ,wavpack)
        ("zlib" ,zlib)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)))
+       ("qttools" ,qttools)))           ;for qtlinguist
     (synopsis "Music composition and editing environment based around a MIDI
 sequencer")
     (description "Rosegarden is a music composition and editing environment
@@ -5046,7 +5275,7 @@ the electronic or dubstep genre.")
 (define-public sonivox-eas
   (package
     (name "sonivox-eas")
-    (version "1.1.0")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5055,14 +5284,14 @@ the electronic or dubstep genre.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0l9gs00p5g4k4qy6i7nv1mfi2n2wnsycwjrgrh9hxzam4irf2mw2"))))
+                "1ygmlrsdzxii2dvj6id2ai3xv3klw2x67ip5rcp823jzczl0wpjd"))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f)) ; there are no tests
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("drumstick" ,drumstick)
        ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (home-page "https://github.com/pedrolcl/Linux-SonivoxEas")
@@ -5207,7 +5436,7 @@ MusicBrainz lookup capabilities to their applications.")
 (define-public perl-musicbrainz-discid
   (package
     (name "perl-musicbrainz-discid")
-    (version "0.04")
+    (version "0.06")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5215,7 +5444,7 @@ MusicBrainz lookup capabilities to their applications.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1i4qk1qfcmxdibqkyfjrrjdq2zk42vjcz590qgiyc47fi9p6xx1j"))))
+                "1azc91jnwa3gdmy9pc8mflakgvsvf69ywwlqllxmdzwpk386w2xs"))))
     (build-system perl-build-system)
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("which" ,which)))
@@ -5446,7 +5675,7 @@ discard bad quality ones.
        ("fftw" ,fftw)
        ("jack" ,jack-1)
        ("portaudio" ,portaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)
        ("qtsvg" ,qtsvg)))
     (native-inputs
@@ -5846,7 +6075,7 @@ audio and MIDI plugins that can also run as standalone JACK applications.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bxvssqnnd7bph3w1d6xcmxradv4cqq3wyzyv1a1hfm71a0pdahs"))))
+        (base32 "02blg0iqich4vx5z1ahj6avkh83yqszdiq83p9jd5qwm0i4llqjq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;no "check" target
@@ -5943,7 +6172,7 @@ It can also play and mix samples.")
       #:make-flags
       (list (string-append "PREFIX="
                            (assoc-ref %outputs "out"))
-            "CC=gcc")
+            (string-append "CC=" ,(cc-for-target)))
       #:phases
       (modify-phases %standard-phases
         (delete 'configure))))
@@ -6017,7 +6246,7 @@ Soul Force), MVerb, Nekobi, and ProM.")
 (define-public avldrums-lv2
   (package
     (name "avldrums-lv2")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
@@ -6029,7 +6258,7 @@ Soul Force), MVerb, Nekobi, and ProM.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vwdp3d8qzd493qa99ddya7iql67bbfxmbcl8hk96lxif2lhmyws"))))
+        (base32 "14gka5g7va30gm1hn0cas4vvb8s764rfvzcxm67ww86hf54cpnig"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no "check" target
@@ -6037,10 +6266,10 @@ Soul Force), MVerb, Nekobi, and ProM.")
        (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
+         (delete 'configure)            ; no configure script
          (add-before 'build 'set-CC-variable
            (lambda _
-             (setenv "CC" "gcc") #t))
-         (delete 'configure))))
+             (setenv "CC" "gcc"))))))
     (inputs
      `(("cairo" ,cairo)
        ("dssi" ,dssi)
@@ -6251,7 +6480,7 @@ as JACK standalone applications.")
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://git.zrythm.org/git/zplugins")
+         (url "https://git.zrythm.org/zrythm/zplugins")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -6585,3 +6814,45 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
   framework.")
       (home-page "http://shiru.untergrund.net/software.shtml")
       (license license:wtfpl2))))
+
+(define-public a2jmidid
+  (package
+    (name "a2jmidid")
+    (version "9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jackaudio/a2jmidid")
+                    (commit version)))
+              (sha256
+               (base32 "1x6rcl3f4nklnx4p5jln9a7fpj9y7agjxs9rw7cccmwnski7pnsq"))
+              (file-name (git-file-name name version))))
+    (arguments
+     `(#:tests? #f      ; No tests.
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'wrap-programs
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin/")))
+               (substitute* (string-append bin "a2j")
+                 (("a2j_control") (string-append bin "a2j_control")))
+               (wrap-program (string-append bin "a2j_control")
+                `("PYTHONPATH" prefix (,(getenv "PYTHONPATH"))))
+               #t))))))
+    (build-system meson-build-system)
+    (inputs
+     `(("alsa-lib" ,alsa-lib)
+       ("bash-minimal" ,bash-minimal)   ; for wrap-program
+       ("dbus" ,dbus)
+       ("jack" ,jack-1)
+       ("python" ,python)
+       ("python-dbus" ,python-dbus)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (synopsis "ALSA sequencer to JACK MIDI bridging")
+    (description
+     "@code{a2jmidid} is a daemon that implements automatic bridging of ALSA
+midi devices to JACK midi devices.")
+    (home-page "https://github.com/jackaudio/a2jmidid")
+    (license license:gpl2)))

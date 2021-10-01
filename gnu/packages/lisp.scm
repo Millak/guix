@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018, 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -18,6 +18,8 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,14 +55,17 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages ed)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
@@ -82,7 +87,7 @@
 (define-public cl-asdf
   (package
     (name "cl-asdf")
-    (version "3.3.4")
+    (version "3.3.5")
     (source
      (origin
        (method url-fetch)
@@ -90,7 +95,7 @@
         (string-append "https://common-lisp.net/project/asdf/archives/asdf-"
                        version ".lisp"))
        (sha256
-        (base32 "1hpx30f6yrak15nw992k7x3pn75ahvjs04n4f134k68mhgs62km2"))))
+        (base32 "1mydyrii3f0aig1q5admj6hyf59vjn4a5x1q8hqgh483987ilz6h"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("config-patch" ,@(search-patches "cl-asdf-config-directories.patch"))
@@ -400,14 +405,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.1.3")
+    (version "2.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1h6s3as8m72ik971zy7a8j1kqfyy5gzpv9ksy09ixv65a10ll3d9"))))
+        (base32 "189gjqzdz10xh3ybiy4ch1r98bsmkcb4hpnrmggd4y2g5kqnyx4y"))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -598,7 +603,9 @@ statistical profiler, a code coverage tool, and many other extensions.")
   ;;     it, as is the case for SBCL, but I know of no attempt to do so."
   (package
     (name "ccl")
-    (version "1.12")
+    ;; XXX When updating this package, check whether we can simply append
+    ;; VERSION to the ccl-bootstrap URL again, instead of per architecture.
+    (version "1.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -607,7 +614,7 @@ statistical profiler, a code coverage tool, and many other extensions.")
               (file-name (git-file-name "ccl" version))
               (sha256
                (base32
-                "0kxr24d2fzsmpsilijpwwfl6g89y7fcrwb80kai5nx9pwgxmjbp3"))))
+                "1zz291lvsrr7pps8wfl2kdxsnzjngqi4v3mil14pga4r5zanmsi7"))))
     (build-system gnu-build-system)
     ;; CCL consists of a "lisp kernel" and "heap image", both of which are
     ;; shipped in precompiled form in source tarballs.  The former is a C
@@ -619,20 +626,20 @@ statistical profiler, a code coverage tool, and many other extensions.")
         ,(origin
            (method url-fetch)
            (uri (string-append
-                 "https://github.com/Clozure/ccl/releases/download/v" version "/"
+                 "https://github.com/Clozure/ccl/releases/download/v"
                  (match (%current-system)
-                   ("armhf-linux" "linuxarm")
+                   ("armhf-linux" "1.12/linuxarm")
                    ;; XXX: This source only works on x86, but provide it as a
                    ;; catch-all to prevent errors when querying this package
                    ;; on unsupported platforms.
-                   (_ "linuxx86"))
+                   (_ "1.12.1/linuxx86"))
                  ".tar.gz"))
            (sha256
             (base32
              (match (%current-system)
                ("armhf-linux"
                 "0x4bjx6cxsjvxyagijhlvmc7jkyxifdvz5q5zvz37028va65243c")
-               (_ "15l7cfa4a7jkfwdzsfm4q3n22jnb57imxahpql3h77xin57v1gbz"))))))))
+               (_ "0ll017ajcfsyx8f7zsy4394y8xxvz40iz0gcsmznp0n3mf0xi67c"))))))))
     (native-inputs
      `(("cl-asdf" ,cl-asdf)
        ("m4" ,m4)))
@@ -844,10 +851,64 @@ enough to play the original mainframe Zork all the way through.")
       (home-page "http://www.russotto.net/git/mrussotto/confusion/src/master/src/README")
       (license license:gpl3+))))
 
+(define man-for-txr
+  (let ((commit "dfbf19b9a96474b8c1bacac85e43605e5691ceb2")
+        ;; Number of additional commits since the last tag (see the output of
+        ;; "git describe --tags").
+        (revision "41"))
+    (package
+      (name "man-for-txr")
+      (version (git-version "1.6g" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "http://www.kylheku.com/git/man/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zy0g8fj9nsfwzvg88hyaiy94r8j14xhs8vy2ln2niqdm6x2lvy2"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ; There are no tests.
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-man2html-makefile
+             (lambda _
+               (substitute* "man2html/Makefile.in"
+                 ;; It inadvertently ignores @bindir@.
+                 (("^(bindir = \\$\\(DESTDIR\\)\\$\\(PREFIX\\)).*" _ prefix)
+                  (string-append prefix "@bindir@\n")))
+               #t))
+           (add-after 'unpack 'delete-generated-files
+             (lambda _
+               (for-each delete-file
+                         (append
+                          (list "conf_script")
+                          (map (lambda (d) (string-append d "/Makefile"))
+                               '("." "man" "man2html" "src"))
+                          (map (lambda (f) (string-append "src/" f))
+                               '("makewhatis.in" "man.conf"
+                                 "paths.h" "version.h"))))
+               #t))
+           (replace 'configure
+             (lambda* (#:key outputs #:allow-other-keys)
+               (setenv "CC" ,(cc-for-target))
+               ;; Humor the manually written configure script.
+               (invoke "./configure" "+lang" "en" "+fhs"
+                       (string-append "-prefix=" (assoc-ref outputs "out")))
+               #t)))))
+      (home-page "http://www.kylheku.com/cgit/man/")
+      (synopsis "Modifications to the man utilities, specifically man2html")
+      (description
+       "This is a fork of the man utilities intended specifically for building
+the HTML documentation of TXR.")
+      (license license:gpl2))))
+
 (define-public txr
   (package
     (name "txr")
-    (version "255")
+    (version "270")
     (source
      (origin
        (method git-fetch)
@@ -856,8 +917,16 @@ enough to play the original mainframe Zork all the way through.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fjca44761x29xg5hh60yf4i3k7462z7ysnadbk2wzisp42yxk6j"))))
+        (base32 "1kp64h3ls8mddvrlaqqylrb3brckfrqvkk8049xn15mimfggg0xv"))))
     (build-system gnu-build-system)
+    (native-inputs
+     ;; Required to build the documentation.
+     `(("ghostscript" ,ghostscript)
+       ("groff" ,groff)
+       ("man2html" ,man-for-txr)))
+    (inputs
+     `(("bash" ,bash-minimal)
+       ("libffi" ,libffi)))
     (arguments
      `(#:configure-flags
        (list ,(string-append "cc=" (cc-for-target))
@@ -865,6 +934,35 @@ enough to play the original mainframe Zork all the way through.")
        #:test-target "tests"
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-license-installation
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("INSTALL(,.*LICENSE,.*)\\$\\(datadir\\)" _ match)
+                (string-append "INSTALL" match
+                               (assoc-ref outputs "out")
+                               "/share/doc/" ,name "-" ,version)))
+             #t))
+         (delete 'install-license-files)
+         (add-after 'unpack 'inhibit-doc-syms-generation
+           (lambda _
+             (substitute* "genman.txr"
+               ;; Exit from genman.txr before it tries to write to
+               ;; stdlib/doc-syms.tl, which is anyway kept up to date with
+               ;; each release (and is already compiled to stdlib/doc-syms.tlo
+               ;; when genman.txr is run).
+               (("^@\\(output \"stdlib/doc-syms\\.tl\"\\).*" line)
+                (string-append "@(do (exit))\n" line)))
+             #t))
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "stream.c"
+               (("/bin/sh")
+                (string-append (assoc-ref inputs "bash") "/bin/bash")))))
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* (list "tests/017/realpath.tl"
+                                "tests/017/realpath.expected")
+               (("/usr/bin") "/"))))
          (replace 'configure
            ;; ./configure is a hand-written script that can't handle standard
            ;; autotools arguments like CONFIG_SHELL.
@@ -872,14 +970,18 @@ enough to play the original mainframe Zork all the way through.")
              (setenv "txr_shell" (which "bash"))
              (apply invoke "./configure" configure-flags)
              #t))
-         (add-after 'configure 'fix-tests
+         (add-after 'build 'build-doc
            (lambda _
-             (substitute* (list "tests/017/realpath.tl"
-                                "tests/017/realpath.expected")
-               (("/usr/bin") "/"))
+             (setenv "GS_GENERATE_UUIDS" "0")
+             (invoke "make" "txr-manpage.html" "txr-manpage.pdf")
+             #t))
+         (add-after 'install 'install-doc
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((doc (string-append (assoc-ref outputs "out")
+                                       "/share/doc/" ,name "-" ,version)))
+               (for-each (lambda (f) (install-file f doc))
+                         '("txr-manpage.html" "txr-manpage.pdf")))
              #t)))))
-    (inputs
-     `(("libffi" ,libffi)))
     (synopsis "General-purpose, multi-paradigm programming language")
     (description
      "TXR is a general-purpose, multi-paradigm programming language.  It

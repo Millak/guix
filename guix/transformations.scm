@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,7 +26,7 @@
   #:autoload   (guix download) (download-to-store)
   #:autoload   (guix git-download) (git-reference? git-reference-url)
   #:autoload   (guix git) (git-checkout git-checkout? git-checkout-url)
-  #:autoload   (guix upstream) (package-latest-release*
+  #:autoload   (guix upstream) (package-latest-release
                                 upstream-source-version
                                 upstream-source-signature-urls)
   #:use-module (guix utils)
@@ -270,6 +271,25 @@ strings like \"guile-next=stable-3.0\" meaning that packages are built using
           (rewrite obj)
           obj))))
 
+(define (commit->version-string commit)
+  "Return a string suitable for use in the 'version' field of a package based
+on the given COMMIT."
+  (cond ((and (> (string-length commit) 1)
+              (string-prefix? "v" commit)
+              (char-set-contains? char-set:digit
+                                  (string-ref commit 1)))
+         ;; Probably a tag like "v1.0" or a 'git describe' identifier.
+         (string-drop commit 1))
+        ((not (string-every char-set:hex-digit commit))
+         ;; Pass through tags and 'git describe' style IDs directly.
+         commit)
+        (else
+         (string-append "git."
+                        (if (< (string-length commit) 7)
+                            commit
+                            (string-take commit 7))))))
+
+
 (define (transform-package-source-commit replacement-specs)
   "Return a procedure that, when passed a package, replaces its direct
 dependencies according to REPLACEMENT-SPECS.  REPLACEMENT-SPECS is a list of
@@ -278,15 +298,7 @@ strings like \"guile-next=cabba9e\" meaning that packages are built using
   (define (replace old url commit)
     (package
       (inherit old)
-      (version (if (and (> (string-length commit) 1)
-                        (string-prefix? "v" commit)
-                        (char-set-contains? char-set:digit
-                                            (string-ref commit 1)))
-                   (string-drop commit 1)        ;looks like a tag like "v1.0"
-                   (string-append "git."
-                                  (if (< (string-length commit) 7)
-                                      commit
-                                      (string-take commit 7)))))
+      (version (commit->version-string commit))
       (source (git-checkout (url url) (commit commit)
                             (recursive? #t)))))
 
@@ -460,19 +472,46 @@ to the same package but with #:strip-binaries? #f in its 'arguments' field."
         (rewrite obj)
         obj)))
 
+(define (patched-source name source patches)
+  "Return a file-like object with the given NAME that applies PATCHES to
+SOURCE.  SOURCE must itself be a file-like object of any type, including
+<git-checkout>, <local-file>, etc."
+  (define patch
+    (module-ref (resolve-interface '(gnu packages base)) 'patch))
+
+  (computed-file name
+                 (with-imported-modules '((guix build utils))
+                   #~(begin
+                       (use-modules (guix build utils))
+
+                       (setenv "PATH" #+(file-append patch "/bin"))
+
+                       ;; XXX: Assume SOURCE is a directory.  This is true in
+                       ;; most practical cases, where it's a <git-checkout>.
+                       (copy-recursively #+source #$output)
+                       (chdir #$output)
+                       (for-each (lambda (patch)
+                                   (invoke "patch" "-p1" "--batch"
+                                           "-i" patch))
+                                 '(#+@patches))))))
+
 (define (transform-package-patches specs)
   "Return a procedure that, when passed a package, returns a package with
 additional patches."
   (define (package-with-extra-patches p patches)
-    (if (origin? (package-source p))
-        (package/inherit p
-          (source (origin
-                    (inherit (package-source p))
-                    (patches (append (map (lambda (file)
-                                            (local-file file))
-                                          patches)
-                                     (origin-patches (package-source p)))))))
-        p))
+    (let ((patches (map (lambda (file)
+                          (local-file file))
+                        patches)))
+      (if (origin? (package-source p))
+          (package/inherit p
+            (source (origin
+                      (inherit (package-source p))
+                      (patches (append patches
+                                       (origin-patches (package-source p)))))))
+          (package/inherit p
+            (source (patched-source (string-append (package-full-name p "-")
+                                                   "-source")
+                                    (package-source p) patches))))))
 
   (define (coalesce-alist alist)
     ;; Coalesce multiple occurrences of the same key in ALIST.
@@ -518,7 +557,7 @@ additional patches."
   "Return a procedure that rewrites package graphs such that those in SPECS
 are replaced by their latest upstream version."
   (define (package-with-latest-upstream p)
-    (let ((source (package-latest-release* p)))
+    (let ((source (package-latest-release p)))
       (cond ((not source)
              (warning
               (G_ "could not determine latest upstream release of '~a'~%")

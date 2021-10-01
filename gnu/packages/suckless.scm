@@ -7,7 +7,8 @@
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,140 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages))
+
+(define-public slscroll
+  (package
+    (name "slscroll")
+    (version "0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dl.suckless.org/tools/scroll-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1mpfrvn122lnaqid1pi99ckpxd6x679b0w91pl003xmdwsfdbcly"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no check target
+       #:make-flags
+       (list
+        (string-append "CC=" ,(cc-for-target))
+        (string-append "PREFIX=" %output))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))         ; no configure script
+    (home-page "https://tools.suckless.org/scroll/")
+    (synopsis "Scroll-back buffer program for st")
+    (description "Scroll is a program that provides a scroll back buffer for
+terminal like @code{st}.")
+    (license license:isc)))
+
+(define-public tabbed
+  (package
+    (name "tabbed")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dl.suckless.org/tools/tabbed-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0hhwckyzvsj9aim2l6m69wmvl2n7gzd6b1ly8qjnlpgcrcxfllbn"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no check target
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "config.mk"
+               (("/usr/local")
+                (assoc-ref outputs "out"))
+               (("/usr/X11R6")
+                (assoc-ref inputs "libx11"))
+               (("/usr/include/freetype2")
+                (string-append (assoc-ref inputs "freetype")
+                               "/include/freetype2"))
+               (("CC = cc")
+                (string-append "CC = " ,(cc-for-target))))))
+         (delete 'configure))))         ; no configure script
+    (inputs
+     `(("fontconfig" ,fontconfig)
+       ("freetype" ,freetype)
+       ("libx11" ,libx11)
+       ("libxft" ,libxft)))
+    (home-page "https://tools.suckless.org/tabbed/")
+    (synopsis "Tab interface for application supporting Xembed")
+    (description "Tabbed is a generic tabbed frontend to xembed-aware
+applications.  It was originally designed for surf but also usable with many
+other applications, i.e. st, uzbl, urxvt and xterm.")
+    (license
+     ;; Dual-licensed.
+     (list
+      license:expat
+      license:x11))))
+
+(define-public slstatus
+  ;; No release tarballs yet.
+  (let ((commit "84a2f117a32f0796045941260cdc4b69852b41e0")
+        (revision "0"))
+    (package
+      (name "slstatus")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "git://git.suckless.org/slstatus.git")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "063a4fnvsjbc61alnbfdpxy0nwhh9ql9j6s9hkdv12713kv932ds"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ;no test suite
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (substitute* "config.mk"
+                 (("/usr/local") (assoc-ref outputs "out"))
+                 (("/usr/X11R6") (assoc-ref inputs "x11"))
+                 (("CC = cc") (string-append "CC = " ,(cc-for-target))))))
+           (delete 'configure))))       ;no configure script
+      (inputs
+       `(("x11" ,libx11)))
+      (home-page "https://tools.suckless.org/slstatus/")
+      (synopsis "Status monitor for window managers")
+      (description "SlStatus is a suckless status monitor for window managers
+that use WM_NAME or stdin to fill the status bar.
+It provides the following features:
+@itemize
+@item Battery percentage/state/time left
+@item CPU usage
+@item CPU frequency
+@item Custom shell commands
+@item Date and time
+@item Disk status (free storage, percentage, total storage and used storage)
+@item Available entropy
+@item Username/GID/UID
+@item Hostname
+@item IP address (IPv4 and IPv6)
+@item Kernel version
+@item Keyboard indicators
+@item Keymap
+@item Load average
+@item Network speeds (RX and TX)
+@item Number of files in a directory (hint: Maildir)
+@item Memory status (free memory, percentage, total memory and used memory)
+@item Swap status (free swap, percentage, total swap and used swap)
+@item Temperature
+@item Uptime
+@item Volume percentage
+@item WiFi signal percentage and ESSID
+@end itemize")
+      (license license:isc))))
 
 (define-public blind
   (package
@@ -270,15 +405,14 @@ drawing.")
 (define-public surf
   (package
     (name "surf")
-    (version "2.0")
+    (version "2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.suckless.org/surf/surf-"
                            version ".tar.gz"))
        (sha256
-        (base32
-         "07cmajyafljigy10d21kkyvv5jf3hxkx06pz3rwwk3y3c9x4rvps"))))
+        (base32 "0mrj0kp01bwrgrn4v298g81h6zyq64ijsg790di68nm21f985rbj"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -297,6 +431,7 @@ drawing.")
              #t)))))
     (inputs
      `(("dmenu" ,dmenu)
+       ("gcr" ,gcr)
        ("glib-networking" ,glib-networking)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("webkitgtk" ,webkitgtk)

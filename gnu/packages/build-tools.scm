@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
-;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -218,8 +218,7 @@ programs and other files depend.")
                     (add-before 'configure 'set-build-environment
                       (lambda _
                         (setenv "CC" "gcc") (setenv "CXX" "g++")
-                        (setenv "AR" "ar")
-                        #t))
+                        (setenv "AR" "ar")))
                     (replace 'configure
                       (lambda _
                         (invoke "python" "build/gen.py"
@@ -234,16 +233,15 @@ programs and other files depend.")
                                     (string-append
                                      "#define LAST_COMMIT_POSITION_NUM ~a\n"
                                      "#define LAST_COMMIT_POSITION \"~a (~a)\"\n")
-                                    ,revision ,revision ,(string-take commit 8))
-                            #t))))
+                                    ,revision ,revision ,(string-take commit 8))))))
                     (replace 'build
                       (lambda _
                         (invoke "ninja" "-C" "out" "gn"
                                 "-j" (number->string (parallel-job-count)))))
                     (replace 'check
-                      (lambda* (#:key (tests? #t) #:allow-other-keys)
+                      (lambda* (#:key tests? #:allow-other-keys)
                         (if tests?
-                            (lambda ()
+                            (begin
                               (invoke "ninja" "-C" "out" "gn_unittests"
                                       "-j" (number->string (parallel-job-count)))
                               (invoke "./out/gn_unittests"))
@@ -251,11 +249,10 @@ programs and other files depend.")
                     (replace 'install
                       (lambda* (#:key outputs #:allow-other-keys)
                         (let ((out (assoc-ref outputs "out")))
-                          (install-file "out/gn" (string-append out "/bin"))
-                          #t))))))
+                          (install-file "out/gn" (string-append out "/bin"))))))))
       (native-inputs
        `(("ninja" ,ninja)
-         ("python" ,python-2)))
+         ("python" ,python-wrapper)))
       (synopsis "Generate Ninja build files")
       (description
        "GN is a tool that collects information about a project from @file{.gn}

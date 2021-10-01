@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,7 +61,7 @@ Import and convert the RubyGems package for PACKAGE-NAME.\n"))
                    (exit 0)))
          (option '(#\V "version") #f #f
                  (lambda args
-                   (show-version-and-exit "guix import pypi")))
+                   (show-version-and-exit "guix import gem")))
          (option '(#\r "recursive") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'recursive #t result)))
@@ -73,12 +75,8 @@ Import and convert the RubyGems package for PACKAGE-NAME.\n"))
 (define (guix-import-gem . args)
   (define (parse-options)
     ;; Return the alist of option values.
-    (args-fold* args %options
-                (lambda (opt name arg result)
-                  (leave (G_ "~A: unrecognized option~%") name))
-                (lambda (arg result)
-                  (alist-cons 'argument arg result))
-                %default-options))
+    (parse-command-line args %options (list %default-options)
+                        #:build-options? #f))
 
   (let* ((opts (parse-options))
          (args (filter-map (match-lambda

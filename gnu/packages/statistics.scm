@@ -12,6 +12,8 @@
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2018 Alex Branham <alex.branham@gmail.com>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
+;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +38,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system r)
   #:use-module (guix build-system python)
@@ -59,6 +62,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
@@ -78,11 +82,13 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match))
 
 
 (define-public pspp
@@ -184,7 +190,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.0.4")
+    (version "4.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -192,7 +198,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0bl098xcv8v316kqnf43v6gb4kcsv31ydqfm1f7qr824jzb2fgsj"))))
+                "0r6kpnxjbvb7gdfg4m1z8zc6xd225vw81wrnf05ps9ajawk06pji"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -211,12 +217,15 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
              (substitute* "src/library/base/makebasedb.R"
                (("compress = TRUE") "compress = FALSE"))
              #t))
-         (add-before 'configure 'patch-uname
+         (add-before 'configure 'patch-coreutils-paths
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((uname-bin (string-append (assoc-ref inputs "coreutils")
-                                             "/bin/uname")))
+             (let* ((coreutils (assoc-ref inputs "coreutils"))
+                   (uname-bin (string-append coreutils "/bin/uname"))
+                   (rm-bin (string-append coreutils "/bin/rm")))
                (substitute* "src/scripts/R.sh.in"
-                 (("uname") uname-bin)))
+                 (("uname") uname-bin))
+               (substitute* "src/unix/sys-std.c"
+                 (("rm -Rf ") (string-append rm-bin " -Rf "))))
              #t))
          (add-after 'unpack 'build-reproducibly
            (lambda _
@@ -339,7 +348,7 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
        ("texlive" ,(texlive-union (list texlive-ae
                                         texlive-inconsolata
                                         texlive-fonts-ec
-                                        texlive-amsfonts
+                                        texlive-amsfonts/patched
                                         texlive-latex-base
                                         texlive-latex-fancyvrb
                                         texlive-latex-graphics
@@ -416,14 +425,14 @@ available, greatly increasing its breadth and scope.")
 (define-public r-boot
   (package
     (name "r-boot")
-    (version "1.3-27")
+    (version "1.3-28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "boot" version))
        (sha256
         (base32
-         "1v9anpxj4p83kd40gyfy8a454b2jmn11incrzym7wdvh8mdxpcil"))))
+         "0cjafhqv1c1mrjjcasqr767vs96wjcc6am9r1icryr8l4zymhwcz"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/boot")
     (synopsis "Bootstrap functions for R")
@@ -437,14 +446,14 @@ D.V. Hinkley (1997, CUP), originally written by Angelo Canty for S.")
 (define-public r-mass
   (package
     (name "r-mass")
-    (version "7.3-53.1")
+    (version "7.3-54")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MASS" version))
        (sha256
         (base32
-         "0ra46441y4iwcpd8px7j7vcjfj09fawl5khilaivjbg3gswiwnz4"))))
+         "08g8ashbcas3ac98kxvchbwc8da9dq9anpngb4arnw62npawq05q"))))
     (properties `((upstream-name . "MASS")))
     (build-system r-build-system)
     (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
@@ -458,14 +467,14 @@ Applied Statistics with S\" (4th edition, 2002) by Venables and Ripley.")
 (define-public r-class
   (package
     (name "r-class")
-    (version "7.3-18")
+    (version "7.3-19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "class" version))
        (sha256
         (base32
-         "148k47k354k6wygpmwg79p2jwni0glpi6z7q8n0lp2w9d8p75fnj"))))
+         "0dxyxk59fs90713qisanlvk4p0d3l8n8n7zdd4d5c290naaaw83q"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-mass" ,r-mass)))
@@ -480,14 +489,14 @@ k-nearest neighbour, Learning Vector Quantization and Self-Organizing Maps.")
 (define-public r-cluster
   (package
     (name "r-cluster")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cluster" version))
        (sha256
         (base32
-         "0qw06n1f7771mszc9y1f1c9zngd82zlf2s2z30p9514vxh4wgf5x"))))
+         "168l653ygkg21fwrqrf7lsqi5p6jzhgmcvhrwv7lznkdzdhag2jw"))))
     (build-system r-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)))
@@ -541,14 +550,14 @@ for reading and writing some dBase files.")
 (define-public r-kernsmooth
   (package
     (name "r-kernsmooth")
-    (version "2.23-18")
+    (version "2.23-20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "KernSmooth" version))
        (sha256
         (base32
-         "14640ddvxmczd5xjg1xsd51gll2glfg946vks8wmac6jb8680d43"))))
+         "0fgclmzk3ksjsh3j47jqzm3jhqrwn12rkp7f84yr6wr43q2pbsr0"))))
     (properties `((upstream-name . "KernSmooth")))
     (build-system r-build-system)
     (native-inputs
@@ -565,13 +574,13 @@ estimation) corresponding to the book: Wand, M.P. and Jones, M.C. (1995)
 (define-public r-lattice
   (package
     (name "r-lattice")
-    (version "0.20-41")
+    (version "0.20-45")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lattice" version))
               (sha256
                (base32
-                "1dapkmh4jlb9sxfrpvapvlfhczl4s8p3r20bn47gcgdk1izmbjjl"))))
+                "1b87fmyjzbg854vpi03my1p25n3d0bchhwsdm2frblxppn98sf12"))))
     (build-system r-build-system)
     (home-page "http://lattice.r-forge.r-project.org/")
     (synopsis "High-level data visualization system")
@@ -585,14 +594,14 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-matrix
   (package
     (name "r-matrix")
-    (version "1.3-2")
+    (version "1.3-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Matrix" version))
        (sha256
         (base32
-         "0ccmmfd0lbvrhzjzr28k4yfawiywa1m4ics34zyi3rqq23csa2wm"))))
+         "0fbcbysp3vaivmp1yasmp8mdsldhr826vfs4vyxrjpjl8jfifhmb"))))
     (properties `((upstream-name . "Matrix")))
     (build-system r-build-system)
     (propagated-inputs
@@ -607,13 +616,13 @@ and operations on them using LAPACK and SuiteSparse.")
 (define-public r-nlme
   (package
     (name "r-nlme")
-    (version "3.1-152")
+    (version "3.1-153")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nlme" version))
        (sha256
-        (base32 "0pji9vvmjqyk8b7lhxsixnagsrz2hmnwy6ilc2gg5ji1y6qx2rav"))))
+        (base32 "1qw0sq64iybyidj0s8m76z4i1gxb1fn27s29i63fw5hvvy7aj9rx"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-lattice" ,r-lattice)))
@@ -629,13 +638,13 @@ nonlinear mixed-effects models.")
 (define-public r-mgcv
   (package
    (name "r-mgcv")
-   (version "1.8-34")
+   (version "1.8-37")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "mgcv" version))
      (sha256
-      (base32 "1pkky9xb3wsinqd75gkfbgw270vx8zh52id6bf1xj9njnzrkmc8m"))))
+      (base32 "14gw714xcyvgrbajijmyd4v8zs84i701g7gyld6z8p7677dgc8w8"))))
    (build-system r-build-system)
    (propagated-inputs
     `(("r-matrix" ,r-matrix)
@@ -652,14 +661,14 @@ distributions beyond the exponential family.")
 (define-public r-nnet
   (package
     (name "r-nnet")
-    (version "7.3-15")
+    (version "7.3-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nnet" version))
        (sha256
         (base32
-         "068yxmx165r9gk4s267iczrzwbwbbg3a8qi0cgncqn78892yvsdc"))))
+         "0smmyx4vhlz99vy4w238y913gq74845v0l1p0g1kgydsp9lijlcr"))))
     (build-system r-build-system)
     (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
     (synopsis "Feed-forward neural networks and multinomial log-linear models")
@@ -690,14 +699,14 @@ classification, regression and survival trees.")
 (define-public r-spatial
   (package
     (name "r-spatial")
-    (version "7.3-13")
+    (version "7.3-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatial" version))
        (sha256
         (base32
-         "0ciqa8y2gd1gb2yzmmn4ga6z9b00fjf49bd5qn8wmxwm2fs36w64"))))
+         "0dlafq744mahxpb13llmsrg54fzww8ld1nbxmr7m851gff11kk2j"))))
     (build-system r-build-system)
     (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
     (synopsis "Functions for kriging and point pattern analysis")
@@ -710,14 +719,14 @@ analysis.")
 (define-public r-survival
   (package
     (name "r-survival")
-    (version "3.2-10")
+    (version "3.2-13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survival" version))
        (sha256
         (base32
-         "19fg7mrrr6chbixq10kwwl5clry2y57v6zl24jlmxx2ylis0vjzd"))))
+         "0zrikancm9shixvgng89f1610sphlwljczi0fnjbdqn4l85rrarz"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-matrix" ,r-matrix)))
@@ -823,13 +832,13 @@ effects of different types of color-blindness.")
 (define-public r-digest
   (package
     (name "r-digest")
-    (version "0.6.27")
+    (version "0.6.28")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "digest" version))
        (sha256
-        (base32 "0gr503pinailfglpfbzxprqw7w1jla8jr9nl856a4zch498zg1gl"))))
+        (base32 "006vqwfrry84xn51lxlfalzn9yqr1k81s39r0zy251azx5sqqcja"))))
     (build-system r-build-system)
     ;; Vignettes require r-knitr, which requires r-digest, so we have to
     ;; disable them and the tests.
@@ -1038,14 +1047,14 @@ solution for sending email, including attachments, from within R.")
 (define-public r-stringi
   (package
     (name "r-stringi")
-    (version "1.5.3")
+    (version "1.7.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringi" version))
        (sha256
         (base32
-         "0420f7zn5knyyvd3a3xa7059l4kadw0m67rfpivacqn9xn6iwkr2"))))
+         "1mda4612sc573zabsvygnla3vpnf3mql58fc9j450540h6hlwfv2"))))
     (build-system r-build-system)
     (inputs `(("icu4c" ,icu4c)))
     (native-inputs `(("pkg-config" ,pkg-config)))
@@ -1111,13 +1120,13 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.3.3")
+    (version "3.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "1k136k1sr6dq1xvx6gs6gzji6hbnnwnsb5qivsxrblfv90irxhj5"))))
+        (base32 "1si46bf9p09qzs208hqffwcb40305p361whmwhc1pwrsmx7jjxdh"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-digest" ,r-digest)
@@ -1329,13 +1338,13 @@ adapted for other output formats, such as HTML or LaTeX.")
 (define-public r-formatr
   (package
     (name "r-formatr")
-    (version "1.8")
+    (version "1.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "formatR" version))
               (sha256
                (base32
-                "04q6y53ji7ll131khbwiz584wl8sinhh3z82p6r8dqa9f618ay6z"))))
+                "0353aj975mj0yjc91z76bbfy86y7d5cvlqqyfr93cdng14nnd0dx"))))
     (build-system r-build-system)
     (native-inputs
      `(("r-knitr" ,r-knitr)))
@@ -1351,14 +1360,21 @@ There is also a Shiny app as a user interface in this package.")
 (define-public r-highr
   (package
     (name "r-highr")
-    (version "0.8")
+    (version "0.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "highr" version))
               (sha256
                (base32
-                "0my6idnhmmgs4q1vs40y2lh56yij2p59mpwvm53wjs2zk6x1zl2b"))))
+                "0kgdv2vf1lz3b5kbal9s83gg6812nw7fvrq0rkyr0v4k1lwi3zxy"))))
     (build-system r-build-system)
+    (propagated-inputs
+     `(("r-xfun" ,r-xfun)))
+    ;; We cannot add knitr to the inputs, because highr depends on xfun, which
+    ;; is an input to knitr.
+    #;
+    (native-inputs
+     `(("r-knitr" ,r-knitr)))
     (home-page "https://github.com/yihui/highr")
     (synopsis "Syntax highlighting for R source code")
     (description
@@ -1370,13 +1386,13 @@ supported via Andre Simon's highlight package.")
 (define-public r-mime
   (package
     (name "r-mime")
-    (version "0.10")
+    (version "0.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mime" version))
               (sha256
                (base32
-                "1xz37fizlx4w3g8kbim7vr5slqd6cmaq5sa0s4q7ayl1bahk6ckq"))))
+                "1h7fz0rqnp970r9q0d95qcxpxm9mb98rqhcdncx0w2qdkyj2fm11"))))
     (build-system r-build-system)
     (home-page "https://github.com/yihui/mime")
     (synopsis "R package to map filenames to MIME types")
@@ -1433,18 +1449,17 @@ emitter (http://pyyaml.org/wiki/LibYAML) for R.")
 (define-public r-knitr
   (package
     (name "r-knitr")
-    (version "1.31")
+    (version "1.34")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "knitr" version))
               (sha256
                (base32
-                "1s87py0km76l72lbwx714cn5903lsdxs237k35p26d5bmyvqv39c"))))
+                "0p6jdicyqknrqilcjm2h4r6vza5lpzccnsdirj92jb3ljg10b0by"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-evaluate" ,r-evaluate)
        ("r-highr" ,r-highr)
-       ("r-markdown" ,r-markdown)
        ("r-stringr" ,r-stringr)
        ("r-xfun" ,r-xfun)
        ("r-yaml" ,r-yaml)))
@@ -1503,19 +1518,19 @@ the execution time of R expressions.")
 (define-public r-pryr
   (package
     (name "r-pryr")
-    (version "0.1.4")
+    (version "0.1.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "pryr" version))
               (sha256
                (base32
-                "06vj5xl9x37kbd3l5bw7sbgfdnp37spvrjrn976rxi04clqk966k"))))
+                "02vp1y7zhv22id43j5c0gdcgn9171dyypqp8rqrlc3w5a7n565kv"))))
     (build-system r-build-system)
     (propagated-inputs
-     `(("r-stringr" ,r-stringr)
-       ("r-codetools" ,r-codetools)))
-    (native-inputs
-     `(("r-rcpp" ,r-rcpp)))
+     `(("r-codetools" ,r-codetools)
+       ("r-lobstr" ,r-lobstr)
+       ("r-rcpp" ,r-rcpp)
+       ("r-stringr" ,r-stringr)))
     (home-page "https://github.com/hadley/pryr")
     (synopsis "Tools for computing on the R language")
     (description
@@ -1587,13 +1602,13 @@ R packages that praise their users.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.0.2")
+    (version "3.0.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "03sbk36vrjhzfap6a9czxw93r7h06rh3mb01inbrhrh5r2pd00qq"))))
+                "0iqizv2gpv9fg766qv8hbkmc6c5i9xcfrmq9k5m2550p28zff2w3"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-brio" ,r-brio)
@@ -1627,13 +1642,13 @@ flexible and easy to set up.")
 (define-public r-r6
   (package
     (name "r-r6")
-    (version "2.5.0")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R6" version))
               (sha256
                (base32
-                "00ifi2kwa7kn67xf0z1w6jfdicjczygbyi5mhfw2qlzc4sbazhdf"))))
+                "0j5z0b0myzjyyykk310xsa9n2mcm9bz8yqbq4xgz2yzdq8lvv4ld"))))
     (build-system r-build-system)
     (home-page "https://github.com/wch/R6/")
     (synopsis "Classes with reference semantics in R")
@@ -1649,13 +1664,13 @@ defined in different packages.")
 (define-public r-rlang
   (package
     (name "r-rlang")
-    (version "0.4.10")
+    (version "0.4.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlang" version))
               (sha256
                (base32
-                "0ximv89f6zymnwms121k1jfvvflrdm3pmmf5xyvz56f1qiq04lq7"))))
+                "1pfm24jjkxzdb5qcbc05dcjxyk69zpfr5jv4xakqh1xh41mr43kl"))))
     (build-system r-build-system)
     (home-page "http://rlang.tidyverse.org")
     (synopsis "Functions for base types, core R and Tidyverse features")
@@ -1667,14 +1682,14 @@ like tidy evaluation.")
 (define-public r-tibble
   (package
     (name "r-tibble")
-    (version "3.1.0")
+    (version "3.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tibble" version))
        (sha256
         (base32
-         "0khmypf49la8n5gx72n7gr6dl6r6ja404i578g6sg0ail3g2i7lm"))))
+         "0zqpg2haph0qi1x5r6wr083xckab9gw21jbr9spcr8xdf43hx1vk"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-ellipsis" ,r-ellipsis)
@@ -1697,13 +1712,13 @@ and printing capabilities than traditional data frames.")
 (define-public r-dplyr
   (package
     (name "r-dplyr")
-    (version "1.0.5")
+    (version "1.0.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "dplyr" version))
               (sha256
                (base32
-                "0w3fr6sn0mw5mjs27669czpc8vpjj6ayrjavw8v0gd7ccsfa0hbm"))))
+                "0g8jsxclj9cgm7a2lyazy78sj62rbzw812lsw3fdsbz0pknkmznj"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-ellipsis" ,r-ellipsis)
@@ -1711,6 +1726,7 @@ and printing capabilities than traditional data frames.")
        ("r-glue" ,r-glue)
        ("r-lifecycle" ,r-lifecycle)
        ("r-magrittr" ,r-magrittr)
+       ("r-pillar" ,r-pillar)
        ("r-r6" ,r-r6)
        ("r-rlang" ,r-rlang)
        ("r-tibble" ,r-tibble)
@@ -2014,19 +2030,18 @@ chain.")
 (define-public r-ade4
   (package
     (name "r-ade4")
-    (version "1.7-16")
+    (version "1.7-18")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "ade4" version))
         (sha256
           (base32
-            "142m70im8yd4q01q7z02y3ia0f66yh4ikdznv0ps6c7yyigs5mwv"))))
+            "09f5kh2mwygqpnvf53k0r54k0cvaafxm9x4nm819gwv05k2g9dpc"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-mass" ,r-mass)
        ("r-pixmap" ,r-pixmap)
-       ("r-progress" ,r-progress)
        ("r-sp" ,r-sp)))
     (home-page "http://pbil.univ-lyon1.fr/ADE-4")
     (synopsis "Multivariate data analysis and graphical display")
@@ -2089,13 +2104,13 @@ jackknifed confidence intervals are available for most estimates.")
 (define-public r-rversions
   (package
     (name "r-rversions")
-    (version "2.0.2")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rversions" version))
               (sha256
                (base32
-                "0ghpla5r3d6zh5dn6d6ii5p0a952lcdv004m88fk8r9k76vz88rm"))))
+                "1cbwwbz8lqx2n33xr4q904whvld22s63rpyy1nn93395l7ssrakr"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-curl" ,r-curl)
@@ -2316,24 +2331,24 @@ tables, autolinks and strikethrough text.")
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
-    (version "7.1.1")
+    (version "7.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roxygen2" version))
               (sha256
                (base32
-                "0qc8akwfwmaqsjaza87f5fi0zk6sh3l6j3assbs6chvx0gnmvidx"))))
+                "1zf55wywlpy7mk7zfyi3s9fhhg1m9kvafzj46iqw5cbvnlg3ssdk"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-brew" ,r-brew)
        ("r-commonmark" ,r-commonmark)
+       ("r-cpp11" ,r-cpp11)
        ("r-desc" ,r-desc)
        ("r-digest" ,r-digest)
        ("r-knitr" ,r-knitr)
        ("r-pkgload" ,r-pkgload)
        ("r-purrr" ,r-purrr)
        ("r-r6" ,r-r6)
-       ("r-rcpp" ,r-rcpp)
        ("r-rlang" ,r-rlang)
        ("r-stringi" ,r-stringi)
        ("r-stringr" ,r-stringr)
@@ -2350,14 +2365,14 @@ collation, and NAMESPACE files.")
 (define-public r-openssl
   (package
     (name "r-openssl")
-    (version "1.4.3")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openssl" version))
        (sha256
         (base32
-         "0sc2skh1nz7jj65p0pq4a6bl8jza6lyi4zvmvwndzxfgivgh281l"))))
+         "1xy1w0rljzsgvsg91fh9hs6h9rx58mza1vg6rig9ykp9m2ml3hag"))))
     (build-system r-build-system)
     (inputs
      `(("libressl" ,libressl)))
@@ -2456,23 +2471,22 @@ informative error messages when it's not available.")
 (define-public r-devtools
   (package
     (name "r-devtools")
-    (version "2.3.2")
+    (version "2.4.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "devtools" version))
               (sha256
                (base32
-                "0vcqs4c5dfjs2ddkclv3z7zzix2zrnrxvzax8hjvjszgp8362275"))))
+                "01cg2ykg0av6z7bgl41njcxcii8vjj8ipch26xazp4yjai8abw3i"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-callr" ,r-callr)
        ("r-cli" ,r-cli)
-       ("r-covr" ,r-covr)
        ("r-desc" ,r-desc)
-       ("r-dt" ,r-dt)
        ("r-ellipsis" ,r-ellipsis)
+       ("r-fs" ,r-fs)
        ("r-httr" ,r-httr)
-       ("r-jsonlite" ,r-jsonlite)
+       ("r-lifecycle" ,r-lifecycle)
        ("r-memoise" ,r-memoise)
        ("r-pkgbuild" ,r-pkgbuild)
        ("r-pkgload" ,r-pkgload)
@@ -2497,13 +2511,13 @@ tools to simplify the devolpment of R packages.")
 (define-public r-withr
   (package
     (name "r-withr")
-    (version "2.4.1")
+    (version "2.4.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "withr" version))
               (sha256
                (base32
-                "13qpcx7vjnqchvbbdwiqw286gkiajp02pcvhn7w7ddjiil2xjpjz"))))
+                "1j5srffi748yxphwli56lkbh4cga0kmz38dyzganzkw0nx66mya8"))))
     (build-system r-build-system)
     (native-inputs
      `(("r-knitr" ,r-knitr)))
@@ -2518,14 +2532,14 @@ were originally a part of the r-devtools package.")
 (define-public r-hms
   (package
     (name "r-hms")
-    (version "1.0.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hms" version))
        (sha256
         (base32
-         "0qn9lvpkqrpxck88nf0zbff43vd7d6s1ibg58qfr3w14sw1yj14p"))))
+         "0qlh4s1g9rbm6c3s906dhw3xsz28m8fg6cyynlkhvis533dk0pvb"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-ellipsis" ,r-ellipsis)
@@ -2543,13 +2557,13 @@ time-of-day values, based on the @code{difftime} class.")
 (define-public r-readr
   (package
     (name "r-readr")
-    (version "1.4.0")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "readr" version))
               (sha256
                (base32
-                "1fa67h4l9d30ig460xizgzl115i9pm3bk9dvsbrw6awbmf51ic82"))))
+                "0cj5k3ykkhixgdsqm1gnmpc0d8z04l3fhvm2dr5xp7cpmhgsrpfr"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-cli" ,r-cli)
@@ -2561,7 +2575,8 @@ time-of-day values, based on the @code{difftime} class.")
        ("r-tibble" ,r-tibble)
        ("r-r6" ,r-r6)
        ("r-rlang" ,r-rlang)
-       ("r-bh" ,r-bh)))
+       ("r-tzdb" ,r-tzdb)
+       ("r-vroom" ,r-vroom)))
     (native-inputs
      `(("r-knitr" ,r-knitr)))
     (home-page "https://github.com/hadley/readr")
@@ -2574,13 +2589,13 @@ disk (or a connection).")
 (define-public r-plotrix
   (package
     (name "r-plotrix")
-    (version "3.8-1")
+    (version "3.8-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotrix" version))
               (sha256
                (base32
-                "0pxfaalwwmnpv19nff0cg6b871m6gjhhmx63fpxm7730z75qh663"))))
+                "07xwq3505qb2yak7pfda22yqwifj6m78f8b5rm0ym74808qrawmv"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/plotrix")
     (synopsis "Various plotting functions")
@@ -2635,13 +2650,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "0.10.2.2.0")
+    (version "0.10.6.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "193smj6vp3cn3qjhrx2llgi5c7hs069crhvi85xj2vzx80fx6r9q"))))
+                "1bcx8fk5l5mmwb6cw36ndvld9v3amkz6vyc19059dw0xp7mxx04v"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -2663,13 +2678,13 @@ the header files from the templated Armadillo library.")
 (define-public r-bitops
   (package
     (name "r-bitops")
-    (version "1.0-6")
+    (version "1.0-7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bitops" version))
               (sha256
                (base32
-                "176nr5wpnkavn5z0yy9f7d47l37ndnn2w3gv854xav8nnybi6wwv"))))
+                "1i0phmq5yynla5x0frqll1gbf5ww59p3sgz1s06a354zqf9grdg9"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/bitops")
     (synopsis "Bitwise operations")
@@ -2727,18 +2742,19 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.7")
+    (version "2.11")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "0shj637qhpcf30il3lhl3k5bxi5l3x3gf612hbqlakp1qrgrf8lm"))))
+          (base32 "0xcpg9d009a71p5i6jczw02qcp907p5d52lp6vclrsp7019jawck"))))
     (properties `((upstream-name . "rmarkdown")))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-evaluate" ,r-evaluate)
        ("r-htmltools" ,r-htmltools)
+       ("r-jquerylib" ,r-jquerylib)
        ("r-jsonlite" ,r-jsonlite)
        ("r-knitr" ,r-knitr)
        ("r-stringr" ,r-stringr)
@@ -2820,13 +2836,13 @@ that package, other packages are unaffected.")
 (define-public r-blob
   (package
     (name "r-blob")
-    (version "1.2.1")
+    (version "1.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "blob" version))
               (sha256
                (base32
-                "1slb5mvxfyi92i8ifx2qa31hp57inilwhq1g9lzvgha6jrxbqm7g"))))
+                "1yn7f13icaix0apxp4drnciwdn8bx8xmbd129jd7ck4rcly0axj9"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-rlang" ,r-rlang)
@@ -2842,18 +2858,17 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.2.5")
+    (version "2.2.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "14cxqh8j5v2rqs6yiargy1miycvx7xj47lppvpnnchi5plimlvyy"))))
+                "1hscgi11px9hq0sx78c2lkfzq121rlvmhxmqf305xg6lgqdxr2hv"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-dbi" ,r-dbi)
-       ("r-bh" ,r-bh)
        ("r-memoise" ,r-memoise)
        ("r-plogr" ,r-plogr)
        ("r-rcpp" ,r-rcpp)
@@ -2916,13 +2931,13 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 (define-public r-xml
   (package
     (name "r-xml")
-    (version "3.99-0.6")
+    (version "3.99-0.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "XML" version))
               (sha256
                (base32
-                "0qibvacbfm7gl41ylway3vdyi1qbpa211d48rg3k5i30d48rbf58"))))
+                "0l3bsgqw4bicv3sl2bfag7p4rh1y2pcyg0ajr73kkbg85qf6j7q8"))))
     (properties
      `((upstream-name . "XML")))
     (build-system r-build-system)
@@ -3039,14 +3054,14 @@ statements.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "1.3-3")
+    (version "1.3-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "16036lp0dq7qqzy8wc4qsgv58zksz6hmgw51v88gl6xclryc670y"))))
+         "0bchqcy308kbywavgyg9kb4543rbkfn753q9c6d7l7aw7sxvyxl2"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/segmented")
     (synopsis "Regression models with breakpoints estimation")
@@ -3197,43 +3212,400 @@ using the multicore functionality of the parallel package.")
     (license license:gpl2+)))
 
 (define-public r-dt
-  (package
-    (name "r-dt")
-    (version "0.17")
-    (source (origin
-              (method url-fetch)
-              (uri (cran-uri "DT" version))
-              (sha256
-               (base32
-                "0mpvyfmi2viyhdqx11hznd7dl0q6kxrdmppjsmm2pk0x8a904hz3"))))
-    (properties
-     `((upstream-name . "DT")))
-    (build-system r-build-system)
-    (propagated-inputs
-     `(("r-crosstalk" ,r-crosstalk)
-       ("r-htmltools" ,r-htmltools)
-       ("r-htmlwidgets" ,r-htmlwidgets)
-       ("r-jsonlite" ,r-jsonlite)
-       ("r-magrittr" ,r-magrittr)
-       ("r-promises" ,r-promises)))
-    (native-inputs
-     `(("r-knitr" ,r-knitr)))
-    (home-page "https://rstudio.github.io/DT")
-    (synopsis "R wrapper of the DataTables JavaScript library")
-    (description
-     "This package allows for data objects in R to be rendered as HTML tables
+  (let ((javascript-sources
+         '(("https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"
+            "03ln7ys1q1hy3xpsrjxnjpg9hq3lfpqz0firrxsgjzj8fsw20is3"
+            "datatables")
+           ("https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.js"
+            "16clrnxm7axn6cdimyf3qbskxg10gpn9ld5ls2xdfw5q1qf2i4ml"
+            "datatables")
+           ("https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.js"
+            "16v49zqxr1zil19bcx3wdnv95zdpiz2m979aazan7z04ymqb2rzb"
+            "datatables")
+           ("https://cdn.datatables.net/1.10.20/js/dataTables.foundation.js"
+            "1gpjm1pi2pl0hxsn0pg3s3f382y2s7nsr06866vxld6gb8054lld"
+            "datatables")
+           ("https://cdn.datatables.net/1.10.20/js/dataTables.jqueryui.js"
+            "0nxd8jph34vsk8k8whs2yiybrn6nsnwzhri0bxn2k1dzmcvpn24i"
+            "datatables")
+           ("https://cdn.datatables.net/1.10.20/js/dataTables.semanticui.js"
+            "1477f49xyxs4phias789mbspv23w8alxchhl5b5iy0aw6vd35c43"
+            "datatables")
+           
+           ("https://cdn.datatables.net/autofill/2.3.4/js/dataTables.autoFill.js"
+            "04i6n7r3512gzfihl5wnhrvm0klnjp41g1z6cny3j803hvmnp8zk"
+            "datatables-extensions/AutoFill")
+           ("https://cdn.datatables.net/autofill/2.3.4/js/autoFill.bootstrap.js"
+            "1zi7iiq63i5qx3p9cyynn6am4idxwj8xaz8mp4n3klm1x68sc0ja"
+            "datatables-extensions/AutoFill")
+           ("https://cdn.datatables.net/autofill/2.3.4/js/autoFill.bootstrap4.js"
+            "1vk2smcz14raf0cz88a65yf36a7mnmbml02q03apg2b8bqy91m7w"
+            "datatables-extensions/AutoFill")
+           ("https://cdn.datatables.net/autofill/2.3.4/js/autoFill.foundation.js"
+            "0sbcib1461pkglk69fzzqi73g4abylah74f264v0f79dc5247yzz"
+            "datatables-extensions/AutoFill")
+           ("https://cdn.datatables.net/autofill/2.3.4/js/autoFill.jqueryui.js"
+            "1dw9vbbchzbd2c7id8na2p1cxac2kgjbzjrvqafra715hr0i4z3z"
+            "datatables-extensions/AutoFill")
+           ("https://cdn.datatables.net/autofill/2.3.4/js/autoFill.semanticui.js"
+            "07ck81y6wpqchq8jfym6gjgc57xwj6vv9h5w9grc1gps6p7q9xnr"
+            "datatables-extensions/AutoFill")
+
+           ("https://cdn.datatables.net/buttons/1.6.1/js/dataTables.buttons.js"
+            "15l9kd9898zm8xf996d5c761rwl55k4w718k9k5fzz2gh91g21g5"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.js"
+            "1rqlv5pacipl652xgyzsdq1gbfwv52rwl4mr2fx9a3py21yskppk"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.flash.js"
+            "150r2ypxl017kl5agrn17cnyvwpf7x2x7vkqbc1qxif8vclf35kj"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.html5.js"
+            "1d8is99yrh95hycjijzbrbxy1anfslab6krmhj2xbwsmssyn16xh"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.print.js"
+            "1irgspv2zidv6v0ay92152d8cvhz2zyrwb71xk3nw903223vc2gl"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.semanticui.js"
+            "1p02r953ampxlzfzpay227ya6qdzsxz2anjxpnx3q8qs6gv6y2jl"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.foundation.js"
+            "0aykm1sk8rwvxp5r4qnvbb2scx2bln5kh88h36829mcqcdksfc50"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.jqueryui.js"
+            "1im6f6jw3yc3959rw1i3bghvz863kmp3wgfvz661r1r2wjzzfs4d"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.bootstrap.js"
+            "1mzmpabhrk0iag7hb16n8bhghx4cprq39p2vqn3v65mpklajzznc"
+            "datatables-extensions/Buttons")
+           ("https://cdn.datatables.net/buttons/1.6.1/js/buttons.bootstrap4.js"
+            "0hfclipg43wr9p7irrcn9vp5wji8z7gz6y5mclkq88z1mlpwklzf"
+            "datatables-extensions/Buttons")
+           ;; It is not clear what version the bundled file corresponds to.
+           ("https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.js"
+            "18hpj9vwgki56ijb20l5gwmqa5p1d0xprn57z2mlg3ph6ll0bdkd"
+            "datatables-extensions/Buttons")
+           ("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.js"
+            "1sfw80az2cgzin5wk7q1p2n9zm66c35cz0m6isdygml81i594wia"
+            "datatables-extensions/Buttons")
+           ("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"
+            "1k324s0hw4lfpd71bb1cnv4j5096k8smk64fjdsh81sl0ykizf2w"
+            "datatables-extensions/Buttons")
+
+           ("https://cdn.datatables.net/colreorder/1.5.2/js/dataTables.colReorder.js"
+            "1dalc28km19xzzszsa82hsd9alikrqpzjvf9vzxkccjpf7m2sdqg"
+            "datatables-extensions/ColReorder")
+           ("https://cdn.datatables.net/colreorder/1.5.2/js/colReorder.foundation.js"
+            "0nrddc8swkmsfzji518kh6ks55ykyk9p8r4x5fmf8ckr9fhjkh0s"
+            "datatables-extensions/ColReorder")
+           ("https://cdn.datatables.net/colreorder/1.5.2/js/colReorder.bootstrap.js"
+            "0crgmjwcn817yz6ibjkji6gsickvv2a4las9asyldfcpj2c99x84"
+            "datatables-extensions/ColReorder")
+           ("https://cdn.datatables.net/colreorder/1.5.2/js/colReorder.bootstrap4.js"
+            "065fhw4v2d9rp3ic9zfb1q5d7pfq4f2949rr24hdjbspf19m3ymd"
+            "datatables-extensions/ColReorder")
+           ("https://cdn.datatables.net/colreorder/1.5.2/js/colReorder.semanticui.js"
+            "17kw143ny0nq0yidsffw3cpghvlg2bzlzavfi0ihkamcn26ymxcp"
+            "datatables-extensions/ColReorder")
+           ("https://cdn.datatables.net/colreorder/1.5.2/js/colReorder.jqueryui.js"
+            "1rd8hijz3prg2y36fvqczrpdzixibjy2dxgs2fmgr8wrm8k01rrm"
+            "datatables-extensions/ColReorder")
+           
+           ("https://cdn.datatables.net/fixedcolumns/3.3.0/js/dataTables.fixedColumns.js"
+            "0vsqk2fv59n351bdfcbvhmvpq38qwf41j1cn810xz1l1i07cg4hg"
+            "datatables-extensions/FixedColumns")
+           ("https://cdn.datatables.net/fixedcolumns/3.3.0/js/fixedColumns.bootstrap.js"
+            "1j4wvg694l960gk5dg7wghwa3dpgq8mnrcgp78ghm92i08djb1wy"
+            "datatables-extensions/FixedColumns")
+           ("https://cdn.datatables.net/fixedcolumns/3.3.0/js/fixedColumns.bootstrap4.js"
+            "1p79k9bjslyvmp1bdhmg4nm2l9nbfsi4kgw7rx3vjka3n50qy730"
+            "datatables-extensions/FixedColumns")
+           ("https://cdn.datatables.net/fixedcolumns/3.3.0/js/fixedColumns.foundation.js"
+            "0f0xkrsapzgma58f6l63rpn68xid098dxwqqddsyddl0hy0x1z82"
+            "datatables-extensions/FixedColumns")
+           ("https://cdn.datatables.net/fixedcolumns/3.3.0/js/fixedColumns.jqueryui.js"
+            "0lw35c8vkajx75pg4ddik4gyzmjak1jaw3flq850frwgnzsvhahx"
+            "datatables-extensions/FixedColumns")
+           ("https://cdn.datatables.net/fixedcolumns/3.3.0/js/fixedColumns.semanticui.js"
+            "1kqsap9y0d25a7m5zjakipifl5qi2qr72kfj4ap3zxavd8md2wyn"
+            "datatables-extensions/FixedColumns")
+           
+           ("https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.js"
+            "1ml5ilnm8nirr6rsgmzn75l1k0hcjz3sqk6h1y1gy8cpwpklvqri"
+            "datatables-extensions/FixedHeader")
+           ("https://cdn.datatables.net/fixedheader/3.1.6/js/fixedHeader.bootstrap.js"
+            "1qf3pkb3svpia7g8bwyql7ma3x2g4zj5bp0d14pnv8xpc9h52r93"
+            "datatables-extensions/FixedHeader")
+           ("https://cdn.datatables.net/fixedheader/3.1.6/js/fixedHeader.bootstrap4.js"
+            "19jcvnk7zh4k6fd5si3b743x70qzlkqiw3m10jbc5jzbpz8sj6qd"
+            "datatables-extensions/FixedHeader")
+           ("https://cdn.datatables.net/fixedheader/3.1.6/js/fixedHeader.foundation.js"
+            "0xmpx1r76vykqygksyjaf4d1ql1fid69rqhvk4k857iybqz3gdcv"
+            "datatables-extensions/FixedHeader")
+           ("https://cdn.datatables.net/fixedheader/3.1.6/js/fixedHeader.jqueryui.js"
+            "1lc0g2cag1sj3bqmh7rh5z00pmfv1srxfhwi32y4mgpzhrzpfzxn"
+            "datatables-extensions/FixedHeader")
+           ("https://cdn.datatables.net/fixedheader/3.1.6/js/fixedHeader.semanticui.js"
+            "1v0i6dc68h8l8673fb5970igzkl7as36riv504iyg82glfi7n877"
+            "datatables-extensions/FixedHeader")
+           
+           ("https://cdn.datatables.net/keytable/2.5.1/js/dataTables.keyTable.js"
+            "16iib2icxsjh93x5hd42gpsl7bzpcsqb7zjgj0m1s02ls45bdlv5"
+            "datatables-extensions/KeyTable")
+           ("https://cdn.datatables.net/keytable/2.5.1/js/keyTable.bootstrap.js"
+            "0hnhk6am4yl6h6bb7as935k8h2syil9hf8g7nn409yd3ws736xpj"
+            "datatables-extensions/KeyTable")
+           ("https://cdn.datatables.net/keytable/2.5.1/js/keyTable.bootstrap4.js"
+            "0r85mp5yf9hgl5ayzzs46dfbxa231bjlvgb8lqpyzik1m6afa51i"
+            "datatables-extensions/KeyTable")
+           ("https://cdn.datatables.net/keytable/2.5.1/js/keyTable.foundation.js"
+            "11fr14p33lyvs0wfcx228m600i4qcaqb44q3hk723jxcz59k17dw"
+            "datatables-extensions/KeyTable")
+           ("https://cdn.datatables.net/keytable/2.5.1/js/keyTable.jqueryui.js"
+            "0572rxrvwyprdr8l5jkgacj2bkmhmgxjy5vybm65n54g9j19l6bc"
+            "datatables-extensions/KeyTable")
+           ("https://cdn.datatables.net/keytable/2.5.1/js/keyTable.semanticui.js"
+            "157mqn9mhmmf7vas2das4hbpwipk3wshs8n0808q04rbijr0g2bz"
+            "datatables-extensions/KeyTable")
+
+           ("https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.js"
+            "1jnsx4sqf7qjd1gz5ag9hn6n76cwwfms23rzw37lgbd6h54yqzwr"
+            "datatables-extensions/Responsive")
+           ("https://cdn.datatables.net/responsive/2.2.3/js/responsive.foundation.js"
+            "1vzzqpd9l8xv0am42g4cilx9igmq60mgk0hab4ssqvbicrmrgq9z"
+            "datatables-extensions/Responsive")
+           ("https://cdn.datatables.net/responsive/2.2.3/js/responsive.semanticui.js"
+            "1cjiwcf0d07482k08dhn5ffsizshw4hqgz5l58p03pq9g6wc9pvm"
+            "datatables-extensions/Responsive")
+           ("https://cdn.datatables.net/responsive/2.2.3/js/responsive.jqueryui.js"
+            "10nykak2kf4sai64girh26xdmdil29jvw3zja2rpp2qzjg4172z9"
+            "datatables-extensions/Responsive")
+           ("https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.js"
+            "1xxlh01vmzmfwwlsa611pl2nrl2sx58rp8xmx301bfsylmp2v5b2"
+            "datatables-extensions/Responsive")
+           ("https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.js"
+            "1zjh15p7n1038sggaxv1xvcwbkhw2nk1ndx745s6cxiqb69y3i0h"
+            "datatables-extensions/Responsive")
+           
+           ("https://cdn.datatables.net/rowgroup/1.1.1/js/dataTables.rowGroup.js"
+            "0s4q7ir2d6q36g29nn9mqk7vrqrdig2mm5zbcv0sn2lixqi29pkj"
+            "datatables-extensions/RowGroup")
+           ("https://cdn.datatables.net/rowgroup/1.1.1/js/rowGroup.bootstrap.js"
+            "1xfdhqgznz9x1v8spvql6b0wbna13h8cbzvkjza14nqsmccxck66"
+            "datatables-extensions/RowGroup")
+           ("https://cdn.datatables.net/rowgroup/1.1.1/js/rowGroup.bootstrap4.js"
+            "1xm53sda4fabwdaglngrj09bpiygkn9mm17grxbykn1jazqqdp62"
+            "datatables-extensions/RowGroup")
+           ("https://cdn.datatables.net/rowgroup/1.1.1/js/rowGroup.foundation.js"
+            "0832i10vils1wv1sm10qvsnd4i2k2xkhskz6i9y2q0axkmk73hcd"
+            "datatables-extensions/RowGroup")
+           ("https://cdn.datatables.net/rowgroup/1.1.1/js/rowGroup.jqueryui.js"
+            "0n53cd294s9mjblkykkqvd9n414bsc26wpcg5spxdscjl6hxh79p"
+            "datatables-extensions/RowGroup")
+           ("https://cdn.datatables.net/rowgroup/1.1.1/js/rowGroup.semanticui.js"
+            "010wls5nf387p21fdc2k952bxq89r5kxkv7j4wbvwf8k2a18cmc9"
+            "datatables-extensions/RowGroup")
+
+           ("https://cdn.datatables.net/rowreorder/1.2.6/js/dataTables.rowReorder.js"
+            "13ymbn3h9755pgb0gmlb9gl54vz9nqnz4mws7g6mlmz53r3sqhmj"
+            "datatables-extensions/RowReorder")
+           ("https://cdn.datatables.net/rowreorder/1.2.6/js/rowReorder.bootstrap.js"
+            "185if2pxgc940rm49hdgln57pc5h9cszlii3bfpdf3pdc1fjhckm"
+            "datatables-extensions/RowReorder")
+           ("https://cdn.datatables.net/rowreorder/1.2.6/js/rowReorder.bootstrap4.js"
+            "14129x4md57i4ff7j18m49jn5fw8r716np84cdrcawlydgjsxp4a"
+            "datatables-extensions/RowReorder")
+           ("https://cdn.datatables.net/rowreorder/1.2.6/js/rowReorder.foundation.js"
+            "0zg94jckymxzda2xjyj9p38y5v61cji55kak1ylq72l6a9sw8sg6"
+            "datatables-extensions/RowReorder")
+           ("https://cdn.datatables.net/rowreorder/1.2.6/js/rowReorder.jqueryui.js"
+            "08gm419xcixgqw0i5yv2mxyyvafhzviibifp6nv129vdxx0a5d8v"
+            "datatables-extensions/RowReorder")
+           ("https://cdn.datatables.net/rowreorder/1.2.6/js/rowReorder.semanticui.js"
+            "1zjrx2rlgw3qannsqa88pcp3i4pc87pwv7rmgfw1dar8namkr9kk"
+            "datatables-extensions/RowReorder")
+           
+           ("https://cdn.datatables.net/scroller/2.0.1/js/dataTables.scroller.js"
+            "0zfjjdvwwlsnps24i9l4c97hmway2qs6addks1is5bxl4k1r6d16"
+            "datatables-extensions/Scroller")
+           ("https://cdn.datatables.net/scroller/2.0.1/js/scroller.foundation.js"
+            "04bk6ink8wqay7655v93jvv86m3bn6asrsfb22i99rgxdvm8gn1z"
+            "datatables-extensions/Scroller")
+           ("https://cdn.datatables.net/scroller/2.0.1/js/scroller.bootstrap.js"
+            "19dl40dl8ir21xvs1j7xhm2a4py1m21xbypwn499fg2awj8vaidi"
+            "datatables-extensions/Scroller")
+           ("https://cdn.datatables.net/scroller/2.0.1/js/scroller.bootstrap4.js"
+            "0pbkgncijlafwdmyh4l65dabd18hzjh8r01cad3b9iy8cfif6iwd"
+            "datatables-extensions/Scroller")
+           ("https://cdn.datatables.net/scroller/2.0.1/js/scroller.jqueryui.js"
+            "1md5mpx5in7wzsr38yn801cmv3phm0i0ikdnpd0b1nsna5ccpj14"
+            "datatables-extensions/Scroller")
+           ("https://cdn.datatables.net/scroller/2.0.1/js/scroller.semanticui.js"
+            "1dfbblbzbryjgiv31qfdjnijz19lmyijg12win3y8gsgfd4fp9zz"
+            "datatables-extensions/Scroller")
+           
+           ("https://cdn.datatables.net/searchbuilder/1.0.0/js/dataTables.searchBuilder.js"
+            "0n5g0j0yfzqvdpsmwb27bj1rd8zx864fsx2k7b2kpv6mqqavzpqc"
+            "datatables-extensions/SearchBuilder")
+           ("https://cdn.datatables.net/searchbuilder/1.0.0/js/searchBuilder.bootstrap.js"
+            "1gnd8rjcg9c96xayshn9rwinzgmlwzddczjlpfmf2j33npmyka2y"
+            "datatables-extensions/SearchBuilder")
+           ("https://cdn.datatables.net/searchbuilder/1.0.0/js/searchBuilder.bootstrap4.js"
+            "0vdv5mi6zbp2dspmj0lw2vaqxvfadcydlmc6frqv4a68rms7wz05"
+            "datatables-extensions/SearchBuilder")
+           ("https://cdn.datatables.net/searchbuilder/1.0.0/js/searchBuilder.dataTables.js"
+            "0fbzfnaqswb2xq7m1vdzcg7l7qi0wmyz64ml6k4002kp0dm4xnlx"
+            "datatables-extensions/SearchBuilder")
+
+           ("https://cdn.datatables.net/searchpanes/1.1.1/js/dataTables.searchPanes.js"
+            "1s697avk42h24fsaq79d1kkw66dqig7xgpx9bvmhwncv8amkmz6i"
+            "datatables-extensions/SearchPanes")
+           ("https://cdn.datatables.net/searchpanes/1.1.1/js/searchPanes.bootstrap.js"
+            "0n3z4fdx1nsga4l5hmd4s93piv9k0v607xd7q9h2zpq613if7sld"
+            "datatables-extensions/SearchPanes")
+           ("https://cdn.datatables.net/searchpanes/1.1.1/js/searchPanes.bootstrap4.js"
+            "1i1arnvxp57z01wc207jxnw9h8clcish6l96c2gnmachgkaz8lqa"
+            "datatables-extensions/SearchPanes")
+           ("https://cdn.datatables.net/searchpanes/1.1.1/js/searchPanes.dataTables.js"
+            "04zzg7i46igcd6gfvdln5alpgjn7m663yf9bf2f3fk9va4fvis6y"
+            "datatables-extensions/SearchPanes")
+           ("https://cdn.datatables.net/searchpanes/1.1.1/js/searchPanes.foundation.js"
+            "0m78wdajxn1m3j9jn9jfwqf73wwsxrsfw4zf84h5y6saj4rrcz72"
+            "datatables-extensions/SearchPanes")
+           ("https://cdn.datatables.net/searchpanes/1.1.1/js/searchPanes.jqueryui.js"
+            "0zb2x736isb8nxrmd7j8nb78lj8h0h9j3axnbjiybwzzk819xw1m"
+            "datatables-extensions/SearchPanes")
+           ("https://cdn.datatables.net/searchpanes/1.1.1/js/searchPanes.semanticui.js"
+            "1781d0xmx7xz0jly0wsw2zbrdmfc1crahmcdbsfbj5s66kdsnd7c"
+            "datatables-extensions/SearchPanes")
+           
+           ("https://cdn.datatables.net/select/1.3.1/js/dataTables.select.js"
+            "0a7bkbz1cizhiq4h417b4rcdr7998pn8q4dlyzx8449xdp0h0n0v"
+            "datatables-extensions/Select")
+           ("https://cdn.datatables.net/select/1.3.1/js/select.bootstrap.js"
+            "0mm5ly3p2iprlfi8ajz548rjqx8lz1sbjj5ysgqmwqg14gw7l9k7"
+            "datatables-extensions/Select")
+           ("https://cdn.datatables.net/select/1.3.1/js/select.bootstrap4.js"
+            "1hv6d9lwgflmxhy7mdfb9rvli2wa2cbkdhqjz64zkf1a1a7wlb5q"
+            "datatables-extensions/Select")
+           ("https://cdn.datatables.net/select/1.3.1/js/select.foundation.js"
+            "1zzygcbngvrqh7m22x0s23k8m5xj5fv1p466pzjs23p94qq24a2r"
+            "datatables-extensions/Select")
+           ("https://cdn.datatables.net/select/1.3.1/js/select.jqueryui.js"
+            "1hv5zlmfifd27hylfqsji09y2hbp3m2hnb7j41418sjrxs63f6x6"
+            "datatables-extensions/Select")
+           ("https://cdn.datatables.net/select/1.3.1/js/select.semanticui.js"
+            "0q6q3vb6pa5nmkxy7zcnjs0bkn4ldw8ykdcfrc04bf1d2hjjaw47"
+            "datatables-extensions/Select"))))
+    (package
+      (name "r-dt")
+      (version "0.19")
+      (source (origin
+                (method url-fetch)
+                (uri (cran-uri "DT" version))
+                (sha256
+                 (base32
+                  "04rv1rprqlc56hycxpqkbmwmq4wjvmanq2lwxrflmf2s46pbv9ms"))
+                (modules '((guix build utils)))
+                (snippet
+                 '(for-each delete-file
+                            (find-files "inst/htmlwidgets/lib" "\\.min\\.js$")))))
+      (properties
+       `((upstream-name . "DT")))
+      (build-system r-build-system)
+      (arguments
+       `(#:modules
+         ((guix build r-build-system)
+          (guix build minify-build-system)
+          (guix build utils)
+          (ice-9 match))
+         #:imported-modules
+         (,@%r-build-system-modules
+          (guix build minify-build-system))
+         #:phases
+         (modify-phases (@ (guix build r-build-system) %standard-phases)
+           (add-after 'unpack 'process-javascript
+             (lambda* (#:key inputs #:allow-other-keys)
+               (with-directory-excursion "inst/htmlwidgets/lib/"
+                 (for-each (match-lambda
+                             ((url hash dir)
+                              (let* ((input (string-append "js:" (basename url)))
+                                     (source (assoc-ref inputs input))
+                                     (target (string-append dir "/"
+                                                            (basename url ".js")
+                                                            ".min.js")))
+                                (mkdir-p dir)
+                                (minify source #:target target))))
+                           ',javascript-sources)
+                 (minify (string-append (assoc-ref inputs "datatables-plugins")
+                                        "/features/scrollResize/dataTables.scrollResize.js")
+                         #:target "datatables-plugins/features/scrollResize/source.min.js")
+                 (minify (string-append (assoc-ref inputs "datatables-plugins")
+                                        "/features/searchHighlight/dataTables.searchHighlight.js")
+                         #:target "datatables-plugins/features/searchHighlight/source.min.js")
+                 (minify (assoc-ref inputs "js-nouislider")
+                         #:target "nouislider/jquery.nouislider.min.js")
+
+                 (let ((replace-file (lambda (old new)
+                                       (format #t "replacing ~a with ~a\n" old new)
+                                       (symlink new old))))
+                   (replace-file "selectize/selectize.min.js"
+                                 (string-append (assoc-ref inputs "js-selectize")
+                                                "/share/javascript/selectize.min.js")))))))))
+      (propagated-inputs
+       `(("r-crosstalk" ,r-crosstalk)
+         ("r-htmltools" ,r-htmltools)
+         ("r-htmlwidgets" ,r-htmlwidgets)
+         ("r-jquerylib" ,r-jquerylib)
+         ("r-jsonlite" ,r-jsonlite)
+         ("r-magrittr" ,r-magrittr)
+         ("r-promises" ,r-promises)))
+      (inputs
+       `(("js-selectize" ,js-selectize)))
+      (native-inputs
+       `(("r-knitr" ,r-knitr)
+         ("uglifyjs" ,node-uglify-js)
+         ("datatables-plugins"
+          ,(let ((version "1.10.20"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/DataTables/Plugins.git")
+                     (commit version)))
+               (file-name (git-file-name "datatables-plugins" version))
+               (sha256
+                (base32
+                 "05zni20863ml1711lfllljdfkb3k05h0kpqhkijkbp0bp7q0ak94")))))
+         ("js-nouislider"
+          ,(let ((version "7.0.10"))
+             (origin
+               (method url-fetch)
+               (uri (string-append "https://raw.githubusercontent.com/leongersen/noUiSlider/"
+                                   version "/distribute/jquery.nouislider.js"))
+               (sha256
+                (base32
+                 "1f7vsfcn7wwzngib6j0wpl0psd6qriiaa6kv728ynfn5da73zfxm")))))
+         ,@(map (match-lambda
+                  ((url hash dir)
+                   `(,(string-append "js:" (basename url))
+                     ,(origin (method url-fetch)
+                              (uri url)
+                              (sha256 (base32 hash))))))
+                javascript-sources)))
+      (home-page "https://rstudio.github.io/DT")
+      (synopsis "R wrapper of the DataTables JavaScript library")
+      (description
+       "This package allows for data objects in R to be rendered as HTML tables
 using the JavaScript library @code{DataTables} (typically via R Markdown or
 Shiny).  The @code{DataTables} library has been included in this R package.")
-    ;; The DT package as a whole is distributed under GPLv3.  The DT package
-    ;; inludes other software components under different licenses:
-    ;;
-    ;;   * Expat: jQuery, jquery.highlight.js, DataTables
-    ;;   * ASL2.0: selectize.js
-    ;;   * WTFPL: noUiSlider
-    (license (list license:gpl3
-                   license:expat
-                   license:asl2.0
-                   license:wtfpl2))))
+      ;; The DT package as a whole is distributed under GPLv3.  The DT package
+      ;; inludes other software components under different licenses:
+      ;;
+      ;;   * Expat: jquery.highlight.js, DataTables
+      ;;   * WTFPL: noUiSlider
+      (license (list license:gpl3
+                     license:expat
+                     license:wtfpl2)))))
 
 (define-public r-base64enc
   (package
@@ -3278,13 +3650,13 @@ analysis of large sparse or dense matrices.")
 (define-public r-glmnet
   (package
    (name "r-glmnet")
-   (version "4.1-1")
+   (version "4.1-2")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "glmnet" version))
      (sha256
-      (base32 "0zpfq0m1y5zks5p9r28553ykywwrhrb3ds8m6b7sm6hj4n1c4csd"))))
+      (base32 "1kfd8kfhapx2cxw6qnkbs502c3kya4pd9qmf0mk76cdlq1c2paq6"))))
    (build-system r-build-system)
    (native-inputs
     `(("gfortran" ,gfortran)
@@ -3354,14 +3726,14 @@ package registries.")
 (define-public r-rngtools
   (package
     (name "r-rngtools")
-    (version "1.5")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rngtools" version))
        (sha256
         (base32
-         "0xgmg3qb6insc157as47mcm9sdjdpy9jirh7w06bxb7pfcxqfx42"))))
+         "0kd7x214cqw7hzpmk1iqy1bn7j6x0ady0yz2hsdbclbq9k57d33z"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-digest" ,r-digest)))
@@ -3402,14 +3774,14 @@ Stochastic Neighbor Embedding using a Barnes-Hut implementation.")
 (define-public r-e1071
   (package
     (name "r-e1071")
-    (version "1.7-6")
+    (version "1.7-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "e1071" version))
        (sha256
         (base32
-         "0blfnv3m5k5xm9bfx1v5awvagqlhqaqpabrvzplf4244c3j259qa"))))
+         "09i2hmyf1bxansqp24p9n9djlzzarclqs173gjjv3fg0giga3ycv"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-class" ,r-class)
@@ -3541,13 +3913,13 @@ maintenance for package developers.")
 (define-public r-r-utils
   (package
     (name "r-r-utils")
-    (version "2.10.1")
+    (version "2.11.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.utils" version))
               (sha256
                (base32
-                "1gssnk73nhisc20by9kvfl4byfsmwrk6597na0x40ycck58lyylm"))))
+                "1n7y4dzls7dc8fdkm9zncq4cpiblb2a9vwirwjkf72zpjpwn0a32"))))
     (properties `((upstream-name . "R.utils")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3563,15 +3935,20 @@ developing R packages.")
 (define-public r-r-cache
   (package
     (name "r-r-cache")
-    (version "0.14.0")
+    (version "0.15.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "R.cache" version))
               (sha256
                (base32
-                "1n8n5ihkryrbxv630dwhz4r048nyv676qd3i9f5z5fa04hvlxbqq"))))
+                "09pipn1974ivjh4sm3n5fjlh31rilf87p30qwq7y25vriyqd7d5d"))))
     (properties `((upstream-name . "R.cache")))
     (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      `(("r-digest" ,r-digest)
        ("r-r-methodss3" ,r-r-methodss3)
@@ -3598,6 +3975,11 @@ persistent (on the file system).")
                 "0n9sxrffahgxcc8h9vgxg5i446g14cibixpf82nkpm5bvidhfsc9"))))
     (properties `((upstream-name . "R.rsp")))
     (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      `(("r-digest" ,r-digest)
        ("r-r-cache" ,r-r-cache)
@@ -3621,13 +4003,13 @@ vignettes.")
 (define-public r-mvtnorm
   (package
     (name "r-mvtnorm")
-    (version "1.1-1")
+    (version "1.1-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mvtnorm" version))
               (sha256
                (base32
-                "1pj51mi0g6ip7a2nhzc93yv9289kaayvspjvsbgbgarvx7axlrg9"))))
+                "05wh7mprf2sim2kxh3d72pdcmml6vbikzxavws1dq6mxwlsy2p7j"))))
     (build-system r-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)))
@@ -3640,15 +4022,20 @@ t-probabilities, quantiles, random deviates and densities.")
 (define-public r-matrixstats
   (package
     (name "r-matrixstats")
-    (version "0.58.0")
+    (version "0.61.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "matrixStats" version))
               (sha256
                (base32
-                "0jab3xk56vqqzgz8jbsvxvsvr83sj0gb3cic0906wjyjijwv8rw3"))))
+                "16pxsba5i51ifbbgvxln2w6nigbwd3290b2ckgzn5bmib7nc1lyv"))))
     (properties `((upstream-name . "matrixStats")))
     (build-system r-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      `(("r-r-rsp" ,r-r-rsp))) ;used to build vignettes
     (home-page "https://github.com/HenrikBengtsson/matrixStats")
@@ -3664,13 +4051,13 @@ memory usage.")
 (define-public r-viridis
   (package
     (name "r-viridis")
-    (version "0.5.1")
+    (version "0.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "viridis" version))
               (sha256
                (base32
-                "060rf1jn29dq53y3nhb0hykvcap6rqsk04rq544ypiiqb18ngwnx"))))
+                "1fyax36ycjiypcnxhrv58pq67qv03vfg4lx822d38jpjly54q128"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-ggplot2" ,r-ggplot2)
@@ -3693,14 +4080,14 @@ most common form of color blindness.")
 (define-public r-viridislite
   (package
     (name "r-viridislite")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "viridisLite" version))
        (sha256
         (base32
-         "1by2l05f0yabwvv64lhnv7bbhx0w683s3wr9j2xda920ghpa23kq"))))
+         "0siwr0vq80gs3sbyd542zjb0cl9av5zqdm0fqnym5g6ribf5b6c4"))))
     (properties `((upstream-name . "viridisLite")))
     (build-system r-build-system)
     (home-page "https://github.com/sjmgarnier/viridisLite")
@@ -3719,14 +4106,14 @@ more complete @code{viridis} package.")
 (define-public r-tidyselect
   (package
     (name "r-tidyselect")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyselect" version))
        (sha256
         (base32
-         "14rqx4dq574hilmdwrr34wyjg8rlw4rvndpsqd9plgxm3wwfsdg6"))))
+         "0ss8mq05mwif64cj8zmrfx0ljgy3n0fvyv7f37782shr8rknmsqq"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-ellipsis" ,r-ellipsis)
@@ -3833,13 +4220,13 @@ features present in other programming languages.")
 (define-public r-plotly
   (package
     (name "r-plotly")
-    (version "4.9.3")
+    (version "4.9.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "0801i2q7sw62x734d58h9p2fwpi1hirqj73gsg18pqkdv4b1lkfl"))))
+                "1q711c0lg0jmzrmcc2fhjy70ms49as7cakdbgbh2ij9s149fa7iq"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-base64enc" ,r-base64enc)
@@ -4118,14 +4505,14 @@ hierarchical clustering dendrograms.")
 (define-public r-fastcluster
   (package
     (name "r-fastcluster")
-    (version "1.1.25")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastcluster" version))
        (sha256
         (base32
-         "01a2xnhhvv1swd4g8p4lzyn7ww7kg49jlnzc7kfz60jqjzpisrpk"))))
+         "009amz7i5yndqw2008fgd3p11n4fsb291k2ypg3pip6dw4lr28hz"))))
     (build-system r-build-system)
     (home-page "http://danifold.net/fastcluster.html")
     (synopsis "Fast hierarchical clustering routines")
@@ -4143,14 +4530,14 @@ existing packages provide.")
 (define-public r-sfsmisc
   (package
     (name "r-sfsmisc")
-    (version "1.1-10")
+    (version "1.1-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sfsmisc" version))
        (sha256
         (base32
-         "1skxahq5jgqdsllpsavzrcpz8l0yj3mfzcf70as8d33jxbiaa4s4"))))
+         "10h76pgzcxv1y5pkmba9607lvjrsyq62sq63s2n7ry7z5151h4lv"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/sfsmisc")
     (synopsis "Utilities from \"Seminar fuer Statistik\" ETH Zurich")
@@ -4162,23 +4549,15 @@ Zurich, including many that are related to graphics.")
 (define-public r-gtools
   (package
     (name "r-gtools")
-    (version "3.8.2")
+    (version "3.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gtools" version))
        (sha256
         (base32
-         "1pnwy412wvhhvnnx8qg6s9hrgcnsfhnfcpf2560ipipk845acfsh"))))
+         "0lx97yafrms2mjym8rhcq5586z7s1iqgy8qfm4px3xl1yn5qkc83"))))
     (build-system r-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-deterministic
-           (lambda _
-             (substitute* "R/checkReverseDependencies.R"
-               (("tempdir\\(\\)") "\"/tmp\""))
-             #t)))))
     (home-page "https://cran.r-project.org/web/packages/gtools")
     (synopsis "Various R programming tools")
     (description
@@ -4355,13 +4734,13 @@ within a category based on their density using quasirandom noise.")
 (define-public r-beeswarm
   (package
     (name "r-beeswarm")
-    (version "0.3.1")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "beeswarm" version))
               (sha256
                (base32
-                "1jsggypyww77hkcic03kdb3fp8h938qs142xi0lapzh62bkn2pjj"))))
+                "016mqcbdksialkmap56rprzna9b6cd6896ml9gl2n2h8yjdk7x2i"))))
     (build-system r-build-system)
     (home-page "https://www.cbs.dtu.dk/~eklund/beeswarm/")
     (synopsis "Implementation of bee swarm plots")
@@ -4443,13 +4822,13 @@ Wall Street Journal, among others.  This package also provides
 (define-public r-statmod
   (package
     (name "r-statmod")
-    (version "1.4.35")
+    (version "1.4.36")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statmod" version))
               (sha256
                (base32
-                "1zpqnfslq5gi6hvqjqnsn5kf2m986s1yb6kvyjd881n3h67l4pny"))))
+                "1hkvklcav6gj4zib4g3b4xwsdsbsmnzdblr0v6jaqv227p49gs0l"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/statmod")
     (native-inputs
@@ -4615,14 +4994,14 @@ regression.")
 (define-public r-fastica
   (package
     (name "r-fastica")
-    (version "1.2-2")
+    (version "1.2-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastICA" version))
        (sha256
         (base32
-         "1zpijqcipm0aa3rxj0mys06lskqy4dbppjpxr1aby0j16y9ka8ij"))))
+         "0l49cmxm1n4dzrv8q3q3mq4drcjgby4f1dmpwfdb8jxn9ij85vz9"))))
     (properties `((upstream-name . "fastICA")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/fastICA")
@@ -4658,14 +5037,14 @@ forest of trees using random inputs, for classification and regression.")
 (define-public r-diptest
   (package
     (name "r-diptest")
-    (version "0.75-7")
+    (version "0.76-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "diptest" version))
        (sha256
         (base32
-         "06xnc5gv1284ll0addxnxb6ljz6fn8dbyrp5vchyz6551h800aa6"))))
+         "10629vwn6r2949jjrmj5slbb5v0vnm3w0v8mrl7ws68m2sxmx2jh"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/diptest")
     (synopsis "Hartigan's dip test statistic for unimodality")
@@ -4772,14 +5151,14 @@ data for species delimitation, nearest neighbor based noise detection.")
 (define-public r-deoptimr
   (package
     (name "r-deoptimr")
-    (version "1.0-8")
+    (version "1.0-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DEoptimR" version))
        (sha256
         (base32
-         "1vz546hyjyhly70z62h5n3mn62b8llhhmim8ffp9y6jnnb0i2sc4"))))
+         "04k5gi0a5hbm6znzvjaipbmkacp694krkqs38dkbxx1gymsallb1"))))
     (properties `((upstream-name . "DEoptimR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
@@ -4795,14 +5174,14 @@ can be efficiently implemented directly in the R language.")
 (define-public r-robustbase
   (package
     (name "r-robustbase")
-    (version "0.93-7")
+    (version "0.93-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robustbase" version))
        (sha256
         (base32
-         "0mh9d114p3jdrjf8yn4dx5ff41niz5wn411y0ckjcpnazp8d44c9"))))
+         "16fmnk3p32mi70rkx89l1v4pry3gnrpy9jicnlfnk6lg1pwz5j8w"))))
     (build-system r-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)))
@@ -4818,14 +5197,14 @@ regression methodology including model selections and multivariate statistics.")
 (define-public r-pcapp
   (package
     (name "r-pcapp")
-    (version "1.9-73")
+    (version "1.9-74")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pcaPP" version))
        (sha256
         (base32
-         "1z2kdf9gfp965xbcd4rg6vf20d1bl443na0qjkpq7gmzpaq6cifa"))))
+         "1dlrz5plb8b89vr3j6sn9jwryyhcwflqkiilxkybbr379m1pp0sh"))))
     (properties `((upstream-name . "pcaPP")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4840,14 +5219,14 @@ analysis} (PCA) by projection pursuit.")
 (define-public r-rrcov
   (package
     (name "r-rrcov")
-    (version "1.5-5")
+    (version "1.6-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rrcov" version))
        (sha256
         (base32
-         "0ag6q16ajkqwj28dk9vp4xkvqw26fqqqdxnz38gpszilirahfzqz"))))
+         "0i69gv55c86gkclwhch0jzdfyb20l20mx1nx1xp9qz71nd4klpvr"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-lattice" ,r-lattice)
@@ -4999,14 +5378,14 @@ VGLMs can be loosely thought of as multivariate generalised linear models.")
 (define-public r-pbapply
   (package
     (name "r-pbapply")
-    (version "1.4-3")
+    (version "1.5-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pbapply" version))
        (sha256
         (base32
-         "08gb6c8p1r9z8wrfidj2dfn6irm43k6f4448d1d6nxmy6msjirlg"))))
+         "0m8a0ygwl98cs0vcha5gs9f7z8whcplwxhravhs9bfp5hvigxzgg"))))
     (build-system r-build-system)
     (home-page "https://github.com/psolymos/pbapply")
     (synopsis "Adding progress bar to apply functions")
@@ -5112,13 +5491,13 @@ using modular prediction and response module classes.")
 (define-public r-quantreg
   (package
     (name "r-quantreg")
-    (version "5.85")
+    (version "5.86")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantreg" version))
        (sha256
-        (base32 "1y8sgl16yby1k7g23y6bdnfllwnxj3iik3fqp96iwm5jd8blb7q4"))))
+        (base32 "01fnp6ndh7npxj76xlynndacsgmcfr9kgh2waw0clx3mmwlwilbi"))))
     (build-system r-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)))
@@ -5168,14 +5547,14 @@ algorithms.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-26")
+    (version "1.1-27.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "0ls2krph4pfjn45vf9fn3ln3x98s85wxrkvm5pnxyx55n1pnsjrn"))))
+         "1i9f8kl2qj48j75dbn1vmwxz1xlbikdr7v2yq542w6dq74z8gyi5"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-boot" ,r-boot)
@@ -5186,8 +5565,7 @@ algorithms.")
        ("r-nloptr" ,r-nloptr)
        ("r-nlme" ,r-nlme)
        ("r-rcpp" ,r-rcpp)
-       ("r-rcppeigen" ,r-rcppeigen)
-       ("r-statmod" ,r-statmod)))
+       ("r-rcppeigen" ,r-rcppeigen)))
     (native-inputs
      `(("r-knitr" ,r-knitr)))
     (home-page "https://cran.r-project.org/web/packages/lme4")
@@ -5251,13 +5629,13 @@ Companion to Applied Regression, Third Edition, Sage.")
 (define-public r-car
   (package
     (name "r-car")
-    (version "3.0-10")
+    (version "3.0-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "car" version))
        (sha256
-        (base32 "1w95b7xm0bna3qm637pwyv4s7294ffz9dl153naprd79zv91dqqw"))))
+        (base32 "0b2l35656bi75hfvnjhzhlnrnbpjn0vv7nvny8gn65gm0rr94b5k"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-abind" ,r-abind)
@@ -5430,14 +5808,14 @@ diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
 (define-public r-ranger
   (package
     (name "r-ranger")
-    (version "0.12.1")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ranger" version))
        (sha256
         (base32
-         "1vr5akgh388iivrxi0g4pl2npq9dc4cim3ljk4kjf637q058wc7w"))))
+         "02idcc6zbdz4wsi1mcwh7qyhmlbwvnzxwkdvvppxw7n2rh54z4v0"))))
     (build-system r-build-system)
     (propagated-inputs
      `(("r-rcpp" ,r-rcpp)
@@ -5710,31 +6088,14 @@ to any arbitrary string.  In this case, it is up to you to set valid values.")
 (define-public python-rpy2
   (package
     (name "python-rpy2")
-    (version "3.3.5")
+    (version "3.4.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rpy2" version))
         (sha256
          (base32
-          "1bs36rds5fq8821l5q85q2b25161rs9ppw5c26x0hjwj487gpcfj"))
-        ;; These patches should be removed with the next release.
-        (patches
-          (list
-            (origin
-              (method url-fetch)
-              (uri "https://github.com/rpy2/rpy2/commit/04c57598f00145d868ea8da31ac1b1e7c49f7570.patch")
-              (file-name "python-rpy2-fix-test-failure.patch")
-              (sha256
-               (base32
-                "1lqd3yxjfx1rxrybcmnapy0r6ambg9myrb98q4nlfhpxanwfdbbh")))
-            (origin
-              (method url-fetch)
-              (uri "https://github.com/rpy2/rpy2/commit/685f67d0a6b47ea80e718116a10755019446aef7.patch")
-              (file-name "python-rpy2-r-console-test-fix.patch")
-              (sha256
-               (base32
-                "18wpvfaa4c13d44cb4sw88c3c7403xdy5m8h82wfq8fjmcq3cmzn")))))))
+          "1cysswxr5glrdblyl2zsmywcj7xhxn3wmyihxinrz9gm8gmaacax"))))
     (build-system python-build-system)
     (arguments
      '(#:modules ((ice-9 ftw)
@@ -5906,6 +6267,33 @@ Java package that provides routines for various statistical distributions.")
 is designed to support editing of scripts and interaction with various
 statistical analysis programs such as R, Julia, and JAGS.")
       (license license:gpl3+))))
+
+(define-public emacs-poly-r
+  (package
+    (name "emacs-poly-r")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/polymode/poly-R")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a4wx73jkngw5nbq1fa4jfhba6bsmyn6vnsf887x3xhb5v3ykhsg"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-ess" ,emacs-ess)
+       ("emacs-poly-noweb" ,emacs-poly-noweb)
+       ("emacs-polymode-markdown" ,emacs-polymode-markdown)
+       ("emacs-polymode" ,emacs-polymode)))
+    (properties '((upstream-name . "poly-R")))
+    (home-page "https://github.com/polymode/poly-markdown")
+    (synopsis "Polymodes for the R language")
+    (description
+     "This package provides a number of polymodes for working with mixed R
+files, including Rmarkdown files.")
+    (license license:gpl3+)))
 
 (define-public readstat
   (package
@@ -6086,3 +6474,232 @@ input, the effect size can be returned as standardized mean difference, Cohen's
 f, Hedges' g, Pearson's r or Fisher's transformation z, odds ratio or log odds,
 or eta squared effect size.")
     (license license:gpl3)))
+
+(define-public r-kknn
+  (package
+    (name "r-kknn")
+    (version "1.3.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "kknn" version))
+        (sha256
+          (base32
+            "1nzkg3dxaiqp87p56wm895qx5xn86hv5hjr73qvl1yiaxiq0x112"))))
+    (properties `((upstream-name . "kknn")))
+    (build-system r-build-system)
+    (propagated-inputs
+      `(("r-igraph" ,r-igraph) ("r-matrix" ,r-matrix)))
+    (home-page "https://github.com/KlausVigo/kknn")
+    (synopsis "Weighted k-Nearest Neighbors")
+    (description
+      "Weighted k-Nearest Neighbors for Classification, Regression and Clustering.")
+    (license license:gpl2+)))
+
+(define-public r-logspline
+  (package
+    (name "r-logspline")
+    (version "2.1.16")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "logspline" version))
+        (sha256
+          (base32
+            "12hkdi77vkic05p2vhap025xdcg1n53ywm239v18713pihdlj63l"))))
+    (properties `((upstream-name . "logspline")))
+    (build-system r-build-system)
+    (native-inputs `(("gfortran" ,gfortran)))
+    (home-page
+      "https://cran.r-project.org/web/packages/logspline/")
+    (synopsis
+      "Routines for Logspline Density Estimation")
+    (description
+      "Contains routines for logspline density estimation.  The function
+@code{oldlogspline()} uses the same algorithm as the logspline package version
+1.0.x; i.e.  the Kooperberg and Stone (1992) algorithm (with an improved
+interface).  The recommended routine @code{logspline()} uses an algorithm from
+@url{doi:10.1214/aos/1031594728,Stone et al (1997)}.")
+    (license license:asl2.0)))
+
+(define-public r-effects
+  (package
+    (name "r-effects")
+    (version "4.2-0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "effects" version))
+        (sha256
+          (base32
+            "0iks79rd4knrd81x4kvcpgpclr69l0m0v6sfla8k3wzkcnydycv8"))))
+    (properties `((upstream-name . "effects")))
+    (build-system r-build-system)
+    (propagated-inputs
+      `(("r-cardata" ,r-cardata)
+        ("r-colorspace" ,r-colorspace)
+        ("r-estimability" ,r-estimability)
+        ("r-insight" ,r-insight)
+        ("r-lattice" ,r-lattice)
+        ("r-lme4" ,r-lme4)
+        ("r-nnet" ,r-nnet)
+        ("r-survey" ,r-survey)))
+    (native-inputs
+      `(("r-knitr" ,r-knitr)
+        ("r-car", r-car)))
+    (home-page "https://www.r-project.org")
+    (synopsis
+      "Effect Displays for Linear, Generalized Linear, and Other Models")
+    (description
+      "Graphical and tabular effect displays, e.g., of interactions, for
+various statistical models with linear predictors.")
+    (license license:gpl2+)))
+
+(define-public r-bayesfactor
+  (package
+    (name "r-bayesfactor")
+    (version "0.9.12-4.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "BayesFactor" version))
+        (sha256
+          (base32
+            "1z083v7is21gm0a458jm5ph3xfdm7mh29a6sg2r1njq82f8x3s3g"))))
+    (properties `((upstream-name . "BayesFactor")))
+    (build-system r-build-system)
+    (propagated-inputs
+      `(("r-coda" ,r-coda)
+        ("r-gtools" ,r-gtools)
+        ("r-hypergeo" ,r-hypergeo)
+        ("r-matrix" ,r-matrix)
+        ("r-matrixmodels" ,r-matrixmodels)
+        ("r-mvtnorm" ,r-mvtnorm)
+        ("r-pbapply" ,r-pbapply)
+        ("r-rcpp" ,r-rcpp)
+        ("r-rcppeigen" ,r-rcppeigen)
+        ("r-stringr" ,r-stringr)))
+    (native-inputs `(("r-knitr" ,r-knitr)))
+    (home-page
+      "https://richarddmorey.github.io/BayesFactor/")
+    (synopsis
+      "Computation of Bayes Factors for Common Designs")
+    (description
+      "This package provides a suite of functions for computing various Bayes
+factors for simple designs, including contingency tables, one- and two-sample
+designs, one-way designs, general ANOVA designs, and linear regression.")
+    (license license:gpl2)))
+
+(define-public r-norm
+  (package
+    (name "r-norm")
+    (version "1.0-9.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "norm" version))
+              (sha256
+               (base32
+                "01j1h412yfjx5r4dd0w8rhlf55997spgb6zd6pawy19rgw0byp1h"))))
+    (build-system r-build-system)
+    (native-inputs
+     `(("gfortran" ,gfortran)))
+    (home-page "https://cran.r-project.org/web/packages/norm/")
+    (synopsis "Analysis of multivariate normal datasets with missing values")
+    (description "Multiple imputation of multivariate continuous data under a
+normal model.")
+    ;; Custom license, see https://cran.r-project.org/web/packages/norm/LICENSE.
+    (license (license:non-copyleft "file://LICENSE"))))
+
+(define-public r-naniar
+  (package
+    (name "r-naniar")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "naniar" version))
+              (sha256
+               (base32
+                "0l3l2x85v3srilww483kpgp4zlwixyml257b0cqly8kcpwawlinm"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     `(("r-dplyr" ,r-dplyr)
+       ("r-norm" ,r-norm)
+       ("r-forcats" ,r-forcats)
+       ("r-ggplot2" ,r-ggplot2)
+       ("r-glue" ,r-glue)
+       ("r-magrittr" ,r-magrittr)
+       ("r-purrr" ,r-purrr)
+       ("r-rlang" ,r-rlang)
+       ("r-tibble" ,r-tibble)
+       ("r-tidyr" ,r-tidyr)
+       ("r-upsetr" ,r-upsetr)
+       ("r-viridis" ,r-viridis)
+       ("r-visdat" ,r-visdat)))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)))
+    (home-page "https://github.com/njtierney/naniar")
+    (synopsis
+     "Data structures, summaries, and visualisations for missing data")
+    (description
+     "Missing values are ubiquitous in data and need to be explored and
+handled in the initial stages of analysis.  The package provides data structures
+and functions that facilitate the plotting of missing values and examination of
+imputations.  This allows missing data dependencies to be explored with minimal
+deviation from the common work patterns of @code{ggplot2} and tidy data.")
+    (license license:expat)))
+
+(define-public r-glinternet
+  (package
+    (name "r-glinternet")
+    (version "1.0.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "glinternet" version))
+       (sha256
+        (base32
+         "0aphdscj0s6kqxlkgqkw2d6snrylz6hiis6307pl8ldh7q5cvm33"))))
+    (build-system r-build-system)
+    (home-page "http://web.stanford.edu/~hastie/Papers/glinternet_jcgs.pdf")
+    (synopsis "Learning interactions via hierarchical group-lasso regularization")
+    (description "Group-Lasso INTERaction-NET.  Fits linear pairwise-interaction
+models that satisfy strong hierarchy: if an interaction coefficient is estimated
+to be nonzero, then its two associated main effects also have nonzero estimated
+coefficients.  Accommodates categorical variables (factors) with arbitrary
+numbers of levels, continuous variables, and combinations thereof.  Implements
+the machinery described in the paper \"Learning interactions via hierarchical
+group-lasso regularization\" (JCGS 2015, Volume 24, Issue 3).
+Michael Lim & Trevor Hastie (2015)")
+    (license license:gpl2)))
+
+(define-public r-datasaurus
+  (package
+    (name "r-datasaurus")
+    (version "0.1.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "datasauRus" version))
+        (sha256
+          (base32
+            "1w1yhwwrmh95bklacz44wjwynxd8cj3z8b9zvsnzmk18m5a4k0fl"))))
+    (properties `((upstream-name . "datasauRus")))
+    (build-system r-build-system)
+    (native-inputs `(("r-knitr" ,r-knitr)))
+    (home-page
+      "https://github.com/lockedata/datasauRus")
+    (synopsis "Datasets from the Datasaurus Dozen")
+    (description
+     "The Datasaurus Dozen is a set of datasets with the same summary
+statistics.  They retain the same summary statistics despite having radically
+different distributions.  The datasets represent a larger and quirkier object
+lesson that is typically taught via Anscombe's Quartet (available in the
+'datasets' package).  Anscombe's Quartet contains four very different
+distributions with the same summary statistics and as such highlights the value
+of visualisation in understanding data, over and above summary statistics.  As
+well as being an engaging variant on the Quartet, the data is generated in a
+novel way.  The simulated annealing process used to derive datasets from the
+original Datasaurus is detailed in \"Same Stats, Different Graphs: Generating
+Datasets with Varied Appearance and Identical Statistics through Simulated
+Annealing\" @url{doi:10.1145/3025453.3025912}.")
+    (license license:expat)))

@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -21,12 +21,17 @@
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Yoshinori Arai <kumagusu08@gmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,8 +58,10 @@
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages anthy)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -68,6 +75,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -1512,11 +1520,10 @@ treat it as part of their software base when porting.")
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
-    (inputs
-      `(("libxext" ,libxext)
-        ("libx11" ,libx11)))
     (propagated-inputs
-      `(("xorgproto" ,xorgproto)))
+      `(("libx11" ,libx11)
+        ("libxext" ,libxext)
+        ("xorgproto" ,xorgproto)))
     (native-inputs
       `(("pkg-config" ,pkg-config)))
     (home-page "https://www.x.org/wiki/")
@@ -2529,7 +2536,7 @@ including most mice, keyboards, tablets and touchscreens.")
 (define-public xf86-input-libinput
   (package
     (name "xf86-input-libinput")
-    (version "0.30.0")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2537,7 +2544,7 @@ including most mice, keyboards, tablets and touchscreens.")
                     name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1h4np66p87jf0c85ig524w8f5rbhl5gx8fww1qg0c55f87yzkizr"))))
+                "0nr4r9x8c7y1l0ipivjch5zps093mxmg2nqmfn2934am26fc9ppx"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2554,7 +2561,8 @@ including most mice, keyboards, tablets and touchscreens.")
      "xf86-input-libinput is an input driver for the Xorg X server based
 on libinput.  It is a thin wrapper around libinput, so while it does
 provide all features that libinput supports it does little beyond.")
-    (license license:x11)))
+    (license (list license:x11          ; only install-sh
+                   license:expat))))    ; everything else
 
 (define-public xf86-input-joystick
   (package
@@ -3013,8 +3021,8 @@ X server.")
 
 
 (define-public xf86-video-intel
-  (let ((commit "ad5540f6ecaec287c70259f0181e613561b716f6")
-        (revision "17"))
+  (let ((commit "31486f40f8e8f8923ca0799aea84b58799754564")
+        (revision "18"))
     (package
       (name "xf86-video-intel")
       (version (git-version "2.99.917" revision commit))
@@ -3023,11 +3031,11 @@ X server.")
          ;; there's no current tarball
          (method git-fetch)
          (uri (git-reference
-               (url "https://anongit.freedesktop.org/git/xorg/driver/xf86-video-intel.git")
+               (url "https://gitlab.freedesktop.org/xorg/driver/xf86-video-intel.git")
                (commit commit)))
          (sha256
           (base32
-           "09jdg5wrq708wc83027337qvdjb96827h7sjwjfl5ffiynfpwl95"))
+           "0lv6vlx9gvp34pidmx4gxgb0qjf0km0gabbaxw141nnvj1azv94y"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (inputs `(("mesa" ,mesa)
@@ -3508,7 +3516,7 @@ X server.")
 (define-public xf86-video-vesa
   (package
     (name "xf86-video-vesa")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
       (origin
         (method url-fetch)
@@ -3518,7 +3526,7 @@ X server.")
                ".tar.bz2"))
         (sha256
           (base32
-            "1373vsxn6qh00na0s9c09kf09gj78rzi98zq93id8v5zsya3qi5z"))))
+            "0nf6ai74c60xk96kgr8q9mx6lrxm5id3765ws4d801irqzrj85hz"))))
     (build-system gnu-build-system)
     (inputs `(("xorg-server" ,xorg-server)))
     (native-inputs `(("pkg-config" ,pkg-config)))
@@ -3978,6 +3986,32 @@ make keyboards more accessible to people with physical impairments.")
 requested commands if they occur.")
     (license license:x11)))
 
+(define-public xkbprint
+  (package
+    (name "xkbprint")
+    (version "1.0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append  "mirror://xorg/individual/app/"
+                             "xkbprint-" version ".tar.bz2"))
+        (sha256
+          (base32 "1yi3232g25hhp241irncd8znv3090k2gm0yjcdnz08h89y1zwn2v"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("libx11" ,libx11)
+       ("libxkbfile" ,libxkbfile)
+        ("xorgproto" ,xorgproto)))
+    (native-inputs
+      `(("pkg-config" ,pkg-config)))
+    (home-page "https://www.x.org/wiki/")
+    (synopsis "Visualise an XKB keyboard layout description")
+    (description
+     "The @command{xkbprint} utility visualises (``prints'') an XKB keyboard
+description as printable or encapsulated PostScript.  It accepts any compiled
+keymap (@file{.xkm}) file that includes a geometry description, or can obtain
+one from a running X server.")
+    (license license:x11)))
 
 (define-public xkbutils
   (package
@@ -4375,17 +4409,14 @@ and Reflect (RandR) extension.")
 (define-public xrdb
   (package
     (name "xrdb")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xrdb-"
-               version
-               ".tar.bz2"))
+        (uri (string-append "mirror://xorg/individual/app/xrdb-"
+                            version ".tar.bz2"))
         (sha256
-          (base32
-            "0ik9gh6363c47pr0dp7q22nfs8vmavjg2v4bsr0604ppl77nafpj"))))
+          (base32 "1d78prd8sfszq2rwwlb32ksph4fymf988lp75aj8iysg44f06pag"))))
     (build-system gnu-build-system)
     (inputs
       `(("libxmu" ,libxmu)
@@ -4548,17 +4579,14 @@ extension.")
 (define-public xwd
   (package
     (name "xwd")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xwd-"
-               version
-               ".tar.bz2"))
+        (uri (string-append "mirror://xorg/individual/app/xwd-"
+                            version ".tar.bz2"))
         (sha256
-          (base32
-            "1537i8q8pgf0sjklakzfvjwrq5b246qjywrx9ll8xfg0p6w1as6d"))))
+          (base32 "06q36fh55r62ms0igfxsanrn6gv8lh794q1bw9xzw51p2qs2papv"))))
     (build-system gnu-build-system)
     (inputs
       `(("libxt" ,libxt)
@@ -5303,7 +5331,7 @@ over Xlib, including:
 (define-public xorg-server
   (package
     (name "xorg-server")
-    (version "1.20.10")
+    (version "1.20.11")
     (source
       (origin
         (method url-fetch)
@@ -5311,7 +5339,7 @@ over Xlib, including:
                             "xorg-server-" version ".tar.bz2"))
         (sha256
          (base32
-          "16bwrf0ag41l7jbrllbix8z6avc5yimga7ihvq4ch3a5hb020x4p"))
+          "0jacqgin8kcyy8fyv0lhgb4if8g9hp60rm3ih3s1mgps7xp7jk4i"))
         (patches
          (list
           ;; See:
@@ -5433,7 +5461,30 @@ draggable titlebars and borders.")
 (define-public xorg-server-for-tests
   (hidden-package
    (package
-     (inherit xorg-server))))
+     (inherit xorg-server)
+     (version "1.20.10")
+     (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "mirror://xorg/individual/xserver/"
+                             "xorg-server-" version ".tar.bz2"))
+         (sha256
+          (base32
+           "16bwrf0ag41l7jbrllbix8z6avc5yimga7ihvq4ch3a5hb020x4p"))
+         (patches
+          (list
+           ;; See:
+           ;;   https://lists.fedoraproject.org/archives/list/devel@lists.
+           ;;      fedoraproject.org/message/JU655YB7AM4OOEQ4MOMCRHJTYJ76VFOK/
+           (origin
+             (method url-fetch)
+             (uri (string-append
+                   "http://pkgs.fedoraproject.org/cgit/rpms/xorg-x11-server.git"
+                   "/plain/06_use-intel-only-on-pre-gen4.diff"))
+             (sha256
+              (base32
+               "0mm70y058r8s9y9jiv7q2myv0ycnaw3iqzm7d274410s0ik38w7q"))
+             (file-name "xorg-server-use-intel-only-on-pre-gen4.diff")))))))))
 
 (define-public xorg-server-xwayland
   (package/inherit xorg-server
@@ -5500,17 +5551,14 @@ draggable titlebars and borders.")
 (define-public libx11/fixed
   (package
     (inherit libx11)
-    (version "1.6.12")
+    (version "1.7.1A")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/lib/libX11-"
-               version
-               ".tar.bz2"))
+        (uri "mirror://xorg/individual/lib/libX11-1.7.1.tar.bz2")
         (sha256
           (base32
-            "1ivfzl1qwk8zh7gc0m5vb58gdxz11jwg7w3d356w16j1d5s2427i"))))))
+            "0isxad59hvdwggbxqqjjjg3zmih9xiq4d9mdsnqbyb2nmbg46kp6"))))))
 
 ;; packages of height 5 in the propagated-inputs tree
 
@@ -6072,7 +6120,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
 (define-public xterm
   (package
     (name "xterm")
-    (version "366")
+    (version "368")
     (source
      (origin
        (method url-fetch)
@@ -6082,7 +6130,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
              (string-append "ftp://ftp.invisible-island.net/xterm/"
                             "xterm-" version ".tgz")))
        (sha256
-        (base32 "0vmzffy3hzgcgwx305h07ars5sxsq6nnl1ir4xqpxs9zjs2ji2w5"))))
+        (base32 "04p7db3j3n5dk1vvlas4231rh6jgr4qi6ppvpbq9xd5n62cidx9g"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-wide-chars" "--enable-load-vt-fonts"
@@ -6278,18 +6326,18 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.0.6")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
-                           version ".tar.xz"))
+                           version ".tar.gz"))
        (sha256
-        (base32 "1s49y2s75a8a70vj0micnmpic5zv1n32yjxy8fkxsqa6j5njyrww"))
-       (patches (search-patches "xpra-4.0.1-systemd-run.patch"))))
+        (base32 "0gqdcw5cfk919jk8g0g4xjxbsvr5j9gskn8q3cmrz388pvfvm8x7"))
+       (patches (search-patches "xpra-4.2-systemd-run.patch"))))
     (build-system python-build-system)
     ;; see also http://xpra.org/trac/wiki/Dependencies
-    (inputs `(
+    (inputs `(("bash-minimal" ,bash-minimal)    ; for wrap-program
               ;; Essential dependencies.
               ("libjpeg" ,libjpeg-turbo)
               ("libwebp" ,libwebp)
@@ -6325,6 +6373,7 @@ basic eye-candy effects.")
               ("python-lz4" ,python-lz4) ; Faster compression than zlib.
               ("python-netifaces" ,python-netifaces)))
     (native-inputs `(("pkg-config" ,pkg-config)
+                     ("pandoc" ,pandoc)
                      ("python-cython" ,python-cython)))
     (arguments
      `(#:configure-flags '("--without-Xdummy"
@@ -6361,7 +6410,7 @@ basic eye-candy effects.")
                  (close-port file)))
              ;; Add Xorg module paths.
              (append-to-file
-              "etc/xpra/xorg.conf"
+              "fs/etc/xpra/xorg.conf"
               (string-append "\nSection \"Files\"\nModulePath \""
                              (assoc-ref inputs "xf86-video-dummy") "/lib/xorg/modules,"
                              (assoc-ref inputs "xf86-input-mouse") "/lib/xorg/modules,"
@@ -6369,8 +6418,8 @@ basic eye-candy effects.")
                              (assoc-ref inputs "xorg-server") "/lib/xorg/modules\"\n"
                              "EndSection\n\n"))
              (substitute* '("xpra/scripts/config.py"
-                            "etc/xpra/conf.d/60_server.conf.in"
-                            "unittests/unit/server/mixins/notification_test.py")
+                            "fs/etc/xpra/conf.d/60_server.conf.in"
+                            "tests/unittests/unit/server/mixins/notification_test.py")
                ;; The trailing -- is intentional, so we only replace it inside
                ;; a command line.
                (("dbus-launch --")
@@ -6419,7 +6468,8 @@ X11 servers, Windows, or macOS.")
      `(("anthy" ,anthy)
        ("libedit" ,libedit)
        ("libxft" ,libxft)
-       ("m17n-lib" ,m17n-lib)))
+       ("m17n-lib" ,m17n-lib)
+       ("ncurses" ,ncurses)))
     (native-inputs
      `(("emacs" ,emacs-minimal)
        ("intltool" ,intltool)
@@ -6492,7 +6542,7 @@ and embedded platforms.")
   (package/inherit uim
     (name "uim-qt")
     (inputs
-     `(("qt" ,qtbase)
+     `(("qt" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)
        ,@(package-inputs uim)))
     (arguments
@@ -6642,7 +6692,7 @@ output.")
 (define-public console-setup
   (package
     (name "console-setup")
-    (version "1.201")
+    (version "1.205")
     (source
      (origin
        (method git-fetch)
@@ -6650,7 +6700,7 @@ output.")
              (url "https://salsa.debian.org/installer-team/console-setup.git")
              (commit version)))
        (sha256
-        (base32 "0xkynb8d1813wph3p0sdvbpimx7zqkzh4c3mmqymp3pibcg7af5a"))
+        (base32 "0sf560s14firyvzpgww79ydzc6p3jvjkbvsi8zsr5m3hr833w0ba"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -6826,7 +6876,7 @@ box, and a calendar.  It uses GTK+, and will match your desktop theme.")
            (lambda _
              (chmod "xvfb-run" #o755)
              (substitute* "xvfb-run"
-               (("(\\(| )(fmt|stty|awk|kill|getopt|mktemp|touch|rm|mcookie)"
+               (("(\\(| )(fmt|stty|awk|cat|kill|getopt|mktemp|touch|rm|mcookie)"
                  _ prefix command)
                 (string-append prefix (which command)))
                ;; These also feature in UI messages, so be more strict.
@@ -6835,13 +6885,15 @@ box, and a calendar.  It uses GTK+, and will match your desktop theme.")
                 (string-append prefix (which command))))))
          (replace 'check
            ;; There are no tests included.  Here we test whether we can run
-           ;; a simple client without xvfb-run itself relying on $PATH.
+           ;; a simple client and whether xvfb-run --help succeeds
+           ;; without xvfb-run itself relying on $PATH.
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (let ((old-PATH (getenv "PATH"))
                      (xterm (which "xterm")))
                  (unsetenv "PATH")
                  (invoke "./xvfb-run" xterm "-e" "true")
+                 (invoke "./xvfb-run" "--help")
                  (setenv "PATH" old-PATH)))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -6868,3 +6920,38 @@ an existing user-specified one, writes a cookie to it, and then starts the
 the server and cleaning up before returning the exit status of the command.")
     (license (list license:x11                    ; the script
                    license:gpl2+))))              ; the man page
+
+(define-public setroot
+  (package
+    (name "setroot")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ttzhou/setroot")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w95828v0splk7bj5kfacp4pq6wxpyamvyjmahyvn5hc3ycq21mq"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "DESTDIR=" (assoc-ref %outputs "out"))
+             "PREFIX="
+             "xinerama=1")
+       #:tests? #f                       ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs
+     `(("imlib2" ,imlib2)
+       ("libx11" ,libx11)
+       ("libxinerama" ,libxinerama)))
+    (home-page "https://github.com/ttzhou/setroot")
+    (synopsis "Simple X background setter inspired by imlibsetroot and feh")
+    (description "Setroot is a lightweight X background setter with feh's
+syntax without its image viewing capabilities.  It supports multiple monitors
+and can restore previously set wallpapers and options.")
+    (license license:gpl3+)))

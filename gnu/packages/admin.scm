@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015, 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Alex Sassmannshausen <alex.sassmannshausen@gmail.com>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
@@ -17,7 +17,7 @@
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2017 Ethan R. Jones <doubleplusgood23@gmail.com>
-;;; Copyright © 2017 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017, 2018, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
@@ -29,7 +29,7 @@
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
@@ -40,6 +40,10 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hyunseok Kim <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
+;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,11 +136,14 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages selinux)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
@@ -469,6 +476,34 @@ services.")
     (license license:public-domain)
     (home-page "https://cr.yp.to/daemontools.html")))
 
+(define-public daemonize
+  (package
+    (name "daemonize")
+    (version "1.7.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bmc/daemonize")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w4g0iyssyw7dd0061881z8s5czcl01mz6v00znax57zfxjqpvnm"))))
+    (build-system gnu-build-system)
+    (arguments '(#:tests? #f))          ; No tests available.
+    (home-page "http://software.clapper.org/daemonize/")
+    (synopsis "Command line utility to run a program as a daemon")
+    (description
+     "daemonize runs a command as a Unix daemon.  It will close all open file
+descriptors, change working directory of the process to the root filesystem,
+reset its umask, run in the background, ignore I/O signals, handle
+@code{SIGCLD}, etc.  Most programs that are designed to be run as daemons do
+that work for themselves.  However, you’ll occasionally run across one that
+does not.  When you must run a daemon program that does not properly make
+itself into a true Unix daemon, you can use daemonize to force it to run as a
+true daemon.")
+    (license license:bsd-3)))
+
 (define-public dfc
   (package
    (name "dfc")
@@ -602,7 +637,7 @@ console.")
 (define-public htop
   (package
     (name "htop")
-    (version "3.0.5")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -610,7 +645,7 @@ console.")
              (url "https://github.com/htop-dev/htop")
              (commit version)))
        (sha256
-        (base32 "10lp6cbfvigzp6pq5nwj3s3l4vs7cv92krz2r08nwrz8vl6rqdzp"))
+        (base32 "1ngvidaka6xbfb3l4zxmlksk2ms93fy3sb76w7917kjgn9mh53zz"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -652,14 +687,13 @@ memory, disks, network and processes.")
 (define-public bpytop
   (package
     (name "bpytop")
-    (version "1.0.63")
+    (version "1.0.67")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bpytop" version))
        (sha256
-        (base32
-         "0ql72s842g56rnzdqja6m53lw5y68c4gb540ihp1bjg7x9ycim11"))))
+        (base32 "1fwmiwvs8ax9az3hbp1p79x6m3wq73pn3vkbhcg9jvps4wv8wcwb"))))
     (build-system python-build-system)
     (inputs
      `(("python-psutil" ,python-psutil)))
@@ -674,19 +708,19 @@ memory, disks, network and processes.")
                                             (package-version python))
                                           "/site-packages/bpytop-themes")))
                (mkdir-p themes)
-               (copy-recursively "bpytop-themes" themes)))))))
+               (copy-recursively "themes" themes)))))))
     (home-page
      "https://github.com/aristocratos/bpytop")
     (synopsis "Resource monitor")
     (description "Resource monitor that shows usage and stats for processor,
-memory, disks, network and processes.  It's a Python port of
+memory, disks, network and processes.  It's a Python port and continuation of
 @command{bashtop}.")
     (license license:asl2.0)))
 
 (define-public pies
   (package
     (name "pies")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
@@ -694,7 +728,7 @@ memory, disks, network and processes.  It's a Python port of
                            version ".tar.bz2"))
        (sha256
         (base32
-         "11j168qljsinaj5dwmg7nkm2z1aghi6gc3d0wf0pikflnh2q2wqf"))))
+         "0ad5bg1czwmr4qw33aszxzc6ll99a9lfs32lyfb1wl5x9s1cc7az"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -791,6 +825,17 @@ hostname.")
 
        #:phases
        (modify-phases %standard-phases
+         ,@(if (%current-target-system)
+               '((add-before 'configure 'set-runtime-shell
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((shell (string-append
+                                   (assoc-ref inputs "bash")
+                                   "/bin/bash")))
+                       (setenv "RUNTIME_SHELL" shell)
+                       (substitute* "configure.ac"
+                         (("\\$SHELL")
+                          "$RUNTIME_SHELL"))))))
+               '())
          (add-before 'build 'set-nscd-file-name
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Use the right file name for nscd.
@@ -815,7 +860,10 @@ hostname.")
     (inputs
      `(,@(if (hurd-target?)
            '()
-           `(("linux-pam" ,linux-pam)))))
+           `(("linux-pam" ,linux-pam)))
+       ,@(if (%current-target-system)
+             `(("bash" ,bash-minimal))
+             '())))
     (home-page "https://github.com/shadow-maint/shadow")
     (synopsis "Authentication-related tools such as passwd, su, and login")
     (description
@@ -1108,7 +1156,7 @@ connection alive.")
 (define-public isc-dhcp
   (let* ((bind-major-version "9")
          (bind-minor-version "11")
-         (bind-patch-version "29")
+         (bind-patch-version "32")
          (bind-release-type "")         ; for patch release, use "-P"
          (bind-release-version "")      ; for patch release, e.g. "6"
          (bind-version (string-append bind-major-version
@@ -1120,14 +1168,15 @@ connection alive.")
                                       bind-release-version)))
     (package
       (name "isc-dhcp")
-      (version "4.4.2")
+      (version "4.4.2-P1")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://ftp.isc.org/isc/dhcp/"
                                     version "/dhcp-" version ".tar.gz"))
+                (patches (search-patches "isc-dhcp-gcc-compat.patch"))
                 (sha256
                  (base32
-                  "08a5003zdxgl41b29zjkxa92h2i40zyjgxg0npvnhpkfl5jcsz0s"))))
+                  "06jsr0cg5rsmyibshrpcb9za0qgwvqccashdma7mlm1rflrh8pmh"))))
       (build-system gnu-build-system)
       (arguments
        `(#:parallel-build? #f
@@ -1199,7 +1248,11 @@ connection alive.")
                            "--owner=root:0"
                            "--group=root:0")))))
            (add-after 'install 'post-install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; TODO(core-updates): native-inputs isn't required anymore.
+             (lambda* (#:key ,@(if (%current-target-system)
+                                   '(native-inputs)
+                                   '())
+                       inputs outputs #:allow-other-keys)
                ;; Install the dhclient script for GNU/Linux and make sure
                ;; if finds all the programs it needs.
                (let* ((out       (assoc-ref outputs "out"))
@@ -1224,6 +1277,19 @@ connection alive.")
                              (string-append dir "/bin:"
                                             dir "/sbin"))
                            (list inetutils net-tools coreutils sed))))
+                 ;; TODO(core-updates): should not be required anymore,
+                 ;; once <https://issues.guix.gnu.org/49290> has been merged.
+                 ,@(if (%current-target-system)
+                       '((for-each
+                          (lambda (file)
+                            (substitute* file
+                              (((assoc-ref native-inputs "bash"))
+                               (assoc-ref inputs "bash"))))
+                          (list (string-append libexec
+                                               "/dhclient-script")
+                                (string-append libexec
+                                               "/.dhclient-script-real"))))
+                       '())
                  #t))))))
 
       (native-inputs
@@ -1231,6 +1297,11 @@ connection alive.")
          ("file" ,file)))
 
       (inputs `(("inetutils" ,inetutils)
+                ;; TODO(core-updates): simply make this unconditional
+                ,@(if (%current-target-system)
+                      ;; for wrap-program
+                      `(("bash" ,(canonical-package bash-minimal)))
+                      '())
                 ,@(if (hurd-target?) '()
                       `(("net-tools" ,net-tools)
                         ("iproute" ,iproute)))
@@ -1245,12 +1316,12 @@ connection alive.")
                                         "/bind-" bind-version ".tar.gz"))
                     (sha256
                      (base32
-                      "01vvkvlhsxz4ffz2fw86z0fsf170b93jjnn5710ai6vfri8wgfy7"))))
+                      "0hhkb4d14hvly2751cxl2s2xyim3bri8qaisgkcm456xfi5wpy6b"))))
 
                 ("coreutils*" ,coreutils)
                 ("sed*" ,sed)))
 
-      (home-page "https://www.isc.org/products/DHCP/")
+      (home-page "https://www.isc.org/dhcp/")
       (synopsis "Dynamic Host Configuration Protocol (DHCP) tools")
       (description
        "ISC's Dynamic Host Configuration Protocol (DHCP) distribution provides a
@@ -1259,24 +1330,64 @@ tools: server, client, and relay agent.")
       (license license:mpl2.0)
       (properties '((cpe-name . "dhcp"))))))
 
+(define-public radvd
+  (package
+    (name "radvd")
+    (version "2.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/radvd-project/radvd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1df827m3vkjq2bcs5y9wg2cygvpdwl8ppl446qqhyym584gz54nl"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("bison" ,bison)
+       ("check" ,check)
+       ("flex" ,flex)
+       ("pkg-config" ,pkg-config)))
+    (arguments
+     `(#:configure-flags '("--with-check")))
+    (home-page "https://radvd.litech.org/")
+    (synopsis "IPv6 Router Advertisement Daemon")
+    (description
+     "The Router Advertisement Daemon (radvd) is run on systems acting as IPv6
+routers.  It sends Router Advertisement messages specified by RFC 2461
+periodically and when requested by a node sending a Router Solicitation
+message.  These messages are required for IPv6 stateless autoconfiguration.")
+    (license (license:non-copyleft "file://COPYRIGHT"))))
+
 (define-public libpcap
   (package
     (name "libpcap")
-    (version "1.10.0")
+    (version "1.10.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.tcpdump.org/release/libpcap-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "07ibr6zzfh1wk5gqcbnlyh6v0dfmhpfd0fqj5y3yxvzf4ckb84ld"))))
+                "1m5x26vlbymp90k1qh0w3nj2nxzyvfrmfmwpj17k81dgri55ya7d"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("bison" ,bison)
        ("flex" ,flex)))
     (arguments
      ;; There are some tests in testprogs/, but no automated test suite.
-     '(#:tests? #f))
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'omit-static-library
+           ;; Neither build nor install libpcap.a.
+           (lambda _
+             (substitute* "Makefile.in"
+               ((" libpcap\\.a") "")
+               ((" install-archive ") " ")))))))
     (home-page "https://www.tcpdump.org")
     (synopsis "Network packet capture library")
     (description
@@ -1290,14 +1401,14 @@ network statistics collection, security monitoring, network debugging, etc.")
 (define-public tcpdump
   (package
     (name "tcpdump")
-    (version "4.99.0")
+    (version "4.99.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.tcpdump.org/release/tcpdump-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0hmqh2fx8rgs9v1mk3vpywj61xvkifz260q685xllxr8jmxg3wlc"))))
+                "1ghfs5gifzrk3813zf9zalfbjs70wg6llz6q31k180r7zf2nkcvr"))))
     (build-system gnu-build-system)
     (inputs `(("libpcap" ,libpcap)
               ("openssl" ,openssl)))
@@ -1559,7 +1670,7 @@ system administrator.")
 (define-public sudo
   (package
     (name "sudo")
-    (version "1.9.6p1")
+    (version "1.9.8p2")
     (source (origin
               (method url-fetch)
               (uri
@@ -1569,12 +1680,11 @@ system administrator.")
                                     version ".tar.gz")))
               (sha256
                (base32
-                "146alf6cwnzjcckia8m0ibcj9ram2z469f5z7v6vkzpsb30cvsd9"))
+                "0b8gd15l2g22w4fhhz0gzmq5c8370klanmy2c1p3px6yly6qnfwy"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (delete-file-recursively "lib/zlib")
-                  #t))))
+                  (delete-file-recursively "lib/zlib")))))
     (build-system gnu-build-system)
     (outputs (list "out"))
     (arguments
@@ -1627,8 +1737,7 @@ system administrator.")
              ;; not the task of the build system, and fails.
              (substitute* "plugins/sudoers/Makefile.in"
                (("^pre-install:" match)
-                (string-append match "\ndisabled-" match)))
-             #t)))
+                (string-append match "\ndisabled-" match))))))
 
        ;; XXX: The 'testsudoers' test series expects user 'root' to exist, but
        ;; the chroot's /etc/passwd doesn't have it.  Turn off the tests.
@@ -1672,18 +1781,27 @@ commands and their arguments.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'pre-configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "GNUmakefile"
+               (("^\tchown.*$") ""))
+             ;; OpenDoas look for binaries in safepath when a rule specify a
+             ;; relative command, such as “permit keepenv :wheel cmd guix”.
+             (substitute* "doas.c"
+               (("safepath =" match)
+                (string-append match " \""
+                               "/run/setuid-programs:"
+                               "/run/current-system/profile/bin:"
+                               "/run/current-system/profile/sbin:"
+                               "\" ")))
+             #t))
          (replace 'configure
            ;; The configure script doesn't accept most of the default flags.
            (lambda* (#:key configure-flags #:allow-other-keys)
              ;; The configure script can be told which compiler to use only
              ;; through environment variables.
              (setenv "CC" ,(cc-for-target))
-             (apply invoke "./configure" configure-flags)))
-         (add-before 'install 'fix-makefile
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "GNUmakefile"
-               (("^\tchown.*$") ""))
-             #t)))
+             (apply invoke "./configure" configure-flags))))
        #:configure-flags
        (list (string-append "--prefix=" (assoc-ref %outputs "out"))
              "--with-timestamp")
@@ -1839,7 +1957,7 @@ command.")
   (package
     (inherit wpa-supplicant)
     (name "wpa-supplicant-gui")
-    (inputs `(("qtbase" ,qtbase)
+    (inputs `(("qtbase" ,qtbase-5)
               ("qtsvg" ,qtsvg)
               ,@(package-inputs wpa-supplicant)))
     (native-inputs
@@ -2027,7 +2145,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
 (define-public acpica
   (package
     (name "acpica")
-    (version "20210331")
+    (version "20210730")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2035,7 +2153,7 @@ module slots, and the list of I/O ports (e.g. serial, parallel, USB).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1h98pvc9iy1c49cid0ppjwk5zsy2m1xbvfqb72pkwkrd4rn35arx"))))
+                "02z0492vrpk001m7xcy72lp7sd968lja3wp6jn3q6k9nm46h4v7h"))))
     (build-system gnu-build-system)
     (native-inputs `(("flex" ,flex)
                      ("bison" ,bison)))
@@ -2110,7 +2228,7 @@ system is under heavy load.")
 (define-public detox
   (package
     (name "detox")
-    (version "1.3.3")
+    (version "1.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2119,21 +2237,23 @@ system is under heavy load.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13mhs62m7bpff45liy65pajq5jg3i12jj90vwdkra94z9mlr2rlz"))))
+                "116bgpbkh3c96h6vq0880rmnpb5kbnnlvvkpsrcib6928bj8lfvi"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
        ("flex" ,flex)))
     (arguments
-     `(#:tests? #f                    ;no 'check' target
-       #:phases (modify-phases %standard-phases
+     `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'delete-configure
                     ;; The "configure" script is present, but otherwise the
                     ;; project is not bootstrapped: missing install-sh and
                     ;; Makefile.in, so delete it so the bootstrap phase will
                     ;; take over.
-                    (lambda _ (delete-file "configure") #t)))))
+                    (lambda _ (delete-file "configure") #t))
+                  (replace 'check
+                    (lambda _
+                      (invoke "./tests/test.sh" "src/detox"))))))
     (home-page "https://github.com/dharple/detox")
     (synopsis "Clean up file names")
     (description
@@ -2382,40 +2502,29 @@ Statsd, Librato and InfluxDB.  Graphios can emit Nagios metrics to any number
 of supported upstream metrics systems simultaneously.")
    (license license:gpl2+)))
 
-(define-public ansible
+(define-public ansible-core
   (package
-    (name "ansible")
-    (version "2.9.18")
+    (name "ansible-core")
+    (version "2.11.4")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "ansible" version))
+       (uri (pypi-uri "ansible-core" version))
        (sha256
-        (base32 "0g6rsnh02zq5nizamgakl2wvgz7hk1lpnjn9akldrcpa55vygzjm"))))
+        (base32
+         "0jgahcv2pyc5ky0wir55a1h9q9d6rgqj60rqmvlpbj76vz1agsi2"))))
     (build-system python-build-system)
-    (native-inputs
-     `(("python-bcrypt" ,python-bcrypt)
-       ("python-pynacl" ,python-pynacl)
-       ("python-httplib2" ,python-httplib2)
-       ("python-passlib" ,python-passlib)
-       ("python-nose" ,python-nose)
-       ("python-mock" ,python-mock)
-       ("python-jinja2" ,python-jinja2)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-paramiko" ,python-paramiko)))
-    (inputs
-     `(("python-cryptography" ,python-cryptography)
-       ("python-jinja2" ,python-jinja2)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-paramiko" ,python-paramiko)))
     (arguments
-     `(#:phases
+     `(#:modules ((guix build python-build-system)
+                  (guix build utils)
+                  (ice-9 ftw))
+       #:phases
        (modify-phases %standard-phases
          ;; Several ansible commands (ansible-config, ansible-console, etc.)
-         ;; are just symlinks to a single ansible executable. The ansible
-         ;; executable behaves differently based on the value of
-         ;; sys.argv[0]. This does not work well with our wrap phase, and
-         ;; therefore the following two phases are required as a workaround.
+         ;; are just symlinks to a single ansible executable.  The ansible
+         ;; executable behaves differently based on the value of sys.argv[0].
+         ;; This does not work well with our wrap phase, and therefore the
+         ;; following two phases are required as a workaround.
          (add-after 'unpack 'hide-wrapping
            (lambda _
              ;; Overwrite sys.argv[0] to hide the wrapper script from it.
@@ -2424,27 +2533,138 @@ of supported upstream metrics systems simultaneously.")
                 (string-append all "
 import re
 sys.argv[0] = re.sub(r'\\.([^/]*)-real$', r'\\1', sys.argv[0])
-")))
-             #t))
+")))))
          (add-after 'install 'replace-symlinks
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Replace symlinks with duplicate copies of the ansible
-             ;; executable.
-             (let ((out (assoc-ref outputs "out")))
+             ;; executable so that sys.argv[0] has the correct value.
+             (define bin (string-append (assoc-ref outputs "out") "/bin"))
+             (with-directory-excursion bin
                (for-each
-                (lambda (subprogram)
-                  (delete-file (string-append out "/bin/ansible-" subprogram))
-                  (copy-file (string-append out "/bin/ansible")
-                             (string-append out "/bin/ansible-" subprogram)))
-                (list "config" "console" "doc" "galaxy"
-                      "inventory" "playbook" "pull" "vault")))
-             #t)))))
+                (lambda (ansible-symlink)
+                  (delete-file ansible-symlink)
+                  (copy-file "ansible" ansible-symlink))
+                (scandir "." (lambda (x)
+                               (and (eq? 'symlink (stat:type (lstat x)))
+                                    (string-prefix? "ansible-" x)
+                                    (string=? "ansible" (readlink x)))))))))
+         (add-after 'unpack 'preserve-pythonpath
+           (lambda _
+             (substitute* "test/lib/ansible_test/_internal/ansible_util.py"
+               (("PYTHONPATH=get_ansible_python_path\\(args\\)" all)
+                (string-append all "+ ':' + os.environ['PYTHONPATH']")))))
+         (add-after 'unpack 'patch-paths
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "lib/ansible/module_utils/compat/selinux.py"
+               (("libselinux.so.1" name)
+                (string-append (assoc-ref inputs "libselinux")
+                               "/lib/" name)))
+             (substitute* "test/units/modules/test_async_wrapper.py"
+               (("/usr/bin/python")
+                (which "python")))))
+         (replace 'check
+           ;; The environment for the test suite can be tricky to get right.
+           ;; The environment used for Ansible's CI defined in the following
+           ;; Dockerfile can be used as a reference:
+           ;; https://raw.githubusercontent.com/ansible/
+           ;; default-test-container/master/Dockerfile.
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               ;; Otherwise Ansible fails to create its config directory.
+               (setenv "HOME" "/tmp")
+               (setenv "PATH" (string-append (getenv "PATH") ":"
+                                             (assoc-ref outputs "out") "/bin"))
+               (add-installed-pythonpath inputs outputs)
+               ;; This test module messes up with sys.path and causes many
+               ;; test failures.
+               (delete-file "test/units/_vendor/test_vendor.py")
+               ;; The test fails when run in the container, for reasons
+               ;; unknown.
+               (delete-file "test/units/utils/test_display.py")
+               ;; This test fail for reasons unknown.
+               (delete-file "test/units/cli/test_adhoc.py")
+               ;; The test suite needs to be run with 'ansible-test', which
+               ;; does some extra environment setup.  Taken from
+               ;; https://raw.githubusercontent.com/ansible/ansible/\
+               ;; devel/test/utils/shippable/shippable.sh.
+               (invoke "ansible-test" "units" "-v")))))))
+    (native-inputs
+     `(("openssh" ,openssh)
+       ("openssl" ,openssl)
+       ("python-mock" ,python-mock)
+       ("python-pycrypto" ,python-pycrypto)
+       ("python-pytest" ,python-pytest)
+       ("python-pytest-forked" ,python-pytest-forked)
+       ("python-pytest-mock" ,python-pytest-mock)
+       ("python-pytest-xdist" ,python-pytest-xdist)
+       ("python-pytz" ,python-pytz)))
+    (inputs                    ;optional dependencies captured in wrap scripts
+     `(("libselinux" ,libselinux)
+       ("python-paramiko" ,python-paramiko)
+       ("python-passlib" ,python-passlib)
+       ("python-pexpect" ,python-pexpect)
+       ("sshpass" ,sshpass)))
+    (propagated-inputs      ;core dependencies listed in egg-info/requires.txt
+     `(("python-cryptography" ,python-cryptography)
+       ("python-jinja2" ,python-jinja2)
+       ("python-pyyaml" ,python-pyyaml)
+       ("python-packaging" ,python-packaging) ;for version number parsing
+       ("python-resolvelib" ,python-resolvelib-0.5)))
     (home-page "https://www.ansible.com/")
     (synopsis "Radically simple IT automation")
-    (description "Ansible is a radically simple IT automation system.  It
-handles configuration management, application deployment, cloud provisioning,
-ad hoc task execution, and multinode orchestration---including trivializing
-things like zero-downtime rolling updates with load balancers.")
+    (description "Ansible aims to be a radically simple IT automation system.
+It handles configuration management, application deployment, cloud
+provisioning, ad-hoc task execution, network automation, and multi-node
+orchestration.  Ansible facilitates complex changes like zero-downtime rolling
+updates with load balancers.  This package is the core of Ansible, which
+provides the following commands:
+@itemize
+@item ansible
+@item ansible-config
+@item ansible-connection
+@item ansible-console
+@item ansible-doc
+@item ansible-galaxy
+@item ansible-inventory
+@item ansible-playbook
+@item ansible-pull
+@item ansible-test
+@item ansible-vault
+@end itemize")
+    (license license:gpl3+)))
+
+(define-public ansible
+  (package
+    (name "ansible")
+    (version "4.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ansible" version))
+       (sha256
+        (base32 "031n22j0lsmh69x6i6gkva81j68b4yzh1pbg3q2h4bknl85q46ag"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("ansible-core" ,ansible-core)))
+    ;; The Ansible collections are found by ansible-core via PYTHONPATH; the
+    ;; following search path ensures that they are found even when Python is
+    ;; not present in the profile.
+    (native-search-paths
+     ;; XXX: Attempting to use (package-native-search-paths python)
+     ;; here would cause an error about python being an unbound
+     ;; variable in the tests/cpan.scm test.
+     (list (search-path-specification
+            (variable "PYTHONPATH")
+            (files (list "lib/python3.8/site-packages")))))
+    (home-page "https://www.ansible.com/")
+    (synopsis "Radically simple IT automation")
+    (description "Ansible aims to be a radically simple IT automation system.
+It handles configuration management, application deployment, cloud
+provisioning, ad-hoc task execution, network automation, and multi-node
+orchestration.  Ansible facilitates complex changes like zero-downtime rolling
+updates with load balancers.  This package provides a curated set of
+community-maintained Ansible collections, which contain playbooks, roles,
+modules and plugins that extend Ansible.")
     (license license:gpl3+)))
 
 (define-public debops
@@ -2803,14 +3023,14 @@ done with the @code{auditctl} utility.")
 (define-public nmap
   (package
     (name "nmap")
-    (version "7.80")
+    (version "7.91")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nmap.org/dist/nmap-" version
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1aizfys6l9f9grm82bk878w56mg0zpkfns3spzj157h98875mypw"))
+                "001kb5xadqswyw966k2lqi6jr6zz605jpp9w4kmm272if184pk0q"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2886,6 +3106,7 @@ tool.  It is also useful for tasks such as network inventory, managing service
 upgrade schedules, and monitoring host or service uptime.  It also provides an
 advanced netcat implementation (ncat), a utility for comparing scan
 results (ndiff), and a packet generation and response analysis tool (nping).")
+    ;; See <https://github.com/nmap/nmap/issues/2199#issuecomment-792048244>.
     ;; This package uses nmap's bundled versions of libdnet and liblinear, which
     ;; both use a 3-clause BSD license.
     (license (list license:nmap license:bsd-3))))
@@ -3035,7 +3256,7 @@ produce uniform output across heterogeneous networks.")
      `(#:tests? #f                      ; no tests
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "CC=gcc")
+             ,(string-append "CC=" (cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))         ; no configure script
@@ -3305,7 +3526,7 @@ buffers.")
 (define-public igt-gpu-tools
   (package
     (name "igt-gpu-tools")
-    (version "1.25")
+    (version "1.26")
     (source
      (origin
        (method git-fetch)
@@ -3314,7 +3535,7 @@ buffers.")
              (commit (string-append "igt-gpu-tools-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lvhkdhilw0fn4nzkpfwvrhiv8d92h811qs2v6ac3p5w7v86a9zm"))))
+        (base32 "0m124pqv7zna25jnvk566c4kk628jr0w8mgnp8mr5xqz9cprgczm"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f))            ; many of the tests try to load kernel modules
@@ -3343,52 +3564,6 @@ low-level tools and tests specifically for development and testing of the
 Intel DRM Driver.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:expat)))
-
-(define-public fabric
-  (package
-    (name "fabric")
-    (version "1.14.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Fabric" version))
-       (sha256
-        (base32
-         "1a3ndlpdw6bhn8fcw1jgznl117a8pnr84az9rb5fwnrypf1ph2b6"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:python ,python-2               ; Python 2 only
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke
-              "nosetests" "-v" "tests/"
-              ;; This test hangs indefinitely when run on a single core VM
-              ;; (see GNU bug #26647 and Debian bug #850230).
-              "--exclude=test_nested_execution_with_explicit_ports"
-              ;; This test randomly fails in certain environments causing too
-              ;; much noise to be useful (see Debian bug #854686).
-              "--exclude=test_should_use_sentinel_for_tasks_that_errored"))))))
-    (native-inputs
-     `(("python2-fudge" ,python2-fudge) ; Requires < 1.0
-       ("python2-jinja2" ,python2-jinja2) ; Requires < 3.0
-       ("python2-nose" ,python2-nose) ; Requires < 2.0
-       ("python2-pynacl" ,python2-pynacl)
-       ("python2-bcrypt" ,python2-bcrypt)))
-    (propagated-inputs
-     `(("python2-paramiko" ,python2-paramiko)))
-    (home-page "https://www.fabfile.org/")
-    (synopsis "Simple Pythonic remote execution and deployment tool")
-    (description
-     "Fabric is designed to upload files and run shell commands on a number of
-servers in parallel or serially.  These commands are grouped in tasks (which
-are regular Python functions) and specified in a @dfn{fabfile}.
-
-It is similar to Capistrano, except it's implemented in Python and doesn't
-expect you to be deploying Rails applications.  Fabric is a simple, Pythonic
-tool for remote execution and deployment.")
-    (license license:bsd-2)))
 
 (define-public neofetch
   (package
@@ -3567,14 +3742,14 @@ information tool.")
 (define-public nnn
   (package
     (name "nnn")
-    (version "3.6")
+    (version "4.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jarun/nnn/releases/download/v"
                            version "/nnn-v" version ".tar.gz"))
        (sha256
-        (base32 "1dbq16cdipij5ws59ab3alfmxli7n4wx28ip7gsyq8ncxg598l47"))))
+        (base32 "1fnf35s3b2nfp18s712n5vhg6idx4rfgwdfv74nc2933v9l2dq7h"))))
     (build-system gnu-build-system)
     (inputs
      `(("ncurses" ,ncurses)
@@ -3585,33 +3760,26 @@ information tool.")
      `(#:tests? #f                      ; no tests
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'unpack 'patch-pkg-config
-           (lambda _
-             (substitute* "Makefile"
-               (("pkg-config")
-                (or (which "pkg-config")
-                    (string-append ,(%current-target-system)
-                                   "-pkg-config"))))
-             #t)))
+         (delete 'configure))           ; no configure script
        #:make-flags
        (list
         (string-append "PREFIX="
                        (assoc-ref %outputs "out"))
-        (string-append "CC=" ,(cc-for-target)))))
+        (string-append "CC=" ,(cc-for-target))
+        (string-append "PKG_CONFIG=" ,(pkg-config-for-target)))))
     (home-page "https://github.com/jarun/nnn")
     (synopsis "Terminal file browser")
-    (description "@command{nnn} is a fork of @command{noice}, a blazing-fast
-lightweight terminal file browser with easy keyboard shortcuts for
-navigation, opening files and running tasks.  There is no config file and
-mime associations are hard-coded.  The incredible user-friendliness and speed
-make it a perfect utility on modern distros.")
+    (description
+     "@command{nnn} is a fork of @command{noice}, a fast and minimal text
+terminal file browser with keyboard shortcuts for navigation, opening files and
+running tasks.  There is no configuration file and MIME associations are
+hard-coded.")
     (license license:bsd-2)))
 
 (define-public thermald
   (package
     (name "thermald")
-    (version "2.4.3")
+    (version "2.4.6")
     (source
      (origin
       (method git-fetch)
@@ -3620,7 +3788,7 @@ make it a perfect utility on modern distros.")
              (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1ibihgpmx038xci0k2h471scs5ssn7z5kcvjrfz63qf2ppdf9yh8"))))
+       (base32 "1lgaky8cmxbi17zpymy2v9wgknx1g92bq50j6kfpsm8qgb7djjb6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3634,13 +3802,7 @@ make it a perfect utility on modern distros.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'no-early-./configure
            (lambda _
-             (setenv "NO_CONFIGURE" "yet")
-             ;; XXX thd_trip_point.h redefines "__STDC_LIMIT_MACROS" after
-             ;; <xz>/include/lzma.h.  ./configure forcibly appends -Werror
-             ;; to CXXFLAGS, overriding any -Wno-error we'd add.
-             (substitute* "configure.ac"
-               (("-Werror") ""))
-             #t)))))
+             (setenv "NO_CONFIGURE" "yet"))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("autoconf-archive" ,autoconf-archive)
@@ -3809,7 +3971,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.03-1")
+      (version "3.3.06-1")
       (source
        (origin
          (method git-fetch)
@@ -3818,7 +3980,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "1pahns10i5farw47v9v8cykrk5arq8218vpsa8c0bmaia0rf2n1q"))))
+          (base32 "1qk40iyrdp52vmbiqwxicvlcycm2v2bf1gg4lzq0b4619sd6d1m7"))))
       (build-system trivial-build-system)
       (inputs
        `(("bash" ,bash-minimal)
@@ -4019,7 +4181,7 @@ cache of unix and unix-like systems.")
 (define-public solaar
   (package
     (name "solaar")
-    (version "1.0.5")
+    (version "1.0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4028,7 +4190,7 @@ cache of unix and unix-like systems.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17gkr2lf1kzp1198gcdr30j3c8xd81kg7ly12aar1jrgi6lc7klk"))))
+                "04zclzfc31l2fj5shcsngnmcvcmmhnc567l3wb9yfhs8k39k9kb2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -4057,7 +4219,7 @@ Logitech Unifying Receiver.")
   (package
     (name "lynis")
     ;; Also update the ‘lynis-sdk’ input to the commit matching this release.
-    (version "3.0.3")
+    (version "3.0.5")
     (source
      (origin
        (method git-fetch)
@@ -4066,7 +4228,7 @@ Logitech Unifying Receiver.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sdjh2f1563qalp740vkaaxdxl56ny98h168cggpm10h2yq366gr"))
+        (base32 "11kl54hbvjl7q2i1jz8a726vlkdmknvbp4zac3j4fgljg27qp410"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4083,10 +4245,10 @@ Logitech Unifying Receiver.")
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/CISOfy/lynis-sdk")
-                 (commit "ea7a39774fbd71113a1955cf1a4937b489935174")))
+                 (commit "99f79c4deb4cb2221d7fccfe82baf58c0a55b9e7")))
            (file-name (git-file-name "lynis-sdk" version))
            (sha256
-            (base32 "0q5j2myshjkz9qwvcg8n7c33yw2cp80yvzhckd60qmzabv4g4qb5"))))))
+            (base32 "1nc2rhzj6l08d2mnjrzkm4mxla1mjkddcxl8n05c1kdz9ycn6cpl"))))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -4253,7 +4415,7 @@ file-types for easier parsing in scripts.")
 (define-public jtbl
   (package
     (name "jtbl")
-    (version "1.1.6")
+    (version "1.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4262,7 +4424,7 @@ file-types for easier parsing in scripts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zzd7rd63xva50f22d1rfja4r302aizrafarhwm67vv181swvdya"))))
+                "19i21fqz2m40cds9pb17brjxkczqagmx2f7mfb0xdvbygaply5wz"))))
     (build-system python-build-system)
     (inputs
      `(("python-tabulate" ,python-tabulate)))
@@ -4391,14 +4553,14 @@ Netgear devices.")
 (define-public atop
   (package
     (name "atop")
-    (version "2.5.0")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.atoptool.nl/download/atop-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0crzz4i2nabyh7d6xg7fvl65qls87nbca5ihidp3nijhrrbi14ab"))))
+                "0wlg0n0h9vwpjp2dcb623jvvqck422jrjpq9mbpzg4hnawxcmhly"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no test suite
@@ -4590,3 +4752,49 @@ the XMODEM/YMODEM/ZMODEM file transfer protocols.")
 setup, maintenance, supervision, or any long-running processes.")
     (home-page "https://github.com/leahneukirchen/nq")
     (license license:public-domain)))
+
+(define-public lsofgraph
+  (let ((commit "1d414bdc727c00a8c6cbfffc3c43128c60d6f0de")
+        (revision "1"))
+    (package
+      (name "lsofgraph")
+      (version (git-version "0.0.1" revision commit)) ;no upstream release
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zevv/lsofgraph")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "058x04yp6bc77hbl3qchqm7pa8f9vqfl9jryr88m8pzl7kvpif54"))))
+      (build-system trivial-build-system)
+      (inputs
+       `(("lua" ,lua)))
+      (arguments
+       `(#:modules ((guix build utils))
+         #:builder
+         (begin
+           (use-modules (guix build utils))
+           ;; copy source
+           (copy-recursively (assoc-ref %build-inputs "source") ".")
+           ;; patch-shebang phase
+           (setenv "PATH"
+                   (string-append (assoc-ref %build-inputs "lua") "/bin"
+                                  ":" (getenv "PATH")))
+           (substitute* "lsofgraph"
+             (("#!/usr/bin/env lua")
+              (string-append "#!" (which "lua"))))
+           ;; install phase
+           (install-file "lsofgraph" (string-append %output "/bin"))
+           (let ((doc (string-append
+                       %output "/share/doc/" ,name "-" ,version)))
+             (mkdir-p doc)
+             (install-file "LICENSE" doc)
+             (install-file "README.md" doc))
+           #t)))
+      (home-page "https://github.com/zevv/lsofgraph")
+      (synopsis "Convert @code{lsof} output to @code{graphviz}")
+      (description "Utility to convert @code{lsof} output to a graph showing
+FIFO and UNIX interprocess communication.")
+      (license license:bsd-2))))

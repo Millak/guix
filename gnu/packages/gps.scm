@@ -7,7 +7,6 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -85,7 +84,7 @@
     (inputs
      `(("expat" ,expat)
        ("libusb" ,libusb)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)))
     (native-inputs
      `(("which" ,which)
@@ -149,7 +148,7 @@ between two other data points.")
 (define-public gama
   (package
     (name "gama")
-    (version "2.14")
+    (version "2.15")
     (source
       (origin
         (method url-fetch)
@@ -157,7 +156,7 @@ between two other data points.")
                             version ".tar.gz"))
         (sha256
          (base32
-          "04mhbgpqbynnmm8ww4k2yk1w2j66c276dns9xwn8cvrq58kjimln"))
+          "1lsa7k9anxla2r3wxzg2yhxgxlp8xibz56gaxhgf5rd3mzf51flx"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -171,7 +170,7 @@ between two other data points.")
     (inputs
      `(("expat" ,expat)
        ("sqlite" ,sqlite)))
-    (home-page "https://www.gnu.org/software/gama")
+    (home-page "https://www.gnu.org/software/gama/")
     (synopsis "Adjustment of geodetic networks")
     (description
      "GNU Gama is a program for the adjustment of geodetic networks.  It is
@@ -207,7 +206,7 @@ coordinates as well as partial support for adjustments in global coordinate syst
                      (string-append "PREFIX="
                                     (assoc-ref outputs "out"))))))))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (native-inputs
      `(("qttools" ,qttools)))
     (home-page "https://www.gpxsee.org")
@@ -222,14 +221,14 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
 (define-public gpsd
   (package
     (name "gpsd")
-    (version "3.21")
+    (version "3.23")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download-mirror.savannah.gnu.org"
-                           "/releases/gpsd/gpsd-" version ".tar.gz"))
+                           "/releases/gpsd/gpsd-" version ".tar.xz"))
        (sha256
-        (base32 "14gyqrbrq6jz4y6x59rdpv9d4c3pbn0vh1blq3iwrc6kz0x4ql35"))))
+        (base32 "1px9im0qfn8k7mnvjcw5myakzd7mad2drwyzji400hpwyswjjr73"))))
     (build-system scons-build-system)
     (native-inputs
      `(("bc" ,bc)
@@ -246,7 +245,7 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
        ("python-pygobject" ,python-pygobject)
        ("python-pyserial" ,python-pyserial)
        ("python-wrapper" ,python-wrapper)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (arguments
      `(#:scons-flags
        (list (string-append "prefix=" %output)
@@ -259,7 +258,8 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-build
            (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "SConstruct"
+             (setenv "TAR" "noop")
+             (substitute* "SConscript"
                (("envs = \\{\\}")
                 "envs = os.environ"))
              #t))

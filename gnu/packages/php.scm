@@ -28,6 +28,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
@@ -35,7 +36,6 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
-  #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -60,7 +60,7 @@
 (define-public php
   (package
     (name "php")
-    (version "7.4.16")
+    (version "7.4.22")
     (home-page "https://secure.php.net/")
     (source (origin
               (method url-fetch)
@@ -68,7 +68,7 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "12xr7w2mk8ab3igvbpi94ks2xfw2nqga9a6nxs94rvcdz3xcw5hw"))
+                "1s5xjy1cchlg0vfxic73wy2wip8spfjr094hzzyc76plsbbqq1wf"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -104,6 +104,7 @@
                ;; now uses the Aspell library.
                (with "--with-pspell" "aspell")
                (with "--with-readline" "readline")
+               (with "--with-sodium" "libsodium")
                (with "--with-sqlite3" "sqlite")
                (with "--with-tidy" "tidy")
                (with "--with-xsl" "libxslt")
@@ -144,13 +145,11 @@
              ;; This file has ISO-8859-1 encoding.
              (with-fluids ((%default-port-encoding "ISO-8859-1"))
                (substitute* "main/build-defs.h.in"
-                 (("@CONFIGURE_COMMAND@") "(omitted)")))
-             #t))
+                 (("@CONFIGURE_COMMAND@") "(omitted)")))))
          (add-before 'build 'patch-/bin/sh
            (lambda _
              (substitute* '("run-tests.php" "ext/standard/proc_open.c")
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-before 'check 'prepare-tests
            (lambda _
              ;; Some of these files have ISO-8859-1 encoding, whereas others
@@ -325,7 +324,9 @@
                          ;; Expects an Array with 3 preg_matches; gets 0.
                          "ext/pcre/tests/bug79846.phpt"
                          ;; Expects an empty Array; gets one with " " in it.
-                         "ext/pcre/tests/bug80118.phpt"))
+                         "ext/pcre/tests/bug80118.phpt"
+                         ;; Renicing a process fails in the build environment.
+                         "ext/standard/tests/general_functions/proc_nice_basic.phpt"))
 
              ;; Accomodate two extra openssl errors flanking the expected one:
              ;; random number generator:RAND_{load,write}_file:Cannot open file
@@ -341,8 +342,7 @@
              (setenv "REPORT_EXIT_STATUS" "1")
              ;; Skip tests requiring I/O facilities that are unavailable in the
              ;; build environment
-             (setenv "SKIP_IO_CAPTURE_TESTS" "1")
-             #t)))
+             (setenv "SKIP_IO_CAPTURE_TESTS" "1"))))
        #:test-target "test"))
     (inputs
      `(("aspell" ,aspell)
@@ -357,6 +357,7 @@
        ("icu4c" ,icu4c)
        ("libgcrypt" ,libgcrypt)
        ("libpng" ,libpng)
+       ("libsodium" ,libsodium)
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("libx11" ,libx11)
@@ -373,7 +374,7 @@
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("bison" ,bison)
-       ("intltool" ,intltool)
+       ("gettext" ,gettext-minimal)
        ("procps" ,procps)))             ; for tests
     (synopsis "PHP programming language")
     (description

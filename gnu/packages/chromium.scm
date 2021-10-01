@@ -97,7 +97,6 @@
     "third_party/angle/src/common/third_party/base" ;BSD-3
     "third_party/angle/src/common/third_party/smhasher" ;Public domain
     "third_party/angle/src/common/third_party/xxhash" ;BSD-2
-    "third_party/angle/src/third_party/compiler" ;BSD-2
     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
     "third_party/angle/src/third_party/trace_event" ;BSD-3
     "third_party/angle/src/third_party/volk" ;Expat
@@ -111,7 +110,10 @@
     "third_party/catapult" ;BSD-3
     "third_party/catapult/common/py_vulcanize/third_party/rcssmin" ;ASL2.0
     "third_party/catapult/common/py_vulcanize/third_party/rjsmin" ;ASL2.0
+    "third_party/catapult/third_party/beautifulsoup4" ;Expat
+    "third_party/catapult/third_party/html5lib-python" ;Expat
     "third_party/catapult/third_party/polymer" ;BSD-3
+    "third_party/catapult/third_party/six" ;Expat
     ;; XXX: This is a minified version of <https://d3js.org/>.
     "third_party/catapult/tracing/third_party/d3" ;BSD-3
     "third_party/catapult/tracing/third_party/gl-matrix" ;Expat
@@ -138,7 +140,7 @@
     "third_party/devtools-frontend/src/front_end/third_party/axe-core" ;MPL2.0
     "third_party/devtools-frontend/src/front_end/third_party/chromium" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/codemirror" ;Expat
-    "third_party/devtools-frontend/src/front_end/third_party/fabricjs" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party/diff" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/lighthouse" ;ASL2.0
@@ -150,14 +152,20 @@
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/typescript" ;ASL2.0
     "third_party/dom_distiller_js" ;BSD-3
+    "third_party/eigen3" ;MPL2.0
     "third_party/emoji-segmenter" ;ASL2.0
+    "third_party/farmhash" ;Expat
+    "third_party/fdlibm" ;non-copyleft
+    "third_party/fft2d" ;non-copyleft
     "third_party/flatbuffers" ;ASL2.0
     "third_party/fusejs" ;ASL2.0
+    "third_party/gemmlowp" ;ASL2.0
     "third_party/google_input_tools" ;ASL2.0
     "third_party/google_input_tools/third_party/closure_library" ;ASL2.0
     "third_party/google_input_tools/third_party/closure_library/third_party/closure" ;Expat
     "third_party/googletest" ;BSD-3
     "third_party/harfbuzz-ng" ;Expat
+    "third_party/highway" ;ASL2.0
     "third_party/hunspell" ;MPL1.1/GPL2+/LGPL2.1+
     "third_party/iccjpeg" ;IJG
     "third_party/inspector_protocol" ;BSD-3
@@ -171,8 +179,11 @@
     "third_party/libXNVCtrl" ;Expat
     "third_party/libaddressinput" ;ASL2.0
     "third_party/libaom" ;BSD-2 or "Alliance for Open Media Patent License 1.0"
+    "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
+    "third_party/libjxl" ;ASL2.0
+    "third_party/libgav1" ;ASL2.0
     "third_party/libgifcodec" ;MPL1.1/GPL2+/LGPL2.1+, BSD-3, BSD-2
     "third_party/libjingle_xmpp" ;BSD-3
     "third_party/libphonenumber" ;ASL2.0
@@ -190,6 +201,7 @@
     "third_party/libwebm" ;BSD-3
     "third_party/libxml/chromium" ;BSD-3
     "third_party/libyuv" ;BSD-3
+    "third_party/libzip" ;BSD-3
     "third_party/lottie" ;Expat
     "third_party/lss" ;BSD-3
     "third_party/mako" ;Expat
@@ -211,6 +223,7 @@
     "third_party/pdfium/third_party/agg23" ;Expat
     "third_party/pdfium/third_party/base" ;BSD-3
     "third_party/pdfium/third_party/bigint" ;Public domain, BSD-3
+    "third_party/pdfium/third_party/libtiff" ;non-copyleft
     "third_party/pdfium/third_party/skia_shared" ;BSD-3
     "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
     "third_party/perfetto" ;ASL2.0
@@ -228,8 +241,8 @@
     ;; ABI relies on libstdc++ internals.  See build/linux/unbundle/re2.gn.
     "third_party/re2" ;BSD-3
     "third_party/rnnoise" ;BSD-3
+    "third_party/ruy" ;ASL2.0
     "third_party/s2cellid" ;ASL2.0
-    "third_party/schema_org" ;CC-BY-SA3.0
     "third_party/securemessage" ;ASL2.0
     "third_party/shell-encryption" ;ASL2.0
     "third_party/skia" ;BSD-3
@@ -237,6 +250,11 @@
     "third_party/skia/third_party/skcms" ;BSD-3
     "third_party/skia/third_party/vulkanmemoryallocator" ;BSD-3, Expat
     "third_party/smhasher" ;Expat, public domain
+
+    ;; FIXME: the snappy "replacement" shim (see replace_gn_files.py below) does
+    ;; not declare a library dependency added in M93, causing a link failure.
+    "third_party/snappy" ;BSD-3
+
     "third_party/speech-dispatcher" ;GPL2+
     "third_party/sqlite" ;Public domain
     "third_party/swiftshader" ;ASL2.0
@@ -247,9 +265,15 @@
     "third_party/swiftshader/third_party/subzero" ;NCSA
     "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
     "third_party/tcmalloc/chromium" ;BSD-3
+    "third_party/tensorflow-text" ;ASL2.0
+    "third_party/tflite" ;ASL2.0
+    "third_party/tflite/src/third_party/eigen3" ;MPL2.0
+    "third_party/tflite/src/third_party/fft2d" ;ASL2.0
+    "third_party/tflite-support" ;ASL2.0
     "third_party/ukey2" ;ASL2.0
     "third_party/usb_ids" ;BSD-3
     "third_party/usrsctp" ;BSD-2
+    "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
     "third_party/vulkan_memory_allocator" ;Expat
     "third_party/wayland/protocol" ;Expat
@@ -258,6 +282,7 @@
     "third_party/wayland-protocols" ;Expat
     "third_party/web-animations-js" ;ASL2.0
     "third_party/webdriver" ;ASL2.0
+    "third_party/webgpu-cts" ;BSD-3
     "third_party/webrtc" ;BSD-3
     "third_party/webrtc/common_audio/third_party/ooura" ;Non-copyleft
     "third_party/webrtc/common_audio/third_party/spl_sqrt_floor" ;Public domain
@@ -269,6 +294,7 @@
     "third_party/widevine/cdm/widevine_cdm_version.h" ;BSD-3
     "third_party/widevine/cdm/widevine_cdm_common.h" ;BSD-3
     "third_party/woff2" ;ASL2.0
+    "third_party/wuffs" ;ASL2.0
     "third_party/xcbproto" ;X11
     "third_party/xdg-utils" ;Expat
 
@@ -293,7 +319,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define (debian-patch name revision hash)
+(define* (debian-patch name hash #:optional (revision %debian-revision))
   (origin
     (method url-fetch)
     (uri (string-append "https://salsa.debian.org/chromium-team/chromium/-/raw/"
@@ -303,38 +329,40 @@
                   (string-append "ungoogled-chromium-" category "-" name))))
     (sha256 (base32 hash))))
 
-(define %ungoogled-revision "89.0.4389.114-1")
-(define %debian-revision "debian/84.0.4147.105-1")
+(define %chromium-version "93.0.4577.82")
+(define %debian-revision "debian/90.0.4430.85-1")
+;; Note: use 'git describe --long' even for exact tags to placate the
+;; custom version format for ungoogled-chromium.
+(define %ungoogled-revision "93.0.4577.82-1-2-g3f62dbc")
 
 (define %debian-patches
-  (list (debian-patch "system/zlib.patch" %debian-revision
-                      "09vqgs37w9ycc7par14wa7rnvmg9bm0z9pqg6fyl3iqvpghyjyr4")
-        (debian-patch "system/openjpeg.patch" %debian-revision
-                      "0zd6v5njx1pc7i0y6mslxvpx5j4cq01mmyx55qcqx8qzkm0gm48j")))
+  (list (debian-patch "fixes/nomerge.patch"
+                      "0lybs2b5gk08j8cr6vjrs9d3drd7qfw013z2r0y00by8dnpm74i3")
+        (debian-patch "system/zlib.patch"
+                      "0j313bd3q8qc065j60x97dckrfgbwl4qxc8jhz33iihvv4lwziwv")
+        (debian-patch "system/openjpeg.patch"
+                      "048405xh84pys0kky81vlqhaxjyxvcql4py217z01qxiv991zxaj")))
 
 (define %ungoogled-origin
   (origin
     (method git-fetch)
     (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
                         (commit %ungoogled-revision)))
-    (file-name (git-file-name "ungoogled-chromium"
-                              (if (= 40 (string-length %ungoogled-revision))
-                                  (string-take %ungoogled-revision 7)
-                                  %ungoogled-revision)))
+    (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0cr2i51gxhgl55c8f9w0ra3m5q2dk03sf7p2qn4bqq1l1l72hw6s"))))
+      "1n0bffmwrzp3g1zzsy6qq325mbp4yn629m5zlfyz261szhvl9rgw"))))
 
 (define %guix-patches
   (list (local-file
          (assume-valid-file-name
-          (search-patch "ungoogled-chromium-system-nspr.patch")))
+          (search-patch "ungoogled-chromium-extension-search-path.patch")))
         (local-file
          (assume-valid-file-name
-          (search-patch "ungoogled-chromium-system-opus.patch")))
+          (search-patch "ungoogled-chromium-ffmpeg-compat.patch")))
         (local-file
          (assume-valid-file-name
-          (search-patch "ungoogled-chromium-extension-search-path.patch")))))
+          (search-patch "ungoogled-chromium-system-nspr.patch")))))
 
 ;; This is a source 'snippet' that does the following:
 ;; *) Applies various patches for unbundling purposes and libstdc++ compatibility.
@@ -378,7 +406,7 @@
 
           (format #t "Pruning third party files...~%")
           (force-output)
-          (apply invoke (string-append #+python-2 "/bin/python")
+          (apply invoke "python"
                  "build/linux/unbundle/remove_bundled_libraries.py"
                  "--do-remove" '#$%preserved-third-party-files)
 
@@ -395,8 +423,7 @@
                   "--system-libraries" "ffmpeg" "flac" "fontconfig"
                   "freetype" "harfbuzz-ng" "icu" "libdrm" "libevent"
                   "libjpeg" "libpng" "libwebp" "libxml" "libxslt"
-                  "openh264" "opus" "snappy" "zlib")
-          #t))))
+                  "openh264" "opus" "zlib")))))
 
 (define opus+custom
   (package/inherit opus
@@ -409,22 +436,6 @@
         ;; sizes.  Chromium requires that this is enabled.
         `(cons "--enable-custom-modes"
                ,flags))))))
-
-;; WebRTC in Chromium 88 requires an unreleased version of libvpx.  Use the
-;; commit mentioned in "third_party/libvpx/README.chromium".
-(define libvpx/chromium
-  (package
-    (inherit libvpx)
-    (version "1.9.0-104-gb5d77a48d")
-    (source (origin
-              (inherit (package-source libvpx))
-              (uri (git-reference
-                    (url "https://chromium.googlesource.com/webm/libvpx")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "libvpx" version))
-              (sha256
-               (base32
-                "07nkpx8myw5nd4bkaj6l4wr5ipk2c6lg9cwirz0i5qbr659051rk"))))))
 
 ;; 'make-ld-wrapper' can only work with an 'ld' executable, so we need
 ;; this trick to make it wrap 'lld'.
@@ -454,17 +465,19 @@
 (define-public ungoogled-chromium
   (package
     (name "ungoogled-chromium")
-    (version %ungoogled-revision)
+    (version (string-append %chromium-version "-0."
+                            (match (string-split %ungoogled-revision #\-)
+                              ((version revision commits g+short)
+                               (string-drop g+short 1)))))
     (synopsis "Graphical web browser")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://commondatastorage.googleapis.com"
                                   "/chromium-browser-official/chromium-"
-                                  (string-drop-right %ungoogled-revision 2)
-                                  ".tar.xz"))
+                                  %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "007df9p78bbmk3iyfi8qn57mmn68qqrdhx6z8n2hl8ksd7lspw7j"))
+                "0lr8zdq06smncdzd6knzww9hxl8ynvxadmrkyyl13fpwb1422rjx"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -486,6 +499,8 @@
              ;; a developer build.
              "is_official_build=true"
              "clang_use_chrome_plugins=false"
+             "is_cfi=false"             ;requires Clang 13
+             "use_thin_lto=false"       ;XXX ICE with Clang+LLD 12.0.1
              "chrome_pgo_phase=0"
              "use_sysroot=false"
              "goma_dir=\"\""
@@ -506,6 +521,11 @@
              "enable_widevine=false"
              ;; Disable type-checking for the Web UI to avoid a Java dependency.
              "enable_js_type_check=false"
+             ;; Disable code using TensorFlow until it has been scrutinized
+             ;; by the ungoogled project.
+             "build_with_tflite_lib=false"
+             ;; Avoid dependency on code formatting tools.
+             "blink_enable_generated_code_formatting=false"
 
              ;; Define a custom toolchain that simply looks up CC, AR and
              ;; friends from the environment.
@@ -565,7 +585,13 @@
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-stuff
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((openjpeg (assoc-ref inputs "openjpeg")))
+               (substitute* "third_party/pdfium/BUILD.gn"
+                 ;; This include path is added by Debians openjpeg patch.
+                 (("/usr/include/openjpeg")
+                  (string-append openjpeg "/include/openjpeg"))))
+
              (substitute*
                  '("base/process/launch_posix.cc"
                    "base/third_party/dynamic_annotations/dynamic_annotations.c"
@@ -604,6 +630,12 @@
                (("include \"third_party/lcms/include/lcms2\\.h\"")
                 "include \"lcms2.h\""))
 
+             ;; Add missing include statement.
+             (substitute* "third_party/pdfium/core/fxcodec/png/png_decoder.cpp"
+               (("#include \"core/fxcodec/fx_codec.h\"" all)
+                (string-append all
+                               "\n#include \"core/fxcodec/fx_codec_def.h\"")))
+
              (substitute*
                  "third_party/breakpad/breakpad/src/common/linux/libcurl_wrapper.h"
                (("include \"third_party/curl")
@@ -615,9 +647,7 @@
                (("third_party/vulkan_headers/include/") ""))
 
              (substitute* "third_party/skia/include/gpu/vk/GrVkVulkan.h"
-               (("include/third_party/vulkan/") ""))
-
-             #t))
+               (("include/third_party/vulkan/") ""))))
          (add-after 'patch-stuff 'add-absolute-references
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((cups (assoc-ref inputs "cups"))
@@ -645,8 +675,7 @@
                  (("libEGL\\.so\\.1")
                   (string-append mesa "/lib/libEGL.so.1"))
                  (("libGLESv2\\.so\\.2")
-                  (string-append mesa "/lib/libGLESv2.so.2")))
-               #t)))
+                  (string-append mesa "/lib/libGLESv2.so.2"))))))
          (add-before 'configure 'prepare-build-environment
            (lambda* (#:key inputs #:allow-other-keys)
 
@@ -683,9 +712,7 @@
              ;; XXX: How portable is this.
              (mkdir-p "third_party/node/linux/node-linux-x64")
              (symlink (string-append (assoc-ref inputs "node") "/bin")
-                      "third_party/node/linux/node-linux-x64/bin")
-
-             #t))
+                      "third_party/node/linux/node-linux-x64/bin")))
          (replace 'configure
            (lambda* (#:key configure-flags #:allow-other-keys)
              (let ((args (string-join configure-flags " ")))
@@ -713,8 +740,7 @@
                        (setrlimit 'nofile 2048 #f))
                    (format #t
                            "increased maximum number of open files from ~d to ~d~%"
-                           soft (if hard (min hard 2048) 2048)))))
-             #t))
+                           soft (if hard (min hard 2048) 2048)))))))
          (replace 'build
            (lambda* (#:key (parallel-build? #t) #:allow-other-keys)
              (invoke "ninja" "-C" "out/Release"
@@ -735,6 +761,7 @@
                                       "chrome_200_percent.pak"
                                       "resources.pak"
                                       "v8_context_snapshot.bin"
+
                                       ;; Chromium ships its own libGL
                                       ;; implementation called ANGLE.
                                       "libEGL.so" "libGLESv2.so"))
@@ -790,25 +817,24 @@
                       (mkdir-p icons)
                       (copy-file (string-append "product_logo_" size ".png")
                                  (string-append icons "/chromium.png"))))
-                  '("24" "48" "64" "128" "256")))
-               #t))))))
+                  '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      `(("bison" ,bison)
-       ("clang" ,clang-11)
+       ("clang" ,clang-12)
        ("gn" ,gn)
        ("gperf" ,gperf)
        ("ld-wrapper" ,(make-lld-wrapper lld))
        ("ninja" ,ninja)
-       ("node" ,node)
+       ("node" ,node-lts)
        ("pkg-config" ,pkg-config)
        ("which" ,which)
 
        ;; This file contains defaults for new user profiles.
        ("master-preferences" ,(local-file "aux-files/chromium/master-preferences.json"))
 
-       ("python-beautifulsoup4" ,python2-beautifulsoup4)
-       ("python-html5lib" ,python2-html5lib)
-       ("python" ,python-2)
+       ("python-beautifulsoup4" ,python-beautifulsoup4)
+       ("python-html5lib" ,python-html5lib)
+       ("python" ,python-wrapper)
        ("wayland-scanner" ,wayland)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -825,14 +851,14 @@
        ("glib" ,glib)
        ("gtk+" ,gtk+)
        ("harfbuzz" ,harfbuzz)
-       ("icu4c" ,icu4c-68)
+       ("icu4c" ,icu4c-69)
        ("lcms" ,lcms)
        ("libevent" ,libevent)
        ("libffi" ,libffi)
        ("libjpeg-turbo" ,libjpeg-turbo)
        ("libpng" ,libpng)
        ("libva" ,libva)
-       ("libvpx" ,libvpx/chromium)
+       ("libvpx" ,libvpx)
        ("libwebp" ,libwebp)
        ("libx11" ,libx11)
        ("libxcb" ,libxcb)
@@ -848,6 +874,9 @@
        ("libxscrnsaver" ,libxscrnsaver)
        ("libxslt" ,libxslt)
        ("libxtst" ,libxtst)
+       ;; Newer kernel headers are required for userfaultfd support; remove
+       ;; after 'core-updates' merge.
+       ("linux-libre-headers" ,linux-libre-headers-5.10)
        ("mesa" ,mesa)
        ("minizip" ,minizip)
        ("mit-krb5" ,mit-krb5)
@@ -882,7 +911,9 @@
     (home-page "https://github.com/Eloston/ungoogled-chromium")
     (description
      "Ungoogled-Chromium is the Chromium web browser, with some functionality
-disabled in order to protect the users privacy.")
+disabled in order to protect the users privacy.  This package also includes
+the @command{chromedriver} command, which can be useful for automated web
+testing.")
     ;; Chromium is developed as BSD-3, but bundles a large number of third-party
     ;; components with other licenses.  For full information, see chrome://credits.
     (license (list license:bsd-3

@@ -11,24 +11,24 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2016, 2018, 2020 Kei Kebreau <kkebreau@posteo.net>
+;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2019, 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017, 2019 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
-;;; Copyright © 2018, 2019, 2020 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Nadya Voronova <voronovank@gmail.com>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
-;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
@@ -39,12 +39,15 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
+;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +77,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system ocaml)
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
@@ -85,11 +89,13 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages coq)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages emacs)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fltk)
@@ -118,8 +124,11 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages perl)
@@ -133,6 +142,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages scheme)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
@@ -166,6 +176,39 @@ logical symbols and its natural deduction interface make it easy to use for
 beginners.")
     (license license:gpl3+)
     (home-page "https://www.gnu.org/software/aris/")))
+
+(define-public bitwise
+  (package
+    (name "bitwise")
+    (version "0.42")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/mellowcandle/bitwise"
+                                  "/releases/download/v" version
+                                  "/bitwise-v" version ".tar.gz"))
+              (sha256
+               (base32 "1lniw4bsb5qs5ybf018qllf95pzixb1q3lvybzl4k3xz8zpkrm6k"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("ncurses" ,ncurses)
+       ("readline" ,readline)))
+    (native-inputs
+     `(("cunit" ,cunit)
+       ("pkg-config" ,pkg-config)))
+    (synopsis "Terminal based bit manipulator in ncurses")
+    (description "Bitwise is a multi base interactive calculator supporting
+dynamic base conversion and bit manipulation.  It's a handy tool for low level
+hackers, kernel developers and device drivers developers.
+
+Some of the features include:
+@itemize
+@item Interactive ncurses interface.
+@item Command line calculator supporting all bitwise operations.
+@item Individual bit manipulator.
+@item Bitwise operations such as NOT, OR, AND, XOR, and shifts.
+@end itemize")
+    (license license:gpl3+)
+    (home-page "https://github.com/mellowcandle/bitwise/")))
 
 (define-public c-graph
   (package
@@ -236,16 +279,19 @@ programming languages.")
 (define-public qhull
   (package
     (name "qhull")
-    (version "2019.1")
+    (version "2020.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.qhull.org/download/qhull-"
                                   (car (string-split version #\.))
-                                  "-src-7.3.2.tgz"))
+                                  "-src-8.0.2.tgz"))
               (sha256
                (base32
-                "1ys3vh3qq0v9lh452xb932vp63advds1pxk42lk7cc1niiar0y9b"))))
+                "0zlbhg0lb6j60188c2xhcrvviskr079552icjldqhy1jhgmxghmm"))))
     (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DLINK_APPS_SHARED=ON"
+                           "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))
     (synopsis "Calculate convex hulls and related structures")
     (description
      "@code{Qhull} computes the convex hull, Delaunay triangulation, Voronoi
@@ -698,6 +744,30 @@ in memory, so even problems with very large output sizes can sometimes
 be solved.")
     (license license:gpl2+)))
 
+(define-public libcerf
+  (package
+    (name "libcerf")
+    (version "1.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://jugit.fz-juelich.de/mlz/libcerf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ic2q7kvxpqmgxlishygvx8d00i4wn51vkq4fyac44ahhf6c3kwd"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("perl" ,perl)))
+    (home-page "https://jugit.fz-juelich.de/mlz/libcerf")
+    (synopsis "Library for complex error functions")
+    (description
+     "@code{libcerf} is a self-contained numeric library that provides an
+efficient and accurate implementation of complex error functions, along with
+Dawson, Faddeeva, and Voigt functions.")
+    (license license:expat)))
+
 (define-public vinci
   (package
     (name "vinci")
@@ -746,7 +816,7 @@ halfspaces) or by their double description with both representations.")
 (define-public arpack-ng
   (package
     (name "arpack-ng")
-    (version "3.6.3")
+    (version "3.8.0")
     (home-page "https://github.com/opencollab/arpack-ng")
     (source (origin
               (method git-fetch)
@@ -754,14 +824,16 @@ halfspaces) or by their double description with both representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wljl96yqxc9v8r49c37lscwkdp58kaacfb9p6s6nvpm31haax4y"))))
+                "0l7as5z6xvbxly8alam9s4kws70952qq35a6vkljzayi4b9gbklx"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
-       ("libtool" ,libtool)))
+       ("libtool" ,libtool)
+       ("pkg-config" ,pkg-config)))
     (inputs
-     `(("lapack" ,lapack)
+     `(("eigen" ,eigen)
+       ("lapack" ,lapack)
        ("fortran" ,gfortran)))
     (synopsis "Fortran subroutines for solving eigenvalue problems")
     (description
@@ -774,16 +846,15 @@ large scale eigenvalue problems.")
   (package
     (inherit arpack-ng)
     (version "3.3.0")
-    (name (package-name arpack-ng))
-    (home-page (package-home-page arpack-ng))
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append home-page "/archive/" version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference (url (package-home-page arpack-ng))
+                           (commit version)))
+       (file-name (git-file-name (package-name arpack-ng) version))
        (sha256
         (base32
-         "1cz53wqzcf6czmcpfb3vb61xi0rn5bwhinczl65hpmbrglg82ndd"))))))
+         "00h6bjvxjq7bv0b8pwnc0gw33ns6brlqv00xx2rh3w9b5n205918"))))))
 
 (define-public arpack-ng-openmpi
   (package (inherit arpack-ng)
@@ -923,14 +994,14 @@ singular value problems.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.1")
+    (version "5.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "03jrqs5lvxmbbz2c4g17dn2hrxqwd3hfadk9q8wbkbkyas2h8sbb"))))
+        (base32 "1fp7rbhjmz2w63r72kicf8lfszzimz2csfx868fracw167hpaz75"))))
     (build-system gnu-build-system)
     (inputs `(("readline" ,readline)
               ("cairo" ,cairo)
@@ -1145,7 +1216,7 @@ incompatible with HDF5.")
              ;; libhdf5.so.  We truncate the hashes to avoid
              ;; unnecessary store references to those compilers:
              (substitute* "src/libhdf5.settings"
-              (("(/gnu/store/)([a-Z0-9]*)" all prefix hash)
+              (("(/gnu/store/)([a-zA-Z0-9]*)" all prefix hash)
                (string-append prefix (string-take hash 10) "..."))
               ;; Don't record the build-time kernel version to make the
               ;; settings file reproducible.
@@ -1204,7 +1275,8 @@ extremely large and complex data collections.")
               "https://www.hdfgroup.org/ftp/HDF5/current/src/unpacked/COPYING"))))
 
 (define-public hdf5-1.10
-  (package/inherit hdf5-1.8
+  (package
+    (inherit hdf5-1.8)
     (version "1.10.7")
     (source
      (origin
@@ -1223,7 +1295,8 @@ extremely large and complex data collections.")
        (patches (search-patches "hdf5-config-date.patch"))))))
 
 (define-public hdf5-1.12
-  (package/inherit hdf5-1.8
+  (package
+    (inherit hdf5-1.8)
     (version "1.12.0")
     (source
      (origin
@@ -1721,21 +1794,16 @@ online as well as original implementations of various other algorithms.")
 (define-public ipopt
   (package
     (name "ipopt")
-    (version "3.12.12")
+    (version "3.13.4")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://www.coin-or.org/download/source/Ipopt/Ipopt-"
-                    version".tgz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/coin-or/Ipopt")
+                    (commit (string-append "releases/" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "07yn9rzdswjk8n246qq6ci9ssf2bcplkifcpsfz9j6cdxw9vgbkv"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Make sure we don't use the bundled software.
-               '(begin
-                  (delete-file-recursively "ThirdParty")
-                  #t))))
+                "08gznhwhqv1x4baksz350ih8q16r5rd0k8vals6078m3h94khr4b"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -1755,7 +1823,8 @@ online as well as original implementations of various other algorithms.")
                                           after "\n")))
                         #t))))))
     (native-inputs
-     `(("gfortran" ,gfortran)))
+     `(("gfortran" ,gfortran)
+       ("pkg-config" ,pkg-config)))
     (inputs
      ;; TODO: Maybe add dependency on COIN-MUMPS, ASL, and HSL.
      `(("lapack" ,lapack)))                    ;for both libblas and liblapack
@@ -1765,6 +1834,183 @@ online as well as original implementations of various other algorithms.")
      "The Interior Point Optimizer (IPOPT) is a software package for
 large-scale nonlinear optimization.  It provides C++, C, and Fortran
 interfaces.")
+    (license license:epl2.0)))
+
+(define-public nomad-optimizer
+  (package
+    (name "nomad-optimizer")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bbopt/nomad/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0w386d8r5ldbvnv0c0g7vz95pfpvwdxis26vaalk2amsa5akl775"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("python" ,python-wrapper)
+       ("python-cython" ,python-cython)))
+    (arguments
+     `(#:imported-modules ((guix build python-build-system)
+                           ,@%cmake-build-system-modules)
+       #:modules (((guix build python-build-system)
+                   #:select (python-version site-packages))
+                  (guix build cmake-build-system)
+                  (guix build utils))
+       #:configure-flags
+       '("-DBUILD_INTERFACES=ON"
+         "-DBUILD_TESTS=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-sources-for-build
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               ;; CMAKE_INSTALL_PREFIX is accidentally hardcoded.
+               (("set\\(CMAKE_INSTALL_PREFIX .* FORCE\\)") "")
+               ;; Requiring GCC version 8 or later is unwarranted.
+               (("message\\(FATAL_ERROR \"GCC version < 8")
+                "message(STATUS \"GCC version < 8"))
+
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* "interfaces/PyNomad/CMakeLists.txt"
+                 ;; We don't want to build in-place, and anyway the install
+                 ;; command further below runs build_ext as a prerequisite.
+                 (("COMMAND python setup_PyNomad\\.py .* build_ext --inplace\n")
+                  "")
+                 ;; Don't install locally.
+                 (("COMMAND python (setup_PyNomad\\.py .* install) --user\n"
+                   _ args)
+                  (string-append "COMMAND ${CMAKE_COMMAND} -E env"
+                                 " CC=" ,(cc-for-target)
+                                 " CXX=" ,(cxx-for-target)
+                                 " " (which "python")
+                                 " " args
+                                 " --prefix=" out
+                                 "\n")))
+               ;; Fix erroneous assumptions about the paths of the include and
+               ;; library directories.
+               (substitute* "interfaces/PyNomad/setup_PyNomad.py"
+                 (("^( +os_include_dirs = ).*" _ prefix)
+                  (string-append prefix "[\"../../src\"]\n"))
+                 (("^(installed_lib_dir = ).*" _ prefix)
+                  (string-append prefix "\"" out "/lib\"\n"))))
+             #t))
+
+         ;; Fix the tests so they run in out-of-source builds.
+         (add-after 'fix-sources-for-build 'fix-sources-for-tests
+           (lambda _
+             (substitute*
+                 (map (lambda (d) (string-append "examples/" d "/CMakeLists.txt"))
+                      (append
+                       (map (lambda (d) (string-append "basic/library/" d))
+                            '("example1" "example2" "example3"
+                              "single_obj_parallel"))
+                       (map (lambda (d) (string-append "advanced/library/" d))
+                            '("FixedVariable" "NMonly" "PSDMads" "Restart"
+                              "c_api/example1" "c_api/example2"
+                              "exampleSuggestAndObserve"))))
+               ;; The built examples are assumed to be in the source tree
+               ;; (which isn't the case here).
+               (("(COMMAND \\$\\{CMAKE_BINARY_DIR\\}/examples/runExampleTest\\.sh )\\.(/.*)"
+                 _ command test)
+                (string-append command "${CMAKE_CURRENT_BINARY_DIR}" test)))
+             ;; (Unrelated to support for out-of-source testing.)
+             (make-file-writable
+              "examples/advanced/library/exampleSuggestAndObserve/cache0.txt")
+
+             (let* ((builddir (string-append (getcwd) "/../build"))
+                    ;; The BB_EXE and SURROGATE_EXE paths are interpreted
+                    ;; relative to the configuration file provided to NOMAD.
+                    ;; However, the configuration files are all in the source
+                    ;; tree rather than in the build tree (unlike the compiled
+                    ;; executables).
+                    (fix-exe-path (lambda* (dir #:optional
+                                                (file "param.txt")
+                                                (exe-opt "BB_EXE"))
+                                    (substitute* (string-append dir "/" file)
+                                      (((string-append "^" exe-opt " +"))
+                                       ;; The $ prevents NOMAD from prefixing
+                                       ;; the executable with the path of the
+                                       ;; parent directory of the configuration
+                                       ;; file NOMAD was provided with as
+                                       ;; argument (param.txt or some such).
+                                       (string-append exe-opt " $"
+                                                      builddir "/" dir "/"))))))
+               (for-each
+                (lambda (dir)
+                  (let ((dir (string-append "examples/" dir)))
+                    (substitute* (string-append dir "/CMakeLists.txt")
+                      ;; The install phase has not yet run.
+                      (("COMMAND \\$\\{CMAKE_INSTALL_PREFIX\\}/bin/nomad ")
+                       "COMMAND ${CMAKE_BINARY_DIR}/src/nomad "))
+                    (fix-exe-path dir)
+                    (when (equal? dir "examples/basic/batch/surrogate_sort")
+                      (fix-exe-path dir "param.txt" "SURROGATE_EXE"))))
+                (append (map (lambda (d) (string-append "basic/batch/" d))
+                             '("example1" "example2"
+                               "single_obj" "single_obj_parallel"
+                               "surrogate_sort"))
+                        '("advanced/batch/LHonly")))
+
+               (let ((dir "examples/advanced/batch/FixedVariable"))
+                 (substitute* (string-append dir "/runFixed.sh")
+                   ;; Hardcoded path to NOMAD executable.
+                   (("^\\.\\./\\.\\./\\.\\./\\.\\./bin/nomad ")
+                    (string-append builddir "/src/nomad ")))
+                 (for-each
+                  (lambda (f) (fix-exe-path dir f))
+                  '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))
+             #t))
+
+         ;; The information in the .egg-info file is not kept up to date.
+         (add-after 'install 'delete-superfluous-egg-info
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (delete-file (string-append
+                           (site-packages inputs outputs)
+                           "PyNomad-0.0.0-py"
+                           (python-version (assoc-ref inputs "python"))
+                           ".egg-info"))
+             #t)))))
+    (home-page "https://www.gerad.ca/nomad/")
+    (synopsis "Nonlinear optimization by mesh-adaptive direct search")
+    (description
+     "NOMAD is a C++ implementation of the mesh-adaptive direct search (MADS)
+algorithm, designed for difficult blackbox optimization problems.  These
+problems occur when the functions defining the objective and constraints are
+the result of costly computer simulations.")
+    (license license:lgpl3+)))
+
+(define-public cbc
+  (package
+    (name "cbc")
+    (version "2.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.coin-or.org/download/source/"
+                                  "Cbc/Cbc-" version ".tgz"))
+              (sha256
+               (base32
+                "0wk9vr6zc62gw71v7gnra5wxqlcljcgbhm5lasx236v791b986ns"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Make sure we don't use the bundled software.
+               '(delete-file-recursively "ThirdParty"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("gfortran" ,gfortran)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("openblas" ,openblas)))
+    (home-page "https://www.coin-or.org")
+    (synopsis "Branch-and-cut solver")
+    (description
+     "Cbc (Coin-or branch and cut) is a mixed integer linear programming
+solver written in C++.  It can be used as a library or as a standalone
+executable.")
     (license license:epl1.0)))
 
 (define-public clp
@@ -1798,6 +2044,77 @@ its dual and primal Simplex algorithms.  It also has a barrier algorithm for
 linear and quadratic objectives.  There are limited facilities for nonlinear
 and quadratic objectives using the Simplex algorithm.")
     (license license:epl1.0)))
+
+(define-public gecode
+  (package
+    (name "gecode")
+    (version "6.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Gecode/gecode")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b1cq0c810j1xr2x9y9996p894571sdxng5h74py17c6nr8c6dmk"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; delete generated sources
+                  (for-each delete-file
+                            '("gecode/kernel/var-imp.hpp"
+                              "gecode/kernel/var-type.hpp"))))))
+    (outputs '("out" "examples"))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "GLDFLAGS=-Wl,-rpath="
+                            (assoc-ref %outputs "out")
+                            "/lib")
+             "--enable-examples=no")
+       #:modules ((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 rdelim)
+                  (ice-9 popen))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-examples
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "make" "compileexamples")))
+         ;; The Makefile disrespects GLDFLAGS for some reason, so we have to
+         ;; patch it ourselves... *sigh*
+         (add-after 'install 'fix-rpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((libdir (string-append (assoc-ref outputs "out") "/lib")))
+               (for-each
+                (lambda (file)
+                  (let* ((pipe (open-pipe* OPEN_READ "patchelf"
+                                          "--print-rpath" file))
+                         (line (read-line pipe)))
+                    (and (zero? (close-pipe pipe))
+                         (invoke "patchelf" "--set-rpath"
+                                 (string-append libdir ":" line)
+                                 file))))
+                (find-files libdir ".*\\.so$")))))
+         (add-after 'install 'install-examples
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "make" "installexamples"
+                     (string-append "bindir=" (assoc-ref outputs "examples")
+                                    "/bin"))))
+         ;; Tests depend on installed libraries.
+         (delete 'check)
+         (add-after 'fix-rpath 'check
+           (assoc-ref %standard-phases 'check)))))
+    (native-inputs
+     `(("patchelf" ,patchelf)
+       ("perl" ,perl)
+       ("sed" ,sed)))
+    (home-page "https://www.gecode.org")
+    (synopsis "Toolkit for developing constraint-based systems")
+    (description "Gecode is a C++ toolkit for developing constraint-based
+systems and applications.  It provides a modular and extensible solver.")
+    (license license:expat)))
 
 (define-public libflame
   (package
@@ -2013,7 +2330,7 @@ can solve two kinds of problems:
                  "\"" (assoc-ref inputs "texinfo") "/bin/makeinfo\"")))
              #t)))))
     (home-page "https://www.gnu.org/software/octave/")
-    (synopsis "High-level language for numerical computation")
+    (synopsis "High-level language for numerical computation (no GUI)")
     (description "GNU Octave is a high-level interpreted language that is
 specialized for numerical computations.  It can be used for both linear and
 non-linear applications and it provides great support for visualizing results.
@@ -2026,7 +2343,7 @@ script files.")
     (name "octave")
     (inputs
      `(("qscintilla" ,qscintilla)
-       ("qt" ,qtbase)
+       ("qt" ,qtbase-5)
        ,@(package-inputs octave-cli)))
     (native-inputs
      `(("qttools" , qttools) ;for lrelease
@@ -2045,7 +2362,8 @@ script files.")
                (substitute* "configure"
                  (("qscintilla2-qt5")
                   "qscintilla2_qt5"))
-               #t))))))))
+               #t))))))
+    (synopsis "High-level language for numerical computation (with GUI)")))
 
 (define-public opencascade-oce
   (package
@@ -2197,7 +2515,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
 (define-public gmsh
   (package
     (name "gmsh")
-    (version "4.6.0")
+    (version "4.8.4")
     (source
      (origin
       (method git-fetch)
@@ -2205,11 +2523,10 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
             (url "https://gitlab.onelab.info/gmsh/gmsh.git")
             (commit
              (string-append "gmsh_"
-                            (string-map (lambda (x) (if (eq? x #\.) #\_ x))
-                                        version)))))
+                            (string-replace-substring version "." "_")))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0m0pjxcy1bnr7a20i11lh0ih159pphq9wsvfjr3sfx4y3lginz5y"))
+       (base32 "07mi6ja3b9libgcdp2b4dwnkap1b9ha2wi2zdn9mhmwvp3g1pxhp"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -2219,22 +2536,48 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
     (propagated-inputs
      `(("fltk" ,fltk)
        ("gfortran" ,gfortran)
+       ("glu" ,glu)
        ("gmp" ,gmp)
        ("hdf5" ,hdf5)
        ("lapack" ,lapack)
-       ("mesa" ,mesa)
-       ("glu" ,glu)
-       ("metis" ,metis)
-       ("opencascade-occt" ,opencascade-occt)
        ("libx11" ,libx11)
-       ("libxext" ,libxext)))
+       ("libxext" ,libxext)
+       ("mesa" ,mesa)
+       ("metis" ,metis)
+       ("opencascade-occt" ,opencascade-occt)))
     (inputs
      `(("fontconfig" ,fontconfig)
-       ("libxft" ,libxft)))
+       ("libxft" ,libxft)
+       ("python" ,python)))
     (arguments
      `(#:configure-flags `("-DENABLE_SYSTEM_CONTRIB:BOOL=ON"
                            "-DENABLE_BUILD_SHARED:BOOL=ON"
-                           "-DENABLE_BUILD_DYNAMIC:BOOL=ON")))
+                           "-DENABLE_BUILD_DYNAMIC:BOOL=ON")
+       #:imported-modules (,@%cmake-build-system-modules
+                           (guix build python-build-system))
+       #:modules (((guix build python-build-system) #:select (site-packages))
+                  (guix build cmake-build-system)
+                  (guix build utils))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-paths
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; Use the standard Guix site-package path for
+             ;; installation of the Python API.
+             (substitute* "CMakeLists.txt"
+               (("include\\(GNUInstallDirs\\)\n")
+                (string-append "include(GNUInstallDirs)\n"
+                               "  set(GMSH_PY_LIB "
+                               (site-packages inputs outputs) ")\n"))
+               (("\\$\\{GMSH\\_PY\\} DESTINATION \\$\\{GMSH\\_LIB\\}")
+                "${GMSH_PY} DESTINATION ${GMSH_PY_LIB}"))
+             ;; Find the shared library.
+             (let ((libgmsh (string-append (assoc-ref outputs "out")
+                                           "/lib/libgmsh.so")))
+               (substitute* "api/gmsh.py"
+                 (("find_library\\(\"gmsh\"\\)")
+                  (simple-format #f "\"~a\"" libgmsh))))
+             #t)))))
     (home-page "http://gmsh.info/")
     (synopsis "3D finite element grid generator")
     (description "Gmsh is a 3D finite element grid generator with a built-in
@@ -2298,7 +2641,7 @@ ASCII text files using Gmsh's own scripting language.")
        ("python-dbus" ,python-dbus)
        ("python-h5py" ,python-h5py) ;optional, for HDF5 data
        ("python-pyqt" ,python-pyqt)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)))
     (propagated-inputs
      `(("python-numpy" ,python-numpy)))
@@ -2356,7 +2699,7 @@ September 2004}")
      `(("python" ,python-2)))
     (inputs
      `(("gfortran" ,gfortran)
-       ("lapack" ,lapack)
+       ("openblas" ,openblas)
        ("superlu" ,superlu)
        ;; leaving out hdf5 and fftw, as petsc expects them to be built with mpi
        ;; leaving out opengl, as configuration seems to only be for mac
@@ -2367,6 +2710,7 @@ September 2004}")
        #:configure-flags
        `("--with-mpi=0"
          "--with-openmp=1"
+         "--with-openblas=1"
          "--with-superlu=1")
        #:make-flags
        ;; Honor (parallel-job-count) for build.  Do not use --with-make-np,
@@ -2750,6 +3094,136 @@ the Cauchy-Schwarz inequality, Stirling's formula, etc.  See the Metamath
 book.")
     (license license:gpl2+)))
 
+(define-public minizinc
+  (package
+    (name "minizinc")
+    (version "2.5.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/MiniZinc/libminizinc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10b2hsl1fx9psh0iagmp8ki3f60f3qg5hmvra5aczjlfmbl88ggp"))
+              (modules '((guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-1)))
+              (snippet
+               '(begin
+                  ;; Do not advertise proprietary solvers
+                  (with-directory-excursion "cmake/targets"
+                    (let ((targets '("libminizinc_fzn.cmake"
+                                     "libminizinc_gecode.cmake"
+                                     "libminizinc_mip.cmake"
+                                     "libminizinc_nl.cmake"
+                                     "libminizinc_osicbc.cmake"
+                                     "libminizinc_parser.cmake"
+                                     "libmzn.cmake"
+                                     "minizinc.cmake"
+                                     "mzn2doc.cmake")))
+                     (for-each delete-file
+                              (remove
+                               (lambda (file)
+                                 (member file (cons* "." ".." targets)))
+                               (scandir ".")))
+                    (substitute* "libmzn.cmake"
+                      (("include\\(cmake/targets/(.*)\\)" all target)
+                       (if (member target targets) all "")))))
+                  (with-directory-excursion "include/minizinc/solvers/MIP"
+                    (for-each delete-file
+                              (remove
+                               (lambda (file)
+                                 (member file '("." ".."
+                                                "MIP_osicbc_solverfactory.hh"
+                                                "MIP_osicbc_wrap.hh"
+                                                "MIP_solverinstance.hh"
+                                                "MIP_solverinstance.hpp"
+                                                "MIP_wrap.hh")))
+                               (scandir "."))))
+                  (with-directory-excursion "solvers/MIP"
+                    (for-each delete-file
+                              (remove
+                               (lambda (file)
+                                 (member file '("." ".."
+                                                "MIP_osicbc_solverfactory.cpp"
+                                                "MIP_osicbc_wrap.cpp"
+                                                "MIP_solverinstance.cpp"
+                                                "MIP_wrap.cpp")))
+                               (scandir "."))))
+                  (substitute* "CMakeLists.txt"
+                    (("find_package\\(([^ ]*).*\\)" all pkg)
+                     (if (member pkg '("Gecode" "OsiCBC" "Threads"))
+                         all
+                         "")))
+                  ;; TODO: swap out miniz for zlib
+                  #t))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; no ‘check’ target
+       #:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-solver-configs
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((gecode (assoc-ref inputs "gecode"))
+                   (pkgdatadir (string-append (assoc-ref outputs "out")
+                                                  "/share/minizinc")))
+               (call-with-output-file (string-append pkgdatadir
+                                                     "/Preferences.json")
+                 (lambda (port)
+                   (display "\
+{
+  \"tagDefaults\": [
+    [\"\", \"org.gecode.gecode\"],
+    [\"gecode\", \"org.gecode.gecode\"]
+  ],
+  \"solverDefaults\": []
+}"
+                            port)
+                   (newline port)))
+
+               (mkdir-p (string-append pkgdatadir "/solvers"))
+               (call-with-output-file (string-append pkgdatadir
+                                                     "/solvers/gecode.msc")
+                 (lambda (port)
+                   (format port
+                    "\
+{
+  \"id\": \"org.gecode.gecode\",
+  \"name\": \"Gecode\",
+  \"description\": \"Gecode FlatZinc executable\",
+  \"version\": ~s,
+  \"mznlib\": ~s,
+  \"executable\": ~s,
+  \"supportsMzn\": false,
+  \"supportsFzn\": true,
+  \"needsSolns2Out\": true,
+  \"needsMznExecutable\": false,
+  \"needsStdlibDir\": false,
+  \"isGUIApplication\": false
+}"
+                    (last (string-split gecode #\-))
+                    (string-append gecode "/share/gecode/mznlib")
+                    (string-append gecode "/bin/fzn-gecode"))
+                   (newline port)))))))))
+    (native-inputs
+     `(("bison" ,bison)
+       ("flex" ,flex)))
+    (inputs
+     `(("cbc" ,cbc)
+       ("gecode" ,gecode)
+       ("zlib" ,zlib)))
+    (home-page "https://www.minizinc.org")
+    (synopsis "High-level constraint modeling language")
+    (description "MiniZinc is a high-level modeling language for constraint
+satisfaction and optimization problems.  Models are compiled to FlatZinc, a
+language understood by many solvers.")
+    (license license:mpl2.0)))
+
 (define-public mumps
   (package
     (name "mumps")
@@ -3106,14 +3580,14 @@ implemented in ANSI C, and MPI for communications.")
 (define-public scotch
   (package
     (name "scotch")
-    (version "6.1.0")
+    (version "6.1.1")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://gforge.inria.fr/frs/download.php/"
                           "latestfile/298/scotch_" version ".tar.gz"))
       (sha256
-       (base32 "1184fcv4wa2df8szb5lan6pjh0raarr45pk8ilpvbz23naikzg53"))
+       (base32 "04dkz24a2g20wq703fnyi4440ac4mwycy9gwrrllljj7zxcjy19r"))
       (patches (search-patches "scotch-build-parallelism.patch"
                                "scotch-integer-declarations.patch"))))
     (build-system gnu-build-system)
@@ -3121,7 +3595,8 @@ implemented in ANSI C, and MPI for communications.")
      `(("zlib" ,zlib)))
     (native-inputs
      `(("flex" ,flex)
-       ("bison" ,bison)))
+       ("bison" ,bison)
+       ("gfortran" ,gfortran)))
     (outputs '("out" "metis"))
     (arguments
      `(#:make-flags (list (string-append "prefix=" %output))
@@ -3146,6 +3621,7 @@ CAT = cat
 CCS = gcc
 CCP = mpicc
 CCD = gcc
+FC = gfortran
 CPPFLAGS =~{ -D~a~}
 CFLAGS = -O2 -g -fPIC $(CPPFLAGS)
 LDFLAGS = -lz -lm -lrt -lpthread
@@ -3189,6 +3665,8 @@ YACC = bison -pscotchyy -y -b y
                          (find-files "../lib/" ".*metis\\..*"))
                #t))))))
     (home-page "https://www.labri.fr/perso/pelegrin/scotch/")
+    (properties
+     `((release-monitoring-url . "https://gforge.inria.fr/frs/?group_id=248")))
     (synopsis "Programs and libraries for graph algorithms")
     (description "SCOTCH is a set of programs and libraries which implement
 the static mapping and sparse matrix reordering algorithms developed within
@@ -3225,6 +3703,7 @@ CAT = cat
 CCS = gcc
 CCP = mpicc
 CCD = gcc
+FC = gfortran
 CPPFLAGS =~{ -D~a~}
 CFLAGS = -O2 -g -fPIC $(CPPFLAGS)
 LDFLAGS = -lz -lm -lrt -lpthread
@@ -3279,6 +3758,7 @@ CAT = cat
 CCS = gcc
 CCP = mpicc
 CCD = gcc
+FC = gfortran
 CPPFLAGS =~{ -D~a~}
 CFLAGS = -O2 -g -fPIC $(CPPFLAGS) $(RPATHFLAGS)
 CLIBFLAGS = -shared -fPIC
@@ -3458,31 +3938,32 @@ processor cores.")
     (synopsis "Parallel adaptive mesh refinement on forests of octrees")))
 
 (define-public gsegrafix
+  ;; This is an old and equally dead "experimental fork" of the longer-dead
+  ;; original. At least it no longer requires the even-deader libgnomeprint{,ui}
+  ;; libraries, instead rendering plots with Pango.
   (package
     (name "gsegrafix")
-    (version "1.0.6")
+    (version "1.0.7.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/" name "/" name "-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "1b13hvx063zv970y750bx41wpx6hwd5ngjhbdrna8w8yy5kmxcda"))))
+       (method url-fetch)
+       (uri (string-append "mirror://savannah/gsegrafix-experimental/"
+                           "gsegrafix-experimental-" version ".tar.gz"))
+       (sha256
+        (base32 "0fwh6719xy2zasmqlp0vdx6kzm45hn37ga88xmw5cz0yx7xw4j6f"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("LDFLAGS=-lm")))
+     `(#:configure-flags
+       (list "--disable-static")))
     (inputs
-     `(("libgnomecanvas" ,libgnomecanvas)
-       ("libbonoboui" ,libbonoboui)
-       ("libgnomeui" ,libgnomeui)
-       ("libgnomeprintui" ,libgnomeprintui)
-       ("popt" ,popt)))
+     `(("glib" ,glib)
+       ("gtk+" ,gtk+)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (home-page "https://www.gnu.org/software/gsegrafix/")
     (synopsis "GNOME application to create scientific and engineering plots")
-    (description  "GSEGrafix is an application which produces high-quality graphical
+    (description
+     "GSEGrafix is an application which produces high-quality graphical
 plots for science and engineering.  Plots are specified via simple ASCII
 parameter files and data files and are presented in an anti-aliased GNOME
 canvas.  The program supports rectangular two-dimensional plots, histograms,
@@ -3493,7 +3974,7 @@ to BMP, JPEG or PNG image formats.")
 (define-public maxima
   (package
     (name "maxima")
-    (version "5.44.0")
+    (version "5.45.1")
     (source
      (origin
        (method url-fetch)
@@ -3501,7 +3982,7 @@ to BMP, JPEG or PNG image formats.")
                            version "-source/" name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1v6jr5s6hhj6r18gfk6hgxk2qd6z1dxkrjq9ss2z1y6sqi45wgyr"))
+         "1p77nk5sz1qfkn5zr97szpbi8ib4b22k8i52l4ag5gkhd4kid47y"))
        (patches (search-patches "maxima-defsystem-mkdir.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -3592,7 +4073,7 @@ to BMP, JPEG or PNG image formats.")
                (wrap-program (string-append out "/bin/maxima")
                  `("PATH" prefix (,binutils))))
              #t)))))
-    (home-page "http://maxima.sourceforge.net")
+    (home-page "https://maxima.sourceforge.io")
     (synopsis "Numeric and symbolic expression manipulation")
     (description "Maxima is a system for the manipulation of symbolic and
 numerical expressions.  It yields high precision numeric results by using
@@ -3608,7 +4089,7 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "21.02.0")
+    (version "21.05.2")
     (source
      (origin
        (method git-fetch)
@@ -3617,7 +4098,7 @@ point numbers.")
              (commit (string-append "Version-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19sab596ydwz65151bwymnfilyfmr8qcxb0k8cxlnj1gmdldlyz6"))))
+        (base32 "0h7ryykh2dapcyvpp4f1j1b3vrrz80x9k8nkci2yxifgdb29vyhw"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)))
@@ -3775,13 +4256,17 @@ parts of it.")
              ;; Build the library for all supported CPUs.  This allows
              ;; switching CPU targets at runtime with the environment variable
              ;; OPENBLAS_CORETYPE=<type>, where "type" is a supported CPU type.
-             ;; Unfortunately, this is not supported on non-x86 architectures,
+             ;; Unfortunately, this is not supported on all architectures,
              ;; where it leads to failed builds.
              ,@(let ((system (or (%current-target-system) (%current-system))))
                  (cond
                   ((or (string-prefix? "x86_64" system)
                        (string-prefix? "i686" system))
                    '("DYNAMIC_ARCH=1"))
+                  ;; On some of these architectures the CPU can't be detected.
+                  ((string-prefix? "powerpc64le" system)
+                   '("DYNAMIC_ARCH=1"
+                     "TARGET=GENERIC"))
                   ;; On MIPS we force the "SICORTEX" TARGET, as for the other
                   ;; two available MIPS targets special extended instructions
                   ;; for Loongson cores are used.
@@ -3790,6 +4275,9 @@ parts of it.")
                   ;; On aarch64 force the generic 'armv8-a' target
                   ((string-prefix? "aarch64" system)
                    '("TARGET=ARMV8"))
+                  ;; Failed to detect CPU.
+                  ((string-prefix? "armhf" system)
+                   '("TARGET=ARMV7"))
                   (else '()))))
        ;; no configure script
        #:phases
@@ -3934,7 +4422,7 @@ access to BLIS implementations via traditional BLAS routine calls.")
 (define-public openlibm
   (package
     (name "openlibm")
-    (version "0.6.0")
+    (version "0.7.4")
     (source
      (origin
        (method git-fetch)
@@ -3943,11 +4431,12 @@ access to BLIS implementations via traditional BLAS routine calls.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08wfchmmr5200fvmn1kwq9byc1fhsq46hn0y5k8scdl74771c7gh"))))
+        (base32 "1azms0lpxb7vxb3bln5lyz0wpwx6jnzbffkclclpq2v5aiw8d14i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out")))
+       (list (string-append "prefix=" (assoc-ref %outputs "out"))
+             ,(string-append "CC=" (cc-for-target)))
        #:phases
        ;; no configure script
        (modify-phases %standard-phases (delete 'configure))
@@ -4011,7 +4500,7 @@ Fresnel integrals, and similar related functions as well.")
 (define-public suitesparse
   (package
     (name "suitesparse")
-    (version "5.9.0")
+    (version "5.10.1")
     (source
      (origin
        (method git-fetch)
@@ -4021,7 +4510,7 @@ Fresnel integrals, and similar related functions as well.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zhkix58afw92s7p291prljdm3yi0pjg1kbi3lczdb8rb14jkz5n"))
+         "19gx5wlgqnqpgz6mvam9lalyzpbfwgqhppps8z3np9sh0mgaiyw9"))
        (patches (search-patches "suitesparse-mongoose-cmake.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -4036,6 +4525,11 @@ Fresnel integrals, and similar related functions as well.")
        (list (string-append "CC=" ,(cc-for-target))
              "TBB=-ltbb"
              "MY_METIS_LIB=-lmetis"
+
+             ;; The default is to link against netlib lapack.  Use OpenBLAS
+             ;; instead.
+             "BLAS=-lopenblas" "LAPACK=-lopenblas"
+
              ;; Flags for cmake (required to build GraphBLAS and Mongoose)
              (string-append "CMAKE_OPTIONS=-DCMAKE_INSTALL_PREFIX="
                             (assoc-ref %outputs "out")
@@ -4055,7 +4549,7 @@ Fresnel integrals, and similar related functions as well.")
          (delete 'configure))))         ;no configure script
     (inputs
      `(("tbb" ,tbb)
-       ("lapack" ,lapack)
+       ("openblas" ,openblas)
        ("gmp" ,gmp)
        ("mpfr" ,mpfr)
        ("metis" ,metis)))
@@ -4200,7 +4694,38 @@ done in the BIOS, or, on GNU/Linux, with the following command:
 @end example
 
 Failure to do so will result in a library with poor performance.")
+    ;; The test suite is notoriously lengthy and routinely exceeds the default
+    ;; timeout of 21600 seconds on the not unbeefy berlin build nodes.
+    (properties '((timeout . 86400)))        ; 1 day
     (license license:bsd-3)))
+
+(define-public cglm
+  (package
+    (name "cglm")
+    (version "0.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/recp/cglm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lcfl9ph4bnl3hckpx4hzwh8r4llnw94ik75igc5qy38wk468gmk"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "-DCGLM_USE_TEST=ON")))
+    (home-page "https://github.com/recp/cglm")
+    (synopsis "Mathematics C library for graphics programming")
+    (description
+     "@acronym{CGLM, C OpenGL Mathematics} is an optimised 3D maths library
+for graphics software based on the @acronym{GLSL, OpenGL Shading Language}
+specifications.
+
+It's similar to the original C++ GLM library but written in C99 and compatible
+with C89.")
+    (license license:expat)))
 
 (define-public glm
   (package
@@ -4322,43 +4847,226 @@ specifications.")
 revised simplex and the branch-and-bound methods.")
     (license license:lgpl2.1+)))
 
+;; Private Trilinos package for dealii-openmpi (similar to
+;; trilinos-serial-xyce and trilinos-parallel-xyce).
+;; This version is the latest known to be compatible with deal.II [1].
+;; Since the latest version of Trilinos is not necessarily supported by
+;; deal.II, it may be worth keeping this package even if and when Trilinos
+;; gets packaged separately for Guix (unless various versions of Trilinos are
+;; packaged).
+;;
+;; An insightful source of information for building Trilinos for deal.II lies
+;; in the Trilinos package for candi [2], which is a source-based installer
+;; for deal.II and its dependencies.
+;;
+;; [1]: https://www.dealii.org/current/external-libs/trilinos.html
+;; [2]: https://github.com/dealii/candi/blob/master/deal.II-toolchain/packages/trilinos.package
+(define trilinos-for-dealii-openmpi
+  (package
+    (name "trilinos-for-dealii-openmpi")
+    (version "12.18.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/trilinos/Trilinos/")
+             (commit
+              (string-append "trilinos-release-"
+                             (string-replace-substring version "." "-")))))
+       (file-name (git-file-name "trilinos" version))
+       (sha256
+        (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("gfortran" ,gfortran)
+       ;; Trilinos's repository contains several C-shell scripts, but adding
+       ;; tcsh to the native inputs does not result in the check phase running
+       ;; any more tests than without it (nor is tcsh required to build
+       ;; Trilinos).
+       ;; It seems that Trilinos has replaced its use of C-shell test scripts
+       ;; with CMake's testing facilities.
+       ;; For example,
+       ;; packages/zoltan/doc/Zoltan_html/dev_html/dev_test_script.html [1]
+       ;; states that Zoltan's C-shell test script
+       ;; packages/zoltan/test/test_zoltan has been obsoleted by the tests now
+       ;; performed through CMake.
+       ;;
+       ;; Perl is required for some Zoltan tests and Python 2 for one ML test.
+       ;;
+       ;; [1]: https://cs.sandia.gov/zoltan/dev_html/dev_test_script.html
+       ("perl" ,perl)
+       ("python" ,python-2)))
+    (inputs
+     `(("blas" ,openblas)
+       ("lapack" ,lapack)
+       ("mumps" ,mumps-openmpi)
+       ("scalapack" ,scalapack)))
+    (propagated-inputs
+     `(("mpi" ,openmpi)))
+    (arguments
+     `(#:build-type "Release"
+       #:configure-flags
+       `("-DBUILD_SHARED_LIBS=ON"
+         ;; Obtain the equivalent of RelWithDebInfo but with -O3 (the Release
+         ;; default) rather than -O2 (the RelWithDebInfo default), to conform
+         ;; to candi's trilinos.package's compilation flags, which are -g -O3.
+         "-DCMAKE_C_FLAGS=-g"
+         "-DCMAKE_CXX_FLAGS=-g"
+         "-DCMAKE_Fortran_FLAGS=-g"
+
+         ;; Trilinos libraries that deal.II can interface with.
+         "-DTrilinos_ENABLE_Amesos=ON"
+         "-DTrilinos_ENABLE_AztecOO=ON"
+         "-DTrilinos_ENABLE_Epetra=ON"
+         "-DTrilinos_ENABLE_EpetraExt=ON"
+         "-DTrilinos_ENABLE_Ifpack=ON"
+         "-DTrilinos_ENABLE_ML=ON"
+         "-DTrilinos_ENABLE_MueLu=ON"
+         "-DTrilinos_ENABLE_ROL=ON"
+         ;; Optional; required for deal.II's GridIn::read_exodusii, but
+         ;; depends on netcdf.
+         ;; Enable if and when someone needs it.
+         ;;"-DTrilinos_ENABLE_SEACAS=ON"
+         "-DTrilinos_ENABLE_Sacado=ON"
+         "-DTrilinos_ENABLE_Teuchos=ON"
+         "-DTrilinos_ENABLE_Tpetra=ON"
+         "-DTrilinos_ENABLE_Zoltan=ON"
+
+         ;; Third-party libraries (TPLs) that Trilinos can interface with.
+         "-DBLAS_LIBRARY_NAMES=openblas"
+         "-DTPL_ENABLE_MPI=ON"
+         "-DTPL_ENABLE_MUMPS=ON"
+         "-DTPL_ENABLE_SCALAPACK=ON"
+
+         ;; Enable the tests but not the examples (which are enabled by
+         ;; default when enabling tests).
+         ;; Although some examples are run as tests, they are otherwise
+         ;; unnecessary since this is a private package meant for
+         ;; dealii-openmpi.
+         ;; Besides, some MueLu and ROL examples require a lot of memory to
+         ;; compile.
+         ;;
+         ;; (For future reference, note that some ROL and SEACAS examples
+         ;; require removing gfortran from CPLUS_INCLUDE_PATH as in the
+         ;; dune-istl, dune-localfunctions and dune-alugrid packages.)
+         "-DTrilinos_ENABLE_TESTS=ON"
+         "-DTrilinos_ENABLE_EXAMPLES=OFF"
+         ;; MueLu tests require considerably more time and memory to compile
+         ;; than the rest of the tests.
+         "-DMueLu_ENABLE_TESTS=OFF"
+
+         ;; The following options were gleaned from candi's trilinos.package.
+         ;; (We do not enable the complex instantiations, which are anyway
+         ;; provided only as an option in trilinos.package, because they are
+         ;; costly in compilation time and memory usage, and disk space [1].)
+         ;;
+         ;; [1]: https://www.docs.trilinos.org/files/TrilinosBuildReference.html#enabling-float-and-complex-scalar-types
+         "-DTrilinos_ENABLE_Ifpack2=OFF"
+         "-DTeuchos_ENABLE_FLOAT=ON"
+         "-DTpetra_INST_INT_LONG=ON"
+         "-DTPL_ENABLE_Boost=OFF")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'fix-kokkos-config
+           (lambda _
+             ;; GNU Make 4.3 accidentally leaves the backslash preceding the
+             ;; number sign in strings containing a literal backslash–number
+             ;; sign (\#) [1, 2].
+             ;; This is still an issue in Trilinos 13.0.1, but should be fixed
+             ;; in the following version.
+             ;; (The latest versions of Kokkos incorporate the fix [2].)
+             ;;
+             ;; [1]: https://github.com/GEOSX/thirdPartyLibs/issues/136
+             ;; [2]: https://github.com/kokkos/kokkos/blob/3.4.00/Makefile.kokkos#L441
+             (substitute* "KokkosCore_config.h"
+               (("\\\\#") "#"))
+             #t))
+         (add-before 'check 'mpi-setup
+           ,%openmpi-setup))))
+    (home-page "https://trilinos.github.io/")
+    (synopsis "Algorithms for engineering and scientific problems")
+    (description
+     "The Trilinos Project is an effort to develop algorithms and enabling
+technologies within an object-oriented software framework for the solution of
+large-scale, complex multi-physics engineering and scientific problems.
+A unique design feature of Trilinos is its focus on packages.")
+    ;; The packages are variously licensed under more than just BSD-3 and
+    ;; LGPL-2.1+, but all the licenses are either BSD- or LGPL-compatible.
+    ;; See https://trilinos.github.io/license.html.
+    (license (list license:bsd-3 license:lgpl2.1+))))
+
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.2.0")
+    (version "9.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32
-         "0fm4xzrnb7dfn4415j24d8v3jkh0lssi86250x2f5wgi83xq4nnh"))
+        (base32 "1f0sqvlxvl0myqcn0q6xrn1vnp5pgx143lai4a4jkh1dmdv4cbx6"))
        (modules '((guix build utils)))
        (snippet
-        ;; Remove bundled sources: UMFPACK, TBB, muParser, and boost
         '(begin
+           ;; Remove bundled boost, muparser, TBB and UMFPACK.
            (delete-file-recursively "bundled")
            #t))))
     (build-system cmake-build-system)
+    (outputs '("out" "doc"))
+    (native-inputs
+     ;; Required to build the documentation.
+     `(("dot" ,graphviz)
+       ("doxygen" ,doxygen)
+       ("perl" ,perl)))
     (inputs
-     `(("tbb" ,tbb)
-       ("zlib" ,zlib)
-       ("boost" ,boost)
-       ("p4est" ,p4est)
+     `(("arpack" ,arpack-ng)
        ("blas" ,openblas)
-       ("lapack" ,lapack)
-       ("arpack" ,arpack-ng)
-       ("muparser" ,muparser)
        ("gfortran" ,gfortran)
-       ("suitesparse" ,suitesparse)))   ;for UMFPACK
+       ("lapack" ,lapack)
+       ("muparser" ,muparser)
+       ("zlib" ,zlib)))
+    (propagated-inputs
+     ;; Some scripts are installed into share/deal.II/scripts that require
+     ;; perl and python, but they are not executable (and some are missing the
+     ;; shebang line) and therefore must be explicitly passed to the
+     ;; interpreter.
+     ;; Anyway, they are meant to be used at build time, so rather than adding
+     ;; the interpreters here, any package depending on them should just add
+     ;; the requisite interpreter to its native inputs.
+     `(("boost" ,boost)
+       ("hdf5" ,hdf5)
+       ("suitesparse" ,suitesparse)     ; For UMFPACK.
+       ("tbb" ,tbb)))
     (arguments
-     `(#:build-type "DebugRelease" ;only supports Release, Debug, or DebugRelease
+     `(#:build-type "DebugRelease" ; Supports only Debug, Release and DebugRelease.
+       ;; The tests take too long and must be explicitly enabled with "make
+       ;; setup_tests".
+       ;; See https://www.dealii.org/developer/developers/testsuite.html.
+       ;; (They can also be run for an already installed deal.II.)
+       #:tests? #f
        #:configure-flags
-       ;; Work around a bug in libsuitesparseconfig linking
-       ;; see https://github.com/dealii/dealii/issues/4745
-       '("-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON")))
-    (home-page "https://www.dealii.org")
+       (let ((doc (string-append (assoc-ref %outputs "doc")
+                                 "/share/doc/" ,name "-" ,version)))
+         `("-DDEAL_II_COMPONENT_DOCUMENTATION=ON"
+           ,(string-append "-DDEAL_II_DOCREADME_RELDIR=" doc)
+           ,(string-append "-DDEAL_II_DOCHTML_RELDIR=" doc "/html")
+           ;; Don't compile the examples because the source and CMakeLists.txt
+           ;; are installed anyway, allowing users to do so for themselves.
+           "-DDEAL_II_COMPILE_EXAMPLES=OFF"
+           ,(string-append "-DDEAL_II_EXAMPLES_RELDIR=" doc "/examples")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'remove-build-logs
+           ;; These build logs leak the name of the build directory by storing
+           ;; the values of CMAKE_SOURCE_DIR and CMAKE_BINARY_DIR.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((doc (string-append (assoc-ref outputs "doc")
+                                       "/share/doc/" ,name "-" ,version)))
+               (for-each delete-file (map (lambda (f) (string-append doc "/" f))
+                                          '("detailed.log" "summary.log"))))
+             #t)))))
+    (home-page "https://www.dealii.org/")
     (synopsis "Finite element library")
     (description
      "Deal.II is a C++ program library targeted at the computational solution
@@ -4369,30 +5077,25 @@ in finite element programs.")
     (license license:lgpl2.1+)))
 
 (define-public dealii-openmpi
-  (package (inherit dealii)
+  (package/inherit dealii
     (name "dealii-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ;;Supported only with MPI:
-       ("hdf5" ,hdf5-parallel-openmpi)  ;TODO: have petsc-openmpi propagate?
+     `(("arpack" ,arpack-ng-openmpi)
+       ("metis" ,metis)
+       ("scalapack" ,scalapack)
+       ,@(alist-delete "arpack" (package-inputs dealii))))
+    (propagated-inputs
+     `(("hdf5" ,hdf5-parallel-openmpi)
+       ("mpi" ,openmpi)
        ("p4est" ,p4est-openmpi)
        ("petsc" ,petsc-openmpi)
        ("slepc" ,slepc-openmpi)
-       ("metis" ,metis)               ;for MUMPS
-       ("scalapack" ,scalapack)       ;for MUMPS
-       ("mumps" ,mumps-metis-openmpi) ;configure supports only metis orderings
-       ("arpack" ,arpack-ng-openmpi)
-       ,@(fold alist-delete (package-inputs dealii)
-               '("p4est" "arpack"))))
+       ("trilinos" ,trilinos-for-dealii-openmpi)
+       ,@(alist-delete "hdf5" (package-propagated-inputs dealii))))
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
-       ((#:configure-flags cf)
-        `(cons "-DDEAL_II_WITH_MPI:BOOL=ON"
-               ,cf))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-before 'check 'mpi-setup
-             ,%openmpi-setup)))))
+       ((#:configure-flags flags)
+        `(cons "-DDEAL_II_WITH_MPI=ON" ,flags))))
     (synopsis "Finite element library (with MPI support)")))
 
 (define-public flann
@@ -4480,7 +5183,7 @@ evaluates expressions using the standard order of operations.")
 (define-public xaos
   (package
     (name "xaos")
-    (version "4.0")
+    (version "4.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4489,10 +5192,10 @@ evaluates expressions using the standard order of operations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00110p5xscjsmn7avfqgydn656zbmdj3l3y2fpv9b4ihzpid8n7a"))))
+                "0maw5am6rrkyjrprfg113zjq37mqj0iaznkg4h2927ff7wrprc94"))))
     (build-system gnu-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
-                     ("qtbase" ,qtbase)
+                     ("qtbase" ,qtbase-5)
                      ("qttools" ,qttools)))
     (inputs `(("libx11" ,libx11)
               ("zlib" ,zlib)
@@ -4512,12 +5215,14 @@ evaluates expressions using the standard order of operations.")
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               ;; The DESTDIR is originally set to install the xaos binary to
-               ;; the "bin" folder inside the build directory.  Setting make
-               ;; flags doesn't seem to change this.
                (substitute* "XaoS.pro"
+                 ;; The DESTDIR is originally set to install the xaos binary to
+                 ;; the "bin" folder inside the build directory.  Setting make
+                 ;; flags doesn't seem to change this.
                  (("DESTDIR.*$")
-                  (string-append "DESTDIR=" out "/bin")))
+                  (string-append "DESTDIR=" out "/bin"))
+                 ;; Set the correct path to the lrelease binary.
+                 (("lrelease-qt5") "lrelease"))
                (substitute* "src/include/config.h"
                  (("/usr/share/XaoS")
                   (string-append out "/share/XaoS")))
@@ -4554,7 +5259,7 @@ set.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/LLNL/hypre")
+             (url "https://github.com/hypre-space/hypre")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -4640,7 +5345,8 @@ set.")
                            '("HYPRE_usr_manual"
                              "HYPRE_ref_manual")))
                #t))))))
-    (home-page "http://www.llnl.gov/casc/hypre/")
+    (home-page "https://computing.llnl.gov/projects\
+/hypre-scalable-linear-solvers-multigrid-methods")
     (synopsis "Library of solvers and preconditioners for linear equations")
     (description
      "HYPRE is a software library of high performance preconditioners and
@@ -4696,14 +5402,14 @@ supports compressed MAT files, as well as newer (version 7.3) MAT files.")
 (define-public vc
   (package
     (name "vc")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
       (origin (method url-fetch)
               (uri (string-append "https://github.com/VcDevel/Vc/releases/"
                                   "download/" version "/Vc-" version ".tar.gz"))
               (sha256
                (base32
-                "17qili8bf8r78cng65yf4qmgna8kiqjqbgcqbric6v9j6nkhkrk8"))))
+                "0lirdqzcxys9walz04bllsphydynk7973aimd5k1h1qbwi8z3lsh"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
@@ -5062,7 +5768,7 @@ reduction.")
 (define-public mcrl2
   (package
     (name "mcrl2")
-    (version "202006.0")
+    (version "202106.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -5070,12 +5776,12 @@ reduction.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "167ryrzk1a2j53c2j198jlxa98amcaym070gkcj730619gymv5zl"))))
+                "0db9wgy9spwm76mgfisnifrlg69y9cadjgxjr4gdwzfgg6wgqf6d"))))
     (inputs
      `(("boost" ,boost)
        ("glu" ,glu)
        ("mesa" ,mesa)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (build-system cmake-build-system)
     (synopsis "Toolset for the mCRL2 formal specification language")
     (description
@@ -5885,7 +6591,7 @@ management via the GIMPS project's Primenet server.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.7r1")
+    (version "2.7r3")
     (source
      (origin
        (method url-fetch)
@@ -5893,7 +6599,7 @@ management via the GIMPS project's Primenet server.")
              "https://pallini.di.uniroma1.it/"
              "nauty" (string-join (string-split version #\.) "") ".tar.gz"))
        (sha256
-        (base32 "0xsfqfcknbd6g6wzpa5l7crmmk3bf3zjh37rhylq6b20dqcmvjkn"))))
+        (base32 "1hl81gpf3xjf809w04jczvilq1ixy9ch1qrax8a7lgx52svna1jg"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
@@ -6006,7 +6712,7 @@ functions.")
        (base32
         "0vh7cd1915bjqzkdp3sk25ngy8cq624mkh8c53c5bnzk357kb0fk"))))
     (build-system cmake-build-system)
-    (inputs `(("qtbase" ,qtbase)))
+    (inputs `(("qtbase" ,qtbase-5)))
     (native-inputs `(("qttools" ,qttools)))
     (arguments
      `(#:phases
@@ -6066,7 +6772,7 @@ researchers and developers alike to get started on SAT.")
 (define-public libqalculate
   (package
     (name "libqalculate")
-    (version "3.8.0")
+    (version "3.19.0")
     (source
      (origin
        (method git-fetch)
@@ -6075,7 +6781,7 @@ researchers and developers alike to get started on SAT.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vbaza9c7159xf2ym90l0xkyj2mp6c3hbghhsqn29yvz08fda9df"))
+        (base32 "1w44407wb552q21dz4m2nwwdi8b9hzjb2w1l3ffsikzqckc7wbyj"))
        (patches
         (search-patches "libqalculate-3.8.0-libcurl-ssl-fix.patch"))))
     (build-system gnu-build-system)
@@ -6120,7 +6826,7 @@ cli.")
 (define-public qalculate-gtk
   (package
     (name "qalculate-gtk")
-    (version "3.8.0")
+    (version "3.19.0")
     (source
      (origin
        (method git-fetch)
@@ -6129,7 +6835,7 @@ cli.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nsg6dzg5r7rzqr671nvrf1c50rjwpz7bxv5f20i4s7agizgv840"))))
+        (base32 "1nrx7gp6f1yalbdda1gb97azhbr4xclq2xf08vvbvsk8jfd6fd2v"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -6153,15 +6859,6 @@ cli.")
            ;; script, which has not yet been patched to replace /bin/sh.
            (lambda _
              (setenv "NOCONFIGURE" "TRUE")
-             #t))
-         (add-before 'check 'add-pot-file
-           ;; the file contains translations and are currently not in use
-           ;; left out on purpose so add it to POTFILES.skip
-           (lambda _
-             (with-output-to-file "po/POTFILES.skip"
-               (lambda _
-                 (format #t "data/shortcuts.ui~%")
-                 #t))
              #t)))))
     (home-page "https://qalculate.github.io/")
     (synopsis "Multi-purpose graphical desktop calculator")
@@ -6173,3 +6870,359 @@ and conversions, physical constants, symbolic calculations (including
 integrals and equations), arbitrary precision, uncertainty propagation,
 interval arithmetic, plotting.")
     (license license:gpl2+)))
+
+(define-public numdiff
+  (package
+    (name "numdiff")
+    (version "5.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://savannah/numdiff/numdiff-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1vzmjh8mhwwysn4x4m2vif7q2k8i19x8azq7pzmkwwj4g48lla47"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f ; There are no tests.
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'compress-documentation 'delete-precompressed-info-file
+           (lambda _
+             (delete-file (string-append (assoc-ref %outputs "out")
+                                         "/share/info/numdiff.info.gz"))
+             #t)))))
+    (home-page "https://nongnu.org/numdiff/")
+    (synopsis "Compare files with numeric fields")
+    (description
+     "Numdiff compares files line by line and field by field, ignoring small
+numeric differences and differences in numeric formats.")
+    (license license:gpl3+)))
+
+(define-public why3
+  (package
+    (name "why3")
+    (version "1.3.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://gforge.inria.fr/frs/download.php/file"
+                                  "/38367/why3-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1n0a2nn1gnk0zg339lh698g4wpk7m8m1vyi2yvifd5adqvk4milw"))))
+    (build-system ocaml-build-system)
+    (native-inputs
+     `(("coq" ,coq)
+       ("ocaml" ,ocaml)
+       ("which" ,which)))
+    (propagated-inputs
+     `(("camlzip" ,camlzip)
+       ("ocaml-graph" ,ocaml-graph)
+       ("ocaml-menhir" ,ocaml-menhir)
+       ("ocaml-num" ,ocaml-num)
+       ("ocaml-zarith" ,ocaml-zarith)))
+    (inputs
+     `(("coq-flocq" ,coq-flocq)
+       ("emacs-minimal" ,emacs-minimal)
+       ("zlib" ,zlib)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-configure
+           (lambda _
+             (setenv "CONFIG_SHELL" (which "sh"))
+             (substitute* "configure"
+               ;; find ocaml-num in the correct directory
+               (("\\$DIR/nums.cma") "$DIR/num.cma")
+               (("\\$DIR/num.cmi") "$DIR/core/num.cmi"))
+             #t))
+         (add-after 'configure 'fix-makefile
+           (lambda _
+             (substitute* "Makefile"
+               ;; find ocaml-num in the correct directory
+               (("site-lib/num") "site-lib"))
+             #t))
+        (add-after 'install 'install-lib
+          (lambda _
+            (invoke "make" "byte")
+            (invoke "make" "install-lib")
+            #t)))))
+    (home-page "http://why3.lri.fr")
+    (synopsis "Deductive program verification")
+    (description "Why3 provides a language for specification and programming,
+called WhyML, and relies on external theorem provers, both automated and
+interactive, to discharge verification conditions.  Why3 comes with a standard
+library of logical theories (integer and real arithmetic, Boolean operations,
+sets and maps, etc.) and basic programming data structures (arrays, queues,
+hash tables, etc.).  A user can write WhyML programs directly and get
+correct-by-construction OCaml programs through an automated extraction
+mechanism.  WhyML is also used as an intermediate language for the verification
+of C, Java, or Ada programs.")
+    (license license:lgpl2.1)))
+
+(define-public frama-c
+  (package
+    (name "frama-c")
+    (version "22.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://frama-c.com/download/frama-c-"
+                                  version "-Titanium.tar.gz"))
+              (sha256
+               (base32
+                "1mq1fijka95ydrla486yr4w6wdl9l7vmp512s1q00b0p6lmfwmkh"))))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:tests? #f; no test target in Makefile
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'export-shell
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CONFIG_SHELL" (string-append (assoc-ref inputs "bash")
+                                                   "/bin/sh"))
+             #t)))))
+    (inputs
+     `(("gmp" ,gmp)))
+    (propagated-inputs
+     `(("ocaml-biniou" ,ocaml-biniou)
+       ("ocaml-easy-format" ,ocaml-easy-format)
+       ("ocaml-graph" ,ocaml-graph)
+       ("ocaml-yojson" ,ocaml-yojson)
+       ("ocaml-zarith" ,ocaml-zarith)
+       ("why3" ,why3)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "FRAMAC_SHARE")
+            (files '("share/frama-c"))
+            (separator #f))
+           (search-path-specification
+            (variable "FRAMAC_LIB")
+            (files '("lib/frama-c"))
+            (separator #f))))
+    (home-page "http://frama-c.com")
+    (synopsis "C source code analysis platform")
+    (description "Frama-C is an extensible and collaborative platform dedicated
+to source-code analysis of C software.  The Frama-C analyzers assist you in
+various source-code-related activities, from the navigation through unfamiliar
+projects up to the certification of critical software.")
+    (license license:lgpl2.1+)))
+
+(define-public blitz
+  (package
+    (name "blitz")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blitzpp/blitz")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c88gc72j3zggyk4yrrip6i0v7xkx97l140vpy3xhxs2i7xy1461"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DBUILD_DOC=ON"
+                           "-DBUILD_TESTING=ON")
+       ;; The default "check" target also includes examples and benchmarks.
+       #:test-target "check-testsuite"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-doc
+           (lambda _
+             (invoke "make" "-j" (number->string (parallel-job-count))
+                     "blitz-doc"))))))
+    (native-inputs
+     `(("python" ,python)
+       ("texinfo" ,texinfo)))
+    (synopsis "C++ template class library for multidimensional arrays")
+    (description "Blitz++ is a C++ template class library that provides
+high-performance multidimensional array containers for scientific computing.")
+    (home-page "https://github.com/blitzpp/blitz")
+    (license (list license:artistic2.0
+                   license:bsd-3
+                   license:lgpl3+))))
+
+(define-public fxdiv
+  ;; There is currently no tag in this repo.
+  (let ((commit "63058eff77e11aa15bf531df5dd34395ec3017c8")
+        (version "0.0")
+        (revision "1"))
+    (package
+      (name "fxdiv")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/Maratyszcza/FXdiv")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0zwzh8gmbx4m6b18s5nf13b0dk5yjkd1fs8f421bl7fz5f9gjd9f"))
+                (patches (search-patches "fxdiv-system-libraries.patch"))))
+      (build-system cmake-build-system)
+      (inputs
+       `(("googletest" ,googletest)
+         ("googlebenchmark" ,googlebenchmark)))
+      (synopsis
+       "C++ library for division via fixed-point multiplication by inverse")
+      (description
+       "On modern CPUs and GPUs, integer division is several times slower than
+multiplication.  FXdiv implements an algorithm to replace an integer division
+with a multiplication and two shifts.  This algorithm improves performance
+when an application performs repeated divisions by the same divisor.")
+      (license license:expat))))
+
+(define-public fp16
+  ;; There is currently no tag in this repo.
+  (let ((commit "0a92994d729ff76a58f692d3028ca1b64b145d91")
+        (version "0.0")
+        (revision "1"))
+    (package
+      (name "fp16")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/Maratyszcza/FP16")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "05mm4vrxsac35hjf5djif9r6rdxj9ippg97ia3p6q6b8lrp7srwv"))
+                (patches (search-patches "fp16-system-libraries.patch"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:imported-modules ((guix build python-build-system)
+                             ,@%cmake-build-system-modules)
+         #:modules (((guix build python-build-system)
+                     #:select (site-packages))
+                    (guix build cmake-build-system)
+                    (guix build utils))
+         #:phases (modify-phases %standard-phases
+                    (add-after 'install 'move-python-files
+                      (lambda* (#:key inputs outputs #:allow-other-keys)
+                        ;; Python files get installed to $includedir (!).
+                        ;; Move them to the usual Python site directory.
+                        (let* ((out     (assoc-ref outputs "out"))
+                               (include (string-append out "/include"))
+                               (site    (site-packages inputs outputs))
+                               (target  (string-append site "/fp16")))
+                          (mkdir-p target)
+                          (for-each (lambda (file)
+                                      (rename-file file
+                                                   (string-append target "/"
+                                                                  (basename
+                                                                   file))))
+                                    (find-files include "\\.py$"))))))))
+      (native-inputs
+       `(("python-wrapper" ,python-wrapper)))
+      (inputs
+       `(("psimd" ,psimd)
+         ("googletest" ,googletest)
+         ("googlebenchmark" ,googlebenchmark)))
+      (synopsis "C++ library for half-precision floating point formats")
+      (description
+       "This header-only C++ library implements conversion to and from
+half-precision floating point formats.")
+      (license license:expat))))
+
+(define-public optizelle
+  (let ((commit "ed4160b5287518448caeb34789d92dc6a0b7e2cc"))
+   (package
+    (name "optizelle")
+    (version (git-version "1.3.0" "0" commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OptimoJoe/Optizelle")
+             (commit commit)))
+       (file-name (git-file-name "optizelle" commit))
+       (sha256
+        (base32
+         "0rjrs5sdmd33a9f4xm8an7p0953aa0bxsmr4hs3ss1aad9k181vq"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Reduce the stopping tolerance in one test so that the
+           ;; convergence check returns the correct stopping
+           ;; condition.
+           (substitute*
+            "src/unit/linear_algebra/tcg_loss_of_orthogonality.cpp"
+            (("1e-13") "5e-14"))
+           ;; Skip one set of python tests.  See
+           ;; https://github.com/OptimoJoe/Optizelle/issues/2.
+           (substitute*
+            "src/examples/inequality_scaling/CMakeLists.txt"
+            (("add_unit(.*)\\$\\{interfaces\\}(.*)$" all middle end)
+             (string-append "add_unit" middle "\"cpp\"" end)))
+           ;; Install the licence for Optizelle, without also
+           ;; including the licences for the dependencies.
+           (substitute* "licenses/CMakeLists.txt"
+                        (("file.*package.*$" all)
+                         (string-append "# " all))
+                        ((".*[^l].[.]txt\\)\n") "")
+                        (("add_license.*\"\n") ""))
+           #t))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:imported-modules ((guix build python-build-system)
+                           ,@%cmake-build-system-modules)
+       #:modules (((guix build python-build-system) #:select
+                   (python-version))
+                  (guix build cmake-build-system)
+                  (guix build utils))
+       #:configure-flags `("-DCMAKE_CXX_FLAGS:STRING=-pthread"
+                           "-DENABLE_CPP_UNIT:BOOL=ON"
+                           "-DENABLE_CPP_EXAMPLES:BOOL=ON"
+                           "-DENABLE_PYTHON:BOOL=ON"
+                           "-DENABLE_PYTHON_UNIT:BOOL=ON"
+                           "-DENABLE_PYTHON_EXAMPLES:BOOL=ON"
+                           ,(string-append "-DBLAS_LIBRARY:FILEPATH="
+                                           (assoc-ref %build-inputs
+                                                      "blas/lapack")
+                                           "/lib/libopenblas.so")
+                           ,(string-append "-DLAPACK_LIBRARY:FILEPATH="
+                                           (assoc-ref %build-inputs
+                                                      "fortran:lib")
+                                           "/lib/libgfortran.so;"
+                                           (assoc-ref %build-inputs
+                                                      "fortran:lib")
+                                           "/lib/libquadmath.so"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-numpy-path ; Needed for the unit tests.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((pyver (python-version (assoc-ref inputs "python")))
+                    (npdir (string-append (assoc-ref inputs "numpy")
+                                          "/lib/python" pyver
+                                          "/site-packages")))
+                (substitute* "src/cmake/Modules/Optizelle.cmake"
+                  (("PYTHONPATH=")
+                   (string-append "LD_LIBRARY_PATH=$ENV{LIBRARY_PATH};"
+                                  "PYTHONPATH=" npdir ":"))))))
+         (delete 'install-license-files)))) ; LICENSE.txt is installed.
+    (inputs
+     `(("blas/lapack" ,openblas)
+       ("fortran:lib" ,gfortran "lib")
+       ("jsoncpp" ,jsoncpp)
+       ("numpy" ,python-numpy)
+       ("python" ,python)))
+    (native-inputs
+     `(("fortran" ,gfortran)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://www.optimojoe.com/products/optizelle/")
+    (synopsis "Mathematical optimization library")
+    (description "@code{optizelle} is a software library designed to
+solve nonlinear optimization problems.  Four types of problem are
+considered: unconstrained, equality constrained, inequality
+constrained and constrained.  Constraints may be applied as values of
+functions or sets of partial differential equations (PDEs).
+
+Solution algorithms such as the preconditioned nonlinear conjugate
+gradient method, sequential quadratic programming (SQP) and the
+primal-dual interior-point method are made available.  Interfaces are
+provided for applications written in C++ and Python.  Parallel
+computation is supported via MPI.")
+    (license license:bsd-2))))

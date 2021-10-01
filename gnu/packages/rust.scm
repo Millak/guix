@@ -10,7 +10,7 @@
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2020, 2021 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020 Matthew Kraai <kraai@ftbfs.org>
+;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1463,6 +1463,16 @@ move around."
 (define-public rust-1.51
   (rust-bootstrapped-package rust-1.50 "1.51.0"
     "0ixqkqglv3isxbvl4ldr4byrkx692wghsz3fasy1pn5kr2prnsvs"))
+
+(define-public rust-1.52
+  (let ((base-rust
+         (rust-bootstrapped-package rust-1.51 "1.52.1"
+           "165zs3xzp9dravybwslqs1qhn35agp6wacmzpymqg3qfdni26vrs")))
+    (package
+      (inherit base-rust)
+      (inputs
+        (alist-replace "llvm" (list llvm-12)
+                       (package-inputs base-rust))))))
 
 ;; TODO(staging): Bump this variable to the latest packaged rust.
 (define-public rust rust-1.50)

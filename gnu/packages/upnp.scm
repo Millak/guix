@@ -61,11 +61,11 @@
      ;; The build system does not use a configure script but depends on
      ;; `make'.  Hence we should pass parameters to `make' instead and remove
      ;; the configure phase.
-     '(#:make-flags
+     `(#:make-flags
        (list
         (string-append "SH=" (assoc-ref %build-inputs "bash") "/bin/sh")
         (string-append "INSTALLPREFIX=" (assoc-ref %outputs "out"))
-        "CC=gcc"
+        ,(string-append "CC=" (cc-for-target))
 
         ;; Allow executables to find libminiupnpc.so.
         (string-append "LDFLAGS=-Wl,-rpath="
@@ -96,14 +96,14 @@ over IRC, instant messaging, network games, and most server software.")
 (define-public libupnp
   (package
     (name "libupnp")
-    (version "1.14.5")
+    (version "1.14.7")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://github.com/pupnp/pupnp/releases/download"
                           "/release-" version "/libupnp-" version".tar.bz2"))
       (sha256
-       (base32 "16hlcpffmqd4rja57m6km1dpx3abgv91vvmb8971vfg6gd0glzr2"))))
+       (base32 "093wmhk7rdmg2ixyam4hpxa43g25555jgb3i4y7223mwhr5aqrkv"))))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (build-system gnu-build-system)

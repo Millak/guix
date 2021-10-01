@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -61,7 +61,7 @@
    (inexact->exact (ceiling (/ size 1024)))))
 
 (define (estimate-partition-size root)
-  "Given the ROOT directory, evalute and return its size.  As this doesn't
+  "Given the ROOT directory, evaluate and return its size.  As this doesn't
 take the partition metadata size into account, take a 25% margin."
   (* 1.25 (file-size root)))
 

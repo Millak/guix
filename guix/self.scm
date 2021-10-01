@@ -50,7 +50,7 @@
   (let ((ref (lambda (module variable)
                (module-ref (resolve-interface module) variable))))
     (match-lambda
-      ("guile"      (ref '(gnu packages guile) 'guile-3.0/libgc-7))
+      ("guile"      (ref '(gnu packages guile) 'guile-3.0-latest))
       ("guile-avahi" (ref '(gnu packages guile-xyz) 'guile-avahi))
       ("guile-json" (ref '(gnu packages guile) 'guile-json-4))
       ("guile-ssh"  (ref '(gnu packages ssh)   'guile-ssh))
@@ -63,6 +63,7 @@
       ("guile-zstd" (ref '(gnu packages guile) 'guile-zstd))
       ("guile-gcrypt"  (ref '(gnu packages gnupg) 'guile-gcrypt))
       ("gnutls"     (ref '(gnu packages tls) 'gnutls))
+      ("disarchive" (ref '(gnu packages backup) 'disarchive))
       ("gzip"       (ref '(gnu packages compression) 'gzip))
       ("bzip2"      (ref '(gnu packages compression) 'bzip2))
       ("xz"         (ref '(gnu packages compression) 'xz))
@@ -406,9 +407,8 @@ a list of extra files, such as '(\"contributing\")."
                                     "\\.[a-z]{2}(_[A-Z]{2})?\\.po$")))
 
           (define parallel-jobs
-            ;; Limit thread creation by 'n-par-for-each'.  Going beyond can
-            ;; lead libgc 8.0.4 to abort with:
-            ;; mmap(PROT_NONE) failed
+            ;; Limit thread creation by 'n-par-for-each', mostly to put an
+            ;; upper bound on memory usage.
             (min (parallel-job-count) 4))
 
           (mkdir #$output)
@@ -718,7 +718,9 @@ load path."
                   ("share/guix/ci.guix.gnu.org.pub"  ;alias
                    ,(file-append* source "/etc/substitutes/berlin.guix.gnu.org.pub"))
                   ("share/guix/ci.guix.info.pub"  ;alias
-                   ,(file-append* source "/etc/substitutes/berlin.guix.gnu.org.pub")))))
+                   ,(file-append* source "/etc/substitutes/berlin.guix.gnu.org.pub"))
+                  ("share/guix/bordeaux.guix.gnu.org.pub"
+                   ,(file-append* source "/etc/substitutes/bordeaux.guix.gnu.org.pub")))))
 
 (define* (whole-package name modules dependencies
                         #:key
@@ -842,6 +844,9 @@ itself."
   (define gnutls
     (specification->package "gnutls"))
 
+  (define disarchive
+    (specification->package "disarchive"))
+
   (define dependencies
     (append-map transitive-package-dependencies
                 (list guile-gcrypt gnutls guile-git guile-avahi
@@ -867,7 +872,9 @@ itself."
                  ;; rebuilt when the version changes, which in turn means we
                  ;; can have substitutes for it.
                  #:extra-modules
-                 `(((guix config) => ,(make-config.scm)))
+                 `(((guix config)
+                    => ,(make-config.scm
+                         #:config-variables %default-config-variables)))
 
                  ;; (guix man-db) is needed at build-time by (guix profiles)
                  ;; but we don't need to compile it; not compiling it allows
@@ -878,7 +885,8 @@ itself."
                    ("guix/store/schema.sql"
                     ,(local-file "../guix/store/schema.sql")))
 
-                 #:extensions (list guile-gcrypt)
+                 #:extensions (list guile-gcrypt
+                                    guile-json)   ;for (guix swh)
                  #:guile-for-build guile-for-build))
 
   (define *extra-modules*
@@ -950,13 +958,23 @@ itself."
                  #:guile-for-build
                  guile-for-build))
 
+  (define *home-modules*
+    (scheme-node "guix-home"
+                 `((gnu home)
+                   (gnu home-services)
+                   ,@(scheme-modules* source "gnu/home-services"))
+                 (list *core-package-modules* *package-modules*
+                       *extra-modules* *core-modules* *system-modules*)
+                 #:extensions dependencies
+                 #:guile-for-build guile-for-build))
+
   (define *cli-modules*
     (scheme-node "guix-cli"
                  (append (scheme-modules* source "/guix/scripts")
                          `((gnu ci)))
                  (list *core-modules* *extra-modules*
                        *core-package-modules* *package-modules*
-                       *system-modules*)
+                       *system-modules* *home-modules*)
                  #:extensions dependencies
                  #:guile-for-build guile-for-build))
 
@@ -968,6 +986,8 @@ itself."
                  (list *core-package-modules* *package-modules*
                        *extra-modules* *system-modules* *core-modules*
                        *cli-modules*)           ;for (guix scripts pack), etc.
+                 #:extra-files (file-imports source "gnu/tests/data"
+                                             (const #t))
                  #:extensions dependencies
                  #:guile-for-build guile-for-build))
 
@@ -1002,6 +1022,7 @@ itself."
                                        *cli-modules*
                                        *system-test-modules*
                                        *system-modules*
+                                       *home-modules*
                                        *package-modules*
                                        *core-package-modules*
                                        *extra-modules*
@@ -1025,7 +1046,8 @@ itself."
          (let* ((modules  (built-modules (compose list node-source+compiled)))
                 (command  (guix-command modules
                                         #:source source
-                                        #:dependencies dependencies
+                                        #:dependencies
+                                        (cons disarchive dependencies)
                                         #:guile guile-for-build
                                         #:guile-version guile-version)))
            (whole-package name modules dependencies
@@ -1075,10 +1097,17 @@ itself."
                                       (variables rest ...))))))
     (variables %localstatedir %storedir %sysconfdir)))
 
+(define %default-config-variables
+  ;; Default values of the configuration variables above.
+  `((%localstatedir . "/var")
+    (%storedir . "/gnu/store")
+    (%sysconfdir . "/etc")))
+
 (define* (make-config.scm #:key gzip xz bzip2
                           (package-name "GNU Guix")
                           (package-version "0")
                           (channel-metadata #f)
+                          (config-variables %config-variables)
                           (bug-report-address "bug-guix@gnu.org")
                           (home-page-url "https://guix.gnu.org"))
 
@@ -1108,7 +1137,7 @@ itself."
                    #$@(map (match-lambda
                              ((name . value)
                               #~(define-public #$name #$value)))
-                           %config-variables)
+                           config-variables)
 
                    (define %store-directory
                      (or (and=> (getenv "NIX_STORE_DIR") canonicalize-path)

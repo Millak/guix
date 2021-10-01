@@ -95,14 +95,17 @@ DEVICES list."
 
 (define (run-label-page button-text button-callback)
   "Run a page asking the user to select a partition table label."
-  (run-listbox-selection-page
-   #:info-text (G_ "Select a new partition table type. \
+  ;; Force the GPT label if UEFI is supported.
+  (if (efi-installation?)
+      "gpt"
+      (run-listbox-selection-page
+       #:info-text (G_ "Select a new partition table type. \
 Be careful, all data on the disk will be lost.")
-   #:title (G_ "Partition table")
-   #:listbox-items '("msdos" "gpt")
-   #:listbox-item->text identity
-   #:button-text button-text
-   #:button-callback-procedure button-callback))
+       #:title (G_ "Partition table")
+       #:listbox-items '("msdos" "gpt")
+       #:listbox-item->text identity
+       #:button-text button-text
+       #:button-callback-procedure button-callback)))
 
 (define (run-type-page partition)
   "Run a page asking the user to select a partition type."
@@ -128,7 +131,7 @@ Be careful, all data on the disk will be lost.")
   (run-listbox-selection-page
    #:info-text (G_ "Please select the file-system type for this partition.")
    #:title (G_ "File-system type")
-   #:listbox-items '(ext4 btrfs fat16 fat32 jfs ntfs swap)
+   #:listbox-items '(ext4 btrfs fat16 fat32 jfs ntfs xfs swap)
    #:listbox-item->text user-fs-type-name
    #:sort-listbox-items? #f
    #:button-text (G_ "Exit")
@@ -640,8 +643,10 @@ edit it."
              default-result))))
        ((partition? item)
         (if (freespace-partition? item)
-            (run-error-page (G_ "You cannot delete a free space area.")
-                            (G_ "Delete partition"))
+            (begin
+              (run-error-page (G_ "You cannot delete a free space area.")
+                              (G_ "Delete partition"))
+              default-result)
             (let* ((disk (partition-disk item))
                    (number-str (partition-print-number item))
                    (info-text
@@ -706,6 +711,13 @@ by pressing the Exit button.~%~%")))
                        (run-error-page
                         (G_ "No root mount point found.")
                         (G_ "Missing mount point"))
+                       #f)
+                      ((cannot-read-uuid? c)
+                       (run-error-page
+                        (format #f (G_ "Cannot read the ~a partition UUID.\
+ You may need to format it.")
+                                (cannot-read-uuid-partition c))
+                        (G_ "Wrong partition format"))
                        #f))
                  (check-user-partitions user-partitions))))
           (if user-partitions-ok?
@@ -786,6 +798,7 @@ by pressing the Exit button.~%~%")))
     (format-user-partitions user-partitions-with-pass)
     (syslog "formatted ~a user partitions~%"
             (length user-partitions-with-pass))
+    (syslog "user-partitions: ~a~%" user-partitions)
 
     (destroy-form-and-pop form)
     user-partitions))

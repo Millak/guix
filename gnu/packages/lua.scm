@@ -215,7 +215,7 @@ some projects.")))
      `(#:make-flags
        (let ((out (assoc-ref %outputs "out"))
              (lua-version ,(version-major+minor (package-version lua))))
-         (list "CC=gcc"
+         (list ,(string-append "CC=" (cc-for-target))
                (string-append "LUA_LDIR=" out "/share/lua/" lua-version)
                (string-append "LUA_CDIR=" out "/lib/lua/" lua-version)))
        #:phases
@@ -356,7 +356,7 @@ directory structure and file attributes.")
      `(#:make-flags
        (let ((out (assoc-ref %outputs "out"))
              (lua-api-version ,(version-major+minor (package-version lua))))
-         (list "CC=gcc"
+         (list ,(string-append "CC=" (cc-for-target))
                "CFLAGS='-D HAVE_SYS_SYSCTL_H=0'" ; sys/sysctl.h is deprecated
                (string-append "prefix=" out)
                (string-append "LUA_APIS=" lua-api-version)))
@@ -417,7 +417,7 @@ binds OpenSSL's bignum, message digest, HMAC, cipher, and CSPRNG interfaces.")
        (let ((out (assoc-ref %outputs "out"))
              (lua-version ,(version-major+minor (package-version lua))))
          (list "linux"
-               "CC=gcc"
+               ,(string-append "CC=" (cc-for-target))
                "LD=gcc"
                (string-append "LUAPATH=" out "/share/lua/" lua-version)
                (string-append "LUACPATH=" out "/lib/lua/" lua-version)))
@@ -465,7 +465,7 @@ secure session between the peers.")
        #:make-flags
        (let ((out (assoc-ref %outputs "out"))
              (lua-api-version ,(version-major+minor (package-version lua))))
-         (list "CC=gcc"
+         (list ,(string-append "CC=" (cc-for-target))
                (string-append "LUA_APIS=" lua-api-version)))
        #:phases
        (modify-phases %standard-phases
@@ -657,7 +657,7 @@ describing the commented declarations and functions.")
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
-       (list "CC=gcc"
+       (list ,(string-append "CC=" (cc-for-target))
              (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
@@ -1014,7 +1014,7 @@ on numbers.")
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ;TODO: Run the test suite.
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "PREFIX=" %output))
        #:phases
        (modify-phases %standard-phases
@@ -1108,23 +1108,20 @@ shell command executions.")
 (define-public emilua
   (package
    (name "emilua")
-   (version "0.3.0")
+   (version "0.3.2")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url "https://gitlab.com/emilua/emilua.git")
                   (commit (string-append "v" version))
-                  ;; Current version requires bundled CLI11, but at some future
-                  ;; release the one found in the system could be used
-                  ;; instead. Current version also requires Trial.Protocol and
-                  ;; the HTTP lib developed as part of GSoC 2014 for Boost, but
-                  ;; these are dependencies unlikely to be "unbundled" in future
-                  ;; releases.
+                  ;; Current version requires Trial.Protocol and the HTTP lib
+                  ;; developed as part of GSoC 2014 for Boost, and these are
+                  ;; dependencies unlikely to be "unbundled" in future releases.
                   (recursive? #t)))
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "124fj73722c03znwdyqp1i0jygwv3s11f6s1j9rzym513qrf7fnd"))))
+              "1999bgrh52124a5g4qizav3x257ff2brjr855srpm1jv1nxzbygv"))))
    (build-system meson-build-system)
    (arguments
     `(#:meson ,meson-0.55
@@ -1173,7 +1170,7 @@ enabled.")
 (define-public fennel
   (package
     (name "fennel")
-    (version "0.8.1")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1182,7 +1179,7 @@ enabled.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0n0xkgzlrwpppm5vbvn84mq418xhmyakk9hakdmjv1lk2dfdq2g7"))
+                "07qgycf5cxm9zcc4fgpgvplg95ndavh3ynpdjpvzkikzbnyj7xia"))
               (modules '((guix build utils)))
               (snippet
                '(begin

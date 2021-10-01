@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -25,6 +25,7 @@
   #:use-module (guix channels)
   #:use-module (guix gexp)
   #:use-module (guix records)
+  #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages ci)
@@ -38,16 +39,13 @@
   #:use-module (gnu system shadow)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
-  #:export (<cuirass-remote-server-configuration>
-            cuirass-remote-server-configuration
+  #:export (cuirass-remote-server-configuration
             cuirass-remote-server-configuration?
 
-            <cuirass-configuration>
             cuirass-configuration
             cuirass-configuration?
             cuirass-service-type
 
-            <cuirass-remote-worker-configuration>
             cuirass-remote-worker-configuration
             cuirass-remote-worker-configuration?
             cuirass-remote-worker-service-type))
@@ -60,7 +58,7 @@
 ;;;; Code:
 
 (define %cuirass-default-database
-  "dbname=cuirass host=/var/run/postgresql")
+  "dbname=cuirass host=/tmp")
 
 (define-record-type* <cuirass-remote-server-configuration>
   cuirass-remote-server-configuration make-cuirass-remote-server-configuration
@@ -75,6 +73,8 @@
                     (default "/var/log/cuirass-remote-server.log"))
   (cache            cuirass-remote-server-configuration-cache ;string
                     (default "/var/cache/cuirass/remote/"))
+  (publish?         cuirass-remote-server-configuration-publish? ;boolean
+                    (default #t))
   (trigger-url      cuirass-remote-server-trigger-url ;string
                     (default #f))
   (public-key       cuirass-remote-server-configuration-public-key ;string
@@ -194,8 +194,8 @@
         (stop #~(make-kill-destructor)))
       ,@(if remote-server
             (match-record remote-server <cuirass-remote-server-configuration>
-              (backend-port publish-port log-file cache trigger-url
-                            public-key private-key)
+              (backend-port publish-port log-file cache publish?
+                            trigger-url public-key private-key)
               (list
                (shepherd-service
                 (documentation "Run Cuirass remote build server.")
@@ -228,6 +228,9 @@
                                          "--trigger-substitute-url="
                                          trigger-url))
                                        '())
+                                #$@(if publish?
+                                       '()
+                                       (list "--no-publish"))
                                 #$@(if public-key
                                        (list
                                         (string-append "--public-key="
@@ -272,6 +275,8 @@
                                remote-server)))
          (user           (cuirass-configuration-user config))
          (log            "/var/log/cuirass")
+         (profile        (string-append "/var/guix/profiles/per-user/" user))
+         (roots          (string-append profile "/cuirass"))
          (group          (cuirass-configuration-group config)))
     (with-imported-modules '((guix build utils))
       #~(begin
@@ -279,6 +284,7 @@
 
           (mkdir-p #$cache)
           (mkdir-p #$log)
+          (mkdir-p #$roots)
 
           (when #$remote-cache
             (mkdir-p #$remote-cache))
@@ -287,6 +293,8 @@
                 (gid (group:gid (getgr #$group))))
             (chown #$cache uid gid)
             (chown #$log uid gid)
+            (chown #$roots uid gid)
+            (chown #$profile uid gid)
 
             (when #$remote-cache
               (chown #$remote-cache uid gid)))))))
@@ -331,6 +339,8 @@
                     (default "/var/log/cuirass-remote-worker.log"))
   (publish-port     cuirass-remote-worker-configuration-publish-port ;int
                     (default 5558))
+  (substitute-urls  cuirass-remote-worker-configuration-substitute-urls
+                    (default %default-substitute-urls)) ;list of strings
   (public-key       cuirass-remote-worker-configuration-public-key ;string
                     (default #f))
   (private-key      cuirass-remote-worker-configuration-private-key ;string
@@ -341,7 +351,7 @@
 CONFIG."
   (match-record config <cuirass-remote-worker-configuration>
     (cuirass workers server systems log-file publish-port
-             public-key private-key)
+             substitute-urls public-key private-key)
     (list (shepherd-service
            (documentation "Run Cuirass remote build worker.")
            (provision '(cuirass-remote-worker))
@@ -363,6 +373,11 @@ CONFIG."
                                   (list (string-append
                                          "--publish-port="
                                          (number->string publish-port)))
+                                  '())
+                           #$@(if substitute-urls
+                                  (list (string-append
+                                         "--substitute-urls="
+                                         (string-join substitute-urls)))
                                   '())
                            #$@(if public-key
                                   (list

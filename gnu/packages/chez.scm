@@ -316,13 +316,14 @@ and 32-bit PowerPC architectures.")
       (native-inputs
        `(("chez-scheme" ,chez-scheme)
          ("ghostscript" ,ghostscript)
-         ("texlive" ,(texlive-union (list texlive-latex-oberdiek
+         ("texlive" ,(texlive-union (list texlive-charter
+                                          texlive-latex-oberdiek
                                           texlive-generic-epsf
                                           texlive-metapost
                                           texlive-fonts-charter
-                                          texlive-generic-pdftex
-                                          texlive-context-base
-                                          texlive-fonts-cm
+                                          texlive-pdftex
+                                          texlive-context
+                                          texlive-cm
                                           texlive-tex-plain)))))
       (arguments
        `(#:make-flags (list (string-append "PREFIX=" %output)
@@ -381,7 +382,7 @@ programming in Scheme.")
       (native-inputs
        `(("chez-scheme" ,chez-scheme)
          ("chez-web" ,chez-web)
-         ("texlive" ,(texlive-union (list texlive-generic-pdftex)))))
+         ("texlive" ,(texlive-union (list texlive-pdftex)))))
       (arguments
        `(#:tests? #f              ; no tests
          #:phases

@@ -225,14 +225,14 @@ the traditional flat-text whatis databases.")
 (define-public mandoc
   (package
     (name "mandoc")
-    (version "1.14.5")
+    (version "1.14.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://mandoc.bsd.lv/snapshots/mandoc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1xyqllxpjj1kimlipx11pzyywf5c25i4wmv0lqm7ph3gnlnb86c2"))))
+                "174x2x9ws47b14lm339j6rzm7mxy1j3qhh484khscw0yy1qdbw4b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "regress"
@@ -254,6 +254,10 @@ the traditional flat-text whatis databases.")
                                         "\n"))))))))
     (native-inputs `(("perl" ,perl)))             ;used to run tests
     (inputs `(("zlib" ,zlib)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "MANPATH")
+            (files '("share/man")))))
     (synopsis "Tools for BSD mdoc and man pages")
     (description
      "mandoc is a suite of tools compiling mdoc, the roff macro language of
@@ -269,7 +273,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
 (define-public man-pages
   (package
     (name "man-pages")
-    (version "5.11")
+    (version "5.13")
     (source
      (origin
        (method url-fetch)
@@ -279,7 +283,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
               (string-append "mirror://kernel.org/linux/docs/man-pages/Archive/"
                              "man-pages-" version ".tar.xz")))
        (sha256
-        (base32 "1aiwn6yi19idg4jbf7x4x5i06macjv7r8d5fgp1rwnc4a775vniy"))))
+        (base32 "12vb15gs56g8wl5nqlm4llr508brh4m2lfknhq4lizbxzqzawkb1"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases (delete 'configure))
@@ -290,7 +294,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
        #:parallel-build? #f
 
        #:tests? #f
-       #:make-flags (list (string-append "MANDIR="
+       #:make-flags (list (string-append "mandir="
                                          (assoc-ref %outputs "out")
                                          "/share/man"))))
     (home-page "https://www.kernel.org/doc/man-pages/")

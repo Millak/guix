@@ -3,17 +3,16 @@
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2013, 2015, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015, 2017, 2018, 2019, 2021y Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Alexander I.Grafov <grafov@gmail.com>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Florian Paul Schmidt <mista.tapas@gmx.net>
-;;; Copyright © 2016 Christopher Allan Webber <cwebber@dustycloud.org>
+;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
@@ -29,10 +28,10 @@
 ;;; Copyright © 2019 Kyle Andrews <kyle.c.andrews@gmail.com>
 ;;; Copyright © 2019, 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 David Wilson <david@daviwil.com>
 ;;; Copyright © 2020 Ivan Vilata i Balaguer <ivan@selidor.net>
-;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Damien Cassou <damien@cassou.me>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Boris A. Dekshteyn <boris.dekshteyn@gmail.com>
@@ -45,6 +44,11 @@
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Renzo Poddighe <renzo@poddighe.nl>
+;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021 Niklas Eklund <niklas.eklund@posteo.net>
+;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
+;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,6 +100,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
@@ -257,7 +262,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.4.1")
+    (version "0.6.2")
     (source
      (origin
        (method git-fetch)
@@ -266,11 +271,11 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fjcs9d3533ay3nz79cx3c0lmy2chgragr2lhsy0xl2ckr0iins0"))))
+        (base32 "13y4y3i03vdx3zkh4lm67xmigzycf8fxg4fdr5s4x2brr3ya46fv"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
-       #:make-flags (list "CC=gcc"
+     `(#:tests? #f
+       #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           "CFLAGS=-O2 -fPIC"
                           (string-append "LDFLAGS=-Wl,-rpath="
                                          (assoc-ref %outputs "out") "/lib")
@@ -317,7 +322,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
    `(#:configure-flags '("-DCMAKE_BUILD_TYPE=Release")
      #:tests? #f)) ; Test suite is a rather manual process.
   (inputs
-   `(("qtbase" ,qtbase)
+   `(("qtbase" ,qtbase-5)
      ("qtscript" ,qtscript)
      ("qtsvg" ,qtsvg)
      ("qtx11extras" ,qtx11extras)))
@@ -356,6 +361,33 @@ application.")
 high-level and flexible remapping mechanisms.  It affects the low-level
 layers (evdev and uinput), making remapping work in almost all the places.")
     (license license:gpl3+)))           ; see README.md (no licence headers)
+
+(define-public xkb-switch
+  (package
+    (name "xkb-switch")
+    (version "1.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/grwlf/xkb-switch")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sd6ihgsswp6hjm1i4y092n4gl3gj0bc22grz4n7iy43mwphi40d"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))                    ;no test target
+    (inputs
+     `(("libx11" ,libx11)
+       ("libxkbfile" ,libxkbfile)))
+    (home-page "https://github.com/grwlf/xkb-switch")
+    (synopsis "Switch your X keyboard layouts from the command line")
+    (description
+     "xkb-switch is a C++ program that queries and changes the XKB layout
+state.")
+    (license license:gpl3+)))
 
 (define-public xclip
   (package
@@ -509,6 +541,39 @@ resize, hide, and modify window properties like the title.  If your window
 manager supports it, you can use xdotool to switch desktops, move windows
 between desktops, and change the number of desktops.")
     (license license:bsd-3)))
+
+(define-public xdo
+  (package
+    (name "xdo")
+    (version "0.5.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/baskerville/xdo")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h3jrygcjjbavdbkpx2hscsf0yf97gk487lzjdlvymd7dxdv9hy9"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no tests
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "PREFIX=" %output))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs
+     `(("libxcb" ,libxcb)
+       ("xcb-util-wm" ,xcb-util-wm)
+       ("xcb-util" ,xcb-util)))
+    (home-page "https://github.com/baskerville/xdo")
+    (synopsis "Small X utility to perform elementary actions on windows")
+    (description
+     "Apply the given action to the given windows.  If no window IDs and no
+options are given, the action applies to the focused window.")
+    (license license:bsd-2)))
 
 (define-public xeyes
   (package
@@ -700,7 +765,7 @@ move windows, switch between desktops, etc.).")
 (define-public scrot
   (package
     (name "scrot")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -710,14 +775,16 @@ move windows, switch between desktops, etc.).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x64b7xqi5cbq29pb8s8r2kzbxaday1f5k0j70n3s2p7sahjxy72"))))
+        (base32 "1qanx2xx9m5l995csqzfcm1ks2nhk90zga1wzbkjjl75ga4iik2h"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
        ("autoconf-archive" ,autoconf-archive)
-       ("automake" ,automake)))
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("giblib" ,giblib)
+       ("imlib2" ,imlib2)
        ("libx11" ,libx11)
        ("libxcomposite" ,libxcomposite)
        ("libxext" ,libxext)
@@ -843,6 +910,55 @@ xedit, for example.  The human factors crowd would agree it should make
 things less distracting.")
     (license license:public-domain)))
 
+(define-public unclutter-xfixes
+  (package
+    (name "unclutter-xfixes")
+    (version "1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Airblader/unclutter-xfixes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "148m4wx8v57s3l2wb69y9imb00y8ca2li27hsxibwnl1wrkb7z4b"))))
+    (build-system gnu-build-system)
+    (arguments `(#:tests? #f
+                 #:make-flags
+                 (list ,(string-append "CC=" (cc-for-target))
+                       (string-append "PREFIX=" (assoc-ref %outputs "out")))
+                 #:phases
+                 (modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs
+     `(("libx11" ,libx11)
+       ("libev" ,libev)
+       ("libxfixes" ,libxfixes)
+       ("libxi" ,libxi)))
+    (native-inputs
+     `(("asciidoc" ,asciidoc)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://github.com/Airblader/unclutter-xfixes")
+    (synopsis "Hide idle mouse cursor")
+    (description
+     "unclutter-xfixes is a rewrite of the popular tool unclutter, but
+using the x11-xfixes extension.  This means that this rewrite doesn't
+use fake windows or pointer grabbing and hence causes less problems
+with window managers and/or applications.
+
+Unclutter is a program which runs permanently in the background of an
+X11 session.  It checks on the X11 pointer (cursor) position every few
+seconds, and when it finds it has not moved (and no buttons are pressed
+on the mouse, and the cursor is not in the root window) it creates a
+small sub-window as a child of the window the cursor is in.  The new
+window installs a cursor of size 1x1 but a mask of all 0, i.e. an
+invisible cursor.  This allows you to see all the text in an xterm or
+xedit, for example.  The human factors crowd would agree it should make
+things less distracting.")
+    (license license:expat)))
+
 (define-public xautomation
   (package
     (name "xautomation")
@@ -892,7 +1008,7 @@ to find buttons, etc, on the screen to click on.")
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases (modify-phases %standard-phases
                   (delete 'configure)))) ; no configure script
@@ -910,7 +1026,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
 (define-public xlockmore
   (package
     (name "xlockmore")
-    (version "5.66")
+    (version "5.67")
     (source (origin
              (method url-fetch)
              (uri (list (string-append "http://sillycycle.com/xlock/"
@@ -921,7 +1037,7 @@ shows it again when the mouse cursor moves or a mouse button is pressed.")
                                        "xlockmore-" version ".tar.xz")))
              (sha256
               (base32
-               "0wdb7gpyjw3sigmhiplgg1bqxz6wipr0c3n9492x2a18cv1saxjr"))))
+               "0k13gxgnk4i041g1fzixfwlf3l5hrvvkhfvxf27szx0d1qbpwq58"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--enable-appdefaultdir="
@@ -972,14 +1088,14 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "1vgngcg8wxn6zfg34czn9w55ia0zmhlgnpzf0gh31dc72li9353k"))))
+        (base32 "080pwz8pvqqq068lavzz48dl350iszpdswjd86bjk6zra5h5d10q"))))
     (build-system meson-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -1071,7 +1187,7 @@ Guile will work for XBindKeys.")
      `(#:phases (modify-phases %standard-phases (delete 'configure))
        #:tests? #f  ; no check target
        #:make-flags
-       (list "CC=gcc"
+       (list ,(string-append "CC=" (cc-for-target))
              (string-append "PREFIX=" %output)
              ;; Keep the documentation where the build system installs LICENSE.
              (string-append "DOCPREFIX=" %output
@@ -1085,15 +1201,14 @@ compact configuration syntax.")
 (define-public rxvt-unicode
   (package
     (name "rxvt-unicode")
-    (version "9.22")
+    (version "9.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dist.schmorp.de/rxvt-unicode/Attic/"
                                   name "-" version ".tar.bz2"))
-              (patches (search-patches "rxvt-unicode-escape-sequences.patch"))
               (sha256
                (base32
-                "1pddjn5ynblwfrdmskylrsxb9vfnk3w4jdnq2l8xn2pspkljhip9"))))
+                "12y9p32q0v7n7rhjla0j2g9d5rj2dmwk20c9yhlssaaxlawiccb4"))))
     (build-system gnu-build-system)
     (arguments
      ;; This sets the destination when installing the necessary terminal
@@ -1143,7 +1258,8 @@ compact configuration syntax.")
                #t))))))
     (inputs
      `(("libXft" ,libxft)
-       ("libX11" ,libx11)))
+       ("libX11" ,libx11)
+       ("libXt" ,libxt)))
     (native-inputs
      `(("ncurses" ,ncurses)         ;trigger the installation of terminfo data
        ("perl" ,perl)
@@ -1184,7 +1300,7 @@ within a single process.")
        #:phases (modify-phases %standard-phases (delete 'configure))
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           "MANDIR=/share/man/man1"
-                          "CC=gcc")))
+                          ,(string-append "CC=" (cc-for-target)))))
     (inputs
      `(("libxtst" ,libxtst)
        ("libx11" ,libx11)))
@@ -1201,7 +1317,7 @@ Escape key when Left Control is pressed and released on its own.")
 (define-public libwacom
   (package
     (name "libwacom")
-    (version "1.7")
+    (version "1.10")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1209,7 +1325,7 @@ Escape key when Left Control is pressed and released on its own.")
                     "libwacom-" version "/libwacom-" version ".tar.bz2"))
               (sha256
                (base32
-                "0797gc055dgg2jfqijy9823bd83jwr4wb2z9id992qlcr0xmz1rw"))))
+                "14aj4ss1chxxgaprs9sfriia2ch9wj9rqay0ndkzk1m7jx2qrjgn"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")))
@@ -1553,7 +1669,7 @@ demos.  It also acts as a nice screen locker.")
     (arguments `(#:make-flags `("bindir=/bin"
                                 "man1dir=/share/man/man1"
                                 ,(string-append "DESTDIR=" (assoc-ref %outputs "out"))
-                                "CC=gcc")
+                                ,,(string-append "CC=" (cc-for-target)))
                  #:phases (modify-phases %standard-phases
                             (delete 'configure)
                             (delete 'check))))
@@ -1625,15 +1741,15 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
 (define-public rofi
   (package
     (name "rofi")
-    (version "1.6.1")
+    (version "1.7.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/DaveDavenport/rofi/"
+              (uri (string-append "https://github.com/davatorium/rofi/"
                                   "releases/download/"
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "12p9z8bl1gg8k024m4a6zfz7gf1zbyffardh98raqgabn6knwk22"))))
+                "1929q3dks8fqd3pfkzs0ba06gwzhlgcrfar9fpga43f3byrrbfxa"))))
     (build-system gnu-build-system)
     (inputs
      `(("pango" ,pango)
@@ -1645,6 +1761,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
        ("libxkbcommon" ,libxkbcommon)
        ("libxcb" ,libxcb)
        ("xcb-util" ,xcb-util)
+       ("xcb-util-cursor" ,xcb-util-cursor)
        ("xcb-util-xrm" ,xcb-util-xrm)
        ("xcb-util-wm" ,xcb-util-wm)))
     (native-inputs
@@ -1664,7 +1781,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
                (("~") "")
                (("g_get_home_dir \\(\\)") "\"/\""))
              #t)))))
-    (home-page "https://github.com/DaveDavenport/rofi")
+    (home-page "https://github.com/davatorium/rofi")
     (synopsis "Application launcher")
     (description "Rofi is a minimalist application launcher.  It memorizes which
 applications you regularly use and also allows you to search for an application
@@ -2090,7 +2207,7 @@ to automatically turn it on on login.")
 (define-public xrandr-invert-colors
   (package
     (name "xrandr-invert-colors")
-    (version "0.01")
+    (version "0.02")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2099,20 +2216,23 @@ to automatically turn it on on login.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1br3x9vr6xm4ika06n8cfxx1b3wdchdqvyzjl4y1chmivrml8x9h"))))
+                "0gk1fgxb2kjyr78xn8m0ckjdic99ras7msa67piwnhj3j4scg1ih"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "CC=gcc")
+     `(#:make-flags (list ,(string-append "CC=" (cc-for-target)))
        #:tests? #f ; there are none
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
          (replace 'install
+           ;; It's simpler to install the single binary ourselves than to patch
+           ;; the Makefile's install target into working.
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
                     (bin  (string-append out "/bin")))
-               (install-file "xrandr-invert-colors.bin" bin)
-               #t))))))
+               (mkdir-p bin)
+               (copy-file "xrandr-invert-colors.bin"
+                          (string-append bin "/xrandr-invert-colors"))))))))
     (inputs
      `(("libxrandr" ,libxrandr)))
     (home-page "https://github.com/zoltanp/xrandr-invert-colors")
@@ -2235,11 +2355,25 @@ binary to setuid-binaries:
        (sha256
         (base32 "0c4w87ipsw09aii34szj9p0xfy0m00wyjpll0gb0aqmwa60p0c5d"))))
     (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-file-names
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* (find-files "src" "\\.c$")
+               (("\"(cat|rm)\"" _ command)
+                (string-append "\"" (assoc-ref inputs "coreutils")
+                               "/bin/" command "\""))
+               (("\"xdg-mime\"")
+                (string-append "\"" (assoc-ref inputs "xdg-utils")
+                               "/bin/xdg-mime\""))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
-     `(("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)))
+     `(("coreutils" ,coreutils)
+       ("wayland" ,wayland)
+       ("wayland-protocols" ,wayland-protocols)
+       ("xdg-utils" ,xdg-utils)))
     (home-page "https://github.com/bugaevc/wl-clipboard")
     (synopsis "Command-line copy/paste utilities for Wayland")
     (description "Wl-clipboard is a set of command-line copy/paste utilities for
@@ -2274,7 +2408,7 @@ The cutbuffer and clipboard selection are always synchronized.")
 (define-public jgmenu
   (package
     (name "jgmenu")
-    (version "4.1.0")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2283,8 +2417,7 @@ The cutbuffer and clipboard selection are always synchronized.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1wsh37rapb1bszlq36hvwxqvfds39hbvbl152m8as4zlh93wfvvk"))))
+        (base32 "13y4ra2hjfqbn2vxyyn4ar5iqklbabyfwksbryc2gzxspw1vz4zq"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("cppcheck" ,cppcheck)
@@ -2299,17 +2432,12 @@ The cutbuffer and clipboard selection are always synchronized.")
        ("libxrandr" ,libxrandr)
        ("pango" ,pango)))
     (arguments
-     `(#:phases
+     `(#:test-target "test"
+       #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "scripts/cppcheck-wrapper.sh"
-               (("--library=/usr/share/cppcheck/cfg/gnu\\.cfg")
-                ""))
-             #t))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "CC" "gcc")
+             (setenv "CC" ,(cc-for-target))
              (invoke "./configure"
                      (string-append "--prefix=" (assoc-ref outputs "out")))
              #t)))))
@@ -2323,7 +2451,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
 (define-public xwallpaper
   (package
     (name "xwallpaper")
-    (version "0.6.6")
+    (version "0.7.3")
     (source
      (origin
        (method git-fetch)
@@ -2332,7 +2460,7 @@ can optionally use some appearance settings from XSettings, tint2 and GTK.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10klm81rs3k3l2i7whpvcsg95x51ja11l86fmwbrvg3kq705p2sr"))))
+        (base32 "1rsv42cl0s149sbpdxz9yqqjip3si95jv3dglwzrcm7pjfg7519v"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -2413,7 +2541,7 @@ Xwrits hides itself until you should take another break.")
     (arguments
      `(#:scons ,scons-python2
        #:scons-flags
-       (list "CC=gcc")
+       (list ,(string-append "CC=" (cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'patch-sconstruct
@@ -2441,10 +2569,13 @@ Xwrits hides itself until you should take another break.")
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
+                    (bin (string-append out "/bin"))
+                    (man (string-append out "/share/man/man1")))
                (mkdir-p bin)
                (install-file "xsettingsd" bin)
                (install-file "dump_xsettings" bin)
+               (install-file "xsettingsd.1" man)
+               (install-file "dump_xsettings.1" man)
                #t))))))
     (home-page "https://github.com/derat/xsettingsd")
     (synopsis "Xorg settings daemon")
@@ -2768,7 +2899,7 @@ and execute @file{.desktop} files of the Application type.")
      `(#:tests? #f
        #:make-flags
        (list
-        "CC=gcc"
+        ,(string-append "CC=" (cc-for-target))
         (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases
        (modify-phases %standard-phases
@@ -2788,3 +2919,126 @@ and execute @file{.desktop} files of the Application type.")
      "The @command{hsetroot} command composes wallpapers for X.
 This package is the fork of hsetroot by Hyriand.")
     (license license:gpl2+)))
+
+(define-public jumpapp
+  (package
+    (name "jumpapp")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mkropat/jumpapp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jrk4mm42sz6ca2gkb6w3dad53d4im4shpgsq8s4vr6xpl3b43ry"))))
+    (build-system gnu-build-system)
+    (arguments `(#:phases
+                 (modify-phases %standard-phases
+                   (delete 'configure)
+                   (delete 'check)
+                   (add-before 'install 'set-prefix-in-makefile
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out")))
+                         (substitute* "Makefile"
+                           (("PREFIX =.*")
+                            (string-append "PREFIX = " out "\n")))
+                         #true))))))
+    (propagated-inputs
+     `(("wmctrl" ,wmctrl)
+       ("xdotool" ,xdotool)
+       ("xprop" ,xprop)))
+    (native-inputs
+     `(("pandoc" ,pandoc)
+       ("perl" ,perl)))
+    (synopsis "Run-or-raise application switcher for any X11 desktop")
+    (description
+     "Bind a key for any given application that will launch the application,
+if it's not already running, or focus the application's window,if it is running.
+Pressing the key again will cycle to the application's next window,
+if there's more than one.")
+    (home-page "https://github.com/mkropat/jumpapp")
+    (license license:expat)))
+
+(define-public xkbset
+  (package
+    (name "xkbset")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://faculty.missouri.edu/~stephen/software/"
+                           name "/" name "-" version ".tar.gz"))
+       (sha256
+        (base32 "199mlm127zk1lr8nrq22n68l2l8cjwc4cgwd67rg1i6497n2y0xc"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("libx11" ,libx11)
+       ("perl" ,perl)
+       ("perl-tk" ,perl-tk)))
+    (arguments
+     `(#:tests? #f                      ; There are none.
+       #:make-flags
+       `(,,(string-append "CC=" (cc-for-target))
+         ,(string-append "X11PREFIX=" %output)
+         ,(string-append "X11BASE=" (assoc-ref %build-inputs "libx11"))
+         ,(string-append "INSTALL_MAN1=" %output "/share/man/man1"))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (add-before 'install 'create-install-directories
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (mkdir-p out)
+               (with-directory-excursion out
+                 (for-each mkdir-p '("bin" "share/man/man1"))))
+             #t))
+         (add-after 'install 'wrap-perl-script
+           (lambda* (#:key outputs #:allow-other-keys)
+             (wrap-program (string-append (assoc-ref outputs "out")
+                                          "/bin/xkbset-gui")
+               `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB"))))
+             #t))
+         (replace 'install-license-files
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "COPYRIGHT"
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/doc/" ,name "-" ,version))
+             #t)))))
+    (home-page "https://faculty.missouri.edu/~stephen/software/")
+    (synopsis "User-preference utility for XKB extensions for X")
+    (description
+     "This is a program to help manage many of the XKB features of the X Window
+System.  This includes such features as MouseKeys, AccessX, StickyKeys,
+BounceKeys, and SlowKeys.  It includes a graphical program to help with
+MouseKeys-acceleration management.")
+    (license license:bsd-3)))
+
+(define-public wlsunset
+  (package
+    (name "wlsunset")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~kennylevinsen/wlsunset/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0hhsddh3rs066rbsjksr8kcwg8lvglbvs67dq0r5wx5c1xcwb51w"))))
+    (build-system meson-build-system)
+    (inputs
+     `(("wayland" ,wayland)
+       ("wayland-protocols" ,wayland-protocols)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (synopsis "Day/night gamma adjustments for Wayland compositors")
+    (home-page "https://sr.ht/~kennylevinsen/wlsunset/")
+    (description
+     "wlunset adjusts gamma based on day-night cycles on Wayland compositors
+that support @samp{wlr-gamma-control-unstable-v1}.  It is also known as a blue
+light filter or night light.")
+    (license license:expat)))

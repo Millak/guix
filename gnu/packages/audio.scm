@@ -21,18 +21,18 @@
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2019, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020 Alexandros Theodotou <alex@zrythm.org>
-;;; Copyright © 2019 Christopher Lemmer Webber <cwebber@dustycloud.org>
+;;; Copyright © 2019 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2019 Hartmt Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Jonathan Frederickson <jonathan@terracrypt.net>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -78,12 +78,14 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnunet) ; libmicrohttpd
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libbsd)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -107,6 +109,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages linphone)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
@@ -302,7 +305,7 @@ Linux kernel.")
 (define-public libopenmpt
   (package
     (name "libopenmpt")
-    (version "0.5.4")
+    (version "0.5.9")
     (source
      (origin
        (method url-fetch)
@@ -310,7 +313,7 @@ Linux kernel.")
         (string-append "https://download.openmpt.org/archive/libopenmpt/src/"
                        "libopenmpt-" version "+release.autotools.tar.gz"))
        (sha256
-        (base32 "0h7gpjx1221jwsq3k91p8zhf1h77qaxyasakc88s3g57vawhckgk"))))
+        (base32 "0h86p8mnpm98vc4v6jbvrmm02fch7dnn332i26fg3a2s1738m04d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -407,7 +410,7 @@ by MusicIP.")
 (define-public libtimidity
   (package
     (name "libtimidity")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
@@ -415,7 +418,7 @@ by MusicIP.")
         (string-append "https://sourceforge.net/projects/" name "/files/"
                        name "/" version "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p2px0m907gi1zpdr0l9adq25jl89j85c11ag9s2g4yc6n1nhgfm"))))
+        (base32 "0sif6lxa058b1mg19zwjm8rl2sg8cg0443k4dgi65clz0jy7qi16"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))       ; XXX: LibTiMidity could not be initialised
@@ -495,7 +498,7 @@ implementation of Adaptive Multi Rate Narrowband and Wideband
        ("jack" ,jack-1)
        ("ladspa" ,ladspa)
        ("liblo" ,liblo)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools" ,qttools)))
@@ -568,7 +571,7 @@ streams from live audio.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "6.6")
+    (version "6.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -586,7 +589,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
                     #t)))
               (sha256
                (base32
-                "0k5rxh8b3d8si3lj01gfqj0pmd448d8sj4asnb205mwhwbfgn0cp"))
+                "16x7bkzbrk0rgywq5vrkhf2z3jj08jw1bvaq9vwlf2b4h4sd7i4s"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -981,21 +984,18 @@ tools (analyzer, mono/stereo tools, crossovers).")
 (define-public caps-plugins-lv2
   (package
     (name "caps-plugins-lv2")
-    (version "0.9.24") ; version that has been ported.
+    (version "0.9.26")
     (source
      (origin
        ;; The Github project hasn't tagged a release.
        (method git-fetch)
        (uri (git-reference
-             ;; Actually https://github.com/moddevices/caps-lv2.git, but it's
-             ;; missing fixes for newer glibc, so using the origin of a pull
-             ;; request regarding this issue:
-             (url "https://github.com/jujudusud/caps-lv2")
-             (commit "9c9478b7fbd8f9714f552ebe2a6866398b0babfb")))
+             (url "https://github.com/moddevices/caps-lv2.git")
+             (commit "5d52a0c6e8863c058c2aab2dea9f901a90d96eb9")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1idfnazin3cca41zw1a8vwgnxjnkrap7bxxjamjqvgpmvydgcam1"))))
+         "0hdl7n3ra5gqgwkdfqkw8dj9gb1cgb76bn1v91w06d2w4lj9s8xa"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no check target
@@ -1022,7 +1022,7 @@ generators of mostly elementary and occasionally exotic nature.")
 (define-public infamous-plugins
   (package
     (name "infamous-plugins")
-    (version "0.2.04")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1031,7 +1031,7 @@ generators of mostly elementary and occasionally exotic nature.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hmqk80w4qxq09iag7b7srf2g0wigkyhzq0ywxvhz2iz0hq9k0dh"))))
+                "1r72agk5nxf5k0mghcc2j90z43j5d9i7rqjmf49jfyqnd443isip"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; there are no tests
@@ -1041,6 +1041,12 @@ generators of mostly elementary and occasionally exotic nature.")
            (lambda _
              (substitute* (find-files "." "CMakeLists.txt")
                (("-msse2 -mfpmath=sse") ""))
+             #t))
+         (add-after 'unpack 'fix-build-with-newer-lv2
+           (lambda _
+             ;; https://github.com/ssj71/infamousPlugins/commit/4c7275b1fa8ea3296446421cbd29ec2df66588c0
+             (substitute* (find-files "src" ".*\\.cxx")
+               (("_LV2UI_Descriptor") "LV2UI_Descriptor"))
              #t)))))
     (inputs
      `(("cairo" ,cairo)
@@ -2141,7 +2147,7 @@ synchronous execution of all clients, and low latency operation.")
        ("gtk2" ,gtk+-2)
        ("gtk3" ,gtk+)
        ("gtkmm" ,gtkmm-2)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("jack" ,jack-1)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
@@ -2339,6 +2345,18 @@ implementation of the Open Sound Control (@dfn{OSC}) protocol.")
        (sha256
         (base32 "156c2dgh6jrsyfn1y89nslvaxm4yifmxridsb708yvkaym02w2l8"))))
     (build-system cmake-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; The header that pkg-config expects is include/rtaudio/RtAudio.h,
+         ;; but this package installs it as include/RtAudio.h by default.
+         (add-after 'install 'fix-inc-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (inc (string-append out "/include")))
+               (mkdir-p (string-append inc "/rtaudio"))
+               (rename-file (string-append inc "/RtAudio.h")
+                            (string-append inc "/rtaudio/RtAudio.h"))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
@@ -2418,6 +2436,99 @@ included are the command line utilities @code{send_osc} and @code{dump_osc}.")
 
 (define-public python2-pyliblo
   (package-with-python2 python-pyliblo))
+
+(define-public python-soundfile
+  (package
+    (name "python-soundfile")
+    (version "0.10.3.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "SoundFile" version))
+       (sha256
+        (base32
+         "0yqhrfz7xkvqrwdxdx2ydy4h467sk7z3gf984y1x2cq7cm1gy329"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     `(("python-cffi" ,python-cffi)
+       ("python-numpy" ,python-numpy)
+       ("libsndfile" ,libsndfile)))
+    (native-inputs
+     `(("python-pytest" ,python-pytest)))
+    (arguments
+     `(#:tests? #f ; missing OGG support
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "soundfile.py"
+               (("_find_library\\('sndfile'\\)")
+                (string-append "\"" (assoc-ref inputs "libsndfile")
+                               "/lib/libsndfile.so\""))))))))
+    (home-page "https://github.com/bastibe/SoundFile")
+    (synopsis "Python bindings for libsndfile")
+    (description "This package provides python bindings for libsndfile based on
+CFFI and NumPy.")
+    (license license:expat)))
+
+(define-public python-python3-midi
+  (package
+    (name "python-python3-midi")
+    (version "0.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python3_midi" version))
+       (sha256
+        (base32
+         "1z9j1w7mpn3xhkcpxmqm5rvmj6nffb5rf14bv7n3sdh07nf6n7sf"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/NFJones/python3-midi")
+    (synopsis "Python MIDI API")
+    (description "This package provides a python API to read and write MIDI
+files.")
+    (license license:expat)))
+
+(define-public audio-to-midi
+  (package
+    (name "audio-to-midi")
+    (version "2020.7")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/NFJones/audio-to-midi")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+            "12wf17abn3psbsg2r2lk0xdnk8n5cd5rrvjlpxjnjfhd09n7qqgm"))))
+    (build-system python-build-system)
+    (propagated-inputs
+      `(("python-cffi" ,python-cffi)
+        ("python-cython" ,python-cython)
+        ("python-numpy" ,python-numpy)
+        ("python-progressbar2" ,python-progressbar2)
+        ("python-pycparser" ,python-pycparser)
+        ("python-python3-midi" ,python-python3-midi)
+        ("python-soundfile" ,python-soundfile)))
+    (native-inputs
+     `(("libsndfile" ,libsndfile)))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-versions
+           (lambda _
+             (substitute* "requirements.txt" (("==") ">=")))))))
+    (home-page "https://github.com/NFJones/audio-to-midi")
+    (synopsis "Convert audio to multichannel MIDI.")
+    (description "@command{audio-to-midi} converts audio files to multichannel
+MIDI files.  It accomplishes this by performing FFTs on all channels of the
+audio data at user-specified time steps.  It then separates the resulting
+frequency analysis into equivalence classes which correspond to the twelve tone
+scale; the volume of each class being the average volume of its constituent
+frequencies.  This data is then formatted to MIDI and written to disk.")
+    (license license:expat)))
 
 (define-public lilv
   (package
@@ -2718,22 +2829,22 @@ different audio devices such as ALSA or PulseAudio.")
 (define-public qjackctl
   (package
     (name "qjackctl")
-    (version "0.9.1")
+    (version "0.9.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qjackctl/qjackctl/"
                                   version "/qjackctl-" version ".tar.gz"))
               (sha256
                (base32
-                "0m72kglwwvn91dxnka4lx765p3r0bcpqw251svymxr2wxjc4rgjg"))))
-    (build-system gnu-build-system)
+                "186rg3j67rac9ds1r7gnrib2d0smgv15cmr5gwb7v83mywcp1gzy"))))
+    (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no check target
     (inputs
      `(("jack" ,jack-1)
        ("alsa-lib" ,alsa-lib)
        ("portaudio" ,portaudio)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)))
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -2767,11 +2878,11 @@ into various outputs and to start, stop and configure jackd")
                      (string-append "PREFIX="
                                     (assoc-ref outputs "out"))))))))
     (native-inputs
-     `(("qtbase" ,qtbase))) ; for qmake
+     `(("qtbase" ,qtbase-5))) ; for qmake
     (inputs
      `(("jack" ,jack-1)
        ("libsndfile" ,libsndfile)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://sourceforge.net/projects/qjackrcd/")
     (synopsis "Stereo audio recorder for JACK")
     (description "QJackRcd is a simple graphical stereo recorder for JACK
@@ -2880,7 +2991,7 @@ link REQUIRED)"))
        ("boost" ,boost)
        ("boost-sync" ,boost-sync)
        ("yaml-cpp" ,yaml-cpp)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtsvg" ,qtsvg)
        ("qtwebchannel" ,qtwebchannel)
@@ -3082,7 +3193,7 @@ the Turtle syntax.")
      `(("lv2" ,lv2)
        ("gtk+" ,gtk+-2)
        ("gtk+" ,gtk+)
-       ("qt" ,qtbase)))
+       ("qt" ,qtbase-5)))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (home-page "https://drobilla.net/software/suil/")
@@ -3558,7 +3669,7 @@ interface.")
        ("pkg-config" ,pkg-config)))
     (inputs
      `(("fluidsynth" ,fluidsynth)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtx11extras" ,qtx11extras)))
     (home-page "https://qsynth.sourceforge.io")
     (synopsis "Graphical user interface for FluidSynth")
@@ -4314,7 +4425,7 @@ representations.")
 (define-public cava
   (package
     (name "cava")
-    (version "0.7.3")
+    (version "0.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4323,7 +4434,7 @@ representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04j5hb29hivcbk542sfsx9m57dbnj2s6qpvy9fs488zvgjbgxrai"))))
+                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -4466,7 +4577,7 @@ library.")
 (define-public faudio
   (package
     (name "faudio")
-    (version "21.04")
+    (version "21.09")
     (source
      (origin
        (method git-fetch)
@@ -4475,7 +4586,7 @@ library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g3zp7igh4ns31sqnxddxqhgibijngkbcqqsj23i9d1lah6k4747"))))
+        (base32 "0411fj5b9gvjz1z1gpvy07hkm7rz2nmwggw2v3hbn7ran7w3w5zy"))))
     (arguments
      '(#:tests? #f                      ; No tests.
        #:configure-flags '("-DGSTREAMER=ON")))
@@ -4734,7 +4845,7 @@ as is the case with audio plugins.")
        ;; (ModuleNotFoundError: No module named 'PyQt5')
        ("python-wrapper" ,python-wrapper)
        ("libx11" ,libx11)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("zlib" ,zlib)
 
        ;; For WRAP-SCRIPT above.
@@ -4801,7 +4912,7 @@ in the package.")
       (origin
         (method git-fetch)
         (uri (git-reference
-               (url "https://git.zrythm.org/git/libaudec")
+               (url "https://git.zrythm.org/zrythm/libaudec")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
@@ -4822,7 +4933,7 @@ in the package.")
    (description "libaudec is a wrapper library over ffmpeg, sndfile and
 libsamplerate for reading and resampling audio files, based on Robin Gareus'
 @code{audio_decoder} code.")
-   (home-page "https://git.zrythm.org/cgit/libaudec")
+   (home-page "https://git.zrythm.org/zrythm/libaudec")
    (license license:agpl3+)))
 
 (define-public lv2lint
@@ -4901,7 +5012,7 @@ with the provided metadata and adhere to well-known best practices.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.zrythm.org/git/ztoolkit")
+             (url "https://git.zrythm.org/zrythm/ztoolkit")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -4922,7 +5033,7 @@ the user and provides a high-level API for managing the UI and custom
 widgets.  ZToolkit is written in C and was created to be used for building
 audio plugin UIs, where the dependencies often need to be kept to a
 minimum.")
-    (home-page "https://git.zrythm.org/cgit/ztoolkit/")
+    (home-page "https://git.zrythm.org/zrythm/ztoolkit")
     (license license:agpl3+)))
 
 (define-public libinstpatch
@@ -5036,6 +5147,32 @@ digital radio.")
     (home-page "https://www.rowetel.com/?page_id=452")
     (license license:lgpl2.1)))
 
+(define-public mbelib
+  ;; No release since 2016, use commit directly.
+  (let ((commit "9a04ed5c78176a9965f3d43f7aa1b1f5330e771f")
+        (revision "1"))
+    (package
+      (name "mbelib")
+      (version (git-version "1.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/szechyjs/mbelib")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a7xmf87xnjzm5b437j2vnwv39x0ascja1j04c5wj6xs1529gw8h"))))
+      (build-system cmake-build-system)
+      (home-page "https://github.com/szechyjs/mbelib")
+      (synopsis "P25 Phase 1 and ProVoice vocoder")
+      (description
+       "The mbelib library provides support for the 7200x4400 bit/s codec used
+in P25 Phase 1, the 7100x4400 bit/s codec used in ProVoice and the @emph{Half
+Rate} 3600x2250 bit/s vocoder used in various radio systems.")
+      (license (list license:bsd-3      ; test/ framework
+                     license:isc)))))   ; the rest
+
 (define-public ableton-link
   (package
     (name "ableton-link")
@@ -5067,7 +5204,7 @@ digital radio.")
      `(("catch" ,catch-framework)
        ("python" ,python)       ;for running tests
        ("portaudio" ,portaudio) ;for portaudio examples
-       ("qtbase" ,qtbase)       ;for Qt examples
+       ("qtbase" ,qtbase-5)       ;for Qt examples
        ("qtdeclarative" ,qtdeclarative)
        ("qttools" ,qttools)))
     (inputs
@@ -5140,14 +5277,18 @@ while still staying in time.")
 (define-public butt
   (package
     (name "butt")
-    (version "0.1.29")
+    (version "0.1.31")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/butt/butt/butt-"
                                   version "/butt-" version ".tar.gz"))
               (sha256
                (base32
-                "0nbz0z4d7krvhmnwn10594gwc61gn2dlb5fazmynjfisrfdswqlg"))))
+                "19zvdi5vr6vqnrpc60jir7550nz9a5x1c61lh13355cdny2zp28z"))
+              (modules '((guix build utils)))
+              (snippet
+               '(substitute* "src/butt.cpp"
+                  ((".*zica.*") "")))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -5184,9 +5325,88 @@ while still staying in time.")
                                         version "_manual.pdf"))
                     (sha256
                      (base32
-                      "1hhgdhdg5s86hjcbwh856gcd3kcch0i5xgi3i3v02zz3xmzl7gg3"))))))
+                      "0a0kgd069whfp1v8xgw6qm67w02n8b7b4h5ay5665wgq947hxanp"))))))
     (home-page "https://danielnoethen.de/butt/")
     (synopsis "Audio streaming tool")
     (description "Butt is a tool to stream audio to a ShoutCast or
 Icecast server.")
     (license license:gpl2+)))
+
+(define-public siggen
+  (package
+    (name "siggen")
+    (version "2.3.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bleskodev/siggen")
+             (commit "a407611b59d59c7770bbe62ba9b8e9a948cf3210")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0szhgfd9kddr6qsz0imp0x66jjn6ry236f35vjl82ivc1v2bllcb"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags (list (string-append "INSDIR=" %output "/bin")
+                          (string-append "MANDIR=" %output "/share/man"))
+       #:tests? #f                      ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         ;; Patch misc.c to prevent a segfault.
+         (add-after 'unpack 'patch-segfault
+           (lambda _
+             (substitute* "misc.c"
+               (("#include <stdio.h>\n" all)
+                (string-append all "#include <string.h>\n")))))
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key make-flags outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (for-each (lambda (dir)
+                           (mkdir-p (string-append out dir)))
+                         (list "/bin" "/share/man/man1" "/share/man/man5"))
+               (apply invoke "make" "sysinstall" make-flags)))))))
+    (inputs
+     `(("ncurses" ,ncurses)))
+    (native-inputs
+     `(("groff" ,groff-minimal)         ; for nroff
+       ("util-linux" ,util-linux)))     ; for col
+    (home-page "https://github.com/bleskodev/siggen")
+    (synopsis "Signal generation tools")
+    (description "siggen is a set of tools for imitating a laboratory signal
+generator, generating audio signals out of Linux's /dev/dsp audio
+device.  There is support for mono and/or stereo and 8 or 16 bit samples.")
+    (license license:gpl2)))
+
+(define-public mda-lv2
+  (package
+    (name "mda-lv2")
+    (version "1.2.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "http://download.drobilla.net/mda-lv2-"
+                            version ".tar.bz2"))
+        (sha256
+         (base32 "1nspk2j11l65m5r9z5isw8j749vh9a89wgx8mkrrq15f4iq12rnd"))))
+    (build-system waf-build-system)
+    (arguments
+     `(#:tests? #f  ; There are no tests.
+       #:configure-flags
+       (list (string-append "--prefix="
+                            (assoc-ref %outputs "out")))))
+    (inputs
+     `(("lv2" ,lv2)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))))
+    (home-page "https://drobilla.net/software/mda-lv2")
+    (synopsis "Audio plug-in pack for LV2")
+    (description
+     "MDA-LV2 is an LV2 port of the MDA plugins.  It includes effects and a few
+instrument plugins.")
+    (license license:gpl3+)))

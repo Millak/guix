@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Eric Bavier <bavier@posteo.net>
@@ -15,11 +15,11 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2017, 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016, 2017, 2018, 2019, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017, 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -39,7 +39,6 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2019, 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
@@ -48,6 +47,10 @@
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
+;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -93,6 +96,7 @@
   #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages bittorrent)
   #:use-module (gnu packages boost)
@@ -161,6 +165,7 @@
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -236,7 +241,7 @@
              #t)))))
     (inputs
      `(("http-parser" ,http-parser)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (home-page "https://github.com/azadkuh/qhttp/")
     (synopsis "Qt-based HTTP Library")
     (description
@@ -247,14 +252,14 @@
 (define-public httpd
   (package
     (name "httpd")
-    (version "2.4.46")
+    (version "2.4.48")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/httpd/httpd-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1sj1rwgbcjgkzac3ybjy7j68c9b3dv3ap71m48mrjhf6w7vds3kl"))))
+               "0v4npxnvih5mlxx6dywwhhfs8xvgcckc0hxzwk3hi0g8nbkjdj0v"))))
     (build-system gnu-build-system)
     (native-inputs `(("pcre" ,pcre "bin")))       ;for 'pcre-config'
     (inputs `(("apr" ,apr)
@@ -316,7 +321,7 @@ Interface} specification.")
 (define-public monolith
   (package
     (name "monolith")
-    (version "2.4.1")
+    (version "2.6.1")
     (source
      (origin
        (method git-fetch)
@@ -325,7 +330,7 @@ Interface} specification.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z0bcvk2cvx2cd0hs8addzcb070xvrkcxvg25691xw0ikiynpkwz"))))
+        (base32 "1pj4wnsw5a4ys79sqw68ib6zimaqlkplb89x6yncg949a6hj8516"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -334,14 +339,14 @@ Interface} specification.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-2)
         ("rust-cssparser" ,rust-cssparser-0.28)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-html5ever" ,rust-html5ever-0.24)
         ("rust-regex" ,rust-regex-1)
         ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
+       (("rust-assert-cmd" ,rust-assert-cmd-1))))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs
@@ -366,17 +371,19 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    ;; Consider updating the nginx-documentation package together with this one.
-    (version "1.19.9")
+    ;; Please update the nginx-documentation package together with this one!
+    (version "1.21.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0hfqqyfgqa6wqazmb3d434nb3r5p8szfisa0m6nfh9lqdbqdyd9f"))))
+                "11ail85iw6mg8fxd2qnxhcghi0frjk5r70cfar83dms61rb1qxri"))))
     (build-system gnu-build-system)
-    (inputs `(("openssl" ,openssl)
+    (inputs `(("libxml2" ,libxml2)
+              ("libxslt" ,libxslt)
+              ("openssl" ,openssl)
               ("pcre" ,pcre)
               ("zlib" ,zlib)))
     (arguments
@@ -390,11 +397,16 @@ the same, being completely separated from the Internet.")
              #t))
          (replace 'configure
            ;; The configure script is hand-written, not from GNU autotools.
-           (lambda* (#:key configure-flags outputs #:allow-other-keys)
+           (lambda* (#:key configure-flags inputs outputs #:allow-other-keys)
              (let ((flags
                     (append (list (string-append "--prefix=" (assoc-ref outputs "out"))
                                   "--with-http_ssl_module"
                                   "--with-http_v2_module"
+                                  "--with-http_xslt_module"
+                                  "--with-http_gzip_static_module"
+                                  "--with-http_gunzip_module"
+                                  "--with-http_addition_module"
+                                  "--with-http_sub_module"
                                   "--with-pcre-jit"
                                   "--with-debug"
                                   "--with-stream"
@@ -417,7 +429,11 @@ the same, being completely separated from the Internet.")
                                      (string-append "--crossbuild="
                                                     system ":" release ":" machine)))
                             configure-flags)))
-               (setenv "CC" "gcc")
+               (setenv "CC" ,(cc-for-target))
+               ;; Fix ./configure test for ‘#include <libxml/parser.h>’.
+               (setenv "CFLAGS"         ; CPPFLAGS is not respected
+                       (string-append "-I" (assoc-ref inputs "libxml2")
+                                      "/include/libxml2"))
                (format #t "configure flags: ~s~%" flags)
                (apply invoke "./configure" flags)
                #t)))
@@ -458,9 +474,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.19.9")
-        (revision 2696)
-        (changeset "f85798c1c70a"))
+  (let ((version "1.21.2")
+        (revision 2764)
+        (changeset "bc9c5d11b67c"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -472,7 +488,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "1ksl32jw6h3qzyxxlsdjag7fcjvk3md3hdxn6ljs8pr2nhk1v6cs"))))
+                 "05n72q9vqxx37dyw3yl7jssmpqkw3rwxa2y3m6s0c0ih0z2bx58n"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -757,6 +773,64 @@ documentation.")
     (synopsis "NGINX module for Lua programming language support")
     (description "This NGINX module provides a scripting support with Lua
 programming language.")))
+
+(define-public nginx-rtmp-module
+  (package
+    (inherit nginx)
+    (name "nginx-rtmp-module")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arut/nginx-rtmp-module")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y45bswk213yhkc2v1xca2rnsxrhx8v6azxz9pvi71vvxcggqv6h"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("nginx-sources" ,(package-source nginx))
+       ,@(package-inputs nginx)))
+    (arguments
+     (substitute-keyword-arguments
+         `(#:configure-flags '("--add-dynamic-module=.")
+           #:make-flags '("modules")
+           #:modules ((guix build utils)
+                      (guix build gnu-build-system))
+           ,@(package-arguments nginx))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'unpack-nginx-sources
+             (lambda* (#:key inputs native-inputs #:allow-other-keys)
+               (begin
+                 ;; The nginx source code is part of the module’s source.
+                 (format #t "decompressing nginx source code~%")
+                 (invoke "tar" "xvf" (assoc-ref inputs "nginx-sources")
+                         ;; This packages's LICENSE file would be
+                         ;; overwritten with the one from nginx when
+                         ;; unpacking the nginx source, so rename the nginx
+                         ;; one when unpacking.
+                         "--transform=s,/LICENSE$,/LICENSE.nginx,"
+                         "--strip-components=1")
+                 #t)))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((modules-dir (string-append (assoc-ref outputs "out")
+                                                 "/etc/nginx/modules")))
+                 (install-file "objs/ngx_rtmp_module.so" modules-dir)
+                 #t)))
+           (delete 'fix-root-dirs)
+           (delete 'install-man-page)))))
+    (home-page "https://github.com/arut/nginx-rtmp-module")
+    (synopsis "NGINX module for audio and video streaming with RTMP")
+    (description "This NGINX module provides streaming with the @acronym{RTMP,
+Real-Time Messaging Protocol}, @acronym{DASH, Dynamic Adaptive Streaming over HTTP},
+and @acronym{HLS, HTTP Live Streaming} protocols.  It allows NGINX to accept
+incoming RTMP streams for recording or redistribution.  It also supports
+on-demand streaming from a file on disk and pulling from an upstream RTMP
+stream.  Remote control of the module is possible over HTTP.")
+    (license license:bsd-2)))
 
 (define-public lighttpd
   (package
@@ -1111,7 +1185,7 @@ project)
          (add-before 'check 'render-offscreen
            (lambda _ (setenv "QT_QPA_PLATFORM" "offscreen") #t)))))
     (inputs
-     `(("qtbase" ,qtbase)))
+     `(("qtbase" ,qtbase-5)))
     (home-page "http://qjson.sourceforge.net")
     (synopsis "Library that maps JSON data to QVariant objects")
     (description "QJson is a Qt-based library that maps JSON data to
@@ -1136,7 +1210,7 @@ instances, while JSON's objects will be mapped to @code{QVariantMap}.")
     (build-system gnu-build-system)
     (inputs
      `(("qca" ,qca)
-       ("qtbase" ,qtbase)))
+       ("qtbase" ,qtbase-5)))
     (arguments
      '(#:tests? #f                      ;FIXME: some tests are failing
        #:phases
@@ -1174,7 +1248,7 @@ efficiently.  It gives the application developer no more than 4 methods.")
 (define-public krona-tools
   (package
    (name "krona-tools")
-   (version "2.7")
+   (version "2.8")
    (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1182,7 +1256,7 @@ efficiently.  It gives the application developer no more than 4 methods.")
                    version "/KronaTools-" version ".tar"))
              (sha256
               (base32
-               "0wvgllcqscsfb4xc09y3fqhx8i38pmr4w55vjs5y79wx56n710iq"))))
+               "1h698wddb3hii68mnkby7s1x81vbhd4z1sf4ivm1lsi2nqlc1vsn"))))
    (build-system perl-build-system)
    (arguments
      `(#:phases
@@ -1197,11 +1271,13 @@ efficiently.  It gives the application developer no more than 4 methods.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin   (string-append (assoc-ref outputs "out") "/bin"))
                    (perl  (string-append (assoc-ref outputs "out")
-                                         "/lib/perl5/site_perl/krona-tools/lib")))
+                                         "/lib/perl5/site_perl/krona-tools/lib"))
+                   (share (string-append (assoc-ref outputs "out")
+                                         "/share/krona-tools")))
                (mkdir-p bin)
                (for-each
                 (lambda (script)
-                  (let* ((executable (string-append "scripts/" script ".pl")))
+                  (let ((executable (string-append "scripts/" script ".pl")))
                     ;; Prefix executables with 'kt' as install script does.
                     (copy-file executable (string-append bin "/kt" script))))
                 '("ClassifyBLAST"
@@ -1229,7 +1305,32 @@ efficiently.  It gives the application developer no more than 4 methods.")
                   (copy-recursively directory
                                     (string-append perl "/../" directory)))
                 (list "data" "img" "taxonomy" "src"))
-               (install-file "lib/KronaTools.pm" perl))))
+               (install-file "lib/KronaTools.pm" perl)
+
+               ;; Install downloaders
+               (substitute* "updateAccessions.sh"
+                 (("ktPath=.*") (string-append "ktPath=" share "\n")))
+               (substitute* "updateTaxonomy.sh"
+                 (("ktPath=.*") (string-append "ktPath=" share "\n"))
+                 (("command -v curl")
+                  (string-append "command -v " (which "curl")))
+                 (("curl -s")
+                  (string-append (which "curl") " -s"))
+                 (("curl\\$timestring")
+                  (string-append (which "curl") "$timestring"))
+                 (("perl -M")
+                  (string-append (which "perl") " -M"))
+                 (("make ")
+                  (string-append (which "make") " ")))
+               (for-each (lambda (file)
+                           (install-file file (string-append share "/scripts")))
+                         '("scripts/extractTaxonomy.pl"
+                           "scripts/accession2taxid.make"
+                           "scripts/taxonomy.make"))
+               (for-each (lambda (file)
+                           (install-file file share))
+                         '("updateAccessions.sh"
+                           "updateTaxonomy.sh")))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1247,7 +1348,9 @@ efficiently.  It gives the application developer no more than 4 methods.")
                (invoke (string-append (assoc-ref outputs "out") "/bin/ktImportText")
                        "ec.tsv")))))))
    (inputs
-    `(("perl" ,perl)))
+    `(("curl" ,curl)
+      ("make" ,gnu-make)
+      ("perl" ,perl)))
    (home-page "https://github.com/marbl/Krona/wiki")
    (synopsis "Hierarchical data exploration with zoomable HTML5 pie charts")
    (description
@@ -1277,8 +1380,7 @@ current version of any major web browser.")
                '(begin
                   ;; Remove code using the problematic JSON license (see
                   ;; <https://www.gnu.org/licenses/license-list.html#JSON>).
-                  (delete-file-recursively "bin/jsonchecker")
-                  #t))))
+                  (delete-file-recursively "bin/jsonchecker")))))
     (build-system cmake-build-system)
     (arguments
      (if (string-prefix? "aarch64" (or (%current-target-system)
@@ -1288,10 +1390,8 @@ current version of any major web browser.")
              (add-after 'unpack 'patch-aarch-march-detection
                (lambda _
                  (substitute* (find-files "." "^CMakeLists\\.txt$")
-                   (("native") "armv8-a"))
-                 #t))))
-         ;; Disable CPU optimization for reproducibility.
-         '(#:configure-flags '("-DRAPIDJSON_ENABLE_INSTRUMENTATION_OPT=OFF"))))
+                   (("native") "armv8-a"))))))
+         '()))
     (home-page "https://github.com/Tencent/rapidjson")
     (synopsis "JSON parser/generator for C++ with both SAX/DOM style API")
     (description
@@ -1553,7 +1653,7 @@ used to validate and fix HTML data.")
 (define-public esbuild
   (package
     (name "esbuild")
-    (version "0.11.9")
+    (version "0.12.9")
     (source
      (origin
        (method git-fetch)
@@ -1562,7 +1662,7 @@ used to validate and fix HTML data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pi5ydvbcfi8dbq2ryw8z4197pf4jrlz8mj1vzkdff22ga9qcmxy"))
+        (base32 "10bz1xq2frdja7mbx04m009svg8b5rj7vfq3sc2gc88n31v21b1j"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1571,13 +1671,17 @@ used to validate and fix HTML data.")
            #t))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/evanw/esbuild/cmd/esbuild"
+     `(#:import-path "github.com/evanw/esbuild/cmd/esbuild"
        #:unpack-path "github.com/evanw/esbuild"
        #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? unpack-path #:allow-other-keys)
              (when tests?
+               ;; The "Go Race Detector" is only supported on 64-bit
+               ;; platforms, this variable disables it.
+               (unless ,(target-64bit?)
+                 (setenv "ESBUILD_RACE" ""))
                (with-directory-excursion (string-append "src/" unpack-path)
                  (invoke "make" "test-go")))
              #t)))))
@@ -1596,7 +1700,7 @@ and other data, for distribution on the web.")
 (define-public tinyproxy
   (package
     (name "tinyproxy")
-    (version "1.10.0")
+    (version "1.11.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/tinyproxy/tinyproxy/"
@@ -1604,10 +1708,11 @@ and other data, for distribution on the web.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "10jnk6y2swld25mm47mjc0nkffyzsfysnsxwr7cs0ns1kil8ggjr"))))
+                "0cizm8pbh5p557birdirkayj71xdxapaa9q29v1d4lf5qk7q3v61"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:test-target "test"             ; ‘make check’ silently does nothing
+       #:configure-flags
        (list
         ;; For the log file, etc.
         "--localstatedir=/var")
@@ -1619,6 +1724,8 @@ and other data, for distribution on the web.")
              ;; (substitute* "docs/man5/Makefile" (("a2x") "a2x -v"))
              ;; (setenv "XML_DEBUG_CATALOG" "1")
              #t)))))
+    (native-inputs
+     `(("perl" ,perl)))                 ; for tests
     (home-page "https://tinyproxy.github.io/")
     (synopsis "Light-weight HTTP/HTTPS proxy daemon")
     (description "Tinyproxy is a light-weight HTTP/HTTPS proxy
@@ -1746,34 +1853,6 @@ requests or verify signatures using either NSS or OpenSSL for calculating the
 hash/signatures.")
     ;; Source code may be distributed under either license.
     (license (list license:expat license:gpl2+))))
-
-(define-public libyaml
-  (package
-    (name "libyaml")
-    (version "0.2.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://pyyaml.org/download/libyaml/yaml-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "1x4fcw13r3lqy8ndydr3ili87wicplw2awbcv6r21qgyfndswhn6"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags '("--disable-static")))
-    (home-page "https://pyyaml.org/wiki/LibYAML")
-    (synopsis "YAML 1.1 parser and emitter written in C")
-    (description
-     "LibYAML is a YAML 1.1 parser and emitter written in C.")
-    (license license:expat)))
-
-(define-public libyaml+static
-  (package
-    (inherit libyaml)
-    (name "libyaml+static")
-    (arguments
-     '(#:configure-flags '("--enable-static")))))
 
 (define-public libquvi-scripts
   (package
@@ -1967,7 +2046,7 @@ stylesheets, you'll need to use another program that uses this library,
 (define-public sassc
   (package
     (name "sassc")
-    (version "3.6.1")
+    (version "3.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1976,7 +2055,7 @@ stylesheets, you'll need to use another program that uses this library,
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sxm54mkhs9m4vnl7vn11y17mhzamc403hv3966j1c7p2rbzg5pv"))))
+                "0m7flrs0hz3ivib8kvsgn3d0fgkabqviadkp1dyspa6iibx3gjwd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -1995,9 +2074,9 @@ stylesheets, you'll need to use another program that uses this library,
                (("install: libsass-install-\\$\\(BUILD\\) \\\\")
                 "install: \\"))
              #t))
-         ;; This phase fails for some reason.
+         ;; This phase fails because…
          (delete 'bootstrap)
-         ;; There is no configure script.
+         ;; …there is no configure script to be generated.
          (delete 'configure)
          (add-before 'build 'setup-environment
            (lambda _
@@ -2887,14 +2966,14 @@ development server with Starman.")
 (define-public perl-cgi
   (package
     (name "perl-cgi")
-    (version "4.51")
+    (version "4.52")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/L/LE/LEEJO/"
                            "CGI-" version ".tar.gz"))
        (sha256
-        (base32 "02k0p8zwbn0fz9r39rg8jvbmky8fwdg6kznklzk557rg07kiblhb"))))
+        (base32 "1bxrpxv95js8yinicminxdg41xvd85haj2gvlywg3zqdb66smqy8"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-test-deep" ,perl-test-deep)
@@ -3435,14 +3514,14 @@ and multipart/form-data.")
 (define-public perl-http-cookiejar
   (package
     (name "perl-http-cookiejar")
-    (version "0.010")
+    (version "0.012")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/D/DA/DAGOLDEN/"
                            "HTTP-CookieJar-" version ".tar.gz"))
        (sha256
-        (base32 "1l7mqsca4fmls7agzwmp6yq1x16y9jwq4114i6i75n654gl37qsn"))))
+        (base32 "0jk0ps4i67dhhhwaxwwa9nkv3n6n5w44xlnwyzvk59735pwvyjh0"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-test-deep" ,perl-test-deep)
@@ -3833,7 +3912,7 @@ select or poll.")
 (define-public perl-libwww
   (package
     (name "perl-libwww")
-    (version "6.49")
+    (version "6.55")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -3841,7 +3920,7 @@ select or poll.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "19k0cg4j4qz005a4ngy48z4r8dc99dxlpq8kvj7qnk15mvgd1r63"))))
+               "0869hn711d6fd6yil8p88wij6p1zdrbnycy7p9p176q39ajd7l61"))))
     (build-system perl-build-system)
     (native-inputs
      `(("perl-test-fatal" ,perl-test-fatal)
@@ -4259,7 +4338,7 @@ can say what method it actually meant.")
 (define-public perl-plack-middleware-removeredundantbody
   (package
     (name "perl-plack-middleware-removeredundantbody")
-    (version "0.07")
+    (version "0.09")
     (source
      (origin
        (method url-fetch)
@@ -4267,7 +4346,7 @@ can say what method it actually meant.")
                            "Plack-Middleware-RemoveRedundantBody-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1hz3kgb5vw4r02gfk9i911f5ykvz55lrsx45bdcllk2bszal3f34"))))
+        (base32 "0zh83001rn5aqwpc1pn3di2h3ibzlf2dvkmkv05hnadpss9mzm40"))))
     (build-system perl-build-system)
     (propagated-inputs
      `(("perl-plack" ,perl-plack)))
@@ -5326,46 +5405,6 @@ developed as part of the Netsurf project.")
 written in C.  It is developed as part of the NetSurf project.")
     (license license:expat)))
 
-(define-public libcyaml
-  (package
-    (name "libcyaml")
-    (version "1.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tlsa/libcyaml")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (patches (search-patches "libcyaml-libyaml-compat.patch"))
-       (sha256
-        (base32 "0428p0rwq71nhh5nzcbapsbrjxa0x5l6h6ns32nxv7j624f0zd93"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "CC=gcc"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'check
-           (lambda _
-             (setenv "CC" "gcc")
-             (invoke "make" "test"))))))
-    (inputs
-     `(("libyaml" ,libyaml)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (synopsis "C library for reading and writing YAML")
-    (description
-     "LibCYAML is a C library written in ISO C11 for reading and writing
-structured YAML documents.  The fundamental idea behind CYAML is to allow
-applications to construct schemas which describe both the permissible
-structure of the YAML documents to read/write, and the C data structure(s)
-in which the loaded data is arranged in memory.")
-    (home-page "https://github.com/tlsa/libcyaml")
-    (license license:isc)))
-
 (define-public libdom
   (package
     (name "libdom")
@@ -5783,14 +5822,14 @@ config files---you only have to specify the www root.")
 (define-public goaccess
   (package
     (name "goaccess")
-    (version "1.0.2")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://tar.goaccess.io/goaccess-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1w84y61f3ldg2f28q6qlyr1scn3mcx0bsbq3i5xi5w193wh3xa2q"))
+                "03wp75n1krv8g643q00gcv1ikmzwwh8jjqmph0wxww1bwrw7whc8"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "src/error.h"
@@ -5958,16 +5997,17 @@ deployments.")
   (package
     (name "varnish")
     (home-page "https://varnish-cache.org/")
-    (version "6.5.1")
+    (version "7.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "_downloads/varnish-" version ".tgz"))
               (sha256
                (base32
-                "1dfdswri6lkfk6kml3szvffm91y49pajgqy1k5y26llqixl4r5hi"))))
+                "11z0pa618lh925ih67wmp1gqk7i46l486j4spjy71g1n3w5mqylc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
+                               (string-append "CC=" ,(cc-for-target))
                                ;; Use absolute path of GCC so it's found at runtime.
                                (string-append "PTHREAD_CC="
                                               (assoc-ref %build-inputs "gcc")
@@ -5976,23 +6016,26 @@ deployments.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'use-absolute-file-names
-           (lambda _
-             (substitute* '("bin/varnishtest/vtc_varnish.c"
-                            "bin/varnishtest/vtc_process.c"
-                            "bin/varnishd/mgt/mgt_vcc.c"
-                            "bin/varnishtest/tests/u00014.vtc")
-               (("/bin/sh") (which "sh")))
-             (substitute* "bin/varnishd/mgt/mgt_shmem.c"
-               (("rm -rf") (string-append (which "rm") " -rf")))
-             (substitute* "bin/varnishtest/vtc_main.c"
-               (("/bin/rm") (which "rm")))
-             #t))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((bash (assoc-ref inputs "bash-minimal"))
+                    (sh (string-append bash "/bin/sh"))
+                    (coreutils (assoc-ref inputs "coreutils"))
+                    (rm (string-append coreutils "/bin/rm")))
+               (substitute* '("bin/varnishtest/vtc_varnish.c"
+                              "bin/varnishtest/vtc_process.c"
+                              "bin/varnishtest/vtc_haproxy.c"
+                              "bin/varnishtest/tests/u00014.vtc"
+                              "bin/varnishd/mgt/mgt_vcc.c")
+                 (("/bin/sh") sh))
+               (substitute* "bin/varnishd/mgt/mgt_shmem.c"
+                 (("rm -rf") (string-append rm " -rf")))
+               (substitute* "bin/varnishtest/vtc_main.c"
+                 (("/bin/rm") rm)))))
          (add-before 'install 'patch-Makefile
            (lambda _
              (substitute* "Makefile"
                ;; Do not create /var/varnish during install.
-               (("^install-data-am: install-data-local") "install-data-am: "))
-             #t))
+               (("^install-data-am: install-data-local") "install-data-am: "))))
          (add-after 'install 'wrap-varnishd
            ;; Varnish uses GCC to compile VCL, so wrap it with required GCC
            ;; environment variables to avoid propagating them to profiles.
@@ -6005,17 +6048,18 @@ deployments.")
                  ;; Add binutils to PATH so gcc finds the 'as' executable.
                  `("PATH" ":" prefix (,PATH))
                  ;; Make sure 'crti.o' et.al is found.
-                 `("LIBRARY_PATH" ":" prefix (,LIBRARY_PATH)))
-               #t))))))
+                 `("LIBRARY_PATH" ":" prefix (,LIBRARY_PATH)))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python-sphinx" ,python-sphinx)
        ("rst2man" ,python-docutils)))
     (inputs
-     `(("jemalloc" ,jemalloc)
+     `(("bash-minimal" ,bash-minimal)
+       ("coreutils" ,coreutils)
+       ("jemalloc" ,jemalloc)
        ("ncurses" ,ncurses)
-       ("pcre" ,pcre)
-       ("python" ,python-wrapper)
+       ("pcre2" ,pcre2)
+       ("python" ,python)
        ("readline" ,readline)))
     (synopsis "Web application accelerator")
     (description
@@ -6032,14 +6076,14 @@ configuration language.")
   (package
     (name "varnish-modules")
     (home-page "https://github.com/varnish/varnish-modules")
-    (version "0.17.1")
+    (version "0.19.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mzkad9r4rpm1fi7j7skwrsyzzbwcapfnlvvl1ls3rng2djcqb5j"))))
+                "0qq5g6bbd1a1ml1wk8jj9z39a899jzqbf7aizr3pvyz0f4kz8mis"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
@@ -6495,7 +6539,7 @@ snippets on @url{https://commandlinefu.com}.")
 (define-public rss-bridge
   (package
     (name "rss-bridge")
-    (version "2019-09-12")
+    (version "2020-11-10")
     (source
      (origin
        (method git-fetch)
@@ -6504,19 +6548,23 @@ snippets on @url{https://commandlinefu.com}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mx7f3l45nqhcrng531l4cq8kpzm164hhbwn26g5akb2pamdlnra"))))
-    (build-system trivial-build-system)
+        (base32 "1mir6mcm37sbdrhl5kgs6schpp3l4r5mfamhiic0yfbz4hqwmg44"))))
+    (build-system copy-build-system)
     (arguments
-     '(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 match))
-         (let* ((out (assoc-ref %outputs "out"))
-                (share-rss-bridge (string-append out "/share/rss-bridge")))
-           (mkdir-p share-rss-bridge)
-           (copy-recursively (assoc-ref %build-inputs "source") share-rss-bridge)
-           #t))))
+     '(#:install-plan
+       '(("." "share/rss-bridge"))
+       #:phases
+       (modify-phases %standard-phases
+         ;;Change paths to not use source directory.
+         (add-before 'install 'patch-paths
+           (lambda _
+             (substitute* "lib/rssbridge.php"
+               (("PATH_ROOT . 'cache/'")
+                "'/var/cache/rss-bridge/'")
+               (("PATH_ROOT . 'whitelist.txt'")
+                "'/etc/rss-bridge/whitelist.txt'")
+               (("PATH_ROOT . 'config.ini.php'")
+                "'/etc/rss-bridge/config.ini.php'")))))))
     (home-page "https://github.com/RSS-Bridge/rss-bridge")
     (synopsis "Generate Atom feeds for social networking websites")
     (description "rss-bridge generates Atom feeds for social networking
@@ -6528,51 +6576,37 @@ Instagram and YouTube.")
 (define-public linkchecker
   (package
     (name "linkchecker")
-    (version "9.4.0")
+    (version "10.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/linkchecker/linkchecker")
              (commit (string-append "v" version))))
-       (patches
-        (search-patches "linkchecker-tests-require-network.patch"))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03ihjmc4bqxxqv71bb43r2f23sx0xnbq1k2fsg9fw05qa5s9x187"))))
+         "1j97dc9a4yhpscwadhv5dxp7036pnrxiaky18l8ddr3pvxdjvkxs"))))
     (build-system python-build-system)
     (inputs
-     `(("python2-dnspython" ,python2-dnspython-1.16)
-       ("python2-pyxdg" ,python2-pyxdg)
-       ("python2-requests" ,python2-requests)))
+     `(("python-beautifulsoup4" ,python-beautifulsoup4)
+       ("python-dnspython" ,python-dnspython)
+       ("python-pyxdg" ,python-pyxdg)
+       ("python-requests" ,python-requests)))
     (native-inputs
      `(("gettext" ,gettext-minimal)
-       ("python2-pytest" ,python2-pytest)
-       ("python2-miniboa" ,python2-miniboa)
-       ("python2-parameterized" ,python2-parameterized)))
+       ("python-pytest" ,python-pytest)
+       ("python-miniboa" ,python-miniboa)
+       ("python-parameterized" ,python-parameterized)))
     (arguments
-     `(#:python ,python-2
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
-         ;; Move the 'check phase to after 'install, so that the installed
-         ;; library can be used
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Set PYTHONPATH so that the installed linkchecker is used
-               (setenv "PYTHONPATH"
-                       (string-append out "/lib/python2.7/site-packages"
-                                      ":"
-                                      (getenv "PYTHONPATH")))
-               ;; Remove this directory to avoid it being used when running
-               ;; the tests
-               (delete-file-recursively "linkcheck")
-
-               (invoke "py.test" "tests"))
-             #t)))))
-    (home-page "https://linkcheck.github.io/linkchecker")
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "py.test" "tests")))))))
+    (home-page "https://linkchecker.github.io/linkchecker/")
     (synopsis "Check websites for broken links")
     (description "LinkChecker is a website validator.  It checks for broken
 links in websites.  It is recursive and multithreaded providing output in
@@ -6585,42 +6619,10 @@ file links.")
                    license:psfl               ; linkcheck/gzip2.py
                    license:expat))))          ; linkcheck/mem.py
 
-(define-public cadaver
-  (package
-    (name "cadaver")
-    (version "0.23.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://www.webdav.org/cadaver/"
-                           name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1jizq69ifrjbjvz5y79wh1ny94gsdby4gdxwjad4bfih6a5fck7x"))))
-    (build-system gnu-build-system)
-    ;; TODO: Unbundle libneon and make build succeed with new neon.
-    (arguments
-     `(#:configure-flags (list "--with-ssl=openssl")
-       #:tests? #f)) ;No tests included
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
-    (inputs
-     `(("expat" ,expat)
-       ("openssl" ,openssl-1.0)))
-    (home-page "http://www.webdav.org/cadaver/")
-    (synopsis "Command-line WebDAV client")
-    (description
-     "Cadaver is a command-line WebDAV client for Unix.  It supports
-file upload, download, on-screen display, namespace operations (move/copy),
-collection creation and deletion, and locking operations.")
-    (license license:gpl2)))
-
 (define-public castor
   (package
     (name "castor")
-    (version "0.8.16")
+    (version "0.8.18")
     (source
      (origin
        (method git-fetch)
@@ -6629,7 +6631,7 @@ collection creation and deletion, and locking operations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rwg1w7srjwa23mkypl8zk6674nhph4xsc6nc01f6g5k959szylr"))))
+        (base32 "1l72r6a917ymc9pn8dllbal1xdczfai376nvqkiys5fm4j4s3zmj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -6931,7 +6933,12 @@ or embedded instantiation.  This package provides utility classes.")
                   "testdir.getPathFile(\"foo\").toFile()")
                  (("testdir.getFile\\(name\\)")
                   "testdir.getPathFile(name).toFile()")))
-             #t)))))))
+             #t)))))
+    (native-inputs
+     `(("java-junit" ,java-junit)
+       ("java-hamcrest-all" ,java-hamcrest-all)
+       ("perf-helper" ,java-eclipse-jetty-perf-helper)
+       ("test-helper" ,java-eclipse-jetty-test-helper)))))
 
 (define-public java-eclipse-jetty-io
   (package
@@ -7077,7 +7084,8 @@ or embedded instantiation.  This package provides the JMX management.")))
     (source (package-source java-eclipse-jetty-util-9.2))
     (inputs
      `(("http" ,java-eclipse-jetty-http-9.2)
-       ,@(package-inputs java-eclipse-jetty-http-9.2)))))
+       ,@(package-inputs java-eclipse-jetty-http-9.2)))
+    (native-inputs (package-native-inputs java-eclipse-jetty-util-9.2))))
 
 (define-public java-eclipse-jetty-server
   (package
@@ -7651,87 +7659,83 @@ compressed JSON header blocks.
     (license license:expat)))
 
 (define-public hpcguix-web
-  (let ((commit "9de63562b06b4aef3a3afe5ecb18d3c91e57ee74")
-        (revision "5"))
-    (package
-      (name "hpcguix-web")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/UMCUGenetics/hpcguix-web")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0wjgj2s7v2cyz6dx24c111rxs99i84sfvxl4ch8brnh02j2606jz"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:modules ((guix build gnu-build-system)
-                    (guix build utils)
-                    (srfi srfi-26)
-                    (ice-9 popen)
-                    (ice-9 rdelim))
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'set-variables
-             (lambda _
-               ;; This prevents a few warnings
-               (setenv "GUILE_AUTO_COMPILE" "0")
-               (setenv "XDG_CACHE_HOME" (getcwd))
-               #t))
-           (add-after 'install 'wrap-program
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out      (assoc-ref outputs "out"))
-                      (guix     (assoc-ref inputs "guix"))
-                      (guile    (assoc-ref inputs "guile"))
-                      (gcrypt   (assoc-ref inputs "guile-gcrypt"))
-                      (git      (assoc-ref inputs "guile-git"))
-                      (bs       (assoc-ref inputs "guile-bytestructures"))
-                      (json     (assoc-ref inputs "guile-json"))
-                      (guile-cm (assoc-ref inputs
-                                           "guile-commonmark"))
-                      (deps (list guile gcrypt git bs guile-cm guix json))
-                      (effective
-                       (read-line
-                        (open-pipe* OPEN_READ
-                                    (string-append guile "/bin/guile")
-                                    "-c" "(display (effective-version))")))
-                      (path   (string-join
-                               (map (cut string-append <>
-                                         "/share/guile/site/"
-                                         effective)
-                                    deps)
-                               ":"))
-                      (gopath (string-join
-                               (map (cut string-append <>
-                                         "/lib/guile/" effective
-                                         "/site-ccache")
-                                    deps)
-                               ":")))
-                 (wrap-program (string-append out "/bin/run")
-                   `("GUILE_LOAD_PATH" ":" prefix (,path))
-                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,gopath)))
-
-                 #t))))))
-      (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("uglify-js" ,uglify-js)
-         ("pkg-config" ,pkg-config)))
-      (inputs
-       `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
-         ("guix" ,guix)))
-      (propagated-inputs
-       `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
-         ("guile-commonmark" ,guile-commonmark)
-         ("guile-json" ,guile-json-4)))
-      (home-page "https://github.com/UMCUGenetics/hpcguix-web")
-      (synopsis "Web interface for cluster deployments of Guix")
-      (description "Hpcguix-web provides a web interface to the list of packages
+  (package
+    (name "hpcguix-web")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/UMCUGenetics/hpcguix-web")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02lz5k1hhkwfz3nr3lsd69icsz6n0q82z047d3svi09qpxw6y0cj"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:modules ((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26)
+                  (ice-9 popen)
+                  (ice-9 rdelim))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'set-variables
+           (lambda _
+             ;; This prevents a few warnings
+             (setenv "GUILE_AUTO_COMPILE" "0")
+             (setenv "XDG_CACHE_HOME" (getcwd))))
+         (add-after 'install 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out      (assoc-ref outputs "out"))
+                    (guix     (assoc-ref inputs "guix"))
+                    (guile    (assoc-ref inputs "guile"))
+                    (gcrypt   (assoc-ref inputs "guile-gcrypt"))
+                    (git      (assoc-ref inputs "guile-git"))
+                    (bs       (assoc-ref inputs "guile-bytestructures"))
+                    (json     (assoc-ref inputs "guile-json"))
+                    (guile-cm (assoc-ref inputs
+                                         "guile-commonmark"))
+                    (deps (list guile gcrypt git bs guile-cm guix json))
+                    (effective
+                     (read-line
+                      (open-pipe* OPEN_READ
+                                  (string-append guile "/bin/guile")
+                                  "-c" "(display (effective-version))")))
+                    (path   (string-join
+                             (map (cut string-append <>
+                                       "/share/guile/site/"
+                                       effective)
+                                  deps)
+                             ":"))
+                    (gopath (string-join
+                             (map (cut string-append <>
+                                       "/lib/guile/" effective
+                                       "/site-ccache")
+                                  deps)
+                             ":")))
+               (wrap-program (string-append out "/bin/hpcguix-web")
+                 `("GUILE_LOAD_PATH" ":" prefix (,path))
+                 `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,gopath)))))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("uglify-js" ,uglify-js)
+       ("pkg-config" ,pkg-config)))
+    (inputs
+     `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
+       ("guix" ,guix)
+       ("bash-minimal" ,bash-minimal)))           ;for 'wrap-program'
+    (propagated-inputs
+     `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
+       ("guile-commonmark" ,guile-commonmark)
+       ("guile-json" ,guile-json-4)))
+    (home-page "https://github.com/UMCUGenetics/hpcguix-web")
+    (synopsis "Web interface for cluster deployments of Guix")
+    (description "Hpcguix-web provides a web interface to the list of packages
 provided by Guix.  The list of packages is searchable and provides
 instructions on how to use Guix in a shared HPC environment.")
-      (license license:agpl3+))))
+    (license license:agpl3+)))
 
 (define-public httrack
   (package
@@ -7926,8 +7930,8 @@ solution for any project's interface needs:
     (license license:expat)))
 
 (define-public gmnisrv
-  (let ((commit "d484ba0ab0020866535a44be5948c9482b8f2b8d")
-        (revision "1"))
+  (let ((commit "32854b79c73b278bf33eb5123abf1c36abdc7c01")
+        (revision "2"))
     (package
       (name "gmnisrv")
       (version (git-version "0" revision commit))
@@ -7939,24 +7943,22 @@ solution for any project's interface needs:
                       (commit commit)))
                 (sha256
                  (base32
-                  "11phipixsxx1jgm42agp76p5s68l0zj65kgb41vzaymgwcq79ivn"))
+                  "0lbb3ablwkdcgm1cjr1hikr55y8gpl420nh8b8g9wn4abhm2xgr9"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'set-variables
-             (lambda _
-               (setenv "CC" "gcc")
-               #t))
-           (delete 'check))))
+       `(#:tests? #f ; no check target
+         #:configure-flags (list "--sysconfdir=/etc"
+                                 (string-append "--with-mimedb="
+                                                (assoc-ref %build-inputs "mailcap")
+                                                "/etc/mime.types"))
+         #:make-flags (list (string-append "CC=" ,(cc-for-target)))))
       (inputs
-       `(("openssl" ,openssl)))
+       `(("mailcap" ,mailcap)
+         ("openssl" ,openssl)))
       (native-inputs
        `(("pkg-config" ,pkg-config)
          ("scdoc" ,scdoc)))
-      (propagated-inputs
-       `(("mailcap" ,mailcap)))
       (synopsis "Simple Gemini protocol server")
       (description "gmnisrv is a simple Gemini protocol server written in C.")
       (license (list license:gpl3+
@@ -7965,7 +7967,7 @@ solution for any project's interface needs:
 (define-public libzim
   (package
     (name "libzim")
-    (version "6.3.0")
+    (version "6.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7973,7 +7975,7 @@ solution for any project's interface needs:
                     (commit version)))
               (sha256
                (base32
-                "0iy0f1clhihq277x218ccx3mszgpr3h9l0by48b9ykr115nffw3s"))
+                "00kc4qc0a69jh1jwk5xhi567b7ffpc3p38ffrf2xaax4hvpjwmn6"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
@@ -8101,7 +8103,7 @@ It contains the code shared by all Kiwix ports.")
        ("libmicrohttpd" ,libmicrohttpd)
        ("libzim" ,libzim)
        ("pugixml" ,pugixml)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtdeclarative" ,qtdeclarative)
        ("qtwebchannel" ,qtwebchannel)
        ("qtwebengine" ,qtwebengine)
@@ -8110,7 +8112,7 @@ It contains the code shared by all Kiwix ports.")
        ("zstd" ,zstd "lib")))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("qmake" ,qtbase)))
+       ("qmake" ,qtbase-5)))
     (home-page "https://wiki.kiwix.org/wiki/Software")
     (synopsis "Viewer and manager of ZIM files")
     (description "Kiwix Desktop allows you to enjoy a lot of different content

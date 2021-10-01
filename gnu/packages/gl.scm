@@ -5,15 +5,15 @@
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
+;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -270,7 +270,7 @@ also known as DXTn or DXTC) for Mesa.")
         ("libxrandr" ,libxrandr)
         ("libxvmc" ,libxvmc)
         ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux")
+            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux")
              ;; Note: update the 'clang' input of mesa-opencl when bumping this.
              `(("llvm" ,llvm-11)))
             (_
@@ -282,7 +282,7 @@ also known as DXTn or DXTC) for Mesa.")
         ("flex" ,flex)
         ("gettext" ,gettext-minimal)
         ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux")
+            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux")
              `(("glslang" ,glslang)))
             (_
              `()))
@@ -295,8 +295,10 @@ also known as DXTn or DXTC) for Mesa.")
      `(#:configure-flags
        '(,@(match (%current-system)
              ((or "armhf-linux" "aarch64-linux")
-              ;; TODO: Fix svga driver for aarch64 and armhf.
+              ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+             ("powerpc64le-linux"
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
              (_
               '("-Dgallium-drivers=iris,nouveau,r300,r600,radeonsi,svga,swrast,virgl")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
@@ -313,16 +315,18 @@ also known as DXTn or DXTC) for Mesa.")
          "-Dgbm=true"
          "-Dshared-glapi=true"
 
-         ;; Enable Vulkan on i686-linux and x86-64-linux.
+         ;; Explicitly enable Vulkan on some architectures.
          ,@(match (%current-system)
              ((or "i686-linux" "x86_64-linux")
               '("-Dvulkan-drivers=intel,amd"))
+             ("powerpc64le-linux"
+              '("-Dvulkan-drivers=amd"))
              (_
               '("-Dvulkan-drivers=auto")))
 
-         ;; Enable the Vulkan overlay layer on i686-linux and x86-64-linux.
+         ;; Enable the Vulkan overlay layer on architectures using llvm.
          ,@(match (%current-system)
-             ((or "x86_64-linux" "i686-linux")
+             ((or "x86_64-linux" "i686-linux" "powerpc64le-linux")
               '("-Dvulkan-overlay-layer=true"))
              (_
               '()))
@@ -336,6 +340,9 @@ also known as DXTn or DXTC) for Mesa.")
              ((or "x86_64-linux" "i686-linux")
               '("-Ddri-drivers=i915,i965,nouveau,r200,r100"
                 "-Dllvm=true"))         ; default is x86/x86_64 only
+             ("powerpc64le-linux"
+              '("-Ddri-drivers=nouveau,r200,r100"
+                "-Dllvm=true"))
              (_
               '("-Ddri-drivers=nouveau,r200,r100"))))
 
@@ -349,6 +356,15 @@ also known as DXTn or DXTC) for Mesa.")
                   (guix build meson-build-system))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (string-prefix? "powerpc64le" (or (%current-target-system)
+                                                 (%current-system)))
+               ;; Disable some of the llvmpipe tests.
+               `((add-after 'unpack 'disable-failing-test
+                   (lambda _
+                     (substitute* "src/gallium/drivers/llvmpipe/lp_test_arit.c"
+                       (("0\\.5, ") ""))
+                     #t)))
+               '())
          ,@(if (string-prefix? "i686" (or (%current-target-system)
                                           (%current-system)))
                ;; Disable new test from Mesa 19 that fails on i686.  Upstream
@@ -383,7 +399,7 @@ also known as DXTn or DXTC) for Mesa.")
              (let ((out (assoc-ref outputs "out"))
                    (bin (assoc-ref outputs "bin")))
                ,@(match (%current-system)
-                   ((or "i686-linux" "x86_64-linux")
+                   ((or "i686-linux" "x86_64-linux" "powerpc64le-linux")
                     ;; Install the Vulkan overlay control script to a separate
                     ;; output to prevent a reference on Python, saving ~70 MiB
                     ;; on the closure size.
@@ -459,10 +475,26 @@ from software emulation to complete hardware acceleration for modern GPUs.")
   (package/inherit mesa-opencl
     (name "mesa-opencl-icd")
     (arguments
-     (substitute-keyword-arguments (package-arguments mesa)
-       ((#:configure-flags flags)
-        `(cons "-Dgallium-opencl=icd"
-               ,(delete "-Dgallium-opencl=standalone" flags)))))))
+      (substitute-keyword-arguments (package-arguments mesa)
+        ((#:configure-flags flags)
+         `(cons "-Dgallium-opencl=icd"
+                ,(delete "-Dgallium-opencl=standalone" flags)))
+        ((#:phases phases)
+         `(modify-phases ,phases
+            (add-after 'install 'mesa-icd-absolute-path
+              (lambda _
+                ;; Use absolute path for OpenCL platform library.
+                ;; Otherwise we would have to set LD_LIBRARY_PATH=LIBRARY_PATH
+                ;; for ICD in our applications to find OpenCL platform.
+                (use-modules (guix build utils)
+                             (ice-9 textual-ports))
+                (let* ((out (assoc-ref %outputs "out"))
+                       (mesa-icd (string-append out "/etc/OpenCL/vendors/mesa.icd"))
+                       (old-path (call-with-input-file mesa-icd get-string-all))
+                       (new-path (string-append out "/lib/" (string-trim-both old-path))))
+                  (if (file-exists? new-path)
+                    (call-with-output-file mesa-icd
+                      (lambda (port) (format port "~a\n" new-path)))))))))))))
 
 (define-public mesa-headers
   (package/inherit mesa
@@ -686,7 +718,7 @@ OpenGL graphics API.")
 (define-public libglvnd
   (package
     (name "libglvnd")
-    (version "1.3.2")
+    (version "1.3.4")
     (home-page "https://gitlab.freedesktop.org/glvnd/libglvnd")
     (source (origin
               (method git-fetch)
@@ -696,7 +728,7 @@ OpenGL graphics API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10x7fgb114r4gikdg6flszl3kwzcb9y5qa7sj9936mk0zxhjaylz"))))
+                "0phvgg2h3pcz3x39gaymwb37bnw1s26clq9wsj0zx398zmp3dwpk"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags '("-Dx11=enabled")
@@ -708,8 +740,7 @@ OpenGL graphics API.")
                       ;; require a running Xorg server.
                       (substitute* "tests/meson.build"
                         (("if with_glx")
-                         "if false"))
-                      #t)))))
+                         "if false")))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)))
     (inputs

@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -99,14 +100,14 @@ extensive examples, including parsers for the Javascript and C99 languages.")
 (define-public nyacc
   (package
     (inherit nyacc-0.99)
-    (version "1.03.6")
+    (version "1.04.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/nyacc/nyacc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1s7kli288l4pizjaarx8m6jg7g0mgfy8rpbs9lpzg8la7wr5rvp4"))
+                "0m3mcdaslvvr2iav8ga146hzsja2hdj4656pszljb4q2q7h25ip5"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -116,7 +117,14 @@ extensive examples, including parsers for the Javascript and C99 languages.")
 $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))
                   #t))))
     (inputs
-     `(("guile" ,guile-3.0)))))
+     `(("guile" ,guile-3.0)))
+    (description
+     "@acronym{NYACC, Not Yet Another Compiler Compiler} is set of Guile modules
+for generating parsers and lexical analyzers.  It provides sample parsers,
+pretty-printers using SXML trees as an intermediate representation, a decent C
+parser and an `FFI Helper' tool to help create Guile Scheme bindings for C-based
+libraries.  It also provides (partially implemented) compilers based on these
+parsers to allow execution with Guile as extension languages.")))
 
 (define-public nyacc-1.00.2
   (package

@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -68,9 +70,7 @@ that are not yet in Guix"))
                    (alist-cons 'recursive #t result)))
          (option '(#\p "goproxy") #t #f
                  (lambda (opt name arg result)
-                   (alist-cons 'goproxy
-                               (string->symbol arg)
-                               (alist-delete 'goproxy result))))
+                   (alist-cons 'goproxy arg (alist-delete 'goproxy result))))
          (option '("pin-versions") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'pin-versions? #t result)))
@@ -84,12 +84,8 @@ that are not yet in Guix"))
 (define (guix-import-go . args)
   (define (parse-options)
     ;; Return the alist of option values.
-    (args-fold* args %options
-                (lambda (opt name arg result)
-                  (leave (G_ "~A: unrecognized option~%") name))
-                (lambda (arg result)
-                  (alist-cons 'argument arg result))
-                %default-options))
+    (parse-command-line args %options (list %default-options)
+                        #:build-options? #f))
 
   (let* ((opts (parse-options))
          (args (filter-map (match-lambda
@@ -116,10 +112,10 @@ that are not yet in Guix"))
                (map package->definition*
                     (apply go-module-recursive-import arguments))
                ;; Single import.
-               (let ((sexp (apply go-module->guix-package arguments)))
+               (let ((sexp (apply go-module->guix-package* arguments)))
                  (unless sexp
-                   (leave (G_ "failed to download meta-data for module '~a'~%")
-                          module-name))
+                   (leave (G_ "failed to download meta-data for module '~a'.~%")
+                          name))
                  (package->definition* sexp))))))
       (()
        (leave (G_ "too few arguments~%")))

@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -800,7 +800,7 @@ maintain the Noto Fonts project.")
 (define-public fcft
   (package
     (name "fcft")
-    (version "2.3.2")
+    (version "2.4.1")
     (home-page "https://codeberg.org/dnkl/fcft")
     (source (origin
               (method git-fetch)
@@ -808,7 +808,7 @@ maintain the Noto Fonts project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k2i57rakm4g86f7hbhkby8af0vv7v63a70lk3m58mkycpy5q2rm"))))
+                "00rwh5qfayihrq0wjx8pxqw5ah6g5ym6raxvdbqb6g6rk7m2j423"))))
     (build-system meson-build-system)
     (arguments
      `(#:meson ,meson-0.55))
@@ -952,18 +952,17 @@ Unicode Charts.  It was developed for use with DejaVu Fonts project.")
 (define-public libraqm
   (package
     (name "libraqm")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/HOST-Oman/libraqm/"
-                           "releases/download/v" version "/"
-                           "raqm-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/HOST-Oman/libraqm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0a4q9dziirb85sa9rmkamg2krdhd009di2vlz91njwxcp3q8qj46"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags (list "--disable-static")))
+        (base32 "1shcs5l27l7380dvacvhl8wrdq3lix0wnhzvfdh7vx2pkzjs3zk6"))))
+    (build-system meson-build-system)
     (native-inputs
      `(("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)

@@ -26,6 +26,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages sqlite)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64)
@@ -173,9 +174,9 @@
                               ,(package-version package)
                               ,(package-location package))
                      ,@rest)))))
-    (list (map ->list (package-inputs guile-2.2))
-          (map ->list (package-native-inputs guile-2.2))
-          (map ->list (package-propagated-inputs guile-2.2))))
+    (list (map ->list (package-inputs guile-3.0-latest))
+          (map ->list (package-native-inputs guile-3.0-latest))
+          (map ->list (package-propagated-inputs guile-3.0-latest))))
   (let* ((inferior (open-inferior %top-builddir
                                   #:command "scripts/guix"))
          (guile    (first (lookup-inferior-packages inferior "guile")))
@@ -259,6 +260,25 @@
     (map derivation-file-name
          (list (inferior-package-derivation %store guile "x86_64-linux")
                (inferior-package-derivation %store guile "armhf-linux")))))
+
+(unless (package-replacement sqlite)
+  (test-skip 1))
+
+(test-equal "inferior-package-replacement"
+  (package-derivation %store
+                      (package-replacement sqlite)
+                      "x86_64-linux")
+  (let* ((inferior (open-inferior %top-builddir
+                                  #:command "scripts/guix"))
+         (packages (inferior-packages inferior)))
+    (match (lookup-inferior-packages inferior
+                                     (package-name sqlite)
+                                     (package-version sqlite))
+      ((inferior-sqlite rest ...)
+       (inferior-package-derivation %store
+                                    (inferior-package-replacement
+                                     inferior-sqlite)
+                                    "x86_64-linux")))))
 
 (test-equal "inferior-package->manifest-entry"
   (manifest-entry->list (package->manifest-entry

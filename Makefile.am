@@ -15,6 +15,7 @@
 # Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
+# Copyright © 2021 Andrew Tropin <andrew@trop.in>
 #
 # This file is part of GNU Guix.
 #
@@ -141,6 +142,7 @@ MODULES =					\
   guix/build-system/go.scm			\
   guix/build-system/meson.scm			\
   guix/build-system/minify.scm			\
+  guix/build-system/minetest.scm		\
   guix/build-system/asdf.scm			\
   guix/build-system/copy.scm			\
   guix/build-system/glib-or-gtk.scm		\
@@ -203,6 +205,7 @@ MODULES =					\
   guix/build/gnu-dist.scm			\
   guix/build/guile-build-system.scm		\
   guix/build/maven-build-system.scm		\
+  guix/build/minetest-build-system.scm		\
   guix/build/node-build-system.scm		\
   guix/build/perl-build-system.scm		\
   guix/build/python-build-system.scm		\
@@ -220,6 +223,7 @@ MODULES =					\
   guix/build/linux-module-build-system.scm	\
   guix/build/store-copy.scm			\
   guix/build/json.scm				\
+  guix/build/pack.scm				\
   guix/build/utils.scm				\
   guix/build/union.scm				\
   guix/build/profiles.scm			\
@@ -248,8 +252,10 @@ MODULES =					\
   guix/import/cpan.scm				\
   guix/import/cran.scm				\
   guix/import/crate.scm				\
+  guix/import/egg.scm   			\
   guix/import/elpa.scm   			\
   guix/import/gem.scm				\
+  guix/import/git.scm                           \
   guix/import/github.scm   			\
   guix/import/gnome.scm				\
   guix/import/gnu.scm				\
@@ -258,10 +264,10 @@ MODULES =					\
   guix/import/json.scm				\
   guix/import/kde.scm				\
   guix/import/launchpad.scm   			\
+  guix/import/minetest.scm   			\
   guix/import/opam.scm				\
   guix/import/print.scm				\
   guix/import/pypi.scm				\
-  guix/import/snix.scm				\
   guix/import/stackage.scm			\
   guix/import/texlive.scm   			\
   guix/import/utils.scm				\
@@ -290,17 +296,20 @@ MODULES =					\
   guix/scripts/system.scm			\
   guix/scripts/system/search.scm		\
   guix/scripts/system/reconfigure.scm		\
+  guix/scripts/home.scm			\
+  guix/scripts/home/import.scm			\
   guix/scripts/lint.scm				\
   guix/scripts/challenge.scm			\
   guix/scripts/import/crate.scm			\
   guix/scripts/import/cran.scm			\
+  guix/scripts/import/egg.scm   		\
   guix/scripts/import/elpa.scm  		\
   guix/scripts/import/gem.scm			\
   guix/scripts/import/gnu.scm			\
   guix/scripts/import/go.scm			\
   guix/scripts/import/hackage.scm		\
   guix/scripts/import/json.scm  		\
-  guix/scripts/import/nix.scm			\
+  guix/scripts/import/minetest.scm  		\
   guix/scripts/import/opam.scm			\
   guix/scripts/import/pypi.scm			\
   guix/scripts/import/stackage.scm		\
@@ -365,10 +374,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
-  gnu/packages/aux-files/linux-libre/5.11-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.11-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.11-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.11-x86_64.conf	\
+  gnu/packages/aux-files/linux-libre/5.14-arm.conf	\
+  gnu/packages/aux-files/linux-libre/5.14-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/5.14-i686.conf	\
+  gnu/packages/aux-files/linux-libre/5.14-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/5.10-arm.conf	\
   gnu/packages/aux-files/linux-libre/5.10-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.10-i686.conf	\
@@ -451,6 +460,7 @@ SCM_TESTS =					\
   tests/debug-link.scm				\
   tests/derivations.scm			\
   tests/discovery.scm				\
+  tests/egg.scm				\
   tests/elpa.scm				\
   tests/file-systems.scm			\
   tests/gem.scm				\
@@ -459,14 +469,15 @@ SCM_TESTS =					\
   tests/git-authenticate.scm			\
   tests/glob.scm				\
   tests/gnu-maintenance.scm			\
-  tests/go.scm					\
   tests/grafts.scm				\
   tests/graph.scm				\
   tests/gremlin.scm				\
   tests/hackage.scm				\
+  tests/import-git.scm				\
   tests/import-utils.scm			\
   tests/inferior.scm				\
   tests/lint.scm				\
+  tests/minetest.scm				\
   tests/modules.scm				\
   tests/monads.scm				\
   tests/nar.scm				\
@@ -486,10 +497,11 @@ SCM_TESTS =					\
   tests/search-paths.scm			\
   tests/services.scm				\
   tests/services/file-sharing.scm		\
+  tests/services/configuration.scm		\
   tests/services/linux.scm			\
+  tests/services/telephony.scm			\
   tests/sets.scm				\
   tests/size.scm				\
-  tests/snix.scm				\
   tests/status.scm				\
   tests/store-database.scm			\
   tests/store-deduplication.scm		\
@@ -507,6 +519,12 @@ SCM_TESTS =					\
   tests/utils.scm				\
   tests/uuid.scm				\
   tests/workers.scm
+
+if HAVE_GUILE_LIB
+SCM_TESTS += tests/go.scm
+else
+EXTRA_DIST += tests/go.scm
+endif
 
 if BUILD_DAEMON_OFFLOAD
 SCM_TESTS  += tests/offload.scm
@@ -582,7 +600,8 @@ check-system: $(GOBJECTS)
 dist_pkgdata_DATA =				\
   etc/substitutes/berlin.guix.gnu.org.pub	\
   etc/substitutes/ci.guix.gnu.org.pub		\
-  etc/substitutes/ci.guix.info.pub
+  etc/substitutes/ci.guix.info.pub		\
+  etc/substitutes/bordeaux.guix.gnu.org.pub
 
 # Bash completion file.
 dist_bashcompletion_DATA = etc/completion/bash/guix	\
@@ -606,9 +625,11 @@ EXTRA_DIST +=						\
   .guix-authorizations					\
   .guix-channel						\
   scripts/guix.in					\
+  etc/disarchive-manifest.scm				\
   etc/guix-install.sh					\
   etc/news.scm						\
   etc/release-manifest.scm				\
+  etc/source-manifest.scm				\
   etc/system-tests.scm					\
   etc/historical-authorizations				\
   build-aux/build-self.scm				\
@@ -658,15 +679,53 @@ CLEANFILES =					\
 # the whole thing.  Likewise, set 'XDG_CACHE_HOME' to avoid loading possibly
 # stale files from ~/.cache/guile/ccache.
 %.go: make-go ; @:
-make-go: $(MODULES) guix/config.scm $(dist_noinst_DATA)
-	$(AM_V_at)echo "Compiling Scheme modules..." ;			\
-	unset GUILE_LOAD_COMPILED_PATH ;				\
-	XDG_CACHE_HOME=/nowhere						\
-	host=$(host) srcdir="$(top_srcdir)"				\
-	$(top_builddir)/pre-inst-env					\
-	$(GUILE) -L "$(top_builddir)" -L "$(top_srcdir)"		\
-	  --no-auto-compile 						\
-	  -s "$(top_srcdir)"/build-aux/compile-all.scm $^
+make-go: make-core-go make-packages-go make-system-go make-cli-go
+
+# Define a rule to build a subset of the .go files.
+define guile-compilation-rule
+
+$(1): $(2)
+	$(AM_V_at)echo "Compiling Scheme modules..." ;		\
+	unset GUILE_LOAD_COMPILED_PATH ;			\
+	XDG_CACHE_HOME=/nowhere					\
+	host=$(host) srcdir="$(top_srcdir)"			\
+	$(top_builddir)/pre-inst-env				\
+	$(GUILE) -L "$(top_builddir)" -L "$(top_srcdir)"	\
+	  --no-auto-compile					\
+	  -s "$(top_srcdir)"/build-aux/compile-all.scm		\
+	  --total $(words $(MODULES))				\
+	  --completed $(3)					\
+	  $$(filter %.scm,$$^)
+
+.PHONY: $(1)
+
+endef
+
+# Split compilation in several steps, each of which building a subset of
+# $(MODULES).  The main goal is to reduce peak memory consumption, as reported
+# in <https://issues.guix.gnu.org/48963>.  Each 'eval' call below creates a
+# 'make-*-go' phony target that builds the corresponding subset.
+
+MODULES_CORE     = guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULES)))
+MODULES_PACKAGES = $(filter gnu/packages/%,$(MODULES))
+MODULES_SYSTEM   = gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
+MODULES_CLI      = $(filter guix/scripts/%,$(MODULES))
+
+$(eval $(call guile-compilation-rule,make-core-go,	\
+  $(MODULES_CORE) guix/config.scm $(dist_noinst_DATA),	\
+  0))
+
+$(eval $(call guile-compilation-rule,make-packages-go,	\
+  $(MODULES_PACKAGES) make-core-go,			\
+  $(words $(MODULES_CORE))))
+
+$(eval $(call guile-compilation-rule,make-system-go,	\
+  $(MODULES_SYSTEM) make-packages-go make-core-go,	\
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES))))
+
+$(eval $(call guile-compilation-rule,make-cli-go,			\
+  $(MODULES_CLI) make-system-go make-packages-go make-core-go,		\
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES) $(MODULES_SYSTEM))))
 
 SUFFIXES = .go
 
@@ -733,22 +792,22 @@ AM_DISTCHECK_CONFIGURE_FLAGS =			\
   --enable-daemon				\
   ac_cv_guix_test_root="$(GUIX_TEST_ROOT)"
 
-# Name of the 'guix' package shipped in the binary tarball.
-GUIX_FOR_BINARY_TARBALL = guix
-
 # The self-contained tarball.
 guix-binary.%.tar.xz:
 	$(AM_V_GEN)GUIX_PACKAGE_PATH=					\
 	tarball=`$(top_builddir)/pre-inst-env guix pack -C xz		\
 	  --fallback							\
 	  -s "$*" --localstatedir --profile-name=current-guix		\
-	  $(GUIX_FOR_BINARY_TARBALL)` ;					\
+	  guix` ;					\
 	cp "$$tarball" "$@.tmp" ; mv "$@.tmp" "$@"
 
 
+# The dependency on doc-pot-update is to generate the .pot files, which are
+# not checked in.
+dist: doc-pot-update
+
 dist-hook: gen-ChangeLog gen-AUTHORS gen-tarball-version
 dist-hook: assert-no-store-file-names
-dist-hook: doc-po-update
 
 distcheck-hook: assert-binaries-available assert-final-inputs-self-contained
 
@@ -829,21 +888,20 @@ system_flags = $(foreach system,$(1),-s $(system))
 
 # The release process works in several phases:
 #
-#   0. We assume the developer created a 'vX.Y' tag.
+#   0. We assume the developer created a 'vX.Y.Z' tag.
 #   1. Build the source tarball.
-#   2. Update the 'guix' package so that it corresponds to the 'vX.Y' tag.
+#   2. Update the 'guix' package so that it corresponds to the 'vX.Y.Z' tag.
 #   3. Build the binary tarballs for that 'guix' package.
 #   4. Update the 'guix' package again.
-#   5. Build the installation images.  The images will run 'guix'
-#      corresponding to 'vX.Y' + 1 commit, and they will install 'vX.Y'.
+#   5. Build the installation and VM images.  The images will run 'guix'
+#      corresponding to 'vX.Y.Z' + 1 commit, and they will install 'vX.Y.Z'.
 #
 # This 'release' target takes care of everything and copies the resulting
 # files to $(releasedir).
 #
 # XXX: Depend on 'dist' rather than 'distcheck' to work around the Gettext
 # issue described at <https://savannah.gnu.org/bugs/index.php?51027>.
-release: dist-with-updated-version
-	cd po; git checkout .
+release: dist-with-updated-version all
 	@if ! git diff-index --quiet HEAD; then			\
 	  echo "There are uncommitted changes; stopping." >&2 ;	\
 	  exit 1 ;						\
@@ -851,21 +909,24 @@ release: dist-with-updated-version
 	$(MKDIR_P) "$(releasedir)"
 	rm -f "$(releasedir)"/*
 	mv $(SOURCE_TARBALLS) "$(releasedir)"
+# Bump the Guix package version and build it.
 	GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT=yes \
 	$(top_builddir)/pre-inst-env "$(GUILE)"	\
 		$(top_srcdir)/build-aux/update-guix-package.scm	\
 	   	"`git rev-parse HEAD`" "$(PACKAGE_VERSION)"
 	git add $(top_srcdir)/gnu/packages/package-management.scm
 	git commit -m "gnu: guix: Update to $(PACKAGE_VERSION)."
-	$(top_builddir)/pre-inst-env guix build $(GUIX_FOR_BINARY_TARBALL)	\
+	$(top_builddir)/pre-inst-env guix build guix	\
 	      $(call system_flags,$(SUPPORTED_SYSTEMS))	\
 	      -v1 --no-grafts --fallback
+# Generate the binary release tarballs.
 	rm -f $(BINARY_TARBALLS)
 	$(MAKE) $(BINARY_TARBALLS)
 	for system in $(SUPPORTED_SYSTEMS) ; do					\
 	  mv "guix-binary.$$system.tar.xz"					\
 	      "$(releasedir)/guix-binary-$(PACKAGE_VERSION).$$system.tar.xz" ;	\
 	done
+# Bump the Guix package version and build it (again).
 	GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT=yes \
 	$(top_builddir)/pre-inst-env "$(GUILE)"	\
 		$(top_srcdir)/build-aux/update-guix-package.scm	\
@@ -875,9 +936,10 @@ release: dist-with-updated-version
 	$(top_builddir)/pre-inst-env guix build guix			\
 	      $(call system_flags,$(GUIX_SYSTEM_SUPPORTED_SYSTEMS))	\
 	      -v1 --no-grafts --fallback
+# Generate the ISO installation images.
 	for system in $(GUIX_SYSTEM_SUPPORTED_SYSTEMS) ; do				\
 	  image=`$(top_builddir)/pre-inst-env						\
-	    guix system disk-image -t iso9660                                           \
+	    guix system image -t iso9660                                           	\
 	    --label="GUIX_$${system}_$(VERSION)"					\
             --system=$$system --fallback						\
 	    gnu/system/install.scm` ;							\
@@ -885,13 +947,14 @@ release: dist-with-updated-version
 	    echo "failed to produced Guix installation image for $$system" >&2 ;	\
 	    exit 1 ;									\
 	  fi ;										\
-	  xz < "$$image" > "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.xz.tmp" ;	\
-	  mv "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.xz.tmp"		\
-	     "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.xz" ;		\
+	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.tmp" ;	\
+	  mv "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.tmp"			\
+	     "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso" ;			\
 	done
+# Generate the VM images.
 	for system in $(GUIX_SYSTEM_VM_SYSTEMS) ; do					\
 	  image=`$(top_builddir)/pre-inst-env						\
-	    guix system vm-image $(GUIX_SYSTEM_VM_IMAGE_FLAGS)				\
+	    guix system image -t qcow2 $(GUIX_SYSTEM_VM_IMAGE_FLAGS)			\
 	    --save-provenance								\
 	    --system=$$system --fallback						\
 	    gnu/system/examples/vm-image.tmpl` ;					\
@@ -899,9 +962,7 @@ release: dist-with-updated-version
 	    echo "failed to produced Guix VM image for $$system" >&2 ;			\
 	    exit 1 ;									\
 	  fi ;										\
-	  xz < "$$image" > "$(releasedir)/$(GUIX_SYSTEM_VM_IMAGE_BASE).$$system.xz.tmp" ;	\
-	  mv "$(releasedir)/$(GUIX_SYSTEM_VM_IMAGE_BASE).$$system.xz.tmp"			\
-	     "$(releasedir)/$(GUIX_SYSTEM_VM_IMAGE_BASE).$$system.xz" ;			\
+	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_VM_IMAGE_BASE).$$system.qcow2";	\
 	done
 	@echo
 	@echo "Congratulations!  All the release files are now in $(releasedir)."
@@ -969,75 +1030,31 @@ cuirass-jobs: $(GOBJECTS)
 
 # Downloading up-to-date PO files.
 
-# make-download-po-rule DOMAIN DIRECTORY [FILE-NAME-PREFIX]
-define make-download-po-rule
+WEBLATE_REPO = https://framagit.org/tyreunom/guix-translations
 
-download-po.$(1):
-	if [ -f "$(top_srcdir)/$(2)/LINGUAS" ]; then				\
-	  LINGUAS="`grep -v '^[[:blank:]]*#' < $(top_srcdir)/$(2)/LINGUAS`" ;	\
-	else									\
-	  LINGUAS="`(cd $(top_srcdir)/$(2);					\
-	    for i in *.po; do echo $$$$i; done) | cut -d . -f 2`" ;		\
-	fi ;									\
-	for lang in $$$$LINGUAS; do						\
-	  if wget -nv -O "$(top_srcdir)/$(2)/$(3)$$$$lang.po.tmp"		\
-	     "https://translate.fedoraproject.org/api/translations/guix/$(1)/$$$$lang/file/" ; \
-	  then									\
-	    msgfilter --no-wrap -i "$(top_srcdir)/$(2)/$(3)$$$$lang.po.tmp"	\
-	      cat > "$(top_srcdir)/$(2)/$(3)$$$$lang.po.tmp2" ;			\
-	    rm "$(top_srcdir)/$(2)/$(3)$$$$lang.po.tmp" ;			\
-	    mv "$(top_srcdir)/$(2)/$(3)$$$$lang.po"{.tmp2,} ;			\
-	  else									\
-	    rm "$(top_srcdir)/$(2)/$(3)$$$$lang.po.tmp" ;			\
-	  fi ;									\
-	done
-
-.PHONY: download-po.$(1)
-
-endef
-
-# Checking po files for issues.  This is useful to run after downloading new
-# po files.
-
-# make-check-po-rule DOMAIN DIRECTORY [FILE-NAME-PREFIX]
-define make-check-po-rule
-
-check-po.$(1):
-	if [ -f "$(top_srcdir)/$(2)/LINGUAS" ]; then				\
-	  LINGUAS="`grep -v '^[[:blank:]]*#' < $(top_srcdir)/$(2)/LINGUAS`" ;	\
-	else									\
-	  LINGUAS="`(cd $(top_srcdir)/$(2);					\
-	    for i in *.po; do echo $$$$i; done) | cut -d . -f 2`" ;		\
-	fi ;									\
-	for lang in $$$$LINGUAS; do						\
-	  if [ -f "$(top_srcdir)/$(2)/$(3)$$$$lang.po" ];			\
-	  then									\
-	    if ! msgfmt -c "$(top_srcdir)/$(2)/$(3)$$$$lang.po" ;		\
-		then								\
-		  exit 1 ;							\
-	    fi ;								\
-	  fi ;									\
-	done
-
-.PHONY: check-po.$(1)
-
-endef
-
-$(eval $(call make-download-po-rule,documentation-cookbook,po/doc,guix-cookbook.))
-$(eval $(call make-download-po-rule,documentation-manual,po/doc,guix-manual.))
-$(eval $(call make-download-po-rule,guix,po/guix))
-$(eval $(call make-download-po-rule,packages,po/packages))
-
-$(eval $(call make-check-po-rule,documentation-cookbook,po/doc,guix-cookbook.))
-$(eval $(call make-check-po-rule,documentation-manual,po/doc,guix-manual.))
-$(eval $(call make-check-po-rule,guix,po/guix))
-$(eval $(call make-check-po-rule,packages,po/packages))
-
-download-po: $(foreach domain,guix packages documentation-manual documentation-cookbook,download-po.$(domain))
+# Shallow clone the Git repository behind Weblate and copy files from it if
+# they contain at least one translation, and they are well-formed (Scheme
+# format only), warn otherwise.  Copied files are converted to a canonical
+# form.
+download-po:
+	dir=$$(mktemp -d); \
+	git clone --depth 1 "$(WEBLATE_REPO)" "$$dir/translations"; \
+	for domain in po/doc po/guix po/packages; do \
+	    for po in "$$dir/translations/$$domain"/*.po; do \
+	        translated=$$(LANG=en_US.UTF-8 msgfmt --statistics "$$po" 2>&1 | cut -f1 -d' '); \
+	        target=$$(basename "$$po"); \
+	        target="$$domain/$$target"; \
+	        if msgfmt -c "$$po" && [ "$$translated" != "0" ]; then \
+	            msgfilter --no-wrap -i "$$po" cat > "$$po".tmp; \
+	            mv "$$po".tmp "$$target"; \
+	            echo "copied $$target."; \
+	        else \
+	            echo "WARN: $$target ($$translated translated messages) was not added/updated."; \
+	        fi; \
+	    done; \
+	done; \
+	rm -rf "$$dir"
 .PHONY: download-po
-
-check-po: $(foreach domain,guix packages documentation-manual documentation-cookbook,check-po.$(domain))
-.PHONY: check-po
 
 ## -------------- ##
 ## Silent rules.  ##

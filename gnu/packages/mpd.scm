@@ -9,7 +9,7 @@
 ;;; Copyright © 2019 Evan Straw <evan.straw99@gmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2020 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2020, 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Noah Evans <noah@nevans.me>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -105,7 +105,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.22.6")
+    (version "0.22.11")
     (source (origin
               (method url-fetch)
               (uri
@@ -114,7 +114,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "0pjdd8qwia1dsfkzyxcasfhxiqwk6lcz333z8w9vcg2wi6j4kq9b"))))
+                "1850ii8vnv5l8b561fai4q2mcrnym94mvlrxiy48fvpfm8s7ygql"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Ddocumentation=enabled")))
@@ -285,13 +285,13 @@ information about tracks being played to a scrobbler, such as Libre.FM.")
 (define-public python-mpd2
   (package
     (name "python-mpd2")
-    (version "3.0.1")
+    (version "3.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "python-mpd2" version))
               (sha256
                (base32
-                "0fxssbmnv44m03shjyvbqslc69b0160702j2s0flgvdxjggrnbjj"))))
+                "1r8saq1460yfa0sxfrvxqs2r453wz2xchlc9gzbpqznr49786rvs"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -383,7 +383,7 @@ other MPD frontends.")
 (define-public mpdris2
   (package
     (name "mpdris2")
-    (version "0.8")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -392,7 +392,7 @@ other MPD frontends.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "048b8acsd1b8kcxzd9fsh5p9g2an9c4rznicfcpyrsjz5syv894h"))))
+                "17ys8ccr3h6vix0agvhz859slz0phhk7lwqn5bg4az8s7zgqm3nm"))))
     (build-system gnu-build-system)
     ;; Manually wrap the binary, because we’re not using python-build-system.
     (arguments
@@ -447,7 +447,7 @@ support")
        ("libebur128" ,libebur128)
        ("libmtp" ,libmtp)
        ("mpg123" ,mpg123)
-       ("qtbase" ,qtbase)
+       ("qtbase" ,qtbase-5)
        ("qtmultimedia" ,qtmultimedia)
        ("qtsvg" ,qtsvg)
        ("taglib" ,taglib)
