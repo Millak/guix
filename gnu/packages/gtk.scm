@@ -768,14 +768,15 @@ scaled, composited, modified, saved, or rendered.")
                         (string-append out "/share/gtk-doc")))
                      #t))))
          (add-after 'install 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              (setenv "HOME" (getenv "TMPDIR")) ; xfconfd requires a writable HOME
              ;; Run test-suite under a dbus session.
              (setenv "XDG_DATA_DIRS" ; for finding org.xfce.Xfconf.service
                      (string-append %output "/share"))
              ;; Don't fail on missing  '/etc/machine-id'.
              (setenv "DBUS_FATAL_WARNINGS" "0") ;
-             (invoke "dbus-launch" "ninja" "test")))
+             (when tests?
+               (invoke "dbus-launch" "ninja" "test"))))
          (delete 'check))))
     (inputs
      `(("bash-minimal" ,bash-minimal)))
