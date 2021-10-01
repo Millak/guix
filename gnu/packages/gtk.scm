@@ -326,9 +326,9 @@ representing trie.  Trie is a kind of digital search tree.")
     (native-inputs
      `(("doxygen" ,doxygen)
        ("pkg-config" ,pkg-config)
-       ("datrie" ,libdatrie))) ; for 'trietool'
+       ("libdatrie" ,libdatrie))) ; for 'trietool'
     (propagated-inputs
-     `(("datrie" ,libdatrie)))
+     `(("libdatrie" ,libdatrie)))
     (synopsis "Thai language support library")
     (description "LibThai is a set of Thai language support routines aimed to
 ease developers’ tasks to incorporate Thai language support in their
