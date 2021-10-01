@@ -2251,16 +2251,12 @@ sockets in Perl.")
      `(("dbus" ,dbus)
        ("zlib" ,zlib)))
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           ;; TODO(core-updates): Make this unconditional.
-           ,(if (%current-target-system)
-                '(lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ctest" "-E" "url-test")))
-                '(lambda _
-                   (invoke "ctest" "-E" "url-test")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ctest" "-E" "url-test")))))))
     (synopsis "Library providing automatic proxy configuration management")
     (description "Libproxy handles the details of HTTP/HTTPS proxy
 configuration for applications across all scenarios.  Applications using
