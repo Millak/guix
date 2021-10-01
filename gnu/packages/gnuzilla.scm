@@ -370,11 +370,7 @@ in C/C++.")
      `(#:tests? #f ; FIXME: all tests pass, but then the check phase fails anyway.
        #:test-target "check-jstests"
        #:configure-flags
-       ;; TODO(core-updates): unconditionally use 'quasiquote
-       ,#~(#$(if (%current-target-system)
-                 #~quasiquote
-                 #~quote)
-           ("--enable-ctypes"
+       ,#~`("--enable-ctypes"
             "--enable-optimize"
             "--enable-pie"
             "--enable-readline"
@@ -391,7 +387,7 @@ in C/C++.")
             ;; This is important because without it gjs will segfault during the
             ;; configure phase.  With jemalloc only the standalone mozjs console
             ;; will work.
-            "--disable-jemalloc"))
+            "--disable-jemalloc")
        #:phases
        (modify-phases %standard-phases
          ;; Make sure pkg-config will be found.
