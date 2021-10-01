@@ -49,6 +49,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system mozilla)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -108,7 +109,7 @@
                  (substitute* '("js/src/config/milestone.pl")
                    (("defined\\(@TEMPLATE_FILE)") "@TEMPLATE_FILE"))
                  #t))))
-    (build-system gnu-build-system)
+    (build-system mozilla-build-system)
     (native-inputs
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
@@ -390,15 +391,7 @@ in C/C++.")
             ;; This is important because without it gjs will segfault during the
             ;; configure phase.  With jemalloc only the standalone mozjs console
             ;; will work.
-            "--disable-jemalloc"
-            ;; Mozilla deviates from Autotools conventions due to historical
-            ;; reasons.
-            #$@(if (%current-target-system)
-                   #~(#$(string-append
-                         "--host="
-                         (nix-system->gnu-triplet (%current-system)))
-                      #$(string-append "--target=" (%current-target-system)))
-                   #~())))
+            "--disable-jemalloc"))
        #:phases
        (modify-phases %standard-phases
          ;; Make sure pkg-config will be found.
