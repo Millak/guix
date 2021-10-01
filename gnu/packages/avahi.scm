@@ -75,21 +75,18 @@
                            ,@(if (%current-target-system)
                                  '("ac_cv_prog_have_pkg_config=yes")
                                  '()))
-       ;; TODO(core-updates): Make this unconditional.
-       ,@(if (%current-target-system)
-             `(#:modules ((srfi srfi-26)
-                          (guix build utils)
-                          (guix build gnu-build-system))
-               #:phases
-               ,#~(modify-phases %standard-phases
-                    (add-after 'patch-shebangs 'patch-more-shebangs
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        (define path
-                          `(,(dirname (search-input-file inputs "bin/sh"))))
-                        (for-each
-                         (cut patch-shebang <> path)
-                         (find-files (string-append #$output "/etc/avahi")))))))
-             '())))
+       #:modules ((srfi srfi-26)
+                  (guix build utils)
+                  (guix build gnu-build-system))
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-after 'patch-shebangs 'patch-more-shebangs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (define path
+                  `(,(dirname (search-input-file inputs "bin/sh"))))
+                (for-each
+                 (cut patch-shebang <> path)
+                 (find-files (string-append #$output "/etc/avahi"))))))))
     (inputs
      `(("bash-minimal" ,bash-minimal)
        ("dbus" ,dbus)
