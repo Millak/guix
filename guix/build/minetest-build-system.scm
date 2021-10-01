@@ -90,15 +90,6 @@ If it is unknown, make an educated guess."
          #:install-plan (mod-install-plan (apply guess-mod-name arguments))
          arguments))
 
-(define %png-magic-bytes
-  ;; Magic bytes of PNG images, see ‘5.2 PNG signatures’ in
-  ;; ‘Portable Network Graphics (PNG) Specification (Second Edition)’
-  ;; on <https://www.w3.org/TR/PNG/>.
-  #vu8(137 80 78 71 13 10 26 10))
-
-(define png-file?
-  ((@@ (guix build utils) file-header-match) %png-magic-bytes))
-
 (define* (minimise-png #:key inputs native-inputs #:allow-other-keys)
   "Minimise PNG images found in the working directory."
   (define optipng (which "optipng"))

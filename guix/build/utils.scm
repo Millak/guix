@@ -61,6 +61,8 @@
             symbolic-link?
             call-with-temporary-output-file
             call-with-ascii-input-file
+            file-header-match
+            png-file?
             elf-file?
             ar-file?
             gzip-file?
@@ -289,6 +291,15 @@ with the bytes in HEADER, a bytevector."
         (if (= EISDIR (system-error-errno args))
             #f                                    ;FILE is a directory
             (apply throw args))))))
+
+(define %png-magic-bytes
+  ;; Magic bytes of PNG images, see ‘5.2 PNG signatures’ in
+  ;; ‘Portable Network Graphics (PNG) Specification (Second Edition)’
+  ;; on <https://www.w3.org/TR/PNG/>.
+  #vu8(137 80 78 71 13 10 26 10))
+
+(define png-file?
+  (file-header-match %png-magic-bytes))
 
 (define %elf-magic-bytes
   ;; Magic bytes of ELF files.  See <elf.h>.
