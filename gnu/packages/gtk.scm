@@ -646,8 +646,9 @@ highlighting and other features typical of a source code editor.")
          ,@(if (any (cute string=? <> (%current-system))
                     '("armhf-linux" "aarch64-linux"))
                '((replace 'check
-                   (lambda _
-                     (invoke "meson" "test" "--timeout-multiplier" "5"))))
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (invoke "meson" "test" "--timeout-multiplier" "5")))))
                '()))))
     (propagated-inputs
      `( ;; Required by gdk-pixbuf-2.0.pc
