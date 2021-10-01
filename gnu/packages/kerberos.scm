@@ -280,10 +280,7 @@ After installation, the system administrator should generate keys using
                            `(("perl" ,perl))
                            '())))
     (inputs `(("readline" ,readline)
-              ;; TODO(core-updates): Make this input unconditional.
-              ,@(if (%current-target-system)
-                    `(("bash-minimal" ,bash-minimal))
-                    '())
+              ("bash-minimal" ,bash-minimal)
               ("bdb" ,bdb)
               ("e2fsprogs" ,e2fsprogs)            ;for libcom_err
               ("sqlite" ,sqlite)))
