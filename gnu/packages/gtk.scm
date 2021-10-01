@@ -326,10 +326,7 @@ representing trie.  Trie is a kind of digital search tree.")
     (native-inputs
      `(("doxygen" ,doxygen)
        ("pkg-config" ,pkg-config)
-       ;; TODO(core-updates): Make this input unconditional.
-       ,@(if (%current-target-system)
-             `(("datrie" ,libdatrie)) ; for 'trietool'
-             '())))
+       ("datrie" ,libdatrie))) ; for 'trietool'
     (propagated-inputs
      `(("datrie" ,libdatrie)))
     (synopsis "Thai language support library")
