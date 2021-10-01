@@ -486,18 +486,12 @@ be used when cross-compiling."
     (native-inputs
      `(("glib" ,glib "bin")
        ("pkg-config" ,pkg-config)
-       ;; TODO(core-updates): Unconditionally place "flex" and "bison"
-       ;; in 'native-inputs'.
-       ,@(if (%current-target-system)
-             `(("bison" ,bison)
-               ("flex" ,flex))
-             '())))
+       ("bison" ,bison)
+       ("flex" ,flex)))
     (inputs
      `(,@(if (%current-target-system)
              `(("python" ,python))
-             `(("bison" ,bison)
-               ("flex" ,flex)
-               ("python" ,python-wrapper)))
+             `(("python" ,python-wrapper)))
        ("zlib" ,zlib)))
     (propagated-inputs
      `(("glib" ,glib)
