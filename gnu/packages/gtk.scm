@@ -377,10 +377,7 @@ applications.")
        ("libxft" ,libxft)
        ("libxrender" ,libxrender)))
     (inputs
-     ;; TODO(core-updates): Unconditionally add "bash-minimal"
-     `(,@(if (%current-target-system)
-             `(("bash-minimal" ,bash-minimal)) ; for glib-or-gtk-wrap
-             '())
+     `(("bash-minimal" ,bash-minimal) ; for glib-or-gtk-wrap
        ("zlib" ,zlib)))
     (native-inputs
      `(("glib" ,glib "bin")             ; glib-mkenums, etc.
