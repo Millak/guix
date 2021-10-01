@@ -657,9 +657,7 @@ highlighting and other features typical of a source code editor.")
        ;; Used for testing and required at runtime.
        ("shared-mime-info" ,shared-mime-info)))
     (inputs
-     `(,@(if (%current-target-system)
-             `(("bash-minimal" ,bash-minimal)) ; for glib-or-gtk-wrap
-             '())
+     `(("bash-minimal" ,bash-minimal) ; for glib-or-gtk-wrap
        ("jasper" ,jasper)
        ("libjpeg" ,libjpeg-turbo)
        ("libpng"  ,libpng)
