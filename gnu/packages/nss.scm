@@ -52,12 +52,9 @@
                "1j5b2m8cjlhnnv8sq34587avaagkqvh521w4f95miwgvsn3xlaap"))))
     (build-system mozilla-build-system)
     (inputs
-     ;; TODO(core-updates): Make these inputs unconditional.
      ;; For 'compile-et.pl' and 'nspr-config'.
-     (if (%current-target-system)
-         `(("perl" ,perl) ; for 'compile-et.pl'
-           ("bash-minimal" ,bash-minimal)) ; for 'nspr-config'
-         '()))
+     `(("perl" ,perl) ; for 'compile-et.pl'
+       ("bash-minimal" ,bash-minimal))) ; for 'nspr-config'
     (native-inputs
      `(("perl" ,perl)))
     (arguments
