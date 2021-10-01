@@ -1267,11 +1267,7 @@ connection alive.")
                            "--owner=root:0"
                            "--group=root:0")))))
            (add-after 'install 'post-install
-             ;; TODO(core-updates): native-inputs isn't required anymore.
-             (lambda* (#:key ,@(if (%current-target-system)
-                                   '(native-inputs)
-                                   '())
-                       inputs outputs #:allow-other-keys)
+             (lambda* (#:key inputs outputs #:allow-other-keys)
                ;; Install the dhclient script for GNU/Linux and make sure
                ;; if finds all the programs it needs.
                (let* ((out       (assoc-ref outputs "out"))
@@ -1295,19 +1291,6 @@ connection alive.")
                              (string-append dir "/bin:"
                                             dir "/sbin"))
                            (list inetutils net-tools coreutils sed))))
-                 ;; TODO(core-updates): should not be required anymore,
-                 ;; once <https://issues.guix.gnu.org/49290> has been merged.
-                 ,@(if (%current-target-system)
-                       '((for-each
-                          (lambda (file)
-                            (substitute* file
-                              (((assoc-ref native-inputs "bash"))
-                               (assoc-ref inputs "bash"))))
-                          (list (string-append libexec
-                                               "/dhclient-script")
-                                (string-append libexec
-                                               "/.dhclient-script-real"))))
-                       '())
                  #t))))))
 
       (native-inputs
