@@ -623,23 +623,17 @@ highlighting and other features typical of a source code editor.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-docbook
-           ;; TODO(core-updates): Unconditionally look in (or native-inputs inputs)
-           (lambda* (#:key ,@(if (%current-target-system)
-                                 '(native-inputs)
-                                 '())
-                     inputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (with-directory-excursion "docs"
                (substitute* "meson.build"
                  (("http://docbook.sourceforge.net/release/xsl/current/")
-                  (string-append (assoc-ref ,(if (%current-target-system)
-                                                 '(or native-inputs inputs)
-                                                 'inputs) "docbook-xsl")
+                  (string-append (assoc-ref (or native-inputs inputs)
+                                            "docbook-xsl")
                                  "/xml/xsl/docbook-xsl-1.79.2/")))
                (substitute* (find-files "." "\\.xml$")
                  (("http://www.oasis-open.org/docbook/xml/4\\.3/")
-                  (string-append (assoc-ref ,(if (%current-target-system)
-                                                 '(or native-inputs inputs)
-                                                 'inputs) "docbook-xml")
+                  (string-append (assoc-ref (or native-inputs inputs)
+                                            "docbook-xml")
                                  "/xml/dtd/docbook/"))))
              #t))
          (add-before 'configure 'disable-failing-tests
