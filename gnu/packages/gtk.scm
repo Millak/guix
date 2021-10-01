@@ -740,15 +740,10 @@ scaled, composited, modified, saved, or rendered.")
            (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p (string-append (assoc-ref outputs "doc") "/share"))
              #t))
-         ;; TODO(core-updates): Unconditionally use (or native-inputs inputs)
          (add-after 'unpack 'patch-docbook-sgml
-           (lambda* (#:key ,@(if (%current-target-system)
-                                 '(native-inputs)
-                                 '()) inputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (let* ((xmldoc
-                     (string-append (assoc-ref ,(if (%current-target-system)
-                                                    '(or native-inputs inputs)
-                                                    'inputs)
+                     (string-append (assoc-ref (or native-inputs inputs)
                                                "docbook-xml")
                                     "/xml/dtd/docbook")))
                (substitute* "doc/libatspi/libatspi-docs.sgml"
