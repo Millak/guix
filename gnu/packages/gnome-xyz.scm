@@ -16,6 +16,7 @@
 ;;; Copyright © 2021, 2022, 2024 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Sughosha <sughosha@proton.me>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -53,6 +54,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -62,14 +64,17 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -1567,6 +1572,60 @@ variants.")
     (synopsis "Library for the Megapixels application")
     (description "This package provides a device abstraction library for the
 Megapixels application.")
+    (license license:gpl3+)))
+
+(define-public megapixels
+  (package
+    (name "megapixels")
+    (version "1.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/megapixels-org/Megapixels")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "006gpkfgwp8gzn5ryvxgh1s9rq9a6fgy4rz4q23k5nxvcf1g8yk5"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((paths (map
+                            (lambda (p)
+                              (string-append (assoc-ref inputs p) "/bin"))
+                            '("coreutils"
+                              "imagemagick"
+                              "libraw"
+                              "perl-image-exiftool"))))
+                (wrap-program
+                    (string-append #$output "/share/megapixels/postprocess.sh")
+                  `("PATH" prefix ,paths))))))))
+    (native-inputs
+     (list desktop-file-utils           ;for update-desktop-database
+           `(,glib "bin")               ;glib-compile-schemas, etc.
+           `(,gtk "bin")                ;for gtk-update-icon-cache
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           coreutils-minimal
+           feedbackd
+           gtk
+           imagemagick
+           libepoxy
+           libtiff
+           libraw
+           perl-image-exiftool
+           zbar))
+    (synopsis "Camera application for mobile devices")
+    (description "This package provides a camera application for mobile
+devices that captures a five frames burst of raw frames that are later
+post-processed and saved as JPEG files.")
+    (home-page "https://gitlab.com/megapixels-org/Megapixels")
     (license license:gpl3+)))
 
 (define-public postmarketos-theme
