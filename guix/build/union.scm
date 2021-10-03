@@ -27,7 +27,7 @@
   #:use-module (rnrs io ports)
   #:export (union-build
 
-            warn-about-collision
+            resolve-collision/default
 
             relative-file-name
             symlink-relative))
@@ -103,22 +103,31 @@ identical, #f otherwise."
   ;; for most packages.
   '("icon-theme.cache" "gschemas.compiled" "ld.so.cache"))
 
-(define (warn-about-collision files)
-  "Handle the collision among FILES by emitting a warning and choosing the
-first one of THEM."
-  (let ((file (first files)))
-    (unless (member (basename file) %harmless-collisions)
+(define (resolve+warn-if-harmful resolve files)
+  "Same as (resolve files), but print a warning if the resolved file is not
+considered harmless.  Also warn if the resolver doesn't pick any file."
+  (let ((file (resolve files)))
+    (cond
+     ((not file)
       (format (current-error-port)
               "~%warning: collision encountered:~%~{  ~a~%~}"
               files)
-      (format (current-error-port) "warning: choosing ~a~%" file))
+      (format (current-error-port) "warning: not choosing any file~%"))
+     (((negate member) (basename file) %harmless-collisions)
+      (format (current-error-port)
+              "~%warning: collision encountered:~%~{  ~a~%~}"
+              files)
+      (format (current-error-port) "warning: choosing ~a~%" file)))
     file))
+
+(define (resolve-collision/default files)
+  (resolve+warn-if-harmful first files))
 
 (define* (union-build output inputs
                       #:key (log-port (current-error-port))
                       (create-all-directories? #f)
                       (symlink symlink)
-                      (resolve-collision warn-about-collision))
+                      (resolve-collision resolve-collision/default))
   "Build in the OUTPUT directory a symlink tree that is the union of all the
 INPUTS, using SYMLINK to create symlinks.  As a special case, if
 CREATE-ALL-DIRECTORIES?, creates the subdirectories in the output directory to

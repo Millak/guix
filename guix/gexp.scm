@@ -2128,7 +2128,7 @@ This yields an 'etc' directory containing these two files."
 
 (define* (directory-union name things
                           #:key (copy? #f) (quiet? #f)
-                          (resolve-collision 'warn-about-collision))
+                          (resolve-collision 'resolve-collision/default))
   "Return a directory that is the union of THINGS, where THINGS is a list of
 file-like objects denoting directories.  For example:
 
