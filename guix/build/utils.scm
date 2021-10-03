@@ -90,6 +90,8 @@
             search-error-path
             search-error-file
 
+            define-constant
+
             every*
             alist-cons-before
             alist-cons-after
@@ -128,6 +130,16 @@
             make-desktop-entry-file
 
             locale-category->string))
+
+
+;;;
+;;; Syntax
+;;;
+
+;; Note that in its current form VAL doesn't get evaluated, just simply
+;; inlined. TODO?
+(define-syntax-rule (define-constant name val)
+  (define-syntax name (identifier-syntax val)))
 
 
 ;;;
