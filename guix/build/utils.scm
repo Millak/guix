@@ -48,6 +48,7 @@
                ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26805#16>.
                delete)
   #:export (%store-directory
+            %store-hash-string-length
             store-file-name?
             strip-store-file-name
             package-name->name+version
@@ -198,15 +199,21 @@ compression."
       (getenv "NIX_STORE")              ;inside builder, set by the daemon
       "/gnu/store"))
 
+(define-constant %store-hash-string-length 32)
+
 (define (store-file-name? file)
   "Return true if FILE is in the store."
   (string-prefix? (%store-directory) file))
 
+(define (store-path-prefix-length)
+  (+ 2         ; the slash after %store-directory, and the dash after the hash
+     (string-length (%store-directory))
+     %store-hash-string-length))
+
 (define (strip-store-file-name file)
   "Strip the '/gnu/store' and hash from FILE, a store file name.  The result
 is typically a \"PACKAGE-VERSION\" string."
-  (string-drop file
-               (+ 34 (string-length (%store-directory)))))
+  (string-drop file (store-path-prefix-length)))
 
 (define (package-name->name+version name)
   "Given NAME, a package name like \"foo-0.9.1b\", return two values:

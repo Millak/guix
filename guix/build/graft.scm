@@ -44,7 +44,7 @@
 ;;;
 ;;; Code:
 
-(define-constant hash-length 32)
+(define-constant hash-length %store-hash-string-length)
 
 (define nix-base32-char?
   (cute char-set-contains?
