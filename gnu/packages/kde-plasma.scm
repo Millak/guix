@@ -336,3 +336,53 @@ basic needs and easy to configure for those who want special setups.")
 manage running processes.  It obtains this information by interacting
 with a ksysguardd daemon, which may also run on a remote system.")
     (license license:gpl3+)))
+
+(define-public kwayland-server
+  (package
+    (name "kwayland-server")
+    (version "5.24.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/plasma/" version
+                    "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1279nqhy1qyz84dkn23rvzak8bg71hbrp09jlhv9mkjdb3bhnyfi"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list plasma-wayland-protocols
+           qtbase-5
+           qtwayland
+           kwayland
+           wayland
+           wayland-protocols-next))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-install-path
+           (lambda _
+             ;; Fixes errors including nonexistant /include/KF5
+             (substitute* "src/server/CMakeLists.txt"
+               (("KF5_INSTALL") "KDE_INSTALL"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               (setenv "XDG_RUNTIME_DIR" (getcwd))
+               (setenv "QT_QPA_PLATFORM" "offscreen")
+               (invoke "ctest" "-E"
+                       ;; This test fails inconsistently.
+                       "kwayland-testDragAndDrop")))))))
+    (home-page "https://api.kde.org/kwayland-server/html/index.html")
+    (synopsis "KDE wayland server component")
+    (description
+     "KWayland is a Qt-style API to interact with the wayland-client and
+wayland-server API.")
+    ;; Most files are LGPL2.1 or LGPL3.0 only, at the users option.
+    (license (list license:lgpl2.1 license:lgpl3
+                   ;; src/server/drm_fourcc.h carries the MIT license.
+                   license:expat))))
+
