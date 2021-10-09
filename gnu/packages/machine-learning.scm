@@ -1745,7 +1745,7 @@ Python.")
                   ((guix build python-build-system)
                    #:select (python-version)))
        #:imported-modules (,@%cmake-build-system-modules
-                            (guix build python-build-system))
+                           (guix build python-build-system))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-source-file-times-to-1980
@@ -1775,8 +1775,7 @@ Python.")
              ;; https://github.com/tensorflow/tensorflow/issues/34197
              (substitute* (find-files "tensorflow/python" ".*\\.cc$")
                (("(nullptr,)(\\ +/. tp_print)" _ _ tp_print)
-                (string-append "NULL,   " tp_print)))
-             #t))
+                (string-append "NULL,   " tp_print)))))
          (add-after 'python3.7-compatibility 'chdir
            (lambda _ (chdir "tensorflow/contrib/cmake") #t))
          (add-after 'chdir 'disable-downloads
@@ -1874,8 +1873,7 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
                (("tf_core_cpu grpc") "tf_core_cpu"))
 
              ;; This directory is a dependency of many targets.
-             (mkdir-p "protobuf")
-             #t))
+             (mkdir-p "protobuf")))
          (add-after 'configure 'unpack-third-party-sources
            (lambda* (#:key inputs #:allow-other-keys)
              ;; This is needed to configure bundled packages properly.
@@ -1915,8 +1913,7 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
                     "re2"))
 
              (rename-file "../build/cub/src/cub/cub-1.8.0/"
-                          "../build/cub/src/cub/cub/")
-             #t))
+                          "../build/cub/src/cub/cub/")))
          (add-after 'unpack 'fix-python-build
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (mkdir-p "protobuf-src")
@@ -1955,21 +1952,22 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
                 (string-append "set_target_properties(${_AT_TARGET} PROPERTIES \
 COMPILE_FLAGS ${target_compile_flags} \
 INSTALL_RPATH_USE_LINK_PATH TRUE \
-INSTALL_RPATH " (assoc-ref outputs "out") "/lib)\n")))
-             #t))
+INSTALL_RPATH " (assoc-ref outputs "out") "/lib)\n")))))
          (add-after 'build 'build-pip-package
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key outputs parallel-build? #:allow-other-keys)
              (setenv "LDFLAGS"
                      (string-append "-Wl,-rpath="
                                     (assoc-ref outputs "out") "/lib"))
-             (invoke "make" "tf_python_build_pip_package")
-             #t))
+             (invoke "make" "-j" (if parallel-build?
+                                     (number->string (parallel-job-count))
+                                     "1")
+                     "tf_python_build_pip_package")))
          (add-after 'build-pip-package 'install-python
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
                    (wheel (car (find-files "../build/tf_python/dist/" "\\.whl$")))
                    (python-version (python-version
-                                     (assoc-ref inputs "python"))))
+                                    (assoc-ref inputs "python"))))
                (invoke "python" "-m" "pip" "install" wheel
                        (string-append "--prefix=" out))
 
@@ -1978,8 +1976,7 @@ INSTALL_RPATH " (assoc-ref outputs "out") "/lib)\n")))
                 (string-append
                  out "/lib/python" python-version
                  "/site-packages/tensorflow/contrib/"
-                 "seq2seq/python/ops/lib_beam_search_ops.so"))
-               #t))))))
+                 "seq2seq/python/ops/lib_beam_search_ops.so"))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("protobuf:native" ,protobuf-3.6) ; protoc
