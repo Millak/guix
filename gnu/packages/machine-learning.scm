@@ -16,7 +16,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2561,9 +2561,14 @@ with image data, text data, and sequence data.")
                        "-p" "no:pep8"
                        ;; FIXME: python-build-system lacks PARALLEL-TESTS?
                        "-n" (number->string (parallel-job-count))
-                       ;; The following test fail only in the build container;
-                       ;; skip it.
-                       "-k" "not test_selu")))))))
+                       "-k"
+                       (string-append
+                        ;; The following test fails only in the build
+                        ;; container; skip it.
+                        "not test_selu "
+                        ;; The following test was found flaky and removed in
+                        ;; recent versions.
+                        "and not test_stateful_metrics"))))))))
     (propagated-inputs
      `(("python-h5py" ,python-h5py)
        ("python-keras-applications" ,python-keras-applications)
