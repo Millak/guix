@@ -33395,6 +33395,30 @@ facets.  It also allows multiple colour, fill scales per plot and hosts a
 smaller collection of stats, geoms and axis guides.")
     (license license:expat)))
 
+(define-public r-gghalves
+  (package
+    (name "r-gghalves")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gghalves" version))
+       (sha256
+        (base32
+         "1lj4c38fzxwg8gy57ymf00lqjdplb7v2a0lnd262c1d5cavqiws4"))))
+    (properties `((upstream-name . "gghalves")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2 r-gtable))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://github.com/erocoar/gghalves")
+    (synopsis "Compose half-half plots using your favourite geoms")
+    (description "This package provides a @code{ggplot2} extension for easy
+plotting of half-half geom combinations.  Think half boxplot and half
+jitterplot, or half violinplot and half dotplot.")
+    (license license:expat)))
+
 (define-public r-zoeppritz
   (package
     (name "r-zoeppritz")
