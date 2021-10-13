@@ -682,6 +682,20 @@ chmod +x guix-install.sh
 ./guix-install.sh
 @end example
 
+If you're running Debian or a derivative such as Ubuntu, you can instead
+install the package (it might be a version older than @value{VERSION}
+but you can update it afterwards by running @samp{guix pull}):
+
+@example
+sudo apt install guix
+@end example
+
+Likewise on openSUSE:
+
+@example
+sudo zypper install guix
+@end example
+
 When you're done, @pxref{Application Setup} for extra configuration you
 might need, and @ref{Getting Started} for your first steps!
 @end quotation
