@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,7 +35,6 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
-  #:use-module (gnu packages kde-internet)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages search)
@@ -1638,6 +1638,38 @@ Virtual Contact File}) files to the KPeople contact management library.")
     (home-page "https://invent.kde.org/pim/pimcommon")
     (synopsis "Common libraries for KDE PIM")
     (description "This package provides common libraries for KDE PIM.")
+    (license ;; GPL for programs, LGPL for libraries
+     (list license:gpl2+ license:lgpl2.0+))))
+
+(define-public libgravatar
+  (package
+    (name "libgravatar")
+    (version "20.04.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/libgravatar-" version ".tar.xz"))
+       (sha256
+        (base32 "0981ci2kr20v4fk11h57rqya0brgslfazpgq1yk5yqiwyqqm49r2"))))
+    (build-system qt-build-system)
+    (native-inputs
+     `(("extra-cmake-modules" ,extra-cmake-modules)))
+    (inputs
+     `(("kconfig" ,kconfig)
+       ("ki18n" ,ki18n)
+       ("kio" ,kio)
+       ("kpimcommon" ,kpimcommon)
+       ("ktextwidgets" ,ktextwidgets)
+       ("kwidgetsaddons" ,kwidgetsaddons)
+       ("qtbase" ,qtbase-5)))
+    (arguments
+     `(#:tests? #f)) ;; 2/7 tests fail (due to network issues?)
+    (home-page "https://invent.kde.org/pim/libgravatar")
+    (synopsis "Online avatar lookup library")
+    (description "This library retrieves avatar images based on a
+hash from a person's email address, as well as local caching to avoid
+unnecessary network operations.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
 
