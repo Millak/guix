@@ -1424,6 +1424,35 @@ performances.  The plugins include a cellular automaton synthesizer, an
 envelope follower, distortion effects, tape effects and more.")
     (license license:gpl2+)))
 
+(define-public omins-lv2
+  (let ((commit "058f341053067b69a84d4081107fda5058290ff9")
+	(revision "1"))
+    (package
+      (name "omins-lv2")
+      ;; No release despite being perfectly usable. 0.0.0 seems to be the only
+      ;; version the author ever specified:
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin (method git-fetch)
+	       (uri
+	        (git-reference
+	         (url "https://git.drobilla.net/cgit.cgi/omins.lv2.git/")
+	         (commit commit)))
+	       (file-name (git-file-name name version))
+	       (sha256
+	        (base32
+                 "01hnx4hhbz3ap3bw15s42q4q1mw1mhdjwygq4550wvjfg6k4ga8w"))))
+      (build-system waf-build-system)
+      (arguments (list #:tests? #false)) ;There are no tests.
+      (inputs (list lv2))
+      (native-inputs (list pkg-config))
+      (home-page "https://git.drobilla.net/cgit.cgi/omins.lv2.git/")
+      (synopsis "LV2 audio plugins for modular synthesis")
+      (description
+       "Omins-lv2 is a small collection of LV2 audio plugins for modular
+synthesis.")
+      (license license:gpl2+))))
+
 (define-public snapcast
   (package
     (name "snapcast")
