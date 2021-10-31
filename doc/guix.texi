@@ -33941,7 +33941,7 @@ cluster node that supports multiple storage backends, and installs the
 @end lisp
 
 Users are advised to read the
-@url{http://docs.ganeti.org/ganeti/master/html/admin.html,Ganeti
+@url{https://docs.ganeti.org/docs/ganeti/3.0/html/admin.html,Ganeti
 administrators guide} to learn about the various cluster options and
 day-to-day operations.  There is also a
 @url{https://guix.gnu.org/blog/2020/running-a-ganeti-cluster-on-guix/,blog post}
@@ -34030,12 +34030,30 @@ The name for this OS provider.  It is only used to specify where the
 configuration ends up.  Setting it to ``debootstrap'' will create
 @file{/etc/ganeti/instance-debootstrap}.
 
-@item @code{extension}
-The file extension for variants of this OS type.  For example
-@file{.conf} or @file{.scm}.
+@item @code{extension} (default: @code{#f})
+The file extension for variants of this OS type.  For example @file{.conf}
+or @file{.scm}.  It will be appended to the variant file name if set.
 
 @item @code{variants} (default: @code{'()})
-List of @code{ganeti-os-variant} objects for this OS.
+This must be either a list of @code{ganeti-os-variant} objects for this OS,
+or a ``file-like'' object (@pxref{G-Expressions, file-like objects})
+representing the variants directory.
+
+To use the Guix OS provider with variant definitions residing in a local
+directory instead of declaring individual variants (see @var{guix-variants}
+below), you can do:
+
+@lisp
+(ganeti-os
+ (name "guix")
+ (variants (local-file "ganeti-guix-variants"
+                       #:recursive? #true)))
+@end lisp
+
+Note that you will need to maintain the @file{variants.list} file
+(see @code{@url{https://docs.ganeti.org/docs/ganeti/3.0/man/ganeti-os-interface.html,
+ganeti-os-interface(7)}})
+manually in this case.
 
 @end table
 @end deftp
@@ -34318,7 +34336,7 @@ via a JSON-based RPC protocol.
 Most query operations are allowed without authentication (unless
 @var{require-authentication?} is set), whereas write operations require
 explicit authorization via the @file{/var/lib/ganeti/rapi/users} file.  See
-the @url{http://docs.ganeti.org/ganeti/master/html/rapi.html, Ganeti Remote
+the @url{https://docs.ganeti.org/docs/ganeti/3.0/html/rapi.html, Ganeti Remote
 API documentation} for more information.
 
 The value of this service must be a @code{ganeti-rapi-configuration} object.

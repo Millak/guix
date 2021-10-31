@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -819,8 +819,9 @@ than 21 days from @file{/var/lib/ganeti/queue/archive}.")))
 (define-record-type* <ganeti-os>
   ganeti-os make-ganeti-os ganeti-os?
   (name ganeti-os-name)                     ;string
-  (extension ganeti-os-extension)           ;string
-  (variants ganeti-os-variants              ;list of <ganeti-os-variant>
+  (extension ganeti-os-extension            ;#f | string
+             (default #f))
+  (variants ganeti-os-variants              ;<file-like> | list of <ganeti-os-variant>
             (default '())))
 
 (define-record-type* <ganeti-os-variant>
@@ -992,35 +993,46 @@ trap - EXIT
 (define (ganeti-os->directory os)
   "Return the derivation to build the configuration directory to be installed
 in /etc/ganeti/instance-$os for OS."
-  (let* ((name      (ganeti-os-name os))
-         (extension (ganeti-os-extension os))
-         (variants  (ganeti-os-variants os))
-         (names     (map ganeti-os-variant-name variants))
-         (configs   (map ganeti-os-variant-configuration variants)))
-    (with-imported-modules '((guix build utils))
-      (define builder
-        #~(begin
-            (use-modules (guix build utils)
-                         (ice-9 format)
-                         (ice-9 match)
-                         (srfi srfi-1))
-            (mkdir-p #$output)
-            (unless (null? '#$names)
-              (let ((variants-dir (string-append #$output "/variants")))
-                (mkdir-p variants-dir)
-                (call-with-output-file (string-append variants-dir "/variants.list")
-                  (lambda (port)
-                    (format port "~a~%"
-                            (string-join '#$names "\n"))))
-                (for-each (match-lambda
-                            ((name file)
-                             (symlink file
-                                      (string-append variants-dir "/" name
-                                                     #$extension))))
+  (let ((name      (ganeti-os-name os))
+        (extension (ganeti-os-extension os))
+        (variants  (ganeti-os-variants os)))
+    (define builder
+      (with-imported-modules '((guix build utils))
+        (if (file-like? variants)
+            #~(begin
+                (use-modules (guix build utils))
+                (mkdir-p #$output)
+                (symlink #$variants
+                         (string-append #$output "/variants")))
+            #~(begin
+                (use-modules (guix build utils)
+                             (ice-9 format)
+                             (ice-9 match)
+                             (srfi srfi-1))
+                (mkdir-p #$output)
+                (let ((variants-dir (string-append #$output "/variants"))
+                      (names   '#$(map ganeti-os-variant-name variants))
+                      (configs '#$(map ganeti-os-variant-configuration variants)))
+                  (mkdir-p variants-dir)
+                  (unless (null? names)
+                    (call-with-output-file (string-append variants-dir
+                                                          "/variants.list")
+                      (lambda (port)
+                        (format port "~a~%"
+                                (string-join names "\n"))))
+                    (for-each (match-lambda
+                                ((name file)
+                                 (let ((file-name
+                                        (if #$extension
+                                            (string-append name #$extension)
+                                            name)))
+                                   (symlink file
+                                            (string-append variants-dir "/"
+                                                           file-name)))))
+                              (zip names configs))))))))
 
-                          '#$(zip names configs))))))
-
-      (computed-file (string-append name "-os") builder))))
+    (computed-file (string-append name "-os") builder
+                   #:local-build? #t)))
 
 (define (ganeti-directory file-storage-file os)
   (let ((dirs (map ganeti-os->directory os))
