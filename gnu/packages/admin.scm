@@ -44,6 +44,7 @@
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021, 2025 muradm <mail@muradm.net>
 ;;; Copyright © 2021 pineapples <guixuser6392@protonmail.com>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
@@ -692,6 +693,45 @@ environments:
   @acronym{MIME,Multipurpose Internet Mail Extensions} messages
 @end itemize")
     (license license:gpl3)))
+
+(define-public collectl
+  (package
+    (name "collectl")
+    (version "4.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://sourceforge/collectl/collectl/collectl-" version
+             "/collectl-" version ".src.tar.gz"))
+       (sha256
+        (base32 "1wc9k3rmhqzh6cx5dcpqhlc3xcpadsn2ic54r19scdjbjx6jd1r1"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build) ; There's nothing to build.
+          (replace 'configure
+            (lambda _
+              (substitute* "INSTALL"
+                (("DESTDIR:=\"/\"") (format #f "DESTDIR:=~s" #$output))
+                (("DESTDIR/usr") "DESTDIR"))))
+          (replace 'install
+            (lambda _
+              (substitute* "collectl"
+                (("\\$configFile='';")
+                 (string-append "$configFile='" #$output "/etc';")))
+              (invoke "./INSTALL"))))))
+    (inputs
+     (list perl))
+    (home-page "http://collectl.sourceforge.net")
+    (synopsis "Performance data collector")
+    (description
+     "This package provides a program that collects various performance
+measurement data like CPU, memory, disk and network performance numbers.")
+    (license license:artistic2.0)))
 
 (define-public daemontools
   (package
