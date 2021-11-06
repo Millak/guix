@@ -4448,6 +4448,15 @@ Transport Tycoon Deluxe.")
          (list (string-append "-DCMAKE_INSTALL_BINDIR=" out "/bin")))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-sources
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/music/fluidsynth.cpp"
+               (("default_sf\\[\\] = \\{" all)
+                (string-append all "
+\t/* Guix hardcoded :P */
+\t\"" (string-append (assoc-ref inputs "freepats-gm")
+                     "/share/soundfonts/FreePatsGM.sf2") "\",
+")))))
          (add-before 'check 'install-data
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (for-each
@@ -4457,7 +4466,7 @@ Transport Tycoon Deluxe.")
               (list "opengfx" "openmsx" "opensfx")))))))
     (inputs
      (modify-inputs (package-inputs openttd-engine)
-       (prepend timidity++)))
+       (prepend fluidsynth freepats-gm)))
     (native-inputs
      `(("opengfx" ,openttd-opengfx)
        ("openmsx" ,openttd-openmsx)
