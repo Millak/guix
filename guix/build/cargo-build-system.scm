@@ -210,12 +210,28 @@ directory = '" port)
       #t))
 
 (define* (package #:key
+                  source
+                  skip-build?
                   install-source?
                   (cargo-package-flags '("--no-metadata" "--no-verify"))
                   #:allow-other-keys)
   "Run 'cargo-package' for a given Cargo package."
   (if install-source?
-    (apply invoke `("cargo" "package" ,@cargo-package-flags))
+    (if skip-build?
+      (begin
+        (install-file source "target/package")
+        (with-directory-excursion "target/package"
+          (for-each
+            (lambda (file)
+              (make-file-writable file)
+              ;; Strip the hash and replace '.tar.gz' with '.crate'.
+              (rename-file file
+                           (string-append (string-drop-right
+                                            (string-drop file 35)
+                                            (string-length ".tar.gz"))
+                                          ".crate")))
+            (find-files "." "\\.tar\\.gz$"))))
+      (apply invoke `("cargo" "package" ,@cargo-package-flags)))
     (format #t "Not installing cargo sources, skipping `cargo package`.~%"))
   #t)
 
