@@ -155,6 +155,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
@@ -22831,13 +22832,26 @@ files are easily readable and they work nicely with version control systems.")
         (base32 "0lwgvgnqf7vihglm0c5bwsxbl4x7f641289cji5s7jwy2dbsqk7g"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include '("\\.el$" "^data/" "^fonts/")
+     `(#:include '("\\.el$" "^data/")
        ;; Compiling "test/" fails with "Symbol’s value as variable is void:
        ;; all-the-icons--root-code".  Ignoring tests.
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-fonts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((fonts (string-append (assoc-ref outputs "out")
+                                         "/share/fonts")))
+               (mkdir-p fonts)
+               (with-directory-excursion "fonts"
+                 (install-file "all-the-icons.ttf" fonts)
+                 ;; TODO: Unbundle.
+                 (install-file "file-icons.ttf" fonts)
+                 (install-file "octicons.ttf" fonts)
+                 (install-file "weathericons.ttf" fonts))))))
        #:exclude '("^test/")
        #:tests? #f))
     (propagated-inputs
-     (list emacs-f emacs-memoize))
+     (list emacs-f emacs-memoize font-awesome font-google-material-design-icons))
     (home-page "https://github.com/domtronn/all-the-icons.el")
     (synopsis "Collect icon fonts and propertize them within Emacs")
     (description
