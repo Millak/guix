@@ -1652,6 +1652,66 @@ postmarketOS green.  There's also the oled and paper variants of the theme
 that are completely black and completely white.")
     (license license:lgpl2.0+)))
 
+(define-public postmarketos-tweaks
+  (package
+    (name "postmarketos-tweaks")
+    (version "0.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/postmarketOS/postmarketos-tweaks")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "020blf2v588q9g5zq8imcii7iykca7v5an6if6bf9p4fd3yh7ar8"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
+                           (guix build python-build-system))
+      #:modules '((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
+                  (guix build utils))
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-install-dir
+            (lambda* _
+              (substitute* "data/meson.build"
+                (("/etc/init.d") (string-append %output "/etc/init.d")))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin/")))
+                (for-each
+                 (lambda (program)
+                   (wrap-program (string-append bin program)
+                     `("GUIX_PYTHONPATH" =
+                       (,(getenv "GUIX_PYTHONPATH")
+                        ,(python:site-packages inputs outputs)))
+                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+                 (list "pmos-tweaks" "pmos-tweakd" "pk-tweaks-action")))))
+          (add-after 'glib-or-gtk-wrap 'python-wrap
+            (assoc-ref python:%standard-phases 'wrap)))))
+    (native-inputs
+     (list desktop-file-utils           ;for update-desktop-database
+           `(,gtk+ "bin")               ;for gtk-update-icon-cache
+           `(,glib "bin")               ;glib-compile-schemas, etc.
+           pkg-config))
+    (inputs
+     (list bash-minimal
+           gtk+
+           libhandy
+           python
+           python-pygobject
+           python-pyyaml))
+    (home-page "https://gitlab.com/postmarketOS/postmarketos-tweaks")
+    (synopsis "Settings configuration utility for postmarketOS")
+    (description "postmarketOS tweaks is an application for tweaking settings
+on desktop environments supported by postmarketOS.")
+    (license license:lgpl3+)))
+
 (define-public eiciel
   (package
     (name "eiciel")
