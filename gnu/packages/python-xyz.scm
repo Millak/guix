@@ -13089,7 +13089,7 @@ time.")
                                      texlive-zapfding))))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")
-    (description "The @code{nbconvert} tool, @{jupyter nbconvert}, converts
+    (description "The @code{nbconvert} tool, @code{jupyter nbconvert}, converts
 notebooks to various other formats via Jinja templates.  It allows you to
 convert an @code{.ipynb} notebook file into various static formats including:
 
