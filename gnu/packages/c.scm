@@ -12,6 +12,7 @@
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -580,6 +581,28 @@ avoiding distractions when studying code that uses @code{#ifdef} heavily for
 portability.")
     (license (list license:bsd-2        ;all files except...
                    license:bsd-3))))    ;...the unidef.1 manual page
+
+(define-public byacc
+  (package
+    (name "byacc")
+    (version "20210808")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://invisible-mirror.net/archives/byacc/byacc-"
+                   version ".tgz"))
+             (sha256
+              (base32
+               "10rsgnygn11358jr2dn6bbjj7sj9d9hqf6piqxil4nfhx6dm4n7i"))))
+    (build-system gnu-build-system)
+    (home-page "https://invisible-island.net/byacc/byacc.html")
+    (synopsis "Berkeley Yacc LALR parser generator")
+    (description
+     "Berkeley Yacc is an LALR(1) parser generator.  Yacc reads the grammar
+specification from a file and generates an LALR(1) parser for it.  The parsers
+consist of a set of LALR(1) parsing tables and a driver routine written in the
+C programming language.")
+    (license license:public-domain)))
 
 (define-public aws-c-common
   (package
