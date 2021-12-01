@@ -2785,6 +2785,36 @@ authenticated session objects providing things like keep-alive.")
       (native-inputs `(("python2-unittest2" ,python2-unittest2)
                        ,@(package-native-inputs base))))))
 
+(define-public python-unalix
+  (package
+    (name "python-unalix")
+    (version "0.9")
+    (source
+     (origin
+       ;; There's only a wheel on PyPI.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AmanoTeam/Unalix")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h8wc1axv26h753a8brc6dccqndx005c2bhr09gwg5c1hj9zsfml"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (home-page "https://pypi.org/project/Unalix/")
+    (synopsis "Python library for removing tracking fields from URLs")
+    (description "Unalix is a library written in Python implementing the
+specification used by the @url{https://github.com/ClearURLs/Addon, ClearURLs}
+addon for removing tracking fields from URLs.")
+    (license license:lgpl3+)))
+
 (define-public python-urllib3
   (package
     (name "python-urllib3")
