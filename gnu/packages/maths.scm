@@ -49,6 +49,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1851,6 +1852,65 @@ sharing of scientific data.")
     (description (package-description netcdf))
     (home-page (package-home-page netcdf))
     (license (package-license netcdf))))
+
+(define-public n2p2
+  (package
+    (name "n2p2")
+    (version "2.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/CompPhysVienna/n2p2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lw195ihpxwh08387i4gamk1glhalpq888q6nj8l5vswbgnrv1pq"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags '("MODE=shared" "-C" "src")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'post-unpack
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/makefile.gnu"
+               (("PROJECT_EIGEN=/usr/include/eigen3")
+                (string-append "PROJECT_EIGEN="
+                               (assoc-ref inputs "eigen") "/include/eigen3")))
+             (substitute* "src/makefile.gnu"
+               (("-lblas")
+                (string-append "-L" (assoc-ref inputs "openblas")
+                               "/lib -lopenblas"))
+               (("-march=native")
+                ""))
+             (substitute* "src/application/makefile"
+               (("LDFLAGS=")
+                "LDFLAGS=-Wl,-rpath='$$ORIGIN/../lib' "))))
+         (delete 'configure)
+         (delete 'check)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bindir (string-append out "/bin"))
+                    (libdir (string-append out "/lib"))
+                    (incdir (string-append out "/include")))
+               (for-each (lambda (f) (install-file f bindir))
+                         (find-files "bin" "^nnp-"))
+               (for-each (lambda (f) (install-file f libdir))
+                         (find-files "lib" "\\.so$"))
+               (for-each (lambda (f) (install-file f incdir))
+                         (find-files "include" "\\.h$"))))))))
+    (inputs
+     (list openmpi gsl openblas eigen))
+    (synopsis "Neural network potentials for chemistry and physics")
+    (description "This package contains software that will allow you to use
+existing neural network potential parameterizations to predict energies and
+forces (with standalone tools but also in conjunction with the MD software
+LAMMPS).  In addition it is possible to train new neural network potentials
+with the provided training tools.")
+    (home-page "https://compphysvienna.github.io/n2p2/")
+    (properties '((tunable? . #t)))        ;to benefit from SIMD code in Eigen
+    (license license:gpl3+)))
 
 (define-public nlopt
   (package
