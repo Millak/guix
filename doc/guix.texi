@@ -21767,9 +21767,14 @@ The actual service definitions included in @code{%desktop-services} and
 provided by @code{(gnu services dbus)} and @code{(gnu services desktop)}
 are described below.
 
-@deffn {Scheme Procedure} dbus-service [#:dbus @var{dbus}] [#:services '()]
+@deffn {Scheme Procedure} dbus-service [#:dbus @var{dbus}] [#:services '()] @
+                                       [#:verbose?]
 Return a service that runs the ``system bus'', using @var{dbus}, with
-support for @var{services}.
+support for @var{services}.  When @var{verbose?} is true, it causes the
+@samp{DBUS_VERBOSE} environment variable to be set to @samp{1}; a
+verbose-enabled D-Bus package such as @code{dbus-verbose} should be
+provided as @var{dbus} in this scenario.  The verbose output is logged
+to @file{/var/log/dbus-daemon.log}.
 
 @uref{https://dbus.freedesktop.org/, D-Bus} is an inter-process communication
 facility.  Its system bus is used to allow system services to communicate
