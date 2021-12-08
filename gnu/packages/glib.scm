@@ -193,6 +193,21 @@ shared NFS home directories.")
                   (("@SYSCONFDIR_FROM_PKGDATADIR@/dbus-1/session-local.conf")
                    "/var/run/jami/session-local.conf")))))))))))
 
+;;; The reason this is not enabled in the regular dbus package is because it
+;;; impacts the performance of D-Bus (including its library) as a whole, even
+;;; when the DBUS_VERBOSE environment variable is not set.
+(define-public dbus-verbose
+  (package/inherit dbus
+    (name "dbus-verbose")
+    (arguments (substitute-keyword-arguments (package-arguments dbus)
+                 ((#:configure-flags flags '())
+                  `(cons "--enable-verbose-mode" ,flags))))
+    (synopsis "D-Bus with verbose mode enabled for debugging")
+    (description "This variant D-Bus package is built with verbose mode, which
+eases debugging of D-Bus services by printing various debug information when
+the @code{DBUS_VERBOSE} environment variable is set to @samp{1}.  For more
+information, refer to the @samp{dbus-daemon(1)} man page.")))
+
 (define glib
   (package
     (name "glib")
