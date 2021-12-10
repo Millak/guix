@@ -20350,10 +20350,9 @@ Defaults to @samp{#f}.
 
 @deftypevr {@code{cups-configuration} parameter} comma-separated-string-list browse-dns-sd-sub-types
 Specifies a list of DNS-SD sub-types to advertise for each shared printer.
-For example, @samp{"_cups" "_print"} will tell network clients that both
-CUPS sharing and IPP Everywhere are supported.
 
-Defaults to @samp{"_cups"}.
+The default @samp{(list "_cups" "_print" "_universal")} tells clients
+that CUPS sharing, IPP Everywhere, AirPrint, and Mopria are supported.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} browse-local-protocols browse-local-protocols
@@ -20370,22 +20369,6 @@ Defaults to @samp{#f}.
 
 @deftypevr {@code{cups-configuration} parameter} boolean browsing?
 Specifies whether shared printers are advertised.
-
-Defaults to @samp{#f}.
-@end deftypevr
-
-@deftypevr {@code{cups-configuration} parameter} string classification
-Specifies the security classification of the server.  Any valid banner
-name can be used, including @samp{"classified"}, @samp{"confidential"},
-@samp{"secret"}, @samp{"topsecret"}, and @samp{"unclassified"}, or the
-banner can be omitted to disable secure printing functions.
-
-Defaults to @samp{""}.
-@end deftypevr
-
-@deftypevr {@code{cups-configuration} parameter} boolean classify-override?
-Specifies whether users may override the classification (cover page) of
-individual print jobs using the @code{job-sheets} option.
 
 Defaults to @samp{#f}.
 @end deftypevr
@@ -20525,17 +20508,6 @@ domain sockets.  The Listen directive is similar to the Port directive
 but allows you to restrict access to specific interfaces or networks.
 @end deftypevr
 
-@deftypevr {@code{cups-configuration} parameter} non-negative-integer listen-back-log
-Specifies the number of pending connections that will be allowed.  This
-normally only affects very busy servers that have reached the MaxClients
-limit, but can also be triggered by large numbers of simultaneous
-connections.  When the limit is reached, the operating system will
-refuse additional connections until the scheduler can accept the pending
-ones.
-
-Defaults to @samp{128}.
-@end deftypevr
-
 @deftypevr {@code{cups-configuration} parameter} location-access-control-list location-access-controls
 Specifies a set of additional access controls.
 
@@ -20641,14 +20613,14 @@ Defaults to @samp{500}.
 
 @deftypevr {@code{cups-configuration} parameter} non-negative-integer max-jobs-per-printer
 Specifies the maximum number of simultaneous jobs that are allowed per
-printer.  A value of 0 allows up to MaxJobs jobs per printer.
+printer.  A value of 0 allows up to @code{max-jobs} per printer.
 
 Defaults to @samp{0}.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} non-negative-integer max-jobs-per-user
 Specifies the maximum number of simultaneous jobs that are allowed per
-user.  A value of 0 allows up to MaxJobs jobs per user.
+user.  A value of 0 allows up to @code{max-jobs} per user.
 
 Defaults to @samp{0}.
 @end deftypevr
@@ -20667,51 +20639,42 @@ bytes.  The value 0 disables log rotation.
 Defaults to @samp{1048576}.
 @end deftypevr
 
+@deftypevr {@code{cups-configuration} parameter} non-negative-integer max-subscriptions
+Specifies the maximum number of simultaneous event subscriptions that are
+allowed.  Set to @samp{0} to allow an unlimited number of subscriptions.
+
+Defaults to @samp{0}.
+@end deftypevr
+
+@deftypevr {@code{cups-configuration} parameter} non-negative-integer max-subscriptions-per-job
+Specifies the maximum number of simultaneous event subscriptions that are
+allowed per job.  A value of @samp{0} allows up to @code{max-subscriptions}
+per job.
+
+Defaults to @samp{0}.
+@end deftypevr
+
+@deftypevr {@code{cups-configuration} parameter} non-negative-integer max-subscriptions-per-printer
+Specifies the maximum number of simultaneous event subscriptions that are
+allowed per printer.  A value of @samp{0} allows up to @code{max-subscriptions}
+per printer.
+
+Defaults to @samp{0}.
+@end deftypevr
+
+@deftypevr {@code{cups-configuration} parameter} non-negative-integer max-subscriptions-per-user
+Specifies the maximum number of simultaneous event subscriptions that are
+allowed per user.  A value of @samp{0} allows up to @code{max-subscriptions}
+per user.
+
+Defaults to @samp{0}.
+@end deftypevr
+
 @deftypevr {@code{cups-configuration} parameter} non-negative-integer multiple-operation-timeout
 Specifies the maximum amount of time to allow between files in a
 multiple file print job, in seconds.
 
 Defaults to @samp{900}.
-@end deftypevr
-
-@deftypevr {@code{cups-configuration} parameter} string page-log-format
-Specifies the format of PageLog lines.  Sequences beginning with percent
-(@samp{%}) characters are replaced with the corresponding information,
-while all other characters are copied literally.  The following percent
-sequences are recognized:
-
-@table @samp
-@item %%
-insert a single percent character
-
-@item %@{name@}
-insert the value of the specified IPP attribute
-
-@item %C
-insert the number of copies for the current page
-
-@item %P
-insert the current page number
-
-@item %T
-insert the current date and time in common log format
-
-@item %j
-insert the job ID
-
-@item %p
-insert the printer name
-
-@item %u
-insert the username
-@end table
-
-A value of the empty string disables page logging.  The string @code{%p
-%u %j %T %P %C %@{job-billing@} %@{job-originating-host-name@}
-%@{job-name@} %@{media@} %@{sides@}} creates a page log with the
-standard items.
-
-Defaults to @samp{""}.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} environment-variables environment-variables
@@ -20799,18 +20762,22 @@ history is preserved until the MaxJobs limit is reached.
 Defaults to @samp{#t}.
 @end deftypevr
 
+@deftypevr {@code{cups-configuration} parameter} comma-separated-string-list-or-#f ready-paper-sizes
+Specifies a list of potential paper sizes that are reported as ready,
+that is: loaded.  The actual list will contain only the sizes that each
+printer supports.
+
+The default value of @code{#f} is a special case: CUPS will use
+@samp{(list \"Letter\" \"Legal\" \"Tabloid\" \"4x6\" \"Env10\")}
+if the default paper size is \"Letter\", and
+@samp{(list \"A3\" \"A4\" \"A5\" \"A6\" \"EnvDL\")} otherwise.
+@end deftypevr
+
 @deftypevr {@code{cups-configuration} parameter} non-negative-integer reload-timeout
 Specifies the amount of time to wait for job completion before
 restarting the scheduler.
 
 Defaults to @samp{30}.
-@end deftypevr
-
-@deftypevr {@code{cups-configuration} parameter} string rip-cache
-Specifies the maximum amount of memory to use when converting documents
-into bitmaps for a printer.
-
-Defaults to @samp{"128m"}.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} string server-admin

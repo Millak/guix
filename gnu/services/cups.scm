@@ -99,6 +99,15 @@
 (define (serialize-comma-separated-string-list field-name val)
   (serialize-field field-name (string-join val ",")))
 
+;; A special case of the above, where we don't want to emit anything at all
+;; when #f, to allow CUPS to pick a default we cannot compute ourselves.
+;; XXX Ideally, this could be a generic higher-order function, but it's used
+;; only once so far: for ready-paper-sizes to handle "Auto" default-paper-size.
+(define (comma-separated-string-list-or-#f? val)
+  (if val (comma-separated-string-list? val) #t))
+(define (serialize-comma-separated-string-list-or-#f field-name val)
+  (if val (serialize-field field-name (string-join val ",")) #f))
+
 (define (space-separated-string-list? val)
   (and (list? val)
        (and-map (lambda (x)
@@ -143,7 +152,7 @@
 (define-enumerated-field-type browse-local-protocols
   (all dnssd none))
 (define-enumerated-field-type default-auth-type
-  (Basic Negotiate))
+  (Basic))
 (define-enumerated-field-type default-encryption
   (Never IfRequested Required))
 (define-enumerated-field-type error-policy
@@ -514,10 +523,10 @@ requests.")
    "Specifies whether to purge job history data automatically when it is no
 longer required for quotas.")
   (browse-dns-sd-sub-types
-   (comma-separated-string-list (list "_cups"))
+   (comma-separated-string-list (list "_cups" "_print" "_universal"))
    "Specifies a list of DNS-SD sub-types to advertise for each shared printer.
-For example, @samp{\"_cups\" \"_print\"} will tell network clients that both
-CUPS sharing and IPP Everywhere are supported.")
+The default @samp{(list \"_cups\" \"_print\" \"_universal\")} tells clients
+that CUPS sharing, IPP Everywhere, AirPrint, and Mopria are supported.")
   (browse-local-protocols
    (browse-local-protocols 'dnssd)
    "Specifies which protocols to use for local printer sharing.")
@@ -527,16 +536,6 @@ CUPS sharing and IPP Everywhere are supported.")
   (browsing?
    (boolean #f)
    "Specifies whether shared printers are advertised.")
-  (classification
-   (string "")
-   "Specifies the security classification of the server.
-Any valid banner name can be used, including \"classified\", \"confidential\",
-\"secret\", \"topsecret\", and \"unclassified\", or the banner can be omitted
-to disable secure printing functions.")
-  (classify-override?
-   (boolean #f)
-   "Specifies whether users may override the classification (cover page) of
-individual print jobs using the @code{job-sheets} option.")
   (default-auth-type
     (default-auth-type 'Basic)
     "Specifies the default type of authentication to use.")
@@ -583,10 +582,6 @@ the scheduler to printing a single job at any time.")
    "Specifies the scheduling priority of filters that are run to print a job.
 The nice value ranges from 0, the highest priority, to 19, the lowest
 priority.")
-  ;; Add this option if the package is built with Kerberos support.
-  ;; (gss-service-name
-  ;;  (string "http")
-  ;;  "Specifies the service name when using Kerberos authentication.")
   (host-name-lookups
    (host-name-lookups #f)
    "Specifies whether to do reverse lookups on connecting clients.
@@ -595,7 +590,7 @@ resolved from the address matches one of the addresses returned for that
 hostname.  Double lookups also prevent clients with unregistered addresses
 from connecting to your server.  Only set this option to @code{#t} or
 @code{double} if absolutely required.")
-  ;; Add this option if the package is built with launchd/systemd support.
+  ;; Add this option if the package is built with socket activation support.
   ;;   (idle-exit-timeout
   ;;    (non-negative-integer 60)
   ;;    "Specifies the length of time to wait before shutting down due to
@@ -630,13 +625,6 @@ address enclosed in brackets, an IPv4 address, or @code{*} to indicate all
 addresses.  Values can also be file names of local UNIX domain sockets.  The
 Listen directive is similar to the Port directive but allows you to restrict
 access to specific interfaces or networks.")
-  (listen-back-log
-   (non-negative-integer 128)
-   "Specifies the number of pending connections that will be allowed.  This
-normally only affects very busy servers that have reached the MaxClients
-limit, but can also be triggered by large numbers of simultaneous connections.
-When the limit is reached, the operating system will refuse additional
-connections until the scheduler can accept the pending ones.")
   (location-access-controls
    (location-access-control-list
     (list (location-access-control
@@ -695,7 +683,7 @@ printer.  A value of 0 allows up to MaxJobs jobs per printer.")
   (max-jobs-per-user
    (non-negative-integer 0)
    "Specifies the maximum number of simultaneous jobs that are allowed per
-user.  A value of 0 allows up to MaxJobs jobs per user.")
+user.  A value of 0 allows up to @code{max-jobs} jobs per user.")
   (max-job-time
    (non-negative-integer 10800)
    "Specifies the maximum time a job may take to print before it is canceled,
@@ -704,39 +692,29 @@ in seconds.  Set to 0 to disable cancellation of \"stuck\" jobs.")
    (non-negative-integer 1048576)
    "Specifies the maximum size of the log files before they are rotated, in
 bytes.  The value 0 disables log rotation.")
+  (max-subscriptions
+   (non-negative-integer 100)
+   "Specifies the maximum number of simultaneous event subscriptions that are
+allowed.  Set to @samp{0} to allow an unlimited number of subscriptions.")
+  (max-subscriptions-per-job
+   (non-negative-integer 0)
+   "Specifies the maximum number of simultaneous event subscriptions that are
+allowed per job.  A value of @samp{0} allows up to @code{max-subscriptions}
+per job.")
+  (max-subscriptions-per-printer
+   (non-negative-integer 0)
+   "Specifies the maximum number of simultaneous event subscriptions that are
+allowed per printer.  A value of @samp{0} allows up to @code{max-subscriptions}
+per printer.")
+  (max-subscriptions-per-user
+   (non-negative-integer 0)
+   "Specifies the maximum number of simultaneous event subscriptions that are
+allowed per user.  A value of @samp{0} allows up to @code{max-subscriptions}
+per user.")
   (multiple-operation-timeout
    (non-negative-integer 900)
    "Specifies the maximum amount of time to allow between files in a multiple
 file print job, in seconds.")
-  (page-log-format
-   (string "")
-   "Specifies the format of PageLog lines.  Sequences beginning with
-percent (@samp{%}) characters are replaced with the corresponding information,
-while all other characters are copied literally.  The following percent
-sequences are recognized:
-
-@table @samp
-@item %%
-insert a single percent character
-@item %@{name@}
-insert the value of the specified IPP attribute
-@item %C
-insert the number of copies for the current page
-@item %P
-insert the current page number
-@item %T
-insert the current date and time in common log format
-@item %j
-insert the job ID
-@item %p
-insert the printer name
-@item %u
-insert the username
-@end table
-
-A value of the empty string disables page logging.  The string @code{%p %u %j
-%T %P %C %@{job-billing@} %@{job-originating-host-name@} %@{job-name@}
-%@{media@} %@{sides@}} creates a page log with the standard items.")
   (environment-variables
    (environment-variables '())
    "Passes the specified environment variable(s) to child processes; a list of
@@ -794,13 +772,18 @@ indefinitely.")
 If a numeric value is specified, the job history is preserved for the
 indicated number of seconds after printing.  If @code{#t}, the job history is
 preserved until the MaxJobs limit is reached.")
+  (ready-paper-sizes
+   (comma-separated-string-list-or-#f #f)
+   "Specifies a list of potential paper sizes that are reported as ready,
+that is: loaded.  The actual list will contain only the sizes that each
+printer supports.  If @code{#f}, CUPS will assume
+@samp{(list \"Letter\" \"Legal\" \"Tabloid\" \"4x6\" \"Env10\")}
+if the default paper size is \"Letter\", and
+@samp{(list \"A3\" \"A4\" \"A5\" \"A6\" \"EnvDL\")} otherwise.")
   (reload-timeout
    (non-negative-integer 30)
    "Specifies the amount of time to wait for job completion before restarting
 the scheduler.")
-  (rip-cache
-   (string "128m")
-   "Specifies the maximum amount of memory to use when converting documents into bitmaps for a printer.")
   (server-admin
    (string "root@localhost.localdomain")
    "Specifies the email address of the server administrator.")
