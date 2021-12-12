@@ -32,7 +32,7 @@
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
@@ -56,6 +56,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +91,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
@@ -1225,38 +1227,43 @@ and high-availability (HA).")
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--with-uuid=e2fs" "--with-openssl"
-                           ;; PostgreSQL installs its own Makefile (should it?).
-                           ;; Prevent it from retaining needless references to
-                           ;; the build tools in order to save size.
-                           "MKDIR_P=mkdir -p" "INSTALL_BIN=install -c"
-                           "LD=ld" "TAR=tar")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-/bin/sh
-                     (lambda _
-                       ;; Refer to the actual shell.
-                       (substitute* '("src/bin/pg_ctl/pg_ctl.c"
-                                      "src/bin/psql/command.c")
-                         (("/bin/sh") (which "sh")))
-                       #t))
-         (add-before 'configure 'set-socket-dir
-           (lambda _
-             (substitute* '("src/include/pg_config_manual.h")
-               (("DEFAULT_PGSOCKET_DIR[^\n]*")
-                "DEFAULT_PGSOCKET_DIR \"/var/run/postgresql\""))
-             #t))
-         (add-after 'build 'build-contrib
-           (lambda _
-             (invoke "make" "-C" "contrib")))
-         (add-after 'install 'install-contrib
-           (lambda _
-             (invoke "make" "-C" "contrib" "install"))))))
-    (inputs
-     `(("readline" ,readline)
-       ("libuuid" ,util-linux "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list
+      #:configure-flags
+      #~(list "--with-uuid=e2fs" "--with-openssl"
+              (string-append "--mandir=" #$output "/share/man")
+              ;; PostgreSQL installs its own Makefile (should it?).
+              ;; Prevent it from retaining needless references to
+              ;; the build tools in order to save size.
+              "MKDIR_P=mkdir -p" "INSTALL_BIN=install -c"
+              "LD=ld" "TAR=tar")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-/bin/sh
+            (lambda _
+              ;; Refer to the actual shell.
+              (substitute* '("src/bin/pg_ctl/pg_ctl.c"
+                             "src/bin/psql/command.c")
+                (("/bin/sh") (which "sh")))))
+          (add-before 'configure 'set-socket-dir
+            (lambda _
+              (substitute* '("src/include/pg_config_manual.h")
+                (("DEFAULT_PGSOCKET_DIR[^\n]*")
+                 "DEFAULT_PGSOCKET_DIR \"/var/run/postgresql\""))))
+          (add-after 'build 'build-contrib
+            (lambda _
+              (invoke "make" "-C" "contrib")))
+          (add-after 'install 'install-contrib
+            (lambda _
+              (invoke "make" "-C" "contrib" "install")))
+          (add-after 'install 'install-manuals
+            (lambda _
+              (with-directory-excursion "doc/src/sgml"
+                (invoke "make" "install-man")
+                (invoke "make" "postgres.info")
+                (install-file "postgres.info"
+                              (string-append #$output "/share/info"))))))))
+    (native-inputs (list docbook-xml docbook2x libxml2 perl texinfo))
+    (inputs (list readline `(,util-linux "lib") openssl zlib))
     (home-page "https://www.postgresql.org/")
     (synopsis "Powerful object-relational database system")
     (description
