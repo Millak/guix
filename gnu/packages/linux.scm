@@ -60,6 +60,8 @@
 ;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8800,3 +8802,33 @@ older system-wide @file{/sys} interface.")
     (license (list license:lgpl2.1+   ;; libgpiod
                    license:gpl2+      ;; gpio-tools
                    license:lgpl3+)))) ;; C++ bindings
+
+(define-public libtree
+  (package
+    (name "libtree")
+    (version "3.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/haampie/libtree")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "072624anz9g01mp5vfkahfmzy0nb7axg5rwk3n1yrdm4hr3d4zrb"))))
+    (arguments
+     (list #:make-flags
+           ;; NOTE: Official documentation recommends to build libtree with
+           ;; "-static" flag.
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
+    (build-system gnu-build-system)
+    (home-page "https://github.com/haampie/libtree")
+    (synopsis "Show output of @command{ldd} as a tree")
+    (description
+     "This tool turns @command{ldd} into a tree and explains how shared
+libraries are found or why they cannot be located.")
+    (license license:expat)))
