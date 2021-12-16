@@ -157,6 +157,19 @@ pure Scheme to Tar and decompression in one easy step.")
            (replace 'configure
              (bootstrap-configure "Gash" ,(package-version gash)
                                   '("gash") "scripts"))
+           ;; ARM's %bootstrap-guile (2.0.11) does not have EXIT_SUCCESS.
+           (add-after 'unpack 'patch-compat
+             (lambda* _
+               (substitute* "gash/compat.scm"
+                 (("exact-integer") "avoid-exact-integer-override-in-2.0.11")
+                 (("\\(if-guile-version-below \\(2 0 10\\)")
+"(if-guile-version-below (2 0 10)
+  (begin
+    (define-public (exact-integer? x)
+      (and (integer? x) (exact? x)))))
+
+(if-guile-version-below (2 0 12)
+"))))
            (replace 'build (bootstrap-build '("gash")))
            (replace 'install (bootstrap-install '("gash") "scripts"))
            (add-after 'install 'install-symlinks
