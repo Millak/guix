@@ -32,6 +32,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -404,7 +405,16 @@ overlapping images, as well as some command line tools.")
            vigra
            zlib))
     (arguments
-     `(#:configure-flags `("--enable-openmp")))
+     (list #:configure-flags
+           #~(list "--enable-openmp")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-missing-include
+                 (lambda _
+                   (substitute* "src/minimizer.h"
+                     ;; Fix error: ‘numeric_limits’ is not a member of ‘std’.
+                     (("#include <vector>" line)
+                      (string-append line "\n#include <limits>"))))))))
     (home-page "http://enblend.sourceforge.net/")
     (synopsis "Tools for combining and blending images")
     (description
