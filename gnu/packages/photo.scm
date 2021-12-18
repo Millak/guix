@@ -382,27 +382,27 @@ overlapping images, as well as some command line tools.")
                 "0j5x011ilalb47ssah50ag0a4phgh1b0wdgxdbbp1gcyjcjf60w7"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("perl" ,perl)
-       ("perl-timedate" ,perl-timedate)
-       ;; for building the documentation
-       ("gnuplot" ,gnuplot)
-       ("help2man" ,help2man)
-       ("imagemagick" ,imagemagick)
-       ("libxml2" ,libxml2)
-       ("texlive-minimal" ,texlive-tiny)
-       ("tidy" ,tidy)
-       ("transfig" ,transfig)))
+     (list pkg-config
+           perl
+           perl-timedate
+           ;; For building the documentation.
+           gnuplot
+           help2man
+           imagemagick
+           libxml2
+           texlive-tiny
+           tidy
+           transfig))
     (inputs
-     `(("boost" ,boost)
-       ("gsl" ,gsl)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("openexr" ,openexr-2)
-       ("vigra" ,vigra)
-       ("zlib" ,zlib)))
+     (list boost
+           gsl
+           lcms
+           libjpeg-turbo
+           libpng
+           libtiff
+           openexr-2
+           vigra
+           zlib))
     (arguments
      `(#:configure-flags `("--enable-openmp")))
     (home-page "http://enblend.sourceforge.net/")
