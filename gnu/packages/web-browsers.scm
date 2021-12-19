@@ -87,6 +87,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -481,6 +482,7 @@ interface.")
            python-jinja2
            python-markupsafe
            python-pygments
+           python-pynacl
            python-pypeg2
            python-pyyaml
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
@@ -497,6 +499,11 @@ interface.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-systemdir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* "qutebrowser/utils/standarddir.py"
+                 (("/usr/share") (string-append out "/share"))))))
          (add-before 'check 'set-env-offscreen
            (lambda _
              (setenv "QT_QPA_PLATFORM" "offscreen")))
@@ -521,6 +528,12 @@ interface.")
                  (("Exec=qutebrowser")
                   (string-append "Exec=" out "/bin/qutebrowser")))
                (install-file "misc/org.qutebrowser.qutebrowser.desktop" app))))
+         (add-after 'install 'install-userscripts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out     (assoc-ref outputs "out"))
+                    (scripts (string-append out "/share/qutebrowser/userscripts")))
+               (mkdir-p scripts)
+               (copy-recursively "misc/userscripts" scripts))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
