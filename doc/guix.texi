@@ -21378,6 +21378,448 @@ bluetooth keyboard or mouse.
 Users need to be in the @code{lp} group to access the D-Bus service.
 @end deffn
 
+@deffn {Scheme Variable} bluetooth-service-type
+This is the type for the @uref{https://bluez.org/, Linux Bluetooth Protocol
+Stack} (BlueZ) system, which generates the @file{/etc/bluetooth/main.conf}
+configuration file.  The value for this type is a @command{bluetooth-configuration}
+record as in this example:
+
+@lisp
+(service bluetooth-service-type)
+@end lisp
+
+See below for details about @code{bluetooth-configuration}.
+@end deffn
+
+@deftp {Data Type} bluetooth-configuration
+Data type representing the configuration for @code{bluetooth-service}.
+
+@table @asis
+@item @code{bluez} (default: @code{bluez})
+@code{bluez} package to use.
+
+@item @code{name} (default: @code{"BlueZ"})
+Default adapter name.
+
+@item @code{class} (default: @code{#x000000})
+Default device class. Only the major and minor device class bits are considered.
+
+@item @code{discoverable-timeout} (default: @code{180})
+How long to stay in discoverable mode before going back to non-discoverable. The
+value is in seconds.
+
+@item @code{always-pairable?} (default: @code{#f})
+Always allow pairing even if there are no agents registered.
+
+@item @code{pairable-timeout} (default: @code{0})
+How long to stay in pairable mode before going back to non-discoverable. The
+value is in seconds.
+
+@item @code{device-id} (default: @code{#f})
+Use vendor id source (assigner), vendor, product and version information for
+DID profile support. The values are separated by ":" and @var{assigner}, @var{VID},
+@var{PID} and @var{version}.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{#f} to disable it,
+
+@item
+@code{"assigner:1234:5678:abcd"}, where @var{assigner} is either @code{usb} (default)
+or @code{bluetooth}.
+
+@end itemize
+
+@item @code{reverse-service-discovery?} (default: @code{#t})
+Do reverse service discovery for previously unknown devices that connect to
+us. For BR/EDR this option is really only needed for qualification since the
+BITE tester doesn't like us doing reverse SDP for some test cases, for LE
+this disables the GATT client functionally so it can be used in system which
+can only operate as peripheral.
+
+@item @code{name-resolving?} (default: @code{#t})
+Enable name resolving after inquiry. Set it to @code{#f} if you don't need
+remote devices name and want shorter discovery cycle.
+
+@item @code{debug-keys?} (default: @code{#f})
+Enable runtime persistency of debug link keys. Default is false which makes
+debug link keys valid only for the duration of the connection that they were
+created for.
+
+@item @code{controller-mode} (default: @code{'dual})
+Restricts all controllers to the specified transport. @code{'dual} means both
+BR/EDR and LE are enabled (if supported by the hardware).
+
+Possible values are: 
+
+@itemize @bullet
+@item
+@code{'dual}
+
+@item
+@code{'bredr}
+
+@item
+@code{'le}
+
+@end itemize
+
+@item @code{multi-profile} (default: @code{'off})
+Enables Multi Profile Specification support. This allows to specify if system
+supports only Multiple Profiles Single Device (MPSD) configuration or both
+Multiple Profiles Single Device (MPSD) and Multiple Profiles Multiple Devices
+(MPMD) configurations.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{'off}
+
+@item
+@code{'single}
+
+@item
+@code{'multiple}
+
+@end itemize
+
+@item @code{fast-connectable?} (default: @code{#f})
+Permanently enables the Fast Connectable setting for adapters that support
+it. When enabled other devices can connect faster to us, however the
+tradeoff is increased power consumptions. This feature will fully work only
+on kernel version 4.1 and newer.
+
+@item @code{privacy} (default: @code{'off})
+Default privacy settings.
+
+@itemize @bullet
+@item
+@code{'off}: Disable local privacy
+
+@item
+@code{'network/on}: A device will only accept advertising packets from peer
+devices that contain private addresses. It may not be compatible with some
+legacy devices since it requires the use of RPA(s) all the time
+
+@item
+@code{'device}: A device in device privacy mode is only concerned about the
+privacy of the device and will accept advertising packets from peer devices
+that contain their Identity Address as well as ones that contain a private
+address, even if the peer device has distributed its IRK in the past
+
+@end itemize
+
+and additionally, if @var{controller-mode} is set to @code{'dual}:
+
+@itemize @bullet
+@item
+@code{'limited-network}: Apply Limited Discoverable Mode to advertising, which
+follows the same policy as to BR/EDR that publishes the identity address when
+discoverable, and Network Privacy Mode for scanning
+
+@item
+@code{'limited-device}: Apply Limited Discoverable Mode to advertising, which
+follows the same policy as to BR/EDR that publishes the identity address when
+discoverable, and Device Privacy Mode for scanning.
+
+@end itemize
+
+@item @code{just-works-repairing} (default: @code{'never})
+Specify the policy to the JUST-WORKS repairing initiated by peer.
+
+Possible values:
+@itemize @bullet
+@item
+@code{'never}
+
+@item
+@code{'confirm}
+
+@item
+@code{'always}
+
+@end itemize
+
+@item @code{temporary-timeout} (default: @code{30})
+How long to keep temporary devices around. The value is in seconds. @code{0}
+disables the timer completely.
+
+@item @code{refresh-discovery?} (default: @code{#t})
+Enables the device to issue an SDP request to update known services when
+profile is connected.
+
+@item @code{experimental} (default: @code{#f})
+Enables experimental features and interfaces, alternatively a list of UUIDs
+can be given.
+
+Possible values:
+
+@itemize @bullet
+@item
+@code{#t}
+
+@item
+@code{#f}
+
+@item
+@code{(list (uuid <uuid-1>) (uuid <uuid-2>) ...)}.
+@end itemize
+
+List of possible UUIDs:
+@itemize @bullet
+@item
+@code{d4992530-b9ec-469f-ab01-6c481c47da1c}: BlueZ Experimental Debug,
+
+@item
+@code{671b10b5-42c0-4696-9227-eb28d1b049d6}: BlueZ Experimental Simultaneous Central and Peripheral,
+
+@item
+@code{"15c0a148-c273-11ea-b3de-0242ac130004}: BlueZ Experimental LL privacy,
+
+@item
+@code{330859bc-7506-492d-9370-9a6f0614037f}: BlueZ Experimental Bluetooth Quality Report,
+
+@item
+@code{a6695ace-ee7f-4fb9-881a-5fac66c629af}: BlueZ Experimental Offload Codecs.
+@end itemize
+
+@item @code{remote-name-request-retry-delay} (default: @code{300})
+The duration to avoid retrying to resolve a peer's name, if the previous
+try failed.
+
+@item @code{page-scan-type} (default: @code{#f})
+BR/EDR Page scan activity type.
+
+@item @code{page-scan-interval} (default: @code{#f})
+BR/EDR Page scan activity interval.
+
+@item @code{page-scan-window} (default: @code{#f})
+BR/EDR Page scan activity window.
+
+@item @code{inquiry-scan-type} (default: @code{#f})
+BR/EDR Inquiry scan activity type.
+
+@item @code{inquiry-scan-interval} (default: @code{#f})
+BR/EDR Inquiry scan activity interval.
+
+@item @code{inquiry-scan-window} (default: @code{#f})
+BR/EDR Inquiry scan activity window.
+
+@item @code{link-supervision-timeout} (default: @code{#f})
+BR/EDR Link supervision timeout.
+
+@item @code{page-timeout} (default: @code{#f})
+BR/EDR Page timeout.
+
+@item @code{min-sniff-interval} (default: @code{#f})
+BR/EDR minimum sniff interval.
+
+@item @code{max-sniff-interval} (default: @code{#f})
+BR/EDR maximum sniff interval.
+
+@item @code{min-advertisement-interval} (default: @code{#f})
+LE minimum advertisement interval (used for legacy advertisement only).
+
+@item @code{max-advertisement-interval} (default: @code{#f})
+LE maximum advertisement interval (used for legacy advertisement only).
+
+@item @code{multi-advertisement-rotation-interval} (default: @code{#f})
+LE multiple advertisement rotation interval.
+
+@item @code{scan-interval-auto-connect} (default: @code{#f})
+LE scanning interval used for passive scanning supporting auto connect.
+
+@item @code{scan-window-auto-connect} (default: @code{#f})
+LE scanning window used for passive scanning supporting auto connect.
+
+@item @code{scan-interval-suspend} (default: @code{#f})
+LE scanning interval used for active scanning supporting wake from suspend.
+
+@item @code{scan-window-suspend} (default: @code{#f})
+LE scanning window used for active scanning supporting wake from suspend.
+
+@item @code{scan-interval-discovery} (default: @code{#f})
+LE scanning interval used for active scanning supporting discovery.
+
+@item @code{scan-window-discovery} (default: @code{#f})
+LE scanning window used for active scanning supporting discovery.
+
+@item @code{scan-interval-adv-monitor} (default: @code{#f})
+LE scanning interval used for passive scanning supporting the advertisement monitor APIs.
+
+@item @code{scan-window-adv-monitor} (default: @code{#f})
+LE scanning window used for passive scanning supporting the advertisement monitor APIs.
+
+@item @code{scan-interval-connect} (default: @code{#f})
+LE scanning interval used for connection establishment.
+
+@item @code{scan-window-connect} (default: @code{#f})
+LE scanning window used for connection establishment.
+
+@item @code{min-connection-interval} (default: @code{#f})
+LE default minimum connection interval. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{max-connection-interval} (default: @code{#f})
+LE default maximum connection interval. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{connection-latency} (default: @code{#f})
+LE default connection latency. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{connection-supervision-timeout} (default: @code{#f})
+LE default connection supervision timeout. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{autoconnect-timeout} (default: @code{#f})
+LE default autoconnect timeout. This value is superceeded by any specific
+value provided via the Load Connection Parameters interface.
+
+@item @code{adv-mon-allowlist-scan-duration} (default: @code{300})
+Allowlist scan duration during interleaving scan. Only used when scanning for ADV
+monitors. The units are msec.
+
+@item @code{adv-mon-no-filter-scan-duration} (default: @code{500})
+No filter scan duration during interleaving scan. Only used when scanning for ADV
+monitors. The units are msec.
+
+@item @code{enable-adv-mon-interleave-scan?} (default: @code{#t})
+Enable/Disable Advertisement Monitor interleave scan for power saving.
+
+@item @code{cache} (default: @code{'always})
+GATT attribute cache.
+
+Possible values are:
+@itemize @bullet
+@item
+@code{'always}: Always cache attributes even for devices not paired, this is
+recommended as it is best for interoperability, with more consistent
+reconnection times and enables proper tracking of notifications for all
+devices
+
+@item
+@code{'yes}: Only cache attributes of paired devices
+
+@item
+@code{'no}: Never cache attributes.
+@end itemize
+
+@item @code{key-size} (default: @code{0})
+Minimum required Encryption Key Size for accessing secured characteristics.
+
+Possible values are:
+@itemize @bullet
+@item
+@code{0}: Don't care
+
+@item
+@code{7 <= N <= 16}
+@end itemize
+
+@item @code{exchange-mtu} (default: @code{517})
+Exchange MTU size. Possible values are:
+
+@itemize @bullet
+@item
+@code{23 <= N <= 517}
+@end itemize
+
+@item @code{att-channels} (default: @code{3})
+Number of ATT channels. Possible values are:
+
+@itemize @bullet
+@item
+@code{1}: Disables EATT
+
+@item
+@code{2 <= N <= 5}
+@end itemize
+
+@item @code{session-mode} (default: @code{'basic})
+AVDTP L2CAP signalling channel mode.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{'basic}: Use L2CAP basic mode
+
+@item
+@code{'ertm}: Use L2CAP enhanced retransmission mode.
+@end itemize
+
+@item @code{stream-mode} (default: @code{'basic})
+AVDTP L2CAP transport channel mode.
+
+Possible values are:
+
+@itemize @bullet
+@item
+@code{'basic}: Use L2CAP basic mode
+
+@item
+@code{'streaming}: Use L2CAP streaming mode.
+@end itemize
+
+@item @code{reconnect-uuids} (default: @code{'()})
+The ReconnectUUIDs defines the set of remote services that should try
+to be reconnected to in case of a link loss (link supervision
+timeout). The policy plugin should contain a sane set of values by
+default, but this list can be overridden here. By setting the list to
+empty the reconnection feature gets disabled.
+
+Possible values:
+
+@itemize @bullet
+@item
+@code{'()}
+
+@item
+@code{(list (uuid <uuid-1>) (uuid <uuid-2>) ...)}.
+@end itemize
+
+@item @code{reconnect-attempts} (default: @code{7})
+Defines the number of attempts to reconnect after a link lost. Setting
+the value to 0 disables reconnecting feature.
+
+@item @code{reconnect-intervals} (default: @code{'(1 2 4 8 16 32 64)})
+Defines a list of intervals in seconds to use in between attempts. If
+the number of attempts defined in @var{reconnect-attempts} is bigger than
+the list of intervals the last interval is repeated until the last attempt.
+
+@item @code{auto-enable?} (default: @code{#f})
+Defines option to enable all controllers when they are found. This includes
+adapters present on start as well as adapters that are plugged in later on.
+
+@item @code{resume-delay} (default: @code{2})
+Audio devices that were disconnected due to suspend will be reconnected on
+resume. @var{resume-delay} determines the delay between when the controller
+resumes from suspend and a connection attempt is made. A longer delay is
+better for better co-existence with Wi-Fi. The value is in seconds.
+
+@item @code{rssi-sampling-period} (default: @code{#xFF})
+Default RSSI Sampling Period. This is used when a client registers an
+advertisement monitor and leaves the RSSISamplingPeriod unset.
+
+Possible values are:
+@itemize @bullet
+@item
+@code{#x0}: Report all advertisements
+
+@item
+@code{N = #xXX}: Report advertisements every N x 100 msec (range: #x01 to #xFE)
+
+@item
+@code{#xFF}: Report only one advertisement per device during monitoring period.
+@end itemize
+
+@end table
+@end deftp
+
 @defvr {Scheme Variable} gnome-keyring-service-type
 This is the type of the service that adds the
 @uref{https://wiki.gnome.org/Projects/GnomeKeyring, GNOME Keyring}.  Its
@@ -21411,7 +21853,6 @@ By default, this field contains ``gdm-password'' with the value @code{login}
 and ``passwd'' is with the value @code{passwd}.
 @end table
 @end deftp
-
 
 @node Sound Services
 @subsection Sound Services
