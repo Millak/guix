@@ -23,6 +23,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix utils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages docbook))
@@ -30,7 +31,7 @@
 (define-public moreutils
   (package
     (name "moreutils")
-    (version "0.65")
+    (version "0.66")
     (source
      (origin
        (method url-fetch)
@@ -38,18 +39,13 @@
              "https://git.joeyh.name/index.cgi/moreutils.git/snapshot/"
              name "-" version ".tar.gz"))
        (sha256
-        (base32 "10c8b4bwnli4gxwvgmgkc5kin1ksrxsnxmigs7y4rrh4aaszdjb0"))))
+        (base32 "0k91dvqy3jb070bkmhkdxhi05fr7hqlwpv1nrx329wmgi80rw1yw"))))
     (build-system gnu-build-system)
     ;; For building the manual pages.
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.4)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)))
+     (list docbook-xml-4.4 docbook-xsl libxml2 libxslt))
     (inputs
-     `(("perl" ,perl)
-       ("perl-timedate" ,perl-timedate)
-       ("perl-time-duration" ,perl-time-duration)))
+     (list perl perl-timedate perl-time-duration))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -58,8 +54,7 @@
                       (let* ((out (assoc-ref outputs "out")))
                         (wrap-program
                             (string-append out "/bin/ts")
-                          `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))
-                      #t))
+                          `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))
          (delete 'configure))           ; no configure script
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
@@ -67,7 +62,7 @@
                             (assoc-ref %build-inputs "docbook-xsl") "/xml/xsl/"
                             ,(package-name docbook-xsl) "-"
                             ,(package-version docbook-xsl))
-             "CC=gcc")))
+             (string-append "CC=" ,(cc-for-target)))))
     (home-page "https://joeyh.name/code/moreutils/")
     (synopsis "Miscellaneous general-purpose command-line tools")
     (description

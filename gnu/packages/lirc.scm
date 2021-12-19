@@ -69,7 +69,7 @@
            (lambda* (#:key inputs #:allow-other-keys)
              ;; 'lirc-make-devinput' script assumes that linux headers
              ;; are placed in "/usr/...".
-             (let ((headers (assoc-ref inputs "linux-headers")))
+             (let ((headers (assoc-ref inputs "kernel-headers")))
                (substitute* "tools/lirc-make-devinput"
                  (("/usr/include") (string-append headers "/include"))))
              #t))
@@ -85,12 +85,10 @@
                (("^varimage_DATA =.*") "varimage_DATA =\n"))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("libxslt" ,libxslt)))
+     (list pkg-config libxslt))
     (inputs
      `(("libx11" ,libx11)
        ("libusb-compat" ,libusb-compat)
-       ("linux-headers" ,linux-libre-headers)
        ("alsa-lib" ,alsa-lib)
        ("python" ,python)))
     (home-page "https://www.lirc.org/")
@@ -123,9 +121,9 @@ on just one button press.")
            "13s9zqyfh871ls1aha47rhmk13b4mcyfckcn2sw70bvc26832gk6"))))
       (build-system python-build-system)
       (inputs
-       `(("lirc" ,lirc)))
+       (list lirc))
       (native-inputs
-       `(("python-cython" ,python-cython)))
+       (list python-cython))
       (arguments
        `(#:tests? #f         ; the only tests that exist are interactive
          #:phases

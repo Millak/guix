@@ -53,8 +53,7 @@
 
 ;; These are the default inclusion/exclusion regexps for the install phase.
 (define %default-include '("^[^/]*\\.el$" "^[^/]*\\.info$" "^doc/.*\\.info$"))
-(define %default-exclude '("^\\.dir-locals\\.el$" "-pkg\\.el$"
-                           "^[^/]*tests?\\.el$"))
+(define %default-exclude '("^\\.dir-locals\\.el$" "^[^/]*tests?\\.el$"))
 
 (define gnu:unpack (assoc-ref gnu:%standard-phases 'unpack))
 
@@ -111,7 +110,7 @@ environment variable\n" source-directory))
 
 (define* (build #:key outputs inputs #:allow-other-keys)
   "Compile .el files."
-  (let* ((emacs (string-append (assoc-ref inputs "emacs") "/bin/emacs"))
+  (let* ((emacs (search-input-file inputs "/bin/emacs"))
          (out (assoc-ref outputs "out")))
     (setenv "SHELL" "sh")
     (parameterize ((%emacs emacs))
@@ -220,7 +219,7 @@ parallel. PARALLEL-TESTS? is ignored when using a non-make TEST-COMMAND."
 
 (define* (make-autoloads #:key outputs inputs #:allow-other-keys)
   "Generate the autoloads file."
-  (let* ((emacs (string-append (assoc-ref inputs "emacs") "/bin/emacs"))
+  (let* ((emacs (search-input-file inputs "/bin/emacs"))
          (out (assoc-ref outputs "out"))
          (elpa-name-ver (store-directory->elpa-name-version out))
          (elpa-name (package-name->name+version elpa-name-ver))

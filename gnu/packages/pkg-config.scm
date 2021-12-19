@@ -145,8 +145,7 @@ build, or a GNU triplet."
     (source #f)
     (build-system trivial-build-system)
     (inputs
-     `(("bash-minimal" ,bash-minimal)
-       ("pkg-config" ,%pkg-config)))
+     (list bash-minimal %pkg-config))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -166,5 +165,5 @@ exec ~a \"$@\""
      (map (lambda (original)
             (search-path-specification
              (inherit original)
-             (variable "PKG_CONFIG_FOR_BUILD")))
+             (variable "PKG_CONFIG_PATH_FOR_BUILD")))
           (package-native-search-paths %pkg-config)))))

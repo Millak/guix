@@ -8,6 +8,8 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,10 +53,9 @@
     (source
      (origin
        (method url-fetch)
-       (uri
-        (string-append "https://sourceforge.net/projects/xmltoman/files/"
-                       "xmltoman/xmltoman-" version ".tar.gz/xmltoman-"
-                       version ".tar.gz/download"))
+       (uri (string-append "mirror://sourceforge/xmltoman/xmltoman/"
+                           "xmltoman-" version ".tar.gz/"
+                           "xmltoman-" version ".tar.gz"))
        (sha256
         (base32 "1c0lvzr7kdy63wbn1jv6s126ds7add3pxqb0vlxd3v5a2sir91wl"))))
     (build-system gnu-build-system)
@@ -68,8 +69,7 @@
        (modify-phases %standard-phases
          (delete 'configure))))
     (propagated-inputs
-     `(("perl" ,perl)
-       ("perl-xml-parser" ,perl-xml-parser)))
+     (list perl perl-xml-parser))
     (synopsis "XML to Man converter")
     (description "XMLtoMan and XMLMantoHTML are two small scripts to convert xml
 to man pages in groff format or html.  It features the usual man page items such
@@ -199,18 +199,16 @@ a flexible and convenient way.")
                   (guix build utils)
                   (srfi srfi-1))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("flex" ,flex)
-       ("groff" ,groff)))   ;needed at build time (troff, grops, soelim, etc.)
+     (list pkg-config flex groff))   ;needed at build time (troff, grops, soelim, etc.)
     (inputs
-     `(("gdbm" ,gdbm)
-       ("groff-minimal" ,groff-minimal)
-       ("less" ,less)
-       ("libpipeline" ,libpipeline)
-       ;; FIXME: 4.8 and later can use libseccomp, but it causes test
-       ;; failures in the build chroot.
-       ;;("libseccomp" ,libseccomp)
-       ("util-linux" ,util-linux)))
+     (list gdbm
+           groff-minimal
+           less
+           libpipeline
+           ;; FIXME: 4.8 and later can use libseccomp, but it causes test
+           ;; failures in the build chroot.
+           ;;("libseccomp" ,libseccomp)
+           util-linux))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
@@ -226,14 +224,14 @@ the traditional flat-text whatis databases.")
 (define-public mandoc
   (package
     (name "mandoc")
-    (version "1.14.5")
+    (version "1.14.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://mandoc.bsd.lv/snapshots/mandoc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1xyqllxpjj1kimlipx11pzyywf5c25i4wmv0lqm7ph3gnlnb86c2"))))
+                "174x2x9ws47b14lm339j6rzm7mxy1j3qhh484khscw0yy1qdbw4b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "regress"
@@ -253,8 +251,8 @@ the traditional flat-text whatis databases.")
                         (("^PREFIX=.*")
                          (string-append "PREFIX=" (assoc-ref outputs "out")
                                         "\n"))))))))
-    (native-inputs `(("perl" ,perl)))             ;used to run tests
-    (inputs `(("zlib" ,zlib)))
+    (native-inputs (list perl))             ;used to run tests
+    (inputs (list zlib))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
@@ -336,7 +334,9 @@ Linux kernel and C library interfaces employed by user-space programs.")
                        #t)))))
     (inputs
      `(("perl" ,perl)
-       ("perl-gettext" ,perl-gettext)))
+       ,@(if (%current-target-system)
+             '()
+             `(("perl-gettext" ,perl-gettext)))))
     (native-inputs
      `(("perl" ,perl)
        ("gettext" ,gettext-minimal)))
@@ -396,7 +396,7 @@ in C99.")
        #:make-flags (list (string-append "prefix=" (assoc-ref %outputs "out")))
        #:phases (modify-phases %standard-phases (delete 'configure))))
     (inputs
-     `(("gawk" ,gawk)))
+     (list gawk))
     (home-page "https://github.com/mvertes/txt2man")
     (synopsis "Convert text to man page")
     (description "Txt2man converts flat ASCII text to man page format.")

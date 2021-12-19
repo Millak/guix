@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,9 +89,9 @@
              '())))
     (propagated-inputs
      ;; hwloc.pc lists it in 'Requires.private'.
-     `(("libpciaccess" ,libpciaccess)))
+     (list libpciaccess))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (arguments
      `(#:configure-flags '("--localstatedir=/var")
        #:phases
@@ -151,7 +151,7 @@ bind processes, and much more.")
   ;; Note: 2.x isn't the default yet, see above.
   (package
     (inherit hwloc-1)
-    (version "2.5.0")
+    (version "2.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -159,7 +159,7 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1j2j9wn39a8v91r23xncm1rzls6rjkgkvdvqghbdsnq8ps491kx9"))))
+                "1q440fwvhnxz6j8k5bn3bxj86b3lzbr8fgib78l4iq6gxd9yx302"))))
 
     ;; libnuma is no longer needed.
     (inputs (alist-delete "numactl" (package-inputs hwloc-1)))
@@ -232,8 +232,7 @@ bind processes, and much more.")
        ("valgrind" ,valgrind)
        ("slurm" ,slurm)))              ;for PMI support (launching via "srun")
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("perl" ,perl)))
+     (list pkg-config perl))
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags `("--enable-mpi-ext=affinity" ;cr doesn't work
@@ -308,6 +307,16 @@ best MPI library available.  Open MPI offers advantages for system and
 software vendors, application developers and computer science researchers.")
     ;; See file://LICENSE
     (license license:bsd-2)))
+
+(define-public openmpi-c++
+  (package/inherit openmpi
+    (name "openmpi-c++")
+    (outputs '("out"))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openmpi)
+       ((#:configure-flags flags)
+        `(cons "--enable-mpi-cxx" ,flags))))
+    (synopsis "C++ bindings for MPI")))
 
 ;; TODO: javadoc files contain timestamps.
 (define-public java-openmpi
@@ -412,7 +421,7 @@ only provides @code{MPI_THREAD_FUNNELED}.")))
                 "unittest.skipMPI('openmpi')"))
              #t)))))
     (inputs
-     `(("openmpi" ,openmpi)))
+     (list openmpi))
     (home-page "https://bitbucket.org/mpi4py/mpi4py/")
     (synopsis "Python bindings for the Message Passing Interface standard")
     (description "MPI for Python (mpi4py) provides bindings of the Message
@@ -447,9 +456,7 @@ arrays) that expose a buffer interface.")
              `(("ucx" ,ucx))
              '())))
     (native-inputs
-     `(("perl" ,perl)
-       ("which" ,which)
-       ("gfortran" ,gfortran)))
+     (list perl which gfortran))
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags

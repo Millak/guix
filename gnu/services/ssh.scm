@@ -39,6 +39,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 vlist)
   #:export (lsh-configuration
             lsh-configuration?
             lsh-service
@@ -282,7 +283,7 @@ The other options should be self-descriptive."
 (define-record-type* <openssh-configuration>
   openssh-configuration make-openssh-configuration
   openssh-configuration?
-  ;; <package>
+  ;; file-like object
   (openssh               openssh-configuration-openssh
                          (default openssh))
   ;; string
@@ -535,7 +536,15 @@ of user-name/file-like tuples."
   (openssh-configuration
    (inherit config)
    (authorized-keys
-    (append (openssh-authorized-keys config) keys))))
+    (match (openssh-authorized-keys config)
+      (((users _ ...) ...)
+       ;; Build a user/key-list mapping.
+       (let ((user-keys (alist->vhash (openssh-authorized-keys config))))
+         ;; Coalesce the key lists associated with each user.
+         (map (lambda (user)
+                `(,user
+                  ,@(concatenate (vhash-fold* cons '() user user-keys))))
+              users)))))))
 
 (define openssh-service-type
   (service-type (name 'openssh)
@@ -754,7 +763,7 @@ object."
 (define-record-type* <webssh-configuration>
   webssh-configuration make-webssh-configuration
   webssh-configuration?
-  (package     webssh-configuration-package     ;package
+  (package     webssh-configuration-package     ;file-like
                (default webssh))
   (user-name   webssh-configuration-user-name   ;string
                (default "webssh"))

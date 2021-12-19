@@ -89,10 +89,8 @@ staying as close to their API as is reasonable.")
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("perl" ,perl)                             ;for tests
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list perl ;for tests
+           autoconf automake libtool))
     (synopsis "C++ logging library")
     (description
      "Google glog is a library that implements application-level logging.
@@ -115,10 +113,8 @@ command line.")
          "0wl2wm6p3pc0vkk33s7rzgcfvs9cwxfmlz997pdfhlw72r00l7s5"))))
     (build-system python-build-system)
     (inputs
-     `(("python-pyyaml" ,python-pyyaml)
-       ("python-sockjs-tornado" ,python-sockjs-tornado)
-       ("python-tornado-http-auth" ,python-tornado-http-auth)
-       ("python-tornado" ,python-tornado)))
+     (list python-pyyaml python-sockjs-tornado python-tornado-http-auth
+           python-tornado))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -170,7 +166,7 @@ commands, displaying the results via a web interface.")
              #t))
          (delete 'configure))           ; no configure script
        #:tests? #f)) ; no test suite (make check just runs cppcheck)
-    (inputs `(("ncurses" ,ncurses)))
+    (inputs (list ncurses))
     (home-page "https://vanheusden.com/multitail/")
     (synopsis "Monitor multiple log files")
     (description
@@ -181,7 +177,7 @@ output in multiple windows in a terminal.")
 (define-public spdlog
   (package
     (name "spdlog")
-    (version "1.8.5")
+    (version "1.9.2")
     (source
      (origin
        (method git-fetch)
@@ -190,7 +186,7 @@ output in multiple windows in a terminal.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "179krvg5sad6dviqpcjwg6czzknnilqszrg1d0fgp12h6sy66vqg"))))
+        (base32 "1img03ka63hf3sb62v5f02ax5jc9mlpz5cijr38xxzymvcg1s98r"))))
     (build-system cmake-build-system)
     ;; TODO run benchmark. Currently not possible, as adding
     ;; (gnu packages benchmark) forms a dependency cycle

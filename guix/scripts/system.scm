@@ -64,6 +64,7 @@
                  (device-module-aliases matching-modules)
   #:use-module (gnu system linux-initrd)
   #:use-module (gnu image)
+  #:use-module (gnu platform)
   #:use-module (gnu system)
   #:use-module (gnu bootloader)
   #:use-module (gnu system file-systems)
@@ -253,7 +254,7 @@ the ownership of '~a' may be incorrect!~%")
           (install-bootloader local-eval bootloader bootcfg
                               #:target target)
           (return
-           (info (G_ "bootloader successfully installed on '~a'~%")
+           (info (G_ "bootloader successfully installed on~{ ~a~}~%")
                  (bootloader-configuration-targets bootloader))))))))
 
 
@@ -688,6 +689,7 @@ checking this by themselves in their 'check' procedure."
 (define* (system-derivation-for-action image action
                                        #:key
                                        full-boot?
+                                       (graphic? #t)
                                        container-shared-network?
                                        mappings)
   "Return as a monadic value the derivation for IMAGE according to ACTION."
@@ -705,6 +707,7 @@ checking this by themselves in their 'check' procedure."
       ((vm)
        (system-qemu-image/shared-store-script os
                                               #:full-boot? full-boot?
+                                              #:graphic? graphic?
                                               #:disk-image-size
                                               (if full-boot?
                                                   image-size
@@ -771,6 +774,7 @@ and TARGET arguments."
                          dry-run? derivations-only?
                          use-substitutes? target
                          full-boot?
+                         (graphic? #t)
                          container-shared-network?
                          (mappings '())
                          (gc-root #f))
@@ -824,6 +828,7 @@ static checks."
   (mlet* %store-monad
       ((sys       (system-derivation-for-action image action
                                                 #:full-boot? full-boot?
+                                                #:graphic? graphic?
                                                 #:container-shared-network? container-shared-network?
                                                 #:mappings mappings))
 
@@ -1012,6 +1017,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "
       --full-boot        for 'vm', make a full boot sequence"))
   (display (G_ "
+      --no-graphic       for 'vm', use the tty that we are started in for IO"))
+  (display (G_ "
       --skip-checks      skip file system and initrd module safety checks"))
   (display (G_ "
       --target=TRIPLET   cross-build for TRIPLET--e.g., \"armel-linux-gnu\""))
@@ -1080,6 +1087,9 @@ Some ACTIONS support additional ARGS.\n"))
          (option '("full-boot") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'full-boot? #t result)))
+         (option '("no-graphic") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'no-graphic? #t result)))
          (option '("save-provenance") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'save-provenance? #t result)))
@@ -1212,13 +1222,11 @@ resulting from command-line parsing."
                             (base-image (if (operating-system? obj)
                                             (os->image obj
                                                        #:type image-type)
-                                            obj))
-                            (base-target (image-target base-image)))
+                                            obj)))
                         (image
                          (inherit (if label
                                       (image-with-label base-image label)
                                       base-image))
-                         (target (or base-target target))
                          (size image-size)
                          (volatile-root? volatile?))))
          (os          (image-operating-system image))
@@ -1267,6 +1275,7 @@ resulting from command-line parsing."
                                #:validate-reconfigure
                                (assoc-ref opts 'validate-reconfigure)
                                #:full-boot? (assoc-ref opts 'full-boot?)
+                               #:graphic? (not (assoc-ref opts 'no-graphic?))
                                #:container-shared-network?
                                (assoc-ref opts 'container-shared-network?)
                                #:mappings (filter-map (match-lambda

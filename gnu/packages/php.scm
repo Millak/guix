@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,7 +61,7 @@
 (define-public php
   (package
     (name "php")
-    (version "7.4.22")
+    (version "7.4.26")
     (home-page "https://secure.php.net/")
     (source (origin
               (method url-fetch)
@@ -68,7 +69,10 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "1s5xjy1cchlg0vfxic73wy2wip8spfjr094hzzyc76plsbbqq1wf"))
+                "1y0f1xgfi8cks6npdhrycg8r9g3q0pikqgf5h4xafpy8znmb61g3"))
+              (patches
+               (search-patches "php-bug-74093-test.patch"
+                               "php-openssl_x509_checkpurpose_basic.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -81,8 +85,7 @@
                             ;;"fileinfo/libmagic" ; a patched version of libmagic
                             '("gd/libgd"
                               "pcre/pcre2lib"
-                              "xmlrpc/libxmlrpc"))
-                  #t))))
+                              "xmlrpc/libxmlrpc"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -93,7 +96,7 @@
          (list (with "--with-bz2" "bzip2")
                (with "--with-curl" "curl")
                (with "--with-gdbm" "gdbm")
-               (with "--with-gettext" "glibc") ; libintl.h
+               (with "--with-gettext" "libc")  ; libintl.h
                (with "--with-gmp" "gmp")
                (with "--with-ldap" "openldap")
                (with "--with-ldap-sasl" "cyrus-sasl")
@@ -367,7 +370,6 @@
        ("cyrus-sasl" ,cyrus-sasl)
        ("gd" ,gd)
        ("gdbm" ,gdbm)
-       ("glibc" ,glibc)
        ("gmp" ,gmp)
        ("gnutls" ,gnutls)
        ("icu4c" ,icu4c)

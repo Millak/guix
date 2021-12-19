@@ -107,7 +107,7 @@
   "Texinfo markup in description is invalid"
   (single-lint-warning-message
    (check-description-style
-    (dummy-package "x" (description "f{oo}b@r")))))
+    (dummy-package "x" (description (identity "f{oo}b@r"))))))
 
 (test-equal "description: does not start with an upper-case letter"
   "description should start with an upper-case letter or digit"
@@ -177,6 +177,20 @@
                               (description "Whitespace. "))))
      (check-description-style pkg))))
 
+(test-equal "description: pluralized 'This package'"
+  "description contains typo 'This packages', should be 'This package'"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "x"
+                             (description "This packages is a typo."))))
+     (check-description-style pkg))))
+
+(test-equal "description: grammar 'allows to'"
+  "description contains typo 'allows to'"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "x"
+                             (description "This package allows to do stuff."))))
+     (check-description-style pkg))))
+
 (test-equal "synopsis: not a string"
   "invalid synopsis: #f"
   (single-lint-warning-message
@@ -195,7 +209,7 @@
   "Texinfo markup in synopsis is invalid"
   (single-lint-warning-message
    (check-synopsis-style
-    (dummy-package "x" (synopsis "Bad $@ texinfo")))))
+    (dummy-package "x" (synopsis (identity "Bad $@ texinfo"))))))
 
 (test-equal "synopsis: does not start with an upper-case letter"
   "synopsis should start with an upper-case letter or digit"
@@ -506,17 +520,17 @@
                                  (file-name "x.patch")))))))))
     (check-patch-file-names pkg)))
 
-(test-equal "patches: file name too long"
+(test-equal "patches: file name too long, which may break 'make dist'"
   (string-append "x-"
-                 (make-string 100 #\a)
-                 ".patch: file name is too long")
+                 (make-string 152 #\a)
+                 ".patch: file name is too long, which may break 'make dist'")
   (single-lint-warning-message
    (let ((pkg (dummy-package
                "x"
                (source
                 (dummy-origin
                  (patches (list (string-append "x-"
-                                               (make-string 100 #\a)
+                                               (make-string 152 #\a)
                                                ".patch"))))))))
      (check-patch-file-names pkg))))
 
@@ -1331,29 +1345,34 @@
 
 (test-assert "haskell-stackage"
   (let* ((stackage (string-append "{ \"packages\": [{"
-                                  "    \"name\":\"x\","
-                                  "    \"version\":\"1.0\" }]}"))
+                                  "    \"name\":\"pandoc\","
+                                  "    \"synopsis\":\"synopsis\","
+                                  "    \"version\":\"1.0\" }],"
+                                  "  \"snapshot\": {"
+                                  "    \"ghc\": \"8.6.5\","
+                                  "    \"name\": \"lts-14.27\""
+                                  "  }}"))
          (packages (map (lambda (version)
                           (dummy-package
-                           (string-append "ghc-x")
+                           "ghc-pandoc"
                            (version version)
                            (source
                             (dummy-origin
                              (method url-fetch)
                              (uri (string-append
                                    "https://hackage.haskell.org/package/"
-                                   "x-" version "/x-" version ".tar.gz"))))))
-                        '("0.9" "1.0" "2.0")))
+                                   "pandoc-" version "/pandoc-" version ".tar.gz"))))))
+                        '("0.9" "1.0" "100.0")))
          (warnings (pk (with-http-server `((200 ,stackage) ; memoized
-                                           (200 "name: x\nversion: 1.0\n")
-                                           (200 "name: x\nversion: 1.0\n")
-                                           (200 "name: x\nversion: 1.0\n"))
+                                           (200 "name: pandoc\nversion: 1.0\n")
+                                           (200 "name: pandoc\nversion: 1.0\n")
+                                           (200 "name: pandoc\nversion: 1.0\n"))
                          (parameterize ((%hackage-url (%local-url))
                                         (%stackage-url (%local-url)))
                            (append-map check-haskell-stackage packages))))))
     (match warnings
       (((? lint-warning? warning))
-       (and (string=? (package-version (lint-warning-package warning)) "2.0")
+       (and (string=? (package-version (lint-warning-package warning)) "100.0")
             (string-contains (lint-warning-message warning)
                              "ahead of Stackage LTS version"))))))
 

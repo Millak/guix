@@ -84,9 +84,7 @@
                               (assoc-ref %outputs "out")
                               "/lib/cups"))))
       (inputs
-       `(("ghostscript" ,ghostscript)
-         ("cups" ,cups)
-         ("zlib" ,zlib)))
+       (list ghostscript cups zlib))
       (home-page "https://github.com/pdewacht/brlaser")
       (synopsis "Brother laser printer driver")
       (description "Brlaser is a CUPS driver for Brother laser printers.  This
@@ -213,8 +211,8 @@ driver is known to work with these printers:
                                                out "/lib/cups/filter")))
                         #t))))))
     (native-inputs
-     `(("glib" ,glib "bin")             ; for gdbus-codegen
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin") ; for gdbus-codegen
+           pkg-config))
     (inputs
      `(("avahi"        ,avahi)
        ("fontconfig"   ,fontconfig)
@@ -327,10 +325,9 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
                 "#elif defined(HAVE_AVAHI)"))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("zlib"  ,zlib)
-       ("gnutls" ,gnutls)))
+     (list zlib gnutls))
     (home-page "https://openprinting.github.io/")
     (synopsis "The Common Unix Printing System")
     (description
@@ -486,11 +483,7 @@ device-specific programs to convert and print many types of files.")
                 "0a52jw6rm7lr5nbyksiia0rn7sasyb5cjqcb95z1wxm2yprgi6lm"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("glib" ,glib)
-       ("polkit" ,polkit)
-       ("cups" ,cups)))
+     (list intltool pkg-config glib polkit cups))
     (home-page "https://www.freedesktop.org/wiki/Software/cups-pk-helper/")
     (synopsis "PolicyKit helper to configure CUPS with fine-grained privileges")
     (description
@@ -502,14 +495,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.21.6")
+    (version "3.21.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "1jkvbq64pxn5rg25pk13xwn5xr2bn0sa95yvh2q4ys0kv79n0cyc"))
+                "0q3adcp8iygravp4bq4gw14jk20c5rhnawj1333qyw8yvlghw8yy"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -524,9 +517,13 @@ should only be used as part of the Guix cups-pk-helper service.")
                   (delete-file "prnt/hpcups/ImageProcessor.h")
                   (substitute* "Makefile.in"
                     ((" -lImageProcessor ") " ")
-                    (("(\\@HPLIP_BUILD_TRUE\\@[[:blank:]]*).*libImageProcessor.*"
+                    ;; Turn shell commands inside an if…fi into harmless no-ops.
+                    (("^(\\@HPLIP_BUILD_TRUE\\@[[:blank:]]*).*libImageProcessor.*"
                       _ prefix)
-                     (string-append prefix ":; \\\n")))
+                     (string-append prefix ": ; \\\n"))
+                    ;; Remove the lines adding file targets altogether.
+                    (("^\\@FULL_BUILD_TRUE\\@.*libImageProcessor.*")
+                     ""))
 
                   ;; Install binaries under libexec/hplip instead of
                   ;; share/hplip; that'll at least ensure they get stripped.
@@ -688,8 +685,7 @@ should only be used as part of the Guix cups-pk-helper service.")
        ("sane-backends" ,sane-backends-minimal)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)))))
+     (list perl pkg-config))))
 
 (define-public hplip-minimal
   (package/inherit hplip
@@ -731,11 +727,9 @@ should only be used as part of the Guix cups-pk-helper service.")
     (home-page
      "https://wiki.linuxfoundation.org/openprinting/database/foomatic")
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list perl pkg-config))
     (inputs
-     `(("dbus" ,dbus)
-       ("a2ps" ,a2ps)))
+     (list dbus a2ps))
     (arguments
      '( ;; Specify the installation directories.
        #:configure-flags (list (string-append "ac_cv_path_CUPS_BACKENDS="
@@ -750,7 +744,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                                (string-append "ac_cv_path_PPR_LIB="
                                               (assoc-ref %outputs "out")
                                               "/lib/ppr/lib")
-
+                               "CFLAGS=-fcommon"
                                ;; For some reason these are misdiagnosed.
                                "ac_cv_func_malloc_0_nonnull=yes"
                                "ac_cv_func_realloc_0_nonnull=yes")
@@ -849,14 +843,12 @@ printer/driver specific, but spooler-independent PPD file.")
        #:tests? #f                                ;no tests
        #:make-flags '("CC=gcc")))
     (inputs
-     `(("coreutils" ,coreutils)
-       ("sed" ,sed)
-       ("ghostscript" ,ghostscript)
-       ("foomatic-filters" ,foomatic-filters)))   ;for 'foomatic-rip'
+     (list coreutils sed ghostscript foomatic-filters))   ;for 'foomatic-rip'
     (native-inputs
-     `(("bc" ,bc)
-       ("groff" ,groff)))
-    (home-page "http://foo2zjs.rkkda.com/")
+     (list bc groff))
+    ;; The domain has expired and no one has meaningfully taken up the torch.
+    (home-page (string-append "https://web.archive.org/web/20210129024712/"
+                              "http://foo2zjs.rkkda.com/"))
     (synopsis "Printer driver for ZjStream-based printers")
     (description
      "foo2zjs is a printer driver for printers that use the Zenographics
@@ -917,8 +909,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
                  (for-each (cut invoke "gzip" "-9" <>)
                            (find-files "share/cups" "\\.ppd$")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (inputs
      `(("cups" ,cups-minimal)))
     (synopsis "ESC/P-R printer driver")
@@ -929,9 +920,6 @@ printers.  It can be used only with printers that support the Epson@tie{}ESC/P-R
 language.")
     (home-page "http://download.ebz.epson.net/dsc/search/01/search/?OSC=LX")
     (license license:gpl2+)))
-
-(define-public escpr
-  (deprecated-package "escpr" epson-inkjet-printer-escpr))
 
 (define-public splix
   ;; Last released in 2009 <https://sourceforge.net/projects/splix/files/>.
@@ -1021,7 +1009,7 @@ obtained and installed separately.")
      '(;; Tests require CUPS to be running
        #:tests? #f))
     (inputs
-     `(("cups" ,cups)))
+     (list cups))
     (home-page "https://github.com/zdohnal/pycups")
     (synopsis "Python bindings for libcups")
     (description

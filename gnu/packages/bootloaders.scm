@@ -263,11 +263,11 @@ menu to select one of the installed operating systems.")
     (inherit grub)
     (name "grub-minimal")
     (inputs
-     (fold alist-delete (package-inputs grub)
-           '("lvm2" "mdadm" "fuse" "console-setup")))
+     (modify-inputs (package-inputs grub)
+       (delete "lvm2" "mdadm" "fuse" "console-setup")))
     (native-inputs
-     (fold alist-delete (package-native-inputs grub)
-           '("help2man" "texinfo" "parted" "qemu" "xorriso")))
+     (modify-inputs (package-native-inputs grub)
+       (delete "help2man" "texinfo" "parted" "qemu" "xorriso")))
     (arguments
      (substitute-keyword-arguments (package-arguments grub)
        ((#:configure-flags _ ''())
@@ -295,9 +295,8 @@ menu to select one of the installed operating systems.")
     (name "grub-efi")
     (synopsis "GRand Unified Boot loader (UEFI version)")
     (inputs
-     `(("efibootmgr" ,efibootmgr)
-       ("mtools" ,mtools)
-       ,@(package-inputs grub)))
+     (modify-inputs (package-inputs grub)
+       (prepend efibootmgr mtools)))
     (arguments
      `(;; TODO: Tests need a UEFI firmware for qemu. There is one at
        ;; https://github.com/tianocore/edk2/tree/master/OvmfPkg .
@@ -344,8 +343,8 @@ menu to select one of the installed operating systems.")
     (name "grub-hybrid")
     (synopsis "GRand Unified Boot loader (hybrid version)")
     (inputs
-     `(("grub" ,grub)
-       ,@(package-inputs grub-efi)))
+     (modify-inputs (package-inputs grub-efi)
+       (prepend grub)))
     (arguments
      (substitute-keyword-arguments (package-arguments grub-efi)
        ((#:modules modules `((guix build utils) (guix build gnu-build-system)))
@@ -380,7 +379,10 @@ menu to select one of the installed operating systems.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0k8dvafd6410kqxf3kyr4y8jzmpmrih6wbjqg6gklak7945yflrc"))))
+                  "0k8dvafd6410kqxf3kyr4y8jzmpmrih6wbjqg6gklak7945yflrc"))
+                (patches
+                 (search-patches "syslinux-gcc10.patch"
+                                 "syslinux-strip-gnu-property.patch"))))
       (build-system gnu-build-system)
       (native-inputs
        `(("nasm" ,nasm)
@@ -400,6 +402,7 @@ menu to select one of the installed operating systems.")
                (string-append "MANDIR=" %output "/share/man")
                "PERL=perl"
                "bios")
+         #:strip-flags '("--strip-debug" "--enable-deterministic-archives")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'patch-files
@@ -451,14 +454,14 @@ menu to select one of the installed operating systems.")
                 "0wrl43rvd8nnm1v1wyfdr17vk8q7ymib62vli6da8n9ni4lwbkk5"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("libyaml" ,libyaml)
-       ("pkg-config" ,pkg-config)
-       ("swig" ,swig)
-       ("valgrind" ,valgrind)))
+     (list bison
+           flex
+           libyaml
+           pkg-config
+           swig
+           valgrind))
     (inputs
-     `(("python" ,python)))
+     (list python))
     (arguments
      `(#:make-flags
        (list (string-append "CC=" ,(cc-for-target))
@@ -500,21 +503,34 @@ tree binary files.  These are board description files used by Linux and BSD.")
   ;; https://bugs.launchpad.net/ubuntu/+source/u-boot/+bug/1937246
   (search-patch "u-boot-sifive-prevent-reloc-initrd-fdt.patch"))
 
+(define %u-boot-allow-disabling-openssl-patch
+  ;; Fixes build of u-boot 2021.10 without openssl
+  ;; https://lists.denx.de/pipermail/u-boot/2021-October/462728.html
+  (search-patch "u-boot-allow-disabling-openssl.patch"))
+
+(define %u-boot-rk3399-enable-emmc-phy-patch
+  ;; Fix emmc boot on rockpro64 and pinebook-pro, this was a regression
+  ;; therefore should hopefully be fixed when updating u-boot.
+  ;; https://lists.denx.de/pipermail/u-boot/2021-November/466329.html
+  (search-patch "u-boot-rk3399-enable-emmc-phy.patch"))
+
 (define u-boot
   (package
     (name "u-boot")
-    (version "2021.07")
+    (version "2021.10")
     (source (origin
 	      (patches
                (list %u-boot-rockchip-inno-usb-patch
-                     %u-boot-sifive-prevent-relocating-initrd-fdt))
+                     %u-boot-allow-disabling-openssl-patch
+                     %u-boot-sifive-prevent-relocating-initrd-fdt
+                     %u-boot-rk3399-enable-emmc-phy-patch))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "0zm7igkdnz0w4ir8rfl2dislfrl0ip104grs5hvd30a5wkm7wari"))))
+                "1m0bvwv8r62s4wk4w3cmvs888dhv9gnfa98dczr4drk2jbhj7ryd"))))
     (native-inputs
      `(("bc" ,bc)
        ("bison" ,bison)
@@ -530,7 +546,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
     (build-system  gnu-build-system)
     (home-page "https://www.denx.de/wiki/U-Boot/")
     (synopsis "ARM bootloader")
-    (description "U-Boot is a bootloader used mostly for ARM boards. It
+    (description "U-Boot is a bootloader used mostly for ARM boards.  It
 also initializes the boards (RAM etc).")
     (license license:gpl2+)))
 
@@ -539,8 +555,8 @@ also initializes the boards (RAM etc).")
     (inherit u-boot)
     (name "u-boot-tools")
     (native-inputs
-     `(("sdl2" ,sdl2)
-       ,@(package-native-inputs u-boot)))
+     (modify-inputs (package-native-inputs u-boot)
+       (prepend sdl2)))
     (arguments
      `(#:make-flags '("HOSTCC=gcc")
        #:test-target "tcheck"
@@ -586,7 +602,7 @@ def test_ctrl_c"))
                                   ;; See https://bugs.gnu.org/34717 for
                                   ;; details.
                                   (("CONFIG_FIT_SIGNATURE=y")
-                                   "CONFIG_FIT_SIGNATURE=n\nCONFIG_UT_LIB_ASN1=n")
+                                   "CONFIG_FIT_SIGNATURE=n\nCONFIG_UT_LIB_ASN1=n\nCONFIG_TOOLS_LIBCRYPTO=n")
                                   ;; This test requires a sound system, which is un-used
                                   ;; in u-boot-tools.
                                   (("CONFIG_SOUND=y") "CONFIG_SOUND=n")))
@@ -612,6 +628,7 @@ def test_ctrl_c"))
                            "tools/mkenvimage"
                            "tools/dumpimage"
                            "tools/mkimage"
+                           "tools/kwboot"
                            "tools/proftool"
                            "tools/fdtgrep"
                            "tools/env/fw_printenv"
@@ -684,6 +701,12 @@ board-independent tools.")))
                                                                   suffix-len))))
                                    (sort entries string-ci<)))
                        (error "Invalid boardname ~s." ,board))))))
+           (add-after 'configure 'disable-tools-libcrypto
+             ;; Disable libcrypto due to GPL and OpenSSL license
+             ;; incompatibilities
+             (lambda _
+               (substitute* ".config"
+                 (("CONFIG_TOOLS_LIBCRYPTO=.*$") "CONFIG_TOOLS_LIBCRYPTO=n"))))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -722,7 +745,7 @@ board-independent tools.")))
     (package
       (inherit base)
       (name "u-boot-am335x-boneblack")
-      (description "U-Boot is a bootloader used mostly for ARM boards. It
+      (description "U-Boot is a bootloader used mostly for ARM boards.  It
 also initializes the boards (RAM etc).
 
 This U-Boot is built for the BeagleBone Black, which was removed upstream,
@@ -842,7 +865,7 @@ device while it's being turned on (and a while longer).")
   (let ((base (make-u-boot-package "novena" "arm-linux-gnueabihf")))
     (package
       (inherit base)
-      (description "U-Boot is a bootloader used mostly for ARM boards. It
+      (description "U-Boot is a bootloader used mostly for ARM boards.  It
 also initializes the boards (RAM etc).
 
 This U-Boot is built for Novena.  Be advised that this version, contrary
@@ -894,7 +917,8 @@ to Novena upstream, does not load u-boot.img from the first partition.")
       (source (origin
                 (inherit (package-source u-boot))
                 (patches
-                 (search-patches "u-boot-riscv64-fix-extlinux.patch")))))))
+                 (search-patches "u-boot-riscv64-fix-extlinux.patch"
+                                 %u-boot-allow-disabling-openssl-patch)))))))
 
 (define-public u-boot-sifive-unleashed
   (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu"))
@@ -1066,14 +1090,14 @@ tools, and more.")
 (define-public os-prober
   (package
     (name "os-prober")
-    (version "1.78")
+    (version "1.79")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://debian/pool/main/o/os-prober/os-prober_"
                            version ".tar.xz"))
        (sha256
-        (base32 "1sahk72blsrlirly4xlwa8jfxrpwagyn7b81p92q2s9m218rz43f"))))
+        (base32 "1vhhk0bl2j4910513gn5h3z8nsaavyv3c8764bim2klc0xyk3rmb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -1238,9 +1262,7 @@ order to add a suitable bootloader menu entry.")
              (lambda _ (chdir "..") #t)))
          #:tests? #f))                  ; no test suite
       (native-inputs
-       `(("perl" ,perl)
-         ("syslinux" ,syslinux)
-         ("xorriso" ,xorriso)))
+       (list perl syslinux xorriso))
       (home-page "https://ipxe.org")
       (synopsis "PXE-compliant network boot firmware")
       (description "iPXE is a network boot firmware.  It provides a full PXE

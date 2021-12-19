@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
+;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -53,6 +55,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
@@ -75,14 +78,14 @@
 (define-public ccid
   (package
     (name "ccid")
-    (version "1.4.34")
+    (version "1.4.36")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ccid.apdu.fr/files/ccid-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "02mlbpnsvy6jgwpz0jk5lh27y3cn2bsyz9xini7898m9b5dn9xz6"))))
+                "1ha9cwxkadx4rs4jj114qzh42qj02x6r8y1mvhcvijhvby4aqwrb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--enable-usbdropdir=" %output
@@ -95,11 +98,9 @@
                (("/bin/echo") (which "echo")))
              #t)))))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list perl pkg-config))
     (inputs
-     `(("libusb" ,libusb)
-       ("pcsc-lite" ,pcsc-lite)))
+     (list libusb pcsc-lite))
     (home-page "https://ccid.apdu.fr/")
     (synopsis "PC/SC driver for USB smart card devices")
     (description
@@ -112,7 +113,8 @@ readers and is needed to communicate with such devices through the
 (define-public eid-mw
   (package
     (name "eid-mw")
-    (version "5.0.14")
+    ;; When updating, remove the short-lived libbsd input and module import!
+    (version "5.0.28")
     (source
      (origin
        (method git-fetch)
@@ -121,7 +123,7 @@ readers and is needed to communicate with such devices through the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hyxsbxjjn9hh5p7jlcfb5yplf3n8dg49dfgi8fjp95phis3gbd4"))))
+        (base32 "0fmpdx09a60ndbsvy3m6w77naqy3j6k2ydq6jdcmdvxnr31z7fmf"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -133,17 +135,23 @@ readers and is needed to communicate with such devices through the
        ("pkg-config" ,pkg-config)
        ("perl" ,perl)))
     (inputs
-     `(("curl" ,curl)
-       ("openssl" ,openssl)
-       ("gtk+" ,gtk+)
-       ("pcsc-lite" ,pcsc-lite)
-       ("p11-kit" ,p11-kit)
-       ("libproxy" ,libproxy)
-       ("libxml2" ,libxml2)
-       ("cyrus-sasl" ,cyrus-sasl)))
+     (list curl
+           libbsd
+           openssl
+           gtk+
+           pcsc-lite
+           p11-kit
+           libproxy
+           libxml2
+           cyrus-sasl))
     (arguments
      `(#:configure-flags
-       (list "--disable-static")
+       (list "--disable-static"
+
+             ;; With the (prettier) pinentry enabled, eid-viewer will skip
+             ;; crucial dialogue when used with card readers with built-in
+             ;; keypads such as the Digipass 870, and possibly others too.
+             "--disable-pinentry")
        #:phases
        (modify-phases %standard-phases
          (replace 'bootstrap
@@ -153,25 +161,12 @@ readers and is needed to communicate with such devices through the
              (substitute* "scripts/build-aux/genver.sh"
                (("/bin/sh") (which "sh"))
                (("^(GITDESC=).*" _ match) (string-append match ,version "\n")))
-             (invoke "sh" "./bootstrap.sh")))
-         (add-after 'unpack 'make-reproducible
-           (lambda _
-             (substitute* "scripts/mac/create-vers.sh"
-               (("NOW=.*")
-                "NOW=1970-01-01\n"))
-             #t))
-         ;; Remove failing test that was removed upstream after version 5.0.8.
-         ;; See: https://github.com/Fedict/eid-mw/commit/3d1187b1b61118b9ae97607903d3d2fc0bad7518
-         (add-before 'check 'remove-failing-test
-           (lambda _
-             (substitute* "tests/unit/Makefile.am"
-               (("sign_state ordering cardcom_common")
-                "sign_state ordering #cardcom_common"))
-             #t))
-         )))
-    (synopsis "Belgian eID Middleware")
-    (description "The Belgian eID Middleware is required to authenticate with
-online services using the Belgian electronic identity card.")
+             (invoke "sh" "./bootstrap.sh"))))))
+    (synopsis "Belgian electronic identity card (eID) middleware")
+    (description "The Belgian eID middleware is required to authenticate with
+online services and sign digital documents with Belgian identity cards.
+
+It requires a running pcscd service and a compatible card reader.")
     (home-page "https://github.com/Fedict/eid-mw")
     (license license:lgpl3)))
 
@@ -212,10 +207,9 @@ the low-level development kit for the Yubico YubiKey authentication device.")
      '(#:configure-flags '("--disable-gost"))) ; TODO Missing the OpenSSL
                                                ; engine for GOST
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("cppunit" ,cppunit)))
+     (list pkg-config cppunit))
     (synopsis "Software implementation of a generic cryptographic device")
     (description
      "SoftHSM 2 is a software implementation of a generic cryptographic device
@@ -239,8 +233,8 @@ with a PKCS #11 Cryptographic Token Interface.")
      `(#:configure-flags '("--enable-usbdropdir=/var/lib/pcsc/drivers"
                            "--disable-libsystemd")))
     (native-inputs
-     `(("perl" ,perl)                   ; for pod2man
-       ("pkg-config" ,pkg-config)))
+     (list perl ; for pod2man
+           pkg-config))
     (inputs
      `(("libudev" ,eudev)))
     (home-page "https://pcsclite.apdu.fr/")
@@ -271,9 +265,8 @@ from a client application and provide access to the desired reader.")
     ;; yubico.com, so skip it.
     (arguments '(#:tests? #f))
 
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("help2man" ,help2man)))
-    (inputs `(("curl" ,curl)))
+    (native-inputs (list pkg-config help2man))
+    (inputs (list curl))
     (synopsis "C library to validate one-time-password YubiKeys")
     (description
      "YubiKey C Client Library (libykclient) is a C library used to validate a
@@ -285,7 +278,7 @@ website for more information about Yubico and the YubiKey.")
 (define-public opensc
   (package
     (name "opensc")
-    (version "0.21.0")
+    (version "0.22.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -293,7 +286,7 @@ website for more information about Yubico and the YubiKey.")
                     version "/opensc-" version ".tar.gz"))
               (sha256
                (base32
-                "0pijycjwpll9zn83dazgsh8n9ywq0z1ragjsd1sqv3abrcfvpyrb"))))
+                "11ki9j2b07w5gi2b1r39d71320s7rhfzcpaqpqra7gjy353m6kld"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -309,17 +302,11 @@ website for more information about Yubico and the YubiKey.")
                (substitute* "configure"
                  (("DEFAULT_PCSC_PROVIDER=\"libpcsclite\\.so\\.1\"")
                   (string-append
-                   "DEFAULT_PCSC_PROVIDER=\"" libpcsclite "\"")))
-               #t))))))
+                   "DEFAULT_PCSC_PROVIDER=\"" libpcsclite "\"")))))))))
     (inputs
-     `(("readline" ,readline)
-       ("openssl" ,openssl)
-       ("pcsc-lite" ,pcsc-lite)
-       ("ccid" ,ccid)))
+     (list readline openssl pcsc-lite ccid))
     (native-inputs
-     `(("libxslt" ,libxslt)
-       ("docbook-xsl" ,docbook-xsl)
-       ("pkg-config" ,pkg-config)))
+     (list libxslt docbook-xsl pkg-config))
     (home-page "https://github.com/OpenSC/OpenSC/wiki")
     (synopsis "Tools and libraries related to smart cards")
     (description
@@ -344,17 +331,14 @@ authentication, encryption and digital signatures.  OpenSC implements the PKCS
                 "10xgdc51xvszkxmsvqnbjs8ixxz7rfnfahh3wn8glllynmszbhwi"))))
     (build-system gnu-build-system)
     (inputs
-     `(("gengetopt" ,gengetopt)
-       ("perl" ,perl)
-       ("pcsc-lite" ,pcsc-lite)
-       ("openssl" ,openssl)))
+     (list gengetopt perl pcsc-lite openssl))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("help2man" ,help2man)
-       ("check" ,check)
-       ("texlive-bin" ,texlive-bin)
-       ("pkg-config" ,pkg-config)))
+     (list doxygen
+           graphviz
+           help2man
+           check
+           texlive-bin
+           pkg-config))
     (home-page "https://developers.yubico.com/yubico-piv-tool/")
     (synopsis "Interact with the PIV application on a YubiKey")
     (description
@@ -392,13 +376,11 @@ and other operations.  It includes a library and a command-line tool.")
                                               (assoc-ref %outputs "out")
                                               "/lib/udev/rules.d"))))
     (inputs
-     `(("json-c" ,json-c-0.13)
-       ("libusb" ,libusb)
-       ;; The library "libyubikey" is also known as "yubico-c".
-       ("libyubikey" ,libyubikey)))
+     (list json-c-0.13 libusb
+           ;; The library "libyubikey" is also known as "yubico-c".
+           libyubikey))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("eudev" ,eudev)))
+     (list pkg-config eudev))
     (home-page "https://developers.yubico.com/yubikey-personalization/")
     (synopsis "Library and tools to personalize YubiKeys")
     (description
@@ -447,9 +429,9 @@ retrieve a YubiKey's serial number, and so forth.")
                                                   "/lib/libpcsclite.so.1"))))
              #t)))))
     (inputs
-     `(("pcsc-lite" ,pcsc-lite)))
+     (list pcsc-lite))
     (native-inputs
-     `(("swig" ,swig)))
+     (list swig))
     (home-page "https://github.com/LudovicRousseau/pyscard")
     (synopsis "Smart card library for Python")
     (description
@@ -492,15 +474,14 @@ PCSC API Python wrapper module.")
                                "/xml/dtd/docbook/docbookx.dtd")))
              #t)))))
     (inputs
-     `(("json-c" ,json-c-0.13)
-       ("hidapi" ,hidapi)))
+     (list json-c-0.13 hidapi))
     (native-inputs
-     `(("help2man" ,help2man)
-       ("gengetopt" ,gengetopt)
-       ("pkg-config" ,pkg-config)
-       ("gtk-doc" ,gtk-doc)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("eudev" ,eudev)))
+     (list help2man
+           gengetopt
+           pkg-config
+           gtk-doc
+           docbook-xml-4.3
+           eudev))
     (home-page "https://developers.yubico.com/libu2f-host/")
     ;; TRANSLATORS: The U2F protocol has a "server side" and a "host side".
     (synopsis "U2F host-side C library and tool")
@@ -532,18 +513,17 @@ operations.")
        (list "--enable-gtk-doc"
              "--enable-tests")))
     (inputs
-     `(("json-c" ,json-c-0.13)
-       ("libressl" ,libressl)))
+     (list json-c-0.13 libressl))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("check" ,check)
-       ("gengetopt" ,gengetopt)
-       ("help2man" ,help2man)
-       ("pkg-config" ,pkg-config)
-       ("gtk-doc" ,gtk-doc)
-       ("which" ,which)))
+     (list autoconf
+           automake
+           libtool
+           check
+           gengetopt
+           help2man
+           pkg-config
+           gtk-doc
+           which))
     (home-page "https://developers.yubico.com/libu2f-server/")
     ;; TRANSLATORS: The U2F protocol has a "server side" and a "host side".
     (synopsis "U2F server-side C library")
@@ -575,15 +555,9 @@ verifying the cryptographic operations.")
        (list (string-append "--with-pam-dir="
                             (assoc-ref %outputs "out") "/lib/security"))))
     (inputs
-     `(("libu2f-host" ,libu2f-host)
-       ("libu2f-server" ,libu2f-server)
-       ("linux-pam" ,linux-pam)))
+     (list libu2f-host libu2f-server linux-pam))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("asciidoc" ,asciidoc)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool asciidoc pkg-config))
     (home-page "https://developers.yubico.com/pam-u2f/")
     (synopsis "PAM module for U2F authentication")
     (description
@@ -623,12 +597,9 @@ your existing infrastructure.")
               "fido2/public_suffix_list.dat")
              #t)))))
     (propagated-inputs
-     `(("python-cryptography" ,python-cryptography)
-       ("python-six" ,python-six)))
+     (list python-cryptography python-six))
     (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-pyfakefs" ,python-pyfakefs)
-       ("public-suffix-list" ,public-suffix-list)))
+     (list python-mock python-pyfakefs public-suffix-list))
     (home-page "https://github.com/Yubico/python-fido2")
     (synopsis "Python library for communicating with FIDO devices over USB")
     (description
@@ -678,20 +649,17 @@ implementing a Relying Party.")
                  "')")))
              #t)))))
     (propagated-inputs
-     `(("python-six" ,python-six)
-       ("python-pyscard" ,python-pyscard)
-       ("python-pyusb" ,python-pyusb)
-       ("python-click" ,python-click)
-       ("python-cryptography" ,python-cryptography)
-       ("python-pyopenssl" ,python-pyopenssl)
-       ("python-fido2" ,python-fido2)))
+     (list python-six
+           python-pyscard
+           python-pyusb
+           python-click
+           python-cryptography
+           python-pyopenssl
+           python-fido2))
     (inputs
-     `(("yubikey-personalization" ,yubikey-personalization)
-       ("pcsc-lite" ,pcsc-lite)
-       ("libusb" ,libusb)))
+     (list yubikey-personalization pcsc-lite libusb))
     (native-inputs
-     `(("swig" ,swig)
-       ("python-mock" ,python-mock)))
+     (list swig python-mock))
     (home-page "https://developers.yubico.com/yubikey-manager/")
     (synopsis "Command line tool and library for configuring a YubiKey")
     (description
@@ -734,8 +702,7 @@ an unprivileged user.")
         ("rust-regex" ,rust-regex-1)
         ("rust-tempfile" ,rust-tempfile-3))))
     (inputs
-     `(("hidapi" ,hidapi)
-       ("gnupg" ,gnupg)))
+     (list hidapi gnupg))
     (home-page "https://github.com/d-e-s-o/nitrocli")
     (synopsis "Command line tool for Nitrokey devices")
     (description
@@ -758,17 +725,16 @@ devices.")
 
     (build-system cmake-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
-     `(("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtwebsockets" ,qtwebsockets)
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtquickcontrols2" ,qtquickcontrols2)
-       ("pcsc-lite" ,pcsc-lite)
-       ("openssl" ,openssl)))
+     (list qtbase-5
+           qtsvg
+           qtdeclarative
+           qtwebsockets
+           qtgraphicaleffects
+           qtquickcontrols2
+           pcsc-lite
+           openssl))
     (arguments
      `(#:modules ((guix build cmake-build-system)
                   (guix build qt-utils)
@@ -790,3 +756,36 @@ used for online authentication with electronic German ID cards and residence
 titles.  To use this app, a supported RFID card reader or NFC-enabled smart
 phone is required.")
     (license license:eupl1.2)))
+
+(define-public libfido2
+  (package
+    (name "libfido2")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "git://github.com/Yubico/libfido2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "12zy4cnlcffcb64lsx8198y09j1dwi0bcn9rr82q6i1k950yzd3p"))))
+    (native-inputs (list pkg-config))
+    (inputs
+     `(("zlib" ,zlib)
+       ("udev" ,eudev)
+       ("libcbor" ,libcbor)
+       ("openssl" ,openssl)))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; regress tests enabled only for debug builds
+         (delete 'check))))
+    (synopsis "Library functionality and command-line tools for FIDO devices")
+    (description "libfido2 provides library functionality and command-line
+tools to communicate with a FIDO device over USB, and to verify attestation
+and assertion signatures.
+
+libfido2 supports the FIDO U2F (CTAP 1) and FIDO 2.0 (CTAP 2) protocols.")
+    (license license:bsd-2)
+    (home-page "https://github.com/Yubico/libfido2")))

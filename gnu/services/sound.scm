@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -55,7 +55,7 @@
 
 (define-record-type* <alsa-configuration>
   alsa-configuration make-alsa-configuration alsa-configuration?
-  (alsa-plugins alsa-configuration-alsa-plugins ;<package>
+  (alsa-plugins alsa-configuration-alsa-plugins ;file-like
                 (default alsa-plugins))
   (pulseaudio?   alsa-configuration-pulseaudio? ;boolean
                  (default #t))

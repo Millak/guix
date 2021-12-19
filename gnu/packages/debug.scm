@@ -5,9 +5,10 @@
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +62,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xdisorg)
   #:use-module (ice-9 match)
@@ -84,7 +86,7 @@
         "184wh35pf2ddx97319s6sgkzpz48xxkbwzcjpycv009bm53lh61q"))))
     (build-system gnu-build-system)
     (inputs                             ;Installed programs are perl scripts
-     `(("perl" ,perl)))
+     (list perl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -127,7 +129,7 @@ program to exhibit a bug.")
       (sha256
        (base32 "0qx0zq8jxzx2as2zf0740g7kvgq163ayn3041di4vwk77490y76v"))))
     (build-system gnu-build-system)
-    (native-inputs `(("flex" ,flex)))
+    (native-inputs (list flex))
     (inputs
      `(("astyle"          ,astyle)
        ("llvm"            ,llvm)
@@ -189,9 +191,7 @@ tools that process C/C++ code.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("flex" ,flex)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-flake8" ,python-pytest-flake8)))
+     (list flex python-pytest python-pytest-flake8))
     (inputs
      `(("bash" ,bash-minimal)           ; For wrap-program
        ("clang" ,clang)
@@ -252,7 +252,7 @@ tool.")
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (inputs
-       `(("qemu" ,qemu-for-american-fuzzy-lop)))
+       (list qemu-for-american-fuzzy-lop))
       (arguments
        `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
                             (string-append "DOC_PATH=$(PREFIX)/share/doc/"
@@ -470,9 +470,7 @@ server and embedded PowerPC, and S390 guests.")
            "0k55cy7x0hlc6rgpascl6ibhcfxaash3p9r9r8kwvbm3zag1rmac"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("go" ,go)))
+       (list autoconf automake go))
       (inputs
        `(("make-source" ,(package-source gnu-make))))
       (arguments
@@ -561,9 +559,7 @@ input.  Zzuf's behaviour is deterministic, making it easy to reproduce bugs.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "gui/GameConqueror.py"
                (("/usr/bin/env python")
-                (string-append (assoc-ref %build-inputs
-                                          "python-wrapper") "/bin/python")))
-             #t))
+                (search-input-file inputs "/bin/python")))))
          (add-after 'install 'wrap-gameconqueror
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
@@ -574,17 +570,17 @@ input.  Zzuf's behaviour is deterministic, making it easy to reproduce bugs.")
                  `("GUIX_PYTHONPATH"             ":" prefix (,python-path))))
              #t)))))
     (native-inputs
-     `(("libtool" ,libtool)
-       ("python-wrapper" ,python-wrapper)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+" ,gtk+)
-       ("intltool" ,intltool)
-       ("automake" ,automake)
-       ("autoconf" ,autoconf)))
+     (list libtool
+           python-wrapper
+           gobject-introspection
+           gtk+
+           intltool
+           automake
+           autoconf))
     (inputs
-     `(("readline" ,readline)))
+     (list readline))
     (propagated-inputs
-     `(("python-pygobject" ,python-pygobject)))
+     (list python-pygobject))
     (home-page "https://github.com/scanmem/scanmem")
     (synopsis "Memory scanner")
     (description "Scanmem is a debugging utility designed to isolate the
@@ -614,8 +610,8 @@ the position of the variable and allows you to modify its value.")
                 "0xlx2485y0israv2pfghmv74lxcv9i5y65agy69mif76yc4vfvif"))
               (patches (search-patches "remake-impure-dirs.patch"))))
     (inputs
-     `(("readline" ,readline)
-       ,@(package-inputs gnu-make)))
+     (modify-inputs (package-inputs gnu-make)
+       (prepend readline)))
     (home-page "http://bashdb.sourceforge.net/remake/")
     (description "Remake is an enhanced version of GNU Make that adds improved
 error reporting, better tracing, profiling, and a debugger.")
@@ -667,14 +663,9 @@ error reporting, better tracing, profiling, and a debugger.")
                       (setenv "HOME" (getcwd))
                       #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("ninja" ,ninja)
-       ("which" ,which)))
+     (list pkg-config ninja which))
     (inputs
-     `(("gdb" ,gdb)
-       ("capnproto" ,capnproto)
-       ("python" ,python)
-       ("python-pexpect" ,python-pexpect)))
+     (list gdb capnproto python python-pexpect))
     (home-page "https://rr-project.org/")
     (synopsis "Record and reply debugging framework")
     (description
@@ -743,8 +734,7 @@ program to produce symbolic backtraces.")
                       (let* ((out (assoc-ref outputs "out")))
                         (install-file "libleak.so" (string-append out "/lib"))
                         #t))))))
-    (inputs `(("libbacktrace" ,libbacktrace)
-              ("libwuya" ,libwuya)))
+    (inputs (list libbacktrace libwuya))
     (home-page "https://github.com/WuBingzheng/libleak")
     (synopsis "Memory leaks detection tool")
     (description "The libleak tool detects memory leaks by hooking memory
@@ -757,36 +747,63 @@ smaller than that of other tools such as Valgrind, and it aims to be easier to
 use than similar tools like @command{mtrace}.")
     (license license:gpl2+)))
 
-(define-public mspdebug
+(define-public cgdb
   (package
-    (name "mspdebug")
-    (version "0.25")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/dlbeer/mspdebug")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "0prgwb5vx6fd4bj12ss1bbb6axj2kjyriyjxqrzd58s5jyyy8d3c"))))
+    (name "cgdb")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://cgdb.me/files/cgdb-" version ".tar.gz"))
+       (sha256
+        (base32 "1671gpz5gx5j0zga8xy2x7h33vqh3nij93lbb6dbb366ivjknwmv"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                         ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))              ; no configure script
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "INSTALL=install"
-             (string-append "PREFIX=" %output))))
-  (inputs
-     `(("libusb-compat" ,libusb-compat)
-       ("readline" ,readline)))
-    (synopsis "Debugging tool for MSP430 MCUs")
-    (description "MspDebug supports FET430UIF, eZ430, RF2500 and Olimex
+    (inputs
+     (list ncurses readline))
+    (native-inputs
+     (list flex texinfo))
+    (home-page "https://cgdb.github.io")
+    (synopsis "Console front-end to the GNU debugger")
+    (description
+     "@code{cgdb} is a lightweight curses (terminal-based) interface to the
+GNU Debugger (GDB).  In addition to the standard gdb console, cgdb provides
+a split screen view that displays the source code as it executes.  The
+keyboard interface is modeled after vim, so vim users should feel at home
+using cgdb.")
+    (license license:gpl2+)))
+
+(define-public mspdebug
+  ;; Last official release was 24 July 2017
+  (let ((commit "4c4d94e43bc4a18ecf82070ff81cd38dd5641e3b")
+        (revision "0"))
+    (package
+      (name "mspdebug")
+      (version (git-version "0.25" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/dlbeer/mspdebug")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1lgw1dsc1aglyja610ichadvgs5b0df3wlarinczb0ykf431gjln"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ; no test suite
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure))         ; no configure script
+         #:make-flags
+         (list (string-append "CC=" ,(cc-for-target))
+               "INSTALL=install"
+               (string-append "PREFIX=" %output))))
+      (inputs
+       (list libusb-compat readline))
+      (synopsis "Debugging tool for MSP430 MCUs")
+      (description "MspDebug supports FET430UIF, eZ430, RF2500 and Olimex
 MSP430-JTAG-TINY programmers, as well as many other compatible
 devices.  It can be used as a proxy for gdb or as an independent
 debugger with support for programming, disassembly and reverse
 engineering.")
-    (home-page "https://github.com/dlbeer/mspdebug")
-    (license license:gpl2+)))
+      (home-page "https://github.com/dlbeer/mspdebug")
+      (license license:gpl2+))))

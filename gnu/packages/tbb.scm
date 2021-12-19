@@ -25,12 +25,13 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (gnu packages))
 
 (define-public tbb
   (package
     (name "tbb")
-    (version "2021.3.0")
+    (version "2021.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -39,10 +40,87 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bz039my3ma87f24ngcsqs16f8jlpdgaqg01ab4g60nfqbrz1lkq"))))
+                "0ih727g802j9lvwkqhw021bk1wb7xlvfgd0vl1i6jng4am1wv7vq"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DTBB_STRICT=OFF"))) ;; Don't fail on warnings
+    (home-page "https://www.threadingbuildingblocks.org")
+    (synopsis "C++ library for parallel programming")
+    (description
+     "Threading Building Blocks (TBB) is a C++ runtime library that abstracts
+the low-level threading details necessary for optimal multi-core performance.
+It uses common C++ templates and coding style to eliminate tedious threading
+implementation work.  It provides parallel loop constructs, asynchronous
+tasks, synchronization primitives, atomic operations, and more.")
+    (license asl2.0)))
+
+(define-public tbb-2020
+  (package
+    (name "tbb")
+    (version "2020.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/01org/tbb")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0r9axsdlmacjlcnax4vkzg86nwf8lsx7wbqdi3wnryaxk0xvdcx6"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "build/common.inc"
+                    (("export tbb_build_prefix.+$")
+                     "export tbb_build_prefix?=guix\n"))
+
+                  ;; Don't capture the build time and kernel version.
+                  (substitute* "build/version_info_linux.sh"
+                    (("uname -srv") "uname -s")
+                    (("`date -u`") "01 Jan 1970"))
+
+                  (substitute* "build/linux.inc"
+                    (("os_kernel_version:=.*")
+                     "os_kernel_version:=5\n")
+                    (("os_version:=.*")
+                     "os_version:=1\n"))))))
+    (outputs '("out" "doc"))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:make-flags (list (string-append "LDFLAGS=-Wl,-rpath="
+                                         (assoc-ref %outputs "out") "/lib"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fail-on-test-errors
+           (lambda _
+             (substitute* "Makefile"
+               (("-\\$\\(MAKE") "$(MAKE"))))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "build/linux.gcc.inc"
+               (("LIB_LINK_FLAGS =")
+                (string-append "LIB_LINK_FLAGS = -Wl,-rpath="
+                               (assoc-ref outputs "out") "/lib")))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((doc      (string-append
+                               (assoc-ref outputs "doc") "/doc"))
+                    (examples (string-append doc "/examples"))
+                    (lib      (string-append
+                               (assoc-ref outputs "out") "/lib"))
+                    (include  (string-append
+                               (assoc-ref outputs "out") "/include")))
+               (mkdir-p lib)
+               (for-each
+                (lambda (f)
+                  (copy-file f
+                             (string-append lib "/"
+                                            (basename f))))
+                (find-files "build/guix_release" "\\.so"))
+               (copy-recursively "doc" doc)
+               (copy-recursively "examples" examples)
+               (copy-recursively "include" include)))))))
     (home-page "https://www.threadingbuildingblocks.org")
     (synopsis "C++ library for parallel programming")
     (description

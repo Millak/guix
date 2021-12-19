@@ -139,12 +139,12 @@ chk_gpg_keyring()
 required to verify the Guix binary signature: $gpg_key_id.
 Would you like me to fetch it for you? (yes/no)"; then
                 wget "https://sv.gnu.org/people/viewgpg.php?user_id=$user_id" \
-                     -qO - | gpg --import -
+                     --no-verbose -O- | gpg --import -
             else
                 _err "${ERR}Missing OpenPGP public key ($gpg_key_id).
 Fetch it with this command:
 
-  wget \"https://sv.gnu.org/people/viewgpg.php?user_id=$user_id\" -qO - | \
+  wget \"https://sv.gnu.org/people/viewgpg.php?user_id=$user_id\" -O - | \
 sudo -i gpg --import -"
                 exit_flag=yes
             fi
@@ -272,7 +272,7 @@ guix_get_bin_list()
     _debug "--- [ ${FUNCNAME[0]} ] ---"
 
     # Filter only version and architecture
-    bin_ver_ls=("$(wget -qO- "$gnu_url" \
+    bin_ver_ls=("$(wget "$gnu_url" --no-verbose -O- \
         | sed -n -e 's/.*guix-binary-\([0-9.]*[a-z0-9]*\)\..*.tar.xz.*/\1/p' \
         | sort -Vu)")
 
@@ -305,7 +305,7 @@ guix_get_bin()
     _msg "${INF}Downloading Guix release archive"
 
     wget --help | grep -q '\--show-progress' \
-        && wget_args=("-q" "--show-progress")
+        && wget_args=("--no-verbose" "--show-progress")
 
     if wget "${wget_args[@]}" -P "$dl_path" \
             "${url}/${bin_ver}.tar.xz" "${url}/${bin_ver}.tar.xz.sig"; then
@@ -345,11 +345,11 @@ sys_create_store()
     mv "${tmp_path}/gnu" /
 
     _msg "${INF}Linking the root user's profile"
-    mkdir -p "~root/.config/guix"
+    mkdir -p ~root/.config/guix
     ln -sf /var/guix/profiles/per-user/root/current-guix \
-       "~root/.config/guix/current"
+       ~root/.config/guix/current
 
-    GUIX_PROFILE="~root/.config/guix/current"
+    GUIX_PROFILE=~root/.config/guix/current
     # shellcheck disable=SC1090
     source "${GUIX_PROFILE}/etc/profile"
     _msg "${PAS}activated root profile at ${GUIX_PROFILE}"
@@ -405,7 +405,7 @@ sys_enable_guix_daemon()
     case "$INIT_SYS" in
         upstart)
             { initctl reload-configuration;
-              cp "~root/.config/guix/current/lib/upstart/system/guix-daemon.conf" \
+              cp ~root/.config/guix/current/lib/upstart/system/guix-daemon.conf \
                  /etc/init/ &&
                   configure_substitute_discovery /etc/init/guix-daemon.conf &&
                   start guix-daemon; } &&
@@ -415,15 +415,15 @@ sys_enable_guix_daemon()
             { # systemd .mount units must be named after the target directory.
               # Here we assume a hard-coded name of /gnu/store.
               # XXX Work around <https://issues.guix.gnu.org/41356> until next release.
-              if [ -f "~root/.config/guix/current/lib/systemd/system/gnu-store.mount" ]; then
-                  cp "~root/.config/guix/current/lib/systemd/system/gnu-store.mount" \
+              if [ -f ~root/.config/guix/current/lib/systemd/system/gnu-store.mount ]; then
+                  cp ~root/.config/guix/current/lib/systemd/system/gnu-store.mount \
                      /etc/systemd/system/;
                   chmod 664 /etc/systemd/system/gnu-store.mount;
                   systemctl daemon-reload &&
                       systemctl enable gnu-store.mount;
               fi
 
-              cp "~root/.config/guix/current/lib/systemd/system/guix-daemon.service" \
+              cp ~root/.config/guix/current/lib/systemd/system/guix-daemon.service \
                  /etc/systemd/system/;
               chmod 664 /etc/systemd/system/guix-daemon.service;
 
@@ -447,7 +447,7 @@ sys_enable_guix_daemon()
             ;;
         sysv-init)
             { mkdir -p /etc/init.d;
-              cp "~root/.config/guix/current/etc/init.d/guix-daemon" \
+              cp ~root/.config/guix/current/etc/init.d/guix-daemon \
                  /etc/init.d/guix-daemon;
               chmod 775 /etc/init.d/guix-daemon;
 
@@ -460,7 +460,7 @@ sys_enable_guix_daemon()
             ;;
         openrc)
             { mkdir -p /etc/init.d;
-              cp "~root/.config/guix/current/etc/openrc/guix-daemon" \
+              cp ~root/.config/guix/current/etc/openrc/guix-daemon \
                  /etc/init.d/guix-daemon;
               chmod 775 /etc/init.d/guix-daemon;
 
@@ -492,7 +492,7 @@ sys_authorize_build_farms()
     if prompt_yes_no "Permit downloading pre-built package binaries from the \
 project's build farm? (yes/no)"; then
         guix archive --authorize \
-             < "~root/.config/guix/current/share/guix/ci.guix.gnu.org.pub" \
+             < ~root/.config/guix/current/share/guix/ci.guix.gnu.org.pub \
             && _msg "${PAS}Authorized public key for ci.guix.gnu.org"
         else
             _msg "${INF}Skipped authorizing build farm public keys"

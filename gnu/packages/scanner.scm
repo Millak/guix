@@ -75,7 +75,7 @@
        ;; For scripts/pixma_gen_options.py.
        ("python" ,python-wrapper)))
     (inputs
-     `(("libusb" ,libusb)))
+     (list libusb))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -231,7 +231,7 @@ package contains the library and drivers.")))
                                         ,name "-" ,version)))
                (install-file "doc/README.txt" doc)))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("dbus" ,dbus)
        ("libconfuse" ,libconfuse)
@@ -240,7 +240,7 @@ package contains the library and drivers.")))
        ("zlib" ,zlib)))
     (home-page "https://scanbd.sourceforge.io")
     (synopsis "Configurable scanner button monitor")
-    (description "Scanbd stands for scanner button daemon.  It regulary polls
+    (description "Scanbd stands for scanner button daemon.  It regularly polls
 scanners for pressed buttons, function knob changes, or other events such
 as (un)plugging the scanner or inserting and removing paper.  Then it performs
 the desired action(s) such as saving, copying, or e-mailing the image.
@@ -315,7 +315,7 @@ provided the driver also exposes the buttons.")
                (rmdir (string-append out "/sbin"))
                #t))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("gtk+" ,gtk+-2)
        ("lcms" ,lcms)

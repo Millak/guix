@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -441,6 +441,17 @@
                   '(system-binding)))
             (x x)))))
 
+(test-assert "let-system in file-append"
+  (let ((mixed (file-append (let-system (system target)
+                              (if (not target) grep sed))
+                            "/bin"))
+        (grep  (file-append grep "/bin"))
+        (sed   (file-append sed "/bin")))
+    (and (equal? (gexp->sexp* #~(list #$mixed))
+                 (gexp->sexp* #~(list #$grep)))
+         (equal? (gexp->sexp* #~(list #$mixed) "powerpc64le-linux-gnu")
+                 (gexp->sexp* #~(list #$sed) "powerpc64le-linux-gnu")))))
+
 (test-assert "ungexp + ungexp-native"
   (let* ((exp    (gexp (list (ungexp-native %bootstrap-guile)
                              (ungexp coreutils)
@@ -834,19 +845,14 @@
                        (files -> `(("a/b/c" . ,q-scm)
                                    ("p/q"   . ,plain)))
                        (drv      (imported-files files)))
-    (define (file=? file1 file2)
-      ;; Assume deduplication is in place.
-      (= (stat:ino (stat file1))
-         (stat:ino (stat file2))))
-
     (mbegin %store-monad
       (built-derivations (list (pk 'drv drv)))
       (mlet %store-monad ((dir -> (derivation->output-path drv))
                           (plain* (text-file "foo" "bar!"))
                           (q-scm* (interned-file q-scm "c")))
         (return
-         (and (file=? (string-append dir "/a/b/c") q-scm*)
-              (file=? (string-append dir "/p/q") plain*)))))))
+         (and (file=? (string-append dir "/a/b/c") q-scm* stat)
+              (file=? (string-append dir "/p/q") plain* stat)))))))
 
 (test-equal "gexp-modules & ungexp"
   '((bar) (foo))
@@ -1474,6 +1480,42 @@ importing.* \\(guix config\\) from the host"
                                (derivation->output-path guile-drv))
                      (string=? (readlink (string-append comp "/text"))
                                text)))))))
+
+(test-assert "lower-object, computed-file + grafts"
+  ;; The reference graph should refer to grafted packages when grafts are
+  ;; enabled.  See <https://issues.guix.gnu.org/50676>.
+  (let* ((base    (package
+                    (inherit (dummy-package "trivial"))
+                    (build-system trivial-build-system)
+                    (arguments
+                     `(#:guile ,%bootstrap-guile
+                       #:builder (mkdir %output)))))
+         (pkg     (package
+                    (inherit base)
+                    (version "1.1")
+                    (replacement (package
+                                   (inherit base)
+                                   (version "9.9")))))
+         (exp      #~(begin
+                       (use-modules (ice-9 rdelim))
+                       (let ((item (call-with-input-file "graph" read-line)))
+                         (call-with-output-file #$output
+                           (lambda (port)
+                             (display item port))))))
+         (computed (computed-file "computed" exp
+                                  #:options
+                                  `(#:references-graphs (("graph" ,pkg)))))
+         (drv0     (package-derivation %store pkg #:graft? #t))
+         (drv1     (parameterize ((%graft? #t))
+                     (run-with-store %store
+                       (lower-object computed)))))
+    (build-derivations %store (list drv1))
+
+    ;; The graph obtained in COMPUTED should refer to the grafted version of
+    ;; PKG, not to PKG itself.
+    (string=? (call-with-input-file (derivation->output-path drv1)
+                get-string-all)
+              (derivation->output-path drv0))))
 
 (test-equal "lower-object, computed-file, #:system"
   '("mips64el-linux")

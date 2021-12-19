@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2020 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Vinícius dos Santos Oliveira <vini.ipsmaker@gmail.com>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,7 +44,6 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
-  #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libevent)
@@ -72,7 +72,7 @@
              (patches (search-patches "lua-pkgconfig.patch"
                                       "lua-liblua-so.patch"))))
     (build-system gnu-build-system)
-    (inputs `(("readline" ,readline)))
+    (inputs (list readline))
     (arguments
      `(#:modules ((guix build gnu-build-system)
                   (guix build utils)
@@ -228,8 +228,7 @@ some projects.")))
              (invoke "lua" "tests/test.lua")
              (invoke "lua" "tests/test-lom.lua"))))))
     (inputs
-     `(("lua" ,lua)
-       ("expat" ,expat)))
+     (list lua expat))
     (home-page "https://matthewwild.co.uk/projects/luaexpat/")
     (synopsis "SAX XML parser based on the Expat library")
     (description "LuaExpat is a SAX XML parser based on the Expat library.")
@@ -272,7 +271,7 @@ some projects.")))
                (invoke "lua" "test/testsrvr.lua"))
              (invoke "lua" "test/testclnt.lua"))))))
     (inputs
-     `(("lua" ,lua)))
+     (list lua))
     (home-page "http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/")
     (synopsis "Socket library for Lua")
     (description "LuaSocket is a Lua extension library that is composed by two
@@ -322,7 +321,7 @@ handy.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (inputs
-     `(("lua" ,lua)))
+     (list lua))
     (home-page "https://keplerproject.github.io/luafilesystem/index.html")
     (synopsis "File system library for Lua")
     (description "LuaFileSystem is a Lua library developed to complement the
@@ -378,8 +377,7 @@ directory structure and file attributes.")
                            (find-files "." "^[0-9].*\\.lua$"))))
              #t)))))
     (inputs
-     `(("lua" ,lua)
-       ("openssl" ,openssl)))
+     (list lua openssl))
     (home-page "https://25thandclement.com/~william/projects/luaossl.html")
     (synopsis "OpenSSL bindings for Lua")
     (description "The luaossl extension module for Lua provides comprehensive,
@@ -426,8 +424,7 @@ binds OpenSSL's bignum, message digest, HMAC, cipher, and CSPRNG interfaces.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (inputs
-     `(("lua" ,lua)
-       ("openssl" ,openssl)))
+     (list lua openssl))
     (propagated-inputs
      `(("lua-socket"
         ,(make-lua-socket
@@ -530,12 +527,11 @@ secure session between the peers.")
 
                (apply invoke "make" "check" make-flags)))))))
     (native-inputs
-     `(("m4" ,m4)))
+     (list m4))
     (inputs
-     `(("lua" ,lua)
-       ("openssl" ,openssl)))
+     (list lua openssl))
     (propagated-inputs
-     `(("lua-ossl" ,lua-ossl)))
+     (list lua-ossl))
     (home-page "https://25thandclement.com/~william/projects/cqueues.html")
     (synopsis "Event loop for Lua using continuation queues")
     (description "The cqueues extension module for Lua implements an event loop
@@ -567,9 +563,9 @@ to be non-intrusive, composable, and embeddable within existing applications.")
         (base32 "0qc2d1riyr4b5a0gnsmdw2lz5pw65s4ac60hc34w3mmk9l6yg6nl"))))
     (build-system trivial-build-system)
     (inputs
-     `(("lua" ,lua)))
+     (list lua))
     (propagated-inputs
-     `(("lua-filesystem" ,lua-filesystem)))
+     (list lua-filesystem))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -607,9 +603,9 @@ standard libraries.")
         (base32 "1h0cf7bp4am54r0j8lhjs2l1c7q5vz74ba0jvw9qdbaqimls46g8"))))
     (build-system gnu-build-system)
     (inputs
-     `(("lua" ,lua)))
+     (list lua))
     (propagated-inputs
-     `(("lua-penlight" ,lua-penlight)))
+     (list lua-penlight))
     (arguments
      `(#:tests? #f                 ;tests must run after installation.
        #:phases
@@ -697,8 +693,8 @@ describing the commented declarations and functions.")
              (setenv "DISPLAY" ":1")
              #t)))))
     (native-inputs
-     `(("dbus" ,dbus)                   ;tests use 'dbus-run-session'
-       ("pkg-config" ,pkg-config)))
+     (list dbus ;tests use 'dbus-run-session'
+           pkg-config))
     (inputs
      `(("cairo" ,cairo)
        ("glib" ,glib)
@@ -751,7 +747,7 @@ Notable examples are GTK+, GStreamer and Webkit.")
                              (string-append out "/share/lua/" lua-version))
                #t))))
        #:test-target "test"))
-    (inputs `(("lua" ,lua)))
+    (inputs (list lua))
     (synopsis "Pattern-matching library for Lua")
     (description
      "LPeg is a pattern-matching library for Lua, based on Parsing Expression
@@ -803,8 +799,7 @@ Grammars (PEGs).")
                                     (or (getenv "CPATH") "")))
              #t)))))
     (inputs
-     `(("lua" ,lua)
-       ("libuv" ,libuv)))
+     (list lua libuv))
     (native-inputs
      `(("lua-compat"
         ,(origin
@@ -856,7 +851,7 @@ Grammars (PEGs).")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
-    (inputs `(("lua" ,lua)))
+    (inputs (list lua))
     (home-page "https://bitop.luajit.org/index.html")
     (synopsis "Bitwise operations on numbers for Lua")
     (description
@@ -917,8 +912,7 @@ on numbers.")
                (chdir "./runner")
                (invoke "./test_runner")))))))
     (native-inputs
-     `(("lua" ,lua)
-       ("pkg-config" ,pkg-config)))
+     (list lua pkg-config))
     (home-page "https://github.com/jeremyong/Selene")
     (synopsis "Lua C++11 bindings")
     (description
@@ -1132,26 +1126,25 @@ shell command executions.")
             "-Denable_manpages=false"
             "-Dversion_suffix=-guix1")))
    (native-inputs
-    `(("gcc" ,gcc-10) ; gcc-7 is too old for our C++17 needs
-      ("luajit-lua52-openresty" ,luajit-lua52-openresty)
-      ("pkg-config" ,pkg-config)
-      ("re2c" ,re2c)
-      ("xxd" ,xxd)))
+    (list luajit-lua52-openresty
+          pkg-config
+          re2c
+          xxd))
    (inputs
-    `(("boost" ,boost)
-      ("boost-static" ,boost-static)
-      ("fmt" ,fmt)
-      ;; LuaJIT has a 2GiB addressing limit[1] that has been fixed on OpenResty
-      ;; fork. Emilua is severely affected by this limit, so the upstream package
-      ;; is avoided. Emilua also depends on the -DLUAJIT_ENABLE_LUA52COMPAT
-      ;; configure flag[2] for some features to work (e.g. __pairs on HTTP
-      ;; headers).
-      ;;
-      ;; [1] <http://hacksoflife.blogspot.com/2012/12/integrating-luajit-with-x-plane-64-bit.html>
-      ;; [2] <http://luajit.org/extensions.html#lua52>
-      ("luajit-lua52-openresty" ,luajit-lua52-openresty)
-      ("ncurses" ,ncurses)
-      ("openssl" ,openssl)))
+    (list boost
+          boost-static
+          fmt-7
+          ;; LuaJIT has a 2GiB addressing limit[1] that has been fixed on OpenResty
+          ;; fork. Emilua is severely affected by this limit, so the upstream package
+          ;; is avoided. Emilua also depends on the -DLUAJIT_ENABLE_LUA52COMPAT
+          ;; configure flag[2] for some features to work (e.g. __pairs on HTTP
+          ;; headers).
+          ;;
+          ;; [1] <http://hacksoflife.blogspot.com/2012/12/integrating-luajit-with-x-plane-64-bit.html>
+          ;; [2] <http://luajit.org/extensions.html#lua52>
+          luajit-lua52-openresty
+          ncurses
+          openssl))
    (native-search-paths
     (list
      (search-path-specification
@@ -1169,7 +1162,7 @@ enabled.")
 (define-public fennel
   (package
     (name "fennel")
-    (version "0.9.1")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1178,11 +1171,7 @@ enabled.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07qgycf5cxm9zcc4fgpgvplg95ndavh3ynpdjpvzkikzbnyj7xia"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file "fennelview.lua") #t))))
+                "0d4rpf0f2aqxlca3kxrbhjjhf1knhiz8ccwlx8xid05mc16la70y"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
@@ -1191,29 +1180,15 @@ enabled.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         (add-before 'build 'patch-lua-calls
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((lua (search-input-file inputs "/bin/lua")))
-               (setenv "LUA" lua)
-               (substitute* "old/launcher.lua"
-                 (("/usr/bin/env lua") lua))
-               #t)))
          (add-after 'build 'patch-fennel
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "fennel"
                (("/usr/bin/env .*lua")
-                (search-input-file inputs "/bin/lua")))
-             #t))
+                (search-input-file inputs "/bin/lua")))))
          (delete 'check)
          (add-after 'install 'check
-           (assoc-ref %standard-phases 'check))
-         (add-after 'install 'install-manpage
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "fennel.1"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/man/man1"))
-             #t)))))
-    (inputs `(("lua" ,lua)))
+           (assoc-ref %standard-phases 'check)))))
+    (inputs (list lua))
     (home-page "https://fennel-lang.org/")
     (synopsis "Lisp that compiles to Lua")
     (description

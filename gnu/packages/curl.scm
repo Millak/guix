@@ -57,24 +57,20 @@
 (define-public curl
   (package
    (name "curl")
-   (version "7.77.0")
+   (version "7.79.1")
    (source (origin
              (method url-fetch)
              (uri (string-append "https://curl.haxx.se/download/curl-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0jsrc97vbghvljic997r9nypc9qqddcil2lzvv032br8ahn5hr0g"))
-             (patches (search-patches "curl-use-ssl-cert-env.patch"
-                                      "curl-7.77-tls-priority-string.patch"))))
+               "129n9hi7rbg3s112chyadhp4y27ppb5i65n12wm77aw2255zf1h6"))
+             (patches (search-patches "curl-use-ssl-cert-env.patch"))))
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                             ;1.2 MiB of man3 pages
-   (inputs `(("gnutls" ,gnutls)
-             ("libidn" ,libidn)
-             ("mit-krb5" ,mit-krb5)
-             ("nghttp2" ,nghttp2 "lib")
-             ("zlib" ,zlib)))
+   (inputs (list gnutls libidn mit-krb5
+                 `(,nghttp2 "lib") zlib))
    (native-inputs
      `(("nghttp2" ,nghttp2)
        ("perl" ,perl)
@@ -112,8 +108,7 @@
             ;; Do not save the configure options to avoid unnecessary references.
             (substitute* "curl-config.in"
               (("@CONFIGURE_OPTIONS@")
-               "\"not available\""))
-            #t))
+               "\"not available\""))))
         (add-after
          'install 'move-man3-pages
          (lambda* (#:key outputs #:allow-other-keys)
@@ -122,18 +117,17 @@
                  (doc (assoc-ref outputs "doc")))
              (mkdir-p (string-append doc "/share/man"))
              (rename-file (string-append out "/share/man/man3")
-                          (string-append doc "/share/man/man3"))
-             #t)))
-        (replace
-         'check
-         (lambda _
-           (substitute* "tests/runtests.pl"
-             (("/bin/sh") (which "sh")))
+                          (string-append doc "/share/man/man3")))))
+        (replace 'check
+          (lambda* (#:key tests? #:allow-other-keys)
+            (substitute* "tests/runtests.pl"
+              (("/bin/sh") (which "sh")))
 
-           ;; The top-level "make check" does "make -C tests quiet-test", which
-           ;; is too quiet.  Use the "test" target instead, which is more
-           ;; verbose.
-           (invoke "make" "-C" "tests" "test"))))))
+            (when tests?
+              ;; The top-level "make check" does "make -C tests quiet-test", which
+              ;; is too quiet.  Use the "test" target instead, which is more
+              ;; verbose.
+              (invoke "make" "-C" "tests" "test")))))))
    (synopsis "Command line tool for transferring data with URL syntax")
    (description
     "curl is a command line tool for transferring data with URL syntax,
@@ -193,9 +187,8 @@ tunneling, and so on.")
                             (string-append man "/kurly.1")))
                #t))))))
     (inputs
-     `(("go-github-com-alsm-ioprogress" ,go-github-com-alsm-ioprogress)
-       ("go-github-com-aki237-nscjar" ,go-github-com-aki237-nscjar)
-       ("go-github-com-urfave-cli" ,go-github-com-urfave-cli)))
+     (list go-github-com-alsm-ioprogress go-github-com-aki237-nscjar
+           go-github-com-urfave-cli))
     (synopsis "Command-line HTTP client")
     (description "kurly is an alternative to the @code{curl} program written in
 Go.  kurly is designed to operate in a similar manner to curl, with select
@@ -266,10 +259,9 @@ not offer a replacement for libcurl.")
               ;; The build system does not actually compile the Scheme module.
               ;; So we can compile it and put it in the right place in one go.
               (invoke "guild" "compile" curl.scm "-o" curl.go)))))))
-   (native-inputs `(("pkg-config" ,pkg-config)))
+   (native-inputs (list pkg-config))
    (inputs
-    `(("curl" ,curl)
-      ("guile" ,guile-3.0)))
+    (list curl guile-3.0))
    (home-page "http://www.lonelycactus.com/guile-curl.html")
    (synopsis "Curl bindings for Guile")
    (description "@code{guile-curl} is a project that has procedures that allow
@@ -282,8 +274,7 @@ FTP servers.  It is based on the curl library.")
     (inherit guile-curl)
     (name "guile2.2-curl")
     (inputs
-     `(("curl" ,curl)
-       ("guile" ,guile-2.2)))))
+     (list curl guile-2.2))))
 
 (define-public curlpp
   (package
@@ -304,7 +295,7 @@ FTP servers.  It is based on the curl library.")
      '(#:tests? #f))
     ;; The installed version needs the header files from the C library.
     (propagated-inputs
-     `(("curl" ,curl)))
+     (list curl))
     (synopsis "C++ wrapper around libcURL")
     (description
      "This package provides a free and easy-to-use client-side C++ URL
@@ -335,7 +326,7 @@ more!")
      '(#:install-plan
        '(("./h2c" "bin/"))))
     (inputs
-     `(("perl" ,perl)))
+     (list perl))
     (home-page "https://curl.se/h2c/")
     (synopsis "Convert HTTP headers to a curl command line")
     (description

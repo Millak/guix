@@ -485,13 +485,13 @@ programs.")
     (serialize-space-separated-string-list field-name vars)))
 
 (define (package-list? val)
-  (and (list? val) (and-map package? val)))
+  (and (list? val) (and-map file-like? val)))
 (define (serialize-package-list field-name val)
   #f)
 
 (define-configuration cups-configuration
   (cups
-   (package cups)
+   (file-like cups)
    "The CUPS package.")
   (extensions
    (package-list (list brlaser cups-filters epson-inkjet-printer-escpr
@@ -705,7 +705,7 @@ in seconds.  Set to 0 to disable cancellation of \"stuck\" jobs.")
    "Specifies the maximum size of the log files before they are rotated, in
 bytes.  The value 0 disables log rotation.")
   (multiple-operation-timeout
-   (non-negative-integer 300)
+   (non-negative-integer 900)
    "Specifies the maximum amount of time to allow between files in a multiple
 file print job, in seconds.")
   (page-log-format
@@ -850,7 +850,7 @@ protocol version to TLS v1.1.")
    "Specifies whether the scheduler requires clients to strictly adhere to the
 IPP specifications.")
   (timeout
-   (non-negative-integer 300)
+   (non-negative-integer 900)
    "Specifies the HTTP request timeout, in seconds.")
   (web-interface?
    (boolean #f)

@@ -74,6 +74,7 @@
 /etc/guix-daemon.service
 /etc/guix-publish.conf
 /etc/guix-publish.service
+/etc/guix-gc.service
 /etc/init.d/guix-daemon
 /etc/openrc/guix-daemon
 /guix-*
@@ -132,6 +133,7 @@
 /pre-inst-env
 /release-*
 /scripts/guix
+/t-*/
 /test-env
 /test-tmp
 /tests/*.trs
@@ -143,6 +145,7 @@ Makefile
 Makefile.in
 config.cache
 stamp-h[0-9]
+.am[0-9]*/
 .dirstamp
 .deps
 tmp

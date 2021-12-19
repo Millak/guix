@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
@@ -108,7 +110,7 @@
          "0wpn9ijlsmrpyiwg3drmgz4dms1i1i347adgqw37bkrh3vn6yq16"))))
     (build-system python-build-system)
     (inputs
-     `(("chmlib" ,chmlib)))
+     (list chmlib))
     (home-page "https://github.com/dottedmag/pychm")
     (synopsis "Handle CHM files")
     (description "This package provides a Python module for interacting
@@ -148,11 +150,11 @@ with Microsoft Compiled HTML (CHM) files")
                                  "calibre-remove-test-unrar.patch"))))
     (build-system python-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qtbase" ,qtbase-5) ; for qmake
-       ("python-flake8" ,python-flake8)
-       ("python-pyqt-builder" ,python-pyqt-builder)
-       ("xdg-utils" ,xdg-utils)))
+     (list pkg-config
+           qtbase-5 ; for qmake
+           python-flake8
+           python-pyqt-builder
+           xdg-utils))
     (inputs
      `(("fontconfig" ,fontconfig)
        ("font-liberation" ,font-liberation)
@@ -366,15 +368,50 @@ e-books for convenient reading.")
      `(#:tests? #f)) ; No 'test' target
     (build-system cmake-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libzip" ,libzip)
-       ("libxml2" ,libxml2)))
+     (list libzip libxml2))
     (home-page "http://ebook-tools.sourceforge.net")
     (synopsis "Tools and library for dealing with various ebook file formats")
     (description "This package provides command-line tools and a library for
 accessing and converting various ebook file formats.")
     (license license:expat)))
+
+(define-public inkbox
+  (package
+    (name "inkbox")
+    (version "1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://alpinekobox.ddns.net/InkBox/inkbox/")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "126cqn0ixcn608lv2hd9f7zmzj4g448bnpxc7wv9cvg83qqajh5n"))))
+    (build-system qt-build-system)
+    (arguments
+     '(#:tests? #f                      ; no test suite
+       #:make-flags
+       (list (string-append "PREFIX="
+                            (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'prefix-opt
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "inkbox.pro"
+               (("/opt/\\$\\$\\{TARGET\\}") (string-append (assoc-ref outputs "out"))))))
+         (replace 'configure
+           (lambda* (#:key make-flags #:allow-other-keys)
+             (apply invoke (cons "qmake" make-flags)))))))
+    (native-inputs
+     (list qtbase-5))
+    (home-page "https://alpinekobox.ddns.net/InkBox/inkbox/")
+    (synopsis "EBook reader")
+    (description "This package provides InkBox eBook reader.")
+    (license license:gpl3)))
 
 (define-public liblinebreak
   (package
@@ -529,26 +566,26 @@ following formats:
        ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)))
     (inputs
-     `(("file" ,file)
-       ("granite" ,granite)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gst-libav" ,gst-libav)
-       ("gst-plugins-bad" ,gst-plugins-bad)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("gst-plugins-ugly" ,gst-plugins-ugly)
-       ("gtk+" ,gtk+)
-       ("libdazzle" ,libdazzle)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("python-distro" ,python-distro)
-       ("python-gst" ,python-gst)
-       ("python-mutagen" ,python-mutagen)
-       ("python-packaging" ,python-packaging)
-       ("python-peewee" ,python-peewee)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pytz" ,python-pytz)
-       ("python-requests" ,python-requests)))
+     (list file
+           granite
+           gsettings-desktop-schemas
+           gst-libav
+           gst-plugins-bad
+           gst-plugins-good
+           gst-plugins-ugly
+           gtk+
+           libdazzle
+           libgee
+           libhandy
+           python-distro
+           python-gst
+           python-mutagen
+           python-packaging
+           python-peewee
+           python-pycairo
+           python-pygobject
+           python-pytz
+           python-requests))
     (home-page "https://cozy.geigi.de/")
     (synopsis "Modern audiobook player using GTK+")
     (description
@@ -587,10 +624,9 @@ Some of the current features:
                 "0b12ym7cn65wy268kbksyhakicwb053c8xfn76q2dawrvbras9dj"))))
     (build-system gnu-build-system)
     (inputs
-     `(("wxwidgets" ,wxwidgets)
-       ("chmlib" ,chmlib)))
+     (list wxwidgets chmlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://github.com/rzvncj/xCHM")
     (synopsis "CHM file viewer")
     (description "xCHM is a graphical CHM file viewer.  It is a frontend to
@@ -612,12 +648,9 @@ the CHM library CHMLIB.")
                 "0yps72cm609xn2k7alflkdhp9kgr1w7zzyxjygz0n1kqrdcplihh"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list autoconf automake libtool))
     (inputs
-     `(("zlib" ,zlib)
-       ("libxml2" ,libxml2)))
+     (list zlib libxml2))
     (home-page "https://github.com/bfabiszewski/libmobi/")
     (synopsis "C library for handling MOBI formats")
     (description "Libmobi is a C library for handling MOBI ebook

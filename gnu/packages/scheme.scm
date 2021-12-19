@@ -16,6 +16,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,7 +37,7 @@
   #:use-module (gnu packages)
   #:use-module ((guix licenses)
                 #:select (gpl2+ lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3+ asl2.0 bsd-3
-                          cc-by-sa4.0 non-copyleft expat))
+                          cc-by-sa4.0 non-copyleft expat public-domain))
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -303,21 +304,20 @@ features an integrated Emacs-like editor and a large runtime library.")
                          (string-append "EMACSBRAND=emacs25")
                          (string-append "EMACSDIR=" dir))))))))
       (inputs
-       `(("emacs" ,emacs)                     ;UDE needs the X version of Emacs
-         ("libgc" ,libgc)
-         ("libunistring" ,libunistring)
-         ("libuv" ,libuv)
-         ("openssl" ,openssl)
-         ("sqlite" ,sqlite)
-
-         ;; Optional APIs for which Bigloo has bindings.
-         ("avahi" ,avahi)
-         ("libphidget" ,libphidget)
-         ("pcre" ,pcre)))
+       (list emacs ;UDE needs the X version of Emacs
+             libgc
+             libunistring
+             libuv
+             openssl
+             sqlite
+             ;; Optional APIs for which Bigloo has bindings.
+             avahi
+             libphidget
+             pcre))
       (native-inputs
-       `(("pkg-config" ,pkg-config)))
+       (list pkg-config))
       (propagated-inputs
-       `(("gmp" ,gmp)))                            ; bigloo.h refers to gmp.h
+       (list gmp))                            ; bigloo.h refers to gmp.h
       (home-page "https://www-sop.inria.fr/indes/fp/Bigloo/")
       (synopsis "Efficient Scheme compiler")
       (description
@@ -363,14 +363,14 @@ and between Scheme and Java programs.")
                                       "-copt \\$(CPICFLAGS) "
                                       "-L \\$(BUILDLIBDIR) "
                                       "-ldopt -Wl,-rpath," out "/lib"))))))))
-    (inputs `(("avahi" ,avahi)
-              ("bigloo" ,bigloo)
-              ("libgc" ,libgc)
-              ("libunistring" ,libunistring)
-              ("libuv" ,libuv)
-              ("pcre" ,pcre)
-              ("sqlite" ,sqlite)
-              ("which" ,which)))
+    (inputs (list avahi
+                  bigloo
+                  libgc
+                  libunistring
+                  libuv
+                  pcre
+                  sqlite
+                  which))
     (home-page "http://hop.inria.fr/")
     (synopsis "Multi-tier programming language for the Web 2.0")
     (description
@@ -440,7 +440,7 @@ mixed.")
 (define-public chibi-scheme
   (package
     (name "chibi-scheme")
-    (version "0.9")
+    (version "0.10")
     (home-page "https://github.com/ashinn/chibi-scheme")
     (source
      (origin
@@ -448,17 +448,15 @@ mixed.")
        (uri (git-reference (url home-page) (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1lnap41gl9vg82h557f4rlr69jgmd2gh0iqs6cxm77d39kv1scb8"))))
+        (base32 "0yhmj0lws3r3bl4ivs31dhlzxqc7f0dinixi904mraz1fmrg3w7f"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-before 'build 'set-cc
-                    (lambda _
-                      (setenv "CC" "gcc"))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure))           ; no configure script
        #:make-flags (let ((out (assoc-ref %outputs "out")))
                       (list (string-append "PREFIX=" out)
+                            (string-append "CC=" ,(cc-for-target))
                             (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")))
        #:test-target "test"))
     (synopsis "Small embeddable Scheme implementation")
@@ -585,8 +583,7 @@ regular-expression notation.")
                     (invoke "./configure"
                             (string-append "--prefix="
                                            (assoc-ref outputs "out"))))))))
-    (native-inputs `(("unzip" ,unzip)
-                     ("texinfo" ,texinfo)))
+    (native-inputs (list unzip texinfo))
     (home-page "https://people.csail.mit.edu/jaffer/SLIB.html")
     (synopsis "Compatibility and utility library for Scheme")
     (description "SLIB is a portable Scheme library providing compatibility and
@@ -639,9 +636,8 @@ utility functions for all standard Scheme implementations.")
                         ;; We must generate the slibcat file.
                         (invoke (string-append out "/bin/scm")
                                 "-br" "new-catalog")))))))
-    (inputs `(("slib" ,slib)))
-    (native-inputs `(("unzip" ,unzip)
-                     ("texinfo" ,texinfo)))
+    (inputs (list slib))
+    (native-inputs (list unzip texinfo))
     (home-page "https://people.csail.mit.edu/jaffer/SCM")
     (synopsis "Scheme implementation conforming to R5RS and IEEE P1178")
     (description "GNU SCM is an implementation of Scheme.  This
@@ -663,7 +659,7 @@ linked with a SCM executable.")
                 "0rik3qnxqd8wjlazx8rw996pfzkjjg60v6hcbpcqzi7rgml8q4n8"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -777,9 +773,9 @@ small program, it is easy to comprehend, get to grips with, and use.")
                                (string-append out "/bin"))
                  #t))))))
       (inputs
-       `(("libx11" ,libx11)))
+       (list libx11))
       (propagated-inputs
-       `(("libgc" ,libgc)))
+       (list libgc))
       (supported-systems '("x86_64-linux"))
       (home-page "https://engineering.purdue.edu/~qobi/papers/fdlcc.pdf")
       (synopsis "Brutally efficient Scheme compiler")
@@ -793,6 +789,45 @@ in-lining, unboxing, and flow-directed program-specific and
 program-point-specific low-level representation selection and code
 generation.")
       (license gpl2+))))
+
+(define-public s9fes
+  (package
+    (name "s9fes")
+    (version "20181205")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.t3x.org/s9fes/s9fes-" version ".tgz"))
+       (sha256
+        (base32 "0ynpl707bc9drwkdpdgvw14bz9zmwd3wffl1k02sxppjl28xm7rf"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "CC=" ,(cc-for-target))
+             (string-append "PREFIX=" %output))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key make-flags #:allow-other-keys)
+             (apply invoke "make" "install-all" make-flags))))
+       #:tests? #f))  ; No check target.
+    (inputs
+     (list ncurses))
+    (home-page "https://www.t3x.org/s9fes/")
+    (synopsis "Interpreter for R4RS Scheme")
+    (description
+     "Scheme 9 from Empty Space (S9fES) is a mature, portable, and
+comprehensible public-domain interpreter for R4RS Scheme offering:
+@itemize
+@item bignum arithmetics
+@item decimal-based real number arithmetics
+@item support for low-level Unix programming
+@item cursor addressing with Curses
+@item basic networking procedures
+@item an integrated online help system
+@item loads of useful library functions
+@end itemize")
+    (license public-domain)))
 
 (define-public femtolisp
   (let ((commit "ec7601076a976f845bc05ad6bd3ed5b8cde58a97")
@@ -865,13 +900,10 @@ The core is 12 builtin special forms and 33 builtin functions.")
                    #t))))
     (build-system gnu-build-system)
     (inputs
-     `(("libatomic-ops" ,libatomic-ops)
-       ("slib" ,slib)
-       ("zlib" ,zlib)))
+     (list libatomic-ops slib zlib))
     (native-inputs
-     `(("texinfo" ,texinfo)
-       ("openssl" ,openssl)            ; needed for tests
-       ("pkg-config" ,pkg-config)))    ; needed to find external libatomic-ops
+     (list texinfo openssl ; needed for tests
+           pkg-config))    ; needed to find external libatomic-ops
     (arguments
      `(#:configure-flags
        (list (string-append "--with-slib="
@@ -998,13 +1030,9 @@ and list gauche extension packages.")
                (copy-recursively "../bin" bin)
                (copy-recursively "../lib" lib)))))))
     (native-inputs
-     `(("coreutils" ,coreutils)
-       ("util-linux" ,util-linux)))
+     (list coreutils util-linux))
     (propagated-inputs
-     `(("gambit-c" ,gambit-c)
-       ("zlib" ,zlib)
-       ("openssl" ,openssl)
-       ("sqlite" ,sqlite)))
+     (list gambit-c zlib openssl sqlite))
     (build-system gnu-build-system)
     (synopsis "Meta-dialect of Scheme with post-modern features")
     (description "Gerbil is an opinionated dialect of Scheme designed for Systems

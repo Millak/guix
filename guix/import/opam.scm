@@ -231,7 +231,8 @@ path to the repository."
                  (('list-pat . stuff) stuff)
                  (('string-pat stuff) stuff)
                  (('multiline-string stuff) stuff)
-                 (('dict records ...) records))
+                 (('dict records ...) records)
+                 (_ #f))
                acc))))
         #f file))
 
@@ -317,7 +318,7 @@ path to the repository."
                 (_ others)))
             #f
             (filter-map get-opam-repository repositories-specs))
-      (leave (G_ "package '~a' not found~%") name)))
+      (warning (G_ "opam: package '~a' not found~%") name)))
 
 (define* (opam->guix-package name #:key (repo 'opam) version)
   "Import OPAM package NAME from REPOSITORY (a directory name) or, if
@@ -370,7 +371,8 @@ or #f on failure."
                                ,(list 'quasiquote `((upstream-name . ,name))))))
                        (home-page ,(metadata-ref opam-content "homepage"))
                        (synopsis ,(metadata-ref opam-content "synopsis"))
-                       (description ,(metadata-ref opam-content "description"))
+                       (description ,(beautify-description
+                                      (metadata-ref opam-content "description")))
                        (license ,(spdx-string->license
                                   (metadata-ref opam-content "license"))))
                     (filter

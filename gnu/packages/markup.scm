@@ -7,6 +7,8 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
+;;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,7 +26,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages markup)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -34,6 +36,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages perl)
@@ -67,7 +70,7 @@
     (description "Hoedown is a standards compliant, fast, secure markdown
 processing library written in C.")
     (home-page "https://github.com/hoedown/hoedown")
-    (license expat)))
+    (license license:expat)))
 
 (define-public markdown
   (package
@@ -90,8 +93,7 @@ processing library written in C.")
          (let ((source (assoc-ref %build-inputs "source"))
                (out    (assoc-ref %outputs "out"))
                (perlbd (string-append (assoc-ref %build-inputs "perl") "/bin"))
-               (unzip  (string-append (assoc-ref %build-inputs "unzip")
-                                      "/bin/unzip")))
+               (unzip  (search-input-file %build-inputs "/bin/unzip")))
            (mkdir-p out)
            (with-directory-excursion out
              (invoke unzip source)
@@ -103,16 +105,46 @@ processing library written in C.")
              (patch-shebang "bin/markdown" (list perlbd))
              (delete-file-recursively "Markdown_1.0.1"))
            #t))))
-    (native-inputs `(("unzip" ,unzip)))
-    (inputs `(("perl" ,perl)))
+    (native-inputs (list unzip))
+    (inputs (list perl))
     (home-page "http://daringfireball.net/projects/markdown")
     (synopsis "Text-to-HTML conversion tool")
     (description
      "Markdown is a text-to-HTML conversion tool for web writers.  It allows
 you to write using an easy-to-read, easy-to-write plain text format, then
 convert it to structurally valid XHTML (or HTML).")
-    (license (non-copyleft "file://License.text"
-                           "See License.text in the distribution."))))
+    (license (license:non-copyleft "file://License.text"
+                                   "See License.text in the distribution."))))
+
+(define-public lowdown
+  (package
+    (name "lowdown")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://kristaps.bsd.lv/lowdown/snapshots/lowdown-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "15v2kk4ffqw3n6y6n9plch4qcib3ynnhw0ih8wn2v9qgn4jssp5p"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "regress"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "./configure"
+                       (string-append "PREFIX=" out)
+                       (string-append "MANDIR=" out "/share/man"))))))))
+    (native-inputs
+     (list which))
+    (home-page "https://kristaps.bsd.lv/lowdown/")
+    (synopsis "Simple Markdown translator")
+    (description "Lowdown is a Markdown translator producing HTML5,
+roff documents in the ms and man formats, LaTeX, gemini, and terminal output.")
+    (license license:isc)))
 
 (define-public discount
   (package
@@ -152,13 +184,13 @@ convert it to structurally valid XHTML (or HTML).")
                        (string-append "--prefix=" out)
                        "--shared")))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (synopsis "Markdown processing library, written in C")
     (description
      "Discount is a markdown implementation, written in C.  It provides a
 @command{markdown} command, and a library.")
     (home-page "https://www.pell.portland.or.us/~orc/Code/discount/")
-    (license bsd-3)))
+    (license license:bsd-3)))
 
 (define-public perl-text-markdown-discount
   (package
@@ -190,7 +222,7 @@ convert it to structurally valid XHTML (or HTML).")
                       "/lib")))
              #t)))))
     (inputs
-     `(("discount" ,discount)))
+     (list discount))
     (home-page
      "https://metacpan.org/release/Text-Markdown-Discount")
     (synopsis
@@ -203,7 +235,7 @@ implementation.
   use Text::Markdown::Discount;
   my $html = markdown($text)
 @end example")
-    (license perl-license)))
+    (license license:perl-license)))
 
 (define-public cmark
   (package
@@ -230,7 +262,7 @@ implementation.
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "test"))
-    (native-inputs `(("python" ,python)))
+    (native-inputs (list python))
     (synopsis "CommonMark Markdown reference implementation")
     (description "CommonMark is a strongly defined, highly compatible
 specification of Markdown.  cmark is the C reference implementation of
@@ -243,7 +275,7 @@ for parsing and rendering CommonMark.")
     ;; cmark is distributed with a BSD-2 license, but some components are Expat
     ;; licensed. The CommonMark specification is Creative Commons CC-BY-SA 4.0
     ;; licensed. See 'COPYING' in the source distribution for more information.
-    (license (list bsd-2 expat cc-by-sa4.0))))
+    (license (list license:bsd-2 license:expat license:cc-by-sa4.0))))
 
 (define-public smu
   (package
@@ -279,7 +311,7 @@ amount of indents it scales just great.
 Smu was started as a rewrite of Markdown but became something more
 lightweight and consistent.  The biggest difference between Markdown
 and smu is that smu doesn't support reference style links.")
-    (license x11)))
+    (license license:x11)))
 
 (define-public md4c
   (package
@@ -301,7 +333,7 @@ and smu is that smu doesn't support reference style links.")
     (description "MD4C is a C Markdown parser with a
 SAX-like interface.  It is compliant to the CommonMark specification,
 with a few extensions.")
-    (license expat)))
+    (license license:expat)))
 
 (define-public python-mistletoe
   (package
@@ -323,4 +355,4 @@ parser that supports definitions of custom tokens.
 Parsing Markdown into an abstract syntax tree also allows @code{mistletoe} to
 swap out renderers for different output formats, without touching any of the
 core components.")
-    (license expat)))
+    (license license:expat)))

@@ -47,7 +47,7 @@
              (chdir "acorn"))))))
     (home-page "https://github.com/acornjs/acorn/tree/master/acorn")
     (synopsis "Javascript-based Javascript parser")
-    (description "Acornjs is a Javascrip parser with many options and an
+    (description "Acornjs is a Javascript parser with many options and an
 architecture supporting plugins.")
     (license license:expat)))
 
@@ -118,7 +118,7 @@ architecture supporting plugins.")
              ;; We skip the two tests which are supposed to fail.
              (invoke "bin/node-far" "-v" "test/" "-e" "test.*fail.js"))))))
     (inputs
-     `(("node-oop" ,node-oop)))
+     (list node-oop))
     (home-page "https://github.com/felixge/node-far")
     (synopsis "Node.js test runner")
     (description "This package provides a simple test runner that finds and runs
@@ -223,8 +223,7 @@ while being as light-weight and simple as possible.")
                (("far.include") "far.exclude(/test-parse.js/)\nfar.include"))
              #t)))))
       (native-inputs
-       `(("node-far" ,node-far)
-         ("node-long-stack-traces" ,node-long-stack-traces)))
+       (list node-far node-long-stack-traces))
       (home-page "https://github.com/felixge/node-stack-trace")
       (synopsis "Get v8 stack traces as an array of CallSite objects")
       (description "Get v8 stack traces as an array of CallSite objects.")
@@ -349,7 +348,7 @@ function with browser support.")
          ;; still works as a dependency of node-glob and node-inflight.
          (delete 'configure))))
     (inputs
-     `(("node-wrappy" ,node-wrappy)))
+     (list node-wrappy))
     (home-page "https://github.com/isaacs/once")
     (synopsis "Node.js module to call a function only once")
     (description
@@ -357,3 +356,61 @@ function with browser support.")
 Subsequent calls will either return the cached previous value or throw an error
 if desired.")
     (license license:isc)))
+
+(define-public node-irc-colors
+  (package
+    (name "node-irc-colors")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fent/irc-colors.js")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0q3y34rbnlc55jcakmdxkicwazyvyph9r6gaf6hi8k7wj2nfwfli"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f                      ; FIXME: tests depend on node-istanbul
+       #:phases
+       (modify-phases %standard-phases
+         ;; The default configure phase fails due to various packages
+         ;; being missing, as we don't have them packaged yet.
+         (delete 'configure))))
+    (home-page "https://github.com/fent/irc-colors.js")
+    (synopsis "Node.js module providing color and formatting for IRC")
+    (description "@code{node-irc-colors} is a Node.js module that
+allows you to easily use colored output and formatting in IRC bots.
+It contains functions for colours as well as more complex formatting
+such as rainbows.")
+    (license license:expat)))
+
+(define-public node-irc
+  (package
+    (name "node-irc")
+    (version "0.5.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martynsmith/node-irc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ln4qfx20jbwg4cp8lp0vf27m5281z2sz16d15xd6150n26cbi4x"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f                      ; FIXME: tests depend on node-faucet
+       #:phases
+       (modify-phases %standard-phases
+         ;; The default configure phase fails due to various packages
+         ;; being missing, as we don't have them packaged yet.
+         (delete 'configure))))
+    (inputs
+     (list node-irc-colors))
+    (home-page "https://github.com/martynsmith/node-irc")
+    (synopsis "IRC client library for Node.js")
+    (description "@code{node-irc} is an IRC client library for Node.js.
+It has functions for joining, parting, talking, and many other IRC commands.")
+    (license license:gpl3+)))

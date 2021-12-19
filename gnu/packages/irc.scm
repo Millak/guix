@@ -47,6 +47,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -124,9 +125,7 @@
                #t))))
        #:tests? #f)) ; no test target
     (native-inputs
-     `(("extra-cmake-modules" ,extra-cmake-modules)
-       ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list extra-cmake-modules pkg-config qttools))
     (inputs
      `(("inxi" ,inxi-minimal)
        ("libdbusmenu-qt" ,libdbusmenu-qt)
@@ -167,6 +166,7 @@ irssi, but graphical.")
                (setenv "CONFIG_SHELL" (which "bash"))
                (invoke "./configure"
                        (string-append "--prefix=" out)
+                       (string-append "--enable-true-color")
                        (string-append "--with-proxy")
                        (string-append "--with-socks")
                        (string-append "--with-bot")))))
@@ -174,12 +174,9 @@ irssi, but graphical.")
            (lambda _
              (setenv "HOME" (getcwd)))))))
     (inputs
-     `(("glib" ,glib)
-       ("ncurses" ,ncurses)
-       ("openssl" ,openssl)
-       ("perl" ,perl)))
+     (list glib ncurses openssl perl utf8proc))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://irssi.org/")
     (synopsis "Terminal-based IRC client")
     (description
@@ -190,39 +187,52 @@ SILC and ICB protocols via plugins.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "3.2")
+    (version "3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1a47knznlm9f2f83d71s3c4fm50m6iq6iq1bvp4m61p8fkrsva1r"))))
+                "1pyb1yaw61cbdg1g4cc22px1wsh8wm0gsx1yzp684idyz25apzna"))))
     (build-system cmake-build-system)
+    (outputs '("out" "doc"))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)
+       ("ruby-asciidoctor" ,ruby-asciidoctor)
        ;; For tests.
        ("cpputest" ,cpputest)))
     (inputs
-     `(("aspell" ,aspell)
-       ("curl" ,curl)
-       ("gnutls" ,gnutls)
-       ("libgcrypt" ,libgcrypt "out")
-       ("ncurses" ,ncurses)
-       ("zlib" ,zlib)
-
-       ;; Scripting language plug-ins.
-       ("guile" ,guile-3.0)
-       ("lua" ,lua-5.1)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("tcl" ,tcl)))
+     (list aspell
+           curl
+           gnutls
+           `(,libgcrypt "out")
+           ncurses
+           zlib
+           ;; Scripting language plug-ins.
+           guile-3.0
+           lua-5.1
+           perl
+           python
+           ruby
+           tcl))
     (arguments
      `(#:configure-flags
        (list "-DENABLE_PHP=OFF"
-             "-DENABLE_RUBY=OFF"
+             "-DENABLE_MAN=ON"
+             "-DENABLE_DOC=ON"
              "-DENABLE_TESTS=ON")       ; ‘make test’ fails otherwise
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'move-doc
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                   (doc (assoc-ref outputs "doc"))
+                   (from (string-append out "/share/doc/weechat"))
+                   (to (string-append doc "/share/doc/weechat")))
+               (mkdir-p (string-append doc "/share/doc"))
+               (rename-file from to)))))
        ;; Tests hang indefinitely on non-Intel platforms.
        #:tests? ,(if (any (cute string-prefix? <> (or (%current-target-system)
                                                       (%current-system)))
@@ -242,7 +252,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
 (define-public srain
   (package
     (name "srain")
-    (version "1.2.3")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -251,7 +261,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rlpygcpacgcfjxw3brw99ad3rc7zs96p5c6rg6j79p6sy38lrfs"))))
+        (base32 "14s0h5wgvlkdylnjis2fa7m835142jzw0d0yqjnir1wqnwmq1rld"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -263,13 +273,13 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
        ("python" ,python-wrapper)
        ("python-sphinx" ,python-sphinx)))
     (inputs
-     `(("glib-networking" ,glib-networking)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("libconfig" ,libconfig)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup)
-       ("openssl" ,openssl)))
+     (list glib-networking
+           gsettings-desktop-schemas
+           gtk+
+           libconfig
+           libsecret
+           libsoup
+           openssl))
     (home-page "https://srain.im")
     (synopsis "Modern IRC client written in GTK")
     (description
@@ -314,16 +324,55 @@ for the IRCv3 protocol.")
                (("/bin/rm") "rm")
                (("/bin/mv") "mv")))))))
     (inputs
-     `(("ncurses" ,ncurses)
-       ("openssl" ,openssl)))
+     (list ncurses openssl))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("perl" ,perl)))
+     (list pkg-config perl))
     (home-page "http://www.eterna.com.au/ircii/")
     (synopsis "Terminal-based IRC and ICB client")
     (description
      "ircII is a terminal based IRC and ICB client for UNIX systems.")
     (license license:bsd-3)))
+
+(define-public catgirl
+  (package
+    (name "catgirl")
+    (version "1.9a")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://git.causal.agency/catgirl/snapshot/"
+                                  name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0pci8crcgm33zb58y7ky2aydzyqsirj8ri8ik1zdlz6npadbjj9h"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:make-flags (list (string-append "PREFIX=" %output)
+                          ,(string-append "CC=" (cc-for-target)))))
+    (native-inputs
+     (list universal-ctags pkg-config))
+    (inputs
+     (list libressl ncurses))
+    (home-page "https://git.causal.agency/catgirl")
+    (synopsis "TLS-only terminal IRC client")
+    (description
+     "@command{catgirl} is a TLS-only terminal IRC client.
+
+Notable features include:
+@itemize
+@item Tab complete: most recently seen or mentioned nicks are completed first.
+  Commas are inserted between multiple nicks.
+@item Prompt: the prompt clearly shows whether input will be interpreted as a
+command or sent as a message.
+@item Split scroll: keeps the latest messages in view while scrolling.
+@item URL detection: recent URLs from a particular user or matching a
+substring can be opened or copied.
+@item Nick coloring: color generation based on usernames remains stable across
+nick changes.  Mentions of users in messages are colored.
+@item Topic diffing: the modified portion of a channel topic change is
+highlighted.
+@end itemize")
+    (license license:gpl3+)))
 
 (define-public ii
   (package
@@ -378,7 +427,7 @@ for the IRCv3 protocol.")
 (define-public kirc
   (package
     (name "kirc")
-    (version "0.2.7")
+    (version "0.2.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -386,7 +435,7 @@ for the IRCv3 protocol.")
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0phx00lr7ya8rx1hskv1wdwbq2vlihiqhnplqdvk1r3m23is7al9"))))
+               (base32 "0ahmfxhgcvnlgmxxbv9vga5x6krab1n7qq55ygj7hj3x7s7ra419"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -417,16 +466,16 @@ all RFC 2812 commands, and customized color scheme definitions.")
         (base32 "0853xk1ps3v6lkmfx50wv56vynnzpl84v66hxnhl8i34zl36kk3c"))))
     (build-system python-build-system)
     (inputs
-     `(("python-pytz" ,python-pytz)
-       ("python-chardet" ,python-chardet)
-       ("python-dateutil" ,python-dateutil)
-       ("python-gnupg" ,python-gnupg)
-       ("python-feedparser" ,python-feedparser)
-       ("python-sqlalchemy" ,python-sqlalchemy)
-       ("python-socksipy-branch" ,python-socksipy-branch)
-       ("python-ecdsa" ,python-ecdsa)))
+     (list python-pytz
+           python-chardet
+           python-dateutil
+           python-gnupg
+           python-feedparser
+           python-sqlalchemy
+           python-socksipy-branch
+           python-ecdsa))
     (native-inputs
-     `(("python-mock" ,python-mock)))
+     (list python-mock))
     ;; Despite the existence of a test folder there is no test phase.
     ;; We need to package https://github.com/ProgVal/irctest and write
     ;; our own testphase.
@@ -504,14 +553,14 @@ other enhancements and bug fixes.")
                                       (assoc-ref %build-inputs "tcl")
                                       "/lib/tclConfig.sh"))))))))
     (inputs
-     `(("libressl" ,libressl)
-       ("ncurses" ,ncurses)
-       ("libarchive" ,libarchive) ; CHANGELOG: "Support for loading zip files"
-       ("perl" ,perl)
-       ("tcl" ,tcl)
-       ("ruby" ,ruby)))
+     (list libressl
+           ncurses
+           libarchive ; CHANGELOG: "Support for loading zip files"
+           perl
+           tcl
+           ruby))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "http://epicsol.org")
     (synopsis "Epic5 IRC Client")
     (description
@@ -526,6 +575,37 @@ interface for those who are accustomed to the ircII way of doing things.")
                    ;; "Redistribution is permitted" clause of the license if you
                    ;; distribute binaries.
                    (license:non-copyleft "http://epicsol.org/copyright")))))
+
+(define-public litterbox
+  (package
+    (name "litterbox")
+    (version "1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://git.causal.agency/litterbox/snapshot/litterbox-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0ll5d18slngdg2qhaxkvrcq2p1admh0h7sr06wx8347ka0vvrgjl"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; There are no tests.
+       #:make-flags
+       (list
+        (string-append "CC=" ,(cc-for-target))
+        (string-append "PREFIX=" %output))))
+    (native-inputs
+      (list pkg-config universal-ctags))
+    (inputs
+      (list libressl sqlite))
+    (home-page "https://code.causal.agency/june/litterbox")
+    (synopsis "TLS-only IRC logger")
+    (description
+"@command{litterbox} is a TLS-only IRC logger.  It logs
+events from IRC in a SQLite database, indexing messages for full-text
+search.  It is intended for use with the IRC bouncer @command{pounce},
+but can also be used independently as a logging bot.")
+    (license license:gpl3+)))
 
 (define-public inspircd
   (package
@@ -581,21 +661,21 @@ interface for those who are accustomed to the ircII way of doing things.")
                        (string-append "--config-dir=" out-etc name)))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("argon2" ,argon2)
-       ("gnutls" ,gnutls)
-       ("libmaxminddb" ,libmaxminddb)
-       ("mbedtls-apache" ,mbedtls-apache)
-       ("mysql" ,mysql)
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)
-       ("pcre" ,pcre "bin")
-       ("perl" ,perl)
-       ("postgresql" ,postgresql)
-       ("re2" ,re2)
-       ("sqlite" ,sqlite)
-       ("tre" ,tre)))
+     (list argon2
+           gnutls
+           libmaxminddb
+           mbedtls-apache
+           mysql
+           openldap
+           openssl
+           `(,pcre "bin")
+           perl
+           postgresql
+           re2
+           sqlite
+           tre))
     (synopsis "Modular IRC server written in C++")
     (description "InspIRCd is a modular Internet Relay Chat
 server written in C++ for Unix-like operating systems.")

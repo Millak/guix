@@ -358,6 +358,20 @@
           (package-transitive-supported-systems d)
           (package-transitive-supported-systems e))))
 
+(test-assert "package-development-inputs"
+  ;; Note: Due to propagated inputs, 'package-development-inputs' returns a
+  ;; couple more inputs, such as 'linux-libre-headers'.
+  (lset<= equal?
+          `(("source" ,(package-source hello)) ,@(standard-packages))
+          (package-development-inputs hello)))
+
+(test-assert "package-development-inputs, cross-compilation"
+  (lset<= equal?
+          `(("source" ,(package-source hello))
+            ,@(standard-cross-packages "mips64el-linux-gnu" 'host)
+            ,@(standard-cross-packages "mips64el-linux-gnu" 'target))
+          (package-development-inputs hello #:target "mips64el-linux-gnu")))
+
 (test-assert "package-closure"
   (let-syntax ((dummy-package/no-implicit
                 (syntax-rules ()
@@ -881,6 +895,28 @@
     (guard (c ((store-protocol-error? c) #t))
       (build-derivations %store (list d))
       #f)))
+
+(test-assert "trivial with #:allowed-references + grafts"
+  (let* ((g (package
+              (inherit %bootstrap-guile)
+              (replacement (package
+                             (inherit %bootstrap-guile)
+                             (version "9.9")))))
+         (p (package
+              (inherit (dummy-package "trivial"))
+              (build-system trivial-build-system)
+              (inputs (list g))
+              (arguments
+               `(#:guile ,g
+                 #:allowed-references (,g)
+                 #:builder (mkdir %output)))))
+         (d0 (package-derivation %store p #:graft? #f))
+         (d1 (parameterize ((%graft? #t))
+               (package-derivation %store p #:graft? #t))))
+    ;; D1 should be equal to D2 because there's nothing to graft.  In
+    ;; particular, its #:disallowed-references should be lowered in the same
+    ;; way (ungrafted) whether or not #:graft? is true.
+    (string=? (derivation-file-name d1) (derivation-file-name d0))))
 
 (test-assert "search paths"
   (let* ((p (make-prompt-tag "return-search-paths"))

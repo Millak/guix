@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -33,7 +33,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
-  #:use-module (gnu packages nss)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
@@ -76,7 +75,7 @@
          #:install-plan
          '(("." "etc/desec" #:include ("hook.sh")))))
       (inputs
-       `(("curl" ,curl)))
+       (list curl))
       (synopsis "Certbot DNS challenge automatization for deSEC")
       (description "The deSEC can be used to obtain certificates with certbot
 DNS ownership verification.  With the help of this hook script, you can obtain
@@ -86,7 +85,7 @@ port forwarding to your local machine.")
       (home-page "https://desec.io")
       (license license:expat))))
 
-(define certdata2pem
+(define-public certdata2pem
   (let ((revision "1")
         (commit "4c576f350f44186d439179f63d5be19f710a73f5"))
     (package
@@ -128,7 +127,10 @@ that was originally contributed to Debian.")
 (define-public nss-certs
   (package
     (name "nss-certs")
-    (version "3.67")
+    ;; XXX We used to refer to the nss package here, but that eventually caused
+    ;; module cycles.  The below is a quick copy-paste job that must be kept in
+    ;; sync manually.  Surely there's a better way…?
+    (version "3.71")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -139,12 +141,21 @@ that was originally contributed to Debian.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "0zyfi27lbdz1bmk9dmsivcya4phx25rzlxqcnjab69yd928rlm7n"))))
+                "0ly2l3dv6z5hlxs72h5x6796ni3x1bq60saavaf42ddgv4ax7b4r"))
+              ;; Create nss.pc and nss-config.
+              (patches (search-patches "nss-3.56-pkgconfig.patch"
+                                       "nss-getcwd-nonnull.patch"
+                                       "nss-increase-test-timeout.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Delete the bundled copy of these libraries.
+                  (delete-file-recursively "nss/lib/zlib")
+                  (delete-file-recursively "nss/lib/sqlite")))))
     (build-system gnu-build-system)
     (outputs '("out"))
     (native-inputs
-     `(("certdata2pem" ,certdata2pem)
-       ("openssl" ,openssl)))
+     (list certdata2pem openssl))
     (inputs '())
     (propagated-inputs '())
     (arguments
@@ -211,8 +222,7 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
                    (string-append openssl "/bin/c_rehash")
                    ".")))))
     (native-inputs
-     `(("openssl" ,openssl)
-       ("perl" ,perl)))                           ;for 'c_rehash'
+     (list openssl perl))                           ;for 'c_rehash'
     (inputs
      `(; The Let's Encrypt root certificate, "ISRG Root X1".
        ("isrgrootx1.pem"

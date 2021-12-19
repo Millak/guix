@@ -36,10 +36,13 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -74,8 +77,7 @@
          (add-after 'unpack 'chdir
            (lambda _ (chdir "lang/c++"))))))
     (inputs
-     `(("boost" ,boost)
-       ("snappy" ,snappy)))
+     (list boost snappy))
     (home-page "https://avro.apache.org/")
     (synopsis "Data serialization system")
     (description "Apache Avro is a data serialization system.  Avro provides:
@@ -143,34 +145,21 @@ implement RPC protocols.")
          "0hc8wh9dwpc1w1zf5lfss4vg5hmgpblqxbrpp1rggicpx9ar831p"))))
     (build-system cmake-build-system)
     (arguments
-     `(;; The only included tests are portability tests requiring
-       ;; cross-compilation and boost.  Since we are building cereal on more
-       ;; platforms anyway, there is no compelling reason to build the tests.
-       #:tests? #f
-       #:out-of-source? #f
+     `(#:configure-flags '("-DSKIP_PORTABILITY_TEST=ON")
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-          (lambda _
-            (substitute* "doc/doxygen.in"
-              (("@CMAKE_CURRENT_BINARY_DIR@") ".")
-              (("@CMAKE_CURRENT_SOURCE_DIR@") "."))
-            (with-directory-excursion "doc"
-              (invoke "doxygen" "doxygen.in"))))
-         ;; There is no "install" target, so we have to provide our own
-         ;; "install" phase.
-         (replace 'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out     (assoc-ref outputs "out"))
-                   (doc     (string-append out "/share/cereal/docs"))
-                   (include (string-append out "/include/cereal")))
-              (mkdir-p doc)
-              (mkdir-p include)
-              (copy-recursively "include/cereal" include)
-              (copy-recursively "doc/html" doc)))))))
+         (add-before 'configure 'skip-sandbox
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("add_subdirectory\\(sandbox\\)") ""))))
+         (add-after 'install 'install-doc
+           (lambda _
+             (let ((doc (string-append %output "/share/doc/html")))
+               (invoke "make" "doc")
+               (mkdir-p doc)
+               (copy-recursively "doc/html" doc)))))))
     (native-inputs
-     `(("doxygen" ,doxygen)))
+     (list doxygen))
     (home-page "https://uscilab.github.io/cereal/")
     (synopsis "C++11 library for serialization")
     (description
@@ -200,10 +189,9 @@ such as compact binary encodings, XML, or JSON.")
         (base32 "0yzhq50ijvwrfkr97knhvn54lj3f4hr3zy39yq8wpf6xll94s4bf"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("googletest" ,googletest-1.8)
-       ("pkg-config" ,pkg-config)))
+     (list googletest-1.8 pkg-config))
     (propagated-inputs
-     `(("zlib" ,zlib))) ;; Msgpack installs two headers (zbuffer.h,
+     (list zlib)) ;; Msgpack installs two headers (zbuffer.h,
     ;; zbuffer.hpp) which #include <zlib.h>.  However, 'guix gc --references'
     ;; does not detect a store reference to zlib since these headers are not
     ;; compiled.
@@ -236,7 +224,7 @@ serialization.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     `(("libtool" ,libtool)))
+     (list libtool))
     (home-page "https://github.com/tarruda/libmpack")
     (synopsis "Small binary serialization library")
     (description "Libmpack is a small binary serialization and RPC library
@@ -288,7 +276,7 @@ that implements both the msgpack and msgpack-rpc specifications.")
                                "mpack-src")
              #t)))))
     (inputs
-     `(("lua" ,lua)))
+     (list lua))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("libmpack" ,(package-source libmpack))))
@@ -390,9 +378,9 @@ that implements both the msgpack and msgpack-rpc specifications.")
              (setenv "CC" "gcc")
              (invoke "make" "test"))))))
     (inputs
-     `(("libyaml" ,libyaml)))
+     (list libyaml))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (synopsis "C library for reading and writing YAML")
     (description
      "LibCYAML is a C library written in ISO C11 for reading and writing
@@ -420,7 +408,7 @@ in which the loaded data is arranged in memory.")
     (arguments
      '(#:configure-flags '("-DYAML_BUILD_SHARED_LIBS=ON")))
     (native-inputs
-     `(("python" ,python)))
+     (list python))
     (home-page "https://github.com/jbeder/yaml-cpp")
     (synopsis "YAML parser and emitter in C++")
     (description "YAML parser and emitter in C++ matching the YAML 1.2 spec.")
@@ -435,6 +423,8 @@ in which the loaded data is arranged in memory.")
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
+              (patches
+               (search-patches "jsoncpp-pkg-config-version.patch"))
               (sha256
                (base32
                 "0qnx5y6c90fphl9mj9d20j2dfgy6s5yr5l0xnzid0vh71zrp6jwv"))))
@@ -470,6 +460,51 @@ it a convenient format to store user input files.")
               (sha256
                (base32
                 "1180ln8blrb0mwzpcf78k49hlki6di65q77rsvglf83kfcyh4d7z"))))))
+
+(define-public json.sh
+  (let ((commit "0d5e5c77365f63809bf6e77ef44a1f34b0e05840") ;no releases
+        (revision "1"))
+    (package
+      (name "json.sh")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dominictarr/JSON.sh")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "14lxvp5xbdk0dcwkjbdp098z1108j8z48zaibndh4i731kkcz43i"))))
+      (build-system copy-build-system)
+      (arguments
+       `(#:install-plan '(("JSON.sh" "bin/"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests? (invoke "./all-tests.sh"))
+               #t))
+           (add-after 'install 'wrap-program
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (wrap-program (string-append (assoc-ref outputs "out") "/bin/JSON.sh")
+                 `("PATH" ":" prefix
+                   (,(string-join
+                     (map (lambda (in) (string-append (assoc-ref inputs in) "/bin"))
+                          '("grep" "sed"))
+                      ":"))))
+                #t)))))
+      (inputs
+       (list bash-minimal grep sed))
+      (synopsis "Pipeable JSON parser written in shell")
+      (description
+        "This package provides a JSON parser written in shell, compatible with
+ash, Bash, Dash and Zsh.  Pipe JSON to it, and it traverses the JSON objects
+and prints out the path to the current object (as a JSON array) and then the
+object, without whitespace.")
+      (home-page "https://github.com/dominictarr/JSON.sh")
+      (license (list license:expat license:asl2.0))))) ;dual-licensed
 
 (define-public capnproto
   (package
@@ -521,7 +556,7 @@ RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faste
          (base32
           "1fj4554msq0rrz14snbj908dzqj46gh7jg9w9j0akn2b7q911m5a"))))
     (build-system gnu-build-system)
-    (native-inputs `(("perl" ,perl)))
+    (native-inputs (list perl))
     (home-page "http://mongoc.org/libbson/current/index.html")
     (synopsis "C BSON library")
     (description "Libbson can create and parse BSON documents.  It can also
@@ -542,9 +577,9 @@ it is comparable to protobuf.")
          "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-pytest" ,python-pytest)))
+     (list python-pytest))
     (propagated-inputs
-     `(("python-ruamel.yaml.clib" ,python-ruamel.yaml.clib)))
+     (list python-ruamel.yaml.clib))
     (arguments
      `(;; TODO: Tests require packaging "ruamel.std.pathlib".
        #:tests? #f))
@@ -588,7 +623,7 @@ style and key ordering are kept, so you can diff the source.")
            (lambda _
              (invoke "cython" "_ruamel_yaml.pyx"))))))
     (native-inputs
-     `(("python-cython" ,python-cython)))
+     (list python-cython))
     (home-page "https://sourceforge.net/p/ruamel-yaml-clib/code/ci/default/tree")
     (synopsis "C version of reader, parser and emitter for ruamel.yaml")
     (description
@@ -663,8 +698,7 @@ game development and other performance-critical applications.")
           "00w9hwz7sj3fkdjc378r066vdy6lpxmn6vfac3qx956k8lvpxxj5"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-pandas" ,python-pandas)
-       ("python-pyarrow" ,python-pyarrow)))
+     (list python-pandas python-pyarrow))
     (home-page "https://github.com/wesm/feather")
     (synopsis "Python wrapper to the Feather file format")
     (description "This package provides a Python wrapper library to the

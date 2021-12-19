@@ -185,8 +185,6 @@
                      (default '()))
   (semantic-checks?  knot-zone-configuration-semantic-checks?
                      (default #f))
-  (disable-any?      knot-zone-configuration-disable-any?
-                     (default #f))
   (zonefile-sync     knot-zone-configuration-zonefile-sync
                      (default 0))
   (zonefile-load     knot-zone-configuration-zonefile-load
@@ -310,8 +308,8 @@
       (error-out "remote id must be a non empty string."))))
 
 (define (verify-knot-configuration config)
-  (unless (package? (knot-configuration-knot config))
-    (error-out "knot configuration field must be a package."))
+  (unless (file-like? (knot-configuration-knot config))
+    (error-out "knot configuration field must be a file-like object."))
   (unless (string? (knot-configuration-run-directory config))
     (error-out "run-directory must be a string."))
   (unless (list? (knot-configuration-includes config))
@@ -509,7 +507,6 @@
                 (notify (list #$@(knot-zone-configuration-notify zone)))
                 (acl (list #$@(knot-zone-configuration-acl zone)))
                 (semantic-checks? #$(knot-zone-configuration-semantic-checks? zone))
-                (disable-any? #$(knot-zone-configuration-disable-any? zone))
                 (zonefile-sync #$(knot-zone-configuration-zonefile-sync zone))
                 (zonefile-load '#$(knot-zone-configuration-zonefile-load zone))
                 (journal-content #$(knot-zone-configuration-journal-content zone))
@@ -541,7 +538,6 @@
                       #$(format-string-list
                           (knot-zone-configuration-acl zone))))
             (format #t "      semantic-checks: ~a\n" (if semantic-checks? "on" "off"))
-            (format #t "      disable-any: ~a\n" (if disable-any? "on" "off"))
             (if zonefile-sync
               (format #t "      zonefile-sync: ~a\n" zonefile-sync))
             (if zonefile-load
@@ -736,7 +732,7 @@ cache.size = 100 * MB
   dnsmasq-configuration make-dnsmasq-configuration
   dnsmasq-configuration?
   (package          dnsmasq-configuration-package
-                    (default dnsmasq))  ;package
+                    (default dnsmasq))  ;file-like
   (no-hosts?        dnsmasq-configuration-no-hosts?
                     (default #f))       ;boolean
   (port             dnsmasq-configuration-port
@@ -909,7 +905,7 @@ cache.size = 100 * MB
 
 (define-configuration ddclient-configuration
   (ddclient
-   (package ddclient)
+   (file-like ddclient)
    "The ddclient package.")
   (daemon
    (integer 300)

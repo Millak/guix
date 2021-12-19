@@ -41,6 +41,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
@@ -73,28 +74,24 @@
                 "0hcdysw8ibr66vk8i7v56l0v5ijvhlq67v4460mc2xf2910g2m72"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("extra-cmake-modules" ,extra-cmake-modules)
-       ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list extra-cmake-modules pkg-config qttools))
     (inputs
-     `(("elogind" ,elogind)
-       ("glib" ,glib)
-       ("libxcb" ,libxcb)
-       ("libxkbcommon" ,libxkbcommon)
-       ("linux-pam" ,linux-pam)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-
-       ;; Some user-defined themes use QtQuick components internally.  Adding
-       ;; QtQuick & co. here; they end up in QML2_IMPORT_PATH thanks to
-       ;; 'wrap-qt-program'.
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtquickcontrols" ,qtquickcontrols)
-       ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtsvg" ,qtsvg)
-
-       ("shadow" ,shadow)
-       ("wayland" ,wayland)))
+     (list elogind
+           glib
+           libxcb
+           libxkbcommon
+           linux-pam
+           qtbase-5
+           qtdeclarative
+           ;; Some user-defined themes use QtQuick components internally.  Adding
+           ;; QtQuick & co. here; they end up in QML2_IMPORT_PATH thanks to
+           ;; 'wrap-qt-program'.
+           qtgraphicaleffects
+           qtquickcontrols
+           qtquickcontrols2
+           qtsvg
+           shadow
+           wayland))
     (arguments
      `(#:configure-flags
        ,#~(list
@@ -233,11 +230,11 @@ easy to use, login interface with a modern yet classy touch.")
              (unsetenv "LC_ALL")
              #t)))))
     (inputs
-     `(("audit" ,audit)
-       ("linux-pam" ,linux-pam)
-       ("shadow" ,shadow)                         ;for sbin/nologin
-       ("libgcrypt" ,libgcrypt)
-       ("libxcb" ,libxcb)))
+     (list audit
+           linux-pam
+           shadow ;for sbin/nologin
+           libgcrypt
+           libxcb))
     (native-inputs
      `(("gobject-introspection" ,gobject-introspection)
        ("pkg-config" ,pkg-config)
@@ -250,9 +247,7 @@ easy to use, login interface with a modern yet classy touch.")
        ("python-pygobject" ,python2-pygobject)))
     ;; Required by liblightdm-gobject-1.pc.
     (propagated-inputs
-     `(("glib" ,glib)
-       ("libx11" ,libx11)
-       ("libxklavier" ,libxklavier)))
+     (list glib libx11 libxklavier))
     (home-page "https://www.freedesktop.org/wiki/Software/LightDM/")
     (synopsis "Lightweight display manager")
     (description "The Light Display Manager (LightDM) is a cross-desktop
@@ -262,16 +257,16 @@ display manager which supports different greeters.")
 (define-public lightdm-gtk-greeter
   (package
     (name "lightdm-gtk-greeter")
-    (version "2.0.7")
+    (version "2.0.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://launchpad.net/lightdm-gtk-greeter/"
-                    (version-major+minor version) "/" version
-                    "/+download/lightdm-gtk-greeter-" version ".tar.gz"))
+                    "https://github.com/xubuntu/lightdm-gtk-greeter"
+                    "/releases/download/lightdm-gtk-greeter-" version "/"
+                    "lightdm-gtk-greeter-" version ".tar.gz"))
               (sha256
                (base32
-                "1g7wc3d3vqfa7mrdhx1w9ywydgjbffla6rbrxq9k3sc62br97qms"))))
+                "04q62mvr97l9gv8h37hfarygqc7p0498ig7xclcg4kxkqw0b7yxy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -304,16 +299,15 @@ display manager which supports different greeters.")
                  `("GIO_EXTRA_MODULES" ":" prefix (,gtk))))
              #t)))))
     (native-inputs
-     `(("exo" ,exo)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list exo intltool pkg-config xfce4-dev-tools))
     (inputs
-     `(("lightdm" ,lightdm)
+     `(("bash" ,bash-minimal) ; for wrap-program
+       ("lightdm" ,lightdm)
        ("shared-mime-info" ,shared-mime-info)
        ("at-spi2-core" ,at-spi2-core)
        ("gtk+" ,gtk+)))
     (synopsis "GTK+ greeter for LightDM")
-    (home-page "https://launchpad.net/lightdm-gtk-greeter")
+    (home-page "https://github.com/xubuntu/lightdm-gtk-greeter")
     (description "This package provides a LightDM greeter implementation using
 GTK+, lets you select a desktop session and log in to it.")
     (license license:gpl3+)))
@@ -350,7 +344,7 @@ GTK+, lets you select a desktop session and log in to it.")
 	      ("libxmu" ,libxmu)
 	      ("xauth" ,xauth)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (arguments
      '(#:phases
        (modify-phases %standard-phases

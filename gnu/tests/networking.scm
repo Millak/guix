@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,8 +38,96 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu services shepherd)
   #:use-module (ice-9 match)
-  #:export (%test-inetd %test-openvswitch %test-dhcpd %test-tor %test-iptables
-                        %test-ipfs))
+  #:export (%test-static-networking
+            %test-inetd
+            %test-openvswitch
+            %test-dhcpd
+            %test-tor
+            %test-iptables
+            %test-ipfs))
+
+
+;;;
+;;; Static networking.
+;;;
+
+(define (run-static-networking-test vm)
+  (define test
+    (with-imported-modules '((gnu build marionette)
+                             (guix build syscalls))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (guix build syscalls)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette
+             '(#$vm "-nic" "user,model=virtio-net-pci")))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "static-networking")
+
+          (test-assert "service is up"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (start-service 'networking))
+             marionette))
+
+          (test-assert "network interfaces"
+            (marionette-eval
+             '(begin
+                (use-modules (guix build syscalls))
+                (network-interface-names))
+             marionette))
+
+          (test-equal "address of eth0"
+            "10.0.2.15"
+            (marionette-eval
+             '(let* ((sock (socket AF_INET SOCK_STREAM 0))
+                     (addr (network-interface-address sock "eth0")))
+                (close-port sock)
+                (inet-ntop (sockaddr:fam addr) (sockaddr:addr addr)))
+             marionette))
+
+          (test-equal "netmask of eth0"
+            "255.255.255.0"
+            (marionette-eval
+             '(let* ((sock (socket AF_INET SOCK_STREAM 0))
+                     (mask (network-interface-netmask sock "eth0")))
+                (close-port sock)
+                (inet-ntop (sockaddr:fam mask) (sockaddr:addr mask)))
+             marionette))
+
+          (test-equal "eth0 is up"
+            IFF_UP
+            (marionette-eval
+             '(let* ((sock  (socket AF_INET SOCK_STREAM 0))
+                     (flags (network-interface-flags sock "eth0")))
+                (logand flags IFF_UP))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "static-networking" test))
+
+(define %test-static-networking
+  (system-test
+   (name "static-networking")
+   (description "Test the 'static-networking' service.")
+   (value
+    (let ((os (marionette-operating-system
+               (simple-operating-system
+                (service static-networking-service-type
+                         (list %qemu-static-networking)))
+               #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
+      (run-static-networking-test (virtual-machine os))))))
+
+
+;;;
+;;; Inetd.
+;;;
 
 (define %inetd-os
   ;; Operating system with 2 inetd services.
@@ -104,9 +193,7 @@ port 7, and a dict service on port 2628."
           (define marionette
             (make-marionette (list #$vm)))
 
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "inetd")
 
           ;; Make sure the PID file is created.
@@ -137,8 +224,7 @@ port 7, and a dict service on port 2628."
                 (close dict)
                 response)))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 0)))))
+          (test-end))))
 
   (gexp->derivation "inetd-test" test))
 
@@ -180,9 +266,13 @@ port 7, and a dict service on port 2628."
 (define %openvswitch-os
   (operating-system
     (inherit (simple-operating-system
-              (static-networking-service "ovs0" "10.1.1.1"
-                                         #:netmask "255.255.255.252"
-                                         #:requirement '(openvswitch-configuration))
+              (simple-service 'openswitch-networking
+                              static-networking-service-type
+                              (list (static-networking
+                                     (addresses (list (network-address
+                                                       (value "10.1.1.1/24")
+                                                       (device "ovs0"))))
+                                     (requirement '(openvswitch-configuration)))))
               (service openvswitch-service-type)
               openvswitch-configuration-service))
     ;; Ensure the interface name does not change depending on the driver.
@@ -191,12 +281,15 @@ port 7, and a dict service on port 2628."
 (define (run-openvswitch-test)
   (define os
     (marionette-operating-system %openvswitch-os
-                                 #:imported-modules '((gnu services herd))))
+                                 #:imported-modules '((gnu services herd)
+                                                      (guix build syscalls))))
 
   (define test
-    (with-imported-modules '((gnu build marionette))
+    (with-imported-modules '((gnu build marionette)
+                             (guix build syscalls))
       #~(begin
           (use-modules (gnu build marionette)
+                       (guix build syscalls)
                        (ice-9 popen)
                        (ice-9 rdelim)
                        (srfi srfi-64))
@@ -204,9 +297,7 @@ port 7, and a dict service on port 2628."
           (define marionette
             (make-marionette (list #$(virtual-machine os))))
 
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "openvswitch")
 
           ;; Make sure the bridge is created.
@@ -239,13 +330,24 @@ port 7, and a dict service on port 2628."
                              (srfi srfi-1))
                 (live-service-running
                  (find (lambda (live)
-                         (memq 'networking-ovs0
+                         (memq 'networking
                                (live-service-provision live)))
                        (current-services))))
              marionette))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 0)))))
+          (test-equal "ovs0 is up"
+            IFF_UP
+            (marionette-eval
+             '(begin
+                (use-modules (guix build syscalls))
+
+                (let* ((sock  (socket AF_INET SOCK_STREAM 0))
+                       (flags (network-interface-flags sock "ovs0")))
+                  (close-port sock)
+                  (logand flags IFF_UP)))
+             marionette))
+
+          (test-end))))
 
   (gexp->derivation "openvswitch-test" test))
 
@@ -282,10 +384,15 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 
 (define %dhcpd-os
   (simple-operating-system
-   (static-networking-service "ens3" "192.168.1.4"
-                              #:netmask "255.255.255.0"
-                              #:gateway "192.168.1.1"
-                              #:name-servers '("192.168.1.2" "192.168.1.3"))
+   (service static-networking-service-type
+            (list (static-networking
+                   (addresses (list (network-address
+                                     (value "192.168.1.4/24")
+                                     (device "ens3"))))
+                   (routes (list (network-route
+                                  (destination "default")
+                                  (gateway "192.168.1.1"))))
+                   (name-servers '("192.168.1.2" "192.168.1.3")))))
    (service dhcpd-service-type dhcpd-v4-configuration)))
 
 (define (run-dhcpd-test)
@@ -304,9 +411,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
           (define marionette
             (make-marionette (list #$(virtual-machine os))))
 
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "dhcpd")
 
           (test-assert "pid file exists"
@@ -339,8 +444,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
                        (current-services))))
              marionette))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 0)))))
+          (test-end))))
 
   (gexp->derivation "dhcpd-test" test))
 
@@ -399,9 +503,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
                        (current-services))))
              marionette))
 
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "tor")
 
           ;; Test the usual Tor service.
@@ -433,8 +535,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
               (wait-for-unix-socket "/var/run/tor/socks-sock"
                                     marionette/unix-socks-socket)))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 0)))))
+          (test-end))))
 
   (gexp->derivation "tor-test" test))
 
@@ -526,9 +627,7 @@ COMMIT
                            (loop (read-line in)))))))))
              marionette))
 
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "iptables")
 
           (test-equal "iptables-save dumps the same rules that were loaded"
@@ -557,8 +656,7 @@ COMMIT
           ;;      marionette)
           ;;     (wait-for-tcp-port inetd-echo-port marionette #:timeout 5)))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 0)))))
+          (test-end))))
 
   (gexp->derivation "iptables" test))
 
@@ -622,9 +720,7 @@ COMMIT
              marionette))
 
           (marionette-eval '(use-modules (guix ipfs)) marionette)
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "ipfs")
 
           ;; Test the IPFS service.
@@ -644,8 +740,7 @@ COMMIT
             test-bv
             (read-contents (add-data test-bv)))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 0)))))
+          (test-end))))
   (gexp->derivation "ipfs-test" test))
 
 (define %test-ipfs

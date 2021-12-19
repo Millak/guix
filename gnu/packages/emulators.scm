@@ -48,10 +48,11 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
-  #:use-module (gnu packages backup)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -60,6 +61,7 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fltk)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -102,6 +104,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python))
 
 (define-public vice
@@ -120,20 +123,20 @@
     (arguments
      `(#:configure-flags '("--disable-pdf-docs")))
     (native-inputs
-     `(("bison" ,bison)
-       ("dos2unix" ,dos2unix)
-       ("flex" ,flex)
-       ("glib" ,glib "bin")             ; for glib-genmarshal, etc.
-       ("pkg-config" ,pkg-config)))
+     (list bison
+           dos2unix
+           flex
+           `(,glib "bin") ; for glib-genmarshal, etc.
+           pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("glew" ,glew)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("pulseaudio" ,pulseaudio)
-       ("sdl" ,sdl)
-       ("sdl-image" ,sdl-image)
-       ("xa" ,xa)))
+     (list alsa-lib
+           glew
+           glib
+           gtk+
+           pulseaudio
+           sdl
+           sdl-image
+           xa))
     (home-page "https://vice-emu.sourceforge.io/")
     (synopsis "The versatile Commodore emulator")
     (description
@@ -200,12 +203,9 @@ SuperCPU.")
                       ("shaders" "share/blastem/shaders"))
                     args))))))
     (inputs
-     `(("glew" ,glew)
-       ("mesa" ,mesa)
-       ("sdl2" ,sdl2)
-       ("zlib" ,zlib)))
+     (list glew mesa sdl2 zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://www.retrodev.com/blastem/")
     (synopsis "Genesis/Mega Drive emulator")
     (description "Blastem is an emulator for the Sega Genesis/Mega Drive
@@ -233,14 +233,9 @@ console.")
      `(#:configure-flags '("--enable-wifi"
                            "--enable-openal")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
+     (list pkg-config intltool))
     (inputs
-     `(("zlib" ,zlib)
-       ("sdl" ,sdl)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+-2)
-       ("glu" ,glu)))
+     (list zlib sdl glib gtk+-2 glu))
     (home-page "http://desmume.org/")
     (synopsis "Nintendo DS emulator")
     (description
@@ -320,39 +315,39 @@ console.")
        `(("pkg-config" ,pkg-config)
          ("gettext" ,gettext-minimal)))
       (inputs
-       `(("alsa-lib" ,alsa-lib)
-         ("ao" ,ao)
-         ("bluez" ,bluez)
-         ("curl" ,curl)
-         ("eudev" ,eudev)
-         ("ffmpeg" ,ffmpeg)
-         ("font-wqy-microhei" ,font-wqy-microhei)
-         ("freetype" ,freetype)
-         ("glew" ,glew)
-         ("glib" ,glib)
-         ("glu" ,glu)
-         ("gtk+" ,gtk+-2)
-         ("hidapi" ,hidapi)
-         ("libevdev" ,libevdev)
-         ("libpng" ,libpng)
-         ("libusb" ,libusb)
-         ("libx11" ,libx11)
-         ("libxi" ,libxi)
-         ("libxrandr" ,libxrandr)
-         ("lzo" ,lzo)
-         ("mbedtls-apache" ,mbedtls-apache)
-         ("mesa" ,mesa)
-         ("miniupnpc" ,miniupnpc)
-         ("openal" ,openal)
-         ("pugixml" ,pugixml)
-         ("pulseaudio" ,pulseaudio)
-         ("qtbase" ,qtbase-5)
-         ("sdl2" ,sdl2)
-         ("sfml" ,sfml)
-         ("soil" ,soil)
-         ("soundtouch" ,soundtouch)
-         ("vulkan-loader" ,vulkan-loader)
-         ("zlib" ,zlib)))
+       (list alsa-lib
+             ao
+             bluez
+             curl
+             eudev
+             ffmpeg
+             font-wqy-microhei
+             freetype
+             glew
+             glib
+             glu
+             gtk+-2
+             hidapi
+             libevdev
+             libpng
+             libusb
+             libx11
+             libxi
+             libxrandr
+             lzo
+             mbedtls-apache
+             mesa
+             miniupnpc
+             openal
+             pugixml
+             pulseaudio
+             qtbase-5
+             sdl2
+             sfml
+             soil
+             soundtouch
+             vulkan-loader
+             zlib))
       (home-page "https://dolphin-emu.org/")
       (synopsis "Nintendo Wii and GameCube emulator")
       (description
@@ -378,15 +373,14 @@ turbo speed, networked multiplayer, and graphical enhancements.")
                 "02i648i50dwicv1vaql15rccv4g8h5blf5g6inv67lrfxpbkvlf0"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (inputs
-     `(("sdl" ,sdl)
-       ("libpng" ,libpng)
-       ("zlib" ,zlib)
-       ("alsa-lib" ,alsa-lib)
-       ("glu" ,glu)
-       ("mesa" ,mesa)))
+     (list sdl
+           libpng
+           zlib
+           alsa-lib
+           glu
+           mesa))
     (home-page "https://www.dosbox.com")
     (synopsis "X86 emulator with CGA/EGA/VGA/etc. graphics and sound")
     (description "DOSBox is a DOS-emulator that uses the SDL library.  DOSBox
@@ -400,7 +394,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.76.0")
+    (version "0.77.1")
     (source
      (origin
        (method git-fetch)
@@ -409,34 +403,20 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14zlkm9qmaq2x4zdiadczsxvdnrf35w13ccvkxzd8cwrzxv84fvd"))))
-    (build-system gnu-build-system)
+        (base32 "07jwmmm1bhfxavlhl854cj8l5iy5hqx5hpwkkjbcwqg7yh9jfs2x"))))
+    (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (let* ((flags (list "-O3"
-                           ;; From scripts/automator/build/gcc-defaults.
-                           "-fstrict-aliasing"
-                           "-fno-signed-zeros"
-                           "-fno-trapping-math"
-                           "-fassociative-math"
-                           "-frename-registers"
-                           "-ffunction-sections"
-                           "-fdata-sections"))
-              (CFLAGS (string-join flags " ")))
-         ;; Several files #include <SDL_net.h> instead of <SDL2/SDL_net.h>,
-         ;; including configure.ac itself.
-         (list (string-append "CPPFLAGS=-I" (assoc-ref %build-inputs "sdl2")
-                              "/include/SDL2")
-               (string-append "CFLAGS=" CFLAGS)
-               (string-append "CXXFLAGS=-DNDEBUG " CFLAGS)))))
+       ;; These both try to git clone subprojects.
+       (list "-Dunit_tests=disabled"     ; gtest
+             "-Duse_mt32emu=false")))    ; mt32emu
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("fluidsynth" ,fluidsynth)
        ("libpng" ,libpng)
+       ("mesa" ,mesa)
        ("opusfile" ,opusfile)
        ("sdl2" ,(sdl-union (list sdl2 sdl2-net)))
        ("zlib" ,zlib)))
@@ -517,8 +497,7 @@ emulate a serial nullmodem over TCP/IP.")
                #t))))
        #:tests? #f))    ; test suite wants mips toolchain
     (inputs
-     `(("elfutils" ,elfutils)
-       ("qtbase" ,qtbase-5)))
+     (list elfutils qtbase-5))
     (home-page "https://github.com/cvut/QtMips")
     (synopsis "MIPS CPU emulator")
     (description "This package contains a MIPS CPU emulator.  The simulator
@@ -577,7 +556,7 @@ and a game metadata scraper.")
         (base32 "11rvm53c3p2f6zk8xbyv2j51xp8zmqnch7zravhj3fk590qrjrr2"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("ao" ,ao)
@@ -679,7 +658,7 @@ V2.")
         ;; "--with-external-mpcdec"
         "--with-external-lzo")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("alsa" ,alsa-lib)
        ("flac" ,flac)
@@ -726,7 +705,7 @@ The following systems are supported:
 (define-public mgba
   (package
     (name "mgba")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -735,7 +714,7 @@ The following systems are supported:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16kngkzf08jflqxwbgafb47091vqqb9pbhazg9cd94cy81ahz3q3"))
+        (base32 "1bg4ax5gjkr6d4cpzsgzv3bpa3i2c2b1ckwrjklqiy835b5ni6yi"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure we don't use the bundled software.
@@ -752,22 +731,21 @@ The following systems are supported:
        (list "-DUSE_LZMA=OFF"           ;do not use bundled LZMA
              "-DUSE_LIBZIP=OFF")))      ;use "zlib" instead
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("libedit" ,libedit)
-       ("libelf" ,libelf)
-       ("libepoxy" ,libepoxy)
-       ("libpng" ,libpng)
-       ("mesa" ,mesa)
-       ("minizip" ,minizip)
-       ("ncurses" ,ncurses)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
-       ("sdl2" ,sdl2)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list ffmpeg
+           libedit
+           libelf
+           libepoxy
+           libpng
+           mesa
+           minizip
+           ncurses
+           qtbase-5
+           qtmultimedia
+           sdl2
+           sqlite
+           zlib))
     (home-page "https://mgba.io")
     (synopsis "Game Boy Advance emulator")
     (description
@@ -782,7 +760,7 @@ and Game Boy Color games.")
 (define-public sameboy
   (package
     (name "sameboy")
-    (version "0.14.4")
+    (version "0.14.7")
     (source
      (origin
        (method git-fetch)
@@ -791,13 +769,12 @@ and Game Boy Color games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zp11qm8b3cmx70pzczyh4vv4jyhlh4jnci8kn6b30c8lzl43g83"))))
+        (base32 "1r391jdh0gjnx8bwmr63dcdmq58lpm162mng2ncrx53ydbb13xxf"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("rgbds" ,rgbds)
-       ("pkg-config" ,pkg-config)))
+     (list rgbds pkg-config))
     (inputs
-     `(("sdl2" ,sdl2)))
+     (list sdl2))
     (arguments
      `(#:tests? #f                      ; There are no tests
        #:make-flags `(,(string-append "CC=" ,(cc-for-target))
@@ -816,8 +793,7 @@ and Game Boy Color games.")
                (with-directory-excursion "build/bin/SDL"
                  (install-file "sameboy" bin)
                  (delete-file "sameboy")
-                 (copy-recursively "." data))
-               #t))))))
+                 (copy-recursively "." data))))))))
     (home-page "https://sameboy.github.io/")
     (synopsis "Accurate Game Boy, Game Boy Color and Super Game Boy emulator")
     (description "SameBoy is a user friendly Game Boy, Game Boy Color
@@ -841,26 +817,26 @@ from an emulator---from save states to scaling filters.")
         (base32 "116fndl6652zrp1r6ag4xv3dzp1x52mlvadj8xwflq07fd5rhri1"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("freetype" ,freetype)
-       ("glu" ,glu)
-       ("libpng" ,libpng)
-       ("mesa" ,mesa)
-       ("sdl2" ,sdl2)
-       ("zlib" ,zlib)))
+     (list freetype
+           glu
+           libpng
+           mesa
+           sdl2
+           zlib))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          ;; The mupen64plus build system has no configure phase.
-         (delete 'configure)
+         (replace 'configure
+           (lambda _
+             (substitute* "projects/unix/Makefile"
+               (("\\$\\(CFLAGS\\)")
+                "$(CFLAGS) -fcommon"))))
          ;; Makefile is in a subdirectory.
-         (add-before
-          'build 'chdir-to-project-directory
-          (lambda _
-            (chdir "projects/unix")
-            #t)))
+         (add-before 'build 'chdir-to-project-directory
+           (lambda _ (chdir "projects/unix"))))
        #:make-flags (let ((out (assoc-ref %outputs "out")))
                       (list "all" (string-append "PREFIX=" out)))
        ;; There are no tests.
@@ -890,11 +866,9 @@ core library.")
         (base32 "0z19amfg9vr2pqjjri1ipc7hs681fzjcnb0f9y7bjhp5n8d7p6bb"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("mupen64plus-core" ,mupen64plus-core)
-       ("sdl2" ,sdl2)))
+     (list mupen64plus-core sdl2))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -936,10 +910,9 @@ SDL audio plugin.")
         (base32 "1dyazfbdjycdfslq8jixqiqhziw0rlkvach2r9dz91229jmkyc9c"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("which" ,which)))
+     (list which))
     (inputs
-     `(("mupen64plus-core" ,mupen64plus-core)
-       ("sdl2" ,sdl2)))
+     (list mupen64plus-core sdl2))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -981,7 +954,7 @@ SDL input plugin.")
         (base32 "0pi31qzjjp7aypdvvnz6ms18g09c4gqzxi6328zj8sji94b75gf0"))))
     (build-system gnu-build-system)
     (inputs
-     `(("mupen64plus-core" ,mupen64plus-core)))
+     (list mupen64plus-core))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1023,7 +996,7 @@ high-level emulation (HLE) RSP processor plugin.")
         (base32 "0nfyjns9k8xbg3aqs7593nfaxvlj72h3l8h467442xlk8ajfcylx"))))
     (build-system gnu-build-system)
     (inputs
-     `(("mupen64plus-core" ,mupen64plus-core)))
+     (list mupen64plus-core))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1065,11 +1038,9 @@ Z64 RSP processor plugin.")
         (base32 "1v9fqwpb6pawr8z5cm2ki7bqkks4iyr5c4jy4v5khj6h8zcv55gc"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("mesa" ,mesa)
-       ("mupen64plus-core" ,mupen64plus-core)))
+     (list mesa mupen64plus-core))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1111,12 +1082,9 @@ Arachnoid video plugin.")
         (base32 "0qn5za7g7796kh2ag3xpmhbqg0yf71g9liz6ks0rha8pz73lgs01"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("mesa" ,mesa)
-       ("mupen64plus-core" ,mupen64plus-core)
-       ("sdl2" ,sdl2)))
+     (list mesa mupen64plus-core sdl2))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1165,15 +1133,14 @@ Glide64 video plugin.")
         (base32 "08pm28a36dpr0cvr8pzw0n5ksdazp7jqvlmqfy2lwb4dm0cwhkqd"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("boost" ,boost)
-       ("libpng" ,libpng)
-       ("mesa" ,mesa)
-       ("mupen64plus-core" ,mupen64plus-core)
-       ("sdl2" ,sdl2)
-       ("zlib" ,zlib)))
+     (list boost
+           libpng
+           mesa
+           mupen64plus-core
+           sdl2
+           zlib))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1215,13 +1182,9 @@ Glide64MK2 video plugin.")
         (base32 "0rpmbcq67gsj5h5jjis146378qc1mskskvx20y1ikx59yhbamh13"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("libpng" ,libpng)
-       ("mesa" ,mesa)
-       ("mupen64plus-core" ,mupen64plus-core)
-       ("sdl2" ,sdl2)))
+     (list libpng mesa mupen64plus-core sdl2))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1264,12 +1227,9 @@ Rice Video plugin.")
        (patches (search-patches "mupen64plus-video-z64-glew-correct-path.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("glew" ,glew)
-       ("mupen64plus-core" ,mupen64plus-core)
-       ("sdl2" ,sdl2)))
+     (list glew mupen64plus-core sdl2))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1319,10 +1279,9 @@ Z64 video plugin.")
        (patches (search-patches "mupen64plus-ui-console-notice.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list pkg-config which))
     (inputs
-     `(("sdl2" ,sdl2)))
+     (list sdl2))
     ;; Mupen64Plus supports a single data directory and a single plugin
     ;; directory in its configuration, yet we need data and plugin files from
     ;; a variety of packages.  The best way to deal with this is to install
@@ -1332,13 +1291,13 @@ Z64 video plugin.")
     ;; mupen64plus-ui-console-notice also gives users instructions on what
     ;; they need to do in order to point the configuration to their profile.
     (propagated-inputs
-     `(("mupen64plus-core" ,mupen64plus-core)
-       ("mupen64plus-audio-sdl" ,mupen64plus-audio-sdl)
-       ("mupen64plus-input-sdl" ,mupen64plus-input-sdl)
-       ("mupen64plus-rsp-hle" ,mupen64plus-rsp-hle)
-       ("mupen64plus-video-glide64" ,mupen64plus-video-glide64)
-       ("mupen64plus-video-glide64mk2" ,mupen64plus-video-glide64mk2)
-       ("mupen64plus-video-rice" ,mupen64plus-video-rice)))
+     (list mupen64plus-core
+           mupen64plus-audio-sdl
+           mupen64plus-input-sdl
+           mupen64plus-rsp-hle
+           mupen64plus-video-glide64
+           mupen64plus-video-glide64mk2
+           mupen64plus-video-rice))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1371,7 +1330,7 @@ towards a working Mupen64Plus for casual users.")
 (define-public nestopia-ue
   (package
     (name "nestopia-ue")
-    (version "1.48")
+    (version "1.51.1")
     (source
      (origin
        (method git-fetch)
@@ -1380,36 +1339,21 @@ towards a working Mupen64Plus for casual users.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19c8vx5yxbysl0sszk5blfngwacshdgwbf44g1qaxvq8ywiyxmb4"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; We don't need libretro for the GNU/Linux build.
-           (delete-file-recursively "libretro")
-           #t))))
-    (build-system cmake-build-system)
+        (base32 "1g19gz33jav00rwzkpcnynf5ps41vl64a9qx0xjd6lva4bgn8s57"))))
+    (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list autoconf autoconf-archive automake pkg-config))
     (inputs
-     `(("ao" ,ao)
-       ("gtk+" ,gtk+)
+     `(("fltk" ,fltk)
+       ("fontconfig", fontconfig)
        ("libarchive" ,libarchive)
        ("libepoxy" ,libepoxy)
+       ("libxft" ,libxft)
+       ("libxrender" ,libxrender)
        ("sdl2" ,sdl2)
        ("zlib" ,zlib)))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; This fixes the file chooser crash that happens with GTK 3.
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (nestopia (string-append out "/bin/nestopia"))
-                    (gtk (assoc-ref inputs "gtk+"))
-                    (gtk-share (string-append gtk "/share")))
-               (wrap-program nestopia
-                 `("XDG_DATA_DIRS" ":" prefix (,gtk-share)))))))
-       ;; There are no tests.
+     '(;; There are no tests.
        #:tests? #f))
     (home-page "http://0ldsk00l.ca/nestopia/")
     (synopsis "Nintendo Entertainment System (NES/Famicom) emulator")
@@ -1458,7 +1402,7 @@ as RetroArch.")
 (define-public retroarch
   (package
     (name "retroarch")
-    (version "1.9.4")
+    (version "1.9.11")
     (source
      (origin
        (method git-fetch)
@@ -1467,7 +1411,7 @@ as RetroArch.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wky28y52nsjmannks3y1hbjgw0dvqh85gxrllr98f9y7kvk1cvf"))
+        (base32 "0hd77kw1f655s40qcz1righdhd9czqyy40rf7gigdag1bkchdx6z"))
        (patches
         (search-patches "retroarch-LIBRETRO_DIRECTORY.patch"))))
     (build-system gnu-build-system)
@@ -1529,9 +1473,7 @@ as RetroArch.")
        ("wayland" ,wayland)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("wayland-protocols" ,wayland-protocols)
-       ("which" ,which)))
+     (list pkg-config wayland-protocols which))
     (native-search-paths
      (list (search-path-specification
             (variable "LIBRETRO_DIRECTORY")
@@ -1550,14 +1492,14 @@ multi-system game/emulator system.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.2.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "11vknasm5dna2vqr6gk343qynh7nhsq3kf60zayarn1vb5z6as8l"))))
+        (base32 "08ynw1cmld41p4bwrw84gb1nv229va70i91qiqsjr3c2jnqy8zml"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                                 ;require "git"
@@ -1576,14 +1518,15 @@ multi-system game/emulator system.")
                (setenv "CONFIG_SHELL" bash)
                (apply invoke "./configure" flags)))))))
     (native-inputs
-     `(("nasm" ,nasm)
-       ("pkg-config" ,pkg-config)))
+     (list nasm pkg-config))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("faad2" ,faad2)
        ("fluidsynth" ,fluidsynth)
        ("freetype" ,freetype)
        ("fribidi" ,fribidi)
+       ("glew" ,glew)
+       ("giflib" ,giflib)
        ("liba52" ,liba52)
        ("libflac" ,flac)
        ("libjpeg-turbo" ,libjpeg-turbo)
@@ -1628,15 +1571,14 @@ play them on systems for which they were never designed!")
              (chdir (string-append "libticables2-" ,version))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("autogen" ,autogen)
-       ("automake" ,automake)
-       ("gettext" ,gnu-gettext)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           autogen
+           automake
+           gnu-gettext
+           libtool
+           pkg-config))
     (inputs
-     `(("glib" ,glib)
-       ("libusb" ,libusb)))
+     (list glib libusb))
     (synopsis "Link cable library for TI calculators")
     (description
      "This package contains libticables, a library for operations on
@@ -1671,12 +1613,9 @@ This is a part of the TiLP project.")
              (chdir (string-append "libticonv-" ,version))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("glib" ,glib)))
+     (list glib))
     (synopsis "Character conversion library for TI calculators")
     (description
      "This package contains libticonv, a library to support working with
@@ -1709,15 +1648,9 @@ This is a part of the TiLP project.")
              (chdir (string-append "libtifiles2-" ,version))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gnu-gettext)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake gnu-gettext libtool pkg-config))
     (inputs
-     `(("glib" ,glib)
-       ("libarchive" ,libarchive)
-       ("libticonv" ,libticonv)))
+     (list glib libarchive libticonv))
     (synopsis "File functions library for TI calculators")
     (description
      "This package contains libticonv, a library to support working with
@@ -1750,17 +1683,9 @@ This is a part of the TiLP project.")
              (chdir (string-append "libticalcs2-" ,version))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gnu-gettext)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake gnu-gettext libtool pkg-config))
     (inputs
-     `(("glib" ,glib)
-       ("libarchive" ,libarchive)
-       ("libticables2" ,libticables2)
-       ("libticonv" ,libticonv)
-       ("libtifiles2" ,libtifiles2)))
+     (list glib libarchive libticables2 libticonv libtifiles2))
     (synopsis "Support library for TI calculators")
     (description
      "This project aims to develop a multi-platform linking program for use
@@ -1774,7 +1699,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.235")
+    (version "0.238")
     (source
      (origin
        (method git-fetch)
@@ -1783,7 +1708,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iz5p51am7gh19i0zx96vfpfpza8xvrz9f2pd908jsc4xpr36agd"))
+        (base32 "188h9a4lla0gimbss1bfvlidsm0l8smhqrhplv973k8j2jgf74fb"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1923,7 +1848,7 @@ This is a part of the TiLP project.")
        ("texinfo" ,texinfo)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("asio" ,asio-1.12)              ;the bundled copy is at 1.11
+       ("asio" ,asio)
        ("expat" ,expat)
        ("flac" ,flac)
        ("fontconfig" ,fontconfig)
@@ -2004,7 +1929,7 @@ functions.  The source code to MAME serves as this documentation.")
                (install-file "../source/data/tile/TILE.TXT" tile))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("mame" ,mame)
        ("gtk" ,gtk+)
@@ -2062,17 +1987,16 @@ emulator.")
                                     "/share/glib-2.0/schemas"))))
                #t)))))
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("intltool" ,intltool)
-         ("glib" ,glib "bin")))
+       (list pkg-config intltool
+             `(,glib "bin")))
       (inputs
-       `(("libcdio" ,libcdio)
-         ("sdl2" ,sdl2)
-         ("gtk+" ,gtk+)
-         ("ffmpeg" ,ffmpeg)
-         ("libxv" ,libxv)
-         ("libarchive" ,libarchive)
-         ("pulseaudio" ,pulseaudio)))
+       (list libcdio
+             sdl2
+             gtk+
+             ffmpeg
+             libxv
+             libarchive
+             pulseaudio))
       (home-page "https://archive.codeplex.com/?p=pcsxr")
       (synopsis "PlayStation emulator")
       (description
@@ -2104,8 +2028,7 @@ improvements.")
                (("GTK_CFLAGS=\"\\$GTK_CFLAGS .*\"") ""))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("nasm" ,nasm)))
+     (list pkg-config nasm))
     (inputs
      `(("sdl" ,sdl)
        ("gtk" ,gtk+-2)))
@@ -2142,7 +2065,7 @@ from various forks of Gens, and improved platform portability.")
        #:phases (modify-phases %standard-phases
                   (delete 'configure))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("ao" ,ao)
@@ -2360,8 +2283,7 @@ elseif(FALSE)"))
                (("unknown") ,version))))))
       (build-system cmake-build-system)
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("python" ,python)))
+       (list pkg-config python))
       (inputs
        `(("cityhash" ,cityhash)
          ;; ppsspp doesn't yet build with ffmpeg 4.4 (see:
@@ -2511,8 +2433,7 @@ system.")
                (install-file "exobasic" out-bin))
              #t)))))
     (native-inputs
-     `(("flex" ,flex)
-       ("bison" ,bison)))
+     (list flex bison))
     (synopsis "Compressor for use on Commodore home computers")
     (description "This program compresses files in a way that tries to be as
 efficient as possible but still allows them to be decompressed in environments

@@ -52,7 +52,7 @@
        ;; XXX: Tests expect real name resolution to work.
        #:tests? #f))
     (native-inputs
-     `(("m4" ,m4)))
+     (list m4))
     (home-page "https://www.gnu.org/software/adns/")
     (synopsis "Asynchronous DNS client library and utilities")
     (description
@@ -65,7 +65,7 @@ scripts.")
 (define-public c-ares
   (package
     (name "c-ares")
-    (version "1.17.1")
+    (version "1.17.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -73,17 +73,19 @@ scripts.")
                     ".tar.gz"))
               (sha256
                (base32
-                "0h7wjfnk2092glqcp9mqaax7xx0s13m501z1gi0gsjl2vvvd0gfp"))))
+                "0gcincjvpll2qmlc906jx6mfq97s87mgi0zby0753ki0rr2ch0s8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     '(;; FIXME: Some tests require network access
+       #:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'filter-live-tests
            (lambda _
              ;; Filter tests that require internet access.
              (setenv "GTEST_FILTER" "-*.Live*:*.FamilyV4*"))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://c-ares.haxx.se/")
     (synopsis "C library for asynchronous DNS requests")
     (description
@@ -107,3 +109,25 @@ multiple clients and programs with graphical user interfaces.")
      (arguments
       `(;; XXX: Tests require name resolution (the normal variant runs no tests).
         #:tests? #f)))))
+
+(define-public c-ares-for-node
+  (hidden-package
+   (package
+     (inherit c-ares)
+     (name "c-ares")
+     (version "1.18.1")
+     (source (origin
+               (method url-fetch)
+               (uri (string-append
+                     "https://c-ares.haxx.se/download/" name "-" version
+                     ".tar.gz"))
+               (sha256
+                (base32
+                 "1kxviskwsaa7dcgscvssxa8ps88pdq7kq4z93gxvz7sam2l54z8s"))))
+     (arguments
+      '(#:phases
+        (modify-phases %standard-phases
+          (add-before 'check 'filter-live-tests
+            (lambda _
+              ;; Filter tests that require internet access.
+              (setenv "GTEST_FILTER" "-*.Live*:*.FamilyV4*")))))))))

@@ -12,6 +12,8 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,23 +36,34 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages version-control))
+  #:use-module (gnu packages version-control)
+  #:use-module (gnu packages xorg))
 
 (define-public agate
   (package
@@ -132,10 +145,9 @@ low-end hardware and serving many concurrent requests.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libgit2" ,libgit2)
-       ("zlib" ,zlib)))
+     (list libgit2 zlib))
     (home-page "https://github.com/sharkdp/bat")
     (synopsis "@command{cat} clone with syntax highlighting and git integration")
     (description
@@ -143,6 +155,46 @@ low-end hardware and serving many concurrent requests.")
 highlighting for a large number of languages, git integration, and automatic
 paging.")
     (license (list license:expat license:asl2.0))))
+
+(define-public diffr
+  (package
+    (name "diffr")
+    (version "0.1.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "diffr" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1b0mz1ki2ksxni6g49x5l5j9ijpyhc11mywvxr9i9h3nr098nc5l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       ;; https://github.com/mookid/diffr/issues/79
+       #:cargo-test-flags
+       '("--release" "--"
+         "--skip=tests::success"
+         "--skip=test_cli::color_invalid_attribute_name"
+         "--skip=test_cli::color_invalid_color_not_done"
+         "--skip=test_cli::color_invalid_color_value_ansi"
+         "--skip=test_cli::color_invalid_color_value_name"
+         "--skip=test_cli::color_invalid_color_value_rgb"
+         "--skip=test_cli::color_invalid_face_name"
+         "--skip=test_cli::color_ok"
+         "--skip=test_cli::color_ok_multiple"
+         "--skip=test_cli::color_only_face_name"
+         "--skip=test_cli::debug_flag")
+       #:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-diffr-lib" ,rust-diffr-lib-0.1)
+        ("rust-termcolor" ,rust-termcolor-1))))
+    (home-page "https://github.com/mookid/diffr")
+    (synopsis "Longest Common Sequence based diff highlighting tool")
+    (description
+     "This package provides an @acronym{LCS, longest common sequence} based diff
+highlighting tool to ease code review from your terminal.")
+    (license license:expat)))
 
 (define-public drill
   (package
@@ -175,14 +227,50 @@ paging.")
          ("rust-url" ,rust-url-2)
          ("rust-yaml-rust" ,rust-yaml-rust-0.4))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (home-page "https://github.com/fcsonline/drill")
     (synopsis "HTTP load testing application")
     (description
       "Drill is a HTTP load testing application written in Rust inspired by
 Ansible syntax.  Benchmark files can be written in YAML.")
+    (license license:gpl3)))
+
+(define-public dutree
+  (package
+    (name "dutree")
+    (version "0.2.18")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "dutree" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "1611h27i8fm3jndscd6w65z8z7w09nnrm61vdgs9kb8ln57gqm8x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs
+       (("rust-getopts" ,rust-getopts-0.2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-signal-hook" ,rust-signal-hook-0.1)
+        ("rust-terminal-size" ,rust-terminal-size-0.1)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (home-page "https://ownyourbits.com/2018/03/25/analyze-disk-usage-with-dutree/")
+    (synopsis "Command line tool to analyze disk usage")
+    (description
+     "@command{dutree} is command line tool to analyze disk usage.
+Features include:
+@enumerate
+@item coloured output, according to the @code{LS_COLORS} environment variable.
+@item display the file system tree.
+@item ability to aggregate small files.
+@item ability to exclude files or directories.
+@item ability to compare different directories.
+@item fast, written in Rust.
+@end enumerate\n")
     (license license:gpl3)))
 
 (define-public exa
@@ -267,10 +355,9 @@ Ansible syntax.  Benchmark files can be written in YAML.")
                           (string-append share "/zsh/site-functions/_exa"))
                #t))))))
     (inputs
-     `(("libgit2" ,libgit2)
-       ("zlib" ,zlib)))
+     (list libgit2 zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://the.exa.website/")
     (synopsis "Modern replacement for ls")
     (description "@code{exa} is a modern replacement for the command-line
@@ -342,7 +429,7 @@ also knows about symlinks, extended attributes, and Git.")
                (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
                             (string-append out "/etc/bash_completion.d/fd"))
                #t))))))
-    (inputs `(("jemalloc" ,jemalloc)))
+    (inputs (list jemalloc))
     (home-page "https://github.com/sharkdp/fd")
     (synopsis "Simple, fast and user-friendly alternative to find")
     (description
@@ -439,6 +526,103 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
      "This package provides a command-line benchmarking tool.")
     (license (list license:expat license:asl2.0))))
 
+(define-public i3status-rust
+  (package
+    (name "i3status-rust")
+    (version "0.20.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/greshake/i3status-rust")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (patches (search-patches "i3status-rust-enable-unstable-features.patch"))
+       (sha256
+        (base32 "00gzm3g297s9bfp13vnb623p7dfac3g6cdhz2b3lc6l0kmnnqs1s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '("pulseaudio" "libpulse-binding")
+       #:install-source? #f
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-tz" ,rust-chrono-tz-0.5)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-curl" ,rust-curl-0.4)
+        ("rust-dbus" ,rust-dbus-0.9)
+        ("rust-dbus-tree" ,rust-dbus-tree-0.9)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-nix" ,rust-nix-0.20)
+        ("rust-nl80211" ,rust-nl80211-0.0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-signal-hook" ,rust-signal-hook-0.3)
+        ("rust-swayipc" ,rust-swayipc-2)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-cpuprofiler" ,rust-cpuprofiler-0.0)
+        ("rust-inotify" ,rust-inotify-0.9)
+        ("rust-libpulse-binding" ,rust-libpulse-binding-2)
+        ("rust-maildir" ,rust-maildir-0.5)
+        ("rust-notmuch" ,rust-notmuch-0.6)
+        ("rust-progress" ,rust-progress-0.2))
+       #:cargo-development-inputs
+       (("rust-assert-fs" ,rust-assert-fs-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enable-unstable-features
+           (lambda _
+             (setenv "RUSTC_BOOTSTRAP" "1")))
+         (add-after 'unpack 'fix-resources-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share")))
+               (substitute* "src/util.rs"
+                 (("/usr/share/i3status-rust") share)))))
+         (add-after 'install 'install-resources
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (copy-recursively "files" (string-append out "/share")))))
+         (add-after 'install 'wrap-i3status
+           (lambda* (#:key outputs inputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (paths (map
+                           (lambda (input)
+                             (string-append (assoc-ref inputs input) "/bin"))
+                           '("alsa-utils" "coreutils" "curl" "dbus" "ibus" "iproute"
+                             "kdeconnect" "lm-sensors" "pulseaudio"
+                             "openssl"
+                             "setxkbmap" "speedtest-cli" "xdg-utils" "xrandr"
+                             "zlib"))))
+               (wrap-program (string-append out "/bin/i3status-rs")
+                 `("PATH" prefix ,paths))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     `(("alsa-utils" ,alsa-utils)
+       ("bash-minimal" ,bash-minimal)
+       ("coreutils" ,coreutils)
+       ("curl" ,curl)
+       ("dbus" ,dbus)
+       ("ibus" ,ibus)
+       ("iproute" ,iproute)
+       ("kdeconnect" ,kdeconnect)
+       ("lm-sensors" ,lm-sensors)
+       ("pulseaudio" ,pulseaudio)
+       ("openssl" ,openssl)
+       ("setxkbmap" ,setxkbmap)
+       ("speedtest-cli" ,speedtest-cli)
+       ("xdg-utils" ,xdg-utils)
+       ("xrandr" ,xrandr)
+       ("zlib" ,zlib)))
+    (home-page "https://github.com/greshake/i3status-rust")
+    (synopsis "i3status, written in pure Rust")
+    (description "@code{i3status-rs} is a feature-rich and resource-friendly
+replacement for i3status, written in pure Rust.  It provides a way to display
+@code{blocks} of system information (time, battery status, volume, etc) on the i3
+bar.  It is also compatible with sway.")
+    (license license:gpl3)))
+
 (define-public ripgrep
   (package
     (name "ripgrep")
@@ -487,9 +671,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
              #t)))
        #:features '("pcre2")))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("pcre2" ,pcre2)
-       ("pkg-config" ,pkg-config)))
+     (list asciidoc pcre2 pkg-config))
     (home-page "https://github.com/BurntSushi/ripgrep")
     (synopsis "Line-oriented search tool")
     (description
@@ -506,7 +688,7 @@ gitignore rules.")
       (origin
         (method url-fetch)
         (uri (crate-uri "cbindgen" version))
-        (file-name (string-append name "-" version ".crate"))
+        (file-name (string-append name "-" version ".tar.xz"))
         (sha256
          (base32
           "0673pq96hs7waavkv58v2pakpxpsfyjvbraa5kyl2b44phgdzcid"))))
@@ -558,7 +740,7 @@ gitignore rules.")
        #:cargo-development-inputs
        (("rust-serial-test" ,rust-serial-test-0.5))))
     (native-inputs
-     `(("python-cython" ,python-cython)))))
+     (list python-cython))))
 
 (define-public rust-cbindgen-0.16
   (package
@@ -690,8 +872,7 @@ gitignore rules.")
        #:cargo-development-inputs
        (("rust-boxxy" ,rust-boxxy-0.11))))
     (inputs
-     `(("libpcap" ,libpcap)
-       ("libseccomp" ,libseccomp)))
+     (list libpcap libseccomp))
     (home-page "https://github.com/kpcyrd/sniffglue")
     (synopsis "Secure multithreaded packet sniffer")
     (description
@@ -700,21 +881,55 @@ are parsed concurrently using a thread pool to utilize all cpu cores.  A goal
 of the project is to be runnable on untrusted networks without crashing.")
     (license license:gpl3)))
 
+(define-public spotify-tui-0.25
+  (package
+    (name "spotify-tui")
+    (version "0.25.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "spotify-tui" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "08bpihkdv3rmcksnxp4cz04kawjs6spmwa3wr2k27b30x3q9cd4r"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-anyhow" ,rust-anyhow-1)
+         ("rust-arboard" ,rust-arboard-1)
+         ("rust-backtrace" ,rust-backtrace-0.3)
+         ("rust-clap" ,rust-clap-2)
+         ("rust-crossterm" ,rust-crossterm-0.20)
+         ("rust-dirs" ,rust-dirs-3)
+         ("rust-rand" ,rust-rand-0.8)
+         ("rust-rspotify" ,rust-rspotify-0.10)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+         ("rust-tokio" ,rust-tokio-0.2)
+         ("rust-tui" ,rust-tui-0.16)
+         ("rust-unicode-width" ,rust-unicode-width-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/Rigellute/spotify-tui")
+    (synopsis "Terminal user interface for Spotify")
+    (description "This package provides a terminal user interface for Spotify")
+    (license (list license:expat license:asl2.0))))
+
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.7.1")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rjkfmbam81anpdqs2qafcmd5bf7y898c8a7iqqqwkbl1hfw4sqs"))))
+        (base32 "0hzyqpjxya6g1ifb3hvjvj0zl2aigx898pz7h5pl46z50jp2pdc8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:rust ,rust-1.52
-       #:cargo-build-flags '("--release" "--features" "external-harfbuzz")
+     `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
        #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-byte-unit" ,rust-byte-unit-4)
@@ -730,14 +945,14 @@ of the project is to be runnable on untrusted networks without crashing.")
         ("rust-serde" ,rust-serde-1)
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.2)
-        ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.1)
+        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
+        ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.2)
         ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.1)
         ("rust-tectonic-engine-bibtex" ,rust-tectonic-engine-bibtex-0.1)
         ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.1)
         ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.1)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.2)
+        ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
         ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.3)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.1)
@@ -763,7 +978,7 @@ of the project is to be runnable on untrusted networks without crashing.")
                     (doc (string-append out "/share/doc/" ,name "-" ,version)))
                (copy-recursively "docs/src" doc)))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("fontconfig" ,fontconfig)
        ("harfbuzz" ,harfbuzz)
@@ -776,6 +991,36 @@ of the project is to be runnable on untrusted networks without crashing.")
 TeX/LaTeX engine.  Tectonic is forked from the XeTeX extension to the
 classic Web2C implementation of TeX and uses the TeXLive distribution
 of support files.")
+    (license license:expat)))
+
+(define-public hex
+  (package
+    (name "hex")
+    (version "0.4.2")
+    (source
+     (origin
+       ;; crates.io does not provide the test data.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sitkevij/hex")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03x27nixdlnkkrh85gy4152arp02kpjwq0i9dn9p73lyr24s64lv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-no-color" ,rust-no-color-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-1))))
+    (home-page "https://github.com/sitkevij/hex")
+    (synopsis "Hexadecimal colorized view of a file")
+    (description
+     "@command{hx} accepts a file path as input and outputs a hexadecimal
+colorized view to stdout.")
     (license license:expat)))
 
 (define-public tokei
@@ -820,17 +1065,50 @@ of support files.")
         ("rust-regex" ,rust-regex-1)
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libgit2" ,libgit2)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list libgit2 openssl zlib))
     (home-page "https://tokei.rs")
     (synopsis "Count code, quickly")
     (description
      "Tokei is a program that displays statistics about your code.  Tokei will
 show number of files, total lines within those files and code, comments, and
 blanks grouped by language.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public vivid
+  (package
+    (name "vivid")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vivid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01fds6dm19bqgqydaa6n051v9l4wh9rb5d6sr9akwp2cc0fs43b7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-colours" ,rust-ansi-colours-1)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-dirs" ,rust-dirs-3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rust-embed" ,rust-rust-embed-5)
+        ("rust-yaml-rust" ,rust-yaml-rust-0.4))))
+    (home-page "https://github.com/sharkdp/vivid")
+    (synopsis "LS_COLORS environment variable manager")
+    (description
+     "vivid is a generator for the @code{LS_COLORS} environment variable that
+controls the colorized output of ls, tree, fd, bfs, dust and many other tools.
+
+It uses a YAML configuration format for the filetype-database and the color
+themes.  In contrast to @command{dircolors}, the database and the themes are
+organized in different files.  This allows users to choose and customize color
+themes independent from the collection of file extensions.  Instead of using
+cryptic ANSI escape codes, colors can be specified in the RRGGBB format and
+will be translated to either truecolor (24-bit) ANSI codes or 8-bit codes for
+older terminal emulators.")
     (license (list license:expat license:asl2.0))))
 
 (define-public watchexec
@@ -892,8 +1170,7 @@ runs a command whenever it detects modifications.")
          "06bc3s5kjwpyr2cq79p0306a9bqp3xp928d750ybby9npq2dvj3z"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:rust ,rust-1.52
-       #:install-source? #f             ; virtual manifest
+     `(#:install-source? #f             ; virtual manifest
        #:cargo-test-flags
        '("--release" "--"
          "--skip=tests::test_version_check"         ;; It need rustc's version
@@ -1020,8 +1297,7 @@ support for Rust.")
           "0fwdxhdj2963xr6xfqr56i7hikhsdv562vgxq2dj3h2mi3dil1k6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:rust ,rust-1.52                ;inherited from rust-cargo
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cbindgen" ,rust-cbindgen-0.19)
         ("rust-cargo" ,rust-cargo-0.53) ;
         ("rust-anyhow" ,rust-anyhow-1)
@@ -1036,12 +1312,9 @@ support for Rust.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-regex" ,rust-regex-1))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("curl" ,curl)
-       ("libssh2" ,libssh2)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list curl libssh2 openssl zlib))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description
@@ -1049,6 +1322,132 @@ support for Rust.")
 library and a dynamic library, and a C header to be used by any C (and
 C-compatible) software.")
     (license license:expat)))
+
+(define-public tealdeer
+  (package
+    (name "tealdeer")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tealdeer" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0cwf46k2rszcpydrqajnm4dvhggr3ms7sjma0jx02ch4fjicxch7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bash (string-append out "/etc/bash_completion.d/"))
+                    (fish (string-append out "/share/fish/vendor_completions.d/")))
+               (mkdir-p bash)
+               (mkdir-p fish)
+               (copy-file "bash_tealdeer"
+                          (string-append bash "tealdeer"))
+               (copy-file "fish_tealdeer"
+                          (string-append fish "tealdeer.fish"))))))
+       #:install-source? #f
+       #:cargo-test-flags
+       '("--release" "--"
+         ;; These tests go to the network
+         "--skip=test_quiet_old_cache"
+         "--skip=test_quiet_cache"
+         "--skip=test_quiet_failures"
+         "--skip=test_pager_flag_enable"
+         "--skip=test_markdown_rendering"
+         "--skip=test_spaces_find_command"
+         "--skip=test_autoupdate_cache"
+         "--skip=test_update_cache")
+       #:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-app-dirs2" ,rust-app-dirs2-2)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-docopt" ,rust-docopt-1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-pager" ,rust-pager-0.15)
+        ("rust-reqwest" ,rust-reqwest-0.10)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-tar" ,rust-tar-0.4)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-xdg" ,rust-xdg-2))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-1)
+        ("rust-escargot" ,rust-escargot-0.5)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-predicates" ,rust-predicates-1)
+        ;; This earlier version is required to fix a bug.
+        ;; Remove rust-remove-dir-all-0.5.2 when tealdeer gets upgraded
+        ("rust-remove-dir-all" ,rust-remove-dir-all-0.5.2)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
+    (home-page "https://github.com/dbrgn/tealdeer/")
+    (synopsis "Fetch and show tldr help pages for many CLI commands")
+    (description
+     "This package fetches and shows tldr help pages for many CLI commands.
+Full featured offline client with caching support.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public git-absorb
+  (package
+    (name "git-absorb")
+    (version "0.6.6")
+    (source
+     (origin
+       ;; crates.io does not include the manual page.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tummychow/git-absorb")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04v10bn24acify34vh5ayymsr1flcyb05f3az9k1s2m6nlxy5gb9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-git2" ,rust-git2-0.13)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-slog" ,rust-slog-2)
+        ("rust-slog-async" ,rust-slog-async-2)
+        ("rust-slog-term" ,rust-slog-term-2))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'relax-version-requirements
+           (lambda _
+             (substitute* "Cargo.toml"
+               (("2.5") "2")
+               (("~2.3\"") "2\"")
+               (("3.1") "3"))))
+         (add-after 'install 'install-manual-page
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out   (assoc-ref outputs "out"))
+                    (man   (string-append out "/share/man/man1")))
+               (install-file "Documentation/git-absorb.1" man)))))))
+    (inputs
+     (list zlib))
+    (home-page "https://github.com/tummychow/git-absorb")
+    (synopsis "Git tool for making automatic fixup commits")
+    (description
+     "@code{git absorb} automatically absorbs staged changes into their
+current branch.  @code{git absorb} will automatically identify which commits
+are safe to modify, and which staged changes belong to each of those commits.
+It will then write @code{fixup!} commits for each of those changes.")
+    (license license:bsd-3)))
 
 (define-public zoxide
   (package

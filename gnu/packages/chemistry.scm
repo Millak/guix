@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,9 +36,11 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gv)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages perl)
@@ -67,20 +70,20 @@
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("eigen" ,eigen)
-       ("mmtf-cpp" ,mmtf-cpp)
-       ("msgpack" ,msgpack)
-       ("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("pybind11" ,pybind11)))
+     (list eigen
+           mmtf-cpp
+           msgpack
+           googletest
+           pkg-config
+           pybind11))
     (inputs
-     `(("glew" ,glew)
-       ("libarchive" ,libarchive)
-       ("libmsym" ,libmsym)
-       ("molequeue" ,molequeue)
-       ("python" ,python)
-       ("spglib" ,spglib)
-       ("qtbase" ,qtbase-5)))
+     (list glew
+           libarchive
+           libmsym
+           molequeue
+           python
+           spglib
+           qtbase-5))
     (arguments
      '(#:configure-flags (list "-DENABLE_TESTING=ON"
                                (string-append "-DSPGLIB_INCLUDE_DIR="
@@ -110,13 +113,9 @@ bioinformatics, materials science, and related areas.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("eigen" ,eigen)
-       ("pkg-config" ,pkg-config)))
+     (list eigen pkg-config))
     (inputs
-     `(("avogadrolibs" ,avogadrolibs)
-       ("hdf5" ,hdf5)
-       ("molequeue" ,molequeue)
-       ("qtbase" ,qtbase-5)))
+     (list avogadrolibs hdf5 molequeue qtbase-5))
     ;; TODO: Enable tests with "-DENABLE_TESTING" configure flag.
     (arguments
      '(#:tests? #f))
@@ -144,7 +143,7 @@ powerful plugin architecture.")
          "1z26lsyf7xwnzwjvimmbla7ckipx6p734w7y0jk2a2fzci8fkdcr"))))
     (build-system python-build-system)
     (inputs
-     `(("python-mmtk" ,python2-mmtk)))
+     (list python2-mmtk))
     (arguments
      `(#:python ,python-2
        ;; No test suite
@@ -300,7 +299,7 @@ biological structures.")
          "1w1fgxzqrb5yxvpmnc3c9ymnvixy0z1nfafkd9whg9zw8nbgl998"))))
     (build-system cmake-build-system)
     (inputs
-     `(("qtbase" ,qtbase-5)))
+     (list qtbase-5))
     (arguments
      '(#:configure-flags '("-DENABLE_TESTING=ON")
        #:phases
@@ -352,12 +351,10 @@ staged, and output files collected using a standard interface.")
          "016h4bqg419p6s7bcx55q5iik91gqmk26hbnfgj2j6zl0j36w51r"))))
     (build-system python-build-system)
     (inputs
-     `(("python-matplotlib" ,(with-numpy-1.8 python2-matplotlib))
-       ("python-scientific" ,python2-scientific)
-       ("netcdf" ,netcdf)
-       ("gv" ,gv)))
+     (list (with-numpy-1.8 python2-matplotlib) python2-scientific netcdf
+           gv))
     (propagated-inputs
-     `(("python-mmtk" ,python2-mmtk)))
+     (list python2-mmtk))
     (arguments
      `(#:python ,python-2
        #:tests? #f  ; No test suite
@@ -413,7 +410,7 @@ NumPy < 1.9.")
                 "1apf2n8nb34z09xarj7k4jgriq283l769sakjmj5aalpbilvai4q"))))
     (build-system cmake-build-system)
     (inputs
-     `(("zlib" ,zlib)))
+     (list zlib))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -499,13 +496,13 @@ stored with user-specified precision.")
        ("python-pygments" ,python-pygments)
        ("python-sphinx" ,python-sphinx)))
     (inputs
-     `(("fftwf" ,fftwf)
-       ("hwloc" ,hwloc-2 "lib")
-       ("lmfit" ,lmfit)
-       ("openblas" ,openblas)
-       ("perl" ,perl)
-       ("tinyxml2" ,tinyxml2)
-       ("tng" ,tng)))
+     (list fftwf
+           `(,hwloc-2 "lib")
+           lmfit
+           openblas
+           perl
+           tinyxml2
+           tng))
     (home-page "http://www.gromacs.org/")
     (synopsis "Molecular dynamics software package")
     (description "GROMACS is a versatile package to perform molecular dynamics,
@@ -546,12 +543,9 @@ usual algorithms you expect from a modern molecular dynamics implementation.")
                             (assoc-ref %build-inputs "inchi") "/include/inchi"))
        #:test-target "test"))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("eigen" ,eigen)
-       ("inchi" ,inchi)
-       ("libxml2" ,libxml2)
-       ("zlib" ,zlib)))
+     (list eigen inchi libxml2 zlib))
     (home-page "http://openbabel.org/wiki/Main_Page")
     (synopsis "Chemistry data manipulation toolbox")
     (description
@@ -605,4 +599,62 @@ symmetries written in C.  Spglib can be used to:
 @item Find a primitive cell
 @item Search irreducible k-points
 @end enumerate")
+    (license license:bsd-3)))
+
+(define-public python-pymol
+  (package
+    (name "python-pymol")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/schrodinger/pymol-open-source")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08zmfgclkbjkqjpq8xs1mphs1i8rpqj76mcw7m2mrhvma5qj1nr5"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:configure-flags
+       (list "--glut" "--testing")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'make-reproducible
+           (lambda _
+             (substitute* "create_shadertext.py"
+               (("time\\.time\\(\\)") "0"))))
+         (add-after 'unpack 'add-include-directories
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CPLUS_INCLUDE_PATH"
+                     (string-append (assoc-ref inputs "freetype")
+                                    "/include/freetype2:"
+                                    (assoc-ref inputs "libxml2")
+                                    "/include/libxml2:"
+                                    (getenv "CPLUS_INCLUDE_PATH")))))
+         ;; The setup.py script does not support one of the Python build
+         ;; system's default flags, "--single-version-externally-managed".
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "python" "setup.py" "install"
+                     (string-append "--prefix=" (assoc-ref outputs "out"))
+                     "--root=/"))))))
+    (inputs
+     (list freetype
+           libpng
+           freeglut
+           glew
+           libxml2
+           mmtf-cpp
+           msgpack
+           python-pyqt
+           glm
+           netcdf))
+    (native-inputs
+     (list catch-framework2 python-setuptools))
+    (home-page "https://pymol.org")
+    (synopsis "Molecular visualization system")
+    (description "PyMOL is a capable molecular viewer and renderer.  It can be
+used to prepare publication-quality figures, to share interactive results with
+your colleagues, or to generate pre-rendered animations.")
     (license license:bsd-3)))

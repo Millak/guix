@@ -8,10 +8,11 @@
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018 Nam Nguyen <namn@berkeley.edu>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system glib-or-gtk)
@@ -42,6 +44,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
@@ -119,14 +122,9 @@
                 (string-append gui "/share/man/man1/transmission-gtk.1"))
              #t))))))
     (inputs
-     `(("libevent" ,libevent)
-       ("curl" ,curl)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)
-       ("gtk+" ,gtk+)))
+     (list libevent curl openssl zlib gtk+))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (home-page "https://transmissionbt.com/")
     (synopsis "Fast and easy BitTorrent client")
     (description
@@ -148,26 +146,21 @@ DHT, µTP, PEX and Magnet Links.")
 (define-public transmission-remote-gtk
   (package
     (name "transmission-remote-gtk")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/transmission-remote-gtk/"
                            "transmission-remote-gtk/releases/download/"
                            version "/transmission-remote-gtk-" version
-                           ".tar.xz"))
-       (patches (search-patches "transmission-remote-gtk-fix-appstream.patch"))
+                           ".tar.gz"))
        (sha256
-        (base32 "1aqjl5rgamgcgqvcldd1gzyfh2xci0m7070924d6vz2qln0q75sr"))))
+        (base32 "0qz9wi70qc6vgnaymivc3xz6y86c9hglk6wjv3snnqxpxmp9saay"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gnu-gettext)
-       ("pkg-config" ,pkg-config)))
+     (list gnu-gettext pkg-config))
     (inputs
-     `(("appstream-glib" ,appstream-glib)
-       ("curl" ,curl)
-       ("gtk+" ,gtk+)
-       ("json-glib" ,json-glib)))
+     (list appstream-glib curl gtk+ json-glib))
     (synopsis "Gtk frontend to the Transmission daemon")
     (description "transmission-remote-gtk is a GTK client for remote management
 of the Transmission BitTorrent client, using its HTTP RPC protocol.")
@@ -187,10 +180,8 @@ of the Transmission BitTorrent client, using its HTTP RPC protocol.")
                (base32
                 "10z9i1rc41cmmi7nx8k7k1agsx6afv09g9cl7g9zr35fyhl5l4gd"))))
     (build-system gnu-build-system)
-    (inputs `(("openssl" ,openssl)
-              ("zlib" ,zlib)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("cppunit" ,cppunit)))
+    (inputs (list openssl zlib))
+    (native-inputs (list pkg-config cppunit))
     (synopsis "BitTorrent library of rtorrent")
     (description
      "LibTorrent is a BitTorrent library used by and developed in parallel
@@ -212,14 +203,13 @@ speed and efficiency.")
                (base32
                 "1bs2fnf4q7mlhkhzp3i1v052v9xn8qa7g845pk9ia8hlpw207pwy"))))
     (build-system gnu-build-system)
-    (inputs `(("libtorrent" ,libtorrent)
-              ("ncurses" ,ncurses)
-              ("curl" ,curl)
-              ("cyrus-sasl" ,cyrus-sasl)
-              ("openssl" ,openssl)
-              ("zlib" ,zlib)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("cppunit" ,cppunit)))
+    (inputs (list libtorrent
+                  ncurses
+                  curl
+                  cyrus-sasl
+                  openssl
+                  zlib))
+    (native-inputs (list pkg-config cppunit))
     (synopsis "BitTorrent client with ncurses interface")
     (description
      "rTorrent is a BitTorrent client with an ncurses interface.  It supports
@@ -253,7 +243,7 @@ XML-RPC over SCGI.")
          (delete 'configure)
          (delete 'build))))
     (inputs
-     `(("python" ,python)))
+     (list python))
     (synopsis "Console client for the Transmission BitTorrent daemon")
     (description "Tremc is a console client, with a curses interface, for the
 Transmission BitTorrent daemon.")
@@ -332,17 +322,17 @@ maintained upstream.")
                 (string-append "// " text)))
              #t)))))
     (native-inputs
-     `(("cppunit" ,cppunit) ; for the tests
-       ("pkg-config" ,pkg-config)))
+     (list cppunit ; for the tests
+           pkg-config))
     (inputs
-     `(("c-ares" ,c-ares)
-       ("gnutls" ,gnutls)
-       ("gmp" ,gmp)
-       ("libssh2" ,libssh2)
-       ("libxml2" ,libxml2)
-       ("nettle" ,nettle)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list c-ares
+           gnutls
+           gmp
+           libssh2
+           libxml2
+           nettle
+           sqlite
+           zlib))
     (home-page "https://aria2.github.io/")
     (synopsis "Utility for parallel downloading files")
     (description
@@ -364,18 +354,19 @@ Aria2 can be manipulated via built-in JSON-RPC and XML-RPC interfaces.")
        (sha256
         (base32 "0dlrjhnm1pg2vwmp7nl2xv1aia5hyirb3021rl46x859k63zap24"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags '("CFLAGS=-fcommon")))
     (inputs
-     `(("curl" ,curl)
-       ("gtk+" ,gtk+)
-       ("glib" ,glib)
-       ("gnutls" ,gnutls)
-       ("gstreamer" ,gstreamer)
-       ("libgcrypt" ,libgcrypt)
-       ("libnotify" ,libnotify)
-       ("openssl" ,openssl)))
+     (list curl
+           gtk+
+           glib
+           gnutls
+           gstreamer
+           libgcrypt
+           libnotify
+           openssl))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (home-page "https://ugetdm.com/")
     (synopsis "Universal download manager with GTK+ interface")
     (description
@@ -423,30 +414,41 @@ and will take advantage of multiple processor cores where possible.")
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "1.2.8")
+    (version "1.2.14")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "https://github.com/arvidn/libtorrent/"
-                       "releases/download/libtorrent-" version "/"
+                       "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "1phn4klzvfzvidv5g566pnrrxj8l0givpy6s4r17d45wznqxc006"))))
-    (build-system gnu-build-system)
+        (base32 "0gwm4w7337ykh5lfnspapnnz6a35g7yay3wnj126s8s5kcsvy9wy"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost-libdir="
-                            (assoc-ref %build-inputs "boost")
-                            "/lib")
-             "--enable-python-binding"
-             "--enable-tests")
-       #:make-flags (list
-                     (string-append "LDFLAGS=-Wl,-rpath="
-                                    (assoc-ref %outputs "out") "/lib"))))
-    (inputs `(("boost" ,boost)
-              ("openssl" ,openssl)))
-    (native-inputs `(("python" ,python-wrapper)
+     `(#:configure-flags '("-Dpython-bindings=ON"
+                           "-Dbuild_tests=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+             (let ((disabled-tests
+                    ;; test_upnp requires a non-localhost IPv4 interface.
+                    '("test_upnp")))
+               (when tests?
+                 ;; test_ssl relies on bundled TLS certificates with a fixed
+                 ;; expiry date.  To ensure succesful builds in the future,
+                 ;; fake the time to be roughly that of the release.
+                 (setenv "FAKETIME_ONLY_CMDS" "test_ssl")
+                 (invoke "faketime" "2021-06-01"
+                         "ctest"
+                         "--exclude-regex" (string-join disabled-tests "|")
+                         "-j" (if parallel-tests?
+                                  (number->string (parallel-job-count))
+                                  "1")))))))))
+    (inputs (list boost openssl))
+    (native-inputs `(("libfaketime" ,libfaketime)
+                     ("python" ,python-wrapper)
                      ("pkg-config" ,pkg-config)))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
@@ -490,8 +492,7 @@ desktops.")
                (wrap-qt-program "qbittorrent" #:output out #:inputs inputs))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
      `(("boost" ,boost)
        ("libtorrent-rasterbar" ,libtorrent-rasterbar)
@@ -544,8 +545,7 @@ features.")
        ("python-twisted" ,python-twisted)
        ("python-zope-interface" ,python-zope-interface)))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("python-wheel" ,python-wheel)))
+     (list intltool python-wheel))
     ;; TODO: Enable tests.
     ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
     ;; started, some of the tests still fail.  There are likely some tests

@@ -70,7 +70,7 @@
              (base32
               "1qxwkfvd185dfcqbakrzikrsw6ffr5jp1gl3dch9dsdyjvmw745x"))))
    (build-system gnu-build-system)
-   (inputs `(("readline" ,readline)))
+   (inputs (list readline))
    (outputs '("out" "static"))
    (arguments
     `(#:configure-flags
@@ -109,18 +109,14 @@ widely deployed SQL database engine in the world.  The source code for SQLite
 is in the public domain.")
    (license license:public-domain)))
 
-(define-public sqlite-3.33
+;; Newer version required for e.g. fossil.
+(define-public sqlite-next
   (package
     (inherit sqlite)
-    (version "3.33.0")
+    (version "3.37.0")
     (source (origin
               (method url-fetch)
-              (uri (sqlite-uri version 2020))
+              (uri (sqlite-uri version 2021))
               (sha256
                (base32
-                "05dvdfaxd552gj5p7k0i72sfam7lykaw1g2pfn52jnppqx42qshh"))))))
-
-;; Column metadata support was added to the regular 'sqlite' package with
-;; commit fad5b1a6d8d9c36bea5785ae4fbc1beb37e644d7.
-(define-public sqlite-with-column-metadata
-  (deprecated-package "sqlite-with-column-metadata" sqlite))
+                "1xvrfh2r5x5pljlvakym3zrhml2dvsr8dd8xsb3nzcylsi8lc6kk"))))))

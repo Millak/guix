@@ -7,6 +7,7 @@
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,18 +31,24 @@
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages pkg-config))
 
 (define-public ath9k-htc-firmware
   (package
@@ -119,8 +126,7 @@ Linux-libre.")
            "1wgmj4d65izbhprwb5bcwimc2ryv19b9066lqzy4sa5m6wncm9cn"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("flex" ,flex)
-         ("bison" ,bison)))
+       (list flex bison))
       (arguments
        `(#:modules ((srfi srfi-1)
                     (guix build gnu-build-system)
@@ -174,7 +180,7 @@ driver.")
          "1p60gdi7w88s7qw82d3g9v7mk887mhvidf4l5q5hh09j10h37q4x"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("b43-tools" ,b43-tools)))
+     (list b43-tools))
     (arguments
      `(#:make-flags (list (string-append "PREFIX="
                                          (assoc-ref %outputs "out")
@@ -189,6 +195,30 @@ driver.")
 Broadcom/AirForce chipset BCM43xx with Wireless-Core Revision 5.  It is used
 by the b43-open driver of Linux-libre.")
     (license license:gpl2)))
+
+(define-public eg25-manager
+  (package
+    (name "eg25-manager")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/mobian1/devices/eg25-manager")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h4c4ndcnh88jn65h1kycxkjrydwwwh3irkxvpaxb6ry4wpc45r0"))))
+    (build-system meson-build-system)
+    (native-inputs (list curl
+                         `(,glib "bin") pkg-config))
+    (inputs (list libgpiod libgudev libusb))
+    (synopsis "Manager daemon for the Quectel EG25 mobile broadband modem")
+    (description
+     "This package provides a manager daemon for the Quectel EG25 mobile
+broadband modem as found, for example, on PinePhone.")
+    (home-page "https://gitlab.com/mobian1/devices/eg25-manager")
+    (license license:gpl3+)))
 
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
@@ -245,16 +275,8 @@ for platform-specific firmwares executing in M-mode.")
 (define-public opensbi-qemu-generic
   (make-opensbi-package "generic" "opensbi-qemu-generic"))
 
-(define-public opensbi-qemu-virt
-  (deprecated-package "opensbi-qemu-virt" opensbi-qemu-generic))
-
 (define-public opensbi-sifive-fu540
   (make-opensbi-package "sifive/fu540" "opensbi-sifive-fu540"))
-
-(define-public opensbi-qemu-sifive-u
-  ;; Dropped upstream, as all functionality is present in the sifive-fu540
-  ;; target for recent versions of qemu, u-boot and linux.
-  (deprecated-package "opensbi-qemu-sifive-u" opensbi-sifive-fu540))
 
 (define-public seabios
   (package
@@ -465,7 +487,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
 (define* (make-arm-trusted-firmware platform #:optional (arch "aarch64"))
   (package
     (name (string-append "arm-trusted-firmware-" platform))
-    (version "2.4")
+    (version "2.5")
     (source
       (origin
         (method git-fetch)
@@ -476,7 +498,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
         (file-name (git-file-name "arm-trusted-firmware" version))
        (sha256
         (base32
-         "12k0n79j156bdzqws18kpbli04kn00nh6dy42pjv6gakqrkx9px3"))))
+         "0w3blkqgmyb5bahlp04hmh8abrflbzy0qg83kmj1x9nv4mw66f3b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

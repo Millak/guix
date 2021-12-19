@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
@@ -72,6 +72,7 @@
             %test-btrfs-raid-root-os
             %test-jfs-root-os
             %test-f2fs-root-os
+            %test-xfs-root-os
             %test-lvm-separate-home-os
 
             %test-gui-installed-os
@@ -354,7 +355,7 @@ IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
                 (format #t "creating writable image from '~a'...~%" image)
                 (unless (zero? (system* #+(file-append qemu-minimal
                                                        "/bin/qemu-img")
-                                        "create" "-f" "qcow2"
+                                        "create" "-f" "qcow2" "-F" "qcow2"
                                         "-o"
                                         (string-append "backing_file=" image)
                                         "disk.img"))
@@ -924,7 +925,7 @@ reboot\n")
 
   (operating-system
     (host-name "bootroot")
-    (timezone "Europe/Madrid")
+    (timezone "Europe/Paris")
     (locale "en_US.UTF-8")
 
     (bootloader (bootloader-configuration
@@ -1167,7 +1168,7 @@ RAID-0 (stripe) root partition.")
 
   (operating-system
     (host-name "hurd")
-    (timezone "America/Montreal")
+    (timezone "Europe/Paris")
     (locale "en_US.UTF-8")
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
@@ -1396,6 +1397,79 @@ build (current-guix) and then store a couple of full system images.")
 
 
 ;;;
+;;; XFS root file system.
+;;;
+
+(define-os-with-source (%xfs-root-os %xfs-root-os-source)
+  ;; The OS we want to install.
+  (use-modules (gnu) (gnu tests) (srfi srfi-1))
+
+  (operating-system
+    (host-name "liberigilo")
+    (timezone "Europe/Paris")
+    (locale "en_US.UTF-8")
+
+    (bootloader (bootloader-configuration
+                 (bootloader grub-bootloader)
+                 (targets (list "/dev/vdb"))))
+    (kernel-arguments '("console=ttyS0"))
+    (file-systems (cons (file-system
+                          (device (file-system-label "my-root"))
+                          (mount-point "/")
+                          (type "xfs"))
+                        %base-file-systems))
+    (users (cons (user-account
+                  (name "charlie")
+                  (group "users")
+                  (supplementary-groups '("wheel" "audio" "video")))
+                 %base-user-accounts))
+    (services (cons (service marionette-service-type
+                             (marionette-configuration
+                              (imported-modules '((gnu services herd)
+                                                  (guix combinators)))))
+                    %base-services))))
+
+(define %xfs-root-installation-script
+  ;; Shell script of a simple installation.
+  "\
+. /etc/profile
+set -e -x
+guix --version
+
+export GUIX_BUILD_OPTIONS=--no-grafts
+ls -l /run/current-system/gc-roots
+parted --script /dev/vdb mklabel gpt \\
+  mkpart primary ext2 1M 3M \\
+  mkpart primary ext2 3M 2G \\
+  set 1 boot on \\
+  set 1 bios_grub on
+mkfs.xfs -L my-root -q /dev/vdb2
+mount /dev/vdb2 /mnt
+herd start cow-store /mnt
+mkdir /mnt/etc
+cp /etc/target-config.scm /mnt/etc/config.scm
+guix system build /mnt/etc/config.scm
+guix system init /mnt/etc/config.scm /mnt --no-substitutes
+sync
+reboot\n")
+
+(define %test-xfs-root-os
+  (system-test
+   (name "xfs-root-os")
+   (description
+    "Test basic functionality of an OS installed like one would do by hand.
+This test is expensive in terms of CPU and storage usage since we need to
+build (current-guix) and then store a couple of full system images.")
+   (value
+    (mlet* %store-monad ((image   (run-install %xfs-root-os
+                                               %xfs-root-os-source
+                                               #:script
+                                               %xfs-root-installation-script))
+                         (command (qemu-command/writable-image image)))
+      (run-basic-test %xfs-root-os command "xfs-root-os")))))
+
+
+;;;
 ;;; Installation through the graphical interface.
 ;;;
 
@@ -1605,9 +1679,12 @@ build (current-guix) and then store a couple of full system images.")
     ;; encryption support.  The installer produces a UUID for the partition;
     ;; this "UUID" is explicitly set in 'gui-test-program' to the value shown
     ;; below.
-    (swap-devices (if encrypted?
-                      '()
-                      (list (uuid "11111111-2222-3333-4444-123456789abc"))))
+    (swap-devices
+     (if encrypted?
+         '()
+         (list
+          (swap-space
+           (target (uuid "11111111-2222-3333-4444-123456789abc"))))))
     (services (cons (service dhcp-client-service-type)
                     (operating-system-user-services %minimal-os-on-vda)))))
 

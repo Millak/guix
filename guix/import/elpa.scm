@@ -46,6 +46,7 @@
   #:use-module (guix packages)
   #:use-module ((guix utils) #:select (call-with-temporary-output-file))
   #:export (elpa->guix-package
+            guix-package->elpa-name
             %elpa-updater
             elpa-recursive-import))
 
@@ -337,9 +338,10 @@ the package named PACKAGE-NAME."
 type '<elpa-package>'."
 
   (define melpa-recipe
-    (if (eq? repo 'melpa)
-        (package-name->melpa-recipe (elpa-package-name pkg))
-        #f))
+    ;; XXX: Call 'identity' to work around a Guile 3.0.[5-7] compiler bug:
+    ;; <https://bugs.gnu.org/48368>.
+    (and (eq? (identity repo) 'melpa)
+         (package-name->melpa-recipe (elpa-package-name pkg))))
 
   (define name (elpa-package-name pkg))
 
@@ -387,7 +389,7 @@ type '<elpa-package>'."
             '())
       (home-page ,(elpa-package-home-page pkg))
       (synopsis ,(elpa-package-synopsis pkg))
-      (description ,(elpa-package-description pkg))
+      (description ,(beautify-description (elpa-package-description pkg)))
       (license ,license))
    dependencies-names))
 
@@ -411,13 +413,17 @@ type '<elpa-package>'."
 ;;; Updates.
 ;;;
 
+(define (guix-package->elpa-name package)
+  "Given a Guix package, PACKAGE, return the upstream name on ELPA."
+  (or (and=> (package-properties package)
+             (cut assq-ref <> 'upstream-name))
+      (if (string-prefix? "emacs-" (package-name package))
+          (string-drop (package-name package) 6)
+          (package-name package))))
+
 (define (latest-release package)
   "Return an <upstream-release> for the latest release of PACKAGE."
-  (define name
-    (if (string-prefix? "emacs-" (package-name package))
-        (string-drop (package-name package) 6)
-        (package-name package)))
-
+  (define name (guix-package->elpa-name package))
   (define repo 'gnu)
 
   (match (elpa-package-info name repo)

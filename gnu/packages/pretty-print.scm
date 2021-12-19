@@ -72,12 +72,9 @@
                         "a2ps-CVE-2015-8107.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("psutils" ,psutils)
-       ("gv" ,gv)))
+     (list psutils gv))
     (native-inputs
-     `(("gperf" ,gperf)
-       ("groff" ,groff)
-       ("perl" ,perl)))
+     (list gperf groff perl))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -168,19 +165,19 @@ different programming languages.")
 (define-public fmt
   (package
     (name "fmt")
-    (version "7.1.3")
+    (version "8.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
                            version "/fmt-" version ".zip"))
        (sha256
-        (base32 "17sc10hfg087z0s774lnn05wwy3bfzmcv7j448p92pr0s02cb62x"))))
+        (base32 "1gqmsk4r93x65cqs8w7zhfiv70w5fv8279nrblggqm4mmdpaa9x6"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (home-page "https://fmt.dev")
     (synopsis "Small and fast C++ formatting library")
     (description
@@ -189,6 +186,17 @@ It can be used as a safe alternative to @code{printf} or as a fast alternative
 to @code{IOStreams}.")
     ;; The library is bsd-2, but documentation and tests include other licenses.
     (license (list bsd-2 bsd-3 psfl))))
+
+(define-public fmt-7
+  (package (inherit fmt)
+    (version "7.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
+                           version "/fmt-" version ".zip"))
+       (sha256
+        (base32 "17sc10hfg087z0s774lnn05wwy3bfzmcv7j448p92pr0s02cb62x"))))))
 
 (define-public fmt-for-irods
   (package
@@ -229,7 +237,7 @@ to @code{IOStreams}.")
                        (getenv "CPLUS_INCLUDE_PATH"))))))))
     (properties `((hidden? . #true)))
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (inputs
      `(("libcxx" ,libcxx+libcxxabi-6)
        ("libcxxabi" ,libcxxabi-6)
@@ -251,10 +259,9 @@ to @code{IOStreams}.")
     ;; The ctags that comes with emacs does not support the --excmd options,
     ;; so can't be used
     (inputs
-     `(("boost" ,boost)))
+     (list boost))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)))
+     (list bison flex))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-boost="
@@ -347,12 +354,9 @@ seen in a terminal.")
                  (install-file "highlight.so" autodir))
                #t))))))
     (inputs
-     `(("lua" ,lua)
-       ("boost" ,boost)
-       ("perl" ,perl)))
+     (list lua boost perl))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("swig" ,swig)))
+     (list pkg-config swig))
     (home-page "http://www.andre-simon.de/doku/highlight/en/highlight.php")
     (synopsis "Convert code to documents with syntax highlighting")
     (description "Highlight converts source code to HTML, XHTML, RTF, LaTeX,

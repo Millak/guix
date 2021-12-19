@@ -1,8 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Google LLC
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,7 +30,8 @@
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-9 gnu)
   #:use-module (guix records)
-  #:use-module ((guix diagnostics) #:select (&fix-hint))
+  #:use-module ((guix diagnostics)
+                #:select (source-properties->location leave &fix-hint))
   #:use-module (guix i18n)
   #:use-module (gnu system uuid)
   #:re-export (uuid                               ;backward compatibility
@@ -51,6 +53,8 @@
             file-system-mount?
             file-system-mount-may-fail?
             file-system-check?
+            file-system-skip-check-if-clean?
+            file-system-repair
             file-system-create-mount-point?
             file-system-dependencies
             file-system-location
@@ -93,7 +97,14 @@
 
             %store-mapping
             %network-configuration-files
-            %network-file-mappings))
+            %network-file-mappings
+
+            swap-space
+            swap-space?
+            swap-space-target
+            swap-space-dependencies
+            swap-space-priority
+            swap-space-discard?))
 
 ;;; Commentary:
 ;;;
@@ -104,6 +115,45 @@
 ;;;
 ;;; Code:
 
+(eval-when (expand load eval)
+  (define invalid-file-system-flags
+    ;; Note: Keep in sync with 'mount-flags->bit-mask'.
+    (let ((known-flags '(read-only
+                         bind-mount no-suid no-dev no-exec
+                         no-atime strict-atime lazy-time)))
+      (lambda (flags)
+        "Return the subset of FLAGS that is invalid."
+        (remove (cut memq <> known-flags) flags))))
+
+  (define (%validate-file-system-flags flags location)
+    "Raise an error if FLAGS contains invalid mount flags; otherwise return
+FLAGS."
+    (match (invalid-file-system-flags flags)
+      (() flags)
+      (invalid
+       (leave (source-properties->location location)
+              (N_ "invalid file system mount flag:~{ ~s~}~%"
+                  "invalid file system mount flags:~{ ~s~}~%"
+                  (length invalid))
+              invalid)))))
+
+(define-syntax validate-file-system-flags
+  (lambda (s)
+    "Validate the given file system mount flags, raising an error if invalid
+flags are found."
+    (syntax-case s (quote)
+      ((_ (quote (symbols ...)))                  ;validate at expansion time
+       (begin
+         (%validate-file-system-flags (syntax->datum #'(symbols ...))
+                                      (syntax-source s))
+         #'(quote (symbols ...))))
+      ((_ flags)
+       #`(%validate-file-system-flags flags
+                                      '#,(datum->syntax s (syntax-source s))))
+      (id
+       (identifier? #'id)
+       #'%validate-file-system-flags))))
+
 ;; File system declaration.
 (define-record-type* <file-system> %file-system
   make-file-system
@@ -112,7 +162,8 @@
   (mount-point      file-system-mount-point)      ; string
   (type             file-system-type)             ; string
   (flags            file-system-flags             ; list of symbols
-                    (default '()))
+                    (default '())
+                    (sanitize validate-file-system-flags))
   (options          file-system-options           ; string or #f
                     (default #f))
   (mount?           file-system-mount?            ; Boolean
@@ -123,6 +174,10 @@
                     (default #f))
   (check?           file-system-check?            ; Boolean
                     (default #t))
+  (skip-check-if-clean? file-system-skip-check-if-clean? ; Boolean
+                        (default #t))
+  (repair           file-system-repair            ; symbol or #f
+                    (default 'preen))
   (create-mount-point? file-system-create-mount-point? ; Boolean
                        (default #f))
   (dependencies     file-system-dependencies      ; list of <file-system>
@@ -318,19 +373,22 @@ store--e.g., if FS is the root file system."
 initrd code."
   (match fs
     (($ <file-system> device mount-point type flags options mount?
-                      mount-may-fail? needed-for-boot? check?)
+                      mount-may-fail? needed-for-boot?
+                      check? skip-check-if-clean? repair)
      ;; Note: Add new fields towards the end for compatibility.
      (list (cond ((uuid? device)
                   `(uuid ,(uuid-type device) ,(uuid-bytevector device)))
                  ((file-system-label? device)
                   `(file-system-label ,(file-system-label->string device)))
                  (else device))
-           mount-point type flags options mount-may-fail? check?))))
+           mount-point type flags options mount-may-fail?
+           check? skip-check-if-clean? repair))))
 
 (define (spec->file-system sexp)
   "Deserialize SEXP, a list, to the corresponding <file-system> object."
   (match sexp
-    ((device mount-point type flags options mount-may-fail? check?
+    ((device mount-point type flags options mount-may-fail?
+             check? skip-check-if-clean? repair
              _ ...)                               ;placeholder for new fields
      (file-system
        (device (match device
@@ -343,7 +401,9 @@ initrd code."
        (mount-point mount-point) (type type)
        (flags flags) (options options)
        (mount-may-fail? mount-may-fail?)
-       (check? check?)))))
+       (check? check?)
+       (skip-check-if-clean? skip-check-if-clean?)
+       (repair repair)))))
 
 (define (specification->file-system-mapping spec writable?)
   "Read the SPEC and return the corresponding <file-system-mapping>.  SPEC is
@@ -658,5 +718,20 @@ subvolume name is unknown."))
                  (hint
                   (G_ "Use the @code{subvol} Btrfs file system option."))))))))
 
+
+;;;
+;;; Swap space
+;;;
+
+(define-record-type* <swap-space> swap-space make-swap-space
+  swap-space?
+  this-swap-space
+  (target swap-space-target)
+  (dependencies swap-space-dependencies
+                (default '()))
+  (priority swap-space-priority
+            (default #f))
+  (discard? swap-space-discard?
+           (default #f)))
 
 ;;; file-systems.scm ends here

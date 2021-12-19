@@ -9,6 +9,8 @@
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,7 +114,7 @@
   (url          distribution-url)                  ;string
   (digests      distribution-digests)              ;list of string pairs
   (file-name    distribution-file-name "filename") ;string
-  (has-signature? distribution-has-signature? "hash_sig") ;Boolean
+  (has-signature? distribution-has-signature? "has_sig") ;Boolean
   (package-type distribution-package-type "packagetype") ;"bdist_wheel" | ...
   (python-version distribution-package-python-version
                   "python_version"))
@@ -127,27 +129,30 @@
   missing-source-error?
   (package  missing-source-error-package))
 
-(define (latest-source-release pypi-package)
-  "Return the latest source release for PYPI-PACKAGE."
-  (let ((releases (assoc-ref (pypi-project-releases pypi-package)
-                             (project-info-version
-                              (pypi-project-info pypi-package)))))
+(define (latest-version project)
+  "Return the latest version of PROJECT, a <pypi-project> record."
+  (project-info-version (pypi-project-info project)))
+
+(define* (source-release pypi-package
+                         #:optional (version (latest-version pypi-package)))
+  "Return the source release of VERSION for PYPI-PACKAGE, a <pypi-project>
+record, by default the latest version."
+  (let ((releases (or (assoc-ref (pypi-project-releases pypi-package) version)
+                      '())))
     (or (find (lambda (release)
                 (string=? "sdist" (distribution-package-type release)))
               releases)
         (raise (condition (&missing-source-error
                            (package pypi-package)))))))
 
-(define (latest-wheel-release pypi-package)
+(define* (wheel-release pypi-package
+                        #:optional (version (latest-version pypi-package)))
   "Return the url of the wheel for the latest release of pypi-package,
 or #f if there isn't any."
-  (let ((releases (assoc-ref (pypi-project-releases pypi-package)
-                             (project-info-version
-                              (pypi-project-info pypi-package)))))
-    (or (find (lambda (release)
-                (string=? "bdist_wheel" (distribution-package-type release)))
-              releases)
-        #f)))
+  (let ((releases (assoc-ref (pypi-project-releases pypi-package) version)))
+    (find (lambda (release)
+            (string=? "bdist_wheel" (distribution-package-type release)))
+          releases)))
 
 (define (python->package-name name)
   "Given the NAME of a package on PyPI, return a Guix-compliant name for the
@@ -163,12 +168,13 @@ package on PyPI."
     (hyphen-package-name->name+version
      (basename (file-sans-extension url))))
 
-  (match (and=> (package-source package) origin-uri)
-    ((? string? url)
-     (url->pypi-name url))
-    ((lst ...)
-     (any url->pypi-name lst))
-    (#f #f)))
+  (or (assoc-ref (package-properties package) 'upstream-name)
+      (match (and=> (package-source package) origin-uri)
+        ((? string? url)
+         (url->pypi-name url))
+        ((lst ...)
+         (any url->pypi-name lst))
+        (#f #f))))
 
 (define (wheel-url->extracted-directory wheel-url)
   (match (string-split (basename wheel-url) #\-)
@@ -416,6 +422,11 @@ return the unaltered list of upstream dependency names."
                         description license)
   "Return the `package' s-expression for a python package with the given NAME,
 VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
+  (define (maybe-upstream-name name)
+    (if (string-match ".*\\-[0-9]+" name)
+        `((properties ,`'(("upstream-name" . ,name))))
+        '()))
+  
   (call-with-temporary-output-file
    (lambda (temp port)
      (and (url-fetch source-url temp)
@@ -454,12 +465,13 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
                       (sha256
                        (base32
                         ,(guix-hash-url temp)))))
+                   ,@(maybe-upstream-name name)
                    (build-system python-build-system)
                    ,@(maybe-inputs required-inputs 'propagated-inputs)
                    ,@(maybe-inputs native-inputs 'native-inputs)
                    (home-page ,home-page)
                    (synopsis ,synopsis)
-                   (description ,description)
+                   (description ,(beautify-description description))
                    (license ,(license->symbol license)))
                 upstream-dependencies))))))))
 
@@ -469,18 +481,17 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
      "Fetch the metadata for PACKAGE-NAME from pypi.org, and return the
 `package' s-expression corresponding to that package, or #f on failure."
      (let* ((project (pypi-fetch package-name))
-            (info    (and project (pypi-project-info project))))
+            (info    (and=> project pypi-project-info))
+            (version (or version (and=> project latest-version))))
        (and project
             (guard (c ((missing-source-error? c)
                        (let ((package (missing-source-error-package c)))
                          (leave (G_ "no source release for pypi package ~a ~a~%")
-                                (project-info-name info)
-                                (project-info-version info)))))
-              (make-pypi-sexp (project-info-name info)
-                              (project-info-version info)
-                              (and=> (latest-source-release project)
+                                (project-info-name info) version))))
+              (make-pypi-sexp (project-info-name info) version
+                              (and=> (source-release project version)
                                      distribution-url)
-                              (and=> (latest-wheel-release project)
+                              (and=> (wheel-release project version)
                                      distribution-url)
                               (project-info-home-page info)
                               (project-info-summary info)
@@ -488,8 +499,9 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
                               (string->license
                                (project-info-license info)))))))))
 
-(define (pypi-recursive-import package-name)
+(define* (pypi-recursive-import package-name #:optional version)
   (recursive-import package-name
+                    #:version version
                     #:repo->guix-package pypi->guix-package
                     #:guix-name python->package-name))
 
@@ -522,12 +534,19 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
          (guard (c ((missing-source-error? c) #f))
            (let* ((info    (pypi-project-info pypi-package))
                   (version (project-info-version info))
-                  (url     (distribution-url
-                            (latest-source-release pypi-package))))
+                  (dist    (source-release pypi-package))
+                  (url     (distribution-url dist)))
              (upstream-source
+              (urls (list url))
+              (signature-urls
+               (if (distribution-has-signature? dist)
+                   (list (string-append url ".asc"))
+                   #f))
+              (input-changes
+               (changed-inputs package
+                               (pypi->guix-package pypi-name)))
               (package (package-name package))
-              (version version)
-              (urls (list url))))))))
+              (version version)))))))
 
 (define %pypi-updater
   (upstream-updater

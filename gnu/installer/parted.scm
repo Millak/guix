@@ -26,6 +26,7 @@
   #:use-module ((gnu build file-systems)
                 #:select (canonicalize-device-spec
                           find-partition-by-label
+                          find-partition-by-uuid
                           read-partition-uuid
                           read-luks-partition-uuid))
   #:use-module ((gnu build linux-boot)
@@ -231,6 +232,7 @@ inferior to MAX-SIZE, #f otherwise."
     ((fat32) "fat32")
     ((jfs)   "jfs")
     ((ntfs)  "ntfs")
+    ((xfs)   "xfs")
     ((swap)  "linux-swap")))
 
 (define (user-fs-type->mount-type fs-type)
@@ -241,7 +243,8 @@ inferior to MAX-SIZE, #f otherwise."
     ((fat16) "vfat")
     ((fat32) "vfat")
     ((jfs)   "jfs")
-    ((ntfs)  "ntfs")))
+    ((ntfs)  "ntfs")
+    ((xfs)   "xfs")))
 
 (define (partition-filesystem-user-type partition)
   "Return the filesystem type of PARTITION, to be stored in the FS-TYPE field
@@ -256,6 +259,7 @@ of <user-partition> record."
             ((string=? name "fat32") 'fat32)
             ((string=? name "jfs") 'jfs)
             ((string=? name "ntfs") 'ntfs)
+            ((string=? name "xfs") 'xfs)
             ((or (string=? name "swsusp")
                  (string=? name "linux-swap(v0)")
                  (string=? name "linux-swap(v1)"))
@@ -342,35 +346,38 @@ fail. See rereadpt function in wipefs.c of util-linux for an explanation."
   (with-null-output-ports
    (invoke "dmsetup" "remove_all")))
 
-(define (installation-device)
-  "Return the installation device path."
+(define (installer-root-partition-path)
+  "Return the root partition path, or #f if it could not be detected."
   (let* ((cmdline (linux-command-line))
          (root (find-long-option "--root" cmdline)))
     (and root
-         (canonicalize-device-spec (uuid root)))))
+         (or (and (access? root F_OK) root)
+             (find-partition-by-label root)
+             (and=> (uuid root)
+                    find-partition-by-uuid)))))
 
 (define (non-install-devices)
   "Return all the available devices, except the install device."
-  (define (read-only? device)
-    (dynamic-wind
-    (lambda ()
-      (device-open device))
-    (lambda ()
-      (device-read-only? device))
-    (lambda ()
-      (device-close device))))
 
-  ;; If parted reports that a device is read-only it is probably the
-  ;; installation device. However, as this detection does not always work,
-  ;; compare the device path to the installation device path read from the
-  ;; command line.
-  (let ((install-device (installation-device)))
-    (remove (lambda (device)
-              (let ((file-name (device-path device)))
-                (or (read-only? device)
-                    (and install-device
-                         (string=? file-name install-device)))))
-            (devices))))
+  (define the-installer-root-partition-path
+    (installer-root-partition-path))
+
+  ;; Read partition table of device and compare each path to the one
+  ;; we're booting from to determine if it is the installation
+  ;; device.
+  (define (installation-device? device)
+    ;; When using CDROM based installation, the root partition path may be the
+    ;; device path.
+    (or (string=? the-installer-root-partition-path
+                  (device-path device))
+        (let ((disk (disk-new device)))
+          (and disk
+               (any (lambda (partition)
+                      (string=? the-installer-root-partition-path
+                                (partition-get-path partition)))
+                    (disk-partitions disk))))))
+
+  (remove installation-device? (devices)))
 
 
 ;;
@@ -895,7 +902,7 @@ partition."
                 (format #f "Unable to create partition ~a~%" name)))))))))
 
 (define (force-user-partitions-formatting user-partitions)
-  "Set the NEED-FORMATING? fields to #t on all <user-partition> records of
+  "Set the NEED-FORMATTING? fields to #t on all <user-partition> records of
 USER-PARTITIONS list and return the updated list."
   (map (lambda (p)
          (user-partition
@@ -1125,6 +1132,11 @@ bit bucket."
   (with-null-output-ports
    (invoke "mkfs.ntfs" "-F" "-f" partition)))
 
+(define (create-xfs-file-system partition)
+  "Create an XFS file-system for PARTITION file-name."
+  (with-null-output-ports
+   (invoke "mkfs.xfs" "-f" partition)))
+
 (define (create-swap-partition partition)
   "Set up swap area on PARTITION file-name."
   (with-null-output-ports
@@ -1169,7 +1181,7 @@ USER-PARTITION if it is encrypted, or the plain file-name otherwise."
 
 (define (format-user-partitions user-partitions)
   "Format the <user-partition> records in USER-PARTITIONS list with
-NEED-FORMATING? field set to #t."
+NEED-FORMATTING? field set to #t."
   (for-each
    (lambda (user-partition)
      (let* ((need-formatting?
@@ -1206,6 +1218,10 @@ NEED-FORMATING? field set to #t."
           (and need-formatting?
                (not (eq? type 'extended))
                (create-ntfs-file-system file-name)))
+         ((xfs)
+          (and need-formatting?
+               (not (eq? type 'extended))
+               (create-xfs-file-system file-name)))
          ((swap)
           (create-swap-partition file-name))
          (else
@@ -1402,9 +1418,11 @@ USER-PARTITIONS, or return nothing."
             (let* ((uuids (map (lambda (file)
                                  (uuid->string (read-partition-uuid file)))
                                swap-devices)))
-              `((swap-devices (list ,@(map (lambda (uuid)
-                                             `(uuid ,uuid))
-                                           uuids))))))
+              `((swap-devices
+                 (list ,@(map (lambda (uuid)
+                                `(swap-space
+                                  (target (uuid ,uuid))))
+                              uuids))))))
       ,@(if (null? encrypted-partitions)
             '()
             `((mapped-devices

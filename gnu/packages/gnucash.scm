@@ -83,7 +83,7 @@
        ("libofx" ,libofx)
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
-       ("webkitgtk" ,webkitgtk)
+       ("webkitgtk" ,webkitgtk-with-libsoup2)
        ("aqbanking" ,aqbanking)
        ("python" ,python)
        ("perl-date-manip" ,perl-date-manip)
@@ -100,7 +100,7 @@
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
      ;; dconf is required at runtime according to README.dependencies.
-     `(("dconf" ,dconf)))
+     (list dconf))
     (outputs '("out" "doc" "debug" "python"))
     (arguments
      `(#:test-target "check"
@@ -274,12 +274,9 @@ to be read using the GNOME Yelp program.")
              (string-append "--with-openssl-libs="
                             (assoc-ref %build-inputs "openssl") "/lib"))))
     (inputs
-     `(("libgcrypt" ,libgcrypt)
-       ("gnutls" ,gnutls)
-       ("openssl" ,openssl)
-       ("gtk+" ,gtk+)))
+     (list libgcrypt gnutls openssl gtk+))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://www.aquamaniac.de/sites/aqbanking/index.php")
     (synopsis "Utility library for networking and security applications")
     (description
@@ -292,29 +289,25 @@ applications and libraries.  It is used by AqBanking.")
 (define-public aqbanking
   (package
     (name "aqbanking")
-    (version "6.3.0")
+    (version "6.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.aquamaniac.de/rdm/attachments/"
-                           "download/372/aqbanking-" version ".tar.gz"))
+                           "download/386/aqbanking-" version ".tar.gz"))
        (sha256
-        (base32 "1k2mhdnk0jc0inq1hmp74m3y7azxrjm8r07x5k1pp4ic0yi5vs50"))))
+        (base32 "061l7qja7x557650kphbg1gzxc52a7557nibgdhv5jwqf8pv8ym9"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Parallel building fails because aqhbci is required before it's
        ;; built.
        #:parallel-build? #f))
     (propagated-inputs
-     `(("gwenhywfar" ,gwenhywfar)))
+     (list gwenhywfar))
     (inputs
-     `(("gmp" ,gmp)
-       ("xmlsec" ,xmlsec)
-       ("gnutls" ,gnutls)))
+     (list gmp xmlsec gnutls))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gettext-minimal" ,gettext-minimal)
-       ("libltdl" ,libltdl)))
+     (list pkg-config gettext-minimal libltdl))
     (home-page "https://www.aquamaniac.de/sites/aqbanking/index.php")
     (synopsis "Interface for online banking tasks")
     (description

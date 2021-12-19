@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2017, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -47,74 +47,54 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages storage)
   #:use-module (ice-9 match))
 
 (define-public fio
   (package
     (name "fio")
-    (version "3.27")
+    (version "3.28")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://brick.kernel.dk/snaps/"
                                   "fio-" version ".tar.bz2"))
               (sha256
                (base32
-                "0akaixip86ycbxr13bjff2121rgfbz35fa9l39677wpwzckp4f4d"))))
+                "0ba9cnjrnm3nwcfbhh5x2sycr54j3yn1rqn76kjdyz40f3pdg3qm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:test-target "test"
+     `(#:modules (,@%gnu-build-system-modules
+                  (ice-9 textual-ports))
+       #:test-target "test"
+       #:configure-flags '("--disable-native") ;don't generate code for the build CPU
        #:phases
        (modify-phases %standard-phases
-         (add-after
-          'unpack 'patch-paths
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out"))
-                  (gnuplot (search-input-file inputs "/bin/gnuplot")))
-              (substitute* "tools/plot/fio2gnuplot"
-                (("/usr/share/fio") (string-append out "/share/fio"))
-                ;; FIXME (upstream): The 'gnuplot' executable is used inline
-                ;; in various os.system() calls mixed with *.gnuplot filenames.
-                (("; do gnuplot") (string-append "; do " gnuplot))
-                (("gnuplot mymath") (string-append gnuplot " mymath"))
-                (("gnuplot mygraph") (string-append gnuplot " mygraph")))
-              #t)))
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key (configure-flags ''()) outputs #:allow-other-keys)
              ;; The configure script doesn't understand some of the
-             ;; GNU options, so we can't use #:configure-flags.
+             ;; GNU options, so we can't use the stock phase.
              (let ((out (assoc-ref outputs "out")))
-               (invoke "./configure"
-                       (string-append "--prefix=" out))
-               #t)))
+               (apply invoke "./configure"
+                      (string-append "--prefix=" out)
+                      configure-flags))))
          ;; The main `fio` executable is fairly small and self contained.
-         ;; Moving the auxiliary python and gnuplot scripts to a separate
-         ;; output saves almost 400 MiB on the closure.
+         ;; Moving the auxiliary scripts to a separate output saves ~100 MiB
+         ;; on the closure.
          (add-after 'install 'move-outputs
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((oldbin (string-append (assoc-ref outputs "out") "/bin"))
-                   (newbin (string-append (assoc-ref outputs "utils") "/bin")))
+                   (newbin (string-append (assoc-ref outputs "utils") "/bin"))
+                   (script? (lambda* (file #:rest _)
+                              (call-with-input-file file
+                                (lambda (port)
+                                  (char=? #\# (peek-char port)))))))
                (mkdir-p newbin)
                (for-each (lambda (file)
-                           (let ((src (string-append oldbin "/" file))
-                                 (dst (string-append newbin "/" file)))
-                             (link src dst)
-                             (delete-file src)))
-                         '("fio2gnuplot"  "fiologparser_hist.py"
-                           "fiologparser.py"))
-               ;; Make sure numpy et.al is found.
-               (wrap-program (string-append newbin "/fiologparser_hist.py")
-                 `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+                           (link file (string-append newbin "/" (basename file)))
+                           (delete-file file))
+                         (find-files oldbin script?))))))))
     (outputs '("out" "utils"))
     (inputs
-     `(("ceph" ,ceph "lib")
-       ("libaio" ,libaio)
-       ("gnuplot" ,gnuplot)
-       ("zlib" ,zlib)
-       ("python-numpy" ,python2-numpy)
-       ("python-pandas" ,python2-pandas)
-       ("python" ,python-2)))
+     (list libaio python zlib))
     (home-page "https://github.com/axboe/fio")
     (synopsis "Flexible I/O tester")
     (description
@@ -150,7 +130,7 @@ is to write a job file matching the I/O load one wants to simulate.")
                   #t))))
     (build-system gnu-build-system)
     (inputs
-     `(("openmpi" ,openmpi)))
+     (list openmpi))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -189,9 +169,6 @@ and throughput;
 Efficiency of the MPI implementation.
 @end itemize")
     (license license:cpl1.0)))
-
-(define-public imb-openmpi
-  (deprecated-package "imb-openmpi" intel-mpi-benchmarks/openmpi))
 
 (define-public multitime
   (package
@@ -262,7 +239,7 @@ tests.")
                 "010bmlmi0nrlp3aq7p624sfaj5a65lswnyyxk3cnz1bqig0cn2vf"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl)))
+     (list perl))
     (arguments '(#:tests? #f)) ; there are no tests
     (home-page "https://doc.coker.com.au/projects/bonnie/")
     (synopsis "Hard drive and file system benchmark suite")
@@ -319,20 +296,18 @@ file metadata operations that can be performed per second.")
                             "not test_custom_exit_code"
                             "not test_webserver") " and ")))))))
     (propagated-inputs
-     `(("python-configargparse" ,python-configargparse)
-       ("python-flask" ,python-flask)
-       ("python-flask-basicauth" ,python-flask-basicauth)
-       ("python-gevent" ,python-gevent)
-       ("python-geventhttpclient" ,python-geventhttpclient)
-       ("python-msgpack" ,python-msgpack)
-       ("python-psutil" ,python-psutil)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-requests" ,python-requests)
-       ("python-werkzeug" ,python-werkzeug)))
+     (list python-configargparse
+           python-flask
+           python-flask-basicauth
+           python-gevent
+           python-geventhttpclient
+           python-msgpack
+           python-psutil
+           python-pyzmq
+           python-requests
+           python-werkzeug))
     (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-pyquery" ,python-pyquery)
-       ("python-pytest" ,python-pytest))) ;for more easily skipping tests
+     (list python-mock python-pyquery python-pytest)) ;for more easily skipping tests
     (home-page "https://locust.io/")
     (synopsis "Distributed load testing framework")
     (description "Locust is a performance testing tool that aims to be easy to
@@ -404,8 +379,7 @@ and options.  With careful benchmarking, different hardware can be compared.")
       (build-system cmake-build-system)
       (home-page "https://github.com/krrishnarraj/clpeak")
       (inputs
-        `(("opencl-clhpp" ,opencl-clhpp)
-          ("opencl-icd-loader" ,opencl-icd-loader)))
+        (list opencl-clhpp opencl-icd-loader))
       (synopsis "OpenCL benchmark tool")
       (description
         "A synthetic benchmarking tool to measure peak capabilities of OpenCL

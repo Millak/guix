@@ -28,6 +28,7 @@
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -52,6 +53,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix build utils) #:select (alist-replace))
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -93,11 +95,15 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -128,7 +134,7 @@
                ;; on the build system.
                '("-Dintrospection=false"))
              '())))
-    (propagated-inputs `(("glib" ,glib))) ; required by atk.pc
+    (propagated-inputs (list glib)) ; required by atk.pc
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib" ,glib "bin")             ; glib-mkenums, etc.
@@ -248,12 +254,10 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
    (outputs '("out"
               "bin")) ; 160K, only hb-view depend on cairo
    (inputs
-    `(("cairo" ,cairo)))
+    (list cairo))
    (propagated-inputs
     ;; There are all in the Requires or Requires.private field of '.pc'.
-    `(("glib" ,glib)
-      ("graphite2" ,graphite2)
-      ("icu4c" ,icu4c)))
+    (list glib graphite2 icu4c))
    (native-inputs
     `(("glib:bin" ,glib "bin")          ;for glib-mkenums
       ("gobject-introspection" ,gobject-introspection)
@@ -271,6 +275,19 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
    (license (license:x11-style "file://COPYING"
                        "See 'COPYING' in the distribution."))
    (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
+
+(define-public harfbuzz-3.0
+  (package
+    (inherit harfbuzz)
+    (version "3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
+                                  "/releases/download/" version
+                                  "/harfbuzz-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1ngk8vn06rryx3s4v5pbl91bw1j1pd4431n77rw3j5a533hhwsq3"))))))
 
 (define-public libdatrie
   (package
@@ -295,8 +312,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
            ;; conditions when running tests in parallel.
            #:parallel-tests? #f))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("pkg-config" ,pkg-config)))
+     (list doxygen pkg-config))
     (synopsis "Double-Array Trie Library")
     (description "Libdatrie is an implementation of double-array structure for
 representing trie.  Trie is a kind of digital search tree.")
@@ -324,11 +340,11 @@ representing trie.  Trie is a kind of digital search tree.")
                        (assoc-ref %outputs "doc")
                        "/share/doc/libthai/html"))))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("pkg-config" ,pkg-config)
-       ("libdatrie" ,libdatrie))) ; for 'trietool'
+     `(("datrie" ,libdatrie)
+       ("doxygen" ,doxygen)
+       ("pkg-config" ,pkg-config)))
     (propagated-inputs
-     `(("libdatrie" ,libdatrie)))
+     `(("datrie" ,libdatrie)))
     (synopsis "Thai language support library")
     (description "LibThai is a set of Thai language support routines aimed to
 ease developers’ tasks to incorporate Thai language support in their
@@ -339,7 +355,7 @@ applications.")
 (define-public pango
   (package
     (name "pango")
-    (version "1.48.9")
+    (version "1.48.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/pango/"
@@ -348,21 +364,20 @@ applications.")
               (patches (search-patches "pango-skip-libthai-test.patch"))
               (sha256
                (base32
-                "1akj11n0ycqrm1rvi0fdfldqk7l5zk9vb8sq77009ap57xyna4x9"))))
+                "166wxhsjb6hb0dk7wkkdcmpvasl9n0a0aa64mdgagzfdidwzbq91"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
+     '(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'disable-cantarell-tests
                     (lambda _
                       (substitute* "tests/meson.build"
-                        ;; XXX FIXME: These tests require "font-cantarell", but
+                        ;; XXX FIXME: These tests require "font-abattis-cantarell", but
                         ;; adding it here would introduce a circular dependency.
                         (("\\[ 'test-layout'.*") "")
                         (("\\[ 'test-itemize'.*") "")
                         (("\\[ 'test-font'.*") "")
-                        (("\\[ 'test-harfbuzz'.*") ""))
-                      #t)))))
+                        (("\\[ 'test-harfbuzz'.*") "")))))))
     (propagated-inputs
      ;; These are all in Requires or Requires.private of the '.pc' files.
      `(("cairo" ,cairo)
@@ -377,10 +392,9 @@ applications.")
        ("libxft" ,libxft)
        ("libxrender" ,libxrender)))
     (inputs
-     `(("bash-minimal" ,bash-minimal) ; for glib-or-gtk-wrap
-       ("zlib" ,zlib)))
+     (list bash-minimal zlib))
     (native-inputs
-     `(("glib" ,glib "bin")             ; glib-mkenums, etc.
+     `(("glib" ,glib "bin")                             ; glib-mkenums, etc.
        ("gobject-introspection" ,gobject-introspection) ; g-ir-compiler, etc.
        ("help2man" ,help2man)
        ("perl" ,perl)
@@ -436,11 +450,9 @@ handling for GTK+-2.x.")
                "0ip0ziys6mrqqmz4n71ays0kf5cs1xflj1gfpvs4fgy2nsrr482m"))))
     (build-system gnu-build-system)
     (inputs
-     `(("glib" ,glib)
-       ("pango" ,pango-1.42)))
+     (list glib pango-1.42))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (home-page "https://developer.gnome.org/pango")
     (synopsis "Obsolete pango functions")
     (description  "Pangox was a X backend to pango.  It is now obsolete and no
@@ -475,8 +487,8 @@ functions which were removed.")
      `(("gtk" ,gtk+-2)
        ("gtkmm" ,gtkmm-2)))
     (native-inputs
-     `(("glib" ,glib "bin")             ; for glib-genmarshal, etc.
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin") ; for glib-genmarshal, etc.
+           pkg-config))
     (home-page "https://drobilla.net/software/ganv/")
     (synopsis "GTK+ widget for interactive graph-like environments")
     (description
@@ -502,12 +514,12 @@ diagrams.")
                   "gtksourceview-2-add-default-directory.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("intltool" ,intltool)
-       ("glib" ,glib "bin")             ; for glib-genmarshal, etc.
-       ("pkg-config" ,pkg-config)
-       ;; For testing.
-       ("xorg-server" ,xorg-server-for-tests)
-       ("shared-mime-info" ,shared-mime-info)))
+     (list intltool
+           `(,glib "bin") ; for glib-genmarshal, etc.
+           pkg-config
+           ;; For testing.
+           xorg-server-for-tests
+           shared-mime-info))
     (propagated-inputs
      ;; As per the pkg-config file.
      `(("gtk" ,gtk+-2)
@@ -581,9 +593,7 @@ printing and other features typical of a source code editor.")
       ("shared-mime-info" ,shared-mime-info)))
    (propagated-inputs
     ;; gtksourceview-3.0.pc refers to all these.
-    `(("glib" ,glib)
-      ("gtk+" ,gtk+)
-      ("libxml2" ,libxml2)))
+    (list glib gtk+ libxml2))
    (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
    (synopsis "GNOME source code widget")
    (description "GtkSourceView is a text widget that extends the standard
@@ -617,9 +627,10 @@ highlighting and other features typical of a source code editor.")
                (base32
                 "0k9f9177qxaryaxprwrhqnv5p2gdq4a8i6y05gm98qa8izc5v77y"))))
     (build-system meson-build-system)
+    (outputs '("out" "debug"))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:configure-flags '("-Dinstalled_tests=false" "-Djasper=true")
+     `(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
+       #:configure-flags '("-Dinstalled_tests=false")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-docbook
@@ -632,8 +643,9 @@ highlighting and other features typical of a source code editor.")
                                  "/xml/xsl/docbook-xsl-1.79.2/")))
                (substitute* (find-files "." "\\.xml$")
                  (("http://www.oasis-open.org/docbook/xml/4\\.3/")
-                  (string-append (assoc-ref (or native-inputs inputs)
-                                            "docbook-xml")
+                  (string-append (assoc-ref ,(if (%current-target-system)
+                                                 '(or native-inputs inputs)
+                                                 'inputs) "docbook-xml")
                                  "/xml/dtd/docbook/"))))))
          (add-before 'configure 'disable-failing-tests
            (lambda _
@@ -648,15 +660,16 @@ highlighting and other features typical of a source code editor.")
                        (invoke "meson" "test" "--timeout-multiplier" "5")))))
                '()))))
     (propagated-inputs
-     `( ;; Required by gdk-pixbuf-2.0.pc
-       ("glib" ,glib)
-       ;; Required by gdk-pixbuf-xlib-2.0.pc
-       ("libx11" ,libx11)
-       ;; Used for testing and required at runtime.
-       ("shared-mime-info" ,shared-mime-info)))
+     (list ;; Required by gdk-pixbuf-2.0.pc
+           glib
+           ;; Required by gdk-pixbuf-xlib-2.0.pc
+           libx11
+           ;; Used for testing and required at runtime.
+           shared-mime-info))
     (inputs
-     `(("bash-minimal" ,bash-minimal) ; for glib-or-gtk-wrap
-       ("jasper" ,jasper)
+     `(,@(if (%current-target-system)
+             `(("bash-minimal" ,bash-minimal)) ; for glib-or-gtk-wrap
+             '())
        ("libjpeg" ,libjpeg-turbo)
        ("libpng"  ,libpng)
        ("libtiff" ,libtiff)))
@@ -664,11 +677,19 @@ highlighting and other features typical of a source code editor.")
      `(("docbook-xml" ,docbook-xml-4.3)
        ("docbook-xsl" ,docbook-xsl)
        ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")             ; glib-mkenums, etc.
+       ("glib" ,glib "bin")                             ; glib-mkenums, etc.
        ("gobject-introspection" ,gobject-introspection) ; g-ir-compiler, etc.
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("xsltproc" ,libxslt)))
+    (native-search-paths
+     ;; This file is produced by the gdk-pixbuf-loaders-cache-file
+     ;; profile hook.
+     (list (search-path-specification
+            (variable "GDK_PIXBUF_MODULE_FILE")
+            (files (list %gdk-pixbuf-loaders-cache-file))
+            (separator #f)              ;single valued
+            (file-type 'regular))))
     (synopsis "Image loading library")
     (description "GdkPixbuf is a library that loads image data in various
 formats and stores it as linear buffers in memory.  The buffers can then be
@@ -676,141 +697,93 @@ scaled, composited, modified, saved, or rendered.")
     (home-page "https://wiki.gnome.org/Projects/GdkPixbuf")
     (license license:lgpl2.1+)))
 
-;; To build gdk-pixbuf with SVG support, we need librsvg, and librsvg depends
-;; on gdk-pixbuf, so this new varibale.  Also, librsvg adds 90MiB to the
-;; closure size.
-(define-public gdk-pixbuf+svg
-  (package/inherit gdk-pixbuf
-    (name "gdk-pixbuf+svg")
-    (inputs
-     `(("librsvg" ,librsvg)
-       ,@(package-inputs gdk-pixbuf)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments gdk-pixbuf)
-        ((#:phases phases)
-          `(modify-phases ,phases
-         (add-after 'install 'register-svg-loader
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (librsvg (assoc-ref inputs "librsvg"))
-                    (loaders
-                     (append
-                      (find-files out "^libpixbufloader-.*\\.so$")
-                      (find-files librsvg "^libpixbufloader-.*\\.so$")))
-                    (gdk-pixbuf-query-loaders
-                     (string-append out "/bin/gdk-pixbuf-query-loaders")))
-               (apply invoke
-                      gdk-pixbuf-query-loaders
-                      "--update-cache"
-                      loaders))))))))
-    (synopsis "Image loading library, with SVG support")))
+;;; A minimal variant used to prevent a cycle with Inkscape.
+(define-public at-spi2-core-minimal
+  (hidden-package
+   (package
+     (name "at-spi2-core")
+     (version "2.40.0")
+     (source (origin
+               (method url-fetch)
+               (uri (string-append "mirror://gnome/sources/" name "/"
+                                   (version-major+minor version)  "/"
+                                   name "-" version ".tar.xz"))
+               (sha256
+                (base32
+                 "0a9l6cfxynjn6jcp29d72i75xbkrzs1l5kmqcwmfal801b9sg5j1"))))
+     (build-system meson-build-system)
+     (arguments
+      '(#:glib-or-gtk? #t    ; To wrap binaries and/or compile schemas
+        #:phases
+        (modify-phases %standard-phases
+          (add-after 'install 'check
+            (lambda _
+              (setenv "HOME" (getenv "TMPDIR")) ; xfconfd requires a writable HOME
+              ;; Run test-suite under a dbus session.
+              (setenv "XDG_DATA_DIRS" ; for finding org.xfce.Xfconf.service
+                      (string-append %output "/share"))
+              ;; Don't fail on missing  '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0") ;
+              (invoke "dbus-launch" "ninja" "test")))
+          (delete 'check))))
+     (inputs
+      (list bash-minimal))
+     (propagated-inputs
+      ;; atspi-2.pc refers to all these.
+      (list dbus glib libx11 libxi libxtst))
+     (native-inputs
+      `(("gettext" ,gettext-minimal)
+        ("glib" ,glib "bin")
+        ("gobject-introspection" ,gobject-introspection)
+        ("pkg-config" ,pkg-config)
+        ("python" ,python-wrapper)))
+     (synopsis "Assistive Technology Service Provider Interface, core components")
+     (description
+      "The Assistive Technology Service Provider Interface, core components,
+is part of the GNOME accessibility project.")
+     (license license:lgpl2.1+)
+     (home-page "https://wiki.gnome.org/Accessibility/"))))
 
 (define-public at-spi2-core
-  (package
-    (name "at-spi2-core")
-    (version "2.40.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version)  "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0a9l6cfxynjn6jcp29d72i75xbkrzs1l5kmqcwmfal801b9sg5j1"))))
-    (build-system meson-build-system)
-    (outputs '("out" "doc"))
+  (package/inherit at-spi2-core-minimal
+    (outputs (cons "doc" (package-outputs at-spi2-core-minimal)))
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
-       #:configure-flags
-       ;; Generating documentation requires running binaries for the host
-       ;; on the build machine.
-       (list ,(if (%current-target-system)
-                  "-Ddocs=false"
-                  "-Ddocs=true"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-documentation-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Ensure that the cross-references point to the "doc" output.
-             (substitute* "doc/libatspi/meson.build"
-               (("docpath =.*")
-                (string-append "docpath = '" (assoc-ref outputs "doc")
-                               "/share/gtk-doc/html'\n")))))
-         (add-before 'install 'prepare-doc-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "doc") "/share"))))
-         (add-after 'unpack 'patch-docbook-sgml
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (let* ((xmldoc
-                     (string-append (assoc-ref (or native-inputs inputs)
-                                               "docbook-xml")
-                                    "/xml/dtd/docbook")))
-               (substitute* "doc/libatspi/libatspi-docs.sgml"
-                 (("http://.*/docbookx\\.dtd")
-                  (string-append xmldoc "/docbookx.dtd"))))))
-         ,@(if (%current-target-system)
-               '()
-               '((add-after 'install 'move-documentation
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let ((out (assoc-ref outputs "out"))
-                           (doc (assoc-ref outputs "doc")))
-                       (copy-recursively
-                        (string-append out "/share/gtk-doc")
-                        (string-append doc "/share/gtk-doc"))
-                       (delete-file-recursively
-                        (string-append out "/share/gtk-doc")))))))
-         (add-after 'install 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (setenv "HOME" (getenv "TMPDIR")) ; xfconfd requires a writable HOME
-             ;; Run test-suite under a dbus session.
-             (setenv "XDG_DATA_DIRS" ; for finding org.xfce.Xfconf.service
-                     (string-append %output "/share"))
-             ;; Don't fail on missing  '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0") ;
-             (when tests?
-               (invoke "dbus-launch" "ninja" "test"))))
-         (delete 'check))))
-    (inputs
-     `(("bash-minimal" ,bash-minimal)))
-    (propagated-inputs
-     ;; atspi-2.pc refers to all these.
-     `(("dbus" ,dbus)
-       ("glib" ,glib)
-       ("libx11" ,libx11)
-       ("libxi" ,libxi)
-       ("libxtst" ,libxtst)))
-    (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.3)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
-    (synopsis "Assistive Technology Service Provider Interface, core components")
-    (description
-     "The Assistive Technology Service Provider Interface, core components,
-is part of the GNOME accessibility project.")
-    (license license:lgpl2.1+)
-    (home-page "https://wiki.gnome.org/Accessibility/")))
-
-;;; A minimal variant used to prevent a cycle with Inkscape.
-(define at-spi2-core-minimal
-  (package
-    (inherit at-spi2-core)
-    (name "at-spi2-core-minimal")
-    (outputs (delete "doc" (package-outputs at-spi2-core)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments at-spi2-core)
-       ((#:configure-flags configure-flags)
-        `(delete "-Ddocs=true" ,configure-flags))
+     (substitute-keyword-arguments (package-arguments at-spi2-core-minimal)
+       ((#:configure-flags flags ''())
+        `(cons ,(if (%current-target-system)
+                    "-Ddocs=false"
+                    "-Ddocs=true")
+               ,flags))
        ((#:phases phases)
         `(modify-phases ,phases
-           (delete 'set-documentation-path)
-           (delete 'prepare-doc-directory)
-           (delete 'move-documentation)))))
+           (add-after 'unpack 'set-documentation-path
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; Ensure that the cross-references point to the "doc" output.
+               (substitute* "doc/libatspi/meson.build"
+                 (("docpath =.*")
+                  (string-append "docpath = '" (assoc-ref outputs "doc")
+                                 "/share/gtk-doc/html'\n")))))
+           (add-before 'install 'prepare-doc-directory
+             (lambda* (#:key outputs #:allow-other-keys)
+               (mkdir-p (string-append (assoc-ref outputs "doc") "/share"))))
+           ,@(if (%current-target-system)
+                 '()
+                 '((add-after 'install 'move-documentation
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out"))
+                             (doc (assoc-ref outputs "doc")))
+                         (copy-recursively
+                          (string-append out "/share/gtk-doc")
+                          (string-append doc "/share/gtk-doc"))
+                         (delete-file-recursively
+                          (string-append out "/share/gtk-doc")))))))))))
     (native-inputs
-     (alist-delete "gtk-doc" (package-native-inputs at-spi2-core)))))
+     (append `(("docbook-xml" ,docbook-xml-4.3)
+               ("gtk-doc" ,gtk-doc/stable)
+               ("libxml2" ,libxml2))    ;for XML_CATALOG_FILES
+         (package-native-inputs at-spi2-core-minimal)))
+    (properties (alist-delete 'hidden?
+                              (package-properties at-spi2-core-minimal)))))
 
 (define-public at-spi2-atk
   (package
@@ -839,17 +812,12 @@ is part of the GNOME accessibility project.")
              (setenv "DBUS_FATAL_WARNINGS" "0")
              (invoke "dbus-launch" "meson" "test"))))))
     (propagated-inputs
-     ;; TODO: Replace by at-spi2-core-minimal in the next staging window, or
-     ;; when Inkscape 0.92 is upgraded to 1.0 to avoid a cycle.
-     `(("at-spi2-core" ,at-spi2-core))) ; required by atk-bridge-2.0.pc
+     (list at-spi2-core-minimal)) ; required by atk-bridge-2.0.pc
     (inputs
-     `(("atk" ,atk)
-       ("glib" ,glib)))
+     (list atk glib))
     (native-inputs
-     `(("dbus" ,dbus)                ; For tests
-       ("gobject-introspection" ,gobject-introspection)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)))
+     (list dbus ; For tests
+           gobject-introspection libxml2 pkg-config))
     (synopsis "Assistive Technology Service Provider Interface, ATK bindings")
     (description
      "The Assistive Technology Service Provider Interface
@@ -871,42 +839,38 @@ is part of the GNOME accessibility project.")
                 "1nn6kks1zyvb5xikr9y2k7r9bwjy1g4b0m0s66532bclymbwfamc"))
               (patches (search-patches "gtk2-respect-GUIX_GTK2_PATH.patch"
                                        "gtk2-respect-GUIX_GTK2_IM_MODULE_FILE.patch"
-                                       "gtk2-theme-paths.patch"))))
+                                       "gtk2-theme-paths.patch"
+                                       "gtk2-fix-builder-test.patch"))))
     (build-system gnu-build-system)
-    (outputs '("out" "bin" "doc"))
+    (outputs '("out" "bin" "doc" "debug"))
     (propagated-inputs
-     `(("atk" ,atk)
-       ("cairo" ,cairo)
-       ;; SVG support is optional and requires librsvg, which pulls in rust.
-       ;; Rust is not supported well on every architecture yet.
-       ("gdk-pixbuf" ,(if (string-prefix? "x86_64" (or (%current-target-system)
-                                                       (%current-system)))
-                          gdk-pixbuf+svg
-                          gdk-pixbuf))
-       ("glib" ,glib)
-       ("pango" ,pango)))
+     (list atk cairo
+           (if (target-x86-64?)
+             librsvg-bootstrap
+             librsvg-2.40)
+           glib pango))
     (inputs
-     `(("cups" ,cups)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxcursor" ,libxcursor)
-       ("libxext" ,libxext)
-       ("libxdamage" ,libxdamage)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxshmfence" ,libxshmfence)))
+     (list cups
+           libx11
+           libxcomposite
+           libxcursor
+           libxext
+           libxdamage
+           libxi
+           libxinerama
+           libxkbcommon
+           libxrandr
+           libxrender
+           libxshmfence))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           intltool
+           perl
+           pkg-config
+           python-wrapper
+           xorg-server-for-tests))
     (arguments
      `(#:parallel-tests? #f
        #:configure-flags
@@ -974,60 +938,63 @@ application suites.")
        (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
                                 "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     (propagated-inputs
-     `(("atk" ,atk)
-       ("at-spi2-atk" ,at-spi2-atk)
-       ("cairo" ,cairo)
-       ("fribidi" ,fribidi)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ;; SVG support is optional and requires librsvg, which pulls in rust.
-       ;; Rust is not supported well on every architecture yet.
-       ("gdk-pixbuf" ,(if (target-x86-64?)
-                          gdk-pixbuf+svg
-                          gdk-pixbuf))
-       ("glib" ,glib)
-       ("libcloudproviders" ,libcloudproviders)
-       ("libepoxy" ,libepoxy)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxcursor" ,libxcursor)
-       ("libxdamage" ,libxdamage)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("mesa" ,mesa)
-       ("pango" ,pango)
-       ("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)))
+     (list atk
+           at-spi2-atk
+           cairo
+           fribidi
+           fontconfig
+           freetype
+           (if (target-x86-64?)
+             librsvg-bootstrap
+             librsvg-2.40)
+           glib
+           libcloudproviders-minimal
+           libepoxy
+           libx11
+           libxcomposite
+           libxcursor
+           libxdamage
+           libxext
+           libxfixes
+           libxi
+           libxinerama
+           libxkbcommon
+           libxrandr
+           libxrender
+           mesa
+           pango
+           wayland
+           wayland-protocols))
     (inputs
-     `(("colord" ,colord)
-       ("cups" ,cups)
-       ("graphene" ,graphene)
-       ("harfbuzz" ,harfbuzz)
-       ("iso-codes" ,iso-codes)
-       ("json-glib" ,json-glib)
-       ("libxml2" ,libxml2)
-       ("rest" ,rest)))
+     (list colord-minimal ;to prevent a cycle with inkscape
+           cups
+           graphene
+           harfbuzz
+           iso-codes
+           json-glib-minimal
+           libxml2
+           rest))
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.1.2)
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("sassc" ,sassc)
-       ;; By using a special xorg-server for GTK+'s tests, we reduce the impact
-       ;; of updating xorg-server directly on the master branch.
-       ("xorg-server" ,xorg-server-for-tests)
-       ("xsltproc" ,libxslt)))
+     (list docbook-xml-4.1.2
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           hicolor-icon-theme
+           perl
+           pkg-config
+           python-wrapper
+           sassc
+           ;; By using a special xorg-server for GTK+'s tests, we reduce the impact
+           ;; of updating xorg-server directly on the master branch.
+           xorg-server-for-tests
+           libxslt))
     (arguments
-     `(#:disallowed-references (,xorg-server-for-tests)
+     `(#:imported-modules ((guix build glib-or-gtk-build-system)
+                           ,@%gnu-build-system-modules)
+       #:modules ((guix build utils)
+                  (guix build gnu-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
+       #:disallowed-references (,xorg-server-for-tests)
        ;; 47 MiB goes to "out" (24 of which is locale data!), and 26 MiB goes
        ;; to "doc".
        #:configure-flags (list (string-append "--with-html-dir="
@@ -1043,6 +1010,9 @@ application suites.")
                                "--enable-broadway-backend")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+           (assoc-ref glib-or-gtk:%standard-phases
+                      'generate-gdk-pixbuf-loaders-cache-file))
          (add-after 'unpack 'disable-failing-tests
            (lambda _
              (substitute* "testsuite/gtk/Makefile.in"
@@ -1051,12 +1021,7 @@ application suites.")
                (("notify no-gtk-init object objects-finalize papersize rbtree")
                 "no-gtk-init papersize rbtree")
                (("stylecontext templates textbuffer textiter treemodel treepath")
-                "stylecontext textbuffer textiter treemodel treepath")
-               ;; The ‘icontheme’ test needs SVG support.
-               ,@(if (not (target-x86-64?))
-                     '((("floating focus gestures grid gtkmenu icontheme keyhash listbox")
-                        "floating focus gestures grid gtkmenu keyhash listbox"))
-                     '()))
+                "stylecontext textbuffer textiter treemodel treepath"))
              (substitute* "testsuite/a11y/Makefile.in"
                (("accessibility-dump tree-performance text children derive")
                 "tree-performance text children derive"))
@@ -1089,6 +1054,183 @@ application suites.")
      (list (search-path-specification
             (variable "GUIX_GTK3_PATH")
             (files '("lib/gtk-3.0")))))))
+
+(define-public gtk
+  (package
+    (name "gtk")
+    (version "4.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major+minor version)  "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1rh9fd5axf79pmd93hb2fmmflic5swcvqvq6vqghlgz4bmvnjc82"))
+       (patches
+        (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
+    (build-system meson-build-system)
+    (outputs '("out" "bin" "doc"))
+    (arguments
+     `(#:modules ((guix build utils)
+                  (guix build meson-build-system)
+                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
+       #:configure-flags
+       (list
+        "-Dbroadway-backend=true"      ;for broadway display-backend
+        "-Dcloudproviders=enabled"     ;for cloud-providers support
+        "-Dtracker=enabled"            ;for filechooser search support
+        "-Dcolord=enabled"             ;for color printing support
+        ,@(if (%current-target-system)
+              ;; If true, gtkdoc-scangobj will try to execute a
+              ;; cross-compiled binary.
+              '("-Dgtk_doc=false")
+              '("-Dgtk_doc=true"))
+        "-Dman-pages=true")
+       #:parallel-tests? #f             ;parallel tests are not supported
+       #:test-options '("--setup=x11"   ;defaults to wayland
+                        ;; Use the same test options as upstream uses for
+                        ;; their CI.
+                        "--suite=gtk"
+                        "--no-suite=gsk-compare-broadway")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+           (assoc-ref glib-or-gtk:%standard-phases
+                      'generate-gdk-pixbuf-loaders-cache-file))
+         (add-after 'unpack 'patch
+           (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
+             ;; Correct DTD resources of docbook.
+             (substitute* (find-files "docs" "\\.xml$")
+               (("http://www.oasis-open.org/docbook/xml/4.3/")
+                (string-append
+                 (assoc-ref (or native-inputs inputs) "docbook-xml-4.3")
+                 "/xml/dtd/docbook/")))
+             ;; Disable building of icon cache.
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false"))
+             ;; Disable failing tests.
+             (substitute* (find-files "testsuite" "meson.build")
+               (("[ \t]*'empty-text.node',") "")
+               (("[ \t]*'testswitch.node',") "")
+               (("[ \t]*'widgetfactory.node',") ""))
+             (substitute* "testsuite/reftests/meson.build"
+               (("[ \t]*'label-wrap-justify.ui',") "")) ))
+         (add-before 'build 'set-cache
+           (lambda _
+             (setenv "XDG_CACHE_HOME" (getcwd))))
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; Tests require a running X server.
+             (system "Xvfb :1 +extension GLX &")
+             (setenv "DISPLAY" ":1")
+             ;; Tests write to $HOME.
+             (setenv "HOME" (getcwd))
+             ;; Tests look for those variables.
+             (setenv "XDG_RUNTIME_DIR" (getcwd))
+             ;; For missing '/etc/machine-id'.
+             (setenv "DBUS_FATAL_WARNINGS" "0")))
+         (add-after 'install 'move-files
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (assoc-ref outputs "bin"))
+                    (doc (assoc-ref outputs "doc")))
+               (for-each mkdir-p
+                         (list
+                          (string-append bin "/bin")
+                          (string-append bin "/share/applications")
+                          (string-append bin "/share/icons")
+                          (string-append bin "/share/man")
+                          (string-append bin "/share/metainfo")
+                          (string-append doc "/share/doc")))
+               ;; Move programs and related files to output 'bin'.
+               (for-each (lambda (dir)
+                           (rename-file
+                            (string-append out dir)
+                            (string-append bin dir)))
+                         (list
+                          "/bin"
+                          "/share/applications"
+                          "/share/icons"
+                          "/share/man"
+                          "/share/metainfo"))
+               ;; Move HTML documentation to output 'doc'.
+               (rename-file
+                (string-append out "/share/doc")
+                (string-append doc "/share/doc"))))))))
+    (native-inputs
+     `(("docbook-xml-4.3" ,docbook-xml-4.3)
+       ("docbook-xsl" ,docbook-xsl)
+       ("gettext-minimal" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
+       ("gobject-introspection" ,gobject-introspection) ;for building introspection data
+       ("gtk-doc" ,gtk-doc)             ;for building documentation
+       ("intltool" ,intltool)
+       ("libxslt" ,libxslt)             ;for building man-pages
+       ("pkg-config" ,pkg-config)
+       ;; These python modules are required for building documentation.
+       ("python-jinja2" ,python-jinja2)
+       ("python-markdown" ,python-markdown)
+       ("python-markupsafe" ,python-markupsafe)
+       ("python-pygments" ,python-pygments)
+       ("python-toml" ,python-toml)
+       ("python-typogrify" ,python-typogrify)
+       ("sassc" ,sassc)                 ;for building themes
+       ("vala" ,vala)
+       ("xorg-server-for-tests" ,xorg-server-for-tests)))
+    (inputs
+     (list colord ;for color printing support
+           cups ;for CUPS print-backend
+           ffmpeg ;for ffmpeg media-backend
+           fribidi
+           gstreamer ;for gstreamer media-backend
+           gst-plugins-bad ;provides gstreamer-player
+           gst-plugins-base ;provides gstreamer-gl
+           harfbuzz
+           iso-codes
+           json-glib
+           libcloudproviders ;for cloud-providers support
+           librsvg
+           python
+           rest
+           tracker))          ;for filechooser search support
+    (propagated-inputs
+     ;; Following dependencies are referenced in .pc files.
+     `(("cairo" ,cairo)
+       ("fontconfig" ,fontconfig)
+       ("librsvg" ,librsvg)
+       ("glib" ,glib)
+       ("graphene" ,graphene)
+       ("libepoxy" ,libepoxy)
+       ("libx11" ,libx11)               ;for x11 display-backend
+       ("libxcomposite" ,libxcomposite)
+       ("libxcursor" ,libxcursor)
+       ("libxdamage" ,libxdamage)
+       ("libxext" ,libxext)
+       ("libxfixes" ,libxfixes)
+       ("libxi" ,libxi)
+       ("libxinerama" ,libxinerama)     ;for xinerama support
+       ("libxkbcommon" ,libxkbcommon)
+       ("libxrandr" ,libxrandr)
+       ("libxrender" ,libxrender)
+       ("pango" ,pango)
+       ("vulkan-headers" ,vulkan-headers)
+       ("vulkan-loader" ,vulkan-loader) ;for vulkan graphics API support
+       ("wayland" ,wayland)             ;for wayland display-backend
+       ("wayland-protocols" ,wayland-protocols)))
+    (native-search-paths
+     (list
+      (search-path-specification
+       (variable "GUIX_GTK4_PATH")
+       (files '("lib/gtk-4.0")))))
+    (search-paths native-search-paths)
+    (home-page "https://www.gtk.org/")
+    (synopsis "Cross-platform widget toolkit")
+    (description "GTK is a multi-platform toolkit for creating graphical user
+interfaces.  Offering a complete set of widgets, GTK is suitable for projects
+ranging from small one-off tools to complete application suites.")
+    (license license:lgpl2.1+)))
 
 ;;;
 ;;; Guile bindings.
@@ -1150,14 +1292,12 @@ application suites.")
                          (find-files module-dir "\\.scm$"))
                #t))))))
     (inputs
-     `(("guile-lib" ,guile-lib)
-       ("expat" ,expat)
-       ("guile" ,guile-3.0)))
+     (list guile-lib expat guile-3.0))
     (propagated-inputs
      ;; The .pc file refers to 'cairo'.
-     `(("cairo" ,cairo)))
+     (list cairo))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://www.nongnu.org/guile-cairo/")
     (synopsis "Cairo bindings for GNU Guile")
     (description
@@ -1178,9 +1318,6 @@ exceptions, macros, and a dynamic programming environment.")
        ("guile-lib" ,guile2.2-lib)
        ,@(fold alist-delete (package-inputs guile-cairo)
                '("guile" "guile-lib"))))))
-
-(define-public guile3.0-cairo
-  (deprecated-package "guile3.0-cairo" guile-cairo))
 
 (define-public guile-rsvg
   ;; Use a recent snapshot that supports Guile 2.2 and beyond.
@@ -1239,15 +1376,10 @@ exceptions, macros, and a dynamic programming environment.")
                                        file "-o" go)))
                            (find-files module-dir "\\.scm$"))
                  #t))))))
-      (native-inputs `(("pkg-config" ,pkg-config)
-                       ("autoconf" ,autoconf)
-                       ("automake" ,automake)
-                       ("libtool" ,libtool)
-                       ("texinfo" ,texinfo)))
-      (inputs `(("guile" ,guile-3.0)
-                ("librsvg" ,librsvg)
-                ("guile-lib" ,guile-lib)))        ;for (unit-test)
-      (propagated-inputs `(("guile-cairo" ,guile-cairo)))
+      (native-inputs (list pkg-config autoconf automake libtool texinfo))
+      (inputs (list guile-3.0
+                    (librsvg-for-system) guile-lib))        ;for (unit-test)
+      (propagated-inputs (list guile-cairo))
       (synopsis "Render SVG images using Cairo from Guile")
       (description
        "Guile-RSVG wraps the RSVG library for Guile, allowing you to render SVG
@@ -1265,9 +1397,6 @@ images onto Cairo surfaces.")
        ,@(fold alist-delete (package-inputs guile-rsvg)
                '("guile" "guile-lib"))))
     (propagated-inputs `(("guile-cairo" ,guile2.2-cairo)))))
-
-(define-public guile3.0-rsvg
-  (deprecated-package "guile3.0-rsvg" guile-rsvg))
 
 (define-public guile-present
   (package
@@ -1312,13 +1441,11 @@ images onto Cairo surfaces.")
                                  out "/share/guile/site/" version " -C "
                                  out "/lib/guile/" version "/site-ccache "))))
              #t)))))
-    (native-inputs `(("pkg-config" ,pkg-config)))
-    (inputs `(("guile" ,guile-3.0)))
+    (native-inputs (list pkg-config))
+    (inputs (list guile-3.0))
     (propagated-inputs
      ;; These are used by the (present …) modules.
-     `(("guile-lib" ,guile-lib)
-       ("guile-cairo" ,guile-cairo)
-       ("guile-rsvg" ,guile-rsvg)))
+     (list guile-lib guile-cairo guile-rsvg))
     (home-page "https://wingolog.org/software/guile-present/")
     (synopsis "Create SVG or PDF presentations in Guile")
     (description
@@ -1333,14 +1460,11 @@ documents.")
   (package
     (inherit guile-present)
     (name "guile2.2-present")
-    (inputs `(("guile" ,guile-2.2)))
+    (inputs (list guile-2.2))
     (propagated-inputs
      `(("guile-lib" ,guile2.2-lib)
        ("guile-cairo" ,guile2.2-cairo)
        ("guile-rsvg" ,guile2.2-rsvg)))))
-
-(define-public guile3.0-present
-  (deprecated-package "guile3.0-present" guile-present))
 
 (define-public guile-gnome
    (package
@@ -1357,23 +1481,23 @@ documents.")
                "1gnf3j96nip5kl99a268i0dy1hj7s1cfs66sps3zwysnkd7qr399"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("atk" ,atk)
-       ;;("corba" ,corba) ; not packaged yet
-       ("gconf" ,gconf)
-       ("gobject-introspection" ,gobject-introspection)
-       ;;("gthread" ,gthread) ; not packaged yet
-       ("gnome-vfs" ,gnome-vfs)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gtk+" ,gtk+-2)
-       ("libglade" ,libglade)
-       ("libgnome" ,libgnome)
-       ("libgnomecanvas" ,libgnomecanvas)
-       ("libgnomeui" ,libgnomeui)
-       ("pango" ,pango)
-       ("libffi" ,libffi)
-       ("glib" ,glib)))
-    (inputs `(("guile" ,guile-2.2)))
+     (list pkg-config
+           atk
+           ;;("corba" ,corba) ; not packaged yet
+           gconf
+           gobject-introspection
+           ;;("gthread" ,gthread) ; not packaged yet
+           gnome-vfs
+           gdk-pixbuf
+           gtk+-2
+           libglade
+           libgnome
+           libgnomecanvas
+           libgnomeui
+           pango
+           libffi
+           glib))
+    (inputs (list guile-2.2))
     (propagated-inputs
      `(("guile-cairo" ,guile2.2-cairo)
        ("g-wrap" ,g-wrap)
@@ -1443,8 +1567,7 @@ guile-gnome-platform (GNOME developer libraries), and guile-gtksourceview.")
     (inputs
      `(("fontconfig" ,fontconfig)))
     (propagated-inputs
-     `(("libsigc++" ,libsigc++)
-       ("cairo" ,cairo)))
+     (list libsigc++ cairo))
     (home-page "https://cairographics.org/")
     (synopsis "C++ bindings to the Cairo 2D graphics library")
     (description
@@ -1466,8 +1589,8 @@ library.")
        (sha256
         (base32 "1qwdj9xw1w651kqwh82nipbryimm1ir5n3c6q34nphsx576bj9h1"))))
     (propagated-inputs
-     `(("libsigc++" ,libsigc++-2)
-       ,@(package-propagated-inputs cairomm)))))
+     (modify-inputs (package-propagated-inputs cairomm)
+       (prepend libsigc++-2)))))
 
 (define-public pangomm
   (package
@@ -1508,10 +1631,7 @@ library.")
        ("pkg-config" ,pkg-config)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
-     `(("cairo" ,cairo)
-       ("cairomm" ,cairomm)
-       ("glibmm" ,glibmm)
-       ("pango" ,pango)))
+     (list cairo cairomm glibmm pango))
     (home-page "https://pango.gnome.org//")
     (synopsis "C++ interface to the Pango text rendering library")
     (description
@@ -1534,9 +1654,7 @@ library.")
        (sha256
         (base32 "06zczkaxf5p5kjgnzrfylzi40w9a8lxpndgs7rpn12qrsq27sy6k"))))
     (propagated-inputs
-     `(("cairomm" ,cairomm-1.14)
-       ("glibmm" ,glibmm-2.64)
-       ("pango" ,pango)))))
+     (list cairomm-1.14 glibmm-2.64 pango))))
 
 (define-public atkmm
   (package
@@ -1577,7 +1695,7 @@ library.")
        ("pkg-config" ,pkg-config)
        ("xsltproc" ,libxslt)))
     (propagated-inputs
-     `(("glibmm" ,glibmm) ("atk" ,atk)))
+     (list glibmm atk))
     (synopsis "C++ bindings for ATK")
     (description "ATKmm is the C++ binding for the ATK library.")
     (home-page "https://wiki.gnome.org/Accessibility")
@@ -1603,13 +1721,13 @@ library.")
        (sha256
         (base32 "1b8vycqzr3lfvk2l73f4kk74hj48081zbh9r1r2ilr3h8xh7cs0i"))))
     (propagated-inputs
-     `(("glibmm" ,glibmm-2.64)
-       ,@(package-propagated-inputs atkmm)))))
+     (modify-inputs (package-propagated-inputs atkmm)
+       (prepend glibmm-2.64)))))
 
 (define-public gtkmm
   (package
     (name "gtkmm")
-    (version "3.24.4")
+    (version "4.4.0")
     (source
      (origin
        (method url-fetch)
@@ -1618,21 +1736,26 @@ library.")
                        (version-major+minor version)  "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "0hv7pviln4cpjvpz7m7ga5krcsbibqzixdcn0dwzpz0cx71p3swv"))))
+        (base32 "1nhdf1s437k41af6frbqw2sky46qci0hgkg9h86a9rlnc0r69d1f"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
      `(#:configure-flags '("-Dbuild-documentation=true")
        #:phases
        (modify-phases %standard-phases
+         (add-before 'build 'set-cache
+           (lambda _
+             (setenv "XDG_CACHE_HOME" (getcwd))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a running X server.
              (system "Xvfb :1 +extension GLX &")
              (setenv "DISPLAY" ":1")
+             ;; Tests write to $HOME.
+             (setenv "HOME" (getcwd))
+             (setenv "XDG_RUNTIME_DIR" (getcwd))
              ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t))
+             (setenv "DBUS_FATAL_WARNINGS" "0")))
          (add-after 'install 'move-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1640,8 +1763,7 @@ library.")
                (mkdir-p (string-append doc "/share"))
                (rename-file
                 (string-append out "/share/doc")
-                (string-append doc "/share/doc"))
-               #t))))))
+                (string-append doc "/share/doc"))))))))
     (native-inputs
      `(("dot" ,graphviz)
        ("doxygen" ,doxygen)
@@ -1653,15 +1775,11 @@ library.")
        ("xsltproc" ,libxslt)
        ("xorg-server" ,xorg-server-for-tests)))
     (propagated-inputs
-     `(("atkmm" ,atkmm-2.28)
-       ("cairomm" ,cairomm-1.14)
-       ("glibmm" ,glibmm)
-       ("gtk+" ,gtk+)
-       ("pangomm" ,pangomm-2.46)))
+     (list atkmm cairomm glibmm gtk pangomm))
     (synopsis "C++ Interfaces for GTK+ and GNOME")
     (description "GTKmm is the official C++ interface for the popular GUI
-library GTK+.  Highlights include typesafe callbacks, and a comprehensive set of
-widgets that are easily extensible via inheritance.  You can create user
+library GTK+.  Highlights include typesafe callbacks, and a comprehensive set
+of widgets that are easily extensible via inheritance.  You can create user
 interfaces either in code or with the Glade User Interface designer, using
 libglademm.  There's extensive documentation, including API reference and a
 tutorial.")
@@ -1672,6 +1790,33 @@ tutorial.")
       license:lgpl2.1+
       ;; Tools
       license:gpl2+))))
+
+(define-public gtkmm-3
+  (package
+    (inherit gtkmm)
+    (name "gtkmm")
+    (version "3.24.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "mirror://gnome/sources/" name "/"
+                       (version-major+minor version)  "/"
+                       name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1ri2msp3cmzi6r65ghwb8gfavfaxv0axpwi3q60nm7v8hvg36qw5"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gtkmm)
+       ;; Use meson 0.59 to workaround a new issue with meson 0.60 (see:
+       ;; https://github.com/mesonbuild/meson/issues/9350#issuecomment-953799600).
+       ((#:meson _ #f)
+        meson-0.59)))
+    (propagated-inputs
+     `(("atkmm-2.28" ,atkmm-2.28)
+       ("cairomm-1.14" ,cairomm-1.14)
+       ("glibmm" ,glibmm)
+       ("gtk+" ,gtk+)
+       ("pangomm-2.42" ,pangomm-2.46)))))
 
 (define-public gtkmm-2
   (package
@@ -1689,29 +1834,10 @@ tutorial.")
         (base32 "0wkbzvsx4kgw16f6xjdc1dz7f77ldngdila4yi5lw2zrgcxsb006"))))
     (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments gtkmm)
-       ((#:modules modules %gnu-build-system-modules)
-        `((srfi srfi-1)
-          ,@modules))
-       ((#:configure-flags flags)
-        `(fold delete
-               ,flags
-               '("-Dbuild-documentation=true")))))
-    (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("m4" ,m4)
-       ("mm-common" ,mm-common)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (strip-keyword-arguments
+      '(#:configure-flags) (package-arguments gtkmm)))
     (propagated-inputs
-     `(("atkmm" ,atkmm-2.28)
-       ("cairomm" ,cairomm-1.14)
-       ("glibmm" ,glibmm-2.64)
-       ("gtk+" ,gtk+-2)
-       ("pangomm" ,pangomm-2.46)))))
+     (list atkmm-2.28 cairomm-1.14 glibmm-2.64 gtk+-2 pangomm-2.46))))
 
 (define-public gtksourceviewmm
   (package
@@ -1726,12 +1852,10 @@ tutorial.")
                (base32 "0fgvmhm4h4qmxig87qvangs6ijw53mi40siz7pixlxbrsgiil22i"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (propagated-inputs
      ;; In 'Requires' of gtksourceviewmm-3.0.pc.
-     `(("glibmm" ,glibmm)
-       ("gtkmm" ,gtkmm)
-       ("gtksourceview" ,gtksourceview-3)))
+     (list glibmm gtkmm-3 gtksourceview-3))
     (synopsis "C++ interface to the GTK+ 'GtkTextView' widget")
     (description
      "gtksourceviewmm is a portable C++ library that extends the standard GTK+
@@ -1759,10 +1883,9 @@ printing and other features typical of a source code editor.")
         "1326aa2ybhhhrvz3n4p22z5sic25m016ddb5yq0hvbprnw6a35an"))))
     (build-system python-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-pytest" ,python-pytest)))
+     (list pkg-config python-pytest))
     (propagated-inputs                  ;pycairo.pc references cairo
-     `(("cairo" ,cairo)))
+     (list cairo))
     (home-page "https://cairographics.org/pycairo/")
     (synopsis "Python bindings for cairo")
     (description
@@ -1805,7 +1928,7 @@ printing and other features typical of a source code editor.")
     (outputs '("out"
                "doc"))                            ;13 MiB of gtk-doc HTML
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("python" ,python-2)
 
@@ -1872,10 +1995,9 @@ write GNOME applications.")
                 "0zq78dv22arg35ma6kah9cwfd1zx8gg7amsibzd128qw81p766c2"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-extutils-depends" ,perl-extutils-depends)
-       ("perl-extutils-pkgconfig" ,perl-extutils-pkgconfig)))
+     (list perl-extutils-depends perl-extutils-pkgconfig))
     (propagated-inputs
-     `(("cairo" ,cairo)))
+     (list cairo))
     (home-page "https://metacpan.org/release/Cairo")
     (synopsis "Perl interface to the cairo 2d vector graphics library")
     (description "Cairo provides Perl bindings for the vector graphics library
@@ -1896,11 +2018,9 @@ produces identical output on all those targets.")
         (base32 "0l2wcz77ndmbgvxx34gdm919a3dxh9fixqr47p50n78ysx2692cd"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-extutils-depends" ,perl-extutils-depends)
-       ("perl-extutils-pkgconfig" ,perl-extutils-pkgconfig)))
+     (list perl-extutils-depends perl-extutils-pkgconfig))
     (propagated-inputs
-     `(("perl-cairo" ,perl-cairo)
-       ("perl-glib" ,perl-glib)))
+     (list perl-cairo perl-glib))
     (home-page "https://metacpan.org/dist/Cairo-GObject")
     (synopsis "Integrate Cairo into the Glib type system")
     (description "Cairo::GObject registers Cairo's types with Glib's type systems,
@@ -1920,12 +2040,11 @@ so that they can be used normally in signals and properties.")
                 "0ry9jfvfgdwzalxcvwsgr7plhk3agx7p40l0fqdf3vrf7ds47i29"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-extutils-depends" ,perl-extutils-depends)
-       ("perl-extutils-pkgconfig" ,perl-extutils-pkgconfig)))
+     (list perl-extutils-depends perl-extutils-pkgconfig))
     (inputs
-     `(("gtk+" ,gtk+-2)))
+     (list gtk+-2))
     (propagated-inputs
-     `(("perl-pango" ,perl-pango)))
+     (list perl-pango))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1973,11 +2092,8 @@ yet remaining very close in spirit to original API.")
        ("perl-test-simple" ,perl-test-simple)
        ("xorg-server" ,xorg-server-for-tests)))
     (propagated-inputs
-     `(("gtk+" ,gtk+)
-       ("perl-cairo-gobject" ,perl-cairo-gobject)
-       ("perl-carp" ,perl-carp)
-       ("perl-exporter" ,perl-exporter)
-       ("perl-glib-object-introspection" ,perl-glib-object-introspection)))
+     (list gtk+ perl-cairo-gobject perl-carp perl-exporter
+           perl-glib-object-introspection))
     (home-page "https://metacpan.org/dist/Gtk3")
     (synopsis "Perl interface to the 3.x series of the gtk+ toolkit")
     (description "Perl bindings to the 3.x series of the gtk+ toolkit.
@@ -1999,13 +2115,11 @@ yet remaining very close in spirit to original API.")
                 "0wdcidnfnb6nm79fzfs39ivawj3x8m98a147fmcxgv1zvwia9c1l"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-extutils-depends" ,perl-extutils-depends)
-       ("perl-extutils-pkgconfig" ,perl-extutils-pkgconfig)))
+     (list perl-extutils-depends perl-extutils-pkgconfig))
     (inputs
-     `(("pango" ,pango)))
+     (list pango))
     (propagated-inputs
-     `(("perl-cairo" ,perl-cairo)
-       ("perl-glib" ,perl-glib)))
+     (list perl-cairo perl-glib))
     (home-page "https://metacpan.org/release/Pango")
     (synopsis "Layout and render international text")
     (description "Pango is a library for laying out and rendering text, with an
@@ -2042,7 +2156,7 @@ and routines to assist in editing internationalized text.")
                      ("glib:bin" ,glib "bin")
                      ("xorg-server" ,xorg-server-for-tests)))
     ;; Listed in 'Requires.private' of 'girara.pc'.
-    (propagated-inputs `(("gtk+" ,gtk+)))
+    (propagated-inputs (list gtk+))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-before 'check 'start-xserver
@@ -2127,21 +2241,21 @@ information.")
        ("pkg-config" ,pkg-config)
        ("python-wrapper" ,python-wrapper)))
     (inputs
-     `(("bc" ,bc)
-       ("dblatex" ,dblatex)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib" ,glib)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("python" ,python)
-       ("python-anytree" ,python-anytree)
-       ("python-lxml" ,python-lxml)
-       ("python-parameterized" ,python-parameterized)
-       ("python-pygments" ,python-pygments)
-       ("python-unittest2" ,python-unittest2)
-       ("source-highlight" ,source-highlight)
-       ("yelp-tools" ,yelp-tools)))
+     (list bc
+           dblatex
+           docbook-xml-4.3
+           docbook-xsl
+           glib
+           libxml2
+           libxslt
+           python
+           python-anytree
+           python-lxml
+           python-parameterized
+           python-pygments
+           python-unittest2
+           source-highlight
+           yelp-tools))
     (home-page "https://wiki.gnome.org/DocumentationProject/GtkDoc")
     (synopsis "GTK+ DocBook Documentation Generator")
     (description "GtkDoc is a tool used to extract API documentation from C-code
@@ -2184,11 +2298,10 @@ with some extra work.")
      `(#:configure-flags
        `("--enable-animation")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
+     (list pkg-config intltool))
     (inputs
      ;; Don't propagate GTK+ to reduce "profile pollution".
-     `(("gtk+" ,gtk+-2))) ; required by gtk-engines-2.pc
+     (list gtk+-2)) ; required by gtk-engines-2.pc
     (home-page "https://live.gnome.org/GnomeArt")
     (synopsis "Theming engines for GTK+ 2.x")
     (description
@@ -2215,10 +2328,9 @@ Redmond95 and ThinIce.")
        `("--enable-animation"
          "--enable-animationrtl")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
+     (list pkg-config intltool))
     (propagated-inputs
-     `(("gtk+" ,gtk+-2)))
+     (list gtk+-2))
     (home-page "https://live.gnome.org/GnomeArt")
     (synopsis "Cairo-based theming engine for GTK+ 2.x")
     (description
@@ -2239,15 +2351,11 @@ glass artworks done by Venicians glass blowers.")
                 "0cjp6xdcnzh6kka42w9g0w2ihqjlq8yl8hjm9wsfnixk6qwgch5h"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list intltool pkg-config vala))
     (inputs
-     `(("gobject-introspection" ,gobject-introspection)
-       ("gtk+" ,gtk+)
-       ("pango" ,pango)))
+     (list gobject-introspection gtk+ pango))
     (propagated-inputs
-     `(("enchant" ,enchant)))           ; gtkspell3-3.0.pc refers to it
+     (list enchant))           ; gtkspell3-3.0.pc refers to it
     (home-page "http://gtkspell.sourceforge.net")
     (synopsis "Spell-checking addon for GTK's TextView widget")
     (description
@@ -2270,12 +2378,9 @@ misspelled words in a GtkTextView widget.")
         (base32 "05xi29v2y0rvb33fmvrz7r9j4l858qj7ngwd7dp4pzpkkaybjln0"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake intltool pkg-config))
     (inputs
-     `(("gtk+" ,gtk+-2)))
+     (list gtk+-2))
     (home-page "https://github.com/CristianHenzel/ClipIt")
     (synopsis "Lightweight GTK+ clipboard manager")
     (description
@@ -2287,7 +2392,7 @@ Parcellite and adds bugfixes and features.")
 (define-public graphene
   (package
     (name "graphene")
-    (version "1.10.0")
+    (version "1.10.6")
     (source
      (origin
        (method git-fetch)
@@ -2297,7 +2402,7 @@ Parcellite and adds bugfixes and features.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14a0j1rvjlc7yhfdmhmckdmkzy4ch61qbzywdlw1xv58h23wx29p"))))
+        (base32 "0g2jjy6xizzjxlp0dr81h1f5l16dzcnhznhj6jvhpdjqcvgp98xr"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
@@ -2309,13 +2414,12 @@ Parcellite and adds bugfixes and features.")
               '("-Dintrospection=false")
               '()))))
     (native-inputs
-     `(("git" ,git-minimal)
+     `(("git" ,git-minimal/fixed)
        ("gobject-introspection" ,gobject-introspection)
        ("mutest" ,mutest)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("glib" ,glib)
-       ("python" ,python)))
+     (list glib python))
     (synopsis "Thin layer of graphic data types")
     (description "Graphene provides graphic types and their relative API; it
 does not deal with windowing system surfaces, drawing, scene graphs, or input.")
@@ -2335,12 +2439,11 @@ does not deal with windowing system surfaces, drawing, scene graphs, or input.")
         (base32 "09rzgp7gabnzab460x874a1ibgyjiibpwzsz5srn9zs6jv2jdxjb"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("glib" ,glib "bin")             ; for glib-genmarshal, etc.
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin") ; for glib-genmarshal, etc.
+           pkg-config))
     ;; In 'Requires' of spread-sheet-widget.pc.
     (propagated-inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+)))
+     (list glib gtk+))
     (home-page "https://www.gnu.org/software/ssw/")
     (synopsis "Gtk+ widget for dealing with 2-D tabular data")
     (description
@@ -2348,6 +2451,40 @@ does not deal with windowing system surfaces, drawing, scene graphs, or input.")
 viewing and manipulating 2 dimensional tabular data in a manner similar to many
 popular spread sheet programs.")
     (license license:gpl3+)))
+
+(define-public pnmixer
+  (package
+    (name "pnmixer")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nicklan/pnmixer/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0416pa933ddf4b7ph9zxhk5jppkk7ppcq1aqph6xsrfnka4yb148"))))
+    (build-system cmake-build-system)
+    (arguments `(#:tests? #f))          ;no check target
+    (native-inputs
+     (list gettext-minimal pkg-config))
+    (inputs
+     (list alsa-lib glib gtk+ libnotify libx11))
+    (home-page "https://github.com/nicklan/pnmixer/")
+    (synopsis "Simple mixer application designed to run in system tray")
+    (description
+     "PNMixer is a simple mixer application designed to run in system tray.
+It integrates nicely into desktop environments that don't have a panel that
+supports applets and therefore can't run a mixer applet.  In particular, it's
+been used quite a lot with fbpanel and tint2 but should run fine in any system
+tray.
+
+PNMixer is designed to work on systems that use ALSA for sound management.
+Any other sound driver like OSS or FFADO are, currently, not supported.  There
+is no official PulseAudio support, at the moment, but it seems that PNMixer
+behaves quite well anyway when PA is running.")
+    (license license:gpl3)))
 
 (define-public volumeicon
   (package
@@ -2365,12 +2502,9 @@ popular spread sheet programs.")
      `(#:configure-flags
        (list "--enable-notify")))       ; optional libnotify support
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("gtk+" ,gtk+)
-       ("libnotify" ,libnotify)))
+     (list alsa-lib gtk+ libnotify))
     (home-page "http://nullwise.com/volumeicon.html")
     (synopsis "System tray volume applet")
     (description
@@ -2409,13 +2543,9 @@ independent of your desktop environment, and supports global key bindings.")
            (lambda _
              (invoke "intltoolize" "--force" "--automake"))))))
     (inputs
-     `(("gspell" ,gspell)
-       ("gtk+" ,gtk+)))
+     (list gspell gtk+))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake intltool pkg-config))
     (home-page "https://sourceforge.net/projects/yad-dialog/")
     (synopsis "GTK+ dialog boxes for shell scripts")
     (description
@@ -2439,8 +2569,8 @@ shell scripts.  Example of how to use @code{yad} can be consulted at
               (base32
                "0fgzz39007fdjwq72scp0qygp2v3zc5f1xkm0sxaa8zxm25g1bra"))))
    (build-system gnu-build-system)
-   (inputs `(("gtk+" ,gtk+)))
-   (native-inputs `(("pkg-config" ,pkg-config)))
+   (inputs (list gtk+))
+   (native-inputs (list pkg-config))
    (arguments
     `(#:tests? #f                       ; no check
       #:make-flags
@@ -2546,10 +2676,8 @@ displayed on the other side of the bus.")
         (base32 "1kcp4p3s7sdh9lwniybjdarfy8z69j2j23hfrw98amhwhq39gdcc"))))
     (build-system meson-build-system)
     (arguments `(#:configure-flags (list "-Dtests=true")))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("gobject-introspection" ,gobject-introspection)))
-    (inputs `(("wayland" ,wayland)
-              ("gtk+" ,gtk+)))
+    (native-inputs (list pkg-config gobject-introspection))
+    (inputs (list wayland gtk+))
     (home-page "https://github.com/wmww/gtk-layer-shell")
     (synopsis "Library to create Wayland desktop components using the Layer
 Shell protocol")
@@ -2581,10 +2709,7 @@ popovers.")
        ("pkg-config" ,pkg-config)
        ("python" ,python)))
     (inputs
-     `(("cairo" ,cairo)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("python-pygobject" ,python-pygobject)))
+     (list cairo glib gtk+ python-pygobject))
     (arguments
      `(#:configure-flags '("--disable-rebuilds"
                            "--disable-static")
@@ -2623,7 +2748,8 @@ library for drawing.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--enable-glade"
-                               "--enable-introspection")
+                               "--enable-introspection"
+                               "CFLAGS=-fcommon")
        #:phases
        (modify-phases %standard-phases
          ;; The "configure" script is present, but otherwise the project is
@@ -2633,11 +2759,14 @@ library for drawing.")
            (lambda _
              (delete-file "configure")
              #t))
-         (add-after 'unpack 'rename-type
+         (add-after 'unpack 'patch-for-compatibility
            (lambda _
              (substitute* "glade/glade-gtksheet-editor.c"
                (("GladeEditableIface") "GladeEditableInterface"))
-             #t))
+             ;; Glade 3.37 renamed the macro GWA_GET_CLASS to
+             ;; GLADE_WIDGET_ADAPTOR_GET_ADAPTOR_CLASS.
+             (substitute* "glade/glade-gtksheet-editor.c"
+               (("GWA_GET_CLASS") "GLADE_WIDGET_ADAPTOR_GET_ADAPTOR_CLASS"))))
          ;; Fix glade install directories.
          (add-before 'bootstrap 'configure-glade-directories
            (lambda* (#:key outputs #:allow-other-keys)
@@ -2650,16 +2779,9 @@ library for drawing.")
                 (string-append (assoc-ref outputs "out") "/share/pixmaps")))
              #t)))))
     (inputs
-     `(("glade" ,glade3)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("libxml2" ,libxml2)))
+     (list glade3 glib gtk+ libxml2))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gobject-introspection" ,gobject-introspection)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake gobject-introspection libtool pkg-config))
     (home-page "https://fpaquet.github.io/gtksheet/")
     (synopsis "Spreadsheet widget for GTK+")
     (description "GtkSheet is a matrix widget for GTK+.  It consists of an
@@ -2691,9 +2813,9 @@ foreground and background colors, text justification and more.")
         (base32 "1qykm551bx8j8pfgxs60l2vhpi8lv4r8va69zvn2594lchh71vlb"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("gtk+" ,gtk+)))
+     (list gtk+))
     (synopsis "Display widget for dynamic data")
     (description "GtkDatabox is a widget for live display of large amounts of
 fluctuating numerical data.  It enables data presentation (for example, on
@@ -2730,14 +2852,9 @@ user interaction (e.g.  measuring distances).")
                   (string-append pulse "/lib/libpulse.so.0")))
                #t))))))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("libxfixes" ,libxfixes)
-       ("pulseaudio" ,pulseaudio)))
+     (list gtk+ libxfixes pulseaudio))
     (propagated-inputs
-     `(("python-click" ,python-click)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyyaml" ,python-pyyaml)))
+     (list python-click python-pycairo python-pygobject python-pyyaml))
     (home-page "https://buzz.github.io/volctl/")
     (synopsis "Per-application volume control and on-screen display (OSD) for graphical desktops")
     (description "Volctl is a PulseAudio-enabled tray icon volume control and

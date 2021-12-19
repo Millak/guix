@@ -30,6 +30,8 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2021 Chadwain Holness <chadwainholness@gmail.com>
+;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -227,10 +229,7 @@
        ("pcre" ,pcre)
        ("gcc:lib" ,(canonical-package gcc) "lib")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("which" ,which)
-       ("net-base" ,net-base)
-       ("perl" ,perl)))
+     (list pkg-config which net-base perl))
 
     (home-page "https://golang.org/")
     (synopsis "Compiler and libraries for Go, a statically-typed language")
@@ -270,7 +269,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((gcclib (string-append (assoc-ref inputs "gcc:lib") "/lib"))
                       (ld (string-append (assoc-ref inputs "libc") "/lib"))
-                      (loader (car (find-files ld "^ld-linux.+")))
+                      (loader (car (append (find-files ld "^ld-linux.+")
+                                           (find-files ld "^ld(64)?\\.so.+"))))
                       (net-base (assoc-ref inputs "net-base"))
                       (tzdata-path
                        (string-append (assoc-ref inputs "tzdata") "/share/zoneinfo"))
@@ -407,6 +407,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                  (setenv "GOOS" "linux")
                  (setenv "GOROOT" (dirname (getcwd)))
                  (setenv "GOROOT_FINAL" output)
+                 (setenv "GOCACHE" "/tmp/go-cache")
                  (setenv "CGO_ENABLED" "1")
                  (invoke "sh" "all.bash"))))
            (replace 'install
@@ -445,7 +446,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                  (copy-recursively "../" output)
                  #t)))))))
     (native-inputs
-     `(("go" ,go-1.4)
+     `(,@(if (member (%current-system) (package-supported-systems go-1.4))
+           `(("go" ,go-1.4))
+           `(("go" ,gccgo-10)))
        ("go-skip-gc-test.patch" ,(search-patch "go-skip-gc-test.patch"))
        ,@(match (%current-system)
            ((or "armhf-linux" "aarch64-linux")
@@ -458,7 +461,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.14)
     (name "go")
-    (version "1.16.8")
+    (version "1.16.12")
     (source
      (origin
        (method git-fetch)
@@ -468,7 +471,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00zv65v09kr2cljxxqypk980r4b4aqjijhbw4ikppn8km68h831n"))))
+         "06c8dcmni38za638ma069izd9kbxr6ii6ccflbibgc6k54lpc3fb"))))
     (arguments
      (substitute-keyword-arguments (package-arguments go-1.14)
        ((#:tests? _) #t)
@@ -617,7 +620,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.16)
     (name "go")
-    (version "1.17.1")
+    (version "1.17.5")
     (source
      (origin
        (method git-fetch)
@@ -627,7 +630,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wk99lwpzp4qwrksl932lm9vb70nyf4vgb5lxwh7gzjcbhlqj992"))))
+         "1yjhg4j89vgb26m35gc0799x2fd0xav03gcvcg2xwcfvvcar5gza"))))
     (outputs '("out" "tests")) ; 'tests' contains distribution tests.
     (arguments
      `(#:modules ((ice-9 match)
@@ -793,7 +796,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                   (install-file file (string-append out "/share/doc/go")))
                 '("AUTHORS" "CONTRIBUTORS" "CONTRIBUTING.md" "PATENTS"
                   "README.md" "SECURITY.md"))))))))
-    (inputs (alist-delete "gcc:lib" (package-inputs go-1.16)))))
+    (inputs (alist-delete "gcc:lib" (package-inputs go-1.16)))
+    (native-inputs
+     `(,@(if (not (member (%current-system) (package-supported-systems go-1.4)))
+           ;; gccgo-10.4, 11.3 and lower has a bug which causes bootstrapping
+           ;; to fail. Use go-1.16 until we have a newer version available.
+           (alist-replace "go" (list go-1.16) (package-native-inputs go-1.16))
+           (package-native-inputs go-1.16))))))
 
 (define-public go go-1.14)
 
@@ -817,11 +826,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
       (arguments
        `(#:import-path "0xacab.org/leap/shapeshifter"))
       (propagated-inputs
-       `(("go-github-com-operatorfoundation-obfs4"
-          ,go-github-com-operatorfoundation-obfs4)
-         ("go-github-com-operatorfoundation-shapeshifter-transports"
-          ,go-github-com-operatorfoundation-shapeshifter-transports)
-         ("go-golang-org-x-net" ,go-golang-org-x-net)))
+       (list go-github-com-operatorfoundation-obfs4
+             go-github-com-operatorfoundation-shapeshifter-transports
+             go-golang-org-x-net))
       (home-page "https://0xacab.org/leap/shapeshifter")
       (synopsis "Shapeshifter Dispatcher Library")
       (description "Shapeshifter provides network protocol shapeshifting
@@ -928,33 +935,21 @@ filtering devices.")
                "github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v2"
                "github.com/OperatorFoundation/shapeshifter-transports/transports/shadow/v3")))))))
     (native-inputs
-     `(("go-github-com-stretchr-testify"
-        ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     `(("go-github-com-aead-chacha20"
-        ,go-github-com-aead-chacha20)
-       ("go-github-com-blanu-dust"
-        ,go-github-com-blanu-dust)
-       ("go-github-com-deckarep-golang-set"
-        ,go-github-com-deckarep-golang-set)
-       ("go-github-com-kataras-golog"
-        ,go-github-com-kataras-golog)
-       ("go-github-com-mufti1-interconv"
-        ,go-github-com-mufti1-interconv)
-       ("go-github-com-opentracing-opentracing-go"
-        ,go-github-com-opentracing-opentracing-go)
-       ("go-github-com-operatorfoundation-monolith-go"
-        ,go-github-com-operatorfoundation-monolith-go)
-       ("go-github-com-operatorfoundation-obfs4"
-        ,go-github-com-operatorfoundation-obfs4)
-       ("go-github-com-operatorfoundation-shapeshifter-ipc"
-        ,go-github-com-operatorfoundation-shapeshifter-ipc)
-       ("go-github-com-shadowsocks-go-shadowsocks2"
-        ,go-github-com-shadowsocks-go-shadowsocks2)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-torproject-org-pluggable-transports-goptlib"
-        ,go-torproject-org-pluggable-transports-goptlib)))
+     (list go-github-com-aead-chacha20
+           go-github-com-blanu-dust
+           go-github-com-deckarep-golang-set
+           go-github-com-kataras-golog
+           go-github-com-mufti1-interconv
+           go-github-com-opentracing-opentracing-go
+           go-github-com-operatorfoundation-monolith-go
+           go-github-com-operatorfoundation-obfs4
+           go-github-com-operatorfoundation-shapeshifter-ipc
+           go-github-com-shadowsocks-go-shadowsocks2
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-torproject-org-pluggable-transports-goptlib))
     (home-page "https://github.com/OperatorFoundation/shapeshifter-transports")
     (synopsis "Go implementation of Pluggable Transports")
     (description "Shapeshifter-Transports is a set of Pluggable Transports
@@ -983,8 +978,7 @@ networks where it would otherwise be blocked or heavily throttled.")
     (arguments
      `(#:import-path "github.com/kataras/golog"))
     (propagated-inputs
-     `(("go-github-com-kataras-pio"
-        ,go-github-com-kataras-pio)))
+     (list go-github-com-kataras-pio))
     (home-page "https://github.com/kataras/golog")
     (synopsis "Logging foundation for Go applications")
     (description "GoLog is a level-based logger written in Go.")
@@ -1033,12 +1027,8 @@ terminals.")
     (arguments
      `(#:import-path "github.com/shadowsocks/go-shadowsocks2"))
     (propagated-inputs
-     `(("go-github-com-riobard-go-bloom"
-        ,go-github-com-riobard-go-bloom)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-golang-org-x-sys" ,go-golang-org-x-sys)
-       ("go-golang-org-x-text" ,go-golang-org-x-text)))
+     (list go-github-com-riobard-go-bloom go-golang-org-x-crypto
+           go-golang-org-x-net go-golang-org-x-sys go-golang-org-x-text))
     (home-page "https://github.com/shadowsocks/go-shadowsocks2")
     (synopsis "Shadowsocks tunnel proxy")
     (description "Go-ShadowSocks is a Go implementation of the Shadowsocks tunnel
@@ -1089,7 +1079,7 @@ proxy protocol.")
       (arguments
        `(#:import-path "github.com/aead/chacha20"))
       (propagated-inputs
-       `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+       (list go-golang-org-x-sys))
       (home-page "https://github.com/aead/chacha20")
       (synopsis "ChaCha20 and XChaCha20 stream ciphers")
       (description "ChaCha is a stream cipher family created by Daniel Bernstein.
@@ -1140,8 +1130,7 @@ standardized in RFC 7539.")
     (arguments
      `(#:import-path "github.com/opentracing/opentracing-go"))
     (native-inputs
-     `(("go-github-com-stretchr-testify"
-        ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/opentracing/opentracing-go")
     (synopsis "OpenTracing API for Go")
     (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
@@ -1167,8 +1156,7 @@ standardized in RFC 7539.")
        #:unpack-path "github.com/OperatorFoundation/monolith-go"
        #:import-path "github.com/OperatorFoundation/monolith-go/monolith"))
     (propagated-inputs
-     `(("go-github-com-deckarep-golang-set"
-        ,go-github-com-deckarep-golang-set)))
+     (list go-github-com-deckarep-golang-set))
     (home-page "https://github.com/OperatorFoundation/monolith-go")
     (synopsis "Byte sequences library")
     (description "Monolith-Go is a Go library for working with byte sequences.")
@@ -1195,6 +1183,33 @@ standardized in RFC 7539.")
     (synopsis "Set type for Go")
     (description "Set is the set collection for the Go language.")
     (license license:expat)))
+
+(define-public go-github-com-dhowett-go-plist
+  (let ((commit "1454fab16a0642638feb0ae98c41f79eccb2a20a")
+        (revision "1"))
+    (package
+      (name "go-github-com-dhowett-go-plist")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/DHowett/go-plist")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "01c9wmhny2rxywcjipq1xa0xw4qm7yd001239grwxcja3b4n45v8"))))
+      (build-system go-build-system)
+      (arguments `(#:import-path "howett.net/plist"))
+      (inputs
+       (list go-github.com-jessevdk-go-flags go-github-com-kr-pretty
+             go-gopkg-in-check-v1 go-gopkg-in-yaml-v2))
+      (home-page "https://github.com/DHowett/go-plist")
+      (synopsis "Apple property list transcoder")
+      (description "This list transcoder supports encoding/decoding property
+lists (Apple XML, Apple Binary, OpenStep, and GNUStep) from/to arbitrary Go
+types.")
+      (license license:giftware))))
 
 (define-public go-github-com-blanu-dust
   (package
@@ -1277,11 +1292,8 @@ standardized in RFC 7539.")
                "github.com/blanu/Dust/go/v2/interface"
                "github.com/blanu/Dust/go/v2/shaping")))))))
     (propagated-inputs
-     `(("go-github-com-operatorfoundation-ed25519"
-        ,go-github-com-operatorfoundation-ed25519)
-       ("go-github-com-op-go-logging"
-        ,go-github-com-op-go-logging)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+     (list go-github-com-operatorfoundation-ed25519
+           go-github-com-op-go-logging go-golang-org-x-crypto))
     (home-page "https://github.com/blanu/Dust")
     (synopsis "Censorship-resistant internet transport protocol")
     (description "Dust is an Internet protocol designed to resist a number of
@@ -1478,16 +1490,12 @@ protocol from the Pluggable Transports 2.0 specification.")
                "github.com/OperatorFoundation/obfs4/proxy_dialers/proxy_socks4"
                "github.com/OperatorFoundation/obfs4/transports")))))))
     (propagated-inputs
-     `(("go-github-com-dchest-siphash"
-        ,go-github-com-dchest-siphash)
-       ("go-github-com-operatorfoundation-ed25519"
-        ,go-github-com-operatorfoundation-ed25519)
-       ("go-github-com-willscott-goturn"
-        ,go-github-com-willscott-goturn)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-torproject-org-pluggable-transports-goptlib"
-        ,go-torproject-org-pluggable-transports-goptlib)))
+     (list go-github-com-dchest-siphash
+           go-github-com-operatorfoundation-ed25519
+           go-github-com-willscott-goturn
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-torproject-org-pluggable-transports-goptlib))
     (home-page "https://github.com/OperatorFoundation/obfs4")
     (synopsis "Network obfourscator to scramble network traffic")
     (description "Obfs4 is a look-like nothing obfuscation protocol that
@@ -1575,7 +1583,7 @@ Go.")
     (arguments
      `(#:import-path "github.com/sevlyar/go-daemon"))
     (propagated-inputs
-     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+     (list go-golang-org-x-sys))
     (home-page "https://github.com/sevlyar/go-daemon")
     (synopsis "Library for writing system daemons")
     (description "Go-Daemon is a library for writing system daemons in Go.")
@@ -1612,9 +1620,7 @@ Go.")
                (substitute* "src/github.com/keybase/go-ps/process_openbsd.go"
                  (("^// \\+build ignore") "")))))))
       (native-inputs
-       `(("coreutils" ,coreutils)
-         ("go-github-com-stretchr-testify"
-          ,go-github-com-stretchr-testify)))
+       (list coreutils go-github-com-stretchr-testify))
       (home-page "https://github.com/keybase/go-ps")
       (synopsis "Process list library for Go")
       (description "Go-Ps is a library for Go that implements OS-specific APIs
@@ -1815,10 +1821,8 @@ jar struct to manage the cookies added to the cookie jar.")
      '(#:unpack-path "github.com/gizak/termui"
        #:import-path "github.com/gizak/termui/v3"))
     (propagated-inputs
-     `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-       ("go-github-com-mitchellh-go-wordwrap"
-        ,go-github-com-mitchellh-go-wordwrap)
-       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)))
+     (list go-github.com-mattn-go-runewidth
+           go-github-com-mitchellh-go-wordwrap go-github.com-nsf-termbox-go))
     (home-page "https://github.com/gizak/termui")
     (synopsis "Terminal dashboard widget Go library")
     (description
@@ -1869,7 +1873,7 @@ mouse, and terminal resizing events.")
     (arguments
      '(#:import-path "github.com/mitchellh/go-wordwrap"))
     (propagated-inputs
-     `(("go-gopkg-in-yaml-v2" ,go-gopkg-in-yaml-v2)))
+     (list go-gopkg-in-yaml-v2))
     (home-page "https://github.com/mitchellh/go-wordwrap")
     (synopsis "Go library for word-wrapping strings")
     (description
@@ -1920,7 +1924,7 @@ generally useful thing to do.")
     (arguments
      '(#:import-path "github.com/daviddengcn/go-colortext"))
     (native-inputs
-     `(("go-github-com-golangplus-testing" ,go-github-com-golangplus-testing)))
+     (list go-github-com-golangplus-testing))
     (synopsis "Change the color of console text and background")
     (description
      "This is a package to change the color of the text and background in the
@@ -1947,7 +1951,7 @@ Under Windows, the console APIs are used.  Otherwise, ANSI texts are output.")
     (arguments
      '(#:import-path "github.com/golangplus/testing"))
     (propagated-inputs
-     `(("go-github-com-golangplus-fmt" ,go-github-com-golangplus-fmt)))
+     (list go-github-com-golangplus-fmt))
     (synopsis "Additions to Go's standard testing package")
     (description "This package provides additions to Go's stdlib testing.")
     (license license:bsd-3)))
@@ -1970,7 +1974,7 @@ Under Windows, the console APIs are used.  Otherwise, ANSI texts are output.")
     (arguments
      '(#:import-path "github.com/leodido/go-urn"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (synopsis "Parser for uniform resource names as seen on RFC 2141")
     (description
      "This package implements a parser for uniform resource names (URN) as
@@ -2077,7 +2081,7 @@ implemented features include
     (arguments
      '(#:import-path "github.com/go-playground/universal-translator"))
     (propagated-inputs
-     `(("go-github-com-go-playground-locales" ,go-github-com-go-playground-locales)))
+     (list go-github-com-go-playground-locales))
     (synopsis "Translator using Unicode CLDR data and pluralization rules")
     (description
      "This package offers an Internalization Translator for Go using
@@ -2115,12 +2119,10 @@ professionally translated
     (arguments
      '(#:import-path "gopkg.in/go-playground/validator.v9"))
     (native-inputs
-     `(("go-gopkg-in-go-playground-assert-v1"
-        ,go-gopkg-in-go-playground-assert-v1)))
+     (list go-gopkg-in-go-playground-assert-v1))
     (propagated-inputs
-     `(("go-github-com-go-playground-universal-translator"
-        ,go-github-com-go-playground-universal-translator)
-       ("go-github-com-leodido-go-urn" ,go-github-com-leodido-go-urn)))
+     (list go-github-com-go-playground-universal-translator
+           go-github-com-leodido-go-urn))
     (synopsis "Validator for structs and individual fields based on tags")
     (description
      "This package implements value validations for structs and individual
@@ -2165,10 +2167,9 @@ web framework
      '(#:import-path "github.com/aws/aws-sdk-go/aws"
        #:unpack-path "github.com/aws/aws-sdk-go"))
     (propagated-inputs
-     `(("go-github-com-go-sql-driver-mysql" ,go-github-com-go-sql-driver-mysql)
-       ("go-github-com-jmespath-go-jmespath" ,go-github-com-jmespath-go-jmespath)
-       ("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)))
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-jmespath-go-jmespath go-github-com-pkg-errors
+           go-golang-org-x-net))
     (home-page "https://github.com/aws/aws-sdk-go")
     (synopsis "Library to access Amazon Web Services (AWS)")
     (description
@@ -2275,7 +2276,7 @@ per-goroutine.")
     (arguments
      `(#:import-path "github.com/saracen/walker"))
     (inputs
-     `(("go-golang-org-x-sync" ,go-golang-org-x-sync)))
+     (list go-golang-org-x-sync))
     (home-page "https://github.com/saracen/walker")
     (synopsis "Faster, parallel version of Go's filepath.Walk")
     (license license:expat)
@@ -2399,7 +2400,7 @@ Go programming language.")
                       ".*\\.gz$"))
                #t)))))
       (propagated-inputs
-       `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+       (list go-golang-org-x-sys))
       (synopsis "Supplementary cryptographic libraries in Go")
       (description "This package provides supplementary cryptographic libraries
 for the Go language.")
@@ -2614,7 +2615,7 @@ time.")
       (arguments
        `(#:import-path "golang.org/x/oauth2"))
       (propagated-inputs
-       `(("go-golang-org-x-net" ,go-golang-org-x-net)))
+       (list go-golang-org-x-net))
       (home-page "https://go.googlesource.com/oauth2")
       (synopsis "Client implementation of the OAuth 2.0 spec")
       (description "This package contains a client implementation for OAuth 2.0
@@ -2643,6 +2644,41 @@ time.")
       (description
        "This package holds the transition packages for the new Go 1.13 error values.")
       (home-page "https://godoc.org/golang.org/x/xerrors")
+      (license license:bsd-3))))
+
+(define-public go-golang-org-x-mod
+  (let ((commit "0f08993efd8a8ec67e75bcccf86b0e1569b0ab0a")
+        (revision "0"))
+    (package
+      (name "go-golang-org-x-mod")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/golang/mod")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pl0jc5jvg7hxj4z66zg6kglnq5g7li09f3k9klwvyr4jx5dw88k"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "golang.org/x/mod/"
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           ;; Source-only package
+           (delete 'build))))
+      (home-page "https://golang.org/x/mod")
+      (synopsis "Tools to work directly with Go module mechanics")
+      (description
+       "This repository holds packages for writing tools that work directly
+with Go module mechanics.  That is, it is for direct manipulation of Go modules
+themselves.
+
+The specific case of loading packages should still be done by invoking the
+@command{go} command, which remains the single point of truth for package
+loading algorithms.")
       (license license:bsd-3))))
 
 (define-public go-github-com-burntsushi-toml
@@ -2688,8 +2724,7 @@ is similar to Go's standard library @code{json} and @code{xml} package.")
       (arguments
        '(#:import-path "github.com/getsentry/raven-go"))
       (propagated-inputs
-       `(("go-github-com-certifi-gocertifi" ,go-github-com-certifi-gocertifi)
-         ("go-github-com-pkg-errors" ,go-github-com-pkg-errors)))
+       (list go-github-com-certifi-gocertifi go-github-com-pkg-errors))
       (home-page "https://github.com/getsentry/raven-go")
       (synopsis "Sentry client in Go")
       (description "This package is a Go client API for the Sentry event/error
@@ -2976,41 +3011,6 @@ with the HTTP protocol definition.")
 API service accounts for Go.")
     (license license:asl2.0)))
 
-(define-public go-github-com-google-gmail-oauth2-tools-go-sendgmail
-  (let ((commit "e3229155a4037267ce40f1a3a681f53221aa4d8d")
-        (revision "0"))
-    (package
-      (name "go-github-com-google-gmail-oauth2-tools-go-sendgmail")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/google/gmail-oauth2-tools")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1cxpkiaajhq1gjsg47r2b5xgck0r63pvkyrkm7af8c8dw7fyn64f"))))
-      (propagated-inputs
-       `(("go-golang-org-x-oauth2" ,go-golang-org-x-oauth2)
-         ("go-cloud-google-com-go-compute-metadata"
-          ,go-cloud-google-com-go-compute-metadata)))
-      (build-system go-build-system)
-      (arguments
-       '(#:unpack-path "github.com/google/gmail-oauth2-tools"
-         #:import-path "github.com/google/gmail-oauth2-tools/go/sendgmail"))
-      (home-page
-       "https://github.com/google/gmail-oauth2-tools/tree/master/go/sendgmail")
-      (synopsis
-       "Sendmail-compatible tool for using Gmail with @code{git send-email}")
-      (description
-       "The @command{sendgmail} command provides a minimal sendmail-compatible
-front-end that connects to Gmail using OAuth2.  It is specifically designed
-for use with @code{git send-email}.  The command needs a Gmail API key to
-function.")
-      (license license:asl2.0))))
-
 (define-public go-github-com-google-cadvisor
   (let ((commit "2ed7198f77395ee9a172878a0a7ab92ab59a2cfd")
         (revision "0"))
@@ -3279,7 +3279,7 @@ middleware for Go web applications and services.")
     (arguments
      `(#:import-path "github.com/spf13/cast"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/spf13/cast")
     (synopsis "Safe and easy casting from one type to another in Go")
     (description "Safe and easy casting from one type to another in Go")
@@ -3328,7 +3328,7 @@ applications as well as a program to generate applications and command files.")
     (arguments
      `(#:import-path "github.com/spf13/jwalterweatherman"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/spf13/jwalterweatherman")
     (synopsis "Go logging library")
     (description "Go logging library")
@@ -3393,7 +3393,7 @@ GNU extensions} to the POSIX recommendations for command-line options.")
        ("gopkg.in/ini.v1" ,go-gopkg-in-ini-v1)
        ("gopkg.in/yaml.v2" ,go-gopkg-in-yaml-v2)))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/spf13/viper")
     (synopsis "Go configuration with fangs")
     (description
@@ -3517,7 +3517,7 @@ application's http.Handlers.")
     (arguments
      `(#:import-path "github.com/subosito/gotenv"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/subosito/gotenv")
     (synopsis "Go library for loading environment variables from files")
     (description "Go library for loading environment variables from files")
@@ -3539,11 +3539,9 @@ application's http.Handlers.")
          "0rvqzic2zz7fpxyizmqxwmhv1m52ii9bgxnqa6km8wsa0l08wh42"))))
     (build-system go-build-system)
     (propagated-inputs
-     `(("go-github-com-davecgh-go-spew" ,go-github-com-davecgh-go-spew)
-       ("go-github-com-pmezard-go-difflib" ,go-github-com-pmezard-go-difflib)
-       ("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+     (list go-github-com-davecgh-go-spew go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-testify go-golang-org-x-crypto
+           go-golang-org-x-sys))
     (arguments
      '(#:import-path "github.com/sirupsen/logrus"))
     (home-page "https://github.com/sirupsen/logrus")
@@ -3569,7 +3567,7 @@ compatible with the standard library logger.")
     (arguments
      `(#:import-path "github.com/rifflock/lfshook"))
     (propagated-inputs
-     `(("go-github-com-sirupsen-logrus" ,go-github-com-sirupsen-logrus)))
+     (list go-github-com-sirupsen-logrus))
     (home-page "https://github.com/rifflock/lfshook")
     (synopsis "Local File System hook for Logrus logger")
     (description "This package provides a hook for Logrus to write directly to
@@ -3624,8 +3622,7 @@ finding resources located relative to the executable file.")
            "0x0cn7l5gda2khsfypix7adxd5yqighzn04mxjw6hc4ayrh7his5"))))
       (build-system go-build-system)
       (native-inputs
-       `(("go-github-com-kardianos-osext"
-          ,go-github-com-kardianos-osext)))
+       (list go-github-com-kardianos-osext))
       (arguments
        '(#:tests? #f                ;FIXME tests fail: Service is not running.
          #:import-path "github.com/ayufan/golang-kardianos-service"))
@@ -3656,11 +3653,8 @@ SysVinit, and more.")
            "1yg2zrikn3vkvkx5mn51p6bfjk840qdkn7ahhhvvcsc8mpigrjc6"))))
       (build-system go-build-system)
       (native-inputs
-       `(("go-golang-org-x-sys" ,go-golang-org-x-sys)
-         ("go-github-com-sirupsen-logrus"
-          ,go-github-com-sirupsen-logrus)
-         ("go-golang-org-x-crypto"
-          ,go-golang-org-x-crypto)))
+       (list go-golang-org-x-sys go-github-com-sirupsen-logrus
+             go-golang-org-x-crypto))
       (arguments
        '(#:import-path "github.com/docker/distribution"
          #:phases
@@ -3782,7 +3776,7 @@ which satisfies the cron expression.")
     (arguments
      '(#:import-path "gopkg.in/check.v1"))
     (propagated-inputs
-     `(("go-github-com-kr-pretty" ,go-github-com-kr-pretty)))
+     (list go-github-com-kr-pretty))
     (home-page "https://gopkg.in/check.v1")
     (synopsis "Test framework for the Go language")
     (description "This package provides a test library for the Go language.")
@@ -3815,7 +3809,7 @@ which satisfies the cron expression.")
 (define-public go-gopkg-in-yaml-v2
   (package
     (name "go-gopkg-in-yaml-v2")
-    (version "2.2.2")
+    (version "2.4.0")
     (source
       (origin
         (method git-fetch)
@@ -3825,12 +3819,23 @@ which satisfies the cron expression.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "01wj12jzsdqlnidpyjssmj0r4yavlqy7dwrg7adqd8dicjc4ncsa"))))
+          "1pbmrpj7gcws34g8vwna4i2nhm9p6235piww36436xhyaa10cldr"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            ;; https://github.com/go-yaml/yaml/issues/441 and
+            ;; https://github.com/go-yaml/yaml/pull/442
+            ;; Don't assume 64-bit wide integers
+            (substitute* "decode_test.go"
+              (("bin: (-0b1000000000000000000000000000000000000000000000000000000000000000)" all number)
+               (string-append "int64_min_base2: " number))
+              (("map\\[string\\]interface\\{\\}\\{\"bin\": -9223372036854775808\\}")
+               "map[string]int64{\"int64_min_base2\": math.MinInt64}"))))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "gopkg.in/yaml.v2"))
     (native-inputs
-     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)))
+     (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/yaml.v2")
     (synopsis "YAML reader and writer for the Go language")
     (description
@@ -3855,7 +3860,7 @@ values.")
     (arguments
      '(#:import-path "gopkg.in/yaml.v3"))
     (native-inputs
-     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)))
+     (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/yaml.v3")
     (synopsis "YAML reader and writer for the Go language")
     (description
@@ -3880,7 +3885,7 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
          "0h671sv7hfprja495kavazkalkx7xzaqksjh13brcnwq67ijrali"))))
     (build-system go-build-system)
     (propagated-inputs
-     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+     (list go-golang-org-x-sys))
     (arguments
      '(#:import-path "github.com/mattn/go-isatty"))
     (home-page "https://github.com/mattn/go-isatty")
@@ -3907,8 +3912,7 @@ terminal.")
          "0q34zqwbnls72md8q8mhj368s7p3i4xspvs3rk8fs76s0pn7dr2l"))))
     (build-system go-build-system)
     (native-inputs
-     `(("go-github-com-mattn-go-isatty"
-        ,go-github-com-mattn-go-isatty)))
+     (list go-github-com-mattn-go-isatty))
     (arguments
      '(#:import-path "github.com/mattn/go-colorable"))
     (synopsis "Handle ANSI color escapes on Windows")
@@ -3960,10 +3964,7 @@ makes it possible to handle ANSI color escapes on Windows.")
            "00bz22314j26736w1f0q4jy9d9dfaml17vn890n5zqy3cmvmww1j"))))
       (build-system go-build-system)
       (native-inputs
-       `(("go-github-com-mattn-go-isatty"
-          ,go-github-com-mattn-go-isatty)
-         ("go-github-com-mattn-go-colorable"
-          ,go-github-com-mattn-go-colorable)))
+       (list go-github-com-mattn-go-isatty go-github-com-mattn-go-colorable))
       (arguments
        '(#:import-path "github.com/mgutz/ansi"))
       (home-page "https://github.com/mgutz/ansi")
@@ -3995,7 +3996,7 @@ generate ANSI colored strings.")
       ;; be built again.  Thus its CGO requirements must be made available in
       ;; the environment, that is, they must be propagated.
       (propagated-inputs
-       `(("lua" ,lua)))
+       (list lua))
       (arguments
        `(#:unpack-path "github.com/aarzilli/golua"
          #:import-path "github.com/aarzilli/golua/lua"
@@ -4037,8 +4038,7 @@ run a Lua virtual machine.")
            "1izcp7p8nagjwqd13shb0020w7xhppib1a3glw2d1468bflhksnm"))))
       (build-system go-build-system)
       (native-inputs
-       `(("lua" ,lua)
-         ("go-github-com-aarzilli-golua" ,go-github-com-aarzilli-golua)))
+       (list lua go-github-com-aarzilli-golua))
       (arguments
        `(#:unpack-path "gitlab.com/ambrevar/golua"
          #:import-path "gitlab.com/ambrevar/golua/unicode"
@@ -4130,7 +4130,7 @@ similar word.")
            "1acjgw9cz1l0l9mzkyk7irz6cfk31wnxgbwa805fvm1rqcjzin2c"))))
       (build-system go-build-system)
       (native-inputs
-       `(("go-github-com-aarzilli-golua" ,go-github-com-aarzilli-golua)))
+       (list go-github-com-aarzilli-golua))
       (arguments
        `(#:tests? #f                    ; Upstream tests are broken.
          #:import-path "github.com/stevedonovan/luar"))
@@ -4171,7 +4171,7 @@ be performed.")
            "0rjfms0csjqi91xnddzx3rcrcaikc7xc027617px3kdwdap80ir4"))))
       (build-system go-build-system)
       (native-inputs
-       `(("go-github-com-kr-text" ,go-github-com-kr-text)))
+       (list go-github-com-kr-text))
       (arguments
        `(#:tests? #f                    ; Upstream tests seem to be broken.
          #:import-path "github.com/michiwend/golang-pretty"))
@@ -4205,8 +4205,7 @@ functions in packages @code{fmt} and @code{log}.")
            "1li9daw0kghb80rdmxbh7g72qhxcvx3rvhwq5gs0jrr9hb8pjvcn"))))
       (build-system go-build-system)
       (native-inputs
-       `(("go-github-com-michiwend-golang-pretty" ,go-github-com-michiwend-golang-pretty)
-         ("go-github-com-kr-text" ,go-github-com-kr-text)))
+       (list go-github-com-michiwend-golang-pretty go-github-com-kr-text))
       (arguments
        `(#:import-path "github.com/michiwend/gomusicbrainz"))
       (home-page "https://github.com/michiwend/gomusicbrainz")
@@ -4238,8 +4237,7 @@ and lookup requests.  Browse requests are not supported yet.")
       ;; be built again.  Thus its CGO requirements must be made available in
       ;; the environment, that is, they must be propagated.
       (propagated-inputs
-       `(("pkg-config" ,pkg-config)
-         ("taglib" ,taglib)))
+       (list pkg-config taglib))
       (arguments
        `(#:import-path "github.com/wtolson/go-taglib"
          ;; Tests don't pass "vet" on Go since 1.11.  See
@@ -4404,7 +4402,7 @@ implementing the same interface.")
        '(#:unpack-path "github.com/btcsuite/btcd"
          #:import-path "github.com/btcsuite/btcd/btcec"))
       (native-inputs
-       `(("go-github-com-davecgh-go-spew" ,go-github-com-davecgh-go-spew)))
+       (list go-github-com-davecgh-go-spew))
       (home-page "https://github.com/btcsuite/btcd")
       (synopsis "Elliptic curve cryptography to work with Bitcoin")
       (description "Package @command{btcec} implements elliptic curve
@@ -4475,10 +4473,8 @@ Architecture Processors\" by J. Guilford et al.")
       (arguments
        '(#:import-path "github.com/libp2p/go-libp2p-crypto"))
       (native-inputs
-       `(("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-         ("go-github-com-btcsuite-btcd-btcec" ,go-github-com-btcsuite-btcd-btcec)
-         ("go-github-com-gogo-protobuf" ,go-github-com-gogo-protobuf)
-         ("go-github-com-minio-sha256-simd" ,go-github-com-minio-sha256-simd)))
+       (list go-golang-org-x-crypto go-github-com-btcsuite-btcd-btcec
+             go-github-com-gogo-protobuf go-github-com-minio-sha256-simd))
       (home-page
        "https://github.com/libp2p/go-libp2p-crypto")
       (synopsis "Various cryptographic utilities used by IPFS")
@@ -4642,12 +4638,12 @@ required by Go's standard Hash interface.")
       (arguments
        '(#:import-path "github.com/multiformats/go-multihash"))
       (native-inputs
-       `(("go-github-com-mr-tron-base58" ,go-github-com-mr-tron-base58)
-         ("go-github-com-gxed-hashland-keccakpg" ,go-github-com-gxed-hashland-keccakpg)
-         ("go-github-com-minio-blake2b-simd" ,go-github-com-minio-blake2b-simd)
-         ("go-github-com-minio-sha256-simd" ,go-github-com-minio-sha256-simd)
-         ("go-github-com-spaolacci-murmur3" ,go-github-com-spaolacci-murmur3)
-         ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+       (list go-github-com-mr-tron-base58
+             go-github-com-gxed-hashland-keccakpg
+             go-github-com-minio-blake2b-simd
+             go-github-com-minio-sha256-simd
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
       (home-page "https://github.com/multiformats/go-multihash")
       (synopsis "Multihash implementation in Go")
       (description "Multihash implementation in Go.")
@@ -4673,16 +4669,16 @@ required by Go's standard Hash interface.")
       (arguments
        '(#:import-path "github.com/libp2p/go-libp2p-peer"))
       (native-inputs
-       `(("go-github-com-libp2p-go-libp2p-crypto" ,go-github-com-libp2p-go-libp2p-crypto)
-         ("go-github-com-gogo-protobuf" ,go-github-com-gogo-protobuf)
-         ("go-github-com-minio-sha256-simd" ,go-github-com-minio-sha256-simd)
-         ("go-github-com-minio-blake2b-simd" ,go-github-com-minio-blake2b-simd)
-         ("go-github-com-btcsuite-btcd-btcec" ,go-github-com-btcsuite-btcd-btcec)
-         ("go-github-com-mr-tron-base58" ,go-github-com-mr-tron-base58)
-         ("go-github-com-multiformats-go-multihash" ,go-github-com-multiformats-go-multihash)
-         ("go-github-com-gxed-hashland-keccakpg" ,go-github-com-gxed-hashland-keccakpg)
-         ("go-github-com-spaolacci-murmur3" ,go-github-com-spaolacci-murmur3)
-         ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+       (list go-github-com-libp2p-go-libp2p-crypto
+             go-github-com-gogo-protobuf
+             go-github-com-minio-sha256-simd
+             go-github-com-minio-blake2b-simd
+             go-github-com-btcsuite-btcd-btcec
+             go-github-com-mr-tron-base58
+             go-github-com-multiformats-go-multihash
+             go-github-com-gxed-hashland-keccakpg
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
       (home-page "https://github.com/libp2p/go-libp2p-peer")
       (synopsis "PKI based identities for use in go-libp2p")
       (description "PKI based identities for use in @command{go-libp2p}.")
@@ -4733,19 +4729,19 @@ required by Go's standard Hash interface.")
       (arguments
        '(#:import-path "github.com/libp2p/go-libp2p-metrics"))
       (native-inputs
-       `(("go-github-com-libp2p-go-flow-metrics" ,go-github-com-libp2p-go-flow-metrics)
-         ("go-github-com-libp2p-go-libp2p-peer" ,go-github-com-libp2p-go-libp2p-peer)
-         ("go-github-com-libp2p-go-libp2p-protocol" ,go-github-com-libp2p-go-libp2p-protocol)
-         ("go-github-com-libp2p-go-libp2p-crypto" ,go-github-com-libp2p-go-libp2p-crypto)
-         ("go-github-com-mr-tron-base58" ,go-github-com-mr-tron-base58)
-         ("go-github-com-multiformats-go-multihash" ,go-github-com-multiformats-go-multihash)
-         ("go-github-com-btcsuite-btcd-btcec" ,go-github-com-btcsuite-btcd-btcec)
-         ("go-github-com-gogo-protobuf" ,go-github-com-gogo-protobuf)
-         ("go-github-com-gxed-hashland-keccakpg" ,go-github-com-gxed-hashland-keccakpg)
-         ("go-github-com-minio-blake2b-simd" ,go-github-com-minio-blake2b-simd)
-         ("go-github-com-minio-sha256-simd" ,go-github-com-minio-sha256-simd)
-         ("go-github-com-spaolacci-murmur3" ,go-github-com-spaolacci-murmur3)
-         ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+       (list go-github-com-libp2p-go-flow-metrics
+             go-github-com-libp2p-go-libp2p-peer
+             go-github-com-libp2p-go-libp2p-protocol
+             go-github-com-libp2p-go-libp2p-crypto
+             go-github-com-mr-tron-base58
+             go-github-com-multiformats-go-multihash
+             go-github-com-btcsuite-btcd-btcec
+             go-github-com-gogo-protobuf
+             go-github-com-gxed-hashland-keccakpg
+             go-github-com-minio-blake2b-simd
+             go-github-com-minio-sha256-simd
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
       (home-page "https://github.com/libp2p/go-libp2p-metrics")
       (synopsis "Connection wrapper for go-libp2p that provides bandwidth metrics")
       (description "A connection wrapper for @command{go-libp2p} that provides bandwidth
@@ -4855,7 +4851,7 @@ unknown structures such as those decoded from JSON.")
     (arguments
      `(#:import-path "github.com/mitchellh/copystructure"))
     (native-inputs
-     `(("go-github-com-mitchellh-reflectwalk" ,go-github-com-mitchellh-reflectwalk)))
+     (list go-github-com-mitchellh-reflectwalk))
     (home-page "https://github.com/mitchellh/copystructure")
     (synopsis "Go library for decoding deep copying values")
     (description "@code{copystructure} is a Go library for deep copying values
@@ -4887,13 +4883,13 @@ references.")
        '(#:import-path
          "github.com/multiformats/go-multiaddr"))
       (native-inputs
-       `(("go-github-com-multiformats-go-multihash" ,go-github-com-multiformats-go-multihash)
-         ("go-github-com-gxed-hashland-keccakpg" ,go-github-com-gxed-hashland-keccakpg)
-         ("go-github-com-minio-blake2b-simd" ,go-github-com-minio-blake2b-simd)
-         ("go-github-com-minio-sha256-simd" ,go-github-com-minio-sha256-simd)
-         ("go-github-com-mr-tron-base58" ,go-github-com-mr-tron-base58)
-         ("go-github-com-spaolacci-murmur3" ,go-github-com-spaolacci-murmur3)
-         ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+       (list go-github-com-multiformats-go-multihash
+             go-github-com-gxed-hashland-keccakpg
+             go-github-com-minio-blake2b-simd
+             go-github-com-minio-sha256-simd
+             go-github-com-mr-tron-base58
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
       (home-page "https://github.com/multiformats/go-multiaddr")
       (synopsis "Composable and future-proof network addresses")
       (description "Multiaddr is a standard way to represent addresses that
@@ -4930,14 +4926,14 @@ does the following:
                ;; TODO: Tests fail because they try to access the network.
                #:tests? #f)))
       (native-inputs
-       `(("go-github-com-multiformats-go-multiaddr" ,go-github-com-multiformats-go-multiaddr)
-         ("go-github-com-multiformats-go-multihash" ,go-github-com-multiformats-go-multihash)
-         ("go-github-com-gxed-hashland-keccakpg" ,go-github-com-gxed-hashland-keccakpg)
-         ("go-github-com-minio-blake2b-simd" ,go-github-com-minio-blake2b-simd)
-         ("go-github-com-minio-sha256-simd" ,go-github-com-minio-sha256-simd)
-         ("go-github-com-mr-tron-base58" ,go-github-com-mr-tron-base58)
-         ("go-github-com-spaolacci-murmur3" ,go-github-com-spaolacci-murmur3)
-         ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+       (list go-github-com-multiformats-go-multiaddr
+             go-github-com-multiformats-go-multihash
+             go-github-com-gxed-hashland-keccakpg
+             go-github-com-minio-blake2b-simd
+             go-github-com-minio-sha256-simd
+             go-github-com-mr-tron-base58
+             go-github-com-spaolacci-murmur3
+             go-golang-org-x-crypto))
       (home-page "https://github.com/multiformats/go-multiaddr-net")
       (synopsis "Multiaddress net tools")
       (description "This package provides Multiaddr specific versions of
@@ -5024,7 +5020,7 @@ as conversion to and from @command{net.Addr}.")
        '(#:import-path
          "github.com/sabhiram/go-gitignore"))
       (native-inputs
-       `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+       (list go-github-com-stretchr-testify))
       (home-page "https://github.com/sabhiram/go-gitignore")
       (synopsis "Gitignore parser for Go")
       (description "A @command{.gitignore} parser for Go.")
@@ -5049,7 +5045,7 @@ as conversion to and from @command{net.Addr}.")
     (arguments
      '(#:import-path "github.com/urfave/cli"))
     (propagated-inputs
-     `(("go-github-com-go-md2man" ,go-github-com-go-md2man)))
+     (list go-github-com-go-md2man))
     (home-page "https://github.com/urfave/cli")
     (synopsis "Simple, fast, and fun package for building command line apps in Go")
     (description "@command{cli} is a simple, fast, and fun package for
@@ -5099,7 +5095,7 @@ fast and distributable command line applications in an expressive way.")
     (arguments
      '(#:import-path "github.com/cpuguy83/go-md2man"))
     (propagated-inputs
-     `(("go-github-com-russross-blackfriday" ,go-github-com-russross-blackfriday)))
+     (list go-github-com-russross-blackfriday))
     (home-page "https://github.com/cpuguy83/go-md2man")
     (synopsis "Convert markdown into roff")
     (description "Go-md2man is a Go program that converts markdown to roff for
@@ -5124,10 +5120,9 @@ the purpose of building man pages.")
     (arguments
      '(#:import-path "github.com/russross/blackfriday"))
     (propagated-inputs
-     `(("go-github-com-shurcool-sanitized-anchor-name"
-        ,go-github-com-shurcool-sanitized-anchor-name)))
+     (list go-github-com-shurcool-sanitized-anchor-name))
     (native-inputs
-     `(("go-github-com-pmezard-go-difflib" ,go-github-com-pmezard-go-difflib)))
+     (list go-github-com-pmezard-go-difflib))
     (home-page "https://github.com/russross/blackfriday")
     (synopsis "Markdown processor in Go")
     (description "Blackfriday is a Markdown processor in Go.")
@@ -5319,7 +5314,7 @@ format in Go.")
                 "0vzfz06y9q8gs2nxx0kys0591vzp78k0fvpb8digi5n15h3b25hy"))))
     (build-system go-build-system)
     (propagated-inputs
-     `(("go-github-com-kr-text" ,go-github-com-kr-text)))
+     (list go-github-com-kr-text))
     (arguments
      '(#:import-path "github.com/kr/pretty"))
     (synopsis "Pretty printer for Go values")
@@ -5441,7 +5436,7 @@ golang's database/sql package.")
     (arguments
      '(#:import-path "github.com/lucasb-eyer/go-colorful"))
     (native-inputs
-     `(("go-golang-org-sql-mock" ,go-golang-org-sql-mock)))
+     (list go-golang-org-sql-mock))
     (synopsis "Convert between colorspaces and generate colors")
     (description "This package implements Go's @code{color.Color} interface
 and provides a means of converting colors stored as RGB to various
@@ -5467,7 +5462,7 @@ colorspaces.")
     (arguments
      '(#:import-path "github.com/gdamore/encoding"))
     (inputs
-     `(("go-golang-org-x-text" ,go-golang-org-x-text)))
+     (list go-golang-org-x-text))
     (home-page "https://github.com/gdamore/encoding")
     (synopsis "Provide encodings missing from Go")
     (description "This package provides useful encodings not included in the
@@ -5506,10 +5501,8 @@ non-UTF-friendly sources.")
                            (find-files out "\\.gz$"))
                  #t))))))
       (inputs
-       `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-         ("go-golang-org-colorful" ,go-golang-org-colorful)
-         ("go-golang-org-x-text" ,go-golang-org-x-text)
-         ("go-github-com-gdamore-encoding" ,go-github-com-gdamore-encoding)))
+       (list go-github.com-mattn-go-runewidth go-golang-org-colorful
+             go-golang-org-x-text go-github-com-gdamore-encoding))
       (home-page "https://github.com/gdamore/tcell")
       (synopsis "Provide a cell-based view for text terminals")
       (description "This package includes a full parser and expander for
@@ -5545,9 +5538,8 @@ systems.")
                  (for-each make-file-writable
                            (find-files out "\\.gz$"))))))))
       (propagated-inputs
-       `(("go-golang-org-x-term" ,go-golang-org-x-term)
-         ("go-golang-org-x-sys" ,go-golang-org-x-sys)
-         ,@(package-inputs go-github-com-gdamore-tcell)))))
+       (modify-inputs (package-inputs go-github-com-gdamore-tcell)
+         (prepend go-golang-org-x-term go-golang-org-x-sys)))))
 
 (define-public go-github-com-mattn-go-shellwords
   (let ((commit "2444a32a19f450fabaa0bb3e96a703f15d9a97d2")
@@ -5646,7 +5638,7 @@ mutex, simply ignore the RLock/RUnlock functions.")
        ;; The test suite requires networking.
        #:tests? #f))
     (propagated-inputs
-     `(("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+     (list go-golang-org-x-crypto))
     (synopsis "TLS 1.3 with QUIC in Go")
     (description "This package provides @code{qtls}, a QUIC-capable variant of
 the Go standard library's TLS 1.3 implementation.")
@@ -5692,7 +5684,7 @@ internal ChaCha20 package.")
     (arguments
      '(#:import-path "github.com/cheekybits/genny"))
     (propagated-inputs
-     `(("go-golang-org-x-tools" ,go-golang-org-x-tools)))
+     (list go-golang-org-x-tools))
     (synopsis "Generics for Go")
     (description "This package provides @code{genny}, a Go language
 implementation of generics.")
@@ -5718,11 +5710,10 @@ implementation of generics.")
        ;; XXX More packages required...
        #:tests? #f))
     (propagated-inputs
-     `(("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-github-com-cheekybits-genny" ,go-github-com-cheekybits-genny)
-       ("go-github-com-marten-seemann-chacha20" ,go-github-com-marten-seemann-chacha20)
-       ("go-github-com-marten-seemann-qtls" ,go-github-com-marten-seemann-qtls)
-       ("go-github-com-golang-protobuf-proto" ,go-github-com-golang-protobuf-proto)))
+     (list go-golang-org-x-crypto go-github-com-cheekybits-genny
+           go-github-com-marten-seemann-chacha20
+           go-github-com-marten-seemann-qtls
+           go-github-com-golang-protobuf-proto))
     (synopsis "QUIC in Go")
     (description "This package provides a Go language implementation of the QUIC
 network protocol.")
@@ -5746,7 +5737,7 @@ network protocol.")
     (arguments
      '(#:import-path "github.com/francoispqt/gojay"))
     (propagated-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (synopsis "JSON encoder/decoder with powerful stream API for Golang")
     (description "GoJay is a performant JSON encoder/decoder for Golang.  It has
 a simple API and doesn't use reflection.  It relies on small interfaces to
@@ -5892,7 +5883,7 @@ fnmatch gist (https://gist.github.com/kballard/272720).")
       (arguments
        '(#:import-path "github.com/ddevault/go-libvterm"))
       (propagated-inputs
-       `(("go-github-com-mattn-go-pointer" ,go-github-com-mattn-go-pointer)))
+       (list go-github-com-mattn-go-pointer))
       (home-page "https://github.com/ddevault/go-libvterm")
       (synopsis "Go binding to libvterm")
       (description
@@ -5917,7 +5908,7 @@ fnmatch gist (https://gist.github.com/kballard/272720).")
     (arguments
      '(#:import-path "github.com/emersion/go-imap"))
     (native-inputs
-     `(("go-golang-org-x-text" ,go-golang-org-x-text)))
+     (list go-golang-org-x-text))
     (home-page "https://github.com/emersion/go-imap")
     (synopsis "IMAP4rev1 library written in Go")
     (description "This package provides an IMAP4rev1 library written in Go.  It
@@ -5968,9 +5959,8 @@ can be used to build a client and/or a server.")
       (arguments
        '(#:import-path "github.com/emersion/go-imap-idle"))
       (native-inputs
-       `(("go-github-com-emersion-go-imap" ,go-github-com-emersion-go-imap)
-         ("go-github-com-emersion-go-sasl" ,go-github-com-emersion-go-sasl)
-         ("go-golang-org-x-text" ,go-golang-org-x-text)))
+       (list go-github-com-emersion-go-imap go-github-com-emersion-go-sasl
+             go-golang-org-x-text))
       (home-page "https://github.com/emersion/go-imap-idle")
       (synopsis "IDLE extension for go-imap")
       (description "This package provides an IDLE extension for go-imap.")
@@ -6016,7 +6006,7 @@ colorized or SGR defined output to the standard output.")
      '(#:import-path "github.com/google/go-cmp/cmp"
        #:unpack-path "github.com/google/go-cmp"))
     (propagated-inputs
-     `(("go-golang-org-x-xerrors" ,go-golang-org-x-xerrors)))
+     (list go-golang-org-x-xerrors))
     (synopsis "Determine equality of values in Go")
     (description "This package provides a more powerful and safer
 alternative to @code{reflect.DeepEqual} for comparing whether two values
@@ -6116,8 +6106,7 @@ into URL query parameters.")
        #:import-path "github.com/google/go-github/v26/github"
        #:unpack-path "github.com/google/go-github/v26"))
     (native-inputs
-     `(("go-github-com-google-go-querystring" ,go-github-com-google-go-querystring)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+     (list go-github-com-google-go-querystring go-golang-org-x-crypto))
     (home-page "https://github.com/google/go-github/")
     (synopsis "Client library for accessing the GitHub API v3")
     (description "@code{go-github} is a Go client library for accessing the
@@ -6205,9 +6194,7 @@ common task.")
 (define-public go-gotest-tools-internal-format
   (package (inherit (go-gotest-tools-package "internal/format"))
     (native-inputs
-     `(("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
-       ("go-github-com-google-go-cmp-cmp"
-        ,go-github-com-google-go-cmp-cmp)))
+     (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
     (synopsis "Formats messages for use with gotest-tools")
     (description "This package provides a way to format messages for use
 with gotest-tools.")))
@@ -6221,8 +6208,7 @@ with gotest-tools.")))
 (define-public go-gotest-tools-internal-source
   (package (inherit (go-gotest-tools-package "internal/source"))
     (native-inputs
-     `(("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
-       ("go-github-com-google-go-cmp-cmp" ,go-github-com-google-go-cmp-cmp)))
+     (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
     (synopsis "Source code AST formatters for gotest-tools")
     (description "This package provides source code AST formatters for
 gotest-tools.")))
@@ -6237,9 +6223,7 @@ gotest-tools.")))
     ;(propagated-inputs
     ; `(("go-gotest-tools-internal-format" ,go-gotest-tools-internal-format)))
     (native-inputs
-     `(("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
-       ("go-github-com-google-go-cmp-cmp"
-        ,go-github-com-google-go-cmp-cmp)))
+     (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
     (synopsis "Compare values and fail a test when a comparison fails")
     (description "This package provides a way to compare values and fail a
 test when a comparison fails.")
@@ -6263,29 +6247,22 @@ test when a comparison fails.")
     (arguments
      '(#:import-path "gotest.tools/gotestsum"))
     (native-inputs
-     `(("go-github-com-fatih-color" ,go-github-com-fatih-color)
-       ("go-golang.org-x-sync-errgroup" ,go-golang.org-x-sync-errgroup)
-       ("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
-       ("go-github-com-sirupsen-logrus"
-        ,go-github-com-sirupsen-logrus)
-       ("go-github-com-spf13-pflag" ,go-github-com-spf13-pflag)
-       ("go-github-com-jonboulle-clockwork"
-        ,go-github-com-jonboulle-clockwork)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-gotest-tools-assert" ,go-gotest-tools-assert)
-       ("go-github-com-google-go-cmp-cmp"
-        ,go-github-com-google-go-cmp-cmp)
-       ;; TODO: This would be better as a propagated-input of
-       ;; go-gotest-tools-assert, but that does not work for
-       ;; some reason.
-       ("go-gotest-tools-internal-format"
-        ,go-gotest-tools-internal-format)
-       ("go-gotest-tools-internal-difflib"
-        ,go-gotest-tools-internal-difflib)
-       ("go-gotest-tools-internal-source"
-        ,go-gotest-tools-internal-source)
-       ("go-github-com-google-go-cmp-cmp"
-        ,go-github-com-google-go-cmp-cmp)))
+     (list go-github-com-fatih-color
+           go-golang.org-x-sync-errgroup
+           go-github-com-pkg-errors
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-pflag
+           go-github-com-jonboulle-clockwork
+           go-golang-org-x-crypto
+           go-gotest-tools-assert
+           go-github-com-google-go-cmp-cmp
+           ;; TODO: This would be better as a propagated-input of
+           ;; go-gotest-tools-assert, but that does not work for
+           ;; some reason.
+           go-gotest-tools-internal-format
+           go-gotest-tools-internal-difflib
+           go-gotest-tools-internal-source
+           go-github-com-google-go-cmp-cmp))
     (synopsis "Go test runner with output optimized for humans")
     (description "This package provides a @code{go test} runner with output
 optimized for humans, JUnit XML for CI integration, and a summary of the
@@ -6412,8 +6389,7 @@ efficient space usage.")
                (("spaolacci") "twmb"))
              #t)))))
     (propagated-inputs
-     `(("go-github-com-twmb-murmur3" ,go-github-com-twmb-murmur3)
-       ("go-github-com-willf-bitset" ,go-github-com-willf-bitset)))
+     (list go-github-com-twmb-murmur3 go-github-com-willf-bitset))
     (synopsis "Bloom filters in Go")
     (description "This package provides a Go implementation of bloom filters,
 based on murmurhash.")
@@ -6465,7 +6441,7 @@ characters with their ASCII approximations.")
       (arguments
        `(#:import-path "github.com/golang/freetype"))
       (propagated-inputs
-       `(("go-golang-org-x-image" ,go-golang-org-x-image)))
+       (list go-golang-org-x-image))
       (home-page "https://github.com/golang/freetype")
       (synopsis "Freetype font rasterizer in the Go programming language")
       (description "The Freetype font rasterizer in the Go programming language.")
@@ -6490,7 +6466,7 @@ characters with their ASCII approximations.")
      `(#:tests? #f      ; Issue with test flags.
        #:import-path "github.com/fogleman/gg"))
     (propagated-inputs
-     `(("go-github-com-golang-freetype" ,go-github-com-golang-freetype)))
+     (list go-github-com-golang-freetype))
     (home-page "https://github.com/fogleman/gg")
     (synopsis "2D rendering in Go")
     (description "@code{gg} is a library for rendering 2D graphics in pure Go.")
@@ -6615,8 +6591,7 @@ used by other processes.")
       (arguments
        `(#:import-path "github.com/surgebase/porter2"))
       (native-inputs
-       `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)
-         ("go-github-com-surge-glog" ,go-github-com-surge-glog)))
+       (list go-github-com-stretchr-testify go-github-com-surge-glog))
       (home-page "https://github.com/surgebase/porter2")
       (synopsis "Go library implementing english Porter2 stemmer")
       (description "Porter2 implements the
@@ -6715,7 +6690,7 @@ which are widely used in other languages but absent in Go package strings.")
     (arguments
      `(#:import-path "github.com/imdario/mergo"))
     (native-inputs
-     `(("go-gopkg-in-yaml-v2" ,go-gopkg-in-yaml-v2)))
+     (list go-gopkg-in-yaml-v2))
     (home-page "https://github.com/imdario/mergo/")
     (synopsis "Helper to merge structs and maps in Golang")
     (description "Helper to merge structs and maps in Golang.  Useful for
@@ -6745,16 +6720,16 @@ maps (because they are not addressable using Go reflection).")
      `(#:tests? #f ;network tests only
        #:import-path "github.com/Masterminds/sprig"))
     (native-inputs
-     `(("go-github-com-masterminds-goutils" ,go-github-com-masterminds-goutils)
-       ("go-github-com-masterminds-semver" ,go-github-com-masterminds-semver)
-       ("go-github-com-google-uuid" ,go-github-com-google-uuid)
-       ("go-github-com-huandu-xstrings" ,go-github-com-huandu-xstrings)
-       ("go-github-com-imdario-mergo" ,go-github-com-imdario-mergo)
-       ("go-github-com-mitchellh-reflectwalk" ,go-github-com-mitchellh-reflectwalk)
-       ("go-github-com-mitchellh-copystructure" ,go-github-com-mitchellh-copystructure)
-       ("go-github-com-spf13-cast" ,go-github-com-spf13-cast)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-masterminds-goutils
+           go-github-com-masterminds-semver
+           go-github-com-google-uuid
+           go-github-com-huandu-xstrings
+           go-github-com-imdario-mergo
+           go-github-com-mitchellh-reflectwalk
+           go-github-com-mitchellh-copystructure
+           go-github-com-spf13-cast
+           go-golang-org-x-crypto
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/Masterminds/sprig/")
     (synopsis "Template functions for Go templates")
     (description "Sprig is a library that provides more than 100 commonly used
@@ -6829,7 +6804,7 @@ matching and globbing with support for \"doublestar\" patterns.")
     (arguments
      `(#:import-path "github.com/alecthomas/colour"))
     (native-inputs
-     `(("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)))
+     (list go-github-com-mattn-go-isatty))
     (home-page "https://github.com/alecthomas/colour/")
     (synopsis "Colour terminal text for Go")
     (description "Package colour provides Quake-style colour formatting for
@@ -6859,7 +6834,7 @@ stripped.")
       (arguments
        `(#:import-path "github.com/alecthomas/repr"))
       (native-inputs
-       `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+       (list go-github-com-stretchr-testify))
       (home-page "https://github.com/alecthomas/repr/")
       (synopsis "Represent Go values in an almost direct form")
       (description "This package attempts to represent Go values in a form that
@@ -6884,7 +6859,7 @@ can be used almost directly in Go source code.")
      `(#:import-path "github.com/sergi/go-diff/diffmatchpatch"
        #:unpack-path "github.com/sergi/go-diff"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (home-page "https://github.com/sergi/go-diff/")
     (synopsis "Algorithms to perform operations for synchronizing plain text")
     (description "@code{go-diff} offers algorithms to perform operations required for
@@ -6915,10 +6890,8 @@ synchronizing plain text:
       (arguments
        `(#:import-path "github.com/alecthomas/assert"))
       (native-inputs
-       `(("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)
-         ("go-github-com-alecthomas-colour" ,go-github-com-alecthomas-colour)
-         ("go-github-com-alecthomas-repr" ,go-github-com-alecthomas-repr)
-         ("go-github-com-sergi-go-diff" ,go-github-com-sergi-go-diff)))
+       (list go-github-com-mattn-go-isatty go-github-com-alecthomas-colour
+             go-github-com-alecthomas-repr go-github-com-sergi-go-diff))
       (home-page "https://github.com/alecthomas/assert/")
       (synopsis "Go assertion library")
       (description "Assertion library that:
@@ -6946,12 +6919,12 @@ synchronizing plain text:
     (arguments
      `(#:import-path "github.com/alecthomas/chroma"))
     (native-inputs
-     `(("go-github-com-dlclark-regexp2" ,go-github-com-dlclark-regexp2)
-       ("go-github-com-alecthomas-assert" ,go-github-com-alecthomas-assert)
-       ("go-github-com-alecthomas-colour" ,go-github-com-alecthomas-colour)
-       ("go-github-com-alecthomas-repr" ,go-github-com-alecthomas-repr)
-       ("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)
-       ("go-github-com-sergi-go-diff" ,go-github-com-sergi-go-diff)))
+     (list go-github-com-dlclark-regexp2
+           go-github-com-alecthomas-assert
+           go-github-com-alecthomas-colour
+           go-github-com-alecthomas-repr
+           go-github-com-mattn-go-isatty
+           go-github-com-sergi-go-diff))
     (home-page "https://github.com/alecthomas/chroma/")
     (synopsis "General purpose syntax highlighter in pure Go")
     (description "Chroma takes source code and other structured text and
@@ -6975,7 +6948,7 @@ converts it into syntax highlighted HTML, ANSI-coloured text, etc.")
     (arguments
      `(#:import-path "github.com/andybalholm/cascadia"))
     (native-inputs
-     `(("go-golang-org-x-net" ,go-golang-org-x-net)))
+     (list go-golang-org-x-net))
     (home-page "https://github.com/andybalholm/cascadia/")
     (synopsis "CSS selectors for HTML")
     (description "The Cascadia package implements CSS selectors for use with
@@ -6999,8 +6972,7 @@ the parse trees produced by the html package.")
     (arguments
      `(#:import-path "github.com/PuerkitoBio/goquery"))
     (propagated-inputs
-     `(("go-github-com-andybalholm-cascadia" ,go-github-com-andybalholm-cascadia)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)))
+     (list go-github-com-andybalholm-cascadia go-golang-org-x-net))
     (home-page "https://github.com/PuerkitoBio/goquery")
     (synopsis "Features similar to jQuery to the Go language")
     (description "@code{goquery} brings a syntax and a set of features similar
@@ -7025,9 +6997,8 @@ to jQuery to the Go language.")
     (arguments
      '(#:import-path "github.com/jmespath/go-jmespath"))
     (native-inputs
-     `(("go-github-com-davecgh-go-spew" ,go-github-com-davecgh-go-spew)
-       ("go-github-com-pmezard-go-difflib" ,go-github-com-pmezard-go-difflib)
-       ("go-gopkg-in-yaml-v2" ,go-gopkg-in-yaml-v2)))
+     (list go-github-com-davecgh-go-spew go-github-com-pmezard-go-difflib
+           go-gopkg-in-yaml-v2))
     (home-page "https://github.com/jmespath/go-jmespath")
     (synopsis "Golang implementation of JMESPath")
     (description
@@ -7052,10 +7023,9 @@ transforms one JSON document into another through a JMESPath expression.")
     (arguments
      `(#:import-path "github.com/aymerick/douceur"))
     (native-inputs
-     `(("go-github-com-puerkitobio-goquery" ,go-github-com-puerkitobio-goquery)
-       ("go-github-com-andybalholm-cascadia" ,go-github-com-andybalholm-cascadia)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-github-com-gorilla-css" ,go-github-com-gorilla-css)))
+     (list go-github-com-puerkitobio-goquery
+           go-github-com-andybalholm-cascadia go-golang-org-x-net
+           go-github-com-gorilla-css))
     (home-page "https://github.com/aymerick/douceur/")
     (synopsis "CSS parser and inliner")
     (description "This package provides a CSS parser and inliner.")
@@ -7078,11 +7048,9 @@ transforms one JSON document into another through a JMESPath expression.")
     (arguments
      `(#:import-path "github.com/chris-ramon/douceur"))
     (native-inputs
-     `(("go-github-com-aymerick-douceur" ,go-github-com-aymerick-douceur)
-       ("go-github-com-puerkitobio-goquery" ,go-github-com-puerkitobio-goquery)
-       ("go-github-com-andybalholm-cascadia" ,go-github-com-andybalholm-cascadia)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-github-com-gorilla-css" ,go-github-com-gorilla-css)))
+     (list go-github-com-aymerick-douceur go-github-com-puerkitobio-goquery
+           go-github-com-andybalholm-cascadia go-golang-org-x-net
+           go-github-com-gorilla-css))
     (home-page "https://github.com/chris-ramon/douceur/")
     (synopsis "CSS parser and inliner")
     (description "This package provides a CSS parser and inliner.")
@@ -7105,10 +7073,8 @@ transforms one JSON document into another through a JMESPath expression.")
     (arguments
      `(#:import-path "github.com/microcosm-cc/bluemonday"))
     (native-inputs
-     `(("go-github-com-chris-ramon-douceur" ,go-github-com-chris-ramon-douceur)
-       ("go-github-com-aymerick-douceur" ,go-github-com-aymerick-douceur)
-       ("go-github-com-gorilla-css" ,go-github-com-gorilla-css)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)))
+     (list go-github-com-chris-ramon-douceur go-github-com-aymerick-douceur
+           go-github-com-gorilla-css go-golang-org-x-net))
     (home-page "https://github.com/microcosm-cc/bluemonday/")
     (synopsis "HTML sanitizer")
     (description "@code{bluemonday} is a HTML sanitizer implemented in Go.")
@@ -7132,7 +7098,7 @@ transforms one JSON document into another through a JMESPath expression.")
      `(#:import-path "github.com/muesli/reflow/wordwrap"
        #:unpack-path "github.com/muesli/reflow"))
     (native-inputs
-     `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)))
+     (list go-github.com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/reflow/")
     (synopsis "Collection of methods helping to transform blocks of text")
     (description "This package provides a collection of ANSI-aware methods and
@@ -7180,10 +7146,8 @@ io.Writers helping you to transform blocks of text.")
     (arguments
      `(#:import-path "github.com/muesli/termenv"))
     (native-inputs
-     `(("go-github-com-google-goterm" ,go-github-com-google-goterm)
-       ("go-golang-org-colorful" ,go-golang-org-colorful)
-       ("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)
-       ("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)))
+     (list go-github-com-google-goterm go-golang-org-colorful
+           go-github-com-mattn-go-isatty go-github.com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/termenv/")
     (synopsis "Advanced styling options on the terminal")
     (description "termenv lets you safely use advanced styling options on the
@@ -7212,7 +7176,7 @@ escape sequences and color conversions.")
     (arguments
      `(#:import-path "github.com/nwidger/jsoncolor"))
     (native-inputs
-     `(("go-github-com-fatih-color" ,go-github-com-fatih-color)))
+     (list go-github-com-fatih-color))
     (synopsis "Colorized JSON marshalling and encoding")
     (description
      "@code{jsoncolor} is a drop-in replacement for @code{encoding/json}'s
@@ -7237,7 +7201,7 @@ which produce colorized output using github.com/fatih/color.")
     (arguments
      `(#:import-path "github.com/olekukonko/tablewriter"))
     (native-inputs
-     `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)))
+     (list go-github.com-mattn-go-runewidth))
     (home-page "https://github.com/olekukonko/tablewriter/")
     (synopsis "Generate ASCII table")
     (description "This package generates ASCII tables.  Features:
@@ -7298,25 +7262,25 @@ which produce colorized output using github.com/fatih/color.")
     (arguments
      `(#:import-path "github.com/charmbracelet/glamour"))
     (native-inputs
-     `(("go-github-com-alecthomas-chroma" ,go-github-com-alecthomas-chroma)
-       ("go-github-com-danwakefield-fnmatch" ,go-github-com-danwakefield-fnmatch)
-       ("go-github-com-dlclark-regexp2" ,go-github-com-dlclark-regexp2)
-       ("go-github-com-microcosm-cc-bluemonday" ,go-github-com-microcosm-cc-bluemonday)
-       ("go-github-com-chris-ramon-douceur" ,go-github-com-chris-ramon-douceur)
-       ("go-github-com-aymerick-douceur" ,go-github-com-aymerick-douceur)
-       ("go-github-com-gorilla-css" ,go-github-com-gorilla-css)
-       ("go-github-com-muesli-reflow-ansi" ,go-github-com-muesli-reflow-ansi)
-       ("go-github-com-muesli-reflow-wordwrap" ,go-github-com-muesli-reflow-wordwrap)
-       ("go-github-com-muesli-reflow-indent" ,go-github-com-muesli-reflow-indent)
-       ("go-github-com-muesli-reflow-padding" ,go-github-com-muesli-reflow-padding)
-       ("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-       ("go-github-com-muesli-termenv" ,go-github-com-muesli-termenv)
-       ("go-github-com-google-goterm" ,go-github-com-google-goterm)
-       ("go-golang-org-colorful" ,go-golang-org-colorful)
-       ("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)
-       ("go-github-com-olekukonko-tablewriter" ,go-github-com-olekukonko-tablewriter)
-       ("go-github-com-yuin-goldmark" ,go-github-com-yuin-goldmark)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)))
+     (list go-github-com-alecthomas-chroma
+           go-github-com-danwakefield-fnmatch
+           go-github-com-dlclark-regexp2
+           go-github-com-microcosm-cc-bluemonday
+           go-github-com-chris-ramon-douceur
+           go-github-com-aymerick-douceur
+           go-github-com-gorilla-css
+           go-github-com-muesli-reflow-ansi
+           go-github-com-muesli-reflow-wordwrap
+           go-github-com-muesli-reflow-indent
+           go-github-com-muesli-reflow-padding
+           go-github.com-mattn-go-runewidth
+           go-github-com-muesli-termenv
+           go-github-com-google-goterm
+           go-golang-org-colorful
+           go-github-com-mattn-go-isatty
+           go-github-com-olekukonko-tablewriter
+           go-github-com-yuin-goldmark
+           go-golang-org-x-net))
     (home-page "https://github.com/charmbracelet/glamour/")
     (synopsis "Write handsome command-line tools with glamour")
     (description "@code{glamour} lets you render markdown documents and
@@ -7411,8 +7375,7 @@ errors (warnings).")
     (arguments
      `(#:import-path "github.com/go-git/gcfg"))
     (native-inputs
-     `(("go-gopkg-in-warnings" ,go-gopkg-in-warnings)
-       ("go-github-com-pkg-errors" ,go-github-com-pkg-errors)))
+     (list go-gopkg-in-warnings go-github-com-pkg-errors))
     (build-system go-build-system)
     (home-page "https://github.com/go-git/gcfg/")
     (synopsis "Gcfg reads INI-style configuration files into Go structs")
@@ -7436,7 +7399,7 @@ errors (warnings).")
     (arguments
      `(#:import-path "github.com/go-git/go-billy/v5"))
     (native-inputs
-     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)))
+     (list go-gopkg-in-check-v1))
     (home-page "https://github.com/go-git/go-billy/")
     (synopsis "File system abstraction for Go")
     (description "Billy implements an interface based on the OS's standard
@@ -7514,7 +7477,7 @@ can manipulate a @file{ssh_config} file from a program.")
     (arguments
      `(#:import-path "github.com/xanzy/ssh-agent"))
     (native-inputs
-     `(("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+     (list go-golang-org-x-crypto))
     (home-page "https://github.com/xanzy/ssh-agent/")
     (synopsis "Control ssh-agent from Go")
     (description "Package agent implements the ssh-agent protocol, and
@@ -7551,11 +7514,8 @@ ssh-agent process using the sample server. ")
        `(#:import-path "github.com/alcortesm/tgz"
          #:phases
          (modify-phases %standard-phases
-           (add-after 'unpack 'make-git-checkout-writable
-             (lambda* (#:key outputs #:allow-other-keys)
-               (for-each make-file-writable (find-files "."))
-               (for-each make-file-writable (find-files (assoc-ref outputs "out")))
-               #t)))))
+           ;; Files are test fixtures, not generated.
+           (delete 'reset-gzip-timestamps))))
       (home-page "https://github.com/alcortesm/tgz/")
       (synopsis "Go library to extract tgz files to temporal directories")
       (description "This package provides a Go library to extract tgz files to
@@ -7582,10 +7542,8 @@ temporal directories.")
        (modify-phases %standard-phases
          (delete 'reset-gzip-timestamps))))
     (native-inputs
-     `(("go-github-com-alcortesm-tgz" ,go-github-com-alcortesm-tgz)
-       ("go-github-com-go-git-go-billy" ,go-github-com-go-git-go-billy)
-       ("go-golang-org-x-sys" ,go-golang-org-x-sys)
-       ("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)))
+     (list go-github-com-alcortesm-tgz go-github-com-go-git-go-billy
+           go-golang-org-x-sys go-gopkg-in-check-v1))
     (home-page "https://github.com/go-git/go-git-fixtures/")
     (synopsis "Fixtures used by @code{go-git}")
     (description "This package provides fixtures used by @code{go-git}.")
@@ -7610,7 +7568,7 @@ temporal directories.")
       (arguments
        `(#:import-path "github.com/pkg/diff"))
       (native-inputs
-       `(("go-github-com-sergi-go-diff" ,go-github-com-sergi-go-diff)))
+       (list go-github-com-sergi-go-diff))
       (home-page "https://github.com/pkg/diff/")
       (synopsis "Create and print diffs")
       (description
@@ -7656,7 +7614,7 @@ temporal directories.")
     (arguments
      `(#:import-path "github.com/twpayne/go-vfs"))
     (native-inputs
-     `(("go-github-com-bmatcuk-doublestar" ,go-github-com-bmatcuk-doublestar)))
+     (list go-github-com-bmatcuk-doublestar))
     (home-page "https://github.com/twpayne/go-vfs/")
     (synopsis "Abstraction of the @code{os} and @code{ioutil} Go packages")
     (description "Package @code{vfs} provides an abstraction of the @code{os}
@@ -7680,8 +7638,7 @@ and @code{ioutil} packages that is easy to test.")
     (arguments
      `(#:import-path "github.com/twpayne/go-vfsafero"))
     (native-inputs
-     `(("go-github-com-twpayne-go-vfs" ,go-github-com-twpayne-go-vfs)
-       ("go-github-com-spf13-afero" ,go-github-com-spf13-afero)))
+     (list go-github-com-twpayne-go-vfs go-github-com-spf13-afero))
     (home-page "https://github.com/twpayne/go-vfsafero/")
     (synopsis "Compatibility later between @code{go-vfs} and @code{afero}")
     (description
@@ -7706,8 +7663,7 @@ and @code{ioutil} packages that is easy to test.")
     (arguments
      `(#:import-path "github.com/twpayne/go-xdg/v3"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)
-       ("go-github-com-twpayne-go-vfs" ,go-github-com-twpayne-go-vfs)))
+     (list go-github-com-stretchr-testify go-github-com-twpayne-go-vfs))
     (home-page "https://github.com/twpayne/go-xdg/")
     (synopsis "Functions related to freedesktop.org")
     (description "Package @code{xdg} provides functions related to
@@ -7732,7 +7688,7 @@ and @code{ioutil} packages that is easy to test.")
      `(#:tests? #f ;no /var/run/dbus/system_bus_socket
        #:import-path "github.com/godbus/dbus"))
     (native-inputs
-     `(("dbus" ,dbus))) ;dbus-launch
+     (list dbus)) ;dbus-launch
     (home-page "https://github.com/godbus/dbus/")
     (synopsis "Native Go client bindings for the D-Bus")
     (description "@code{dbus} is a library that implements native Go client
@@ -7757,8 +7713,7 @@ bindings for the D-Bus message bus system.")
      `(#:tests? #f ;XXX: Fix dbus tests
        #:import-path "github.com/zalando/go-keyring"))
     (native-inputs
-     `(("go-github-com-godbus-dbus" ,go-github-com-godbus-dbus)
-       ("dbus" ,dbus)))
+     (list go-github-com-godbus-dbus dbus))
     (home-page "https://github.com/zalando/go-keyring/")
     (synopsis "Library for working with system keyring")
     (description "@code{go-keyring} is a library for setting, getting and
@@ -7782,7 +7737,7 @@ deleting secrets from the system keyring.")
     (arguments
      `(#:import-path "go.etcd.io/bbolt"))
     (propagated-inputs
-     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+     (list go-golang-org-x-sys))
     (home-page "https://pkg.go.dev/go.etcd.io/bbolt/")
     (synopsis "Low-level key/value store in Go")
     (description "This package implements a low-level key/value store in Go.")
@@ -7885,35 +7840,41 @@ error messages.")
 inspired by the causal messaging system in the Pony programming language.")
       (license license:expat))))
 
-(define-public go-github-com-cheggaaa-pb
+(define-public go-github-com-cheggaaa-pb-v3
   (package
-    (name "go-github-com-cheggaaa-pb")
-    (version "3.0.4")
+    (name "go-github-com-cheggaaa-pb-v3")
+    (version "3.0.8")
     (source
-      (origin
+     (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/cheggaaa/pb/")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0xhsv9yf3fz918ay6w0d87jnb3hk9vxvi16jk172kqq26x7jixd0"))))
+        (base32 "0d701s2niy39r650d1phjw19h4l27b1yfc2ih6s31f56b3zzqspx"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/cheggaaa/pb/"))
+     '(#:import-path "github.com/cheggaaa/pb/v3"
+       ;; XXX: it does have tests but I'm not sure how to run them.
+       ;; go-build-system is looking in the wrong directory.
+       #:tests? #f))
     (propagated-inputs
-     `(("go-github-com-fatih-color" ,go-github-com-fatih-color)
-       ("go-github-com-mattn-go-colorable" ,go-github-com-mattn-go-colorable)
-       ("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-       ("go-golang-org-x-sys" ,go-golang-org-x-sys)))
-    (native-inputs
-     `(("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)))
+     (list go-golang-org-x-sys
+           go-github-com-rivo-uniseg
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-colorable
+           go-github-com-fatih-color
+           go-github-com-vividcortex-ewma))
     (home-page "https://github.com/cheggaaa/pb/")
     (synopsis "Console progress bar for Go")
     (description "This package is a Go library that draws progress bars on
 the terminal.")
     (license license:bsd-3)))
+
+(define-public go-github-com-cheggaaa-pb
+  (deprecated-package "go-github-com-cheggaaa-pb" go-github-com-cheggaaa-pb-v3))
 
 (define-public go-github-com-gologme-log
   ;; this is the same as v1.2.0, only the LICENSE file changed
@@ -7961,8 +7922,7 @@ additions.")
     (arguments
      '(#:import-path "github.com/frankban/quicktest"))
     (propagated-inputs
-     `(("go-github-com-google-go-cmp-cmp" ,go-github-com-google-go-cmp-cmp)
-       ("go-github-com-kr-pretty" ,go-github-com-kr-pretty)))
+     (list go-github-com-google-go-cmp-cmp go-github-com-kr-pretty))
     (home-page "https://github.com/frankban/quicktest")
     (synopsis "Quick helpers for testing Go applications")
     (description
@@ -8018,7 +7978,7 @@ tests.")
                  (invoke "go" "test" import-path "-tags" "dev"))
              #t)))))
     (propagated-inputs
-     `(("libsass" ,libsass)))
+     (list libsass))
     (native-inputs
      `(("go-github-com-frankban-quicktest" ,go-github-com-frankban-quicktest)
        ("libsass-src" ,(package-source libsass))))
@@ -8086,7 +8046,7 @@ JSON data to the machine.")
        ;; source: golang.zx2c4.com/wireguard
        (uri (git-reference
              (url "https://git.zx2c4.com/wireguard-go/")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -8095,10 +8055,8 @@ JSON data to the machine.")
     (arguments
      '(#:import-path "golang.zx2c4.com/wireguard"))
     (propagated-inputs
-     `(("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
-       ("go-golang-org-x-net" ,go-golang-org-x-net)
-       ("go-golang-org-x-sys" ,go-golang-org-x-sys)
-       ("go-golang-org-x-text" ,go-golang-org-x-text)))
+     (list go-golang-org-x-crypto go-golang-org-x-net go-golang-org-x-sys
+           go-golang-org-x-text))
     (home-page "https://git.zx2c4.com/wireguard")
     (synopsis "Implementation of WireGuard in Go")
     (description "This package is a Go Implementation of WireGuard.")
@@ -8148,11 +8106,9 @@ modifying them.")
     (arguments
      `(#:import-path "github.com/goccy/go-yaml"))
     (propagated-inputs
-     `(("go-github-com-fatih-color" ,go-github-com-fatih-color)
-       ("go-golang-org-x-xerrors" ,go-golang-org-x-xerrors)))
+     (list go-github-com-fatih-color go-golang-org-x-xerrors))
     (native-inputs
-     `(("go-gopkg-in-go-playground-validator-v9"
-        ,go-gopkg-in-go-playground-validator-v9)))
+     (list go-gopkg-in-go-playground-validator-v9))
     (synopsis "YAML support for the Go language")
     (description
      "This package provides features beyond the
@@ -8235,7 +8191,7 @@ compressed streams in Go.")
        ;; and require network access.
        #:tests? #f))
     (propagated-inputs
-     `(("go-github-com-goccy-yaml" ,go-github-com-goccy-yaml)))
+     (list go-github-com-goccy-yaml))
     (synopsis "Go library to get configuration values from gitconfig")
     (description "@{gitconfig} is a package to get configuration values from gitconfig.")
     (license license:expat)))
@@ -8288,7 +8244,7 @@ algorithm.")
           (base32 "16p77p3d1v26qd3knxn087jqlad2qm23q8m796cdr66hrdc0gahq"))))
       (build-system go-build-system)
       (inputs
-       `(("pulseaudio" ,pulseaudio)))
+       (list pulseaudio))
       (arguments
        `(#:import-path "github.com/akosmarton/papipes"
          #:phases
@@ -8326,8 +8282,7 @@ sinks and sources.")
           (base32 "1awwczsa9yy99p035ckajqfs8m6mab0lz82mzlj1c5cj9lnmwplj"))))
       (build-system go-build-system)
       (propagated-inputs
-       `(("pkg-config" ,pkg-config)
-         ("pulseaudio" ,pulseaudio)))
+       (list pkg-config pulseaudio))
       (arguments
        '(#:import-path "github.com/mesilliac/pulse-simple"))
       (home-page "https://github.com/mesilliac/pulse-simple")
@@ -8377,8 +8332,7 @@ programs that use traditional command lines.")
     (arguments
      '(#:import-path "go.uber.org/atomic"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)
-       ("go-github-com-davecgh-go-spew" ,go-github-com-davecgh-go-spew)))
+     (list go-github-com-stretchr-testify go-github-com-davecgh-go-spew))
     (home-page "https://go.uber.org/atomic")
     (synopsis "Wrapper types for sync/atomic")
     (description
@@ -8403,9 +8357,9 @@ atomic access.")
     (arguments
      '(#:import-path "go.uber.org/multierr"))
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)))
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     `(("go-go-uber-org-atomic" ,go-go-uber-org-atomic)))
+     (list go-go-uber-org-atomic))
     (home-page "https://go.uber.org/multierr")
     (synopsis "Error combination for Go")
     (description
@@ -8432,7 +8386,7 @@ atomic access.")
        '(#:import-path "golang.org/x/lint"
          #:tests? #f)) ;; TODO: Fix tests
       (propagated-inputs
-       `(("go-golang-org-x-tools" ,go-golang-org-x-tools)))
+       (list go-golang-org-x-tools))
       (home-page "https://golang.org/x/lint")
       (synopsis "Linter for Go source code")
       (description
@@ -8486,9 +8440,8 @@ tools with similar semantics.")
        (modify-phases %standard-phases
          (delete 'build))))
     (propagated-inputs
-     `(("go-golang-org-x-tools" ,go-golang-org-x-tools)
-       ("go-github-com-kisielk-gotool",go-github-com-kisielk-gotool)
-       ("go-github-com-burntsushi-toml" ,go-github-com-burntsushi-toml)))
+     (list go-golang-org-x-tools go-github-com-kisielk-gotool
+           go-github-com-burntsushi-toml))
     (home-page "https://honnef.co/go/tools")
     (synopsis "Staticcheck advanced Go linter")
     (description
@@ -8515,14 +8468,11 @@ simplifications, and enforces style rules.")
      '(#:import-path "go.uber.org/zap"
        #:tests? #f)) ; TODO: Fix tests
     (native-inputs
-     `(("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)
-       ("go-golang-org-x-lint" ,go-golang-org-x-lint)
-       ("go-honnef-co-go-tools" ,go-honnef-co-go-tools)))
+     (list go-github-com-stretchr-testify go-golang-org-x-lint
+           go-honnef-co-go-tools))
     (propagated-inputs
-     `(("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
-       ("go-go-uber-org-atomic" ,go-go-uber-org-atomic)
-       ("go-go-uber-org-multierr" ,go-go-uber-org-multierr)
-       ("go-gopkg-in-yaml-v2" ,go-gopkg-in-yaml-v2)))
+     (list go-github-com-pkg-errors go-go-uber-org-atomic
+           go-go-uber-org-multierr go-gopkg-in-yaml-v2))
     (home-page "https://go.uber.org/zap")
     (synopsis "Logging library for Go")
     (description
@@ -8597,7 +8547,7 @@ back.")
     (arguments
      '(#:import-path "lukechampine.com/blake3"))
     (propagated-inputs
-     `(("go-github-com-klauspost-cpuid" ,go-github-com-klauspost-cpuid)))
+     (list go-github-com-klauspost-cpuid))
     (home-page "https://pkg.go.dev/lukechampine.com/blake3")
     (synopsis "Implementation of the BLAKE3 cryptographic hash function")
     (description "@code{blake3} implements the BLAKE3 cryptographic hash
@@ -8623,7 +8573,7 @@ performance for large inputs and outputs.")
     (build-system go-build-system)
     (arguments '(#:import-path "golang.org/x/term"))
     (propagated-inputs
-     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+     (list go-golang-org-x-sys))
     (home-page "https://pkg.go.dev/golang.org/x/term")
     (synopsis "Go terminal/console support")
     (description "@code{term} provides support functions for dealing with
@@ -8648,8 +8598,7 @@ terminals, as commonly found on Unix systems.")
     (arguments
      '(#:import-path "github.com/flynn/noise"))
     (propagated-inputs
-     `(("go-gopkg-in-check-v1" ,go-gopkg-in-check-v1)
-       ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+     (list go-gopkg-in-check-v1 go-golang-org-x-crypto))
     (home-page "https://github.com/flynn/noise")
     (synopsis "Go implementation of the Noise protocol framework")
     (description "@code{noise} implements the Noise protocol framework.  Noise
@@ -8684,7 +8633,7 @@ zero round-trip encryption, and other advanced features.")
              (for-each make-file-writable
                        (find-files (assoc-ref outputs "out") ".gz$")))))))
     (propagated-inputs
-     `(("go-github-com-golang-snappy" ,go-github-com-golang-snappy)))
+     (list go-github-com-golang-snappy))
     (home-page "https://github.com/klauspost/compress")
     (synopsis "Go compression library")
     (description "@code{compress} provides various compression algorithms.")
@@ -8732,15 +8681,15 @@ non-cryptographic hash algorithm, working at speeds close to RAM limits.")
     (arguments
      '(#:import-path "github.com/aswinkarthik/csvdiff"))
     (propagated-inputs
-     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)
-       ("go-github-com-stretchr-testify" ,go-github-com-stretchr-testify)
-       ("go-github-com-spf13-cobra" ,go-github-com-spf13-cobra)
-       ("go-github-com-spf13-afero" ,go-github-com-spf13-afero)
-       ("go-github-com-spaolacci-murmur3" ,go-github-com-spaolacci-murmur3)
-       ("go-github-com-mattn-go-colorable" ,go-github-com-mattn-go-colorable)
-       ("go-github-com-fatih-color" ,go-github-com-fatih-color)
-       ("go-github-com-cespare-xxhash" ,go-github-com-cespare-xxhash)
-       ("go-github-com-oneofone-xxhash" ,go-github-com-oneofone-xxhash)))
+     (list go-golang-org-x-sys
+           go-github-com-stretchr-testify
+           go-github-com-spf13-cobra
+           go-github-com-spf13-afero
+           go-github-com-spaolacci-murmur3
+           go-github-com-mattn-go-colorable
+           go-github-com-fatih-color
+           go-github-com-cespare-xxhash
+           go-github-com-oneofone-xxhash))
     (home-page "https://github.com/aswinkarthik/csvdiff")
     (synopsis "Fast diff tool for comparing CSV files")
     (description "@code{csvdiff} is a diff tool to compute changes between two
@@ -8757,3 +8706,129 @@ line.  @code{csvdiff} supports
 JSON for post-processing
 @end itemize")
     (license license:expat)))
+
+(define-public go-gopkg-in-djherbis-times-v1
+  (package
+    (name "go-gopkg-in-djherbis-times-v1")
+    (version "1.5.0")
+    (home-page "https://gopkg.in/djherbis/times.v1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xvl3rgjif5yf62p16yk05kxrsmzhz1kkqisvw4k02svzq10qbfy"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "gopkg.in/djherbis/times.v1"))
+    (synopsis "Go library for getting file times")
+    (description
+     "Provides a platform-independent way to get atime, mtime, ctime and btime for files.")
+    (license license:expat)))
+
+(define-public go-github-com-vividcortex-ewma
+  (package
+    (name "go-github-com-vividcortex-ewma")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/VividCortex/ewma")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0whx516l9nm4n41spagb605ry7kfnz1qha96mcshnfjlahhnnylq"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/vividcortex/ewma"))
+    (home-page "https://github.com/VividCortex/ewma")
+    (synopsis "Exponentially Weighted Moving Average algorithms for Go")
+    (description
+     "This package implements algorithms for exponentially weighted moving
+averages.")
+    (license license:expat)))
+
+(define-public go-github-com-rivo-uniseg
+  (package
+    (name "go-github-com-rivo-uniseg")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rivo/uniseg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j7h22vfmjj562vr8gpsyrkrwp1pq9ayh5fylv24skxb467g9f0q"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/rivo/uniseg"))
+    (home-page "https://github.com/rivo/uniseg")
+    (synopsis "Unicode Text Segmentation for Go")
+    (description
+     "This package implements Unicode Text Segmentation according to
+@url{https://unicode.org/reports/tr29/, Unicode Standard Annex #29}.")
+    (license license:expat)))
+
+(define-public go-github-com-mattn-go-runewidth
+  (package
+    (name "go-github-com-mattn-go-runewidth")
+    (version "0.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattn/go-runewidth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yir0f3wc5z5hnkwhvx5qb6nmpfb05zp2gvfjvna63s8kmla1rrn"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/mattn/go-runewidth"))
+    (propagated-inputs
+     (list go-github-com-rivo-uniseg))
+    (home-page "https://github.com/mattn/go-runewidth")
+    (synopsis "Rune width implementation for Go")
+    (description
+     "This package provides functions to get the fixed width of a character or
+string.")
+    (license license:expat)))
+
+(define-public go-github-com-arceliar-ironwood
+  (package
+    (name "go-github-com-arceliar-ironwood")
+    (version "0.0.0-20210912013146-c2bc55bb349c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Arceliar/ironwood")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1dfkqnkfxwlwcsk8g9r1pv84lfzgn8r1vam13zlmk81cgan2r6fx"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/Arceliar/ironwood"
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; Source-only package
+         (delete 'build))))
+    (propagated-inputs
+     (list go-golang-org-x-crypto go-github-com-arceliar-phony))
+    (home-page "https://github.com/Arceliar/ironwood")
+    (synopsis "Experimental network routing library")
+    (description
+     "Ironwood is a routing library with a @code{net.PacketConn}-compatible
+interface using @code{ed25519.PublicKey}s as addresses.  Basically, you use it
+when you want to communicate with some other nodes in a network, but you can't
+guarantee that you can directly connect to every node in that network.  It was
+written to test improvements to / replace the routing logic in
+@url{https://github.com/yggdrasil-network/yggdrasil-go,Yggdrasil}, but it may
+be useful for other network applications.")
+    (license license:mpl2.0)))

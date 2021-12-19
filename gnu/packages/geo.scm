@@ -6,7 +6,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018, 2019, 2020 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,8 +60,11 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
@@ -75,6 +79,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gps)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages image)
@@ -84,6 +89,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -92,7 +98,9 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -161,10 +169,9 @@
        ("seed" ,seed)
        ("vala" ,vala)))
     (inputs
-     `(("expat" ,expat)
-       ("glib" ,glib)))
+     (list expat glib))
     (propagated-inputs
-     `(("cairo" ,cairo)))
+     (list cairo))
     (synopsis "Map-rendering for OpenSteetMap")
     (description "Memphis is a map-rendering application and a library for
 OpenStreetMap written in C using eXpat, Cairo and GLib.")
@@ -194,7 +201,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                         (("/bin/sh") (which "sh")))
                       #t)))))
     (inputs
-     `(("glib" ,glib)))
+     (list glib))
     (home-page "https://geos.osgeo.org/")
     (synopsis "Geometry Engine for Geographic Information Systems")
     (description
@@ -211,32 +218,32 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "3.38.5")
+    (version "41.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
+                                  (version-major version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1llgzm2ni3iy31dznqkc81vadv0fpqgpz2l9zzrj5jshvyq0akgh"))))
+                "037xmkmcmcw87vb1c1s3y225m8757k331cvk1m8cshf6mx61p0l1"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
+     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
+       #:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t))
+               (("gtk-update-icon-cache") "true"))))
          (add-after 'unpack 'patch-dbus-service
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "data/org.gnome.Maps.service.in"
                (("@pkgdatadir@/org.gnome.Maps")
-                (string-append  (assoc-ref outputs "out") "/bin/gnome-maps")))
-             #t))
+                (string-append  (assoc-ref outputs "out")
+                                "/bin/gnome-maps")))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -274,11 +281,12 @@ topology functions.")
        ("folks" ,folks)
        ("libchamplain" ,libchamplain)
        ("libgee" ,libgee)
+       ("libhandy" ,libhandy)
        ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup)
+       ("libsoup" ,libsoup-minimal-2)
        ("libgweather" ,libgweather)
        ("libxml2" ,libxml2)
-       ("gdk-pixbuf" ,gdk-pixbuf+svg)
+       ("librsvg" ,librsvg)
        ("glib-networking" ,glib-networking)
        ("geoclue" ,geoclue)
        ("geocode-glib" ,geocode-glib)
@@ -289,7 +297,7 @@ topology functions.")
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gtk+" ,gtk+)
        ("rest" ,rest)
-       ("webkitgtk" ,webkitgtk)))
+       ("webkitgtk" ,webkitgtk-with-libsoup2)))
     (synopsis "Graphical map viewer and wayfinding program")
     (description "GNOME Maps is a graphical map viewer.  It uses map data from
 the OpenStreetMap project.  It can provide directions for walking, bicycling,
@@ -321,12 +329,10 @@ and driving.")
            #t))))
     (build-system gnu-build-system)
     (inputs
-     `(("libjpeg-turbo" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("zlib" ,zlib)))
+     (list libjpeg-turbo libtiff zlib))
     (propagated-inputs
-     `(;; libgeotiff headers include proj headers, so ensure those are available.
-       ("proj" ,proj)))
+     (list ;; libgeotiff headers include proj headers, so ensure those are available.
+           proj))
     (arguments
      `(#:configure-flags
        (list "--disable-static"
@@ -361,27 +367,27 @@ writing GeoTIFF information tags.")
          "1x24gqp4hsq97c31ncwxblab0x0863q8v1z42jil7lvsq3glqa7p"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("curl" ,curl)
-       ("freetype" ,freetype)
-       ("freexl" ,freexl)
-       ("giflib" ,giflib)
-       ("libgeotiff" ,libgeotiff)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("librttopo" ,librttopo)
-       ("libspatialite" ,libspatialite)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("libxml2" ,libxml2)
-       ("lz4" ,lz4)
-       ("minizip" ,minizip)
-       ("openjpeg" ,openjpeg)
-       ("proj" ,proj)
-       ("sqlite" ,sqlite)
-       ("zstd" ,zstd "lib")))
+     (list cairo
+           curl
+           freetype
+           freexl
+           giflib
+           libgeotiff
+           libjpeg-turbo
+           libpng
+           librttopo
+           libspatialite
+           libtiff
+           libwebp
+           libxml2
+           lz4
+           minizip
+           openjpeg
+           proj
+           sqlite
+           `(,zstd "lib")))
     (synopsis "Library to work with huge raster coverages using a SpatiaLite")
     (description
      "librasterlite2 is a library that stores and retrieves huge raster
@@ -438,12 +444,9 @@ coverages using a SpatiaLite DBMS.")
                              (string-append "LIBTOOLIZE=" libtoolize "\n"))))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("geos" ,geos)))
+     (list geos))
     (synopsis "Library to handle SQL/MM topologies")
     (description
      "The RT Topology Library exposes an API to create and manage standard
@@ -465,15 +468,15 @@ coverages using a SpatiaLite DBMS.")
          "164y82rw2lrp5glfc0rkn7n6xvx5dvlgmh7bb7815067251wkjzf"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("freexl" ,freexl)
-       ("geos" ,geos)
-       ("librttopo" ,librttopo)
-       ("libxml2" ,libxml2)
-       ("minizip" ,minizip)
-       ("proj" ,proj)
-       ("sqlite" ,sqlite)))
+     (list freexl
+           geos
+           librttopo
+           libxml2
+           minizip
+           proj
+           sqlite))
     (arguments
      `(#:configure-flags
        '("--enable-rttopo=yes")
@@ -503,7 +506,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "6.3.1")
+    (version "7.2.1")
     (source
      (origin
        (method url-fetch)
@@ -511,22 +514,24 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1y46ij32j9b4x1kjnnlykcwk3kkjwkg44sfc1ziwm3a3g0ki3q3d"))))
-    (build-system gnu-build-system)
+         "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")))
     (inputs
-     `(("sqlite" ,sqlite)))
+     (list curl libjpeg-turbo libtiff sqlite))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list googletest pkg-config))
     (home-page "https://proj.org/")
     (synopsis "Coordinate transformation software")
     (description
      "Proj is a generic coordinate transformation software that transforms
-geospatial coordinates from one coordinate reference system (CRS) to another.
-This includes cartographic projections as well as geodetic transformations.
-PROJ includes command line applications for easy conversion of coordinates
-from text files or directly from user input.  In addition, proj also exposes
-an application programming interface that lets developers use the
-functionality of proj in their own software.")
+geospatial coordinates from one @acronym{CRS, coordinate reference system}
+to another.  This includes cartographic projections as well as geodetic
+transformations.  Proj includes command line applications for easy
+conversion of coordinates from text files or directly from user input.
+In addition, Proj also exposes an application programming interface that
+lets developers use the functionality of Proj in their own software.")
     (license (list license:expat
                    ;; src/projections/patterson.cpp
                    license:asl2.0
@@ -567,7 +572,7 @@ functionality of proj in their own software.")
                (("\tPROJ_LIB.*" all) (string-append  "#" all)))
              #t)))))
     (inputs
-     `(("glib" ,glib)))
+     (list glib))
     (home-page "https://proj.org/")
     (synopsis "Cartographic Projections Library")
     (description
@@ -583,6 +588,138 @@ projections.")
                    ;; cmake/*
                    license:boost1.0))))
 
+(define-public python-pyproj
+  (package
+    (name "python-pyproj")
+    (version "3.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "pyproj" version))
+        (sha256
+          (base32
+            "0xrqpy708qlyd7nqjra0dl7nvkqzaj9w0v7wq4j5pxazha9n14sa"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-proj-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((proj (assoc-ref inputs "proj")))
+               (setenv "PROJ_DIR" proj)
+               (substitute* "pyproj/datadir.py"
+                 (("(internal_datadir = ).*$" all var)
+                  (string-append var "Path(\"" proj "/share/proj\")\n")))))))))
+    (inputs
+      (list proj))
+    (propagated-inputs
+      (list python-certifi))
+    (native-inputs
+      (list python-cython python-numpy python-pandas python-pytest
+            python-xarray))
+    (home-page "https://github.com/pyproj4/pyproj")
+    (synopsis
+      "Python interface to PROJ")
+    (description
+      "This package provides a Python interface to PROJ, a cartographic
+projections and coordinate transformations library.")
+    (license license:expat)))
+
+(define-public python-fiona
+  (package
+    (name "python-fiona")
+    (version "1.8.20")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Fiona" version))
+        (sha256
+          (base32
+            "0fql7i7dg1xpbadmk8d26dwp91v7faixxc4wq14zg0kvhp9041d7"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'remove-local-fiona
+           (lambda _
+             ; This would otherwise interfere with finding the installed
+             ; fiona when running tests.
+             (delete-file-recursively "fiona")))
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (add-installed-pythonpath inputs outputs)
+             (when tests?
+               (invoke "pytest" "-m" "not network and not wheel")))))))
+    (inputs
+      (list gdal))
+    (propagated-inputs
+      (list python-attrs
+            python-certifi
+            python-click
+            python-click-plugins
+            python-cligj
+            python-munch
+            python-setuptools
+            python-six
+            python-pytz))
+    (native-inputs
+      (list gdal ; for gdal-config
+            python-boto3
+            python-cython
+            python-pytest
+            python-pytest-cov))
+    (home-page "https://github.com/Toblerity/Fiona")
+    (synopsis
+      "Fiona reads and writes spatial data files")
+    (description
+      "Fiona is GDAL’s neat and nimble vector API for Python programmers.
+Fiona is designed to be simple and dependable.  It focuses on reading
+and writing data in standard Python IO style and relies upon familiar
+Python types and protocols such as files, dictionaries, mappings, and
+iterators instead of classes specific to OGR.  Fiona can read and write
+real-world data using multi-layered GIS formats and zipped virtual file
+systems and integrates readily with other Python GIS packages such as
+pyproj, Rtree, and Shapely.")
+    (license license:bsd-3)))
+
+(define-public python-geopandas
+  (package
+    (name "python-geopandas")
+    (version "0.9.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "geopandas" version))
+        (sha256
+          (base32
+            "02k389zyyjv51gd09c92vlr83sv46awdq0066jgh5i24vjs2m5v3"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest"
+                       ; Disable test that fails with
+                       ; NotImplementedError in pandas.
+                       "-k" "not test_fillna_no_op_returns_copy"
+                       ; Disable tests that require internet access.
+                       "-m" "not web")))))))
+    (propagated-inputs
+      (list python-fiona python-pandas python-pyproj python-shapely))
+    (native-inputs
+      (list python-pytest))
+    (home-page "http://geopandas.org")
+    (synopsis "Geographic pandas extensions")
+    (description "The goal of GeoPandas is to make working with
+geospatial data in Python easier.  It combines the capabilities of
+Pandas and Shapely, providing geospatial operations in Pandas and a
+high-level interface to multiple geometries to Shapely.  GeoPandas
+enables you to easily do operations in Python that would otherwise
+require a spatial database such as PostGIS.")
+    (license license:bsd-3)))
+
 (define-public mapnik
   (package
     (name "mapnik")
@@ -597,21 +734,21 @@ projections.")
          "06frcikaj2mgz3abfk5h0z4j3hbksi0zikwjngbjv4p5f3pwxf8q"))))
     (build-system scons-build-system)
     (inputs
-     `(("boost" ,boost)
-       ("cairo" ,cairo)
-       ("freetype" ,freetype)
-       ("harfbuzz" ,harfbuzz)
-       ("icu4c" ,icu4c)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("libxml2" ,libxml2)
-       ("proj.4" ,proj.4)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list boost
+           cairo
+           freetype
+           harfbuzz
+           icu4c
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           libxml2
+           proj.4
+           sqlite
+           zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (arguments
      `(#:scons ,scons-python2
        #:scons-flags
@@ -652,28 +789,28 @@ development.")
         (base32 "0cyv4cycl073p9lnnnglcb72qn71g8h9g5zn4gzw7swcy5nxjj5s"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("curl" ,curl)
-       ("freexl" ,freexl)
-       ("geos" ,geos)
-       ("giflib" ,giflib)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("librasterlite2" ,librasterlite2)
-       ("librttopo" ,librttopo)
-       ("libspatialite" ,libspatialite)
-       ("libwebp" ,libwebp)
-       ("libxlsxwriter" ,libxlsxwriter)
-       ("libxml2" ,libxml2)
-       ("lz4" ,lz4)
-       ("minizip" ,minizip)
-       ("openjpeg" ,openjpeg)
-       ("postgresql" ,postgresql)
-       ("proj" ,proj)
-       ("sqlite" ,sqlite)
-       ("virtualpg" ,virtualpg)
-       ("wxwidgets" ,wxwidgets)
-       ("zstd" ,zstd "lib")))
+     (list curl
+           freexl
+           geos
+           giflib
+           libjpeg-turbo
+           librasterlite2
+           librttopo
+           libspatialite
+           libwebp
+           libxlsxwriter
+           libxml2
+           lz4
+           minizip
+           openjpeg
+           postgresql
+           proj
+           sqlite
+           virtualpg
+           wxwidgets
+           `(,zstd "lib")))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'fix-gui
@@ -745,24 +882,24 @@ development.")
              (substitute* "frmts/mrf/mrf_band.cpp"
                (("\"../zlib/zlib.h\"") "<zlib.h>")))))))
     (inputs
-     `(("expat" ,expat)
-       ("freexl" ,freexl)
-       ("geos" ,geos)
-       ("giflib" ,giflib)
-       ("json-c" ,json-c)
-       ("libgeotiff" ,libgeotiff)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("netcdf" ,netcdf)
-       ("pcre" ,pcre)
-       ("postgresql" ,postgresql) ; libpq
-       ("proj" ,proj)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list expat
+           freexl
+           geos
+           giflib
+           json-c
+           libgeotiff
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           netcdf
+           pcre
+           postgresql ; libpq
+           proj
+           sqlite
+           zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://gdal.org/")
     (synopsis "Raster and vector geospatial data format library")
     (description "GDAL is a translator library for raster and vector geospatial
@@ -805,9 +942,9 @@ utilities for data translation and processing.")
              #t)))))
     (native-inputs '())
     (propagated-inputs
-     `(("python-numpy" ,python-numpy)))
+     (list python-numpy))
     (inputs
-     `(("gdal" ,gdal)))
+     (list gdal))
     (synopsis "GDAL (Geospatial Data Abstraction Library) python bindings")))
 
 (define-public python-pyshp
@@ -833,8 +970,7 @@ utilities for data translation and processing.")
                ;; This is the only test file.
                (invoke "python" "-m" "pytest" "test_shapefile.py")))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-pytest-runner" ,python-pytest-runner)))
+     (list python-pytest python-pytest-runner))
     (home-page "https://github.com/GeospatialPython/pyshp")
     (synopsis "Read/write support for ESRI Shapefile format")
     (description
@@ -866,19 +1002,16 @@ utilities for data translation and processing.")
                        ;; This one too but it's not marked as such.
                        "-k" "not test_gridliner_labels_bbox_style")))))))
     (propagated-inputs
-     `(("python-matplotlib" ,python-matplotlib)
-       ("python-numpy" ,python-numpy)
-       ("python-pykdtree" ,python-pykdtree)
-       ("python-pyshp" ,python-pyshp)
-       ("python-scipy" ,python-scipy)
-       ("python-shapely" ,python-shapely)))
+     (list python-matplotlib
+           python-numpy
+           python-pykdtree
+           python-pyshp
+           python-scipy
+           python-shapely))
     (inputs
-     `(("geos" ,geos)
-       ("proj" ,proj)))
+     (list geos proj))
     (native-inputs
-     `(("python-cython" ,python-cython)
-       ("python-flufl-lock" ,python-flufl-lock)
-       ("python-pytest" ,python-pytest)))
+     (list python-cython python-flufl-lock python-pytest))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
     (synopsis "Cartographic library for visualisation")
     (description
@@ -935,8 +1068,7 @@ Shapely capabilities
        ("protobuf-c" ,protobuf-c)
        ("proj" ,proj)))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list perl pkg-config))
     (home-page "https://postgis.net")
     (synopsis "Spatial database extender for PostgreSQL")
     (description "PostGIS is a spatial database extender for PostgreSQL
@@ -997,7 +1129,7 @@ delivered to any client.")
 (define-public imposm3
   (package
     (name "imposm3")
-    (version "0.6.0-alpha.4")
+    (version "0.11.1")
     (source
       (origin
         (method url-fetch)
@@ -1006,7 +1138,7 @@ delivered to any client.")
     (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "06f0kwmv52yd5m9jlckqxqmkf0cnqy3hamakrvg9lspplyqrds80"))))
+          "1w7b221z5k9254zn01imycxkyw62xigqizhwvrgxqmq1m9r5410l"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/omniscale/imposm3/cmd/imposm"
@@ -1019,8 +1151,7 @@ delivered to any client.")
                (("0.0.0-dev") ,version))
              #t)))))
     (inputs
-     `(("geos" ,geos)
-       ("leveldb" ,leveldb)))
+     (list geos leveldb))
     (home-page "https://imposm.org/")
     (synopsis "OpenStreetMap importer for PostGIS")
     (description "Imposm is an importer for OpenStreetMap data.  It reads PBF
@@ -1036,7 +1167,7 @@ to create databases that are optimized for rendering/tile/map-services.")
 (define-public libosmium
   (package
     (name "libosmium")
-    (version "2.15.6")
+    (version "2.17.2")
     (source
      (origin
        (method git-fetch)
@@ -1045,21 +1176,22 @@ to create databases that are optimized for rendering/tile/map-services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rqy18bbakp41f44y5id9ixh0ar2dby46z17p4115z8k1vv9znq2"))))
+        (base32 "0xgwicnzlyr8pcpgx528xrzh7g6rjfd7f80bi30478fnp8mq8rzr"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     `(("boost" ,boost)
-       ("bzip2" ,bzip2)
-       ("expat" ,expat)
-       ("gdal" ,gdal)
-       ("geos" ,geos)
-       ("proj" ,proj)
-       ("protozero" ,protozero)
-       ("sparsehash" ,sparsehash)
-       ("utfcpp" ,utfcpp)
-       ("zlib" ,zlib)))
+     (list boost
+           bzip2
+           expat
+           gdal
+           geos
+           lz4
+           proj
+           protozero
+           sparsehash
+           utfcpp
+           zlib))
     (native-inputs
-     `(("doxygen" ,doxygen)))
+     (list doxygen))
     (home-page "https://osmcode.org/libosmium/")
     (synopsis "C++ library for working with OpenStreetMap data")
     (description "Libosmium is a fast and flexible C++ library for working with
@@ -1069,7 +1201,7 @@ OpenStreetMap data.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.2.2")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1078,7 +1210,7 @@ OpenStreetMap data.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j35aa8qinhavliqi5pdm0viyi7lm5xyk402rliaxxs1r2hbsafn"))
+        (base32 "0i18mskcs087dn3f3h9n7j0wafn8502m0h13mrjwin38xsz0crfj"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1096,18 +1228,17 @@ OpenStreetMap data.")
                             (assoc-ref %build-inputs "protozero")
                             "/include"))))
     (inputs
-     `(("boost" ,boost)
-       ("bzip2" ,bzip2)
-       ("expat" ,expat)
-       ("libosmium" ,libosmium)
-       ("lua" ,lua)
-       ("postgresql" ,postgresql)
-       ("proj" ,proj)
-       ("protozero" ,protozero)
-       ("zlib" ,zlib)))
+     (list boost
+           bzip2
+           expat
+           libosmium
+           lua
+           postgresql
+           proj
+           protozero
+           zlib))
     (native-inputs
-     `(("python" ,python)
-       ("python-psycopg2" ,python-psycopg2)))
+     (list python python-psycopg2))
     (home-page "https://github.com/openstreetmap/osm2pgsql")
     (synopsis "OSM data importer to postgresql")
     (description "Osm2pgsql is a tool for loading OpenStreetMap data into a
@@ -1137,9 +1268,7 @@ map, geocoding with Nominatim, or general analysis.")
        (list (string-append "CC=" ,(cc-for-target))
              (string-append "PREFIX=" (assoc-ref %outputs "out")))))
     (inputs
-     `(("perl" ,perl)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list perl sqlite zlib))
     (home-page "https://github.com/mapbox/tippecanoe")
     (synopsis "Vector tile server for maps")
     (description "Tippecanoe creates scale-independent view of data, so that
@@ -1163,10 +1292,9 @@ dropping features at lower levels.")
          "1m8d3r1q1v05pkr8k9czrmb4xjszw6hvgsf3kn9pf0v14gpn4r8f"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (inputs
-     `(("zlib" ,zlib)))
+     (list zlib))
     (home-page "https://gitlab.com/osm-c-tools/osmctools")
     (synopsis "Tools to convert, filter and update OpenStreetMap data files")
     (description "This project contains a few tools which are used in the
@@ -1189,15 +1317,9 @@ OpenStreetMap data files.")
          "11imsf4cz1dpxdjh178k2s29axmq86rkfg1pqmn7incyxmjzhbwg"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gnome-common" ,gnome-common)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)))
+     (list gnome-common gtk-doc/stable pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("glib" ,glib)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+" ,gtk+)
-       ("libsoup" ,libsoup)))
+     (list cairo glib gobject-introspection gtk+ libsoup-minimal-2))
     (home-page "https://nzjrs.github.io/osm-gps-map/")
     (synopsis "GTK+ widget for displaying OpenStreetMap tiles")
     (description
@@ -1252,16 +1374,16 @@ map display.  Downloads map data from a number of websites, including
                   (string-append "\"" font "/share/fonts/\"")))))))
        #:tests? #f)) ; no tests
     (native-inputs
-     `(("qttools" ,qttools)))
+     (list qttools))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("font-liberation" ,font-liberation)
-       ("libnova" ,libnova)
-       ("libpng" ,libpng)
-       ("openjpeg" ,openjpeg)
-       ("proj.4" ,proj.4)
-       ("qtbase" ,qtbase-5)
-       ("zlib" ,zlib)))
+     (list bzip2
+           font-liberation
+           libnova
+           libpng
+           openjpeg
+           proj
+           qtbase-5
+           zlib))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DATA_DIRS")
@@ -1313,6 +1435,40 @@ persisted.
 ")
     (license license:expat)))
 
+(define-public python-rtree
+  (package
+    (name "python-rtree")
+    (version "0.9.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Rtree" version))
+       (sha256
+        (base32 "0gna530vy6rh76035cqh7i2lx199cvxjrzjczg9rm6k96k5751xy"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'find-libspatialindex
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "SPATIALINDEX_C_LIBRARY"
+                     (string-append (assoc-ref inputs "libspatialindex")
+                                    "/lib/libspatialindex.so"))))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-numpy python-pytest python-wheel))
+    (inputs
+     (list libspatialindex))
+    (home-page "https://github.com/Toblerity/rtree")
+    (synopsis "R-Tree spatial index for Python GIS")
+    (description
+     "RTree is a Python package with bindings for @code{libspatialindex}.")
+    (license license:expat)))
+
 (define-public java-jmapviewer
   (package
     (name "java-jmapviewer")
@@ -1327,7 +1483,7 @@ persisted.
                 "0sy6r5fkbb9bclw0is6gwnbzz627m7pjfnsqydxz58pbndakkhrv"))))
     (build-system ant-build-system)
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (arguments
      `(#:build-target "pack"
        #:tests? #f; No tests
@@ -1383,11 +1539,9 @@ an independent project by the JOSM team.")
                        file))
              #t)))))
     (inputs
-     `(("java-jetbrains-annotations" ,java-jetbrains-annotations)))
+     (list java-jetbrains-annotations))
     (native-inputs
-     `(("javacc" ,javacc)
-       ("java-junit" ,java-junit)
-       ("java-hamcrest-core" ,java-hamcrest-core)))
+     (list javacc java-junit java-hamcrest-core))
     (home-page "https://github.com/simonpoole/OpeningHoursParser")
     (synopsis "Java parser for the OpenStreetMap opening hour format")
     (description "This is a very simplistic parser for string values according
@@ -1397,7 +1551,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18193")
+    (version "18303")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1406,7 +1560,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "162hdck29bkag1d97nisx8v7395pdw00bl7nf0p02hr30fc1fcrh"))
+                "1bn3s4lkxx0nlh8ax42qcwn6kn53a5i3qzr47mrvsmcp6hdrnxwx"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1415,19 +1569,19 @@ to the OSM opening hours specification.")
                 #t))))
     (build-system ant-build-system)
     (native-inputs
-     `(("javacc" ,javacc)))
+     (list javacc))
     (inputs
-     `(("java-commons-jcs" ,java-commons-jcs)
-       ("java-commons-compress" ,java-commons-compress)
-       ("java-jmapviewer" ,java-jmapviewer)
-       ("java-jsonp-api" ,java-jsonp-api)
-       ("java-jsonp-impl" ,java-jsonp-impl); runtime dependency
-       ("java-jsr305" ,java-jsr305)
-       ("java-metadata-extractor" ,java-metadata-extractor)
-       ("java-opening-hours-parser" ,java-opening-hours-parser)
-       ("java-openjfx-media" ,java-openjfx-media)
-       ("java-signpost-core" ,java-signpost-core)
-       ("java-svg-salamander" ,java-svg-salamander)))
+     (list java-commons-jcs
+           java-commons-compress
+           java-jmapviewer
+           java-jsonp-api
+           java-jsonp-impl ; runtime dependency
+           java-jsr305
+           java-metadata-extractor
+           java-opening-hours-parser
+           java-openjfx-media
+           java-signpost-core
+           java-svg-salamander))
     (arguments
      `(#:tests? #f
        #:jar-name "josm.jar"
@@ -1514,14 +1668,17 @@ to the OSM opening hours specification.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
                    (share-directories '("applications" "icons" "man" "menu"
-                                        "metainfo" "mime" "pixmaps")))
+                                        "metainfo" "mime" "pixmaps"))
+                   (desktop "org.openstreetmap.josm.desktop"))
                (for-each (lambda (directory)
                            (copy-recursively (string-append
                                               "native/linux/tested/usr/share/"
                                               directory)
                                              (string-append
                                               out "/share/" directory)))
-                         share-directories))
+                         share-directories)
+               (substitute* (string-append out "/share/applications/" desktop)
+                 (("josm-MainApplication") "josm-gui-MainApplication")))
              #t))
          (add-after 'install 'install-bin
            (lambda* (#:key outputs inputs #:allow-other-keys)
@@ -1563,7 +1720,7 @@ ways, and relations) and their metadata tags.")
      `(#:make-flags
        (list ,(string-append "CC=" (cc-for-target)))))
     (native-inputs
-     `(("perl" ,perl)))
+     (list perl))
     (home-page "https://maxmind.github.io/libmaxminddb/")
     (synopsis "C library for the MaxMind DB file format")
     (description "The libmaxminddb library provides a C library for reading
@@ -1588,7 +1745,7 @@ associated with an address.")
     (arguments
      `(#:tests? #f)) ;; Tests require a copy of the maxmind database
     (inputs
-     `(("libmaxminddb" ,libmaxminddb)))
+     (list libmaxminddb))
     (home-page "https://www.maxmind.com/")
     (synopsis "Reader for the MaxMind DB format")
     (description "MaxMind DB is a binary file format that stores data indexed
@@ -1611,8 +1768,7 @@ MaxMind DB files.")
     (arguments
      `(#:tests? #f)) ;; Tests require a copy of the maxmind database
     (inputs
-     `(("python-maxminddb" ,python-maxminddb)
-       ("python-requests" ,python-requests)))
+     (list python-maxminddb python-requests))
     (home-page "https://www.maxmind.com/")
     (synopsis "MaxMind GeoIP2 API")
     (description "Provides an API for the GeoIP2 web services and databases.
@@ -1632,11 +1788,9 @@ The API also works with MaxMind’s free GeoLite2 databases.")
       (base32 "1xa7l2bjn832nk6bc7b481nv8hd2gj41jwhg0d2qy10lqdvjpn5b"))))
    (build-system gnu-build-system)
    (native-inputs
-    `(("perl" ,perl)))
+    (list perl))
    (inputs
-    `(("bzip2" ,bzip2)
-      ("xz" ,xz)
-      ("zlib" ,zlib)))
+    (list bzip2 xz zlib))
    (arguments
     `(#:test-target "test"
       #:phases
@@ -1676,21 +1830,20 @@ using the dataset of topographical information collected by
         (base32 "1l1j2axf94pdqwirwwhwy3y6k8v1aix78ifqbv6j8sv131h2j7y7"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
-     `(("gdal" ,gdal)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("proj" ,proj)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtlocation" ,qtlocation)
-       ("qtwebchannel" ,qtwebchannel)
-       ("qtwebengine" ,qtwebengine)
-       ("quazip" ,quazip)
-       ("routino" ,routino)
-       ("sqlite" ,sqlite)                      ; See wrap phase
-       ("zlib" ,zlib)))
+     (list gdal
+           libjpeg-turbo
+           proj
+           qtbase-5
+           qtdeclarative
+           qtlocation
+           qtwebchannel
+           qtwebengine
+           quazip-0
+           routino
+           sqlite ; See wrap phase
+           zlib))
     (arguments
      `(#:tests? #f
        #:phases
@@ -1729,8 +1882,7 @@ QLandkarte GT application.")
         (base32 "0igif2bxf4dr82glxz9gyx5mmni0r2dsnx9p9k6pxv3c4lfhaz6v"))))
     (build-system gnu-build-system)
     (inputs
-     `(("expat" ,expat)
-       ("zlib" ,zlib)))
+     (list expat zlib))
     (synopsis "Data extractor for OpenStreetMap files")
     (description
      "ReadOSM is a library to extract valid data from within an OpenStreetMap
@@ -1755,9 +1907,7 @@ input file (in @code{.osm} or @code{.osm.pbf} format).")
         (base32 "1lzch0jf6yqhw391phhafzw4ghmiz98zkf698h4fmq109fa2vhqd"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list autoconf automake libtool))
     (home-page "http://shapelib.maptools.org/")
     (synopsis "Provides C library to write and update ESRI Shapefiles")
     (description
@@ -1779,18 +1929,18 @@ associated attribute file (@file{.dbf}).")
         (base32 "070p6pg541wvwb28wkn7k0z1qdyirik2qc2jpj4pf0vzx02w414n"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("expat" ,expat)
-       ("freexl" ,freexl)
-       ("geos" ,geos)
-       ("librttopo" ,librttopo)
-       ("libspatialite" ,libspatialite)
-       ("libxml2" ,libxml2)
-       ("minizip" ,minizip)
-       ("proj" ,proj)
-       ("readosm" ,readosm)
-       ("sqlite" ,sqlite)))
+     (list expat
+           freexl
+           geos
+           librttopo
+           libspatialite
+           libxml2
+           minizip
+           proj
+           readosm
+           sqlite))
     (synopsis "Collection of command line tools for SpatiaLite")
     (description
      "@code{spatialite-tools} is a collection of Command Line Interface (CLI)
@@ -1811,8 +1961,7 @@ tools supporting SpatiaLite.")
         (base32 "12z0l7368r4116ljzg7nljy5hf425r11vxc540w79wlzikmynamy"))))
     (build-system gnu-build-system)
     (inputs
-     `(("postgresql" ,postgresql)
-       ("sqlite" ,sqlite)))
+     (list postgresql sqlite))
     (synopsis "Allow SQLite/SpatiaLite to access PostgreSQL/PostGIS tables")
     (description
      "VirtualPG is a dynamic extension for the SQLite DBMS.  It implements
@@ -1827,7 +1976,7 @@ exchanged form one Spatial DBMS and the other.")
 (define-public opencpn
   (package
     (name "opencpn")
-    (version "5.0.0")
+    (version "5.2.4")
     (source
      (origin
        (method git-fetch)
@@ -1836,46 +1985,49 @@ exchanged form one Spatial DBMS and the other.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xv3h6svw9aay5ixpql231md3pf00qxvhg62z88daraf18hlkfja"))))
+        (base32 "0ffx0lmz1mp5433zqyxigy4qqav32xprpagd66krvihkyvqp2y6y"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("cairo" ,cairo)
-       ("curl" ,curl)
-       ("glu" ,glu)
-       ("gtk+" ,gtk+)
-       ("libarchive" ,libarchive)
-       ("libelf" ,libelf)
-       ("libexif" ,libexif)
-       ("libsndfile" ,libsndfile)
-       ("lz4" ,lz4)
-       ("mesa" ,mesa)
-       ("pango" ,pango)
-       ("portaudio" ,portaudio)
-       ("sqlite" ,sqlite)
-       ("tinyxml" ,tinyxml)
-       ("wxsvg" ,wxsvg)
-       ("wxwidgets" ,wxwidgets)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list bzip2
+           cairo
+           curl
+           glu
+           gtk+
+           libarchive
+           libelf
+           libexif
+           libsndfile
+           lz4
+           mesa
+           pango
+           portaudio
+           sqlite
+           tinyxml
+           wxsvg
+           wxwidgets
+           xz
+           zlib))
     (arguments
-     `(#:configure-flags '("-DENABLE_PORTAUDIO=ON"
-                           "-DENABLE_SNDFILE=ON"
-                           "-DBUNDLE_TCDATA=ON"
-                           "-DBUNDLE_GSHHS=CRUDE"
-                           "-DCMAKE_C_FLAGS=-fcommon")
+     `(#:configure-flags '("-DOCPN_USE_BUNDLED_LIBS=OFF"
+                           "-DOCPN_ENABLE_PORTAUDIO=ON"
+                           "-DOCPN_ENABLE_SNDFILE=ON"
+                           "-DOCPN_BUNDLE_TCDATA=ON"
+                           "-DOCPN_BUNDLE_GSHHS=ON")
        #:tests? #f ; No tests defined
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-build
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "CMakeLists.txt"
-               (("set\\(wxWidgets_CONFIG_OPTIONS.*--toolkit=gtk3" all)
-                (string-append all " --libs all")))
-             #t)))))
+               (("wx-32.c; cc")
+                 "wx-32.c; gcc")
+               (("\"/bin/sh\" \"-c\"")
+                (string-append "\"" (which "bash") "\" \"-c\""))
+               (("include\\(TargetSetup\\)")
+                "set(PKG_TARGET \"guix\")\nset(PKG_TARGET_VERSION 1)")))))))
     (synopsis "Chart plotter and marine GPS navigation software")
     (description
      "OpenCPN is a chart plotter and marine navigation software designed to be
@@ -1892,6 +2044,46 @@ track your position right from your laptop.")
                    license:lgpl3+
                    license:sgifreeb2.0
                    license:zlib))))
+
+(define-public openorienteering-mapper
+  (package
+    (name "openorienteering-mapper")
+    (version "0.9.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/OpenOrienteering/mapper")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11b578h8f3q9yvphbjhqmy2w1cfc9skslzawypqmc3k44v24aj0s"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f
+       #:configure-flags
+       (list
+        "-DLICENSING_PROVIDER:BOOL=OFF"
+        "-DMapper_MANUAL_QTHELP:BOOL=OFF")))
+    (inputs
+     `(("clipper" ,clipper)
+       ("cups" ,cups)
+       ("gdal" ,gdal)
+       ("proj" ,proj)
+       ("qtbase" ,qtbase-5)
+       ("qtimageformats" ,qtimageformats)
+       ("qtlocation" ,qtlocation)
+       ("qtsensors" ,qtsensors)
+       ("zlib" ,zlib)))
+    (native-inputs
+     `(("doxygen" ,doxygen)
+       ("qttools" ,qttools)))
+    (home-page "https://www.openorienteering.org/apps/mapper/")
+    (synopsis "OpenOrienteering Mapper (OOM)")
+    (description
+     "OpenOrienteering Mapper is a software for creating maps for the
+orienteering sport.")
+    (license license:gpl3+)))
 
 (define-public grass
   (let* ((version "7.8.5")
@@ -1926,7 +2118,7 @@ track your position right from your laptop.")
          ("openblas" ,openblas)
          ("perl" ,perl)
          ("postgresql" ,postgresql)
-         ("proj.4" ,proj.4)
+         ("proj" ,proj)
          ("python" ,python)
          ("python-dateutil" ,python-dateutil)
          ("python-numpy" ,python-numpy)
@@ -1981,7 +2173,7 @@ track your position right from your laptop.")
                        "--with-netcdf"
                        "--with-postgres"
                        (string-append "--with-proj-share="
-                                      (assoc-ref inputs "proj.4")
+                                      (assoc-ref inputs "proj")
                                       "/share/proj")
                        "--with-pthread"
                        "--with-readline"
@@ -2028,24 +2220,23 @@ visualization.")
         (base32 "1n051yxxkylly0k9rlkx2ih3j2lf9d4csg00sm7161r7nhjvggd1"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("swig" ,swig)))
+     (list pkg-config swig))
     (inputs
-     `(("curl" ,curl)
-       ("fftw" ,fftw)
-       ("gdal" ,gdal)
-       ("hdf5" ,hdf5)
-       ("jasper" ,jasper)
-       ("libharu" ,libharu)
-       ("libtiff" ,libtiff)
-       ("opencv" ,opencv)
-       ("postgresql" ,postgresql)
-       ("proj" ,proj)
-       ("python" ,python)
-       ("qhull" ,qhull)
-       ("unixodbc" ,unixodbc)
-       ("vigra" ,vigra)
-       ("wxwidgets" ,wxwidgets)))
+     (list curl
+           fftw
+           gdal
+           hdf5
+           jasper
+           libharu
+           libtiff
+           opencv
+           postgresql
+           proj
+           python
+           qhull
+           unixodbc
+           vigra
+           wxwidgets))
     (arguments
      '(#:configure-flags '("--enable-python")))
     (synopsis "System for Automated Geoscientific Analyses")
@@ -2252,62 +2443,62 @@ growing set of geoscientific methods.")
                  `("GISBASE" = (,grass))))
              #t)))))
     (inputs
-     `(("exiv2" ,exiv2)
-       ("expat" ,expat)
-       ("gdal" ,gdal)
-       ("geos" ,geos)
-       ("gpsbabel" ,gpsbabel)
-       ("grass" ,grass)
-       ("gsl" ,gsl)
-       ("hdf5" ,hdf5)
-       ("libspatialindex" ,libspatialindex)
-       ("libspatialite" ,libspatialite)
-       ("libxml2" ,libxml2)
-       ("libzip" ,libzip)
-       ("netcdf" ,netcdf)
-       ("postgresql" ,postgresql)
-       ("proj" ,proj)
-       ("protobuf" ,protobuf)
-       ("python" ,python)
-       ("python-chardet" ,python-chardet)
-       ("python-dateutil" ,python-dateutil)
-       ("python-future" ,python-future)
-       ("python-gdal" ,python-gdal)
-       ("python-jinja2" ,python-jinja2)
-       ("python-numpy" ,python-numpy)
-       ("python-owslib" ,python-owslib)
-       ("python-psycopg2" ,python-psycopg2)
-       ("python-pygments" ,python-pygments)
-       ("python-pyqt+qscintilla" ,python-pyqt+qscintilla)
-       ("python-pytz" ,python-pytz)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-requests" ,python-requests)
-       ("python-sip" ,python-sip)
-       ("python-six" ,python-six)
-       ("python-urllib3" ,python-urllib3)
-       ("qca" ,qca)
-       ("qscintilla" ,qscintilla)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtkeychain" ,qtkeychain)
-       ("qtlocation" ,qtlocation)
-       ("qtserialport" ,qtserialport)
-       ("qtsvg" ,qtsvg)
-       ("qtwebkit" ,qtwebkit)
-       ("qwt" ,qwt)
-       ;;("saga" ,saga)
-       ("sqlite" ,sqlite)))
+     (list exiv2
+           expat
+           gdal
+           geos
+           gpsbabel
+           grass
+           gsl
+           hdf5
+           libspatialindex
+           libspatialite
+           libxml2
+           libzip
+           netcdf
+           postgresql
+           proj
+           protobuf
+           python
+           python-chardet
+           python-dateutil
+           python-future
+           python-gdal
+           python-jinja2
+           python-numpy
+           python-owslib
+           python-psycopg2
+           python-pygments
+           python-pyqt+qscintilla
+           python-pytz
+           python-pyyaml
+           python-requests
+           python-sip
+           python-six
+           python-urllib3
+           qca
+           qscintilla
+           qtbase-5
+           qtdeclarative
+           qtkeychain
+           qtlocation
+           qtserialport
+           qtsvg
+           qtwebkit
+           qwt
+           ;;("saga" ,saga)
+           sqlite))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("perl" ,perl)
-       ("perl-yaml-tiny" ,perl-yaml-tiny)
-       ("pkg-config" ,pkg-config)
-       ("python-mock" ,python-mock)
-       ("python-nose2" ,python-nose2)
-       ("qttools" ,qttools)
-       ("shellcheck" ,shellcheck)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list bison
+           flex
+           perl
+           perl-yaml-tiny
+           pkg-config
+           python-mock
+           python-nose2
+           qttools
+           shellcheck
+           xorg-server-for-tests))
     (home-page "https://qgis.org")
     (synopsis "Geographical information system")
     (description "QGIS is an easy to use Geographical Information
@@ -2384,16 +2575,16 @@ architecture.")
           "0fx0cv0kgbvynpmjgsvq2fpsyngd5idiscdn8pd5201f1ngii3mq"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-geographiclib" ,python-geographiclib)))
+     (list python-geographiclib))
     (native-inputs
-     `(("python-async-generator" ,python-async-generator)
-       ("python-coverage" ,python-coverage)
-       ("python-flake8" ,python-flake8)
-       ("python-isort" ,python-isort)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-aiohttp" ,python-pytest-aiohttp)
-       ("python-readme-renderer" ,python-readme-renderer)
-       ("python-pytz" ,python-pytz)))
+     (list python-async-generator
+           python-coverage
+           python-flake8
+           python-isort
+           python-pytest
+           python-pytest-aiohttp
+           python-readme-renderer
+           python-pytz))
     (home-page "https://github.com/geopy/geopy")
     (synopsis "Geocoding library for Python")
     (description "@code{geopy} is a Python client for several popular geocoding
@@ -2402,42 +2593,41 @@ coordinates of addresses, cities, countries, and landmarks across the globe
 using third-party geocoders and other data sources.")
     (license license:expat)))
 
-(define-public marble-qt
-  (let ((release "17.08")
-        (commit "fc7166eeef784732033c999ba605364f9c82d21c")
-        (revision "1"))
-    (package
-      (name "marble-qt")
-      (version (git-version release revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://invent.kde.org/education/marble.git/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0m0sf3sddaib7vc5lhbmh7ziw07p1hahg02f65sgfylyl5f5kj92"))
-         (patches (search-patches
-                   "marble-qt-add-qt-headers.patch"))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:tests? #f ; libmarblewidget-qt5.so.28 not found
-         #:configure-flags
-         '("-DCMAKE_BUILD_TYPE=Release"
-           "-DWITH_KF5=FALSE")))
-      (native-inputs
-       `(("qttools" ,qttools)))
-      (inputs
-       `(("qtbase" ,qtbase-5)
-         ("qtsvg" ,qtsvg)
-         ("qtdeclarative" ,qtdeclarative)
-         ("qtwebkit" ,qtwebkit)
-         ("qtlocation" ,qtlocation)))
-      (home-page "https://marble.kde.org/")
-      (synopsis "Virtual globe and world atlas")
-      (description "Marble is similar to a desktop globe.  At closer scale it
-becomes a world atlas, while OpenStreetMap takes the user to street level.  It
-supports searching for places of interest, viewing Wikipedia articles,
-creating routes by drag and drop and more.")
-      (license license:gpl3))))
+(define-public gplates
+  (package
+    (name "gplates")
+    (version "2.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri "https://www.earthbyte.org/download/8421/")
+              (file-name (string-append name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0lrcmcxc924ixddii8cyglqlwwxvk7f00g4yzbss5i3fgcbh8n96"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DBoost_NO_BOOST_CMAKE=ON")
+       #:tests? #f)) ;no test target
+    (inputs
+     `(("boost" ,boost)
+       ("cgal" ,cgal)
+       ("gdal" ,gdal)
+       ("glew" ,glew)
+       ("glu" ,glu)
+       ("gmp" ,gmp)
+       ("mesa" ,mesa)
+       ("mpfr" ,mpfr)
+       ("proj" ,proj)
+       ("python-3" ,python-3)
+       ("python-numpy" ,python-numpy)
+       ("qt" ,qtbase-5)
+       ("qtsvg" ,qtsvg)
+       ("qtxmlpatterns" ,qtxmlpatterns)
+       ("qwt" ,qwt)
+       ("zlib" ,zlib)))
+    (home-page "https://www.gplates.org")
+    (synopsis "Plate tectonics simulation program")
+    (description "GPlates is a plate tectonics program.  Manipulate
+reconstructions of geological and paleogeographic features through geological
+time.  Interactively visualize vector, raster and volume data.")
+    (license license:gpl2+)))

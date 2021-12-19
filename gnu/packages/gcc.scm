@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
@@ -171,16 +171,12 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                   "lib"                    ;libgcc_s, libgomp, etc. (15+ MiB)
                   "debug"))                ;debug symbols of run-time libraries
 
-       (inputs `(("gmp" ,gmp)
-                 ("mpfr" ,mpfr)
-                 ("mpc" ,mpc)
-                 ("libelf" ,libelf)
-                 ("zlib" ,zlib)))
+       (inputs (list gmp mpfr mpc libelf zlib))
 
        ;; GCC < 5 is one of the few packages that doesn't ship .info files.
        ;; Newer texinfos fail to build the manual, so we use an older one.
-       (native-inputs `(("perl" ,perl)   ;for manpages
-                        ("texinfo" ,texinfo-5)))
+       (native-inputs (list perl ;for manpages
+                            texinfo-5))
 
        (arguments
         `(#:out-of-source? #t
@@ -398,9 +394,8 @@ Go.  It also includes runtime support libraries for these languages.")
                    "pa" "sh" "tilepro" "xtensa")))))
     (supported-systems %supported-systems)
     (inputs
-     `(("isl" ,isl-0.11)
-       ("cloog" ,cloog)
-       ,@(package-inputs gcc-4.7)))))
+     (modify-inputs (package-inputs gcc-4.7)
+       (prepend isl-0.11 cloog)))))
 
 (define-public gcc-4.9
   (package (inherit gcc-4.8)
@@ -431,8 +426,8 @@ Go.  It also includes runtime support libraries for these languages.")
                  '("aarch64" "alpha" "bfin" "i386" "m68k" "nios2"
                    "pa" "sh" "tilepro" "xtensa")))))
     ;; Override inherited texinfo-5 with latest version.
-    (native-inputs `(("perl" ,perl)   ;for manpages
-                     ("texinfo" ,texinfo)))
+    (native-inputs (list perl ;for manpages
+                         texinfo))
     (arguments
      (if (%current-target-system)
          (package-arguments gcc-4.8)
@@ -490,13 +485,15 @@ Go.  It also includes runtime support libraries for these languages.")
                                        "gcc-5-source-date-epoch-2.patch"
                                        "gcc-6-libsanitizer-mode-size.patch"
                                        "gcc-fix-texi2pod.patch"
-                                       "gcc-5-hurd.patch"))
+                                       "gcc-5-hurd.patch"
+                                       ;; See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=86162
+                                       "gcc-5-fix-powerpc64le-build.patch"))
               (modules '((guix build utils)))
               (snippet gcc-canadian-cross-objdump-snippet)))
     (inputs
-     `(;; GCC5 needs <isl/band.h> which is removed in later versions.
-       ("isl" ,isl-0.18)
-       ,@(package-inputs gcc-4.7)))))
+     (modify-inputs (package-inputs gcc-4.7)
+       (prepend ;; GCC5 needs <isl/band.h> which is removed in later versions.
+                isl-0.18)))))
 
 (define-public gcc-6
   (package
@@ -792,6 +789,12 @@ as the 'native-search-paths' field."
                "gfortran" '("fortran")
                %generic-search-paths)))
 
+(define-public gfortran-7
+  (hidden-package
+   (custom-gcc gcc-7
+               "gfortran" '("fortran")
+               %generic-search-paths)))
+
 (define-public gdc-10
   (hidden-package
    (custom-gcc gcc-10 "gdc" '("d")
@@ -857,9 +860,9 @@ provides the GNU compiler for the Go programming language.")
                         (tooldir (dirname (car (find-files exedir "^cgo$")))))
                    (wrap-program (string-append out "/bin/go")
                      `("GCCGOTOOLDIR" =
-                       (,(string-append "${GCCGOTOOLDIR-" tooldir "}")))
+                       (,(string-append "${GCCGOTOOLDIR:-" tooldir "}")))
                      `("GOROOT" =
-                       (,(string-append "${GOROOT-" out "}")))))))
+                       (,(string-append "${GOROOT:-" out "}")))))))
              (add-before 'configure 'fix-gotools-runpath
                (lambda _
                  (substitute* "gotools/Makefile.in"
@@ -984,13 +987,13 @@ provides the GNU compiler for the Go programming language."))
     (version (package-version gcc))
     (synopsis "GNU libstdc++ documentation")
     (outputs '("out"))
-    (native-inputs `(("doxygen" ,doxygen)
-                     ("texinfo" ,texinfo)
-                     ("libxml2" ,libxml2)
-                     ("libxslt" ,libxslt)
-                     ("docbook-xml" ,docbook-xml)
-                     ("docbook-xsl" ,docbook-xsl)
-                     ("graphviz" ,graphviz))) ;for 'dot', invoked by 'doxygen'
+    (native-inputs (list doxygen
+                         texinfo
+                         libxml2
+                         libxslt
+                         docbook-xml
+                         docbook-xsl
+                         graphviz)) ;for 'dot', invoked by 'doxygen'
     (inputs '())
     (propagated-inputs '())
     (arguments
@@ -1066,7 +1069,7 @@ provides the GNU compiler for the Go programming language."))
                         (substitute* (string-append out "/lib/libisl.la")
                           (("^old_library=.*")
                            "old_library=''\n"))))))))
-    (inputs `(("gmp" ,gmp)))
+    (inputs (list gmp))
     (home-page "http://isl.gforge.inria.fr/")
     (synopsis
      "Manipulating sets and relations of integer points \
@@ -1132,8 +1135,7 @@ dependence analysis and bounds on piecewise step-polynomials.")
         "0a12rwfwp22zd0nlld0xyql11cj390rrq1prw35yjsw8wzfshjhw"))
       (file-name (string-append name "-" version ".tar.gz"))))
     (build-system gnu-build-system)
-    (inputs `(("gmp" ,gmp)
-              ("isl" ,isl-0.11)))
+    (inputs (list gmp isl-0.11))
     (arguments '(#:configure-flags '("--with-isl=system")))
     (home-page "http://www.cloog.org/")
     (synopsis "Library to generate code for scanning Z-polyhedra")
@@ -1163,7 +1165,7 @@ effective code.")
                (base32
                 "1sfsj9256w18qzylgag2h5h377aq8in8929svblfnj9svfriqcys"))))
     (build-system gnu-build-system)
-    (native-inputs `(("texinfo" ,texinfo)))
+    (native-inputs (list texinfo))
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (delete 'configure)

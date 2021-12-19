@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
-;;; Copyright © 2017 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
@@ -124,6 +124,7 @@
 
             profile-manifest
             package->manifest-entry
+            package->development-manifest
             packages->manifest
             ca-certificate-bundle
             %default-profile-hooks
@@ -399,6 +400,24 @@ file name."
                      (parent parent)
                      (properties properties))))
     entry))
+
+(define* (package->development-manifest package
+                                        #:optional
+                                        (system (%current-system))
+                                        #:key target)
+  "Return a manifest for the \"development inputs\" of PACKAGE for SYSTEM,
+optionally when cross-compiling to TARGET.  Development inputs include both
+explicit and implicit inputs of PACKAGE."
+  (manifest
+   (filter-map (match-lambda
+                 ((label (? package? package))
+                  (package->manifest-entry package))
+                 ((label (? package? package) output)
+                  (package->manifest-entry package output))
+                 ;; TODO: Support <inferior-package>.
+                 (_
+                  #f))
+               (package-development-inputs package system #:target target))))
 
 (define (packages->manifest packages)
   "Return a list of manifest entries, one for each item listed in PACKAGES.
@@ -1161,6 +1180,52 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
                     `((type . profile-hook)
                       (hook . emacs-subdirs))))
 
+(define (gdk-pixbuf-loaders-cache-file manifest)
+  "Return a derivation that produces a loaders cache file for every gdk-pixbuf
+loaders discovered in MANIFEST."
+  (define gdk-pixbuf                    ;lazy reference
+    (module-ref (resolve-interface '(gnu packages gtk)) 'gdk-pixbuf))
+
+  (mlet* %store-monad
+      ((gdk-pixbuf (manifest-lookup-package manifest "gdk-pixbuf"))
+       (librsvg (manifest-lookup-package manifest "librsvg"))
+       (gdk-pixbuf-bin -> (if (string? gdk-pixbuf)
+                              (string-append gdk-pixbuf "/bin")
+                              (file-append gdk-pixbuf "/bin"))))
+
+    (define build
+      (with-imported-modules (source-module-closure
+                              '((guix build glib-or-gtk-build-system)))
+        #~(begin
+            (use-modules (guix build glib-or-gtk-build-system))
+            (setenv "PATH" (string-append #$gdk-pixbuf-bin ":" (getenv "PATH")))
+
+            (generate-gdk-pixbuf-loaders-cache
+             ;; XXX: MANIFEST-LOOKUP-PACKAGE transitively searches through
+             ;; every input referenced by the manifest, while MANIFEST-INPUTS
+             ;; only retrieves the immediate inputs as well as their
+             ;; propagated inputs; to avoid causing an empty output derivation
+             ;; we must ensure that the inputs contain at least one
+             ;; loaders.cache file.  This is why we include gdk-pixbuf or
+             ;; librsvg when they are transitively found.
+             (list #$@(if gdk-pixbuf
+                          (list gdk-pixbuf)
+                          '())
+                   #$@(if librsvg
+                          (list librsvg)
+                          '())
+                   #$@(manifest-inputs manifest))
+             (list #$output)))))
+
+    (if gdk-pixbuf
+        (gexp->derivation "gdk-pixbuf-loaders-cache-file" build
+                          #:local-build? #t
+                          #:substitutable? #f
+                          #:properties
+                          '((type . profile-hook)
+                            (hook . gdk-pixbuf-loaders-cache-file)))
+        (return #f))))
+
 (define (glib-schemas manifest)
   "Return a derivation that unions all schemas from manifest entries and
 creates the Glib 'gschemas.compiled' file."
@@ -1663,15 +1728,124 @@ the entries in MANIFEST."
                     `((type . profile-hook)
                       (hook . manual-database))))
 
+(define (manual-database/optional manifest)
+  "Return a derivation to build the manual database of MANIFEST, but only if
+MANIFEST contains the \"man-db\" package.  Otherwise, return #f."
+  ;; Building the man database (for "man -k") is expensive and rarely used.
+  ;; Build it only if the profile also contains "man-db".
+  (mlet %store-monad ((man-db (manifest-lookup-package manifest "man-db")))
+    (if man-db
+        (manual-database manifest)
+        (return #f))))
+
+(define (texlive-configuration manifest)
+  "Return a derivation that builds a TeXlive configuration for the entries in
+MANIFEST."
+  (define entry->texlive-input
+    (match-lambda
+      (($ <manifest-entry> name version output thing deps)
+       (if (string-prefix? "texlive-" name)
+           (cons (gexp-input thing output)
+                 (append-map entry->texlive-input deps))
+           '()))))
+  (define texlive-bin
+    (module-ref (resolve-interface '(gnu packages tex)) 'texlive-bin))
+  (define coreutils
+    (module-ref (resolve-interface '(gnu packages base)) 'coreutils))
+  (define sed
+    (module-ref (resolve-interface '(gnu packages base)) 'sed))
+  (define updmap.cfg
+    (module-ref (resolve-interface '(gnu packages tex))
+                'texlive-default-updmap.cfg))
+  (define build
+    (with-imported-modules '((guix build utils)
+                             (guix build union))
+      #~(begin
+          (use-modules (guix build utils)
+                       (guix build union)
+                       (ice-9 popen))
+
+          ;; Build a modifiable union of all texlive inputs.  We do this so
+          ;; that TeX live can resolve the parent and grandparent directories
+          ;; correctly.  There might be a more elegant way to accomplish this.
+          (union-build #$output
+                       '#$(append-map entry->texlive-input
+                                      (manifest-entries manifest))
+                       #:create-all-directories? #t
+                       #:log-port (%make-void-port "w"))
+          (let ((texmf.cnf (string-append
+                            #$output
+                            "/share/texmf-dist/web2c/texmf.cnf")))
+            (when (file-exists? texmf.cnf)
+              (substitute* texmf.cnf
+                (("^TEXMFROOT = .*")
+                 (string-append "TEXMFROOT = " #$output "/share\n"))
+                (("^TEXMF = .*")
+                 "TEXMF = $TEXMFROOT/share/texmf-dist\n"))
+
+              ;; XXX: This is annoying, but it's necessary because texlive-bin
+              ;; does not provide wrapped executables.
+              (setenv "PATH"
+                      (string-append #$(file-append coreutils "/bin")
+                                     ":"
+                                     #$(file-append sed "/bin")))
+              (setenv "PERL5LIB" #$(file-append texlive-bin "/share/tlpkg"))
+              (setenv "TEXMF" (string-append #$output "/share/texmf-dist"))
+
+              ;; Remove invalid maps from config file.
+              (let* ((web2c (string-append #$output "/share/texmf-config/web2c/"))
+                     (maproot (string-append #$output "/share/texmf-dist/fonts/map/"))
+                     (updmap.cfg (string-append web2c "updmap.cfg")))
+                (mkdir-p web2c)
+
+                ;; Some profiles may already have this file, which prevents us
+                ;; from copying it.  Since we need to generate it from scratch
+                ;; anyway, we delete it here.
+                (when (file-exists? updmap.cfg)
+                  (delete-file updmap.cfg))
+                (copy-file #$updmap.cfg updmap.cfg)
+                (make-file-writable updmap.cfg)
+                (let* ((port (open-pipe* OPEN_WRITE
+                                         #$(file-append texlive-bin "/bin/updmap-sys")
+                                         "--syncwithtrees"
+                                         "--nohash"
+                                         "--force"
+                                         (string-append "--cnffile=" web2c "updmap.cfg"))))
+                  (display "Y\n" port)
+                  (when (not (zero? (status:exit-val (close-pipe port))))
+                    (error "failed to filter updmap.cfg")))
+
+                ;; Generate font maps.
+                (invoke #$(file-append texlive-bin "/bin/updmap-sys")
+                        (string-append "--cnffile=" web2c "updmap.cfg")
+                        (string-append "--dvipdfmxoutputdir="
+                                       maproot "updmap/dvipdfmx/")
+                        (string-append "--dvipsoutputdir="
+                                       maproot "updmap/dvips/")
+                        (string-append "--pdftexoutputdir="
+                                       maproot "updmap/pdftex/")))))
+          #t)))
+
+  (mlet %store-monad ((texlive-base (manifest-lookup-package manifest "texlive-base")))
+    (if texlive-base
+        (gexp->derivation "texlive-configuration" build
+                          #:substitutable? #f
+                          #:local-build? #t
+                          #:properties
+                          `((type . profile-hook)
+                            (hook . texlive-configuration)))
+        (return #f))))
+
 (define %default-profile-hooks
   ;; This is the list of derivation-returning procedures that are called by
   ;; default when making a non-empty profile.
   (list info-dir-file
-        manual-database
+        manual-database/optional
         fonts-dir-file
         ghc-package-cache-file
         ca-certificate-bundle
         emacs-subdirs
+        gdk-pixbuf-loaders-cache-file
         glib-schemas
         gtk-icon-themes
         gtk-im-modules

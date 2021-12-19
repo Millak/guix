@@ -63,9 +63,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
   #:use-module (guix deprecation)
-  #:use-module (guix utils)
-  #:use-module (ice-9 match)
-  #:use-module ((srfi srfi-1) #:prefix srfi-1:))
+  #:use-module (guix utils))
 
 ;;; Commentary:
 ;;;
@@ -270,6 +268,13 @@ without requiring the source code to be rewritten.")
                           (for-each delete-file
                                     (find-files "prebuilt" "\\.go$"))
                           #t))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-2.0)
+       ((#:configure-flags flags ''())
+        (if (target-x86-32?)            ;<https://issues.guix.gnu.org/49368>
+            `(append ,flags '("CFLAGS=-g -O2 -fexcess-precision=standard"))
+            flags))))
+
     (properties '((timeout . 72000)               ;20 hours
                   (max-silent-time . 36000)))     ;10 hours (needed on ARM
                                                   ;  when heavily loaded)
@@ -320,11 +325,10 @@ without requiring the source code to be rewritten.")
     ;; Build with the bundled mini-GMP to avoid interference with GnuTLS' own
     ;; use of GMP via Nettle: <https://issues.guix.gnu.org/46330>.
     (propagated-inputs
-     (srfi-1:fold srfi-1:alist-delete
-                  (package-propagated-inputs guile-2.2)
-                  '("gmp" "libltdl")))
+     (modify-inputs (package-propagated-inputs guile-2.2)
+       (delete "gmp" "libltdl")))
     (arguments
-     (substitute-keyword-arguments (package-arguments guile-2.2)
+     (substitute-keyword-arguments (package-arguments guile-2.0)
        ((#:configure-flags flags ''())
         ;; XXX: JIT-enabled Guile crashes in obscure ways on GNU/Hurd.
         `(cons* ,@(if (hurd-target?)
@@ -334,6 +338,8 @@ without requiring the source code to be rewritten.")
                 ;; i686-linux, otherwise "numbers.test" will fail
                 ;; (see <https://issues.guix.gnu.org/49368> and
                 ;; <https://issues.guix.gnu.org/49659>).
+                ;; TODO: Keep this in GUILE-2.2 and remove from here on next
+                ;; rebuild cycle.
                 ,@(if (target-x86-32?)
                       '("CFLAGS=-g -O2 -fexcess-precision=standard")
                       '())
@@ -356,14 +362,17 @@ without requiring the source code to be rewritten.")
                        ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
                        (substitute* "bootstrap/Makefile.in"
                          (("^GUILE_OPTIMIZATIONS.*")
-                          "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n"))))
-                   (add-after 'unpack 'skip-failing-fdes-test
-                     (lambda _
-                       ;; ERROR: ((system-error "seek" "~A" ("Bad file descriptor") (9)))
-                       (substitute* "test-suite/tests/ports.test"
-                         (("fdes not closed\"" all) (string-append all "(exit 77)")))
-                       #t)))
-                 '())))))
+                          "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
+                 '())
+           ,@(if (or (target-ppc32?)
+                     (target-riscv64?))
+               `((add-after 'unpack 'skip-failing-fdes-test
+                   (lambda _
+                     ;; ERROR: ((system-error "seek" "~A" ("Bad file descriptor") (9)))
+                     (substitute* "test-suite/tests/ports.test"
+                       (("fdes not closed\"" all) (string-append all "(exit 77)")))
+                     #t)))
+               '())))))
 
     (native-search-paths
      (list (search-path-specification
@@ -385,8 +394,8 @@ without requiring the source code to be rewritten.")
    (package
      (inherit guile-3.0-latest)
      (propagated-inputs
-      `(("bdw-gc" ,libgc-7)
-        ,@(srfi-1:alist-delete "bdw-gc" (package-propagated-inputs guile-3.0)))))))
+      (modify-inputs (package-propagated-inputs guile-3.0)
+        (replace "bdw-gc" libgc-7))))))
 
 (define-public guile-3.0/fixed
   ;; A package of Guile that's rarely changed.  It is the one used in the
@@ -521,39 +530,6 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                            (guile-variant-package-name "guile2.2")
                            #:deep? #f))
 
-(define-syntax define-deprecated-guile3.0-package
-  (lambda (s)
-    "Define a deprecated package alias for \"guile3.0-something\"."
-    (syntax-case s ()
-      ((_ name)
-       (and (identifier? #'name)
-            (string-prefix? "guile3.0-" (symbol->string (syntax->datum
-                                                         #'name))))
-       (let ((->guile (lambda (str)
-                        (let ((base (string-drop str
-                                                 (string-length "guile3.0-"))))
-                          (string-append "guile-" base)))))
-         (with-syntax ((package-name (symbol->string (syntax->datum #'name)))
-                       (package
-                         (datum->syntax
-                          #'name
-                          (string->symbol
-                           (->guile (symbol->string (syntax->datum
-                                                     #'name))))))
-                       (old-name
-                        ;; XXX: This is the name generated by
-                        ;; 'define-deprecated'.
-                        (datum->syntax
-                         #'name
-                         (symbol-append '% (syntax->datum #'name)
-                                        '/deprecated))))
-           #'(begin
-               (define-deprecated name package
-                 (deprecated-package package-name package))
-               (export old-name))))))))
-
-(define-deprecated-guile3.0-package guile3.0-readline)
-
 (define-public guile-for-guile-emacs
   (let ((commit "15ca78482ac0dd2e3eb36dcb31765d8652d7106d")
         (revision "1"))
@@ -587,18 +563,18 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                  ;; FAIL: test-out-of-memory
                  (substitute* "test-suite/standalone/Makefile.am"
                    (("(check_SCRIPTS|TESTS) \\+= test-out-of-memory") ""))
-                 
+
                  (patch-shebang "build-aux/git-version-gen")
                  (invoke "sh" "autogen.sh")
                  #t))))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)
-         ("flex" ,flex)
-         ("texinfo" ,texinfo)
-         ("gettext" ,gettext-minimal)
-         ,@(package-native-inputs guile-2.2))))))
+       (modify-inputs (package-native-inputs guile-2.2)
+         (prepend autoconf
+                  automake
+                  libtool
+                  flex
+                  texinfo
+                  gettext-minimal))))))
 
 
 ;;;
@@ -661,9 +637,6 @@ specification.  These are the main features:
                 "0nj0684qgh6ppkbdyxqfyjwsv2qbyairxpi8fzrhsi3xnc7jn4im"))))
     (native-inputs (list pkg-config guile-3.0))
     (inputs (list guile-3.0))))
-
-(define-public guile3.0-json
-  (deprecated-package "guile3.0-json" guile-json-3))
 
 (define-public guile-json-4
   (package
@@ -734,8 +707,6 @@ Guile's foreign function interface.")
 (define-public guile2.2-gdbm-ffi
   (package-for-guile-2.2 guile-gdbm-ffi))
 
-(define-deprecated-guile3.0-package guile3.0-gdbm-ffi)
-
 (define-public guile-sqlite3
   (package
     (name "guile-sqlite3")
@@ -763,8 +734,6 @@ Guile's foreign function interface.")
 
 (define-public guile2.2-sqlite3
   (package-for-guile-2.2 guile-sqlite3))
-
-(define-deprecated-guile3.0-package guile3.0-sqlite3)
 
 (define-public guile-bytestructures
   (package
@@ -810,8 +779,6 @@ type system, elevating types to first-class status.")
 (define-public guile2.2-bytestructures
   (package-for-guile-2.2 guile-bytestructures))
 
-(define-deprecated-guile3.0-package guile3.0-bytestructures)
-
 (define-public guile-git
   (package
     (name "guile-git")
@@ -825,7 +792,9 @@ type system, elevating types to first-class status.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11a51acibwi2hpaygmrpn6nwbr4lqalc87ihrgj3mhz6swbsk9n7"))))
+                "11a51acibwi2hpaygmrpn6nwbr4lqalc87ihrgj3mhz6swbsk9n7"))
+              (patches (search-patches
+                        "guile-git-adjust-for-libgit2-1.2.0.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ; to prevent guild warnings
@@ -846,8 +815,6 @@ manipulate repositories of the Git version control system.")
 
 (define-public guile2.0-git
   (package-for-guile-2.0 guile-git))
-
-(define-deprecated-guile3.0-package guile3.0-git)
 
 (define-public guile-zlib
   (package

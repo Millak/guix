@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -255,15 +256,15 @@
             (variable "NODE_PATH")
             (files '("lib/node_modules")))))
     (inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)
-       ("c-ares" ,c-ares)
-       ("http-parser" ,http-parser)
-       ("icu4c" ,icu4c)
-       ("libuv" ,libuv)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list bash
+           coreutils
+           c-ares
+           http-parser
+           icu4c
+           libuv
+           `(,nghttp2 "lib")
+           openssl
+           zlib))
     (synopsis "Evented I/O for V8 JavaScript")
     (description "Node.js is a platform built on Chrome's JavaScript runtime
 for easily building fast, scalable network applications.  Node.js uses an
@@ -272,8 +273,9 @@ perfect for data-intensive real-time applications that run across distributed
 devices.")
     (home-page "https://nodejs.org/")
     (license license:expat)
-    (properties '((max-silent-time . 7200)     ;2h, needed on ARM
-                  (timeout . 21600)))))        ;6h
+    (properties '((max-silent-time . 7200)   ;2h, needed on ARM
+                  (timeout . 21600)          ;6h
+                  (cpe-name . "node.js")))))
 
 ;; This should be the latest version of node that still builds without
 ;; depending on llhttp.
@@ -385,7 +387,7 @@ formats to milliseconds.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure))))
-    (inputs `(("node-ms" ,node-ms-bootstrap)))
+    (inputs (list node-ms-bootstrap))
     (home-page "https://github.com/visionmedia/debug#readme")
     (properties '((hidden? . #t)))
     (synopsis "Small debugging utility")
@@ -448,10 +450,9 @@ Node.js and web browsers.")
                        "--bundle"
                        "src/builder.ts")))))))
     (inputs
-     `(("node-binary-search" ,node-binary-search-bootstrap)
-       ("node-debug" ,node-debug-bootstrap)))
+     (list node-binary-search-bootstrap node-debug-bootstrap))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/indutny/llparse-builder#readme")
     (properties '((hidden? . #t)))
     (synopsis "Graph builder for consumption by llparse")
@@ -503,10 +504,9 @@ Node.js and web browsers.")
                        "--bundle"
                        "src/frontend.ts")))))))
     (inputs
-     `(("node-debug" ,node-debug-bootstrap)
-       ("node-llparse-builder" ,node-llparse-builder-bootstrap)))
+     (list node-debug-bootstrap node-llparse-builder-bootstrap))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/indutny/llparse-frontend#readme")
     (properties '((hidden? . #t)))
     (synopsis "Frontend for the llparse compiler")
@@ -557,10 +557,9 @@ Node.js and web browsers.")
                        "--bundle"
                        "src/api.ts")))))))
     (inputs
-     `(("node-debug" ,node-debug-bootstrap)
-       ("node-llparse-frontend" ,node-llparse-frontend-bootstrap)))
+     (list node-debug-bootstrap node-llparse-frontend-bootstrap))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/nodejs/llparse#readme")
     (properties '((hidden? . #t)))
     (synopsis "Compile incremental parsers to C code")
@@ -571,7 +570,7 @@ parser definition into a C output.")
 (define-public llhttp-bootstrap
   (package
     (name "llhttp")
-    (version "2.1.3")
+    (version "2.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -580,7 +579,7 @@ parser definition into a C output.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pqj7kyyzr1zs4h9yzn5rdxnxspm3wqgsv00765dd42fszlmrmk8"))
+                "115mwyds9655p76lhglxg2blc1ksgrix6zhigaxnc2q6syy3pa6x"))
               (patches (search-patches "llhttp-bootstrap-CVE-2020-8287.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -602,7 +601,7 @@ parser definition into a C output.")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
              (let ((esbuild (search-input-file (or native-inputs inputs)
                                                "/bin/esbuild")))
                (invoke esbuild
@@ -641,14 +640,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "14.16.0")
+    (version "14.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "19nz2mhmn6ikahxqyna1dn25pb5v3z9vsz9zb2flb6zp2yk4hxjf"))
+                "1vc9rypkgr5i5y946jnyr9jjpydxvm74p1s17rg2zayzvlddg89z"))
               (modules '((guix build utils)))
               (snippet
                `(begin
@@ -680,7 +679,7 @@ source files.")
              (lambda* (#:key native-inputs inputs #:allow-other-keys)
                (let* ((inputs        (or native-inputs inputs))
                       (c-ares        (assoc-ref inputs "c-ares"))
-                      (google-brotli (assoc-ref inputs "google-brotli"))
+                      (brotli        (assoc-ref inputs "brotli"))
                       (icu4c         (assoc-ref inputs "icu4c"))
                       (nghttp2       (assoc-ref inputs "nghttp2"))
                       (openssl       (assoc-ref inputs "openssl"))
@@ -699,7 +698,7 @@ source files.")
                     (string-append target
                                    "'ldflags': ['-Wl,-rpath="
                                    c-ares "/lib:"
-                                   google-brotli "/lib:"
+                                   brotli "/lib:"
                                    icu4c "/lib:"
                                    nghttp2 "/lib:"
                                    openssl "/lib:"
@@ -776,6 +775,9 @@ source files.")
                          '("test/parallel/test-dns.js"
                            "test/parallel/test-dns-lookupService-promises.js"))
 
+               ;; These tests require networking.
+               (delete-file "test/parallel/test-https-agent-unref-socket.js")
+
                ;; FIXME: This test fails randomly:
                ;; https://github.com/nodejs/node/issues/31213
                (delete-file "test/parallel/test-net-listen-after-destroying-stdin.js")
@@ -813,31 +815,31 @@ source files.")
                  (copy-file (string-append llhttp "/include/llhttp.h")
                             "deps/llhttp/include/llhttp.h"))))))))
     (native-inputs
-     `(;; Runtime dependencies for binaries used as a bootstrap.
-       ("c-ares" ,c-ares)
-       ("google-brotli" ,google-brotli)
-       ("icu4c" ,icu4c-67)
-       ("libuv" ,libuv-for-node)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)
-       ;; Regular build-time dependencies.
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("procps" ,procps)
-       ("python" ,python)
-       ("util-linux" ,util-linux)))
+     (list ;; Runtime dependencies for binaries used as a bootstrap.
+           c-ares-for-node
+           brotli
+           icu4c-67
+           libuv-for-node
+           `(,nghttp2 "lib")
+           openssl
+           zlib
+           ;; Regular build-time dependencies.
+           perl
+           pkg-config
+           procps
+           python
+           util-linux))
     (inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)
-       ("c-ares" ,c-ares)
-       ("icu4c" ,icu4c-67)
-       ("libuv" ,libuv-for-node)
-       ("llhttp" ,llhttp-bootstrap)
-       ("google-brotli" ,google-brotli)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))))
+     (list bash
+           coreutils
+           c-ares-for-node
+           icu4c-67
+           libuv-for-node
+           llhttp-bootstrap
+           brotli
+           `(,nghttp2 "lib")
+           openssl
+           zlib))))
 
 (define-public libnode
   (package/inherit node

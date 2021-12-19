@@ -36,7 +36,6 @@
              (sha256
               (base32
                "1hmai3422iaqnp34kkzxdnywl7n7pvlxp11vrw66ybxn9wxg90c1"))
-             (patches (search-patches "diffutils-gets-undeclared.patch"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -49,7 +48,11 @@
                                    "# define _IO_IN_BACKUP 0x100\n"
                                    "#endif\n\n"
                                    "/* BSD stdio derived implementations")))
-                 #t))))
+
+                 ;; 'gets' is deprecated in glibc 2.33 and its declaration is
+                 ;; no longer visible by default from <stdio.h>.
+                 (substitute* "lib/stdio.in.h"
+                   (("_GL_WARN_ON_USE \\(gets.*") ""))))))
     (build-system gnu-build-system)
     (arguments
      ;; XXX: These Gnulib tests fail with GCC 10 and glibc 2.33; skip them.

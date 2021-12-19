@@ -39,7 +39,7 @@
 (define-public gramps
   (package
     (name "gramps")
-    (version "5.1.3")
+    (version "5.1.4")
     (source
      (origin
        (method git-fetch)
@@ -48,32 +48,32 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "109dwkswz2h2328xkqk2zj736d117s9pp7rz5cc1qg2vxn1lpm93"))))
+        (base32 "00358nzyw686ypqv45imc5k9frcqnhla0hpx9ynna3iy6iz5006x"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("intltool" ,intltool)))
     (inputs
-     `(("cairo" ,cairo)
-       ("font-gnu-freefont" ,font-gnu-freefont)
-       ("geocode-glib" ,geocode-glib)
-       ("gexiv2" ,gexiv2)
-       ("ghostscript" ,ghostscript)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+" ,gtk+)
-       ("gtkspell3" ,gtkspell3)
-       ("graphviz" ,graphviz)
-       ("librsvg" ,librsvg)
-       ("osm-gps-map" ,osm-gps-map)
-       ("pango" ,pango)
-       ("python-bsddb3" ,python-bsddb3)
-       ("python-pillow" ,python-pillow)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyicu" ,python-pyicu)
-       ("rcs" ,rcs)
-       ("sqlite" ,sqlite)
-       ("xdg-utils" ,xdg-utils)))
+     (list cairo
+           font-gnu-freefont
+           geocode-glib
+           gexiv2
+           ghostscript
+           gobject-introspection
+           gtk+
+           gtkspell3
+           graphviz
+           librsvg
+           osm-gps-map
+           pango
+           python-bsddb3
+           python-pillow
+           python-pycairo
+           python-pygobject
+           python-pyicu
+           rcs
+           sqlite
+           xdg-utils))
     (arguments
      `(#:imported-modules ((guix build glib-or-gtk-build-system)
                            ,@%python-build-system-modules)

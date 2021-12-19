@@ -182,7 +182,6 @@ terminals.")
        ("icu" ,icu4c)
        ("libbraille" ,libbraille)
        ("libpcre2" ,pcre2)
-       ("linux-headers" ,linux-libre-headers)
        ("louis" ,liblouis)
        ("ncurses" ,ncurses)
        ("polkit" ,polkit)
@@ -223,19 +222,17 @@ incorporated.")
                                "--without-docs"
                                "--with-notification")))
     (inputs
-     `(("libxml2" ,libxml2)
-       ("libglade" ,libglade)
-       ("librsvg" ,librsvg)
-       ("gstreamer" ,gstreamer)
-       ("cairo" ,cairo)
-       ("gtk+" ,gtk+)
-       ("libxtst" ,libxtst)
-       ("libxcomposite" ,libxcomposite)
-       ("libnotify" ,libnotify)))
+     (list libxml2
+           libglade
+           librsvg
+           gstreamer
+           cairo
+           gtk+
+           libxtst
+           libxcomposite
+           libnotify))
     (native-inputs
-     `(("gettext-minimal" ,gettext-minimal)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal intltool pkg-config))
     (home-page "http://florence.sourceforge.net/")
     (synopsis "Extensible, scalable virtual keyboard for X11")
     (description
@@ -268,9 +265,9 @@ available to help to click.")
                   "14pyzc4ws1mj859xs9n4x83wzxxvd3bh5bdxzr6nv267xwx1mq68"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("pkg-config" ,pkg-config)))
+       (list pkg-config))
       (inputs
-       `(("hidapi" ,hidapi)))
+       (list hidapi))
       (arguments
        `(#:tests? #f ; no tests
          #:make-flags (list (string-append "CC=" ,(cc-for-target)))

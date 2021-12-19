@@ -102,7 +102,7 @@
               (copy-file "v.mod" vmod))
             #t)))))
    (inputs
-    `(("glib" ,glib)))
+    (list glib))
    (native-inputs
     `(("vc"
        ;; Versions are not consistently tagged, but the matching commit will
@@ -134,7 +134,3 @@
     "V is a systems programming language.  It provides memory safety and thread
 safety guarantees with minimal abstraction.")
    (license license:expat)))
-
-(define-public v
-  ;; We used to provide 'vlang' under the name 'v'.
-  (deprecated-package "v" vlang))

@@ -2,6 +2,7 @@
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
 ;;; Copyright © 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,7 +83,11 @@
 
             qemu-binfmt-configuration
             qemu-binfmt-configuration?
-            qemu-binfmt-service-type))
+            qemu-binfmt-service-type
+
+            qemu-guest-agent-configuration
+            qemu-guest-agent-configuration?
+            qemu-guest-agent-service-type))
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))
@@ -129,10 +134,10 @@
 
 (define-configuration libvirt-configuration
   (libvirt
-   (package libvirt)
+   (file-like libvirt)
    "Libvirt package.")
   (qemu
-   (package qemu)
+   (file-like qemu)
    "Qemu package.")
 
   (listen-tls?
@@ -849,26 +854,88 @@ functionality of the kernel Linux.")))
 
 
 ;;;
+;;; QEMU guest agent service.
+;;;
+
+(define-configuration qemu-guest-agent-configuration
+  (qemu
+   (file-like qemu-minimal)
+   "QEMU package.")
+  (device
+   (string "")
+   "Path to device or socket used to communicate with the host.  If not
+specified, the QEMU default path is used."))
+
+(define qemu-guest-agent-shepherd-service
+  (match-lambda
+    (($ <qemu-guest-agent-configuration> qemu device)
+     (list
+      (shepherd-service
+       (provision '(qemu-guest-agent))
+       (documentation "Run the QEMU guest agent.")
+       (start #~(make-forkexec-constructor
+                 `(,(string-append #$qemu "/bin/qemu-ga") "--daemon"
+                   "--pidfile=/var/run/qemu-ga.pid"
+                   "--statedir=/var/run"
+                   ,@(if #$device
+                         (list (string-append "--path=" #$device))
+                         '()))
+                 #:pid-file "/var/run/qemu-ga.pid"
+                 #:log-file "/var/log/qemu-ga.log"))
+       (stop #~(make-kill-destructor)))))))
+
+(define qemu-guest-agent-service-type
+  (service-type
+   (name 'qemu-guest-agent)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             qemu-guest-agent-shepherd-service)))
+   (default-value (qemu-guest-agent-configuration))
+   (description "Run the QEMU guest agent.")))
+
+
+;;;
 ;;; Secrets for guest VMs.
 ;;;
 
-(define (secret-service-activation port)
-  "Return an activation snippet that fetches sensitive material at local PORT,
+(define (secret-service-shepherd-services port)
+  "Return a Shepherd service that fetches sensitive material at local PORT,
 over TCP.  Reboot upon failure."
-  (with-imported-modules '((gnu build secret-service)
-                           (guix build utils))
-    #~(begin
-        (use-modules (gnu build secret-service))
-        (let ((sent (secret-service-receive-secrets #$port)))
-          (unless sent
-            (sleep 3)
-            (reboot))))))
+  ;; This is a Shepherd service, rather than an activation snippet, to make
+  ;; sure it is started once 'networking' is up so it can accept incoming
+  ;; connections.
+  (list
+   (shepherd-service
+    (documentation "Fetch secrets from the host at startup time.")
+    (provision '(secret-service-client))
+    (requirement '(loopback networking))
+    (modules '((gnu build secret-service)
+               (guix build utils)))
+    (start (with-imported-modules '((gnu build secret-service)
+                                    (guix build utils))
+             #~(lambda ()
+                 ;; Since shepherd's output port goes to /dev/log, write this
+                 ;; message to stderr so it's visible on the Mach console.
+                 (format (current-error-port)
+                         "receiving secrets from the host...~%")
+                 (force-output (current-error-port))
+
+                 (let ((sent (secret-service-receive-secrets #$port)))
+                   (unless sent
+                     (sleep 3)
+                     (reboot))))))
+    (stop #~(const #f)))))
 
 (define secret-service-type
   (service-type
    (name 'secret-service)
-   (extensions (list (service-extension activation-service-type
-                                        secret-service-activation)))
+   (extensions (list (service-extension shepherd-root-service-type
+                                        secret-service-shepherd-services)
+
+                     ;; Make every Shepherd service depend on
+                     ;; 'secret-service-client'.
+                     (service-extension user-processes-service-type
+                                        (const '(secret-service-client)))))
    (description
     "This service fetches secret key and other sensitive material over TCP at
 boot time.  This service is meant to be used by virtual machines (VMs) that
@@ -928,7 +995,7 @@ that will be listening to receive secret keys on port 1004, TCP."
   hurd-vm-configuration?
   (os          hurd-vm-configuration-os                 ;<operating-system>
                (default %hurd-vm-operating-system))
-  (qemu        hurd-vm-configuration-qemu               ;<package>
+  (qemu        hurd-vm-configuration-qemu               ;file-like
                (default qemu-minimal))
   (image       hurd-vm-configuration-image              ;string
                (thunked)

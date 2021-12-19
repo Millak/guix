@@ -5,6 +5,9 @@
 ;;; Copyright © 2021 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Denis Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +25,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages hardware)
+  #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
@@ -31,6 +35,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -49,12 +54,14 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -65,6 +72,107 @@
 
 ;; This is a module for packages related to physical hardware that don't (yet)
 ;; have a more specific home like gps.scm, security-token.scm, &c.
+
+(define-public hwinfo
+  (package
+    (name "hwinfo")
+    (version "21.78")
+    (home-page "https://github.com/openSUSE/hwinfo")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url home-page)
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v3smzdplh0cdvl19dw3in8gfmkhb2fgkfl60aqhn9qlbjf3p0mr"))
+       (modules
+        '((guix build utils)))
+       (snippet
+        `(begin
+           ;; Remove git2log program file.
+           (delete-file "git2log")
+           ;; Remove variables that depends on git2log.
+           (substitute* "Makefile"
+             (("GIT2LOG.*\\:=.*$") "")
+             (("GITDEPS.*\\:=.*$") "")
+             (("BRANCH.*\\:=.*$") ""))
+           ;; Create version file.
+           (call-with-output-file "VERSION"
+             (lambda (port)
+               (format port ,version)))))))
+    (build-system gnu-build-system)
+    (outputs '("out" "dev" "doc"))
+    (arguments
+     `(#:tests? #f                      ; no test-suite available
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (dev (assoc-ref outputs "dev"))
+                    (doc (assoc-ref outputs "doc"))
+                    (incl-dir (string-append dev "/include"))
+                    (lib-dir (string-append dev "/lib"))
+                    (sbin-dir (string-append out "/sbin"))
+                    (share-dir (string-append out "/share"))
+                    (doc-dir (string-append doc "/share/doc")))
+               ;; Generate HTML documentation in the output "doc".
+               (mkdir-p doc-dir)
+               (substitute* "doc/libhd.doxy"
+                 (("OUTPUT_DIRECTORY.*=.*libhd")
+                  (string-append "OUTPUT_DIRECTORY = " doc-dir "/libhd")))
+               ;; Correct values of the version and install directories.
+               (substitute* "Makefile"
+                 (("VERSION.*\\:=.*$")
+                  (string-append "VERSION := " ,version "\n"))
+                 (("LIBDIR.*\\?=.*$")
+                  (string-append "LIBDIR ?= " lib-dir "\n"))
+                 (("/usr/include") incl-dir)
+                 (("/(usr|var)/(lib|lib64)") lib-dir)
+                 (("/usr/sbin") sbin-dir)
+                 (("/usr/share") share-dir)
+                 (("\\$\\(DESTDIR\\)/sbin ") ""))
+               ;; Add output "dev" to the run-path.
+               (substitute* "Makefile.common"
+                 (("-Lsrc")
+                  (string-append "-Lsrc " "-Wl,-rpath=" lib-dir)))
+               ;; Correct program name of the lexical analyzer.
+               (substitute* "src/isdn/cdb/Makefile"
+                 (("lex isdn_cdb.lex") "flex isdn_cdb.lex"))
+               ;; Patch pkgconfig file to point to output "dev".
+               (substitute* "hwinfo.pc.in"
+                 (("/usr") dev)))))
+         (delete 'configure)
+         (replace 'build
+           (lambda _
+             (setenv "CC" ,(cc-for-target))
+             (invoke "make" "shared")
+             (invoke "make" "doc")))
+         (add-after 'install 'install-manpages
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (man-dir (string-append out "/share/man"))
+                    (man1-dir (string-append man-dir "/man1"))
+                    (man8-dir (string-append man-dir "/man8")))
+               (for-each
+                (lambda (x) (install-file x man1-dir))
+                (find-files "doc" "\\.1$"))
+               (for-each
+                (lambda (y) (install-file y man8-dir))
+                (find-files "doc" "\\.8$"))))))))
+    (native-inputs
+     (list doxygen flex perl pkg-config))
+    (inputs
+     `(("libx86emu" ,libx86emu)
+       ("util-linux:lib" ,util-linux "lib")))
+    (synopsis "Hardware information tool")
+    (description "HwInfo is used to probe for the hardware present in the system.
+It can be used to generate a system overview log which can be later used for
+support.")
+    (license license:gpl2+)))
 
 (define-public ddcutil
   (package
@@ -79,15 +187,15 @@
         (base32 "19kkwb9ijzn6ya3mvjanggh1c96fcc0lkbk7xnyi2qp6wsr4nhxp"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("eudev" ,eudev)
-       ("glib" ,glib)
-       ("libdrm" ,libdrm)               ; enhanced diagnostics
-       ("libusb" ,libusb)               ; support USB monitors
-       ("libx11" ,libx11)               ; enhanced diagnostics
-       ("libxrandr" ,libxrandr)
-       ("zlib" ,zlib)))
+     (list eudev
+           glib
+           libdrm ; enhanced diagnostics
+           libusb ; support USB monitors
+           libx11 ; enhanced diagnostics
+           libxrandr
+           zlib))
     (home-page "https://www.ddcutil.com/")
     (synopsis "Control external monitor settings")
     (description
@@ -125,12 +233,9 @@ calibrated, and restored when the calibration is applied.")
     (arguments
      '(#:tests? #f))                    ; No test suite
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
-     `(("ddcutil" ,ddcutil)
-       ("glib" ,glib)
-       ("qtbase" ,qtbase-5)))
+     (list ddcutil glib qtbase-5))
     (home-page "https://www.ddcutil.com/")
     (synopsis "Graphical user interface for ddcutil")
     (description "ddcui is a graphical user interface for ddcutil, implemented
@@ -198,11 +303,7 @@ human-readable format and checks if it conforms to the standards.")
          ;; build container.
          #:tests? #f))
       (inputs
-       `(("python2" ,python-2)
-         ("python2-pycurl", python2-pycurl)
-         ("python2-pygtk", python2-pygtk)
-         ("pciutils", pciutils)
-         ("usbutils", usbutils)))
+       (list python-2 python2-pycurl python2-pygtk pciutils usbutils))
       (synopsis "Graphical client for the h-node hardware database
 project")
       (description
@@ -230,6 +331,8 @@ whether the hardware works with a fully free operating system or not.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0jxm63a8y1mfl1sa4mzzfs3bgnym6achj1yc0jglmp05xal16lm1"))
+         (patches
+          (search-patches "i7z-gcc-10.patch"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -247,7 +350,7 @@ whether the hardware works with a fully free operating system or not.")
          (modify-phases %standard-phases
            (delete 'configure))))       ; no configure script
       (inputs
-       `(("ncurses" ,ncurses)))
+       (list ncurses))
       (home-page "https://github.com/afontenot/i7z")
       (synopsis "Thermal and C-state reporting on older Intel Core CPUs")
       (description
@@ -287,7 +390,7 @@ information can be viewed in real time and/or logged to a file.")
        ("perl" ,perl)
        ("python" ,python)))
     (inputs
-     `(("libxml2" ,libxml2)))
+     (list libxml2))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -347,7 +450,7 @@ specific SMBIOS tables.")
                #t))))))
     (native-inputs
      ;; Newer GCCs fail with a deluge of "multiple definition of `__foo'" errors.
-     `(("gcc" ,gcc-4.9)))
+     (list gcc-4.9))
     (supported-systems (list "i686-linux" "x86_64-linux"))
     (home-page "https://www.memtest.org/")
     (synopsis "Thorough real-mode memory tester")
@@ -438,7 +541,7 @@ It can also be told to test memory starting at a particular physical address.")
                #t))))
        #:tests? #f))                    ; no test suite
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     ;; These registers and the CPUID instruction only exist on (most) x86 chips.
     (supported-systems (list "i686-linux" "x86_64-linux"))
     (home-page "https://01.org/msr-tools/")
@@ -460,10 +563,36 @@ MSR addresses differ (greatly) between processors, and any such modification can
 be dangerous and may void your CPU or system board's warranty.")
     (license license:gpl2)))     ; cpuid.c is gpl2, {rd,wr}msr.c are gpl2+
 
+(define-public openhmd
+  (package
+    (name "openhmd")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenHMD/OpenHMD")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hkpdl4zgycag5k8njvqpx01apxmm8m8pvhlsxgxpqiqy9a38ccg"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:tests? #f)) ; no test target although there is a test folder
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list hidapi))
+    (home-page "http://www.openhmd.net/")
+    (synopsis "API and drivers for immersive technology")
+    (description "OpenHMD aims to provide an API and drivers for immersive
+technology, such as head mounted displays with built in head tracking.")
+    (license license:boost1.0)))
+
 (define-public wavemon
   (package
     (name "wavemon")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -472,7 +601,7 @@ be dangerous and may void your CPU or system board's warranty.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m9n5asjxs1ir5rqprigqcrm976mgjvh4yql1jhfnbszwbf95193"))))
+        (base32 "0s3yz15vzx90fxyb8bgryksn0cr2gpz9inbcx4qjrgs7zfbm4pgh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -483,11 +612,9 @@ be dangerous and may void your CPU or system board's warranty.")
                             "/share/doc/" ,name "-" ,version))
        #:tests? #f))                    ; no tests
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libcap" ,libcap)
-       ("libnl" ,libnl)
-       ("ncurses" ,ncurses)))
+     (list libcap libnl ncurses))
     (home-page "https://github.com/uoaerg/wavemon")
     (synopsis "Wireless network device monitor")
     (description
@@ -519,11 +646,9 @@ supported by the Linux kernel.")
           (base32 "0zwrkqfxd671iy69v3q0844gfdpm1yk51i9qh2rqc969bd8glxga"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("pkg-config" ,pkg-config)))
+       (list autoconf automake pkg-config))
       (inputs
-       `(("libusb" ,libusb)))
+       (list libusb))
       (home-page "https://github.com/rockchip-linux/rkdeveloptool")
       (synopsis "Read from and write to RockChicp devices over USB")
       (description
@@ -547,8 +672,7 @@ as the Pinebook Pro.")
                 "008vvw504kh40br5v2xkqavnp9vpmjvf768faqzv1d00fd53ingn"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
+     (list pkg-config libxml2))
     (home-page "https://clusterlabs.github.io/libqb/")
     (synopsis "Library providing high performance logging, tracing, ipc, and poll")
     (description "Libqb is a library with the primary purpose of providing
@@ -655,15 +779,14 @@ Simply put, it is a USB device whitelisting tool.")
         (base32 "0gv3xj9sbk1wsyijfw9xjnvy8pg7j4arjnma2r2kfi18qy32wd30"))))
     (build-system gnu-build-system)
     (inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+-2)))
+     (list glib gtk+-2))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("glib" ,glib "bin")
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           intltool
+           libtool
+           `(,glib "bin")
+           automake
+           pkg-config))
     (synopsis "Simple screen testing tool")
     (description "This is a program for testing the quality of CRT/LCD
 screens.  It displays various patterns and allows you to estimate the quality
@@ -685,11 +808,9 @@ of your CRT/LCD monitor.")
         (base32 "05xynpwq851fp8f5fy7ac0blvz8mr5m5cbqj3gslgbwv63kjnfbq"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("curl" ,curl)
-       ("json-c" ,json-c)
-       ("openssl" ,openssl)))
+     (list curl json-c openssl))
     (home-page "https://tpm2-software.github.io/")
     (synopsis "OSS Implementation of the TCG TPM2 Software Stack (TSS2)")
     (description

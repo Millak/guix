@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
@@ -53,10 +53,10 @@
     (build-system mozilla-build-system)
     (inputs
      ;; For 'compile-et.pl' and 'nspr-config'.
-     `(("perl" ,perl) ; for 'compile-et.pl'
-       ("bash-minimal" ,bash-minimal))) ; for 'nspr-config'
+     (list perl ;for 'compile-et.pl'
+           bash-minimal)) ;for 'nspr-config'
     (native-inputs
-     `(("perl" ,perl)))
+     (list perl))
     (arguments
      `(;; Prevent the 'native' perl from sneaking into the closure.
        ;; XXX it would be nice to do the same for 'bash-minimal',
@@ -86,12 +86,25 @@ platform-neutral API for system level and libc-like functions.  It is used
 in the Mozilla clients.")
     (license license:mpl2.0)))
 
-;;; Note: When updating, also update the nss-certs package, which cannot
-;;; inherit from here.
+(define-public nspr-4.32
+  (package
+    (inherit nspr)
+    (version "4.32")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v"
+                   version "/src/nspr-" version ".tar.gz"))
+             (sha256
+              (base32
+               "0v3zds1id71j5a5si42a658fjz8nv2f6zp6w4gqrqmdr6ksz8sxv"))))))
+
 (define-public nss
   (package
     (name "nss")
-    (version "3.67")
+    ;; Also update and test the nss-certs package, which duplicates version and
+    ;; source to avoid a top-level variable reference & module cycle.
+    (version "3.71")
     (source (origin
               (method url-fetch)
               (uri (let ((version-with-underscores
@@ -102,7 +115,7 @@ in the Mozilla clients.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "0zyfi27lbdz1bmk9dmsivcya4phx25rzlxqcnjab69yd928rlm7n"))
+                "0ly2l3dv6z5hlxs72h5x6796ni3x1bq60saavaf42ddgv4ax7b4r"))
               ;; Create nss.pc and nss-config.
               (patches (search-patches "nss-3.56-pkgconfig.patch"
                                        "nss-getcwd-nonnull.patch"
@@ -155,7 +168,7 @@ in the Mozilla clients.")
                    ;; leading to test failures:
                    ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=609734>.  To
                    ;; work around that, set the time to roughly the release date.
-                   (invoke "faketime" "2021-06-01" "./nss/tests/all.sh"))
+                   (invoke "faketime" "2021-09-30" "./nss/tests/all.sh"))
                  (format #t "test suite not run~%"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -179,15 +192,11 @@ in the Mozilla clients.")
                (copy-recursively (string-append obj "/bin") bin)
                (copy-recursively (string-append obj "/lib") lib)))))))
     (inputs
-     `(;; XXX: Build with SQLite 3.33 to work around
-       ;; https://bugzilla.mozilla.org/show_bug.cgi?id=1714874
-       ("sqlite" ,sqlite-3.33)
-       ("zlib" ,zlib)))
+     (list sqlite zlib))
     (propagated-inputs
-     `(("nspr" ,nspr)))                 ;required by nss.pc.
+     (list nspr))                 ;required by nss.pc.
     (native-inputs
-     `(("perl" ,perl)
-       ("libfaketime" ,libfaketime)))   ;for tests
+     (list perl libfaketime))   ;for tests
 
     ;; The NSS test suite takes around 48 hours on Loongson 3A (MIPS) when
     ;; another build is happening concurrently on the same machine.

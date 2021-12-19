@@ -6,6 +6,7 @@
 ;;; Copyright © 2018, 2019, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -85,6 +86,12 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
           `(cons* "--disable-nscd" "--disable-build-nscd"
                   "--enable-static-nss"
                   ,flags))))
+
+      ;; Make sure to build glibc with the same compiler version as the rest
+      ;; of the bootstrap.  Otherwise it fails to statically link on aarch64.
+      (native-inputs
+       `(("gcc" ,gcc-7)
+         ,@(package-native-inputs base)))
 
       ;; Remove the 'debug' output to allow bit-reproducible builds (when the
       ;; 'debug' output is used, ELF files end up with a .gnu_debuglink, which
@@ -206,8 +213,17 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                   (("^xz_LDADD =")
                                    "xz_LDADD = -all-static"))
                                 #t)))))))
-        (gawk (package (inherit gawk)
-                (source (origin (inherit (package-source gawk))
+        (gawk (package
+                (inherit gawk)
+                (source (origin
+                          (inherit (package-source gawk))
+                          (modules '((guix build utils)))
+                          (snippet
+                           ;; Do not build 'getopt.c' since that leads to a
+                           ;; link failure due to duplicate symbols with
+                           ;; 'libc.a'.
+                           '(substitute* "support/Makefile.in"
+                              (("getopt\\.\\$\\(OBJEXT\\)") "")))
                           (patches (cons (search-patch "gawk-shell.patch")
                                          (origin-patches
                                           (package-source gawk))))))
@@ -216,7 +232,9 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                    ;; plug-in mechanism just fail on static builds:
                    ;;
                    ;; ./fts.awk:1: error: can't open shared library `filefuncs' for reading (No such file or directory)
-                   #:tests? #f
+                   ;;
+                   ;; Therefore disable extensions support.
+                   #:configure-flags (list "--disable-extensions")
 
                    ,@(substitute-keyword-arguments (package-arguments gawk)
                        ((#:phases phases)
@@ -263,19 +281,9 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                        (delete 'fix-egrep-and-fgrep)))))))
         (finalize (compose static-package
                            package-with-relocatable-glibc)))
-    `(,@(map (match-lambda
-              ((name package)
-               (list name (finalize package))))
-             `(("tar" ,tar)
-               ("gzip" ,gzip)
-               ("bzip2" ,bzip2)
-               ("xz" ,xz)
-               ("patch" ,patch)
-               ("coreutils" ,coreutils)
-               ("sed" ,sed)
-               ("grep" ,grep)
-               ("gawk" ,gawk)))
-      ("bash" ,static-bash))))
+    (append (map finalize
+                 (list tar gzip bzip2 xz patch coreutils sed grep gawk))
+        (list static-bash))))
 
 (define %static-binaries
   (package
@@ -320,7 +328,10 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
             ;; same name as the input.
             (for-each (match-lambda
                        ((name . dir)
-                        (let ((source (string-append dir "/bin/" name)))
+                        (let* ((name   (if (string-prefix? "bash" name)
+                                           "bash"
+                                           name))
+                               (source (string-append dir "/bin/" name)))
                           (format #t "copying ~s...~%" source)
                           (copy-file source
                                      (string-append bin "/" name)))))
@@ -365,7 +376,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                 (out (assoc-ref %outputs "out")))
            (copy-linux-headers out in)
            #t))))
-    (inputs `(("linux-libre-headers" ,linux-libre-headers)))))
+    (inputs (list linux-libre-headers))))
 
 (define %binutils-static
   ;; Statically-linked Binutils.
@@ -394,32 +405,31 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
 (define %binutils-static-stripped
   ;; The subset of Binutils that we need.
-  (package (inherit %binutils-static)
+  (package
+    (inherit %binutils-static)
     (name (string-append (package-name %binutils-static) "-stripped"))
     (build-system trivial-build-system)
     (outputs '("out"))
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
 
-         (setvbuf (current-output-port)
-                  (cond-expand (guile-2.0 _IOLBF) (else 'line)))
-         (let* ((in  (assoc-ref %build-inputs "binutils"))
-                (out (assoc-ref %outputs "out"))
-                (bin (string-append out "/bin")))
-           (mkdir-p bin)
-           (for-each (lambda (file)
-                       (let ((target (string-append bin "/" file)))
-                         (format #t "copying `~a'...~%" file)
-                         (copy-file (string-append in "/bin/" file)
-                                    target)
-                         (remove-store-references target)))
-                     '("ar" "as" "ld" "nm"  "objcopy" "objdump"
-                       "ranlib" "readelf" "size" "strings" "strip"))
-           #t))))
-    (inputs `(("binutils" ,%binutils-static)))))
+               (setvbuf (current-output-port)
+                        (cond-expand (guile-2.0 _IOLBF) (else 'line)))
+               (let* ((in  #$%binutils-static)
+                      (out #$output)
+                      (bin (string-append out "/bin")))
+                 (mkdir-p bin)
+                 (for-each (lambda (file)
+                             (let ((target (string-append bin "/" file)))
+                               (format #t "copying `~a'...~%" file)
+                               (copy-file (string-append in "/bin/" file)
+                                          target)
+                               (remove-store-references target)))
+                           '("ar" "as" "ld" "nm"  "objcopy" "objdump"
+                             "ranlib" "readelf" "size" "strings" "strip"))))))))
 
 (define (%glibc-stripped)
   ;; GNU libc's essential shared libraries, dynamic linker, and headers,
@@ -532,56 +542,54 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
 (define %gcc-stripped
   ;; The subset of GCC files needed for bootstrap.
-  (package (inherit gcc-7)
+  (package
+    (inherit gcc-7)
     (name "gcc-stripped")
     (build-system trivial-build-system)
     (source #f)
     (outputs '("out"))                            ;only one output
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (srfi srfi-1)
-                      (srfi srfi-26)
-                      (guix build utils))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (srfi srfi-1)
+                            (srfi srfi-26)
+                            (guix build utils))
 
-         (setvbuf (current-output-port)
-                  (cond-expand (guile-2.0 _IOLBF) (else 'line)))
-         (let* ((out        (assoc-ref %outputs "out"))
-                (bindir     (string-append out "/bin"))
-                (libdir     (string-append out "/lib"))
-                (includedir (string-append out "/include"))
-                (libexecdir (string-append out "/libexec"))
-                (gcc        (assoc-ref %build-inputs "gcc")))
-           (copy-recursively (string-append gcc "/bin") bindir)
-           (for-each remove-store-references
-                     (find-files bindir ".*"))
+               (setvbuf (current-output-port)
+                        (cond-expand (guile-2.0 _IOLBF) (else 'line)))
+               (let* ((out        #$output)
+                      (bindir     (string-append out "/bin"))
+                      (libdir     (string-append out "/lib"))
+                      (includedir (string-append out "/include"))
+                      (libexecdir (string-append out "/libexec"))
+                      (gcc        #$%gcc-static))
+                 (copy-recursively (string-append gcc "/bin") bindir)
+                 (for-each remove-store-references
+                           (find-files bindir ".*"))
 
-           (copy-recursively (string-append gcc "/lib") libdir)
-           (for-each remove-store-references
-                     (remove (cut string-suffix? ".h" <>)
-                             (find-files libdir ".*")))
+                 (copy-recursively (string-append gcc "/lib") libdir)
+                 (for-each remove-store-references
+                           (remove (cut string-suffix? ".h" <>)
+                                   (find-files libdir ".*")))
 
-           (copy-recursively (string-append gcc "/libexec")
-                             libexecdir)
-           (for-each remove-store-references
-                     (find-files libexecdir ".*"))
+                 (copy-recursively (string-append gcc "/libexec")
+                                   libexecdir)
+                 (for-each remove-store-references
+                           (find-files libexecdir ".*"))
 
-           ;; Starting from GCC 4.8, helper programs built natively
-           ;; (‘genchecksum’, ‘gcc-nm’, etc.) rely on C++ headers.
-           (copy-recursively (string-append gcc "/include/c++")
-                             (string-append includedir "/c++"))
+                 ;; Starting from GCC 4.8, helper programs built natively
+                 ;; (‘genchecksum’, ‘gcc-nm’, etc.) rely on C++ headers.
+                 (copy-recursively (string-append gcc "/include/c++")
+                                   (string-append includedir "/c++"))
 
-           ;; For native builds, check whether the binaries actually work.
-           ,@(if (%current-target-system)
-                 '()
-                 '((for-each (lambda (prog)
-                               (invoke (string-append gcc "/bin/" prog)
-                                       "--version"))
-                             '("gcc" "g++" "cpp"))))
-
-           #t))))
-    (inputs `(("gcc" ,%gcc-static)))))
+                 ;; For native builds, check whether the binaries actually work.
+                 #$@(if (%current-target-system)
+                        '()
+                        '((for-each (lambda (prog)
+                                      (invoke (string-append gcc "/bin/" prog)
+                                              "--version"))
+                                    '("gcc" "g++" "cpp"))))))))))
 
 ;; Two packages: first build static, bare minimum content.
 (define %mescc-tools-static
@@ -604,23 +612,21 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
     (name (string-append (package-name %mescc-tools-static) "-stripped"))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((in  (assoc-ref %build-inputs "mescc-tools"))
-                (out (assoc-ref %outputs "out"))
-                (bin (string-append out "/bin")))
-           (mkdir-p bin)
-           (for-each (lambda (file)
-                       (let ((target (string-append bin "/" file)))
-                         (format #t "copying `~a'...~%" file)
-                         (copy-file (string-append in "/bin/" file)
-                                    target)
-                         (remove-store-references target)))
-                     '( "M1" "blood-elf" "hex2"))
-           #t))))
-    (inputs `(("mescc-tools" ,%mescc-tools-static)))))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
+               (let* ((in  #$%mescc-tools-static)
+                      (out #$output)
+                      (bin (string-append out "/bin")))
+                 (mkdir-p bin)
+                 (for-each (lambda (file)
+                             (let ((target (string-append bin "/" file)))
+                               (format #t "copying `~a'...~%" file)
+                               (copy-file (string-append in "/bin/" file)
+                                          target)
+                               (remove-store-references target)))
+                           '( "M1" "blood-elf" "hex2"))))))))
 
 ;; Two packages: first build static, bare minimum content.
 (define-public %mes-minimal
@@ -628,8 +634,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
   (package
     (inherit mes)
     (name "mes-minimal")
-    (native-inputs
-     `(("guile" ,guile-3.0)))
+    (native-inputs (list guile-3.0))
     (arguments
      `(#:system "i686-linux"
        #:strip-binaries? #f
@@ -657,22 +662,20 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
     (name (string-append (package-name %mes-minimal) "-stripped"))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:allowed-references ()
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((in  (assoc-ref %build-inputs "mes"))
-               (out (assoc-ref %outputs "out")))
+     (list #:modules '((guix build utils))
+           #:allowed-references '()
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
+               (let ((in  #$%mes-minimal)
+                     (out #$output))
 
-           (copy-recursively in out)
-           (for-each (lambda (dir)
-                       (for-each remove-store-references
-                                 (find-files (string-append out "/" dir)
-                                             ".*")))
-                     '("bin" "share/mes"))
-           #t))))
-    (inputs `(("mes" ,%mes-minimal)))))
+                 (copy-recursively in out)
+                 (for-each (lambda (dir)
+                             (for-each remove-store-references
+                                       (find-files (string-append out "/" dir)
+                                                   ".*")))
+                           '("bin" "share/mes"))))))))
 
 (define* (make-guile-static guile patches)
   (package-with-relocatable-glibc
@@ -690,21 +693,22 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
       (outputs (delete "debug" (package-outputs guile)))
 
       (inputs
-       `(("libunistring:static" ,libunistring "static")
-         ,@(package-inputs guile)))
+       (modify-inputs (package-inputs guile)
+         (prepend `(,libunistring "static"))))
 
       (propagated-inputs
-       `(("bdw-gc" ,libgc/static-libs)
-         ,@(alist-delete "bdw-gc"
-                         (package-propagated-inputs guile))))
+       (modify-inputs (package-propagated-inputs guile)
+         (replace "bdw-gc" libgc/static-libs)))
       (arguments
        (substitute-keyword-arguments (package-arguments guile)
          ((#:configure-flags flags '())
           ;; When `configure' checks for ltdl availability, it
           ;; doesn't try to link using libtool, and thus fails
           ;; because of a missing -ldl.  Work around that.
-          ''("LDFLAGS=-ldl"
-             "--enable-mini-gmp"))
+          `(list "LDFLAGS=-ldl" "--enable-mini-gmp"
+                 ,@(if (hurd-target?)
+                       '("--disable-jit")
+                       '())))
          ((#:phases phases '%standard-phases)
           `(modify-phases ,phases
 
@@ -751,44 +755,41 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
     (build-system trivial-build-system)
     (arguments
      ;; The end result should depend on nothing but itself.
-     `(#:allowed-references ("out")
-       #:modules ((guix build utils))
-       #:builder
-       (let ((version ,(version-major+minor (package-version static-guile))))
-         (use-modules (guix build utils))
+     (list #:allowed-references '("out")
+           #:modules '((guix build utils))
+           #:builder
+           #~(let ((version #$(version-major+minor (package-version static-guile))))
+               (use-modules (guix build utils))
 
-         (let* ((in     (assoc-ref %build-inputs "guile"))
-                (out    (assoc-ref %outputs "out"))
-                (guile1 (string-append in "/bin/guile"))
-                (guile2 (string-append out "/bin/guile")))
-           (mkdir-p (string-append out "/share/guile/" version))
-           (copy-recursively (string-append in "/share/guile/" version)
-                             (string-append out "/share/guile/" version))
+               (let* ((in     #$static-guile)
+                      (out    #$output)
+                      (guile1 (string-append in "/bin/guile"))
+                      (guile2 (string-append out "/bin/guile")))
+                 (mkdir-p (string-append out "/share/guile/" version))
+                 (copy-recursively (string-append in "/share/guile/" version)
+                                   (string-append out "/share/guile/" version))
 
-           (mkdir-p (string-append out "/lib/guile/" version "/ccache"))
-           (copy-recursively (string-append in "/lib/guile/" version "/ccache")
-                             (string-append out "/lib/guile/" version "/ccache"))
+                 (mkdir-p (string-append out "/lib/guile/" version "/ccache"))
+                 (copy-recursively (string-append in "/lib/guile/" version "/ccache")
+                                   (string-append out "/lib/guile/" version "/ccache"))
 
-           (mkdir (string-append out "/bin"))
-           (copy-file guile1 guile2)
+                 (mkdir (string-append out "/bin"))
+                 (copy-file guile1 guile2)
 
-           ;; Verify that the relocated Guile works.
-           ,@(if (%current-target-system)
-                 '()
-                 '((invoke guile2 "--version")))
+                 ;; Verify that the relocated Guile works.
+                 #$@(if (%current-target-system)
+                        '()
+                        '((invoke guile2 "--version")))
 
-           ;; Strip store references.
-           (remove-store-references guile2)
+                 ;; Strip store references.
+                 (remove-store-references guile2)
 
-           ;; Verify that the stripped Guile works.  If it aborts, it could be
-           ;; that it tries to open iconv descriptors and fails because libc's
-           ;; iconv data isn't available (see `guile-default-utf8.patch'.)
-           ,@(if (%current-target-system)
-                 '()
-                 '((invoke guile2 "--version")))
-
-           #t))))
-    (inputs `(("guile" ,static-guile)))
+                 ;; Verify that the stripped Guile works.  If it aborts, it could be
+                 ;; that it tries to open iconv descriptors and fails because libc's
+                 ;; iconv data isn't available (see `guile-default-utf8.patch'.)
+                 #$@(if (%current-target-system)
+                        '()
+                        '((invoke guile2 "--version")))))))
     (outputs '("out"))
     (synopsis "Minimal statically-linked and relocatable Guile")))
 
@@ -803,37 +804,35 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
 (define (tarball-package pkg)
   "Return a package containing a tarball of PKG."
-  (package (inherit pkg)
+  (package
+    (inherit pkg)
     (name (string-append (package-name pkg) "-tarball"))
     (build-system trivial-build-system)
-    (native-inputs `(("tar" ,tar)
-                     ("xz" ,xz)))
-    (inputs `(("input" ,pkg)))
+    (native-inputs (list tar xz))
     (arguments
-     (let ((name    (package-name pkg))
-           (version (package-version pkg)))
-       `(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (let ((out   (assoc-ref %outputs "out"))
-                 (input (assoc-ref %build-inputs "input"))
-                 (tar   (assoc-ref %build-inputs "tar"))
-                 (xz    (assoc-ref %build-inputs "xz")))
-             (mkdir out)
-             (set-path-environment-variable "PATH" '("bin") (list tar xz))
-             (with-directory-excursion input
-               (invoke "tar" "cJvf"
-                       (string-append out "/"
-                                      ,name "-" ,version
-                                      "-"
-                                      ,(or (%current-target-system)
-                                           (%current-system))
-                                      ".tar.xz")
-                       "."
-                       ;; avoid non-determinism in the archive
-                       "--sort=name" "--mtime=@0"
-                       "--owner=root:0" "--group=root:0")))))))))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
+               (let ((out   #$output)
+                     (input #$pkg)
+                     (tar   #+(this-package-native-input "tar"))
+                     (xz    #+(this-package-native-input "xz")))
+                 (mkdir out)
+                 (set-path-environment-variable "PATH" '("bin") (list tar xz))
+                 (with-directory-excursion input
+                   (invoke "tar" "cJvf"
+                           (string-append out "/"
+                                          #$(package-name pkg) "-"
+                                          #$(package-version pkg)
+                                          "-"
+                                          #$(or (%current-target-system)
+                                                (%current-system))
+                                          ".tar.xz")
+                           "."
+                           ;; avoid non-determinism in the archive
+                           "--sort=name" "--mtime=@0"
+                           "--owner=root:0" "--group=root:0"))))))))
 
 (define %bootstrap-binaries-tarball
   ;; A tarball with the statically-linked bootstrap binaries.
@@ -896,17 +895,18 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                         (symlink file (basename file)))
                                       (find-files directory "\\.tar\\."))))
                          %build-inputs))))
-    (inputs `(("guile-tarball" ,%guile-bootstrap-tarball)
-              ,@(match (or (%current-target-system) (%current-system))
-                  ((or "i686-linux" "x86_64-linux")
-                   `(("bootstrap-mescc-tools" ,%mescc-tools-bootstrap-tarball)
-                     ("bootstrap-mes" ,%mes-bootstrap-tarball)
-                     ("bootstrap-linux-libre-headers"
-                      ,%linux-libre-headers-bootstrap-tarball)))
-                  (_ `(("gcc-tarball" ,%gcc-bootstrap-tarball)
-                       ("binutils-tarball" ,%binutils-bootstrap-tarball)
-                       ("glibc-tarball" ,(%glibc-bootstrap-tarball))
-                       ("coreutils&co-tarball" ,%bootstrap-binaries-tarball))))))
+    (inputs
+     (append (list %guile-bootstrap-tarball)
+         (match (or (%current-target-system) (%current-system))
+           ((or "i686-linux" "x86_64-linux")
+            (list %mescc-tools-bootstrap-tarball
+                  %mes-bootstrap-tarball
+                  %linux-libre-headers-bootstrap-tarball))
+           (_
+            (list %gcc-bootstrap-tarball
+                  %binutils-bootstrap-tarball
+                  (%glibc-bootstrap-tarball)
+                  %bootstrap-binaries-tarball)))))
     (synopsis "Tarballs containing all the bootstrap binaries")
     (description synopsis)
     (home-page #f)

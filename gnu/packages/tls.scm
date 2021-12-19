@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +58,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages libbsd)
@@ -93,7 +95,7 @@
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-static")))
-    (native-inputs `(("perl" ,perl)))
+    (native-inputs (list perl))
     (home-page "https://www.gnu.org/software/libtasn1/")
     (synopsis "ASN.1 library")
     (description
@@ -116,7 +118,7 @@ specifications.")
         "1fc64g45ykmv73kdndr4zdm4wxhimhrir4rxnygxvwkych5l81w0"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl)))
+     (list perl))
     (home-page "https://lionet.info/asn1c")
     (synopsis "ASN.1 to C compiler")
     (description "The ASN.1 to C compiler takes ASN.1 module
@@ -143,13 +145,33 @@ in intelligent transportation networks.")
        (base32 "1dn6br4v033d3gp2max9lsr3y4q0nj6iyr1yq3kzi8ym7lal13wa"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     `(,@(if (hurd-target?)
+             `(("autoconf" ,autoconf)
+               ("automake" ,automake)
+               ("gettext" ,gettext-minimal) ;for autopoint
+               ("libtool" ,libtool))
+             '())
+       ("pkg-config" ,pkg-config)))
     (inputs
      `(("libffi" ,libffi)
+       ,@(if (hurd-target?)
+             `(("libbsd" ,libbsd)
+               ("hurd-patch" ,(search-patch "p11-kit-hurd.patch")))
+             '())
        ("libtasn1" ,libtasn1)))
     (arguments
      `(#:configure-flags '("--without-trust-paths")
        #:phases (modify-phases %standard-phases
+                  ,@(if (hurd-target?)
+                        '((add-after 'unpack 'apply-hurd-patch
+                            (lambda* (#:key inputs #:allow-other-keys)
+                              (let ((patch (assoc-ref inputs "hurd-patch")))
+                                (invoke "patch" "-p1" "--batch" "-i"
+                                        patch))))
+                          (replace 'bootstrap
+                            (lambda _
+                              (invoke "autoreconf" "-fiv"))))
+                        '())
                   (add-before 'check 'prepare-tests
                     (lambda _
                       ;; "test-runtime" expects XDG_RUNTIME_DIR to be set up
@@ -159,7 +181,7 @@ in intelligent transportation networks.")
                       (substitute* "Makefile"
                         (("test-runtime\\$\\(EXEEXT\\)") ""))
                       #t)))))
-    (home-page "https://p11-glue.freedesktop.org/p11-kit.html")
+    (home-page "https://p11-glue.github.io/p11-glue/p11-kit.html")
     (synopsis "PKCS#11 library")
     (description
      "p11-kit provides a way to load and enumerate PKCS#11 modules.  It
@@ -168,6 +190,24 @@ in such a way that they are discoverable.  It also solves problems with
 coordinating the use of PKCS#11 by different components or libraries
 living in the same process.")
     (license license:bsd-3)))
+
+(define-public p11-kit-next
+  (package
+    (inherit p11-kit)
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/p11-glue/p11-kit/releases/"
+                           "download/" version "/p11-kit-" version ".tar.xz"))
+       (sha256
+        (base32 "11f6saclxsclc1f3lbavzw8kikws4cr3mfd1avly8dgnhh2i9rl1"))))
+    (arguments
+     ;; Use the default certificates so that users such as flatpak find them.
+     ;; See <https://issues.guix.gnu.org/49957>.
+     (substitute-keyword-arguments (package-arguments p11-kit)
+       ((#:configure-flags flags ''())
+        ''("--with-trust-paths=/etc/ssl/certs/ca-certificates.crt"))))))
 
 (define-public gnutls
   (package
@@ -264,7 +304,7 @@ living in the same process.")
              `(("datefudge" ,datefudge)))         ;tests rely on 'datefudge'
        ("util-linux" ,util-linux)))               ;one test needs 'setsid'
     (inputs
-     `(("guile" ,guile-3.0)))
+     (list guile-3.0))
     (propagated-inputs
      ;; These are all in the 'Requires.private' field of gnutls.pc.
      `(("libtasn1" ,libtasn1)
@@ -311,9 +351,6 @@ required structures.")
               ,@(alist-delete "guile"
                               (package-inputs gnutls))))))
 
-(define-public guile3.0-gnutls
-  (deprecated-package "guile3.0-gnutls" gnutls))
-
 (define (target->openssl-target target)
   "Return the value to set CONFIGURE_TARGET_ARCH to when cross-compiling
 OpenSSL for TARGET."
@@ -337,13 +374,15 @@ OpenSSL for TARGET."
         ((string-prefix? "powerpc64" target)
          "linux-ppc64")
         ((string-prefix? "powerpc" target)
-         "linux-ppc")))
+         "linux-ppc")
+        ((string-prefix? "riscv64" target)
+         ;; linux64-riscv64 isn't recognized until 3.0.0.
+         "linux-generic64")))
 
 (define-public openssl
   (package
     (name "openssl")
-    (version "1.1.1k")
-    (replacement openssl-1.1.1l)
+    (version "1.1.1l")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -356,12 +395,12 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
               (sha256
                (base32
-                "1rdfzcrxy9y38wqdw5942vmdax9hjhgrprzxm42csal7p5shhal9"))))
+                "1lbblxps2fhmz7bqh058iywh5wxfignbfx1s1kz2fj63b5g3wyhb"))))
     (build-system gnu-build-system)
     (outputs '("out"
-               "doc"         ;6.8 MiB of man3 pages and full HTML documentation
-               "static"))    ;6.4 MiB of .a files
-    (native-inputs `(("perl" ,perl)))
+               "doc"        ;6.8 MiB of man3 pages and full HTML documentation
+               "static"))   ;6.4 MiB of .a files
+    (native-inputs (list perl))
     (arguments
      `(#:parallel-tests? #f
        #:test-target "test"
@@ -383,12 +422,13 @@ OpenSSL for TARGET."
                 #~())
          ;; This test seems to be dependant on kernel features.
          ;; https://github.com/openssl/openssl/issues/12242
-         #$@(if (target-arm?)
-              #~((replace 'check
-                   (lambda* (#:key tests? test-target #:allow-other-keys)
-                     (when tests?
-                       (invoke "make" "TESTS=-test_afalg" test-target)))))
-              #~())
+         #$@(if (or (target-arm?)
+                    (target-riscv64?))
+                #~((replace 'check
+                     (lambda* (#:key tests? test-target #:allow-other-keys)
+                       (when tests?
+                         (invoke "make" "TESTS=-test_afalg" test-target)))))
+                #~())
          (replace 'configure
            (lambda* (#:key configure-flags #:allow-other-keys)
              (let* ((out #$output)
@@ -402,7 +442,7 @@ OpenSSL for TARGET."
                 invoke #$@(if (%current-target-system)
                               #~("./Configure")
                               #~("./config"))
-                "shared"    ;build shared libraries
+                "shared"                ;build shared libraries
                 "--libdir=lib"
 
                 ;; The default for this catch-all directory is
@@ -455,37 +495,18 @@ OpenSSL for TARGET."
     (native-search-paths
      (list (search-path-specification
             (variable "SSL_CERT_DIR")
-            (separator #f)                        ;single entry
+            (separator #f)              ;single entry
             (files '("etc/ssl/certs")))
            (search-path-specification
             (variable "SSL_CERT_FILE")
             (file-type 'regular)
-            (separator #f)                        ;single entry
+            (separator #f)              ;single entry
             (files '("etc/ssl/certs/ca-certificates.crt")))))
     (synopsis "SSL/TLS implementation")
     (description
      "OpenSSL is an implementation of SSL/TLS.")
     (license license:openssl)
     (home-page "https://www.openssl.org/")))
-
-;; Replacement package to fix multiple CVEs.
-(define openssl-1.1.1l
-  (package
-    (inherit openssl)
-    (version "1.1.1l")
-    (source (origin
-              (method url-fetch)
-              (uri (list (string-append "https://www.openssl.org/source/openssl-"
-                                        version ".tar.gz")
-                         (string-append "ftp://ftp.openssl.org/source/"
-                                        "openssl-" version ".tar.gz")
-                         (string-append "ftp://ftp.openssl.org/source/old/"
-                                        (string-trim-right version char-set:letter)
-                                        "/openssl-" version ".tar.gz")))
-              (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
-              (sha256
-               (base32
-                "1lbblxps2fhmz7bqh058iywh5wxfignbfx1s1kz2fj63b5g3wyhb"))))))
 
 ;; We will not add any new uses of this package. If you add new code that uses
 ;; this package, your change will be reverted!
@@ -638,13 +659,13 @@ netcat implementation that supports TLS.")
   (package
     (name "python-acme")
     ;; Remember to update the hash of certbot when updating python-acme.
-    (version "1.17.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "acme" version))
               (sha256
                (base32
-                "03ij1wp7jwvppv70qbjkgdg7w824yh6j4gfb68jj20wicx08xx1a"))))
+                "1bv2swaqmzpcx2nq1nbhrc6b825d5sxkdv0al972sjfcpcqn1q4s"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -661,21 +682,21 @@ netcat implementation that supports TLS.")
                (install-file "docs/_build/man/acme-python.1" man)
                #t))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ;; For documentation
-       ("python-sphinx" ,python-sphinx)
-       ("python-sphinxcontrib-programoutput" ,python-sphinxcontrib-programoutput)
-       ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
-       ("texinfo" ,texinfo)))
+     (list python-pytest
+           ;; For documentation
+           python-sphinx
+           python-sphinxcontrib-programoutput
+           python-sphinx-rtd-theme
+           texinfo))
     (propagated-inputs
-     `(("python-josepy" ,python-josepy)
-       ("python-requests" ,python-requests)
-       ("python-requests-toolbelt" ,python-requests-toolbelt)
-       ("python-pytz" ,python-pytz)
-       ("python-pyrfc3339" ,python-pyrfc3339)
-       ("python-pyasn1" ,python-pyasn1)
-       ("python-cryptography" ,python-cryptography)
-       ("python-pyopenssl" ,python-pyopenssl)))
+     (list python-josepy
+           python-requests
+           python-requests-toolbelt
+           python-pytz
+           python-pyrfc3339
+           python-pyasn1
+           python-cryptography
+           python-pyopenssl))
     (home-page "https://github.com/certbot/certbot")
     (synopsis "ACME protocol implementation in Python")
     (description "ACME protocol implementation in Python")
@@ -692,7 +713,7 @@ netcat implementation that supports TLS.")
               (uri (pypi-uri "certbot" version))
               (sha256
                (base32
-                "0wyipx6q78fmvngf1i6g50s01qpjqh07qlk1b5vyxwgl3080lhgg"))))
+                "0yr8sxfg5zspal04l9lpd9xis6gp8il20bhka54xr9bb4hc6xrgk"))))
     (build-system python-build-system)
     (arguments
      `(,@(substitute-keyword-arguments (package-arguments python-acme)
@@ -709,28 +730,28 @@ netcat implementation that supports TLS.")
                     (install-file "docs/_build/man/certbot.7" man7)
                     #t))))))))
     (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)
-       ;; For documentation
-       ("python-sphinx" ,python-sphinx)
-       ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
-       ("python-sphinx-repoze-autointerface" ,python-sphinx-repoze-autointerface)
-       ("python-sphinxcontrib-programoutput" ,python-sphinxcontrib-programoutput)
-       ("texinfo" ,texinfo)))
+     (list python-mock
+           python-pytest
+           ;; For documentation
+           python-sphinx
+           python-sphinx-rtd-theme
+           python-sphinx-repoze-autointerface
+           python-sphinxcontrib-programoutput
+           texinfo))
     (propagated-inputs
-     `(("python-acme" ,python-acme)
-       ("python-cryptography" ,python-cryptography)
-       ("python-zope-interface" ,python-zope-interface)
-       ("python-pyrfc3339" ,python-pyrfc3339)
-       ("python-pyopenssl" ,python-pyopenssl)
-       ("python-configobj" ,python-configobj)
-       ("python-configargparse" ,python-configargparse)
-       ("python-distro" ,python-distro)
-       ("python-zope-component" ,python-zope-component)
-       ("python-parsedatetime" ,python-parsedatetime)
-       ("python-psutil" ,python-psutil)
-       ("python-requests" ,python-requests)
-       ("python-pytz" ,python-pytz)))
+     (list python-acme
+           python-cryptography
+           python-zope-interface
+           python-pyrfc3339
+           python-pyopenssl
+           python-configobj
+           python-configargparse
+           python-distro
+           python-zope-component
+           python-parsedatetime
+           python-psutil
+           python-requests
+           python-pytz))
     (synopsis "Let's Encrypt client by the Electronic Frontier Foundation")
     (description "Certbot automatically receives and installs X.509 certificates
 to enable Transport Layer Security (TLS) on servers.  It interoperates with the
@@ -756,7 +777,7 @@ certificates for free.")
                (base32
                 "1pfgh4h3szcpvqlcimc60pjbk9zwls99x5863sva0wc47i4dl010"))))
     (build-system perl-build-system)
-    (inputs `(("openssl" ,openssl)))
+    (inputs (list openssl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -791,11 +812,9 @@ servers or clients for more complicated applications.")
           "0djl5i6kibl7862b6ih29q8dhg5zpwzq77q9j8hp6xngshx40ws1"))))
   (build-system perl-build-system)
   (native-inputs
-   `(("perl-crypt-openssl-guess" ,perl-crypt-openssl-guess)))
+   (list perl-crypt-openssl-guess))
   (inputs
-    `(("perl-crypt-openssl-bignum" ,perl-crypt-openssl-bignum)
-      ("perl-crypt-openssl-random" ,perl-crypt-openssl-random)
-      ("openssl" ,openssl)))
+    (list perl-crypt-openssl-bignum perl-crypt-openssl-random openssl))
   (arguments perl-crypt-arguments)
   (home-page
     "https://metacpan.org/release/Crypt-OpenSSL-RSA")
@@ -830,7 +849,7 @@ OpenSSL libraries).")
         (base32
           "1p22znbajq91lbk2k3yg12ig7hy5b4vy8igxwqkmbm4nhgxp4ki3"))))
   (build-system perl-build-system)
-  (inputs `(("openssl" ,openssl)))
+  (inputs (list openssl))
   (arguments perl-crypt-arguments)
   (home-page
     "https://metacpan.org/release/Crypt-OpenSSL-Bignum")
@@ -878,9 +897,9 @@ correct OpenSSL include path.  It is intended for use in your
         (base32 "1x6ffps8q7mnawmcfq740llzy7i10g3319vap0wiw4d33fm6z1zh"))))
   (build-system perl-build-system)
   (native-inputs
-   `(("perl-crypt-openssl-guess" ,perl-crypt-openssl-guess)))
+   (list perl-crypt-openssl-guess))
   (inputs
-   `(("openssl" ,openssl)))
+   (list openssl))
   (arguments perl-crypt-arguments)
   (home-page
     "https://metacpan.org/release/Crypt-OpenSSL-Random")
@@ -918,10 +937,9 @@ number generator")
                #t)))
          (delete 'configure)))) ; no './configure' script
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libbsd" ,libbsd)
-       ("libressl" ,libressl)))
+     (list libbsd libressl))
     (synopsis "Let's Encrypt client by the OpenBSD project")
     (description "acme-client is a Let's Encrypt client implemented in C.  It
 uses a modular design, and attempts to secure itself by dropping privileges and
@@ -970,8 +988,7 @@ then ported to the GNU / Linux environment.")
              (for-each make-file-writable (find-files "."))
              #t)))))
     (native-inputs
-     `(("perl" ,perl)
-       ("python" ,python)))
+     (list perl python))
     (synopsis "Small TLS library")
     (description
      "@code{mbed TLS}, formerly known as PolarSSL, makes it trivially easy
@@ -1067,17 +1084,16 @@ coding footprint.")
                               "sed"))))))
            #t))))
     (inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)
-       ("curl" ,curl)
-       ("diffutils" ,diffutils)
-       ("gawk" ,gawk)
-       ("grep" ,grep)
-       ("openssl" ,openssl)
-       ("sed" ,sed)))
+     (list bash
+           coreutils
+           curl
+           diffutils
+           gawk
+           grep
+           openssl
+           sed))
     (native-inputs
-     `(("gzip" ,gzip)
-       ("tar" ,tar)))
+     (list gzip tar))
     ;; The following definition is copied from the cURL package to prevent a
     ;; cycle between the curl and tls modules.
     (native-search-paths
@@ -1087,10 +1103,10 @@ coding footprint.")
             (separator #f)
             (files '("etc/ssl/certs/ca-certificates.crt")))))
     (home-page "https://dehydrated.io/")
-    (synopsis "Let's Encrypt/ACME client implemented as a shell script")
-    (description "Dehydrated is a client for signing certificates with an
-ACME-server (currently only provided by Let's Encrypt) implemented as a
-relatively simple Bash script.")
+    (synopsis "ACME client implemented as a shell script")
+    (description "Dehydrated is a client for obtaining certificates from an
+ACME server (such as Let's Encrypt) implemented as a relatively simple Bash
+script.")
     (license license:expat)))
 
 (define-public go-github-com-certifi-gocertifi
@@ -1120,22 +1136,21 @@ derived from Mozilla's collection.")
 (define-public s2n
   (package
     (name "s2n")
-    (version "1.0.10")
+    ; Update only when updating aws-crt-cpp.
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url (string-append "https://github.com/awslabs/" name))
+                    (url "https://github.com/aws/s2n-tls")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ampvh2n235hhd9nabgjjvja7d5r5kj45q56ass1k8g52a6xg0jq"))))
+                "14dhdddlph36nshdkh0v33718hxjx5vxqxmkw7707393q0qrgipw"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ; tests fail to build for static library
-       #:configure-flags
-       '("-DBUILD_TESTING=OFF"
-         "-DBUILD_SHARED_LIBS=ON")))
+     '(#:configure-flags
+       '("-DBUILD_SHARED_LIBS=ON")))
     (propagated-inputs
      `(("openssl" ,openssl)
        ("openssl:static" ,openssl "static")))
@@ -1149,13 +1164,13 @@ As it can be difficult to keep track of which encryption algorithms and
 protocols are best to use, s2n-tls features a simple API to use the latest
 default set of preferences.  Remaining on a specific version for backwards
 compatibility is also supported.")
-    (home-page "https://github.com/awslabs/s2n")
+    (home-page "https://github.com/aws/s2n-tls")
     (license license:asl2.0)))
 
 (define-public wolfssl
   (package
     (name "wolfssl")
-    (version "4.8.0")
+    (version "4.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1164,15 +1179,13 @@ compatibility is also supported.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w9gs9cq2yhj5s3diz3x1l15pgrc1pbm00jccizvcjyibmwyyf2h"))))
+                "0w5pd40j6h4j2f0b7c2n1n979y9qk8aln3ss2gb0jfsid1hrmx5k"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
        '("--enable-reproducible-build")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list autoconf automake libtool))
     (synopsis "SSL/TLS implementation")
     (description "The wolfSSL embedded SSL library (formerly CyaSSL) is an
 SSL/TLS library written in ANSI C and targeted for embedded, RTOS, and
@@ -1182,3 +1195,30 @@ and DTLS 1.2, is up to 20 times smaller than OpenSSL, and offers progressive
 ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
     (home-page "https://www.wolfssl.com/")
     (license license:gpl2+))) ; Audit
+
+(define-public aws-lc
+  (let ((commit "d0a5455417d80e68581e197d95720c3fb25e3926")
+        (revision "0"))
+    (package
+      (name "aws-lc")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url (string-append "https://github.com/awslabs/" name))
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ysj3x1f2lcdvwzyb9x3waykz1j7r21viv5z5vgc0ja9xv7znm9g"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:tests? #f ; re-enable but with go and perl dependencies
+         #:configure-flags
+         '("-DBUILD_SHARED_LIBS=ON")))
+      (synopsis "General purpose cryptographic library")
+      (description "AWS libcrypto (aws-lc) contains portable C implementations
+of algorithms needed for TLS and common applications, and includes optimized
+assembly versions for x86 and ARM.")
+      (home-page "https://github.com/awslabs/aws-lc")
+      (license license:asl2.0))))

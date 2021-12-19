@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019, 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
@@ -11,6 +11,9 @@
 ;;; Copyright © 2020 Ellis Kenyo <me@elken.dev>
 ;;; Copyright © 2020 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
+;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,11 +79,10 @@
                (("^\"\\$srcdir/configure\".*") ""))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     ;; When Arc is missing an icon, it looks in the Moka icon theme for it.
     (propagated-inputs
-     `(("moka-icon-theme" ,moka-icon-theme)))
+     (list moka-icon-theme))
     (synopsis "Arc icon theme")
     (description "The Arc icon theme provides a set of icons matching the
 style of the Arc GTK theme.  Icons missing from the Arc theme are provided by
@@ -143,8 +145,7 @@ the Obsidian icon theme.")
              (substitute* "meson.build"
                (("meson.add_install_script.*") "")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (synopsis "Faba icon theme")
     (description
      "Faba is a minimal icon set used as a basis for other themes such as
@@ -170,7 +171,7 @@ Moka")
     (propagated-inputs
      ;; Moka is based on Faba by using it as a fallback icon set instead of
      ;; bundling it, so we need to add it as a propagated input.
-     `(("faba-icon-theme" ,faba-icon-theme)))
+     (list faba-icon-theme))
     (synopsis "Moka icon theme")
     (description "Moka is a stylized desktop icon set, designed to be clear,
 simple and consistent.")
@@ -281,6 +282,39 @@ GNOME Shell.")
 that caches clipboard history.")
     (license license:expat)))
 
+(define-public gnome-shell-extension-customize-ibus
+  (package
+    (name "gnome-shell-extension-customize-ibus")
+    (version "78")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openSUSE/Customize-IBus.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hnnsjriq7xaakk8biwz55mn077lnm9nsmi4wz5zk7clgxmasvq9"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "VERSION=" ,version)
+             (string-append "INSTALLBASE=" (assoc-ref %outputs "out")
+                            "/share/gnome-shell/extensions"))
+       #:tests? #f ; No test target
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'bootstrap)
+         (delete 'configure))))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")))
+    (home-page "https://github.com/openSUSE/Customize-IBus")
+    (synopsis "GNOME Shell Extension for IBus Customization")
+    (description "Customize IBus provides full customization of appearance,
+behavior, system tray and input source indicator for IBus.")
+    (license license:gpl3+)))
+
 (define-public gnome-shell-extension-topicons-redux
   (package
     (name "gnome-shell-extension-topicons-redux")
@@ -296,7 +330,7 @@ that caches clipboard history.")
         (base32 "1dli9xb545n3xlj6q4wl0y5gzkm903zs47p8fiq71pdvbr6v38rj"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("glib" ,glib "bin")))
+     (list `(,glib "bin")))
     (arguments
      `(#:tests? #f                      ;no test defined in the project
        #:phases
@@ -325,7 +359,7 @@ easier to keep track of applications running in the background.")
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "67")
+    (version "71")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -334,7 +368,7 @@ easier to keep track of applications running in the background.")
                                            version))))
               (sha256
                (base32
-                "1746xm0iyvyzj6m3pvjx11smh9w1s7naz426ki0dlr5l7jh3mpy5"))
+                "12b6ljzs5071zs0kcf5yj4jfhq10b1gnldv0hmbksnqzz5g719wf"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -349,9 +383,10 @@ easier to keep track of applications running in the background.")
     (native-inputs
      `(("glib:bin" ,glib "bin")
        ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("sassc" ,sassc)))
     (propagated-inputs
-     `(("glib" ,glib)))
+     (list glib))
     (synopsis "Transforms GNOME's dash into a dock")
     (description "This extension moves the dash out of the
 overview, transforming it into a dock for easier application launching and
@@ -436,7 +471,6 @@ faster window switching.")
        ("nautilus" ,nautilus)
        ("openssh" ,openssh)
        ("openssl" ,openssl)
-       ("python-nautilus" ,python-nautilus)
        ("python-pygobject" ,python-pygobject)
        ("upower" ,upower)))
     (native-inputs
@@ -486,10 +520,9 @@ control.")
                  (copy-recursively dir (string-append out pre dir))
                  #t))))))
       (native-inputs
-       `(("glib" ,glib "bin")
-         ("intltool" ,intltool)))
+       (list `(,glib "bin") intltool))
       (propagated-inputs
-       `(("glib" ,glib)))
+       (list glib))
       (synopsis "Hide app icon from GNOME's panel")
       (description "This extension hides the icon and/or title of the
 currently focused application in the top panel of the GNOME shell.")
@@ -504,7 +537,7 @@ currently focused application in the top panel of the GNOME shell.")
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "38")
+    (version "45")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -512,7 +545,7 @@ currently focused application in the top panel of the GNOME shell.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1kvybb49l1vf0fvh8d0c6xkwnry8m330scamf5x40y63d4i213j1"))
+                "05bfd3b1g9zd86pl1rpgfqsmip271lasyfj8phpqf1gdds5yz6f6"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -528,11 +561,10 @@ currently focused application in the top panel of the GNOME shell.")
          (delete 'bootstrap)
          (delete 'configure))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (propagated-inputs
-     `(("glib" ,glib)
-       ("glib" ,glib "bin")))
+     (list glib
+           `(,glib "bin")))
     (synopsis "Icon taskbar for GNOME Shell")
     (description "This extension moves the dash into the gnome main
 panel so that the application launchers and system tray are combined
@@ -603,7 +635,7 @@ notebooks and tiling window managers.")
 (define-public arc-theme
   (package
     (name "arc-theme")
-    (version "20201013")
+    (version "20210412")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -612,30 +644,25 @@ notebooks and tiling window managers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x2l1mwjx68dwf3jb1i90c1q8nqsl1wf2zggcn8im6590k5yv39s"))))
-    (build-system gnu-build-system)
+                "0zs44dagp6baiyszlr1kj5ncap43fg32dv07rl46nxbds2p65lh4"))))
+    (build-system meson-build-system)
     (arguments
      '(#:configure-flags
-       (list "--disable-cinnamon")
+       '("-Dthemes=gnome-shell,gtk2,gtk3,metacity,plank,unity,xfwm")
        #:phases
        (modify-phases %standard-phases
-         ;; autogen.sh calls configure at the end of the script.
-         (replace 'bootstrap
-           (lambda _ (invoke "autoreconf" "-vfi")))
          (add-before 'build 'set-home   ;placate Inkscape
            (lambda _
              (setenv "HOME" (getcwd))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("glib" ,glib "bin")             ; for glib-compile-resources
-       ("gnome-shell" ,gnome-shell)
-       ("gtk+" ,gtk+)
-       ("inkscape" ,inkscape)
-       ("optipng" ,optipng)
-       ("pkg-config" ,pkg-config)
-       ("sassc" ,sassc/libsass-3.5)))
+     (list `(,glib "bin") ; for glib-compile-resources
+           gnome-shell
+           gtk+
+           inkscape
+           optipng
+           pkg-config
+           sassc/libsass-3.5))
     (synopsis "A flat GTK+ theme with transparent elements")
     (description "Arc is a flat theme with transparent elements for GTK 3, GTK
 2, and GNOME Shell which supports GTK 3 and GTK 2 based desktop environments
@@ -660,12 +687,12 @@ like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
                 "154qawiga792iimkpk3a6q8f4gm4r158wmsagkbqqbhj33kxgxhg"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gtk+" ,gtk+)
-       ("glib:bin" ,glib "bin")         ; for "glib-compile-resources"
-       ("librsvg" ,librsvg)
-       ("pkg-config" ,pkg-config)
-       ("ruby-sass" ,ruby-sass)
-       ("sassc" ,sassc)))
+     (list gtk+
+           `(,glib "bin") ; for "glib-compile-resources"
+           librsvg
+           pkg-config
+           ruby-sass
+           sassc))
     (home-page "https://shimmerproject.org/")
     (synopsis "Grey GTK+ theme based on Bluebird")
     (description "Greybird is a grey derivative of the Bluebird theme by the
@@ -707,10 +734,9 @@ Shimmer Project.  It supports GNOME, Unity, and Xfce.")
            (invoke "./install.sh" "-d" themesdir)
            #t))))
     (inputs
-     `(("gtk-engines" ,gtk-engines)))
+     (list gtk-engines))
     (native-inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)))
+     (list bash coreutils))
     (synopsis "Flat design theme for GTK 3, GTK 2 and GNOME-Shell")
     (description "Matcha is a flat Design theme for GTK 3, GTK 2 and
 Gnome-Shell which supports GTK 3 and GTK 2 based desktop environments
@@ -735,8 +761,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
             "0qaxxafsn5zd2ysgr0jyv5j73360mfdmxyd55askswlsfphssn74"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gtk+" ,gtk+)
-       ("sassc" ,sassc)))
+     (list gtk+ sassc))
     (home-page "https://github.com/nana-4/materia-theme")
     (synopsis "Material Design theme for a wide range of environments")
     (description "Materia is a Material Design theme for GNOME/GTK based
@@ -778,9 +803,6 @@ Cinnamon, MATE, Unity, Xfce, LightDM, GDM, Chrome theme, etc.")
 dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
     (home-page "https://numixproject.github.io")
     (license license:gpl3+)))
-
-(define-public numix-theme
-  (deprecated-package "numix-theme" numix-gtk-theme))
 
 (define-public orchis-theme
   (package
@@ -832,11 +854,10 @@ dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
              (apply invoke "./install.sh" configure-flags)
              #t)))))
     (inputs
-     `(("gtk-engines" ,gtk-engines)))
+     (list gtk-engines))
     (native-inputs
-     `(;("coreutils" ,coreutils)
-       ("gtk+" ,gtk+)
-       ("sassc" ,sassc)))
+     (list ;("coreutils" ,coreutils)
+           gtk+ sassc))
     (home-page "https://github.com/vinceliuice/Orchis-theme")
     (synopsis "Material Design theme for a wide range of environments")
     (description "Orchis is a Material Design them for GNOME/GTK based
@@ -849,7 +870,7 @@ variants.")
 (define-public markets
   (package
     (name "markets")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
       (origin
         (method git-fetch)
@@ -859,7 +880,7 @@ variants.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0nk1bs7i6b7r90g5qwd3s2m462vk3kvza0drq7rzb5sdaiz9ccnz"))))
+          "0sfdmz7cp8i2bymippp8jyxsidxjn69v9cqm40q77j81kfm84bfv"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -885,8 +906,8 @@ variants.")
        ("json-glib" ,json-glib)
        ("vala" ,vala)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin"))) ; for 'glib-compile-resources'
+     (list pkg-config
+           `(,glib "bin"))) ; for 'glib-compile-resources'
     (home-page "https://github.com/bitstower/markets")
     (synopsis "Stock, currency and cryptocurrency tracker")
     (description
@@ -900,7 +921,7 @@ track stocks, currencies and cryptocurrencies.")
     ;; Note to maintainer: VLS must be built with a Vala toolchain the same
     ;; version or newer. Therefore when you update this package you may need
     ;; to update Vala too.
-    (version "0.48.1")
+    (version "0.48.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -908,17 +929,13 @@ track stocks, currencies and cryptocurrencies.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "12k095052jkvbiyz8gzkj6w7r7p16d5m18fyikl48yvh5nln8fw0"))))
+               (base32 "1gnvc91gdp3wj9r3r3xxfr09f9lw39cfypn2q5f0443dhhmp059j"))))
     (build-system meson-build-system)
     (arguments '(#:glib-or-gtk? #t))
     (inputs
-     `(("glib" ,glib)
-       ("json-glib" ,json-glib)
-       ("jsonrpc-glib" ,jsonrpc-glib)
-       ("libgee" ,libgee)
-       ("vala" ,vala)))
+     (list glib json-glib jsonrpc-glib libgee vala))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://github.com/benwaffle/vala-language-server")
     (synopsis "Language server for Vala")
     (description "The Vala language server is an implementation of the Vala
@@ -956,40 +973,38 @@ palette.")
    (license license:gpl3))))
 
 (define-public tiramisu
-  (let ((commit "8eb946dae0e2f98d3850d89e1bb535640e8c3266")
-        (revision "0"))
-    (package
-      (name "tiramisu")
-      (version (git-version "1.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Sweets/tiramisu")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0wz2r8369d40vnxswknx0zxzbs03gzv0nc8al4g0ffg972p15j25"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'check)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (install-file "tiramisu" (string-append out "/bin"))
-                 #t))))
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target)))))
-      (inputs
-       `(("glib" ,glib)))
-      (native-inputs
-       `(("pkg-config" ,pkg-config)))
-      (home-page "https://github.com/Sweets/tiramisu")
-      (synopsis "Desktop notifications, the UNIX way")
-      (description "tiramisu is a notification daemon based on dunst that
-outputs notifications to STDOUT in order to allow the user to process
-notifications any way they prefer.")
-      (license license:expat))))
+  (package
+    (name "tiramisu")
+    (version "2.0.20211107")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Sweets/tiramisu")
+                    (commit version)))
+              (sha256
+               (base32
+                "1n1x1ybbwbanibw7b90k7v4cadagl41li17hz2l8s2sapacvq3mw"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'check)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "tiramisu" (string-append out "/bin"))
+               #t))))
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target)))))
+    (inputs
+     (list glib))
+    (native-inputs
+     (list pkg-config vala))
+    (home-page "https://github.com/Sweets/tiramisu")
+    (synopsis "Desktop notifications, the UNIX way")
+    (description "tiramisu is a notification daemon based on dunst that outputs
+notifications to STDOUT in order to allow the user to process notifications any
+way they prefer.")
+    (license license:expat)))

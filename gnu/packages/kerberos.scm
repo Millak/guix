@@ -10,7 +10,7 @@
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -57,8 +57,7 @@
 (define-public mit-krb5
   (package
     (name "mit-krb5")
-    (replacement mit-krb5-1.19.2)
-    (version "1.19.1")
+    (version "1.19.2")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -71,14 +70,12 @@
               (patches (search-patches "mit-krb5-hurd.patch"))
               (sha256
                (base32
-                "02xjpsfy84l6v7vjlxzhrl6mx2zrmxz0v01w2j33bv73nxzgh5ps"))))
+                "0snz1jm2w4dkk65zcz953jmmv9mqa30fanch2bk8r3rs9vp3yi8h"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("bison" ,bison)
-       ("perl" ,perl)
-       ("tcl" ,tcl)))                   ;required for some tests
+     (list bison perl tcl))                   ;required for some tests
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (arguments
      `(;; XXX: On 32-bit systems, 'kdb5_util' hangs on an fcntl/F_SETLKW call
        ;; while running the tests in 'src/tests'. Also disable tests when
@@ -121,23 +118,6 @@ cryptography.")
     (home-page "https://web.mit.edu/kerberos/")
     (properties '((cpe-name . "kerberos")))))
 
-(define mit-krb5-1.19.2
-  (package
-    (inherit mit-krb5)
-    (version "1.19.2")
-    (source (origin
-              (inherit (package-source mit-krb5))
-              (uri (list
-                    (string-append "https://web.mit.edu/kerberos/dist/krb5/"
-                                   (version-major+minor version)
-                                   "/krb5-" version ".tar.gz")
-                    (string-append "https://kerberos.org/dist/krb5/"
-                                   (version-major+minor version)
-                                   "/krb5-" version ".tar.gz")))
-              (sha256
-               (base32
-                "0snz1jm2w4dkk65zcz953jmmv9mqa30fanch2bk8r3rs9vp3yi8h"))))))
-
 (define-public shishi
   (package
     (name "shishi")
@@ -167,14 +147,14 @@ cryptography.")
              (("^install-data-hook:")
               "install-data-hook:\nx:\n"))
             #t)))))
-    (native-inputs `(("pkg-config" ,pkg-config)))
+    (native-inputs (list pkg-config))
     (inputs
-     `(("gnutls" ,gnutls)
-       ("libidn" ,libidn)
-       ("linux-pam" ,linux-pam-1.2)
-       ("zlib" ,zlib)
-       ("libgcrypt" ,libgcrypt)
-       ("libtasn1" ,libtasn1)))
+     (list gnutls
+           libidn
+           linux-pam-1.2
+           zlib
+           libgcrypt
+           libtasn1))
     (home-page "https://www.gnu.org/software/shishi/")
     (synopsis "Implementation of the Kerberos 5 network security system")
     (description
@@ -204,8 +184,7 @@ After installation, the system administrator should generate keys using
                   (substitute* "configure"
                     (("User=.*$") "User=Guix\n")
                     (("Host=.*$") "Host=GNU")
-                    (("Date=.*$") "Date=2019\n"))
-                  #t))))
+                    (("Date=.*$") "Date=2019\n"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -249,17 +228,21 @@ After installation, the system administrator should generate keys using
                                (("ac_cv_prog_COMPILE_ET=\\$\\{with_cross_tools\\}compile_et")
                                 "ac_cv_PROG_COMPILE_ET=compile_et")))
                            '())
-                     (substitute* '("appl/afsutil/pagsh.c" "appl/su/su.c")
-                       (("/bin/sh")
-                        (search-input-file inputs "bin/sh"))
-                       ;; Use the cross-compiled bash instead of the
-                       ;; native bash (XXX shouldn't _PATH_BSHELL point
-                       ;; to a cross-compiled bash?).
-                       (("_PATH_BSHELL")
-                        (string-append
-                         "\"" (search-input-file inputs "bin/sh") "\"")))
-                     (substitute* '("tools/Makefile.in")
-                       (("/bin/sh") (which "sh")))))
+                     ,@(if (%current-target-system)
+                           '((substitute* '("appl/afsutil/pagsh.c" "appl/su/su.c")
+                               (("/bin/sh")
+                                (search-input-file inputs "bin/sh"))
+                               ;; Use the cross-compiled bash instead of the
+                               ;; native bash (XXX shouldn't _PATH_BSHELL point
+                               ;; to a cross-compiled bash?).
+                               (("_PATH_BSHELL")
+                                (string-append
+                                 "\"" (search-input-file inputs "bin/sh") "\"")))
+                             (substitute* '("tools/Makefile.in")
+                               (("/bin/sh") (which "sh"))))
+                           '((substitute* '("appl/afsutil/pagsh.c"
+                                            "tools/Makefile.in")
+                               (("/bin/sh") (which "sh")))))))
                   (add-before 'check 'pre-check
                     (lambda _
                       ;; For 'getxxyyy-test'.
@@ -269,21 +252,19 @@ After installation, the system administrator should generate keys using
                       ;; FIXME: figure out why 'kdc' tests fail.
                       (with-output-to-file "tests/db/have-db.in"
                         (lambda ()
-                          (format #t "#!~a~%exit 1~%" (which "sh"))))
-                      #t)))
+                          (format #t "#!~a~%exit 1~%" (which "sh")))))))
        ;; Tests fail when run in parallel.
        #:parallel-tests? #f))
-    (native-inputs `(("e2fsprogs" ,e2fsprogs)     ;for 'compile_et'
-                     ("texinfo" ,texinfo)
-                     ("unzip" ,unzip)             ;for tests
-                     ,@(if (%current-target-system)
-                           `(("perl" ,perl))
-                           '())))
-    (inputs `(("readline" ,readline)
-              ("bash-minimal" ,bash-minimal)
-              ("bdb" ,bdb)
-              ("e2fsprogs" ,e2fsprogs)            ;for libcom_err
-              ("sqlite" ,sqlite)))
+    (native-inputs (list e2fsprogs ;for 'compile_et'
+                         texinfo
+                         unzip ;for tests
+                         perl))
+    (inputs (list readline
+                  bash-minimal
+                  bdb
+                  e2fsprogs ;for libcom_err
+                  mit-krb5
+                  sqlite))
     (home-page "http://www.h5l.org/")
     (synopsis "Kerberos 5 network authentication")
     (description

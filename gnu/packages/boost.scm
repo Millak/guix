@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,7 +68,7 @@
 (define-public boost
   (package
     (name "boost")
-    (version "1.76.0")
+    (version "1.77.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://boostorg.jfrog.io/artifactory/main/release/"
@@ -75,10 +76,9 @@
                                   (version-with-underscores version) ".tar.bz2"))
               (sha256
                (base32
-                "0hcc661savk32hx65997p0ss1awj6ala4cmz4w7lbi42x6k7nfgh"))))
+                "0m08hhk3l7zvzajyk39qlw566q3fhixayhc2j11328qf0gy8b7zw"))))
     (build-system gnu-build-system)
-    (inputs `(("icu4c" ,icu4c)
-              ("zlib" ,zlib)))
+    (inputs (list icu4c zlib))
     (native-inputs
      `(("perl" ,perl)
        ,@(if (%current-target-system)
@@ -183,8 +183,7 @@
                           (symlink libboost_pythonNN.so
                                    (string-append "libboost_python"
                                                   (string-take python-version 1)
-                                                  ".so")))
-                        #t))))))))
+                                                  ".so")))))))))))
 
     (home-page "https://www.boost.org")
     (synopsis "Peer-reviewed portable C++ source libraries")
@@ -217,9 +216,7 @@ across a broad spectrum of applications.")
        ("libcxxabi" ,libcxxabi-6)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("clang" ,clang-6)
-       ("perl" ,perl)
-       ("tcsh" ,tcsh)))
+     (list clang-6 perl tcsh))
     (arguments
      `(#:tests? #f
        #:make-flags
@@ -280,6 +277,13 @@ across a broad spectrum of applications.")
 
 (define-public boost-with-python3
   (deprecated-package "boost-with-python3" boost))
+
+(define-public boost-with-python2
+  (package/inherit boost
+    (name "boost-python2")
+    (native-inputs
+     `(("python" ,python-2)
+       ,@(alist-delete "python" (package-native-inputs boost))))))
 
 (define-public boost-static
   (package
@@ -360,9 +364,9 @@ across a broad spectrum of applications.")
     (properties '((hidden? . #t)))))
 
 (define-public boost-sync
-  (let ((commit "c72891d9b90e2ceb466ec859f640cd012b2d8709")
+  (let ((commit "e690de2d30e2f1649ff500c9a6f3539814994b1c")
         (version "1.55")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "boost-sync")
       (version (git-version version revision commit))
@@ -374,7 +378,7 @@ across a broad spectrum of applications.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "197mp5z048vz5kv1m4v3jm447l2gqsyv0rbfz11dz0ns343ihbyx"))))
+                  "0473hb15affjq2804xa99ikk4y1gzi46rygd9zhncl28ib7mnn26"))))
       (build-system trivial-build-system)
       (arguments
        `(#:modules ((guix build utils))
@@ -403,7 +407,7 @@ Boost.Thread.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13i5j43nggb46i6qpaf7gk53i7zp7pimphl7sydyfqz2m9yx5cdy"))))
+                "1prhj98jgvkj2m3ia5lcgxnl1a4h13cyzqd55skjn983rivi6090"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -456,7 +460,7 @@ signals and slots system.")
                "03b8i43pw4m767mm0cnbi77x7qhpkzpi9b1f6dpp4cmyszmnsk8l"))))
     (build-system gnu-build-system)
     (propagated-inputs
-      `(("boost" ,boost))) ; inclusion of header files
+      (list boost)) ; inclusion of header files
     (home-page "https://gitlab.com/mdds/mdds")
     (synopsis "Multi-dimensional C++ data structures and indexing algorithms")
     (description "Mdds (multi-dimensional data structure) provides a

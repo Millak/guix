@@ -51,6 +51,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -59,6 +61,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -72,6 +75,7 @@
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages lisp-check)
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
@@ -83,6 +87,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -123,10 +128,12 @@
            (assoc-ref glib-or-gtk:%standard-phases
                       'glib-or-gtk-wrap)))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
+     `(("desktop-file-utils" ,desktop-file-utils) ;for tests
+       ("glib:bin" ,glib "bin")
        ("gtk+:bin" ,gtk+ "bin")
        ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("which" ,which))) ;for tests
     (inputs
      `(("adwaita-icon-theme" ,adwaita-icon-theme)
        ("gcr" ,gcr)
@@ -137,10 +144,9 @@
        ("json-glib" ,json-glib)
        ("libarchive" ,libarchive)
        ("libpeas" ,libpeas)
-       ("libsoup" ,libsoup)
        ("sqlite" ,sqlite)
        ("vala" ,vala)
-       ("webkitgtk" ,webkitgtk)))
+       ("webkitgtk" ,webkitgtk-with-libsoup2)))
     (synopsis "Lightweight graphical web browser")
     (description "@code{Midori} is a lightweight, Webkit-based web browser.
 It features integration with GTK+3, configurable web search engine, bookmark
@@ -151,21 +157,21 @@ management, extensions such as advertisement blocker and colorful tabs.")
 (define-public links
   (package
     (name "links")
-    (version "2.23")
+    (version "2.25")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://links.twibright.com/download/"
                                   "links-" version ".tar.bz2"))
               (sha256
                (base32
-                "0idcwryfbf6ds5x2fx1k21m459qz5mrz3hw4a6ziiz91yl1d4q36"))))
+                "0b6x97xi8i4pag2scba02c0h95cm3sia58q99zppk0lfd448bmrd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
-             ;; The tarball uses a very old version of autconf. It doesn't
+             ;; The tarball uses a very old version of autoconf. It doesn't
              ;; understand extra flags like `--enable-fast-install', so
              ;; we need to invoke it with just what it understands.
              (let ((out (assoc-ref outputs "out")))
@@ -176,10 +182,8 @@ management, extensions such as advertisement blocker and colorful tabs.")
                (setenv "CONFIG_SHELL" (which "bash"))
                (invoke "./configure"
                        (string-append "--prefix=" out)
-                       "--enable-graphics")
-               #t))))))
-    (native-inputs `(("linux-libre-headers" ,linux-libre-headers)
-                     ("pkg-config" ,pkg-config)))
+                       "--enable-graphics")))))))
+    (native-inputs (list pkg-config))
     (inputs `(("gpm" ,gpm)
               ("libevent" ,libevent)
               ("libjpeg" ,libjpeg-turbo)
@@ -221,10 +225,10 @@ features including, tables, builtin image display, bookmarks, SSL and more.")
        ("glib-networking" ,glib-networking)
        ("lua5.1-filesystem" ,lua5.1-filesystem)
        ("luajit" ,luajit)
-       ("webkitgtk" ,webkitgtk)
+       ("webkitgtk" ,webkitgtk-with-libsoup2)
        ("sqlite" ,sqlite)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:make-flags
@@ -283,16 +287,15 @@ and the GTK+ toolkit.")
                (base32
                 "06jhv8ibfw1xkf8d8zrnkc2aw4d462s77hlp6f6xa6k8awzxvmkg"))))
     (build-system gnu-build-system)
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("perl" ,perl)))
-    (inputs `(("ncurses" ,ncurses)
-              ("libidn" ,libidn)
-              ("openssl" ,openssl)
-              ("libgcrypt" ,libgcrypt)
-              ("unzip" ,unzip)
-              ("zlib" ,zlib)
-              ("gzip" ,gzip)
-              ("bzip2" ,bzip2)))
+    (native-inputs (list pkg-config perl))
+    (inputs (list ncurses
+                  libidn
+                  openssl
+                  libgcrypt
+                  unzip
+                  zlib
+                  gzip
+                  bzip2))
     (arguments
      `(#:configure-flags
        (let ((openssl (assoc-ref %build-inputs "openssl")))
@@ -440,13 +443,13 @@ access.")
                 (base32
                  "1kvkxkisi3czldnb43ig60l55pi4a3m2a4ixp7krhpf9fc5wp294")))))))
       (inputs
-       `(("cmark" ,cmark)
-         ("font-google-noto" ,font-google-noto)
-         ("font-openmoji" ,font-openmoji)
-         ("openssl" ,openssl)
-         ("qtbase" ,qtbase-5)
-         ("qtmultimedia" ,qtmultimedia)
-         ("qtsvg" ,qtsvg)))
+       (list cmark
+             font-google-noto
+             font-openmoji
+             openssl
+             qtbase-5
+             qtmultimedia
+             qtsvg))
       (home-page "https://kristall.random-projects.net")
       (synopsis "Small-internet graphical client")
       (description "Graphical small-internet client with with many features
@@ -460,7 +463,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.3.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
@@ -468,26 +471,27 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "05n64mw9lzzxpxr7lhakbkm9ir3x8p0rwk6vbbg01aqg5iaanyj0"))))
+        (base32 "1v4jhlmgfm8v9sbf7i3xg1vjh6dy8y2gpckk0mizkazb2jxrmkgj"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-attrs" ,python-attrs))) ; for tests
+     (list python-attrs)) ; for tests
     (inputs
-     `(("python-colorama" ,python-colorama)
-       ("python-cssutils" ,python-cssutils)
-       ("python-importlib-resources" ,python-importlib-resources)
-       ("python-jinja2" ,python-jinja2)
-       ("python-markupsafe" ,python-markupsafe)
-       ("python-pygments" ,python-pygments)
-       ("python-pypeg2" ,python-pypeg2)
-       ("python-pyyaml" ,python-pyyaml)
-       ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
-       ;; that it's __init__.py is used first.
-       ("python-pyqtwebengine" ,python-pyqtwebengine)
-       ("python-pyqt" ,python-pyqt)
-       ;; While qtwebengine is provided by python-pyqtwebengine, it's
-       ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
-       ("qtwebengine" ,qtwebengine)))
+     (list bash-minimal
+           python-colorama
+           python-cssutils
+           python-jinja2
+           python-markupsafe
+           python-pygments
+           python-pynacl
+           python-pypeg2
+           python-pyyaml
+           ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
+           ;; that it's __init__.py is used first.
+           python-pyqtwebengine
+           python-pyqt
+           ;; While qtwebengine is provided by python-pyqtwebengine, it's
+           ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
+           qtwebengine))
     (arguments
      `(;; FIXME: With the existance of qtwebengine, tests can now run.  But
        ;; they are still disabled because test phase hangs.  It's not readily
@@ -495,10 +499,14 @@ interface.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-systemdir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* "qutebrowser/utils/standarddir.py"
+                 (("/usr/share") (string-append out "/share"))))))
          (add-before 'check 'set-env-offscreen
            (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t))
+             (setenv "QT_QPA_PLATFORM" "offscreen")))
          (add-after 'install 'install-more
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -519,8 +527,13 @@ interface.")
                (substitute* "misc/org.qutebrowser.qutebrowser.desktop"
                  (("Exec=qutebrowser")
                   (string-append "Exec=" out "/bin/qutebrowser")))
-               (install-file "misc/org.qutebrowser.qutebrowser.desktop" app)
-               #t)))
+               (install-file "misc/org.qutebrowser.qutebrowser.desktop" app))))
+         (add-after 'install 'install-userscripts
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out     (assoc-ref outputs "out"))
+                    (scripts (string-append out "/share/qutebrowser/userscripts")))
+               (mkdir-p scripts)
+               (copy-recursively "misc/userscripts" scripts))))
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -529,8 +542,7 @@ interface.")
                                       (assoc-ref inputs "qtwebengine")
                                       "/lib/qt5/libexec/QtWebEngineProcess")))
                (wrap-program bin
-                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))
-               #t))))))
+                 `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (home-page "https://qutebrowser.org/")
     (synopsis "Minimal, keyboard-focused, vim-like web browser")
     (description "qutebrowser is a keyboard-focused browser with a minimal
@@ -562,9 +574,9 @@ GUI.  It is based on PyQt5 and QtWebEngine.")
     (inputs
      `(("glib-networking" ,glib-networking)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("webkitgtk" ,webkitgtk)))
+       ("webkitgtk" ,webkitgtk-with-libsoup2)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://fanglingsu.github.io/vimb/")
     (synopsis "Fast and lightweight Vim-like web browser")
     (description "Vimb is a fast and lightweight vim like web browser based on
@@ -576,22 +588,20 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "2.1.1")
+    (version "2.2.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             ;; TODO: Mirror seems to hang, let's fallback to GitHub for now.
-             ;; (url "https://source.atlas.engineer/public/nyxt")
              (url "https://github.com/atlas-engineer/nyxt")
              (commit version)))
        (sha256
         (base32
-         "0kzm05swhyb197cjfd3iglf60b997sx7v95yxzyq483jxqbcxm0r"))
+         "1v1szbj44pwxh3k70fvg78xjfkab29dqnlafa722sppdyqd06cqp"))
        (file-name (git-file-name "nyxt" version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "nyxt" "NYXT_INTERNAL_QUICKLISP=false"
+     `(#:make-flags (list "nyxt" "NYXT_SUBMODULES=false"
                           (string-append "DESTDIR=" (assoc-ref %outputs "out"))
                           "PREFIX=")
        #:strip-binaries? #f             ; Stripping breaks SBCL binaries.
@@ -636,31 +646,36 @@ driven and does not detract you from your daily work.")
     (inputs
      `(("alexandria" ,sbcl-alexandria)
        ("bordeaux-threads" ,sbcl-bordeaux-threads)
+       ("cl-base64" ,sbcl-cl-base64)
        ("cl-calispel" ,sbcl-calispel)
        ("cl-containers" ,sbcl-cl-containers)
        ("cl-css" ,sbcl-cl-css)
        ("cl-custom-hash-table" ,sbcl-custom-hash-table)
        ("cl-html-diff" ,sbcl-cl-html-diff)
        ("cl-json" ,sbcl-cl-json)
-       ("cl-markup" ,sbcl-cl-markup)
        ("cl-ppcre" ,sbcl-cl-ppcre)
        ("cl-prevalence" ,sbcl-cl-prevalence)
+       ("cl-qrencode" ,sbcl-cl-qrencode)
        ("closer-mop" ,sbcl-closer-mop)
        ("cluffer" ,sbcl-cluffer)
        ("dexador" ,sbcl-dexador)
        ("enchant" ,sbcl-enchant)
+       ("flexi-streams" ,cl-flexi-streams)
        ("fset" ,sbcl-fset)
        ("hu.dwim.defclass-star" ,sbcl-hu.dwim.defclass-star)
        ("iolib" ,sbcl-iolib)
        ("local-time" ,sbcl-local-time)
        ("log4cl" ,sbcl-log4cl)
+       ("lparallel" ,sbcl-lparallel)
        ("mk-string-metrics" ,sbcl-mk-string-metrics)
        ("moptilities" ,sbcl-moptilities)
        ("named-readtables" ,sbcl-named-readtables)
        ("parenscript" ,sbcl-parenscript)
        ("plump" ,sbcl-plump)
+       ("clss" ,sbcl-clss)
        ("quri" ,sbcl-quri)
        ("serapeum" ,sbcl-serapeum)
+       ("spinneret" ,sbcl-spinneret)
        ("str" ,sbcl-cl-str)
        ("swank" ,sbcl-slime-swank)
        ("trivia" ,sbcl-trivia)
@@ -681,21 +696,15 @@ driven and does not detract you from your daily work.")
        ("gobject-introspection" ,gobject-introspection)))
     (synopsis "Extensible web-browser in Common Lisp")
     (home-page "https://nyxt.atlas.engineer")
-    (description "Nyxt is a keyboard-oriented, extensible web browser designed
-for power users.  Conceptually inspired by Emacs and Vim, it has familiar
-key-bindings (Emacs, vi, CUA), and is fully configurable in Common Lisp.")
+    (description "Nyxt is a keyboard-oriented, extensible web-browser designed
+for power users.  The application has familiar Emacs and VI key-bindings and
+is fully configurable and extensible in Common Lisp.")
     (license license:bsd-3)))
-
-(define-public next
-  (deprecated-package "next" nyxt))
-
-(define-public sbcl-next
-  (deprecated-package "sbcl-next" nyxt))
 
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.5.2")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
@@ -703,20 +712,29 @@ key-bindings (Emacs, vi, CUA), and is fully configurable in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "0gqaipgs16kw711ijhshmbhhvlyjvh37wxdz059p4vvjhfrxbr1v"))))
+        (base32 "1j4r2c6f9fqc22f14fjh28s324kfbb9ahf08nv0xlazy1y5g7f6d"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; TODO: unbundle fonts.
+           (delete-file-recursively "lib/fribidi")
+           (delete-file-recursively "lib/harfbuzz")))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #false                  ;no tests
        #:configure-flags (list "-DTFDN_ENABLE_SSE41=OFF")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config zip))
     (inputs
-     `(("libunistring" ,libunistring)
-       ("mpg123" ,mpg123)
-       ("openssl" ,openssl)
-       ("pcre" ,pcre)
-       ("sdl2" ,sdl2)
-       ("zlib" ,zlib)))
+     (list fribidi
+           harfbuzz
+           libunistring
+           libwebp
+           mpg123
+           openssl
+           pcre
+           sdl2
+           zlib))
     (home-page "https://gmi.skyjake.fi/lagrange/")
     (synopsis "Graphical Gemini client")
     (description
@@ -724,6 +742,8 @@ key-bindings (Emacs, vi, CUA), and is fully configurable in Common Lisp.")
 modern conveniences familiar from web browsers, such as smooth scrolling,
 inline image viewing, multiple tabs, visual themes, Unicode fonts, bookmarks,
 history, and page outlines.")
+    (properties
+     '((release-monitoring-url . "https://git.skyjake.fi/gemini/lagrange/releases")))
     (license license:bsd-2)))
 
 (define-public gmni
@@ -746,10 +766,9 @@ history, and page outlines.")
        `(#:tests? #f ; no check target
          #:make-flags (list (string-append "CC=" ,(cc-for-target)))))
       (inputs
-       `(("openssl" ,openssl)))
+       (list openssl))
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("scdoc" ,scdoc)))
+       (list pkg-config scdoc))
       (home-page "https://sr.ht/~sircmpwn/gmni")
       (synopsis "Minimalist command line Gemini client")
       (description "The gmni package includes:
@@ -808,7 +827,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.8.3")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -817,13 +836,17 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "117p1wxi5swmqw429qrswxz2zvp1dcaw2145gk6zxlgwln48qxl8"))))
+        (base32 "1cgx2g2kryfmcwqzzjzcpbdc6zzj10xc52gz0cj2dx5ylc0yg7k3"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("curl" ,curl)
+     `(("automake" ,automake)
+       ("autoreconf" ,autoconf)
        ("gettext" ,gnu-gettext)
-       ("gnupg" ,gnupg)
-       ("sbcl" ,sbcl)))
+       ("mandoc" , mandoc)
+       ("nano" ,nano)
+       ("openssl" ,openssl)
+       ("sbcl" ,sbcl)
+       ("xdg-utils" ,xdg-utils)))
     (inputs
      `(("access" ,sbcl-access)
        ("alexandria" ,sbcl-alexandria)
@@ -846,8 +869,6 @@ http, and https via third-party applications.")
        ("local-time" ,sbcl-local-time)
        ("log4cl" ,sbcl-log4cl)
        ("marshal" ,sbcl-marshal)
-       ("nano" ,nano)
-       ("openssl" ,openssl)
        ("osicat" ,sbcl-osicat)
        ("parse-number" ,sbcl-parse-number)
        ("percent-encoding" ,sbcl-percent-encoding)
@@ -855,8 +876,7 @@ http, and https via third-party applications.")
        ("sxql-composer" ,sbcl-sxql-composer)
        ("tooter" ,sbcl-tooter)
        ("unix-opts" ,sbcl-unix-opts)
-       ("usocket" ,sbcl-usocket)
-       ("xdg-utils" ,xdg-utils)))
+       ("usocket" ,sbcl-usocket)))
     (arguments
      `(#:tests? #f
        #:strip-binaries? #f
@@ -866,11 +886,24 @@ http, and https via third-party applications.")
            (lambda _
              (setenv "HOME" "/tmp")
              #t))
+         (add-after 'unpack 'fix-configure.ac
+           (lambda _
+              (delete-file "configure")
+              (substitute* "configure.ac"
+                (("AC_PATH_PROG.+CURL")
+                 "dnl")
+                (("AC_PATH_PROGS.+GIT")
+                 "dnl")
+                (("AC_PATH_PROG.+GPG")
+                 "dnl"))
+               #t))
          (add-after 'configure 'fix-asdf
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Makefile.in"
                (("LISP_COMPILER) ")
-                "LISP_COMPILER) --eval \"(require 'asdf)\" --eval \"(push \\\"$$(pwd)/\\\" asdf:*central-registry*)\"  "))
+                (string-concatenate
+                 '("LISP_COMPILER) --eval \"(require 'asdf)\" "
+                   "--eval \"(push \\\"$$(pwd)/\\\" asdf:*central-registry*)\"  "))))
              #t)))))
     (synopsis "Gemini and pleroma client with a terminal interface")
     (description
@@ -882,14 +915,14 @@ interface.")
 (define-public telescope
   (package
     (name "telescope")
-    (version "0.5.1")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
                            version "/telescope-" version ".tar.gz"))
        (sha256
-        (base32 "1fgv7gg2lwrjcihq6mkraqm10a6a7h430ikrjpcwfcpv1gvj8ckz"))))
+        (base32 "1hm9gi6yz62h8yh2br85bgycr2xaf5lr7z4gl0p25g7d7qb53ixd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
@@ -897,18 +930,44 @@ interface.")
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("libevent"  ,libevent)
-       ("libressl"  ,libressl)
-       ("ncurses"   ,ncurses)))
+     (list libevent libressl ncurses))
     (home-page "https://git.omarpolo.com/telescope/about/")
     (synopsis "Gemini client with a terminal interface")
     (description "Telescope is a w3m-like browser for Gemini.")
     (license license:x11)))
 
+(define-public leo
+  ;; PyPi only provides a wheel.
+  (let ((commit "88cc10a87afe2ec86be06e6ea2bcd099f5360b74")
+        (version "1.0.4")
+        (revision "1"))
+    (package
+      (name "leo")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xyzshantaram/leo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jp4v4jw82qqynqqs7x35g5yvm1sd48cvbqh7j2r1ixw1z6ldhc4"))))
+      (build-system python-build-system)
+      (home-page "https://github.com/xyzshantaram/leo")
+      (synopsis "Gemini client written in Python")
+      (description
+       "@command{leo} is a gemini client written in Python with no external
+dependencies that fully implements the Gemini spec.  A list of URLs can be
+saved to a file for further viewing in another window.")
+      (license license:expat))))
+
 (define-public av-98
   (package
     (name "av-98")
     (version "1.0.1")
+    (properties
+     '((upstream-name . "AV-98")))
     (source
      (origin
        (method url-fetch)

@@ -61,7 +61,7 @@
 (define-public remmina
   (package
     (name "remmina")
-    (version "1.4.20")
+    (version "1.4.22")
     (source
      (origin
        (method git-fetch)
@@ -71,7 +71,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0apm4lqcmqskdp2fjxl8dbg3686cm4w0b5806fqj7w43hdmd8w4v"))))
+        (base32 "1f8qqr20ccj3fvf587syilabk389afc7ax9xxpr55swqi4qgk9vy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -102,51 +102,50 @@
                         (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
                     (wrap-program file
                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("remmina" "remmina-file-wrapper")))
-             #t)))))
+                '("remmina" "remmina-file-wrapper"))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("intl" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           intltool
+           pkg-config))
     (inputs
-     `(("app-indicator" ,libappindicator)
-       ("atk" ,atk)
-       ("avahi" ,avahi)
-       ("cairo" ,cairo)
-       ("cups" ,cups)
-       ("ffmpeg" ,ffmpeg)
-       ("freerdp" ,freerdp)             ; for rdp plugin
-       ("gcrypt" ,libgcrypt)
-       ("gdk-pixbuf" ,gdk-pixbuf+svg)
-       ("glib" ,glib)
-       ("gnome-keyring" ,gnome-keyring)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("harfbuzz" ,harfbuzz)
-       ("json-glib" ,json-glib)
-       ("libsecret" ,libsecret)         ; for secret plugin
-       ("libsoup" ,libsoup)
-       ("libssh" ,libssh)               ; for ssh plugin
-       ("libvnc" ,libvnc)               ; for vnc plugin
-       ("openssl" ,openssl)
-       ("pango" ,pango)
-       ("pcre2" ,pcre2)                 ; for exec plugin
-       ("shared-mime-info" ,shared-mime-info)
-       ("sodium" ,libsodium)
-       ("spice-client-gtk" ,spice-gtk)  ; for spice plugin
-       ("telepathy" ,telepathy-glib)
-       ("vte" ,vte)                     ; for st plugin
-       ("wayland" ,wayland)
-       ("webkitgtk" ,webkitgtk)         ; for www plugin
-       ("x11" ,libx11)
-       ("xext" ,libxext)                ; for xdmcp plugin
-       ("xdg-utils" ,xdg-utils)
-       ("xkbfile" ,libxkbfile)))        ; for nx plugin
+     (list libappindicator
+           atk
+           avahi
+           cairo
+           cups
+           ffmpeg
+           freerdp                      ; for rdp plugin
+           libgcrypt
+           librsvg
+           glib
+           gnome-keyring
+           gsettings-desktop-schemas
+           gtk+
+           harfbuzz
+           json-glib
+           libsecret                    ; for secret plugin
+           libsoup-minimal-2
+           libssh                       ; for ssh plugin
+           libvnc                       ; for vnc plugin
+           openssl
+           pango
+           pcre2                        ; for exec plugin
+           shared-mime-info
+           libsodium
+           spice-gtk                    ; for spice plugin
+           telepathy-glib
+           vte                          ; for st plugin
+           wayland
+           webkitgtk                    ; for www plugin
+           libx11
+           libxext                      ; for xdmcp plugin
+           xdg-utils
+           libxkbfile))                 ; for nx plugin
     (propagated-inputs
-     `(("dconf" ,dconf)))
+     (list dconf))
     (home-page "https://remmina.org/")
     (synopsis "Remote Desktop Client")
     (description "Remmina is a client to use other desktops remotely.
@@ -176,21 +175,19 @@ RDP, VNC, SPICE, NX, XDMCP, SSH and EXEC network protocols are supported.")
                       (with-directory-excursion "vncviewer"
                         (invoke "make" "install")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("gettext-minimal" ,gettext-minimal)
-       ("automake" ,automake)))
+     (list autoconf gettext-minimal automake))
     (inputs
-     `(("zlib" ,zlib)
-       ("gnutls" ,gnutls)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("fltk" ,fltk)
-       ("linux-pam" ,linux-pam)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxtst" ,libxtst)
-       ("libxrandr" ,libxrandr)
-       ("libxdamage" ,libxdamage)
-       ("pixman" ,pixman)))
+     (list zlib
+           gnutls
+           libjpeg-turbo
+           fltk
+           linux-pam
+           libx11
+           libxext
+           libxtst
+           libxrandr
+           libxdamage
+           pixman))
     (home-page "https://tigervnc.org/")
     (synopsis "High-performance, platform-neutral
 implementation of VNC (client)")
@@ -228,13 +225,11 @@ application which is needed to connect to VNC servers.")
        ,@(package-inputs tigervnc-client)
        ,@(package-native-inputs xorg-server)))
     (inputs
-     `(("perl" ,perl)
-       ("coreutils" ,coreutils)
-       ("xauth" ,xauth)
-       ,@(package-inputs xorg-server)))
+     (modify-inputs (package-inputs xorg-server)
+       (prepend perl coreutils xauth)))
     (propagated-inputs
-     `(("xauth" ,xauth)
-       ,@(package-propagated-inputs xorg-server)))
+     (modify-inputs (package-propagated-inputs xorg-server)
+       (prepend xauth)))
     (arguments
      (substitute-keyword-arguments
          (package-arguments xorg-server)
@@ -363,7 +358,7 @@ where the server is installed.")))
                          "gcc -I"))
                       #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("gnutls" ,gnutls)
        ("libgcrypt" ,libgcrypt)

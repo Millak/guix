@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2017, 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014, 2015, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2017, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -52,6 +52,7 @@
   #:use-module (srfi srfi-35)
   #:use-module (rnrs bytevectors)
   #:use-module (web uri)
+  #:autoload   (texinfo) (texi-fragment->stexi)
   #:re-export (%current-system
                %current-target-system
                search-path-specification)         ;for convenience
@@ -169,6 +170,7 @@
             bag-transitive-host-inputs
             bag-transitive-build-inputs
             bag-transitive-target-inputs
+            package-development-inputs
             package-closure
 
             default-guile
@@ -363,6 +365,27 @@ name of its URI."
          ;; git, svn, cvs, etc. reference
          #f))))
 
+;; Work around limitations in the 'snippet' mechanism.  It is not possible for
+;; a 'snippet' to produce a tarball with a different base name than the
+;; original downloaded source.  Moreover, cherry picking dozens of upsteam
+;; patches and applying them suddenly is often impractical; especially when a
+;; comprehensive code reformatting is done upstream.  Mainly designed for
+;; Linux and IceCat packages.
+;; XXXX: do not make part of public API (export) such radical capability
+;; before a detailed review process.
+(define* (computed-origin-method gexp-promise hash-algo hash
+                                 #:optional (name "source")
+                                 #:key (system (%current-system))
+                                 (guile (default-guile)))
+  "Return a derivation that executes the G-expression that results
+from forcing GEXP-PROMISE."
+  (mlet %store-monad ((guile (package->derivation guile system)))
+    (gexp->derivation (or name "computed-origin")
+                      (force gexp-promise)
+                      #:graft? #f       ;nothing to graft
+                      #:system system
+                      #:guile-for-build guile)))
+
 
 (define %supported-systems
   ;; This is the list of system types that are supported.  By default, we
@@ -444,6 +467,49 @@ lexical scope of its body."
                                   (lambda (s) #,location)))
              body ...))))))
 
+(define-syntax validate-texinfo
+  (let ((validate? (getenv "GUIX_UNINSTALLED")))
+    (define ensure-thread-safe-texinfo-parser!
+      ;; Work around <https://issues.guix.gnu.org/51264> for Guile <= 3.0.7.
+      (let ((patched? (or (> (string->number (major-version)) 3)
+                          (> (string->number (minor-version)) 0)
+                          (> (string->number (micro-version)) 7)))
+            (next-token-of/thread-safe
+             (lambda (pred port)
+               (let loop ((chars '()))
+                 (match (read-char port)
+                   ((? eof-object?)
+                    (list->string (reverse! chars)))
+                   (chr
+                    (let ((chr* (pred chr)))
+                      (if chr*
+                          (loop (cons chr* chars))
+                          (begin
+                            (unread-char chr port)
+                            (list->string (reverse! chars)))))))))))
+        (lambda ()
+          (unless patched?
+            (set! (@@ (texinfo) next-token-of) next-token-of/thread-safe)
+            (set! patched? #t)))))
+
+    (lambda (s)
+      "Raise a syntax error when passed a literal string that is not valid
+Texinfo.  Otherwise, return the string."
+      (syntax-case s ()
+        ((_ str)
+         (string? (syntax->datum #'str))
+         (if validate?
+             (catch 'parser-error
+               (lambda ()
+                 (ensure-thread-safe-texinfo-parser!)
+                 (texi-fragment->stexi (syntax->datum #'str))
+                 #'str)
+               (lambda _
+                 (syntax-violation 'package "invalid Texinfo markup" #'str)))
+             #'str))
+        ((_ obj)
+         #'obj)))))
+
 ;; A package.
 (define-record-type* <package>
   package make-package
@@ -481,9 +547,11 @@ lexical scope of its body."
   (replacement package-replacement                ; package | #f
                (default #f) (thunked) (innate))
 
-  (synopsis package-synopsis)                    ; one-line description
-  (description package-description)              ; one or two paragraphs
-  (license package-license)
+  (synopsis package-synopsis
+            (sanitize validate-texinfo))          ; one-line description
+  (description package-description
+               (sanitize validate-texinfo))       ; one or two paragraphs
+  (license package-license)                       ; (list of) <license>
   (home-page package-home-page)
   (supported-systems package-supported-systems    ; list of strings
                      (default %supported-systems))
@@ -913,10 +981,10 @@ specifies modules in scope when evaluating SNIPPET."
                ((file-is-directory? #+source)
                 (copy-recursively directory #$output
                                   #:log (%make-void-port "w")))
-               ((not #+comp)
-                (copy-file file #$output))
-               (else
-                (repack directory #$output)))))))
+               ((or #+comp (tarball? #+source))
+                (repack directory #$output))
+               (else                    ;single uncompressed file
+                (copy-file file #$output)))))))
 
     (let ((name (if (or (checkout? original-file-name)
                         (not (compressor original-file-name)))
@@ -1015,13 +1083,6 @@ otherwise."
 otherwise."
   (lookup-input (package-direct-inputs package) name))
 
-(define (inputs-sans-labels inputs)
-  "Return INPUTS stripped of any input labels."
-  (map (match-lambda
-         ((label obj) obj)
-         ((label obj output) `(,obj ,output)))
-       inputs))
-
 (define (replace-input name replacement inputs)
   "Replace input NAME by REPLACEMENT within INPUTS."
   (map (lambda (input)
@@ -1056,7 +1117,10 @@ inputs of Coreutils and adds libcap:
     (delete \"gmp\" \"acl\")
     (append libcap))
 
-Other types of clauses include 'prepend' and 'replace'."
+Other types of clauses include 'prepend' and 'replace'.
+
+The first argument must be a labeled input list; the result is also a labeled
+input list."
     ;; Note: This macro hides the fact that INPUTS, as returned by
     ;; 'package-inputs' & co., is actually an alist with labels.  Eventually,
     ;; it will operate on list of inputs without labels.
@@ -1067,10 +1131,10 @@ Other types of clauses include 'prepend' and 'replace'."
      (modify-inputs (fold alist-delete inputs (list names ...))
                     clauses ...))
     ((_ inputs (prepend lst ...) clauses ...)
-     (modify-inputs (append (list lst ...) (inputs-sans-labels inputs))
+     (modify-inputs (append (map add-input-label (list lst ...)) inputs)
                     clauses ...))
     ((_ inputs (append lst ...) clauses ...)
-     (modify-inputs (append (inputs-sans-labels inputs) (list lst ...))
+     (modify-inputs (append inputs (map add-input-label (list lst ...)))
                     clauses ...))
     ((_ inputs (replace name replacement) clauses ...)
      (modify-inputs (replace-input name replacement inputs)
@@ -1155,23 +1219,36 @@ in INPUTS and their transitive propagated inputs."
 
 (define package-transitive-supported-systems
   (let ()
-    (define supported-systems
-      (mlambda (package system)
-        (parameterize ((%current-system system))
-          (fold (lambda (input systems)
-                  (match input
-                    ((label (? package? package) . _)
-                     (lset-intersection string=? systems
-                                        (supported-systems package system)))
-                    (_
-                     systems)))
-                (package-supported-systems package)
-                (bag-direct-inputs (package->bag package))))))
+    (define (supported-systems-procedure system)
+      (define supported-systems
+        (mlambdaq (package)
+          (parameterize ((%current-system system))
+            (fold (lambda (input systems)
+                    (match input
+                      ((label (? package? package) . _)
+                       (lset-intersection string=? systems
+                                          (supported-systems package)))
+                      (_
+                       systems)))
+                  (package-supported-systems package)
+                  (bag-direct-inputs (package->bag package))))))
+
+      supported-systems)
+
+    (define procs
+      ;; Map system strings to one-argument procedures.  This allows these
+      ;; procedures to have fast 'eq?' memoization on their argument.
+      (make-hash-table))
 
     (lambda* (package #:optional (system (%current-system)))
       "Return the intersection of the systems supported by PACKAGE and those
 supported by its dependencies."
-      (supported-systems package system))))
+      (match (hash-ref procs system)
+        (#f
+         (hash-set! procs system (supported-systems-procedure system))
+         (package-transitive-supported-systems package system))
+        (proc
+         (proc package))))))
 
 (define* (supported-package? package #:optional (system (%current-system)))
   "Return true if PACKAGE is supported on SYSTEM--i.e., if PACKAGE and all its
@@ -1207,6 +1284,15 @@ dependencies are known to build on SYSTEM."
   (parameterize ((%current-target-system (bag-target bag))
                  (%current-system (bag-system bag)))
     (transitive-inputs (bag-target-inputs bag))))
+
+(define* (package-development-inputs package
+                                     #:optional (system (%current-system))
+                                     #:key target)
+  "Return the list of inputs required by PACKAGE for development purposes on
+SYSTEM.  When TARGET is true, return the inputs needed to cross-compile
+PACKAGE from SYSTEM to TRIPLET, where TRIPLET is a triplet such as
+\"aarch64-linux-gnu\"."
+  (bag-transitive-inputs (package->bag package system target)))
 
 (define* (package-closure packages #:key (system (%current-system)))
   "Return the closure of PACKAGES on SYSTEM--i.e., PACKAGES and the list of
@@ -1770,7 +1856,7 @@ This is an internal procedure."
                          (return drv))
                         (grafts
                          (mlet %store-monad ((guile (package->derivation
-                                                     (default-guile)
+                                                     (guile-for-grafts)
                                                      system #:graft? #f)))
                            (graft-derivation* drv grafts
                                               #:system system
@@ -1793,7 +1879,7 @@ system identifying string)."
                          (return drv))
                         (grafts
                          (mlet %store-monad ((guile (package->derivation
-                                                     (default-guile)
+                                                     (guile-for-grafts)
                                                      system #:graft? #f)))
                            (graft-derivation* drv grafts
                                               #:system system

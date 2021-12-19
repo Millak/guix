@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2018, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2016, 2017, 2018, 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -72,6 +72,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
@@ -92,6 +93,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
@@ -173,7 +175,7 @@ communication, encryption, decryption, signatures, etc.")
 (define-public libmd
   (package
     (name "libmd")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
             (method url-fetch)
             (uri
@@ -184,8 +186,11 @@ communication, encryption, decryption, signatures, etc.")
                              version ".tar.xz")))
             (sha256
              (base32
-              "0jmga8y94h857ilra3qjaiax3wd5pd6mx1h120zhl9fcjmzhj0js"))))
+              "03skgv013v0y9hxh6j143xdwynb5cmbmbdylvvgfsjz38889477m"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "--disable-static")))
     (synopsis "Message Digest functions from BSD systems")
     (description
      "The currently provided message digest algorithms are:
@@ -226,9 +231,9 @@ communication, encryption, decryption, signatures, etc.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libbsd" ,libbsd)))
+     (list libbsd))
     (synopsis "Create and verify cryptographic signatures")
     (description "The signify utility creates and verifies cryptographic
 signatures using the elliptic curve Ed25519.  This is a Linux port of the
@@ -287,7 +292,7 @@ OpenBSD tool of the same name.")
     (arguments
      '(#:import-path "github.com/jedisct1/go-minisign"))
     (propagated-inputs
-     `(("go-golang-org-x-crypto" ,go-golang-org-x-crypto)))
+     (list go-golang-org-x-crypto))
     (home-page "https://github.com/jedisct1/go-minisign")
     (synopsis "Minisign verification library for Golang")
     (description "A Golang library to verify Minisign signatures.")
@@ -322,10 +327,7 @@ OpenBSD tool of the same name.")
        ("googletest-source" ,(package-source googletest))
        ("perl" ,perl)))
     (inputs
-     `(("attr" ,attr)
-       ("fuse" ,fuse)
-       ("openssl" ,openssl)
-       ("tinyxml2" ,tinyxml2)))
+     (list attr fuse openssl tinyxml2))
     (arguments
      `(#:configure-flags (list "-DUSE_INTERNAL_TINYXML=OFF")
        #:phases
@@ -363,21 +365,22 @@ the wrong hands.")
 (define-public keyutils
   (package
     (name "keyutils")
-    (version "1.6.1")
+    (version "1.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://people.redhat.com/dhowells/keyutils/keyutils-"
-                       version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url (string-append "https://git.kernel.org/pub/scm/linux/kernel/"
+                                 "git/dhowells/keyutils.git"))
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1kk4pmyflgplkgxn2bzpc069ph9c9jdd9ikcsyd5pnaimqi5gcf8"))
+        (base32 "1095g1p5038m91wf2dxnagngpvww7ilcj8fhyviid3srvxr675i7"))
        (modules '((guix build utils)))
        ;; Create relative symbolic links instead of absolute ones to /lib/*.
        (snippet '(begin
                    (substitute* "Makefile" (("\\$\\(LNS\\) \\$\\(LIBDIR\\)/")
-                                            "$(LNS) "))
-                   #t))))
+                                            "$(LNS) "))))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -389,10 +392,11 @@ the wrong hands.")
                           "INCLUDEDIR=/include"
                           "LIBDIR=/lib"
                           "MANDIR=/share/man"
-                          "SHAREDIR=/share/keyutils")
+                          "SHAREDIR=/share/keyutils"
+                          "NO_ARLIB=1") ; omit static libraries
        #:test-target "test"))
     (inputs
-     `(("mit-krb5" ,mit-krb5)))
+     (list mit-krb5))
     (home-page "https://people.redhat.com/dhowells/keyutils/")
     (synopsis "Linux key management utilities")
     (description
@@ -435,9 +439,9 @@ secure operations. ")
                (install-file "ssss.1.html" docdir)
                #t))))))
     (inputs
-     `(("gmp" ,gmp)))
+     (list gmp))
     (native-inputs
-     `(("xmltoman" ,xmltoman)))
+     (list xmltoman))
     (home-page "http://point-at-infinity.org/ssss/")
     (synopsis "Shamir's secret sharing scheme implementation")
     (description "@command{ssss-split} and @command{ssss-combine} are utilities that split
@@ -458,7 +462,7 @@ total number of shares generated.")
                (base32
                 "136nfnpaz29hngwwnzrmc858gpnvnb977gf4ldbpapw1h1k3r8mk"))))
     (build-system gnu-build-system)
-    (native-inputs `(("sudo" ,sudo)))   ;presence needed for 'check' phase
+    (native-inputs (list sudo))   ;presence needed for 'check' phase
     (inputs
      `(("zsh" ,zsh)
        ("gnupg" ,gnupg)
@@ -551,7 +555,7 @@ user's graphical desktop.")
               (install-file "FORMAT" doc)
               #t))))))
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (home-page "https://www.tarsnap.com/scrypt.html")
     (synopsis "Memory-hard encryption tool based on scrypt")
     (description "This package provides a simple password-based encryption
@@ -609,8 +613,7 @@ attacks than alternative functions such as @code{PBKDF2} or @code{bcrypt}.")
          "0yxqqcqvj51fn7b7j5xqhz65v74arzgainn66c6k7inijbmr1xws"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-module-build" ,perl-module-build)
-       ("perl-test-nowarnings" ,perl-test-nowarnings)))
+     (list perl-module-build perl-test-nowarnings))
     (home-page "https://metacpan.org/release/Math-Random-ISAAC-XS")
     (synopsis "C implementation of the ISAAC PRNG algorithm")
     (description "ISAAC (Indirection, Shift, Accumulate, Add, and Count) is a
@@ -636,9 +639,9 @@ This package implements the same interface as @code{Math::Random::ISAAC}.")
          "0z1b3xbb3xz71h25fg6jgsccra7migq7s0vawx2rfzi0pwpz0wr7"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-test-nowarnings" ,perl-test-nowarnings)))
+     (list perl-test-nowarnings))
     (propagated-inputs
-     `(("perl-math-random-isaac-xs" ,perl-math-random-isaac-xs)))
+     (list perl-math-random-isaac-xs))
     (home-page "https://metacpan.org/release/Math-Random-ISAAC")
     (synopsis "Perl interface to the ISAAC PRNG algorithm")
     (description "ISAAC (Indirection, Shift, Accumulate, Add, and Count) is a
@@ -664,16 +667,15 @@ generator.")
         (base32 "1rpdds3sy5l1fhngnkrsgwsmwd54wpicx3i9ds69blcskwkcwkpc"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-module-build-tiny" ,perl-module-build-tiny)
-       ("perl-test-fatal" ,perl-test-fatal)))
+     (list perl-module-build-tiny perl-test-fatal))
     (propagated-inputs
-     `(("perl-capture-tiny" ,perl-capture-tiny)
-       ("perl-module-find" ,perl-module-find)
-       ("perl-module-runtime" ,perl-module-runtime)
-       ("perl-moo" ,perl-moo)
-       ("perl-namespace-clean" ,perl-namespace-clean)
-       ("perl-sub-exporter" ,perl-sub-exporter)
-       ("perl-type-tiny" ,perl-type-tiny)))
+     (list perl-capture-tiny
+           perl-module-find
+           perl-module-runtime
+           perl-moo
+           perl-namespace-clean
+           perl-sub-exporter
+           perl-type-tiny))
     (home-page "https://metacpan.org/release/Crypt-Random-Source")
     (synopsis "Get weak or strong random data from pluggable sources")
     (description "This module provides implementations for a number of
@@ -694,15 +696,11 @@ byte-oriented sources of random data.")
          "0dgbf4ncll4kmgkyb9fsaxn0vf2smc9dmwqzgh3259zc2zla995z"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("perl-list-moreutils" ,perl-list-moreutils)
-       ("perl-test-leaktrace" ,perl-test-leaktrace)
-       ("perl-test-sharedfork" ,perl-test-sharedfork)
-       ("perl-test-warn" ,perl-test-warn)))
+     (list perl-list-moreutils perl-test-leaktrace perl-test-sharedfork
+           perl-test-warn))
     (inputs
-     `(("perl-crypt-random-source" ,perl-crypt-random-source)
-       ("perl-math-random-isaac" ,perl-math-random-isaac)
-       ("perl-math-random-isaac-xs" ,perl-math-random-isaac-xs)
-       ("perl-moo" ,perl-moo)))
+     (list perl-crypt-random-source perl-math-random-isaac
+           perl-math-random-isaac-xs perl-moo))
     (home-page "https://metacpan.org/release/Math-Random-Secure")
     (synopsis "Cryptographically secure replacement for rand()")
     (description "This module is intended to provide a
@@ -791,7 +789,7 @@ data on your platform, so the seed itself will be as random as possible.
                      "Cflags: -I${includedir}\n"))
                    #t))))))))
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (home-page "https://cryptopp.com/")
     (synopsis "C++ class library of cryptographic schemes")
     (description "Crypto++ is a C++ class library of cryptographic schemes.")
@@ -835,6 +833,41 @@ that are faster than MD5, SHA-1, SHA-2, and SHA-3, yet are at least as secure
 as the latest standard, SHA-3.  It is an improved version of the SHA-3 finalist
 BLAKE.")
     (license license:public-domain)))
+
+(define-public b2sum
+  ;; Upstream doesn't seem to use a versioned release workflow, so build from
+  ;; a recent commit.
+  (let ((commit "54f4faa4c16ea34bcd59d16e8da46a64b259fc07")
+        (revision "0"))
+    (package
+      (name "b2sum")
+      (version (git-version "20190724" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/BLAKE2/BLAKE2")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "04z631v0vzl52g73v390ask5fnzi5wg83lcjkjhpmmymaz0jn152"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
+                            (string-append "PREFIX=" (assoc-ref %outputs "out")))
+         #:tests? #f ; No test suite
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'build 'change-directory
+                       (lambda _
+                         (chdir "b2sum")))
+           (delete 'configure)))) ; No ./configure script
+      (home-page "https://www.blake2.net/")
+      (synopsis "BLAKE2 checksum tool")
+      (description "BLAKE2 is a cryptographic hash function faster than MD5,
+SHA-1, SHA-2, and SHA-3, yet is at least as secure as SHA-3.")
+      ;; You may also choose to redistribute this program as Apache 2.0 or the
+      ;; OpenSSL license. See 'b2sum/b2sum.c' in the source distribution.
+      (license license:cc0))))
 
 (define-public rhash
   (package
@@ -893,14 +926,14 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
 (define-public botan
   (package
     (name "botan")
-    (version "2.18.1")
+    (version "2.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://botan.randombit.net/releases/"
                                   "Botan-" version ".tar.xz"))
               (sha256
                (base32
-                "0adf53drhk1hlpfih0175c9081bqpclw6p2afn51cmx849ib9izq"))))
+                "0zih8agygp39ff0dwi3fv8y7dnnzpz3y86kcgjbhzlxry49kn6jl"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -913,6 +946,8 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
                (setenv "CXXFLAGS" "-O3")
                (invoke "python" "./configure.py"
                        (string-append "--prefix=" out)
+                       "--disable-static"
+
                        ;; Otherwise, the `botan` executable cannot find
                        ;; libbotan.
                        (string-append "--ldflags=-Wl,-rpath=" lib)
@@ -932,9 +967,7 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
      `(("python" ,python-wrapper)
        ("python-docutils" ,python-docutils)))
     (inputs
-     `(("sqlite" ,sqlite)
-       ("bzip2" ,bzip2)
-       ("zlib" ,zlib)))
+     (list sqlite bzip2 zlib))
     (synopsis "Cryptographic library in C++11")
     (description "Botan is a cryptography library, written in C++11, offering
 the tools necessary to implement a range of practical systems, such as TLS/DTLS,
@@ -969,8 +1002,8 @@ security.")
     (license license:gpl2)))
 
 (define-public asignify
-  (let ((commit "f58e7977a599f040797975d649ed318e25cbd2d5")
-        (revision "0"))
+  (let ((commit "08af003e1f4833713db28b871759d94f9b2b1469")
+        (revision "1"))
     (package
       (name "asignify")
       (version (git-version "1.1" revision commit))
@@ -982,7 +1015,7 @@ security.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1zl68qq6js6fdahxzyhvhrpyrwlv8c2zhdplycnfxyr1ckkhq8dw"))))
+                  "1zacpqa8b5lg270z1g06r5ik9vnb91crb4ivyy20381dny82xvr1"))))
       (build-system gnu-build-system)
       (arguments
        `(#:configure-flags
@@ -990,11 +1023,9 @@ security.")
                (string-append "--with-openssl="
                               (assoc-ref %build-inputs "openssl")))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)))
+       (list autoconf automake libtool))
       (inputs
-       `(("openssl" ,openssl)))
+       (list openssl))
       (home-page "https://github.com/vstakhov/asignify")
       (synopsis "Cryptographic authentication and encryption tool and library")
       (description "Asignify offers public cryptographic signatures and
@@ -1062,9 +1093,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
                              "--enable-module-ecdh"
                              "--enable-shared")))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)))
+       (list autoconf automake libtool))
       ;; WARNING: This package might need additional configure flags to run properly.
       ;; See https://github.com/archlinux/svntogit-community/blob/packages/libsecp256k1/trunk/PKGBUILD.
       (synopsis "C library for EC operations on curve secp256k1")
@@ -1102,9 +1131,7 @@ Features:
         (base32 "1rnif3iny6pz1r3g69bagzr342mm3x0v66b60csnmm1rg44bd5v1"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list autoconf automake libtool))
     (arguments
      '(#:configure-flags '("--enable-module-recovery"
                            "--enable-experimental"
@@ -1152,10 +1179,9 @@ Features:
                 "0npgr6y85gzwksy8jkwa4yzvqwjprwnplx3yiw3ayk4f0ldlhaxa"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("nettle" ,nettle)
-       ("libxml2" ,libxml2)))
+     (list nettle libxml2))
     (home-page "http://stoken.sf.net")
     (synopsis "Software Token for cryptographic authentication")
     (description
@@ -1202,8 +1228,7 @@ utility/testing functions.")
                (mkdir-p man1)
                #t))))))
     (inputs
-     `(("libsodium" ,libsodium)
-       ("openssl" ,openssl)))
+     (list libsodium openssl))
     (synopsis "High-performance command-line tool for stream encryption")
     (description "Hpenc is a command-line tool for performing authenticated
 encryption (AES-GCM and ChaCha20-Poly1305) of streaming data.  It does not
@@ -1216,23 +1241,23 @@ quickly by using all your CPU cores and hardware acceleration.")
 (define-public minisign
   (package
     (name "minisign")
-    (version "0.9")
+    (version "0.10")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://github.com/jedisct1/minisign/releases/download/"
-                       version "/minisign-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jedisct1/minisign")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1h9cfvvm6lqq33b2wdar1x3w4k7zyrscavllyb0l5dmcdabq60r2"))))
+        (base32 "0gi5z03w9sg72vyjs94y0mhkzz7bbhyzcg92mgmd9r2ydpi5gads"))))
     (build-system cmake-build-system)
     (arguments
-     ; No test suite
-     `(#:tests? #f))
+     `(#:tests? #f))                    ; no test suite
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libsodium" ,libsodium)))
+     (list libsodium))
     (home-page "https://jedisct1.github.io/minisign")
     (synopsis "Tool to sign files and verify signatures")
     (description
@@ -1278,6 +1303,36 @@ API.")
     (home-page "https://matrix.org/docs/projects/other/olm/")
     (license license:asl2.0)))
 
+(define-public python-olm
+  (package
+    ;; python-olm is part of libolm and must be updated at the same time.
+    (inherit libolm)
+    (name "python-olm")
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "python")))
+         (add-before 'build 'set-preprocessor
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CPP" "gcc -E")))
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest")))))))
+    (inputs (list libolm))
+    (propagated-inputs
+     (list python-cffi python-future))
+    (native-inputs
+     (list python-pytest python-pytest-benchmark python-aspectlib))
+    (synopsis "Python bindings for libolm")
+    (description "The libolm library implements the Double Ratchet
+cryptographic ratchet.  It is written in C and C++11, and exposed as a C
+API.  This package contains its Python bindings.")))
+
 (define-public hash-extender
   (let ((commit "cb8aaee49f93e9c0d2f03eb3cafb429c9eed723d")
         (revision "2"))
@@ -1312,7 +1367,7 @@ API.")
                  (install-file "README.md" docdir)
                  #t))))))
       (inputs
-       `(("openssl" ,openssl)))
+       (list openssl))
       (synopsis "Tool for hash length extension attacks")
       (description "@command{hash_extender} is a utility for performing hash
 length extension attacks supporting MD4, MD5, RIPEMD-160, SHA-0, SHA-1,
@@ -1345,9 +1400,9 @@ SHA-256, SHA-512, and WHIRLPOOL hashes.")
                (install-file "mkp224o" bindir)
                #t))))))
     (native-inputs
-     `(("autoconf" ,autoconf)))
+     (list autoconf))
     (inputs
-     `(("libsodium" ,libsodium)))
+     (list libsodium))
     (synopsis "Tor hidden service v3 name generator")
     (description "@code{mkp224o} generates valid ed25519 (hidden service
 version 3) onion addresses.  It allows one to produce customized vanity .onion
@@ -1369,8 +1424,7 @@ addresses using a brute-force method.")
         (base32 "0bpz1hazbhfb6pqi68x55kq6a31bgh6vwij836slmi4jqiwvnh5a"))
        (file-name (git-file-name name version))))
     (inputs
-     `(("git" ,git)
-       ("openssl" ,openssl)))
+     (list git openssl))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
@@ -1449,11 +1503,7 @@ non-encrypted files.")
      `(("python" ,python-wrapper)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("boost" ,boost)
-       ("curl" ,curl)
-       ("fuse" ,fuse)
-       ("range-v3" ,range-v3)
-       ("spdlog" ,spdlog)))
+     (list boost curl fuse range-v3 spdlog))
     (home-page "https://www.cryfs.org/")
     (synopsis "Encrypted FUSE filesystem for the cloud")
     (description "CryFS encrypts your files, so you can safely store them anywhere.
@@ -1463,3 +1513,86 @@ via FUSE without root permissions.  It is similar to EncFS, but provides
 additional security and privacy measures such as hiding file sizes and directory
 structure.  However CryFS is not considered stable yet by the developers.")
     (license license:lgpl3+)))
+
+(define-public rust-blake3-0.3
+  (package
+    (name "rust-blake3")
+    ;; Version 1 requires Rust >= 1.51.
+    ;; <https://github.com/BLAKE3-team/BLAKE3/releases/tag/1.0.0>
+    (version "0.3.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "blake3" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1cr5l5szgxm632px41kavl6cgils8h6yhdfkm6jsc5jgiivqai5n"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-arrayref" ,rust-arrayref-0.3)
+         ("rust-arrayvec" ,rust-arrayvec-0.5)
+         ("rust-cc" ,rust-cc-1)
+         ("rust-cfg-if" ,rust-cfg-if-0.1)
+         ("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
+         ("rust-crypto-mac" ,rust-crypto-mac-0.8)
+         ("rust-digest" ,rust-digest-0.9)
+         ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/BLAKE3-team/BLAKE3")
+    (synopsis "BLAKE3 hash function Rust implementation")
+    (description "This crate provides the official Rust implementation of the
+BLAKE3 cryptographic hash function.  BLAKE3 is faster than MD5, SHA-1, SHA-2,
+SHA-3, and BLAKE2.")
+    ;; Users may choose between these two licenses when redistributing the
+    ;; program provided by this package.
+    (license (list license:cc0 license:asl2.0))))
+
+(define-public b3sum
+  (package
+    (name "b3sum")
+    ;; Version 1 requires Rust >= 1.51.
+    ;; <https://github.com/BLAKE3-team/BLAKE3/releases/tag/1.0.0>
+    (version "0.3.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "b3sum" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0h3fz16q5lk6mg7r8kjkjrq5hd4injngn5m7pswjbf2pyzjmg4b4"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(;; Install the source so that Cargo.toml is installed, because that is
+        ;; the only reference to the license information.
+        #:install-source? #t
+        #:phases
+        (modify-phases %standard-phases
+          (add-before 'check 'patch-tests
+            (lambda _
+              (substitute* "tests/cli_tests.rs"
+                (("/bin/sh") (which "sh")))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (doc (string-append out "/share/doc/" ,name "-"
+                                         ,(package-version this-package))))
+                (install-file "README.md" doc)))))
+        #:cargo-inputs
+        (("rust-anyhow" ,rust-anyhow-1)
+         ("rust-blake3" ,rust-blake3-0.3)
+         ("rust-clap" ,rust-clap-2)
+         ("rust-hex" ,rust-hex-0.4)
+         ("rust-memmap" ,rust-memmap-0.7)
+         ("rust-rayon" ,rust-rayon-1)
+         ("rust-wild" ,rust-wild-2))
+        #:cargo-development-inputs
+        (("rust-duct" ,rust-duct-0.13)
+         ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/BLAKE3-team/BLAKE3")
+    (synopsis "Command line BLAKE3 checksum tool")
+    (description "This package provides @code{b3sum}, a command line
+checksum tool based on the BLAKE3 cryptographic hash function.")
+    ;; Users may choose between these two licenses when redistributing the
+    ;; program provided by this package.
+    (license (list license:cc0 license:asl2.0))))

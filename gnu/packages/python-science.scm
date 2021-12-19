@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,20 +75,17 @@
         (base32 "0rh5b1rwdcvvagld8vpxnpaibszy1skpx39a0fwzd5gx5pwcjvfb"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-pyparsing" ,python-pyparsing)))
+     (list python-numpy python-matplotlib python-pyparsing))
     (inputs
-     `(("openblas" ,openblas)
-       ("pybind11" ,pybind11)))
+     (list openblas pybind11))
     (native-inputs
-     `(("python-cython" ,python-cython)
-       ("python-pytest" ,python-pytest)
-       ("python-sphinx" ,python-sphinx)
-       ("python-numpydoc" ,python-numpydoc)
-       ("gfortran" ,gfortran)
-       ("perl" ,perl)
-       ("which" ,which)))
+     (list python-cython
+           python-pytest
+           python-sphinx
+           python-numpydoc
+           gfortran
+           perl
+           which))
     (outputs '("out" "doc"))
     (arguments
      `(#:phases
@@ -159,11 +157,12 @@ atlas_libs = openblas
          ;; within the source directory.
          (delete 'check)
          (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (with-directory-excursion "/tmp"
-               (invoke "python" "-c"
-                       "import scipy; scipy.test(verbose=2)")))))))
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (with-directory-excursion "/tmp"
+                 (invoke "python" "-c"
+                         "import scipy; scipy.test(verbose=2)"))))))))
     (home-page "https://www.scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
@@ -184,7 +183,16 @@ routines such as routines for numerical integration and optimization.")
        (uri (pypi-uri "scipy" version))
        (sha256
         (base32
-         "1cgvgin8fvckv96hjh3ikmwkra5rif51bdb75ifzf7xbil5iwcx4"))))))
+         "1cgvgin8fvckv96hjh3ikmwkra5rif51bdb75ifzf7xbil5iwcx4"))))
+    (native-inputs
+     (list python2-cython
+           python2-pytest
+           python2-sphinx
+           python2-numpydoc
+           gfortran-7
+           gcc-7
+           perl
+           which))))
 
 (define-public python2-weave
   (package
@@ -207,9 +215,9 @@ routines such as routines for numerical integration and optimization.")
                      "--exclude"
                      "test_(user|incorrect_ownership|char_fail|obj_fail)"))))))
     (propagated-inputs
-     `(("python-numpy" ,python2-numpy)))
+     (list python2-numpy))
     (native-inputs
-     `(("python-nose" ,python2-nose)))
+     (list python2-nose))
     (home-page "https://www.scipy.org/")
     (synopsis "Tools for including C/C++ code within Python code")
     (description "Weave is the stand-alone version of the obsolete Scipy
@@ -238,11 +246,9 @@ Cython.")
              (invoke "nosetests" "-s" "-v" "skfuzzy")
              #t)))))
     (native-inputs
-     `(("python-nose" ,python-nose)))
+     (list python-nose))
     (propagated-inputs
-     `(("python-networkx" ,python-networkx)
-       ("python-numpy" ,python-numpy)
-       ("python-scipy" ,python-scipy)))
+     (list python-networkx python-numpy python-scipy))
     (home-page "https://github.com/scikit-fuzzy/scikit-fuzzy")
     (synopsis "Fuzzy logic toolkit for SciPy")
     (description
@@ -282,24 +288,24 @@ logic, also known as grey logic.")
     ;; NOTE: scikit-image has an optional dependency on python-pooch, however
     ;; propagating it would enable many more tests that require online data.
     (propagated-inputs
-     `(("python-cloudpickle" ,python-cloudpickle)
-       ("python-dask" ,python-dask)
-       ("python-imageio" ,python-imageio)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-networkx" ,python-networkx)
-       ("python-numpy" ,python-numpy)
-       ("python-pillow" ,python-pillow)
-       ("python-pywavelets" ,python-pywavelets)
-       ("python-scipy" ,python-scipy)
-       ("python-tifffile" ,python-tifffile)))
+     (list python-cloudpickle
+           python-dask
+           python-imageio
+           python-matplotlib
+           python-networkx
+           python-numpy
+           python-pillow
+           python-pywavelets
+           python-scipy
+           python-tifffile))
     (native-inputs
-     `(("python-codecov" ,python-codecov)
-       ("python-cython" ,python-cython)
-       ("python-flake8" ,python-flake8)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-localserver" ,python-pytest-localserver)
-       ("python-wheel" ,python-wheel)))
+     (list python-codecov
+           python-cython
+           python-flake8
+           python-pytest
+           python-pytest-cov
+           python-pytest-localserver
+           python-wheel))
     (home-page "https://scikit-image.org/")
     (synopsis "Image processing in Python")
     (description
@@ -318,7 +324,7 @@ logic, also known as grey logic.")
         (base32 "0dncp9i5b6afkg7f8mj9j0qzsp008b8v73yc0qkmizhpns7mvwvx"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-numpy" ,python-numpy)))
+     (list python-numpy))
     (home-page "https://github.com/brandon-rhodes/python-sgp4")
     (synopsis "Track earth satellite TLE orbits using SGP4")
     (description
@@ -329,13 +335,13 @@ of the SGP4 satellite tracking algorithm.")
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "1.3.0")
+    (version "1.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas" version))
        (sha256
-        (base32 "1qi2cv450m05dwccx3p1s373k5b4ncvwi74plnms2pidrz4ycm65"))))
+        (base32 "1z3gm521wpm3j13rwhlb4f2x0645zvxkgxij37i3imdpy39iiam2"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -358,47 +364,49 @@ of the SGP4 satellite tracking algorithm.")
              ;; xsel needs to write a log file.
              (setenv "HOME" "/tmp")))
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              (let ((build-directory
                     (string-append
                      (getcwd) "/build/"
                      (first (scandir "build"
                                      (cut string-prefix? "lib." <>))))))
+               (substitute* "pyproject.toml"
+                 ;; Not all data files are distributed with the tarball.
+                 (("--strict-data-files ") ""))
                (with-directory-excursion build-directory
-                 (invoke "pytest" "-vv" "pandas" "--skip-slow"
-                         "--skip-network"
-                         "-k"
-                         ;; These tets access the internet:
-                         ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
-                         ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
-                         ;; TODO: the excel tests fail for unknown reasons
-                         (string-append "not test_wrong_url"
-                                        " and not test_excelwriter_fspath"
-                                        " and not test_ExcelWriter_dispatch"
-                                        ;; TODO: Missing input
-                                        " and not TestS3"
-                                        " and not s3")))))))))
+                 (when tests?
+                   (invoke "pytest" "-vv" "pandas" "--skip-slow"
+                           "--skip-network"
+                           "-k"
+                           ;; These tets access the internet:
+                           ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
+                           ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
+                           ;; TODO: the excel tests fail for unknown reasons
+                           (string-append "not test_wrong_url"
+                                          " and not test_excelwriter_fspath"
+                                          " and not test_ExcelWriter_dispatch"
+                                          ;; TODO: Missing input
+                                          " and not TestS3"
+                                          " and not s3"))))))))))
     (propagated-inputs
-     `(("python-jinja2" ,python-jinja2)
-       ("python-numpy" ,python-numpy)
-       ("python-openpyxl" ,python-openpyxl)
-       ("python-pytz" ,python-pytz)
-       ("python-dateutil" ,python-dateutil)
-       ("python-xlrd" ,python-xlrd)))
+     (list python-jinja2
+           python-numpy
+           python-openpyxl
+           python-pytz
+           python-dateutil
+           python-xlrd))
     (inputs
-     `(("which" ,which)
-       ("xclip" ,xclip)
-       ("xsel" ,xsel)))
+     (list which xclip xsel))
     (native-inputs
-     `(("python-cython" ,python-cython)
-       ("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-lxml" ,python-lxml)
-       ("python-html5lib" ,python-html5lib)
-       ("python-nose" ,python-nose)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-mock" ,python-pytest-mock)
-       ;; Needed to test clipboard support.
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list python-cython
+           python-beautifulsoup4
+           python-lxml
+           python-html5lib
+           python-nose
+           python-pytest
+           python-pytest-mock
+           ;; Needed to test clipboard support.
+           xorg-server-for-tests))
     (home-page "https://pandas.pydata.org")
     (synopsis "Data structures for data analysis, time series, and statistics")
     (description
@@ -453,12 +461,62 @@ doing practical, real world data analysis in Python.")
                     ;; from <https://github.com/pandas-dev/pandas/pull/29294>.
                     (substitute* "pandas/io/parsers.py"
                       (("if 'NULL byte' in msg:")
-                       "if 'NULL byte' in msg or 'line contains NUL' in msg:"))
-                    #t)))))))
+                       "if 'NULL byte' in msg or 'line contains NUL' in msg:"))))))
+      (arguments
+       `(#:modules ((guix build utils)
+                    (guix build python-build-system)
+                    (ice-9 ftw)
+                    (srfi srfi-26))
+         #:python ,python-2
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-which
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((which (assoc-ref inputs "which")))
+                 (substitute* "pandas/io/clipboard/__init__.py"
+                   (("^CHECK_CMD = .*")
+                    (string-append "CHECK_CMD = \"" which "\"\n"))))))
+           (replace 'check
+             (lambda _
+               (let ((build-directory
+                      (string-append
+                       (getcwd) "/build/"
+                       (car (scandir "build"
+                                     (cut string-prefix? "lib." <>))))))
+                 ;; Disable the "strict data files" option which causes
+                 ;; the build to error out if required data files are
+                 ;; not available (as is the case with PyPI archives).
+                 (substitute* "setup.cfg"
+                   (("addopts = --strict-data-files") "addopts = "))
+                 (with-directory-excursion build-directory
+                   ;; Delete tests that require "moto" which is not yet
+                   ;; in Guix.
+                   (for-each delete-file
+                             '("pandas/tests/io/conftest.py"
+                               "pandas/tests/io/json/test_compression.py"
+                               "pandas/tests/io/parser/test_network.py"
+                               "pandas/tests/io/test_parquet.py"))
+                   (invoke "pytest" "-vv" "pandas" "--skip-slow"
+                           "--skip-network" "-k"
+                           ;; XXX: Due to the deleted tests above.
+                           "not test_read_s3_jsonl"))))))))
+      (propagated-inputs
+       (list python2-numpy python2-openpyxl python2-pytz python2-dateutil
+             python2-xlrd))
+      (inputs
+       (list which))
+      (native-inputs
+       (list python2-cython
+             python2-beautifulsoup4
+             python2-lxml
+             python2-html5lib
+             python2-nose
+             python2-pytest
+             python2-pytest-mock)))))
 
-(define-public python-pyflow
+(define-public python2-pyflow
   (package
-    (name "python-pyflow")
+    (name "python2-pyflow")
     (version "1.1.20")
     (source (origin
               (method url-fetch)
@@ -470,7 +528,10 @@ doing practical, real world data analysis in Python.")
                 "1bvfvviw58cndyn862qnv9nj3d9cd3a0dm4vc4sd9vwq8a6z1riv"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f)) ; There is no test suite.
+     `(#:tests? #f ; There is no test suite.
+       ;; There is no official Python 3-compatible version and upstream is
+       ;; dead. See https://github.com/Illumina/pyflow/issues/20.
+       #:python ,python-2))
     (home-page "https://illumina.github.io/pyflow/")
     (synopsis "Tool to manage tasks in a task dependency graph")
     (description "This package is a Python module to manage tasks in the
@@ -495,11 +556,9 @@ context of a task dependency graph.  It has some similarities to make.")
            (lambda _
              (invoke "python" "setup.py" "pytest"))))))
     (native-inputs
-     `(("python-hypothesis" ,python-hypothesis)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-runner" ,python-pytest-runner)))
+     (list python-hypothesis python-pytest python-pytest-runner))
     (propagated-inputs
-     `(("python-numpy" ,python-numpy)))
+     (list python-numpy))
     (home-page "https://github.com/pydata/bottleneck")
     (synopsis "Fast NumPy array functions written in C")
     (description
@@ -519,9 +578,7 @@ written in C.")
         (base32 "1c1354a7b3g8slychjgyjxqdm8z40z9kviyl9n4g9kfpdg0p4d64"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-matplotlib" ,python-matplotlib)
-       ("python-numpy" ,python-numpy)
-       ("python-scipy" ,python-scipy)))
+     (list python-matplotlib python-numpy python-scipy))
     (home-page "https://github.com/janezd/baycomp")
     (synopsis "Library for comparison of Bayesian classifiers")
     (description
@@ -545,11 +602,9 @@ higher scores.")
                 "1yx8j66b7rn10m2l6gmn8yr9cn38pi5cj0x0wwpy4hdnhy6i7qv4"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-setuptools-scm" ,python-setuptools-scm)
-       ("python-pytest" ,python-pytest)))
+     (list python-setuptools-scm python-pytest))
     (propagated-inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-pandas" ,python-pandas)))
+     (list python-numpy python-pandas))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -581,8 +636,7 @@ and visualization with these data structures.")
          "0syzy645mwcy7lfjwz6pc8f9p2vv1qk4limc8iina3l5nnf0rjyz"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-msgpack" ,python-msgpack)
-       ("python-numpy" ,python-numpy)))
+     (list python-msgpack python-numpy))
     (home-page "https://github.com/lebedov/msgpack-numpy")
     (synopsis
      "Numpy data serialization using msgpack")
@@ -616,7 +670,7 @@ Python's native complex data types is also supported.")
                (with-directory-excursion "ruffus/test"
                  (invoke "bash" "run_all_unit_tests3.cmd"))))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)))
+     (list python-pytest))
     (home-page "http://www.ruffus.org.uk")
     (synopsis "Light-weight computational pipeline management")
     (description
@@ -637,11 +691,8 @@ automated with the minimum of fuss and the least effort.")
          "1f8c2sylzr7lpjbyqxsqlp9xi8rj3d8c9hfh98x4jbb83zxc4026"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-seaborn" ,python-seaborn)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-pandas" ,python-pandas)
-       ("python-scipy" ,python-scipy)))
+     (list python-numpy python-seaborn python-matplotlib python-pandas
+           python-scipy))
     (home-page
      "https://github.com/webermarcolivier/statannot")
     (synopsis "Add annotations to existing plots generated by seaborn")
@@ -674,11 +725,9 @@ annotations on an existing boxplots and barplots generated by seaborn.")
              (add-installed-pythonpath inputs outputs)
              (invoke "pytest" "-v" "--doctest-modules"))))))
     (propagated-inputs
-     `(("python-matplotlib" ,python-matplotlib)
-       ("python-pandas" ,python-pandas)))
+     (list python-matplotlib python-pandas))
     (native-inputs
-     `(("python-pytest-runner" ,python-pytest-runner)
-       ("python-pytest-cov" ,python-pytest-cov)))
+     (list python-pytest-runner python-pytest-cov))
     (home-page "https://upsetplot.readthedocs.io")
     (synopsis "Draw UpSet plots with Pandas and Matplotlib")
     (description
@@ -722,7 +771,7 @@ readable.")
        ("pkgconfig" ,python-pkgconfig)
        ("matplotlib" ,python-matplotlib)))
     (native-inputs ; for python-pkgconfig
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (propagated-inputs
      `(("numpy" ,python-numpy)
        ("vtk" ,vtk)))
@@ -758,8 +807,7 @@ dependencies.")
          "12g4av8gpl6l83yza3h97j3f2jblqv69frlidrvdq8ny2rc6awbq"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-pandas" ,python-pandas)
-       ("python-xarray" ,python-xarray)))
+     (list python-pandas python-xarray))
     (home-page "https://github.com/Zsailer/pandas_flavor")
     (synopsis "Write your own flavor of Pandas")
     (description "Pandas 0.23 added a simple API for registering accessors
@@ -775,7 +823,7 @@ of Pandas
 (define-public python-pingouin
   (package
     (name "python-pingouin")
-    (version "0.3.12")
+    (version "0.5.0")
     (source
      ;; The PyPI tarball does not contain the tests.
      (origin
@@ -786,7 +834,7 @@ of Pandas
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ap29x54kdr19vi8qxj9g6cz2r1q4f0z7dcf6g77zwav7hf7r61a"))))
+         "01aaq023q4bymffrc2wm56af87da32wcvy5d5156i4g7qgvh346r"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -806,19 +854,18 @@ of Pandas
              (when tests?
                (invoke "pytest")))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)))
+     (list python-pytest python-pytest-cov))
     (propagated-inputs
-     `(("python-matplotlib" ,python-matplotlib)
-       ("python-mpmath" ,python-mpmath)
-       ("python-numpy" ,python-numpy)
-       ("python-pandas" ,python-pandas)
-       ("python-pandas-flavor" ,python-pandas-flavor)
-       ("python-scikit-learn" ,python-scikit-learn)
-       ("python-scipy" ,python-scipy)
-       ("python-seaborn" ,python-seaborn)
-       ("python-statsmodels" ,python-statsmodels)
-       ("python-tabulate" ,python-tabulate)))
+     (list python-matplotlib
+           python-mpmath
+           python-numpy
+           python-pandas
+           python-pandas-flavor
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-statsmodels
+           python-tabulate))
     (home-page "https://pingouin-stats.org/")
     (synopsis "Statistical package for Python")
     (description "Pingouin is a statistical package written in Python 3 and
@@ -846,7 +893,7 @@ and more
 (define-public python-distributed
   (package
     (name "python-distributed")
-    (version "2021.07.1")
+    (version "2021.11.2")
     (source
      (origin
        ;; The test files are not included in the archive on pypi
@@ -857,11 +904,16 @@ and more
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0i55zf3k55sqjxnwlzsyj3h3v1588fn54ng4mj3dfiqzh3nlj0dg"))))
+         "1p20cbyabzl7rs8y3ydzszsskh4kw088m252ghgairhs0p2f95hl"))
+       ;; Delete bundled copy of python-versioneer.
+       (snippet '(delete-file "versioneer.py"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'versioneer
+           (lambda _
+             (invoke "versioneer" "install")))
          (add-after 'unpack 'fix-references
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* '("distributed/comm/tests/test_ucx_config.py"
@@ -886,29 +938,31 @@ and more
                        "-m" "not slow and not gpu and not ipython and not avoid_ci"
                        "-k"
                        ;; TODO: These tests fail for unknown reasons:
-                       ;; Assertion error.
                        (string-append
-                        "not test_version_option"
+                        ;; TimeoutExpired
+                        "not test_text"
+                        ;; AssertionError
+                        " and not test_version_option"
                         ;; "The 'distributed' distribution was not found"
                         " and not test_register_backend_entrypoint"
                         ;; "AttributeError: module 'distributed.dashboard' has no attribute 'scheduler'"
                         " and not test_get_client_functions_spawn_clusters"))))))))
     (propagated-inputs
-     `(("python-click" ,python-click)
-       ("python-cloudpickle" ,python-cloudpickle)
-       ("python-cryptography" ,python-cryptography)
-       ("python-dask" ,python-dask)
-       ("python-msgpack" ,python-msgpack)
-       ("python-psutil" ,python-psutil)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-setuptools" ,python-setuptools)
-       ("python-sortedcontainers" ,python-sortedcontainers)
-       ("python-tblib" ,python-tblib)
-       ("python-toolz" ,python-toolz)
-       ("python-tornado" ,python-tornado-6)
-       ("python-zict" ,python-zict)))
+     (list python-click
+           python-cloudpickle
+           python-cryptography
+           python-dask
+           python-msgpack
+           python-psutil
+           python-pyyaml
+           python-setuptools
+           python-sortedcontainers
+           python-tblib
+           python-toolz
+           python-tornado-6
+           python-zict))
     (native-inputs
-     `(("python-pytest" ,python-pytest)))
+     (list python-pytest python-versioneer))
     (home-page "https://distributed.dask.org")
     (synopsis "Distributed scheduler for Dask")
     (description "Dask.distributed is a lightweight library for distributed
@@ -948,31 +1002,31 @@ computing in Python.  It extends both the @code{concurrent.futures} and
                (invoke "python" "-m" "pytest"
                        "modin/pandas/test/test_concat.py")))))))
     (propagated-inputs
-     `(("python-cloudpickle" ,python-cloudpickle)
-       ("python-dask" ,python-dask)
-       ("python-distributed" ,python-distributed)
-       ("python-numpy" ,python-numpy)
-       ("python-packaging" ,python-packaging)
-       ("python-pandas" ,python-pandas)))
+     (list python-cloudpickle
+           python-dask
+           python-distributed
+           python-numpy
+           python-packaging
+           python-pandas))
     (native-inputs
-     `(("python-coverage" ,python-coverage)
-       ("python-jinja2" ,python-jinja2)
-       ("python-lxml" ,python-lxml)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-msgpack" ,python-msgpack)
-       ("python-openpyxl" ,python-openpyxl)
-       ("python-psutil" ,python-psutil)
-       ("python-pyarrow" ,python-pyarrow)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-benchmark" ,python-pytest-benchmark)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-xdist" ,python-pytest-xdist)
-       ("python-scipy" ,python-scipy)
-       ("python-sqlalchemy" ,python-sqlalchemy)
-       ("python-tables" ,python-tables)
-       ("python-tqdm" ,python-tqdm)
-       ("python-xarray" ,python-xarray)
-       ("python-xlrd" ,python-xlrd)))
+     (list python-coverage
+           python-jinja2
+           python-lxml
+           python-matplotlib
+           python-msgpack
+           python-openpyxl
+           python-psutil
+           python-pyarrow
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-xdist
+           python-scipy
+           python-sqlalchemy
+           python-tables
+           python-tqdm
+           python-xarray
+           python-xlrd))
     (home-page "https://github.com/modin-project/modin")
     (synopsis "Make your pandas code run faster")
     (description

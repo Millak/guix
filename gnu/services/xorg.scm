@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
   #:use-module (gnu system shadow)
+  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -161,7 +163,7 @@
 (define-record-type* <xorg-configuration>
   xorg-configuration make-xorg-configuration
   xorg-configuration?
-  (modules          xorg-configuration-modules    ;list of packages
+  (modules          xorg-configuration-modules    ;list of file-like
                     (thunked)
                     ; filter out modules not supported on current system
                     (default (filter
@@ -179,7 +181,7 @@
                     (default #f))
   (extra-config     xorg-configuration-extra-config ;list of strings
                     (default '()))
-  (server           xorg-configuration-server     ;package
+  (server           xorg-configuration-server     ;file-like
                     (default xorg-server))
   (server-arguments xorg-configuration-server-arguments ;list of strings
                     (default %default-xorg-server-arguments)))
@@ -869,6 +871,24 @@ the GNOME desktop environment.")
        (apply execl (string-append #$dbus "/bin/dbus-daemon")
               (program-arguments)))))
 
+;; Wrapper script for Wayland sessions, similar to Xsession.
+;;
+;; See `xinitrc`.  By default, it launches the specified session through a
+;; login shell.  With the default Guix configuration, this should source
+;; /etc/profile, setting up the Guix profile environment variables.  However,
+;; gdm launches its own graphical session through the same method, so we need
+;; to ignore this case, since `gdm` doesn't have a login shell.
+(define gdm-wayland-session-wrapper
+  (program-file
+   "gdm-wayland-session-wrapper"
+   #~((let* ((user (getpw (getuid)))
+	    (name (passwd:name user))
+	    (shell (passwd:shell user))
+	    (args (cdr (command-line))))
+        (if (string=? name "gdm")
+	    (apply execl (cons (car args) args))
+	    (execl shell shell "--login" "-c" (string-join args)))))))
+
 (define-record-type* <gdm-configuration>
   gdm-configuration make-gdm-configuration
   gdm-configuration?
@@ -879,11 +899,14 @@ the GNOME desktop environment.")
   (debug? gdm-configuration-debug? (default #f))
   (default-user gdm-configuration-default-user (default #f))
   (gnome-shell-assets gdm-configuration-gnome-shell-assets
-                      (default (list adwaita-icon-theme font-cantarell)))
+                      (default (list adwaita-icon-theme font-abattis-cantarell)))
   (xorg-configuration gdm-configuration-xorg
                       (default (xorg-configuration)))
   (x-session gdm-configuration-x-session
-             (default (xinitrc))))
+             (default (xinitrc)))
+  (wayland? gdm-configuration-wayland? (default #f))
+  (wayland-session gdm-configuration-wayland-session
+                   (default gdm-wayland-session-wrapper)))
 
 (define (gdm-configuration-file config)
   (mixed-text-file "gdm-custom.conf"
@@ -909,8 +932,9 @@ the GNOME desktop environment.")
                    ;; See also
                    ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=39281>.
                    "InitialSetupEnable=false\n"
-                   ;; Enable me once X is working.
-                   "WaylandEnable=false\n"
+                   "WaylandEnable=" (if (gdm-configuration-wayland? config)
+                                        "true"
+                                        "false") "\n"
                    "\n"
                    "[debug]\n"
                    "Enable=" (if (gdm-configuration-debug? config)
@@ -976,7 +1000,17 @@ the GNOME desktop environment.")
                                   ;; can depend on GNOME Shell directly.
                                   (cons #$gnome-shell
                                         '#$(gdm-configuration-gnome-shell-assets
-                                            config)))))))))
+                                            config)))))
+                           ;; Add XCURSOR_PATH so that mutter can find its
+                           ;; cursors.  gdm doesn't login so doesn't source
+                           ;; the corresponding line in /etc/profile.
+                           "XCURSOR_PATH=/run/current-system/profile/share/icons"
+                           (string-append
+                            "GDK_PIXBUF_MODULE_FILE="
+                            #$gnome-shell "/" #$%gdk-pixbuf-loaders-cache-file)
+                           (string-append
+                            "GDM_WAYLAND_SESSION="
+                            #$(gdm-configuration-wayland-session config))))))
          (stop #~(make-kill-destructor))
          (respawn? #t))))
 

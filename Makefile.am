@@ -15,6 +15,7 @@
 # Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
+# Copyright © 2021 Andrew Tropin <andrew@trop.in>
 #
 # This file is part of GNU Guix.
 #
@@ -95,6 +96,7 @@ MODULES =					\
   guix/discovery.scm				\
   guix/android-repo-download.scm		\
   guix/bzr-download.scm            		\
+  guix/extracting-download.scm			\
   guix/git-download.scm				\
   guix/hg-download.scm				\
   guix/swh.scm					\
@@ -255,6 +257,7 @@ MODULES =					\
   guix/import/egg.scm   			\
   guix/import/elpa.scm   			\
   guix/import/gem.scm				\
+  guix/import/git.scm                           \
   guix/import/github.scm   			\
   guix/import/gnome.scm				\
   guix/import/gnu.scm				\
@@ -296,6 +299,8 @@ MODULES =					\
   guix/scripts/system.scm			\
   guix/scripts/system/search.scm		\
   guix/scripts/system/reconfigure.scm		\
+  guix/scripts/home.scm			\
+  guix/scripts/home/import.scm			\
   guix/scripts/lint.scm				\
   guix/scripts/challenge.scm			\
   guix/scripts/import/crate.scm			\
@@ -313,6 +318,7 @@ MODULES =					\
   guix/scripts/import/stackage.scm		\
   guix/scripts/import/texlive.scm  		\
   guix/scripts/environment.scm			\
+  guix/scripts/shell.scm			\
   guix/scripts/publish.scm			\
   guix/scripts/edit.scm				\
   guix/scripts/size.scm				\
@@ -372,14 +378,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
-  gnu/packages/aux-files/linux-libre/5.14-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.14-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.14-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.14-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/5.13-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.13-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.13-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.13-x86_64.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-arm.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-i686.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/5.10-arm.conf	\
   gnu/packages/aux-files/linux-libre/5.10-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.10-i686.conf	\
@@ -477,6 +479,8 @@ SCM_TESTS =					\
   tests/graph.scm				\
   tests/gremlin.scm				\
   tests/hackage.scm				\
+  tests/home-import.scm				\
+  tests/import-git.scm				\
   tests/import-utils.scm			\
   tests/inferior.scm				\
   tests/lint.scm				\
@@ -550,10 +554,12 @@ SH_TESTS =					\
   tests/guix-package-aliases.sh			\
   tests/guix-package-net.sh			\
   tests/guix-system.sh				\
+  tests/guix-home.sh				\
   tests/guix-archive.sh				\
   tests/guix-authenticate.sh			\
   tests/guix-environment.sh			\
   tests/guix-environment-container.sh		\
+  tests/guix-shell.sh				\
   tests/guix-graph.sh				\
   tests/guix-describe.sh			\
   tests/guix-repl.sh     			\
@@ -642,6 +648,7 @@ EXTRA_DIST +=						\
   build-aux/check-final-inputs-self-contained.scm	\
   build-aux/check-channel-news.scm			\
   build-aux/compile-as-derivation.scm			\
+  build-aux/convert-xref.scm			\
   build-aux/generate-authors.scm			\
   build-aux/test-driver.scm				\
   build-aux/update-guix-package.scm			\
@@ -701,8 +708,6 @@ $(1): $(2)
 	  --completed $(3)					\
 	  $$(filter %.scm,$$^)
 
-.PHONY: $(1)
-
 endef
 
 # Split compilation in several steps, each of which building a subset of
@@ -714,22 +719,31 @@ MODULES_CORE     = guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULE
 MODULES_PACKAGES = $(filter gnu/packages/%,$(MODULES))
 MODULES_SYSTEM   = gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
 MODULES_CLI      = $(filter guix/scripts/%,$(MODULES))
+MODULES_PO       = guix/build/po.scm
 
 $(eval $(call guile-compilation-rule,make-core-go,	\
   $(MODULES_CORE) guix/config.scm $(dist_noinst_DATA),	\
   0))
+.PHONY: make-core-go
 
 $(eval $(call guile-compilation-rule,make-packages-go,	\
   $(MODULES_PACKAGES) make-core-go,			\
   $(words $(MODULES_CORE))))
+.PHONY: make-packages-go
 
 $(eval $(call guile-compilation-rule,make-system-go,	\
   $(MODULES_SYSTEM) make-packages-go make-core-go,	\
   $(words $(MODULES_CORE) $(MODULES_PACKAGES))))
+.PHONY: make-system-go
 
 $(eval $(call guile-compilation-rule,make-cli-go,			\
   $(MODULES_CLI) make-system-go make-packages-go make-core-go,		\
   $(words $(MODULES_CORE) $(MODULES_PACKAGES) $(MODULES_SYSTEM))))
+.PHONY: make-cli-go
+
+$(eval $(call guile-compilation-rule,guix/build/po.go,			\
+  $(MODULES_PO),							\
+  0))
 
 SUFFIXES = .go
 

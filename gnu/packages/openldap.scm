@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
@@ -80,14 +80,8 @@
               (base32
                "0nmlyqhc52v24b4awh914sczmvxbazgq2cnlycvb9dgcwvhlgfn7"))))
    (build-system gnu-build-system)
-   (inputs `(("bdb" ,bdb-5.3)
-             ("cyrus-sasl" ,cyrus-sasl)
-             ("gnutls" ,gnutls)
-             ("libgcrypt" ,libgcrypt)
-             ("zlib" ,zlib)))
-   (native-inputs `(("libtool" ,libtool)
-                    ("groff" ,groff)
-                    ("bdb" ,bdb-5.3)))
+   (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
+   (native-inputs (list libtool groff bdb-5.3))
    (arguments
     `(#:tests? #f
       #:configure-flags
@@ -129,14 +123,14 @@
 (define-public nss-pam-ldapd
   (package
     (name "nss-pam-ldapd")
-    (version "0.9.11")
+    (version "0.9.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://arthurdejong.org/nss-pam-ldapd/"
                                   "nss-pam-ldapd-" version ".tar.gz"))
               (sha256
                (base32
-                "1dna3r0q6sjhhlkhcp8x2zkslrd4y7701kk6fl5r940sdph1pmyh"))))
+                "050fzcmxmf6y15dlcffc4gxr3wkk7fliqqwhlwqzbjwk8vkn3mn6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -157,13 +151,9 @@
              (substitute* "Makefile.in"
                (("\\$\\(DESTDIR\\)\\$\\(NSLCD_CONF_PATH\\)")
                 (string-append (assoc-ref outputs "out")
-                               "/etc/nslcd.conf.example")))
-             #t)))))
+                               "/etc/nslcd.conf.example"))))))))
     (inputs
-     `(("linux-pam" ,linux-pam)
-       ("openldap" ,openldap)
-       ("mit-krb5" ,mit-krb5)
-       ("python" ,python)))
+     (list linux-pam openldap mit-krb5 python))
     (home-page "https://arthurdejong.org/nss-pam-ldapd")
     (synopsis "NSS and PAM modules for LDAP")
     (description "nss-pam-ldapd provides a @dfn{Name Service Switch} (NSS)
@@ -200,12 +190,9 @@ an LDAP server.")
                                       "/etc/openldap/schema/")))
              #t)))))
     (inputs
-     `(("openldap" ,openldap)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("mit-krb5" ,mit-krb5)))
+     (list openldap cyrus-sasl mit-krb5))
     (propagated-inputs
-     `(("python-pyasn1" ,python-pyasn1)
-       ("python-pyasn1-modules" ,python-pyasn1-modules)))
+     (list python-pyasn1 python-pyasn1-modules))
     (home-page "https://www.python-ldap.org/")
     (synopsis "Python modules for implementing LDAP clients")
     (description
@@ -216,20 +203,20 @@ servers from Python programs.")
 (define-public 389-ds-base
   (package
     (name "389-ds-base")
-    (version "1.4.0.31")
+    (version "1.4.4.17")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://releases.pagure.org/389-ds-base/"
-                                  "389-ds-base-" version ".tar.bz2"))
+              (uri (string-append "https://github.com/389ds/389-ds-base/archive/"
+                                  "389-ds-base-" version ".tar.gz"))
               (sha256
                (base32
-                "1rs218iqxyclccsdqb529favdsmz88zw785lsxd9ln43ja3x3l65"))))
+                "0i8m4crbnjjhfb7cq758rd0fxyz36i291yq6fykkprjykz9s3zv4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((srfi srfi-1)
                   (guix build gnu-build-system)
                   ((guix build python-build-system)
-                   #:select (add-installed-pythonpath))
+                   #:select (add-installed-pythonpath python-version))
                   (guix build utils))
        #:imported-modules ((guix build python-build-system)
                            ,@%gnu-build-system-modules)
@@ -256,9 +243,14 @@ servers from Python programs.")
            (lambda _
              (substitute* "include/ldaputil/certmap.h"
                (("nss3/cert.h") "nss/cert.h"))
+             (substitute* "src/lib389/lib389/utils.py"
+               (("'/sbin/ip'")
+                (string-append "'" (which "ip") "'")))
              (substitute* "src/lib389/lib389/nss_ssl.py"
                (("'/usr/bin/certutil'")
                 (string-append "'" (which "certutil") "'"))
+               (("'/usr/bin/openssl'")
+                (string-append "'" (which "openssl") "'"))
                (("'/usr/bin/c_rehash'")
                 (string-append "'" (which "perl") "', '"
                                (which "c_rehash") "'")))))
@@ -282,7 +274,11 @@ servers from Python programs.")
                   "etc_dirsrv_path = '/etc/dirsrv/'\n")))))
          (add-after 'unpack 'fix-install-location-of-python-tools
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
+             (let* ((out (assoc-ref outputs "out"))
+                    (pythondir (string-append
+                                out "/lib/python"
+                                (python-version (assoc-ref inputs "python"))
+                                "/site-packages/")))
                ;; Install directory must be on PYTHONPATH.
                (add-installed-pythonpath inputs outputs)
                ;; Install directory must exist.
@@ -318,8 +314,7 @@ servers from Python programs.")
                            "/sbin/dsctl"
                            "/sbin/dsidm"
                            "/bin/ds-logpipe.py"
-                           "/bin/ds-replcheck"
-                           "/bin/readnsstate"))))))))
+                           "/bin/ds-replcheck"))))))))
     (inputs
      `(("bdb" ,bdb)
        ("cracklib" ,cracklib)
@@ -327,6 +322,7 @@ servers from Python programs.")
        ("gnutls" ,gnutls)
        ("httpd" ,httpd)
        ("icu4c" ,icu4c)
+       ("iproute" ,iproute)
        ("libevent" ,libevent)
        ("libselinux" ,libselinux)
        ("linux-pam" ,linux-pam)
@@ -388,9 +384,7 @@ Other features include:
          "013bl6h1m3f7vg1lk89d4vi28wbf31zdcs4f9g8css7ngx63v6px"))))
     (build-system python-build-system)
     (inputs
-     `(("mit-krb5" ,mit-krb5)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("openldap" ,openldap)))
+     (list mit-krb5 cyrus-sasl openldap))
     ;; disabling tests, since they require docker and extensive setup
     (arguments `(#:tests? #f))
     (home-page "https://github.com/noirello/bonsai")

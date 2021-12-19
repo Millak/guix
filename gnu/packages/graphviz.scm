@@ -10,6 +10,8 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2021 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +52,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
@@ -63,7 +66,7 @@
 (define-public graphviz
   (package
     (name "graphviz")
-    (version "2.48.0")
+    (version "2.49.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.com/api/v4/projects/4207231"
@@ -71,7 +74,7 @@
                                   version "/graphviz-" version ".tar.xz"))
               (sha256
                (base32
-                "0lgv508zyfdv4wl95avaj58nmjhbvb5za65nhrkl5nn818ayvggn"))))
+                "042s6mbi681pwgffqww2ap780230nrsrfpfiz9a41dcjb5a0m524"))))
     (build-system gnu-build-system)
     (arguments
      ;; FIXME: rtest/rtest.sh is a ksh script (!).  Add ksh as an input.
@@ -114,9 +117,7 @@
        ("libjpeg" ,libjpeg-turbo)
        ("libpng" ,libpng)))
     (native-inputs
-     `(("bison" ,bison)
-       ("swig" ,swig)
-       ("pkg-config" ,pkg-config)))
+     (list bison swig pkg-config))
     (outputs '("out" "doc"))                      ; 5 MiB of html + pdfs
     (home-page "https://www.graphviz.org/")
     (synopsis "Graph visualization software")
@@ -165,13 +166,13 @@ interfaces for other technical domains.")
                 (lambda _
                   (invoke (which "sh") "autogen.sh" "NOCONFIG") #t))))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)
-         ("flex" ,flex)
-         ("perl" ,perl)
-         ("tcl" ,tcl)
-         ,@(package-native-inputs graphviz))))))
+       (modify-inputs (package-native-inputs graphviz)
+         (prepend autoconf
+                  automake
+                  libtool
+                  flex
+                  perl
+                  tcl))))))
 
 (define-public python-graphviz
   (package
@@ -193,14 +194,13 @@ interfaces for other technical domains.")
                           (format #t "test suite not run~%"))
                       #t)))))
     (native-inputs
-     `(("unzip" ,unzip)
-
-       ;; For tests.
-       ("graphviz" ,graphviz)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-mock" ,python-pytest-mock)))
+     (list unzip
+           ;; For tests.
+           graphviz
+           python-mock
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock))
     (home-page "https://github.com/xflr6/graphviz")
     (synopsis "Simple Python interface for Graphviz")
     (description
@@ -227,12 +227,10 @@ visualization tool suite.")
          "0jqc3dzy9n0hn3b99zq8jp53901zpjzvvi5ns5mbaxg8kdrb1lfx"))))
     (build-system python-build-system)
     (inputs
-     `(("graphviz" ,graphviz)))
+     (list graphviz))
     (native-inputs
-     `(("python-nose" ,python-nose)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)
-       ("python-doctest-ignore-unicode" ,python-doctest-ignore-unicode)))
+     (list python-nose python-mock python-pytest
+           python-doctest-ignore-unicode))
     (home-page "https://pygraphviz.github.io")
     (synopsis "Python interface to Graphviz")
     (description "PyGraphviz is a Python interface to the Graphviz graph
@@ -244,7 +242,7 @@ structure and layout algorithms.")
 (define-public python-uqbar
   (package
     (name "python-uqbar")
-    (version "0.5.1")
+    (version "0.5.6")
     (source
      (origin
        (method git-fetch)
@@ -254,7 +252,7 @@ structure and layout algorithms.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0413nyhd8z8v3lvsgaghhafnyxg90fi1q80j1kbl21gpmpnc9a7n"))))
+         "1ml3x2mf7nlnvrh9lari5yk0sz2mmg39jwsbjxnpzhnw4kcwpdrs"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -263,8 +261,8 @@ structure and layout algorithms.")
            (lambda _
              (substitute* "setup.py"
                ;; Latest versions of sphink-rtd-theme require npm to build.
-               (("sphinx-rtd-theme >= 0.4.0") "sphinx-rtd-theme >= 0.2.4")
-               (("black == 19.10b0") "black >= 19.10b0"))
+               (("sphinx-rtd-theme >= 0.5.0") "sphinx-rtd-theme >= 0.2.4")
+               (("black") "black >= 19.10b0"))
              #t))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
@@ -272,17 +270,15 @@ structure and layout algorithms.")
                (invoke "python" "-m" "pytest" "tests"))
              #t)))))
     (native-inputs
-     `(("graphviz" ,graphviz)
-       ("python-flake8" ,python-flake8)
-       ("python-isort" ,python-isort)
-       ("python-mypy" ,python-mypy)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)))
+     (list graphviz
+           python-flake8
+           python-isort
+           python-mypy
+           python-pytest
+           python-pytest-cov))
     (propagated-inputs
-     `(("python-black" ,python-black)
-       ("python-sphinx" ,python-sphinx)
-       ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
-       ("python-unidecode" ,python-unidecode)))
+     (list python-black python-sphinx python-sphinx-rtd-theme
+           python-unidecode))
     (home-page "https://github.com/josiah-wolf-oberholtzer/uqbar")
     (synopsis "Tools for building documentation with Sphinx, Graphviz and LaTeX")
     (description
@@ -314,10 +310,10 @@ Graphviz and LaTeX.")
        ;; See <http://sourceforge.net/p/gts/bugs/41/>.
        #:tests? #f))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (propagated-inputs
      ;; The gts.pc file has glib-2.0 as required.
-     `(("glib" ,glib)))
+     (list glib))
     (home-page "http://gts.sourceforge.net/")
 
     ;; Note: Despite the name, this is not official GNU software.
@@ -351,16 +347,18 @@ Graphviz and LaTeX.")
                     (assoc-ref inputs "gtk+") "/lib/girepository-1.0"
                     ":" (assoc-ref inputs "pango") "/lib/girepository-1.0"
                     ":" (assoc-ref inputs "gdk-pixbuf") "/lib/girepository-1.0"
-                    ":" (assoc-ref inputs "atk") "/lib/girepository-1.0")))
+                    ":" (assoc-ref inputs "atk") "/lib/girepository-1.0"
+                    ":" (assoc-ref inputs "harfbuzz") "/lib/girepository-1.0")))
                `("PATH" ":" prefix
                  (,(dirname (search-input-file inputs "bin/dot"))))))))))
     (inputs
-     `(("atk" ,atk)
-       ("gdk-pixbuf" ,gdk-pixbuf+svg)
-       ("graphviz" ,graphviz)
-       ("gtk+" ,gtk+)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)))
+     (list atk
+           librsvg
+           harfbuzz
+           graphviz
+           gtk+
+           python-pycairo
+           python-pygobject))
     (home-page "https://pypi.org/project/xdot/")
     (synopsis "Interactive viewer for graphviz dot files")
     (description "Xdot is an interactive viewer for graphs written in
@@ -395,10 +393,9 @@ can be used either as a standalone application, or as a Python library.")
              #t)))))
     (native-inputs
      ;; For tests.
-     `(("graphviz" ,graphviz)
-       ("python-chardet" ,python-chardet)))
+     (list graphviz python-chardet))
     (propagated-inputs
-     `(("python-pyparsing" ,python-pyparsing)))
+     (list python-pyparsing))
     (home-page "https://github.com/pydot/pydot")
     (synopsis "Python interface to Graphviz's DOT language")
     (description
@@ -423,10 +420,9 @@ graphs in Graphviz's DOT language, written in pure Python.")
     (arguments
      `(#:python ,python-2))
     (inputs
-     `(("texlive-latex-preview" ,texlive-latex-preview)
-       ("graphviz" ,graphviz)))
+     (list texlive-latex-preview graphviz))
     (propagated-inputs
-     `(("python-pyparsing" ,python2-pyparsing)))
+     (list python2-pyparsing))
     (home-page "https://github.com/kjellmf/dot2tex")
     (synopsis "Graphviz to LaTeX converter")
     (description
@@ -441,3 +437,45 @@ This approach allows:
 @item Using backend specific styles to customize the output
 @end itemize")
     (license license:expat)))
+
+(define-public gprof2dot
+  (package
+    (name "gprof2dot")
+    (version "2021.02.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jrfonseca/gprof2dot")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jjhsjf5fdi1fkn7mvhnzkh6cynl8gcjrygd3cya5mmda3akhzic"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "tests/test.py")))))))
+    (native-inputs
+     (list graphviz))
+    (home-page "https://github.com/jrfonseca/gprof2dot")
+    (synopsis "Generate a dot graph from the output of several profilers")
+    (description "This package provides a Python script to convert the output
+from many profilers into a dot graph.
+
+It can:
+
+@itemize
+
+@item prune nodes and edges below a certain threshold;
+@item use an heuristic to propagate time inside mutually recursive functions;
+@item use color efficiently to draw attention to hot-spots;
+@item work on any platform where Python and Graphviz is available.
+
+@end itemize")
+    (license license:lgpl3+)))

@@ -38,54 +38,57 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages video)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu))
 
 (define-public zxing-cpp
-  (package
+  ;; Use the master branch as it includes unreleased build system improvements
+  ;; allowing to use system libraries (instead of attempting to fetch them
+  ;; from the Internet).
+  (let ((revision "0")
+        (commit "00783db7aa3bcf8620a301854ac71c0ceaaca0c1"))
+    (package
+      (name "zxing-cpp")
+      (version (git-version "1.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/nu-book/zxing-cpp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yl2cpaqiv1g4nq9v0xfj1vd5faz55k4541vz6hsffvcxgn9nmc5"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list fmt googletest))
+      (synopsis "C++ port of ZXing")
+      (description "ZXing-CPP is a barcode scanning library.")
+      (home-page "https://github.com/nu-book/zxing-cpp")
+      (license license:asl2.0))))
+
+;;; This older variant is kept for gst-plugins-bad (see:
+;;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1684).
+(define-public zxing-cpp-1.2
+  (package/inherit zxing-cpp
     (name "zxing-cpp")
-    (version "1.0.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/nu-book/zxing-cpp")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "011sq8wcjfxbnd8sj6bf2fgkamlp8gj6q835g61c952npvwsnl71"))))
-    (native-inputs
-     `(("googletest-source" ,(package-source googletest))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:out-of-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-googletest
-           ;; Copy the googletest sources to where the CMake build expects them.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((source (assoc-ref inputs "googletest-source"))
-                   (target "test/unit/googletest-src"))
-               (mkdir-p target)
-               (copy-recursively source target)
-               ;; Disable downloading via ExternalProject.
-               (substitute* "test/unit/CMakeLists.txt.in"
-                (("ExternalProject_Add\\(") "message("))
-               #t)))
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "test/unit"
-               (invoke "cmake" ".")
-               (invoke "make")
-               (invoke "./ZXingUnitTest"))
-             #t)))))
-    (synopsis "C++ port of ZXing")
-    (description "ZXing-CPP is a barcode scanning library.")
-    (home-page "https://github.com/nu-book/zxing-cpp")
-    (license license:asl2.0)))
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nu-book/zxing-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gjj9c7h634rrmmgzbc7cxjqsxdq0paj6113k02ncjm1s9abk7ik"))))
+    ;; Disable tests to avoid bundled dependencies.
+    (arguments '(#:tests? #f
+                 #:configure-flags '("-DBUILD_BLACKBOX_TESTS=OFF")))
+    (native-inputs '())))
 
 (define-public barcode
   (package
@@ -99,6 +102,9 @@
                (base32
                 "1indapql5fjz0bysyc88cmc54y8phqrbi7c76p71fgjp45jcyzp8"))))
     (build-system gnu-build-system)
+    (arguments
+      ;; Fix build with GCC 10.
+     '(#:configure-flags '("CFLAGS=-fcommon")))
     (synopsis "Convert text strings to printed bars in various standards")
     (description "GNU Barcode is a flexible tool to produce printed barcodes
 from text strings.  It supports a variety of encoding standards and sizing
@@ -129,8 +135,8 @@ formats.")
                (with-directory-excursion "tests"
                  (invoke "./test_basic.sh")))
              #t)))))
-    (inputs `(("libpng" ,libpng)))
-    (native-inputs `(("pkg-config" ,pkg-config)))
+    (inputs (list libpng))
+    (native-inputs (list pkg-config))
     (synopsis "Encode data into a QR Code symbol")
     (description "Libqrencode is a C library for encoding data in a QR Code
 symbol, a kind of 2D symbology that can be scanned by handy terminals such as
@@ -157,10 +163,7 @@ characters, and is highly robust.")
      ;; XXX Test suite is broken: https://github.com/dmtx/libdmtx/issues/22
      `(#:tests? #f))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/dmtx")
     (synopsis "Library for reading and writing Data Matrix 2D barcodes")
     (description "libdmtx is software for reading and writing Data Matrix 2D
@@ -209,9 +212,7 @@ C/C++ programs to use its capabilities without restrictions or overhead.")
        ("v4l-utils" ,v4l-utils)))
     (propagated-inputs
      ;; These are in 'requires' field of .pc files.
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("qtbase" ,qtbase-5)))
+     (list glib gtk+ qtbase-5))
     (synopsis "Bar code reader")
     (description
      "ZBar can read barcodes from various sources, such as video streams,

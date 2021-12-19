@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Leo Prikler <leo.prikler@student.tugraz.at>
+;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,7 +50,7 @@
              (patch-shebang "suite/parsable_tester.pl")
              #t)))))
     (inputs
-     `(("perl" ,perl)))
+     (list perl))
     (synopsis "Convert filenames between character sets")
     (description
      "convmv is a file renamer, that converts between different encodings,

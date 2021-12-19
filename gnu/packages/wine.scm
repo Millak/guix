@@ -43,7 +43,6 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -222,8 +221,8 @@ integrate Windows applications into your desktop.")
   (package
     (inherit wine)
     (name "wine64")
-    (inputs `(("wine" ,wine)
-              ,@(package-inputs wine)))
+    (inputs (modify-inputs (package-inputs wine)
+              (prepend wine)))
     (arguments
      `(#:make-flags
        (list "SHELL=bash"
@@ -325,8 +324,8 @@ integrate Windows applications into your desktop.")
   (package
     (inherit wine)
     (name "wine-minimal")
-    (native-inputs (fold alist-delete (package-native-inputs wine)
-               '("gettext" "perl" "pkg-config")))
+    (native-inputs (modify-inputs (package-native-inputs wine)
+                     (delete "gettext" "perl" "pkg-config")))
     (inputs `())
     (arguments
      `(#:validate-runpath? #f
@@ -364,8 +363,7 @@ integrate Windows applications into your desktop.")
         (base32 "0d5m9pvafr0iw99ny7rgzfmw7zw45q5wfcw68zj88mvzs47xkgms"))))
     (build-system trivial-build-system)
     (native-inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)))
+     (list bash coreutils))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -413,15 +411,15 @@ integrate Windows applications into your desktop.")
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
           (base32 "1bc4zmqpdqs1ncz3qisp8a313pqzi5a31gq1s99ivb60vk325rcr")))))
-    (inputs `(("autoconf" ,autoconf)    ; for autoreconf
-              ("ffmpeg" ,ffmpeg)
-              ("gtk+" ,gtk+)
-              ("libva" ,libva)
-              ("mesa" ,mesa)
-              ("python" ,python)
-              ("util-linux" ,util-linux) ; for hexdump
-              ("wine-staging-patchset-data" ,wine-staging-patchset-data)
-              ,@(package-inputs wine)))
+    (inputs (modify-inputs (package-inputs wine)
+              (prepend autoconf ; for autoreconf
+                       ffmpeg
+                       gtk+
+                       libva
+                       mesa
+                       python
+                       util-linux ; for hexdump
+                       wine-staging-patchset-data)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -490,8 +488,8 @@ integrated into the main branch.")
   (package
     (inherit wine-staging)
     (name "wine64-staging")
-    (inputs `(("wine-staging" ,wine-staging)
-              ,@(package-inputs wine-staging)))
+    (inputs (modify-inputs (package-inputs wine-staging)
+              (prepend wine-staging)))
     (arguments
      `(#:make-flags
        (list "SHELL=bash"
@@ -609,10 +607,7 @@ version)")
                                (string-append (assoc-ref %build-inputs "source")
                                               "/build-wine32.txt"))))
     (native-inputs
-     ;; Since 1.5 dxvk needs gcc-8.1.  See
-     ;; https://github.com/doitsujin/dxvk/issues/1292#issuecomment-567067373.
-     `(("gcc" ,gcc-9)
-       ("glslang" ,glslang)))
+     `(("glslang" ,glslang)))
     (inputs
      `(("wine" ,wine-staging)))
     (synopsis "Vulkan-based D3D9, D3D10 and D3D11 implementation for Wine")

@@ -51,11 +51,9 @@
               "bin"           ;depends on Readline (adds 20MiB to the closure)
               "doc"           ;1.8 MiB of HTML
               "static"))      ;1.8 MiB static libraries
-   (inputs `(("bzip2" ,bzip2)
-             ("readline" ,readline)
-             ("zlib" ,zlib)))
+   (inputs (list bzip2 readline zlib))
    (arguments
-    '(#:disallowed-references ("doc")
+    `(#:disallowed-references ("doc")
       #:configure-flags '("--enable-utf"
                           "--enable-pcregrep-libz"
                           "--enable-pcregrep-libbz2"
@@ -63,7 +61,10 @@
                           "--enable-unicode-properties"
                           "--enable-pcre16"
                           "--enable-pcre32"
-                          "--enable-jit")
+                          ;; pcretest fails on powerpc32.
+                          ,@(if (target-ppc32?)
+                              '()
+                              `("--enable-jit")))
       #:phases (modify-phases %standard-phases
                  (add-after 'install 'move-static-libs
                    (lambda* (#:key outputs #:allow-other-keys)
@@ -96,9 +97,7 @@ POSIX regular expression API.")
                (base32
                 "0w6jaswjmg3bc0wsw6msn5bvk66p90kf2asnnj9rhll0idpak5ad"))))
    (build-system gnu-build-system)
-   (inputs `(("bzip2" ,bzip2)
-             ("readline" ,readline)
-             ("zlib" ,zlib)))
+   (inputs (list bzip2 readline zlib))
    (arguments
     `(#:configure-flags '("--enable-unicode"
                           "--enable-pcre2grep-libz"

@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +72,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (glibc
+            make-ld-wrapper
             libiconv-if-needed))
 
 ;;; Commentary:
@@ -266,15 +268,15 @@ differences.")
 (define-public diffutils
   (package
    (name "diffutils")
-   (version "3.7")
+   (version "3.8")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/diffutils/diffutils-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "09isrg0isjinv8c535nxsi1s86wfdfzml80dbw41dj9x3hiad9xk"))
-            (patches (search-patches "coreutils-gnulib-tests.patch"))))
+              "1v4g8gi0lgakqa7iix8s4fq7lq6l92vw3rjd9wfd2rhjng8xggd6"))
+            (patches (search-patches "diffutils-fix-signal-processing.patch"))))
    (build-system gnu-build-system)
    (native-inputs (list perl))
    (synopsis "Comparing and merging files")
@@ -521,8 +523,6 @@ change.  GNU make offers many powerful extensions over the standard utility.")
       (patches (search-patches "binutils-loongson-workaround.patch"
                                "binutils-2.37-file-descriptor-leak.patch"))))
    (build-system gnu-build-system)
-
-   ;; TODO: Add dependency on zlib + those for Gold.
    (arguments
     `(#:configure-flags '(;; Add `-static-libgcc' to not retain a dependency
                           ;; on GCC when bootstrapping.
@@ -556,6 +556,23 @@ included.")
    (license gpl3+)
    (home-page "https://www.gnu.org/software/binutils/")))
 
+;;; TODO: Merge into binutils on the next world rebuild.
+(define-public binutils-next
+  (package/inherit binutils
+    (name "binutils-next")
+    (version "2.37")
+    (arguments
+     (substitute-keyword-arguments (package-arguments binutils)
+       ((#:out-of-source? _ #f)         ;recommended in the README
+        #t)
+       ((#:configure-flags flags)
+        `(cons* "--enable-64-bit-bfd"
+                "--enable-compressed-debug-sections=all"
+                "--enable-lto"
+                "--enable-separate-code"
+                "--enable-threads"
+                ,flags))))))
+
 ;; FIXME: ath9k-firmware-htc-binutils.patch do not apply on 2.34 because of a
 ;; big refactoring of xtensa-modules.c (commit 567607c11fbf7105 upstream).
 ;; Keep this version around until the patch is updated.
@@ -569,40 +586,34 @@ included.")
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1cmd0riv37bqy9mwbg6n3523qgr8b3bbm5kwj19sjrasl4yq9d0c"))))
+               "1cmd0riv37bqy9mwbg6n3523qgr8b3bbm5kwj19sjrasl4yq9d0c"))
+             (patches '())))
    (arguments
     (substitute-keyword-arguments (package-arguments binutils)
       ((#:make-flags _ ''()) ''())))
    (properties '())))
 
 (define-public binutils-gold
-  (package/inherit binutils
+  (package/inherit binutils-next
     (name "binutils-gold")
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'patch-more-shebangs
-           (lambda _
-             (substitute* "gold/Makefile.in"
-               (("/bin/sh") (which "sh"))))))
-       ,@(substitute-keyword-arguments (package-arguments binutils)
-         ; Upstream is aware of unrelocatable test failures on arm*.
-         ((#:tests? _ #f)
-          (if (any (cute string-prefix? <> (or (%current-target-system)
-                                               (%current-system)))
-                   '("i686" "x86_64"))
-              '#t '#f))
-         ((#:configure-flags flags)
-          `(cons* "--enable-gold=default"
-                 (delete "LDFLAGS=-static-libgcc" ,flags))))))
-     (native-inputs
-     `(("bc" ,bc)))
-     (inputs
-     `(("gcc:lib" ,(canonical-package gcc) "lib")))))
+     (substitute-keyword-arguments (package-arguments binutils)
+       ((#:configure-flags flags)
+        `(cons* "--enable-gold=default"
+                (delete "LDFLAGS=-static-libgcc" ,flags)))
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-after 'patch-source-shebangs 'patch-more-shebangs
+             (lambda _
+               (substitute* "gold/Makefile.in"
+                 (("/bin/sh") (which "sh")))))))))
+    (native-inputs
+     `(("bc" ,bc)))))
 
 (define* (make-ld-wrapper name #:key
                           (target (const #f))
                           binutils
+                          (linker "ld")
                           (guile (canonical-package guile-3.0))
                           (bash (canonical-package bash))
                           (guile-for-build guile))
@@ -612,7 +623,9 @@ wrapper uses GUILE and BASH.
 
 TARGET must be a one-argument procedure that, given a system type, returns a
 cross-compilation target triplet or #f.  When the result is not #f, make a
-wrapper for the cross-linker for that target, called 'TARGET-ld'."
+wrapper for the cross-linker for that target, called 'TARGET-ld'.  To use a
+different linker than the default \"ld\", such as \"ld.gold\" the linker name
+can be provided via the LINKER argument."
   ;; Note: #:system->target-triplet is a procedure so that the evaluation of
   ;; its result can be delayed until the 'arguments' field is evaluated, thus
   ;; in a context where '%current-system' is accurate.
@@ -637,8 +650,9 @@ wrapper for the cross-linker for that target, called 'TARGET-ld'."
                      (let* ((out (assoc-ref %outputs "out"))
                             (bin (string-append out "/bin"))
                             (ld  ,(if target
-                                      `(string-append bin "/" ,target "-ld")
-                                      '(string-append bin "/ld")))
+                                      `(string-append bin "/" ,target "-"
+                                                      ,linker)
+                                      `(string-append bin "/" ,linker)))
                             (go  (string-append ld ".go")))
 
                        (setvbuf (current-output-port)
@@ -663,11 +677,10 @@ wrapper for the cross-linker for that target, called 'TARGET-ld'."
                           (string-append (assoc-ref %build-inputs "binutils")
                                          ,(if target
                                               (string-append "/bin/"
-                                                             target "-ld")
-                                              "/bin/ld"))))
+                                                             target "-" linker)
+                                              (string-append "/bin/" linker)))))
                        (chmod ld #o555)
-                       (compile-file ld #:output-file go)
-                       #t)))))
+                       (compile-file ld #:output-file go))))))
     (synopsis "The linker wrapper")
     (description
      "The linker wrapper (or @code{ld-wrapper}) wraps the linker to add any
@@ -675,8 +688,6 @@ missing @code{-rpath} flags, and to detect any misuse of libraries outside of
 the store.")
     (home-page "https://www.gnu.org/software/guix//")
     (license gpl3+)))
-
-(export make-ld-wrapper)
 
 (define-public glibc
   ;; This is the GNU C Library, used on GNU/Linux and GNU/Hurd.  Prior to
@@ -775,11 +786,6 @@ the store.")
                   '("--disable-werror")
                   '()))
 
-      ;; Arrange so that /etc/rpc & co. go to $out/etc.
-      #:make-flags (list (string-append "sysconfdir="
-                                        (assoc-ref %outputs "out")
-                                        "/etc"))
-
       #:tests? #f                                 ; XXX
       #:phases (modify-phases %standard-phases
                  (add-before
@@ -793,8 +799,7 @@ the store.")
                            (bash (or (assoc-ref inputs "static-bash")
                                      (assoc-ref native-inputs "static-bash"))))
                       ;; Install the rpc data base file under `$out/etc/rpc'.
-                      ;; FIXME: Use installFlags = [ "sysconfdir=$(out)/etc" ];
-                      (substitute* "sunrpc/Makefile"
+                      (substitute* "inet/Makefile"
                         (("^\\$\\(inst_sysconfdir\\)/rpc(.*)$" _ suffix)
                          (string-append out "/etc/rpc" suffix "\n"))
                         (("^install-others =.*$")
@@ -829,15 +834,6 @@ the store.")
                         (("#define[[:blank:]]+_PATH_BSHELL[[:blank:]].*$")
                          (string-append "#define _PATH_BSHELL \""
                                         bash "/bin/sh\"\n")))
-
-                      ;; Nscd uses __DATE__ and __TIME__ to create a string to
-                      ;; make sure the client and server come from the same
-                      ;; libc.  Use something deterministic instead.
-                      (substitute* "nscd/nscd_stat.c"
-                        (("static const char compilation\\[21\\] =.*$")
-                         (string-append
-                          "static const char compilation[21] = \""
-                          (string-take (basename out) 20) "\";\n")))
 
                       ;; Make sure we don't retain a reference to the
                       ;; bootstrap Perl.
@@ -959,11 +955,24 @@ with the Linux kernel.")
                         "glibc-2.31-hurd-clock_gettime_monotonic.patch"
                         "glibc-hurd-signal-sa-siginfo.patch"
                         "glibc-hurd-mach-print.patch"
-                        "glibc-hurd-gettyent.patch"))))))
+                        "glibc-hurd-gettyent.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments glibc)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'configure 'set-etc-rpc-installation-directory
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; Install the rpc data base file under `$out/etc/rpc'.
+               (let ((out (assoc-ref outputs "out")))
+                 (substitute* "sunrpc/Makefile"
+                   (("^\\$\\(inst_sysconfdir\\)/rpc(.*)$" _ suffix)
+                    (string-append out "/etc/rpc" suffix "\n"))
+                   (("^install-others =.*$")
+                    (string-append "install-others = " out "/etc/rpc\n"))))))))))))
 
 (define-public glibc-2.30
   (package
-    (inherit glibc)
+    (inherit glibc-2.31)
     (version "2.30")
     (native-inputs
      ;; This fails with a build error in libc-tls.c when using GCC 10.  Use an
@@ -1230,7 +1239,7 @@ command.")
     (name "tzdata")
     ;; This package should be kept in sync with python-pytz in (gnu packages
     ;; time).
-    (version "2021a")
+    (version "2021e")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1238,7 +1247,7 @@ command.")
                    version ".tar.gz"))
              (sha256
               (base32
-               "022fn6gkmp7pamlgab04x0dm5hnyn2m2fcnyr3pvm36612xd5rrr"))))
+               "1cdjdcxl0s9xf0dg1z64kh7llm80byxqlzrkkjzcdlyh6yvl5v07"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f
@@ -1306,7 +1315,7 @@ command.")
                           version ".tar.gz"))
                     (sha256
                      (base32
-                      "1l02b0jiwp3fl0xd6227i69d26rmx3yrnq0ssq9vvdmm4jhvyipb")))))
+                      "0x8pcfmjvxk29yfh8bklchv2f0vpl4yih0gc4wyx292l78wncijq")))))
     (home-page "https://www.iana.org/time-zones")
     (synopsis "Database of current and historical time zones")
     (description "The Time Zone Database (often called tz or zoneinfo)
@@ -1321,28 +1330,10 @@ and daylight-saving rules.")
 ;;; thousands of packages (for example, in a core-updates rebuild). This package
 ;;; will typically be obsolete and should never be referred to by a built
 ;;; package.
-(define-public tzdata-for-tests
-  (hidden-package
-   (package
-     (inherit tzdata)
-     (version "2021a")
-     (source (origin
-               (method url-fetch)
-               (uri (string-append
-                     "https://data.iana.org/time-zones/releases/tzdata"
-                     version ".tar.gz"))
-               (sha256
-                (base32
-                 "022fn6gkmp7pamlgab04x0dm5hnyn2m2fcnyr3pvm36612xd5rrr"))))
-     (inputs
-      (list (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://data.iana.org/time-zones/releases/tzcode"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "1l02b0jiwp3fl0xd6227i69d26rmx3yrnq0ssq9vvdmm4jhvyipb"))))))))
+;;;
+;;; Please make this a hidden-package if it is different from the primary tzdata
+;;; package.
+(define-public tzdata-for-tests tzdata)
 
 (define-public libiconv
   (package

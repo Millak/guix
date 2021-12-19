@@ -36,7 +36,7 @@
   #:use-module (srfi srfi-26)
   #:autoload   (ice-9 ftw) (scandir)
   #:autoload   (guix base16) (bytevector->base16-string)
-  #:autoload   (guix swh) (swh-download-directory)
+  #:autoload   (guix swh) (swh-download-directory %verify-swh-certificate?)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:export (open-socket-for-uri
@@ -646,6 +646,8 @@ and write the output to FILE."
                                                   #:verify-certificate?
                                                   verify-certificate?
                                                   #:timeout timeout)))
+              (format #t "Retrieving Disarchive spec from ~a ...~%"
+                      (uri->string uri))
               (let ((specification (read port)))
                 (close-port port)
                 specification))))
@@ -674,9 +676,22 @@ and write the output to FILE."
      (match (fetch-specification uris)
        (#f (format #t "could not find its Disarchive specification~%")
            #f)
-       (spec (parameterize ((%disarchive-log-port (current-output-port)))
+       (spec (parameterize ((%disarchive-log-port (current-output-port))
+                            (%verify-swh-certificate? verify-certificate?))
                (false-if-exception*
                 (disarchive-assemble spec file #:resolver resolve))))))))
+
+(define (internet-archive-uri uri)
+  "Return a URI corresponding to an Internet Archive backup of URI, or #f if
+URI does not denote a Web URI."
+  (and (memq (uri-scheme uri) '(http https))
+       (let* ((now  (time-utc->date (current-time time-utc)))
+              (date (date->string now "~Y~m~d~H~M~S")))
+         ;; Note: the date in the URL can be anything and web.archive.org
+         ;; automatically redirects to the closest date.
+         (build-uri 'https #:host "web.archive.org"
+                    #:path (string-append "/web/" date "/"
+                                          (uri->string uri))))))
 
 (define* (url-fetch url file
                     #:key
@@ -769,7 +784,12 @@ otherwise simply ignore them."
 
   (setvbuf (current-error-port) 'line)
 
-  (let try ((uri (append uri content-addressed-uris)))
+  (let try ((uri (append uri content-addressed-uris
+                   (match uri
+                     ((first . _)
+                      (or (and=> (internet-archive-uri first) list)
+                          '()))
+                     (() '())))))
     (match uri
       ((uri tail ...)
        (or (fetch uri file)

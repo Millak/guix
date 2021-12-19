@@ -68,8 +68,8 @@
                (base32
                 "0gqand86b0r86k3h46dh560lykxmxqqywz5m55kgjfq7q4lngbrw"))))
     (build-system gnu-build-system)
-    (native-inputs `(("perl" ,perl)  ;for doc and test target
-                     ("texinfo" ,texinfo)))
+    (native-inputs (list perl ;for doc and test target
+                         texinfo))
     (arguments
      `(#:test-target "test"
        #:phases
@@ -140,7 +140,7 @@ debugging information in STABS, DWARF 2, and CodeView 8 formats.")
               (base32
                "1jgxbq2cm51dzi3zhz38mmgwdcgs328mfl8iviw8dxn6dn36p1gd"))))
     (build-system gnu-build-system)
-    (native-inputs `(("zlib" ,zlib)))
+    (native-inputs (list zlib))
     (arguments
      ;; Some tests fail when run in parallel.
      `(#:parallel-tests? #f))
@@ -181,14 +181,14 @@ speed on x86, NEON on ARM, etc.).")
 (define-public fasm
   (package
     (name "fasm")
-    (version "1.73.27")
+    (version "1.73.28")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://flatassembler.net/fasm-"
                            version ".tgz"))
        (sha256
-        (base32 "1cghiks49ql77b9l4mwrnlk76kai0fm0z22j71kbdlxngwvlh0b8"))))
+        (base32 "14ljh0ngdaqlwzsr0l70k09r2d520lqpgswl388p84gxhnsfplcy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests exist
@@ -207,8 +207,7 @@ speed on x86, NEON on ARM, etc.).")
          (replace 'install
            (lambda _
              (let ((out (assoc-ref %outputs "out")))
-               (install-file "fasm" (string-append out "/bin")))
-             #t)))))
+               (install-file "fasm" (string-append out "/bin"))))))))
     (supported-systems '("x86_64-linux" "i686-linux"))
     (synopsis "Assembler for x86 processors")
     (description
@@ -271,15 +270,15 @@ assembler, a C compiler and a linker.  The assembler uses Intel syntax
                   "0p6wklslkkp3s4aisj3w5a53bagqn5fy4m6088ppd4fcfxgqkrcd"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("bison" ,bison)
-         ("flex" ,flex)
-         ("help2man" ,help2man)
-         ("gettext" ,gettext-minimal)
-         ("libtool" ,libtool)
-         ("makeinfo" ,texinfo)
-         ("pkg-config" ,pkg-config)))
+       (list autoconf
+             automake
+             bison
+             flex
+             help2man
+             gettext-minimal
+             libtool
+             texinfo
+             pkg-config))
       (home-page "https://www.gnu.org/software/libjit/")
       (synopsis "Just-In-Time compilation library")
       (description
@@ -324,12 +323,9 @@ runtime")
                       ,(string-append "PREFIX="
                                       (assoc-ref %outputs "out")))))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("pkg-config" ,pkg-config)
-       ("util-linux" ,util-linux)))
+     (list bison flex pkg-config util-linux))
     (inputs
-     `(("libpng" ,libpng)))
+     (list libpng))
     (home-page "https://github.com/gbdev/rgbds")
     (synopsis "Rednex Game Boy Development System")
     (description
@@ -387,14 +383,14 @@ Supported architectures are:
 (define-public xa
   (package
     (name "xa")
-    (version "2.3.11")
+    (version "2.3.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.floodgap.com/retrotech/xa"
                                   "/dists/xa-" version ".tar.gz"))
               (sha256
                (base32
-                "0b81r7mvzqxgnbbmhixcnrf9nc72v1nqaw19k67221g3k561dwij"))))
+                "0107zdwc2rzlp26pyx7gns4lqmiyg68nmpgwrg36yrrd04v1bzgq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f   ; TODO: custom test harness, not sure how it works
@@ -402,7 +398,7 @@ Supported architectures are:
        (modify-phases %standard-phases
          (delete 'configure))            ; no "configure" script
        #:make-flags (list (string-append "DESTDIR=" (assoc-ref %outputs "out")))))
-    (native-inputs `(("perl" ,perl)))
+    (native-inputs (list perl))
     (home-page "https://www.floodgap.com/retrotech/xa/")
     (synopsis "Two-pass portable cross-assembler")
     (description

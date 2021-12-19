@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (guix store)
   #:use-module (guix download)
   #:use-module (guix sets)
+  #:use-module (guix ui)
   #:use-module (gnu packages)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
@@ -152,6 +154,7 @@ of the string VERSION is replaced by the symbol 'version."
     ("CC0-1.0"                     'license:cc0)
     ("CC-BY-2.0"                   'license:cc-by2.0)
     ("CC-BY-3.0"                   'license:cc-by3.0)
+    ("CC-BY-4.0"                   'license:cc-by4.0)
     ("CC-BY-SA-2.0"                'license:cc-by-sa2.0)
     ("CC-BY-SA-3.0"                'license:cc-by-sa3.0)
     ("CC-BY-SA-4.0"                'license:cc-by-sa4.0)
@@ -163,6 +166,7 @@ of the string VERSION is replaced by the symbol 'version."
     ("EPL-1.0"                     'license:epl1.0)
     ("MIT"                         'license:expat)
     ("FTL"                         'license:freetype)
+    ("Freetype"                    'license:freetype)
     ("GFDL-1.1"                    'license:fdl1.1+)
     ("GFDL-1.2"                    'license:fdl1.2+)
     ("GFDL-1.3"                    'license:fdl1.3+)
@@ -179,6 +183,7 @@ of the string VERSION is replaced by the symbol 'version."
     ("GPL-3.0-only"                'license:gpl3)
     ("GPL-3.0+"                    'license:gpl3+)
     ("GPL-3.0-or-later"            'license:gpl3+)
+    ("HPND"                        'license:hpnd)
     ("ISC"                         'license:isc)
     ("IJG"                         'license:ijg)
     ("Imlib2"                      'license:imlib2)
@@ -231,9 +236,10 @@ to in the (guix licenses) module, or #f if there is no such known license."
 with dashes."
   (string-join (string-split (string-downcase str) #\_) "-"))
 
-(define (beautify-description description)
-  "Improve the package DESCRIPTION by turning a beginning sentence fragment
-into a proper sentence and by using two spaces between sentences."
+(define* (beautify-description description #:optional (length 80))
+  "Improve the package DESCRIPTION by turning a beginning sentence fragment into
+a proper sentence and by using two spaces between sentences, and wrap lines at
+LENGTH characters."
   (let ((cleaned (cond
                   ((string-prefix? "A " description)
                    (string-append "This package provides a"
@@ -248,8 +254,9 @@ into a proper sentence and by using two spaces between sentences."
                                              (string-length "Functions"))))
                   (else description))))
     ;; Use double spacing between sentences
-    (regexp-substitute/global #f "\\. \\b"
-                              cleaned 'pre ".  " 'post)))
+    (fill-paragraph (regexp-substitute/global #f "\\. \\b"
+                                          cleaned 'pre ".  " 'post)
+                length)))
 
 (define* (package-names->package-inputs names #:optional (output #f))
   "Given a list of PACKAGE-NAMES or (PACKAGE-NAME VERSION) pairs, and an
