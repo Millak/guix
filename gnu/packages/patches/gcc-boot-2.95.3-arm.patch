@@ -1,0 +1,31 @@
+This patch enables building gcc-2.95.3 on armhf-linux using TCC and
+Mes C Library.
+
+  * Add include/asm/unist.h linux header.
+  * Disable libgcc2.c float and long long functions.
+
+Upstream status: Not presented upstream.
+
+--- gcc-2.95.3/include/asm/unistd.h.orig	1970-01-01 01:00:00.000000000 +0100
++++ gcc-2.95.3/include/asm/unistd.h	2020-12-23 07:49:44.156673879 +0100
+@@ -0,0 +1,9 @@
++#ifndef __ASM_UNISTD_H
++#define  __ASM_UNISTD_H
++
++#if __arm__
++#define __NR_getpid 0x14
++#define __NR_kill 0x25
++#endif
++
++#endif // __ASM_UNISTD_H
+--- gcc-2.95.3/gcc/Makefile.in.orig	2020-12-23 08:31:57.733501802 +0100
++++ gcc-2.95.3/gcc/Makefile.in	2020-12-23 08:31:49.985371208 +0100
+@@ -1260,7 +1260,7 @@
+ 	-(cd tmpcopy; chmod +w * > /dev/null 2>&1)
+ 	(cd tmpcopy; $(AR_FOR_TARGET) x ../$(LIBGCC2))
+ 	(cd tmpcopy; $(AR_FOR_TARGET) $(AR_FLAGS_FOR_TARGET) ../tmplibgcc.a *$(objext))
+-	rm -rf libgcc2.a tmpcopy
++	rm -rf tmpcopy
+ 	if $(RANLIB_TEST_FOR_TARGET) ; then \
+ 	  $(RANLIB_FOR_TARGET) tmplibgcc.a; \
+ 	else true; fi

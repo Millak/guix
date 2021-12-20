@@ -697,56 +697,62 @@ MesCC-Tools), and finally M2-Planet.")
 
 (define gnu-make-mesboot0
   ;; The initial make
-  (package
-    (inherit gnu-make)
-    (name "make-mesboot0")
-    (version "3.80")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/make/make-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1pb7fb7fqf9wz9najm85qdma1xhxzf1rhj5gwrlzdsz2zm0hpcv4"))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs `(("tcc" ,tcc-boot0)
-                     ,@(%boot-gash-inputs)))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:configure-flags '("CC=tcc"
-                           "CPP=tcc -E"
-                           "LD=tcc"
-                           "--build=i686-unknown-linux-gnu"
-                           "--host=i686-unknown-linux-gnu"
-                           "--disable-nls")
-       #:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1))
-       #:strip-binaries? #f             ; no strip yet
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'scripted-patch
-           (lambda _
-             (substitute* "build.sh.in"
-               (("@LIBOBJS@") "getloadavg.o")
-               (("@REMOTE@") "stub"))))
-         (add-after 'configure 'configure-fixup
-           (lambda _
-             (substitute* "make.h"
-               (("^extern long int lseek.*" all) (string-append "// " all)))))
-         (replace 'build
-           (lambda _
-             (invoke "sh" "./build.sh")))
-         (replace 'check                ; proper check needs awk
-           (lambda _
-             (invoke "./make" "--version")))
-         (replace 'install
-           (lambda _
-             (let* ((out (assoc-ref %outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "make" bin)))))))))
+  (let ((triplet (match (%current-system)
+                   ((or "armhf-linux" "aarch64-linux")
+                    "arm-linux")
+                   ((or "i686-linux" "x86_64-linux")
+                    "i686-linux-gnu"))))
+    (package
+      (inherit gnu-make)
+      (name "make-mesboot0")
+      (version "3.80")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "mirror://gnu/make/make-" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "1pb7fb7fqf9wz9najm85qdma1xhxzf1rhj5gwrlzdsz2zm0hpcv4"))))
+      (supported-systems '("armhf-linux" "aarch64-linux"
+                           "i686-linux" "x86_64-linux"))
+      (inputs '())
+      (propagated-inputs '())
+      (native-inputs `(("tcc" ,tcc-boot0)
+                       ,@(%boot-gash-inputs)))
+      (arguments
+       `(#:implicit-inputs? #f
+         #:guile ,%bootstrap-guile
+         #:configure-flags (list "CC=tcc"
+                                 "CPP=tcc -E"
+                                 "LD=tcc"
+                                 (string-append "--build=" ,triplet)
+                                 (string-append "--host=" ,triplet)
+                                 "--disable-nls")
+         #:modules ((guix build gnu-build-system)
+                    (guix build utils)
+                    (srfi srfi-1))
+         #:strip-binaries? #f           ; no strip yet
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'scripted-patch
+             (lambda _
+               (substitute* "build.sh.in"
+                 (("@LIBOBJS@") "getloadavg.o")
+                 (("@REMOTE@") "stub"))))
+           (add-after 'configure 'configure-fixup
+             (lambda _
+               (substitute* "make.h"
+                 (("^extern long int lseek.*" all) (string-append "// " all)))))
+           (replace 'build
+             (lambda _
+               (invoke "sh" "./build.sh")))
+           (replace 'check          ; proper check needs awk
+             (lambda _
+               (invoke "./make" "--version")))
+           (replace 'install
+             (lambda _
+               (let* ((out (assoc-ref %outputs "out"))
+                      (bin (string-append out "/bin")))
+                 (install-file "make" bin))))))))))
 
 (define (%boot-tcc0-inputs)
   `(("make" ,gnu-make-mesboot0)
