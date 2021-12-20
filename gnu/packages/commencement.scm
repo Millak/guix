@@ -631,7 +631,8 @@ MesCC-Tools), and finally M2-Planet.")
               (sha256
                (base32
                 "1rhgk2vvmdvnn6vygf0dja92ryyng00knl0kz5srb77k2kryjb2d"))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
     (native-inputs `(("tcc" ,tcc-boot0)
