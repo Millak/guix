@@ -6,7 +6,7 @@ diff --git a/elf/dl-cache.c b/elf/dl-cache.c
 index 93d185e788..e0760a1f40 100644
 --- a/elf/dl-cache.c
 +++ b/elf/dl-cache.c
-@@ -171,6 +171,51 @@ _dl_cache_libcmp (const char *p1, const char *p2)
+@@ -171,6 +171,52 @@ _dl_cache_libcmp (const char *p1, const char *p2)
    return *p1 - *p2;
  }
  
@@ -27,7 +27,8 @@ index 93d185e788..e0760a1f40 100644
 +      const char *origin = _dl_get_origin ();
 +
 +      /* Check whether ORIGIN is something like "/gnu/store/…-foo/bin".  */
-+      if (strncmp (store, origin, strlen (store)) == 0
++      if (origin != (char *) -1   /* _dl_get_origin reported failure */
++	  && strncmp (store, origin, strlen (store)) == 0
 +	  && origin[sizeof store - 1] == '/')
 +	{
 +	  char *store_item_end = strchr (origin + sizeof store, '/');
