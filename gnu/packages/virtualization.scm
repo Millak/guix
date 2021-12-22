@@ -1617,11 +1617,13 @@ domains, their live performance and resource utilization statistics.")
     (native-inputs
      (list pkg-config
            perl
-           protobuf-c
            asciidoc
            xmlto
            docbook-xml
            docbook-xsl))
+    (propagated-inputs
+     ;; included by 'rpc.pb-c.h'
+     (list protobuf-c))
     (home-page "https://criu.org")
     (synopsis "Checkpoint and restore in user space")
     (description "Using this tool, you can freeze a running application (or
