@@ -76,9 +76,7 @@ scripts.")
                 "0gcincjvpll2qmlc906jx6mfq97s87mgi0zby0753ki0rr2ch0s8"))))
     (build-system gnu-build-system)
     (arguments
-     '(;; FIXME: Some tests require network access
-       #:tests? #f
-       #:phases
+     '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'filter-live-tests
            (lambda _
