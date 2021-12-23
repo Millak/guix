@@ -961,46 +961,62 @@ MesCC-Tools), and finally M2-Planet.")
 
 (define binutils-mesboot0
   ;; The initial Binutils
-  (package
-    (inherit binutils)
-    (name "binutils-mesboot0")
-    (version "2.20.1a")
-    (source (bootstrap-origin
-             (origin
-               (method url-fetch)
-               (uri (string-append "mirror://gnu/binutils/binutils-"
-                                   version ".tar.bz2"))
-               (patches (search-patches "binutils-boot-2.20.1a.patch"))
-               (patch-guile %bootstrap-guile)
-               (sha256
-                (base32
-                 "0r7dr0brfpchh5ic0z9r4yxqn4ybzmlh25sbp30cacqk8nb7rlvi")))))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs (%boot-tcc-inputs))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (arguments
-     `(#:implicit-inputs? #f
-       #:guile ,%bootstrap-guile
-       #:tests? #f                      ; runtest: command not found
-       #:parallel-build? #f
-       #:strip-binaries? #f             ; no strip yet
-       #:configure-flags
-       (let ((cppflags (string-append " -D __GLIBC_MINOR__=6"
-                                      " -D MES_BOOTSTRAP=1"))
-             (bash (assoc-ref %build-inputs "bash")))
-         `(,(string-append "CONFIG_SHELL=" bash "/bin/sh")
-           ,(string-append "CPPFLAGS=" cppflags)
-           "AR=tcc -ar"
-           "CXX=false"
-           "RANLIB=true"
-           ,(string-append "CC=tcc" cppflags)
-           "--disable-nls"
-           "--disable-shared"
-           "--disable-werror"
-           "--build=i686-unknown-linux-gnu"
-           "--host=i686-unknown-linux-gnu"
-           "--with-sysroot=/"))))))
+  (let ((triplet (match (%current-system)
+                   ((or "armhf-linux" "aarch64-linux")
+                    "arm-unknown-linux-gnu")
+                   ((or "i686-linux" "x86_64-linux")
+                    "i386-unknown-linux-gnu"))))
+    (package
+      (inherit binutils)
+      (name "binutils-mesboot0")
+      (version "2.20.1a")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "mirror://gnu/binutils/binutils-"
+                                    version ".tar.bz2"))
+                ;; `patches' needs XZ
+                ;; (patches (search-patches "binutils-boot-2.20.1a.patch"))
+                ;; (patch-guile %bootstrap-guile)
+                (sha256
+                 (base32
+                  "0r7dr0brfpchh5ic0z9r4yxqn4ybzmlh25sbp30cacqk8nb7rlvi"))))
+      (inputs '())
+      (propagated-inputs '())
+      (native-inputs (%boot-tcc-inputs))
+      (supported-systems '("armhf-linux" "aarch64-linux"
+                           "i686-linux" "x86_64-linux"))
+      (arguments
+       (list
+        #:implicit-inputs? #f
+        #:guile %bootstrap-guile
+        #:tests? #f                     ; runtest: command not found
+        #:parallel-build? #f
+        #:strip-binaries? #f            ; no strip yet
+        #:configure-flags
+        #~(let ((cppflags (string-append " -D __GLIBC_MINOR__=6"
+                                         " -D MES_BOOTSTRAP=1"))
+                (bash (assoc-ref %build-inputs "bash")))
+            `(,(string-append "CONFIG_SHELL=" bash "/bin/sh")
+              ,(string-append "CPPFLAGS=" cppflags)
+              "AR=tcc -ar"
+              "CXX=false"
+              "RANLIB=true"
+              ,(string-append "CC=tcc" cppflags)
+              "--disable-nls"
+              "--disable-shared"
+              "--disable-werror"
+              ,(string-append "--build=" #$triplet)
+              ,(string-append "--host=" #$triplet)
+              ;;,(string-append "--target=" ,triplet)
+              "--with-sysroot=/"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'apply-boot-patch
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((patch-file
+                       #$(local-file
+                          (search-patch "binutils-boot-2.20.1a.patch"))))
+                  (invoke "patch" "--force" "-p1" "-i" patch-file))))))))))
 
 (define gcc-core-mesboot0
   ;; Gcc-2.95.3 is the most recent GCC that is supported by what the Mes C
