@@ -1089,6 +1089,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-arm-link-spec-fix.patch		\
   %D%/packages/patches/gcc-asan-missing-include.patch		\
   %D%/packages/patches/gcc-boot-2.95.3.patch			\
+  %D%/packages/patches/gcc-boot-2.95.3-arm.patch		\
   %D%/packages/patches/gcc-boot-4.6.4.patch			\
   %D%/packages/patches/gcc-cross-environment-variables.patch	\
   %D%/packages/patches/gcc-cross-gxx-include-dir.patch          \
