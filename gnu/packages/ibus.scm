@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
+;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -307,7 +308,7 @@ Chinese pinyin input methods.")
 (define-public ibus-anthy
   (package
     (name "ibus-anthy")
-    (version "1.5.9")
+    (version "1.5.14")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -315,12 +316,15 @@ Chinese pinyin input methods.")
                     version "/ibus-anthy-" version ".tar.gz"))
               (sha256
                (base32
-                "1y8sf837rmp662bv6zakny0xcm7c9c5qda7f9kq9riv9ywpcbw6x"))))
+                "16vd0k8wm13s38869jqs3dnwmjvywgn0snnpyi41m28binhlssf8"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
        ;; Use absolute exec path in the anthy.xml.
        (list (string-append "--libexecdir=" %output "/libexec"))
+       ;; The test suite fails (see:
+       ;; https://github.com/ibus/ibus-anthy/issues/28).
+       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-programs
@@ -338,6 +342,7 @@ Chinese pinyin input methods.")
                #t))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
        ("python" ,python)))
