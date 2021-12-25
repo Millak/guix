@@ -936,7 +936,8 @@ of PROVENANCE-SERVICE-TYPE to its services."
   ;; Firmware usable by default.
   (list ath9k-htc-ar7010-firmware
         ath9k-htc-ar9271-firmware
-        openfwwf-firmware))
+        openfwwf-firmware
+        wireless-regdb))
 
 (define %base-packages-artwork
   ;; Default set of artwork packages.
