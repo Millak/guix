@@ -6331,10 +6331,11 @@ compliance.")
                     "wireless-regdb-" version ".tar.xz"))
               (sha256
                (base32 "13gmrcsbnkp98b20vqd50d8klxsvl60ydaw0qb8hr0kv480hjbmj"))
-
-              ;; We're building 'regulatory.bin' by ourselves.
+              ;; We're building 'regulatory.bin' and 'regulatory.db' by
+              ;; ourselves.
               (snippet '(begin
-                          (delete-file "regulatory.bin")))))
+                          (map delete-file '("regulatory.bin"
+                                             "regulatory.db"))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6344,46 +6345,46 @@ compliance.")
             (lambda _
               (substitute* "Makefile"
                 (("gzip") "gzip --no-name"))))
-          (add-after 'unpack 'omit-signature
+          (replace 'build
+            (lambda* (#:key (make-flags '()) #:allow-other-keys)
+              (apply invoke "make" "regulatory.db" make-flags)))
+          (add-after 'build 'build-regulatory.bin-unsigned
+            (lambda* (#:key (make-flags '()) #:allow-other-keys)
+              (apply invoke "make" "regulatory.bin"
+                     (cons*
+                      ;; Leave this empty so that db2bin.py doesn't try to sign
+                      ;; ‘regulatory.bin’.  This allows us to avoid managing a key
+                      ;; pair for the whole distribution.
+                      "REGDB_PRIVKEY="
+                      ;; Don't generate a public key for the same reason.  These are
+                      ;; used as Makefile targets and can't be the empty string.
+                      "REGDB_PUBCERT=/dev/null"
+                      "REGDB_PUBKEY=/dev/null"
+                      make-flags))))
+          ;; We check if the 'regulatory.db' we just built is the same as the
+          ;; one that got signed by upstream.
+          (replace 'check
             (lambda _
-              (substitute* "Makefile"
-                ;; Signing requires a REGDB_PUBCERT and REGDB_PRIVKEY which we
-                ;; don't provide (see below).  Disable it.
-                ((" regulatory\\.db\\.p7s") "")
-                ;; regulatory.db is built as a dependency of regulatory.db.p7s,
-                ;; but ‘make install’ depends only on the latter while
-                ;; installing both (and failing).  Depend on it explicitly.
-                (("^install: " all) (string-append all "regulatory.db ")))))
+              (invoke "openssl" "smime"
+                      "-verify" "-inform" "DER"
+                      "-signer" "wens.x509.pem"
+                      "-in" "regulatory.db.p7s" "-content" "regulatory.db"
+                      "-out" "/dev/null"
+                      "-CAfile" "wens.x509.pem")))
           (delete 'configure))  ; no configure script
-
-      ;; The 'all' target of the makefile depends on $(REGDB_CHANGED), which
-      ;; is computed and can be equal to 'maintainer-clean'; when that
-      ;; happens, we can end up deleting the 'regulatory.bin' file that we
-      ;; just built.  Thus, build things sequentially.
-      #:parallel-build? #f
-
-      #:tests? #f                      ; no tests
       #:make-flags
       #~(list (string-append "PREFIX=" #$output)
-              (string-append "FIRMWARE_PATH=$(PREFIX)/lib/firmware")
-
-              ;; Leave this empty so that db2bin.py doesn't try to sign
-              ;; ‘regulatory.bin’.  This allows us to avoid managing a key
-              ;; pair for the whole distribution.
-              (string-append "REGDB_PRIVKEY=")
-              ;; Don't generate a public key for the same reason.  These are
-              ;; used as Makefile targets and can't be the empty string.
-              (string-append "REGDB_PUBCERT=/dev/null")
-              (string-append "REGDB_PUBKEY=/dev/null"))))
-    (native-inputs
-     (list python-wrapper))
+              (string-append "FIRMWARE_PATH=$(PREFIX)/lib/firmware"))))
+    (native-inputs (list openssl        ; to verify signature
+                         python-wrapper))
     (home-page
      "https://wireless.wiki.kernel.org/en/developers/regulatory/wireless-regdb")
     (synopsis "Wireless regulatory database")
     (description
-     "This package contains the wireless regulatory database for the
-@acronym{CRDA, Central Regulatory Database Agent}.  The database contains
-information on country-specific regulations for the wireless spectrum.")
+     "This package contains the wireless regulatory database used by the Linux
+cfg80211 subsystem and the legacy @acronym{CRDA, Central Regulatory Database
+Agent}.  The database contains information on country-specific regulations for
+the wireless spectrum.")
     (license license:isc)))
 
 (define-public lm-sensors
