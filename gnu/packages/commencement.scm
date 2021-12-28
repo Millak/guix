@@ -1162,7 +1162,8 @@ ac_cv_c_float_format='IEEE (little-endian)'
   (package
     (inherit mes-boot)
     (name "mesboot-headers")
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
     (native-inputs `(("kernel-headers" ,%bootstrap-linux-libre-headers)
