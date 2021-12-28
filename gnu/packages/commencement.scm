@@ -1427,122 +1427,134 @@ ac_cv_c_float_format='IEEE (little-endian)'
   ;; stricly needed, but very helpful for development because it builds
   ;; relatively fast.  If this configures and builds then gcc-mesboot1 also
   ;; builds.
-  (package
-    (inherit gcc-mesboot0)
-    (name "gcc-core-mesboot1")
-    (version "4.6.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/gcc/gcc-"
-                                  version "/gcc-core-" version ".tar.gz"))
-              (sha256
-               (base32
-                "173kdb188qg79pcz073cj9967rs2vzanyjdjyxy9v0xb0p5sad75"))))
-    (inputs `(("gmp-source" ,gmp-boot)
-              ("mpfr-source" ,mpfr-boot)
-              ("mpc-source" ,mpc-boot)))
-    (native-inputs (%boot-mesboot1-inputs))
-    (arguments
-     (list #:implicit-inputs? #f
-           #:guile %bootstrap-guile
-           #:tests? #f
-           #:modules '((guix build gnu-build-system)
-                       (guix build utils)
-                       (srfi srfi-1))
-           #:parallel-build? #f             ; for debugging
-           #:make-flags
-           #~(let* ((libc (assoc-ref %build-inputs "libc"))
-                    (ldflags (string-append
-                              "-B" libc "/lib "
-                              "-Wl,-dynamic-linker "
-                              "-Wl," libc
-                              #$(glibc-dynamic-linker "i686-linux"))))
-               (list (string-append "LDFLAGS=" ldflags)
-                     (string-append "LDFLAGS_FOR_TARGET=" ldflags)))
-           #:configure-flags
-           #~(let ((out (assoc-ref %outputs "out"))
-                   (glibc (assoc-ref %build-inputs "libc")))
-               (list (string-append "--prefix=" out)
-                     "--build=i686-unknown-linux-gnu"
-                     "--host=i686-unknown-linux-gnu"
-                     (string-append "--with-native-system-header-dir=" glibc "/include")
-                     (string-append "--with-build-sysroot=" glibc "/include")
-                     "--disable-bootstrap"
-                     "--disable-decimal-float"
-                     "--disable-libatomic"
-                     "--disable-libcilkrts"
-                     "--disable-libgomp"
-                     "--disable-libitm"
-                     "--disable-libmudflap"
-                     "--disable-libquadmath"
-                     "--disable-libsanitizer"
-                     "--disable-libssp"
-                     "--disable-libvtv"
-                     "--disable-lto"
-                     "--disable-lto-plugin"
-                     "--disable-multilib"
-                     "--disable-plugin"
-                     "--disable-threads"
-                     "--enable-languages=c"
-                     "--enable-static"
-                     "--disable-shared"
-                     "--enable-threads=single"
-                     "--disable-libstdcxx-pch"
-                     "--disable-build-with-cxx"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'apply-boot-patch
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((patch-file
-                          #$(local-file
-                             (search-patch "gcc-boot-4.6.4.patch"))))
-                     (invoke "patch" "--force" "-p1" "-i" patch-file))))
-               ;; c&p from commencement.scm:gcc-boot0
-               (add-after 'unpack 'unpack-gmp&co
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
-                         (mpfr (assoc-ref %build-inputs "mpfr-source"))
-                         (mpc  (assoc-ref %build-inputs "mpc-source")))
+  (let ((triplet (match (%current-system)
+                   ((or "armhf-linux" "aarch64-linux")
+                    "arm-unknown-linux-gnu")
+                   ((or "i686-linux" "x86_64-linux")
+                    "i686-unknown-linux-gnu"))))
+    (package
+      (inherit gcc-mesboot0)
+      (name "gcc-core-mesboot1")
+      (version "4.6.4")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "mirror://gnu/gcc/gcc-"
+                                    version "/gcc-core-" version ".tar.gz"))
+                (sha256
+                 (base32
+                  "173kdb188qg79pcz073cj9967rs2vzanyjdjyxy9v0xb0p5sad75"))))
+      (supported-systems '("armhf-linux" "aarch64-linux"
+                           "i686-linux" "x86_64-linux"))
+      (inputs `(("gmp-source" ,gmp-boot)
+                ("mpfr-source" ,mpfr-boot)
+                ("mpc-source" ,mpc-boot)))
+      (native-inputs (%boot-mesboot1-inputs))
+      (arguments
+       (list #:implicit-inputs? #f
+             #:guile %bootstrap-guile
+             #:tests? #f
+             #:modules '((guix build gnu-build-system)
+                         (guix build utils)
+                         (srfi srfi-1))
+             #:parallel-build? #f       ; for debugging
+             #:make-flags
+             #~(let* ((libc (assoc-ref %build-inputs "libc"))
+                      (ldflags (string-append
+                                "-B" libc "/lib "
+                                "-Wl,-dynamic-linker "
+                                "-Wl," libc
+                                #$(glibc-dynamic-linker "i686-linux"))))
+                 (list (string-append "LDFLAGS=" ldflags)
+                       (string-append "LDFLAGS_FOR_TARGET=" ldflags)))
+             #:configure-flags
+             #~(let ((out (assoc-ref %outputs "out"))
+                     (glibc (assoc-ref %build-inputs "libc")))
+                 (list (string-append "--prefix=" out)
+                       (string-append "--build=" #$triplet)
+                       (string-append "--host=" #$triplet)
+                       (string-append "--with-native-system-header-dir=" glibc "/include")
+                       (string-append "--with-build-sysroot=" glibc "/include")
+                       "--disable-bootstrap"
+                       "--disable-decimal-float"
+                       "--disable-libatomic"
+                       "--disable-libcilkrts"
+                       "--disable-libgomp"
+                       "--disable-libitm"
+                       "--disable-libmudflap"
+                       "--disable-libquadmath"
+                       "--disable-libsanitizer"
+                       "--disable-libssp"
+                       "--disable-libvtv"
+                       "--disable-lto"
+                       "--disable-lto-plugin"
+                       "--disable-multilib"
+                       "--disable-plugin"
+                       "--disable-threads"
+                       "--enable-languages=c"
+                       "--enable-static"
+                       "--disable-shared"
+                       "--enable-threads=single"
+                       "--disable-libstdcxx-pch"
+                       "--disable-build-with-cxx"))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'apply-boot-patch
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((patch-file
+                            #$(local-file
+                               (search-patch "gcc-boot-4.6.4.patch"))))
+                       (invoke "patch" "--force" "-p1" "-i" patch-file)))
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((patch-file
+                            #$(local-file
+                               (search-patch "gcc-boot-2.95.3-arm.patch"))))
+                       (invoke "patch" "--force" "-p1" "-i" patch-file))))
+                 ;; c&p from commencement.scm:gcc-boot0
+                 (add-after 'unpack 'unpack-gmp&co
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
+                           (mpfr (assoc-ref %build-inputs "mpfr-source"))
+                           (mpc  (assoc-ref %build-inputs "mpc-source")))
 
-                     ;; To reduce the set of pre-built bootstrap inputs, build
-                     ;; GMP & co. from GCC.
-                     (for-each (lambda (source)
-                                 (or (invoke "tar" "xvf" source)
-                                     (error "failed to unpack tarball"
-                                            source)))
-                               (list gmp mpfr mpc))
+                       ;; To reduce the set of pre-built bootstrap inputs, build
+                       ;; GMP & co. from GCC.
+                       (for-each (lambda (source)
+                                   (or (invoke "tar" "xvf" source)
+                                       (error "failed to unpack tarball"
+                                              source)))
+                                 (list gmp mpfr mpc))
 
-                     ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
-                     #$@(map (lambda (lib package)
-                               ;; Drop trailing letters, as gmp-6.0.0a unpacks
-                               ;; into gmp-6.0.0.
-                               #~(symlink #$(string-trim-right
-                                             (basename
-                                              (origin-actual-file-name lib)
-                                              ".tar.gz")
-                                             char-set:letter)
-                                          #$package))
-                             (list gmp-boot mpfr-boot mpc-boot)
-                             '("gmp" "mpfr" "mpc")))))
-               (add-before 'configure 'setenv
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (binutils (assoc-ref %build-inputs "binutils"))
-                          (bash (assoc-ref %build-inputs "bash"))
-                          (gcc (assoc-ref %build-inputs "gcc"))
-                          (glibc (assoc-ref %build-inputs "libc"))
-                          (kernel-headers (assoc-ref %build-inputs "kernel-headers")))
-                     (setenv "CONFIG_SHELL" (string-append bash "/bin/sh"))
-                     (setenv "C_INCLUDE_PATH" (string-append
-                                               gcc "/lib/gcc-lib/i686-unknown-linux-gnu/2.95.3/include"
-                                               ":" kernel-headers "/include"
-                                               ":" glibc "/include"
-                                               ":" (getcwd) "/mpfr/src"))
-                     (setenv "LIBRARY_PATH" (string-append glibc "/lib"
-                                                           ":" gcc "/lib"))
-                     (format (current-error-port) "C_INCLUDE_PATH=~a\n" (getenv "C_INCLUDE_PATH"))
-                     (format (current-error-port) "LIBRARY_PATH=~a\n"
-                             (getenv "LIBRARY_PATH"))))))))))
+                       ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
+                       #$@(map (lambda (lib package)
+                                 ;; Drop trailing letters, as gmp-6.0.0a unpacks
+                                 ;; into gmp-6.0.0.
+                                 #~(symlink #$(string-trim-right
+                                               (basename
+                                                (origin-actual-file-name lib)
+                                                ".tar.gz")
+                                               char-set:letter)
+                                            #$package))
+                               (list gmp-boot mpfr-boot mpc-boot)
+                               '("gmp" "mpfr" "mpc")))))
+                 (add-before 'configure 'setenv
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (binutils (assoc-ref %build-inputs "binutils"))
+                            (bash (assoc-ref %build-inputs "bash"))
+                            (gcc (assoc-ref %build-inputs "gcc"))
+                            (glibc (assoc-ref %build-inputs "libc"))
+                            (kernel-headers (assoc-ref %build-inputs "kernel-headers")))
+                       (setenv "CONFIG_SHELL" (string-append bash "/bin/sh"))
+                       (setenv "C_INCLUDE_PATH" (string-append
+                                                 gcc "/lib/gcc-lib/i686-unknown-linux-gnu/2.95.3/include"
+                                                 ":" kernel-headers "/include"
+                                                 ":" glibc "/include"
+                                                 ":" (getcwd) "/mpfr/src"))
+                       (setenv "LIBRARY_PATH" (string-append glibc "/lib"
+                                                             ":" gcc "/lib"))
+                       (format (current-error-port) "C_INCLUDE_PATH=~a\n" (getenv "C_INCLUDE_PATH"))
+                       (format (current-error-port) "LIBRARY_PATH=~a\n"
+                               (getenv "LIBRARY_PATH")))))))))))
 
 (define gcc-mesboot1
   (package
