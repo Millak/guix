@@ -1190,95 +1190,108 @@ ac_cv_c_float_format='IEEE (little-endian)'
   ;; GNU C Library 2.2.5 is the most recent glibc that we managed to build
   ;; using gcc-2.95.3.  Newer versions (2.3.x, 2.6, 2.1x) seem to need a newer
   ;; gcc.
-  (package
-    (inherit glibc)
-    (name "glibc-mesboot0")
-    (version "2.2.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/glibc/glibc-"
-                                  version
-                                  ".tar.gz"))
-              ;; Patch needs XZ
-              ;; (patches (search-patches "glibc-boot-2.2.5.patch"))
-              (sha256
-               (base32
-                "1vl48i16gx6h68whjyhgnn1s57vqq32f9ygfa2fls7pdkbsqvp2q"))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
-    (inputs '())
-    (propagated-inputs '())
-    (native-inputs `(("headers" ,mesboot-headers)
-                     ,@(%boot-mesboot-core-inputs)))
-    (outputs '("out"))
-    (arguments
-     (list #:implicit-inputs? #f
-           #:guile %bootstrap-guile
-           #:tests? #f
-           #:strip-binaries? #f
-           #:validate-runpath? #f   ; no dynamic executables
-           #:parallel-build? #f     ; gcc-2.95.3 ICEs on massively parallel builds
-           #:make-flags #~(list (string-append
-                                 "SHELL="
-                                 (assoc-ref %build-inputs "bash")
-                                 "/bin/sh"))
-           #:configure-flags
-           #~(let ((out (assoc-ref %outputs "out"))
-                   (headers (assoc-ref %build-inputs "headers")))
-               `("--disable-shared"
-                 "--enable-static"
-                 "--disable-sanity-checks"
-                 "--build=i686-unknown-linux-gnu"
-                 "--host=i686-unknown-linux-gnu"
-                 ,(string-append "--with-headers=" headers "/include")
-                 "--enable-static-nss"
-                 "--without-__thread"
-                 "--without-cvs"
-                 "--without-gd"
-                 "--without-tls"
-                 ,(string-append "--prefix=" out)))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'apply-boot-patch
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (invoke "patch" "--force" "-p1" "-i"
-                           #$(local-file
-                              (search-patch "glibc-boot-2.2.5.patch")))
-                   (invoke "patch" "--force" "-p1" "-i"
-                           #$(local-file
-                              (search-patch "glibc-bootstrap-system-2.2.5.patch")))))
-               (add-before 'configure 'setenv
-                 (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (bash (assoc-ref %build-inputs "bash"))
-                          (shell (string-append bash "/bin/bash"))
-                          (gcc (assoc-ref %build-inputs "gcc"))
-                          (headers (assoc-ref %build-inputs "headers"))
-                          (cppflags (string-append
-                                     ;;" -D __STDC__=1"
-                                     " -D MES_BOOTSTRAP=1"
-                                     " -D BOOTSTRAP_GLIBC=1"))
-                          (cflags (string-append " -L " (getcwd))))
-                     (setenv "CONFIG_SHELL" shell)
-                     (setenv "SHELL" shell)
-                     (setenv "CPP" (string-append gcc "/bin/gcc -E " cppflags))
-                     (setenv "CC" (string-append gcc "/bin/gcc " cppflags cflags)))))
-               (replace 'configure           ; needs classic invocation of configure
-                 (lambda* (#:key configure-flags #:allow-other-keys)
-                   (format (current-error-port)
-                           "running ./configure ~a\n" (string-join configure-flags))
-                   (apply invoke "./configure" configure-flags)))
-               (add-after 'configure 'fixup-configure
-                 (lambda _
-                   (let* ((out (assoc-ref %outputs "out"))
-                          (bash (assoc-ref %build-inputs "bash"))
-                          (shell (string-append bash "/bin/bash")))
-                     (substitute* "config.make"
-                       (("INSTALL = scripts/") "INSTALL = $(..)./scripts/"))
-                     (substitute* "config.make"
-                       (("INSTALL = scripts/") "INSTALL = $(..)./scripts/")
-                       (("BASH = ") (string-append
-                                     "SHELL = " shell "
-         BASH = ")))))))))))
+  (let ((triplet (match (%current-system)
+                   ((or "armhf-linux" "aarch64-linux")
+                    "arm-unknown-linux-gnu")
+                   ((or "i686-linux" "x86_64-linux")
+                    "i686-unknown-linux-gnu"))))
+    (package
+      (inherit glibc)
+      (name "glibc-mesboot0")
+      (version "2.2.5")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "mirror://gnu/glibc/glibc-"
+                                    version
+                                    ".tar.gz"))
+                ;; Patch needs XZ
+                ;; (patches (search-patches "glibc-boot-2.2.5.patch"))
+                (sha256
+                 (base32
+                  "1vl48i16gx6h68whjyhgnn1s57vqq32f9ygfa2fls7pdkbsqvp2q"))))
+      (supported-systems '("armhf-linux" "aarch64-linux"
+                           "i686-linux" "x86_64-linux"))
+      (inputs '())
+      (propagated-inputs '())
+      (native-inputs `(("headers" ,mesboot-headers)
+                       ,@(%boot-mesboot-core-inputs)))
+      (outputs '("out"))
+      (arguments
+       (list #:implicit-inputs? #f
+             #:guile %bootstrap-guile
+             #:tests? #f
+             #:strip-binaries? #f
+             #:validate-runpath? #f     ; no dynamic executables
+             #:parallel-build? #f ; gcc-2.95.3 ICEs on massively parallel builds
+             #:make-flags #~(list (string-append
+                                   "SHELL="
+                                   (assoc-ref %build-inputs "bash")
+                                   "/bin/sh"))
+             #:configure-flags
+             #~(let ((out (assoc-ref %outputs "out"))
+                     (headers (assoc-ref %build-inputs "headers")))
+                 (list
+                  "--disable-shared"
+                  "--enable-static"
+                  "--disable-sanity-checks"
+                  (string-append "--build=" #$triplet)
+                  (string-append "--host=" #$triplet)
+                  (string-append "--with-headers=" headers "/include")
+                  "--enable-static-nss"
+                  "--without-__thread"
+                  "--without-cvs"
+                  "--without-gd"
+                  "--without-tls"
+                  (string-append "--prefix=" out)))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'apply-boot-patch
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (invoke "patch" "--force" "-p1" "-i"
+                             #$(local-file
+                                (search-patch "glibc-boot-2.2.5.patch")))
+                     (invoke "patch" "--force" "-p1" "-i"
+                             #$(local-file
+                                (search-patch "glibc-bootstrap-system-2.2.5.patch")))
+                     (invoke "patch" "--force" "-p1" "-i"
+                             #$(local-file
+                                (search-patch "glibc-bootstrap-arm-2.2.5.patch")))))
+                 (add-before 'configure 'setenv
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (bash (assoc-ref %build-inputs "bash"))
+                            (shell (string-append bash "/bin/bash"))
+                            (gcc (assoc-ref %build-inputs "gcc"))
+                            (headers (assoc-ref %build-inputs "headers"))
+                            (cppflags (string-append
+                                       ;;" -D __STDC__=1"
+                                       " -D MES_BOOTSTRAP=1"
+                                       " -D BOOTSTRAP_GLIBC=1"
+                                       (if (equal? #$triplet "arm-unknown-linux-gnu")
+                                           " -D __ARM_EABI__=1"
+                                           "")))
+                            (cflags (string-append " -L " (getcwd))))
+                       (setenv "CONFIG_SHELL" shell)
+                       (setenv "SHELL" shell)
+                       (setenv "CPP" (string-append gcc "/bin/gcc -E " cppflags))
+                       (setenv "CC" (string-append gcc "/bin/gcc " cppflags cflags)))))
+                 (replace 'configure ; needs classic invocation of configure
+                   (lambda* (#:key configure-flags #:allow-other-keys)
+                     (format (current-error-port)
+                             "running ./configure ~a\n" (string-join configure-flags))
+                     (apply invoke "./configure" configure-flags)))
+                 (add-after 'configure 'fixup-configure
+                   (lambda _
+                     (let* ((out (assoc-ref %outputs "out"))
+                            (bash (assoc-ref %build-inputs "bash"))
+                            (shell (string-append bash "/bin/bash")))
+                       (substitute* "config.make"
+                         (("INSTALL = scripts/") "INSTALL = $(..)./scripts/"))
+                       (substitute* "config.make"
+                         (("INSTALL = scripts/") "INSTALL = $(..)./scripts/")
+                         (("BASH = ") (string-append
+                                       "SHELL = " shell "
+         BASH = "))))))))))))
 
 (define gcc-mesboot0
   (package

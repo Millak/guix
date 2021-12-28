@@ -11,7 +11,7 @@
 # Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 # Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 # Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1158,6 +1158,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-allow-kernel-2.6.32.patch		\
   %D%/packages/patches/glibc-boot-2.16.0.patch			\
   %D%/packages/patches/glibc-boot-2.2.5.patch			\
+  %D%/packages/patches/glibc-bootstrap-arm-2.2.5.patch	 	\
   %D%/packages/patches/glibc-bootstrap-system-2.2.5.patch 	\
   %D%/packages/patches/glibc-bootstrap-system-2.16.0.patch 	\
   %D%/packages/patches/glibc-bootstrap-system.patch		\

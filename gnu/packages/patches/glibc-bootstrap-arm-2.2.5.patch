@@ -1,0 +1,1287 @@
+Not presented upstream.
+
+From 84d31256c0b37f7f73ff2145a7f6c9a6a9faaf35 Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Mon, 10 Jan 2022 15:01:05 +0100
+Subject: [PATCH 01/10] bootstrappable: arm: Guard __NR_sigaction,
+ __NR_sigpending, __NR_sigprocmask, __NR_sigreturn, __NR_sigsuspend.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+This fixes building on armhf-linux.
+
+* sysdeps/unix/sysv/linux/arm/sigaction.c (__libc_sigaction): Avoid
+using undefined __NR_sigaction.
+* sysdeps/unix/sysv/linux/arm/sigrestorer.S: Avoid using undefined
+__NR_sigreturn.
+* sysdeps/unix/sysv/linux/sigpending.c (sigpending): Avoid using
+undefined __NR_sigpending.
+* sysdeps/unix/sysv/linux/sigprocmask.c (__sigprocmask): Avoid using
+undefined __NR_sigprocmask.
+* sysdeps/unix/sysv/linux/sigsuspend.c (__sigsuspend): Avoid using
+undefined __NR_sigsuspend.
+---
+ sysdeps/unix/sysv/linux/arm/sigaction.c   | 2 ++
+ sysdeps/unix/sysv/linux/arm/sigrestorer.S | 2 ++
+ sysdeps/unix/sysv/linux/sigpending.c      | 2 ++
+ sysdeps/unix/sysv/linux/sigprocmask.c     | 2 ++
+ sysdeps/unix/sysv/linux/sigsuspend.c      | 2 ++
+ 5 files changed, 10 insertions(+)
+
+diff --git a/sysdeps/unix/sysv/linux/arm/sigaction.c b/sysdeps/unix/sysv/linux/arm/sigaction.c
+index f39665f..acc19ce 100644
+--- a/sysdeps/unix/sysv/linux/arm/sigaction.c
++++ b/sysdeps/unix/sysv/linux/arm/sigaction.c
+@@ -134,9 +134,11 @@ __libc_sigaction (sig, act, oact)
+ 	}
+ #endif
+     }
++# ifdef __NR_sigaction
+   result = INLINE_SYSCALL (sigaction, 3, sig,
+ 			   act ? __ptrvalue (&k_sigact) : NULL,
+ 			   oact ? __ptrvalue (&k_osigact) : NULL);
++# endif
+   if (oact && result >= 0)
+     {
+       oact->sa_handler = k_osigact.k_sa_handler;
+diff --git a/sysdeps/unix/sysv/linux/arm/sigrestorer.S b/sysdeps/unix/sysv/linux/arm/sigrestorer.S
+index 98e33cb..a4769ca 100644
+--- a/sysdeps/unix/sysv/linux/arm/sigrestorer.S
++++ b/sysdeps/unix/sysv/linux/arm/sigrestorer.S
+@@ -22,8 +22,10 @@
+    one of these.  This avoids the need for the kernel to synthesise a return
+    instruction on the stack, which would involve expensive cache flushes. */
+ 
++#ifdef __NR_sigreturn
+ ENTRY(__default_sa_restorer)
+ 	swi	SYS_ify(sigreturn)
++#endif
+ 
+ #ifdef __NR_rt_sigreturn
+ 
+diff --git a/sysdeps/unix/sysv/linux/sigpending.c b/sysdeps/unix/sysv/linux/sigpending.c
+index a5404e5..5ff5918 100644
+--- a/sysdeps/unix/sysv/linux/sigpending.c
++++ b/sysdeps/unix/sysv/linux/sigpending.c
+@@ -61,6 +61,8 @@ sigpending (set)
+     }
+ # endif
+ 
++# ifdef __NR_sigpending
+   return INLINE_SYSCALL (sigpending, 1, CHECK_SIGSET (set));
++# endif
+ #endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/sigprocmask.c b/sysdeps/unix/sysv/linux/sigprocmask.c
+index 7a73d9c..fbcc5a1 100644
+--- a/sysdeps/unix/sysv/linux/sigprocmask.c
++++ b/sysdeps/unix/sysv/linux/sigprocmask.c
+@@ -67,8 +67,10 @@ __sigprocmask (how, set, oset)
+     }
+ # endif
+ 
++# ifdef __NR_sigprocmask
+   return INLINE_SYSCALL (sigprocmask, 3, how, CHECK_SIGSET_NULL_OK (set),
+ 			 CHECK_SIGSET_NULL_OK (oset));
++# endif
+ #endif
+ }
+ weak_alias (__sigprocmask, sigprocmask)
+diff --git a/sysdeps/unix/sysv/linux/sigsuspend.c b/sysdeps/unix/sysv/linux/sigsuspend.c
+index bd66a51..952cf52 100644
+--- a/sysdeps/unix/sysv/linux/sigsuspend.c
++++ b/sysdeps/unix/sysv/linux/sigsuspend.c
+@@ -61,7 +61,9 @@ __sigsuspend (set)
+     }
+ # endif
+ 
++# ifdef __NR_sigsuspend
+   return INLINE_SYSCALL (sigsuspend, 3, 0, 0, set->__val[0]);
++# endif
+ #endif
+ }
+ weak_alias (__sigsuspend, sigsuspend)
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 911c8692ba908f545429610a90d13ce3de0576b3 Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Wed, 12 Jan 2022 12:43:50 +0100
+Subject: [PATCH 02/10] bootstrappable: arm: Fixup for __restrict_arr.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* misc/sys/cdefs.h (__restrict_arr)[__arm__]: Define to empty.
+* posix/spawn.h (__restrict_arr)[__arm__]: Likewise.
+* resolv/netdb.h (__restrict_arr)[__arm__]: Likewise.
+---
+ misc/sys/cdefs.h | 5 +++++
+ posix/spawn.h    | 4 ++++
+ resolv/netdb.h   | 4 ++++
+ 3 files changed, 13 insertions(+)
+
+diff --git a/misc/sys/cdefs.h b/misc/sys/cdefs.h
+index 45d2ac3..a2bca2c 100644
+--- a/misc/sys/cdefs.h
++++ b/misc/sys/cdefs.h
+@@ -223,4 +223,9 @@
+ # endif
+ #endif
+ 
++#if __arm__
++#undef __restrict_arr
++#define __restrict_arr
++#endif
++
+ #endif	 /* sys/cdefs.h */
+diff --git a/posix/spawn.h b/posix/spawn.h
+index 92ee940..0601e42 100644
+--- a/posix/spawn.h
++++ b/posix/spawn.h
+@@ -63,6 +63,10 @@ __BEGIN_DECLS
+ 
+ /* Spawn a new process executing PATH with the attributes describes in *ATTRP.
+    Before running the process perform the actions described in FILE-ACTIONS. */
++#if __arm__
++#undef __restrict_arr
++#define __restrict_arr
++#endif
+ extern int posix_spawn (pid_t *__restrict __pid,
+ 			__const char *__restrict __path,
+ 			__const posix_spawn_file_actions_t *__restrict
+diff --git a/resolv/netdb.h b/resolv/netdb.h
+index c3e0772..8a12fcc 100644
+--- a/resolv/netdb.h
++++ b/resolv/netdb.h
+@@ -494,6 +494,10 @@ extern int getnameinfo (__const struct sockaddr *__restrict __sa,
+ /* Enqueue ENT requests from the LIST.  If MODE is GAI_WAIT wait until all
+    requests are handled.  If WAIT is GAI_NOWAIT return immediately after
+    queueing the requests and signal completion according to SIG.  */
++#if __arm__
++#undef __restrict_arr
++#define __restrict_arr
++#endif
+ extern int getaddrinfo_a (int __mode, struct gaicb *__list[__restrict_arr],
+ 			  int __ent, struct sigevent *__restrict __sig)
+      __THROW;
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 335bf269cae7ccbae8209b875cc451cbd6ef2b73 Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Wed, 12 Jan 2022 12:44:46 +0100
+Subject: [PATCH 03/10] bootstrappable: arm: Portability or cpp arithmetic
+ ?error.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* sysdeps/posix/euidaccess.c (euidaccess): Use #warning instead of ?error.
+---
+ sysdeps/posix/euidaccess.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sysdeps/posix/euidaccess.c b/sysdeps/posix/euidaccess.c
+index 8a2d826..3d29dcc 100644
+--- a/sysdeps/posix/euidaccess.c
++++ b/sysdeps/posix/euidaccess.c
+@@ -149,7 +149,7 @@ euidaccess (path, mode)
+ 
+   mode &= (X_OK | W_OK | R_OK);	/* Clear any bogus bits. */
+ #if R_OK != S_IROTH || W_OK != S_IWOTH || X_OK != S_IXOTH
+-  ?error Oops, portability assumptions incorrect.
++  #warning Oops, portability assumptions incorrect.
+ #endif
+ 
+   if (mode == F_OK)
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 2cf31225fef8a11fe201f9dae1f1f17779508d4f Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Wed, 12 Jan 2022 12:45:40 +0100
+Subject: [PATCH 04/10] bootstrappable: arm: Guard __NR_ipc, __NR_sigreturn,
+ __NR_rt_sigreturn.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* sysdeps/unix/sysv/linux/arm/sigaction.c[!__NR_sigreturn]: Do not
+export __default_sa_restorer.
+[!__NR_rt_sigreturn]: Do not export __default_rt_sa_restorer.
+* sysdeps/unix/sysv/linux/arm/sigaction.c (choose_restorer)
+[!__NR_sigreturn]: Do not use __default_sa_restorer.
+[!__NR_rt_sigreturn]: Do not use __default_rt_sa_restorer.
+* sysdeps/unix/sysv/linux/arm/socket.S[__NR_socketcall]: Do not use
+socketcall system call.
+* sysdeps/unix/sysv/linux/i386/msgctl.c (__old_msgctl)
+[!__NR_ipc]: Do not use ipc system call.
+* sysdeps/unix/sysv/linux/i386/msgctl.c (__new_msgctl): Likewise.
+* sysdeps/unix/sysv/linux/i386/semctl.c (__new_semctl): Likewise.
+* sysdeps/unix/sysv/linux/i386/shmctl.c (__old_shmctl): Likewise.
+(__new_shmctl): Likewise.
+* sysdeps/unix/sysv/linux/msgget.c (msgget): Likewise.
+* sysdeps/unix/sysv/linux/msgrcv.c (msgrcv): Likewise.
+* sysdeps/unix/sysv/linux/msgsnd.c (msgsnd): Likewise.
+* sysdeps/unix/sysv/linux/semget.c (semget): Likewise.
+* sysdeps/unix/sysv/linux/semop.c (semop): Likewise.
+* sysdeps/unix/sysv/linux/shmat.c (shmat): Likewise.
+* sysdeps/unix/sysv/linux/shmdt.c (shmdt): Likewise.
+* sysdeps/unix/sysv/linux/shmget.c (shmget): Likewise.
+* sysdeps/unix/sysv/linux/llseek.c (__llseek)[!__NR_llseek]: Do not
+use llseek system call.
+* sysdeps/unix/sysv/linux/umount.S[!__NR_umount]: Do not use umount
+system call.
+---
+ sysdeps/unix/syscall.S                       |  4 ++++
+ sysdeps/unix/sysv/linux/arm/ioperm.c         |  4 ++++
+ sysdeps/unix/sysv/linux/arm/profil-counter.h |  2 ++
+ sysdeps/unix/sysv/linux/arm/sigaction.c      | 11 +++++++++--
+ sysdeps/unix/sysv/linux/arm/socket.S         |  2 ++
+ sysdeps/unix/sysv/linux/i386/msgctl.c        | 10 ++++++++++
+ sysdeps/unix/sysv/linux/i386/semctl.c        | 10 ++++++++++
+ sysdeps/unix/sysv/linux/i386/shmctl.c        | 10 ++++++++++
+ sysdeps/unix/sysv/linux/llseek.c             |  2 ++
+ sysdeps/unix/sysv/linux/msgget.c             |  2 ++
+ sysdeps/unix/sysv/linux/msgrcv.c             |  2 ++
+ sysdeps/unix/sysv/linux/msgsnd.c             |  2 ++
+ sysdeps/unix/sysv/linux/semget.c             |  2 ++
+ sysdeps/unix/sysv/linux/semop.c              |  2 ++
+ sysdeps/unix/sysv/linux/shmat.c              |  2 ++
+ sysdeps/unix/sysv/linux/shmdt.c              |  2 ++
+ sysdeps/unix/sysv/linux/shmget.c             |  2 ++
+ sysdeps/unix/sysv/linux/umount.S             |  2 +-
+ 18 files changed, 70 insertions(+), 3 deletions(-)
+
+diff --git a/sysdeps/unix/syscall.S b/sysdeps/unix/syscall.S
+index 8b685cf..cb66921 100644
+--- a/sysdeps/unix/syscall.S
++++ b/sysdeps/unix/syscall.S
+@@ -18,6 +18,10 @@
+ 
+ #include <sysdep.h>
+ 
++#ifndef __NR_syscall
++#define __NR_syscall 113
++#endif
++
+ #ifndef SYS_syscall
+ #define SYS_syscall	0
+ #endif
+diff --git a/sysdeps/unix/sysv/linux/arm/ioperm.c b/sysdeps/unix/sysv/linux/arm/ioperm.c
+index 40ac8e6..0d34ac5 100644
+--- a/sysdeps/unix/sysv/linux/arm/ioperm.c
++++ b/sysdeps/unix/sysv/linux/arm/ioperm.c
+@@ -95,6 +95,10 @@ static struct platform {
+  *    values.
+  */
+ 
++#ifndef BUS_ISA
++#define BUS_ISA 0
++#endif
++
+ static int
+ init_iosys (void)
+ {
+diff --git a/sysdeps/unix/sysv/linux/arm/profil-counter.h b/sysdeps/unix/sysv/linux/arm/profil-counter.h
+index 5d8be9d..e67ba74 100644
+--- a/sysdeps/unix/sysv/linux/arm/profil-counter.h
++++ b/sysdeps/unix/sysv/linux/arm/profil-counter.h
+@@ -23,10 +23,12 @@
+ void
+ profil_counter (int signo, int _a2, int _a3, int _a4, union k_sigcontext sc)
+ {
++#if 0
+   void *pc;
+   if (sc.v20.magic == SIGCONTEXT_2_0_MAGIC)
+     pc = (void *) sc.v20.reg.ARM_pc;
+   else
+     pc = (void *) sc.v21.arm_pc;
+   profil_count (pc);
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/arm/sigaction.c b/sysdeps/unix/sysv/linux/arm/sigaction.c
+index acc19ce..7843fa9 100644
+--- a/sysdeps/unix/sysv/linux/arm/sigaction.c
++++ b/sysdeps/unix/sysv/linux/arm/sigaction.c
+@@ -39,17 +39,24 @@ int __libc_missing_rt_sigs;
+ 
+ #define SA_RESTORER	0x04000000
+ 
++#ifdef __NR_sigreturn
+ extern void __default_sa_restorer(void);
++#endif
++#ifdef __NR_rt_sigreturn
+ extern void __default_rt_sa_restorer(void);
++#endif
+ 
+ /* When RT signals are in use we need to use a different return stub.  */
+-#ifdef __NR_rt_sigreturn
++#if defined (__NR_sigreturn) && defined (__NR_rt_sigreturn)
+ #define choose_restorer(flags)					\
+   (flags & SA_SIGINFO) ? __default_rt_sa_restorer		\
+   : __default_sa_restorer
+-#else
++#elif defined (__NR_sigreturn)
+ #define choose_restorer(flags)					\
+   __default_sa_restorer
++#elif defined (__NR_rt_sigreturn)
++#define choose_restorer(flags)					\
++  __default_rt_sa_restorer
+ #endif
+ 
+ /* If ACT is not NULL, change the action for SIG to *ACT.
+diff --git a/sysdeps/unix/sysv/linux/arm/socket.S b/sysdeps/unix/sysv/linux/arm/socket.S
+index a672413..c8143a2 100644
+--- a/sysdeps/unix/sysv/linux/arm/socket.S
++++ b/sysdeps/unix/sysv/linux/arm/socket.S
+@@ -71,7 +71,9 @@ ENTRY (__socket)
+         /* Do the system call trap.  */
+ 	mov a1, $P(SOCKOP_,socket)
+ 	mov a2, sp
++#ifdef __NR_socketcall
+ 	swi SYS_ify(socketcall)
++#endif
+ 
+ 	/* Pop args off the stack */
+ 	P(POPARGS_,NARGS)
+diff --git a/sysdeps/unix/sysv/linux/i386/msgctl.c b/sysdeps/unix/sysv/linux/i386/msgctl.c
+index 3e95d85..0cb5fef 100644
+--- a/sysdeps/unix/sysv/linux/i386/msgctl.c
++++ b/sysdeps/unix/sysv/linux/i386/msgctl.c
+@@ -65,8 +65,10 @@ extern int __libc_missing_32bit_uids;
+ int
+ __old_msgctl (int msqid, int cmd, struct __old_msqid_ds *buf)
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_msgctl,
+ 			 msqid, cmd, 0, CHECK_1 (buf));
++#endif
+ }
+ compat_symbol (libc, __old_msgctl, msgctl, GLIBC_2_0);
+ #endif
+@@ -75,8 +77,10 @@ int
+ __new_msgctl (int msqid, int cmd, struct msqid_ds *buf)
+ {
+ #if __ASSUME_32BITUIDS > 0
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_msgctl,
+ 			 msqid, cmd | __IPC_64, 0, CHECK_1 (buf));
++#endif
+ #else
+   switch (cmd) {
+     case MSG_STAT:
+@@ -84,8 +88,10 @@ __new_msgctl (int msqid, int cmd, struct msqid_ds *buf)
+     case IPC_SET:
+       break;
+     default:
++#ifdef __NR_ipc
+       return INLINE_SYSCALL (ipc, 5, IPCOP_msgctl,
+ 			     msqid, cmd, 0, CHECK_1 (buf));
++#endif
+   }
+ 
+   {
+@@ -109,8 +115,10 @@ __new_msgctl (int msqid, int cmd, struct msqid_ds *buf)
+ 	  }
+ 	if (__libc_missing_32bit_uids <= 0)
+ 	  {
++#ifdef __NR_ipc
+ 	    result = INLINE_SYSCALL (ipc, 5, IPCOP_msgctl,
+ 				     msqid, cmd | __IPC_64, 0, CHECK_1 (buf));
++#endif
+ 	    return result;
+ 	  }
+       }
+@@ -129,8 +137,10 @@ __new_msgctl (int msqid, int cmd, struct msqid_ds *buf)
+ 	    return -1;
+ 	  }
+       }
++#ifdef __NR_ipc
+     result = INLINE_SYSCALL (ipc, 5, IPCOP_msgctl,
+ 			     msqid, cmd, 0, __ptrvalue (&old));
++#endif
+     if (result != -1 && cmd != IPC_SET)
+       {
+ 	memset(buf, 0, sizeof(*buf));
+diff --git a/sysdeps/unix/sysv/linux/i386/semctl.c b/sysdeps/unix/sysv/linux/i386/semctl.c
+index 8d41d7f..821728d 100644
+--- a/sysdeps/unix/sysv/linux/i386/semctl.c
++++ b/sysdeps/unix/sysv/linux/i386/semctl.c
+@@ -82,8 +82,10 @@ __old_semctl (int semid, int semnum, int cmd, ...)
+ 
+   va_end (ap);
+ 
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_semctl, semid, semnum, cmd,
+ 			 CHECK_SEMCTL (&arg, semid, cmd));
++#endif
+ }
+ compat_symbol (libc, __old_semctl, semctl, GLIBC_2_0);
+ #endif
+@@ -102,8 +104,10 @@ __new_semctl (int semid, int semnum, int cmd, ...)
+   va_end (ap);
+ 
+ #if __ASSUME_32BITUIDS > 0
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_semctl, semid, semnum, cmd | __IPC_64,
+ 			 CHECK_SEMCTL (&arg, semid, cmd | __IPC_64));
++#endif
+ #else
+   switch (cmd) {
+     case SEM_STAT:
+@@ -111,8 +115,10 @@ __new_semctl (int semid, int semnum, int cmd, ...)
+     case IPC_SET:
+       break;
+     default:
++#ifdef __NR_ipc
+       return INLINE_SYSCALL (ipc, 5, IPCOP_semctl, semid, semnum, cmd,
+ 			     CHECK_SEMCTL (&arg, semid, cmd));
++#endif
+   }
+ 
+   {
+@@ -137,8 +143,10 @@ __new_semctl (int semid, int semnum, int cmd, ...)
+ 	  }
+ 	if (__libc_missing_32bit_uids <= 0)
+ 	  {
++#ifdef __NR_ipc
+ 	    result = INLINE_SYSCALL (ipc, 5, IPCOP_semctl, semid, semnum, cmd | __IPC_64,
+ 				     CHECK_SEMCTL (&arg, semid, cmd | __IPC_64));
++#endif
+ 	    return result;
+ 	  }
+       }
+@@ -158,8 +166,10 @@ __new_semctl (int semid, int semnum, int cmd, ...)
+ 	    return -1;
+ 	  }
+       }
++#ifdef __NR_ipc
+     result = INLINE_SYSCALL (ipc, 5, IPCOP_semctl, semid, semnum, cmd,
+ 			     CHECK_SEMCTL (&arg, semid, cmd));
++#endif
+     if (result != -1 && cmd != IPC_SET)
+       {
+ 	memset(buf, 0, sizeof(*buf));
+diff --git a/sysdeps/unix/sysv/linux/i386/shmctl.c b/sysdeps/unix/sysv/linux/i386/shmctl.c
+index 8fa6ff0..292bbbd 100644
+--- a/sysdeps/unix/sysv/linux/i386/shmctl.c
++++ b/sysdeps/unix/sysv/linux/i386/shmctl.c
+@@ -72,8 +72,10 @@ int __new_shmctl (int, int, struct shmid_ds *);
+ int
+ __old_shmctl (int shmid, int cmd, struct __old_shmid_ds *buf)
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_shmctl,
+ 			 shmid, cmd, 0, CHECK_1 (buf));
++#endif
+ }
+ compat_symbol (libc, __old_shmctl, shmctl, GLIBC_2_0);
+ #endif
+@@ -82,8 +84,10 @@ int
+ __new_shmctl (int shmid, int cmd, struct shmid_ds *buf)
+ {
+ #if __ASSUME_32BITUIDS > 0
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_shmctl,
+ 			 shmid, cmd | __IPC_64, 0, CHECK_1 (buf));
++#endif
+ #else
+   switch (cmd) {
+     case SHM_STAT:
+@@ -94,8 +98,10 @@ __new_shmctl (int shmid, int cmd, struct shmid_ds *buf)
+ # endif
+       break;
+     default:
++#ifdef __NR_ipc
+       return INLINE_SYSCALL (ipc, 5, IPCOP_shmctl,
+ 			     shmid, cmd, 0, CHECK_1 (buf));
++#endif
+   }
+ 
+   {
+@@ -117,9 +123,11 @@ __new_shmctl (int shmid, int cmd, struct shmid_ds *buf)
+ 	      __libc_missing_32bit_uids = 0;
+ 	    __set_errno(save_errno);
+ 	  }
++#ifdef __NR_ipc
+ 	if (__libc_missing_32bit_uids <= 0)
+ 	  return INLINE_SYSCALL (ipc, 5, IPCOP_shmctl,
+ 				 shmid, cmd | __IPC_64, 0, CHECK_1 (buf));
++#endif
+       }
+ # endif
+ 
+@@ -135,8 +143,10 @@ __new_shmctl (int shmid, int cmd, struct shmid_ds *buf)
+ 	    return -1;
+ 	  }
+       }
++#ifdef __NR_ipc
+     result = INLINE_SYSCALL (ipc, 5, IPCOP_shmctl,
+ 			     shmid, cmd, 0, __ptrvalue (&old));
++#endif
+     if (result != -1 && (cmd == SHM_STAT || cmd == IPC_STAT))
+       {
+ 	memset(buf, 0, sizeof(*buf));
+diff --git a/sysdeps/unix/sysv/linux/llseek.c b/sysdeps/unix/sysv/linux/llseek.c
+index fa83f10..ae68fb6 100644
+--- a/sysdeps/unix/sysv/linux/llseek.c
++++ b/sysdeps/unix/sysv/linux/llseek.c
+@@ -34,9 +34,11 @@ __llseek (int fd, loff_t offset, int whence)
+ {
+   loff_t result;
+ 
++#ifdef __NR__llseek
+   return (loff_t) (INLINE_SYSCALL (_llseek, 5, fd, (off_t) (offset >> 32),
+ 				   (off_t) (offset & 0xffffffff),
+ 				   __ptrvalue (&result), whence) ?: result);
++#endif
+ }
+ weak_alias (__llseek, llseek)
+ strong_alias (__llseek, __libc_lseek64)
+diff --git a/sysdeps/unix/sysv/linux/msgget.c b/sysdeps/unix/sysv/linux/msgget.c
+index a4a8290..1076764 100644
+--- a/sysdeps/unix/sysv/linux/msgget.c
++++ b/sysdeps/unix/sysv/linux/msgget.c
+@@ -33,5 +33,7 @@ msgget (key, msgflg)
+      key_t key;
+      int msgflg;
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_msgget, key, msgflg, 0, NULL);
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/msgrcv.c b/sysdeps/unix/sysv/linux/msgrcv.c
+index ab43792..83b93d4 100644
+--- a/sysdeps/unix/sysv/linux/msgrcv.c
++++ b/sysdeps/unix/sysv/linux/msgrcv.c
+@@ -50,5 +50,7 @@ msgrcv (msqid, msgp, msgsz, msgtyp, msgflg)
+   tmp.msgp = CHECK_N (msgp, msgsz);
+   tmp.msgtyp = msgtyp;
+ 
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_msgrcv, msqid, msgsz, msgflg, __ptrvalue (&tmp));
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/msgsnd.c b/sysdeps/unix/sysv/linux/msgsnd.c
+index f4df5da..20ffb69 100644
+--- a/sysdeps/unix/sysv/linux/msgsnd.c
++++ b/sysdeps/unix/sysv/linux/msgsnd.c
+@@ -33,6 +33,8 @@ msgsnd (msqid, msgp, msgsz, msgflg)
+      size_t msgsz;
+      int msgflg;
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_msgsnd, msqid, msgsz,
+ 			 msgflg, (void *) CHECK_N (msgp, msgsz));
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/semget.c b/sysdeps/unix/sysv/linux/semget.c
+index 639bb02..d5fd0cb 100644
+--- a/sysdeps/unix/sysv/linux/semget.c
++++ b/sysdeps/unix/sysv/linux/semget.c
+@@ -34,5 +34,7 @@ semget (key, nsems, semflg)
+      int nsems;
+      int semflg;
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_semget, key, nsems, semflg, NULL);
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/semop.c b/sysdeps/unix/sysv/linux/semop.c
+index 4bf2976..528f6d7 100644
+--- a/sysdeps/unix/sysv/linux/semop.c
++++ b/sysdeps/unix/sysv/linux/semop.c
+@@ -33,6 +33,8 @@ semop (semid, sops, nsops)
+      struct sembuf *sops;
+      size_t nsops;
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_semop,
+ 			 semid, (int) nsops, 0, CHECK_N (sops, nsops));
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/shmat.c b/sysdeps/unix/sysv/linux/shmat.c
+index d6dead1..c698612 100644
+--- a/sysdeps/unix/sysv/linux/shmat.c
++++ b/sysdeps/unix/sysv/linux/shmat.c
+@@ -47,9 +47,11 @@ shmat (shmid, shmaddr, shmflg)
+     length = shmds.shm_segsz;
+ #endif
+ 
++#ifdef __NR_ipc
+   result = (void *__unbounded) INLINE_SYSCALL (ipc, 5, IPCOP_shmat, shmid, shmflg,
+ 					       (long int) __ptrvalue (&raddr),
+ 					       __ptrvalue (shmaddr));
++#endif
+   if ((unsigned long) result <= -(unsigned long) SHMLBA)
+     result = raddr;
+ 
+diff --git a/sysdeps/unix/sysv/linux/shmdt.c b/sysdeps/unix/sysv/linux/shmdt.c
+index 413c852..c298c9b 100644
+--- a/sysdeps/unix/sysv/linux/shmdt.c
++++ b/sysdeps/unix/sysv/linux/shmdt.c
+@@ -31,5 +31,7 @@ int
+ shmdt (shmaddr)
+      const void *shmaddr;
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_shmdt, 0, 0, 0, __ptrvalue ((void *) shmaddr));
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/shmget.c b/sysdeps/unix/sysv/linux/shmget.c
+index c8d509f..1c32df7 100644
+--- a/sysdeps/unix/sysv/linux/shmget.c
++++ b/sysdeps/unix/sysv/linux/shmget.c
+@@ -34,5 +34,7 @@ shmget (key, size, shmflg)
+      size_t size;
+      int shmflg;
+ {
++#ifdef __NR_ipc
+   return INLINE_SYSCALL (ipc, 5, IPCOP_shmget, key, size, shmflg, NULL);
++#endif
+ }
+diff --git a/sysdeps/unix/sysv/linux/umount.S b/sysdeps/unix/sysv/linux/umount.S
+index e18463e..2944030 100644
+--- a/sysdeps/unix/sysv/linux/umount.S
++++ b/sysdeps/unix/sysv/linux/umount.S
+@@ -4,7 +4,7 @@
+ #include <sysdep.h>
+ #ifdef __NR_oldumount
+ PSEUDO (__umount, oldumount, 1)
+-#else
++#elif defined (__NR_umount)
+ PSEUDO (__umount, umount, 1)
+ #endif
+ 	ret
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 7415adb7fa53e8c6df0be266b1422cb7a98b26af Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Mon, 21 Feb 2022 10:22:03 +0100
+Subject: [PATCH 05/10] bootstrappable: arm: Add missing headers.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* sysdeps/unix/sysv/linux/arm/asm/page.h,
+sysdeps/unix/sysv/linux/arm/linux/const.h: New files.
+---
+ sysdeps/unix/sysv/linux/arm/asm/page.h    | 3 +++
+ sysdeps/unix/sysv/linux/arm/linux/const.h | 3 +++
+ 2 files changed, 6 insertions(+)
+ create mode 100644 sysdeps/unix/sysv/linux/arm/asm/page.h
+ create mode 100644 sysdeps/unix/sysv/linux/arm/linux/const.h
+
+diff --git a/sysdeps/unix/sysv/linux/arm/asm/page.h b/sysdeps/unix/sysv/linux/arm/asm/page.h
+new file mode 100644
+index 0000000..237343a
+--- /dev/null
++++ b/sysdeps/unix/sysv/linux/arm/asm/page.h
+@@ -0,0 +1,3 @@
++#ifndef __ASM_ARM_PAGE_H
++#define __ASM_ARM_PAGE_H
++#endif /*  __ASM_ARM_PAGE_H */
+diff --git a/sysdeps/unix/sysv/linux/arm/linux/const.h b/sysdeps/unix/sysv/linux/arm/linux/const.h
+new file mode 100644
+index 0000000..ce002d5
+--- /dev/null
++++ b/sysdeps/unix/sysv/linux/arm/linux/const.h
+@@ -0,0 +1,3 @@
++#ifndef __LINUX_CONST_H
++#define __LINUX_CONST_H
++#endif /*  __LINUX_CONST_H */
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 48ae1c92a4a19494d38c32fe7d83c5e09ca4b355 Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Wed, 12 Jan 2022 13:01:59 +0100
+Subject: [PATCH 06/10] bootstrappable: arm: Avoid fpu_setw.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* sysdeps/generic/setfpucw.c (__setfpucw)[!__arm__]: Skip.
+---
+ sysdeps/generic/setfpucw.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sysdeps/generic/setfpucw.c b/sysdeps/generic/setfpucw.c
+index cb50f9f..03a627a 100644
+--- a/sysdeps/generic/setfpucw.c
++++ b/sysdeps/generic/setfpucw.c
+@@ -23,6 +23,7 @@
+ void
+ __setfpucw (fpu_control_t set)
+ {
++#if !__arm__
+   fpu_control_t cw;
+ 
+   /* Fetch the current control word.  */
+@@ -34,4 +35,5 @@ __setfpucw (fpu_control_t set)
+   cw |= set & ~_FPU_RESERVED;
+ 
+   _FPU_SETCW (cw);
++#endif
+ }
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 3597394200bafed1291ff65039db6cf9cec03b59 Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Mon, 21 Feb 2022 00:14:16 +0100
+Subject: [PATCH 07/10] bootstrappable: arm: Guard __NR_getrlimit.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+This fixes building with armhf-linux-libre-headers-5.4.20.
+
+* sysdeps/unix/sysv/linux/i386/getrlimit.c (__new_getrlimit)[!__NR_getrlimit]:
+Avoid getrlimit syscall.
+---
+ sysdeps/unix/sysv/linux/i386/getrlimit.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sysdeps/unix/sysv/linux/i386/getrlimit.c b/sysdeps/unix/sysv/linux/i386/getrlimit.c
+index f7af934..72f4c54 100644
+--- a/sysdeps/unix/sysv/linux/i386/getrlimit.c
++++ b/sysdeps/unix/sysv/linux/i386/getrlimit.c
+@@ -66,8 +66,10 @@ __new_getrlimit (enum __rlimit_resource resource, struct rlimit *rlimits)
+     }
+ # endif
+ 
++# ifdef __NR_getrlimit
+   /* Fall back to the old system call.  */
+   result = INLINE_SYSCALL (getrlimit, 2, resource, CHECK_1 (rlimits));
++# endif
+ 
+   if (result == -1)
+     return result;
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From e0764cfa9e3ff4b120723b87a66d2e9c7a500aef Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Sun, 20 Feb 2022 15:32:53 +0100
+Subject: [PATCH 08/10] bootstrappable: arm: Support EABI system calls.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* sysdeps/unix/sysv/linux/arm/sysdep.h (DO_CALL,INLINE_SYSCALL)
+[__ARM_EABI__]: Use eabi calling convention for syscalls.
+* sysdeps/arm/dl-machine.h (CLEAR_CACHE): Likewise.  Use 0xf0002
+instead of 0x9f0002.
+* sysdeps/unix/sysv/linux/arm/brk.c (__brk): Likewise.
+* sysdeps/unix/sysv/linux/arm/clone.S: Likewise.
+* sysdeps/unix/sysv/linux/arm/mmap.S: Likewise.
+* sysdeps/unix/sysv/linux/arm/mmap64.S: Likewise.
+* sysdeps/unix/sysv/linux/arm/sigrestorer.S: Likewise.
+* sysdeps/unix/sysv/linux/arm/socket.S: Likewise.
+* sysdeps/unix/sysv/linux/arm/vfork.S: Likewise.
+---
+ sysdeps/arm/dl-machine.h                  | 14 ++++++
+ sysdeps/unix/sysv/linux/arm/brk.c         | 10 +++++
+ sysdeps/unix/sysv/linux/arm/clone.S       |  7 +++
+ sysdeps/unix/sysv/linux/arm/mmap.S        |  7 +++
+ sysdeps/unix/sysv/linux/arm/mmap64.S      |  7 +++
+ sysdeps/unix/sysv/linux/arm/sigrestorer.S | 14 ++++++
+ sysdeps/unix/sysv/linux/arm/socket.S      |  7 +++
+ sysdeps/unix/sysv/linux/arm/sysdep.h      | 54 +++++++++++++++++++++++
+ sysdeps/unix/sysv/linux/arm/vfork.S       | 14 ++++++
+ 9 files changed, 134 insertions(+)
+
+diff --git a/sysdeps/arm/dl-machine.h b/sysdeps/arm/dl-machine.h
+index 2d802b7..f0558bb 100644
+--- a/sysdeps/arm/dl-machine.h
++++ b/sysdeps/arm/dl-machine.h
+@@ -32,6 +32,19 @@
+   && VALID_ELF_OSABI (hdr[EI_OSABI]) \
+   && VALID_ELF_ABIVERSION (hdr[EI_ABIVERSION])
+ 
++#if __ARM_EABI__
++#define CLEAR_CACHE(BEG,END)						\
++{									\
++  register unsigned long _beg __asm ("a1") = (unsigned long)(BEG);	\
++  register unsigned long _end __asm ("a2") = (unsigned long)(END);	\
++  register unsigned long _flg __asm ("a3") = 0;				\
++  __asm __volatile ("mov r7, 0xf0002\n\t"				\
++		    "swi 0x0		@ sys_cacheflush"		\
++		    : /* no outputs */					\
++		    : /* no inputs */					\
++		    : "a1","r7");					\
++}
++#else // !__ARM_EABI__
+ #define CLEAR_CACHE(BEG,END)						\
+ {									\
+   register unsigned long _beg __asm ("a1") = (unsigned long)(BEG);	\
+@@ -42,6 +55,7 @@
+ 		    : /* no inputs */					\
+ 		    : "a1");						\
+ }
++#endif // !__ARM_EABI__
+ 
+ /* Return nonzero iff ELF header is compatible with the running host.  */
+ static inline int __attribute__ ((unused))
+diff --git a/sysdeps/unix/sysv/linux/arm/brk.c b/sysdeps/unix/sysv/linux/arm/brk.c
+index 153d893..d5d0904 100644
+--- a/sysdeps/unix/sysv/linux/arm/brk.c
++++ b/sysdeps/unix/sysv/linux/arm/brk.c
+@@ -29,12 +29,22 @@ __brk (void *addr)
+ {
+   void *newbrk;
+ 
++#if __ARM_EABI__
++  asm ("mov a1, %1\n"	/* save the argment in r0 */
++       "mov r7, %2\n"	/* system call nr in r7 */
++       "swi 0x0\n"	/* do the system call */
++       "mov %0, a1;"	/* keep the return value */
++       : "=r"(newbrk)
++       : "r"(addr), "i" (SYS_ify (brk))
++       : "a1","r7");
++#else // !__ARM_EABI__
+   asm ("mov a1, %1\n"	/* save the argment in r0 */
+        "swi %2\n"	/* do the system call */
+        "mov %0, a1;"	/* keep the return value */
+        : "=r"(newbrk) 
+        : "r"(addr), "i" (SYS_ify (brk))
+        : "a1");
++#endif // !__ARM_EABI__
+ 
+   __curbrk = newbrk;
+ 
+diff --git a/sysdeps/unix/sysv/linux/arm/clone.S b/sysdeps/unix/sysv/linux/arm/clone.S
+index c9a1ec2..bd088b4 100644
+--- a/sysdeps/unix/sysv/linux/arm/clone.S
++++ b/sysdeps/unix/sysv/linux/arm/clone.S
+@@ -44,7 +44,14 @@ ENTRY(__clone)
+ 	@ get flags
+ 	mov	r0, r2
+ 	@ new sp is already in r1
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov     r7, #SYS_ify(clone)
++	swi	0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi	SYS_ify(clone)
++#endif // !__ARM_EABI__
+ 	movs	a1, a1
+ 	blt	PLTJMP(C_SYMBOL_NAME(__syscall_error))
+ 	RETINSTR(movne, pc, lr)
+diff --git a/sysdeps/unix/sysv/linux/arm/mmap.S b/sysdeps/unix/sysv/linux/arm/mmap.S
+index af93c7b..97b4a55 100644
+--- a/sysdeps/unix/sysv/linux/arm/mmap.S
++++ b/sysdeps/unix/sysv/linux/arm/mmap.S
+@@ -41,7 +41,14 @@ ENTRY (__mmap)
+ 
+ 	/* do the syscall */
+ 	mov	a1, sp
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov	r7, #SYS_ify (mmap)
++	swi	0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi	SYS_ify (mmap)
++#endif // !__ARM_EABI__
+ 
+ 	/* pop args off the stack. */
+ 	add	sp, sp, #16
+diff --git a/sysdeps/unix/sysv/linux/arm/mmap64.S b/sysdeps/unix/sysv/linux/arm/mmap64.S
+index 1f19bf0..8cb40f5 100644
+--- a/sysdeps/unix/sysv/linux/arm/mmap64.S
++++ b/sysdeps/unix/sysv/linux/arm/mmap64.S
+@@ -36,7 +36,14 @@ ENTRY (__mmap64)
+ 	movs	ip, ip, lsr $12
+ 	bne	.Linval			@ check for overflow
+ 	mov	ip, r0
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov	r7, #SYS_ify (mmap2)
++	swi	0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi	SYS_ify (mmap2)
++#endif // !__ARM_EABI__
+ 	cmn	r0, $4096
+ 	LOADREGS(ccfd, sp!, {r4, r5, pc})
+ 	cmn	r0, $ENOSYS
+diff --git a/sysdeps/unix/sysv/linux/arm/sigrestorer.S b/sysdeps/unix/sysv/linux/arm/sigrestorer.S
+index a4769ca..54aa196 100644
+--- a/sysdeps/unix/sysv/linux/arm/sigrestorer.S
++++ b/sysdeps/unix/sysv/linux/arm/sigrestorer.S
+@@ -24,12 +24,26 @@
+ 
+ #ifdef __NR_sigreturn
+ ENTRY(__default_sa_restorer)
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov	r7, #SYS_ify(sigreturn)
++	swi	0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi	SYS_ify(sigreturn)
++#endif // !__ARM_EABI__
+ #endif
+ 
+ #ifdef __NR_rt_sigreturn
+ 
+ ENTRY(__default_rt_sa_restorer)
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov	r7, #SYS_ify(rt_sigreturn)
++	swi	0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi	SYS_ify(rt_sigreturn)
++#endif // !__ARM_EABI__
+ 
+ #endif
+diff --git a/sysdeps/unix/sysv/linux/arm/socket.S b/sysdeps/unix/sysv/linux/arm/socket.S
+index c8143a2..f0d6e08 100644
+--- a/sysdeps/unix/sysv/linux/arm/socket.S
++++ b/sysdeps/unix/sysv/linux/arm/socket.S
+@@ -72,7 +72,14 @@ ENTRY (__socket)
+ 	mov a1, $P(SOCKOP_,socket)
+ 	mov a2, sp
+ #ifdef __NR_socketcall
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov r7, #SYS_ify(socketcall)
++	swi 0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi SYS_ify(socketcall)
++#endif // !__ARM_EABI__
+ #endif
+ 
+ 	/* Pop args off the stack */
+diff --git a/sysdeps/unix/sysv/linux/arm/sysdep.h b/sysdeps/unix/sysv/linux/arm/sysdep.h
+index 89ad194..f8e88e4 100644
+--- a/sysdeps/unix/sysv/linux/arm/sysdep.h
++++ b/sysdeps/unix/sysv/linux/arm/sysdep.h
+@@ -95,10 +95,40 @@
+ */
+ 
+ #undef	DO_CALL
++#if __ARM_EABI__
++#define DO_CALL(args, syscall_name)		\
++    DOARGS_##args				\
++    ldr r7, =SYS_ify (syscall_name);		\
++    swi 0x0;					\
++    UNDOARGS_##args
++#else //!__ARM_EABI__
+ #define DO_CALL(args, syscall_name)		\
+     DOARGS_##args				\
+     swi SYS_ify (syscall_name); 		\
+     UNDOARGS_##args
++#endif //!__ARM_EABI__
++
++#if __ARM_EABI__
++
++#define DOARGS_0 str r7, [sp, $-4]!;
++#define DOARGS_1 str r7, [sp, $-4]!;
++#define DOARGS_2 str r7, [sp, $-4]!;
++#define DOARGS_3 str r7, [sp, $-4]!;
++#define DOARGS_4 str r7, [sp, $-4]!;
++#define DOARGS_5 mov ip, sp; stmfd sp!, {r4, r7}; ldmia ip, {r4, r7};
++#define DOARGS_6 mov ip, sp; stmfd sp!, {r4, r5, r7}; ldmia ip, {r4, r5, r7};
++#define DOARGS_7 mov ip, sp; stmfd sp!, {r4, r5, r6, r7}; ldmia ip, {r4, r5, r6, r7};
++
++#define UNDOARGS_0 ldr r7, [sp], $4;
++#define UNDOARGS_1 ldr r7, [sp], $4;
++#define UNDOARGS_2 ldr r7, [sp], $4;
++#define UNDOARGS_3 ldr r7, [sp], $4;
++#define UNDOARGS_4 ldr r7, [sp], $4;
++#define UNDOARGS_5 ldmfd sp!, {r4, r7};
++#define UNDOARGS_6 ldmfd sp!, {r4, r5, r7};
++#define UNDOARGS_7 ldmfd sp!, {r4, r5, r6, r7};
++
++#else //!__ARM_EABI__
+ 
+ #define DOARGS_0 /* nothing */
+ #define DOARGS_1 /* nothing */
+@@ -118,11 +148,34 @@
+ #define UNDOARGS_6 ldmfd sp!, {r4, r5};
+ #define UNDOARGS_7 ldmfd sp!, {r4, r5, r6};
+ 
++#endif //!__ARM_EABI__
++
+ #else /* not __ASSEMBLER__ */
+ 
+ /* Define a macro which expands into the inline wrapper code for a system
+    call.  */
+ #undef INLINE_SYSCALL
++
++#if __ARM_EABI__
++#define INLINE_SYSCALL(name, nr, args...)			\
++  ({ unsigned int _sys_result;					\
++     {								\
++       register int _a1 asm ("a1");				\
++       LOAD_ARGS_##nr (args)					\
++       asm volatile ("mov 	r7, %1\n\t"			\
++		     "swi	$0	@ syscall " #name	\
++		     : "=r" (_a1)				\
++		     : "i" (SYS_ify(name)) ASM_ARGS_##nr	\
++		     : "a1", "r7", "memory");                   \
++       _sys_result = _a1;					\
++     }								\
++     if (_sys_result >= (unsigned int) -4095)			\
++       {							\
++	 __set_errno (-_sys_result);				\
++	 _sys_result = (unsigned int) -1;			\
++       }							\
++     (int) _sys_result; })
++#else //!__ARM_EABI__
+ #define INLINE_SYSCALL(name, nr, args...)			\
+   ({ unsigned int _sys_result;					\
+      {								\
+@@ -140,6 +193,7 @@
+ 	 _sys_result = (unsigned int) -1;			\
+        }							\
+      (int) _sys_result; })
++#endif //!__ARM_EABI__
+ 
+ #define LOAD_ARGS_0()
+ #define ASM_ARGS_0
+diff --git a/sysdeps/unix/sysv/linux/arm/vfork.S b/sysdeps/unix/sysv/linux/arm/vfork.S
+index b10117e..ba2259d 100644
+--- a/sysdeps/unix/sysv/linux/arm/vfork.S
++++ b/sysdeps/unix/sysv/linux/arm/vfork.S
+@@ -29,7 +29,14 @@
+ ENTRY (__vfork)
+ 
+ #ifdef __NR_vfork
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov	r7, #__NR_vfork
++	swi	0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi	__NR_vfork
++#endif // !__ARM_EABI__
+ 	cmn	a1, #4096
+ 	RETINSTR(movcc, pc, lr)
+ 
+@@ -40,7 +47,14 @@ ENTRY (__vfork)
+ #endif
+ 
+ 	/* If we don't have vfork, fork is close enough.  */
++#if __ARM_EABI__
++	str	r7, [sp, #-4]!
++	mov	r7, #__NR_fork
++	swi	0x0
++	ldr	r7, [sp], #4
++#else // !__ARM_EABI__
+ 	swi	__NR_fork
++#endif // !__ARM_EABI__
+ 	cmn	a1, #4096
+ 	RETINSTR(movcc, pc, lr)
+     	b	PLTJMP(C_SYMBOL_NAME(__syscall_error))
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 030ccc9978c73eccddbaf8049b02a5cecf913383 Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Tue, 22 Feb 2022 07:06:39 +0100
+Subject: [PATCH 09/10] bootstrappable: arm: Add #warning when using OABI.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+---
+ sysdeps/arm/dl-machine.h                  | 1 +
+ sysdeps/unix/sysv/linux/arm/brk.c         | 1 +
+ sysdeps/unix/sysv/linux/arm/clone.S       | 1 +
+ sysdeps/unix/sysv/linux/arm/mmap.S        | 1 +
+ sysdeps/unix/sysv/linux/arm/mmap64.S      | 1 +
+ sysdeps/unix/sysv/linux/arm/sigrestorer.S | 2 ++
+ sysdeps/unix/sysv/linux/arm/socket.S      | 1 +
+ sysdeps/unix/sysv/linux/arm/sysdep.h      | 3 +++
+ sysdeps/unix/sysv/linux/arm/vfork.S       | 2 ++
+ 9 files changed, 13 insertions(+)
+
+diff --git a/sysdeps/arm/dl-machine.h b/sysdeps/arm/dl-machine.h
+index f0558bb..c0ac564 100644
+--- a/sysdeps/arm/dl-machine.h
++++ b/sysdeps/arm/dl-machine.h
+@@ -45,6 +45,7 @@
+ 		    : "a1","r7");					\
+ }
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ #define CLEAR_CACHE(BEG,END)						\
+ {									\
+   register unsigned long _beg __asm ("a1") = (unsigned long)(BEG);	\
+diff --git a/sysdeps/unix/sysv/linux/arm/brk.c b/sysdeps/unix/sysv/linux/arm/brk.c
+index d5d0904..8d7ffae 100644
+--- a/sysdeps/unix/sysv/linux/arm/brk.c
++++ b/sysdeps/unix/sysv/linux/arm/brk.c
+@@ -38,6 +38,7 @@ __brk (void *addr)
+        : "r"(addr), "i" (SYS_ify (brk))
+        : "a1","r7");
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+   asm ("mov a1, %1\n"	/* save the argment in r0 */
+        "swi %2\n"	/* do the system call */
+        "mov %0, a1;"	/* keep the return value */
+diff --git a/sysdeps/unix/sysv/linux/arm/clone.S b/sysdeps/unix/sysv/linux/arm/clone.S
+index bd088b4..e0c5d8f 100644
+--- a/sysdeps/unix/sysv/linux/arm/clone.S
++++ b/sysdeps/unix/sysv/linux/arm/clone.S
+@@ -50,6 +50,7 @@ ENTRY(__clone)
+ 	swi	0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi	SYS_ify(clone)
+ #endif // !__ARM_EABI__
+ 	movs	a1, a1
+diff --git a/sysdeps/unix/sysv/linux/arm/mmap.S b/sysdeps/unix/sysv/linux/arm/mmap.S
+index 97b4a55..f003f54 100644
+--- a/sysdeps/unix/sysv/linux/arm/mmap.S
++++ b/sysdeps/unix/sysv/linux/arm/mmap.S
+@@ -47,6 +47,7 @@ ENTRY (__mmap)
+ 	swi	0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi	SYS_ify (mmap)
+ #endif // !__ARM_EABI__
+ 
+diff --git a/sysdeps/unix/sysv/linux/arm/mmap64.S b/sysdeps/unix/sysv/linux/arm/mmap64.S
+index 8cb40f5..462fc28 100644
+--- a/sysdeps/unix/sysv/linux/arm/mmap64.S
++++ b/sysdeps/unix/sysv/linux/arm/mmap64.S
+@@ -42,6 +42,7 @@ ENTRY (__mmap64)
+ 	swi	0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi	SYS_ify (mmap2)
+ #endif // !__ARM_EABI__
+ 	cmn	r0, $4096
+diff --git a/sysdeps/unix/sysv/linux/arm/sigrestorer.S b/sysdeps/unix/sysv/linux/arm/sigrestorer.S
+index 54aa196..2985f08 100644
+--- a/sysdeps/unix/sysv/linux/arm/sigrestorer.S
++++ b/sysdeps/unix/sysv/linux/arm/sigrestorer.S
+@@ -30,6 +30,7 @@ ENTRY(__default_sa_restorer)
+ 	swi	0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi	SYS_ify(sigreturn)
+ #endif // !__ARM_EABI__
+ #endif
+@@ -43,6 +44,7 @@ ENTRY(__default_rt_sa_restorer)
+ 	swi	0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi	SYS_ify(rt_sigreturn)
+ #endif // !__ARM_EABI__
+ 
+diff --git a/sysdeps/unix/sysv/linux/arm/socket.S b/sysdeps/unix/sysv/linux/arm/socket.S
+index f0d6e08..3bf16e9 100644
+--- a/sysdeps/unix/sysv/linux/arm/socket.S
++++ b/sysdeps/unix/sysv/linux/arm/socket.S
+@@ -78,6 +78,7 @@ ENTRY (__socket)
+ 	swi 0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi SYS_ify(socketcall)
+ #endif // !__ARM_EABI__
+ #endif
+diff --git a/sysdeps/unix/sysv/linux/arm/sysdep.h b/sysdeps/unix/sysv/linux/arm/sysdep.h
+index f8e88e4..37b8cb6 100644
+--- a/sysdeps/unix/sysv/linux/arm/sysdep.h
++++ b/sysdeps/unix/sysv/linux/arm/sysdep.h
+@@ -102,6 +102,7 @@
+     swi 0x0;					\
+     UNDOARGS_##args
+ #else //!__ARM_EABI__
++#warning Using ARM_OABI
+ #define DO_CALL(args, syscall_name)		\
+     DOARGS_##args				\
+     swi SYS_ify (syscall_name); 		\
+@@ -129,6 +130,7 @@
+ #define UNDOARGS_7 ldmfd sp!, {r4, r5, r6, r7};
+ 
+ #else //!__ARM_EABI__
++#warning Using ARM_OABI
+ 
+ #define DOARGS_0 /* nothing */
+ #define DOARGS_1 /* nothing */
+@@ -176,6 +178,7 @@
+        }							\
+      (int) _sys_result; })
+ #else //!__ARM_EABI__
++#warning Using ARM_OABI
+ #define INLINE_SYSCALL(name, nr, args...)			\
+   ({ unsigned int _sys_result;					\
+      {								\
+diff --git a/sysdeps/unix/sysv/linux/arm/vfork.S b/sysdeps/unix/sysv/linux/arm/vfork.S
+index ba2259d..9b0c9ec 100644
+--- a/sysdeps/unix/sysv/linux/arm/vfork.S
++++ b/sysdeps/unix/sysv/linux/arm/vfork.S
+@@ -35,6 +35,7 @@ ENTRY (__vfork)
+ 	swi	0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi	__NR_vfork
+ #endif // !__ARM_EABI__
+ 	cmn	a1, #4096
+@@ -53,6 +54,7 @@ ENTRY (__vfork)
+ 	swi	0x0
+ 	ldr	r7, [sp], #4
+ #else // !__ARM_EABI__
++#warning Using ARM_OABI
+ 	swi	__NR_fork
+ #endif // !__ARM_EABI__
+ 	cmn	a1, #4096
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
+From 3d0f788cb58075e9790956ef0d6778b56dac291f Mon Sep 17 00:00:00 2001
+From: "Jan (janneke) Nieuwenhuizen" <janneke@gnu.org>
+Date: Wed, 23 Feb 2022 08:16:46 +0100
+Subject: [PATCH 10/10] bootstrappable: arm: More minimal SYS_ify patch.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+
+* sysdeps/unix/sysv/linux/arm/sysdep.h (SWI_BASE): Set to zero.
+(SYS_ify): And with 0xfffff.
+
+Co-authored-by: Danny Milosavljevic <dannym@scratchpost.org>
+---
+ sysdeps/unix/sysv/linux/arm/sysdep.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/sysdeps/unix/sysv/linux/arm/sysdep.h b/sysdeps/unix/sysv/linux/arm/sysdep.h
+index 37b8cb6..3878331 100644
+--- a/sysdeps/unix/sysv/linux/arm/sysdep.h
++++ b/sysdeps/unix/sysv/linux/arm/sysdep.h
+@@ -29,9 +29,8 @@
+    of the kernel.  But these symbols do not follow the SYS_* syntax
+    so we have to redefine the `SYS_ify' macro here.  */
+ #undef SYS_ify
+-#define SWI_BASE  (0x900000)
+-#define SYS_ify(syscall_name)	(__NR_##syscall_name)
+-
++#define SWI_BASE  (0x000000)
++#define SYS_ify(syscall_name)  (__NR_##syscall_name & 0xfffff)
+ 
+ #ifdef __ASSEMBLER__
+ 
+-- 
+Jan Nieuwenhuizen <janneke@gnu.org> | GNU LilyPond http://lilypond.org
+Freelance IT http://JoyofSource.com | Avatar® http://AvatarAcademy.com
+
