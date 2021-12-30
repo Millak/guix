@@ -506,7 +506,7 @@ sys_create_init_profile()
 { # Define for better desktop integration
   # This will not take effect until the next shell or desktop session!
     [ -d "/etc/profile.d" ] || mkdir /etc/profile.d # Just in case
-    cat <<"EOF" > /etc/profile.d/guix.sh
+    cat <<"EOF" > /etc/profile.d/zzz-guix.sh
 # Explicitly initialize XDG base directory variables to ease compatibility
 # with Guix System: see <https://issues.guix.gnu.org/56050#3>.
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
