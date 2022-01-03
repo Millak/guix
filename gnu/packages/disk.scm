@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -834,6 +835,46 @@ provides a minimalistic and nice curses interface with a view on the directory
 hierarchy.  It ships with @code{rifle}, a file launcher that is good at
 automatically finding out which program to use for what file type.")
     (license license:gpl3)))
+
+(define-public fff
+  (package
+   (name "fff")
+   (version "2.2")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/dylanaraps/fff")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "14ymdw6l6phnil0xf1frd5kgznaiwppcic0v4hb61s1zpf4wrshg"))))
+   (build-system gnu-build-system)
+   (inputs
+    (list bash
+          file))
+   (arguments
+    (list
+     #:tests? #f                       ; no tests
+     #:make-flags
+     #~(list
+        (string-append "PREFIX=" #$output))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'refer-to-inputs
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((file (assoc-ref inputs "file")))
+               (substitute* "fff"
+                 (("\\bfile [-\"]" match)
+                  (string-append file "/bin/" match))))))
+         (delete 'configure))))         ; no configure script
+   (home-page "https://github.com/dylanaraps/fff")
+   (synopsis "Simple file manager written in bash")
+   (description
+    "@command{fff} (fast file-manager) is a simple, blazing fast and minimal
+file manager for Linux, written in bash.  It only requires bash and coreutils,
+and its highly optimized now for efficient performance.")
+   (license license:expat)))
 
 (define-public volume-key
   (package
