@@ -1353,44 +1353,48 @@ effects and music to make a completely free game.")
 (define-public freedroidrpg
   (package
     (name "freedroidrpg")
-    (version "0.16.1")
+    (version "1.0rc2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://ftp.osuosl.org/pub/freedroid/"
-                           "freedroidRPG-" (version-major+minor version) "/"
-                           "freedroidRPG-" version ".tar.gz"))
+       (uri (let ((major+minor
+                   (version-major+minor
+                    (string-replace-substring version "rc" "."))))
+              (string-append "http://ftp.osuosl.org/pub/freedroid/"
+                             "freedroidRPG-" major+minor "/"
+                             "freedroidRPG-" version ".tar.gz")))
        (sha256
-        (base32 "0n4kn38ncmcy3lrxmq8fjry6c1z50z4q1zcqfig0j4jb0dsz2va2"))))
+        (base32 "10jknaad2ph9j5bs4jxvpnl8rq5yjlq0nasv98f4mki2hh8yiczy"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list
-        (string-append "CFLAGS="
-                       "-fcommon "      ; XXX needed to build with GCC 10
-                       "-I" (assoc-ref %build-inputs "sdl-gfx") "/include/SDL "
-                       "-I" (assoc-ref %build-inputs "sdl-image") "/include/SDL "
-                       "-I" (assoc-ref %build-inputs "sdl-mixer") "/include/SDL")
-        "--enable-opengl")
-       ;; FIXME: the test suite fails with the following error output:
-       ;;   4586 Segmentation fault      env SDL_VIDEODRIVER=dummy \
-       ;;   SDL_AUDIODRIVER=dummy ./src/freedroidRPG -nb text
-       #:tests? #f))
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "CFLAGS=-fcommon "
+                        "-I" #$(this-package-input "sdl-gfx") "/include/SDL "
+                        "-I" #$(this-package-input "sdl-image") "/include/SDL "
+                        "-I" #$(this-package-input "sdl-mixer") "/include/SDL")
+         "--enable-opengl")
+      ;; FIXME: the test suite fails with the following error output:
+      ;;   4586 Segmentation fault      env SDL_VIDEODRIVER=dummy \
+      ;;   SDL_AUDIODRIVER=dummy ./src/freedroidRPG -nb text
+      #:tests? #f))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("glu" ,glu)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libogg" ,libogg)
-       ("libpng" ,libpng)
-       ("libvorbis" ,libvorbis)
-       ("mesa" ,mesa)
-       ("python" ,python-wrapper)
-       ("sdl" ,sdl)
-       ("sdl-gfx" ,sdl-gfx)
-       ("sdl-image" ,sdl-image)
-       ("sdl-mixer" ,sdl-mixer)
-       ("zlib" ,zlib)))
+     (list glew
+           glu
+           libjpeg-turbo
+           libogg
+           libpng
+           libvorbis
+           mesa
+           python-wrapper
+           sdl
+           sdl-gfx
+           sdl-image
+           sdl-mixer
+           zlib))
     (home-page "https://www.freedroid.org/")
     (synopsis "Isometric role-playing game against killer robots")
     (description
