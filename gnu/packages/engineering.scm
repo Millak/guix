@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
@@ -65,6 +65,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
@@ -119,6 +120,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
@@ -928,28 +930,28 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "5.1.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/kicad/code/kicad.git")
-             (commit version)))
-       (sha256
-        (base32 "0kgikchqxds3mp71nkg307mr4c1dgv8akbmksz4w9x8jg4i1mfqq"))
-       (file-name (git-file-name name version))))
+    (version "6.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/kicad/code/kicad.git")
+                    (commit version)))
+              (sha256
+               (base32
+                "1vpcbhhw8844hm6vpk3kk405wak531pvcvcpc66z0b48iprk3imr"))
+              (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      `(#:out-of-source? #t
-       #:tests? #f                      ; no tests
+       #:tests? #f ;no tests
        #:build-type "Release"
        #:configure-flags
-       ,#~(list
-           "-DKICAD_SCRIPTING_PYTHON3=ON"
-           "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
-           "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE"
-           (string-append "-DOCC_INCLUDE_DIR="
-                          #$(this-package-input "opencascade-occt") "/include/opencascade"))
+       ,#~(list "-DKICAD_SCRIPTING_PYTHON3=ON"
+                (string-append "-DOCC_INCLUDE_DIR="
+                               #$(this-package-input "opencascade-occt")
+                               "/include/opencascade")
+                "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
+                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-ngspice-detection
@@ -969,70 +971,63 @@ Emacs).")
              (substitute* "common/lib_tree_model.cpp"
                (("#include <eda_pattern_match.h>" all)
                 (string-append "#include <algorithm>\n" all)))))
-         (add-after 'install 'install-translations
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "kicad-i18n")
-                               (assoc-ref outputs "out"))
-             #t))
          (add-after 'install 'wrap-program
            ;; Ensure correct Python at runtime.
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (python (assoc-ref inputs "python"))
                     (file (string-append out "/bin/kicad"))
-                    (path (string-append
-                           out
-                           "/lib/python"
-                           ,(version-major+minor
-                             (package-version python))
-                           "/site-packages:"
-                           (getenv "GUIX_PYTHONPATH"))))
+                    (path (string-append out "/lib/python"
+                                         ,(version-major+minor (package-version
+                                                                python))
+                                         "/site-packages:"
+                                         (getenv "GUIX_PYTHONPATH"))))
                (wrap-program file
-                 `("GUIX_PYTHONPATH" ":" prefix (,path))
+                 `("GUIX_PYTHONPATH" ":" prefix
+                   (,path))
                  `("PATH" ":" prefix
-                   (,(string-append python "/bin:")))))
-             #t)))))
+                   (,(string-append python "/bin:"))))))))))
     (native-search-paths
      (list (search-path-specification
-            (variable "KICAD")          ; to find kicad-doc
+            (variable "KICAD") ;to find kicad-doc
             (files '("")))
            (search-path-specification
             (variable "KICAD_TEMPLATE_DIR")
             (files '("share/kicad/template")))
            (search-path-specification
-            (variable "KICAD_SYMBOL_DIR") ; symbol path
+            (variable "KICAD_SYMBOL_DIR") ;symbol path
             (files '("share/kicad/library")))
            (search-path-specification
-            (variable "KISYSMOD")       ; footprint path
+            (variable "KISYSMOD") ;footprint path
             (files '("share/kicad/modules")))
            (search-path-specification
-            (variable "KISYS3DMOD")     ; 3D model path
+            (variable "KISYS3DMOD") ;3D model path
             (files '("share/kicad/modules/packages3d")))))
-    (native-inputs
-     `(("boost" ,boost)
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("kicad-i18n" ,kicad-i18n)
-       ("pkg-config" ,pkg-config)
-       ("swig" ,swig)
-       ("zlib" ,zlib)))
-    (inputs
-     `(("cairo" ,cairo)
-       ("curl" ,curl)
-       ("glew" ,glew)
-       ("glm" ,glm)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("libngspice" ,libngspice)
-       ("libsm" ,libsm)
-       ("mesa" ,mesa)
-       ("opencascade-occt" ,opencascade-occt)
-       ("openssl" ,openssl)
-       ("python" ,python-wrapper)
-       ("wxwidgets" ,wxwidgets)
-       ("wxpython" ,python-wxpython)))
+    (native-inputs (list boost
+                         desktop-file-utils
+                         gettext-minimal
+                         pkg-config
+                         swig
+                         zlib))
+    (inputs (list bash-minimal
+                  cairo
+                  curl
+                  glew
+                  glm
+                  hicolor-icon-theme
+                  libngspice
+                  libsm
+                  mesa
+                  opencascade-occt
+                  openssl
+                  python-wrapper
+                  gtk+
+                  wxwidgets
+                  python-wxpython))
     (home-page "https://www.kicad.org/")
     (synopsis "Electronics Design Automation Suite")
-    (description "Kicad is a program for the formation of printed circuit
+    (description
+     "Kicad is a program for the formation of printed circuit
 boards and electrical circuits.  The software has a number of programs that
 perform specific functions, for example, pcbnew (Editing PCB), eeschema (editing
 electrical diagrams), gerbview (viewing Gerber files) and others.")
@@ -1077,23 +1072,23 @@ translations for KiCad.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "026cz4zm903i75yhdvzha2nsnk4c0w07q3gd3xw3jmsmn18imgm3"))))
+                "0zaafa9ckvdgsim6nhp3flj4r2fzzmwn054lc3iijwgga82qy7il"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
-       #:tests? #f                      ; no test suite
+       #:tests? #f ;no test suite
        #:phases
        (modify-phases %standard-phases
          (delete 'build))))
-    (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("gettext" ,gettext-minimal)
-       ("git" ,git-minimal)
-       ("perl" ,perl)
-       ("perl-unicode-linebreak" ,perl-unicode-linebreak)
-       ("perl-yaml-tiny" ,perl-yaml-tiny)
-       ("po4a" ,po4a)
-       ("source-highlight" ,source-highlight)))
+    (native-inputs (list asciidoc
+                         gettext-minimal
+                         git-minimal
+                         perl
+                         perl-unicode-linebreak
+                         perl-yaml-tiny
+                         po4a
+                         ruby-asciidoctor
+                         source-highlight))
     (home-page "https://kicad.org")
     (synopsis "KiCad official documentation")
     (description "This repository contains the official KiCad documentation.")
@@ -1111,7 +1106,7 @@ translations for KiCad.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zdajim409570xzis53kmrbdcf7000v2vmc90f49h214lrx2zhr2"))))
+                "1azjx1bmxaz8bniyw75lq60mc8hvay00jn9qdc2zp7isy3c9ibp0"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1140,7 +1135,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qpii55dgv2gxqg1qq0dngdnbb9din790qi5qv0l6qqrzx843h5s"))))
+                "0mv9xs0mmmfn0yhzx1v55r5app13ckagb16249rabyiz3v5crdpb"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1157,7 +1152,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12w7m5nbk9kcnlnlg4sk1sd7xgb9i2kxfi0jcbd0phs89qyl7wjr"))))
+                "0vwcbzq42hzjl4f0zjaswmiff1x59hv64g5n00mx1gl0gwngnyla"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1174,7 +1169,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fbhn1l3j2rwc29aida9b408wif55i23bp9ddcs7dvf83smjm05g"))))
+                "13h9ly6amiwm7zkwa2fd9730kh295ls8j95fszlfjp9rczv2yyzm"))))
     (synopsis "Official KiCad project and worksheet templates")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
