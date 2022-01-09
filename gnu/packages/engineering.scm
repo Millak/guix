@@ -1033,33 +1033,6 @@ perform specific functions, for example, pcbnew (Editing PCB), eeschema (editing
 electrical diagrams), gerbview (viewing Gerber files) and others.")
     (license license:gpl3+)))
 
-(define kicad-i18n
-  (package
-    (name "kicad-i18n")
-    (version (package-version kicad))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.com/kicad/code/kicad-i18n.git")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0y51l0r62cnxkvpc21732p3cx7pjvaqjih8193502hlv9kv1j9p6"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'build)
-         (delete 'check))))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (home-page (package-home-page kicad))
-    (synopsis "KiCad GUI translations")
-    (description "This package contains the po files that are used for the GUI
-translations for KiCad.")
-    (license license:gpl3+)))
-
 (define-public kicad-doc
   (package
     (name "kicad-doc")
