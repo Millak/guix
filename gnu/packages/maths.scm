@@ -2708,7 +2708,7 @@ Open CASCADE library.")
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")
-    (version "7.3.0p3")
+    (version "7.6.0")
     (source
       (origin
         (method git-fetch)
@@ -2720,7 +2720,7 @@ Open CASCADE library.")
                                           version)))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0bdywwxb6mk0ykbiajlvsb37295akqjp0a60y672qjfa67k0ljv4"))
+         (base32 "1rcwm9fkx0j4wrsyikb6g7qd611kpry7dand5dzdjvs5vzd13zvd"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -2757,6 +2757,7 @@ Open CASCADE library.")
               "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON"
               "-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON"
               "-UCMAKE_INSTALL_LIBDIR")))
+    (native-inputs (list fontconfig))
     (inputs
      (list doxygen
            ;("freeimage" ,freeimage)
