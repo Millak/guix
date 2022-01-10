@@ -52,6 +52,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -128,88 +129,84 @@ driver is known to work with these printers:
   (package
     (name "cups-filters")
     (version "1.28.9")
-    (source(origin
-              (method url-fetch)
-              (uri
-               (string-append "https://openprinting.org/download/cups-filters/"
-                              "cups-filters-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1bk0x1rrb8wqbhh5c979ppgy6s2kqss8mjdlahgcjvd79wm3fs9g"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; install backends, banners and filters to cups-filters output
-               ;; directory, not the cups server directory
-               '(begin
-                  (substitute* "Makefile.in"
-                    (("CUPS_DATADIR = @CUPS_DATADIR@")
-                     "CUPS_DATADIR = $(PREFIX)/share/cups")
-                    (("pkgcupsserverrootdir = \\$\\(CUPS_SERVERROOT\\)")
-                     "pkgcupsserverrootdir = $(PREFIX)")
-                    ;; Choose standard directories notably so that binaries are
-                    ;; stripped.
-                    (("pkgbackenddir = \\$\\(CUPS_SERVERBIN\\)/backend")
-                     "pkgbackenddir = $(PREFIX)/lib/cups/backend")
-                    (("pkgfilterdir = \\$\\(CUPS_SERVERBIN\\)/filter")
-                     "pkgfilterdir = $(PREFIX)/lib/cups/filter"))
-                  ;; Find bannertopdf data such as the print test page in our
-                  ;; output directory, not CUPS's prefix.
-                  (substitute* "configure"
-                    (("\\{CUPS_DATADIR\\}/data")
-                     "{prefix}/share/cups/data"))
-                  #t))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://openprinting.org/download/cups-filters/"
+                       "cups-filters-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1bk0x1rrb8wqbhh5c979ppgy6s2kqss8mjdlahgcjvd79wm3fs9g"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; install backends, banners and filters to cups-filters output
+        ;; directory, not the cups server directory
+        #~(begin
+            (substitute* "Makefile.in"
+              (("CUPS_DATADIR = @CUPS_DATADIR@")
+               "CUPS_DATADIR = $(PREFIX)/share/cups")
+              (("pkgcupsserverrootdir = \\$\\(CUPS_SERVERROOT\\)")
+               "pkgcupsserverrootdir = $(PREFIX)")
+              ;; Choose standard directories notably so that binaries are
+              ;; stripped.
+              (("pkgbackenddir = \\$\\(CUPS_SERVERBIN\\)/backend")
+               "pkgbackenddir = $(PREFIX)/lib/cups/backend")
+              (("pkgfilterdir = \\$\\(CUPS_SERVERBIN\\)/filter")
+               "pkgfilterdir = $(PREFIX)/lib/cups/filter"))
+            ;; Find bannertopdf data such as the print test page in our
+            ;; output directory, not CUPS's prefix.
+            (substitute* "configure"
+              (("\\{CUPS_DATADIR\\}/data")
+               "{prefix}/share/cups/data"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" %output))
-       #:configure-flags
-       `("--disable-driverless" ; TODO: enable this
-         "--disable-mutool"     ; depends on yet another PDF library (mupdf)
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:configure-flags
+           #~(list "--disable-driverless" ; TODO: enable this
+                   "--disable-mutool"  ; needs yet another PDF library (mupdf)
 
-         ;; Look for the "domain socket of CUPS" in /var/run/cups.
-         "--localstatedir=/var"
+                   ;; Look for the "domain socket of CUPS" in /var/run/cups.
+                   "--localstatedir=/var"
 
-         ;; Free software for the win.
-         "--with-acroread-path=evince"
+                   ;; Free software for the win.
+                   "--with-acroread-path=evince"
 
-         ,(string-append "--with-test-font-path="
-                         (assoc-ref %build-inputs "font-dejavu")
-                         "/share/fonts/truetype/DejaVuSans.ttf")
-         ,(string-append "--with-gs-path="
-                         (assoc-ref %build-inputs "ghostscript")
-                         "/bin/gsc")
-         ,(string-append "--with-shell="
-                         (assoc-ref %build-inputs "bash")
-                         "/bin/bash")
-         ,(string-append "--with-rcdir="
-                         (assoc-ref %outputs "out") "/etc/rc.d"))
-
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-foomatic-hardcoded-file-names
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; Foomatic has hardcoded file names we need to fix.
-                      (let ((out (assoc-ref outputs "out"))
-                            (gs  (assoc-ref inputs "ghostscript")))
-                        (substitute* "filter/foomatic-rip/foomaticrip.c"
-                          (("/usr/local/lib/cups/filter")
-                           (string-append out "/lib/cups/filter")))
-                        #t)))
-                  (add-after 'install 'wrap-filters
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; Some filters expect to find things in $PATH.  We cannot
-                      ;; just hard-code all absolute file names in the source
-                      ;; because foomatic-rip, for example, has tests like
-                      ;; 'startswith(cmd, "gs")'.
-                      (let ((out         (assoc-ref outputs "out"))
-                            (ghostscript (assoc-ref inputs "ghostscript"))
-                            (grep        (assoc-ref inputs "grep")))
-                        (for-each (lambda (file)
-                                    (wrap-program file
-                                      `("PATH" ":" prefix
-                                        (,(string-append ghostscript "/bin:"
-                                                         grep "/bin")))))
-                                  (find-files (string-append
-                                               out "/lib/cups/filter")))
-                        #t))))))
+                   (string-append "--with-test-font-path="
+                                  #$(this-package-input "font-dejavu")
+                                  "/share/fonts/truetype/DejaVuSans.ttf")
+                   (string-append "--with-gs-path="
+                                  #$(this-package-input "ghostscript")
+                                  "/bin/gsc")
+                   (string-append "--with-shell="
+                                  (assoc-ref %build-inputs "bash")
+                                  "/bin/bash")
+                   (string-append "--with-rcdir="
+                                  #$output "/etc/rc.d"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-foomatic-hardcoded-file-names
+                 (lambda _
+                   ;; Foomatic has hard-coded file names we need to fix.
+                   (substitute* "filter/foomatic-rip/foomaticrip.c"
+                     (("/usr/local(/lib/cups/filter)" _ file)
+                      (string-append #$output file)))))
+               (add-after 'install 'wrap-filters
+                 (lambda _
+                   ;; Some filters expect to find things in $PATH.  We cannot
+                   ;; just hard-code all absolute file names in the source
+                   ;; because foomatic-rip, for example, has tests like
+                   ;; 'startswith(cmd, "gs")'.
+                   (for-each
+                    (lambda (file)
+                      (wrap-program file
+                        `("PATH" ":" prefix
+                          (,(string-append
+                             #$(this-package-input "ghostscript") "/bin:"
+                             #$(this-package-input "grep") "/bin")))))
+                    (find-files (string-append #$output
+                                               "/lib/cups/filter"))))))))
     (native-inputs
      (list `(,glib "bin") ; for gdbus-codegen
            pkg-config))
