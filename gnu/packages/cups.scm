@@ -38,6 +38,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -449,6 +450,7 @@ applications''.  These must be installed separately.")
      `(("avahi" ,avahi)
        ("gnutls" ,gnutls)
        ("cups-filters" ,cups-filters)
+       ("linux-pam" ,linux-pam)
        ("zlib"  ,zlib)))))
 
 (define-public cups-pk-helper
