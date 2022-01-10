@@ -150,10 +150,8 @@ driver is known to work with these printers:
                "pkgcupsserverrootdir = $(PREFIX)")
               ;; Choose standard directories notably so that binaries are
               ;; stripped.
-              (("pkgbackenddir = \\$\\(CUPS_SERVERBIN\\)/backend")
-               "pkgbackenddir = $(PREFIX)/lib/cups/backend")
-              (("pkgfilterdir = \\$\\(CUPS_SERVERBIN\\)/filter")
-               "pkgfilterdir = $(PREFIX)/lib/cups/filter"))
+              (("^pkg(.*)dir = \\$\\(CUPS_SERVERBIN\\)/(.*)" _ type suffix)
+               (format #f "pkg~adir = $(PREFIX)/lib/cups/~a" type suffix)))
             ;; Find bannertopdf data such as the print test page in our
             ;; output directory, not CUPS's prefix.
             (substitute* "configure"
@@ -164,8 +162,7 @@ driver is known to work with these printers:
      (list #:make-flags
            #~(list (string-append "PREFIX=" #$output))
            #:configure-flags
-           #~(list "--disable-driverless" ; TODO: enable this
-                   "--disable-mutool"  ; needs yet another PDF library (mupdf)
+           #~(list "--disable-mutool"  ; needs yet another PDF library (mupdf)
 
                    ;; Look for the "domain socket of CUPS" in /var/run/cups.
                    "--localstatedir=/var"
