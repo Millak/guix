@@ -177,7 +177,7 @@ driver is known to work with these printers:
                                   #$(this-package-input "font-dejavu")
                                   "/share/fonts/truetype/DejaVuSans.ttf")
                    (string-append "--with-gs-path="
-                                  #$(this-package-input "ghostscript")
+                                  #$(this-package-input "ghostscript-with-cups")
                                   "/bin/gsc")
                    (string-append "--with-shell="
                                   (assoc-ref %build-inputs "bash")
@@ -203,30 +203,31 @@ driver is known to work with these printers:
                       (wrap-program file
                         `("PATH" ":" prefix
                           (,(string-append
-                             #$(this-package-input "ghostscript") "/bin:"
+                             #$(this-package-input "ghostscript-with-cups")
+                             "/bin:"
                              #$(this-package-input "grep") "/bin")))))
                     (find-files (string-append #$output
                                                "/lib/cups/filter"))))))))
     (native-inputs
-     (list `(,glib "bin") ; for gdbus-codegen
+     (list `(,glib "bin")               ; for gdbus-codegen
            pkg-config))
     (inputs
-     `(("avahi"        ,avahi)
-       ("fontconfig"   ,fontconfig)
-       ("freetype"     ,freetype)
-       ("font-dejavu"  ,font-dejavu)    ; also needed by test suite
-       ("ghostscript"  ,ghostscript/cups)
-       ("grep"         ,grep)
-       ("ijs"          ,ijs)
-       ("dbus"         ,dbus)
-       ("lcms"         ,lcms)
-       ("libjpeg"      ,libjpeg-turbo)
-       ("libpng"       ,libpng)
-       ("libtiff"      ,libtiff)
-       ("glib"         ,glib)
-       ("qpdf"         ,qpdf)
-       ("poppler"      ,poppler)
-       ("cups-minimal" ,cups-minimal)))
+     (list avahi
+           fontconfig
+           freetype
+           font-dejavu                  ; also needed by test suite
+           ghostscript/cups
+           grep
+           ijs
+           dbus
+           lcms
+           libjpeg-turbo
+           libpng
+           libtiff
+           glib
+           qpdf
+           poppler
+           cups-minimal))
     (home-page "https://wiki.linuxfoundation.org/openprinting/cups-filters")
     (synopsis "OpenPrinting CUPS filters and backends")
     (description
