@@ -7478,3 +7478,60 @@ metadata from HTML markup.  Currently, extruct supports:
     (description "The @code{wadllib} Python library allows navigating HTTP
 resources using Web Application Description Language (WADL) files as guides.")
     (license license:lgpl3)))
+
+(define-public python-zeep
+  (package
+    (name "python-zeep")
+    (version "4.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zeep" version))
+       (patches
+        (search-patches "python-zeep-Fix-pytest_httpx-test-cases.patch"))
+       (sha256
+        (base32 "1ranr4hkjd2kbbhxa3is1qlgkankj3sml5gla6bqs0kbvpmg4rsq"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd)) ; one test requires write access
+               (invoke "pytest" "-vv")))))))
+    (propagated-inputs
+     (list python-attrs
+           python-cached-property
+           python-isodate
+           python-lxml
+           python-platformdirs
+           python-pytz
+           python-requests
+           python-requests-file
+           python-requests-toolbelt))
+    (native-inputs
+     (list python-aiohttp
+           python-aioresponses
+           python-freezegun
+           python-mock
+           python-pretend
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-httpx
+           python-requests-mock))
+    (home-page "https://docs.python-zeep.org/en/stable/")
+    (synopsis "Python SOAP client based on lxml / requests")
+    (description "Zeep is a Python SOAP client.  Highlights:
+
+@itemize
+@item Build on top of @code{lxml} and @code{requests}.
+@item Support for Soap 1.1, Soap 1.2 and HTTP bindings.
+@item Support for WS-Addressing headers.
+@item Support for WSSE (UserNameToken / x.509 signing).
+@item Support for @code{asyncio} via @code{httpx}.
+@item Experimental support for XOP messages.
+@end itemize")
+    (license license:expat)))
+
