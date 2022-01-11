@@ -21612,19 +21612,24 @@ and corruption checks.")
 (define-public python-requests-file
   (package
     (name "python-requests-file")
-    (version "1.4.3")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "requests-file" version))
        (sha256
-        (base32
-         "1yp2jaxg3v86pia0q512dg3hz6s9y5vzdivsgrba1kds05ial14g"))))
+        (base32 "13kx4k83i9zcv20h0fnmawwwdzhcmw1z97mqib1h379qsc445mq7"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "tests/test_requests_file.py")))))))
     (propagated-inputs
      (list python-requests python-six))
-    (home-page
-     "https://github.com/dashea/requests-file")
+    (home-page "https://github.com/dashea/requests-file")
     (synopsis "File transport adapter for Requests")
     (description
      "Requests-File is a transport adapter for use with the Requests Python
