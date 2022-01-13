@@ -2201,6 +2201,30 @@ The Discordian calendar was made popular by the \"Illuminatus!\" trilogy
 by Robert Shea and Robert Anton Wilson.")
     (license license:public-domain)))
 
+(define-public dislocker
+  (package
+    (name "dislocker")
+    (version "0.7.3")
+    (home-page "https://github.com/Aorimn/dislocker")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ak68s1v5dwh8y2dy5zjybmrh0pnqralmyqzis67y21m87g47h2k"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ;no test suite
+    (inputs (list fuse mbedtls-apache))
+    (synopsis "FUSE driver to read/write Windows BitLocker drives")
+    (description
+     "This package provides means to to read BitLocker encrypted
+partitions.  Write functionality is also provided but check the README.")
+    (license license:gpl2+)))
+
 (define-public fbset
   (package
     (name "fbset")
