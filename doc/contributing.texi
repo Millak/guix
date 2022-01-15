@@ -29,6 +29,7 @@ choice.
 * Tracking Bugs and Patches::   Keeping it all organized.
 * Commit Access::               Pushing to the official repository.
 * Updating the Guix Package::   Updating the Guix package definition.
+* Writing Documentation::       Improving documentation in GNU Guix.
 * Translating Guix::            Make Guix speak your native language.
 @end menu
 
@@ -1778,6 +1779,47 @@ This check can be disabled, @emph{at your own peril}, by setting the
 @code{GUIX_ALLOW_ME_TO_USE_PRIVATE_COMMIT} environment variable.  When
 this variable is set, the updated package source is also added to the
 store.  This is used as part of the release process of Guix.
+
+@cindex documentation
+@node Writing Documentation
+@section Writing Documentation
+
+Guix is documented using the Texinfo system.  If you are not yet
+familiar with it, we accept contributions for documentation in most
+formats.  That includes plain text, Markdown, Org, etc.
+
+Documentation contributions can be sent to
+@email{guix-patches@@gnu.org}.  Prepend @samp{[DOCUMENTATION]} to the
+subject.
+
+When you need to make more than a simple addition to the documentation,
+we prefer that you send a proper patch as opposed to sending an email
+as described above.  @xref{Submitting Patches} for more information on
+how to send your patches.
+
+To modify the documentation, you need to edit @file{doc/guix.texi} and
+@file{doc/contributing.texi} (which contains this documentation
+section), or @file{doc/guix-cookbook.texi} for the cookbook.  If
+you compiled the Guix repository before, you will have
+many more @file{.texi} files that are translations of these
+documents.  Do not modify them, the translation is managed through
+@uref{https://translate.fedoraproject.org/projects/guix, Weblate}.
+@xref{Translating Guix} for more information.
+
+To render documentation, you must first make sure that you ran
+@command{./configure} in your source tree (@pxref{Running Guix Before
+It Is Installed}).  After that you can run one of the following
+commands:
+
+@itemize
+@item @samp{make doc/guix.info} to compile the Info manual.
+      You can check it with @command{info doc/guix.info}.
+@item @samp{make doc/guix.html} to compile the HTML version.
+      You can point your browser to the relevant file in the
+      @file{doc/guix.html} directory.
+@item @samp{make doc/guix-cookbook.info} for the cookbook Info manual.
+@item @samp{make doc/guix-cookbook.html} for the cookbook HTML version.
+@end itemize
 
 @cindex translation
 @cindex l10n
