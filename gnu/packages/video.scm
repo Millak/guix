@@ -24,7 +24,7 @@
 ;;; Copyright © 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2018, 2019, 2020, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
@@ -1545,6 +1545,195 @@ Video Acceleration API} implemented by the libva library.
 These tools require a supported graphics chip, driver, and VA-API back end to
 operate properly.")
     (license license:expat)))
+
+(define-public ffmpeg-5
+  (package
+    (name "ffmpeg")
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
+    (build-system gnu-build-system)
+    (inputs
+     (append
+      ;; XXX: rav1e depends on rust, which currently only works on x86_64.
+      ;; See also the related configure flag when changing this.
+      (if (target-x86-64?) (list rav1e) '())
+      (list dav1d
+            fontconfig
+            freetype
+            frei0r-plugins
+            gnutls
+            opus
+            ladspa
+            lame
+            libaom
+            libass
+            libbluray
+            libcaca
+            libcdio-paranoia
+            libdrm
+            libtheora
+            libva
+            libvdpau
+            libvorbis
+            libvpx
+            libx11
+            libx264
+            mesa
+            openal
+            pulseaudio
+            sdl2
+            soxr
+            speex
+            srt
+            twolame
+            vidstab
+            x265
+            xvid
+            zlib)))
+    (native-inputs
+     (list bc
+           perl
+           pkg-config
+           texinfo
+           speex
+           yasm))
+    (arguments
+     (list
+      #:test-target "fate"
+      #:configure-flags
+      ;; possible additional inputs:
+      ;;   --enable-avisynth        enable reading of AviSynth script
+      ;;                            files [no]
+      ;;   --enable-libaacplus      enable AAC+ encoding via libaacplus [no]
+      ;;   --enable-libcelt         enable CELT decoding via libcelt [no]
+      ;;   --enable-libdc1394       enable IIDC-1394 grabbing using libdc1394
+      ;;                            and libraw1394 [no]
+      ;;   --enable-libfaac         enable AAC encoding via libfaac [no]
+      ;;   --enable-libfdk-aac      enable AAC de/encoding via libfdk-aac [no]
+      ;;   --enable-libflite        enable flite (voice synthesis) support via
+      ;;                            libflite [no]
+      ;;   --enable-libgme          enable Game Music Emu via libgme [no]
+      ;;   --enable-libgsm          enable GSM de/encoding via libgsm [no]
+      ;;   --enable-libiec61883     enable iec61883 via libiec61883 [no]
+      ;;   --enable-libilbc         enable iLBC de/encoding via libilbc [no]
+      ;;   --enable-libmodplug      enable ModPlug via libmodplug [no]
+      ;;   --enable-libnut          enable NUT (de)muxing via libnut,
+      ;;                            native (de)muxer exists [no]
+      ;;   --enable-libopencore-amrnb    enable AMR-NB de/encoding via
+      ;;                                 libopencore-amrnb [no]
+      ;;   --enable-libopencore-amrwb    enable AMR-WB decoding via
+      ;;                                 libopencore-amrwb [no]
+      ;;   --enable-libopencv       enable video filtering via libopencv [no]
+      ;;   --enable-libopenjpeg     enable JPEG 2000 de/encoding via
+      ;;                            OpenJPEG [no]
+      ;;   --enable-librtmp         enable RTMP[E] support via librtmp [no]
+      ;;   --enable-libschroedinger enable Dirac de/encoding via
+      ;;                            libschroedinger [no]
+      ;;   --enable-libshine        enable fixed-point MP3 encoding via
+      ;;                            libshine [no]
+      ;;   --enable-libssh          enable SFTP protocol via libssh [no]
+      ;;                            (libssh2 does not work)
+      ;;   --enable-libstagefright-h264  enable H.264 decoding via
+      ;;                                 libstagefright [no]
+      ;;   --enable-libutvideo      enable Ut Video encoding and decoding via
+      ;;                            libutvideo [no]
+      ;;   --enable-libv4l2         enable libv4l2/v4l-utils [no]
+      ;;   --enable-libvo-aacenc    enable AAC encoding via libvo-aacenc [no]
+      ;;   --enable-libvo-amrwbenc  enable AMR-WB encoding via
+      ;;                            libvo-amrwbenc [no]
+      ;;   --enable-libwavpack      enable wavpack encoding via libwavpack [no]
+      ;;   --enable-libxavs         enable AVS encoding via xavs [no]
+      ;;   --enable-libzmq          enable message passing via libzmq [no]
+      ;;   --enable-libzvbi         enable teletext support via libzvbi [no]
+      ;;   --enable-opencl          enable OpenCL code
+      #~(list
+         "--enable-gpl"                 ;enable optional gpl licensed parts
+         "--enable-shared"
+         "--enable-frei0r"
+         "--enable-fontconfig"
+         "--enable-gnutls"
+         "--enable-ladspa"
+         "--enable-libaom"
+         "--enable-libass"
+         "--enable-libbluray"
+         "--enable-libcaca"
+         "--enable-libcdio"
+         "--enable-libdav1d"
+         "--enable-libfreetype"
+         "--enable-libmp3lame"
+         "--enable-libopus"
+         "--enable-libpulse"
+         #$@(if (target-x86-64?)
+                '("--enable-librav1e")
+                '())
+         "--enable-libsoxr"
+         "--enable-libspeex"
+         "--enable-libsrt"
+         "--enable-libtheora"
+         "--enable-libtwolame"
+         "--enable-libvidstab"
+         "--enable-libvorbis"
+         "--enable-libvpx"
+         "--enable-libxvid"
+         "--enable-libx264"
+         "--enable-libx265"
+         "--enable-openal"
+         "--enable-opengl"
+         "--enable-libdrm"
+         "--enable-vaapi"
+
+         "--enable-runtime-cpudetect"
+
+         ;; The HTML pages take 7.2 MiB
+         "--disable-htmlpages"
+
+         ;; The static libraries are 23 MiB
+         "--disable-static"
+
+         ;; Runtime cpu detection is not implemented on
+         ;; MIPS, so we disable some features.
+         "--disable-mips32r2"
+         "--disable-mipsdsp"
+         "--disable-mipsdspr2"
+         "--disable-mipsfpu")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; configure does not work followed by "SHELL=..." and
+            ;; "CONFIG_SHELL=..."; set environment variables instead
+            (lambda* (#:key outputs configure-flags #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (substitute* "configure"
+                  (("#! /bin/sh") (string-append "#!" (which "sh"))))
+                (setenv "SHELL" (which "bash"))
+                (setenv "CONFIG_SHELL" (which "bash"))
+                (apply invoke
+                       "./configure"
+                       (string-append "--prefix=" out)
+                       ;; Add $libdir to the RUNPATH of all the binaries.
+                       (string-append "--extra-ldflags=-Wl,-rpath="
+                                      out "/lib")
+                       configure-flags))))
+          (add-before 'check 'set-ld-library-path
+            (lambda _
+              ;; Allow $(top_builddir)/ffmpeg to find its dependencies when
+              ;; running tests.
+              (let* ((dso  (find-files "." "\\.so$"))
+                     (path (string-join (map dirname dso) ":")))
+                (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
+                (setenv "LD_LIBRARY_PATH" path)))))))
+    (home-page "https://www.ffmpeg.org/")
+    (synopsis "Audio and video framework")
+    (description "FFmpeg is a complete, cross-platform solution to record,
+convert and stream audio and video.  It includes the libavcodec
+audio/video codec library.")
+    (license license:gpl2+)))
 
 (define-public ffmpeg
   (package
