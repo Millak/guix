@@ -462,6 +462,25 @@ drawing.")
 Vim bindings and Xresource compatibility.")
       (license license:expat))))
 
+(define-public sxmo-st
+  (package
+    (inherit st)
+    (name "sxmo-st")
+    (version "0.8.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://git.sr.ht/~mil/sxmo-st")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nl40q1pxf46hpbibz9m9d0giiy1p3lrhr9agw0fkyba2vzbbafa"))))
+    (home-page "https://git.sr.ht/~mil/sxmo-st")
+    (synopsis "St terminal emulator for the Simple X Mobile PinePhone environment")
+    (license license:expat)))
+
 (define-public surf
   (package
     (name "surf")
