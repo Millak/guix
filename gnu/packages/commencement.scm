@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
@@ -3099,8 +3099,7 @@ memoized as a function of '%current-system'."
      `(,@(%boot0-inputs)
        ("expat" ,expat-sans-tests)))              ;remove OpenSSL, zlib, etc.
     (native-inputs                                ;and pkg-config
-     `(("sitecustomize.py" ,(local-file (search-auxiliary-file
-                                         "python/sitecustomize.py")))))
+     `())
     (arguments
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
@@ -3133,11 +3132,14 @@ memoized as a function of '%current-system'."
                        (substitute* "Lib/plat-generic/regen"
                          (("/usr/include/")
                           (string-append libc "/include/")))))))
-               '())
-         (add-after 'install 'install-sitecustomize.py
-           ,(customize-site version)))))
+               '()))))
     (native-search-paths
-     (list (guix-pythonpath-search-path version)))))
+     (list (search-path-specification
+            (variable "PYTHONPATH")
+            (files (list (string-append
+                           "lib/python"
+                           (version-major+minor version)
+                           "/site-packages"))))))))
 
 (define/system-dependent ld-wrapper-boot0
   ;; The first 'ld' wrapper, defined with 'define/system-dependent' because
