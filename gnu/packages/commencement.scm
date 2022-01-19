@@ -3125,6 +3125,13 @@ memoized as a function of '%current-system'."
                ;; Prevent the 'ossaudiodev' extension from being
                ;; built, since it requires Linux headers.
                (("'linux', ") ""))))
+         (add-after 'install 'remove-tests
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file-recursively
+               (string-append (assoc-ref outputs "out")
+                              "/lib/python"
+                              ,(version-major+minor version)
+                              "/test"))))
          ,@(if (hurd-system?)
                `((add-before 'build 'fix-regen
                    (lambda* (#:key inputs #:allow-other-keys)
