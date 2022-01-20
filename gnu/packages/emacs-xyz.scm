@@ -30403,39 +30403,40 @@ service, and connect it with Emacs via inter-process communication.")
     (name "emacs-telega")
     (build-system emacs-build-system)
     (arguments
-     `(#:emacs ,(if (target-64bit?)
-                    emacs-minimal
-                    ;; Require wide-int support for 32-bit platform.
-                    emacs-wide-int)
-       #:include (cons "^etc\\/" %default-include)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Hard-code paths to `ffplay` and `ffmpeg`.
-             (let* ((ffplay-bin (search-input-file inputs "/bin/ffplay"))
-                    (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg")))
-               (substitute* '("telega-ffplay.el" "telega-vvnote.el")
-                 (("(shell-command-to-string\|concat) \"(ffmpeg\|ffprobe)"
-                   all func cmd)
-                  (string-append func " \""
-                                 (search-input-file
-                                  inputs (string-append "/bin/" cmd))))
-                 (("\\(executable-find \"ffplay\"\\)")
-                  (string-append "(and (file-executable-p \"" ffplay-bin "\")"
-                                 "\"" ffplay-bin "\")"))
-                 (("\\(executable-find \"ffmpeg\"\\)")
-                  (string-append "(and (file-executable-p \"" ffmpeg-bin "\")"
-                                 "\"" ffmpeg-bin "\")"))))))
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "telega-customize.el"
-               (("@TELEGA_SERVER_BIN@")
-                (search-input-file inputs "/bin/telega-server")))
-             (substitute* "telega-util.el"
-               (("@TELEGA_SHARE@")
-                (string-append (elpa-directory (assoc-ref outputs "out"))
-                               "/etc"))))))))
+     (list
+      #:emacs (if (target-64bit?)
+                  emacs-minimal
+                  ;; Require wide-int support for 32-bit platform.
+                  emacs-wide-int)
+      #:include #~(cons "^etc\\/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hard-code paths to `ffplay` and `ffmpeg`.
+              (let* ((ffplay-bin (search-input-file inputs "/bin/ffplay"))
+                     (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg")))
+                (substitute* '("telega-ffplay.el" "telega-vvnote.el")
+                  (("(shell-command-to-string\|concat) \"(ffmpeg\|ffprobe)"
+                    all func cmd)
+                   (string-append func " \""
+                                  (search-input-file
+                                   inputs (string-append "/bin/" cmd))))
+                  (("\\(executable-find \"ffplay\"\\)")
+                   (string-append "(and (file-executable-p \"" ffplay-bin "\")"
+                                  "\"" ffplay-bin "\")"))
+                  (("\\(executable-find \"ffmpeg\"\\)")
+                   (string-append "(and (file-executable-p \"" ffmpeg-bin "\")"
+                                  "\"" ffmpeg-bin "\")"))))))
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "telega-customize.el"
+                (("@TELEGA_SERVER_BIN@")
+                 (search-input-file inputs "/bin/telega-server")))
+              (substitute* "telega-util.el"
+                (("@TELEGA_SHARE@")
+                 (string-append (elpa-directory (assoc-ref outputs "out"))
+                                "/etc"))))))))
     (inputs
      (list emacs-telega-server ffmpeg))
     (native-inputs '())
@@ -30451,13 +30452,14 @@ for the Telegram messaging platform.")))
     (inherit emacs-telega)
     (name "emacs-telega-contrib")
     (arguments
-     `(#:exclude '("telega-live-location.el")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-subdirectory
-           (lambda _ (chdir "contrib") #t))
-         (add-before 'install-license-files 'leave-subdirectory
-           (lambda _ (chdir "..") #t)))))
+     (list
+      #:exclude #~(list "telega-live-location.el")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _ (chdir "contrib")))
+          (add-before 'install-license-files 'leave-subdirectory
+            (lambda _ (chdir ".."))))))
     (inputs '())
     (native-inputs '())
     (propagated-inputs
