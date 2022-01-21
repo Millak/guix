@@ -11321,6 +11321,17 @@ reading and writing MessagePack data.")
     (home-page "https://pypi.org/project/msgpack/")
     (license license:asl2.0)))
 
+(define-public python-msgpack-1.0.2
+  (package
+    (inherit python-msgpack)
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "msgpack" version))
+              (sha256
+               (base32
+                "1109s2yynrahwi64ikax68hx0mbclz8p35afmpphw5dwynb49q7s"))))))
+
 ;; This msgpack library's name changed from "python-msgpack" to "msgpack" with
 ;; release 0.5. Some packages like borg still call it by the old name for now.
 ;; <https://bugs.gnu.org/30662>
