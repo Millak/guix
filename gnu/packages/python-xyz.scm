@@ -11,7 +11,7 @@
 ;;; Copyright © 2015, 2016, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2015, 2016, 2017, 2019, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Erik Edrosa <erik.edrosa@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -28998,3 +28998,23 @@ multipurpose analysis in Python.")
      "This packages provides a collection of library stubs for Python, with
 static types.")
     (license license:asl2.0)))
+
+(define-public python-pyfuse3
+  (package
+    (name "python-pyfuse3")
+    (version "3.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "pyfuse3" version))
+        (sha256
+          (base32 "0cvybynv9igssfa4l13q09gb6m7afmwk34wsbq8jk14sqpd4dl92"))))
+    (build-system python-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list fuse-3))
+    (propagated-inputs (list python-pytest-trio))
+    (home-page "https://github.com/libfuse/pyfuse3")
+    (synopsis "Python bindings FUSE 3")
+    (description "This package provides Python 3 bindings for libfuse 3 with
+async I/O support.")
+    (license license:gpl2+)))
