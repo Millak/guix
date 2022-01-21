@@ -117,6 +117,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -241,6 +242,24 @@
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
+
+(define-public python-xmldiff
+  (package
+    (name "python-xmldiff")
+    (version "2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xmldiff" version))
+       (sha256
+        (base32 "0qygxi3z1jwb0471k7bh5gcqf7wqm4xhrkmwhf36gjgjw46a5gh5"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-lxml python-six))
+    (home-page "https://github.com/Shoobx/xmldiff")
+    (synopsis "Creates diffs of XML files")
+    (description "This Python tool figures out the differences between two
+similar XML files, in the same way the @command{diff} utility does it.")
+    (license license:expat)))
 
 (define-public python-janus
   (package
