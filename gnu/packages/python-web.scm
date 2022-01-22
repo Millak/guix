@@ -2532,13 +2532,13 @@ APIs.")
 (define-public python-requests
   (package
     (name "python-requests")
-    (version "2.26.0")
+    (version "2.27.1")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "19q73fq7hip7b74fwls3p9x6zwvfwqcwpn6kha3zsgvrrzw5iamq"))))
+               "0qcsbi919d689xqlgyhw9zkppp1fs6k09wwffa3ri6d8smpwbmv8"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-certifi python-chardet python-charset-normalizer
