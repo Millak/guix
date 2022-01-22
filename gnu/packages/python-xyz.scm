@@ -12038,14 +12038,14 @@ versions of Python.")
 (define-public python-idna
   (package
     (name "python-idna")
-    (version "2.10")
+    (version "3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "idna" version))
        (sha256
         (base32
-         "1xmk3s92d2vq42684p61wixfmh3qpr2mw762w0n6662vhlpqf1xk"))))
+         "0v8f6qjfi5i7qc5icsbv2pi24qy6k6m8wjqjvdf2sxjvlpq3yr4x"))))
     (build-system python-build-system)
     (home-page "https://github.com/kjd/idna")
     (synopsis "Internationalized domain names in applications")
@@ -12057,10 +12057,20 @@ from the earlier standard from 2003.  The library is also intended to act as a
 suitable drop-in replacement for the “encodings.idna” module that comes with
 the Python standard library but currently only supports the older 2003
 specification.")
+    (properties `((python2-variant . ,(delay python2-idna))))
     (license license:bsd-4)))
 
 (define-public python2-idna
-  (package-with-python2 python-idna))
+  (let ((base (package-with-python2 (strip-python2-variant python-idna))))
+    (package
+      (inherit base)
+      (version "2.10")
+      (source (origin
+                (method url-fetch)
+                (uri (pypi-uri "idna" version))
+                (sha256
+                 (base32
+                  "1xmk3s92d2vq42684p61wixfmh3qpr2mw762w0n6662vhlpqf1xk")))))))
 
 (define-public python-libsass
   (package
