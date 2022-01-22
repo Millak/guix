@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
+;;; Copyright © 2022 Simon South <simon@simonsouth.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4155,6 +4156,7 @@ definitions.")
                     "0gmdzhgr0h57xhsl61c5jsp4fj4pbmdr8p6k96am5jbyrbbx121q"))))
     (package
       (inherit template)
+      (outputs '("out" "doc"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
@@ -4533,7 +4535,35 @@ language that is written in a Cyrillic alphabet.")
           `(modify-phases ,phases
              (add-after 'unpack 'chdir
                (lambda _
-                 (chdir "source/latex/psnfss")))))))
+                 (chdir "source/latex/psnfss")))
+             (add-after 'install 'chdir-back
+               (lambda _
+                 (chdir "../../..")))
+             (add-after 'chdir-back 'clean-installed-files
+               (lambda _
+                 ;; Remove the generated .sty files from the build area as
+                 ;; these were already copied to the default output in the
+                 ;; "install" phase.
+                 (delete-file-recursively "source/latex/psnfss/build")))
+             (add-after 'clean-installed-files 'move-doc-files
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((doc (assoc-ref outputs "doc"))
+                        (doc-root (string-append doc "/share/texmf-dist"))
+                        (doc-path "doc/latex/psnfss")
+                        (source-path "source/latex/psnfss"))
+                   ;; Move the PDF documentation to the "doc" output.
+                   (let* ((file-name "psnfss2e.pdf")
+                          (source (string-append doc-path "/" file-name))
+                          (target-dir (string-append doc-root "/" doc-path)))
+                     (mkdir-p target-dir)
+                     (copy-file source
+                                (string-append target-dir "/" file-name))
+                     (delete-file source))
+
+                   ;; Keep the remaining files together with the package's
+                   ;; source, as per the installation instructions.
+                   (copy-recursively doc-path source-path)
+                   (delete-file-recursively "doc"))))))))
       (native-inputs
        (list texlive-cm))
       (home-page "https://www.ctan.org/pkg/psnfss")
