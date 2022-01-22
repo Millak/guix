@@ -459,13 +459,13 @@ for example, for recording or replaying web content.")
 (define-public python-certifi
   (package
     (name "python-certifi")
-    (version "2020.12.5")
+    (version "2021.10.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "certifi" version))
               (sha256
                (base32
-                "177mdbw0livdjvp17sz6wsfrc32838m9y59v871gpgv2888raj8s"))))
+                "0wl8ln7acd797i1q7mmb430l6hqwhmk4bd37x8ycw02b3my4x23q"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no tests
     (home-page "https://certifi.io/")
