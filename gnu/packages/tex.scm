@@ -4533,7 +4533,7 @@ language that is written in a Cyrillic alphabet.")
           `(modify-phases ,phases
              (add-after 'unpack 'chdir
                (lambda _
-                 (chdir "source/latex/psnfss") #t))))))
+                 (chdir "source/latex/psnfss")))))))
       (native-inputs
        (list texlive-cm))
       (home-page "https://www.ctan.org/pkg/psnfss")
