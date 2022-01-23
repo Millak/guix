@@ -2541,8 +2541,10 @@ APIs.")
                "0qcsbi919d689xqlgyhw9zkppp1fs6k09wwffa3ri6d8smpwbmv8"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-certifi python-chardet python-charset-normalizer
-           python-idna python-urllib3))
+     (list python-certifi
+           python-charset-normalizer
+           python-idna
+           python-urllib3))
     (arguments
      ;; FIXME: Some tests require network access.
      '(#:tests? #f))
@@ -2561,6 +2563,7 @@ than Python’s urllib2 library.")
       ;; The python-charset-normalizer dependency is necessary on Python 3
       ;; only.
       (propagated-inputs (modify-inputs (package-propagated-inputs base)
+                           (append python2-chardet)
                            (delete "python-charset-normalizer"))))))
 
 (define-public python-requests-unixsocket
