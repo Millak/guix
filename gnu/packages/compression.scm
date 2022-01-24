@@ -7,7 +7,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -232,14 +232,14 @@ adding and extracting files to/from a tar archive.")
 (define-public gzip
   (package
    (name "gzip")
-   (version "1.10")
+   (version "1.11")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gzip/gzip-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1h6p374d3j8d4cdfydzls021xa2yby8myc0h8d6m8bc7k6ncq9c4"))))
+              "01vrly90rvc98af6rcmrb3gwv1l6pylasvsdka23dffwizb9b6lv"))))
    (build-system gnu-build-system)
    (synopsis "General file (de)compression (using lzw)")
    (arguments
@@ -260,15 +260,13 @@ adding and extracting files to/from a tar archive.")
                (string-append "#if !defined _IO_IN_BACKUP && defined _IO_EOF_SEEN\n"
                               "# define _IO_IN_BACKUP 0x100\n"
                               "#endif\n\n"
-                              "/* BSD stdio derived implementations")))
-            #t))
+                              "/* BSD stdio derived implementations")))))
         (add-after 'unpack 'use-absolute-name-of-gzip
           (lambda* (#:key outputs #:allow-other-keys)
             (substitute* "gunzip.in"
               (("exec gzip")
                (string-append "exec " (assoc-ref outputs "out")
-                              "/bin/gzip")))
-            #t)))))
+                              "/bin/gzip"))))))))
    (description
     "GNU Gzip provides data compression and decompression utilities; the
 typical extension is \".gz\".  Unlike the \"zip\" format, it compresses a single
