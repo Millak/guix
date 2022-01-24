@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2014, 2015 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
@@ -104,14 +104,14 @@ command-line arguments, multiple languages, and so on.")
 (define-public grep
   (package
    (name "grep")
-   (version "3.6")
+   (version "3.7")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/grep/grep-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0gipv6bzkm1aihj0ncqpyh164xrzgcxcv9r1kwzyk2g1mzl1azk6"))
+              "0g42svbc1nq5bamxfj6x7320wli4dlj86padk0hwgbk04hqxl42w"))
             (patches (search-patches "grep-timing-sensitive-test.patch"))))
    (build-system gnu-build-system)
    (native-inputs (list perl))                   ;some of the tests require it
