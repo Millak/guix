@@ -29100,3 +29100,30 @@ manipulating stereolithography (STL) files.  It can convert STL files into
 POV-ray meshes, PDF and PostScript.  The Python modules allow for reading and
 writing STL files.  It supports both the text and binary forms of STL.")
     (license license:expat)))
+
+(define-public python-multipart
+  (package
+    (name "python-multipart")
+    (version "0.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-multipart" version))
+              (sha256
+               (base32
+                "0hzshd665rl1bkwvaj9va4j3gs8nmb478fbvligx20663xhmzfzp"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-pyyaml python-mock python-pytest-cov))
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  ;; There is a bug in the test_suit specification.
+                  (add-after 'unpack 'patch-test-suite
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("test_suite = 'multipart.tests.suite'")
+                         "test_suite = 'multipart.tests.test_multipart.suite'")))))))
+    (home-page "https://github.com/andrew-d/python-multipart")
+    (synopsis "Streaming multipart parser for Python")
+    (description
+     "This package provides a streaming multipart parser for Python.")
+    (license license:asl2.0)))
