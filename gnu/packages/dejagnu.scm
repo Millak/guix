@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flasher.co.il>
+;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flasher.co.il>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -43,25 +43,25 @@
      '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              ;; Note: The test-suite *requires* /dev/pts among the
              ;; `build-chroot-dirs' of the build daemon when
              ;; building in a chroot.  See
              ;; <http://thread.gmane.org/gmane.linux.distributions.nixos/1036>
              ;; for details.
-             (if (and (directory-exists? "/dev/pts")
-                      (directory-exists? "/proc"))
+             (when tests?
+               (if (and (directory-exists? "/dev/pts")
+                        (directory-exists? "/proc"))
                  (begin
-                  ;; Provide `runtest' with a log name, otherwise it
-                  ;; tries to run `whoami', which fails when in a chroot.
-                  (setenv "LOGNAME" "guix-builder")
+                   ;; Provide `runtest' with a log name, otherwise it
+                   ;; tries to run `whoami', which fails when in a chroot.
+                   (setenv "LOGNAME" "guix-builder")
 
-                  ;; The test-suite needs to have a non-empty stdin:
-                  ;; <http://lists.gnu.org/archive/html/bug-dejagnu/2003-06/msg00002.html>.
-                  (unless (zero? (system "make check < /dev/zero"))
-                    (error "make check failed")))
-                 (display "test suite cannot be run, skipping\n"))
-             #t))
+                   ;; The test-suite needs to have a non-empty stdin:
+                   ;; <http://lists.gnu.org/archive/html/bug-dejagnu/2003-06/msg00002.html>.
+                   (unless (zero? (system "make check < /dev/zero"))
+                     (error "make check failed")))
+                 (display "test suite cannot be run, skipping\n")))))
          (add-after 'install 'post-install
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Use the right `expect' binary.
@@ -71,8 +71,7 @@
                  (("^mypath.*$" all)
                   (string-append all
                                  "export PATH="
-                                 expect "/bin:$PATH\n")))
-               #t))))))
+                                 expect "/bin:$PATH\n")))))))))
     (home-page
      "https://www.gnu.org/software/dejagnu/")
     (synopsis "GNU software testing framework")
