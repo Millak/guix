@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
@@ -60,14 +60,14 @@ Java libraries.")
 (define-public libidn2
   (package
     (name "libidn2")
-    (version "2.3.1")
+    (version "2.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/libidn/" name "-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "0b8gsksj2g9f4iywwdma3v4jcg7i9rqvdxfmclwvbf1n72a89xla"))))
+                "14agfrv7lhwba9l20966kmp96ppzbyr9bld9g4shks3qwza0r53n"))))
     (inputs
      (list libunistring))
     (build-system gnu-build-system)
