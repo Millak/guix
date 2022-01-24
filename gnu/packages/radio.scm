@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 João Pedro Simas <jpsimas@gmail.com>
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 Sheng Yang <styang@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1114,6 +1115,30 @@ users.")
                            "--with-tcl-binding"
                            "--with-xml-support")))))
 
+(define-public jtdx-hamlib
+  ;; Fork of hamlib with custom patches used by jtdx.
+  (package
+    (inherit hamlib)
+    (name "jtdx-hamlib")
+    (version "2.2.158")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jtdx-project/jtdxhamlib.git")
+             (commit "158")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m9i5k1n6j0nvmsqcy12x2ngqzjvxxlc3jg29igh93hb7lprlkjv"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs hamlib)
+       (prepend autoconf automake libtool texinfo)))
+    (arguments
+     `(#:configure-flags '("--disable-shared"
+                           "--enable-static"
+                           "--without-cxx-binding"
+                           "--disable-winradio")))))
+
 (define-public tlf
   (package
     (name "tlf")
@@ -1205,6 +1230,47 @@ detecting and measuring your own radio signals reflected from the Moon.  These
 modes were all designed for making reliable, confirmed QSOs under extreme
 weak-signal conditions.")
     (home-page "https://www.physics.princeton.edu/pulsar/k1jt/wsjtx.html")
+    (license license:gpl3)))
+
+(define-public jtdx
+  (package
+    (name "jtdx")
+    (version "2.2.158")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jtdx-project/jtdx")
+             (commit "158")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lw9q7ggh2jlasipl3v5pkbabysjr6baw15lnmg664ah3fwdrvnx"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
+    (inputs
+     (list
+      boost
+      fftw
+      fftwf
+      jtdx-hamlib
+      libusb
+      qtbase-5
+      qtwebsockets
+      qtmultimedia
+      qtserialport))
+    (arguments
+     `(#:tests? #f)) ; No test suite
+    (synopsis "Weak-signal ham radio communication program, forked from WSJTX")
+    (description
+     "JTDX means \"JT,T10 and FT8 and FT4 modes for DXing\", it is being
+developed with main focus on the sensitivity and decoding efficiency, both, in
+overcrowded and half empty HF band conditions.
+
+It is modified WSJT-X software forked from WSJT-X r6462.  JTDX supports JT9,
+JT65, T10, FT8 and FT4 © digital modes for HF amateur radio communication,
+focused on DXing and being shaped by community of DXers.JTDX")
+    (home-page "https://www.jtdx.tech/en/")
     (license license:gpl3)))
 
 (define-public js8call
