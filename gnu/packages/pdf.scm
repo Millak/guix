@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -42,6 +42,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
@@ -777,46 +778,47 @@ line tools for batch rendering @command{pdfdraw}, rewriting files
 
 (define-public qpdf
   (package
-   (name "qpdf")
-   (version "10.0.1")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://sourceforge/qpdf/qpdf/" version
-                                "/qpdf-" version ".tar.gz"))
-            (sha256
-             (base32
-              "0yw2cpw7ygfd6jlgpwbi8vsnvv9p55zxp9h17x77z2qq733pf8jx"))))
-   (build-system gnu-build-system)
-   (arguments
-    `(#:disallowed-references (,perl)
+    (name "qpdf")
+    (version "10.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/qpdf/qpdf/" version
+                                  "/qpdf-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01p07hh74j1ajb2dhjdfhqbc3bwwvlj86j3r505wbmaglhv7s9c8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:disallowed-references (list perl)
       #:phases
-      (modify-phases %standard-phases
-        (add-before 'configure 'patch-paths
-          (lambda _
-            (substitute* "make/libtool.mk"
-              (("SHELL=/bin/bash")
-               (string-append "SHELL=" (which "bash"))))
-            (substitute* (append
-                          '("qtest/bin/qtest-driver")
-                          (find-files "." "\\.test"))
-              (("/usr/bin/env") (which "env")))
-            #t)))))
-   (native-inputs
-    (list pkg-config perl))
-   (propagated-inputs
-    ;; In Requires.private of libqpdf.pc.
-    (list libjpeg-turbo zlib))
-   (synopsis "Command-line tools and library for transforming PDF files")
-   (description
-    "QPDF is a command-line program that does structural, content-preserving
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "make/libtool.mk"
+                (("SHELL=/bin/bash")
+                 (string-append "SHELL="
+                                (search-input-file inputs "/bin/bash"))))
+              (substitute*
+                  (append '("qtest/bin/qtest-driver")
+                      (find-files "." "\\.test"))
+                (("/usr/bin/env") (which "env"))))))))
+    (native-inputs
+     (list perl pkg-config))
+    (propagated-inputs
+     ;; In Requires.private of libqpdf.pc.
+     (list libjpeg-turbo zlib))
+    (synopsis "Command-line tools and library for transforming PDF files")
+    (description
+     "QPDF is a command-line program that does structural, content-preserving
 transformations on PDF files.  It could have been called something like
 pdf-to-pdf.  It includes support for merging and splitting PDFs and to
 manipulate the list of pages in a PDF file.  It is not a PDF viewer or a
 program capable of converting PDF into other formats.")
-   ;; Prior to the 7.0 release, QPDF was licensed under Artistic 2.0.
-   ;; Users can still choose to use the old license at their option.
-   (license (list license:asl2.0 license:clarified-artistic))
-   (home-page "http://qpdf.sourceforge.net/")))
+    ;; Prior to the 7.0 release, QPDF was licensed under Artistic 2.0.
+    ;; Users can still choose to use the old license at their option.
+    (license (list license:asl2.0 license:clarified-artistic))
+    (home-page "http://qpdf.sourceforge.net/")))
 
 (define-public qpdfview
   (package
