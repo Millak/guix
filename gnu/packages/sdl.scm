@@ -111,23 +111,24 @@ joystick, and graphics hardware.")
     (license license:lgpl2.1)))
 
 (define-public sdl2
-  (package (inherit sdl)
+  (package
+    (inherit sdl)
     (name "sdl2")
-    (version "2.0.14")
+    (version "2.0.18")
     (source (origin
-             (method url-fetch)
-             (uri
-              (string-append "https://libsdl.org/release/SDL2-"
-                             version ".tar.gz"))
-             (sha256
-              (base32
-               "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))
+              (method url-fetch)
+              (uri
+               (string-append "https://libsdl.org/release/SDL2-"
+                              version ".tar.gz"))
+              (sha256
+               (base32
+                "073iwmggkvvl82fssqb7xzbb4awraprjig6zxav0p8dz7pbhrm4l"))))
     (arguments
      (substitute-keyword-arguments (package-arguments sdl)
        ((#:configure-flags flags)
         `(append '("--disable-wayland-shared" "--enable-video-kmsdrm"
                    "--disable-kmsdrm-shared")
-                 ,flags))
+             ,flags))
        ((#:make-flags flags ''())
         `(cons*
           ;; SDL dlopens libudev, so make sure it is in rpath. This overrides
@@ -141,16 +142,17 @@ joystick, and graphics hardware.")
      ;; experience a bug where input events are doubled.
      ;;
      ;; For more information, see: https://dev.solus-project.com/T1721
-     (append `(("dbus" ,dbus)
-               ("eudev" ,eudev) ; for discovering input devices
-               ("fcitx" ,fcitx) ; helps with CJK input
-               ("glib" ,glib)
-               ("ibus" ,ibus)
-               ("libxkbcommon" ,libxkbcommon)
-               ("libxcursor" ,libxcursor) ; enables X11 cursor support
-               ("wayland" ,wayland)
-               ("wayland-protocols" ,wayland-protocols))
-             (package-inputs sdl)))
+     (modify-inputs (package-inputs sdl)
+       (prepend
+           dbus
+           eudev                        ;for discovering input devices
+         fcitx                          ;helps with CJK input
+         glib
+         ibus
+         libxkbcommon
+         libxcursor
+         wayland                        ;enables X11 cursor support
+         wayland-protocols)))
     (license license:bsd-3)))
 
 (define-public libmikmod
