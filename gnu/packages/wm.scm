@@ -45,7 +45,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
@@ -1509,16 +1509,16 @@ functionality to display information about the most commonly used services.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.14.1")
+    (version "0.15.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/swaywm/wlroots")
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sshp3lvlkl1i670kxhwsb4xzxl8raz6769kqvgmxzcb63ns9ay1"))))
+        (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
