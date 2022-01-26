@@ -79,6 +79,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
@@ -96,6 +97,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
@@ -376,7 +378,7 @@ applications.")
 (define-public openvdb
   (package
     (name "openvdb")
-    (version "8.0.1")
+    (version "8.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -386,14 +388,14 @@ applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qzx6l5c183k6j9zki31gg9aixf5s1j46wdi7wr1h3bz7k53syg9"))))
+                "0856697hnwk8xsp29kx8y2p1kliy0bdwfsznxm38v4690vna15rk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        (list (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
                             (assoc-ref %outputs "out") "/lib"))))
     (inputs
-     (list boost c-blosc ilmbase tbb-2020 zlib))
+     (list boost c-blosc ilmbase tbb zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.openvdb.org/")
@@ -408,14 +410,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "2.93.6")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "19i84bh8jiamf38fj9p24q8w8fhg3hhl49940dh74h4flyfyqfg7"))))
+                "1jzirg60c2lhln78a7phbsk2ssvcdqxqb3awp895m0pqrlmz7w2h"))))
     (build-system cmake-build-system)
     (arguments
       (let ((python-version (version-major+minor (package-version python))))
@@ -497,8 +499,9 @@ typically encountered in feature film production.")
        ("python" ,python)
        ("python-numpy" ,python-numpy)
        ("openvdb" ,openvdb)
-       ("tbb" ,tbb-2020)
+       ("tbb" ,tbb)
        ("zlib" ,zlib)
+       ("zstd" ,zstd "lib")
        ("embree" ,embree)))
     (home-page "https://blender.org/")
     (synopsis "3D graphics creation suite")
@@ -507,103 +510,6 @@ typically encountered in feature film production.")
 the 3D pipeline—modeling, rigging, animation, simulation, rendering,
 compositing and motion tracking, even video editing and game creation.  The
 application can be customized via its API for Python scripting.")
-    (license license:gpl2+)))
-
-(define-public blender-2.79
-  (package
-    (name "blender")
-    (version "2.79b")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.blender.org/source/"
-                                  "blender-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1g4kcdqmf67srzhi3hkdnr4z1ph4h9sza1pahz38mrj998q4r52c"))
-              (patches (search-patches "blender-2.79-newer-ffmpeg.patch"
-                                       "blender-2.79-oiio2.patch"
-                                       ;; The following patches may be
-                                       ;; needed when the default GCC is
-                                       ;; updated:
-                                       ;;   "blender-2.79-gcc8.patch"
-                                       ;;   "blender-2.79-gcc9.patch"
-                                       "blender-2.79-python-3.7-fix.patch"
-                                       "blender-2.79-python-3.8-fix.patch"))))
-    (build-system cmake-build-system)
-    (arguments
-      (let ((python-version (version-major+minor (package-version python))))
-       `(;; Test files are very large and not included in the release tarball.
-         #:tests? #f
-         #:configure-flags
-         (list "-DWITH_CODEC_FFMPEG=ON"
-               "-DWITH_CODEC_SNDFILE=ON"
-               "-DWITH_CYCLES=ON"
-               "-DWITH_DOC_MANPAGE=ON"
-               "-DWITH_FFTW3=ON"
-               "-DWITH_GAMEENGINE=ON"
-               "-DWITH_IMAGE_OPENJPEG=ON"
-               "-DWITH_INPUT_NDOF=ON"
-               "-DWITH_INSTALL_PORTABLE=OFF"
-               "-DWITH_JACK=ON"
-               "-DWITH_MOD_OCEANSIM=ON"
-               "-DWITH_PLAYER=ON"
-               "-DWITH_PYTHON_INSTALL=OFF"
-               "-DWITH_PYTHON_INSTALL=OFF"
-               "-DWITH_SYSTEM_OPENJPEG=ON"
-               (string-append "-DPYTHON_LIBRARY=python" ,python-version)
-               (string-append "-DPYTHON_LIBPATH=" (assoc-ref %build-inputs "python")
-                              "/lib")
-               (string-append "-DPYTHON_INCLUDE_DIR=" (assoc-ref %build-inputs "python")
-                              "/include/python" ,python-version)
-               (string-append "-DPYTHON_VERSION=" ,python-version))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-broken-import
-             (lambda _
-               (substitute* "release/scripts/addons/io_scene_fbx/json2fbx.py"
-                 (("import encode_bin") "from . import encode_bin"))
-               #t))
-           (add-after 'set-paths 'add-ilmbase-include-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; OpenEXR propagates ilmbase, but its include files do not appear
-               ;; in the CPATH, so we need to add "$ilmbase/include/OpenEXR/" to
-               ;; the CPATH to satisfy the dependency on "half.h".
-               (setenv "CPATH"
-                       (string-append
-                        (search-input-directory inputs "include/OpenEXR")
-                        ":" (or (getenv "CPATH") "")))))))))
-    (inputs
-     `(("boost" ,boost)
-       ("jemalloc" ,jemalloc)
-       ("libx11" ,libx11)
-       ("opencolorio" ,opencolorio)
-       ("openimageio" ,openimageio)
-       ("openexr" ,openexr-2)
-       ("ilmbase" ,ilmbase)
-       ("openjpeg" ,openjpeg)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("ffmpeg" ,ffmpeg)
-       ("fftw" ,fftw)
-       ("jack" ,jack-1)
-       ("libsndfile" ,libsndfile)
-       ("freetype" ,freetype)
-       ("glew" ,glew)
-       ("openal" ,openal)
-       ("pugixml" ,pugixml)
-       ("python" ,python)
-       ("zlib" ,zlib)))
-    (home-page "https://blender.org/")
-    (synopsis "3D graphics creation suite")
-    (description
-     "Blender is a 3D graphics creation suite.  It supports the entirety of
-the 3D pipeline—modeling, rigging, animation, simulation, rendering,
-compositing and motion tracking, even video editing and game creation.  The
-application can be customized via its API for Python scripting.
-
-NOTE: This older version of Blender is the last release that does not require
-OpenGL 3.  It is retained for use with older computers.")
     (license license:gpl2+)))
 
 (define-public goxel
@@ -664,6 +570,72 @@ processing tools: normals and tangent space generation, triangulation, vertex
 cache locality optimization, removal of degenerate primitives and duplicate
 vertices, sorting by primitive type, merging of redundant materials and many
 more.")
+    (license license:bsd-3)))
+
+(define-public openshadinglanguage
+  (package
+    (name "openshadinglanguage")
+    (version "1.11.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AcademySoftwareFoundation/OpenShadingLanguage")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x0lc163vl2b57l75bf5zxlr6vm2y1f1izlxdnrw3vsapv3r9k9g"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DUSE_PARTIO=OFF") ; TODO: not packaged
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'set-paths 'add-ilmbase-include-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; OpenEXR 2 propagates ilmbase, but its include files do not
+             ;; appear in the C_INCLUDE_PATH.
+             (let ((headers (string-append
+                             (assoc-ref inputs "ilmbase")
+                             "/include/OpenEXR")))
+               (setenv "C_INCLUDE_PATH"
+                       (string-append headers ":"
+                                      (or (getenv "C_INCLUDE_PATH") "")))
+               (setenv "CPLUS_INCLUDE_PATH"
+                       (string-append headers ":"
+                                      (or (getenv "CPLUS_INCLUDE_PATH") ""))))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ctest" "--exclude-regex"
+                       (string-join
+                        (list
+                         "osl-imageio"       ; OIIO not compiled with freetype
+                         "osl-imageio.opt"   ; OIIO not compiled with freetype
+                         "texture-udim"      ; file does not exist
+                         "texture-udim.opt"  ; file does not exist
+                         "example-deformer"  ; could not find OSLConfig
+                         "python-oslquery")  ; no module oslquery
+                        "|"))))))))
+    (native-inputs
+     (list bison
+           clang
+           flex
+           llvm
+           pybind11
+           python-wrapper))
+    (inputs
+     (list boost
+           imath
+           openexr-2
+           openimageio
+           pugixml
+           qtbase-5
+           zlib))
+    (home-page "https://github.com/AcademySoftwareFoundation/OpenShadingLanguage")
+    (synopsis "Shading language for production GI renderers")
+    (description "Open Shading Language (OSL) is a language for programmable
+shading in advanced renderers and other applications, ideal for describing
+materials, lights, displacement, and pattern generation.")
     (license license:bsd-3)))
 
 (define-public cgal
@@ -935,6 +907,30 @@ applications, full-screen applications, and embedded platforms without standard
 operating system features.")
     (license license:expat)))           ; some examples/ use the zlib licence
 
+(define-public alembic
+  (package
+    (name "alembic")
+    (version "1.8.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alembic/alembic")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0glfx3cm7r8zn3cn7j4x4ch1ab6igfis0i2lcy23jc56q87r8yj2"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DUSE_HDF5=ON")))
+    (inputs
+     (list hdf5 imath zlib))
+    (home-page "http://www.alembic.io/")
+    (synopsis "Framework for storing and sharing scene data")
+    (description "Alembic is a computer graphics interchange framework.  It
+distills complex, animated scenes into a set of baked geometric results.")
+    (license license:bsd-3)))
+
 (define-public ogre
   (package
     (name "ogre")
@@ -1007,7 +1003,7 @@ graphics.")
 (define-public openexr
   (package
     (name "openexr")
-    (version "3.1.2")
+    (version "3.1.3")
     (source
      (origin
        (method git-fetch)
@@ -1016,7 +1012,7 @@ graphics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vyclrrikphwkkpyjg8kzh3qzflzk3d6xsidgqllgfdgllr9wmgv"))))
+        (base32 "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
@@ -1918,6 +1914,38 @@ Some feature highlights:
 @item Automatic port forwarding with UPnP
 @end itemize\n")
       (license license:gpl3+))))
+
+(define-public openxr
+  (package
+    (name "openxr")
+    (version "1.0.20")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KhronosGroup/OpenXR-SDK")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete bundled jsoncpp.
+           (delete-file-recursively "src/external/jsoncpp")))
+       (sha256
+        (base32 "1jd7jjxlrdi8kjnmn3sad7dgb4h48dbxryfb9snf0kifn47bi20m"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f))                    ; there are no tests
+    (native-inputs
+     (list pkg-config python shaderc vulkan-headers))
+    (inputs
+     (list jsoncpp mesa vulkan-loader wayland))
+    (home-page "https://www.khronos.org/openxr/")
+    (synopsis "Generated headers and sources for OpenXR loader")
+    (description "This package contains OpenXR headers, as well as source code
+and build scripts for the OpenXR loader.")
+    ;; Dual licensed.  Either license applies.
+    (license (list license:asl2.0 license:expat))))
 
 (define-public monado
   (package

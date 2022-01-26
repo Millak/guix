@@ -375,7 +375,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "3.4.3")
+    (version "4.5.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -384,14 +384,34 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06bc61r8myym4s8im10brdjfg4wxkrvsbhhl7vr1msdan2xddzi3"))
-              (patches
-               (search-patches "opencv-fix-build-of-grfmt_jpeg2000.cpp.patch"))
+                "0gf2xs3r4s51m20mpf0wdidpk0xzp3m2w6jx72fwldhn0pshlmcj"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Remove external libraries. We have all available in Guix:
-                  (delete-file-recursively "3rdparty")
+                  ;; Remove external libraries. We have almost all available
+                  ;; in Guix:
+                  (with-directory-excursion "3rdparty"
+                    (for-each delete-file-recursively
+                              '("carotene"
+                                "cpufeatures"
+                                "ffmpeg"
+                                "include"
+                                "ippicv"
+                                "ittnotify"
+                                "libjasper"
+                                "libjpeg"
+                                "libjpeg-turbo"
+                                "libpng"
+                                "libtengine"
+                                "libtiff"
+                                "libwebp"
+                                "openexr"
+                                "openjpeg"
+                                "openvx"
+                                "protobuf"
+                                ;;"quirc"
+                                "tbb"
+                                "zlib")))
 
                   ;; Milky icon set is non-free:
                   (delete-file-recursively "modules/highgui/src/files_Qt/Milky")
@@ -399,12 +419,12 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                   ;; Some jars found:
                   (for-each delete-file
                             '("modules/java/test/pure_test/lib/junit-4.11.jar"
-                              "samples/java/sbt/sbt/sbt-launch.jar"))
-                  #t))))
+                              "samples/java/sbt/sbt/sbt-launch.jar"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       (list "-DWITH_IPP=OFF"
+       (list "-DWITH_ADE=OFF" ;we don't have a package for ade yet
+             "-DWITH_IPP=OFF"
              "-DWITH_ITT=OFF"
              "-DWITH_CAROTENE=OFF" ; only visible on arm/aarch64
              "-DENABLE_PRECOMPILED_HEADERS=OFF"
@@ -457,30 +477,25 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-broken-tests
            (lambda _
-             ;; These tests fails with:
-             ;; vtkXOpenGLRenderWindow (0x723990): Could not find a decent config
-             ;; I think we have no OpenGL support with the Xvfb.
-             (substitute* '("modules/viz/test/test_tutorial3.cpp"
-                            "modules/viz/test/test_main.cpp"
-                            "modules/viz/test/tests_simple.cpp"
-                            "modules/viz/test/test_viz3d.cpp")
-               (("(TEST\\(Viz, )([a-z].*\\).*)" all pre post)
-                (string-append pre "DISABLED_" post)))
-
-             ;; This one fails with "unknown file: Failure"
+             ;; This test fails with "unknown file: Failure"
              ;; But I couldn't figure out which file was missing:
              (substitute* "../opencv-contrib/modules/face/test/test_face_align.cpp"
                (("(TEST\\(CV_Face_FacemarkKazemi, )(can_detect_landmarks\\).*)"
                  all pre post)
                 (string-append pre "DISABLED_" post)))
 
-             ;; Failure reason: Bad accuracy
-             ;; Incorrect count of accurate poses [2nd case]: 90.000000 / 94.000000
-             (substitute* "../opencv-contrib/modules/rgbd/test/test_odometry.cpp"
-               (("(TEST\\(RGBD_Odometry_Rgbd, )(algorithmic\\).*)" all pre post)
+             ;; This test fails with a comparison between the expected 396 and
+             ;; the actual 440 in file size.
+             (substitute* "modules/imgcodecs/test/test_exr.impl.hpp"
+               (("(TEST\\(Imgcodecs_EXR, )(readWrite_32FC1\\).*)" all pre post)
                 (string-append pre "DISABLED_" post)))
-             #t))
 
+             ;; These fail with protobuf parse errors that come from
+             ;; opencv-extra/testdata.
+             (substitute* "modules/dnn/test/test_layers.cpp"
+               (("(TEST_P\\(Test_Caffe_layers, )\
+(Accum\\).*|DataAugmentation\\).*|Resample\\).*|Correlation\\).*)" all pre post)
+                (string-append pre "DISABLED_" post)))))
          (add-after 'unpack 'unpack-submodule-sources
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir "../opencv-extra")
@@ -489,27 +504,19 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                                "../opencv-extra")
              (copy-recursively (assoc-ref inputs "opencv-contrib")
                                "../opencv-contrib")))
-
-         (add-after 'set-paths 'add-ilmbase-include-path
+         (add-after 'build 'do-not-install-3rdparty-file
+           (lambda _
+             (substitute* "cmake_install.cmake"
+               (("file\\(INSTALL .*source/3rdparty/include/opencl/LICENSE.txt.*") "\n"))))
+         (add-before 'check 'start-xserver
            (lambda* (#:key inputs #:allow-other-keys)
-           ;; OpenEXR propagates ilmbase, but its include files do not appear
-           ;; in the CPATH, so we need to add "$ilmbase/include/OpenEXR/" to
-           ;; the CPATH to satisfy the dependency on "ImathVec.h".
-           (setenv "CPATH"
-                   (string-append
-                    (string-drop-right
-                     (search-input-file inputs "include/OpenEXR/ImathVec.h")
-                     11)
-                    ":" (or (getenv "CPATH") "")))))
-       (add-before 'check 'start-xserver
-         (lambda* (#:key inputs #:allow-other-keys)
-           (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                 (disp ":1"))
-             (setenv "HOME" (getcwd))
-             (setenv "DISPLAY" disp)
-             ;; There must be a running X server and make check doesn't start one.
-             ;; Therefore we must do it.
-             (zero? (system (format #f "~a/bin/Xvfb ~a &" xorg-server disp)))))))))
+             (let ((xorg-server (assoc-ref inputs "xorg-server"))
+                   (disp ":1"))
+               (setenv "HOME" (getcwd))
+               (setenv "DISPLAY" disp)
+               ;; There must be a running X server and make check doesn't start one.
+               ;; Therefore we must do it.
+               (zero? (system (format #f "~a/bin/Xvfb ~a &" xorg-server disp)))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("xorg-server" ,xorg-server-for-tests) ; For running the tests
@@ -517,48 +524,50 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
         ,(origin
            (method git-fetch)
            (uri (git-reference
-                  (url "https://github.com/opencv/opencv_extra")
-                  (commit version)))
+                 (url "https://github.com/opencv/opencv_extra")
+                 (commit version)))
            (file-name (git-file-name "opencv_extra" version))
            (sha256
-            (base32 "08p5xnq8n1jw8svvz0fnirfg7q8dm3p4a5dl7527s5xj0f9qn7lp"))))
+            (base32 "1fg2hxdvphdvagc2fkmhqk7qql9mp7pj2bmp8kmd7vicpr72qk82"))))
        ("opencv-contrib"
         ,(origin
            (method git-fetch)
            (uri (git-reference
-                  (url "https://github.com/opencv/opencv_contrib")
-                  (commit version)))
+                 (url "https://github.com/opencv/opencv_contrib")
+                 (commit version)))
            (file-name (git-file-name "opencv_contrib" version))
-           (patches (search-patches "opencv-rgbd-aarch64-test-fix.patch"))
            (sha256
-            (base32 "1f334glf39nk42mpqq6j732h3ql2mpz89jd4mcl678s8n73nfjh2"))))))
-    (inputs `(("libjpeg" ,libjpeg-turbo)
-              ("libpng" ,libpng)
-              ("jasper" ,jasper)
-              ;; ffmpeg 4.0 causes core dumps in tests.
-              ("ffmpeg" ,ffmpeg-3.4)
-              ("libtiff" ,libtiff)
-              ("hdf5" ,hdf5)
-              ("libgphoto2" ,libgphoto2)
-              ("libwebp" ,libwebp)
-              ("zlib" ,zlib)
-              ("gtkglext" ,gtkglext)
-              ("openexr" ,openexr-2)
-              ("ilmbase" ,ilmbase)
-              ("gtk+" ,gtk+-2)
-              ("python-numpy" ,python-numpy)
-              ("protobuf" ,protobuf)
-              ("vtk" ,vtk)
-              ("python" ,python)))
+            (base32 "0ga0l4ranp1834gxgp487ll1amvmssa02l2nk5ja5w0rx4d8hh26"))))))
+    (inputs
+     (list ffmpeg
+           gtk+
+           gtkglext
+           hdf5
+           ilmbase
+           imath ;should be propagated by openexr
+           jasper
+           libgphoto2
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           openblas
+           openexr
+           openjpeg
+           protobuf
+           python
+           python-numpy
+           vtk
+           zlib))
     ;; These three CVEs are not a problem of OpenCV, see:
     ;; https://github.com/opencv/opencv/issues/10998
     (properties '((lint-hidden-cve . ("CVE-2018-7712"
                                       "CVE-2018-7713"
                                       "CVE-2018-7714"))))
     (synopsis "Computer vision library")
-    (description "OpenCV is a library aimed at
-real-time computer vision, including several hundred computer
-vision algorithms.  It can be used to do things like:
+    (description "OpenCV is a library aimed at real-time computer vision,
+including several hundred computer vision algorithms.  It can be used to do
+things like:
 
 @itemize
 @item image and video input and output
@@ -627,14 +636,14 @@ due to its architecture which automatically parallelises the image workflows.")
 (define-public gmic
   (package
     (name "gmic")
-    (version "2.9.7")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gmic.eu/files/source/gmic_"
                            version ".tar.gz"))
        (sha256
-        (base32 "05kzaplsl5qvxs7v6g73q0lq8dii8g6v77ap609188m7gr43f9cl"))))
+        (base32 "080inz0wisv3rhvbnzrgcs3j25wq86gybp68yi56gw6vwswnn19z"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -655,12 +664,13 @@ due to its architecture which automatically parallelises the image workflows.")
      (list curl
            fftw
            graphicsmagick
+           imath
            libjpeg-turbo
            libpng
            libtiff
            libx11
-           ;;("opencv" ,opencv) ;OpenCV is currently broken in the CI
-           openexr-2
+           ;;opencv ;OpenCV is currently broken in the CI
+           openexr
            zlib))
     (home-page "https://gmic.eu/")
     (synopsis "Full-featured framework for digital image processing")

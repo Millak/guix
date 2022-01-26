@@ -19,7 +19,7 @@
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2017, 2018, 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017, 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -54,6 +54,7 @@
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -254,14 +255,14 @@
 (define-public httpd
   (package
     (name "httpd")
-    (version "2.4.51")
+    (version "2.4.52")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/httpd/httpd-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "1x1qp10pfh33x1b56liwsjl0jamjm5lkk7j3lj87c1ygzs0ivq10"))))
+               "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1"))))
     (build-system gnu-build-system)
     (native-inputs (list `(,pcre "bin")))       ;for 'pcre-config'
     (inputs (list apr apr-util openssl perl)) ; needed to run bin/apxs
@@ -371,14 +372,14 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.21.4")
+    (version "1.21.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1ziv3xargxhxycd5hp6r3r5mww54nvvydiywcpsamg3i9r3jzxyi"))))
+                "1fygvl19cch100d15k74666jcbc7xpz7v5m7ygqac6556gskn3xj"))))
     (build-system gnu-build-system)
     (inputs (list libxml2 libxslt openssl pcre zlib))
     (arguments
@@ -469,9 +470,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.21.4")
-        (revision 2791)
-        (changeset "9385526a9b2d"))
+  (let ((version "1.21.5")
+        (revision 2816)
+        (changeset "ae1d713a06e2"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -483,7 +484,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "07v5vpwg2k4y1asbygmrvsk61l1vbdb2pyllc5k4hcjykg9avfza"))))
+                 "03j85wj6qb32q5xhq9nvcjzarq98802gaq6n3f7k85aqj731bml0"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -1537,7 +1538,15 @@ high performance.")
     (build-system gnu-build-system)
     (arguments
      ;; Parallel builds don't reliably succeed.
-     `(#:parallel-build? #f))
+     `(#:parallel-build? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-sphinx-error
+           ;; XXX: Remove in next version: fix applied upstream.  See
+           ;; <https://github.com/tatsuhiro-t/wslay/commit/43fda1207ea5977043630500e0c8e77b98b35320>.
+           (lambda _
+             (substitute* "doc/sphinx/conf.py.in"
+               (("add_stylesheet") "add_css_file")))))))
     (native-inputs
      (list autoconf
            automake
@@ -1630,7 +1639,7 @@ used to validate and fix HTML data.")
 (define-public esbuild
   (package
     (name "esbuild")
-    (version "0.12.9")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -1639,7 +1648,7 @@ used to validate and fix HTML data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10bz1xq2frdja7mbx04m009svg8b5rj7vfq3sc2gc88n31v21b1j"))
+        (base32 "09r1xy0kk6c9cpz6q0mxr4why373pwxbm439z2ihq3k1d5kk7x4w"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4613,20 +4622,24 @@ their web site.")
        (method url-fetch)
        (uri (pypi-uri "feedparser" version ".tar.gz"))
        (sha256
-        (base32
-         "0qcnkyjjfj5gg5rhd1j4zzlqx5h34bma18zwgj68q95b0l543q2w"))))
+        (base32 "0qcnkyjjfj5gg5rhd1j4zzlqx5h34bma18zwgj68q95b0l543q2w"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-sgmllib3k))
     (arguments
-     '(#:tests? #f))
-    (home-page
-     "https://github.com/kurtmckee/feedparser")
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "tests/runtests.py")))))))
+    (home-page "https://github.com/kurtmckee/feedparser")
     (synopsis "Parse feeds in Python")
     (description
      "Universal feed parser which handles RSS 0.9x, RSS 1.0, RSS 2.0,
 CDF, Atom 0.3, and Atom 1.0 feeds.")
-    (license (list license:bsd-2 ; source code
+    (license (list license:bsd-2           ; source code
                    license:freebsd-doc)))) ; documentation
 
 (define-public python2-feedparser
@@ -4654,8 +4667,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "df2a0a73f1f35ea53ba6c07a6ad4c5347ba12b8f")
-        (revision "27"))
+  (let ((commit "f1d8d76c4d685bc5e938f495c762984fe2564371")
+        (revision "28"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4667,7 +4680,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ss1prr98zdjkm97w24rd04lfnnvcw6xs0gwxqgd40briqisaa5g"))))
+                  "16ys402pvrzxm8kvhss4fhgfzbcxh70jndi50cpgz80qb510x3iq"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4737,12 +4750,12 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
              postgresql-13
              sqitch))
       (native-inputs
-       `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
-         ("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("emacs-minimal" ,emacs-minimal)
-         ("emacs-htmlize" ,emacs-htmlize)
-         ("pkg-config" ,pkg-config)))
+       (list (car (assoc-ref (package-native-inputs guix) "guile"))
+             autoconf
+             automake
+             emacs-minimal
+             emacs-htmlize
+             pkg-config))
       (synopsis "Store and provide data about GNU Guix")
       (description
        "The Guix Data Service stores data about GNU Guix, and provides this
@@ -5785,46 +5798,41 @@ tools like SSH (Secure Shell) to reach the outside world.")
 (define-public stunnel
   (package
   (name "stunnel")
-  (version "5.60")
+  (version "5.61")
   (source
     (origin
       (method url-fetch)
       (uri (string-append "https://www.stunnel.org/downloads/stunnel-"
                           version ".tar.gz"))
       (sha256
-       (base32 "0zbqiydyz9dvfg3axh18a42v6j3xvnwjbd03kgm1z1i12mdpcpf4"))))
+       (base32 "0yjx07r5wc987s4z0wm37381fa3az2s4mrhyjxypx3rd92k0rsli"))))
   (build-system gnu-build-system)
+  (arguments
+   (list #:configure-flags
+         #~(list (string-append "--with-ssl="
+                                #$(this-package-input "openssl")))
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'patch-output-directories
+               (lambda _
+                 ;; Some (not all) Makefiles have a hard-coded incorrect docdir.
+                 (substitute* (list "Makefile.in"
+                                    "doc/Makefile.in"
+                                    "tools/Makefile.in")
+                   (("/doc/stunnel")
+                    (string-append "/doc/" #$name "-" #$version)))))
+             (add-after 'install 'prune-documentation
+               (lambda _
+                 (let* ((doc (string-append #$output "/share/doc/"
+                                            #$name "-" #$version)))
+                   (for-each delete-file (find-files doc "^INSTALL"))))))))
   (native-inputs
    ;; For tests.
-   `(("iproute" ,iproute)
-     ("netcat" ,netcat)
-     ("procps" ,procps)))
+   (list iproute
+         netcat
+         procps
+         python))
   (inputs (list openssl))
-  (arguments
-   `(#:configure-flags
-     (list (string-append "--with-ssl=" (assoc-ref %build-inputs "openssl")))
-     #:phases
-     (modify-phases %standard-phases
-       (add-after 'unpack 'patch-output-directories
-         (lambda _
-           ;; Some (not all) Makefiles have a hard-coded incorrect docdir.
-           (substitute* (list "Makefile.in"
-                              "doc/Makefile.in"
-                              "tools/Makefile.in")
-             (("/doc/stunnel")
-              (string-append "/doc/" ,name "-" ,version)))))
-       (add-before 'check 'patch-tests
-         (lambda _
-           (substitute* "tests/make_test"
-             (("/bin/sh ")
-              (string-append (which "sh") " ")))
-           ;; This test requires networking.
-           (delete-file "tests/recipes/055_socket_closed")))
-       (add-after 'install 'prune-documentation
-         (lambda* (#:key outputs #:allow-other-keys)
-           (let* ((out (assoc-ref outputs "out"))
-                  (doc (string-append out "/share/doc/" ,name "-" ,version)))
-             (for-each delete-file (find-files doc "^INSTALL"))))))))
   (home-page "https://www.stunnel.org")
   (synopsis "TLS proxy for clients or servers")
   (description "Stunnel is a proxy designed to add TLS encryption
@@ -5851,17 +5859,16 @@ deployments.")
                                (string-append "CC=" ,(cc-for-target))
                                ;; Use absolute path of GCC so it's found at runtime.
                                (string-append "PTHREAD_CC="
-                                              (assoc-ref %build-inputs "gcc")
-                                              "/bin/gcc")
+                                              (search-input-file %build-inputs
+                                                                 "/bin/gcc"))
                                "--localstatedir=/var")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'use-absolute-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((bash (assoc-ref inputs "bash-minimal"))
-                    (sh (string-append bash "/bin/sh"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (rm (string-append coreutils "/bin/rm")))
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (let* ((inpts (or native-inputs inputs))
+                    (sh (search-input-file inpts "/bin/sh"))
+                    (rm (search-input-file inpts "/bin/rm")))
                (substitute* '("bin/varnishtest/vtc_varnish.c"
                               "bin/varnishtest/vtc_process.c"
                               "bin/varnishtest/vtc_haproxy.c"
@@ -5891,9 +5898,7 @@ deployments.")
                  ;; Make sure 'crti.o' et.al is found.
                  `("LIBRARY_PATH" ":" prefix (,LIBRARY_PATH)))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-sphinx" ,python-sphinx)
-       ("rst2man" ,python-docutils)))
+     (list pkg-config python-sphinx python-docutils))
     (inputs
      (list bash-minimal
            coreutils
@@ -6481,6 +6486,92 @@ file links.")
 Rust with GTK.  It currently supports the Gemini, Gopher and Finger
 protocols.")
     (license license:expat)))
+
+(define-public clearsilver
+  (package
+    (name "clearsilver")
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/blong42/clearsilver/")
+             (commit "fbe4926ba9a756163fd1539ff6eee3522cf1f5d8")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02ad43gmqwy7wmh71mh5pk6gl1lax76sjnf42sknj0ijdga170kl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there is not test target and tests are run during build
+      #:configure-flags
+      '(list "--disable-java" "--disable-python")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'prepare-streamhtmlparser
+           (lambda* (#:key inputs #:allow-other-keys)
+             (copy-recursively (assoc-ref inputs "streamhtmlparser")
+                               (string-append (getcwd) "/streamhtmlparser"))
+             (for-each make-file-writable
+                       (find-files "streamhtmlparser" "."
+                                   #:directories? #t))))
+         (add-after 'unpack 'pre-bootstrap
+           (lambda _
+             ;; We don't need the Java stuff
+             (substitute* "configure.in"
+               (("AC_JNI_INCLUDE_DIR") ""))
+
+             ;; This script will call /bin/sh, so it's easier to just
+             ;; bootstrap manually.
+             (delete-file "autogen.sh")
+             (substitute* "rules.mk.in"
+               (("@PTHREAD_LIBS@") "-lpthread")
+               (("@PTHREAD_CFLAGS@") "")
+               (("@PTHREAD_CC@") "gcc"))
+
+             ;; The GNU variadic macros actually work, whereas the C99
+             ;; implementation fails to build.
+             (substitute* "util/neo_misc.h"
+               (("#define USE_C99_VARARG_MACROS") "#define USE_GNUC_VARARG_MACROS"))
+
+             (setenv "CFLAGS" "-fPIC")
+
+             ;; This directory is created some time during the build, but the
+             ;; early libtool processes assume the directory exists.  When
+             ;; they are run first they copy the libraries themselves to the
+             ;; file "libs" instead of moving them into the directory.
+             (mkdir-p "libs")))
+         (add-after 'build 'build-documentation
+           (lambda _ (invoke "make" "man")))
+         (add-after 'install 'install-streamhtmlparser
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (with-directory-excursion "streamhtmlparser"
+               (apply invoke "make" "-j" (if parallel-build?
+                                             (number->string (parallel-job-count))
+                                             "1")
+                      "install" make-flags)))))))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)
+       ("python" ,python-2)
+       ("streamhtmlparser"
+        ,(let ((commit "551109ac02a31957a0e776416774c7b515b4b7c7"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/google/streamhtmlparser/")
+                   (commit commit)))
+             (file-name (git-file-name "streamhtmlparser" commit))
+             (sha256
+              (base32
+               "0bmrdakk930q3m8fmq0xcy7n7cdvlk1xma4z9204919hvb1gk9md")))))))
+    (home-page "https://github.com/blong42/clearsilver")
+    (synopsis "CGI kit and HTML templating system")
+    (description
+     "This package includes Clearsilver, the CGI kit and HTML templating
+system.")
+    (license license:bsd-3)))
 
 (define-public python-py-ubjson
   (package
@@ -7591,15 +7682,18 @@ HTTrack is fully configurable, and has an integrated help system.")
      (origin
        (method url-fetch)
        (uri (pypi-uri "buku" version))
-       (file-name (git-file-name name version))
        (sha256
         (base32 "1n4d1mkjyvzdxbyq067p1p9skb3iwx0msd86nzr224dlqrfh9675"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f))                    ;FIXME: many tests need network access
+     `(#:tests? #f                     ; FIXME: many tests need network access
+       #:phases
+       (modify-phases %standard-phases
+         ;; XXX: missing inputs, e.g. python-flask-admin
+         (delete 'sanity-check))))
     (inputs
      (list python-beautifulsoup4 python-certifi python-cryptography
-           python-html5lib python-urllib3))
+           python-flask python-html5lib python-urllib3))
     (home-page "https://github.com/jarun/buku")
     (synopsis "Bookmark manager")
     (description

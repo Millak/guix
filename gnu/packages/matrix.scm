@@ -3,6 +3,8 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +26,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -72,7 +75,10 @@
     (build-system python-build-system)
     (arguments
      ;; tests require synapse, creating a circular dependency.
-     '(#:tests? #f))
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  ;; Also, auth_provider.py attempts to import synapse.
+                  (delete 'sanity-check))))
     (propagated-inputs
      (list python-twisted python-ldap3 python-service-identity))
     (home-page "https://github.com/matrix-org/matrix-synapse-ldap3")
@@ -256,20 +262,26 @@ fledged batteries-included asyncio layer using aiohttp.")
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-vv" "tests")))))))
     (native-inputs
-     (list python-pytest python-faker python-pytest-aiohttp
-           python-aioresponses))
+     (list python-aioresponses
+           python-faker
+           python-pytest
+           python-pytest-aiohttp))
     (propagated-inputs
      (list python-aiohttp
            python-appdirs
            python-attrs
            python-cachetools
            python-click
+           python-dbus
            python-janus
            python-keyring
            python-logbook
            python-matrix-nio
+           python-notify2
            python-peewee
-           python-prompt-toolkit))
+           python-prompt-toolkit
+           python-pydbus
+           python-pygobject))
     (home-page "https://github.com/matrix-org/pantalaimon")
     (synopsis "Matrix proxy daemon that adds E2E encryption capabilities")
     (description

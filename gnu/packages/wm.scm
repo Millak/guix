@@ -48,6 +48,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -638,32 +639,32 @@ prompt.")
 (define-public i3lock-color
   (package
     (name "i3lock-color")
-    (version "2.12.c")
+    (version "2.13.c.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/PandorasFox/i3lock-color")
+             (url "https://github.com/Raymo111/i3lock-color")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08fhnchf187b73h52xgzb86g6byzxz085zs9galsvl687g5zxk34"))))
+        (base32 "1lnyh8spbf1ar4xan5v7q8i2i51aq1i60kzbfkn9w3wa0jzf9f3d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests included
     (inputs
-     `(("cairo" ,cairo)
-       ("libev" ,libev)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libxcb" ,libxcb)
-       ("libxkbcommon" ,libxkbcommon)
-       ("linux-pam" ,linux-pam)
-       ("xcb-util" ,xcb-util)
-       ("xcb-util-image" ,xcb-util-image)
-       ("xcb-util-xrm" ,xcb-util-xrm)))
+     (list cairo
+           libev
+           libjpeg-turbo
+           libxcb
+           libxkbcommon
+           linux-pam
+           xcb-util
+           xcb-util-image
+           xcb-util-xrm))
     (native-inputs
      (list autoconf automake pkg-config))
-    (home-page "https://github.com/PandorasFox/i3lock-color")
+    (home-page "https://github.com/Raymo111/i3lock-color")
     (synopsis "Screen locker with color configuration support")
     (description
      "i3lock-color is a simpler X11 screen locker derived from i3lock.
@@ -736,10 +737,10 @@ This screen locker can be used with any window manager or
 desktop environment.")
     (license license:expat)))
 
-(define-public xmonad
+(define-public xmonad-next
   (package
-    (name "xmonad")
-    (version "0.15")
+    (name "xmonad-next")
+    (version "0.17.0")
     (synopsis "Tiling window manager")
     (source (origin
               (method url-fetch)
@@ -747,21 +748,13 @@ desktop environment.")
                                   "xmonad-" version ".tar.gz"))
               (sha256
                (base32
-                "0a7rh21k9y6g8fwkggxdxjns2grvvsd5hi2ls4klmqz5xvk4hyaa"))
-              (patches (search-patches "xmonad-dynamic-linking.patch"))))
+                "04qspdz9w6xpw1npcmx2zx0595wc68q985pv4i0hvp32zillvdqy"))
+              (patches (search-patches "xmonad-next-dynamic-linking.patch"))))
     (build-system haskell-build-system)
-    (inputs
-     (list ghc-extensible-exceptions
-           ghc-data-default
-           ghc-quickcheck
-           ghc-semigroups
-           ghc-setlocale
-           ghc-utf8-string
-           ghc-x11))
+    (inputs (list ghc-data-default-class ghc-setlocale ghc-x11))
+    (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
     (arguments
-     `(#:cabal-revision
-       ("1" "0yqh96qqphllr0zyz5j93cij5w2qvf39xxnrb52pz0qz3pywz9wd")
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after
           'install 'install-xsession
@@ -789,17 +782,44 @@ used on each workspace.  Xinerama is fully supported, allowing windows to be
 tiled on several screens.")
     (license license:bsd-3)))
 
+(define-public xmonad
+  (package
+    (inherit xmonad-next)
+    (name "xmonad")
+    (version "0.15")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://hackage/package/xmonad/"
+                                  "xmonad-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0a7rh21k9y6g8fwkggxdxjns2grvvsd5hi2ls4klmqz5xvk4hyaa"))
+              (patches (search-patches "xmonad-dynamic-linking.patch"))))
+    (inputs
+     (list ghc-extensible-exceptions
+           ghc-data-default
+           ghc-quickcheck
+           ghc-semigroups
+           ghc-setlocale
+           ghc-utf8-string
+           ghc-x11))
+    (native-inputs '())
+    (arguments
+     `(#:cabal-revision
+       ("1" "0yqh96qqphllr0zyz5j93cij5w2qvf39xxnrb52pz0qz3pywz9wd")
+       ,@(package-arguments xmonad-next)))))
+
 (define-public xmobar
   (package
     (name "xmobar")
-    (version "0.39")
+    (version "0.40")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hackage.haskell.org/package/xmobar/"
                                   "xmobar-" version ".tar.gz"))
               (sha256
                (base32
-                "1k1n3ff0ikdmfq0mi8r2vpqg1iq6hsw1drvxps6k98rvvn87pws6"))))
+                "1mrdiblm8vilkm1w23pz6xbi16zh1b1lvql26czjzw5k79vd67sf"))))
     (build-system haskell-build-system)
     (native-inputs
      (list ghc-hspec hspec-discover))
@@ -862,8 +882,30 @@ Unlike dmenu, it mangles the input before it presents its choices.  In
 particular, it displays commonly-chosen options before uncommon ones.")
     (license license:bsd-3)))
 
+(define-public ghc-xmonad-contrib-next
+  (package
+    (name "ghc-xmonad-contrib-next")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://hackage/package/xmonad-contrib/"
+                           "xmonad-contrib-" version ".tar.gz"))
+       (sha256
+        (base32 "11g1cyfgfvcmz35qhgi9wzxrk3br8m8b7qy3jvph4nnf6aj13wvy"))))
+    (build-system haskell-build-system)
+    (propagated-inputs (list ghc-random ghc-x11 ghc-utf8-string ghc-x11-xft xmonad-next))
+    (native-inputs (list ghc-quickcheck ghc-hspec))
+    (home-page "https://xmonad.org")
+    (synopsis "Third party extensions for xmonad")
+    (description
+     "Third party tiling algorithms, configurations, and scripts to Xmonad, a
+tiling window manager for X.")
+    (license license:bsd-3)))
+
 (define-public ghc-xmonad-contrib
   (package
+    (inherit ghc-xmonad-contrib-next)
     (name "ghc-xmonad-contrib")
     (version "0.16")
     (source
@@ -873,10 +915,11 @@ particular, it displays commonly-chosen options before uncommon ones.")
                            "xmonad-contrib-" version ".tar.gz"))
        (sha256
         (base32 "1pddgkvnbww28wykncc7j0yb0lv15bk7xnnhdcbrwkxzw66w6wmd"))))
-    (build-system haskell-build-system)
     (arguments
      `(#:cabal-revision
-       ("1" "0vimkby2gq6sgzxzbvz67caba609xqlv2ii2gi8a1cjrnn6ib011")))
+       ("1" "0vimkby2gq6sgzxzbvz67caba609xqlv2ii2gi8a1cjrnn6ib011")
+       ,@(package-arguments ghc-xmonad-contrib-next)))
+    (native-inputs '())
     (propagated-inputs
      (list ghc-old-time
            ghc-random
@@ -885,13 +928,7 @@ particular, it displays commonly-chosen options before uncommon ones.")
            ghc-semigroups
            ghc-x11
            ghc-x11-xft
-           xmonad))
-    (home-page "https://xmonad.org")
-    (synopsis "Third party extensions for xmonad")
-    (description
-     "Third party tiling algorithms, configurations, and scripts to Xmonad, a
-tiling window manager for X.")
-    (license license:bsd-3)))
+           xmonad))))
 
 (define-public evilwm
   (package
@@ -1166,14 +1203,14 @@ dynamic and extensible using the Lua programming language.")
 (define-public menumaker
   (package
     (name "menumaker")
-    (version "0.99.13")
+    (version "0.99.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/menumaker/"
                            "menumaker-" version ".tar.gz"))
        (sha256
-        (base32 "0hbn8bid43725njqcfklvan3n4hwpfx8nq8xkkdwkmpd37kfq594"))))
+        (base32 "0nnnc1awvhq5pplvclap3ha61g9209bca6zqgpsm1f53fq75vs8i"))))
     (build-system gnu-build-system)
     (inputs
      (list python))
@@ -1586,7 +1623,7 @@ modules for building a Wayland compositor.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -1595,7 +1632,7 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nd3v8r9549lykdwh4krldfl59lzaspmmai5k1icy7dvi6kkr18r"))))
+        (base32 "0ziya8d5pvvxg16jhy4i04pvq11bdvj68gz5q654ar4dldil17nn"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")))
@@ -1720,20 +1757,20 @@ Wlroots based compositors.")
 (define-public wlr-randr
   (package
     (name "wlr-randr")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/emersion/wlr-randr")
+             (url "https://git.sr.ht/~emersion/wlr-randr")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10c8zzp78s5bw34vvjhilipa28bsdx3jbyhnxgp8f8kawh3cvgsc"))))
+        (base32 "0d44r4schknfc3g09y0kjbhl62zkynv6hi1z4zqc9ic5fhav3r15"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config))
-    (home-page "https://github.com/emersion/wlr-randr")
+    (home-page "https://sr.ht/~emersion/wlr-randr")
     (synopsis "Utility to manage Wayland compositor outputs")
     (description "wlr-randr is a utility to manage outputs of a Wayland compositor.")
     (license license:expat))) ; MIT license
@@ -1741,7 +1778,7 @@ Wlroots based compositors.")
 (define-public mako
   (package
     (name "mako")
-    (version "1.4.1")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -1750,7 +1787,7 @@ Wlroots based compositors.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hwvibpnrximb628w9dsfjpi30b5jy7nfkm4d94z5vhp78p43vxh"))))
+        (base32 "0vbx2r01rq3r9zc6kflah44ms1fzf4z857zmq3qxnfsyjdkz1hs5"))))
     (build-system meson-build-system)
     (inputs (list cairo elogind gdk-pixbuf pango wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
@@ -2602,7 +2639,7 @@ program and unhides it after quitting.")
     (synopsis "Minimal GTK based system tray")
     (description
      "@command{trayer} is small program designed to provide systray
-functionality present in GNOME/KDE desktop enviroments for window managers
+functionality present in GNOME/KDE desktop environments for window managers
 which do not support it.")
     (license license:expat)))
 

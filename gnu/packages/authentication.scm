@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -88,34 +90,58 @@ data.")
     (license (list license:lgpl2.1+     ; the libraries (liboath/ & libpskc/)
                    license:gpl3+))))    ; the tools (everything else)
 
+(define-public oauth2l
+  (package
+    (name "oauth2l")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/oauth2l")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a9x0b31ybyjg0k7923xw6zr6crm0kigcn8g6hyr228nbvw35r8w"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/oauth2l"))
+    (home-page "https://github.com/google/oauth2l")
+    (synopsis "Simple CLI for interacting with Google API authentication")
+    (description
+     "@code{oauth2l} (pronounced ``oauth tool'') is a simple command-line tool
+for working with @url{https://developers.google.com/identity/protocols/OAuth2,
+Google OAuth 2.0} written in Go.  Its primary use is to fetch and print OAuth
+2.0 access tokens, which can be used with other command-line tools and
+scripts.")
+    (license license:asl2.0)))
+
 (define-public yubico-pam
-  (let ((commit "b5bd00db81e0e0e0ecced65c684080bb56ddc35b")
-        (revision "0"))
-    (package
-      (name "yubico-pam")
-      (version (git-version "2.26" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Yubico/yubico-pam")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "10dq8dqi3jldllj6p8r9hldx9sank9n82c44w8akxrs1vli6nj3m"))))
-      (build-system gnu-build-system)
-      (arguments
-       ;; The pam_test fails because ykclient fails to build a Curl handle.
-       '(#:make-flags '("TESTS=util_test")))
-      (inputs
-       (list linux-pam libyubikey ykclient yubikey-personalization))
-      (native-inputs
-       (list autoconf automake libtool asciidoc pkg-config))
-      (home-page "https://developers.yubico.com/yubico-pam")
-      (synopsis "Yubico pluggable authentication module")
-      (description "The Yubico PAM module provides an easy way to integrate the
+  (package
+    (name "yubico-pam")
+    (version "2.27")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Yubico/yubico-pam")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hb773zlf11xz4bwmsqv2mq5d4aq2g0crdr5cp9xwc4ivi5gd4kg"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; The pam_test fails because ykclient fails to build a Curl handle.
+     '(#:make-flags '("TESTS=util_test")))
+    (inputs
+     (list linux-pam libyubikey ykclient yubikey-personalization))
+    (native-inputs
+     (list autoconf automake libtool asciidoc pkg-config))
+    (home-page "https://developers.yubico.com/yubico-pam")
+    (synopsis "Yubico pluggable authentication module")
+    (description "The Yubico PAM module provides an easy way to integrate the
 YubiKey into your existing user authentication infrastructure.")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public pamtester
   (package

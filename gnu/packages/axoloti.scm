@@ -373,11 +373,9 @@ patcher application.")))
        (sha256
         (base32 "022p993wf9l9mp6vg94x592vfqd1k1sjrq5f6x45h5r16qy6bdzh"))
        (modules '((guix build utils)))
+       ;; Remove pre-built Java binaries.
        (snippet
-        '(begin
-           ;; Remove pre-built Java binaries.
-           (delete-file-recursively "lib/")
-           #t))))
+        '(delete-file-recursively "lib/"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; there's a Java test which is run as part of the Java build.
@@ -533,12 +531,12 @@ patcher application.")))
                                               "share/axoloti/firmware")))
                  (mkdir-p target)
                  (install-file (string-append old-firmware
-                                              "flasher/flasher_build/flasher.bin")
+                                              "/flasher/flasher_build/flasher.bin")
                                target)
                  ;; TODO: the old file differs from the file that is included
                  ;; in this repository as the old firmware.
                  (install-file (string-append old-firmware
-                                              "build/axoloti.bin")
+                                              "/build/axoloti.bin")
                                target))
 
                ;; We do this to ensure that this package retains references to
@@ -573,8 +571,7 @@ patcher application.")))
                                        " -Dsun.java2d.renderer=org.marlin.pisces.MarlinRenderingEngine"
                                        " -Daxoloti_release=" share
                                        " -jar " dir "/Axoloti.jar")))))
-                 (chmod target #o555))
-               #t)))
+                 (chmod target #o555)))))
          (add-after 'install 'strip-jar-timestamps
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs

@@ -31,7 +31,7 @@
   #:use-module (gnu system image)
   #:use-module (gnu system install)
   #:use-module (gnu system vm)
-  #:use-module ((gnu build vm) #:select (qemu-command))
+  #:use-module ((gnu build marionette) #:select (qemu-command))
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages commencement)       ;for 'guile-final'
@@ -1685,8 +1685,9 @@ build (current-guix) and then store a couple of full system images.")
          (list
           (swap-space
            (target (uuid "11111111-2222-3333-4444-123456789abc"))))))
-    (services (cons (service dhcp-client-service-type)
-                    (operating-system-user-services %minimal-os-on-vda)))))
+    (services (cons* (service dhcp-client-service-type)
+                     (service ntp-service-type)
+                     (operating-system-user-services %minimal-os-on-vda)))))
 
 (define* (installation-target-desktop-os-for-gui-tests
           #:key (encrypted? #f))

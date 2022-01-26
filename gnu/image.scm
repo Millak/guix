@@ -42,6 +42,8 @@
             image-partitions
             image-compression?
             image-volatile-root?
+            image-shared-store?
+            image-shared-network?
             image-substitutable?
 
             image-type
@@ -95,6 +97,10 @@
                       (default #t))
   (volatile-root?     image-volatile-root? ;boolean
                       (default #t))
+  (shared-store?      image-shared-store? ;boolean
+                      (default #f))
+  (shared-network?    image-shared-network? ;boolean
+                      (default #f))
   (substitutable?     image-substitutable? ;boolean
                       (default #t)))
 

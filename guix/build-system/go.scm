@@ -2,8 +2,9 @@
 ;;; Copyright © 2016 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +113,9 @@ commit hash and its date rather than a proper release tag."
   (let ((go (resolve-interface '(gnu packages golang))))
     (module-ref go 'go)))
 
+(define (make-go-std)
+  (module-ref (resolve-interface '(gnu packages golang)) 'make-go-std))
+
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
                 (go (default-go))
@@ -120,6 +124,14 @@ commit hash and its date rather than a proper release tag."
   "Return a bag for NAME."
   (define private-keywords
     '(#:target #:go #:inputs #:native-inputs))
+
+  (define inputs-with-cache
+    ;; XXX: Avoid a circular dependency.  This should be rewritten with
+    ;; 'package-mapping' or similar.
+    (let ((go-std-name (string-append (package-name go) "-std")))
+      (if (string-prefix? go-std-name name)
+          inputs
+          (cons `(,go-std-name ,((make-go-std) go)) inputs))))
 
   (bag
     (name name)
@@ -130,7 +142,7 @@ commit hash and its date rather than a proper release tag."
                         '())
                      ,@`(("go" ,go))
                      ,@native-inputs
-                     ,@(if target '() inputs)
+                     ,@(if target '() inputs-with-cache)
                      ,@(if target
                          ;; Use the standard cross inputs of
                          ;; 'gnu-build-system'.
@@ -138,7 +150,7 @@ commit hash and its date rather than a proper release tag."
                          '())
                      ;; Keep the standard inputs of 'gnu-build-system'.
                      ,@(standard-packages)))
-    (host-inputs (if target inputs '()))
+    (host-inputs (if target inputs-with-cache '()))
 
     ;; The cross-libc is really a target package, but for bootstrapping
     ;; reasons, we can't put it in 'host-inputs'.  Namely, 'cross-gcc' is a
@@ -172,7 +184,8 @@ commit hash and its date rather than a proper release tag."
                    (imported-modules %go-build-system-modules)
                    (modules '((guix build go-build-system)
                               (guix build union)
-                              (guix build utils))))
+                              (guix build utils)))
+                   (substitutable? #t))
   (define builder
     (with-imported-modules imported-modules
       #~(begin
@@ -182,6 +195,7 @@ commit hash and its date rather than a proper release tag."
                     #:system #$system
                     #:phases #$phases
                     #:outputs #$(outputs->gexp outputs)
+                    #:substitutable? #$substitutable?
                     #:goarch #$goarch
                     #:goos #$goos
                     #:search-paths '#$(sexp->gexp
@@ -222,7 +236,8 @@ commit hash and its date rather than a proper release tag."
                          (imported-modules %go-build-system-modules)
                          (modules '((guix build go-build-system)
                                     (guix build union)
-                                    (guix build utils))))
+                                    (guix build utils)))
+                         (substitutable? #t))
   "Cross-build NAME using GO, where TARGET is a GNU triplet and with INPUTS."
   (define builder
     #~(begin
@@ -261,6 +276,7 @@ commit hash and its date rather than a proper release tag."
                   #:unpack-path #$unpack-path
                   #:build-flags #$build-flags
                   #:tests? #$tests?
+                  #:make-dynamic-linker-cache? #f ;cross-compiling
                   #:allow-go-reference? #$allow-go-reference?
                   #:inputs %build-inputs)))
 

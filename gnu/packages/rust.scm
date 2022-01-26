@@ -12,6 +12,8 @@
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 (unmatched parenthesis <paren@disroot.org>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +50,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -121,7 +124,7 @@
 ;;; to be used in source form.  The latest support for bootstrapping from
 ;;; 1.39.0 is not yet released so use the latest commit (see:
 ;;; https://github.com/thepowersgang/mrustc/issues/185).
-(define %mrustc-commit "474bec9cfd7862a20e7288cecd7fcf5e18648b9a")
+(define %mrustc-commit "c7066542f8e93d320323749216bf3c82aecb67c2")
 (define %mrustc-source
   (let* ((version "0.9")
          (commit %mrustc-commit)
@@ -135,7 +138,7 @@
       (file-name (git-file-name name (git-version version revision commit)))
       (sha256
        (base32
-        "1zacz5qia0r457mv74wvrvznnv4az5g2w9j8ji9ssy727wljhvz7")))))
+        "0zv1x6601s5fnnkcdlqkc4bknisqz569qb0iyb9rjsmaf1kh0na3")))))
 
 ;;; Rust 1.39 is special in that it is built with mrustc, which shortens the
 ;;; bootstrap path.
@@ -507,7 +510,7 @@ ar = \"" binutils "/bin/ar" "\"
            (search-path-specification
             (variable "LIBRARY_PATH")
             (files '("lib" "lib64")))))
-    (synopsis "Compiler for the Rust progamming language")
+    (synopsis "Compiler for the Rust programming language")
     (description "Rust is a systems programming language that provides memory
 safety and thread safety guarantees.")
     (home-page "https://www.rust-lang.org")
@@ -622,14 +625,29 @@ safety and thread safety guarantees.")
 (define rust-1.54
   (let ((base-rust
          (rust-bootstrapped-package
-          rust-1.53 "1.54.0"
-          "0xk9dhfff16caambmwij67zgshd8v9djw6ha0fnnanlv7rii31dc")))
-    (package
-      (inherit base-rust)
+          rust-1.53
+          "1.54.0" "0xk9dhfff16caambmwij67zgshd8v9djw6ha0fnnanlv7rii31dc")))
+    (package/inherit base-rust
       (source
        (origin
          (inherit (package-source base-rust))
-         (snippet '(delete-file-recursively "src/llvm-project"))))
+         (snippet '(delete-file-recursively "src/llvm-project")))))))
+
+(define rust-1.55
+  (rust-bootstrapped-package
+   rust-1.54 "1.55.0" "07l28f7grdmi65naq71pbmvdd61hwcpi40ry7kp7dy7m233rldxj"))
+
+(define rust-1.56
+  (rust-bootstrapped-package
+   rust-1.55 "1.56.1" "04cmqx7nn63hzz7z27b2b0dj2qx18rck9ifvip43s6dampx8v2f3"))
+
+(define rust-1.57
+  (let ((base-rust
+         (rust-bootstrapped-package
+          rust-1.56 "1.57.0"
+          "06jw8ka2p3kls8p0gd4p0chhhb1ia1mlvj96zn78n7qvp71zjiim")))
+    (package
+      (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
@@ -717,11 +735,6 @@ safety and thread safety guarantees.")
                                 ((file) file))
                    (("fn ctrl_c_kills_everyone")
                     "#[ignore]\nfn ctrl_c_kills_everyone"))))
-             (add-after 'configure 'enable-docs
-               (lambda _
-                 (substitute* "config.toml"
-                   (("docs = false")
-                    "docs = true"))))
              (add-after 'configure 'add-gdb-to-config
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((gdb (assoc-ref inputs "gdb")))
@@ -775,4 +788,22 @@ safety and thread safety guarantees.")
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
 ;;; required to build the full Rust bootstrap chain.
-(define-public rust rust-1.54)
+(define-public rust rust-1.57)
+
+(define-public rust-src
+  (hidden-package
+   (package
+     (inherit rust)
+     (name "rust-src")
+     (build-system copy-build-system)
+     (native-inputs '())
+     (inputs '())
+     (native-search-paths '())
+     (outputs '("out"))
+     (arguments
+      `(#:install-plan
+        '(("library" "lib/rustlib/src/rust/library")
+          ("src" "lib/rustlib/src/rust/src"))))
+     (synopsis "Source code for the Rust standard library")
+     (description "This package provide source code for the Rust standard
+library, only use by rust-analyzer, make rust-analyzer out of the box."))))

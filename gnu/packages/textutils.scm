@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu)
@@ -68,6 +70,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages slang)
+  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages web))
 
 (define-public dos2unix
@@ -1135,6 +1138,40 @@ useful to extract content from OpenDocument spreadsheets (*.ods) and
 OpenDocument presentations (*.odp).")
     (license license:gpl2)))
 
+(define-public bibutils
+  (package
+    (name "bibutils")
+    (version "7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/bibutils/"
+                                  "bibutils_" version "_src.tgz"))
+
+              (sha256
+               (base32
+                "1hxmwjjzw48w6hdh2x7ybkrhi1xngd55i67hrrd3wswa3vpql0kf"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--install-dir" (string-append #$output "/bin")
+                   "--install-lib" (string-append #$output "/lib")
+                   "--dynamic")
+           #:make-flags
+           #~(list (string-append "CC=" #+(cc-for-target))
+                   (string-append "LDFLAGSIN=-Wl,-rpath=" #$output "/lib"))
+           #:test-target "test"
+           #:phases
+           '(modify-phases %standard-phases
+              (replace 'configure
+                (lambda* (#:key configure-flags #:allow-other-keys)
+                  ;; configure script is ill-formed, invoke it manually
+                  (apply invoke "sh" "./configure" configure-flags))))))
+    (home-page "https://bibutils.sourceforge.io/")
+    (synopsis "Convert between various bibliography formats")
+    (description "This package provides converters for various bibliography
+formats (e.g. Bibtex, RIS, ...) using a common XML intermediate.")
+    (license license:gpl2)))
+
 (define-public opencc
   (package
     (name "opencc")
@@ -1336,3 +1373,83 @@ languages such as HTML, Markdown, Asciidoc, and reStructuredText.  The community
 around it also has a list of style guides implemented with Vale in
 @url{https://github.com/errata-ai/styles, their styles repo}.")
     (license license:expat)))
+
+(define-public utf-8-lineseparator
+  (package
+    (name "utf-8-lineseparator")
+    (version "cj3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pflanze/utf-8-lineseparator")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1xnbcanqn5jr965gw9195ij6hz04clfm77m5776dysn9nykn20w1"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list
+         (string-append "CC=" ,(cc-for-target)))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "utf-8-lineseparator" bin)))))))
+    (home-page "https://github.com/pflanze/utf-8-lineseparator")
+    (synopsis "Line ending detection library")
+    (description
+"@code{utf-8-lineseparator} provides a tool to efficiently check text
+files for valid UTF-8 use and to report which line endings they use.")
+    (license license:expat)))
+
+(define-public csvdiff
+  (package
+    (name "csvdiff")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aswinkarthik/csvdiff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0cd1ikxsypjqisfnmr7zix3g7x8p892w77086465chyd39gpk97b"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/aswinkarthik/csvdiff"))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-github-com-stretchr-testify
+           go-github-com-spf13-cobra
+           go-github-com-spf13-afero
+           go-github-com-spaolacci-murmur3
+           go-github-com-mattn-go-colorable
+           go-github-com-fatih-color
+           go-github-com-cespare-xxhash
+           go-github-com-oneofone-xxhash))
+    (home-page "https://github.com/aswinkarthik/csvdiff")
+    (synopsis "Fast diff tool for comparing CSV files")
+    (description "@code{csvdiff} is a diff tool to compute changes between two
+CSV files.  It can compare CSV files with a million records in under 2
+seconds.  It is specifically suited for comparing CSV files dumped from
+database tables.  GNU Diff is orders of magnitude faster for comparing line by
+line.  @code{csvdiff} supports
+
+@itemize
+@item Selective comparison of fields in a row
+@item Specifying group of columns as primary-key to uniquely identify a row
+@item Ignoring columns
+@item Several output formats including colored git style output or
+JSON for post-processing
+@end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-aswinkarthik-csvdiff
+  (deprecated-package "go-github-com-aswinkarthik-csvdiff" csvdiff))

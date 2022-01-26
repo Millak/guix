@@ -30,7 +30,7 @@
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Madalin Ionel-Patrascu <madalinionel.patrascu@mdc-berlin.de>
@@ -42,7 +42,7 @@
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2019 Dan Frumin <dfrumin@cs.ru.nl>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2019 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
@@ -61,12 +61,13 @@
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 David Pflug <david@pflug.io>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -151,6 +152,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages less)
+  #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libidn)
@@ -194,6 +196,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
@@ -1360,6 +1363,7 @@ effects and music to make a completely free game.")
      `(#:configure-flags
        (list
         (string-append "CFLAGS="
+                       "-fcommon "      ; XXX needed to build with GCC 10
                        "-I" (assoc-ref %build-inputs "sdl-gfx") "/include/SDL "
                        "-I" (assoc-ref %build-inputs "sdl-image") "/include/SDL "
                        "-I" (assoc-ref %build-inputs "sdl-mixer") "/include/SDL")
@@ -1754,7 +1758,6 @@ destroying an ancient book using a special wand.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -2342,7 +2345,7 @@ exec -a \"~a\" ~a \"$@\"\n"
     (inputs
      (list python-pygame python-tmx))
     (home-page "https://rogueboxadventures.tuxfamily.org")
-    (synopsis "A classical roguelike/sandbox game")
+    (synopsis "Classical roguelike/sandbox game")
     (description
      "RogueBox Adventures is a graphical roguelike with strong influences
 from sandbox games like Minecraft or Terraria.  The main idea of RogueBox
@@ -3724,54 +3727,49 @@ Widgets, and allows users to create more.")
               (uri (string-append "https://codeload.github.com/fifengine/"
                                   "fifengine/tar.gz/" version))
               (file-name (string-append name "-" version ".tar.gz"))
-              (patches (search-patches "fifengine-swig-compat.patch"))
+              (patches (search-patches "fifengine-swig-compat.patch"
+                                       "fifengine-boost-compat.patch"))
               (sha256
                (base32
                 "1y4grw25cq5iqlg05rnbyxw1njl11ypidnlsm3qy4sm3xxdvb0p8"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f            ; TODO The test running fails to run some tests.
-       #:imported-modules ,(cons '(guix build python-build-system)
-                                 %cmake-build-system-modules)
-       #:modules ((guix build cmake-build-system)
-                  ((guix build python-build-system) #:select (guix-pythonpath))
-                  (guix build utils)
-                  (srfi srfi-1))
-       #:configure-flags
-       (list
-        (string-append "-DOPENALSOFT_INCLUDE_DIR="
-                       (assoc-ref %build-inputs "openal")
-                       "/include/AL")
-        (string-append "-DPYTHON_SITE_PACKAGES="
-                       (assoc-ref %outputs "out")
-                       "/lib/python"
-                       ,(version-major+minor (package-version python))
-                       "/site-packages"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-run_tests.py
-           (lambda _
-             ;; Patch the test runner to exit with a status of 1 if any test
-             ;; fails, to allow detecting failures.
-             (substitute* "run_tests.py"
-               (("ERROR\\. One or more tests failed!'\\)")
-                "ERROR. One or more tests failed!')
-\t\texit(1)"))
-             #t))
-         ;; Run tests after installation so that we can make use of the built
-         ;; python modules.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; The tests require an X server.
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1")
-               (setenv "XDG_RUNTIME_DIR" "/tmp")
-               ;; Run tests
-               (chdir ,(string-append "../" name "-" version))
-               (invoke "python3" "run_tests.py" "-a")))))))
+     (list #:tests? #f         ;TODO The test running fails to run some tests.
+           #:configure-flags
+           #~(list
+              (string-append "-DOPENALSOFT_INCLUDE_DIR="
+                             (search-input-directory %build-inputs "include/AL"))
+              (string-append "-DPYTHON_SITE_PACKAGES="
+                             #$output "/lib/python"
+                             #$(version-major+minor
+                                (package-version (this-package-input "python")))
+                             "/site-packages"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-run_tests.py
+                 (lambda _
+                   ;; Patch the test runner to exit with a status of 1 if any test
+                   ;; fails, to allow detecting failures.
+                   (substitute* "run_tests.py"
+                     (("ERROR\\. One or more tests failed!'\\)")
+                      "ERROR. One or more tests failed!')
+\t\texit(1)"))))
+               ;; Run tests after installation so that we can make use of the built
+               ;; python modules.
+               (delete 'check)
+               (add-after 'install 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; The tests require an X server.
+                     (system "Xvfb :1 &")
+                     (setenv "DISPLAY" ":1")
+                     (setenv "XDG_RUNTIME_DIR" "/tmp")
+                     ;; Run tests
+                     (chdir #$(string-append "../" (package-name this-package)
+                                             "-" (package-version this-package)))
+                     (invoke "python3" "run_tests.py" "-a")))))))
+    (native-inputs
+     (list python swig xorg-server-for-tests))
     (inputs
      (list sdl2
            sdl2-image
@@ -3785,10 +3783,6 @@ Widgets, and allows users to create more.")
            fifechan
            swig
            python))
-    (native-inputs
-     `(("python" ,python)
-       ("swig" ,swig)
-       ("xvfb" ,xorg-server)))
     (propagated-inputs
      (list python-future))
     (home-page "https://www.fifengine.net/")
@@ -5141,7 +5135,8 @@ tactics.")
        (patches
         ;; Use system Minizip.  Patch is provided by Debian, and discussed
         ;; upstream at <https://github.com/widelands/widelands/issues/399>.
-        (search-patches "widelands-system-wide_minizip.patch"))))
+        (search-patches "widelands-system-wide_minizip.patch"
+                        "widelands-add-missing-map-include.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -5447,7 +5442,7 @@ with the \"Stamp\" tool within Tux Paint.")
 (define-public supertux
   (package
    (name "supertux")
-   (version "0.6.2")
+   (version "0.6.3")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://github.com/SuperTux/supertux/"
@@ -5456,7 +5451,7 @@ with the \"Stamp\" tool within Tux Paint.")
             (file-name (string-append name "-" version ".tar.gz"))
             (sha256
              (base32
-              "167m3z4m8n76dvbv42m1fnvabpbpsxvr28zk9641916jl9pfba96"))
+              "1xkr3ka2sxp5s0spp84iv294i29s1vxqzazb6kmjc0n415h0x57p"))
             (patches
              (search-patches "supertux-unbundle-squirrel.patch"))))
    (arguments
@@ -5476,18 +5471,19 @@ with the \"Stamp\" tool within Tux Paint.")
                  (string-append "${SQUIRREL_PREFIX}/include/squirrel"))))
             #t)))))
    (build-system cmake-build-system)
-   (inputs (list sdl2
+   (inputs (list boost
+                 curl
+                 freetype
+                 glew
+                 glm
+                 libogg
+                 libvorbis
+                 mesa
+                 openal
+                 physfs
+                 sdl2
                  sdl2-image
                  sdl2-mixer
-                 openal
-                 mesa
-                 glew
-                 libvorbis
-                 libogg
-                 physfs
-                 curl
-                 boost
-                 freetype
                  squirrel))
    (native-inputs
     (list pkg-config))
@@ -5500,7 +5496,7 @@ a style similar to the original Super Mario games.")
 (define-public tintin++
   (package
     (name "tintin++")
-    (version "2.02.11")
+    (version "2.02.12")
     (source
      (origin
        (method url-fetch)
@@ -5508,7 +5504,7 @@ a style similar to the original Super Mario games.")
                            (string-drop-right version 1)
                            "/tintin-" version ".tar.gz"))
        (sha256
-        (base32 "1xdim1ckq1kgjyxmghcnvnahq1llv2y70gz3yyvzbli63vpqk4mk"))))
+        (base32 "000sg16w7790ha8ys31qjh1ip5hl02ldfwj1zy6dqz0y5i7zvydn"))))
     (inputs
      (list gnutls pcre readline zlib))
     (arguments
@@ -5968,8 +5964,8 @@ Magic, Egypt, Indians, Norsemen, Persian or Romans.")
     (license license:gpl2+)))
 
 (define-public freegish
-  (let ((commit "8795cd7adc95957883f2d3465eb9036a774667a7")
-        (revision "1"))
+  (let ((commit "21977ee5fc2008231b35160df00efe954c508b16")
+        (revision "2"))
     (package
       (name "freegish")
       (version (string-append "0-" revision "." (string-take commit 9)))
@@ -5981,7 +5977,7 @@ Magic, Egypt, Indians, Norsemen, Persian or Romans.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1p1zf5qqagmcpi1db2bs02cnalpy3qiymp6yzan7k1bhmv859gsx"))
+                  "1qh0gcnbyxyzmb13jifwba4xrzj94m4w9whdvl0gnds6ricmwply"))
                 (modules '((guix build utils)))
                 ;; The audio files in the "music" directory are licensed under
                 ;; CC-BY-NC, so we delete them.
@@ -6622,12 +6618,12 @@ fight against their plot and save his fellow rabbits from slavery.")
            wxwidgets
            zlib))
     (native-inputs
-     `(("boost" ,boost)
-       ("cmake" ,cmake-minimal)
-       ("cxxtest" ,cxxtest)
-       ("mesa" ,mesa)
-       ("pkg-config" ,pkg-config)
-       ("python-2" ,python-2)))
+     (list boost
+           cmake-minimal
+           cxxtest
+           mesa
+           pkg-config
+           python-2))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("config=release" "verbose=1" "-C" "build/workspaces/gcc")
@@ -6643,6 +6639,18 @@ fight against their plot and save his fellow rabbits from slavery.")
                 (string-append "\"" (assoc-ref inputs "cxxtest")
                                "/bin/cxxtestgen"
                                "\"")))))
+         (add-after 'unpack 'fix-mozjs-compatibility
+           ;; 0ad only builds fine with a specific version of mozjs
+           ;; (version 78.6 for 0ad-0.0.25).
+           ;; Here we change the error in case of version mismatch to a warning,
+           ;; and add some minor compatibility fixes.
+           (lambda _
+             (substitute* "source/scriptinterface/ScriptTypes.h"
+               (("#error Your compiler is trying to use")
+                "#warning Your compiler is trying to use"))
+             (substitute* "source/scriptinterface/ScriptContext.cpp"
+               (("JS::PrepareZoneForGC\\(")
+                "JS::PrepareZoneForGC(m_cx, "))))
          (replace 'configure
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (let* ((jobs (number->string (parallel-job-count)))
@@ -7161,17 +7169,17 @@ elements to achieve a simple goal in the most complex way possible.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("assimp" ,assimp)
-       ("curl" ,curl)
-       ("freetype" ,freetype)
-       ("glew" ,glew)
-       ("glu" ,glu)
-       ("libpng" ,libpng)
-       ("libsigc++" ,libsigc++)
-       ("libvorbis" ,libvorbis)
-       ("lua" ,lua-5.2)                 ;not compatible with 5.3
-       ("mesa" ,mesa)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image)))))
+     (list assimp
+           curl
+           freetype
+           glew
+           glu
+           libpng
+           libsigc++-2
+           libvorbis
+           lua-5.2                      ;not compatible with 5.3
+           mesa
+           (sdl-union (list sdl2 sdl2-image))))
     (arguments
      `(#:tests? #f                      ;tests are broken
        #:configure-flags (list "-DUSE_SYSTEM_LIBLUA:BOOL=YES"
@@ -7492,16 +7500,17 @@ original.")
 (define shlomif-cmake-modules
   (origin
     (method url-fetch)
-    (uri (string-append "https://bitbucket.org/shlomif/shlomif-cmake-modules/"
-                        "raw/c505713d7a7cda608f97f01577e5868a711b883e/"
-                        "shlomif-cmake-modules/Shlomif_Common.cmake"))
+    (uri (string-append
+          "https://raw.githubusercontent.com/shlomif/shlomif-cmake-modules/"
+          "89f05caf86078f783873975525230cf4fecede8a"
+          "/shlomif-cmake-modules/Shlomif_Common.cmake"))
     (sha256
-     (base32 "0kx9s1qqhhzprp1w3b67xmsns0n0v506bg5hgrshxaxpy6lqiwb2"))))
+     (base32 "05xdikw5ln0yh8p5chsmd8qnndmxg5b5vjlfpdqrjcb1ncqzywkc"))))
 
 (define-public rinutils
   (package
     (name "rinutils")
-    (version "0.2.0")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7510,17 +7519,37 @@ original.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fpxyg86ggv0h7j8aarjjxrvwlj7jycd3bw066c0dwkq2fszxsf2"))))
+                "05h9sq3w900mx8xij7qgqgqcbdk1x5gvbpz7prw2pfbzrrbiq2ns"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-cmake-modules
+                 (lambda _
+                   (copy-file #$shlomif-cmake-modules
+                              (string-append "cmake/"
+                                             (strip-store-file-name
+                                              #$shlomif-cmake-modules)))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "../source"
+                       (setenv "FCS_TEST_BUILD" "1")
+                       (setenv "RINUTILS_TEST_BUILD" "1")
+                       ;; TODO: Run tests after setting RINUTILS_TEST_TIDY to `1',
+                       ;; which requires tidy-all.
+                       ;; (setenv "RINUTILS_TEST_TIDY" "1")
+                       (invoke "perl"
+                               "CI-testing/continuous-integration-testing.pl"))))))))
     (native-inputs
-     `(("perl" ,perl)
-       ;; The following is only needed for tests.
-       ("perl-file-find-object" ,perl-file-find-object)
-       ("perl-test-differences" ,perl-test-differences)
-       ("perl-class-xsaccessor" ,perl-class-xsaccessor)
-       ("perl-io-all" ,perl-io-all)
-       ("perl-test-runvalgrind" ,perl-test-runvalgrind)
-       ("cmake-rules" ,shlomif-cmake-modules)
-       ("pkg-config" ,pkg-config)))
+     (list perl
+           ;; The following are needed only for tests.
+           perl-class-xsaccessor
+           perl-file-find-object
+           perl-io-all
+           perl-test-differences
+           perl-test-runvalgrind
+           pkg-config))
     (inputs
      (list cmocka
            perl-env-path
@@ -7532,27 +7561,6 @@ original.")
            perl-text-glob
            perl-number-compare
            perl-moo))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-env
-           (lambda* (#:key inputs #:allow-other-keys)
-             (use-modules (guix build utils))
-             (let* ((cmake-rules (assoc-ref inputs "cmake-rules")))
-               (copy-file cmake-rules
-                          (string-append "cmake/"
-                                         (strip-store-file-name cmake-rules)))
-               #t)))
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "../source"
-               (setenv "FCS_TEST_BUILD" "1")
-               (setenv "RINUTILS_TEST_BUILD" "1")
-               ;; TODO: Run tests after setting RINUTILS_TEST_TIDY to `1',
-               ;; which requires tidy-all.
-               ;; (setenv "RINUTILS_TEST_TIDY" "1")
-               (invoke "perl" "CI-testing/continuous-integration-testing.pl")))))))
-    (build-system cmake-build-system)
     (home-page "https://www.shlomifish.org/open-source/projects/")
     (synopsis "C11 / gnu11 utilities C library")
     (description "This package provides C11 / gnu11 utilities C library")
@@ -7561,7 +7569,7 @@ original.")
 (define-public fortune-mod
   (package
     (name "fortune-mod")
-    (version "2.28.0")
+    (version "3.12.0")
     (source
      (origin
        (method git-fetch)
@@ -7570,47 +7578,58 @@ original.")
              (commit (string-append "fortune-mod-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ppzgnffgdcmq6fq4gmdq2ig10ip2bnfgklkb3i8nc6bdxm7pb89"))))
+        (base32 "1iq3bxrw8758jqvfqaasd7w1zm0g28g9n25qccnzvr98997h6r2n"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:test-target "check"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-env
-           (lambda* (#:key inputs #:allow-other-keys)
-             (use-modules (guix build utils))
-             (let* ((cmake-rules (assoc-ref inputs "cmake-rules")))
-               (copy-file cmake-rules
-                          (string-append "fortune-mod/cmake/"
-                                         (strip-store-file-name cmake-rules)))
-               (chdir "fortune-mod")
-               ;; TODO: Valgrind tests fail for some reason.
-               ;; Similar issue: https://github.com/shlomif/fortune-mod/issues/21 (?)
-               (delete-file "tests/t/valgrind.t")
-               #t)))
-         (add-after 'install 'fix-install-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move binary from "games/" to "bin/" and remove the latter.  This
-             ;; is easier than patching CMakeLists.txt since the tests hard-code
-             ;; the location as well.
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin"))
-                    (games (string-append out "/games")))
-               (rename-file (string-append games "/fortune")
-                            (string-append bin "/fortune"))
-               (rmdir games)
-               #t))))))
+     (list #:test-target "check"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'enter-build-directory
+                 (lambda _
+                   (chdir "fortune-mod")))
+               (add-after 'enter-build-directory 'symlink-rinutils
+                 (lambda _
+                   (mkdir-p "rinutils")
+                   (symlink #$(this-package-native-input "rinutils")
+                            "rinutils/rinutils")))
+               (add-after 'enter-build-directory 'copy-cmake-modules
+                 (lambda _
+                   (copy-file #$shlomif-cmake-modules
+                              (string-append "cmake/"
+                                             (strip-store-file-name
+                                              #$shlomif-cmake-modules)))))
+               (add-after 'enter-build-directory 'delete-failing-test
+                 (lambda _
+                   ;; TODO: Valgrind tests fail for some reason.  Similar issue?
+                   ;; https://github.com/shlomif/fortune-mod/issues/21
+                   (delete-file "tests/data/valgrind.t")
+                   (with-output-to-file "tests/scripts/split-valgrind.pl"
+                     (const #t))))
+               (add-after 'install 'fix-install-directory
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Move binary from "games/" to "bin/" and remove the
+                   ;; latter.  This is easier than patching CMakeLists.txt
+                   ;; since the tests hard-code the location as well.
+                   (let* ((out   (assoc-ref outputs "out"))
+                          (bin   (string-append out "/bin"))
+                          (games (string-append out "/games")))
+                     (rename-file (string-append games "/fortune")
+                                  (string-append bin "/fortune"))
+                     (rmdir games)))))))
     (inputs (list recode))
     (native-inputs
-     `(("perl" ,perl)
-       ;; The following is only needed for tests.
-       ("perl-file-find-object" ,perl-file-find-object)
-       ("perl-test-differences" ,perl-test-differences)
-       ("perl-class-xsaccessor" ,perl-class-xsaccessor)
-       ("perl-io-all" ,perl-io-all)
-       ("perl-test-runvalgrind" ,perl-test-runvalgrind)
-       ("cmake-rules" ,shlomif-cmake-modules)
-       ("rinutils" ,rinutils)))
+     (list perl
+           ;; For generating the documentation.
+           docbook-xml-5
+           docbook-xsl
+           perl-app-xml-docbook-builder
+           ;; The following are only needed for tests.
+           perl-file-find-object
+           perl-test-differences
+           perl-class-xsaccessor
+           perl-io-all
+           perl-test-runvalgrind
+           rinutils))
     (home-page "https://www.shlomifish.org/open-source/projects/fortune-mod/")
     (synopsis "The Fortune Cookie program from BSD games")
     (description "Fortune is a command-line utility which displays a random
@@ -7909,37 +7928,37 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.8.2")
+    (version "0.9.2")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/naev/naev")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://github.com/naev/naev/releases/download/v"
+                           version "/naev-" version "-source.tar.xz"))
        (sha256
-        (base32 "02rk2fv2nhx5xsi0cariisamab3dpncwps4q3i3ki0y27xpwxzfx"))))
+        (base32 "1p6424n2rgrlb0h71gvww40vxs1h583d9im8bzgmv6dhgclbg0nl"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
      `(#:configure-flags (list "--buildtype=release")
        #:tests? #f))          ;sole test fails with a missing "/dev/dri" error
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
-     `(("freetype" ,freetype)
-       ("glpk" ,glpk)
-       ("libpng" ,libpng)
-       ("libvorbis" ,libvorbis)
-       ("libwebp" ,libwebp)
-       ("libxml2" ,libxml2)
-       ("luajit" ,luajit)
-       ("openal" ,openal)
-       ("openblas" ,openblas)
-       ("physfs" ,physfs)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer)))
-       ("suitesparse" ,suitesparse)))
+     (list freetype
+           glpk
+           libpng
+           libunibreak
+           libvorbis
+           libwebp
+           libxml2
+           luajit
+           openal
+           openblas
+           physfs
+           python
+           python-pyyaml
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer))
+           suitesparse))
     (home-page "https://naev.org/")
     (synopsis "Game about space exploration, trade and combat")
     (description
@@ -7956,14 +7975,7 @@ of lore accompanying everything from planets to equipment.")
                    license:expat        ;edtaa3func.c
                    license:bsd-2        ;distance_field.c
                    license:bsd-3        ;perlin.c
-                   ;; Assets.
-                   license:silofl1.1
-                   license:gpl2+
-                   license:cc0
-                   license:cc-by3.0
-                   license:cc-by-sa3.0
-                   license:cc-by4.0
-                   license:cc-by-sa4.0))))
+                   ))))
 
 (define-public frotz-dumb-terminal
   (package
@@ -8748,7 +8760,7 @@ where the player draws runes in real time to effect the desired spell.")
 (define-public edgar
   (package
     (name "edgar")
-    (version "1.34")
+    (version "1.35")
     (source
      (origin
        (method url-fetch)
@@ -8756,7 +8768,7 @@ where the player draws runes in real time to effect the desired spell.")
         (string-append "https://github.com/riksweeney/edgar/releases/download/"
                        version "/edgar-" version "-1.tar.gz"))
        (sha256
-        (base32 "1121rq5wk3g8rs413av84s2kcy6qj6maspgy2vsxs36c2jd3yygl"))))
+        (base32 "0hwp73ili10kzx0aibhvgxfddqm94pimdaqhpnba6jzn119834q7"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f            ; there are no tests
                  #:make-flags
@@ -8773,15 +8785,15 @@ where the player draws runes in real time to effect the desired spell.")
                                 (search-input-directory inputs "/include/SDL2")
                                 ":" (or (getenv "CPATH") ""))))))))
     (inputs
-     `(("sdl2-union" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))
-       ("zlib" ,zlib)))
+     (list (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
+           zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gnu-gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("which" ,which)))
+     (list pkg-config
+           autoconf
+           automake
+           gettext-minimal
+           libtool
+           which))
     (synopsis "2d action platformer game")
     (description "The Legend of Edgar is a 2D platform game with a persistent world.
 When Edgar's father fails to return home after venturing out one dark and stormy night,
@@ -12200,6 +12212,80 @@ game.")  ;thanks to Debian for description
 computer opponents or against real players online.")
     (license license:agpl3+)))
 
+(define-public xblackjack
+  (package
+    (name "xblackjack")
+    (version "2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.ibiblio.org/pub/X11/contrib/games/"
+                           "xblackjack-" version ".tar.gz"))
+       (sha256
+        (base32 "05h93rya7zwnx2l58f0a7wkjadymkj4y77clcr2hryhrhhy1vwjx"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((imake (assoc-ref inputs "imake"))
+                   (out (assoc-ref outputs "out")))
+               (substitute* "Imakefile"
+                 (("EXTRA_LIBRARIES = -lXm \\$\\(DEPLIBS\\) -lbsd")
+                  "EXTRA_LIBRARIES = -lXm -lXt -lXmu -lXext -lX11")
+                 (("^#define NonStandardInstallTargets NO")
+                  "#define NonStandardInstallTargets YES")
+                 (("BINDIR = /usr/local/bin")
+                  (string-append "BINDIR = " out "/bin"))
+                 (("MANDIR = /usr/local/man/cat1")
+                  (string-append "MANDIR = " out "/share/man/man1"))
+                 (("XAPPLOADDIR = /usr/local/lib/app-defaults")
+                  (string-append "XAPPLOADDIR = " out "/lib/X11/app-defaults")))
+
+               (invoke "xmkmf")  ; Generate Makefile.
+               (substitute* "Makefile"
+                 ((imake) out)
+                 (("ETCX11DIR = /etc/X11")
+                  (string-append "ETCX11DIR = " out "/etc/X11"))
+                 ;; Fix incorrect argument given to gcc. Error message:
+                 ;; "gcc: error: DefaultGcc2AMD64Opt: No such file or directory"
+                 (("CDEBUGFLAGS = [^\n]*") ""))
+
+               ;; Fix header paths.
+               (substitute* '("Draw.c"
+                              "Strategy.c")
+                 (("^#include <X11/Xm/Xm.h>")
+                  "#include <Xm/Xm.h>"))
+               (substitute* "Strategy.c"
+                 (("^#include <X11/Xm/Label.h>")
+                  "#include <Xm/Label.h>"))
+
+               ;; Fix compilation errors.
+               (substitute* "Table.c"
+                 (("/\\* focus_moved_proc \\*/\tXtInheritFocusMovedProc,") "")
+                 (("_XmMoveObject\\(\\(RectObj\\) w, rx, ry\\);")
+                  "_XmMoveObject(w, rx, ry);")
+                 (("_XmResizeObject\\(\\(RectObj\\) managed->locs[i].w, nw, nh,")
+                  "_XmResizeObject(managed->locs[i].w, nw, nh,")))))
+         (add-after 'install 'install-man-pages
+           (lambda _
+             (invoke "make" "install.man"))))
+       #:tests? #f))  ; No check target.
+    (inputs
+     (list lesstif libx11 libxext libxmu libxt))
+    (native-inputs
+     (list imake))
+    (home-page "https://www.ibiblio.org/pub/X11/contrib/games/")
+    (synopsis "X11/Motif blackjack game")
+    (description
+     "Xblackjack is a MOTIF/OLIT based tool constructed to get you ready for
+the casino.  It was inspired by a book called \"Beat the Dealer\" by Edward
+O. Thorp, Ph.D. of UCLA.  A number of important statistics are maintained
+for display, and used by the program to implement Thorp's \"Complete Point
+System\" (high-low system).")
+    (license (license:x11-style "" "See file headers."))))
+
 (define-public azimuth
   (package
     (name "azimuth")
@@ -12476,18 +12562,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "0.9.10")
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags '("FHEROES2_STRICT_COMPILATION=1"
-                      "RELEASE=1")))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (inputs
-     `(("libpng" ,libpng)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))
-       ("zlib" ,zlib)))
+    (version "0.9.11")
     (source
      (origin
        (method git-fetch)
@@ -12496,7 +12571,18 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zz8k1ygw4kwnv403q60v2hdfzk13p89jjgmpfbylhxchjvwaxgh"))))
+        (base32 "1m8649srzg3j2b1hs4x2y8fib6hn7v0afv4c7bjnfk4bhpi4cqd7"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                      ; no tests
+       #:make-flags '("FHEROES2_STRICT_COMPILATION=1"
+                      "RELEASE=1")))
+    (native-inputs
+     (list gettext-minimal))
+    (inputs
+     (list libpng
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
+           zlib))
     (home-page "https://ihhub.github.io/fheroes2/")
     (synopsis "Turn-based strategy game engine")
     (description "@code{fheroes2} is an implementation of Heroes of Might and

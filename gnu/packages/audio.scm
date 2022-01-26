@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
-;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -36,6 +36,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,6 +92,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3) ;taglib
@@ -103,6 +105,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)  ;libsndfile, libsamplerate
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
@@ -133,6 +136,7 @@
   #:use-module (guix build-system waf)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -279,17 +283,17 @@ Coding (AAC) encoder.")
 (define-public tinyalsa
   (package
     (name "tinyalsa")
-    (version "1.1.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
          (url "https://github.com/tinyalsa/tinyalsa")
-         (commit version)))
+         (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ajyvml5bnzvhiyyrn42gqwgg23ssxkfh09rvsnywhzxhd0xai4h"))))
+        (base32 "1p9khz3bdpdcrnc9p6w522a0ankdchj4nxd3ki41z9401rxmnljq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -721,7 +725,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "2.4.2")
+    (version "3.1.3")
     (source
      (origin
        (method git-fetch)
@@ -731,9 +735,7 @@ engineers, musicians, soundtrack editors and composers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lklcvqkxrr2gkb9gh3422iadzl2rv9v0a8s76rwq43lj2im7546"))
-       (patches (search-patches "audacity-build-with-system-portaudio.patch"
-                                "audacity-add-include.patch"))
+         "1689q9apbjf9nnda62shb8j7hm4hxd47mhk4l5h3c728mjjkilmi"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -741,13 +743,10 @@ engineers, musicians, soundtrack editors and composers.")
            (for-each
             (lambda (dir)
               (delete-file-recursively (string-append "lib-src/" dir)))
-            '("expat" "ffmpeg" "lame" "libflac" "libid3tag" "libmad" "libogg"
-              "libsndfile" "libsoxr" "libvamp" "libvorbis" "lv2"
-              "portmidi" "soundtouch" "twolame"
+            '("libsoxr" "libvamp" "lv2" "soundtouch" "sqlite" "twolame"
               ;; FIXME: these libraries have not been packaged yet:
               ;; "libnyquist"
               ;; "libscorealign"
-              ;; "libwidgetextra"
               ;; "portburn"
               ;; "portsmf"
               ;; "portmixer"
@@ -759,26 +758,30 @@ engineers, musicians, soundtrack editors and composers.")
            #t))))
     (build-system cmake-build-system)
     (inputs
-     (list wxwidgets
+     (list wxwidgets-3.1
            gtk+
            alsa-lib
            jack-1
            expat
            ffmpeg
            lame
+           linux-libre-headers
            flac
            libid3tag
+           libjpeg-turbo
            libmad
            ;;("libsbsms" ,libsbsms)         ;bundled version is modified
            libsndfile
            soundtouch
            soxr ;replaces libsamplerate
+           sqlite
            twolame
            vamp
            libvorbis
            lv2
            lilv ;for lv2
            suil ;for lv2
+           portaudio
            portmidi))
     (native-inputs
      `(("autoconf" ,autoconf)
@@ -791,10 +794,12 @@ engineers, musicians, soundtrack editors and composers.")
     (arguments
      `(#:configure-flags
        (list
-        ;; Loading FFmpeg dynamically is problematic.
-        "-Daudacity_use_ffmpeg=linked"
-        "-Daudacity_use_lame=system"
-        "-Daudacity_use_portsmf=system")
+        "-Daudacity_conan_enabled=off"
+        "-Daudacity_lib_preference=system"
+        ;; TODO: enable this flag once we've packaged all dependencies
+        ;; "-Daudacity_obey_system_dependencies=on"
+        ;; disable crash reports, updates, ..., anything that phones home
+        "-Daudacity_has_networking=off")
        #:imported-modules ((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
        #:modules
@@ -803,27 +808,42 @@ engineers, musicians, soundtrack editors and composers.")
         ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-cmake-rpath
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               (("\\$ORIGIN/\\.\\./\\$\\{_PKGLIB\\}")
+                (string-append (assoc-ref outputs "out") "/lib/audacity"))
+               (("CMAKE_BUILD_WITH_INSTALL_RPATH [A-Z]*")
+                "CMAKE_BUILD_WITH_INSTALL_RPATH TRUE")
+               (("CMAKE_INSTALL_RPATH_USE_LINK_PATH [A-Z]*")
+                "CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE"))
+             (substitute* "src/CMakeLists.txt"
+               (("-Wl,--disable-new-dtags") "-Wl,--enable-new-dtags"))))
          (add-after 'unpack 'comment-out-revision-ident
            (lambda _
+             (substitute* "src/CMakeLists.txt"
+               (("file\\( TOUCH \".*RevisionIdent\\.h\" \\)" directive)
+                (string-append "# " directive)))
              (substitute* "src/AboutDialog.cpp"
                (("(.*RevisionIdent\\.h.*)" include-line)
                 (string-append "// " include-line)))))
          (add-after 'unpack 'use-upstream-headers
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("src/NoteTrack.cpp"
-                            "src/AudioIO.cpp"
-                            "src/AudioIO.h"
-                            "src/AudioIOBase.cpp")
-               (("../lib-src/portmidi/pm_common/portmidi.h") "portmidi.h")
-               (("../lib-src/portmidi/porttime/porttime.h") "porttime.h"))
-             (substitute* "src/prefs/MidiIOPrefs.cpp"
-               (("../../lib-src/portmidi/pm_common/portmidi.h") "portmidi.h"))))
+             (substitute* '("libraries/lib-files/FileNames.cpp")
+               (("\"/usr/include/linux/magic.h\"") "<linux/magic.h>"))))
          (add-after 'wrap-program 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
-         ;; The test suite is not "well exercised" according to the developers,
-         ;; and fails with various errors.  See
-         ;; <http://sourceforge.net/p/audacity/mailman/message/33524292/>.
-         #:tests? #f))
+       ;; The test suite is not "well exercised" according to the developers,
+       ;; and fails with various errors.  See
+       ;; <http://sourceforge.net/p/audacity/mailman/message/33524292/>.
+       #:tests? #f))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "AUDACITY_MODULES_PATH")
+            (files '("lib/audacity/modules")))
+           (search-path-specification
+            (variable "AUDACITY_PATH")
+            (files '("share/audacity")))))
     (home-page "https://www.audacityteam.org/")
     (synopsis "Software for recording and editing sounds")
     (description
@@ -1248,10 +1268,8 @@ formats used to store information about DJ record libraries.")
                                "tao-fix-parser-types.patch"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (substitute* "configure"
-                    (("SHELL=/bin/sh") ""))
-                  #t))))
+               '(substitute* "configure"
+                  (("SHELL=/bin/sh") "")))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("TAO_RELEASE=-beta")
@@ -1267,8 +1285,7 @@ formats used to store information about DJ record libraries.")
                 (string-append (which "sed") " -f $distdir/"))
                (("distdir=.*")
                 (string-append "distdir="
-                               (assoc-ref outputs "out") "/share/tao")))
-             #t))
+                               (assoc-ref outputs "out") "/share/tao")))))
          (add-after 'install 'install-extra-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1279,18 +1296,17 @@ formats used to store information about DJ record libraries.")
                (install-file "user-scripts/error.parse" share)
                (copy-recursively "examples" (string-append share "examples"))
                (for-each (lambda (file) (install-file file inc))
-                         (find-files "include" "\\.h"))
-               #t))))))
+                         (find-files "include" "\\.h"))))))))
     (inputs
-     `(("audiofile" ,audiofile)
-       ("libxi" ,libxi)
-       ("libxmu" ,libxmu)
-       ("mesa" ,mesa)
-       ("glut" ,freeglut)
-       ("flex" ,flex)
-       ("bison" ,bison)
-       ("sed" ,sed)
-       ("grep" ,grep)))
+     (list audiofile
+           libxi
+           libxmu
+           mesa
+           freeglut
+           flex
+           bison
+           sed
+           grep))
     (home-page "http://taopm.sourceforge.net/")
     (synopsis "Sound Synthesis with Physical Models")
     (description "Tao is a software package for sound synthesis using physical
@@ -1300,6 +1316,37 @@ musical instruments.  Tao comes with a synthesis language for creating and
 playing instruments and a C++ API for those who would like to use it as an
 object library.")
     (license license:gpl2+)))
+
+(define-public tao-synth
+  (let ((commit "f3aedd81efbc775574e591081b57ae1c08427064")
+        (revision "1"))
+    (package
+      (name "tao-synth")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/lucasw/tao_synth")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1jds2l3cb96b02jxd7lmrjjl9s7mylnrvg6fpw0j8c141bk8vyg3"))))
+      (build-system cmake-build-system)
+      (arguments (list #:tests? #false))  ;there are no tests
+      (inputs
+       (list glfw freeglut))
+      (native-inputs
+       (list gcc-7))
+      (home-page "https://github.com/lucasw/tao_synth")
+      (synopsis "Sound synthesis with physical models")
+      (description "Tao is a software package for sound synthesis using physical
+models.  It provides a virtual acoustic material constructed from masses and
+springs which can be used as the basis for building quite complex virtual
+musical instruments.  Tao comes with a synthesis language for creating and
+playing instruments and a C++ API for those who would like to use it as an
+object library.")
+      (license license:lgpl2.0+))))
 
 (define-public csound
   (package
@@ -1722,7 +1769,7 @@ follower.")
 (define-public fluidsynth
   (package
     (name "fluidsynth")
-    (version "2.1.8")
+    (version "2.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1731,7 +1778,7 @@ follower.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r944ndn138ak9s3ivgd1wgkwkh6zp7jjnxd30hryczc6kbhkpmr"))))
+                "1061rdj69503spkd8vmfl3fqvyg4l41k5xcc4gw7niy31hnpnjmn"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
@@ -1742,18 +1789,19 @@ follower.")
              ;; Install libraries to /lib, not /lib64.
              (substitute* "CMakeLists.txt"
                (("LIB_SUFFIX \\$\\{_init_lib_suffix\\}")
-                "LIB_SUFFIX \"\""))
-             #t)))))
+                "LIB_SUFFIX \"\"")))))))
     (inputs
-     (list libsndfile
-           alsa-lib
-           jack-1
-           ladspa
-           lash
-           readline
-           glib))
+     (list ladspa))
     (native-inputs
      (list pkg-config))
+    (propagated-inputs
+     ;; In Libs.private of fluidsynth.pc.
+     (list alsa-lib
+           glib
+           jack-1
+           lash
+           libsndfile
+           readline))
     (home-page "https://www.fluidsynth.org/")
     (synopsis "SoundFont synthesizer")
     (description
@@ -1762,22 +1810,6 @@ specifications.  FluidSynth reads and handles MIDI events from the MIDI input
 device.  It is the software analogue of a MIDI synthesizer.  FluidSynth can
 also play midifiles using a Soundfont.")
     (license license:lgpl2.1+)))
-
-;; gzdoom@3.3.0 and lmms@1.1.3 requires this version.  Remove once no longer
-;; needed.
-(define-public fluidsynth-1
-  (package
-    (inherit fluidsynth)
-    (version "1.1.11")
-    (source (origin
-              (inherit (package-source fluidsynth))
-              (uri (git-reference
-                    (url "https://github.com/FluidSynth/fluidsynth")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "fluidsynth" version))
-              (sha256
-               (base32
-                "0n75jq3xgq46hfmjkaaxz3gic77shs4fzajq40c8gk043i84xbdh"))))))
 
 (define-public faad2
   (package
@@ -1909,7 +1941,7 @@ patches that can be used with softsynths such as Timidity and WildMidi.")
 (define-public guitarix
   (package
     (name "guitarix")
-    (version "0.41.0")
+    (version "0.43.1")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1917,7 +1949,7 @@ patches that can be used with softsynths such as Timidity and WildMidi.")
                    version ".tar.xz"))
              (sha256
               (base32
-               "0qsfbyrrpb3bbdyq68k28mjql7kglxh8nqcw9jvja28x6x9ik5a0"))))
+               "1bsjlfd7x09p3iiljilyfbns6hpqn9cgp6psl4ccd6i1lwascfrm"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f ; no "check" target
@@ -2562,7 +2594,7 @@ files.")
            (lambda _
              (substitute* "requirements.txt" (("==") ">=")))))))
     (home-page "https://github.com/NFJones/audio-to-midi")
-    (synopsis "Convert audio to multichannel MIDI.")
+    (synopsis "Convert audio to multichannel MIDI")
     (description "@command{audio-to-midi} converts audio files to multichannel
 MIDI files.  It accomplishes this by performing FFTs on all channels of the
 audio data at user-specified time steps.  It then separates the resulting
@@ -2854,14 +2886,14 @@ different audio devices such as ALSA or PulseAudio.")
 (define-public qjackctl
   (package
     (name "qjackctl")
-    (version "0.9.5")
+    (version "0.9.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/qjackctl/qjackctl/"
                                   version "/qjackctl-" version ".tar.gz"))
               (sha256
                (base32
-                "1g61xwsxsndwlnh4547vl7jfcf4kqlbb4394jq2m8qbbzk51b6rv"))))
+                "0sqni9ppwadc01fnyqj6lkwy30ql1vccqglv9imd3zdchffjpjir"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no check target
@@ -3199,22 +3231,22 @@ the Turtle syntax.")
 (define-public suil
   (package
     (name "suil")
-    (version "0.10.8")
+    (version "0.10.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/suil-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0h0ghk1s0lrj4gh12r7390b0ybaw7awnj0vhchyy9ll0gvhqgkci"))))
+                "1ysbazqlbyxlzyr9zk7dj2mgb6pn0amllj2cd5g1m56wnzk0h3vm"))))
     (build-system waf-build-system)
     (arguments
      `(#:tests? #f))                    ;no check target
     (inputs
-     `(("lv2" ,lv2)
-       ("gtk+" ,gtk+-2)
-       ("gtk+" ,gtk+)
-       ("qt" ,qtbase-5)))
+     (list lv2
+           gtk+-2
+           gtk+
+           qtbase-5))
     (native-inputs
      (list pkg-config))
     (home-page "https://drobilla.net/software/suil/")
@@ -3399,7 +3431,7 @@ stretching and pitch scaling of audio.  This package contains the library.")
 (define-public libkeyfinder
   (package
     (name "libkeyfinder")
-    (version "2.2.5")
+    (version "2.2.6")
     (source
      (origin
        (method git-fetch)
@@ -3408,7 +3440,7 @@ stretching and pitch scaling of audio.  This package contains the library.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1623kirmxhmvmhx7f8lbzk0f18w2hrhwlkzl8l4aa906lfqffdp2"))))
+        (base32 "0s7nqjmv44q5qjynfcs0j6h4a6qcz4mxzandkkdjjbnwv5rxc3zg"))))
     (build-system cmake-build-system)
     (native-inputs
      (list catch-framework2))
@@ -5104,7 +5136,7 @@ edited, converted, compressed and saved.")
 (define-public lsp-dsp-lib
   (package
     (name "lsp-dsp-lib")
-    (version "0.5.11")
+    (version "0.5.14")
     (source
       (origin
         (method url-fetch)
@@ -5112,23 +5144,23 @@ edited, converted, compressed and saved.")
                             "releases/download/" version
                             "/lsp-dsp-lib-" version "-src.tar.gz"))
         (sha256
-         (base32 "0lkar6r9jfrrqswi8nnndlm5a9kfwqjn92d81gp2yhc3p46xsswz"))))
+         (base32 "1gcznkyybywbgdi2fhx27i8sckhy6ahvxax72b213g1lr5aaw7bq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'omit-static-library
-           (lambda _
-             (substitute* "src/Makefile"
-               ((".*@.*ARTIFACT_SLIB.*") "")       ; don't install it
-               ((" \\$\\(ARTIFACT_SLIB\\)") "")))) ; don't build it
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "config"
-                     (string-append "PREFIX=" (assoc-ref outputs "out"))))))))
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'omit-static-library
+                 (lambda _
+                   (substitute* "src/Makefile"
+                     ((".*cp \\$\\(ARTIFACT_SLIB\\).*") "") ; don't install it
+                     ((" \\$\\(ARTIFACT_SLIB\\)") ""))))    ; don't build it
+               (replace 'configure
+                 (lambda _
+                   (invoke "make" "config"
+                           (string-append "PREFIX=" #$output)))))))
     (home-page "https://github.com/sadko4u/lsp-dsp-lib")
     (synopsis "Digital signal processing library")
     (description "The LSP DSP library provides a set of functions that perform
@@ -5443,6 +5475,78 @@ information such as sample rate, determining whether an audio file is silent,
 and much more.")
       (license license:bsd-3))))
 
+(define-public python-resampy
+  (package
+    (name "python-resampy")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         ;; PyPi does not include tests.
+         (url "https://github.com/bmcfee/resampy")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qmkxl5sbgh0j73n667vyi7ywzh09iaync91yp1j5rrcmwsn0qfs"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "tests")))))))
+    (propagated-inputs
+     (list python-numba python-numpy python-scipy python-six))
+    (native-inputs
+     (list python-pytest python-pytest-cov))
+    (home-page "https://github.com/bmcfee/resampy")
+    (synopsis "Efficient signal resampling")
+    (description
+     "@code{python-resampy} implements the band-limited sinc interpolation
+method for sampling rate conversion as described by Julius O. Smith at the
+@url{https://ccrma.stanford.edu/~jos/resample/, Digital Audio Resampling
+Home Page}.")
+    (license license:isc)))
+
+(define-public python-librosa
+  (package
+    (name "python-librosa")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "librosa" version))
+       (sha256
+        (base32 "1cx6rhcvak0hy6bx84jwzpxmwgi92m82w77279akwjmfd3khagf5"))))
+    (build-system python-build-system)
+    (arguments
+     ;; Tests require internet connection to download MATLAB scripts for
+     ;; generating the testing data.
+     `(#:tests? #f))
+    (propagated-inputs
+     (list python-audioread
+           python-decorator
+           python-joblib
+           python-numba
+           python-numpy
+           python-packaging
+           python-pooch
+           python-resampy
+           python-scikit-learn
+           python-scipy
+           python-soundfile))
+    (home-page "https://librosa.org")
+    (synopsis "Python module for audio and music processing")
+    (description
+     "@code{librosa} is a python package for music and audio analysis.  It
+provides the building blocks necessary to create music information retrieval
+systems.")
+    (license license:isc)))
+
 (define-public mda-lv2
   (package
     (name "mda-lv2")
@@ -5474,3 +5578,62 @@ and much more.")
      "MDA-LV2 is an LV2 port of the MDA plugins.  It includes effects and a few
 instrument plugins.")
     (license license:gpl3+)))
+
+(define-public libodiosacd
+  (package
+   (name "libodiosacd")
+   (version "21.8.30")
+   (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/tari01/libodiosacd")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0iamf7wksbql0qfigdv5ahaax53ms2yligdav8dw6x0ay88x4lhi"))))
+   (build-system gnu-build-system)
+   (arguments
+    `(#:tests? #f ; no check target
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'patch-makefile
+          (lambda _
+            (substitute* "Makefile"
+              (("\\$\\(DESTDIR\\)/usr")
+                "\\$(DESTDIR)"))))
+        (delete 'configure)) ; no configure script
+      #:make-flags
+      (list (string-append "DESTDIR=" %output))))
+   (synopsis "Library for decoding Super Audio CDs (SACD)")
+   (description
+    "The Odio SACD shared library is a decoding engine which takes a Super
+Audio CD source and extracts a 24-bit high resolution WAV file.  It handles
+both DST and DSD streams.")
+   (home-page "https://tari.in/www/software/libodiosacd/")
+   (license license:gpl3+)))
+
+(define-public odio-sacd
+  (package
+   (name "odio-sacd")
+   (version "21.1.9")
+   (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/tari01/odio-sacd")
+                   (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0314srqk0r4qv292qiaply619l2fw04nkdwvqhj3q1dqzv41g4qk"))))
+   (inputs (list libodiosacd))
+   ;; Build system and arguments for libodiosacd are identical.
+   (build-system (package-build-system libodiosacd))
+   (arguments (package-arguments libodiosacd))
+   (synopsis "Rip Super Audio CDs (SACD)")
+   (description
+    "Odio SACD is a command-line application which takes a Super Audio CD
+source and extracts a 24-bit high resolution WAV file.  It handles both DST
+and DSD streams.")
+   (home-page "https://tari.in/www/software/odio-sacd/")
+   (license license:gpl3+)))

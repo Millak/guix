@@ -235,8 +235,6 @@ provided.")
     (build-system gnu-build-system)
     (propagated-inputs
      (list libgpg-error))
-    (native-inputs
-     (list libgpg-error))
     (arguments
      `(#:configure-flags
        (list ,@(if (%current-target-system)
@@ -281,15 +279,19 @@ compatible to GNU Pth.")
 (define-public gnupg
   (package
     (name "gnupg")
-    (version "2.2.30")
+    ;; Note: The 2.2.X releases are Long Term Support (LTS), so stick to it
+    ;; for our stable 'gnupg'.
+    ;; Note2: 2.2.33 currently suffers from regressions, so do not update to it
+    ;; (see: https://dev.gnupg.org/T5742).
+    (version "2.2.32")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
+              (uri (string-append "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-" version
                                   ".tar.bz2"))
               (patches (search-patches "gnupg-default-pinentry.patch"))
               (sha256
                (base32
-                "1111ry31gaxv76miqsy6l0kwxwlx8sz0jk41jhyrjwx649p6sqyc"))))
+                "0506gv54z10c96z5821z9p0ksibk1pfilsmag39ffqrcz0sinmxj"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -349,25 +351,6 @@ libskba (working with X.509 certificates and CMS data).")
     (properties '((ftp-server . "ftp.gnupg.org")
                   (ftp-directory . "/gcrypt/gnupg")))))
 
-(define-public gnupg-2.2.32
-  (package
-    (inherit gnupg)
-    (version "2.2.32")
-
-    ;; Hide this version because packages like 'emacs-pinentry' propagate the
-    ;; default GnuPG and "guix install gnupg emacs-pinentry" would fail with a
-    ;; collision error.
-    (properties `((hidden? . #t)
-                  ,@(package-properties gnupg)))
-
-    (source (origin
-              (inherit (package-source gnupg))
-              (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "0506gv54z10c96z5821z9p0ksibk1pfilsmag39ffqrcz0sinmxj"))))))
-
 (define-public gnupg-1
   (package (inherit gnupg)
     (version "1.4.23")
@@ -388,8 +371,7 @@ libskba (working with X.509 certificates and CMS data).")
          (add-after 'unpack 'patch-check-sh
            (lambda _
              (substitute* "checks/Makefile.in"
-               (("/bin/sh") (which "sh")))
-             #t)))))))
+               (("/bin/sh") (which "sh"))))))))))
 
 (define-public gpgme
   (package
@@ -439,14 +421,9 @@ and every application benefits from this.")
                         "lang/cpp/src/libgpgmepp.la")
                (symlink (string-append gpgme "/lib/libgpgme.la")
                         "src/libgpgme.la"))
-             (chdir "lang/qt")
-             #t)))))
+             (chdir "lang/qt"))))))
     (native-inputs
-     ;; Use GnuPG 2.2.32.  With 2.2.30, 'testSymmetricEncryptDecrypt' in
-     ;; t-encrypt.cpp fails because 'gpg' wrongfully ask for a passphrase do
-     ;; decrypt the cypher text.
      (modify-inputs (package-native-inputs gpgme)
-       (replace "gnupg" gnupg-2.2.32)
        (prepend pkg-config)))
     (inputs
      (modify-inputs (package-inputs gpgme)
@@ -599,14 +576,14 @@ decrypt messages using the OpenPGP format by making use of GPGME.")
 (define-public python-gnupg
   (package
     (name "python-gnupg")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-gnupg" version))
        (sha256
         (base32
-         "1isazrg2h126xg3vvk4wrhx8k8yfsg5sxybvfa99phj235mzaq90"))))
+         "1mq7hljy3bjkxdvh3qx2bv4y0b66l9pmc6i06ys75y7dbjpf2kdn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -621,8 +598,7 @@ decrypt messages using the OpenPGP format by making use of GPGME.")
                (setenv "USERNAME" "guixbuilder")
                ;; The doctests are extremely slow and sometimes time out,
                ;; so we disable them.
-               (invoke "python"
-                       "test_gnupg.py" "--no-doctests")))))))
+               (invoke "python" "test_gnupg.py" "--no-doctests")))))))
     (native-inputs
      (list gnupg))
     (home-page "https://pythonhosted.org/python-gnupg/index.html")
@@ -631,9 +607,6 @@ decrypt messages using the OpenPGP format by making use of GPGME.")
       "This module allows easy access to GnuPG’s key management, encryption
 and signature functionality from Python programs.")
     (license license:bsd-3)))
-
-(define-public python2-gnupg
-  (package-with-python2 python-gnupg))
 
 (define-public perl-gnupg-interface
   (package
@@ -1097,7 +1070,7 @@ files, to verify signatures, and to manage the private and public keys.")
 (define-public parcimonie
   (package
     (name "parcimonie")
-    (version "0.11.0")
+    (version "0.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gaffer.boum.org/intrigeri/files/"
@@ -1105,70 +1078,61 @@ files, to verify signatures, and to manage the private and public keys.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14pvapvzrxh1yh8zgcj1llmc2dd8g1fgzskxlja21gmw8c88aqdk"))))
+                "10gal2h8ihg7nnzy3adw942axd2ia1rcn1fw3a3v07n5mm8kqrx9"))))
     (build-system perl-build-system)
     (inputs
-     `(("gnupg" ,gnupg)
-       ("perl-config-general" ,perl-config-general)
-       ("perl-clone" ,perl-clone)
-       ("perl-data" ,perl-data)
-       ("perl-exporter-tiny" ,perl-exporter-tiny)
-       ("perl-file-homedir" ,perl-file-homedir)
-       ("perl-file-sharedir" ,perl-file-sharedir)
-       ("perl-file-which" ,perl-file-which)
-       ("perl-getopt-long-descriptive" ,perl-getopt-long-descriptive)
-       ("perl-gnupg-interface" ,perl-gnupg-interface)
-       ("perl-ipc-system-simple" ,perl-ipc-system-simple)
-       ("perl-list-moreutils" ,perl-list-moreutils)
-       ("perl-libintl-perl" ,perl-libintl-perl) ; Locale::TextDomain
-       ("perl-lwp-online" ,perl-lwp-online)
-       ("perl-module-build" ,perl-module-build)
-       ("perl-module-pluggable-object" ,perl-module-pluggable)
-       ("perl-moo" ,perl-moo)
-       ("perl-moox-handlesvia" ,perl-moox-handlesvia)
-       ("perl-moox-late" ,perl-moox-late)
-       ("perl-moox-options" ,perl-moox-options)
-       ("perl-moox-strictconstructor" ,perl-moox-strictconstructor)
-       ("perl-namespace-clean" ,perl-namespace-clean)
-       ("perl-net-dbus" ,perl-net-dbus)
-       ("perl-net-dbus-glib" ,perl-net-dbus-glib)
-       ("perl-path-tiny" ,perl-path-tiny)
-       ("perl-strictures" ,perl-strictures-2)
-       ("perl-test-most" ,perl-test-most)
-       ("perl-test-trap" ,perl-test-trap)
-       ("perl-time-duration" ,perl-time-duration)
-       ("perl-time-duration-parse" ,perl-time-duration-parse)
-       ("perl-try-tiny" ,perl-try-tiny)
-       ("perl-type-tiny" ,perl-type-tiny)
-       ("perl-types-path-tiny" ,perl-types-path-tiny)
-       ("perl-unicode-linebreak" ,perl-unicode-linebreak)
-       ("perl-xml-parser" ,perl-xml-parser)
-       ("perl-xml-twig" ,perl-xml-twig)
-       ("torsocks" ,torsocks)))
+     (list gnupg
+           perl-clone
+           perl-config-general
+           perl-file-homedir
+           perl-file-sharedir
+           perl-file-which
+           perl-gnupg-interface
+           perl-ipc-system-simple
+           perl-json
+           perl-list-moreutils
+           perl-moo
+           perl-moox-late
+           perl-moox-options
+           perl-moox-strictconstructor
+           perl-namespace-clean
+           perl-net-dbus
+           perl-pango
+           perl-path-tiny
+           perl-time-duration
+           perl-time-duration-parse
+           perl-try-tiny
+           perl-type-tiny
+           perl-types-path-tiny
+           torsocks))
     (native-inputs
-     (list xorg-server-for-tests))
+     (list perl-file-which
+           perl-gnupg-interface
+           perl-list-moreutils
+           perl-lwp-online
+           perl-module-build
+           perl-strictures-2
+           perl-test-most
+           perl-test-trap
+           xorg-server-for-tests))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          ;; Needed for using gpg-connect-agent during tests.
          (add-before 'check 'prepare-for-tests
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server")))
-               (system (string-append xorg-server "/bin/Xvfb :1 &"))
+             (let ((Xvfb (search-input-file inputs "/bin/Xvfb")))
+               (system (string-append Xvfb " :1 &"))
                (setenv "DISPLAY" ":1")
                (setenv "HOME" "/tmp")
-               ;; These tests are known to fail
+               ;; These tests expect usable gnupg configurations.
                (delete-file "t/32-keyserver_defined_on_command_line.t")
-               (delete-file "t/33-checkGpgHasDefinedKeyserver.t")
-               ;; The applet is deprecated upstream.
-               (delete-file "t/00-load_all.t")
-               #t)))
+               (delete-file "t/33-checkGpgHasDefinedKeyserver.t"))))
          (add-before 'install 'fix-references
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "lib/App/Parcimonie/GnuPG/Interface.pm"
                ;; Skip check whether dependencies are in the PATH
-               (("defined which.*") ""))
-             #t))
+               (("defined which.*") ""))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1176,9 +1140,8 @@ files, to verify signatures, and to manage the private and public keys.")
                                             ,(package-version perl))))
                (wrap-program (string-append out "/bin/parcimonie")
                  `("PERL5LIB" ":"
-                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))
-               #t))))))
-    (home-page "https://gaffer.boum.org/intrigeri/code/parcimonie/")
+                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))))))))
+    (home-page "https://salsa.debian.org/intrigeri/parcimonie")
     (synopsis "Incrementally refreshes a GnuPG keyring")
     (description "Parcimonie incrementaly refreshes a GnuPG keyring in a way
 that makes it hard to correlate the keyring content to an individual, and
@@ -1186,6 +1149,7 @@ makes it hard to locate an individual based on an identifying subset of her
 keyring content.  Parcimonie is a daemon that fetches one key at a time using
 the Tor network, waits a bit, changes the Tor circuit being used, and starts
 over.")
+    (properties '((upstream-name . "App-Parcimonie")))
     (license license:gpl1+)))
 
 (define-public jetring

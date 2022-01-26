@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Dennis Mungai <dmngaie@gmail.com>
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -155,7 +155,9 @@ compiler.  In LLVM this library is called \"compiler-rt\".")
     (supported-systems (delete "mips64el-linux" %supported-systems))))
 
 (define* (clang-from-llvm llvm clang-runtime hash
-                          #:key (patches '()) tools-extra)
+                          #:key (patches '()) tools-extra
+                          (properties
+                           (clang-properties (package-version llvm))))
   "Produce Clang with dependencies on LLVM and CLANG-RUNTIME, and applying the
 given PATCHES.  When TOOLS-EXTRA is given, it must point to the
 'clang-tools-extra' tarball, which contains code for 'clang-tidy', 'pp-trace',
@@ -362,26 +364,28 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
                                 #t))))
                         '())
                   ,@(if (version>? version "3.8")
-                        `((add-after 'install 'symlink-cfi_blacklist
+                        `((add-after 'install 'symlink-cfi_ignorelist
                             (lambda* (#:key inputs outputs #:allow-other-keys)
                               (let* ((out (assoc-ref outputs "out"))
                                      (lib-share (string-append out "/lib/clang/"
                                                                ,version "/share"))
                                      (compiler-rt (assoc-ref inputs "clang-runtime"))
+                                     (file-name ,(if (version>=? version "13")
+                                                     "cfi_ignorelist.txt"
+                                                     "cfi_blacklist.txt"))
                                      ;; The location varies between Clang versions.
-                                     (cfi-blacklist
+                                     (cfi-ignorelist
                                       (cond
                                        ((file-exists?
-                                         (string-append compiler-rt "/cfi_blacklist.txt"))
-                                        (string-append compiler-rt "/cfi_blacklist.txt"))
+                                         (string-append compiler-rt "/" file-name))
+                                        (string-append compiler-rt "/" file-name))
                                        (else (string-append compiler-rt
-                                                            "/share/cfi_blacklist.txt")))))
+                                                            "/share/" file-name)))))
                                 (mkdir-p lib-share)
-                                ;; Symlink cfi_blacklist.txt to where Clang expects
+                                ;; Symlink the ignorelist to where Clang expects
                                 ;; to find it.
-                                (symlink cfi-blacklist
-                                         (string-append lib-share "/cfi_blacklist.txt"))
-                                #t))))
+                                (symlink cfi-ignorelist
+                                         (string-append lib-share "/" file-name))))))
                         '())
                   (add-after 'install 'install-clean-up-/share/clang
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -426,9 +430,75 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
 Objective-C++ programming languages.  It uses LLVM as its back end.  The Clang
 project includes the Clang front end, the Clang static analyzer, and several
 code analysis tools.")
+    (properties properties)
     (license (if (version>=? version "9.0")
                  license:asl2.0         ;with LLVM exceptions
                  license:ncsa))))
+
+(define (clang-properties version)
+  "Return package properties for Clang VERSION."
+  `((compiler-cpu-architectures
+     ("x86_64"
+      ;; This list was obtained by running:
+      ;;
+      ;;   guix shell clang -- llc -march=x86-64 -mattr=help
+      ;;
+      ;; filtered from uninteresting entries such as "i686" and "pentium".
+      ,@(if (version>=? version "10.0")           ;TODO: refine
+            '("atom"
+              "barcelona"
+              "bdver1"
+              "bdver2"
+              "bdver3"
+              "bdver4"
+              "bonnell"
+              "broadwell"
+              "btver1"
+              "btver2"
+              "c3"
+              "c3-2"
+              "cannonlake"
+              "cascadelake"
+              "cooperlake"
+              "core-avx-i"
+              "core-avx2"
+              "core2"
+              "corei7"
+              "corei7-avx"
+              "generic"
+              "geode"
+              "goldmont"
+              "goldmont-plus"
+              "haswell"
+              "icelake-client"
+              "icelake-server"
+              "ivybridge"
+              "k8"
+              "k8-sse3"
+              "knl"
+              "knm"
+              "lakemont"
+              "nehalem"
+              "nocona"
+              "opteron"
+              "opteron-sse3"
+              "sandybridge"
+              "silvermont"
+              "skx"
+              "skylake"
+              "skylake-avx512"
+              "slm"
+              "tigerlake"
+              "tremont"
+              "westmere"
+              "x86-64"
+              "x86-64-v2"
+              "x86-64-v3"
+              "x86-64-v4"
+              "znver1"
+              "znver2"
+              "znver3")
+            '())))))
 
 (define (make-clang-toolchain clang)
   (package
@@ -471,6 +541,7 @@ code analysis tools.")
     (search-paths (package-search-paths clang))
 
     (license (package-license clang))
+    (properties (package-properties clang))  ;for 'compiler-cpu-architectures'
     (home-page "https://clang.llvm.org")
     (synopsis "Complete Clang toolchain for C/C++ development")
     (description "This package provides a complete Clang toolchain for C/C++
@@ -486,17 +557,17 @@ output), and Binutils.")
               ("libc-debug" ,glibc "debug")
               ("libc-static" ,glibc "static")))))
 
-(define-public llvm-12
+(define-public llvm-13
   (package
     (name "llvm")
-    (version "12.0.1")
+    (version "13.0.0")
     (source
      (origin
       (method url-fetch)
       (uri (llvm-uri "llvm" version))
       (sha256
        (base32
-        "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))))
+        "081h2vw757j5xjg2441539j2vhfzzihrgxwza5pq5sj3hrq133a0"))))
     (build-system cmake-build-system)
     (outputs '("out" "opt-viewer"))
     (native-inputs
@@ -506,6 +577,84 @@ output), and Binutils.")
      (list libffi))
     (propagated-inputs
      (list zlib))                 ;to use output from llvm-config
+    (arguments
+     `(#:configure-flags
+       ,#~(quasiquote
+           ;; These options are required for cross-compiling LLVM according to
+           ;; https://llvm.org/docs/HowToCrossCompileLLVM.html.
+           (#$@(if (%current-target-system)
+                   #~(,(string-append "-DLLVM_TABLEGEN="
+                                      #+(file-append this-package
+                                                     "/bin/llvm-tblgen"))
+                      #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
+                                       (%current-target-system))
+                      #$(string-append "-DLLVM_TARGET_ARCH="
+                                       (system->llvm-target))
+                      #$(string-append "-DLLVM_TARGETS_TO_BUILD="
+                                       (system->llvm-target)))
+                   #~())
+            "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
+            "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
+            "-DBUILD_SHARED_LIBS:BOOL=TRUE"
+            "-DLLVM_ENABLE_FFI:BOOL=TRUE"
+            "-DLLVM_REQUIRES_RTTI=1" ; For some third-party utilities
+            "-DLLVM_INSTALL_UTILS=ON")) ; Needed for rustc.
+       ;; Don't use '-g' during the build, to save space.
+       #:build-type "Release"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-opt-viewer
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (opt-viewer-out (assoc-ref outputs "opt-viewer"))
+                    (opt-viewer-share-dir (string-append opt-viewer-out "/share"))
+                    (opt-viewer-dir (string-append opt-viewer-share-dir "/opt-viewer")))
+               (mkdir-p opt-viewer-share-dir)
+               (rename-file (string-append out "/share/opt-viewer")
+                            opt-viewer-dir)))))))
+    (home-page "https://www.llvm.org")
+    (synopsis "Optimizing compiler infrastructure")
+    (description
+     "LLVM is a compiler infrastructure designed for compile-time, link-time,
+runtime, and idle-time optimization of programs from arbitrary programming
+languages.  It currently supports compilation of C and C++ programs, using
+front-ends derived from GCC 4.0.1.  A new front-end for the C family of
+languages is in development.  The compiler infrastructure includes mirror sets
+of programming tools as well as libraries with equivalent functionality.")
+    (license license:asl2.0)))
+
+(define-public clang-runtime-13
+  (clang-runtime-from-llvm
+   llvm-13
+   "0gyvfhnypfmlf7hdgkiz2wh2lgk4nz26aqf361msjs3qdkbh4djc"))
+
+(define-public clang-13
+  (clang-from-llvm llvm-13 clang-runtime-13
+                   "0zp1p6syii5iajm8v2c207s80arv00yz5ckfwimn5dng0sxiqqax"
+                   #:patches '("clang-13.0-libc-search-path.patch")
+                   #:tools-extra
+                   (origin
+                     (method url-fetch)
+                     (uri (llvm-uri "clang-tools-extra"
+                                    (package-version llvm-13)))
+                     (sha256
+                      (base32
+                       "1mgalgdgxlxi08yxw7k6yh4iia1bpjmjgn7mrpqas8lbl9h612s2")))))
+
+(define-public clang-toolchain-13
+  (make-clang-toolchain clang-13))
+
+(define-public llvm-12
+  (package
+    (inherit llvm-13)
+    (version "12.0.1")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (llvm-uri "llvm" version))
+      (sha256
+       (base32
+        "1pzx9zrmd7r3481sbhwvkms68fwhffpp4mmz45dgrkjpyl2q96kx"))))
     (arguments
      ;; TODO(core-updates): Unconditionally use quasiquote
      `(#:configure-flags
@@ -553,17 +702,7 @@ output), and Binutils.")
                (mkdir-p opt-viewer-share-dir)
                (rename-file (string-append out "/share/opt-viewer")
                             opt-viewer-dir))
-             #t)))))
-    (home-page "https://www.llvm.org")
-    (synopsis "Optimizing compiler infrastructure")
-    (description
-     "LLVM is a compiler infrastructure designed for compile-time, link-time,
-runtime, and idle-time optimization of programs from arbitrary programming
-languages.  It currently supports compilation of C and C++ programs, using
-front-ends derived from GCC 4.0.1.  A new front-end for the C family of
-languages is in development.  The compiler infrastructure includes mirror sets
-of programming tools as well as libraries with equivalent functionality.")
-    (license license:asl2.0)))  ;with LLVM exceptions, see LICENSE.txt
+             #t)))))))
 
 (define-public clang-runtime-12
   (clang-runtime-from-llvm
@@ -945,13 +1084,13 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public libunwind-headers
   (package
     (name "libunwind-headers")
-    (version "12.0.1")
+    (version "13.0.0")
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "libunwind" version))
               (sha256
                (base32
-                "192ww6n81lj2mb9pj4043z79jp3cf58a9c2qrxjwm5c3a64n1shb"))))
+                "1qb5ickp7qims5q7sxacj3fwq1kklvnl94k3v9hpl5qn284iky1n"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases (modify-phases (map (lambda (phase)
@@ -972,20 +1111,20 @@ of programming tools as well as libraries with equivalent functionality.")
 (define-public lld
   (package
     (name "lld")
-    (version "12.0.1")
+    (version "13.0.0")
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "lld" version))
               (sha256
                (base32
-                "0qg3fgc7wj34hdkqn21y03zcmsdd01szhhm1hfki63iifrm3y2v9"))))
+                "11lkwv4jy35z2f3zcpv7hbbk9v9gpavfvxlif8265zv4rl5r1l90"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; Note: check <https://bugs.llvm.org/show_bug.cgi?id=49228> to see
      ;; whether this is still necessary.
      (list libunwind-headers))
     (inputs
-     (list llvm-12))
+     (list llvm-13))
     (arguments
      `(#:build-type "Release"
        ;; TODO: Tests require the lit tool, which isn't installed by the LLVM
@@ -996,6 +1135,19 @@ of programming tools as well as libraries with equivalent functionality.")
     (description "LLD is a high-performance linker, built as a set of reusable
 components which highly leverage existing libraries in the larger LLVM Project.")
     (license license:asl2.0))) ; With LLVM exception
+
+(define-public lld-12
+  (package
+    (inherit lld)
+    (version "12.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (llvm-uri "lld" version))
+              (sha256
+               (base32
+                "0qg3fgc7wj34hdkqn21y03zcmsdd01szhhm1hfki63iifrm3y2v9"))))
+    (inputs (modify-inputs (package-inputs lld)
+              (replace "llvm" llvm-12)))))
 
 (define* (make-lld-wrapper lld #:key lld-as-ld?)
   "Return a LLD wrapper.  When LLD-AS-LD? is true, create a 'ld' symlink that
@@ -1053,16 +1205,15 @@ misuse of libraries outside of the store.")
     (native-inputs
      (list pkg-config swig))
     (inputs
-     `(("clang" ,clang-12)
-       ("llvm" ,llvm-12)
-
-       ;; Optional (but recommended) inputs.
-       ("curses" ,ncurses)
-       ("editline" ,libedit)
-       ("liblzma" ,xz)
-       ("libxml2" ,libxml2)
-       ("lua" ,lua)
-       ("python" ,python)))
+     (list clang-12
+           llvm-12
+           ;; Optional (but recommended) inputs.
+           ncurses
+           libedit
+           xz
+           libxml2
+           lua
+           python))
     (home-page "https://lldb.llvm.org/")
     (synopsis "Low level debugger")
     (description
@@ -1322,110 +1473,46 @@ with that of libgomp, the GNU Offloading and Multi Processing Library.")
                (setenv "LDFLAGS" (string-append "-Wl,-rpath="
                                                 llvm "/lib"))))))))
     (inputs
-     (list (let* ((patches-commit
-                                 "a4a19e8af2c5ef9b9901f20193e4be070726da97") (
-                                                                          patch-uri (
-                                                                                lambda (
-                                                                                  name)
-                                                                                  (
-                                                                                  string-append
-                                                                                               "https://raw.githubusercontent.com/numba/"
-                                                                                               "llvmlite/"
-                                                                                               patches-commit
-                                                                                               "/conda-recipes/"
-                                                                                               name)))
-                                                                          (
-                                                                          patch-origin (
-                                                                                      lambda (
-                                                                                           name
-                                                                                             hash)
-                                                                                           (
-                                                                                           origin (
-                                                                                                 method
-                                                                                                      url-fetch)
-                                                                                                 (
-                                                                                                 uri (
-                                                                                                    patch-uri
-                                                                                                            name))
-                                                                                                 (
-                                                                                                 sha256 (
-                                                                                                       base32
-                                                                                                            hash)))))
-                                                                          (
-                                                                          arch-independent-patches (
-                                                                                                  list (
-                                                                                                     patch-origin
-                                                                                                               "partial-testing.patch"
-                                                                                                               "0g3nkci87knvmn7piqhmh4bcc65ff8r921cvfcibyiv65klv3syg")
-                                                                                                     (
-                                                                                                     patch-origin
-                                                                                                                 "0001-Revert-Limit-size-of-non-GlobalValue-name.patch"
-                                                                                                                 "0n4k7za0smx6qwdipsh6x5lm7bfvzzb3p9r8q1zq1dqi4na21295"))))
-                 (package (inherit llvm-11)
-                          (source (origin (inherit (package-source
-                                                                   llvm-11))
-                                          (patches (if (string=?
-                                                                 "aarch64-linux"
-                                                                 (
-                                                                 %current-system))
-                                                       `(,(patch-origin
-                                                                     "intel-D47188-svml-VF_LLVM9.patch"
-                                                                     "0gnnlfxr8p1a7ls93hzcpfqpa8r0icypfwj8l9cmkslq5sz8p64r") (
-                                                                                                                           unquote-splicing
-                                                                                                                                         arch-independent-patches)
-                                                                                                                           (
-                                                                                                                           unquote-splicing (
-                                                                                                                                           origin-patches (
-                                                                                                                                                        package-source
-                                                                                                                                                                    llvm-11))))
-                                                       `(,(patch-origin
-                                                                     "intel-D47188-svml-VF.patch"
-                                                                     "0gnnlfxr8p1a7ls93hzcpfqpa8r0icypfwj8l9cmkslq5sz8p64r") ,(
-                                                                                                                           patch-origin
-                                                                                                                                   "expect-fastmath-entrypoints-in-add-TLI-mappings.ll.patch"
-                                                                                                                                   "0jxhjkkwwi1cy898l2n57l73ckpw0v73lqnrifp7r1mwpsh624nv")
-                                                                                                                           (
-                                                                                                                           unquote-splicing
-                                                                                                                                           arch-independent-patches)
-                                                                                                                           (
-                                                                                                                           unquote-splicing (
-                                                                                                                                           origin-patches (
-                                                                                                                                                        package-source
-                                                                                                                                                                    llvm-11))))))))
-                          (arguments (substitute-keyword-arguments (
-                                                                   package-arguments
-                                                                                  llvm-11)
-                                                                   ((#:phases
-                                                                             phases) `(
-                                                                                    modify-phases ,
-                                                                                              phases
-                                                                                              (
-                                                                                              add-after '
-                                                                                                       unpack
-                                                                                                       '
-                                                                                                       patch-round-two
-                                                                                                       ;; We have to do the patching in two rounds because we can't
-                                                                                                       ;; pass '-p1' and '-p2' in the source field.
-                                                                                                       (
-                                                                                                       lambda* (
-                                                                                                              #:key
-                                                                                                                  inputs
-                                                                                                                  #:allow-other-keys)
-                                                                                                              (
-                                                                                                              invoke
-                                                                                                                    "patch"
-                                                                                                                    (
-                                                                                                                    assoc-ref
-                                                                                                                             inputs
-                                                                                                                             "llvm_11_consecutive_registers")
-                                                                                                                    "-p2")))))))
-                          (native-inputs `(("llvm_11_consecutive_registers" ,(
-                                                                          patch-origin
-                                                                               "llvm_11_consecutive_registers.patch"
-                                                                               "04msd34dnpr3lpss0pam3mckwnvzrab266z6sml1hya0akv0m3f3")) (
-                                                                                                                                    unquote-splicing (
-                                                                                                                                                package-native-inputs
-                                                                                                                                                                llvm-11))))))))
+     (list
+      (let* ((patches-commit
+              "a4a19e8af2c5ef9b9901f20193e4be070726da97")
+             (patch-uri (lambda (name)
+                          (string-append
+                           "https://raw.githubusercontent.com/numba/"
+                           "llvmlite/"
+                           patches-commit
+                           "/conda-recipes/"
+                           name)))
+             (patch-origin (lambda (name hash)
+                             (origin (method url-fetch)
+                                     (uri (patch-uri name))
+                                     (sha256 (base32 hash)))))
+             (arch-independent-patches
+              (list (patch-origin
+                     "partial-testing.patch"
+                     "0g3nkci87knvmn7piqhmh4bcc65ff8r921cvfcibyiv65klv3syg")
+                    (patch-origin
+                     "0001-Revert-Limit-size-of-non-GlobalValue-name.patch"
+                     "0n4k7za0smx6qwdipsh6x5lm7bfvzzb3p9r8q1zq1dqi4na21295"))))
+        (package
+          (inherit llvm-11)
+          (source
+           (origin
+             (inherit (package-source llvm-11))
+             (patches (if (string=? "aarch64-linux" (%current-system))
+                          `(,(patch-origin
+                              "intel-D47188-svml-VF_LLVM9.patch"
+                              "0gnnlfxr8p1a7ls93hzcpfqpa8r0icypfwj8l9cmkslq5sz8p64r")
+                            ,@arch-independent-patches
+                            ,@(origin-patches (package-source llvm-11)))
+                          `(,(patch-origin
+                              "intel-D47188-svml-VF.patch"
+                              "0gnnlfxr8p1a7ls93hzcpfqpa8r0icypfwj8l9cmkslq5sz8p64r")
+                            ,(patch-origin
+                              "expect-fastmath-entrypoints-in-add-TLI-mappings.ll.patch"
+                              "0jxhjkkwwi1cy898l2n57l73ckpw0v73lqnrifp7r1mwpsh624nv")
+                            ,@arch-independent-patches
+                            ,@(origin-patches (package-source llvm-11)))))))))))
     (home-page "https://llvmlite.pydata.org")
     (synopsis "Wrapper around basic LLVM functionality")
     (description
@@ -1455,10 +1542,10 @@ setup(name=\"clang\", packages=[\"clang\"])\n")))))
                   (add-before 'build 'set-libclang-file-name
                     (lambda* (#:key inputs #:allow-other-keys)
                       ;; Record the absolute file name of libclang.so.
-                      (let ((clang (assoc-ref inputs "clang")))
+                      (let ((libclang (search-input-file inputs
+                                                         "/lib/libclang.so")))
                         (substitute* "clang/cindex.py"
-                          (("libclang\\.so")
-                           (string-append clang "/lib/libclang.so")))))))))
+                          (("libclang\\.so") libclang))))))))
     (inputs (list clang))
     (synopsis "Python bindings to libclang")))
 
@@ -1470,6 +1557,9 @@ setup(name=\"clang\", packages=[\"clang\"])\n")))))
 
 (define-public python-clang-12
   (clang-python-bindings clang-12))
+
+(define-public python-clang-13
+  (clang-python-bindings clang-13))
 
 (define-public emacs-clang-format
   (package
@@ -1483,12 +1573,11 @@ setup(name=\"clang\", packages=[\"clang\"])\n")))))
        (modify-phases %standard-phases
          (add-after 'unpack 'configure
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((clang (assoc-ref inputs "clang")))
+             (let ((clang-format (search-input-file inputs "/bin/clang-format")))
                (copy-file "tools/clang-format/clang-format.el" "clang-format.el")
                (emacs-substitute-variables "clang-format.el"
                  ("clang-format-executable"
-                  (string-append clang "/bin/clang-format"))))
-             #t)))))
+                  clang-format))))))))
     (synopsis "Format code using clang-format")
     (description "This package filters code through @code{clang-format}
 to fix its formatting.  @code{clang-format} is a tool that formats
@@ -1507,12 +1596,11 @@ C/C++/Obj-C code according to a set of style options, see
        (modify-phases %standard-phases
          (add-after 'unpack 'configure
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((clang (assoc-ref inputs "clang")))
+             (let ((clang-rename (search-input-file inputs "/bin/clang-rename")))
                (copy-file "tools/clang-rename/clang-rename.el" "clang-rename.el")
                (emacs-substitute-variables "clang-rename.el"
                  ("clang-rename-binary"
-                  (string-append clang "/bin/clang-rename"))))
-             #t)))))
+                  clang-rename))))))))
     (synopsis "Rename every occurrence of a symbol using clang-rename")
     (description "This package renames every occurrence of a symbol at point
 using @code{clang-rename}.")))

@@ -27,6 +27,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages file-systems)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -195,7 +196,7 @@ another location, similar to @command{mount --bind}.  It can be used for:
 @item Sharing a directory with a list of users (or groups).
 @item Modifying permission bits using rules with chmod-like syntax.
 @item Changing the permissions with which files are created.
-@end itemize ")
+@end itemize")
     (license license:gpl2+)))
 
 (define-public cachefilesd-inotify
@@ -404,8 +405,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "f9f57789de567726f7cfa46bd13df4b0815d137a")
-        (revision "12"))
+  (let ((commit "b19d9f92e12c2e78d6e306e6cb7f8a7d9a7875f3")
+        (revision "13"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -417,37 +418,33 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "13442qpmv7hywkpbnbwlg2sfhlfh16qxry1xwlv35vch2qnzlhrq"))))
+          (base32 "1ixb1fk58yjk8alpcf9a7h0fnkvpbsjxd766iz9h7qa6r1r77a6c"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:make-flags
-         (list ,(string-append "VERSION=" version) ; bogus vX.Y-nogit otherwise
-               (string-append "PREFIX=" (assoc-ref %outputs "out"))
-               "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
-               ,(string-append "CC=" (cc-for-target))
-               ,(string-append "PKG_CONFIG=" (pkg-config-for-target))
-               "PYTEST=pytest")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (add-after 'install 'promote-mount.bcachefs.sh
-             ;; XXX The (optional) mount.bcachefs helper requires rust:cargo.
-             ;; This alternative shell script does the job well enough for now.
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion (string-append out "/sbin")
-                 (rename-file "mount.bcachefs.sh" "mount.bcachefs")
-                 ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
-                 (wrap-program "mount.bcachefs"
-                   `("PATH" ":" prefix
-                     ,(cons (string-append out "/sbin")
-                            (map (lambda (input)
-                                     (string-append (assoc-ref inputs input)
-                                                    "/bin"))
-                                   (list "coreutils"
-                                         "gawk"
-                                         "util-linux"))))))))))
-         #:tests? #f))                  ; XXX 6 valgrind tests fail
+       (list #:make-flags
+             #~(list (string-append "VERSION=" #$version) ; ‘v…-nogit’ otherwise
+                     (string-append "PREFIX=" #$output)
+                     "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
+                     (string-append "CC=" #$(cc-for-target))
+                     (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+                     "PYTEST=pytest")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)    ; no configure script
+                 (add-after 'install 'promote-mount.bcachefs.sh
+                   ;; XXX The (optional) ‘mount.bcachefs’ requires rust:cargo.
+                   ;; This shell alternative does the job well enough for now.
+                   (lambda _
+                     (with-directory-excursion (string-append #$output "/sbin")
+                       (rename-file "mount.bcachefs.sh" "mount.bcachefs")
+                       ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
+                       (wrap-program "mount.bcachefs"
+                         `("PATH" ":" prefix
+                           ,(list (string-append #$output            "/sbin")
+                                  (string-append #$coreutils-minimal "/bin")
+                                  (string-append #$gawk              "/bin")
+                                  (string-append #$util-linux        "/bin"))))))))
+             #:tests? #f))                  ; XXX 6 valgrind tests fail
       (native-inputs
        (list pkg-config
              ;; For tests.
@@ -457,21 +454,20 @@ from a mounted file system.")
              python
              python-docutils))
       (inputs
-       `(("eudev" ,eudev)
-         ("keyutils" ,keyutils)
-         ("libaio" ,libaio)
-         ("libscrypt" ,libscrypt)
-         ("libsodium" ,libsodium)
-         ("liburcu" ,liburcu)
-         ("util-linux:lib" ,util-linux "lib") ; lib{blkid,uuid}
-         ("lz4" ,lz4)
-         ("zlib" ,zlib)
-         ("zstd:lib" ,zstd "lib")
-
-         ;; Only for mount.bcachefs.sh.
-         ("coreutils" ,coreutils-minimal)
-         ("gawk" ,gawk)
-         ("util-linux" ,util-linux)))
+       (list eudev
+             keyutils
+             libaio
+             libscrypt
+             libsodium
+             liburcu
+             `(,util-linux "lib")
+             lz4
+             zlib
+             `(,zstd "lib")
+             ;; Only for mount.bcachefs.sh.
+             coreutils-minimal
+             gawk
+             util-linux))
       (home-page "https://bcachefs.org/")
       (synopsis "Tools to create and manage bcachefs file systems")
       (description
@@ -488,16 +484,16 @@ performance and other characteristics.")
       (license license:gpl2+))))
 
 (define-public bcachefs-tools/static
-   (package
-     (inherit bcachefs-tools)
-     (name "bcachefs-tools-static")
-     (arguments
-      (substitute-keyword-arguments (package-arguments bcachefs-tools)
-        ((#:make-flags make-flags)
-         `(append ,make-flags
-                  (list "LDFLAGS=-static")))
-        ((#:phases phases)
-         `(modify-phases ,phases
+  (package
+    (inherit bcachefs-tools)
+    (name "bcachefs-tools-static")
+    (arguments
+     (substitute-keyword-arguments (package-arguments bcachefs-tools)
+       ((#:make-flags make-flags)
+        #~(append #$make-flags
+              (list "LDFLAGS=-static")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
             (add-after 'unpack 'skip-shared-library
               (lambda _
                 (substitute* "Makefile"
@@ -506,40 +502,38 @@ performance and other characteristics.")
                    (string-append prefix suffix "\n"))
                   ;; …as does installing a now non-existent file.
                   ((".*\\$\\(INSTALL\\).* lib.*") ""))))))))
-     (inputs
-      `(("eudev:static" ,eudev "static")
-        ("libscrypt:static" ,libscrypt "static")
-        ("lz4:static" ,lz4 "static")
-        ("util-linux:static" ,util-linux "static") ; lib{blkid,uuid}
-        ("zlib" ,zlib "static")
-        ("zstd:static" ,zstd "static")
-        ,@(package-inputs bcachefs-tools)))))
+    (inputs (modify-inputs (package-inputs bcachefs-tools)
+              (prepend `(,eudev "static")
+                       `(,keyutils "static")
+                       `(,libscrypt "static")
+                       `(,lz4 "static")
+                       `(,util-linux "static")
+                       `(,zlib "static")
+                       `(,zstd "static"))))))
 
 (define-public bcachefs/static
   (package
     (name "bcachefs-static")
     (version (package-version bcachefs-tools))
-    (build-system trivial-build-system)
     (source #f)
-    (inputs
-     `(("bcachefs-tools" ,bcachefs-tools/static)))
+    (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 ftw)
-                      (srfi srfi-26))
-         (let* ((bcachefs-tools (assoc-ref %build-inputs "bcachefs-tools"))
-                (out (assoc-ref %outputs "out")))
-           (mkdir-p out)
-           (with-directory-excursion out
-             (install-file (string-append bcachefs-tools
-                                          "/sbin/bcachefs")
-                           "sbin")
-             (remove-store-references "sbin/bcachefs")
-             (invoke "sbin/bcachefs" "version") ; test suite
-             #t)))))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils)
+                            (ice-9 ftw)
+                            (srfi srfi-26))
+               (mkdir-p #$output)
+               (with-directory-excursion #$output
+                 (install-file (string-append #$(this-package-input
+                                                 "bcachefs-tools-static")
+                                              "/sbin/bcachefs")
+                               "sbin")
+                 (remove-store-references "sbin/bcachefs")
+                 (invoke "sbin/bcachefs" "version"))))) ; test suite
+    (inputs
+     (list bcachefs-tools/static))
     (home-page (package-home-page bcachefs-tools))
     (synopsis "Statically-linked bcachefs command from bcachefs-tools")
     (description "This package provides the statically-linked @command{bcachefs}
@@ -592,30 +586,29 @@ Extensible File Allocation Table} file systems.  Included are
     (inputs
      (list fuse gnutls))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'install
-           ;; There's no ‘install’ target. Install all variants manually.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man1 (string-append out "/share/man/man1")))
-               (mkdir-p bin)
-               (mkdir-p man1)
-               (for-each
-                (lambda (variant)
-                  (let ((man1-page (string-append variant ".1")))
-                    (install-file variant bin)
-                    (install-file man1-page man1)))
-                (list "httpfs2"
-                      "httpfs2-mt"
-                      "httpfs2-ssl"
-                      "httpfs2-ssl-mt")))
-             #t)))
-       #:make-flags (list "CC=gcc")
-       #:parallel-build? #f             ; can result in missing man pages
-       #:tests? #f))                    ; no tests
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (replace 'install
+                 ;; There's no ‘install’ target. Install all variants manually.
+                 (lambda _
+                   (let* ((bin (string-append #$output "/bin"))
+                          (man1 (string-append #$output "/share/man/man1")))
+                     (mkdir-p bin)
+                     (mkdir-p man1)
+                     (for-each
+                      (lambda (variant)
+                        (let ((man1-page (string-append variant ".1")))
+                          (install-file variant bin)
+                          (install-file man1-page man1)))
+                      (list "httpfs2"
+                            "httpfs2-mt"
+                            "httpfs2-ssl"
+                            "httpfs2-ssl-mt"))))))
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:parallel-build? #f         ; can result in missing man pages
+           #:tests? #f))                ; no tests
     (home-page "https://sourceforge.net/projects/httpfs/")
     (synopsis "Mount remote files over HTTP")
     (description "httpfs2 is a @code{fuse} file system for mounting any
@@ -838,14 +831,14 @@ All of this is accomplished without a centralized metadata server.")
 (define-public libeatmydata
   (package
     (name "libeatmydata")
-    (version "129")
+    (version "130")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.flamingspork.com/projects/libeatmydata/"
                            "libeatmydata-" version ".tar.gz"))
        (sha256
-        (base32 "1qycv1cvy6fr3v5rxilnsqxllwyfbqlcairlh31x2dnjsx28jnqf"))))
+        (base32 "1h212l2s0g3pv6q96d94dk7kpp9qzyxqydrrcgyp7zqjwvbiqws8"))))
     (build-system gnu-build-system)
     (arguments
      ;; All tests pass---but only if the host kernel allows PTRACE_TRACEME.
@@ -887,9 +880,9 @@ All of this is accomplished without a centralized metadata server.")
            (method url-fetch)
            (uri (string-append "https://deb.debian.org/debian/pool/main/"
                                "libe/libeatmydata/libeatmydata_" version
-                               "-1.debian.tar.xz"))
+                               "-2.debian.tar.xz"))
            (sha256
-            (base32 "0q6kx1bf870jj52a2vm5p5xlrr89g2zs8wyhlpn80pys9p28nikx"))))
+            (base32 "1sg9g1nv3wl9ymzz33ig4ns563npkbxj67a64m7p34cc813jl95w"))))
        ;; For the test suite.
        ("strace" ,strace)
        ("which" ,which)))
@@ -911,7 +904,7 @@ Please, @emph{do not} use something called ``eat my data'' in such cases!
 
 However, it does not make sense to accept this performance hit if the data is
 unimportant and you can afford to lose all of it in the event of a crash, for
-example when running a software test suite.  Adding @code{}libeatmydata.so} to
+example when running a software test suite.  Adding @file{libeatmydata.so} to
 the @env{LD_PRELOAD} environment of such tasks will override all C library data
 synchronisation functions with custom @i{no-op} ones that do nothing and
 immediately return success.
@@ -1152,7 +1145,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.1")
+    (version "2.1.2")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1161,7 +1154,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "1zsc0zkz5cci6pxc0kwzn3xg72qv2fq65phb768y5dgk1784hkxx"))))
+           (base32 "1rxrr329y6zgkcqv0gah8bgi9ih6pqaay7mnk4xqlrhzgb8z3315"))))
     (build-system linux-module-build-system)
     (arguments
      `(;; The ZFS kernel module should not be downloaded since the license

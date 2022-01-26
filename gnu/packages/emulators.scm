@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2018 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -36,6 +36,7 @@
 (define-module (gnu packages emulators)
   #:use-module (ice-9 match)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -50,6 +51,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
@@ -110,18 +112,18 @@
 (define-public vice
   (package
     (name "vice")
-    (version "3.5")
+    (version "3.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/vice-emu/releases/"
                            "vice-" version ".tar.gz"))
        (sha256
-        (base32
-         "03nwcldg2h7dxj6aa77ggqc0442hqc1lsq5x69h8kcmqmvx7ifan"))))
+        (base32 "1zfkl9j40v2417l1fmczdvl9yzh81jlpcy5cl2svjzb2rrffbgv5"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-pdf-docs")))
+     `(#:configure-flags '("--disable-html-docs"
+                           "--disable-pdf-docs")))
     (native-inputs
      (list bison
            dos2unix
@@ -394,7 +396,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.77.1")
+    (version "0.78.1")
     (source
      (origin
        (method git-fetch)
@@ -403,13 +405,23 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07jwmmm1bhfxavlhl854cj8l5iy5hqx5hpwkkjbcwqg7yh9jfs2x"))))
+        (base32 "16byip1j9ckq0ik7ilrj0fc9dal3495s48xd21drpbb8q9jwb342"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       ;; These both try to git clone subprojects.
-       (list "-Dunit_tests=disabled"     ; gtest
-             "-Duse_mt32emu=false")))    ; mt32emu
+     (list #:configure-flags
+           #~(list
+              ;; These both try to git clone subprojects.
+              "-Dunit_tests=disabled"   ; gtest
+              "-Duse_mt32emu=false"
+              ;; Not packaged.
+              "-Duse_slirp=false")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-includes
+                 (lambda _
+                   (substitute* (find-files "." "\\.(cpp|h)")
+                     (("^(#include <)(SDL[_.])" _ include file)
+                      (string-append include "SDL2/" file))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -643,14 +655,14 @@ V2.")
 (define-public mednafen
   (package
     (name "mednafen")
-    (version "1.27.1")
+    (version "1.29.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mednafen.github.io/releases/files/"
                            "mednafen-" version ".tar.xz"))
        (sha256
-        (base32 "1ysmb56wzr17ki6f1b486r2dzjr11igd021qb4r3437l68prpa7k"))))
+        (base32 "0binkxnki8w8jgiyf3xr9503m5cynlf5vylb087vxybp53qbqgys"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1492,14 +1504,14 @@ multi-system game/emulator system.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.5.0")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "08ynw1cmld41p4bwrw84gb1nv229va70i91qiqsjr3c2jnqy8zml"))))
+        (base32 "00az0dm85kh8rq0yqj74x0c5zrq4ybvwvnilijzl8qa5whwdpn4z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                                 ;require "git"
@@ -1509,9 +1521,9 @@ multi-system game/emulator system.")
          (replace 'configure
            ;; configure does not work followed by both "SHELL=..." and
            ;; "CONFIG_SHELL=..."; set environment variables instead
-           (lambda* (#:key outputs configure-flags #:allow-other-keys)
+           (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (bash (which "bash"))
+                    (bash (search-input-file inputs "/bin/bash"))
                     (flags `(,(string-append "--prefix=" out)
                              ,@configure-flags)))
                (setenv "SHELL" bash)
@@ -1520,24 +1532,24 @@ multi-system game/emulator system.")
     (native-inputs
      (list nasm pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("faad2" ,faad2)
-       ("fluidsynth" ,fluidsynth)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("glew" ,glew)
-       ("giflib" ,giflib)
-       ("liba52" ,liba52)
-       ("libflac" ,flac)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libmad" ,libmad)
-       ("libmpeg2" ,libmpeg2)
-       ("libogg" ,libogg)
-       ("libpng" ,libpng)
-       ("libtheora" ,libtheora)
-       ("libvorbis" ,libvorbis)
-       ("sdl2" ,(sdl-union (list sdl2 sdl2-net)))
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           faad2
+           fluidsynth
+           freetype
+           fribidi
+           glew
+           giflib
+           liba52
+           flac
+           libjpeg-turbo
+           libmad
+           libmpeg2
+           libogg
+           libpng
+           libtheora
+           libvorbis
+           (sdl-union (list sdl2 sdl2-net))
+           zlib))
     (home-page "https://www.scummvm.org/")
     (synopsis "Engine for several graphical adventure games")
     (description "ScummVM is a program which allows you to run certain
@@ -1699,7 +1711,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.238")
+    (version "0.239")
     (source
      (origin
        (method git-fetch)
@@ -1708,7 +1720,7 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "188h9a4lla0gimbss1bfvlidsm0l8smhqrhplv973k8j2jgf74fb"))
+        (base32 "02by0pq0j8pi5dllk90g94nbszynp9wqg75bl5x8bqrc7h80a0dq"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1720,21 +1732,20 @@ This is a part of the TiLP project.")
                          "SDL2-override" "sqlite3" "utf8proc" "zlib")))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (cons*
-        ;; A 'strict-overflow' error pops up on i686 so disable '-Werror'.
-        "NOWERROR=1"
-        (string-append "QT_HOME=" (assoc-ref %build-inputs "qtbase"))
-        (string-append "SDL_INI_PATH="
-                       (assoc-ref %outputs "out")
-                       "/share/mame/ini")
-        (map (lambda (lib)
-               (string-append "USE_SYSTEM_LIB_" (string-upcase lib) "=1"))
-             '("asio" "expat" "flac" "glm" "jpeg" "lua" "portaudio" "portmidi"
-               "pugixml" "rapidjson" "sqlite3" "utf8proc" "zlib")))
-       #:tests? #f                      ;no test in regular release
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:make-flags
+      #~(cons*
+         ;; A 'strict-overflow' error pops up on i686 so disable '-Werror'.
+         "NOWERROR=1"
+         (string-append "QT_HOME=" #$(this-package-input "qtbase"))
+         (string-append "SDL_INI_PATH=" #$output "/share/mame/ini")
+         (map (lambda (lib)
+                (string-append "USE_SYSTEM_LIB_" (string-upcase lib) "=1"))
+              '("asio" "expat" "flac" "glm" "jpeg" "lua" "portaudio" "portmidi"
+                "pugixml" "rapidjson" "sqlite3" "utf8proc" "zlib")))
+      #:tests? #f                       ;no test in regular release
+      #:phases
+      `(modify-phases %standard-phases
          (delete 'configure)
          (add-after 'build 'build-documentation
            (lambda _ (invoke "make" "-C" "docs" "man" "info")))
@@ -1842,32 +1853,32 @@ This is a part of the TiLP project.")
                            Keywords=Game;Emulator;Arcade;~%"
                            executable)))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("sphinx" ,python-sphinx)
-       ("sphinxcontrib-svg2pdfconverter" ,python-sphinxcontrib-svg2pdfconverter)
-       ("texinfo" ,texinfo)))
+     (list pkg-config
+           python-sphinx
+           python-sphinxcontrib-svg2pdfconverter
+           texinfo))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("asio" ,asio)
-       ("expat" ,expat)
-       ("flac" ,flac)
-       ("fontconfig" ,fontconfig)
-       ("glm" ,glm)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("lua" ,lua)
-       ("portaudio" ,portaudio)
-       ("portmidi" ,portmidi)
-       ("pugixml" ,pugixml)
-       ("pulseaudio" ,pulseaudio)
-       ("python-wrapper" ,python-wrapper)
-       ("qtbase" ,qtbase-5)
-       ("rapidjson" ,rapidjson)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-ttf)))
-       ("sqlite" ,sqlite)
-       ("utf8proc" ,utf8proc)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           asio
+           expat
+           flac
+           fontconfig
+           glm
+           libjpeg-turbo
+           libxi
+           libxinerama
+           lua
+           portaudio
+           portmidi
+           pugixml
+           pulseaudio
+           python-wrapper
+           qtbase-5
+           rapidjson
+           (sdl-union (list sdl2 sdl2-ttf))
+           sqlite
+           utf8proc
+           zlib))
     (home-page "https://www.mamedev.org")
     (synopsis "Multi-purpose emulation framework")
     (description "MAME's purpose is to preserve decades of software
@@ -2186,213 +2197,186 @@ framework based on QEMU.")
       (license license:gpl2+))))
 
 (define-public ppsspp
-  ;; Use a recent commit as fixes for ffmpeg 4.4 haven't been released as of
-  ;; 1.11.3.
-  (let ((commit "69fa20744958aef8da9ca052ba7675fdc1636e46")
-        (revision "1"))
-    (package
-      (name "ppsspp")
-      (version (git-version "1.11.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/hrydgard/ppsspp")
-               (commit commit)))
-         (sha256
-          (base32 "0r8w4hllhn6zsfxlajxw3sn3f8vsri45srr4mdwsffzcb4hvl0cr"))
-         (file-name (git-file-name name version))
-         (patches
-          (search-patches "ppsspp-disable-upgrade-and-gold.patch"))
-         (modules '((guix build utils)))
-         (snippet
-          `(begin
-             ;; The following is quite a heavy-handed way of unbundling PPSSPP.
-             ;; There are still a number of external sources, that we don't
-             ;; remove here.  Some may be packaged, others are not.
-             ;; First, we patch existing sources to include the right headers.
-             (substitute* (append (find-files "Common" ".*\\.(h|cpp)")
-                                  (find-files "Core" ".*\\.(h|cpp)")
-                                  (find-files "GPU" ".*\\.(h|cpp)")
-                                  (find-files "SDL" ".*\\.(h|cpp)")
-                                  (find-files "UI" ".*\\.(h|cpp)"))
-               ;; These headers are all hard-coded in the original source.
-               (("ext/cityhash/") "")
-               (("ext/glslang/glslang/") "glslang/")
-               (("ext/glslang/") "glslang/")
-               (("ext/miniupnp/") "")
-               (("ext/SPIRV-Cross/") "spirv_cross/")
-               (("ext/vulkan/") "vulkan/")
-               (("ext/xxhash.h") "xxhash.h")
-               ;; These definitions do not actually exist in the Vulkan headers,
-               ;; but PPSSPP defines them in ext/vulkan.
-               (("VK_FORMAT_BEGIN_RANGE") "VK_FORMAT_UNDEFINED")
-               (("VK_FORMAT_END_RANGE") "VK_FORMAT_ASTC_12x12_SRGB_BLOCK"))
-             ;; Next, we patch CMakeLists.
-             (substitute* "CMakeLists.txt"
-               ;; Drop unnecessary includes and targets.
-               (("include_directories\\(ext/glslang\\)") "")
-               (("include_directories\\(ext/xxhash\\)") "")
-               (("include_directories\\(ext/cityhash\\)") "")
-               (("include_directories\\(ext/zstd.*") "")
-               (("libzstd_static") "zstd")
-               (("set_target_properties\\(cityhash .*\\)") "")
-               ;; Fix linking to GLEW.
-               (("TARGET Ext::GLEW") "true")
-               (("target_link_libraries\\(native Ext::GLEW\\)")
-                "find_package(GLEW)\ntarget_link_libraries(native GLEW::GLEW)")
-               (("Ext::Snappy") "snappy")
-               ;; Don't search for cityhash/xxhash, we already have them.
-               (("add_library\\((city|xx)hash STATIC") "if()\nendif(")
-               (("ext/xxhash\\.[ch]") "")
-               (("ext/cityhash/.*\\.(cpp|h)") "")
-               (("if\\(USE_MINIUPNPC\\)" all)
-                (string-append all "
+  (package
+    (name "ppsspp")
+    (version "1.12.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hrydgard/ppsspp")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1p6pmp0lhqhk9h5r9xsjicd0zn08bwx3y8533npps96ixwbm2y15"))
+       (file-name (git-file-name name version))
+       (patches
+        (search-patches "ppsspp-disable-upgrade-and-gold.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           ;; The following is quite a heavy-handed way of unbundling PPSSPP.
+           ;; There are still a number of external sources, that we don't
+           ;; remove here.  Some may be packaged, others are not.
+           ;; First, we patch existing sources to include the right headers.
+           (substitute* (append (find-files "Common" ".*\\.(h|cpp)")
+                                (find-files "Core" ".*\\.(h|cpp)")
+                                (find-files "GPU" ".*\\.(h|cpp)")
+                                (find-files "SDL" ".*\\.(h|cpp)")
+                                (find-files "UI" ".*\\.(h|cpp)"))
+             ;; These headers are all hard-coded in the original source.
+             (("ext/cityhash/") "")
+             (("ext/glslang/glslang/") "glslang/")
+             (("ext/glslang/") "glslang/")
+             (("ext/miniupnp/") "")
+             (("ext/SPIRV-Cross/") "spirv_cross/")
+             (("ext/vulkan/") "vulkan/")
+             (("ext/xxhash.h") "xxhash.h")
+             ;; These definitions do not actually exist in the Vulkan headers,
+             ;; but PPSSPP defines them in ext/vulkan.
+             (("VK_FORMAT_BEGIN_RANGE") "VK_FORMAT_UNDEFINED")
+             (("VK_FORMAT_END_RANGE") "VK_FORMAT_ASTC_12x12_SRGB_BLOCK"))
+           ;; Next, we patch CMakeLists.
+           (substitute* "CMakeLists.txt"
+             ;; Drop unnecessary includes and targets.
+             (("include_directories\\(ext/glslang\\)") "")
+             (("include_directories\\(ext/xxhash\\)") "")
+             (("include_directories\\(ext/cityhash\\)") "")
+             (("include_directories\\(ext/zstd.*") "")
+             (("libzstd_static") "zstd")
+             (("set_target_properties\\(cityhash .*\\)") "")
+             ;; Fix linking to GLEW.
+             (("TARGET Ext::GLEW") "true")
+             (("target_link_libraries\\(native Ext::GLEW\\)")
+              "find_package(GLEW)\ntarget_link_libraries(native GLEW::GLEW)")
+             (("Ext::Snappy") "snappy")
+             ;; Don't search for cityhash/xxhash, we already have them.
+             (("add_library\\((city|xx)hash STATIC") "if()\nendif(")
+             (("ext/xxhash\\.[ch]") "")
+             (("ext/cityhash/.*\\.(cpp|h)") "")
+             (("if\\(USE_MINIUPNPC\\)" all)
+              (string-append all "
 find_package(miniupnpc)
 target_link_libraries(${CoreLibName} miniupnpc ${LDLIBS})
 elseif(FALSE)"))
-               ;; Link all of spirv-cross.
-               (("spirv-cross-glsl" all)
-                (string-append all
-                               " spirv-cross-core spirv-cross-cpp"
-                               " spirv-cross-reflect spirv-cross-util")))
-             (substitute* "ext/CMakeLists.txt"
-               (("add_subdirectory\\(glew.*") "")
-               (("add_subdirectory\\(glslang.*") "")
-               (("add_subdirectory\\(snappy.*") "")
-               (("add_subdirectory\\(SPIRV-Cross-build.*") "")
-               (("add_subdirectory\\(zstd.*") ""))
-             ;; Finally, we can delete the bundled sources.
-             (for-each delete-file-recursively
-                       '("MoltenVK"
-                         "ext/cmake"
-                         "ext/glew"
-                         "ext/glslang" "ext/glslang-build"
-                         "ext/miniupnp" "ext/miniupnp-build"
-                         "ext/native"
-                         "ext/snappy"
-                         "ext/SPIRV-Cross" "ext/SPIRV-Cross-build"
-                         "ext/vulkan"
-                         "ext/xxhash.c"
-                         "ext/xxhash.h"
-                         "ext/zlib"
-                         "ext/zstd"))
-             ;; Since we are not including git as an input, PPSSPP is confused
-             ;; about its version.  Let's fix that here.
-             (substitute* "git-version.cmake"
-               (("unknown") ,version))))))
-      (build-system cmake-build-system)
-      (native-inputs
-       (list pkg-config python))
-      (inputs
-       `(("cityhash" ,cityhash)
-         ;; ppsspp doesn't yet build with ffmpeg 4.4 (see:
-         ("ffmpeg" ,ffmpeg)
-         ("glew" ,glew)
-         ("glslang" ,glslang)
-         ("libpng" ,libpng)
-         ("libzip" ,libzip)
-         ("mesa" ,mesa)
-         ("miniupnpc" ,miniupnpc)
-         ("sdl2" ,sdl2)
-         ("snappy" ,snappy)
-         ("spirv-cross" ,spirv-cross)
-         ("vulkan-headers" ,vulkan-headers)
-         ("vulkan-loader" ,vulkan-loader)
-         ("xxhash" ,xxhash)
-         ("zlib" ,zlib)
-         ("zstd" ,zstd "lib")
-;         ("zstd" ,zstd "static")
-         ;; TODO: unbundle armips.
-         ("armips-source" ,(package-source armips))
-         ("lang"
-          ,(let ((commit "6bd5b4bc983917ea8402f73c726b46e36f3de0b4"))
-             (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/hrydgard/ppsspp-lang")
-                     (commit commit)))
-               (sha256
-                (base32 "08npr3a4xskf85gnlxidl4ksc3rhc7m5rgnj7vsbjvhvw5ap02qx"))
-               (file-name (git-file-name "ppsspp-lang" commit)))))
-         ("tests"
-          ,(let ((commit "1047400eaec6bcbdb2a64d326375ef6a6617c4ac"))
-             (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/hrydgard/pspautotests")
-                     (commit commit)))
-               (sha256
-                (base32 "0nxv1lskcr8zbg6nrfai21mxsw0n5vaqhbsa41c3cxfyx5c4w2pg"))
-               (file-name (git-file-name "pspautotests" commit)))))))
-      (arguments
-       `(#:out-of-source? #f
-         #:configure-flags (list "-DUSE_DISCORD=OFF"
-                                 "-DUSE_SYSTEM_FFMPEG=ON"
-                                 "-DUSE_SYSTEM_LIBZIP=ON"
-                                 ;; for testing
-                                 "-DUNITTEST=ON" "-DHEADLESS=ON")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'add-external-sources
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; TODO: unbundle armips.
-               (copy-recursively (assoc-ref inputs "armips-source")
-                                 "ext/armips")
-               ;; Some tests are externalised, so we add them here.
-               (copy-recursively (assoc-ref inputs "tests")
-                                 "pspautotests")
-               ;; i18n is externalised, so we add it here.
-               (copy-recursively (assoc-ref inputs "lang")
-                                 "assets/lang")
-               #t))
-           (add-after 'unpack 'fix-unittest-build
-             (lambda _
-               (substitute* "CMakeLists.txt"
-                 (("unittest/TestVertexJit.cpp" all)
-                  (string-append all " unittest/TestShaderGenerators.cpp")))
-               (substitute* "unittest/TestVertexJit.cpp"
-                 (("#include \"unittest/UnitTest.h\"" all)
-                  (string-append all "\n#include <cmath>")))
-               #t))
-           (replace 'check
-             (lambda _
-               (for-each
-                (lambda (t) (invoke "./unitTest" t))
-                '("Arm64Emitter" "ArmEmitter" "X64Emitter" "VertexJit" "Asin"
-                  "SinCos" #|"VFPUSinCos" SIGSEGV|# "MathUtil" "Parsers" "Jit"
-                  "MatrixTranspose" "ParseLBN" "QuickTexHash" "CLZ"
-                  #|"ShaderGenerators"|#))
-               (invoke "python3" "test.py" "-g")
-               #t))
-           (replace 'install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin/ppsspp (string-append out "/bin/ppsspp"))
-                      (share (string-append out "/share/ppsspp")))
-                 (copy-recursively "icons/hicolor"
-                                   (string-append out "/share/icons/hicolor"))
-                 (install-file "PPSSPPSDL" share)
-                 (copy-recursively "assets" (string-append share "/assets"))
+             ;; Link all of spirv-cross.
+             (("spirv-cross-glsl" all)
+              (string-append all
+                             " spirv-cross-core spirv-cross-cpp"
+                             " spirv-cross-reflect spirv-cross-util")))
+           (substitute* "ext/CMakeLists.txt"
+             (("add_subdirectory\\(glew.*") "")
+             (("add_subdirectory\\(glslang.*") "")
+             (("add_subdirectory\\(snappy.*") "")
+             (("add_subdirectory\\(SPIRV-Cross-build.*") "")
+             (("add_subdirectory\\(zstd.*") ""))
+           ;; Finally, we can delete the bundled sources.
+           (for-each delete-file-recursively
+                     '("ext/cmake"
+                       "ext/glew"
+                       "ext/glslang" "ext/glslang-build"
+                       "ext/miniupnp" "ext/miniupnp-build"
+                       "ext/native"
+                       "ext/snappy"
+                       "ext/SPIRV-Cross" "ext/SPIRV-Cross-build"
+                       "ext/vulkan"
+                       "ext/xxhash.c"
+                       "ext/xxhash.h"
+                       "ext/zlib"
+                       "ext/zstd"))
+           ;; Since we are not including git as an input, PPSSPP is confused
+           ;; about its version.  Let's fix that here.
+           (substitute* "git-version.cmake"
+             (("unknown") ,version))))))
+    (build-system cmake-build-system)
+    (native-inputs (list pkg-config python))
+    (inputs (list bash
+                  cityhash
+                  ffmpeg
+                  glew
+                  glslang
+                  libpng
+                  libzip
+                  mesa
+                  miniupnpc
+                  sdl2
+                  snappy
+                  spirv-cross
+                  vulkan-headers
+                  vulkan-loader
+                  xxhash
+                  zlib
+                  `(,zstd "lib")))
+    (arguments
+     (list
+      #:out-of-source? #f
+      #:configure-flags #~(list "-DUSE_DISCORD=OFF"
+                                "-DUSE_SYSTEM_FFMPEG=ON"
+                                "-DUSE_SYSTEM_LIBZIP=ON"
+                                ;; for testing
+                                "-DUNITTEST=ON" "-DHEADLESS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-external-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; TODO: unbundle armips.
+              (copy-recursively #$(package-source armips) "ext/armips")
+              ;; Some tests are externalised, so we add them here.
+              (copy-recursively
+               #$(let ((commit "1047400eaec6bcbdb2a64d326375ef6a6617c4ac"))
+                   (origin
+                     (method git-fetch)
+                     (uri (git-reference
+                           (url "https://github.com/hrydgard/pspautotests")
+                           (commit commit)))
+                     (sha256
+                      (base32 "0nxv1lskcr8zbg6nrfai21mxsw0n5vaqhbsa41c3cxfyx5c4w2pg"))
+                     (file-name (git-file-name "pspautotests" commit))))
+               "pspautotests")))
+          (add-after 'unpack 'fix-unittest-build
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("unittest/TestVertexJit.cpp" all)
+                 (string-append all " unittest/TestShaderGenerators.cpp")))
+              (substitute* "unittest/TestVertexJit.cpp"
+                (("#include \"unittest/UnitTest.h\"" all)
+                 (string-append all "\n#include <cmath>")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 (lambda (t) (invoke "./unitTest" t))
+                 '("Arm64Emitter" "ArmEmitter" "X64Emitter" "VertexJit" "Asin"
+                   "SinCos" "VFPUSinCos" "MathUtil" "Parsers" "Jit"
+                   "MatrixTranspose" "ParseLBN" "QuickTexHash" "CLZ"
+                   #|"ShaderGenerators"|#))
+                (invoke "python3" "test.py" "-g"))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin/ppsspp (string-append out "/bin/ppsspp"))
+                     (share (string-append out "/share/ppsspp")))
+                (copy-recursively "icons/hicolor"
+                                  (string-append out "/share/icons/hicolor"))
+                (install-file "PPSSPPSDL" share)
+                (copy-recursively "assets" (string-append share "/assets"))
 
-                 (make-desktop-entry-file
-                  (string-append out "/share/applications/ppsspp.desktop")
-                  #:name "PPSSPP"
-                  #:exec (string-append share "/PPSSPPSDL")
-                  #:icon "ppsspp")
-                 (mkdir-p (string-append out "/bin"))
-                 (with-output-to-file bin/ppsspp
-                   (lambda ()
-                     (format #t "#!~a~%exec ~a/PPSSPPSDL \"$@\""
-                             (which "sh") share)))
-                 (chmod bin/ppsspp #o755)
-                 #t))))))
-      (home-page "https://www.ppsspp.org/")
-      (synopsis "PSP emulator")
-      (description
-       "PPSSPP is a ``high-level'' emulator simulating the PSP operating
+                (make-desktop-entry-file
+                 (string-append out "/share/applications/ppsspp.desktop")
+                 #:name "PPSSPP"
+                 #:exec (string-append share "/PPSSPPSDL")
+                 #:icon "ppsspp")
+                (mkdir-p (string-append out "/bin"))
+                (with-output-to-file bin/ppsspp
+                  (lambda ()
+                    (format #t "#!~a~%exec ~a/PPSSPPSDL \"$@\""
+                            (search-input-file inputs "/bin/bash") share)))
+                (chmod bin/ppsspp #o755)))))))
+    (home-page "https://www.ppsspp.org/")
+    (synopsis "PSP emulator")
+    (description
+     "PPSSPP is a ``high-level'' emulator simulating the PSP operating
 system.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public exomizer
   (package

@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -36,20 +36,21 @@
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen@protonmail.com>
 ;;; Copyright © 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
-;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Alex McGrath <amk@amk.ie>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2020 Ivan Kozlov <kanichos@yandex.ru>
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021,2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
@@ -57,6 +58,8 @@
 ;;; Copyright © 2021 Robin Templeton <robin@terpri.org>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Bird <birdsite@airmail.cc>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -144,6 +147,7 @@
   #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
@@ -294,7 +298,7 @@
        ("zlib" ,zlib)))
     (synopsis "Audio/Video Transcoder")
     (description "Transcode is a fast, versatile and command-line based
-audio/video everything to everything converter primarily focussed on producing
+audio/video everything to everything converter primarily focused on producing
 AVI video files with MP3 audio, but also including a program to read all the
 video and audio streams from a DVD.")
     (home-page
@@ -504,18 +508,20 @@ receiving MJPG streams.")
 (define-public mjpegtools
   (package
     (name "mjpegtools")
-    (version "2.1.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri
-        (string-append "https://sourceforge.net/projects/" name "/files/"
+        (string-append "https://sourceforge.net/projects/mjpeg/files/"
                        name "/" version "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kvhxr5hkabj9v7ah2rzkbirndfqdijd9hp8v52c1z6bxddf019w"))))
+        (base32 "16pl22ra3x2mkp8p3awslhlhj46b1nq9g89301gb0q4rgmnm705i"))))
     (build-system gnu-build-system)
     (inputs
-     (list gtk+-2 libdv libpng libquicktime sdl))
+     (list gtk+-2 libdv libjpeg-turbo libpng libquicktime sdl))
+    (native-inputs
+     (list pkg-config))
     (synopsis "Tools for handling MPEG")
     (description "Mjpeg tools is a suite of programs which support video capture,
 editing, playback, and compression to MPEG of MJPEG video.  Edit, play and
@@ -1907,7 +1913,7 @@ videoformats depend on the configuration flags of ffmpeg.")
        ("libogg" ,libogg)
        ("libpng" ,libpng)
        ("libraw1394" ,libraw1394)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("libsamplerate" ,libsamplerate)
        ("libsecret" ,libsecret)
        ("libssh2" ,libssh2)
@@ -2098,7 +2104,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.34.0")
+    (version "0.34.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2106,7 +2112,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0kqckrgvpx42gdmnc644lpwbimwf1am256xd670w2b8sbrjv3bm9"))))
+               (base32 "12qxwm1ww5vhjddl8yvj1xa0n1fi9z3lmzwhaiday2v59ca0qgsk"))))
     (build-system waf-build-system)
     (native-inputs
      (list perl ; for zsh completion file
@@ -2242,6 +2248,28 @@ possibility to play Youtube videos, download subtitles, remember
 the last played position, etc.")
     (license license:gpl2+)))
 
+(define-public gallery-dl
+  (package
+    (name "gallery-dl")
+    (version "1.20.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/mikf/gallery-dl"
+                                  "/releases/download/v" version "/gallery_dl-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0qkz8aznvybdqrjxsl6ir319ras05mi8l0sal4mgi18l70jndh51"))))
+    (build-system python-build-system)
+    (inputs (list python-requests ffmpeg))
+    (home-page "https://github.com/mikf/gallery-dl")
+    (synopsis "Command-line program to download images from several sites")
+    (description "Command-line program to download image galleries
+and collections from several image hosting sites
+While this package can use youtube-dl or yt-dlp packages to download videos,
+the focus is more on images and image hosting sites.")
+    (license license:gpl2)))
+
 (define-public gnome-mpv
   (deprecated-package "gnome-mpv" celluloid))
 
@@ -2287,7 +2315,7 @@ To load this plugin, specify the following option when starting mpv:
 (define-public libvpx
   (package
     (name "libvpx")
-    (version "1.10.0")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2296,7 +2324,7 @@ To load this plugin, specify the following option when starting mpv:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p4v6j1505n3gnvx3iksciyi818ymxpazj9fmdrchzbl9pfzg4qi"))
+                "00f1jrclai2b6ys78dpsg6r1mvcyxlna93vxcz8zjyia24c2pjsb"))
               (patches (search-patches "libvpx-CVE-2016-2818.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -2329,14 +2357,14 @@ To load this plugin, specify the following option when starting mpv:
 (define-public youtube-dl
   (package
     (name "youtube-dl")
-    (version "2021.06.06")
+    (version "2021.12.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://youtube-dl.org/downloads/latest/"
                                   "youtube-dl-" version ".tar.gz"))
               (sha256
                (base32
-                "1hqan9h55x9gfdakw554vic68w9gpvhblchwxlw265zxp56hxjrw"))
+                "1prm84ci1n1kjzhikhrsbxbgziw6br822psjnijm2ibqnz49jfwz"))
               (snippet
                '(begin
                   ;; Delete the pre-generated files, except for the man page
@@ -2346,8 +2374,7 @@ To load this plugin, specify the following option when starting mpv:
                                           ;;"youtube-dl.1"
                                           "youtube-dl.bash-completion"
                                           "youtube-dl.fish"
-                                          "youtube-dl.zsh"))
-                  #t))))
+                                          "youtube-dl.zsh"))))))
     (build-system python-build-system)
     (arguments
      ;; The problem here is that the directory for the man page and completion
@@ -2366,8 +2393,7 @@ To load this plugin, specify the following option when starting mpv:
                       ;; Continue respecting the --ffmpeg-location argument.
                       (substitute* "youtube_dl/postprocessor/ffmpeg.py"
                         (("\\.get\\('ffmpeg_location'\\)" match)
-                         (format #f "~a or '~a'" match (which "ffmpeg"))))
-                      #t))
+                         (format #f "~a or '~a'" match (which "ffmpeg"))))))
                   (add-before 'build 'build-generated-files
                     (lambda _
                       ;; Avoid the make targets that require pandoc.
@@ -2390,8 +2416,7 @@ To load this plugin, specify the following option when starting mpv:
                           (("'etc/")
                            (string-append "'" prefix "/etc/"))
                           (("'share/")
-                           (string-append "'" prefix "/share/")))
-                        #t)))
+                           (string-append "'" prefix "/share/"))))))
                   (add-after 'install 'install-completion
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -2399,8 +2424,7 @@ To load this plugin, specify the following option when starting mpv:
                                                  "/share/zsh/site-functions")))
                         (mkdir-p zsh)
                         (copy-file "youtube-dl.zsh"
-                                   (string-append zsh "/_youtube-dl"))
-                        #t))))))
+                                   (string-append zsh "/_youtube-dl"))))))))
     (native-inputs
      (list zip))
     (inputs
@@ -2410,6 +2434,7 @@ To load this plugin, specify the following option when starting mpv:
      "Youtube-dl is a small command-line program to download videos from
 YouTube.com and many more sites.")
     (home-page "https://yt-dl.org")
+    (properties '((release-monitoring-url . "https://yt-dl.org/downloads/")))
     (license license:public-domain)))
 
 (define-public yt-dlp
@@ -2478,6 +2503,7 @@ YouTube.com and many more sites.")
 YouTube.com and many more sites.  It is a fork of youtube-dl with a
 focus on adding new features while keeping up-to-date with the
 original project.")
+    (properties '((release-monitoring-url . "https://pypi.org/project/yt-dlp/")))
     (home-page "https://github.com/yt-dlp/yt-dlp")))
 
 (define-public youtube-dl-gui
@@ -3380,6 +3406,7 @@ be used for realtime video capture via Linux-specific APIs.")
        ("qtbase" ,qtbase-5)
        ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
+       ("qtwayland" ,qtwayland)
        ("speexdsp" ,speexdsp)
        ("v4l-utils" ,v4l-utils)
        ("wayland" ,wayland)
@@ -3790,7 +3817,7 @@ supported players in addition to this package.")
 (define-public handbrake
   (package
     (name "handbrake")
-    (version "1.4.2")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/HandBrake/HandBrake/"
@@ -3798,7 +3825,7 @@ supported players in addition to this package.")
                                   "HandBrake-" version "-source.tar.bz2"))
               (sha256
                (base32
-                "0qgvdpnjjvh9937cr0yry1lkz5fj6x9pz32fx7s80c9fvjvq33lb"))
+                "1w1hjj6gvdydypw4mdn281w0x163is59cfm7k6bq371hsl3gx69r"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove "contrib" and source not necessary for
@@ -4375,6 +4402,7 @@ tools for styling them, including a built-in real-time video preview.")
             libpeas
             libnotify
             pango
+            python
             python-gst
             python-numpy
             python-matplotlib
@@ -4387,9 +4415,6 @@ tools for styling them, including a built-in real-time video preview.")
        ("pkg-config" ,pkg-config)))
      (arguments
       `(#:glib-or-gtk? #t
-        ;; Pitivi is not yet compatible with Meson 0.60:
-        ;; https://gitlab.gnome.org/GNOME/pitivi/-/issues/2593
-        #:meson ,meson-0.59
         #:phases
         (modify-phases %standard-phases
           (add-after 'glib-or-gtk-wrap 'wrap-other-dependencies
@@ -4807,7 +4832,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "21.10.31")
+    (version "21.12.24")
     (source
      (origin
        (method git-fetch)
@@ -4816,12 +4841,23 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jgv6wl65gf6c4nmfica8k9vbgn3w3594d1phx1mb7zjvyy9y97k"))))
+        (base32 "1l27dqiyi3af0v155w62ib9xcmqyjj2yzs83aqhcrz5pb3i3j18r"))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f ;there are no tests
+     `(#:tests? #f                      ;there are no tests
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-executable-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Shotcut expects ffmpeg and melt executables in the shotcut
+             ;; directory.  Use full store paths.
+             (let* ((ffmpeg (assoc-ref inputs "ffmpeg"))
+                    (mlt (assoc-ref inputs "mlt")))
+               (substitute* "src/jobs/ffmpegjob.cpp"
+                 (("\"ffmpeg\"") (string-append "\"" ffmpeg "/bin/ffmpeg\"")))
+               (substitute* "src/jobs/meltjob.cpp"
+                 (("\"melt\"") (string-append "\"" mlt "/bin/melt\""))
+                 (("\"melt-7\"") (string-append "\"" mlt "/bin/melt-7\""))))))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
@@ -4834,24 +4870,26 @@ transitions, and effects and then export your film to many common formats.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (frei0r (assoc-ref inputs "frei0r-plugins"))
-                    (ffmpeg (assoc-ref inputs "ffmpeg"))
                     (jack (assoc-ref inputs "jack"))
+                    (ladspa (assoc-ref inputs "ladspa"))
+                    (mlt (assoc-ref inputs "mlt"))
                     (sdl2 (assoc-ref inputs "sdl2")))
                (wrap-program (string-append out "/bin/shotcut")
-                 `("PATH" ":" prefix
-                   ,(list (string-append ffmpeg "/bin")))
+                 `("FREI0R_PATH" ":" =
+                   (,(string-append frei0r "/lib/frei0r-1")))
+                 `("LADSPA_PATH" ":" =
+                   (,(string-append ladspa "/lib/ladspa")))
                  `("LD_LIBRARY_PATH" ":" prefix
                    ,(list (string-append jack "/lib" ":" sdl2 "/lib")))
-                 `("FREI0R_PATH" ":" =
-                   (,(string-append frei0r "/lib/frei0r-1/")))
-                 `("MLT_PREFIX" ":" =
-                   (,(assoc-ref inputs "mlt"))))))))))
+                 `("PATH" ":" prefix
+                   ,(list (string-append mlt "/bin"))))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
+       ("python-wrapper" ,python-wrapper)
        ("qttools" ,qttools)))
     (inputs
-     (list ffmpeg
+     (list bash-minimal
+           ffmpeg
            frei0r-plugins
            jack-1
            ladspa
@@ -5064,7 +5102,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
 (define-public svt-av1
   (package
     (name "svt-av1")
-    (version "0.8.7")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -5073,7 +5111,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xlxb6kn6hqz9dxz0nd905m4i2mwjwq1330rbabwzmg4b66cdslg"))))
+        (base32 "1mavggl6f7pk7xs22859vm19qp9csjvdcys3b6n2f4pljqkp4qcj"))))
     (build-system cmake-build-system)
     ;; SVT-AV1 only supports 64-bit Intel-compatible CPUs.
     (supported-systems '("x86_64-linux"))
@@ -5162,10 +5200,38 @@ result in several formats:
     (home-page "https://www.gen2vdr.de/wirbel/w_scan/index2.html")
     (license license:gpl2+)))
 
+;;; XXX: This crate is used only for rav1e and can be removed once the latter
+;;; is updated.  See <https://issues.guix.gnu.org/52837>.
+(define rust-dav1d-sys-0.3.2
+  (package
+    (name "rust-dav1d-sys")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dav1d-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jdxhnlxcml6jd67lx78ifzkn1xm18zfk4li7vjdh3fa61i073kx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.54)
+        ("rust-metadeps" ,rust-metadeps-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list dav1d clang llvm))
+    (home-page "https://github.com/rust-av/dav1d-rs")
+    (synopsis "FFI bindings to dav1d")
+    (description "This package provides FFI bindings to dav1d.")
+    (license license:expat)))
+
 (define-public rav1e
   (package
     (name "rav1e")
-    (version "0.4.1")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
@@ -5174,15 +5240,18 @@ result in several formats:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "00rjil6qbrwfxhhlq9yvidxm0gp9qdbywhf5zvkj85lykbhyff09"))))
+         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-aom-sys" ,rust-aom-sys-0.2)
+     `(;; Strip the '--release' flag to work around the doctest failures with
+       ;; Rust 1.57 (see: https://github.com/xiph/rav1e/issues/2851).
+       #:cargo-test-flags '()
+       #:cargo-inputs
+       (("rust-aom-sys" ,rust-aom-sys-0.3)
         ("rust-arbitrary" ,rust-arbitrary-0.4)
         ("rust-arg-enum-proc-macro" ,rust-arg-enum-proc-macro-0.3)
-        ("rust-arrayvec" ,rust-arrayvec-0.5)
-        ("rust-av-metrics" ,rust-av-metrics-0.6)
+        ("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-av-metrics" ,rust-av-metrics-0.7)
         ("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-bitstream-io" ,rust-bitstream-io-1)
         ("rust-byteorder" ,rust-byteorder-1)
@@ -5209,7 +5278,7 @@ result in several formats:
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-rust-hawktracer" ,rust-rust-hawktracer-0.7)
-        ("rust-rustc-version" ,rust-rustc-version-0.3)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
         ("rust-scan-fmt" ,rust-scan-fmt-0.2)
         ("rust-serde" ,rust-serde-1)
         ("rust-signal-hook" ,rust-signal-hook-0.3)
@@ -5221,16 +5290,21 @@ result in several formats:
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-y4m" ,rust-y4m-0.7))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
         ("rust-cc" ,rust-cc-1)
         ("rust-criterion" ,rust-criterion-0.3)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
-        ("rust-semver" ,rust-semver-0.11))
+        ("rust-semver" ,rust-semver-1))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-versions
+           (lambda _
+             (substitute* "Cargo.toml"
+               ;; Allow using more recent versions of
+               (("~3.1.2") "~3"))))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -5477,20 +5551,18 @@ elementary stream are provided.")
        #:make-flags
        #~(list (string-append "prefix=" #$output))
        #:phases
-       '(modify-phases %standard-phases
+       #~(modify-phases %standard-phases
           (delete 'configure)
           (delete 'build)
           (delete 'check)
           (add-after 'install 'wrap-program
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((vcs (string-append (assoc-ref outputs "out") "/bin/vcs"))
-                    (ffmpeg (assoc-ref inputs "ffmpeg"))
-                    (imagemagick (assoc-ref inputs "imagemagick")))
-                (wrap-program vcs
-                  `("PATH" ":" prefix
-                    ,(map (lambda (dir)
-                            (string-append dir "/bin"))
-                          (list ffmpeg imagemagick))))))))))
+            (lambda _
+              (wrap-program (string-append #$output "/bin/vcs")
+                `("PATH" ":" prefix
+                  ,(map (lambda (dir)
+                          (string-append dir "/bin"))
+                        (list #$(this-package-input "ffmpeg")
+                              #$(this-package-input "imagemagick"))))))))))
    (inputs
      (list bash-minimal ffmpeg imagemagick))
    (synopsis "Create contact sheets (preview images) from videos")

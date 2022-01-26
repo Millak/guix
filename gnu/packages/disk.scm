@@ -93,6 +93,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system scons)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -635,7 +636,7 @@ systems.  Output format is completely customizable.")
     (inputs
      (list eudev parted))
     (home-page "http://oss.digirati.com.br/f3/")
-    (synopsis "Test real capacity of flash memory cards and such.")
+    (synopsis "Test real capacity of flash memory cards and such")
     (description "F3 (Fight Flash Fraud or Fight Fake Flash) tests the full
 capacity of a flash card (flash drive, flash disk, pendrive).  F3 writes to
 the card and then checks if can read it.  It will assure you haven't been sold
@@ -811,7 +812,7 @@ passphrases.")
 (define-public ndctl
   (package
     (name "ndctl")
-    (version "71.1")
+    (version "72.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -820,8 +821,28 @@ passphrases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vi61bm9wyawklswh9mj9zdp28ar7r97qckwnhgiyila73fb3jx2"))))
+                "1lvrhlad5n43bal053ihgbwr1k4ka2kscrjwr9rs5xnf2vy7204v"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-asciidoctor" ; use docbook-xsl instead
+                   "--without-systemd")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-version
+                 ;; Our VERSION's always better than the build's poor guess.
+                 (lambda _
+                   (with-output-to-file "version"
+                     (lambda _ (display #$version)))))
+               (add-after 'unpack 'patch-FHS-file-names
+                 (lambda _
+                   (substitute* "git-version-gen"
+                     (("/bin/sh") (which "sh")))
+                   (substitute* "git-version"
+                     (("/bin/bash") (which "bash"))))))
+           #:make-flags
+           #~(list (string-append "BASH_COMPLETION_DIR=" #$output
+                                  "/share/bash-completion/completions"))))
     (native-inputs
      (list asciidoc
            automake
@@ -835,25 +856,12 @@ passphrases.")
            ;; Required for offline docbook generation.
            which))
     (inputs
-     (list eudev json-c keyutils kmod
+     (list eudev
+           iniparser
+           json-c
+           keyutils
+           kmod
            `(,util-linux "lib")))
-    (arguments
-     `(#:configure-flags
-       (list "--disable-asciidoctor"    ; use docbook-xsl instead
-             "--without-systemd")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-FHS-file-names
-           (lambda _
-             (substitute* "git-version-gen"
-               (("/bin/sh") (which "sh")))
-             (substitute* "git-version"
-               (("/bin/bash") (which "bash")))
-             #t)))
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "BASH_COMPLETION_DIR=" out
-                              "/share/bash-completion/completions")))))
     (home-page "https://github.com/pmem/ndctl")
     (synopsis "Manage the non-volatile memory device sub-system in the Linux kernel")
     (description
@@ -1217,8 +1225,8 @@ and a partitioning of the heap between kinds of memory (for NUMA).")
     (license license:bsd-3)))
 
 (define-public mmc-utils
-  (let ((commit "e9654ebc4a6a48642848822c4a1355a9de4958d1")
-        (revision "0"))
+  (let ((commit "3969aa4804edb8aed7bcb3c958e49d0c7388b067")
+        (revision "1"))
     (package
       (name "mmc-utils")
       (version (git-version "0.1" revision commit))
@@ -1226,12 +1234,11 @@ and a partitioning of the heap between kinds of memory (for NUMA).")
         (origin
           (method git-fetch)
           (uri (git-reference
-                 (url "https://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc-utils.git")
+                 (url "https://git.kernel.org/pub/scm/utils/mmc/mmc-utils.git")
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
-           (base32
-            "1dbsppsmky0r4z6kxwczrw8pih8bhc2pb61gsvs986r4xy6jr17a"))))
+           (base32 "0pvcm685x63afvp8795jd4vn4zs8psh8bs6j2yvk1kgrawpyk10g"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f ; No test suite
@@ -1247,7 +1254,8 @@ and a partitioning of the heap between kinds of memory (for NUMA).")
                (let* ((out (assoc-ref outputs "out"))
                       (man1 (string-append out "/share/man/man1")))
                  (install-file "man/mmc.1" man1)))))))
-      (home-page "https://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc-utils.git/")
+      (home-page
+       "https://www.kernel.org/doc/html/latest/driver-api/mmc/mmc-tools.html")
       (synopsis "Configure MMC storage devices from userspace")
       (description "mmc-utils is a command-line tool for configuring and
 inspecting MMC storage devices from userspace.")

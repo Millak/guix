@@ -4,9 +4,9 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016-2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
@@ -66,13 +66,13 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.6.0")
+    (version "1.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "0rh5b1rwdcvvagld8vpxnpaibszy1skpx39a0fwzd5gx5pwcjvfb"))))
+        (base32 "1gxsnw6viz2j3sm8ak2a8l7fcn4b2zm3kzfm8w57xxyyrzx7an5b"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy python-matplotlib python-pyparsing))
@@ -80,8 +80,10 @@
      (list openblas pybind11))
     (native-inputs
      (list python-cython
+           python-pydata-sphinx-theme
            python-pytest
            python-sphinx
+           python-sphinx-panels
            python-numpydoc
            gfortran
            perl
@@ -90,11 +92,13 @@
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-pythran
+           (lambda _
+             (setenv "SCIPY_USE_PYTHRAN" "0")))
          (add-before 'build 'change-home-dir
            (lambda _
              ;; Change from /homeless-shelter to /tmp for write permission.
-             (setenv "HOME" "/tmp")
-             #t))
+             (setenv "HOME" "/tmp")))
          (add-after 'unpack 'disable-broken-tests
            (lambda _
              (substitute* "scipy/sparse/linalg/dsolve/tests/test_linsolve.py"
@@ -105,8 +109,7 @@
              (substitute* "scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py"
                (("^def test_parallel_threads\\(\\):" m)
                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               m)))
-             #t))
+                               m)))))
          (add-before 'build 'configure-openblas
            (lambda* (#:key inputs #:allow-other-keys)
              (call-with-output-file "site.cfg"
@@ -124,8 +127,7 @@ atlas_libs = openblas
 "
                          (assoc-ref inputs "openblas")
                          (assoc-ref inputs "openblas")
-                         (assoc-ref inputs "openblas"))))
-             #t))
+                         (assoc-ref inputs "openblas"))))))
          (add-after 'install 'install-doc
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
@@ -151,8 +153,7 @@ atlas_libs = openblas
                                (let* ((dir (dirname file))
                                       (tgt-dir (string-append html "/" dir)))
                                  (install-file file html)))
-                             (find-files "." ".*")))))
-             #t))
+                             (find-files ".")))))))
          ;; Tests can only be run after the library has been installed and not
          ;; within the source directory.
          (delete 'check)
@@ -238,13 +239,7 @@ Cython.")
        (sha256
         (base32 "0bp1n771fj44kdp7a00bcvfwirvv2rc803b7g6yf3va7v0j29c8s"))))
     (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "nosetests" "-s" "-v" "skfuzzy")
-             #t)))))
+    (arguments '(#:tests? #f))   ;XXX: not compatible with newer numpy.testing
     (native-inputs
      (list python-nose))
     (propagated-inputs
@@ -335,13 +330,13 @@ of the SGP4 satellite tracking algorithm.")
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "1.3.4")
+    (version "1.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pandas" version))
        (sha256
-        (base32 "1z3gm521wpm3j13rwhlb4f2x0645zvxkgxij37i3imdpy39iiam2"))))
+        (base32 "1wd92ra8xcjgigbypid53gvby89myg68ica6r8hdw4hhvvsqahhy"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -378,23 +373,23 @@ of the SGP4 satellite tracking algorithm.")
                    (invoke "pytest" "-vv" "pandas" "--skip-slow"
                            "--skip-network"
                            "-k"
-                           ;; These tets access the internet:
-                           ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
-                           ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
-                           ;; TODO: the excel tests fail for unknown reasons
-                           (string-append "not test_wrong_url"
-                                          " and not test_excelwriter_fspath"
-                                          " and not test_ExcelWriter_dispatch"
-                                          ;; TODO: Missing input
-                                          " and not TestS3"
-                                          " and not s3"))))))))))
+                           (string-append
+                            ;; These test access the internet (see:
+                            ;; https://github.com/pandas-dev/pandas/issues/45085).:
+                            ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
+                            ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
+                            "not test_wrong_url"
+                            ;; TODO: Missing input
+                            " and not TestS3"
+                            " and not s3"))))))))))
     (propagated-inputs
      (list python-jinja2
            python-numpy
            python-openpyxl
            python-pytz
            python-dateutil
-           python-xlrd))
+           python-xlrd
+           python-xlsxwriter))
     (inputs
      (list which xclip xsel))
     (native-inputs
@@ -402,7 +397,6 @@ of the SGP4 satellite tracking algorithm.")
            python-beautifulsoup4
            python-lxml
            python-html5lib
-           python-nose
            python-pytest
            python-pytest-mock
            ;; Needed to test clipboard support.
@@ -418,33 +412,10 @@ doing practical, real world data analysis in Python.")
     (properties `((python2-variant . ,(delay python2-pandas))))
     (license license:bsd-3)))
 
-(define-public python-pandas-0.25
-  (package
-    (inherit python-pandas)
-    (version "0.25.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pandas" version))
-              (sha256
-               (base32
-                "191048m6kdc6yfvqs9w412lq60cfvigrsb57y0x116lwibgp9njj"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-pandas)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'patch-which
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((which (assoc-ref inputs "which")))
-                 (substitute* "pandas/io/clipboard/__init__.py"
-                   (("^CHECK_CMD = .*")
-                     (string-append "CHECK_CMD = \"" which "\"\n"))))
-               #t))
-           (delete 'prepare-x)))))))
-
 ;; Pandas 0.24.x are the last versions that support Python 2.
 (define-public python2-pandas
   (let ((pandas (package-with-python2
-                 (strip-python2-variant python-pandas-0.25))))
+                 (strip-python2-variant python-pandas))))
     (package
       (inherit pandas)
       (version "0.24.2")
@@ -704,26 +675,31 @@ annotations on an existing boxplots and barplots generated by seaborn.")
 (define-public python-upsetplot
   (package
     (name "python-upsetplot")
-    (version "0.4.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "UpSetPlot" version))
        (sha256
         (base32
-         "0kwljcmsvrxm33y3ssham2bwv4a5m31mv96y9h18va0cv7s3mqn1"))))
+         "11zrykwnb00w5spx4mnsnm0f9gwrphdczainpmwkyyi50vipaa2l"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Patch for compatibility with newer setuptools:
+        ;; https://github.com/jnothman/UpSetPlot/pull/178
+        '(substitute* "upsetplot/data.py"
+           (("import distutils")
+            "from distutils.version import LooseVersion")
+           (("if distutils\\.version\\.LooseVersion")
+            "if LooseVersion")))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-versioning
-           (lambda _
-             (substitute* "setup.py"
-               (("pytest-cov<2.6") "pytest-cov"))))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-v" "--doctest-modules"))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v" "--doctest-modules")))))))
     (propagated-inputs
      (list python-matplotlib python-pandas))
     (native-inputs
@@ -992,6 +968,12 @@ computing in Python.  It extends both the @code{concurrent.futures} and
          (add-after 'unpack 'make-files-writable
            (lambda _
              (for-each make-file-writable (find-files "."))))
+         (add-after 'unpack 'loosen-requirements
+           (lambda _
+             (substitute* "setup.py"
+               ;; Don't depend on a specific version of Pandas.
+               (("pandas==")
+                "pandas>="))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?

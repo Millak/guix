@@ -13,7 +13,7 @@
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Gabriel Hondet <gabrielhondet@gmail.com>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018, 2019 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2018, 2019, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
@@ -224,9 +224,12 @@ configurable through a graphical wizard.")
               (files '("share/terminfo")))))
     (home-page "https://github.com/thestinger/termite/")
     (synopsis "Keyboard-centric, VTE-based terminal")
-    (description "Termite is a minimal terminal emulator designed for use with
-tiling window managers.  It is a modal application, similar to Vim, with an
-insert mode and command mode where keybindings have different functions.")
+    (description "Termite is a minimal terminal emulator.  It is no longer
+maintained as the author considers it obsoleted by Alacritty.
+
+It was designed for use with tiling window managers.  It is a modal
+application, similar to Vim, with an insert mode and command mode where
+keybindings have different functions.")
 
     ;; Files under util/ are under the Expat license; the rest is LGPLv2+.
     (license license:lgpl2.0+)))
@@ -554,7 +557,7 @@ to all types of devices that provide serial consoles.")
 (define-public beep
   (package
     (name "beep")
-    (version "1.4.9")
+    (version "1.4.10")
     (source
      (origin
        (method git-fetch)
@@ -567,16 +570,24 @@ to all types of devices that provide serial consoles.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jmvqk6g5n0wzj9znw42njxq3mzw1769f4db99b83927hf4aidi4"))))
+        (base32 "05c2gxfqc12rgp88c65q7f5ha9gzh222vdh0qpdq1zmyhqj43pq1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags
+     `(#:make-flags
        (list (string-append "prefix=" (assoc-ref %outputs "out"))
              (string-append "pkgdocdir=$(docdir)/" ,name "-" ,version))
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+         (delete 'configure)            ; no configure script
+         (add-before 'check 'patch-tests
+           (lambda _
+             (substitute* "GNUmakefile"
+               (("/bin/bash")
+                (which "bash")))
+             (substitute* (find-files "tests" "\\.expected")
+               ;; The build environment lacks /dev/{console,tty*}.
+               ((": Permission denied")
+                ": No such file or directory")))))))
     (synopsis "Linux command-line utility to control the PC speaker")
     (description "beep allows the user to control the PC speaker with precision,
 allowing different sounds to indicate different events.  While it can be run
@@ -673,6 +684,7 @@ embedded kernel situations.")
                            (srfi srfi-26)
                            (ice-9 rdelim)
                            (ice-9 regex)))
+                (patches (search-patches "cool-retro-term-wctype.patch"))
                 (snippet
                  '(let* ((fonts '(;"1971-ibm-3278"     ; BSD 3-clause
                                   "1977-apple2"        ; Non-Free
@@ -875,7 +887,7 @@ a server/client mode.")
     (inputs
      (list libxft vte))
     (home-page "https://launchpad.net/sakura")
-    (synopsis "A simple but powerful libvte-based terminal emulator")
+    (synopsis "Simple but powerful libvte-based terminal emulator")
     (description "@code{Sakura} is a terminal emulator based on GTK+ and VTE.
 It's a terminal emulator with few dependencies, so you don't need a full GNOME
 desktop installed to have a decent terminal emulator.")
@@ -1418,6 +1430,10 @@ basic input/output.")
         ("rust-xdg" ,rust-xdg-2))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'use-new-nix
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "alacritty_terminal/Cargo.toml"
+               (("0.22.0") "^0.23.0"))))
          (add-after 'configure 'add-absolute-library-references
            (lambda* (#:key inputs cargo-inputs vendor-dir #:allow-other-keys)
              (let* ((glutin-name ,(package-name rust-glutin-0.26))

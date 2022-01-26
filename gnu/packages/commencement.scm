@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
@@ -2496,6 +2496,7 @@ exec " gcc "/bin/" program
        ,@(substitute-keyword-arguments (package-arguments findutils)
            ((#:configure-flags flags ''())
             `(append
+               ;; TODO: Figure out exactly with architectures need this.
               ,(if (target-64bit?)
                    ''("TIME_T_32_BIT_OK=yes")
                    ''())
@@ -2701,6 +2702,50 @@ exec " gcc "/bin/" program
       (inputs (%boot0-inputs))
       (native-inputs '()))))
 
+(define libstdc++-boot0-gcc7
+  ;; GCC >= 7 is needed by architectures which use C++-14 features.
+  (let ((lib (make-libstdc++ gcc-7)))
+    (package
+      (inherit lib)
+      (source (bootstrap-origin (package-source lib)))
+      (name "libstdc++-boot0")
+      (arguments
+       `(#:guile ,%bootstrap-guile
+         #:implicit-inputs? #f
+
+         ;; XXX: libstdc++.so NEEDs ld.so for some reason.
+         #:validate-runpath? #f
+
+         ,@(substitute-keyword-arguments (package-arguments lib)
+             ((#:phases phases)
+              `(modify-phases ,phases
+                 (add-after 'unpack 'unpack-gmp&co
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((gmp  (assoc-ref %build-inputs "gmp-source"))
+                           (mpfr (assoc-ref %build-inputs "mpfr-source"))
+                           (mpc  (assoc-ref %build-inputs "mpc-source")))
+
+                       ;; To reduce the set of pre-built bootstrap inputs, build
+                       ;; GMP & co. from GCC.
+                       (for-each (lambda (source)
+                                   (invoke "tar" "xvf" source))
+                                 (list gmp mpfr mpc))
+
+                       ;; Create symlinks like `gmp' -> `gmp-x.y.z'.
+                       ,@(map (lambda (lib)
+                                ;; Drop trailing letters, as gmp-6.0.0a unpacks
+                                ;; into gmp-6.0.0.
+                                `(symlink ,(string-trim-right
+                                            (package-full-name lib "-")
+                                            char-set:letter)
+                                          ,(package-name lib)))
+                              (list gmp-6.0 mpfr mpc))))))))))
+      (inputs `(("gmp-source" ,(bootstrap-origin (package-source gmp-6.0)))
+                ("mpfr-source" ,(bootstrap-origin (package-source mpfr)))
+                ("mpc-source" ,(bootstrap-origin (package-source mpc)))
+                ,@(%boot0-inputs)))
+      (native-inputs '()))))
+
 (define gcc-boot0
   (package
     (inherit gcc)
@@ -2812,7 +2857,9 @@ exec " gcc "/bin/" program
               ("binutils-cross" ,binutils-boot0)
 
               ;; The libstdc++ that libcc1 links against.
-              ("libstdc++" ,libstdc++-boot0)
+              ("libstdc++" ,(match (%current-system)
+                                   ("riscv64-linux" libstdc++-boot0-gcc7)
+                                   (_ libstdc++-boot0)))
 
               ;; Call it differently so that the builder can check whether
               ;; the "libc" input is #f.
@@ -3540,6 +3587,9 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define (%boot3-inputs)
   ;; 4th stage inputs.
   `(("gcc" ,gcc-final)
+    ,@(if (target-riscv64?)
+        `(("gcc:lib" ,gcc-final "lib"))
+        '())
     ("ld-wrapper" ,ld-wrapper-boot3)
     ,@(alist-delete "gcc" (%boot2-inputs))))
 
@@ -3776,6 +3826,10 @@ COREUTILS-FINAL vs. COREUTILS, etc."
       (search-paths
        (append (package-search-paths gcc)
                (package-search-paths libc)))
+
+      ;; Copy the 'compiler-cpu-architectures' property and other things that
+      ;; may be useful, but not the 'hidden?' property.
+      (properties (alist-delete 'hidden? (package-properties gcc)))
 
       (license (package-license gcc))
       (synopsis "Complete GCC tool chain for C/C++ development")

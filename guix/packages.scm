@@ -56,7 +56,6 @@
   #:re-export (%current-system
                %current-target-system
                search-path-specification)         ;for convenience
-  #:re-export-and-replace (delete)                ;used as syntactic keyword
   #:replace ((define-public* . define-public))
   #:export (content-hash
             content-hash?
@@ -180,6 +179,11 @@
             package->derivation
             package->cross-derivation
             origin->derivation))
+
+;; The 'source-module-closure' procedure ca. 1.2.0 did not recognize
+;; #:re-export-and-replace: <https://issues.guix.gnu.org/52694>.
+;; Work around it.
+(module-re-export! (current-module) '(delete) #:replace? #t)
 
 ;;; Commentary:
 ;;;
@@ -391,7 +395,7 @@ from forcing GEXP-PROMISE."
   ;; This is the list of system types that are supported.  By default, we
   ;; expect all packages to build successfully here.
   '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "mips64el-linux" "i586-gnu"
-    "powerpc64le-linux" "powerpc-linux"))
+    "powerpc64le-linux" "powerpc-linux" "riscv64-linux"))
 
 (define %hurd-systems
   ;; The GNU/Hurd systems for which support is being developed.
@@ -402,7 +406,7 @@ from forcing GEXP-PROMISE."
   ;;
   ;; XXX: MIPS is unavailable in CI:
   ;; <https://lists.gnu.org/archive/html/guix-devel/2017-03/msg00790.html>.
-  (fold delete %supported-systems '("mips64el-linux" "powerpc-linux")))
+  (fold delete %supported-systems '("mips64el-linux" "powerpc-linux" "riscv64-linux")))
 
 (define-inlinable (sanitize-inputs inputs)
   "Sanitize INPUTS by turning it into a list of name/package tuples if it's

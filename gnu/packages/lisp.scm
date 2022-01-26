@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2019 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2019–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018, 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -158,9 +158,9 @@ Definition Facility.")
                                               #$(this-package-input "libtirpc")
                                               "/lib")
                                "LIBS=-ltirpc")
-         #:make-flags ,#~(list
-                          (string-append "GCL_CC=" #$gcc "/bin/gcc")
-                          (string-append "CC="#$gcc "/bin/gcc"))
+         #:make-flags ,#~(let ((gcc (search-input-file %build-inputs "/bin/gcc")))
+                           (list (string-append "GCL_CC=" gcc)
+                                 (string-append "CC=" gcc)))
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'realpath-workaround
@@ -235,7 +235,7 @@ Definition Facility.")
       (native-inputs
        (list m4 texinfo))
       (home-page "https://www.gnu.org/software/gcl/")
-      (synopsis "A Common Lisp implementation")
+      (synopsis "Common Lisp implementation")
       (description "GCL is an implementation of the Common Lisp language.  It
 features the ability to compile to native object code and to load native
 object code modules directly into its lisp core.  It also features a
@@ -407,7 +407,7 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
             (variable "XDG_CONFIG_DIRS")
             (files '("etc")))))
     (home-page "https://clisp.sourceforge.io/")
-    (synopsis "A Common Lisp implementation")
+    (synopsis "Common Lisp implementation")
     (description
      "GNU CLISP is an implementation of ANSI Common Lisp.  Common Lisp is a
 high-level, object-oriented functional programming language.  CLISP includes
@@ -915,7 +915,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "270")
+    (version "273")
     (source
      (origin
        (method git-fetch)
@@ -924,16 +924,8 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kp64h3ls8mddvrlaqqylrb3brckfrqvkk8049xn15mimfggg0xv"))))
+        (base32 "1m4akw64458qcrfbqv71z9y8q9dszj26d7jfqblcn6nn8akx2jyb"))))
     (build-system gnu-build-system)
-    (native-inputs
-     ;; Required to build the documentation.
-     `(("ghostscript" ,ghostscript)
-       ("groff" ,groff)
-       ("man2html" ,man-for-txr)))
-    (inputs
-     `(("bash" ,bash-minimal)
-       ("libffi" ,libffi)))
     (arguments
      `(#:configure-flags
        (list ,(string-append "cc=" (cc-for-target))
@@ -947,8 +939,7 @@ the HTML documentation of TXR.")
                (("INSTALL(,.*LICENSE,.*)\\$\\(datadir\\)" _ match)
                 (string-append "INSTALL" match
                                (assoc-ref outputs "out")
-                               "/share/doc/" ,name "-" ,version)))
-             #t))
+                               "/share/doc/" ,name "-" ,version)))))
          (delete 'install-license-files)
          (add-after 'unpack 'inhibit-doc-syms-generation
            (lambda _
@@ -958,8 +949,7 @@ the HTML documentation of TXR.")
                ;; each release (and is already compiled to stdlib/doc-syms.tlo
                ;; when genman.txr is run).
                (("^@\\(output \"stdlib/doc-syms\\.tl\"\\).*" line)
-                (string-append "@(do (exit))\n" line)))
-             #t))
+                (string-append "@(do (exit))\n" line)))))
          (add-after 'unpack 'fix-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "stream.c"
@@ -975,20 +965,25 @@ the HTML documentation of TXR.")
            ;; autotools arguments like CONFIG_SHELL.
            (lambda* (#:key configure-flags #:allow-other-keys)
              (setenv "txr_shell" (which "bash"))
-             (apply invoke "./configure" configure-flags)
-             #t))
+             (apply invoke "./configure" configure-flags)))
          (add-after 'build 'build-doc
            (lambda _
              (setenv "GS_GENERATE_UUIDS" "0")
-             (invoke "make" "txr-manpage.html" "txr-manpage.pdf")
-             #t))
+             (invoke "make" "txr-manpage.html" "txr-manpage.pdf")))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((doc (string-append (assoc-ref outputs "out")
                                        "/share/doc/" ,name "-" ,version)))
                (for-each (lambda (f) (install-file f doc))
-                         '("txr-manpage.html" "txr-manpage.pdf")))
-             #t)))))
+                         '("txr-manpage.html" "txr-manpage.pdf"))))))))
+    (native-inputs
+     ;; Required to build the documentation.
+     (list ghostscript
+           groff
+           man-for-txr))
+    (inputs
+     (list bash-minimal
+           libffi))
     (synopsis "General-purpose, multi-paradigm programming language")
     (description
      "TXR is a general-purpose, multi-paradigm programming language.  It
@@ -1161,7 +1156,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.19.0")
+    (version "1.19.2")
     (source
      (origin
        (method git-fetch)
@@ -1170,18 +1165,18 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gpwhgnkwxjp95gs3i5dcdpsmv1pa7a299m8hccyy92jxd15pym6"))))
+        (base32 "0waj22rzxmc0yx1yr0pzw9lwp6my5abfpfi6vq932bmli8y9prpd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list
-         (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-         (string-append "PREFIX=")
-         (string-append "CC=" ,(cc-for-target)))
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list
+              (string-append "DESTDIR=" #$output)
+              (string-append "PREFIX=")
+              (string-append "CC=" #$(cc-for-target)))
+           #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://janet-lang.org/")
     (synopsis "Functional, imperative and embeddable programming language")
     (description
@@ -1278,5 +1273,5 @@ and make for REPLs that start blazing fast.
     (synopsis "Makes easy to build application executables with SBCL")
     (description
      "Buildapp is an application for SBCL or CCL that configures and saves an
-executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build. ")
+executable Common Lisp image.  It is similar to cl-launch and hu.dwim.build.")
     (license license:bsd-2)))

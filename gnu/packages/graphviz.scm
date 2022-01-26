@@ -6,7 +6,7 @@
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
@@ -370,15 +370,14 @@ can be used either as a standalone application, or as a Python library.")
 (define-public python-pydot
   (package
     (name "python-pydot")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydot" version))
        (sha256
         (base32
-         "00az4cbf8bv447lkk9xi6pjm7gcc7ia33y4pm71fwfwis56rv76l"))
-       (patches (search-patches "python-pydot-regression-test.patch"))))
+         "0z80zwldf7ffkwrpm28hixsiqp3053j7g281xd6phmnbkfiq3014"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -389,13 +388,14 @@ can be used either as a standalone application, or as a Python library.")
              (when tests?
                (add-installed-pythonpath inputs outputs)
                (with-directory-excursion "test"
-                 (invoke "python" "pydot_unittest.py")))
-             #t)))))
+                 (invoke "python" "pydot_unittest.py"))))))))
     (native-inputs
      ;; For tests.
      (list graphviz python-chardet))
     (propagated-inputs
-     (list python-pyparsing))
+     ;; XXX: Two test failures with 3.0+:
+     ;; https://github.com/pydot/pydot/issues/277
+     (list python-pyparsing-2.4.7))
     (home-page "https://github.com/pydot/pydot")
     (synopsis "Python interface to Graphviz's DOT language")
     (description

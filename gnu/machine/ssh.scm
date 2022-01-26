@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +26,7 @@
   #:use-module (gnu system uuid)
   #:use-module ((gnu services) #:select (sexp->system-provenance))
   #:use-module (guix diagnostics)
+  #:use-module (guix memoization)
   #:use-module (guix gexp)
   #:use-module (guix i18n)
   #:use-module (guix modules)
@@ -83,6 +84,7 @@
 (define-record-type* <machine-ssh-configuration> machine-ssh-configuration
   make-machine-ssh-configuration
   machine-ssh-configuration?
+  this-machine-ssh-configuration
   (host-name      machine-ssh-configuration-host-name)     ; string
   (system         machine-ssh-configuration-system)        ; string
   (build-locally? machine-ssh-configuration-build-locally? ; boolean
@@ -91,6 +93,8 @@
                   (default #t))
   (allow-downgrades? machine-ssh-configuration-allow-downgrades? ; boolean
                      (default #f))
+  (safety-checks?    machine-ssh-configuration-safety-checks? ;boolean
+                     (default #t))
   (port           machine-ssh-configuration-port           ; integer
                   (default 22))
   (user           machine-ssh-configuration-user           ; string
@@ -98,9 +102,33 @@
   (identity       machine-ssh-configuration-identity       ; path to a private key
                   (default #f))
   (session        machine-ssh-configuration-session        ; session
-                  (default #f))
+                  (thunked)
+                  (default
+                    ;; By default, open the session once and cache it.
+                    (open-machine-ssh-session* this-machine-ssh-configuration)))
   (host-key       machine-ssh-configuration-host-key       ; #f | string
                   (default #f)))
+
+(define (open-machine-ssh-session config)
+  "Open an SSH session for CONFIG, a <machine-ssh-configuration> record."
+  (let ((host-name (machine-ssh-configuration-host-name config))
+        (user (machine-ssh-configuration-user config))
+        (port (machine-ssh-configuration-port config))
+        (identity (machine-ssh-configuration-identity config))
+        (host-key (machine-ssh-configuration-host-key config)))
+    (unless host-key
+      (warning (G_ "<machine-ssh-configuration> without a 'host-key' \
+is deprecated~%")))
+    (open-ssh-session host-name
+                      #:user user
+                      #:port port
+                      #:identity identity
+                      #:host-key host-key)))
+
+(define open-machine-ssh-session*
+  (mlambdaq (config)
+    "Memoizing variant of 'open-machine-ssh-session'."
+    (open-machine-ssh-session config)))
 
 (define (machine-ssh-session machine)
   "Return the SSH session that was given in MACHINE's configuration, or create
@@ -108,19 +136,7 @@ one from the configuration's parameters if one was not provided."
   (maybe-raise-unsupported-configuration-error machine)
   (let ((config (machine-configuration machine)))
     (or (machine-ssh-configuration-session config)
-        (let ((host-name (machine-ssh-configuration-host-name config))
-              (user (machine-ssh-configuration-user config))
-              (port (machine-ssh-configuration-port config))
-              (identity (machine-ssh-configuration-identity config))
-              (host-key (machine-ssh-configuration-host-key config)))
-          (unless host-key
-            (warning (G_ "<machine-ssh-configuration> without a 'host-key' \
-is deprecated~%")))
-          (open-ssh-session host-name
-                            #:user user
-                            #:port port
-                            #:identity identity
-                            #:host-key host-key)))))
+        (open-machine-ssh-session config))))
 
 
 ;;;
@@ -226,18 +242,21 @@ exist on the machine."
         (raise (formatted-message (G_ "no file system with UUID '~a'")
                                   (uuid->string (file-system-device fs)))))))
 
-  (append (map check-literal-file-system
-               (filter (lambda (fs)
-                         (string? (file-system-device fs)))
-                       file-systems))
-          (map check-labeled-file-system
-               (filter (lambda (fs)
-                         (file-system-label? (file-system-device fs)))
-                       file-systems))
-          (map check-uuid-file-system
-               (filter (lambda (fs)
-                         (uuid? (file-system-device fs)))
-                       file-systems))))
+  (if (machine-ssh-configuration-safety-checks?
+       (machine-configuration machine))
+      (append (map check-literal-file-system
+                   (filter (lambda (fs)
+                             (string? (file-system-device fs)))
+                           file-systems))
+              (map check-labeled-file-system
+                   (filter (lambda (fs)
+                             (file-system-label? (file-system-device fs)))
+                           file-systems))
+              (map check-uuid-file-system
+                   (filter (lambda (fs)
+                             (uuid? (file-system-device fs)))
+                           file-systems)))
+      '()))
 
 (define (machine-check-initrd-modules machine)
   "Return a list of <remote-assertion> that raise a '&message' error condition
@@ -277,7 +296,10 @@ not available in the initrd."
                                   (file-system-device fs)
                                   missing)))))
 
-  (map missing-modules file-systems))
+  (if (machine-ssh-configuration-safety-checks?
+       (machine-configuration machine))
+      (map missing-modules file-systems)
+      '()))
 
 (define* (machine-check-forward-update machine)
   "Check whether we are making a forward update for MACHINE.  Depending on its

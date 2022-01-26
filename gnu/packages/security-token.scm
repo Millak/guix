@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libbsd)
@@ -72,7 +74,9 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages suckless)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
 
 (define-public ccid
@@ -443,6 +447,65 @@ PCSC API Python wrapper module.")
 (define-public python2-pyscard
   (package-with-python2 python-pyscard))
 
+(define-public yubikey-oath-dmenu
+  (package
+    (name "yubikey-oath-dmenu")
+    (version "0.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emlun/yubikey-oath-dmenu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1h6dr4l0gzgdg8zn2c39kx9cx1bgvwqxkz3z95qz9r70xfsghgwk"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f ; there are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; no configure script
+          (delete 'build)     ; or build
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "yubikey-oath-dmenu.py"
+                (("'(dmenu|notify-send|wl-copy|xclip|xdotool)" _ tool)
+                 (string-append
+                  "'"
+                  (search-input-file inputs
+                                     (string-append "/bin/" tool)))))))
+          (replace 'install
+            (lambda _
+              (invoke "make" "install"
+                      (string-append "PREFIX=" #$output)))))))
+    (inputs
+     (list dmenu
+           libnotify
+           python-click
+           python-yubikey-manager
+           ;; TODO add wtype, once packaged, for type support for Wayland
+           wl-clipboard ; optional clipboard support for Wayland
+           xclip        ; optional clipboard support for X11
+           xdotool))    ; optional type support for X11
+    (home-page
+     "https://github.com/emlun/yubikey-oath-dmenu/")
+    (synopsis "Interface for getting OATH codes from a YubiKey using dmenu")
+    (description
+     "Yubikey-oath-demenu lets you pick an OATH credential from your YubiKey using
+dmenu, and copies the corresponding OTP to the clipboard.  Alternatively, it
+can \"type\" the OTP using @code{xdotool} on X11.
+
+Notable features:
+
+@itemize
+@item Pick between all credentials on all connected YubiKeys
+@item No mouse interaction required
+@end itemize\n")
+    (license license:gpl3+)))
+
 (define-public libu2f-host
   (package
     (name "libu2f-host")
@@ -569,7 +632,7 @@ your existing infrastructure.")
 (define-public python-fido2
   (package
     (name "python-fido2")
-    (version "0.5.0")
+    (version "0.9.3")
     (source (origin
               (method url-fetch)
               (uri
@@ -578,13 +641,17 @@ your existing infrastructure.")
                 version "/fido2-" version ".tar.gz"))
               (sha256
                (base32
-                "1pl8d2pr6jzqj4y9qiaddhjgnl92kikjxy0bgzm2jshkzzic8mp3"))
+                "1v366h449f8q74jkmy1291ffj2345nm7cdsipgqvgz4w22k8jpml"))
               (snippet
                ;; Remove bundled dependency.
-               #~(delete-file "fido2/public_suffix_list.dat"))))
+               '(delete-file "fido2/public_suffix_list.dat"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     `(;; This attempts to access
+       ;; /System/Library/Frameworks/IOKit.framework/IOKit
+       ;; The recommendation is to use tox for testing.
+       #:tests? #false
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'install-public-suffix-list
            (lambda* (#:key inputs #:allow-other-keys)
@@ -594,8 +661,7 @@ your existing infrastructure.")
                                   "/share/public-suffix-list-"
                                   ,(package-version public-suffix-list)
                                   "/public_suffix_list.dat"))
-              "fido2/public_suffix_list.dat")
-             #t)))))
+              "fido2/public_suffix_list.dat"))))))
     (propagated-inputs
      (list python-cryptography python-six))
     (native-inputs
@@ -621,7 +687,7 @@ implementing a Relying Party.")
 (define-public python-yubikey-manager
   (package
     (name "python-yubikey-manager")
-    (version "2.1.0")
+    (version "4.0.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -629,25 +695,13 @@ implementing a Relying Party.")
                     "/yubikey-manager-" version ".tar.gz"))
               (sha256
                (base32
-                "11rsmcaj60k3y5m5gdhr2nbbz0w5dm3m04klyxz0fh5hnpcmr7fm"))))
+                "0kzwal7i4kyywm4f5zh8b823mh0ih2nsh5c0c4dfn4vw3j5dnwlr"))))
     (build-system python-build-system)
     (arguments
-     '(#:modules ((srfi srfi-1)
-                  (guix build utils)
-                  (guix build python-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-libykpers-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "ykman/driver_otp.py"
-               (("Ykpers\\('ykpers-1', '1'\\)")
-                (string-append
-                 "Ykpers('"
-                 (find (negate symbolic-link?)
-                       (find-files (assoc-ref inputs "yubikey-personalization")
-                                   "^libykpers-.*\\.so\\..*"))
-                 "')")))
-             #t)))))
+     '(;; This attempts to access
+       ;; /System/Library/Frameworks/IOKit.framework/IOKit
+       ;; The recommendation is to use tox for testing.
+       #:tests? #false))
     (propagated-inputs
      (list python-six
            python-pyscard
@@ -657,7 +711,7 @@ implementing a Relying Party.")
            python-pyopenssl
            python-fido2))
     (inputs
-     (list yubikey-personalization pcsc-lite libusb))
+     (list pcsc-lite))
     (native-inputs
      (list swig python-mock))
     (home-page "https://developers.yubico.com/yubikey-manager/")

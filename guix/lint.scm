@@ -571,7 +571,7 @@ or \"bash-minimal\" is not in its inputs. 'wrap-script' is not supported."
                                        input-names)))
   (define (check-procedure-body body)
     (match body
-      ;; Explicitely setting an interpreter is acceptable,
+      ;; Explicitely setting an interpreter is acceptable.
       (('wrap-program _ '#:sh . _) '())
       (('wrap-program _ . _)
        (list (report-wrap-program-error package 'wrap-program)))

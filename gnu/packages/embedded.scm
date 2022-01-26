@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020, 2021 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,6 +45,7 @@
   #:use-module ((gnu packages base) #:prefix base:)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages dejagnu)
@@ -58,9 +60,11 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
 
@@ -614,19 +618,17 @@ language.")
                (("-DPKGBLDDATE=") "-DDISABLED_PKGBLDDATE="))
              (patch-shebang "bootstrap")
              (invoke "./bootstrap" "nosubmodule")))
-         (add-after 'autoreconf 'change-udev-group
+         (add-after 'unpack 'change-udev-group
            (lambda _
              (substitute* "contrib/60-openocd.rules"
-               (("plugdev") "dialout"))
-             #t))
+               (("plugdev") "dialout"))))
          (add-after 'install 'install-udev-rules
            (lambda* (#:key outputs #:allow-other-keys)
              (install-file "contrib/60-openocd.rules"
                            (string-append
                             (assoc-ref outputs "out")
-                            "/lib/udev/rules.d/"))
-             #t)))))
-    (home-page "http://openocd.org")
+                            "/lib/udev/rules.d/")))))))
+    (home-page "https://openocd.org/")
     (synopsis "On-Chip Debugger")
     (description "OpenOCD provides on-chip programming and debugging support
 with a layered architecture of JTAG interface and TAP support.")
@@ -1372,17 +1374,17 @@ STC89, STC90, STC10, STC11, STC12, STC15 and STC8 series.")
 (define-public stlink
   (package
     (name "stlink")
-    (version "1.5.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/texane/stlink")
+              (url "https://github.com/stlink-org/stlink")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1d5gxiqpsm8fc105cxlp27af9fk339fap5h6nay21x5a7n61jgyc"))))
+         "03xypffpbp4imrczbxmq69vgkr7mbp0ps9dk815br5wwlz6vgygl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -1402,7 +1404,7 @@ STM32VL discovery kits) and ST-LINK/V2 (on STM32L discovery and later kits).
 Two different transport layers are used: ST-LINK/V1 uses SCSI passthru
 commands over USB, and ST-LINK/V2 and ST-LINK/V2-1 (seen on Nucleo boards) use
 raw USB commands.")
-    (home-page "https://github.com/texane/stlink")
+    (home-page "https://github.com/stlink-org/stlink")
     ;; The flashloaders/stm32l0x.s and flashloaders/stm32lx.s source files are
     ;; licensed under the GPLv2+.
     (license (list license:bsd-3 license:gpl2+))))
@@ -1644,3 +1646,51 @@ families, plus many of their variants.")
 and console on a single serial port.  agent-proxy creates network sockets,
 whereas kdmx creates pseudo-ttys.")
       (license license:gpl2))))
+
+(define-public mbed-tools
+  (package
+    (name "mbed-tools")
+    (version "7.49.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mbed-tools" version))
+       (sha256
+        (base32
+         "07w1h1093xzpg8agw9hjhki5856mam2c6f3q7jb2866n82cihkg9"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Remove this failing test.
+               (delete-file "tests/ci_scripts/test_sync_board_db.py")
+               (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-factory-boy
+           python-requests-mock
+           python-semver))
+    (propagated-inputs
+     (list python-dotenv
+           python-click
+           python-pdoc3
+           python-gitpython
+           python-tqdm
+           python-tabulate
+           python-requests
+           python-psutil
+           python-pyudev
+           python-typing-extensions
+           python-jinja2
+           python-pyserial))
+    (build-system python-build-system)
+    (home-page "https://github.com/ARMmbed/mbed-tools")
+    (synopsis "ARM Mbed command line tools")
+    (description "This package is the successor of @code{mbed-cli}.  It
+provides command line tools for Mbed OS to detect Mbed enabled devices
+connected by USB, checkout Mbed projects and perform builds amongst other
+operations.")
+    (license license:asl2.0)))

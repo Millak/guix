@@ -81,6 +81,7 @@ MODULES =					\
   guix/base64.scm				\
   guix/ci.scm					\
   guix/cpio.scm					\
+  guix/cpu.scm					\
   guix/deprecation.scm				\
   guix/docker.scm	   			\
   guix/records.scm				\
@@ -99,6 +100,7 @@ MODULES =					\
   guix/extracting-download.scm			\
   guix/git-download.scm				\
   guix/hg-download.scm				\
+  guix/hash.scm					\
   guix/swh.scm					\
   guix/monads.scm				\
   guix/monad-repl.scm				\
@@ -404,6 +406,7 @@ AUX_FILES =						\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sitecustomize.py	\
+  gnu/packages/aux-files/renpy/renpy.in	\
   gnu/packages/aux-files/run-in-namespace.c
 
 # Templates, examples.
@@ -481,6 +484,7 @@ SCM_TESTS =					\
   tests/hackage.scm				\
   tests/home-import.scm				\
   tests/import-git.scm				\
+  tests/import-github.scm			\
   tests/import-utils.scm			\
   tests/inferior.scm				\
   tests/lint.scm				\
@@ -654,16 +658,18 @@ EXTRA_DIST +=						\
   build-aux/update-guix-package.scm			\
   build-aux/update-NEWS.scm				\
   tests/test.drv					\
-  tests/signing-key.pub					\
-  tests/signing-key.sec					\
   tests/cve-sample.json					\
-  tests/civodul.key					\
-  tests/rsa.key						\
-  tests/dsa.key						\
-  tests/ed25519.key					\
-  tests/ed25519.sec					\
-  tests/ed25519bis.key					\
-  tests/ed25519bis.sec					\
+  tests/keys/signing-key.pub				\
+  tests/keys/signing-key.sec				\
+  tests/keys/civodul.pub				\
+  tests/keys/rsa.pub					\
+  tests/keys/dsa.pub					\
+  tests/keys/ed25519.pub				\
+  tests/keys/ed25519.sec				\
+  tests/keys/ed25519-2.pub				\
+  tests/keys/ed25519-2.sec				\
+  tests/keys/ed25519-3.pub				\
+  tests/keys/ed25519-3.sec				\
   build-aux/config.rpath				\
   bootstrap						\
   doc/build.scm						\
@@ -962,7 +968,7 @@ release: dist-with-updated-version all
             --system=$$system --fallback						\
 	    gnu/system/install.scm` ;							\
 	  if [ ! -f "$$image" ] ; then							\
-	    echo "failed to produced Guix installation image for $$system" >&2 ;	\
+	    echo "failed to produce Guix installation image for $$system" >&2 ;	\
 	    exit 1 ;									\
 	  fi ;										\
 	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.tmp" ;	\
@@ -977,7 +983,7 @@ release: dist-with-updated-version all
 	    --system=$$system --fallback						\
 	    gnu/system/examples/vm-image.tmpl` ;					\
 	  if [ ! -f "$$image" ] ; then							\
-	    echo "failed to produced Guix VM image for $$system" >&2 ;			\
+	    echo "failed to produce Guix VM image for $$system" >&2 ;			\
 	    exit 1 ;									\
 	  fi ;										\
 	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_VM_IMAGE_BASE).$$system.qcow2";	\

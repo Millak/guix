@@ -16,7 +16,7 @@
 ;;; Copyright © 2017, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2018, 2020, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2019 nee <nee@cock.li>
 ;;; Copyright © 2019 Yoshinori Arai <kumagusu08@gmail.com>
@@ -26,12 +26,14 @@
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
+;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
+;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5232,16 +5234,15 @@ by the Xorg server.")
 (define-public xorg-server
   (package
     (name "xorg-server")
-    (version "21.1.1")
+    (version "21.1.2")
     (source
      (origin
        (method url-fetch)
-
        (uri (string-append "https://xorg.freedesktop.org/archive/individual"
                            "/xserver/xorg-server-" version ".tar.xz"))
        (sha256
         (base32
-         "0md7dqsc5qb30gym06c4zc2cjsdc5ps8nywk1bkcpix05kppybkq"))
+         "1c4dgvpv3kib8rhw37b00vc056nlb1z66c2lwzs4prz8kxmg82y2"))
        (patches
         (list
          ;; See:
@@ -5358,7 +5359,30 @@ draggable titlebars and borders.")
 (define-public xorg-server-for-tests
   (hidden-package
    (package
-     (inherit xorg-server))))
+     (inherit xorg-server)
+     (version "21.1.1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://xorg.freedesktop.org/archive/individual"
+                            "/xserver/xorg-server-" version ".tar.xz"))
+        (sha256
+         (base32
+          "0md7dqsc5qb30gym06c4zc2cjsdc5ps8nywk1bkcpix05kppybkq"))
+        (patches
+         (list
+          ;; See:
+          ;;   https://lists.fedoraproject.org/archives/list/devel@lists.
+          ;;      fedoraproject.org/message/JU655YB7AM4OOEQ4MOMCRHJTYJ76VFOK/
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "http://pkgs.fedoraproject.org/cgit/rpms/xorg-x11-server.git"
+                  "/plain/06_use-intel-only-on-pre-gen4.diff"))
+            (sha256
+             (base32
+              "0mm70y058r8s9y9jiv7q2myv0ycnaw3iqzm7d274410s0ik38w7q"))
+            (file-name "xorg-server-use-intel-only-on-pre-gen4.diff")))))))))
 
 (define-public eglexternalplatform
   (package
@@ -5506,18 +5530,18 @@ Wayland.")
 (define-public libx11
   (package
     (name "libx11")
-    (version "1.7.2")
+    (version "1.7.3.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "mirror://xorg/individual/lib/libX11-"
-                            version ".tar.bz2"))
-        (sha256
-          (base32
-            "0v7aj8q3rlchdyfwdna7n7vgpyzyir391dlv5rwy9fxagbikbyhw"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://xorg.freedesktop.org/archive/"
+                           "/individual/lib/libX11-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1289nvs52q9fnp7zl30bdpbvqggnjjb39vy0zll511zvcrr43z9g"))))
     (build-system gnu-build-system)
     (outputs '("out"
-               "doc"))                            ;8 MiB of man pages + XML
+               "doc"))                  ;8 MiB of man pages + XML
     (arguments
      `(#:configure-flags
        (list (string-append "--mandir="
@@ -5526,9 +5550,9 @@ Wayland.")
              "--disable-static"
              ,@(malloc0-flags))))
     (propagated-inputs
-      (list xorgproto libxcb))
+     (list xorgproto libxcb))
     (inputs
-      (list xtrans))
+     (list xtrans))
     (native-inputs
      (list pkg-config xorgproto))
     (home-page "https://www.x.org/wiki/")
@@ -5977,6 +6001,27 @@ user-friendly mechanism to start the X server.")
 Intrinsics (Xt) Library.")
     (license license:x11)))
 
+(define-public libxpresent
+  (package
+    (name "libxpresent")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri "mirror://xorg/individual/lib/libXpresent-1.0.0.tar.bz2")
+              (sha256
+               (base32
+                "12kvvar3ihf6sw49h6ywfdiwmb8i1gh8wasg1zhzp6hs2hay06n1"))))
+    (inputs
+     (list libx11 xorgproto libxext libxfixes libxrandr))
+    (native-inputs
+     (list pkg-config))
+    (build-system gnu-build-system)
+    (home-page "https://gitlab.freedesktop.org/xorg/lib/libxpresent")
+    (synopsis "Xlib-compatible API for the Present extension")
+    (description "This package provides a Xlib-based library for the X Present
+Extension.")
+    (license license:x11)))
+
 (define-public xclock
   (package
     (name "xclock")
@@ -6127,7 +6172,7 @@ programs that cannot use the window system directly.")
 (define-public perl-x11-xcb
   (package
     (name "perl-x11-xcb")
-    (version "0.18")
+    (version "0.19")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6135,7 +6180,7 @@ programs that cannot use the window system directly.")
                     "X11-XCB-" version ".tar.gz"))
               (sha256
                (base32
-                "1cjpghw7cnackw20lbd7yzm222kz5bnrwz52f8ay24d1f4pwrnxf"))))
+                "1rn8g0yy82v5zp12rhxic332dvqs63l7mykg028ngvccs7rllipp"))))
     (build-system perl-build-system)
     (arguments
      '(;; Disable parallel build to prevent a race condition.
@@ -6146,8 +6191,7 @@ programs that cannot use the window system directly.")
            (lambda _
              (setenv "PERL5LIB"
                      (string-append (getcwd) ":"
-                                    (getenv "PERL5LIB")))
-             #t))
+                                    (getenv "PERL5LIB")))))
          (add-before 'build 'patch-Makefile
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Makefile"
@@ -6155,8 +6199,7 @@ programs that cannot use the window system directly.")
                ;; an error such as "XCB.so: undefined symbol: xcb_xinerama_id"
                (("^LDDLFLAGS = ")
                 (string-append "LDDLFLAGS = "
-                               "-lxcb -lxcb-util -lxcb-xinerama -lxcb-icccm ")))
-             #t)))
+                               "-lxcb -lxcb-util -lxcb-xinerama -lxcb-icccm "))))))
        ;; Tests require a running X11 server.
        #:tests? #f))
     (native-inputs
@@ -6268,15 +6311,16 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.3")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
-                           version ".tar.gz"))
+                           version ".tar.xz"))
        (sha256
-        (base32 "1h9fxarhp6f90fbjrpbkjbfwb86js2gbfl6asqa5hbl1aprrwaxg"))
-       (patches (search-patches "xpra-4.2-systemd-run.patch"))))
+        (base32 "1adp790v9lq3v9pnkyf4skv69n2pd7fjqikzw145swhq9aginh5z"))
+       (patches (search-patches "xpra-4.2-systemd-run.patch"
+                                "xpra-4.2-install_libs.patch"))))
     (build-system python-build-system)
     ;; see also http://xpra.org/trac/wiki/Dependencies
     (inputs `(("bash-minimal" ,bash-minimal)    ; for wrap-program
@@ -6292,6 +6336,7 @@ basic eye-candy effects.")
               ("libxcomposite" ,libxcomposite)
               ("libxdamage" ,libxdamage)
               ("libxext" ,libxext)
+              ("libxres" ,libxres)
               ("gtk+" ,gtk+)
               ("python-pycairo" ,python-pycairo)
               ("python-pygobject" ,python-pygobject)
@@ -6327,8 +6372,12 @@ basic eye-candy effects.")
                                         ; they seem to require python2.
        #:phases
        (modify-phases %standard-phases
-         ;; built by 'install phase
-         (delete 'build)
+         ;; Must pass the same flags as 'install, otherwise enabled modules may
+         ;; not be built.
+         (replace 'build
+           (lambda* (#:key configure-flags #:allow-other-keys)
+             (apply invoke (append (list "python" "setup.py" "build")
+                                   configure-flags))))
          (add-before 'install 'fix-paths
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Fix binary paths.
@@ -6421,7 +6470,8 @@ X11 servers, Windows, or macOS.")
        (list "--with-anthy-utf8"
              (string-append "--with-lispdir=" %output "/share/emacs")
              ;; Set proper runpath
-             (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
+             (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
+             "CFLAGS=-O2 -g -fcommon")
        #:phases
        (modify-phases %standard-phases
          ;; Set path of uim-el-agent and uim-el-helper-agent executables
@@ -6627,7 +6677,7 @@ output.")
 (define-public console-setup
   (package
     (name "console-setup")
-    (version "1.205")
+    (version "1.207")
     (source
      (origin
        (method git-fetch)
@@ -6635,7 +6685,7 @@ output.")
              (url "https://salsa.debian.org/installer-team/console-setup.git")
              (commit version)))
        (sha256
-        (base32 "0sf560s14firyvzpgww79ydzc6p3jvjkbvsi8zsr5m3hr833w0ba"))
+        (base32 "0fj93apsknx3lzbi2025pzr19q1gwnim8g4007aqqkhidc1msgx5"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -6654,8 +6704,7 @@ output.")
              (substitute* '("Keyboard/ckbcomp")
                (("\"cat ")
                 (string-append "\"" (which "cat")
-                               " ")))
-             #t))
+                               " ")))))
          (add-before 'build 'make-doubled-bdfs
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (invoke "make" "-C" "Fonts"

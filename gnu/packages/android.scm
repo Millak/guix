@@ -11,6 +11,7 @@
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pcre)
@@ -54,7 +56,9 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
@@ -190,6 +194,28 @@ use their packages mostly unmodified in our Android NDK build system.")
      (base32
       checksum))))
 
+(define (android-platform-development version)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://android.googlesource.com/platform/development")
+          (commit (string-append "android-" version))))
+    (file-name (string-append "android-platform-development-"
+                              version "-checkout"))
+    (sha256
+     (base32 "0s92961yycg8wsga40i7fvbfmf1a5i6j2gk64j2jiy7s0hfd4rc3"))))
+
+(define (android-platform-frameworks-native version)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://android.googlesource.com/platform/frameworks/native")
+          (commit (string-append "android-" version))))
+    (file-name (string-append "android-platform-frameworks-native-"
+                              version "-checkout"))
+    (sha256
+     (base32 "00dgx27wma7wzivniy8zyw2443fi2xx8gyxii081m0fwamqd3jrm"))))
+
 (define-public android-liblog
   (package
     (name "android-liblog")
@@ -217,7 +243,7 @@ use their packages mostly unmodified in our Android NDK build system.")
                  "../include/android" (string-append out "/include/android")))
              #t)))))
     (home-page "https://developer.android.com/")
-    (synopsis "Logging library from the Android platform.")
+    (synopsis "Logging library from the Android platform")
     (description "@code{liblog} represents an interface to the volatile Android
 Logging system for NDK (Native) applications and libraries and contain
 interfaces for either writing or reading logs.  The log buffers are divided up
@@ -728,6 +754,132 @@ it.
 to be passed to the @code{udev} service.")
     (license license:gpl3+)))
 
+(define-public android-platform-frameworks-native-headers
+  (package
+    (name "android-platform-frameworks-native-headers")
+    (version (android-platform-version))
+    (source (android-platform-frameworks-native version))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((source (assoc-ref %build-inputs "source"))
+               (include (string-append %output "/include/android")))
+           (mkdir-p include)
+           (copy-recursively (string-append source "/include/android")
+                             (string-append include)) ; "/android"))
+           ))))
+    (home-page "https://android.googlesource.com/platform/frameworks/native/")
+    (synopsis "Headers for Android development from
+android-platform-frameworks-native")
+    (description "This package contains headers used for developing software
+for Android.  More precicely the headers from include/android in
+platform/frameworks/native.")
+    (license license:asl2.0)))
+
+(define-public libetc1
+  (package
+    (name "libetc1")
+    (version (android-platform-version))
+    (source (android-platform-frameworks-native version))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'create-Makefile
+           (lambda _
+             ;; No useful makefile is shipped, so we create one.
+             (with-output-to-file "Makefile"
+               (lambda _
+                 (display
+                  (string-append
+                   "NAME = libETC1\n"
+                   "SOURCES = opengl/libs/ETC1/etc1.cpp\n"
+                   "CXXFLAGS += -fPIC\n"
+                   "CPPFLAGS += -Iopengl/include\n"
+                   "LDFLAGS += -shared -Wl,-soname,$(NAME).so.0\n"
+                   "$(NAME).so.0: $(SOURCES)\n"
+                   "	$(CXX) $^ -o $@ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)\n"
+                   "build: $(NAME).so.0"))
+                 #t))))
+         (add-after 'unpack 'remove-unused-stuff-to-reduce-warnings
+           (lambda _
+             (delete-file-recursively "opengl/libs/tools")))
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib"))
+                    (include (string-append out "/include")))
+               (install-file "libETC1.so.0" lib)
+               (with-directory-excursion lib
+                 (symlink "libETC1.so.0" "libETC1.so"))
+               (copy-recursively "opengl/include/ETC1"
+                                 (string-append include "/ETC1"))))))))
+    (home-page "https://android.googlesource.com/platform/frameworks/native/")
+    (synopsis "ETC1 compression library")
+    (description "Ericsson Texture Compression (ETC) is a lossy texture
+compression technique developed in collaboration with Ericsson Research in
+early 2005.  libETC1 provides the encoding and decoding of ETC1 compression
+algorithm.")
+    (license license:asl2.0)))
+
+(define-public etc1tool
+  (package
+    (name "etc1tool")
+    (version (android-platform-version))
+    (source (android-platform-development version))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'create-Makefile
+           (lambda _
+             ;; No useful makefile is shipped, so we create one.
+             (with-output-to-file "Makefile"
+               (lambda _
+                 (display
+                  (string-append
+                   "NAME = etc1tool\n"
+                   "SOURCES = tools/etc1tool/etc1tool.cpp\n"
+                   "CPPFLAGS += -Iinclude\n"
+                   "LDFLAGS += -lpng -lETC1\n"
+                   "$(NAME): $(SOURCES)\n"
+                   "	$(CXX) $^ -o $@ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)\n"
+                   "build: $(NAME)"))
+                 #t))))
+         (add-before 'build 'fix-typos-in-help
+           (lambda _
+             (substitute* "tools/etc1tool/etc1tool.cpp"
+               ((" apropriate ") " appropriate "))
+             #t))
+         ;; TODO: Add man-page from Debian
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "etc1tool" bin)))))))
+    (inputs
+     `(("libetc1" ,libetc1)
+       ("libpng" ,libpng)))
+    (home-page "https://developer.android.com/studio/command-line/etc1tool.html")
+    (synopsis "Encode and decode PNG images to resp. from the ETC1 compression
+standard.")
+    (description
+     "@command{etc1} is a command line utility that lets you encode PNG images
+to the ETC1 compression standard and decode ETC1 compressed images back to
+PNG.  This tool is part of the Android SDK for working with media files for
+game apps.
+
+The standard for the ETC1 texture format can be found at
+@uref{http://www.khronos.org/registry/gles/extensions/OES/OES_compressed_ETC1_RGB8_texture.txt}.")
+    (license license:asl2.0)))
+
 (define-public git-repo
   (package
     (name "git-repo")
@@ -819,7 +971,7 @@ to be passed to the @code{udev} service.")
     (native-inputs
      `(("pytest" ,python-pytest)))
     (home-page "https://code.google.com/p/git-repo/")
-    (synopsis "Helps to manage many Git repositories.")
+    (synopsis "Helps to manage many Git repositories")
     (description "Repo is a tool built on top of Git.  Repo helps manage many
 Git repositories, does the uploads to revision control systems, and automates
 parts of the development workflow.  Repo is not meant to replace Git, only to
@@ -904,17 +1056,84 @@ safest way, on a file image.")
 useful for reverse engineering, analysis of Android applications and more.")
     (license license:asl2.0)))
 
+(define-public python-android-backup
+  (package
+    (name "python-android-backup")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "android_backup" version))
+       (sha256
+        (base32
+         "15wb2lyjj2fpf7bhvmgpqn0mglsjj11zfvbjycx7mnidisgnljw6"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pycrypto))
+    (home-page "https://github.com/bluec0re/android-backup-tools")
+    (synopsis "Unpack and repack android backups")
+    (description "This package allows you to unpack and repack Android
+backups.  It supports encrypted archives.")
+    (license license:asl2.0)))
+
+(define-public python-miio
+  (package
+    (name "python-miio")
+    (version "0.5.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-miio" version))
+       (sha256
+        (base32
+         "0a4f5ybjvibawwxcjm3r9nnrzf1yff6wwgy05yzyk0bb3rmc99fp"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "miio")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-mock
+           python-sphinx
+           python-sphinx-click
+           python-sphinx-rtd-theme
+           python-sphinxcontrib-apidoc))
+    (propagated-inputs
+     (list python-android-backup
+           python-appdirs
+           python-attrs
+           python-click
+           python-construct
+           python-croniter
+           python-cryptography
+           python-defusedxml
+           python-importlib-metadata
+           python-netifaces
+           python-pytz
+           python-pyyaml
+           python-tqdm
+           python-zeroconf))
+    (home-page "https://github.com/rytilahti/python-miio")
+    (synopsis "Control Xiaomi smart appliances")
+    (description "This package provides library and command line interface
+for communicating with Xiaomi smart appliances over miIO and MIoT protocols.")
+    (license license:gpl3+)))
+
 (define-public fdroidserver
   (package
     (name "fdroidserver")
     (version "1.1.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fdroidserver" version))
-        (sha256
-         (base32
-          "0m07f791z45w7r2dzx4yb6s54b3c3wykm3w9hn25p2jcyax082a2"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fdroidserver" version))
+       (sha256
+        (base32
+         "0m07f791z45w7r2dzx4yb6s54b3c3wykm3w9hn25p2jcyax082a2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

@@ -84,14 +84,14 @@
 (define-public hello
   (package
     (name "hello")
-    (version "2.10")
+    (version "2.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/hello/hello-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
+                "1g84a3hqs4pgx3yzs99cysv3iq440ncdw77bf03fsi1w5mby174c"))))
     (build-system gnu-build-system)
     (synopsis "Hello, GNU world: An example GNU package")
     (description
@@ -521,10 +521,12 @@ change.  GNU make offers many powerful extensions over the standard utility.")
       (sha256
        (base32 "1m3b2rdfv1dmdpd0bzg1hy7i8a2qng53szc6livyi3nh6101mz37"))
       (patches (search-patches "binutils-loongson-workaround.patch"
-                               "binutils-2.37-file-descriptor-leak.patch"))))
+                               "binutils-2.37-file-descriptor-leak.patch"
+                               "binutils-CVE-2021-45078.patch"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:configure-flags '(;; Add `-static-libgcc' to not retain a dependency
+    `(#:out-of-source? #t   ;recommended in the README
+      #:configure-flags '(;; Add `-static-libgcc' to not retain a dependency
                           ;; on GCC when bootstrapping.
                           "LDFLAGS=-static-libgcc"
 
@@ -543,7 +545,13 @@ change.  GNU make offers many powerful extensions over the standard utility.")
 
                           ;; Make sure 'ar' and 'ranlib' produce archives in a
                           ;; deterministic fashion.
-                          "--enable-deterministic-archives")))
+                          "--enable-deterministic-archives"
+
+                          "--enable-64-bit-bfd"
+                          "--enable-compressed-debug-sections=all"
+                          "--enable-lto"
+                          "--enable-separate-code"
+                          "--enable-threads")))
 
    (synopsis "Binary utilities: bfd gas gprof ld")
    (description
@@ -555,23 +563,6 @@ the strings in a binary file, and utilities for working with archives.  The
 included.")
    (license gpl3+)
    (home-page "https://www.gnu.org/software/binutils/")))
-
-;;; TODO: Merge into binutils on the next world rebuild.
-(define-public binutils-next
-  (package/inherit binutils
-    (name "binutils-next")
-    (version "2.37")
-    (arguments
-     (substitute-keyword-arguments (package-arguments binutils)
-       ((#:out-of-source? _ #f)         ;recommended in the README
-        #t)
-       ((#:configure-flags flags)
-        `(cons* "--enable-64-bit-bfd"
-                "--enable-compressed-debug-sections=all"
-                "--enable-lto"
-                "--enable-separate-code"
-                "--enable-threads"
-                ,flags))))))
 
 ;; FIXME: ath9k-firmware-htc-binutils.patch do not apply on 2.34 because of a
 ;; big refactoring of xtensa-modules.c (commit 567607c11fbf7105 upstream).
@@ -594,7 +585,7 @@ included.")
    (properties '())))
 
 (define-public binutils-gold
-  (package/inherit binutils-next
+  (package/inherit binutils
     (name "binutils-gold")
     (arguments
      (substitute-keyword-arguments (package-arguments binutils)
@@ -606,7 +597,15 @@ included.")
            (add-after 'patch-source-shebangs 'patch-more-shebangs
              (lambda _
                (substitute* "gold/Makefile.in"
-                 (("/bin/sh") (which "sh")))))))))
+                 (("/bin/sh") (which "sh")))))
+           ;; Multiple failing tests on some architectures in the gold testsuite.
+           ,@(if (or (target-arm?)
+                     (target-ppc32?))
+               '((add-after 'unpack 'skip-gold-testsuite
+                   (lambda _
+                     (substitute* "gold/Makefile.in"
+                       ((" testsuite") " ")))))
+               '())))))
     (native-inputs
      `(("bc" ,bc)))))
 
@@ -1104,7 +1103,8 @@ to the @code{share/locale} sub-directory of this package.")
                                         (assoc-ref %outputs "out")
                                         "/lib/locale/"
                                         ,(version-major+minor
-                                          (package-version glibc)))))))))))
+                                          (package-version glibc)))))))))
+    (properties `((upstream-name . "glibc")))))
 
 (define %default-utf8-locales
   ;; These are the locales commonly used for tests---e.g., in Guile's i18n

@@ -312,6 +312,103 @@ for repositories using URI-based layouts.")))
     (description "This package contains a transport implementation based on
 Maven Wagon, for use in Maven.")))
 
+(define-public maven-resolver-transport-file
+  (package
+    (inherit maven-resolver-api)
+    (name "maven-resolver-transport-file")
+    (arguments
+     `(#:jar-name "maven-resolver-transport-file.jar"
+       #:source-dir "maven-resolver-transport-file/src/main/java"
+       #:test-dir "maven-resolver-transport-file/src/test"
+       #:jdk ,icedtea-8
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-sisu
+           (lambda _
+             (mkdir-p "build/classes/META-INF/sisu")
+             (with-output-to-file "build/classes/META-INF/sisu/javax.inject.Named"
+               (lambda _
+                 (display "org.eclipse.aether.transport.file.FileTransporterFactory\n"))))))))
+    (inputs
+     (list java-eclipse-sisu-inject
+           java-eclipse-sisu-plexus
+           java-javax-inject
+           java-plexus-classworlds
+           java-plexus-component-annotations
+           java-plexus-utils
+           java-slf4j-api
+           maven-resolver-api
+           maven-resolver-spi
+           maven-resolver-util
+           maven-wagon-provider-api))
+    (native-inputs
+     (list java-asm
+           java-aopalliance
+           java-cglib
+           java-guava
+           java-guice
+           java-hamcrest-core
+           java-junit
+           maven-resolver-test-util))
+    (synopsis "Transport implementation for Maven")
+    (description "This package contains a transport implementation based on
+files, for use in Maven.")))
+
+(define-public maven-resolver-transport-http
+  (package
+    (inherit maven-resolver-api)
+    (name "maven-resolver-transport-http")
+    (arguments
+     `(#:jar-name "maven-resolver-transport-http.jar"
+       #:source-dir "maven-resolver-transport-http/src/main/java"
+       #:test-dir "maven-resolver-transport-http/src/test"
+       #:jdk ,icedtea-8
+       ;; Tests all fail because
+       ;; org.eclipse.aether.transport.http.SslSocketFactory is not available.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-sisu
+           (lambda _
+             (mkdir-p "build/classes/META-INF/sisu")
+             (with-output-to-file "build/classes/META-INF/sisu/javax.inject.Named"
+               (lambda _
+                 (display "org.eclipse.aether.transport.http.HttpTransporterFactory\n"))))))))
+    (inputs
+     (list java-eclipse-sisu-inject
+           java-eclipse-sisu-plexus
+           java-javax-inject
+           java-plexus-classworlds
+           java-plexus-component-annotations
+           java-plexus-utils
+           java-slf4j-api
+           maven-resolver-api
+           maven-resolver-spi
+           maven-resolver-util
+           maven-wagon-provider-api))
+    (propagated-inputs
+     (list java-httpcomponents-httpclient
+           java-httpcomponents-httpcore))
+    (native-inputs
+     (list java-aopalliance
+           java-asm
+           java-cglib
+           java-eclipse-aether-api
+           java-eclipse-jetty-http
+           java-eclipse-jetty-io
+           java-eclipse-jetty-server
+           java-eclipse-jetty-servlet
+           java-eclipse-jetty-util
+           java-guava
+           java-guice
+           java-hamcrest-core
+           java-javaee-servletapi
+           java-junit
+           maven-resolver-test-util))
+    (synopsis "Transport implementation for Maven")
+    (description "This package contains a transport implementation based on
+HTTP, for use in Maven.")))
+
 ;; aether is the parent project that was forked into maven-resolver.  It used
 ;; to be used with older versions of Maven, and is still required for some
 ;; plugins and their dependencies.  This version is required for the plugins,
@@ -845,7 +942,7 @@ Test Compatibility Kit.")))
        ("java-asm" ,java-asm)
        ("java-geronimo-xbean-reflect" ,java-geronimo-xbean-reflect)
        ,@(package-native-inputs maven-wagon-provider-api)))
-    (synopsis "Shared Library for wagon providers supporting HTTP.")
+    (synopsis "Shared Library for wagon providers supporting HTTP")
     (description "Maven Wagon is a transport abstraction that is used in Maven's
 artifact and repository handling code.  It uses providers, that are tools to
 manage artifacts and deployment.  This package contains a shared library for
@@ -3565,7 +3662,7 @@ MOJO.")))
      (list maven-surefire-common maven-core))
     (native-inputs
      (list maven-plugin-annotations unzip))
-    (synopsis "SureFire Maven plugin that runs tests.")
+    (synopsis "SureFire Maven plugin that runs tests")
     (description "The Surefire Plugin is used during the test phase of the
 build lifecycle to execute the unit tests of an application.  It generates
 reports in two different file formats, plain text and xml.")))

@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,7 +46,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.18.5")
+    (version "1.18.6")
     ; XXX After the go-build-system can use "Go modules", stop using bundled
     ; dependencies for Syncthing.
     (source (origin
@@ -55,7 +56,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "07yzhc8ilwv9r9cpqdzd1i1mcgi4875xbz9k4dfm5rkazvav8kf6"))))
+                "0hlyk2nvsnf4am1vqc4zl91acf2rhpr1gy4gppk2aa5x85h9qisc"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
@@ -65,7 +66,6 @@
      `(#:modules ((srfi srfi-26) ; for cut
                   (guix build utils)
                   (guix build go-build-system))
-       #:go ,go-1.17
        #:import-path "github.com/syncthing/syncthing"
        ;; We don't need to install the source code for end-user applications.
        #:install-source? #f
@@ -172,6 +172,14 @@ Protocol.")
                  (substitute* "syncthing_gtk/configuration.py"
                    (("/usr/bin/syncthing") (string-append syncthing
                                                           "/bin/syncthing"))))))
+           (add-after 'unpack 'fix-autostart-path
+             ;; Change the autostart .desktop file 'Exec' command so it finds
+             ;; the Python wrapper of 'syncthing-gtk', rather than the unwrapped
+             ;; '.syncthing-gtk-real'.
+             (lambda _
+               (substitute* "syncthing_gtk/tools.py"
+                 (("return executable")
+                   "return \"syncthing-gtk\""))))
            (add-after 'unpack 'remove-windows.py
              (lambda _
                ;; A Windows-specific module that fails to load with
@@ -187,7 +195,6 @@ Protocol.")
        (list gtk+
              libappindicator
              libnotify
-             librsvg
              python-bcrypt
              python-dateutil
              python-pycairo
@@ -886,15 +893,6 @@ message streaming.")
          #:tests? #f
          #:phases
          (modify-phases %standard-phases
-           (add-before 'reset-gzip-timestamps 'make-gzip-archive-writable
-             (lambda* (#:key outputs #:allow-other-keys)
-               (map (lambda (file)
-                      (make-file-writable file))
-                    (find-files
-                      (string-append (assoc-ref outputs "out")
-                                     "/src/github.com/prometheus/common/expfmt/testdata/")
-                      ".*\\.gz$"))
-               #t))
            ;; Source-only package
            (delete 'build))))
       (propagated-inputs
@@ -969,7 +967,7 @@ server tools for Prometheus metrics.")
 (define-public go-github-com-go-asn1-ber-asn1-ber
   (package
     (name "go-github-com-go-asn1-ber-asn1-ber")
-    (version "1.3.1")
+    (version "1.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -978,7 +976,7 @@ server tools for Prometheus metrics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dxfmgk84fn0p6pz3i0cspynh6rly5pfk9wghm1q07mx99npln02"))))
+                "15ygmfmdwwjda9xdq58rx6gnmsfc14m1qqhcj7cn7rm0mx4wk2vb"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/go-asn1-ber/asn1-ber"))
@@ -991,7 +989,7 @@ Go language.")
 (define-public go-github-com-go-ldap-ldap
   (package
     (name "go-github-com-go-ldap-ldap")
-    (version "3.1.7")
+    (version "3.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -999,18 +997,41 @@ Go language.")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1z6wxia7a1jkmasa9mm6g4n8f0qqbp5rw6vk0zyh4vzk7azklnj2"))))
+               (base32 "1xf2jrwhgr06jy4liba48hrz4b7j27r7m9dnl7fj95vazsx2n5br"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/go-ldap/ldap/v3"
        #:tests? #f)) ; test suite requires internet access
     (propagated-inputs
-     (list go-github-com-go-asn1-ber-asn1-ber))
+     (list go-github-com-go-asn1-ber-asn1-ber
+           go-github-com-azure-go-ntlmssp))
     (home-page "https://github.com/go-ldap/ldap")
     (synopsis "LDAP v3 functionality for Go")
     (description "This package provides basic LDAP v3 functionality in the Go
 language.")
+    (license expat)))
+
+(define-public go-github-com-azure-go-ntlmssp
+  (package
+    (name "go-github-com-azure-go-ntlmssp")
+    (version "0.0.0-20211209120228-48547f28849e")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/Azure/go-ntlmssp")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0im28kp9p6ncdmh7qq5qwl85nmiwmp8jka2qgrjiqzc5n36q56np"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/Azure/go-ntlmssp"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/Azure/go-ntlmssp")
+    (synopsis "NTLM negotiation in Go")
+    (description
+     "This package provides NTLM/Negotiate authentication over HTTP.")
     (license expat)))
 
 (define-public go-github-com-flynn-archive-go-shlex

@@ -54,27 +54,9 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu))
 
-(define-public guile-squee-dev
-  (let ((commit "e0614273ad4067af82f508db51c8a100131151ea")
-        (revision "3"))
-    (package
-      (inherit guile-squee)
-      (name "guile-squee")
-      (version (string-append "0-" revision "." (string-take commit 7)))
-      (home-page "https://notabug.org/mothacehe/guile-squee.git")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1jps14z8653ah2kr367iayzyi3ql2s55l77xrafz7gk3mzcvgrrg"))
-                (file-name (string-append name "-" version "-checkout")))))))
-
 (define-public cuirass
-  (let ((commit "7160b182a0d4c9aa71460ad9c4d866b440027bbd")
-        (revision "7"))
+  (let ((commit "9f08035f942a1e78f92e2db886d7837b0ab98b2f")
+        (revision "11"))
     (package
       (name "cuirass")
       (version (git-version "1.1.0" revision commit))
@@ -87,7 +69,7 @@
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1zpldqzrn4ifp0bzh9af4djjjn7bgmyk37qr4qrx3dm1v0jzjgdr"))))
+           "0jrp0hngbmlg5vmfr93j86lxgk2zm5d424dx0c29ldgfr8i7bwcz"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build utils)
@@ -114,14 +96,12 @@
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((pg (assoc-ref inputs "ephemeralpg"))
                      (path (getenv "PATH")))
-                 (setenv "PATH" (string-append pg "/bin:" path))
-                 #t)))
+                 (setenv "PATH" (string-append pg "/bin:" path)))))
            ;; Disable the remote tests that require a Guix daemon connection.
            (add-before 'check 'disable-remote-tests
              (lambda _
                (substitute* "Makefile.am"
-                 (("tests/remote.scm") ""))
-               #t))
+                 (("tests/remote.scm") ""))))
            (add-after 'install 'wrap-program
              (lambda* (#:key inputs outputs #:allow-other-keys)
                ;; Wrap the 'cuirass' command to refer to the right modules.
@@ -165,8 +145,7 @@
                  (wrap-program (string-append out "/bin/cuirass")
                    `("PATH" ":" prefix (,(string-append out "/bin")))
                    `("GUILE_LOAD_PATH" ":" prefix (,mods))
-                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,objs)))
-                 #t))))))
+                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,objs)))))))))
       (inputs
        (list guile-3.0-latest
              guile-avahi
@@ -174,7 +153,7 @@
              guile-gcrypt
              guile-json-4
              guile-simple-zmq
-             guile-squee-dev
+             guile-squee
              guile-git
              guile-zlib
              guile-mastodon
@@ -207,7 +186,7 @@ intended as a replacement for Hydra.")
 (define-public laminar
   (package
     (name "laminar")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://github.com/ohwgiles/laminar/archive/"
@@ -216,7 +195,7 @@ intended as a replacement for Hydra.")
              (file-name (string-append name "-" version ".tar.gz"))
              (sha256
               (base32
-               "11m6h3rdmj2rsmsryy7r40gqccj4gg1cnqwy6blscs87gx4s423g"))))
+               "1lzfmfjygmbdr2n1q49kwwffw8frz5y6iczhdz5skwmzwg0chbsf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; TODO Can't build tests
@@ -293,10 +272,10 @@ intended as a replacement for Hydra.")
        ("ansi_up.js"
         ,(origin (method url-fetch)
                  (uri (string-append "https://raw.githubusercontent.com/"
-                                     "drudru/ansi_up/v1.3.0/ansi_up.js"))
+                                     "drudru/ansi_up/v4.0.4/ansi_up.js"))
                  (sha256
                   (base32
-                   "1993dywxqi2ylnxybwk7m0s0bg2bq7kfllpyr0s8ck6chd0p8i6r"))))
+                   "1dx8wn38ds8d01kkih26fx1yrisg3kpz61qynjr4zil03ap0hrlr"))))
        ("Chart.js"
         ,(origin (method url-fetch)
                  (uri (string-append "https://github.com/chartjs/Chart.js/"

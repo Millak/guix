@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -15,6 +15,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
+;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Benoit Joly <benoit@benoitj.ca>
 ;;; Copyright © 2021 Alexander Krotov <krotov@iitp.ru>
@@ -44,6 +45,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -588,7 +590,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "2.2.3")
+    (version "2.2.4")
     (source
      (origin
        (method git-fetch)
@@ -597,7 +599,7 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "1v1szbj44pwxh3k70fvg78xjfkab29dqnlafa722sppdyqd06cqp"))
+         "12l7ir3q29v06jx0zng5cvlbmap7p709ka3ik6x29lw334qshm9b"))
        (file-name (git-file-name "nyxt" version))))
     (build-system gnu-build-system)
     (arguments
@@ -704,7 +706,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.9.2")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch)
@@ -712,7 +714,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "1j4r2c6f9fqc22f14fjh28s324kfbb9ahf08nv0xlazy1y5g7f6d"))
+        (base32 "1zxvfl0fmkixralzj9jcshbbl2p3918js8qb4nra8pjkrrkaidbn"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -747,40 +749,39 @@ history, and page outlines.")
     (license license:bsd-2)))
 
 (define-public gmni
-  (let ((commit "d8f0870446c471a42612d6a8e853ad9b723a6d39")
-        (revision "0"))
-    (package
-      (name "gmni")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.sr.ht/~sircmpwn/gmni")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1h0iqm7l0i06glf5b2872w656s1mjdiqva14zh6sl4f5yp7zmvwr"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f ; no check target
-         #:make-flags (list (string-append "CC=" ,(cc-for-target)))))
-      (inputs
-       (list openssl))
-      (native-inputs
-       (list pkg-config scdoc))
-      (home-page "https://sr.ht/~sircmpwn/gmni")
-      (synopsis "Minimalist command line Gemini client")
-      (description "The gmni package includes:
+  (package
+    (name "gmni")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~sircmpwn/gmni")
+                    (commit version)))
+              (sha256
+               (base32
+                "0bky9fd8iyr13r6gj4aynb7j9nd36xdprbgq6nh5hz6jiw04vhfw"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no check target
+      #:make-flags #~(list #$(string-append "CC=" (cc-for-target)))))
+    (inputs
+     (list bearssl))
+    (native-inputs
+     (list pkg-config scdoc))
+    (home-page "https://sr.ht/~sircmpwn/gmni")
+    (synopsis "Minimalist command line Gemini client")
+    (description "The gmni package includes:
 
 @itemize
 @item A CLI utility (like curl): gmni
 @item A line-mode browser: gmnlm
 @end itemize")
-      (license (list license:gpl3+
-                     (license:non-copyleft
-                      "https://curl.se/docs/copyright.html"
-                      "Used only for files taken from curl."))))))
+    (license (list license:gpl3+
+                   (license:non-copyleft
+                    "https://curl.se/docs/copyright.html"
+                    "Used only for files taken from curl.")))))
 
 (define-public bombadillo
   (package
@@ -915,20 +916,19 @@ interface.")
 (define-public telescope
   (package
     (name "telescope")
-    (version "0.6.1")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/omar-polo/telescope/releases/download/"
                            version "/telescope-" version ".tar.gz"))
        (sha256
-        (base32 "1hm9gi6yz62h8yh2br85bgycr2xaf5lr7z4gl0p25g7d7qb53ixd"))))
+        (base32 "055iqld99l4jshs10mhl2ml0p74wcyyv5kxjy8izzysw9lnkjjb5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ;no tests
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
      (list libevent libressl ncurses))
     (home-page "https://git.omarpolo.com/telescope/about/")

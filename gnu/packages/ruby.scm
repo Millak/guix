@@ -6408,7 +6408,7 @@ decoding of JSON is implemented as a C extension to Ruby.")
      "Optimized XML (Ox) is a fast XML parser and object serializer for Ruby
 written as a native C extension.  It was designed to be an alternative to
 Nokogiri and other Ruby XML parsers for generic XML parsing and as an
-alternative to Marshal for Object serialization. ")
+alternative to Marshal for Object serialization.")
     (home-page "http://www.ohler.com/ox")
     (license license:expat)))
 
@@ -7080,7 +7080,7 @@ they match.")
                       #t)))))
     (native-inputs
      (list ragel ruby-regexp-property-values ruby-rspec))
-    (synopsis "A regular expression parser library for Ruby ")
+    (synopsis "Regular expression parser library for Ruby")
     (description "A Ruby gem for tokenizing, parsing, and transforming regular
 expressions.  It comprises the following components:
 @itemize

@@ -52,6 +52,7 @@
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -77,6 +78,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -431,7 +433,7 @@ avoiding password prompts when X11 forwarding has already been setup.")
            wayland-protocols
            xkeyboard-config))
     (native-inputs
-     (list bison doxygen pkg-config))
+     (list bison doxygen pkg-config python))
     (arguments
      `(#:configure-flags
        (list (string-append "-Dxkb-config-root="
@@ -1476,7 +1478,7 @@ protocol.")
 (define-public gammastep
   (package
     (name "gammastep")
-    (version "2.0.7")
+    (version "2.0.8")
     (source
      (origin
        (method git-fetch)
@@ -1485,7 +1487,7 @@ protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11j54rdd3cgngdhjwyapwjbrdm8cii4i7g4zdvfykvmb1w4zdk7g"))))
+        (base32 "071f3iqdbblb3awnx48j19kspk6l2g3658za80i2mf4gacgq9fm1"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1500,24 +1502,24 @@ protocol.")
                `("GI_TYPELIB_PATH" ":" prefix
                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           gettext-minimal
+           intltool
+           libtool
+           pkg-config))
     (inputs
-     `(("glib" ,glib)
-       ("gtk" ,gtk+)
-       ("libappindicator" ,libappindicator)
-       ("libdrm" ,libdrm)
-       ("libX11" ,libx11)
-       ("libxxf86vm" ,libxxf86vm)
-       ("libxcb" ,libxcb)
-       ("python" ,python)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyxdg" ,python-pyxdg)
-       ("wayland" ,wayland)))
+     (list glib
+           gtk+
+           libappindicator
+           libdrm
+           libx11
+           libxxf86vm
+           libxcb
+           python
+           python-pygobject
+           python-pyxdg
+           wayland))
     (home-page "https://gitlab.com/chinstrap/gammastep")
     (synopsis "Adjust the color temperature of your screen")
     (description
@@ -1718,6 +1720,11 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
            xcb-util-cursor
            xcb-util-wm
            xcb-util-xrm))
+    (native-search-paths
+     ;; This is where rofi will search for plugins by default.
+     (list (search-path-specification
+            (variable "ROFI_PLUGIN_PATH")
+            (files '("lib/rofi")))))
     (arguments
      `(#:parallel-tests? #f             ; fails in some circumstances
        #:phases
@@ -1733,6 +1740,51 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
     (description "Rofi is a minimalist application launcher.  It memorizes which
 applications you regularly use and also allows you to search for an application
 by name.")
+    (license license:expat)))
+
+(define-public rofi-calc
+  (package
+    (name "rofi-calc")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/svenstaro/rofi-calc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1j23xwa6s27wyx6r0yb85cby6dggrcb103nqcfxr5li1mcqrgd9m"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't try to install directly to rofi, instead install
+          ;; to lib/rofi to match rofi's search-path ROFI_PLUGIN_PATH.
+          (add-after 'unpack 'patch-plugindir
+            (lambda _
+              (substitute* "Makefile.am"
+                (("plugindir=\\$\\{rofi_PLUGIN_INSTALL_DIR\\}\\/")
+                 "plugindir=${libdir}/rofi/"))))
+          (add-after 'unpack 'patch-qalc-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/calc.c"
+                (("\"qalc\"")
+                 (string-append "\""
+                                (search-input-file inputs "bin/qalc")
+                                "\""))))))))
+    (inputs
+     (list cairo libqalculate rofi))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (home-page
+     "https://github.com/svenstaro/rofi-calc")
+    (synopsis "Do live calculations in rofi with qalc")
+    (description
+     "@code{rofi-calc} is a rofi plugin that uses qalculate's @code{qalc} to parse
+natural language input and provide results.")
     (license license:expat)))
 
 (define-public tint2
@@ -2089,14 +2141,14 @@ before the system goes to sleep.")
 (define-public python-pyperclip
   (package
     (name "python-pyperclip")
-    (version "1.6.4")
+    (version "1.8.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyperclip" version))
         (sha256
          (base32
-          "1p505c23ji06r28k1y67siihsbdzdf1brhlqpyv9ams4gk9863pp"))))
+          "0mxzm43z2anr55gyz7awagvam4d5c2rlxhp9hjyg0d29n2l58lhh"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; Not clear how to make tests pass.

@@ -105,7 +105,7 @@ Some ACTIONS support additional ARGS.\n"))
   "Return the verbosity level based on OPTS, the alist of parsed options."
   (or (assoc-ref opts 'verbosity)
       (if (eq? (assoc-ref opts 'action) 'build)
-          2 1)))
+          3 1)))
 
 (define %options
   ;; Specification of the command-line options.
@@ -137,7 +137,7 @@ Some ACTIONS support additional ARGS.\n"))
     (print-build-trace? . #t)
     (print-extended-build-trace? . #t)
     (multiplexed-build-output? . #t)
-    (verbosity . 3)
+    (verbosity . #f)                              ;default
     (debug . 0)))
 
 
@@ -286,7 +286,7 @@ deploy the home environment described by these files.\n")
     ((describe)
      (match (generation-number %guix-home)
        (0
-        (error (G_ "no home environment generation, nothing to describe~%")))
+        (leave (G_ "no home environment generation, nothing to describe~%")))
        (generation
         (display-home-environment-generation generation))))
     ((list-generations)

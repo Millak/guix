@@ -29,6 +29,7 @@
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Alice BRENON <alice.brenon@ens-lyon.fr>
+;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1692,7 +1693,7 @@ command-line utility for working with CBOR data.")
            ghc-vector
            ghc-cborg))
     (home-page "https://github.com/well-typed/cborg")
-    (synopsis "A library for encoding JSON as CBOR")
+    (synopsis "Library for encoding JSON as CBOR")
     (description
      "This package implements the bijection between JSON and CBOR
 defined in the CBOR specification, RFC 7049.")
@@ -2329,7 +2330,7 @@ concurrent threads.  Can be used for progress displays etc.")
     (native-inputs
      (list ghc-quickcheck ghc-hspec ghc-safe ghc-split))
     (home-page "https://github.com/snoyberg/conduit")
-    (synopsis "Streaming data library ")
+    (synopsis "Streaming data library")
     (description
      "The conduit package is a solution to the streaming data problem,
 allowing for production, transformation, and consumption of streams of data
@@ -4528,7 +4529,7 @@ definition of @code{Monad}.")
            ghc-shelly
            ghc-temporary))
     (home-page "https://github.com/haskell-fswatch/hfsnotify")
-    (synopsis "Cross platform library for file change notification.")
+    (synopsis "Cross platform library for file change notification")
     (description "Cross platform library for file creation, modification, and
 deletion notification. This library builds upon existing libraries for platform
 specific Windows, Mac, and Linux file system event notification.")
@@ -6941,7 +6942,7 @@ compiler versions.")
     (inputs
      (list ghc-conduit ghc-resourcet libyaml+static))
     (home-page "https://github.com/snoyberg/yaml#readme")
-    (synopsis "Low-level, streaming YAML interface.")
+    (synopsis "Low-level, streaming YAML interface")
     (description "This package provides a Haskell wrapper over the
 LibYAML C library.")
     (license license:bsd-3)))
@@ -7493,7 +7494,7 @@ efficient memo functions using tries.")
          "10q7gl9yavcln58sxdxzih7ff0ixxq5hpd87icvxw97yqf1p6hmm"))))
     (build-system haskell-build-system)
     (home-page
-     "https://github.com/aelve/microlens")
+     "https://github.com/monadfix/microlens")
     (synopsis "Provides a tiny lens Haskell library with no dependencies")
     (description "This Haskell package provides a lens library, just like
 @code{ghc-lens}, but smaller.  It provides essential lenses and
@@ -8768,7 +8769,7 @@ to other formats.")
     (native-inputs
      (list ghc-hunit))
     (home-page "https://github.com/jgm/emojis#readme")
-    (synopsis "Conversion between emoji characters and their names.")
+    (synopsis "Conversion between emoji characters and their names")
     (description
      "This package provides functions for converting emoji names to emoji
 characters and vice versa.
@@ -9944,6 +9945,28 @@ Show instance.")
      "This package provides various primitive memory-related operations.")
     (license license:bsd-3)))
 
+(define-public ghc-primitive-addr
+  (package
+    (name "ghc-primitive-addr")
+    (version "0.1.0.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/primitive-addr/primitive-addr-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32 "06r1p56wm8rbjxnlaqbmc3rbsj1rsv5scwnh80lsn0xw56jc70a2"))))
+    (build-system haskell-build-system)
+    (inputs (list ghc-primitive))
+    (home-page "https://github.com/haskell-primitive/primitive-addr")
+    (synopsis "Addresses to unmanaged memory")
+    (description
+     "This library provides the @code{Data.Primitive.Addr} module that was a part
+of the @code{primitive} library before @code{primitive-0.7.0.0}.")
+    (license license:bsd-3)))
+
 (define-public ghc-process-extras
   (package
     (name "ghc-process-extras")
@@ -10638,7 +10661,7 @@ Haskell library @code{regex-base}.")
      (list ghc-regex-base))
     (native-inputs (list ghc-utf8-string))
     (home-page "https://github.com/haskell-hvr/regex-tdfa")
-    (synopsis "POSIX extended regular expressions in Haskell.")
+    (synopsis "POSIX extended regular expressions in Haskell")
     (description
      "Regex-tdfa is a pure Haskell regular expression library implementing POSIX
 extended regular expressions.  It is a \"tagged\" DFA regex engine. It is
@@ -10855,7 +10878,7 @@ better for some purposes.")
     (native-inputs
      (list ghc-hspec ghc-quickcheck hspec-discover))
     (home-page "https://github.com/commercialhaskell/rio#readme")
-    (synopsis "A standard library for Haskell")
+    (synopsis "Standard library for Haskell")
     (description "This package works as a prelude replacement for Haskell,
 providing more functionality and types out of the box than the standard
 prelude (such as common data types like @code{ByteString} and
@@ -11289,7 +11312,7 @@ a memory chunk that will be auto-scrubbed after it run out of scope.")
     (home-page
      "https://github.com/isomorphism/these")
     (synopsis
-     "Align and Zip type-classes from the common Semialign ancestor ")
+     "Align and Zip type-classes from the common Semialign ancestor")
     (description
      "The major use of @code{These} of this is provided by the
 @code{align} member of @code{Semialign} class, representing a
@@ -11374,6 +11397,40 @@ semigroup.")
      (list ghc-nats-bootstrap ghc-tagged
            ghc-unordered-containers-bootstrap ghc-hashable-bootstrap))
     (properties '((hidden? #t)))))
+
+(define-public ghc-semirings
+  (package
+    (name "ghc-semirings")
+    (version "0.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "https://hackage.haskell.org/package/semirings/semirings-"
+               version
+               ".tar.gz"))
+        (sha256
+          (base32 "16q535bvjl7395sqkx6zlw48y4fzr7irp44pcp7w9irpn4cncdcr"))))
+    (build-system haskell-build-system)
+    (inputs
+      (list ghc-base-compat-batteries ghc-hashable ghc-unordered-containers))
+    (arguments
+      `(#:cabal-revision
+        ("1" "1c06yhfa053sv3rfz0d72a33l5qb0xmj1b3hy2z7pzxrcay6g1yc")))
+    (home-page "https://github.com/chessai/semirings")
+    (synopsis "Two monoids as one, in holy haskimony")
+    (description
+     "Haskellers are usually familiar with monoids and semigroups.  A monoid has an
+appending operation @code{<>} (or @code{mappend}), and an identity element,
+@code{mempty}.  A semigroup has an appending @code{<>} operation, but does not
+require a @code{mempty} element.  A Semiring has two appending operations,
+@code{plus} and @code{times}, and two respective identity elements,
+@code{zero} and @code{one}.  More formally, a Semiring R is a set equipped
+with two binary relations @code{+} and @code{*}, such that: (R,+) is a
+commutative monoid with identity element 0, (R,*) is a monoid with identity
+element 1, (*) left and right distributes over addition, and . multiplication
+by @code{0} annihilates R.")
+    (license license:bsd-3)))
 
 (define-public ghc-serialise
   (package
@@ -12893,7 +12950,7 @@ datatypes.")
     (inputs
      (list ghc-th-lift ghc-vector ghc-quickcheck))
     (home-page "https://github.com/bennofs/th-lift-instances/")
-    (synopsis "Lift instances for template-haskell for common data types.")
+    (synopsis "Lift instances for template-haskell for common data types")
     (description "Most data types in the Haskell platform do not have Lift
 instances.  This package provides orphan instances for @code{containers},
 @code{text}, @code{bytestring} and @code{vector}.")
@@ -14215,7 +14272,7 @@ It provides the composable @code{Builder} abstraction, which has instances of th
 
 You would first use the @code{Builder} abstraction to specify the structure of
 the vector; then you can execute the builder to actually produce the
-vector. ")
+vector.")
     (license license:expat)))
 
 (define-public ghc-vector-th-unbox
@@ -15309,7 +15366,7 @@ footnotes, math, and more.")
     (inputs
      (list ghc-commonmark ghc-commonmark-extensions ghc-pandoc-types))
     (home-page "https://github.com/jgm/commonmark-hs")
-    (synopsis "Bridge between Commonmark and Pandoc AST.")
+    (synopsis "Bridge between Commonmark and Pandoc AST")
     (description
      "This library provides typeclasses for rendering @code{ghc-commonmark} to
 Pandoc types.")
@@ -15389,7 +15446,7 @@ information.")
     (synopsis "Standard spec's for @code{GenValidity} instances")
     (description
      "This haskell library provides validity and validity-based testing for
-@code{ghc-hspec}. ")
+@code{ghc-hspec}.")
     (license license:expat)))
 
 (define-public ghc-boot-th

@@ -1,5 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2018, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,9 +20,12 @@
 
 (define-module (test-gremlin)
   #:use-module (guix elf)
-  #:use-module ((guix utils) #:select (call-with-temporary-directory))
+  #:use-module (guix tests)
+  #:use-module ((guix utils) #:select (call-with-temporary-directory
+                                       target-aarch64?))
   #:use-module (guix build utils)
   #:use-module (guix build gremlin)
+  #:use-module (gnu packages bootstrap)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -90,13 +95,26 @@
            (if m
                (loop (cons (match:substring m 2) result))
                (loop result))))))
-
     (define ground-truth
-      (remove (cut string-prefix? "linux-vdso.so" <>)
+      (remove (lambda (entry)
+                ;; See vdso(7) for the list of vDSO names across
+                ;; architectures.
+                (or (string-prefix? "linux-vdso.so" entry)
+                    (string-prefix? "linux-vdso32.so" entry) ;32-bit powerpc
+                    (string-prefix? "linux-vdso64.so" entry) ;64-bit powerpc
+                    (string-prefix? "linux-gate.so" entry)   ;i386
+                    ;; FIXME: ELF files on aarch64 do not always include a
+                    ;; NEEDED entry for the dynamic linker, and it is unclear
+                    ;; if that is OK.  See: https://issues.guix.gnu.org/52943
+                    (and (target-aarch64?)
+                         (string-contains entry (glibc-dynamic-linker)))))
               (read-ldd-output pipe)))
 
     (and (zero? (close-pipe pipe))
-         (lset= string=? (pk 'truth ground-truth) (pk 'needed needed)))))
+         ;; It's OK if file-needed/recursive returns multiple entries that are
+         ;; different strings referring to the same file.  This appears to be a
+         ;; benign edge case.  See: https://issues.guix.gnu.org/52940
+         (lset= file=? (pk 'truth ground-truth) (pk 'needed needed)))))
 
 (test-equal "expand-origin"
   '("OOO/../lib"

@@ -2,9 +2,9 @@
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -96,6 +96,8 @@
        ;; of Gstreamer.
        (list "--enable-sdlmixer"
              "LDFLAGS=-lgmodule-2.0")
+       #:make-flags
+       (list "CFLAGS=-fcommon")
        #:phases
        (modify-phases %standard-phases
          (add-after 'set-paths 'set-sdl-paths
@@ -140,15 +142,15 @@ of categories with some of the activities available in that category.
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "2.0")
+    (version "2.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://gcompris.net/download/qt/src/gcompris-qt-"
+             "https://download.kde.org/stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "1ix8wf0mpcwg0bd0fbx594ywhf0r0g0xhkbnjpm2ags8ixh4ddcs"))))
+        (base32 "02j3xv8sa3s5g50zs15wy2giabmhg1q0b8ar73q3fpwvxkz9hcwn"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -311,7 +313,7 @@ easy.")
 (define-public snap
   (package
     (name "snap")
-    (version "6.9.0")
+    (version "7.0.5")
     (source
      (origin
        (method git-fetch)
@@ -320,7 +322,7 @@ easy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wppz57lrrribrfnaiv6jrrf703w7i6ja0dnz8yx8naxhbsglwyf"))))
+        (base32 "13j52r810yijvkj85c356c342drc3947j28z3va7kz75mi26whsf"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -350,9 +352,7 @@ easy.")
                  (format port "#!~a\n~a '~a'" bash xdg-open snap)))
              (chmod script #o555))))))
     (inputs
-     `(("bash" ,bash-minimal)
-       ("js-filesaver" ,js-filesaver)
-       ("xdg-utils" ,xdg-utils)))
+     (list bash-minimal js-filesaver xdg-utils))
     (home-page "https://snap.berkeley.edu")
     (synopsis "Visual, blocks based programming language")
     (description "Snap! (formerly BYOB) is a visual, drag-and-drop
@@ -374,8 +374,12 @@ to open the application in a web browser, for offline usage.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.bipede.fr/downloads/logiciels/"
-                           "ToutEnClic-" version "-src.zip"))
+       (uri (list
+             ;; XXX: Upstream does not exist anymore.
+             (string-append "http://www.bipede.fr/downloads/logiciels/"
+                            "ToutEnClic-" version "-src.zip")
+             (string-append "https://archive.org/download/tout-en-clic-" version
+                            "-src/ToutEnClic-" version "-src.zip")))
        (sha256
         (base32 "0xg24p925rl5bfqsq3jb2lrkidb0f3kbmay5iyxxmjsn3ra0blyh"))))
     (build-system python-build-system)
@@ -403,8 +407,7 @@ to open the application in a web browser, for offline usage.")
                (mkdir-p bin)
                (with-directory-excursion bin
                  (symlink (string-append share "/" executable ".py")
-                          executable)))
-             #t))
+                          executable)))))
          (add-after 'install 'create-desktop-file
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -422,8 +425,7 @@ to open the application in a web browser, for offline usage.")
                             Terminal=false~@
                             Icon=toutenclic~@
                             Type=Application~%"
-                           out)))
-               #t))))))
+                           out)))))))))
     (native-inputs
      (list unzip))
     (inputs

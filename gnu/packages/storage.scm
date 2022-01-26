@@ -59,14 +59,14 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "16.2.6")
+    (version "16.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.ceph.com/tarballs/ceph-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "104xmc84d4ycdn7f4z09kvzwl1vlywxp3hbfxhgq0kcmgikb4wad"))
+                "0n7vpdcxji49bqaa5b7zxif1r80rrkbh0dfacbibvf20kzzbn2fz"))
               (patches
                (search-patches
                 "ceph-disable-cpu-optimizations.patch"
@@ -74,22 +74,20 @@
                 "ceph-rocksdb-compat.patch"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (for-each delete-file-recursively
-                            '(;; TODO: Unbundle these:
-                              ;"src/isa-l"
-                              ;"src/lua"
-                              ;"src/xxHash"
-                              ;"src/zstd"
-                              ;"src/civetweb"
-                              "src/c-ares"
-                              "src/fmt"
-                              "src/googletest"
-                              "src/rapidjson"
-                              "src/spdk"
-                              "src/rocksdb"
-                              "src/boost"))
-                  #t))))
+               '(for-each delete-file-recursively
+                          '(;; TODO: Unbundle these:
+                            ;;"src/isa-l"
+                            ;;"src/lua"
+                            ;;"src/xxHash"
+                            ;;"src/zstd"
+                            ;;"src/civetweb"
+                            "src/c-ares"
+                            "src/fmt"
+                            "src/googletest"
+                            "src/rapidjson"
+                            "src/spdk"
+                            "src/rocksdb"
+                            "src/boost")))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags

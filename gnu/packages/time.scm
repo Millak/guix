@@ -19,6 +19,8 @@
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -157,7 +159,30 @@ saving time.  Almost all of the Olson timezones are supported.")
     (build-system python-build-system)
     ;; XXX: The PyPI distribution lacks tests, and the upstream repository
     ;; lacks a setup.py!
-    (arguments '(#:tests? #f))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Add setup.py to fix the build. Otherwise, the build will fail with
+         ;; "no setup.py found".
+         ;;
+         ;; Upstream uses Poetry to build python-pendulum, including parts
+         ;; written in C. Here, we simply add a setup.py file and do not build
+         ;; the parts written in C. This is possible because python-pendulum
+         ;; falls back on pure Python code when the C parts are not available
+         ;; (reference: build.py).
+         (add-after 'unpack 'add-setup.py
+           (lambda _
+             (call-with-output-file "setup.py"
+               (lambda (port)
+                 (format port
+                         "from setuptools import find_packages, setup
+setup(name='pendulum',
+      version='~a',
+      packages=find_packages())
+"
+                         ,version))))))
+       ;; XXX: The PyPI distribution lacks tests.
+       #:tests? #f))
     (propagated-inputs
      (list python-dateutil python-pytzdata))
     (home-page "https://github.com/sdispater/pendulum")
@@ -213,14 +238,14 @@ datetime module, available in Python 2.3+.")
 (define-public python-parsedatetime
   (package
     (name "python-parsedatetime")
-    (version "2.4")
+    (version "2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "parsedatetime" version))
        (sha256
         (base32
-         "0jxqkjks7z9dn222cqgvskp4wr6d92aglinxq7pd2w4mzdc7r09x"))))
+         "0mfl0ixshqkwx7z5siaib7ix5j2iahb1jqfpyhqp42wan7xnicsc"))))
     (build-system python-build-system)
     (native-inputs
      (list python-nose python-pyicu python-pytest python-pytest-runner))
@@ -513,6 +538,39 @@ datetime type.")
 modifies the @code{time}, @code{gettimeofday} and @code{clock_gettime} system
 calls.")
     (license gpl2)))
+
+(define-public tz
+  (package
+    (name "tz")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oz/tz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nbl13xd95np89sbx8fn0jqrh1iy17hsy70kq31hmcvyns8dljhg"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:go ,go-1.17
+       #:import-path "github.com/oz/tz"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key import-path tests? #:allow-other-keys)
+             (when tests?
+               (invoke "go" "test" "-cover" import-path)))))))
+    (inputs
+     `(("github.com/charmbracelet/bubbletea" ,go-github-com-charmbracelet-bubbletea)
+       ("github.com/muesli/termenv" ,go-github-com-muesli-termenv)))
+    (home-page "https://github.com/oz/tz")
+    (synopsis "TUI time zone helper")
+    (description
+"@command{tz} helps you schedule things across time zones.  It is an interactive
+TUI program that displays time across a few time zones of your choosing.")
+    (license gpl3+)))
 
 (define-public countdown
   (package

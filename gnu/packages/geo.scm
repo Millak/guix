@@ -7,7 +7,7 @@
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -229,8 +229,7 @@ topology functions.")
                 "037xmkmcmcw87vb1c1s3y225m8757k331cvk1m8cshf6mx61p0l1"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -517,7 +516,13 @@ fully fledged Spatial SQL capabilities.")
          "050apzdn0isxpsblys1shrl9ccli5vd32kgswlgx1imrbwpg915k"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")))
+     `(#:configure-flags '("-DUSE_EXTERNAL_GTEST=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-version
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("MAJOR 7 MINOR 2 PATCH 0") "MAJOR 7 MINOR 2 PATCH 1")))))))
     (inputs
      (list curl libjpeg-turbo libtiff sqlite))
     (native-inputs
@@ -648,8 +653,14 @@ projections and coordinate transformations library.")
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
+             (setenv "GDAL_ENABLE_DEPRECATED_DRIVER_GTM" "YES")
              (when tests?
-               (invoke "pytest" "-m" "not network and not wheel")))))))
+               (invoke "pytest"
+                       "-m" "not network and not wheel"
+                       ;; FIXME: Find why the
+                       ;;   test_no_append_driver_cannot_append[PCIDSK]
+                       ;; test is failing.
+                       "-k" "not test_no_append_driver_cannot_append")))))))
     (inputs
       (list gdal))
     (propagated-inputs
@@ -685,14 +696,14 @@ pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "0.9.0")
+    (version "0.10.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "geopandas" version))
         (sha256
           (base32
-            "02k389zyyjv51gd09c92vlr83sv46awdq0066jgh5i24vjs2m5v3"))))
+            "1nvim2i47ap1zdwy6kxydskf1cir5g4ij8124wvmrqij0zklggzg"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -830,7 +841,7 @@ development.")
 (define-public gdal
   (package
     (name "gdal")
-    (version "3.1.2")
+    (version "3.3.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -838,7 +849,7 @@ development.")
                      version ".tar.gz"))
               (sha256
                (base32
-                "1p6nmlsr8wbyq350pa6c22vrp98dcsa7yjnqsbhdbp74yj53nw9r"))
+                "0nk09lws1hk873yn5f4wzqfvr82gm4hw3gq8w9g1h0kvf6j5x4i8"))
               (modules '((guix build utils)))
               (snippet
                 `(begin
@@ -1033,14 +1044,14 @@ Shapely capabilities
 (define-public postgis
   (package
     (name "postgis")
-    (version "3.1.2")
+    (version "3.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.osgeo.org/postgis/source/postgis-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0ch7gry8a1i9114mlhklxryn7ja3flsz6pxj9r5p09k92xh3gp9c"))))
+                "1zbwa15rsvr05rmcidk21q3amndd0q4df4psp3zhqz4lqraf3fbs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -1057,16 +1068,16 @@ Shapely capabilities
                (("\\$\\(DESTDIR\\)\\$\\(PGSQL_BINDIR\\)")
                 (string-append (assoc-ref outputs "out") "/bin"))))))))
     (inputs
-     `(("gdal" ,gdal)
-       ("geos" ,geos)
-       ("giflib" ,giflib)
-       ("json-c" ,json-c)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libxml2" ,libxml2)
-       ("pcre" ,pcre)
-       ("postgresql" ,postgresql)
-       ("protobuf-c" ,protobuf-c)
-       ("proj" ,proj)))
+     (list gdal
+           geos
+           giflib
+           json-c
+           libjpeg-turbo
+           libxml2
+           pcre
+           postgresql
+           protobuf-c
+           proj))
     (native-inputs
      (list perl pkg-config))
     (home-page "https://postgis.net")
@@ -1551,7 +1562,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18303")
+    (version "18360")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1560,7 +1571,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "1bn3s4lkxx0nlh8ax42qcwn6kn53a5i3qzr47mrvsmcp6hdrnxwx"))
+                "0j7fhzh6hs2b5r1a3d1xpy6f5r6q1kh79bck28raang8ldd754c6"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1818,7 +1829,7 @@ using the dataset of topographical information collected by
 (define-public qmapshack
   (package
     (name "qmapshack")
-    (version "1.15.2")
+    (version "1.16.1")
     (source
      (origin
        (method git-fetch)
@@ -1827,7 +1838,7 @@ using the dataset of topographical information collected by
              (commit (string-append "V_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l1j2axf94pdqwirwwhwy3y6k8v1aix78ifqbv6j8sv131h2j7y7"))))
+        (base32 "184fqmsfzr3b333ssizjk6gvv7mncmygq8dj5r7rsvs5md26z2ys"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config qttools))
@@ -1840,7 +1851,7 @@ using the dataset of topographical information collected by
            qtlocation
            qtwebchannel
            qtwebengine
-           quazip-0
+           quazip
            routino
            sqlite ; See wrap phase
            zlib))
@@ -1855,12 +1866,7 @@ using the dataset of topographical information collected by
                 (string-append all "\nfind_package(Qt5Positioning REQUIRED)")))
              (substitute* "cmake/Modules/FindROUTINO.cmake"
                (("/usr/local")
-                (assoc-ref inputs "routino")))
-             ;; The following fixes are included as patches in the sources
-             ;; of QMapShack, but they are not applied by default, for
-             ;; some reason...
-             (invoke "patch" "-p1" "-i" "FindPROJ4.patch")
-             (invoke "patch" "-p1" "-i" "FindQuaZip5.patch"))))))
+                (assoc-ref inputs "routino"))))))))
     (synopsis "GPS mapping application")
     (description
      "QMapShack can be used to plan your next outdoor trip or to visualize and
@@ -2086,7 +2092,7 @@ orienteering sport.")
     (license license:gpl3+)))
 
 (define-public grass
-  (let* ((version "7.8.5")
+  (let* ((version "7.8.6")
          (majorminor (string-join (list-head (string-split version #\.) 2) ""))
          (grassxx (string-append "grass" majorminor)))
     (package
@@ -2098,7 +2104,7 @@ orienteering sport.")
          (uri (string-append "https://grass.osgeo.org/" grassxx
                              "/source/grass-" version ".tar.gz"))
          (sha256
-          (base32 "0dzzhgcsrszzinvjir50nvzq873b8gsp0p9k8fvcrv14amkbnnd3"))))
+          (base32 "1glk74ly3j0x8ymn4jp73s6y8qv7p3g5nv4gvb6l9qqplyq1fpnq"))))
       (build-system gnu-build-system)
       (inputs
        `(("bzip2" ,bzip2)
@@ -2268,6 +2274,8 @@ growing set of geoscientific methods.")
        #:imported-modules (,@%cmake-build-system-modules
                            (guix build python-build-system)
                            (guix build qt-utils))
+       #:configure-flags
+       '("-DWITH_QTWEBKIT=NO")
        #:phases
        (modify-phases %standard-phases
          ;; Configure correct path to PyQt5 SIP directory
@@ -2314,7 +2322,8 @@ growing set of geoscientific methods.")
                (("^REV=.*") "REV=currentrev\n"))
              #t))
          (replace 'check
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key inputs tests? #:allow-other-keys)
+             (when tests?
              (setenv "HOME" "/tmp")
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
@@ -2394,11 +2403,14 @@ growing set of geoscientific methods.")
                              "qgis_imagecachetest"
                              "qgis_labelingenginetest"
                              "qgis_layouthtmltest"
+                             "qgis_layoutlabeltest"
                              "qgis_layoutmanualtabletest"
                              "qgis_layoutmapgridtest"
                              "qgis_layoutmaptest"
+                             "qgis_layoutmultiframetest"
                              "qgis_layoutpicturetest"
                              "qgis_layouttabletest"
+                             "qgis_layouttest"
                              "qgis_mapdevicepixelratiotest"
                              "qgis_maprendererjobtest"
                              "qgis_ogrproviderguitest"
@@ -2415,7 +2427,7 @@ growing set of geoscientific methods.")
                              "qgis_taskmanagertest"
                              "qgis_wcsprovidertest"
                              "qgis_ziplayertest")
-                           "|"))))
+                           "|")))))
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap))
          (add-after 'wrap-python 'wrap-qt
@@ -2484,7 +2496,6 @@ growing set of geoscientific methods.")
            qtlocation
            qtserialport
            qtsvg
-           qtwebkit
            qwt
            ;;("saga" ,saga)
            sqlite))

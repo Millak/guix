@@ -48,7 +48,8 @@
               "0qk6fshgdmhp8dip2ksm13j6nywi41m9mn0czkvmw6b697z85l2r"))))
       (build-system go-build-system)
       (arguments
-       '(#:unpack-path "github.com/ipfs/go-ipfs-cmdkit"
+       `(#:go ,go-1.16
+         #:unpack-path "github.com/ipfs/go-ipfs-cmdkit"
          #:import-path "github.com/ipfs/go-ipfs-cmdkit/files"))
       (home-page "https://github.com/ipfs/go-ipfs-cmdkit")
       (synopsis "Shared types, functions and values for go-ipfs")
@@ -229,17 +230,7 @@ written in Go.")
     (build-system go-build-system)
     (arguments
      `(#:unpack-path "github.com/ipfs/go-ipfs"
-       #:import-path "github.com/ipfs/go-ipfs/cmd/ipfs"
-       #:go ,go-1.17
-       #:phases (modify-phases %standard-phases
-                  (add-before 'reset-gzip-timestamps 'make-files-writable
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Make sure .gz files are writable so that the
-                      ;; 'reset-gzip-timestamps' phase can do its work.
-                      (let ((out (assoc-ref outputs "out")))
-                        (for-each make-file-writable
-                                  (find-files out "\\.gz$"))
-                        #t))))))
+       #:import-path "github.com/ipfs/go-ipfs/cmd/ipfs"))
     (native-inputs
      (list python-minimal-wrapper zsh))
     (home-page "https://ipfs.io")

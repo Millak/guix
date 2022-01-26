@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016–2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -328,7 +328,7 @@ precision.")
 (define-public giac
   (package
     (name "giac")
-    (version "1.7.0-43")
+    (version "1.7.0-45")
     (source
      (origin
        (method url-fetch)
@@ -340,7 +340,7 @@ precision.")
                            "~parisse/debian/dists/stable/main/source/"
                            "giac_" version ".tar.gz"))
        (sha256
-        (base32 "0zsa506isvmixwwg0xgvxhlns6i75jsc3qjzcrny4fl11hkj9xw5"))))
+        (base32 "19hxbx27n5zby96d4pzhxxqn7mzk29g8sxn08fi638l17lr9x2q2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
@@ -378,33 +378,33 @@ precision.")
                (delete-file (string-append out "/bin/xcasnew"))))))))
     (inputs
      ;; TODO: Add libnauty, unbundle "libmicropython.a".
-     `(("fltk" ,fltk)
-       ("glpk" ,glpk-4)
-       ("gmp" ,gmp)
-       ("gsl" ,gsl)
-       ("lapack" ,lapack)
-       ("libao" ,ao)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libsamplerate" ,libsamplerate)
-       ("libx11" ,libx11)
-       ("libxinerama" ,libxinerama)
-       ("libxft" ,libxft)
-       ("libxt" ,libxt)
-       ("mesa" ,mesa)
-       ("mpfi" ,mpfi)
-       ("mpfr" ,mpfr)
-       ("ntl" ,ntl)
-       ("perl" ,perl)
-       ("pari-gp" ,pari-gp)
-       ("tcsh" ,tcsh)))
+     (list ao
+           fltk
+           glpk-4
+           gmp
+           gsl
+           lapack
+           libjpeg-turbo
+           libpng
+           libsamplerate
+           libx11
+           libxft
+           libxinerama
+           libxt
+           mesa
+           mpfi
+           mpfr
+           ntl
+           pari-gp
+           perl
+           tcsh))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("hevea" ,hevea)
-       ("python" ,python-wrapper)
-       ("readline" ,readline)
-       ("texlive" ,texlive-tiny)))
+     (list bison
+           flex
+           hevea
+           python-wrapper
+           readline
+           texlive-tiny))
     (home-page "https://www-fourier.ujf-grenoble.fr/~parisse/giac.html")
     (synopsis "Computer algebra system")
     (description
@@ -1044,6 +1044,44 @@ features, and more.")
     ;; See 'COPYING.README' for details.
     (license license:mpl2.0)))
 
+(define-public eigen-benchmarks
+  (package
+    (inherit eigen)
+    (name "eigen-benchmarks")
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        (define (compile file)
+                          (format #t "compiling '~a'...~%" file)
+                          (let ((target
+                                 (string-append bin "/"
+                                                (basename file ".cpp"))))
+                            (invoke "c++" "-o" target file
+                                    "-I" ".." "-O2" "-g"
+                                    "-lopenblas" "-Wl,--as-needed")))
+
+                        (mkdir-p bin)
+                        (with-directory-excursion "bench"
+                          ;; There are more benchmarks, of varying quality.
+                          ;; Here we pick some that appear to be useful.
+                          (for-each compile
+                                    '("benchBlasGemm.cpp"
+                                      "benchCholesky.cpp"
+                                      ;;"benchEigenSolver.cpp"
+                                      "benchFFT.cpp"
+                                      "benchmark-blocking-sizes.cpp"))))))
+                  (delete 'install))))
+    (inputs (list boost openblas))
+
+    ;; Mark as tunable to take advantage of SIMD code in Eigen.
+    (properties '((tunable? . #t)))
+
+    (synopsis "Micro-benchmarks of the Eigen linear algebra library")))
+
 (define-public eigen-for-tensorflow
   (let ((changeset "fd6845384b86")
         (revision "1"))
@@ -1130,6 +1168,45 @@ xtensor provides:
 @item tools to manipulate array expressions and build upon xtensor.
 @end itemize")
     (license license:bsd-3)))
+
+(define-public xtensor-benchmark
+  (package
+    (inherit xtensor)
+    (name "xtensor-benchmark")
+    (arguments
+     `(#:configure-flags (list "-DBUILD_BENCHMARK=ON"
+                               "-DDOWNLOAD_GBENCHMARK=OFF")
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'remove-march=native
+                    (lambda _
+                      (substitute* "benchmark/CMakeLists.txt"
+                        (("-march=native") ""))))
+                  (add-after 'unpack 'link-with-googlebenchmark
+                    (lambda _
+                      (substitute* "benchmark/CMakeLists.txt"
+                        (("find_package\\(benchmark.*" all)
+                         (string-append
+                          all "\n"
+                          "set(GBENCHMARK_LIBRARIES benchmark)\n")))))
+                  (replace 'build
+                    (lambda _
+                      (invoke "make" "benchmark_xtensor" "-j"
+                              (number->string (parallel-job-count)))))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; Install nothing but the executable.
+                      (let ((out (assoc-ref outputs "out")))
+                        (install-file "benchmark/benchmark_xtensor"
+                                      (string-append out "/bin"))))))))
+    (synopsis "Benchmarks of the xtensor library")
+    (native-inputs '())
+    (inputs
+     (modify-inputs (package-native-inputs xtensor)
+       (prepend googlebenchmark xsimd)))
+
+    ;; Mark as tunable to take advantage of SIMD code in xsimd/xtensor.
+    (properties '((tunable? . #t)))))
 
 (define-public gap
   (package

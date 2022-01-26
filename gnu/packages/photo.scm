@@ -239,14 +239,14 @@ data as produced by digital cameras.")
 (define-public libgphoto2
   (package
     (name "libgphoto2")
-    (version "2.5.27")
+    (version "2.5.28")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gphoto/libgphoto/"
                                   version "/libgphoto2-" version ".tar.bz2"))
               (sha256
                (base32
-                "1ms06b3dj1p33aypcb16gg5pn7fylbylsk9cnnqa0j29qiw59f7q"))))
+                "1gayf81nzi8gxmwhgs4k1p0dwqajsx0h9lzjfvnib3100dm5j04n"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs
@@ -267,14 +267,14 @@ from digital cameras.")
 (define-public gphoto2
   (package
     (name "gphoto2")
-    (version "2.5.27")
+    (version "2.5.28")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gphoto/gphoto/" version
                                   "/gphoto2-" version ".tar.bz2"))
               (sha256
                (base32
-                "0f4d3q381jnnkcqkb2dj1k709skp65qihl5xm80zandvl69lw19h"))))
+                "0xbki37q9ja34igidr2vj0ps1lp7sfz4xpsmh8h9x89dy76qsr1a"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -287,13 +287,10 @@ from digital cameras.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (find-files "tests/data" "\\.param$")
                (("/usr/bin/env")
-                (which "env")))
-             #t)))
-
+                (which "env"))))))
        ;; FIXME: There is 1 test failure, most likely related to the build
        ;; environment.
        #:tests? #f))
-
     (home-page "http://www.gphoto.org/")
     (synopsis "Command-line tools to access digital cameras")
     (description
@@ -460,7 +457,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "3.6.1")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
@@ -468,7 +465,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "051dwhdqa9q3zyrvr78g0cfzl1zhaagfvgx9axa9895q0g0wggx2"))))
+        (base32 "01gp9dg5wr2rg1k8cqs0l3s7ism8a4q8qypgwccd4jh7ip3wfr9f"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
@@ -521,42 +518,42 @@ photographic equipment.")
        ("python" ,python-wrapper)
        ("ruby" ,ruby)))
     (inputs
-     `(("cairo" ,cairo)
-       ("colord-gtk" ,colord-gtk) ;optional, for color profile support
-       ("cups" ,cups) ;optional, for printing support
-       ("curl" ,curl)
-       ("dbus-glib" ,dbus-glib)
-       ("exiv2" ,exiv2)
-       ("freeimage" ,freeimage)
-       ("gmic" ,gmic) ;optional, for HaldcLUT support
-       ("graphicsmagick" ,graphicsmagick)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("imath" ,imath)
-       ("iso-codes" ,iso-codes) ;optional, for language names in the preferences
-       ("json-glib" ,json-glib)
-       ("lcms" ,lcms)
-       ("lensfun" ,lensfun) ;optional, for the lens distortion plugin
-       ("libgphoto2" ,libgphoto2) ;optional, for camera tethering
-       ("libavif" ,libavif) ;optional, for AVIF support
-       ("libjpeg" ,libjpeg-turbo)
-       ("libomp" ,libomp)
-       ("libpng" ,libpng)
-       ("librsvg" ,librsvg)
-       ("libsecret" ,libsecret) ;optional, for storing passwords
-       ("libsoup" ,libsoup-minimal-2)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp) ;optional, for WebP support
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("lua" ,lua) ;optional, for plugins
-       ("opencl-icd-loader" ,opencl-icd-loader) ;optional, for OpenCL support
-       ("openexr" ,openexr) ;optional, for EXR import/export
-       ("openjpeg" ,openjpeg) ;optional, for JPEG2000 export
-       ("osm-gps-map" ,osm-gps-map) ;optional, for geotagging view
-       ("pugixml" ,pugixml)
-       ("python-jsonschema" ,python-jsonschema)
-       ("sqlite" ,sqlite)))
+     (list cairo
+           colord-gtk ;optional, for color profile support
+           cups ;optional, for printing support
+           curl
+           dbus-glib
+           exiv2
+           freeimage
+           gmic ;optional, for HaldcLUT support
+           graphicsmagick
+           gsettings-desktop-schemas
+           gtk+
+           imath
+           iso-codes ;optional, for language names in the preferences
+           json-glib
+           lcms
+           lensfun ;optional, for the lens distortion plugin
+           libgphoto2 ;optional, for camera tethering
+           libavif ;optional, for AVIF support
+           libjpeg-turbo
+           libomp
+           libpng
+           librsvg
+           libsecret ;optional, for storing passwords
+           libsoup-minimal-2
+           libtiff
+           libwebp ;optional, for WebP support
+           libxml2
+           libxslt
+           lua-5.4 ;optional, for plugins
+           opencl-icd-loader ;optional, for OpenCL support
+           openexr ;optional, for EXR import/export
+           openjpeg ;optional, for JPEG2000 export
+           osm-gps-map ;optional, for geotagging view
+           pugixml
+           python-jsonschema
+           sqlite))
     (home-page "https://www.darktable.org")
     (synopsis "Virtual lighttable and darkroom for photographers")
     (description "Darktable is a photography workflow application and RAW
@@ -625,7 +622,6 @@ such as Batch image processing.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59                     ;fails to build with Meson 0.60
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -770,7 +766,8 @@ a complete panorama and stitch any series of overlapping pictures.")
              "-DPROC_TARGET_NUMBER=1"
              ;; These flags are recommended by upstream for distributed packages.
              ;; See the file 'RELEASE_NOTES.txt' in the source distribution.
-             "-O3"
+             "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
+             "-DCMAKE_C_FLAGS=-O3 -fPIC"
              "-DCACHE_NAME_SUFFIX=\"\"")))
     (native-inputs
      (list pkg-config))

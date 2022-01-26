@@ -23,10 +23,10 @@
 ;;; Copyright © 2018, 2019 Tonton <tonton@riseup.net>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Theodoros Foradis <theodoros@foradis.org>
-;;; Copyright © 2018, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -67,6 +67,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
@@ -127,6 +128,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -179,7 +181,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
 (define-public axel
   (package
     (name "axel")
-    (version "2.17.10")
+    (version "2.17.11")
     (source
      (origin
        (method url-fetch)
@@ -187,7 +189,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
                            "releases/download/v" version "/"
                            "axel-" version ".tar.xz"))
        (sha256
-        (base32 "0kmlqk04sgkshsll4r9w3k0rvrgz0gpk987618r50khwl484zss6"))))
+        (base32 "1yfcsi0zv07bvhj8klgna3y1ycc4jhaija1b3rzzv0i4d4c2q2sq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
@@ -909,6 +911,42 @@ addresses used in the wired Ethernet networks.  This daemon can also be
 useful for making transparent firewalls.")
     (license license:gpl2)))
 
+(define-public pproxy
+  (package
+    (name "pproxy")
+    (version "2.7.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pproxy" version))
+              (sha256
+               (base32
+                "1j4nv72i77i2j5nl9ymzpk4m98qih3naihfrqjghrc9b7g0krdzs"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "tests"
+                       (for-each (lambda (file)
+                                   (invoke "python" file))
+                                 ;; XXX: The api_ tests require network access
+                                 ;; so we only run the cipher tests for now.
+                                 (find-files "." "^cipher_.*\\.py$")))))))))
+    (inputs
+     (list python-asyncssh
+           python-daemon
+           python-pycryptodome
+           python-uvloop))
+    (home-page "https://github.com/qwj/python-proxy")
+    (synopsis "Multi-protocol network proxy")
+    (description
+     "@command{pproxy} is an asynchronuous proxy server implemented with
+Python 3 @code{asyncio}.  Among the supported protocols are HTTP, SOCKS
+and SSH, and it can use both TCP and UDP as transport mechanisms.")
+    (license license:expat)))
+
 (define-public socat
   (package
     (name "socat")
@@ -1439,7 +1477,7 @@ and up to 1 Mbit/s downstream.")
 (define-public whois
   (package
     (name "whois")
-    (version "5.5.10")
+    (version "5.5.11")
     (source
      (origin
        (method git-fetch)
@@ -1448,7 +1486,7 @@ and up to 1 Mbit/s downstream.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "179hgmh9yqk8jq26ybik4cr3lgryd5p6kdwccc3r7mfssk3yp8lz"))))
+        (base32 "0wys0aixzq6mzvg7p6jb0d5rkkg23pjcgcsx86p7hjidxdvnbwzr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -1484,14 +1522,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "3.6.0")
+    (version "3.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "01nzzqig1z7ix4xb7ycs7wq3qqwq3ipdwp7rznynzmmibgyggj4w"))))
+        (base32 "0f2sjbbwmmz9zr8vphxy0panfji5vv8vazm688mqxy3bzflfsd04"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -1518,37 +1556,37 @@ of the same name.")
        ;; For now, we disable this phase.
        #:validate-runpath? #f))
     (inputs
-     `(("c-ares" ,c-ares)
-       ("glib" ,glib)
-       ("gnutls" ,gnutls)
-       ("brotli" ,brotli)
-       ("libcap" ,libcap)
-       ("libgcrypt" ,libgcrypt)
-       ("libnl" ,libnl)
-       ("libpcap" ,libpcap)
-       ("libssh" ,libssh)
-       ("libxml2" ,libxml2)
-       ("lz4" ,lz4)
-       ("lua" ,lua-5.2)                 ;Lua 5.3 unsupported
-       ("krb5" ,mit-krb5)
-       ("nghttp2:lib" ,nghttp2 "lib")
-       ("minizip" ,minizip)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtsvg" ,qtsvg)
-       ("sbc" ,sbc)
-       ("snappy" ,snappy)
-       ("zlib" ,zlib)
-       ("zstd:lib" ,zstd "lib")))
+     (list c-ares
+           glib
+           gnutls
+           brotli
+           libcap
+           libgcrypt
+           libnl
+           libpcap
+           libssh
+           libxml2
+           lz4
+           lua-5.2                      ;Lua 5.3 unsupported
+           mit-krb5
+           `(,nghttp2 "lib")
+           minizip
+           qtbase-5
+           qtmultimedia
+           qtsvg
+           sbc
+           snappy
+           zlib
+           `(,zstd "lib")))
     (native-inputs
-     `(("bison" ,bison)
-       ("doxygen" ,doxygen)
-       ("flex" ,flex)
-       ("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("qttools" ,qttools)))
+     (list bison
+           doxygen
+           flex
+           gettext-minimal
+           perl
+           pkg-config
+           python-wrapper
+           qttools))
     (synopsis "Network traffic analyzer")
     (description "Wireshark is a network protocol analyzer, or @dfn{packet
 sniffer}, that lets you capture and interactively browse the contents of
@@ -2620,7 +2658,10 @@ speedtest.net.")
                (base32
                 "12vidchglhyc20znq5wdsbhi9mqg90jnl7qr9qs8hbvaz4fkdvmg"))))
     (build-system gnu-build-system)
-    (arguments `(#:tests? #f)) ; no test target
+    (arguments
+     (list #:tests? #f                  ; no test target
+           #:configure-flags
+           #~(list "CFLAGS=-fcommon")))   ; XXX fix 5.2 build with GCC 10
     (synopsis "HPA's tftp client")
     (description
      "This is a tftp client derived from OpenBSD tftp with some extra options
@@ -2824,14 +2865,14 @@ can be whipped up with little effort.")
 (define-public mtr
   (package
     (name "mtr")
-    (version "0.94")
+    (version "0.95")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "ftp://ftp.bitwizard.nl/mtr/"
                            "mtr-" version ".tar.gz"))
        (sha256
-        (base32 "1glxvlqskcmjkxlqk9i12hcfaxb389cx2n8ji7776gmix3aq4z1z"))))
+        (base32 "0haanralbvd12pvkyihgkmx9ld74dnzm1s7mzparfandl416ibff"))))
     (build-system gnu-build-system)
     (inputs
      (list libcap ncurses))
@@ -3357,11 +3398,14 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
     (license license:bsd-3)))
 
 (define-public opendht
-  (let ((commit "6c58d4f2e9b7f1de15db8d3a736c8cf1ea5f2886")
-        (revision "1"))
+  ;; The version/commit is kept in sync with what Jami uses in its daemon
+  ;; contrib build system (see:
+  ;; https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/opendht/rules.mak).
+  (let ((commit "dbbfdaab0f4119abf79646313e0dbc52881dcd56")
+        (revision "0"))
     (package
       (name "opendht")
-      (version (git-version "2.3.0" revision commit))
+      (version (git-version "2.3.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3370,21 +3414,65 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "06l0z1dmxyjh8gdrmxyq4vnfnv3x400bhx0lxm7l90f8zc5r2bim"))))
-      ;; Since 2.0, the gnu-build-system does not seem to work anymore, upstream bug?
+                  "07x8vw999qpfl6qwj5k5l2mcjy1vp32sd567f6imbsnh9vlx2bdv"))))
       (outputs '("out" "tools" "debug"))
-      (build-system cmake-build-system)
-      (inputs
-       (list argon2
-             nettle
-             readline
-             jsoncpp
-             openssl ;required for the DHT proxy
-             fmt))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:imported-modules `((guix build python-build-system) ;for site-packages
+                             ,@%gnu-build-system-modules)
+        #:modules '(((guix build python-build-system) #:prefix python:)
+                    (guix build gnu-build-system)
+                    (guix build utils))
+        #:tests? #f                     ;tests require networking
+        #:configure-flags
+        #~(list "--enable-tests"
+                "--enable-proxy-server"
+                "--enable-push-notifications"
+                "--enable-proxy-server-identity"
+                "--enable-proxy-client")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-python-installation-prefix
+              ;; Specify the installation prefix for the compiled Python module
+              ;; that would otherwise attempt to installs itself to Python's own
+              ;; site-packages directory.
+              (lambda _
+                (substitute* "python/Makefile.am"
+                  (("--root=\\$\\(DESTDIR)/")
+                   (string-append "--root=/ --single-version-externally-managed "
+                                  "--prefix=" #$output)))))
+            (add-after 'unpack 'specify-runpath-for-python-module
+              (lambda _
+                (substitute* "python/setup.py.in"
+                  (("extra_link_args=\\[(.*)\\]" _ args)
+                   (string-append "extra_link_args=[" args
+                                  ", '-Wl,-rpath=" #$output "/lib']")))))
+            (add-after 'install 'move-and-wrap-tools
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((tools (assoc-ref outputs "tools"))
+                       (dhtcluster (string-append tools "/bin/dhtcluster"))
+                       (site-packages (python:site-packages inputs outputs)))
+                  (mkdir tools)
+                  (rename-file (string-append #$output "/bin")
+                               (string-append tools "/bin"))
+                  ;; TODO: Contribute a patch to python/Makefile.am to
+                  ;; automate this.
+                  (copy-file "python/tools/dhtcluster.py" dhtcluster)
+                  (chmod dhtcluster #o555)
+                  (wrap-program dhtcluster
+                    `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
+      (inputs (list bash-minimal fmt readline))
       (propagated-inputs
-       (list gnutls ;included in opendht/crypto.h
-             msgpack ;included in several installed headers
-             restinio))         ;included in opendht/http.h
+       (list msgpack                    ;included in several installed headers
+             restinio                   ;included in opendht/http.h
+             ;; The following are listed in the 'Requires.private' field of
+             ;; opendht.pc:
+             argon2
+             gnutls
+             jsoncpp
+             nettle
+             openssl))                  ;required for the DHT proxy
       (native-inputs
        (list autoconf
              automake
@@ -3393,50 +3481,6 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
              python-cython
              libtool
              cppunit))
-      (arguments
-       `(#:imported-modules ((guix build python-build-system) ;for site-packages
-                             ,@%cmake-build-system-modules)
-         #:modules (((guix build python-build-system) #:prefix python:)
-                    (guix build cmake-build-system)
-                    (guix build utils))
-         #:tests? #f                      ; Tests require network connection.
-         #:configure-flags
-         '( ;;"-DOPENDHT_TESTS=on"
-           "-DOPENDHT_STATIC=off"
-           "-DOPENDHT_TOOLS=on"
-           "-DOPENDHT_PYTHON=on"
-           "-DOPENDHT_PROXY_SERVER=on"
-           "-DOPENDHT_PUSH_NOTIFICATIONS=on"
-           "-DOPENDHT_PROXY_SERVER_IDENTITY=on"
-           "-DOPENDHT_PROXY_CLIENT=on")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-python-installation-prefix
-             ;; Specify the installation prefix for the compiled Python module
-             ;; that would otherwise attempt to installs itself to Python's own
-             ;; site-packages directory.
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (substitute* "python/CMakeLists.txt"
-                 (("--root=\\\\\\$ENV\\{DESTDIR\\}")
-                  (string-append "--root=/ --single-version-externally-managed "
-                                 "--prefix=${CMAKE_INSTALL_PREFIX}")))))
-           (add-after 'unpack 'specify-runpath-for-python-module
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (substitute* "python/setup.py.in"
-                   (("extra_link_args=\\[(.*)\\]" _ args)
-                    (string-append "extra_link_args=[" args
-                                   ", '-Wl,-rpath=" out "/lib']"))))))
-           (add-after 'install 'move-and-wrap-tools
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (tools (assoc-ref outputs "tools"))
-                     (site-packages (python:site-packages inputs outputs)))
-                 (mkdir tools)
-                 (rename-file (string-append out "/bin")
-                              (string-append tools "/bin"))
-                 (wrap-program (string-append tools "/bin/dhtcluster")
-                   `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
       (home-page "https://github.com/savoirfairelinux/opendht/")
       (synopsis "Lightweight Distributed Hash Table (DHT) library")
       (description "OpenDHT provides an easy to use distributed in-memory data
@@ -3484,7 +3528,7 @@ A very simple IM client working over the DHT.
     (home-page "https://frrouting.org/")
     (synopsis "IP routing protocol suite")
     (description "FRRouting (FRR) is an IP routing protocol suite which includes
-protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP. ")
+protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
     (license license:gpl2+)))
 
 (define-public bird
@@ -3521,7 +3565,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "1.15")
+    (version "1.20")
     (source (origin
               ;; FIXME: We're using the bootstrapped sources because
               ;; otherwise using an external ell library is impossible.
@@ -3531,7 +3575,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
                                   "/wireless/iwd-" version ".tar.xz"))
               (sha256
                (base32
-                "0ngng9a9ra5w0mp2813yy2ihfibyx10ns6v5icdcp99db608xax7"))))
+                "03q5scahyg86h4bdxqxm32shyssgpmfp5b3183j01ig7mg6f4lbx"))))
     (build-system gnu-build-system)
     (inputs
      (list dbus ell readline))
@@ -3973,14 +4017,14 @@ stamps.")
 (define-public nbd
   (package
     (name "nbd")
-    (version "3.22")
+    (version "3.23")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/nbd/nbd/" version
                             "/nbd-" version ".tar.xz"))
         (sha256
-         (base32 "1ljx6vb3lja5p0lr28vmjp27n9d6krlvq49bhqbcm2ns8vxd1vh6"))))
+         (base32 "1d2phi0m9x32p9zddv9fpkhj1rbhlvq93wsn9niy7i3aavn71x6y"))))
     (build-system gnu-build-system)
     (inputs
      (list glib))

@@ -8,9 +8,9 @@
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -22,6 +22,9 @@
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -78,6 +81,76 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
 
+(define-public argagg
+  (let ((commit "79e4adfa2c6e2bfbe63da05cc668eb9ad5596748") (revision "0"))
+    (package
+      (name "argagg")
+      (version (git-version "0.4.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vietjtnguyen/argagg")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1flkgh524lq3024p7ld5lg743s1v7qnbmgv77578rzmn2rjzr77n"))))
+      (build-system cmake-build-system)
+      (outputs '("out" "doc"))
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (add-after 'install 'move-doc
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let* ((name ,(package-name argagg)) (out (assoc-ref
+                                                                   outputs
+                                                                   "out"))
+                               (doc (assoc-ref outputs "doc")))
+                          (mkdir-p (string-append doc "/share/doc"))
+                          (rename-file
+                           (string-append out "/share/doc/" name)
+                           (string-append doc "/share/doc/" name))))))))
+      (native-inputs (list doxygen))
+      (home-page "https://github.com/vietjtnguyen/argagg")
+      (synopsis "C++11 command line argument parser")
+      (description
+       "ArgAgg is yet another C++ command line argument/option
+parser.  It was written as a simple and idiomatic alternative to other
+frameworks like getopt, Boost program options, TCLAP, and others.  The goal is
+to achieve the majority of argument parsing needs in a simple manner with an
+easy to use API.")
+      (license license:expat))))
+
+(define-public asmjit
+  (let ((commit "4ec760a3d1f69e32ba460ecd2513f29b8428700b")
+        (revision "0"))
+    (package
+      (name "asmjit")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/asmjit/asmjit")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0skgccbpamcbg1byawfq5n6jzxgj64hnc7jznvk35nkskaaz1nlb"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-DASMJIT_TEST=TRUE")))
+      (home-page "https://asmjit.com/")
+      (synopsis "Machine code generation for C++")
+      (description "AsmJit is a lightweight library for machine code
+generation written in C++ language.  It can generate machine code for X86 and
+X86_64 architectures with the support for the whole instruction set from
+legacy MMX to the newest AVX-512 and AMX.  It has a type-safe API that allows
+C++ compiler to do semantic checks at compile-time even before the assembled
+code is generated or executed.  It also provides an optional register
+allocator that makes it easy to generate complex code without a significant
+development effort.")
+      (license license:zlib))))
+
 (define-public range-v3
   (package
     (name "range-v3")
@@ -111,7 +184,7 @@ range-v3 ranges are an abstraction layer on top of iterators.")
       (license:x11-style "file:///LICENSE.txt")
       ;; SGI STL
       license:sgifreeb2.0
-      ;;; LibC++ (dual-licensed)
+;;; LibC++ (dual-licensed)
       license:expat
       license:ncsa
       ;; Others
@@ -299,6 +372,53 @@ batches of numbers with the same arithmetic operators as for single values.
 It also provides accelerated implementation of common mathematical functions
 operating on batches.")
     (license license:bsd-3)))
+
+(define-public google-highway
+  (package
+    (name "google-highway")
+    (version "0.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/highway")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yjwgnrpd9m99x2nqf6ld28zc6y9nlsxqg128bxxmja1gg4g4qdz"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
+    (native-inputs
+     (list googletest))
+    (home-page "https://github.com/google/highway")
+    (synopsis "SIMD library with runtime dispatch")
+    (description "Highway is a performance-portable, length-agnostic C++
+library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
+    (license license:asl2.0)))
+
+(define-public xsmimd-benchmark
+  (package
+    (inherit xsimd)
+    (name "xsimd-benchmark")
+    (arguments
+     `(#:configure-flags (list "-DBUILD_BENCHMARK=ON")
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'remove-march=native
+                    (lambda _
+                      (substitute* "benchmark/CMakeLists.txt"
+                        (("-march=native") ""))))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; Install nothing but the executable.
+                      (let ((out (assoc-ref outputs "out")))
+                        (install-file "benchmark/benchmark_xsimd"
+                                      (string-append out "/bin"))))))))
+    (synopsis "Benchmark of the xsimd library")
+
+    ;; Mark as tunable to take advantage of SIMD code in xsimd/xtensor.
+    (properties '((tunable? . #t)))))
 
 (define-public chaiscript
   (package
@@ -509,6 +629,28 @@ code analysis and supports cross references, hierarchies, completion and
 syntax highlighting.  @code{ccls} is derived from @code{cquery} which is not
 maintained anymore.")
     (license license:asl2.0)))
+
+(define-public concurrentqueue
+  (package
+    (name "concurrentqueue")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cameron314/concurrentqueue/")
+             (commit "3747268264d0fa113e981658a99ceeae4dad05b7")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n5v7n27llzg7khg1jvi35jrcf9v6adw8gaic9ndxn65dp723ssy"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #false)) ;no check target
+    (home-page "https://github.com/cameron314/concurrentqueue/")
+    (synopsis "Multi-producer, multi-consumer lock-free concurrent queue for C++11")
+    (description
+     "This package provides a fast multi-producer, multi-consumer lock-free
+concurrent queue for C++11.")
+    (license license:bsd-2)))
 
 (define-public spscqueue
   (package
@@ -1136,7 +1278,7 @@ computation.")
     (native-inputs
      `(("unzip" ,unzip)))
     (home-page "https://sourceforge.net/projects/polyclipping")
-    (synopsis "A polygon and line clipping and offsetting library")
+    (synopsis "Polygon and line clipping and offsetting library")
     (description
      "The Clipper library performs line & polygon clipping - intersection,
 union, difference & exclusive-or, and line & polygon offsetting.

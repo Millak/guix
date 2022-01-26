@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,7 @@
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:select (openldap2.8 lgpl2.1+ gpl3+ psfl expat))
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
@@ -120,6 +122,48 @@
    (license openldap2.8)
    (home-page "https://www.openldap.org/")))
 
+;; TODO: Update the main package in the next rebuild cycle.
+(define-public openldap-2.6
+  (package
+    (inherit openldap)
+    (version "2.6.1")
+    (source (origin
+              (method url-fetch)
+              ;; See <http://www.openldap.org/software/download/> for a list of
+              ;; mirrors.
+              (uri (list (string-append
+                          "http://mirror.eu.oneandone.net/software/openldap"
+                          "/openldap-release/openldap-" version ".tgz")
+                         (string-append
+                          "https://www.openldap.org/software/download/OpenLDAP/"
+                          "openldap-release/openldap-" version ".tgz")
+                         (string-append
+                          "ftp://ftp.dti.ad.jp/pub/net/OpenLDAP/"
+                          "openldap-release/openldap-" version ".tgz")))
+              (sha256
+               (base32
+                "1wz6f3g3bbqgbbxs20zlappmmhapqbl791c0waibhz9djsk6wmwx"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openldap)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'patch-sasl-path
+              ;; Give -L arguments for cyrus-sasl to avoid propagation.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((krb5 (search-input-file inputs "/lib/libkrb5.so")))
+                  (substitute* (string-append #$output "/lib/libldap.la")
+                    (("-lkrb5" lib)
+                     (string-append "-L" (dirname krb5) "/lib " lib))))))
+            (add-after 'install 'provide-ldap_r
+              (lambda _
+                ;; The re-entrant libldap_r no longer exists since 2.6
+                ;; as it has become the default: provide a linker alias
+                ;; for now.
+                (call-with-output-file (string-append #$output
+                                                      "/lib/libldap_r.so")
+                  (lambda (port)
+                    (format port "INPUT ( libldap.so )~%")))))))))))
+
 (define-public nss-pam-ldapd
   (package
     (name "nss-pam-ldapd")
@@ -167,30 +211,27 @@ an LDAP server.")
 (define-public python-ldap
   (package
     (name "python-ldap")
-    (version "3.3.1")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-ldap" version))
        (sha256
         (base32
-         "198as30xy6p760niqps2zdvq2xcmr765h06pmda8fa9y077wl4a7"))))
+         "04hd7rdm59i7wrykx0nggzxx1p42wkm296j483yy0wayqa7lqik0"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'configure-openldap-locations
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((openldap (assoc-ref inputs "openldap")))
-               (setenv "SLAPD"
-                       (string-append openldap
-                                      "/libexec/slapd"))
-               (setenv "SCHEMA"
-                       (string-append openldap
-                                      "/etc/openldap/schema/")))
-             #t)))))
+             (let ((slapd (search-input-file inputs "libexec/slapd"))
+                   (schema (search-input-directory
+                            inputs "etc/openldap/schema")))
+               (setenv "SLAPD" slapd)
+               (setenv "SCHEMA" schema)))))))
     (inputs
-     (list openldap cyrus-sasl mit-krb5))
+     (list openldap-2.6 cyrus-sasl mit-krb5))
     (propagated-inputs
      (list python-pyasn1 python-pyasn1-modules))
     (home-page "https://www.python-ldap.org/")

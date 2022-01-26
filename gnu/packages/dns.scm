@@ -9,7 +9,7 @@
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
-;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2018, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -40,7 +40,6 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -79,6 +78,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -140,15 +140,15 @@ protocol.")
 (define-public ldns
   (package
     (name "ldns")
-    (version "1.7.1")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "https://www.nlnetlabs.nl/downloads/"
-                       name "/" name "-" version ".tar.gz"))
+                       "ldns/ldns-" version ".tar.gz"))
        (sha256
-        (base32 "0ac242n7996fswq1a3nlh1bbbhrsdwsq4mx7xq8ffq6aplb4rj4a"))
+        (base32 "18vzdmyg9bm45janw602d4hifjsncrv143awlwcslfjdrsmjk0lm"))
        (patches
         (search-patches
          ;; To create make-flag variables,
@@ -157,60 +157,41 @@ protocol.")
     (build-system gnu-build-system)
     (outputs '("out" "drill" "examples" "pyldns"))
     (arguments
-     `( ;; Tests require Tpkg.
-       ;; https://tpkg.github.io/
-       #:tests? #f
-       #:configure-flags
-       (list
-        "--disable-static"
-        "--enable-gost-anyway"
-        "--enable-rrtype-ninfo"
-        "--enable-rrtype-rkey"
-        "--enable-rrtype-ta"
-        "--enable-rrtype-avc"
-        "--enable-rrtype-doa"
-        "--enable-rrtype-amtrelay"
-        "--with-drill"
-        "--with-examples"
-        "--with-pyldns"
-        ;; Perl module DNS::LDNS not available.
-        ;; https://github.com/erikoest/DNS-LDNS.git
-        ;; "--with-p5-dns-ldns"
-        (string-append "--with-ssl="
-                       (assoc-ref %build-inputs "openssl"))
-        (string-append "--with-ca-path="
-                       (assoc-ref %build-inputs "nss-certs")
-                       "/etc/ssl/certs"))
-       #:make-flags
-       (list
-        (string-append "drillbindir="
-                       (assoc-ref %outputs "drill")
-                       "/bin")
-        (string-append "drillmandir="
-                       (assoc-ref %outputs "drill")
-                       "/share/man")
-        (string-append "examplesbindir="
-                       (assoc-ref %outputs "examples")
-                       "/bin")
-        (string-append "examplesmandir="
-                       (assoc-ref %outputs "examples")
-                       "/share/man")
-        (string-append "python_site="
-                       (assoc-ref %outputs "pyldns")
-                       "/lib/python"
-                       ,(version-major+minor
-                         (package-version python))
-                       "/site-packages"))))
+     (list
+      #:tests? #f                     ; tests require <https://tpkg.github.io>
+      #:configure-flags
+      #~(list
+         "--disable-static"
+         "--enable-gost-anyway"
+         "--enable-rrtype-ninfo"
+         "--enable-rrtype-rkey"
+         "--enable-rrtype-ta"
+         "--enable-rrtype-avc"
+         "--enable-rrtype-doa"
+         "--enable-rrtype-amtrelay"
+         "--with-drill"
+         "--with-examples"
+         "--with-pyldns"
+         ;; Perl module DNS::LDNS not available.
+         ;; https://github.com/erikoest/DNS-LDNS.git
+         ;; "--with-p5-dns-ldns"
+         (string-append "--with-ssl=" #$(this-package-input "openssl"))
+         (string-append "--with-ca-path=/etc/ssl/certs"))
+      #:make-flags
+      #~(list
+         (string-append "drillbindir=" #$output:drill "/bin")
+         (string-append "drillmandir=" #$output:drill "/share/man")
+         (string-append "examplesbindir=" #$output:examples "/bin")
+         (string-append "examplesmandir=" #$output:examples "/share/man")
+         (string-append "python_site=" #$output:pyldns "/lib/python"
+                        #$(version-major+minor (package-version
+                                                (this-package-input
+                                                 "python-wrapper")))
+                        "/site-packages"))))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("ksh" ,oksh)
-       ("perl" ,perl)
-       ("perl-devel-checklib" ,perl-devel-checklib)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("swig" ,swig)))
+     (list doxygen perl perl-devel-checklib pkg-config swig))
     (inputs
-     (list libpcap nss-certs openssl))
+     (list libpcap openssl python-wrapper))
     (synopsis "DNS library that facilitates DNS tool programming")
     (description "LDNS aims to simplify DNS programming, it supports recent
 RFCs like the DNSSEC documents, and allows developers to easily create
@@ -235,84 +216,67 @@ C it should be a lot faster than Perl.")
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "gui" "nm"))
     (arguments
-     `(#:test-target "test"
-       #:configure-flags
-       (list
-        (string-append "--with-ssl="
-                       (assoc-ref %build-inputs "openssl"))
-        "--with-hooks=networkmanager"
-        (string-append "--with-networkmanager-dispatch="
-                       (assoc-ref %outputs "nm")
-                       "/etc/NetworkManager/dispatcher.d")
-        (string-append "--with-xdg-autostart="
-                       (assoc-ref %outputs "gui")
-                       "/etc/xdg/autostart")
-        (string-append "--with-uidir="
-                       (assoc-ref %outputs "gui")
-                       "/share/dnssec-trigger")
-        (string-append "--with-python="
-                       (assoc-ref %build-inputs "python")
-                       "/bin/python")
-        (string-append "--with-unbound-control="
-                       (assoc-ref %build-inputs "unbound")
-                       "/sbin/unbound-control")
-        "--with-forward-zones-support")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-configure
-           (lambda _
-             (substitute* "configure"
-               (("appindicator-0.1")
-                "appindicator3-0.1"))
-             #t))
-         (add-before 'configure 'patch-makefile
-           (lambda _
-             (substitute* "Makefile.in"
-               (("/usr")
-                "$(prefix)")
-               (("/etc")
-                "$(prefix)/etc")
-               ((".*gtk-update-icon-cache.*")
-                ""))
-             #t))
-         (add-after 'install 'remove-systemd
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (delete-file-recursively
-                (string-append out "/lib/systemd"))
-               #t)))
-         (add-after 'remove-systemd 'move-gui
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (gui (assoc-ref outputs "gui")))
-               (mkdir-p (string-append gui "/bin"))
-               (mkdir-p (string-append gui "/share"))
-               (rename-file
-                (string-append out "/bin")
-                (string-append gui "/bin"))
-               (rename-file
-                (string-append out "/share/icons")
-                (string-append gui "/share/icons"))
-               #t)))
-         (add-after 'move-gui 'move-nm
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (nm (assoc-ref outputs "nm")))
-               (mkdir-p (string-append nm "/libexec"))
-               (rename-file
-                (string-append out "/libexec")
-                (string-append nm "/libexec"))
-               #t))))))
+     (list #:test-target "test"
+           #:configure-flags
+           #~(list
+              (string-append "--with-ssl=" #$(this-package-input "openssl"))
+              "--with-hooks=networkmanager"
+              (string-append "--with-networkmanager-dispatch="
+                             #$output:nm
+                             "/etc/NetworkManager/dispatcher.d")
+              (string-append "--with-xdg-autostart="
+                             #$output:gui
+                             "/etc/xdg/autostart")
+              (string-append "--with-uidir="
+                             #$output:gui
+                             "/share/dnssec-trigger")
+              (string-append "--with-python="
+                             #$(this-package-native-input "python-wrapper")
+                             "/bin/python")
+              (string-append "--with-unbound-control="
+                             #$(this-package-input "unbound")
+                             "/sbin/unbound-control")
+              "--with-forward-zones-support")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-configure
+                 (lambda _
+                   (substitute* "configure"
+                     (("appindicator-0.1")
+                      "appindicator3-0.1"))))
+               (add-before 'configure 'patch-makefile
+                 (lambda _
+                   (substitute* "Makefile.in"
+                     (("/usr")
+                      "$(prefix)")
+                     (("/etc")
+                      "$(prefix)/etc")
+                     ((".*gtk-update-icon-cache.*")
+                      ""))))
+               (add-after 'install 'remove-systemd
+                 (lambda _
+                   (delete-file-recursively
+                    (string-append #$output "/lib/systemd"))))
+               (add-after 'remove-systemd 'move-gui
+                 (lambda _
+                   (mkdir-p (string-append #$output:gui "/bin"))
+                   (mkdir-p (string-append #$output:gui "/share"))
+                   (rename-file
+                    (string-append #$output     "/bin")
+                    (string-append #$output:gui "/bin"))
+                   (rename-file
+                    (string-append #$output     "/share/icons")
+                    (string-append #$output:gui "/share/icons"))))
+               (add-after 'move-gui 'move-nm
+                 (lambda _
+                   (mkdir-p (string-append #$output:nm "/libexec"))
+                   (rename-file
+                    (string-append #$output    "/libexec")
+                    (string-append #$output:nm "/libexec")))))))
     (native-inputs
-     `(("cmocka" ,cmocka)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list cmocka pkg-config python-wrapper))
     (inputs
-     `(("gtk+-2" ,gtk+-2)
-       ("ldns" ,ldns)
-       ("libappindicator" ,libappindicator)
-       ("openssl" ,openssl)
-       ("unbound" ,unbound)))
+     (list gtk+-2 ldns libappindicator openssl unbound))
     (synopsis "DNSSEC protection for the DNS traffic")
     (description "DNSSEC-Trigger enables your computer to use DNSSEC protection
 for the DNS traffic.  It relies on the Unbound DNS resolver running locally on
@@ -368,15 +332,14 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.24")
+    (version "9.16.25")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://ftp.isc.org/isc/bind9/" version
-             "/bind-" version ".tar.xz"))
+       (uri (string-append "https://ftp.isc.org/isc/bind9/" version
+                           "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "01w5n1injvq6azhplyd4vqczila6i9mj051zz62248yn9drz70jm"))
+        (base32 "1wqzbq7jfd8zlidkfgx3fc1132xn5hrga7xznzw3x1421y2ji8wz"))
        (patches
         (search-patches "bind-re-add-attr-constructor-priority.patch"))))
     (build-system gnu-build-system)
@@ -907,7 +870,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.1.4")
+    (version "3.1.5")
     (source
      (origin
        (method git-fetch)
@@ -916,7 +879,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wx8ad95adryzp527m4k0lja8y39qqd65f5z9immhfpb9cyax6i7"))
+        (base32 "145fnz740y1g0h2m07kpcimf2rx37saq2l905bl6vwa5ifybrgcq"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1045,14 +1008,14 @@ synthesis, and on-the-fly re-configuration.")
 (define-public knot-resolver
   (package
     (name "knot-resolver")
-    (version "5.4.3")
+    (version "5.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://secure.nic.cz/files/knot-resolver/"
                                   "knot-resolver-" version ".tar.xz"))
               (sha256
                (base32
-                "01m5s2kllr0apkg0bcfagzvijyfbivby03d1pjv3c0qrjgmjk1s8"))))
+                "1sic5ccbbqml4c01dbikkg6qx1gg81nqi76cj79pjdllkqqn92aq"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1114,7 +1077,8 @@ synthesis, and on-the-fly re-configuration.")
        ("luajit" ,luajit)
        ;; TODO: Add optional lua modules: basexx and psl.
        ("lua-bitop" ,lua5.1-bitop)
-       ("nghttp2" ,nghttp2 "lib")))
+       ("nghttp2" ,nghttp2 "lib")
+       ("python" ,python)))
     (home-page "https://www.knot-resolver.cz/")
     (synopsis "Caching validating DNS resolver")
     (description

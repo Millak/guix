@@ -2,7 +2,7 @@
 ;;; Copyright © 2014 Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
@@ -13,6 +13,8 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
+;;; Copyright © 2022 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,10 +40,12 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module ((guix licenses) #:prefix l:)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -231,7 +235,8 @@ XML-RPC over SCGI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fqspp2ckafplahgba54xmx0sjidx1pdzyjaqjhz0ivh98dkx2n5"))))
+         "1fqspp2ckafplahgba54xmx0sjidx1pdzyjaqjhz0ivh98dkx2n5"))
+       (patches (search-patches "tremc-fix-decodestring.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -296,7 +301,7 @@ maintained upstream.")
 (define-public aria2
   (package
     (name "aria2")
-    (version "1.35.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/aria2/aria2/releases/"
@@ -304,23 +309,24 @@ maintained upstream.")
                                   "/aria2-" version ".tar.xz"))
               (sha256
                (base32
-                "1zbxc517d97lb96f15xcy4l7b66grxrp3h2ids2jiwkaip87yaqy"))))
+                "1987x4ywnnrhhfs9hi2h820c200d7nas9nd35414yh0jiihfglaq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-libaria2"
-                               (string-append "--with-bashcompletiondir="
-                                              %output "/etc/bash_completion.d/"))
+     (list
+       #:configure-flags
+       #~(list "--enable-libaria2"
+               (string-append "--with-bashcompletiondir="
+                              #$output "/etc/bash_completion.d/"))
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-socket-tests
-           (lambda _
-             (substitute* "test/LpdMessageDispatcherTest.cc"
-               (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageDispatcherTest\\);" text)
-                (string-append "// " text)))
-             (substitute* "test/LpdMessageReceiverTest.cc"
-               (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageReceiverTest\\);" text)
-                (string-append "// " text)))
-             #t)))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'delete-socket-tests
+             (lambda _
+               (substitute* "test/LpdMessageDispatcherTest.cc"
+                 (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageDispatcherTest\\);" text)
+                  (string-append "// " text)))
+               (substitute* "test/LpdMessageReceiverTest.cc"
+                 (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageReceiverTest\\);" text)
+                  (string-append "// " text))))))))
     (native-inputs
      (list cppunit ; for the tests
            pkg-config))
@@ -339,6 +345,8 @@ maintained upstream.")
       "Aria2 is a lightweight, multi-protocol & multi-source command-line
 download utility.  It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
 Aria2 can be manipulated via built-in JSON-RPC and XML-RPC interfaces.")
+    (properties
+     '((release-monitoring-url . "https://github.com/aria2/aria2/releases")))
     (license l:gpl2+)))
 
 (define-public uget
@@ -414,7 +422,7 @@ and will take advantage of multiple processor cores where possible.")
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "1.2.14")
+    (version "1.2.15")
     (source
      (origin
        (method url-fetch)
@@ -423,13 +431,18 @@ and will take advantage of multiple processor cores where possible.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "0gwm4w7337ykh5lfnspapnnz6a35g7yay3wnj126s8s5kcsvy9wy"))))
+        (base32 "0jr1c876mvwbbbnav8ldcdm1l6z3g404jc5wp8z902jcd0w8dbf8"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-Dpython-bindings=ON"
                            "-Dbuild_tests=ON")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'extend-test-timeout
+           (lambda _
+             (substitute* "test/test_remove_torrent.cpp"
+               ;; Extend the test timeout from 3 seconds to 10.
+               (("i > 30") "i > 100"))))
          (replace 'check
            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
              (let ((disabled-tests
@@ -440,16 +453,19 @@ and will take advantage of multiple processor cores where possible.")
                  ;; expiry date.  To ensure succesful builds in the future,
                  ;; fake the time to be roughly that of the release.
                  (setenv "FAKETIME_ONLY_CMDS" "test_ssl")
-                 (invoke "faketime" "2021-06-01"
+                 (invoke "faketime" "2021-12-12"
                          "ctest"
                          "--exclude-regex" (string-join disabled-tests "|")
                          "-j" (if parallel-tests?
                                   (number->string (parallel-job-count))
-                                  "1")))))))))
+                                  "1")
+                         "--rerun-failed"
+                         "--output-on-failure"))))))))
     (inputs (list boost openssl))
-    (native-inputs `(("libfaketime" ,libfaketime)
-                     ("python" ,python-wrapper)
-                     ("pkg-config" ,pkg-config)))
+    (native-inputs
+     (list libfaketime
+           python-wrapper
+           pkg-config))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
     (description
@@ -461,7 +477,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.2.5")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -470,7 +486,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n613ylg6i9gisgk0dbr2kpfasyizrkdjff1r8smd4vri2qrdksn"))))
+        (base32 "0aqrcwxi3s2alila3fa7fjs4hifkq7055wa4xvz17hajchs3l567"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -515,7 +531,7 @@ features.")
 (define-public deluge
   (package
     (name "deluge")
-    (version "2.0.3")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
@@ -524,28 +540,31 @@ features.")
              (version-major+minor version) "/deluge-" version ".tar.xz"))
        (sha256
         (base32
-         "14d8kn2pvr1qv8mwqrxmj85jycr73vwfqz12hzag0ararbkfhyky"))))
+         "1n15dzfnz1gvb4cf046yhi404i3gs933qgz0ichna6r1znmh9gf4"))))
     (build-system python-build-system)
+    (inputs (list bash-minimal))
     (propagated-inputs
-     `(("gtk+" ,gtk+)
-       ("librsvg" ,librsvg)
-       ("libtorrent" ,libtorrent-rasterbar)
-       ("python-pycairo" ,python-pycairo)
-       ("python-chardet" ,python-chardet)
-       ("python-dbus" ,python-dbus)
-       ("python-mako" ,python-mako)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pillow" ,python-pillow)
-       ("python-pyopenssl" ,python-pyopenssl)
-       ("python-pyxdg" ,python-pyxdg)
-       ("python-rencode" ,python-rencode)
-       ("python-service-identity" ,python-service-identity)
-       ("python-setproctitle" ,python-setproctitle)
-       ("python-six" ,python-six)
-       ("python-twisted" ,python-twisted)
-       ("python-zope-interface" ,python-zope-interface)))
+     (list gtk+
+           libtorrent-rasterbar
+           python-pycairo
+           python-chardet
+           python-dbus
+           python-mako
+           python-pygobject
+           python-pillow
+           python-pyopenssl
+           python-pyxdg
+           python-rencode
+           python-service-identity
+           python-setproctitle
+           python-six
+           python-twisted
+           python-zope-interface))
     (native-inputs
-     (list intltool python-wheel))
+     (list intltool python-wheel
+           (if (string-prefix? "x86_64-" (%current-system))
+               librsvg-bootstrap
+               librsvg-2.40)))
     ;; TODO: Enable tests.
     ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
     ;; started, some of the tests still fail.  There are likely some tests
@@ -554,17 +573,23 @@ features.")
      `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
-         ;; Remove this phase when upgrading to version 2.0.4 or beyond, as
-         ;; the issue is fixed upstream.
-         (add-after 'unpack 'fix-gettext-warning
-           (lambda _
-             (substitute* "deluge/i18n/util.py"
-               (("names='ngettext'") "names=['ngettext']"))
-             #t))
          (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+                   ;; "librsvg" input is only needed at build time and it
+                   ;; conflit with the "librsvg" propageted by "gtk+", so we
+                   ;; make sure there is no reference to it in the wrapper.
+                   (gi-typelib-path
+                    (string-join (filter
+                                  (lambda (x) (not (string-prefix?
+                                                    (assoc-ref
+                                                     (or native-inputs inputs)
+                                                     "librsvg")
+                                                    x)))
+                                  (string-split
+                                   (getenv "GI_TYPELIB_PATH")
+                                   #\:))
+                                 ":")))
                (for-each
                 (lambda (program)
                   (wrap-program program

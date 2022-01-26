@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
@@ -17,12 +17,12 @@
 ;;; Copyright © 2016, 2017 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Kyle Meyer <kyle@kyleam.com>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2020 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
@@ -62,6 +62,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages mail)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -261,88 +262,88 @@ example, modify the message headers or body, or encrypt or sign the message.")
 (define-public mailutils
   (package
     (name "mailutils")
-    (version "3.13")
+    (version "3.14")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/mailutils/mailutils-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1iwl82d6aa2acsdxbqh1s5xx44sg83b4yxqik408m1s9rcfrf86r"))
+               "0fbi2b144mgblq9qhdyhj9855mbglzr8fr23rnps8icbxa7v7if0"))
              (patches
               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'prepare-test-suite
-           (lambda _
-             ;; Use the right file name for `cat'.
-             (substitute* "testsuite/lib/mailutils.exp"
-               (("/bin/cat")
-                (which "cat")))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'prepare-test-suite
+                 (lambda _
+                   ;; Use the right file name for `cat'.
+                   (substitute* "testsuite/lib/mailutils.exp"
+                     (("/bin/cat")
+                      (which "cat")))
 
-             ;; Tests try to invoke 'mda' such that it looks up the
-             ;; 'root' user, which does not exist in the build
-             ;; environment.
-             (substitute* '("mda/mda/tests/testsuite"
-                            "mda/lmtpd/tests/testsuite")
-               (("root <")         "nobody <")
-               (("spool/root")     "spool/nobody")
-               (("root@localhost") "nobody@localhost"))
+                   ;; Tests try to invoke 'mda' such that it looks up the
+                   ;; 'root' user, which does not exist in the build
+                   ;; environment.
+                   (substitute* '("mda/mda/tests/testsuite"
+                                  "mda/lmtpd/tests/testsuite")
+                     (("root <")         "nobody <")
+                     (("spool/root")     "spool/nobody")
+                     (("root@localhost") "nobody@localhost"))
 
-             ;; The 'pipeact.at' tests generate a shell script; make
-             ;; sure it uses the right shell.
-             (substitute* '("sieve/tests/testsuite"
-                            "mh/tests/testsuite"
-                            "libmailutils/tests/lock.at")
-               (("#! ?/bin/sh")
-                (string-append "#!" (which "sh"))))
+                   ;; The 'pipeact.at' tests generate a shell script; make
+                   ;; sure it uses the right shell.
+                   (substitute* '("sieve/tests/testsuite"
+                                  "mh/tests/testsuite"
+                                  "libmailutils/tests/lock.at")
+                     (("#! ?/bin/sh")
+                      (string-append "#!" (which "sh"))))
 
-             (substitute* "mh/tests/testsuite"
-               (("moreproc: /bin/cat")
-                (string-append "moreproc: " (which "cat"))))
+                   (substitute* "mh/tests/testsuite"
+                     (("moreproc: /bin/cat")
+                      (string-append "moreproc: " (which "cat"))))
 
-             ;; XXX: The comsatd tests rely on being able to open
-             ;; /dev/tty, but that gives ENODEV in the build
-             ;; environment.  Thus, ignore test failures here.
-             (substitute* "comsat/tests/Makefile.in"
-               (("\\$\\(SHELL\\) \\$\\(TESTSUITE\\)" all)
-                (string-append "-" all)))
+                   ;; XXX: The comsatd tests rely on being able to open
+                   ;; /dev/tty, but that gives ENODEV in the build
+                   ;; environment.  Thus, ignore test failures here.
+                   (substitute* "comsat/tests/Makefile.in"
+                     (("\\$\\(SHELL\\) \\$\\(TESTSUITE\\)" all)
+                      (string-append "-" all)))
 
-             ;; XXX: The ‘moderator: program discard’ test does not specify
-             ;; an explicit From: but does expect an exact match.  But why are
-             ;; all other tests unaffected?
-             (substitute* "sieve/tests/testsuite"
-               (("gray@")
-                "nixbld@"))
+                   ;; XXX: The ‘moderator: program discard’ test does not
+                   ;; specify an explicit From: but does expect an exact
+                   ;; match.  But why are all other tests unaffected?
+                   (substitute* "sieve/tests/testsuite"
+                     (("gray@")
+                      "nixbld@"))
 
-             ;; 'frm' tests expect write access to $HOME.
-             (setenv "HOME" (getcwd))
+                   ;; 'frm' tests expect write access to $HOME.
+                   (setenv "HOME" (getcwd))
 
-             ;; Avoid the message "I'm going to create the standard MH path
-             ;; for you", which would lead to one test failure (when diffing
-             ;; stdout of 'fmtcheck'.)
-             (call-with-output-file ".mh_profile"
-               (lambda (port)
-                 (format port "Path: ~a/Mail-for-tests~%"
-                         (getcwd))))
+                   ;; Avoid the message "I'm going to create the standard MH
+                   ;; path for you", which would lead to one test failure
+                   ;; (when diffing stdout of 'fmtcheck'.)
+                   (call-with-output-file ".mh_profile"
+                     (lambda (port)
+                       (format port "Path: ~a/Mail-for-tests~%"
+                               (getcwd))))
 
-             (substitute* "imap4d/tests/testclient.c"
-               (("\"/bin/sh\"")
-                (string-append "\"" (which "sh") "\""))))))
-       #:configure-flags
-       (list "--sysconfdir=/etc"
+                   (substitute* "imap4d/tests/testclient.c"
+                     (("\"/bin/sh\"")
+                      (string-append "\"" (which "sh") "\""))))))
+           #:configure-flags
+           #~(list "--sysconfdir=/etc"
 
-             ;; Add "/X.Y" to the installation directory.
-             (string-append "--with-guile-site-dir="
-                            (assoc-ref %outputs "out")
-                            "/share/guile/site/"
-                            ,(match (assoc "guile"
-                                           (package-inputs this-package))
-                               (("guile" guile)
-                                (version-major+minor
-                                 (package-version guile))))))))
+                   ;; Add "/X.Y" to the installation directory.
+                   (string-append "--with-guile-site-dir="
+                                  (assoc-ref %outputs "out")
+                                  "/share/guile/site/"
+                                  #$(match (assoc "guile"
+                                                  (package-inputs this-package))
+                                      (("guile" guile)
+                                       (version-major+minor
+                                        (package-version guile))))))))
     (native-inputs
      ;; Regeneration of the build system is triggered by touching the
      ;; 'libmailutils/tests/lock.at' file.
@@ -418,7 +419,7 @@ software.  GNU Mailutils provides the following commands:
              go-github-com-emersion-go-imap-idle
              go-github-com-emersion-go-sasl go-github-com-sirupsen-logrus
              go-golang-org-x-text))
-      (synopsis "Execute scripts on IMAP mailbox changes.")
+      (synopsis "Execute scripts on IMAP mailbox changes")
       (description
        "Script to execute scripts on IMAP mailbox changes (new/deleted/updated
 messages) using IDLE.  Implemented in Go.")
@@ -552,7 +553,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.1.4")
+    (version "2.1.5")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -562,7 +563,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "0yfvnjqw9l99kdcr995by3mx5vwad6b530x93yb8ipr3xa1bcq9k"))
+               "1q1bq5qfv67s6ynbqga19ifaprgavhdbgg154kb9ffingvj0k8wj"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -911,19 +912,19 @@ mailpack.  What can alterMIME do?
            pkg-config
            ronn
            w3m
-           xorg-server))
+           xorg-server-for-tests))
     (inputs
-     `(("boost" ,boost)
-       ("gmime" ,gmime)
-       ("gobject-introspection" ,gobject-introspection) ; it is referenced
-       ("gtkmm" ,gtkmm-3)
-       ("libpeas" ,libpeas)
-       ("libsass" ,libsass)
-       ("notmuch" ,notmuch)
-       ("protobuf" ,protobuf)
-       ("python" ,python-wrapper)
-       ("python-pygobject" ,python-pygobject)
-       ("webkitgtk" ,webkitgtk)))
+     (list boost
+           gmime
+           gobject-introspection        ; it is referenced
+           gtkmm-3
+           libpeas
+           libsass
+           notmuch
+           protobuf
+           python-wrapper
+           python-pygobject
+           webkitgtk-with-libsoup2))
     (propagated-inputs
      (list adwaita-icon-theme)) ; Required for the thread view
     (home-page "https://astroidmail.github.io/")
@@ -1334,14 +1335,14 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.34.2")
+    (version "0.34.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1ls7dbgqhvyn9arf1r1jijfllypylgr5l86p489732gn8zpcxwn1"))))
+        (base32 "1278r8x8l2hsxg8plbfk7w2md0fagdm243lm7df5m0gx7d411s9z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -1369,20 +1370,19 @@ invoking @command{notifymuch} from the post-new hook.")
                       (substitute* (find-files "test" "\\.sh$")
                         (("/bin/sh") (which "sh"))))))))
     (native-inputs
-     `(("bash-completion" ,bash-completion)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("python-docutils" ,python-docutils)
-       ("sphinx" ,python-sphinx)
-       ("texinfo" ,texinfo)
-
-       ;; The following are required for tests only.
-       ("emacs" ,emacs-no-x)    ; -minimal lacks libxml, needed for some tests
-       ("which" ,which)
-       ("dtach" ,dtach)
-       ("gnupg" ,gnupg)
-       ("man" ,man-db)
-       ("perl" ,perl)))
+     (list bash-completion
+           pkg-config
+           python
+           python-docutils
+           python-sphinx
+           texinfo
+           ;; The following are required for tests only.
+           emacs-no-x ; -minimal lacks libxml, needed for some tests
+           which
+           dtach
+           gnupg
+           man-db
+           perl))
     (inputs
      (list glib gmime talloc xapian zlib))
     (home-page "https://notmuchmail.org/")
@@ -1537,19 +1537,19 @@ pairs have previously synchronized.")
 (define-public getmail
   (package
     (name "getmail")
-    (version "5.15")
+    (version "5.16")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://pyropus.ca/software/getmail/old-versions/"
+       (uri (string-append "https://pyropus.ca/software/getmail/old-versions/"
                            "getmail-" version ".tar.gz"))
        (sha256
-        (base32 "0ahn2jyj4ka996qzs99id59pwxv6sqxp61g7drcf53rzzigq0lyl"))))
+        (base32 "1yk7lrndbfsrbdxikwzdqvadryqsldalxdn3a184dg4sxzmgis3a"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:python ,python-2))
-    (home-page "http://pyropus.ca/software/getmail/")
+     (list #:tests? #f                  ; no tests
+           #:python python-2))
+    (home-page "https://pyropus.ca/software/getmail/")
     (synopsis "Mail retriever")
     (description
      "A flexible, extensible mail retrieval system with support for
@@ -1642,13 +1642,11 @@ compresses it.")
          (add-after 'unpack 'patch-source
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Use absolute paths to referenced programs.
-             (let* ((mailutils (assoc-ref inputs "mailutils"))
-                    (inc (string-append mailutils "/bin/mu-mh/inc"))
-                    (send-mail (assoc-ref inputs "sendmail"))
-                    (sendmail (string-append send-mail "/sbin/sendmail")))
-               (substitute* "src/common/defs.h"
-                 (("/usr/bin/mh/inc") inc)
-                 (("/usr/sbin/sendmail") sendmail)))))
+             (substitute* "src/common/defs.h"
+               (("/usr/bin/mh/inc")
+                (search-input-file inputs "/bin/mu-mh/inc"))
+               (("/usr/sbin/sendmail")
+                (search-input-file inputs "/sbin/sendmail")))))
          (add-before 'build 'patch-mime
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/procmime.c"
@@ -1663,49 +1661,48 @@ compresses it.")
            intltool
            pkg-config))
     (inputs
-     `(("bogofilter" ,bogofilter)
-       ("cairo" ,cairo)
-       ("compface" ,compface)
-       ("curl" ,curl)
-       ("dbus" ,dbus)
-       ("dbus-glib" ,dbus-glib)
-       ("enchant" ,enchant)
-       ("expat" ,expat)
-       ("fontconfig" ,fontconfig)
-       ("librsvg" ,librsvg)
-       ("ghostscript" ,ghostscript)
-       ("glib" ,glib)
-       ("gnupg" ,gnupg)
-       ("gnutls" ,gnutls)
-       ("gpgme" ,gpgme)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("gumbo-parser" ,gumbo-parser)
-       ;;("j-pilot" ,j-pilot)
-       ("libarchive" ,libarchive)
-       ("libcanberra" ,libcanberra)
-       ("libetpan" ,libetpan)
-       ("libgdata" ,libgdata)
-       ("libical" ,libical)
-       ("libindicator" ,libindicator)
-       ("libnotify" ,libnotify)
-       ("librsvg" ,librsvg)
-       ("libsm" ,libsm)
-       ("libsoup" ,libsoup)
-       ("libxml2" ,libxml2)
-       ("mailutils" ,mailutils)
-       ("nettle" ,nettle)
-       ("network-manager" ,network-manager)
-       ("openldap" ,openldap)
-       ("perl" ,perl)
-       ("poppler" ,poppler)
-       ("python" ,python)
-       ("python-pygobject" ,python-pygobject)
-       ("sendmail" ,sendmail)
-       ("shared-mime-info" ,shared-mime-info)
-       ("startup-notification" ,startup-notification)
-       ;;("webkitgtk" ,webkitgtk)
-       ("ytnef" ,ytnef)))
+      (list bogofilter
+            cairo
+            compface
+            curl
+            dbus
+            dbus-glib
+            enchant
+            expat
+            fontconfig
+            ghostscript
+            glib
+            gnupg
+            gnutls
+            gpgme
+            gsettings-desktop-schemas
+            gtk+
+            gumbo-parser
+            ;;j-pilot
+            libarchive
+            libcanberra
+            libetpan
+            libgdata
+            libical
+            libindicator
+            libnotify
+            (librsvg-for-system)
+            libsm
+            libsoup
+            libxml2
+            mailutils
+            nettle
+            network-manager
+            openldap
+            perl
+            poppler
+            python
+            python-pygobject
+            sendmail
+            shared-mime-info
+            startup-notification
+            ;;webkitgtk
+            ytnef))
     (propagated-inputs
      (list dconf))
     (synopsis "GTK-based Email client")
@@ -2720,7 +2717,7 @@ converts them to maildir format directories.")
 (define-public mblaze
   (package
     (name "mblaze")
-    (version "1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
@@ -2729,7 +2726,7 @@ converts them to maildir format directories.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bir977vnqs76g8jgv1yivqw0wk2kn56l3l5r4w2ipix3fir138y"))))
+        (base32 "0fa8s9dp5ilwmfcwkx72x2b5i0maa5sl97hv2cdknqmc27gv0b1c"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl))
@@ -3523,8 +3520,8 @@ some configuration.")
                  #t))))
        #:tests? #f)) ; Tests try to run a mailman instance to test against.
     (inputs
-     (list python-django python-django-mailman3 python-mailmanclient
-           python-readme-renderer))
+     (list python-readme-renderer python-mailmanclient
+           python-django-2.2 python-django-mailman3))
     (native-inputs
      (list python-beautifulsoup4 python-isort python-mock python-vcrpy))
     (home-page "https://gitlab.com/mailman/postorius")
@@ -3780,29 +3777,30 @@ killed threads.")
 (define-public pan
   (package
     (name "pan")
-    (version "0.147")
+    (version "0.149")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://pan.rebelbase.com/download/releases/"
                            version "/source/" name "-" version ".tar.bz2"))
        (sha256
-        (base32 "0960siaf0r6m18kv0d8aqpf36x2xbsfcvk07kswlany7jbxrhylr"))))
+        (base32 "1sl5rdgalswxya61vhkf28r0fb4b3pq77qgzhhsfagmpvgbx0d2x"))))
     (arguments
-     `(#:configure-flags '("--with-gtk3" "--with-gtkspell" "--with-gnutls"
-                           "--enable-libnotify" "--enable-manual"
-                           "--enable-gkr")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-gpg2
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "pan/usenet-utils/gpg.cc"
-               (("\"gpg2\"") (string-append "\""
-                                            (assoc-ref inputs "gnupg")
-                                            "/bin/gpg\"")))
-             #t)))))
+     (list #:configure-flags
+           #~(list "--with-gtk3" "--with-gtkspell" "--with-gnutls"
+                   "--enable-libnotify" "--enable-manual"
+                   "--enable-gkr")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'patch-gpg2
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "pan/usenet-utils/gpg.cc"
+                     (("\"gpg2\"")
+                      (string-append "\""
+                                     (search-input-file inputs "/bin/gpg")
+                                     "\""))))))))
     (inputs
-     (list gmime-2.6
+     (list gmime
            gnupg
            gnutls
            gtk+
@@ -3858,13 +3856,13 @@ servers.  The 4rev1 and 4 versions of IMAP are supported.")
 (define-public urlscan
   (package
     (name "urlscan")
-    (version "0.9.7")
+    (version "0.9.8")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urlscan" version))
         (sha256
-         (base32 "0sqaplcrz0lj40x20s2mv3gkzsmawpi9h2kx0rmk342k5240il81"))))
+         (base32 "1imrg2r9cshfvdwkdkm9y4i58qzkgnnwkswmh3kgy38m334mlcyf"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-urwid))
@@ -4454,7 +4452,12 @@ ex-like commands on it.")
              ;; Inline functions can only be used from the same compilation
              ;; unit. This causes the build to fail.
              (substitute* "crm_svm_matrix.c"
-               (("^inline ") ""))))
+               (("^inline ") ""))
+             ;; Building with gcc 10 fails without the -fcommon flag. Add it
+             ;; to CFLAGS.
+             (substitute* "Makefile"
+               (("CFLAGS \\+= -DVERSION")
+                "CFLAGS += -fcommon -DVERSION"))))
          (add-before 'install 'pre-install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))

@@ -192,10 +192,10 @@ text or blue underlined text, on ANSI terminals.")
          "1xif1bh938qpfc3d0f9xgidibpm65xix11w9gszwqnia00q7rb13"))))
     (arguments `())))
 
-(define-public rust-aom-sys-0.2
+(define-public rust-aom-sys-0.3
   (package
     (name "rust-aom-sys")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
       (origin
         (method url-fetch)
@@ -204,7 +204,7 @@ text or blue underlined text, on ANSI terminals.")
           (string-append name "-" version ".tar.gz"))
         (sha256
           (base32
-            "03a0xhaafjn0hlpcf9ba73hv557m0jqnmj9wl57wzrcnka96zvgj"))))
+            "0dhikfl7l5nacspajbllbhhysad3vl845cpfplqgm5mf67nmx9w8"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
@@ -218,30 +218,6 @@ text or blue underlined text, on ANSI terminals.")
     (synopsis "FFI bindings to aom")
     (description "This package provides FFI bindings to aom.")
     (license license:expat)))
-
-(define-public rust-aom-sys-0.1
-  (package
-    (inherit rust-aom-sys-0.2)
-    (name "rust-aom-sys")
-    (version "0.1.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "aom-sys" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1bqcpkycv1d67r6jcl9npfbw6rkl829rdq9w6vlpb0rjqxp0xzsn"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.53)
-        ("rust-metadeps" ,rust-metadeps-1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libaom clang llvm))))
 
 (define-public rust-ascii-canvas-2
   (package
@@ -570,24 +546,44 @@ types.")
 and iOS.")
     (license license:expat)))
 
+(define-public rust-dav1d-0.6
+  (package
+    (name "rust-dav1d")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dav1d" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pn6r1a9qfrpg2xwc7ci2iddvnzxb17ddca0bwymgi839cxc2chl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-dav1d-sys" ,rust-dav1d-sys-0.3))))
+    (home-page "https://github.com/rust-av/dav1d-rs")
+    (synopsis "libdav1d bindings in Rust")
+    (description "This package provides libdav1d bindings in Rust.")
+    (license license:expat)))
+
 (define-public rust-dav1d-sys-0.3
   (package
     (name "rust-dav1d-sys")
-    (version "0.3.2")
+    (version "0.3.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "dav1d-sys" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1jdxhnlxcml6jd67lx78ifzkn1xm18zfk4li7vjdh3fa61i073kx"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dav1d-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "020lla2l703iy69gbksq18snj2b1sp7vmjf39qqykd4242d4msr5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.54)
-        ("rust-metadeps" ,rust-metadeps-1))))
+       (("rust-bindgen" ,rust-bindgen-0.58)
+        ("rust-system-deps" ,rust-system-deps-3))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -597,10 +593,32 @@ and iOS.")
     (description "This package provides FFI bindings to dav1d.")
     (license license:expat)))
 
-(define-public rust-euclid-0.20
+(define-public rust-dcv-color-primitives-0.1
+  (package
+    (name "rust-dcv-color-primitives")
+    (version "0.1.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dcv-color-primitives" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yrm1qipdmadynhjgz1bvdh42ph9azvwg8v43c8ywr8vlx9qvaq2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
+    (home-page "https://github.com/aws/dcv-color-primitives")
+    (synopsis "Rust library to perform image color model conversion")
+    (description "This package is a Rust library to perform image color model
+conversion.")
+    (license license:expat)))
+
+(define-public rust-euclid-0.22
   (package
     (name "rust-euclid")
-    (version "0.20.10")
+    (version "0.22.6")
     (source
      (origin
        (method url-fetch)
@@ -609,11 +627,12 @@ and iOS.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0c3hbl0kvc53k6nws0v9d46hi0giza1j079sqx2bgl4wfw65nshc"))))
+         "102blw7ljphi7i2xg435z0bb0a4npmwwbgyfinqxg1m0af2q55ns"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-mint" ,rust-mint-0.5)
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-mint" ,rust-mint-0.5)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
@@ -775,14 +794,14 @@ EUI-64, also known as MAC-48 media access control addresses.")
 (define-public rust-gif-0.11
   (package
     (name "rust-gif")
-    (version "0.11.1")
+    (version "0.11.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gif" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1i4n9fwg3zrp07pi5zsgyza2gl8lqnap6fj6875lfy121xbbmvq2"))))
+        (base32 "0nsfd5qvp69z8kn17ziiq8zv4mclfycyxppf5k9fm2h8g1z1i9y3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -1214,14 +1233,14 @@ PATH.")
 (define-public rust-image-0.23
   (package
     (name "rust-image")
-    (version "0.23.12")
+    (version "0.23.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "image" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dg9z5sbc389spp7pm23n2b1k0gdd8hjdb8hhsp3k3npx9vl1q3w"))))
+        (base32 "18gn2f7xp30pf9aqka877knlq308khxqiwjvsccvzaa4f9zcpzr4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -1363,7 +1382,7 @@ pixel buffers with width, height and stride.")
 (define-public rust-jpeg-decoder-0.1
   (package
     (name "rust-jpeg-decoder")
-    (version "0.1.18")
+    (version "0.1.22")
     (source
      (origin
        (method url-fetch)
@@ -1371,8 +1390,7 @@ pixel buffers with width, height and stride.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0lc428qgffh2a1agkq0p26mvf9rjaiswpywy5883j99mqypg0mh2"))))
+        (base32 "1wnh0bmmswpgwhgmlizz545x8334nlbmkq8imy9k224ri3am7792"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Some test files missing.
@@ -1418,10 +1436,33 @@ pixel buffers with width, height and stride.")
 graphics and video games.")
     (license license:expat)))
 
-(define-public rust-lyon-geom-0.14
+(define-public rust-lyon-extra-0.17
+  (package
+    (name "rust-lyon-extra")
+    (version "0.17.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "lyon_extra" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "10n8h48a363qa66byqfkg164542p97v5rrnb33gqhggah739nwm0"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build?
+        #t
+        #:cargo-inputs
+        (("rust-lyon-path" ,rust-lyon-path-0.17)
+         ("rust-lyon-svg" ,rust-lyon-svg-0.17))))
+    (home-page "https://github.com/nical/lyon")
+    (synopsis "Optional utilities for the lyon crate")
+    (description "This package provides optional utilities for the lyon crate.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-lyon-geom-0.17
   (package
     (name "rust-lyon-geom")
-    (version "0.14.1")
+    (version "0.17.6")
     (source
       (origin
         (method url-fetch)
@@ -1430,25 +1471,25 @@ graphics and video games.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "178z4cqqmyw0rsabbgx9phkjxjzcnq0604062lqjlq87k063216a"))))
+          "12al92qsh0f8ci3qf3533r4y5hxzzyfp972vm4wqzz9bq9vwx6ff"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-euclid" ,rust-euclid-0.20)
-        ("rust-arrayvec" ,rust-arrayvec-0.4)
-        ("rust-serde" ,rust-serde-1))))
+        (("rust-arrayvec" ,rust-arrayvec-0.5)
+         ("rust-euclid" ,rust-euclid-0.22)
+         ("rust-num-traits" ,rust-num-traits-0.2)
+         ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/nical/lyon")
     (synopsis "2D graphics rendering on the GPU using tessellation")
     (description
      "This package provides 2D graphics rendering on the GPU using tessellation.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-lyon-path-0.14
+(define-public rust-lyon-path-0.17
   (package
     (name "rust-lyon-path")
-    (version "0.14.0")
+    (version "0.17.7")
     (source
       (origin
         (method url-fetch)
@@ -1457,17 +1498,65 @@ graphics and video games.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0qk8x46w0sf6j04l6gvhgn9kr4ymcqkmkh67w8wqahm54jn5gjqb"))))
+          "1h7vbfaanf3x7xch6md4q4ja3xmvsi41n7d6ga40vjk7yzymj2jv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-lyon-geom" ,rust-lyon-geom-0.14)
+       (("rust-lyon-geom" ,rust-lyon-geom-0.17)
         ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/nical/lyon")
     (synopsis "Types and utilities to store, build and iterate over 2D paths")
     (description
      "Types and utilities to store, build and iterate over 2D paths.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-lyon-svg-0.17
+  (package
+    (name "rust-lyon-svg")
+    (version "0.17.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "lyon_svg" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0fin6h9vwgz7gi2a1b0j9bp8a1aval2lvha1kzy7iijm4kgdcj3d"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build?
+        #t
+        #:cargo-inputs
+        (("rust-lyon-path" ,rust-lyon-path-0.17)
+         ("rust-svgtypes" ,rust-svgtypes-0.5))))
+    (home-page "https://github.com/nical/lyon")
+    (synopsis "SVG helpers for the lyon crates")
+    (description "This package provides SVG helpers for the lyon crates.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-lyon-tessellation-0.17
+  (package
+    (name "rust-lyon-tessellation")
+    (version "0.17.10")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "lyon-tessellation" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0q2pccjszda26asylnvhwsil8wvsprfjazrqdzj4i033s26y0c3j"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-float-next-after" ,rust-float-next-after-0.1)
+         ("rust-lyon-path" ,rust-lyon-path-0.17)
+         ("rust-serde" ,rust-serde-1))
+        #:cargo-development-inputs
+        (("rust-lyon-extra" ,rust-lyon-extra-0.17))))
+    (home-page "https://github.com/nical/lyon")
+    (synopsis "Low level path tessellation library")
+    (description
+      "This package provides a low level path tessellation library.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-osmesa-sys-0.1
@@ -1587,7 +1676,7 @@ nicely with Piston libraries.")
     (home-page
       "https://github.com/PistonDevelopers/graphics_api_version")
     (synopsis
-      "A library for storing graphics API versions")
+      "Library for storing graphics API versions")
     (description
       "This package provides a library for storing graphics API versions")
     (license license:expat)))
@@ -1630,7 +1719,7 @@ nicely with Piston libraries.")
     (arguments `(#:skip-build? #t))
     (home-page
       "https://github.com/pistondevelopers/texture")
-    (synopsis "A generic library for textures")
+    (synopsis "Generic library for textures")
     (description
       "This package provides a generic library for textures")
     (license license:expat)))

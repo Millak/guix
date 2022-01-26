@@ -25,6 +25,7 @@
 ;;; Copyright © 2020-2021 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
+;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -144,6 +145,11 @@
                                "-DBUILD_CPU_DEMOS=OFF"
                                "-DBUILD_OPENGL3_DEMOS=OFF"
                                "-DBUILD_BULLET2_DEMOS=OFF"
+                               ;; openmw 0.47.0 requires bullet to be built with
+                               ;; double precision.
+                               ;; See <https://issues.guix.gnu.org/52953> for
+                               ;; more information.
+                               "-DUSE_DOUBLE_PRECISION=ON"
                                ;; Extras/BulletRoboticsGUI needs files from
                                ;; ThirdPartyLibs
                                "-DBUILD_BULLET_ROBOTICS_GUI_EXTRA=OFF"
@@ -783,14 +789,14 @@ archive on a per-file basis.")
 (define-public love
   (package
     (name "love")
-    (version "11.3")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "https://bitbucket.org/rude/love/downloads/"
-                                 "love-" version "-linux-src.tar.gz"))
-             (sha256
-              (base32
-               "0m8lvlabmcchskx4qpzkdlsm44360f3j0q3vvvj2388cfnvhv7v4"))))
+    (version "11.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/love2d/love/releases/download/"
+                           version "/love-" version "-linux-src.tar.gz"))
+       (sha256
+        (base32 "0sak3zjpzfs3ys315m8qvszi946fz76jcpsb58j11wplyp5fwbz3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -1212,7 +1218,7 @@ to create fully featured games and multimedia programs in the python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "7.4.10"))
+        (renpy-version "7.4.11"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
@@ -1222,7 +1228,7 @@ to create fully featured games and multimedia programs in the python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "0m0asrr722a4v24fm8199b0c53igagylay8bn9bz9rmc0r4v8si4"))
+         (sha256 (base32 "0nxvca16299jx6sp0ys29rqixcs21ymhqwjfkbchhss0yar7qjgz"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1267,13 +1273,13 @@ developed mainly for Ren'py.")
 (define-public python2-renpy
   (package
     (name "python2-renpy")
-    (version "7.4.10")
+    (version "7.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.renpy.org/dl/" version
                            "/renpy-" version "-source.tar.bz2"))
-       (sha256 (base32 "1yngs2kh1l8micg28mcp9580qsvgq3aa8bkhv2xqfkg9qqrbr8y4"))
+       (sha256 (base32 "0zkhg2sd2hglm9dkansf4h8sq7lm7iqslzl763ambp4kyfdvd07q"))
        (modules '((guix build utils)))
        (patches
         (search-patches
@@ -1315,9 +1321,8 @@ developed mainly for Ren'py.")
              ;; named "setup.py".
              (with-directory-excursion "module"
                (apply (assoc-ref %standard-phases 'build) args))
-             ;; the above causes renpy.__init__ to be compiled but does not
-             ;; compile anything else, hence we do that here
-             (delete-file "renpy/__init__.pyc")
+             ;; The above only builds the cython modules, but nothing else,
+             ;; so we do that here.
              (invoke "python" "-m" "compileall" "renpy")
              #t))
          (replace 'install
@@ -1443,70 +1448,17 @@ are only used to bootstrap it.")
              ;;     `-- Super Awesome Game.sh
              (let* ((out (assoc-ref outputs "out"))
                     (bin/renpy (string-append out "/bin/renpy")))
-               (mkdir-p (string-append out "/bin"))
                (copy-recursively "renpy/common"
                                  (string-append out "/share/renpy/common"))
                (copy-recursively "gui"
                                  (string-append out "/share/renpy/gui"))
 
-               (call-with-output-file bin/renpy
-                 (lambda (port)
-                   (format port "#!~a/bin/python2~%"
-                           (assoc-ref inputs "python2"))
-                   (format port "
-from __future__ import print_function
-
-import os
-import sys
-import warnings
-
-def path_to_common(renpy_base):
-    return renpy_base + \"/common\"
-
-def path_to_saves(gamedir, save_directory=None):
-    import renpy  # @UnresolvedImport
-
-    if save_directory is None:
-        save_directory = renpy.config.save_directory
-        save_directory = renpy.exports.fsencode(save_directory)
-
-    if not save_directory:
-        return gamedir + \"/saves\"
-
-    return os.path.expanduser(\"~~/.renpy/\" + save_directory)
-
-def path_to_renpy_base():
-    return \"~a\"
-
-def main():
-    renpy_base = path_to_renpy_base()
-    try:
-        import renpy.bootstrap
-        import renpy.arguments
-    except ImportError:
-        print(\"\"\"Could not import renpy.bootstrap.
-Please ensure you decompressed Ren'Py correctly, preserving the directory
-structure.\"\"\", file=sys.stderr)
-        raise
-
-    args = renpy.arguments.bootstrap()
-    if not args.basedir:
-        print(\"\"\"This Ren'py requires a basedir to launch.
-The basedir is the directory, in which .rpy files live -- usually the 'game'
-subdirectory of a game packaged by Ren'py.
-
-If you want the Ren'py launcher, use renpy-launcher instead.\"\"\",
-              file=sys.stderr)
-        sys.exit()
-
-    renpy.bootstrap.bootstrap(renpy_base)
-
-if __name__ == \"__main__\":
-    main()
-"
-                           (string-append out "/share/renpy"))))
-               (chmod bin/renpy #o755)
-               #t)))
+               (mkdir-p (string-append out "/bin"))
+               (copy-file (assoc-ref inputs "renpy.in") bin/renpy)
+               (substitute* bin/renpy
+                 (("@PYTHON@") (search-input-file inputs "bin/python2"))
+                 (("@RENPY_BASE@") (string-append out "/share/renpy")))
+               (chmod bin/renpy #o755))))
 
          (add-after 'install 'install-games
            (lambda* (#:key outputs #:allow-other-keys)
@@ -1560,7 +1512,8 @@ if __name__ == \"__main__\":
                                     inputs))))))))
                #t))))))
     (inputs
-     `(("python2-renpy" ,python2-renpy)
+     `(("renpy.in" ,(search-auxiliary-file "renpy/renpy.in"))
+       ("python2-renpy" ,python2-renpy)
        ("python2-tkinter" ,python-2 "tk")
        ("python2" ,python-2) ; for ‘fix-commands’ and ‘wrap’
        ("xdg-utils" ,xdg-utils)))
@@ -1767,7 +1720,7 @@ of use.")
 (define-public openmw
   (package
     (name "openmw")
-    (version "0.46.0")
+    (version "0.47.0")
     (source
      (origin
        (method git-fetch)
@@ -1777,24 +1730,27 @@ of use.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rm32zsmxvr6b0jjihfj543skhicbw5kg6shjx312clhlm035w2x"))))
+         "19mcbnjl4279qalb97msf965bjax48mx1r1qczyvwhn28h6n3bsy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; No test target
        #:configure-flags
-       (list "-DDESIRED_QT_VERSION=5")))
+       (list "-DDESIRED_QT_VERSION=5"
+             "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
     (native-inputs
      (list boost doxygen pkg-config))
     (inputs
-     `(("bullet" ,bullet)
-       ("ffmpeg" ,ffmpeg)
-       ("libxt" ,libxt)
-       ("mygui" ,mygui-gl)              ; OpenMW does not need Ogre.
-       ("openal" ,openal)
-       ("openscenegraph" ,openmw-openscenegraph)
-       ("qtbase" ,qtbase-5)
-       ("sdl" ,sdl2)
-       ("unshield" ,unshield)))
+     (list bullet
+           ffmpeg
+           libxt
+           lz4
+           mygui-gl              ; OpenMW does not need Ogre.
+           openal
+           openmw-openscenegraph
+           qtbase-5
+           recastnavigation
+           sdl2
+           unshield))
     (synopsis "Re-implementation of the RPG Morrowind engine")
     (description
      "OpenMW is a game engine which reimplements and extends the one that runs
@@ -1807,7 +1763,7 @@ games.")
 (define-public godot
   (package
     (name "godot")
-    (version "3.4")
+    (version "3.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1816,7 +1772,7 @@ games.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y542zla6msgxf31rd0349d9j3ya7f3njnwmmrh8lmzfgxx86qbx"))
+                "1bm9yl995chvx6jwkdia12yjrgwcpzb1r9bmj606q8z264aw2ma5"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -1854,8 +1810,7 @@ games.")
                       (for-each delete-file-recursively
                                 (lset-difference string=?
                                                  (scandir ".")
-                                                 (cons* "." ".." preserved-files)))))
-                  #t))))
+                                                 (cons* "." ".." preserved-files)))))))))
     (build-system scons-build-system)
     (arguments
      `(#:scons ,scons-python2
@@ -1889,8 +1844,7 @@ games.")
                (("env_base = Environment\\(tools=custom_tools\\)")
                 (string-append
                  "env_base = Environment(tools=custom_tools)\n"
-                 "env_base = Environment(ENV=os.environ)")))
-             #t))
+                 "env_base = Environment(ENV=os.environ)")))))
          ;; Build headless tools, used for packaging games without depending on X.
          (add-after 'build 'build-headless
            (lambda* (#:key scons-flags #:allow-other-keys)
@@ -1913,8 +1867,7 @@ games.")
                  (install-file "godot_server" (string-append headless "/bin")))
                ;; Tell the editor where to find zenity for OS.alert().
                (wrap-program (string-append out "/bin/godot")
-                 `("PATH" ":" prefix (,(string-append zenity "/bin")))))
-             #t))
+                 `("PATH" ":" prefix (,(string-append zenity "/bin")))))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; FIXME: Mesa tries to dlopen libudev.so.0 and fails.  Pending a
@@ -1922,12 +1875,11 @@ games.")
              ;; Mesa can find libudev.so.0 through LD_LIBRARY_PATH.
              ;; also append ld path for pulseaudio and alsa-lib
              (let* ((out (assoc-ref outputs "out"))
-                    (udev_path (string-append (assoc-ref inputs "udev") "/lib"))
+                    (udev_path (string-append (assoc-ref inputs "eudev") "/lib"))
                     (pulseaudio_path (string-append (assoc-ref inputs "pulseaudio") "/lib"))
                     (alas_lib_path (string-append (assoc-ref inputs "alsa-lib") "/lib")))
                (wrap-program (string-append out "/bin/godot")
-                 `("LD_LIBRARY_PATH" ":" prefix (,udev_path ,pulseaudio_path ,alas_lib_path))))
-             #t))
+                 `("LD_LIBRARY_PATH" ":" prefix (,udev_path ,pulseaudio_path ,alas_lib_path))))))
          (add-after 'install 'install-godot-desktop
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1941,33 +1893,34 @@ games.")
                            (copy-file icon dest))
                          '("icon.png" "icon.svg")
                          `(,(string-append icons "/256x256/apps/godot.png")
-                           ,(string-append icons "/scalable/apps/godot.svg"))))
-             #t)))))
+                           ,(string-append icons "/scalable/apps/godot.svg")))))))))
     (outputs '("out" "headless"))
-    (native-inputs (list pkg-config))
-    (inputs `(("alsa-lib" ,alsa-lib)
-              ("bullet" ,bullet)
-              ("freetype" ,freetype)
-              ("glew" ,glew)
-              ("glu" ,glu)
-              ("libtheora" ,libtheora)
-              ("libvorbis" ,libvorbis)
-              ("libvpx" ,libvpx)
-              ("libwebp" ,libwebp)
-              ("libx11" ,libx11)
-              ("libxcursor" ,libxcursor)
-              ("libxi" ,libxi)
-              ("libxinerama" ,libxinerama)
-              ("libxrandr" ,libxrandr)
-              ("mbedtls" ,mbedtls-apache)
-              ("mesa" ,mesa)
-              ("opusfile" ,opusfile)
-              ("pcre2" ,pcre2)
-              ("pulseaudio" ,pulseaudio)
-              ("udev" ,eudev) ;FIXME: required by mesa
-              ("wslay" ,wslay)
-              ("zenity" ,zenity)
-              ("zstd" ,zstd "lib")))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list alsa-lib
+           bullet
+           freetype
+           glew
+           glu
+           libtheora
+           libvorbis
+           libvpx
+           libwebp
+           libx11
+           libxcursor
+           libxi
+           libxinerama
+           libxrandr
+           mbedtls-apache
+           mesa
+           opusfile
+           pcre2
+           pulseaudio
+           eudev                        ; FIXME: required by mesa
+           wslay
+           zenity
+           `(,zstd "lib")))
     (home-page "https://godotengine.org/")
     (synopsis "Advanced 2D and 3D game engine")
     (description
@@ -2836,4 +2789,55 @@ upgraded modern rendering techniques.  The new rendering features include
 fully dynamic omnidirectional shadows, global illumination, HDR lighting,
 deferred shading, morphological / temporal / multisample anti-aliasing, and
 much more.")
+      (license license:zlib))))
+
+(define-public recastnavigation
+  ;; We follow master since there hasn't been a release since 1.5.1 in 2016.
+  (let ((commit "c5cbd53024c8a9d8d097a4371215e3342d2fdc87")
+        (revision "1"))
+    (package
+      (name "recastnavigation")
+      (version (git-version "1.5.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/recastnavigation/recastnavigation")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "034bm47gc3r285w1pnvkhmm74zz99d204b1r865gisaiq4qfbza0"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON"
+                                 "-DRECASTNAVIGATION_DEMO=OFF"
+                                 "-DRECASTNAVIGATION_TESTS=ON"
+                                 "-DRECASTNAVIGATION_EXAMPLES=OFF")))
+      (synopsis "Navigation system for games")
+      (description "Recast is state of the art navigation mesh
+construction toolset for games.
+
+@itemize
+@item It is automatic, which means that you can throw any level geometry
+      at it and you will get robust mesh out.
+@item It is fast which means swift turnaround times for level designers.
+@item It is open source so it comes with full source and you can
+      customize it to your heart's content.
+@end itemize
+
+The Recast process starts with constructing a voxel mold from a level
+geometry and then casting a navigation mesh over it.  The process
+consists of three steps, building the voxel mold, partitioning the mold
+into simple regions, peeling off the regions as simple polygons.
+
+Recast is accompanied with Detour, path-finding and spatial reasoning
+toolkit.  You can use any navigation mesh with Detour, but of course the
+data generated with Recast fits perfectly.
+
+Detour offers simple static navigation mesh which is suitable for many
+simple cases, as well as tiled navigation mesh which allows you to plug
+in and out pieces of the mesh.  The tiled mesh allows you to create
+systems where you stream new navigation data in and out as the player
+progresses the level, or you may regenerate tiles as the world changes.")
+      (home-page "https://github.com/recastnavigation/recastnavigation")
       (license license:zlib))))

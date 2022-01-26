@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
-;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -47,6 +47,7 @@
   #:use-module (gnu packages audio)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages code)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
@@ -60,11 +61,13 @@
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages gimp)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages kde-plasma)
@@ -442,41 +445,48 @@ a module for implementing ODF Gantt charts, which are bar charts that
 illustrate project schedules.")
     (license license:gpl2+)))
 
+(define-public kseexpr
+  (package
+    (name "kseexpr")
+    (version "4.0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://invent.kde.org/graphics/kseexpr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "088q3kkv2wq426w000iq14wy3a45rrnn0bmsdks6caz4vq04ccay"))))
+    (build-system qt-build-system)
+    (arguments
+     `(#:configure-flags (list "-DBUILD_TESTS=ON"))) ; disabled by default
+    (native-inputs
+     (list bison doxygen extra-cmake-modules flex googletest))
+    (inputs
+     (list ki18n libpng qtbase-5))
+    (home-page "https://invent.kde.org/graphics/kseexpr")
+    (synopsis "Embeddable expression evaluation engine")
+    (description "This package contains the fork of Disney Animation's SeExpr
+expression library, that is used in Krita.")
+    (license license:gpl3+)))
+
 (define-public krita
   (package
     (name "krita")
-    (version "4.4.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/krita/" version
-                    "/krita-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1y0d8gnxfdg5nfwk8dgx8fc2bwskvnys049napb1a9fr25bqmimw"))))
-    (build-system cmake-build-system)
+    (version "5.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://kde/stable/krita/" version "/krita-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1gww95fyd5r3x2260j2ls7d8fp4rsfxnwdqai2j7fjahxg3iyxg6"))))
+    (build-system qt-build-system)
     (arguments
      `(#:tests? #f
-       #:configure-flags
-       (list "-DBUILD_TESTING=OFF"
-             (string-append "-DCMAKE_CXX_FLAGS=-I"
-                            (assoc-ref %build-inputs "openexr")
-                            "/include/OpenEXR"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Ensure that icons are found at runtime.
-         ;; This works around <https://bugs.gnu.org/22138>.
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (qt '("qtbase" "qtsvg")))
-               (wrap-program (string-append out "/bin/krita")
-                 `("QT_PLUGIN_PATH" ":" prefix
-                   ,(map (lambda (label)
-                           (string-append (assoc-ref inputs label)
-                                          "/lib/qt5/plugins/"))
-                         qt)))
-               #t))))))
+       #:configure-flags (list "-DBUILD_TESTING=OFF")))
     (native-inputs
      (list curl
            eigen
@@ -490,8 +500,9 @@ illustrate project schedules.")
      (list boost
            exiv2
            fftw
+           giflib
            gsl
-           ilmbase
+           imath
            karchive
            kcompletion
            kconfig
@@ -502,18 +513,24 @@ illustrate project schedules.")
            kiconthemes
            kio
            kitemviews
+           kseexpr
            kwidgetsaddons
            kwindowsystem
            kxmlgui
            lcms
            libjpeg-turbo
+           libheif
+           libmypaint
            libpng
            libraw-0.18
            libtiff
+           libwebp
            libx11
            libxcb
            libxi
-           openexr-2
+           opencolorio
+           openexr
+           openjpeg
            perl
            poppler-qt5
            qtbase-5

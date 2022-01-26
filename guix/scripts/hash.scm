@@ -1,9 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2014, 2016-2017, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (gcrypt hash)
   #:use-module (guix serialization)
   #:use-module (guix ui)
+  #:use-module (guix hash)
   #:use-module (guix scripts)
   #:use-module (guix base16)
   #:use-module (guix base32)
@@ -46,20 +48,14 @@
 (define* (nar-hash file #:optional
                    (algorithm (assoc-ref %default-options 'hash-algorithm))
                    select?)
-  (let-values (((port get-hash)
-                (open-hash-port algorithm)))
-    (write-file file port #:select? select?)
-    (force-output port)
-    (get-hash)))
+  (file-hash* file #:algorithm algorithm #:select? select? #:recursive? #true))
 
 (define* (default-hash file #:optional
                        (algorithm (assoc-ref %default-options 'hash-algorithm))
                        select?)
   (match file
     ("-" (port-hash algorithm (current-input-port)))
-    (_
-     (call-with-input-file file
-       (cute port-hash algorithm <>)))))
+    (_ (file-hash* file #:algorithm algorithm #:recursive? #false))))
 
 (define* (git-hash file #:optional
                        (algorithm (assoc-ref %default-options 'hash-algorithm))
@@ -69,7 +65,7 @@
       ((directory) #t)
       (else #f)))
   (if directory?
-      (git-hash-directory file algorithm)
+      (git-hash-directory file algorithm #:select? select?)
       (git-hash-file file algorithm)))
 
 
@@ -138,8 +134,9 @@ and 'base16' ('hex' and 'hexadecimal' can be used as well).\n"))
                               (alist-delete 'format result))))
         (option '(#\r "recursive") #f #f
                 (lambda (opt name arg result)
-                  (warning (G_ "'--recursive' is deprecated, \
-use '--serializer' instead~%"))
+                  (unless (eqv? name #\r)
+                    (warning (G_ "'--recursive' is deprecated, \
+use '--serializer=nar' instead~%")))
                   (alist-cons 'serializer nar-hash
                               (alist-delete 'serializer result))))
         (option '(#\S "serializer") #t #f
@@ -180,16 +177,6 @@ use '--serializer' instead~%"))
     ;; Return the alist of option values.
     (parse-command-line args %options (list %default-options)
                         #:build-options? #f))
-
-  (define (vcs-file? file stat)
-    (case (stat:type stat)
-      ((directory)
-       (member (basename file) '(".bzr" ".git" ".hg" ".svn" "CVS")))
-      ((regular)
-       ;; Git sub-modules have a '.git' file that is a regular text file.
-       (string=? (basename file) ".git"))
-      (else
-       #f)))
 
   (let* ((opts (parse-options))
          (args (filter-map (match-lambda

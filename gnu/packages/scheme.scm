@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -220,7 +221,7 @@
     (supported-systems '("x86_64-linux" "i686-linux"))
 
     (home-page "https://www.gnu.org/software/mit-scheme/")
-    (synopsis "A Scheme implementation with integrated editor and debugger")
+    (synopsis "Scheme implementation with integrated editor and debugger")
     (description
      "GNU/MIT Scheme is an implementation of the Scheme programming
 language.  It provides an interpreter, a compiler and a debugger.  It also
@@ -560,14 +561,14 @@ regular-expression notation.")
 (define-public slib
   (package
     (name "slib")
-    (version "3b5")
+    (version "3b6")
     (source (origin
              (method url-fetch)
              (uri (string-append "http://groups.csail.mit.edu/mac/ftpdir/scm/slib-"
                                  version ".zip"))
              (sha256
               (base32
-               "0q0p2d53p8qw2592yknzgy2y1p5a9k7ppjx0cfrbvk6242c4mdpq"))))
+               "137dn2wwwwg0qbifgxfckjhzj4m4820crpg9kziv402l7f2b931f"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There is no check target.
@@ -621,7 +622,7 @@ utility functions for all standard Scheme implementations.")
          (replace 'build
                   (lambda* (#:key inputs outputs #:allow-other-keys)
                     (setenv "SCHEME_LIBRARY_PATH"
-                            (search-input-directory inputs "lib/slib"))
+                            (search-input-directory inputs "lib/slib/"))
                     (invoke "make" "scmlit" "CC=gcc")
                     (invoke "make" "all")))
          (add-after 'install 'post-install
@@ -631,7 +632,7 @@ utility functions for all standard Scheme implementations.")
                         (delete-file req)
                         (format (open req (logior O_WRONLY O_CREAT))
                                 "(define (library-vicinity) ~s)\n"
-                                (search-input-directory inputs "lib/slib"))
+                                (search-input-directory inputs "lib/slib/"))
 
                         ;; We must generate the slibcat file.
                         (invoke (string-append out "/bin/scm")

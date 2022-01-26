@@ -8,6 +8,9 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,11 +67,13 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix svn-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (guix utils))
+  #:use-module (guix utils)
+  #:use-module (srfi srfi-1))
 
 ;; This is a module for packages related to physical hardware that don't (yet)
 ;; have a more specific home like gps.scm, security-token.scm, &c.
@@ -76,7 +81,7 @@
 (define-public hwinfo
   (package
     (name "hwinfo")
-    (version "21.78")
+    (version "21.80")
     (home-page "https://github.com/openSUSE/hwinfo")
     (source
      (origin
@@ -87,7 +92,7 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v3smzdplh0cdvl19dw3in8gfmkhb2fgkfl60aqhn9qlbjf3p0mr"))
+        (base32 "07058vjqdcd3la8y4b92f7fvcqxvmw1p0q4lg5kcn85pvbbg52ag"))
        (modules
         '((guix build utils)))
        (snippet
@@ -315,6 +320,66 @@ to it, and help you submit that information to the h-node project along with
 whether the hardware works with a fully free operating system or not.")
       (home-page "https://savannah.nongnu.org/projects/h-client/")
       (license license:gpl3+))))
+
+(define-public headsetcontrol
+  (package
+    (name "headsetcontrol")
+    (version "2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Sapd/HeadsetControl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a7zimzi71416pmn6z0l1dn1c2x8p702hkd0k6da9rsznff85a88"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list hidapi))
+    (home-page "https://github.com/Sapd/HeadsetControl")
+    (synopsis "Sidetone and Battery status for USB headsets")
+    (description
+     "Headsetcontrol is a tool to control certain aspects of USB-connected
+headsets.  Currently, support is provided for adjusting sidetone, getting
+battery state, controlling LEDs, and setting the inactive time.")
+    (license license:gpl3+)))
+
+(define-public hueplusplus
+  (package
+    (name "hueplusplus")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/enwi/hueplusplus")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jy8m2a0h0kf0aw8jbniz069q9j7cx67b1zlv2vz1ymq921qk0pm"))
+       (patches
+        (search-patches "hueplusplus-mbedtls.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ;; Tests require Google's gtest and gmock
+    (inputs
+     (list mbedtls-apache))
+    (synopsis "C++ library to control Philips Hue lights")
+    (description "Hueplusplus is a library for controlling Philips Hue lights.
+Features:
+
+@itemize
+@item find bridges with SSDP or set an ip manually
+@item all common light functions (brightness, color, temperature)
+@item extended @code{alert()} functions, which alert in a specific
+color (good for notifications)
+@item supports sensors, rules, groups, scenes and schedules
+@item streaming with entertainment mode
+@item documented with doxygen
+@end itemize")
+    (home-page "https://github.com/enwi/hueplusplus")
+    (license license:lgpl3+)))
 
 (define-public i7z
   (let ((revision "0")
@@ -589,6 +654,78 @@ be dangerous and may void your CPU or system board's warranty.")
 technology, such as head mounted displays with built in head tracking.")
     (license license:boost1.0)))
 
+(define-public openrgb
+  (package
+    (name "openrgb")
+    (version "0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/CalcProgrammer1/OpenRGB")
+             (commit (string-append "release_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xhfaz0b74nfnh7il2cz5c0338xlzay00g6hc2h3lsncarj8d5n7"))
+       (patches
+        (search-patches "openrgb-unbundle-hueplusplus.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete the bundled hueplusplus and json libraries.
+           (delete-file-recursively "dependencies/hueplusplus-1.0.0")
+           (delete-file-recursively "dependencies/json")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+       #:tests? #f ; doesn't have tests
+       #:make-flags
+       #~(list (string-append "INSTALL_ROOT=" #$output ))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'unbundle
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "OpenRGB.pro"
+                 (("dependencies/hueplusplus-1.0.0/include/hueplusplus")
+                  (string-append #$(this-package-input "hueplusplus")
+                                 "/include/hueplusplus"))
+                 (("dependencies/json")
+                  (string-append #$(this-package-input "json-modern-cxx")
+                                 "/include/nlohmann")))))
+           ;; Call qmake instead of configure to create a Makefile.
+           (replace 'configure
+             (lambda _ (invoke "qmake" "PREFIX=/" "OpenRGB.pro"))))))
+    (inputs
+     (list hidapi
+           hueplusplus
+           json-modern-cxx
+           libusb
+           mbedtls-apache
+           qtbase-5))
+    (native-inputs
+     (list pkg-config))
+    (synopsis "RGB lighting control")
+    (description
+     "OpenRGB is lighting control that doesn't depend on manufacturer software.
+ASUS, ASRock, Corsair, G.Skill, Gigabyte, HyperX, MSI, Razer, ThermalTake, and more
+supported.
+
+Features:
+
+@itemize
+@item Set colors and select effect modes for a wide variety of RGB hardware
+@item Save and load profiles
+@item Control lighting from third party software using the OpenRGB SDK
+@item Command line interface
+@item Connect multiple instances of OpenRGB to synchronize lighting across multiple PCs
+@item Can operate standalone or in a client/headless server configuration
+@item View device information
+@item No official/manufacturer software required
+@item Graphical view of device LEDs makes creating custom patterns easy
+@end itemize")
+    (home-page "https://openrgb.org/")
+    (license license:gpl2))) ; Included libccmmk is lgpl3+, CRC is bsd-3
+
 (define-public wavemon
   (package
     (name "wavemon")
@@ -819,3 +956,54 @@ of your CRT/LCD monitor.")
 libtss2-esys, libtss2-sys, libtss2-mu, libtss2-tcti-device, libtss2-tcti-swtpm
 and libtss2-tcti-mssim.")
     (license license:bsd-2)))
+
+(define-public libcpuid
+  ;; We need to remove blobs from the source, first we have to isolate the blob
+  ;; source in build system.
+  ;; See https://github.com/anrieff/libcpuid/pull/159.
+  (let ((commit "2e61160983f32ba840b2246d3c3850c44626ab0d")
+        (revision "1"))
+    (package
+      (name "libcpuid")
+      (version (git-version "0.5.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/anrieff/libcpuid")
+               (commit commit)))
+         (sha256
+          (base32 "1mphvkiqq6z33sq6i490fq27sbyylacwrf8bg7ccvpcjms208sww"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Now remove blobs.
+          #~(begin
+              (delete-file "libcpuid/msrdriver.c")
+              (delete-file-recursively "contrib/MSR Driver")))
+         (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DLIBCPUID_TESTS=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'absolutize
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Linux specific
+                (when #$(target-linux?)
+                  (substitute* "libcpuid/rdmsr.c"
+                    (("modprobe") (which "modprobe")))))))))
+      (inputs
+       (if (target-linux?)
+           (list kmod)
+           '()))
+      (native-inputs (list python-3))   ;required by tests
+      (supported-systems
+       (filter (lambda (t) (or (target-x86-64? t) (target-x86-32? t)))
+               %supported-systems))
+      (home-page "https://libcpuid.sourceforge.net/")
+      (synopsis "Small library for x86 CPU detection and feature extraction")
+      (description "Libcpuid is a small C library to get vendor, model, branding
+string, code name and other information from x86 CPU. This library is not to be
+confused with the @code{cpuid} command line utility from package @code{cpuid}.")
+      (license license:bsd-2))))

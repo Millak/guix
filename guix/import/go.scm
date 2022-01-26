@@ -3,7 +3,7 @@
 ;;; Copyright © 2020 Helio Machado <0x2b3bfa0+guix@googlemail.com>
 ;;; Copyright © 2021 François Joulaud <francois.joulaud@radiofrance.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
@@ -26,6 +26,7 @@
 (define-module (guix import go)
   #:use-module (guix build-system go)
   #:use-module (guix git)
+  #:use-module (guix hash)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
   #:use-module (guix import utils)
@@ -36,11 +37,11 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix memoization)
   #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
-  #:autoload   (guix git) (update-cached-checkout)
-  #:autoload   (gcrypt hash) (open-hash-port hash-algorithm sha256)
   #:autoload   (guix serialization) (write-file)
   #:autoload   (guix base32) (bytevector->nix-base32-string)
   #:autoload   (guix build utils) (mkdir-p)
+  #:autoload   (gcrypt hash) (hash-algorithm sha256)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 peg)
   #:use-module (ice-9 rdelim)
@@ -54,6 +55,7 @@
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (sxml match)
   #:use-module ((sxml xpath) #:renamer (lambda (s)
                                          (if (eq? 'filter s)
@@ -499,25 +501,6 @@ source."
       goproxy
       (module-meta-repo-root meta-data)))
 
-;; XXX: Copied from (guix scripts hash).
-(define (vcs-file? file stat)
-  (case (stat:type stat)
-    ((directory)
-     (member (basename file) '(".bzr" ".git" ".hg" ".svn" "CVS")))
-    ((regular)
-     ;; Git sub-modules have a '.git' file that is a regular text file.
-     (string=? (basename file) ".git"))
-    (else
-     #f)))
-
-;; XXX: Adapted from 'file-hash' in (guix scripts hash).
-(define* (file-hash file #:optional (algorithm (hash-algorithm sha256)))
-  ;; Compute the hash of FILE.
-  (let-values (((port get-hash) (open-hash-port algorithm)))
-    (write-file file port #:select? (negate vcs-file?))
-    (force-output port)
-    (get-hash)))
-
 (define* (git-checkout-hash url reference algorithm)
   "Return the ALGORITHM hash of the checkout of URL at REFERENCE, a commit or
 tag."
@@ -536,7 +519,7 @@ tag."
                   (update-cached-checkout url
                                           #:ref
                                           `(tag-or-commit . ,reference)))))
-    (file-hash checkout algorithm)))
+    (file-hash* checkout #:algorithm algorithm #:recursive? #true)))
 
 (define (vcs->origin vcs-type vcs-repo-url version)
   "Generate the `origin' block of a package depending on what type of source
@@ -588,6 +571,34 @@ control system is being used."
       (formatted-message (G_ "unsupported vcs type '~a' for package '~a'")
                          vcs-type vcs-repo-url)))))
 
+(define (strip-v-prefix version)
+  "Strip from VERSION the \"v\" prefix that Go uses."
+  (string-trim version #\v))
+
+(define (ensure-v-prefix version)
+  "Add a \"v\" prefix to VERSION if it does not already have one."
+  (if (string-prefix? "v" version)
+      version
+      (string-append "v" version)))
+
+(define (validate-version version available-versions module-path)
+  "Raise an error if VERSION is not among AVAILABLE-VERSIONS, unless VERSION
+is a pseudo-version.  Return VERSION."
+  ;; Pseudo-versions do not appear in the versions list; skip the
+  ;; following check.
+  (if (or (go-pseudo-version? version)
+          (member version available-versions))
+      version
+      (raise
+       (make-compound-condition
+        (formatted-message (G_ "version ~a of ~a is not available~%")
+                           version module-path available-versions)
+        (condition (&fix-hint
+                    (hint (format #f (G_ "Pick one of the following \
+available versions:~{ ~a~}.")
+                                  (map strip-v-prefix
+                                       available-versions)))))))))
+
 (define* (go-module->guix-package module-path #:key
                                   (goproxy "https://proxy.golang.org")
                                   version
@@ -596,17 +607,11 @@ control system is being used."
 The meta-data is fetched from the GOPROXY server and https://pkg.go.dev/.
 When VERSION is unspecified, the latest version available is used."
   (let* ((available-versions (go-module-available-versions goproxy module-path))
-         (version* (or version
-                       (go-module-version-string goproxy module-path))) ;latest
-         ;; Elide the "v" prefix Go uses.
-         (strip-v-prefix (cut string-trim <> #\v))
-         ;; Pseudo-versions do not appear in the versions list; skip the
-         ;; following check.
-         (_ (unless (or (go-pseudo-version? version*)
-                        (member version* available-versions))
-              (error (format #f "error: version ~s is not available
-hint: use one of the following available versions ~a\n"
-                             version* available-versions))))
+         (version* (validate-version
+                    (or (and version (ensure-v-prefix version))
+                        (go-module-version-string goproxy module-path)) ;latest
+                    available-versions
+                    module-path))
          (content (fetch-go.mod goproxy module-path version*))
          (dependencies+versions (go.mod-requirements (parse-go.mod content)))
          (dependencies (if pin-versions?
@@ -647,10 +652,10 @@ hint: use one of the following available versions ~a\n"
         (synopsis ,synopsis)
         (description ,(and=> description beautify-description))
         (license ,(match (list->licenses licenses)
-                    (() #f)                        ;unknown license
-                    ((license)                     ;a single license
+                    (() #f)                       ;unknown license
+                    ((license)                    ;a single license
                      license)
-                    ((license ...)     ;a list of licenses
+                    ((license ...)                ;a list of licenses
                      `(list ,@license)))))
      (if pin-versions?
          dependencies+versions
@@ -670,12 +675,6 @@ This package and its dependencies won't be imported.~%")
                           (uri->string (http-get-error-uri c))
                           (http-get-error-code c)
                           (http-get-error-reason c))
-                 (values #f '()))
-                (else
-                 (warning (G_ "Failed to import package ~s.
-reason: ~s.~%")
-                          package-name
-                          (exception-args c))
                  (values #f '())))
         (apply go-module->guix-package args)))))
 

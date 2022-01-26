@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -219,14 +219,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.34.0")
+   (version "2.34.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "07s1c9lzlm4kpbb5lmxy0869phg7037pv4faz5hlqyb5csrbjv7x"))))
+              "0b40vf315s1kz65x1wq47g8srl4wqac39pwnvlj1mdzs3kfma1rs"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -246,7 +246,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "0wic95h0i1bm66hxnc38pfj31n74lvk2xb8lx6kcfpzg2wszmsj7"))))
+            "1f3y7hxvs9p00wwwi8zdn0sgn6nh1pgg1fdsnz2bq8gzfbbmsqww"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
@@ -1626,17 +1626,16 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit")
-    (version "2.15.0")
+    (version "2.16.0")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
+       (method git-fetch)               ; no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/pre-commit/pre-commit")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hyynhg52qq8rd37cwk2gl1jjy7hpqh74zl2lg89kkdhhx0xfiaj"))))
+        (base32 "1sf9mqpiv3pgzi6aar7xfna9v7n63lgm7d7b24fhni0jxn56384b"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1676,14 +1675,7 @@ visualize your public Git repositories on a web interface.")
                         "not test_install_existing_hooks_no_overwrite"
                         " and not test_uninstall_restores_legacy_hooks"
                         " and not test_installed_from_venv"
-                        " and not test_healthy_venv_creator")))))
-         (add-before 'reset-gzip-timestamps 'make-gz-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure .gz files are writable so that the
-             ;; 'reset-gzip-timestamps' phase can do its work.
-             (let ((out (assoc-ref outputs "out")))
-               (for-each make-file-writable
-                         (find-files out "\\.gz$"))))))))
+                        " and not test_healthy_venv_creator"))))))))
     (native-inputs
      `(("git" ,git-minimal)
        ("python-covdefaults" ,python-covdefaults)
@@ -2032,10 +2024,12 @@ projects, from individuals to large-scale enterprise operations.")
                  (modify-phases %standard-phases
                    (add-after 'install 'install-rcsfreeze
                      (lambda* (#:key outputs #:allow-other-keys)
-                       (chmod "src/rcsfreeze" #o755)
-                       (install-file
-                         "src/rcsfreeze"
-                         (string-append (assoc-ref outputs "out") "/bin")))))))
+                       (let* ((out (assoc-ref outputs "out"))
+                              (bin (string-append out "/bin"))
+                              (man1 (string-append out "/share/man/man1")))
+                         (chmod "src/rcsfreeze" #o755)
+                         (install-file "src/rcsfreeze" bin)
+                         (install-file "man/rcsfreeze.1" man1)))))))
     (native-inputs (list ed))
     (home-page "https://www.gnu.org/software/rcs/")
     (synopsis "Per-file local revision control system")
@@ -2067,6 +2061,28 @@ machine.")
 annotated RCS file describes the revision and date in which each line was
 added to the file, and the author of each line.")
     (license license:gpl2+)))
+
+(define-public rcshist
+  (package
+    (name "rcshist")
+    (version "1.04-20190106")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://invisible-mirror.net/archives/rcshist/rcshist-"
+                   version ".tgz"))
+             (sha256
+              (base32
+               "01ab3xwgm934lxr8bm758am3vxwx4hxx7cc9prbgqj5nh30vdg1n"))))
+    (build-system gnu-build-system)
+    (home-page "https://invisible-island.net/rcshist/rcshist.html")
+    (synopsis "Display RCS change history")
+    (description
+     "The @code{rcshist} utility displays the complete revision history of a
+set of RCS files including log messages and patches.  It can also display the
+patch associated with a particular revision of an RCS file.")
+    (license (list license:bsd-2
+                   license:bsd-3))))  ; bsd_queue.h
 
 (define-public cvs
   (package
@@ -2400,7 +2416,7 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.4")
+    (version "2.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2408,7 +2424,7 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "19va4jn46s0vjv9f337g3ad6hy1f285ynl27i9gkd9l70b9q90n4"))))
+                "04skfsw5wkf6p47lis7x4xyfbpjik3id1km75q0fd2g8xa5jrfi4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list asciidoc xmlto))
@@ -3229,6 +3245,52 @@ If several repos are related, it helps to see their status together.")
 makes a directory under a specific root directory (by default @file{~/ghq})
 using the remote repository URL's host and path.")
     (license license:expat)))
+
+(define-public tkrev
+  (package
+    (name "tkrev")
+    (version "9.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://sourceforge/tkcvs/tkrev_" version ".tar.gz"))
+       (sha256
+        (base32 "0bpfbhkngzmwy476mfc69mkd94l0m2wxznrn0qzd81s450yxjw2q"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'build)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (invoke "wish" "doinstall.tcl" "-nox" out)
+               (install-file "contrib/tkdirdiff" bin))))
+         (add-after 'install 'wrap-programs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (for-each
+               (lambda (file)
+                 (wrap-program (string-append (assoc-ref outputs "out")
+                                              "/bin/" file)
+                   `("PATH" ":" prefix (,(dirname (which "wish"))))))
+               '("tkdiff"
+                 "tkdirdiff"
+                 "tkrev")))))
+       #:tests? #f))
+    (inputs
+     (list tk))
+    (home-page "https://tkcvs.sourceforge.io")
+    (synopsis "Graphical interface to CVS, Subversion, Git, and RCS")
+    (description
+     "TkRev (formerly TkCVS) is a Tcl/Tk-based graphical interface to the CVS,
+Subversion and Git configuration management systems.  It will also help with
+RCS.  It shows the status of the files in the current working directory, and
+has tools for tagging, merging, checking in/out, and other user operations.
+TkDiff is included for browsing and merging your changes.")
+    (license license:gpl2+)))
 
 (define-public git-filter-repo
   (package

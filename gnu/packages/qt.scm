@@ -8,7 +8,7 @@
 ;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Quiliro <quiliro@fsfla.org>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018, 2020, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -70,6 +70,7 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphics)
@@ -1512,7 +1513,7 @@ message.")))
 (define-public qtspell
   (package
     (name "qtspell")
-    (version "0.9.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1521,7 +1522,7 @@ message.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1081makirjxixz44ghwz362vgnk5wcks6ni6w01pl667x8wggsd2"))))
+        (base32 "19ff6jzm699wrxrk57w3d4kl9qxgdipdikpwls9n4aqv4mw7g969"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ;no test
@@ -2402,7 +2403,7 @@ This package provides the Python bindings.")))
 (define-public qtkeychain
   (package
     (name "qtkeychain")
-    (version "0.9.1")
+    (version "0.13.2")
     (source
       (origin
         (method git-fetch)
@@ -2412,12 +2413,12 @@ This package provides the Python bindings.")))
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0h4wgngn2yl35hapbjs24amkjfbzsvnna4ixfhn87snjnq5lmjbc"))))
+          "1zk6r2vc1q48qs7mw2h47bpgrfbb9r7lf9cwq4sb1a4nls87zznk"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config qttools))
     (inputs
-     (list qtbase-5))
+     (list libsecret qtbase-5))
     (arguments
      `(#:tests? #f ; No tests included
        #:phases
@@ -2426,8 +2427,7 @@ This package provides the Python bindings.")))
            (lambda _
              (substitute* "CMakeLists.txt"
               (("\\$\\{qt_translations_dir\\}")
-               "${CMAKE_INSTALL_PREFIX}/share/qt5/translations"))
-             #t)))))
+               "${CMAKE_INSTALL_PREFIX}/share/qt5/translations")))))))
     (home-page "https://github.com/frankosterfeld/qtkeychain")
     (synopsis "Qt API to store passwords")
     (description

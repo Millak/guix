@@ -34,13 +34,13 @@
 (define-public python-orange-canvas-core
   (package
     (name "python-orange-canvas-core")
-    (version "0.1.19")
+    (version "0.1.24")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "orange-canvas-core" version))
        (sha256
-        (base32 "03wav2msfm32y8zwq69v1v6qyh1ld76xla2z60avf49yhbwjgwal"))))
+        (base32 "0m3dszdkc5bc80ahcvrqxz8jahs33js9cx1mc6rc9ihysq2ddnfz"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -51,15 +51,13 @@
              (substitute* "orangecanvas/application/tests/test_mainwindow.py"
                (("test_help_requests") "_test_help_requests"))
              (setenv "HOME" "/tmp")
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (propagated-inputs
      (list python-anyqt
            python-cachecontrol
            python-commonmark
            python-dictdiffer
            python-docutils
-           python-pyqt
            python-qasync
            python-requests))
     (home-page "https://github.com/biolab/orange-canvas-core")
@@ -73,13 +71,13 @@ data-mining application.")
 (define-public python-orange-widget-base
   (package
     (name "python-orange-widget-base")
-    (version "4.12.0")
+    (version "4.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "orange-widget-base" version))
        (sha256
-        (base32 "13sy3s8rdqs3i3ghixljpqvnfz81qmbb0kqlasw39zvf39qc22kz"))))
+        (base32 "0a0sijsvzijj71sxq8ckpgz59z1cq9sxn4fya3z23ibdzjzwrsi7"))))
     (build-system python-build-system)
     (arguments
      `(;; unittest fails to load one test, all other tests are passing:
@@ -90,11 +88,10 @@ data-mining application.")
          (add-before 'check 'check-setup
            (lambda _
              (setenv "HOME" "/tmp")
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t)))))
+             (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (propagated-inputs
      (list python-anyqt python-matplotlib python-orange-canvas-core
-           python-pyqtgraph))
+           python-pyqtgraph python-typing-extensions))
     (home-page "https://github.com/biolab/orange-widget-base")
     (synopsis "Base Widget for Orange Canvas")
     (description
@@ -105,13 +102,13 @@ GUI based workflow.  It is primarily used in the Orange framework.")
 (define-public orange
   (package
     (name "orange")
-    (version "3.28.0")
+    (version "3.31.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Orange3" version))
        (sha256
-        (base32 "1ac4xjjkx06z10hl7k0zh1z3qhkl5vng15l9jkpkmck9spinbzil"))))
+        (base32 "0jqay46nysgfxldik7f6mfi8iylai2gwfpq60vklrfi1rhqf3pn6"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -128,11 +125,12 @@ GUI based workflow.  It is primarily used in the Orange framework.")
              ;; We use a correct version of PyQtWebEngine, but the build scripts
              ;; consider it incorrect anyways. Remove the constraint entirely to
              ;; work around this bug.
-             (substitute* "requirements-gui.txt" (("PyQtWebEngine>=5.12") ""))
-             #t))
-         (add-before 'check 'set-HOME
+             (substitute* "requirements-pyqt.txt" (("PyQtWebEngine>=5.12") ""))))
+         (add-before 'check 'pre-check
            ;; Tests need a writable home.
-           (lambda _ (setenv "HOME" "/tmp") #t))
+           (lambda _
+             (setenv "HOME" "/tmp")
+             (setenv "QT_QPA_PLATFORM" "offscreen")))
          (add-after 'install 'wrap-executable
            ;; Ensure that icons are found at runtime.
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -140,8 +138,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
                (wrap-program (string-append out "/bin/orange-canvas")
                  `("QT_PLUGIN_PATH" prefix
                    ,(list (string-append (assoc-ref inputs "qtsvg")
-                                         "/lib/qt5/plugins/")))))
-             #t)))))
+                                         "/lib/qt5/plugins/"))))))))))
     (native-inputs
      (list python-cython))
     (inputs
@@ -162,10 +159,12 @@ GUI based workflow.  It is primarily used in the Orange framework.")
            python-orange-canvas-core
            python-orange-widget-base
            python-pandas
+           python-pygments
            python-pyqt
            python-pyqtgraph
            python-pyqtwebengine
            python-pyyaml
+           python-qtconsole
            python-requests
            python-scikit-learn
            python-scipy

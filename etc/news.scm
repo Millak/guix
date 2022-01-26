@@ -1,11 +1,11 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;; Copyright © 2019, 2020, 2021 Florian Pelz <pelzflorian@pelzflorian.de>
+;; Copyright © 2019–2022 Florian Pelz <pelzflorian@pelzflorian.de>
 ;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -25,11 +25,135 @@
 (channel-news
  (version 0)
 
+ (entry (commit "c4fe13c294cc1e31dd8a49ce3981f603fb169e0a")
+        (title
+         (en "@command{guix style} can format package definitions")
+         (de "@command{guix style} kann Paketdefinitionen formatieren")
+         (fr "@command{guix style} peut mettre en forme les définitions de paquets"))
+        (body
+         (en "The recently-introduced @command{guix style} command can now be
+used to automatically format package definitions according to the Guix
+project's formatting guidelines.  If you contribute packages to Guix or to a
+third-party channel, you may find it useful.
+
+The new @option{--styling} option can currently be passed one of the following
+@dfn{styling rules}: @code{format}, to format package definitions, or
+@code{inputs}, to remove labels from package inputs.  Omitting
+@option{--styling} is equivalent to passing @samp{--styling=format};
+previously it was equivalent to @samp{--styling=inputs}.
+
+Run @code{info \"(guix) Invoking guix style\"}, for more info.")
+         (de "Der kürzlich eingeführte Befehl @command{guix style} kann jetzt
+benutzt werden, um Paketdefinitionen automatisch nach den
+Formatierungsrichtlinien des Guix-Projekts zu formatieren. Wenn Sie Pakete zu
+Guix oder zu einem Drittanbieterkanal beitragen, könnte Ihnen das helfen.
+
+Für die neue Befehlszeilenoption @option{--styling} können Sie derzeit eine
+der folgenden @dfn{Stilregeln} angeben: @code{format}, wodurch
+Paketdefinitionen formatiert werden, oder @code{inputs}, wodurch die
+Bezeichnungen aus Paketeingaben entfernt werden. Wenn Sie {--styling}
+weglassen, passiert das Gleiche wie wenn Sie @samp{--styling=format} angeben;
+früher war es das Gleiche wie @samp{--styling=inputs}.
+
+Führen Sie @command{info \"(guix) Invoking guix style\"} aus, um mehr
+Informationen zu erhalten.")
+         (fr "La commande @command{guix style}, récemment introduite, peut
+désormais être utilisée pour mettre en forme des définitions de paquets
+suivant les règles de style du projet Guix.  Si vous contribuez des paquets à
+Guix ou à un canal tiers, cela peut vous être utile.
+
+La nouvelle option @option{--style} peut pour le moment recevoir une des deux
+@dfn{règles de style} suivantes : @code{format}, pour mettre en forme les
+définitions de paquet, ou @code{inputs}, pour retirer les étiquettes des
+champs @code{inputs} des paquets.  Omettre @option{--styling} revient à passer
+@samp{--styling=format} ; auparavant c'était équivalent à
+@samp{--styling=inputs}.
+
+Lancer @command{info \"(guix.fr) Invoquer guix style\"}, pour plus
+d'informations.")))
+
+ (entry (commit "d090e9c37d693f5a0f381482c17fb03462cb6a48")
+        (title
+         (en "New @option{--tune} option for CPU micro-architecture tuning")
+         (de "Neue Option @option{--tune} ermöglicht mikroarchitekturspezifische Optimierungen")
+         (fr "Nouvelle option @option{--tune} pour optimiser pour une
+micro-architecture"))
+        (body
+         (en "The new @option{--tune} package transformation option instructs
+Guix to tune relevant packages for the micro-architecture of the host CPU.
+This lets the compiler use single-instruction/multiple-data (SIMD)
+instructions beyond the baseline instruction set architecture (ISA), which can
+noticeably improve performance in some cases such as linear algebra code.
+
+As an example, here is how you would install the GNU Astronomy Utilities
+against an optimized variant of the GNU Scientific Library (GSL):
+
+@example
+guix install gnuastro --tune
+@end example
+
+Run @command{info \"(guix) Package Transformation Options\"} for more
+information.")
+         (de "Die neue Paketumwandlungsoption @option{--tune} lässt Guix die
+betroffenen Pakete an die im Prozessor dieses Rechners benutzte
+Mikroarchitektur anpassen.  Dadurch kann der Compiler Befehle für
+Single-Instruction/Multiple-Data (SIMD) einsetzen, die über den gemeinsamen
+Befehlssatz hinausgehen. Das kann in manchen Fällen die Leistung beträchtlich
+steigern, etwa für Berechnungen der linearen Algebra.
+
+Zum Beispiel würden Sie so die GNU-Astronomieprogramme unter Nutzung einer
+optimierten Variante der GNU Scientific Library (GSL) installieren:
+
+@example
+guix install gnuastro --tune
+@end example
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "La nouvelle option de transformation de paquets @option{--tune}
+demande à Guix d'optimiser les paquets pour lesquels c'est pertinent pour la
+micro-architecture du processeur hôte.  Cela permet au compilateur d'utiliser
+des instructions vectorielles (SIMD) en plus des instructions de base de
+l'architecture, ce qui peut sensiblement améliorer les performance dans
+certains cas tels que pour du code d'algèbre linéaire.
+
+Par exemple, voici comment installer les Utilitaires d'astronomie GNU de
+manière à ce qu'ils utilisent une variante optimisée de la Bibliothèque
+scientifique GNU (GSL) :
+
+@example
+guix install gnuastro --tune
+@end example
+
+Lancer @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus d'informations.")))
+
+ (entry (commit "ea2fd313d52dc62593b478acf5c3e7ea052c45de")
+        (title
+         (en "@samp{integer expected from stream}?  Update your Guix daemon")
+         (de "@samp{integer expected from stream}? Aktualisieren Sie Ihren Guix-Daemon")
+         (nl "@samp{integer expected from stream}?  Werk je Guix daemon bij"))
+        (body
+         (en "We recently fixed a bug where substitution would fail with
+@samp{error: integer expected from stream}.  Be sure to update your system's
+Guix package that provides the @command{guix-daemon} if you haven't done so
+recently.  Run @command{info \"(guix) Upgrading Guix\"} for instructions.")
+         (de "Unlängst haben wir einen Fehler behoben, dass die Substitution
+mit der Fehlermeldung @samp{error: integer expected from stream}
+fehlschlägt. Bitte aktualisieren Sie daher Ihr systemweites Guix-Paket, das
+@command{guix-daemon} zur Verfügung stellt, wenn es noch nicht geschehen
+ist. Führen Sie @command{info \"(guix.de) Aktualisieren von Guix\"} aus für
+genaue Anweisungen.")
+         (nl "Onlangs herstelden we een fout waarbij substitutie mislukt met
+een @samp{error: integer expected from stream}.  Werk zeker je systeemwijde
+Guix-pakket bij, dat de @command{guix-daemon} levert, als dat nog niet is
+gebeurd.  Voer @command{info \"(guix) Upgrading Guix\"} uit voor meer uitleg.")))
+
  (entry (commit "223f1b1eb3707f1d3ef91200dd616ee6c8b77db0")
         (title
          (en "Improved static networking support on Guix System")
          (de "Bessere Unterstützung für statische Netzwerkanbindungen auf Guix System")
-         (fr "Meilleure prise en charge de réseaux statiques sur Guix System"))
+         (fr "Meilleure prise en charge des réseaux statiques sur Guix System"))
         (body
          (en "Support for declarative static networking setup on Guix System
 has been improved.  It now allows you to list IPv4 and IPv6 addresses in

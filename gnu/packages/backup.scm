@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages backup)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix git-download)
@@ -46,10 +48,12 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -70,6 +74,7 @@
   #:use-module (gnu packages mcrypt)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -80,6 +85,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
@@ -385,7 +391,7 @@ list and implement the backup strategy.")
 (define-public snapraid
   (package
     (name "snapraid")
-    (version "11.6")
+    (version "12.0")
     (source
      (origin
        (method git-fetch)
@@ -394,22 +400,22 @@ list and implement the backup strategy.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jpg97my0akh2ayzy0nm4yqiv4gcx79rgyrkzd19yyv3iy719vcw"))))
+        (base32 "0k8pynafkx8bhnqnjhc3jsds5p40sflz4drm88i6dg6ifv35mhh9"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-valgrind"
-             "--with-blkid")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'set-version
-           (lambda _
-             (setenv "VERSION" ,version)
-             (patch-shebang "autover.sh"))))))
+     (list #:configure-flags
+           ;; XXX --enable-valgrind fails with ‘A must-be-redirected function
+           ;; whose name matches the pattern: strlen in an object with soname
+           ;; matching: ld-linux-x86-64.so.2 was not found […]’; used to work.
+           #~(list "--with-blkid")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'bootstrap 'set-version
+                 (lambda _
+                   (setenv "VERSION" #$version)
+                   (patch-shebang "autover.sh"))))))
     (native-inputs
-     (list automake autoconf
-           ;; For the tests.
-           valgrind))
+     (list automake autoconf))
     (inputs
      (list `(,util-linux "lib"))) ; libblkid
     (home-page "https://www.snapraid.it/")
@@ -748,14 +754,14 @@ to not fully trusted targets.  Borg is a fork of Attic.")
 (define-public wimlib
   (package
     (name "wimlib")
-    (version "1.13.4")
+    (version "1.13.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://wimlib.net/downloads/"
                                   "wimlib-" version ".tar.gz"))
               (sha256
                (base32
-                "04ny5s5z05gk6davbwkjkraan781k2xzw6kjwp75h6ncv45dv1sb"))))
+                "08z3xxm5hq1n4wmyhgz14p1cv0w2lx610vn8nhfwpds4n7lwkz1j"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -877,7 +883,7 @@ NTFS volumes using @code{ntfs-3g}, preserving NTFS-specific attributes.")
     (description
      "With dirvish you can maintain a set of complete images of your
 file systems with unattended creation and expiration.  A dirvish backup vault
-is like a time machine for your data. ")
+is like a time machine for your data.")
     (license (license:fsf-free "file://COPYING"
                                "Open Software License 2.0"))))
 
@@ -1066,6 +1072,85 @@ directory subtrees may also be restored from full or partial backups in
 interactive mode.")
     (license license:bsd-3)))
 
+(define-public btrbk
+  (package
+    (name "btrbk")
+    (version "0.31.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://digint.ch/download/btrbk/releases/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1lx7vnf386nsik8mxrrfyx1h7mkqk5zs26sy0s0lynfxcm4lkxb2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'configure
+                     (lambda _
+                       (substitute* "Makefile"
+                         (("= /etc")
+                          (string-append "= " #$output "/etc")))))
+                   (delete 'check)
+                   (add-after 'install 'wrap-scripts
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (define btrbk (search-input-file outputs "bin/btrbk"))
+                       ;; From a comment in btrbk, "Calling btrbk via 'lsbtr'
+                       ;; symlink acts as an alias for 'btrbk ls', while also
+                       ;; changing the semantics of the command line options."
+                       (substitute* btrbk
+                         (("program_name = \\$0")
+                          (string-append "program_name = "
+                                         "$ENV{'BTRBK_PROGRAM_NAME'}")))
+                       ;; Wrap the script, so that it works with SSH URI and
+                       ;; finds mbuffer out of the box.
+                       (wrap-program btrbk
+                         #:sh (search-input-file inputs "bin/bash")
+                         '("BTRBK_PROGRAM_NAME" = ("$0"))
+                         `("PATH" prefix
+                           ,(list (string-append #$btrfs-progs "/bin")
+                                  (string-append #$coreutils "/bin")
+                                  (string-append #$mbuffer "/bin")
+                                  (string-append #$openssh "/bin")))))))))
+    (native-inputs (list ruby-asciidoctor))
+    (inputs (list bash-minimal
+                  btrfs-progs
+                  coreutils
+                  mbuffer
+                  openssh
+                  perl))
+    (home-page "https://digint.ch/btrbk/")
+    (synopsis "Backup tool for Btrfs subvolumes")
+    (description "Btrbk is a backup tool for Btrfs subvolumes, taking
+advantage of Btrfs specific capabilities to create atomic snapshots and
+transfer them incrementally to your backup locations.  The source and target
+locations are specified in a config file, which allows easily configuring
+simple scenarios like e.g. a @i{laptop with locally attached backup disks}, as
+well as more complex ones, e.g. a @i{server receiving backups from several
+hosts via SSH, with different retention policy}.  It has features such as:
+@itemize
+@item atomic snapshots
+@item incremental backups
+@item flexible retention policy
+@item backups to multiple destinations
+@item transfer via SSH
+@item resume backups (for removable and mobile devices)
+@item archive to offline storage
+@item encrypted backups to non-btrfs storage
+@item wildcard subvolumes (useful for Docker and LXC containers)
+@item transaction log
+@item comprehensive list and statistics output
+@item resolve and trace Btrfs parent-child and received-from relationships
+@item list file changes between backups
+@item calculate accurate disk space usage based on block regions.
+@end itemize
+Btrbk is designed to run as a cron job for triggering periodic snapshots and
+backups, as well as from the command line (e.g. for instantly creating
+additional snapshots).")
+    (license license:gpl3+)))
+
 (define-public burp
   (package
     (name "burp")
@@ -1109,14 +1194,14 @@ backup.")
 (define-public disarchive
   (package
     (name "disarchive")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.ngyro.com/disarchive/"
                                   "disarchive-" version ".tar.gz"))
               (sha256
                (base32
-                "0jgc53rrbas8i4z13l2ii99cpav1ma73spsjg70ygihf0635r3dh"))))
+                "1pql8cspsxyx8cpw3xyhirnisv6rb4vj5mxr1d7w9la72q740n8s"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1124,11 +1209,12 @@ backup.")
            pkg-config
            guile-3.0 ;for cross-compilation
            guile-gcrypt
+           guile-lzma
            guile-quickcheck))
     (inputs
      (list guile-3.0 zlib))
     (propagated-inputs
-     (list guile-gcrypt))
+     (list guile-gcrypt guile-lzma))
     (home-page "https://ngyro.com/software/disarchive.html")
     (synopsis "Software archive disassembler")
     (description "Disarchive can disassemble software archives into data
@@ -1142,32 +1228,32 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "1.5.21")
+    (version "1.5.22")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgmatic" version))
        (sha256
-        (base32 "1kw3mvyby8zd7ql3g930w7z55k8pi9iwj43kh8lvi58b4nzrvamq"))))
+        (base32 "0pvqlj17vp81i7saxqh5hsaxqz29ldrjd7bcssh4g1h0ikmnaf2r"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Set absolute store path to borg.
-             (substitute* "borgmatic/commands/borgmatic.py"
-               (("location\\.get\\('local_path', 'borg'\\)")
-                (string-append "location.get('local_path', '"
-                               (assoc-ref inputs "borg") "/bin/borg"
-                               "')")))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               ;; Tests require the installed executable.
-               (setenv "PATH" (string-append (assoc-ref outputs "out") "/bin"
-                                             ":" (getenv "PATH")))
-               (invoke "pytest")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'configure
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Set absolute store path to borg.
+                   (substitute* "borgmatic/commands/borgmatic.py"
+                     (("location\\.get\\('local_path', 'borg'\\)")
+                      (string-append "location.get('local_path', '"
+                                     (search-input-file inputs "bin/borg")
+                                     "')")))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Tests require the installed executable.
+                     (setenv "PATH" (string-append #$output "/bin"
+                                                   ":" (getenv "PATH")))
+                     (invoke "pytest")))))))
     (inputs
      (list borg python-colorama python-jsonschema python-requests
            python-ruamel.yaml))

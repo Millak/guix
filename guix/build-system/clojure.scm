@@ -81,8 +81,7 @@
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
-  (let ((private-keywords '(#:source #:target
-                            #:inputs #:native-inputs
+  (let ((private-keywords '(#:target #:inputs #:native-inputs
                             #:clojure #:jdk #:zip)))
 
     (if target
@@ -108,8 +107,10 @@
                         #:key
                         source
                         (source-dirs `',%source-dirs)
+                        (java-source-dirs `',%java-source-dirs)
                         (test-dirs `',%test-dirs)
                         (compile-dir %compile-dir)
+                        (java-compile-dir %java-compile-dir)
 
                         (jar-names `',(package-name->jar-names name))
                         (main-class %main-class)
@@ -143,9 +144,11 @@
                          #:source #+source
 
                          #:source-dirs #$source-dirs
+                         #:java-source-dirs #$java-source-dirs
                          #:test-dirs #$test-dirs
                          #:compile-dir #$compile-dir
-
+                         #:java-compile-dir #$java-compile-dir
+                         
                          #:jar-names #$jar-names
                          #:main-class #$main-class
                          #:omit-source? #$omit-source?

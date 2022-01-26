@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -31,6 +31,7 @@
 (define-module (gnu packages vim)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -75,7 +76,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "8.2.3487")
+    (version "8.2.3995")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -84,13 +85,11 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1s09jvr1vv9zjk352vbfidfy5fidbf83kz2vk0kk6zv24j1yck24"))))
+               "1aqrywyry4vxf1x7mk5g1k5k6md38bnjb6f778hmk8ahx26mpqpb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
        #:parallel-tests? #f
-       ;; Fix test_signals.vim. https://github.com/vim/vim/issues/7402
-       #:make-flags (list "CFLAGS=-D_REENTRANT")
        #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'patch-absolute-paths
@@ -106,8 +105,7 @@
                             "src/testdir/test_terminal2.vim")
                (("/bin/sh") (which "sh")))
              (substitute* "src/testdir/test_autocmd.vim"
-               (("/bin/kill") (which "kill")))
-             #t))
+               (("/bin/kill") (which "kill")))))
          (add-before 'check 'set-environment-variables
            (lambda* (#:key inputs #:allow-other-keys)
              ;; One of the tests tests timezone-dependent functions.
@@ -115,8 +113,7 @@
                      (search-input-directory inputs "share/zoneinfo"))
 
              ;; Make sure the TERM environment variable is set for the tests
-             (setenv "TERM" "xterm")
-             #t))
+             (setenv "TERM" "xterm")))
          (add-before 'check 'skip-or-fix-failing-tests
            (lambda _
              ;; This test assumes that PID 1 is run as root and that the user
@@ -141,8 +138,7 @@
                 (string-append line "return\n")))
              (substitute* "src/testdir/test_popupwin.vim"
                ((".*Test_popup_drag_termwin.*" line)
-                (string-append line "return\n")))
-             #t))
+                (string-append line "return\n")))))
          (add-before 'install 'fix-installman.sh
            (lambda _
              (substitute* "src/installman.sh"
@@ -153,8 +149,7 @@
              (let ((vimdir (string-append (assoc-ref outputs "out") "/share/vim")))
                (mkdir-p vimdir)
                (copy-file (assoc-ref inputs "guix.vim")
-                          (string-append vimdir "/vimrc"))
-               #t))))))
+                          (string-append vimdir "/vimrc"))))))))
     (inputs
      (list gawk ncurses perl tcsh))                 ; For runtime/tools/vim32
     (native-inputs
@@ -182,20 +177,19 @@ configuration files.")
   (package (inherit vim)
     (name "xxd")
     (arguments
-     `(#:make-flags (list ,(string-append "CC=" (cc-for-target)))
+     (list
+       #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
        #:tests? #f ; there are none
        #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "src/xxd")
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (install-file "xxd" bin)
-               #t))))))
+       #~(modify-phases %standard-phases
+           (delete 'configure)
+           (add-after 'unpack 'chdir
+             (lambda _
+               (chdir "src/xxd")))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+                 (install-file "xxd" bin)))))))
     (inputs `())
     (native-inputs `())
     (synopsis "Hexdump utility from vim")
@@ -204,9 +198,6 @@ with the editor vim.")))
 
 (define-public vim-full
   (package
-    ;; This package should share its source with Vim, but it doesn't
-    ;; build reliably, and we want to keep Vim up to date due to the
-    ;; frequency of important bug fixes.
     (inherit vim)
     (name "vim-full")
     (arguments
@@ -232,7 +223,7 @@ with the editor vim.")))
            ((#:make-flags flags)
             `(append
               (list "LDFLAGS=-lexpat")
-              (delete "CFLAGS=-D_REENTRANT" ,flags)))
+              ,flags))
            ((#:phases phases)
             `(modify-phases ,phases
                (add-before 'check 'start-xserver
@@ -893,16 +884,16 @@ through its msgpack-rpc API.")
 (define-public vim-guix-vim
   (package
     (name "vim-guix-vim")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://gitlab.com/Efraim/guix.vim.git/")
+                     (url "https://gitlab.com/Efraim/guix.vim")
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bk2mnvbv1rfr0zzx4m8jjdw98wbbmdffx1h9svrjpg25lcvqv1b"))))
+                "080ni4z23qdr8rkrswjqfqfrrcnpn7qdgrg14glwji46wzvwxqyx"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -1114,6 +1105,36 @@ to Lisp.")
 quotes, XML tags, and more.  The plugin provides mappings to easily delete,
 change and add such surroundings in pairs.")
     (license license:vim)))
+
+(define-public vim-gnupg
+  (package
+    (name "vim-gnupg")
+    (version "2.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/jamessan/vim-gnupg/releases/"
+                           "download/v" version
+                           "/vim-gnupg-v" version ".tar.gz"))
+       (sha256
+        (base32 "02w8lgyyh7wgxysvmmcf9ja5c06vrbyh3alzvv97x8cfhrp0skn7"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan
+       '(("autoload" "share/vim/vimfiles/")
+         ("doc" "share/vim/vimfiles/")
+         ("plugin" "share/vim/vimfiles/"))))
+    (home-page "https://www.vim.org/scripts/script.php?script_id=3645")
+    (synopsis "Vim plugin for transparent editing of gpg encrypted files")
+    (description
+     "This script implements transparent editing of gpg encrypted files.  The
+filename must have a @code{.gpg}, @code{.pgp} or @code{.asc} suffix.  When
+opening such a file the content is decrypted, and the content will be encrypted
+to all recipients before it is written.  This script turns off viminfo,
+swapfile, and undofile when editing encrypted files to increase security.")
+    (properties
+     '((release-monitoring-url . "https://github.com/jamessan/vim-gnupg/releases")))
+    (license license:gpl2+)))
 
 (define-public vim-ctrlp
   (package

@@ -273,19 +273,19 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.3")
+    (version "5.5.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14qhv79a2waqzmf6l571wklgwq8j1pkmjvzkj5vhh44nia8hfdh7"))))
+                "0rapdqv2j61cj2jzfk0fiby3na4k5g5i7shkqbjhld4rl2y6j1hd"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list gtk+ libofx libsoup))
+     (list gtk+ libofx libsoup-minimal-2))
     (home-page "http://homebank.free.fr/")
     (synopsis "Graphical personal accounting application")
     (description "HomeBank allows you to manage your personal accounts at
@@ -582,7 +582,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.5")
+    (version "4.2.6")
     (source
      (origin
        (method git-fetch)
@@ -591,7 +591,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fj797hbinxsqjwhh4l1vjsx1vzmgzf2apq7fnqqwpv9g0v2pch0"))))
+        (base32 "193krlnski9wjyfjkxfp4gcs7dgmqkwxgsy2m8x1515vb5bzv5pz"))))
     (build-system python-build-system)
     (inputs
      `(("libevent" ,libevent)
@@ -779,7 +779,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.17.3.0")
+    (version "0.17.3.1")
     (source
      (origin
        (method git-fetch)
@@ -796,7 +796,7 @@ the Monero command line client and daemon.")
            (delete-file-recursively "monero")
            #t))
        (sha256
-        (base32 "0sc3g8g4mlcgz1ys1mqx9klyfl02z17zv2z22clx33jni0l3bqkr"))))
+        (base32 "0mzxbi16zvpfgwykg0c7gm5dmjxr2a47kjwih36g53a7pnf04zl1"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -1230,7 +1230,7 @@ personal identity and company identification codes,
 international standard numbers (ISBN, IBAN, EAN, etc.)
 and various other formats.
 The module also includes implementations of the Verhoeff,
-Luhn and family of ISO/IEC 7064 check digit algorithms. ")
+Luhn and family of ISO/IEC 7064 check digit algorithms.")
     (license license:lgpl2.1+)))
 
 (define-public python2-stdnum
@@ -1250,16 +1250,25 @@ Luhn and family of ISO/IEC 7064 check digit algorithms. ")
     (arguments
      ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required
      ;; positional argument: 'value'".
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'loosen-requirements
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("mnemonic>=0\\.19,<0.20")
+                         "mnemonic>=0.19")))))))
     (propagated-inputs
-     `(("aiohttp" ,python-aiohttp)
-       ("attrs" ,python-attrs)
-       ("base58" ,python-base58)
-       ("jsonschema" ,python-jsonschema)
-       ("libnacl" ,python-libnacl)
-       ("pyaes" ,python-pyaes)
-       ("pylibscrypt" ,python-pylibscrypt)
-       ("pypeg2" ,python-pypeg2)))
+     (list python-aiohttp
+           python-attrs
+           python-base58
+           python-jsonschema
+           python-libnacl
+           python-pyaes
+           python-pylibscrypt
+           python-graphql-core
+           python-mnemonic
+           python-websocket-client
+           python-pypeg2))
     (home-page "https://git.duniter.org/clients/python/duniterpy")
     (synopsis "Python implementation of Duniter API")
     (description "@code{duniterpy} is an implementation of
@@ -1820,6 +1829,32 @@ Interface (UI) for the hledger accounting system.  It can be used as a
 local, single-user UI, or as a multi-user UI for viewing, adding, and
 editing on the Web.")
     (license license:gpl3)))
+
+(define-public quantlib
+  (package
+    (name "quantlib")
+    (version "1.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/lballabio/QuantLib/releases/download/QuantLib-v"
+             version "/QuantLib-" version ".tar.gz"))
+       (sha256
+        (base32 "1rxjhkc32a8z0g5gmh0iw5nx0fr31cjsrfgq7c8g6nib003kgnnx"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       ,#~(list "--disable-static"
+                (string-append "--prefix=" #$output))))
+    (inputs (list boost))
+    (home-page "https://www.quantlib.org")
+    (synopsis "Library for quantitative finance")
+    (description
+     "The QuantLib project is aimed at providing a comprehensive software
+framework for quantitative finance.  QuantLib is a library for modeling,
+trading, and risk management in real-life.")
+    (license license:bsd-2)))
 
 (define-public optionmatrix
   (package

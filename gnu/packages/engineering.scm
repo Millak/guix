@@ -23,7 +23,7 @@
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -97,6 +97,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)               ;FIXME: for pcb
@@ -716,6 +717,43 @@ ready for production.")
     ;; released under GPLv3+.
     (license (list license:gpl3+ license:cc-by-sa3.0))))
 
+(define-public qelectrotech
+  (package
+    (name "qelectrotech")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://git.tuxfamily.org/qet/qet.git/"
+                           "snapshot/qet-" version ".tar.gz"))
+       (sha256
+        (base32 "0w70fqwhqqzga1kfp34v8z1xf9988nvvi3d5gwl2sg429p9mpsk2"))))
+    (build-system qt-build-system)
+    (arguments
+     ;; XXX: tests are built for the CMake build option but it seems to be
+     ;; broken in 0.8.0.
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               ;; Patch hardcoded path before running qmake.
+               (substitute* "qelectrotech.pro" (("\\/usr\\/local") out))
+               (invoke "qmake")))))))
+    (native-inputs
+     (list pkg-config qttools))
+    (inputs
+     (list kcoreaddons kwidgetsaddons qtbase-5 qtsvg sqlite))
+    (home-page "https://qelectrotech.org/")
+    (synopsis "CAD/CAE editor focusing on schematics drawing features")
+    (description "QElectroTech, or QET in short, is a desktop application to
+create diagrams and schematics.  The software is primarily intended to create
+electrical documentation but it can also be used to draw any kinds of diagrams,
+such as those made in pneumatics, hydraulics, process industries, electronics,
+and others.")
+    (license license:gpl2+)))
+
 (define-public gerbv
   (package
     (name "gerbv")
@@ -830,7 +868,10 @@ function calls into the geometry kernel: everything is visible to the user.
 Even fundamental, primitive shapes are represented as code in the user-level
 language.")
       (license (list license:mpl2.0               ;library
-                     license:gpl2+)))))           ;Guile bindings and GUI
+                     license:gpl2+))              ;Guile bindings and GUI
+
+      ;; Mark as tunable to take advantage of SIMD code in Eigen.
+      (properties '((tunable? . #t))))))
 
 (define-public inspekt3d
   (let ((commit "703f52ccbfedad2bf5240bf8183d1b573c9d54ef")
@@ -884,7 +925,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "5.1.10")
+    (version "5.1.12")
     (source
      (origin
        (method git-fetch)
@@ -892,7 +933,7 @@ Emacs).")
              (url "https://gitlab.com/kicad/code/kicad.git")
              (commit version)))
        (sha256
-        (base32 "10ix560bqy0lprnik1bprxw9ix4g8w2ipvyikx551ak9ryvgwjcc"))
+        (base32 "0kgikchqxds3mp71nkg307mr4c1dgv8akbmksz4w9x8jg4i1mfqq"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -900,9 +941,12 @@ Emacs).")
        #:tests? #f                      ; no tests
        #:build-type "Release"
        #:configure-flags
-       (list "-DKICAD_SCRIPTING_PYTHON3=ON"
-             "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
-             "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+       ,#~(list
+           "-DKICAD_SCRIPTING_PYTHON3=ON"
+           "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
+           "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE"
+           (string-append "-DOCC_INCLUDE_DIR="
+                          #$(this-package-input "opencascade-occt") "/include/opencascade"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-ngspice-detection
@@ -978,7 +1022,7 @@ Emacs).")
        ("libngspice" ,libngspice)
        ("libsm" ,libsm)
        ("mesa" ,mesa)
-       ("opencascade-oce" ,opencascade-oce)
+       ("opencascade-occt" ,opencascade-occt)
        ("openssl" ,openssl)
        ("python" ,python-wrapper)
        ("wxwidgets" ,wxwidgets)
@@ -1030,7 +1074,7 @@ translations for KiCad.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "005ljkb7liayvyj4vxd5ncrknfbhnk6xvyjk43qz810hrp1fv0hk"))))
+                "026cz4zm903i75yhdvzha2nsnk4c0w07q3gd3xw3jmsmn18imgm3"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1064,7 +1108,7 @@ translations for KiCad.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0n25rq32jwyigfw26faqraillwv6zbi2ywy26dkz5zqlf5xp56ad"))))
+                "1zdajim409570xzis53kmrbdcf7000v2vmc90f49h214lrx2zhr2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1093,7 +1137,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gyqxryda273hjn2rv8dha461j9bjh054y5dlpiw1wiha65lrf9i"))))
+                "0qpii55dgv2gxqg1qq0dngdnbb9din790qi5qv0l6qqrzx843h5s"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1110,7 +1154,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1szcin52fcsyb55bj7xq7lz6ig187dpz3lk7blwab7b9c4dn3c3y"))))
+                "12w7m5nbk9kcnlnlg4sk1sd7xgb9i2kxfi0jcbd0phs89qyl7wjr"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1127,7 +1171,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a8xfcbdbb4ylrb5m7n2jjk9kwvgmlx1pmnn2cwj327a2b3m4jjs"))))
+                "1fbhn1l3j2rwc29aida9b408wif55i23bp9ddcs7dvf83smjm05g"))))
     (synopsis "Official KiCad project and worksheet templates")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
@@ -1608,10 +1652,9 @@ bindings for Python, Java, OCaml and more.")
         (base32
          "0d69rd9h8wrzjvfrc66vmz4qd5hly2fpdcwj2bdrlb7dbwikv5c7"))))
     (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                    ;XXX: require python-reedsolo
     (propagated-inputs
-     (list python-ecdsa python-pyaes python-pyserial))
+     (list python-ecdsa python-pyaes python-pyserial python-reedsolo
+           python-cryptography python-bitstring))
     (home-page "https://github.com/espressif/esptool")
     (synopsis "Bootloader utility for Espressif ESP8266 & ESP32 chips")
     (description
@@ -2387,7 +2430,7 @@ comments.")))
 (define-public freecad
   (package
     (name "freecad")
-    (version "0.19.2")
+    (version "0.19.3")
     (source
      (origin
        (method git-fetch)
@@ -2396,7 +2439,7 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fhjv0x3dix1c7jml91yx63z9xifjlbhjbcdb73lw80smpxrq7mm"))
+        (base32 "1dkiwnqr6bhi2d90hz7ijqd872144c9n9xxpd1vbrmxr2x8cfl88"))
        (patches (search-patches "freecad-vtk9.patch"
                                 "freecad-boost-serialization.patch"))))
     (build-system qt-build-system)
@@ -2434,13 +2477,16 @@ comments.")))
            python-gitpython
            python-matplotlib
            python-pivy
+           python-ply
            python-pyside-2
            python-pyyaml
            python-shiboken-2
            python-wrapper
            qtbase-5
+           qtdeclarative
            qtsvg
-           qtwebkit
+           qtwebchannel
+           qtwebengine
            qtx11extras
            qtxmlpatterns
            sqlite
@@ -3148,7 +3194,7 @@ visualization, matrix manipulation.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.3.3")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3157,7 +3203,7 @@ visualization, matrix manipulation.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0w0synqi3iz9aigsgv6x1c6sg123fasbx19h4w3ic1l48r8qmpwm"))
+       (sha256 (base32 "1mb7v0khrmsgy3inmh4mjn709jlhx422kvbnrhsqziph2wwak9bz"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3192,32 +3238,35 @@ visualization, matrix manipulation.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("boost" ,boost)
-       ("cereal" ,cereal)
-       ("cgal" ,cgal)
-       ("curl" ,curl)
-       ("dbus" ,dbus)
-       ("eigen" ,eigen)
-       ("expat" ,expat)
-       ("glew" ,glew)
-       ("glib" ,glib)
-       ("gmp" ,gmp)
-       ("gtk" ,gtk+)
-       ("hidapi" ,hidapi)
-       ("ilmbase" ,ilmbase)
-       ("libigl" ,libigl)
-       ("libpng" ,libpng)
-       ("mesa" ,mesa)
-       ("mpfr" ,mpfr)
-       ("nlopt" ,nlopt)
-       ("openvdb" ,openvdb)
-       ("pango" ,pango)
-       ("tbb" ,tbb)
-       ("udev" ,eudev)
-       ("wxwidgets" ,wxwidgets)
-       ("zlib" ,zlib)))
+     (list boost
+           cereal
+           cgal
+           curl
+           dbus
+           eigen
+           expat
+           glew
+           glib
+           gmp
+           gtk+
+           hidapi
+           ilmbase
+           libigl
+           libpng
+           mesa
+           mpfr
+           nlopt
+           openvdb
+           pango
+           tbb
+           eudev
+           wxwidgets
+           zlib))
     (home-page "https://www.prusa3d.com/prusaslicer/")
     (synopsis "G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)")
     (description "PrusaSlicer takes 3D models (STL, OBJ, AMF) and converts them into
 G-code instructions for FFF printers or PNG layers for mSLA 3D printers.")
-    (license license:agpl3)))
+    (license license:agpl3)
+
+    ;; Mark as tunable to take advantage of SIMD code in Eigen and in libigl.
+    (properties '((tunable? . #t)))))

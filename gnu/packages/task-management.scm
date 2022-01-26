@@ -231,6 +231,7 @@ a task.")
            gst-plugins-good ;for ScaleTempo plugin
            gtk+
            libhandy
+           python
            python-gst
            python-pygobject))
     (home-page "https://github.com/rafaelmardojai/blanket")

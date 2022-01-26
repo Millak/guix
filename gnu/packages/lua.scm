@@ -105,6 +105,18 @@ automatic memory management with incremental garbage collection, making it ideal
 for configuration, scripting, and rapid prototyping.")
     (license license:x11)))
 
+(define-public lua-5.4
+  (package (inherit lua)
+           (version "5.4.3")
+           (source (origin
+                     (method url-fetch)
+                     (uri (string-append "https://www.lua.org/ftp/lua-"
+                                         version ".tar.gz"))
+                     (sha256
+                      (base32 "1yxvjvnbg4nyrdv10bq42gz6dr66pyan28lgzfygqfwy2rv24qgq"))
+                     (patches (search-patches "lua-5.4-pkgconfig.patch"
+                                              "lua-5.4-liblua-so.patch"))))))
+
 (define-public lua-5.2
   (package (inherit lua)
            (version "5.2.4")
@@ -159,6 +171,9 @@ for configuration, scripting, and rapid prototyping.")
          #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
     (home-page "https://www.luajit.org/")
     (synopsis "Just in time compiler for Lua programming language version 5.1")
+    ;; On powerpc64le-linux, the build fails with an error: "No support for
+    ;; PowerPC 64 bit mode (yet)".  See: https://issues.guix.gnu.org/49220
+    (supported-systems (delete "powerpc64le-linux" %supported-systems))
     (description
      "LuaJIT is a Just-In-Time Compiler (JIT) for the Lua
 programming language.  Lua is a powerful, dynamic and light-weight programming

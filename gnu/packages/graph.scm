@@ -8,6 +8,8 @@
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +28,7 @@
 
 (define-module (gnu packages graph)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -60,31 +63,72 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml))
 
+(define-public plfit
+  (package
+    (name "plfit")
+    (version "0.9.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ntamas/plfit")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03x5jbvg8vwr92682swy58ljxrhqwmga1xzd0cpfbfmda41gm2fb"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://github.com/ntamas/plfit")
+    (synopsis "Tool for fitting power-law distributions to empirical data")
+    (description "The @command{plfit} command fits power-law distributions to
+empirical (discrete or continuous) data, according to the method of Clauset,
+Shalizi and Newman (@cite{Clauset A, Shalizi CR and Newman MEJ: Power-law
+distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
+    (license license:gpl2+)))
+
 (define-public igraph
   (package
     (name "igraph")
-    (version "0.8.4")
+    (version "0.9.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/igraph/igraph/releases/"
                            "download/" version "/igraph-" version ".tar.gz"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Fully unbundle igraph (see:
+                   ;; https://github.com/igraph/igraph/issues/1897).
+                   (delete-file-recursively "vendor")
+                   (substitute* "CMakeLists.txt"
+                     (("add_subdirectory\\(vendor\\).*")
+                      ""))
+                   ;; Help CMake to find our plfit headers.
+                   (substitute* "etc/cmake/FindPLFIT.cmake"
+                     (("^  NAMES plfit.h.*" all)
+                      (string-append all
+                                     "  PATH_SUFFIXES plfit")))
+                   (substitute* '("src/CMakeLists.txt"
+                                  "etc/cmake/benchmark_helpers.cmake")
+                     ;; Remove bundling related variables.
+                     ((".*_IS_VENDORED.*")
+                      ""))))
        (sha256
-        (base32 "127q6q40kbmvd62yhbz6dlfk370qiq98s1iscyagpgbpjwb4xvyf"))))
-    (build-system gnu-build-system)
+        (base32 "11zkj9bpqcadb0rc4ahvjp9047dp9hna8cn3b0vl3zpc9v2rwabw"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--disable-static"
-             "--with-external-glpk"
-             "--with-external-blas"
-             "--with-external-lapack")))
+     '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))
+    (native-inputs (list pkg-config))
     (inputs
-     (list gmp
+     (list arpack-ng
+           gmp
            glpk
            libxml2
            lapack
            openblas
-           zlib))
+           plfit
+           suitesparse))
     (home-page "https://igraph.org")
     (synopsis "Network analysis and visualization")
     (description
@@ -95,36 +139,47 @@ more.")
     (license license:gpl2+)))
 
 (define-public python-igraph
-  (package (inherit igraph)
+  (package
+    (inherit igraph)
     (name "python-igraph")
-    (version "0.8.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-igraph" version))
-       (sha256
-        (base32 "0wkxrs28qdvnrz7d4jzcf2bh6v2yqzx3wyfziihfgsi2gn6n60a6"))))
+    (version "0.9.9")
+    (source (origin
+              (method git-fetch)
+              ;; The PyPI archive lacks tests.
+              (uri (git-reference
+                    (url "https://github.com/igraph/python-igraph")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ravcww2jcr8fgi97gdxv00s5nkx59ljxy928nnniyd0231bqwlc"))))
     (build-system python-build-system)
     (arguments
-     '(#:configure-flags
-       (list "--use-pkg-config")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (invoke "python" "./setup.py" "build" "--use-pkg-config")))
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-v"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'specify-libigraph-location
+            (lambda _
+              (let ((igraph #$(this-package-input "igraph")))
+                (substitute* "setup.py"
+                  (("(LIBIGRAPH_FALLBACK_INCLUDE_DIRS = ).*" _ var)
+                   (string-append
+                    var (format #f "[~s]~%" (string-append igraph
+                                                           "/include/igraph"))))
+                  (("(LIBIGRAPH_FALLBACK_LIBRARY_DIRS = ).*" _ var)
+                   (string-append
+                    var (format #f "[~s]~%" (string-append igraph "/lib"))))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-v")))))))
     (inputs
      (list igraph))
     (propagated-inputs
      (list python-texttable))
     (native-inputs
-     (list pkg-config python-pytest))
-    (home-page "https://pypi.org/project/python-igraph/")
+     (list python-pytest))
+    (home-page "https://igraph.org/python/")
     (synopsis "Python bindings for the igraph network analysis library")))
 
 (define-public r-rbiofabric
@@ -181,14 +236,7 @@ lines.")
                (invoke "pytest" "-x" "plotly/tests/test_io")
                ;; FIXME: Add optional dependencies and enable their tests.
                ;; (invoke "pytest" "-x" "plotly/tests/test_optional")
-               (invoke "pytest" "_plotly_utils/tests"))
-             #t))
-         (add-before 'reset-gzip-timestamps 'make-files-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (file) (chmod file #o644))
-                 (find-files out "\\.gz"))
-               #t))))))
+               (invoke "pytest" "_plotly_utils/tests")))))))
     (native-inputs
      (list python-ipywidgets python-pytest python-xarray))
     (propagated-inputs
@@ -204,7 +252,7 @@ lines.")
     (description "Plotly's Python graphing library makes interactive,
 publication-quality graphs online.  Examples of how to make line plots, scatter
 plots, area charts, bar charts, error bars, box plots, histograms, heatmaps,
-subplots, multiple-axes, polar charts, and bubble charts. ")
+subplots, multiple-axes, polar charts, and bubble charts.")
     (license license:expat)))
 
 (define-public python-plotly-2.4.1
@@ -239,6 +287,8 @@ subplots, multiple-axes, polar charts, and bubble charts. ")
        (sha256
         (base32 "1sqp97fwh4asx0jr72x8hil8z8fcg2xq92jklmh2m599pvgnx19a"))))
     (build-system python-build-system)
+    (native-inputs
+     (list python-setuptools))          ;for use_2to3 support
     (propagated-inputs
      (list python-networkx python-numpy))
     (home-page "https://github.com/taynaud/python-louvain")
@@ -428,9 +478,18 @@ Faiss library.")))
         (base32
          "15fwld9hdw357rd026mzcwpah5liy4f33vc9x9kwy37g71b2rjf1"))))
     (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; tests are not included
+    (arguments
+     '(#:tests? #f                      ;tests are not included
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-requirements
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("python-igraph >=")
+                         "igraph >=")))))))
     (native-inputs
-     (list pkg-config))
+     ;; XXX: setuptools >= 58 as shipped with Python 3.9+ removes support
+     ;; for lib2to3, so use this older variant.
+     (list pkg-config python-setuptools))
     (inputs
      (list igraph))
     (propagated-inputs

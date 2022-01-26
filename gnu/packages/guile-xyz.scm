@@ -17,7 +17,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 swedebugia <swedebugia@riseup.net>
@@ -38,7 +38,7 @@
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Zelphir Kaltstahl <zelphirkaltstahl@posteo.de>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2021, 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -812,8 +812,8 @@ It has a nice, simple s-expression based syntax.")
     (inputs (list guile-2.2))))
 
 (define-public guile-squee
-  (let ((commit "c1497a216e881cfde39d6aa7c73d0bf6b497c89b")
-        (revision "2"))
+  (let ((commit "a151fd006fa819945ca1d4749b173854269b9f70")
+        (revision "3"))
     (package
       (name "guile-squee")
       (version (string-append "0-" revision "." (string-take commit 7)))
@@ -825,7 +825,7 @@ It has a nice, simple s-expression based syntax.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1alskrplnyl1n5wb39drn72cwplp47a8cpdd1n9cdnw3jhk5p12p"))))
+                  "1jps14z8653ah2kr367iayzyi3ql2s55l77xrafz7gk3mzcvgrrg"))))
       (build-system guile-build-system)
       (arguments
        '(#:phases
@@ -836,9 +836,8 @@ It has a nice, simple s-expression based syntax.")
                  (("dynamic-link \"libpq\"")
                   (string-append
                    "dynamic-link \""
-                   (assoc-ref inputs "postgresql") "/lib/libpq.so"
-                   "\"")))
-               #t)))))
+                   (search-input-file inputs "/lib/libpq.so")
+                   "\""))))))))
       (inputs
        (list postgresql))
       (native-inputs
@@ -1865,7 +1864,7 @@ users and in some situations.")
 (define-public guile-udev
   (package
     (name "guile-udev")
-    (version "0.2.0")
+    (version "0.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1874,7 +1873,7 @@ users and in some situations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "037md1sg7bgsa4478hz1dbsivsxzdnl5acadlrsh4ds2yxbsb5jp"))))
+                "0xvh4wscxmiqm8lnmfyh5cjzn89kv2wslkfvqvcjhinzpnpbg91x"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -2125,7 +2124,7 @@ understand, extend, and port to host languages other than Scheme.")
       (synopsis "Guile reader extension for `raw strings'")
       (description "This package provides A Guile reader extension for `raw
 strings', it lets you write verbatim strings without having to escape double
-quotes. ")
+quotes.")
       (license license:public-domain))))
 
 (define-public guile-reader
@@ -2950,14 +2949,14 @@ list of components.  This module takes care of that for you.")
 (define-public guile-gi
   (package
     (name "guile-gi")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://lonelycactus.com/tarball/guile_gi-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1ljcfyar1nb6h4jskxnnzrcxcsblawc50qqfdn8cax3zqfskmvzj"))))
+                "019mbhgyga57k2074kg97mh3qsa8ny9l0kjgqids8cg3c6vbjdby"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags '("--with-gnu-filesystem-hierarchy")
@@ -2965,6 +2964,7 @@ list of components.  This module takes care of that for you.")
                   (guix build utils)
                   (ice-9 popen)
                   (ice-9 rdelim))
+       #:disallowed-references ,(list gtk+ webkitgtk)
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-dotted-circle-from-combining-character
@@ -3004,19 +3004,13 @@ list of components.  This module takes care of that for you.")
              (setenv "DISPLAY" ":1")
              #t)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for glib-compile-resources
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("xorg-server" ,xorg-server)))
-    (propagated-inputs
-     `(("glib" ,glib)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gssettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("guile-lib" ,guile-lib)
-       ("webkitgtk" ,webkitgtk)))
-    (inputs (list guile-3.0))
+     (list gettext-minimal
+           `(,glib "bin") ; for glib-compile-resources
+           libtool pkg-config xorg-server))
+    (propagated-inputs (list gobject-introspection))
+    (inputs (list guile-3.0 glib
+                  ;; For tests, only relevant when compiling natively
+                  gtk+ webkitgtk))
     (home-page "https://github.com/spk121/guile-gi")
     (synopsis "GObject bindings for Guile")
     (description
@@ -3176,6 +3170,51 @@ more expressive and flexible than the traditional @code{format} procedure.")
        "This library implements a JavaScript Object Notation (JSON) parser and printer.
 It also supports parsing JSON objects that may be bigger than memory with a streaming
 API.")
+      (license license:expat))))
+
+(define-public guile-srfi-189
+  (let ((commit "a0e3786702956c9e510d92746474ac988c2010ec")
+        (revision "0"))
+    (package
+      (name "guile-srfi-189")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; This is a fork of:
+               ;; (url "https://github.com/scheme-requests-for-implementation/srfi-189")
+               ;; Upstream merge requested at:
+               ;; https://github.com/scheme-requests-for-implementation/srfi-189/pull/21
+               ;; TODO switch over to the official repo when the PR gets merged
+               (url "https://github.com/attila-lendvai-patches/srfi-189")
+               (commit commit)))
+         (sha256
+          (base32
+           "0iqv4sjwbp4k87r9l9abzbs5yjcljm69m91kb1ypb03b0rx7napy"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             (delete-file "test-syntax.scm")
+             (delete-file "test.scm")))
+         (file-name (git-file-name name version))))
+      (build-system guile-build-system)
+      (arguments
+       '(#:not-compiled-file-regexp "srfi/189\\.scm$")) ; it's INCLUDE'd
+      (native-inputs
+       (list guile-3.0))
+      (propagated-inputs
+       (list guile-srfi-145))
+      (home-page "https://srfi.schemers.org/srfi-189/")
+      (synopsis "Scheme SRFI implementation of Maybe and Either")
+      (description
+       "This SRFI defines two disjoint immutable container types known as
+Maybe and Either, both of which can contain objects collectively known
+as their payload.  A Maybe object is either a Just object or the unique
+object Nothing (which has no payload); an Either object is either a Right
+object or a Left object.  Maybe represents the concept of optional values;
+Either represents the concept of values which are either correct (Right)
+or errors (Left).")
       (license license:expat))))
 
 (define-public emacsy
@@ -3405,6 +3444,16 @@ perform geometrical transforms on JPEG images.")
                   (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-webkitgtk
+           (lambda _
+             ;; Adapt to the version we have in Guix.
+             (substitute* "configure.ac"
+               (("webkit2gtk-4\\.0") "webkit2gtk-4.1")
+               (("webkit2gtk-web-extension-4\\.0")
+                "webkit2gtk-web-extension-4.1"))
+
+             (substitute* "typelib/Makefile.am"
+               (("WebKit2-4\\.0") "WebKit2-4.1"))))
          (add-before 'check 'start-xorg-server
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The test suite requires a running X server.
@@ -4818,3 +4867,60 @@ with a FSM is being built (for example, from a Makefile.)")
 @url{https://en.wikipedia.org/wiki/INI_file, INI format}.  This library
 provides API for reading and writing INI data.")
     (license license:gpl3)))
+
+(define-public guile-schemetran
+  (let ((commit "3f5e15273ee88ba60ad8caf2de6302ad2bab582b")
+        (revision "1"))
+    (package
+      (name "guile-schemetran")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/codetk/schemetran")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1r4nq7wmy854hvbkcc23sidn4kq3p7r4p15y5czwvd52p9djff3m"))))
+      (build-system guile-build-system)
+      (arguments
+       (list #:not-compiled-file-regexp "/doc/.*\\.scm$"
+             #:source-directory "src"))
+      (inputs
+       (list guile-3.0))
+      (home-page "https://gitlab.com/codetk/schemetran")
+      (synopsis "Write Fortran in Scheme")
+      (description
+       "Fortran is great in expressing operations on multi-dimensional arrays
+of numbers.  Scheme is great at expressing your coding thoughts.  This project
+is an attempt to combine both into something useful.")
+      (license license:asl2.0))))
+
+(define-public guile-kolam
+  (package
+    (name "guile-kolam")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://kolam.systemreboot.net/releases/kolam-"
+                           version ".tar.lz"))
+       (sha256
+        (base32
+         "083r3n3wvzysa9jhlwjj1xppdm6ja56rkizr6hvj4q1806v8n6mn"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
+    (native-inputs
+     (list guile-3.0 lzip))
+    (propagated-inputs
+     (list guile-json-4))
+    (home-page "https://kolam.systemreboot.net")
+    (synopsis "GraphQL implementation for Scheme")
+    (description "@code{guile-kolam} is a GraphQL implementation for Scheme.  kolam
+features a parser to parse and serialize GraphQL documents, a type system to
+create GraphQL schemas, an execution engine to execute GraphQL queries, and a
+HTTP handler to implement a HTTP GraphQL endpoint.")
+    (license license:agpl3+)))

@@ -43,22 +43,21 @@
     (version "0.8")
     (home-page "https://avahi.org")
     (source (origin
-             (method url-fetch)
-             (uri (string-append home-page "/download/avahi-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "1npdixwxxn3s9q1f365x9n9rc5xgfz39hxf23faqvlrklgbhj0q6"))
-             (patches (search-patches "avahi-localstatedir.patch"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Fix version constraint in the avahi-libevent pkg-config file.
-                 ;; This can be removed for Avahi versions > 0.8.
-                 (substitute* "avahi-libevent.pc.in"
-                   (("libevent-2\\.1\\.5")
-                    "libevent >= 2.1.5"))
-                 #t))))
+              (method url-fetch)
+              (uri (string-append home-page "/download/avahi-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1npdixwxxn3s9q1f365x9n9rc5xgfz39hxf23faqvlrklgbhj0q6"))
+              (patches (search-patches "avahi-localstatedir.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Fix version constraint in the avahi-libevent pkg-config file.
+                  ;; This can be removed for Avahi versions > 0.8.
+                  (substitute* "avahi-libevent.pc.in"
+                    (("libevent-2\\.1\\.5")
+                     "libevent >= 2.1.5"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-distro=none"

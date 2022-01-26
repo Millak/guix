@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Steve Sprang <scs@stevesprang.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Aljosha Papsch <misc@rpapsch.de>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Jessica Tallon <tsyesika@tsyesika.se>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2017, 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2018 Thomas Sigurdsen <tonton@riseup.net>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -29,6 +29,7 @@
 ;;; Copyright © 2020 Jean-Baptiste Note <jean-baptiste.note@m4x.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -177,6 +178,8 @@ manage your passwords in a secure way.  You can put all your passwords in one
 database, which is locked with one master key or a key-file which can be stored
 on an external storage device.  The databases are encrypted using the
 algorithms AES or Twofish.")
+    (properties
+     '((release-monitoring-url . "https://github.com/keepassxreboot/keepassxc/releases")))
     ;; While various parts of the software are licensed under different licenses,
     ;; the combined work falls under the GPLv3.
     (license license:gpl3)))
@@ -482,6 +485,7 @@ any X11 window.")
               (sha256
                (base32
                 "17zp9pnb3i9sd2zn9qanngmsywrb7y495ngcqs6313pv3gb83v53"))
+              (patches (search-patches "password-store-tree-compat.patch"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -500,8 +504,7 @@ any X11 window.")
                   (string-append " SYSTEM_EXTENSION_DIR=\""
                                  "${PASSWORD_STORE_SYSTEM_EXTENSION_DIR:-"
                                  extension-dir
-                                 "}\"\n"))))
-             #t))
+                                 "}\"\n"))))))
          (add-before 'install 'patch-passmenu-path
            ;; FIXME Wayland support requires ydotool and dmenu-wl packages
            ;; We are ignoring part of the script that gets executed if
@@ -520,18 +523,18 @@ any X11 window.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin")))
-               (install-file "contrib/dmenu/passmenu" bin)
-               #t)))
+               (install-file "contrib/dmenu/passmenu" bin))))
          (add-after 'install 'wrap-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (path (map (lambda (pkg)
-                                (string-append (assoc-ref inputs pkg) "/bin"))
-                              '("coreutils" "getopt" "git" "gnupg" "qrencode"
-                                "sed" "tree" "which" "wl-clipboard" "xclip"))))
+             (let* ((out (assoc-ref outputs "out"))
+                    (requisites '("getopt" "git" "gpg" "qrencode" "sed"
+                                  "tree" "which" "wl-copy" "xclip"))
+                    (path (map (lambda (pkg)
+                                 (dirname (search-input-file
+                                           inputs (string-append "/bin/" pkg))))
+                               requisites)))
                (wrap-program (string-append out "/bin/pass")
-                 `("PATH" ":" prefix (,(string-join path ":"))))
-               #t))))
+                 `("PATH" ":" prefix (,(string-join path ":"))))))))
        #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output)
                           "WITH_ALLCOMP=yes"
                           (string-append "BASHCOMPDIR="
@@ -546,17 +549,17 @@ any X11 window.")
             (separator #f)             ;single entry
             (files '("lib/password-store/extensions")))))
     (inputs
-     `(("dmenu" ,dmenu)
-       ("getopt" ,util-linux)
-       ("git" ,git)
-       ("gnupg" ,gnupg)
-       ("qrencode" ,qrencode)
-       ("sed" ,sed)
-       ("tree" ,tree)
-       ("which" ,which)
-       ("wl-clipboard" ,wl-clipboard)
-       ("xclip" ,xclip)
-       ("xdotool" ,xdotool)))
+     (list dmenu
+           util-linux
+           git
+           gnupg
+           qrencode
+           sed
+           tree
+           which
+           wl-clipboard
+           xclip
+           xdotool))
     (home-page "https://www.passwordstore.org/")
     (synopsis "Encrypted password manager")
     (description "Password-store is a password manager which uses GnuPG to

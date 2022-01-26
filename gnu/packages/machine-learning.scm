@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -35,6 +35,7 @@
 
 (define-module (gnu packages machine-learning)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
@@ -61,10 +63,16 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -77,6 +85,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -90,6 +99,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -280,6 +290,149 @@ additional Python bindings implementing a wide range of types of @dfn{Hidden
 Markov Models} (HMM) and algorithms: discrete, continuous emissions, basic
 training, HMM clustering, HMM mixtures.")
       (license license:lgpl2.0+))))
+
+(define-public guile-aiscm
+  (package
+    (name "guile-aiscm")
+    (version "0.23.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wedesoft/aiscm")
+                    (commit "c78b91edb7c17c6fbf3b294452f44e91d75e3c67")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09rdbcr8dinzijyx9h940ann91yjlbg0fangx365llhvy354n840"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "GUILE_CACHE=" #$output "/lib/guile/3.0/site-ccache")
+              (string-append "GUILE_EXT=" #$output "/lib/guile/3.0/extensions")
+              (string-append "GUILE_SITE=" #$output "/share/guile/site/3.0"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'build-reproducibly
+           (lambda _
+             (substitute* "doc/Makefile.am"
+               (("\\$\\(DATE\\)") "1970-01-01"))))
+         (add-after 'unpack 'use-llvm-config
+           (lambda _
+             (substitute* "m4/ax_llvmc.m4"
+               (("llvm-config-13") "llvm-config")
+               ;; For some reason this library is not on the link list.
+               (("(LLVM_LIBS=\"\\$\\(\\$ac_llvm_config_path --libs \\$1\\))\"" _ m)
+                (string-append m " -lLLVMMCJIT\"")))
+
+             ;; Because of this message:
+             ;; symbol lookup error: ./.libs/libguile-aiscm-core.so: undefined symbol: LLVMInitializeX86TargetInfo
+             ;; This probably needs to differ when building on architectures
+             ;; other than x86_64p
+             (substitute* "aiscm/Makefile.am"
+               (("LLVM_LIBS\\)") "LLVM_LIBS) \
+-lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMX86Desc -lLLVMX86Info"))))
+         ;; Use Clang instead of GCC.
+         (add-before 'configure 'prepare-build-environment
+           (lambda _
+             (setenv "AR" "llvm-ar")
+             (setenv "NM" "llvm-nm")
+             (setenv "CC" "clang")
+             (setenv "CXX" "clang++"))))))
+    (inputs
+     (list ffmpeg
+           freeglut
+           guile-3.0
+           imagemagick
+           libjpeg-turbo
+           libomp
+           libxi
+           libxmu
+           libxpm
+           libxt
+           libxv
+           mesa
+           mjpegtools
+           pandoc
+           pulseaudio))
+    (native-inputs
+     (list clang-13
+           llvm-13
+           pkg-config
+           autoconf
+           automake
+           gettext-minimal
+           libtool
+           which))
+    (home-page "https://wedesoft.github.io/aiscm/")
+    (synopsis "Guile extension for numerical arrays and tensors")
+    (description "AIscm is a Guile extension for numerical arrays and tensors.
+Performance is achieved by using the LLVM JIT compiler.")
+    (license license:gpl3+)))
+
+(define-public guile-aiscm-next
+  (let ((commit "b17ed538c303badc419a7c358d91f266d2a8c354")
+        (revision "1"))
+    (package
+      (inherit guile-aiscm)
+      (name "guile-aiscm-next")
+      (version (git-version "0.23.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wedesoft/aiscm")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0px7r7lfskbp1prdrfrcvrsc4wjrk3ahkigsw4pqvny6zs7jnvc0"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments guile-aiscm)
+         ((#:configure-flags flags '())
+          #~(list (string-append "OPENCV_CFLAGS=-I" #$(this-package-input "opencv")
+                                 "/include/opencv4")
+                  (let ((modules
+                         (list "aruco" "barcode" "bgsegm" "bioinspired"
+                               "calib3d" "ccalib" "core" "datasets" "dnn"
+                               "dnn_objdetect" "dnn_superres" "dpm" "face"
+                               "features2d" "flann" "freetype" "fuzzy" "hdf"
+                               "hfs" "highgui" "img_hash" "imgcodecs" "imgproc"
+                               "intensity_transform" "line_descriptor" "mcc"
+                               "ml" "objdetect" "optflow" "phase_unwrapping"
+                               "photo" "plot" "quality" "rapid" "reg" "rgbd"
+                               "saliency" "shape" "stereo" "stitching"
+                               "structured_light" "superres" "surface_matching"
+                               "text" "tracking" "video" "videoio" "videostab"
+                               "wechat_qrcode" "ximgproc" "xobjdetect" "xphoto")))
+                    (format #false "OPENCV_LIBS=~{-lopencv_~a~^ ~}" modules))))
+         ((#:phases phases '%standard-phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'find-clearsilver
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (substitute* "configure.ac"
+                   (("/usr/local/include/ClearSilver")
+                    (string-append (assoc-ref inputs "clearsilver")
+                                   "/include/ClearSilver")))
+                 (substitute* "aiscm/Makefile.am"
+                   (("-lneo_utl" m)
+                    (string-append m " -lstreamhtmlparser")))
+                 (setenv "C_INCLUDE_PATH"
+                         (string-append (assoc-ref inputs "clearsilver")
+                                        "/include/ClearSilver:"
+                                        (or (getenv "C_INCLUDE_PATH") "")))))
+             ;; This test fails because our version of tensorflow is too old
+             ;; to provide tf-string-length.
+             (add-after 'unpack 'disable-broken-test
+               (lambda _
+                 (substitute* "tests/test_tensorflow.scm"
+                   (("\\(test-eqv \"determine string length" m)
+                    (string-append "#;" m)))))))))
+      (inputs
+       (modify-inputs (package-inputs guile-aiscm)
+         (append clearsilver opencv tensorflow libgc)))
+      (native-inputs
+       (modify-inputs (package-native-inputs guile-aiscm)
+         (append protobuf-c))))))
 
 (define-public mcl
   (package
@@ -927,7 +1080,7 @@ computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -937,7 +1090,7 @@ computing environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07k92y78sk4074vh5hp8y63pwl592wgl8azrfp0q84chxk8igfx9"))))
+         "1rli53544vlsnmx4v4xcb8fdqcy5n3zksl4plwp76gsmrppb2lig"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -955,14 +1108,7 @@ computing environments.")
 
                (invoke "pytest" "sklearn" "-m" "not network"
                        ;; This test tries to access the internet.
-                       "-k" "not test_load_boston_alternative"))))
-         (add-before 'reset-gzip-timestamps 'make-files-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure .gz files are writable so that the
-             ;; 'reset-gzip-timestamps' phase can do its work.
-             (let ((out (assoc-ref outputs "out")))
-               (for-each make-file-writable
-                         (find-files out "\\.gz$"))))))))
+                       "-k" "not test_load_boston_alternative")))))))
     (inputs
      (list openblas))
     (native-inputs
@@ -1057,16 +1203,24 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.2")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "0w87c2v0li2rdbx6qfc2lb6y6bxpdy3jwfgzfs1kcr4d1chj5zfr"))))
+        (base32 "10pqqqc3jkpw03cyzy04slxmpgyhqnlgbyk0c1cv7kqr5d0zhzbs"))))
     (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent")))))))
     (native-inputs
-     (list python-nose))
+     (list python-pytest))
     (propagated-inputs
      (list python-joblib python-llvmlite python-numba python-scikit-learn
            python-scipy))
@@ -1080,17 +1234,16 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "0.5.2")
+    (version "0.6.1")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
+       (method git-fetch) ; no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/pavlin-policar/openTSNE")
              (commit (string-append "v" version))))
-       (file-name (string-append name "-" version "-checkout"))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1hl42wmafydk4fxdx05l180k3canmqw8h9r20fsqq2aq440b09gh"))))
+        (base32 "124nid27lfq1ipfjd2gkynqcmb4khisjb4r05jv42ckfkk4dbsxs"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1098,13 +1251,15 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
          ;; Benchmarks require the 'macosko2015' data files.
          (add-after 'unpack 'delete-benchmark
            (lambda _
-             (delete-file-recursively "benchmarks")
-             #t))
+             (delete-file-recursively "benchmarks")))
+         (add-after 'unpack 'skip-test
+           (lambda _ ;; TODO: figure out why this test fails.
+             (substitute* "tests/test_correctness.py"
+               (("def test_iris\\(self\\)") "def _test_iris(self)"))))
          ;; Numba needs a writable dir to cache functions.
          (add-before 'check 'set-numba-cache-dir
            (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp")
-             #t)))))
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
      (list python-cython))
     (inputs
@@ -1123,17 +1278,15 @@ visualizing high-dimensional data sets.")
 (define-public python-scikit-rebate
   (package
     (name "python-scikit-rebate")
-    (version "0.6")
+    (version "0.62")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "skrebate" version))
               (sha256
                (base32
-                "1h7qs9gjxpzqabzhb8rmpv3jpmi5iq41kqdibg48299h94iikiw7"))))
+                "0n55ghvnv7rxqa5agq6a4892ad0ghha165b0g4ghwr9gqm6ss3dj"))))
     (build-system python-build-system)
-    ;; Pandas is only needed to run the tests.
-    (native-inputs
-     (list python-pandas))
+    (arguments '(#:tests? #f))          ;no tests on PyPI and no tags in repo
     (propagated-inputs
      (list python-numpy python-scipy python-scikit-learn python-joblib))
     (home-page "https://epistasislab.github.io/scikit-rebate/")
@@ -1679,7 +1832,9 @@ Python.")
        (file-name (string-append "tensorflow-" version "-checkout"))
        (sha256
         (base32
-         "0a9kwha395g3wgxfwln5j8vn9nkspmd75xldrlqdq540w996g8xa"))))
+         "0a9kwha395g3wgxfwln5j8vn9nkspmd75xldrlqdq540w996g8xa"))
+       (patches
+        (search-patches "tensorflow-c-api-fix.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no "check" target
@@ -1862,7 +2017,7 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
              ;; This directory is a dependency of many targets.
              (mkdir-p "protobuf")))
          (add-after 'configure 'unpack-third-party-sources
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; This is needed to configure bundled packages properly.
              (setenv "CONFIG_SHELL" (which "bash"))
              (for-each
@@ -1900,7 +2055,11 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
                     "re2"))
 
              (rename-file "../build/cub/src/cub/cub-1.8.0/"
-                          "../build/cub/src/cub/cub/")))
+                          "../build/cub/src/cub/cub/")
+
+             (setenv "LDFLAGS"
+                     (string-append "-Wl,-rpath="
+                                    (assoc-ref outputs "out") "/lib"))))
          (add-after 'unpack 'fix-python-build
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (mkdir-p "protobuf-src")
@@ -1936,11 +2095,21 @@ set(eigen_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/external/eigen_archive "
 COMPILE_FLAGS ${target_compile_flags} \
 INSTALL_RPATH_USE_LINK_PATH TRUE \
 INSTALL_RPATH " (assoc-ref outputs "out") "/lib)\n")))))
-         (add-after 'build 'build-pip-package
+         (add-after 'unpack 'patch-cmake-file-to-install-c-headers
+           (lambda _
+             (substitute* "tensorflow/contrib/cmake/tf_c.cmake"
+               (("if\\(tensorflow_BUILD_PYTHON_BINDINGS" m)
+                (string-append
+                 "install(DIRECTORY ${tensorflow_source_dir}/tensorflow/c/ \
+DESTINATION include/tensorflow/c FILES_MATCHING PATTERN \"*.h\")\n" m)))))
+         (add-after 'build 'build-c-bindings
            (lambda* (#:key outputs parallel-build? #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append "-Wl,-rpath="
-                                    (assoc-ref outputs "out") "/lib"))
+             (invoke "make" "-j" (if parallel-build?
+                                     (number->string (parallel-job-count))
+                                     "1")
+                     "tf_c")))
+         (add-after 'install 'build-pip-package
+           (lambda* (#:key outputs parallel-build? #:allow-other-keys)
              (invoke "make" "-j" (if parallel-build?
                                      (number->string (parallel-job-count))
                                      "1")
@@ -2321,7 +2490,7 @@ learning libraries.")
 (define-public xgboost
   (package
     (name "xgboost")
-    (version "1.4.2")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -2331,7 +2500,7 @@ learning libraries.")
        (file-name (git-file-name name version))
        (patches (search-patches "xgboost-use-system-dmlc-core.patch"))
        (sha256
-        (base32 "00liz816ahk9zj3jv3m2fqwlf6xxfbgvpmpl72iklx32vl192w5d"))))
+        (base32 "0qx04y7cz8z7qv6bk9q7d7ba9b7xzj53l83l2x9ykdwhzacc3dn0"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DGOOGLE_TEST=ON")))
@@ -2404,8 +2573,6 @@ in a fast and accurate way.")
                         " and not test_cv_no_shuffle"
                         " and not test_cv"
                         " and not test_training"
-                        ;; FIXME: May pass in the next version.
-                        " and not test_pandas"
                         ;; "'['./runexp.sh']' returned non-zero exit status 1"
                         " and not test_cli_binary_classification"))))))))
     (native-inputs

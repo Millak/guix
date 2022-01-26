@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
-;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;;
@@ -30,6 +30,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
   #:use-module (gnu packages)
@@ -41,6 +42,7 @@
   #:use-module (gnu packages geo)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -51,13 +53,13 @@
 (define-public python-django-4.0
   (package
     (name "python-django")
-    (version "4.0")
+    (version "4.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "0xgf2d8j54kicaz8f6ailzlgcvq5zs6wgn74gqivka0rm16s3a6m"))))
+                "11pg33ib43pvkflgvs5gs6c9zflhpxp8dvhd109swfscrjiyx194"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -118,6 +120,13 @@
            ;; This input is not strictly required, but in practice many Django
            ;; libraries need it for test suites and similar.
            python-jinja2))
+    (native-search-paths
+     ;; Set TZDIR when 'tzdata' is available so that timezone functionality
+     ;; works (mostly) out of the box in containerized environments.
+     ;; Note: This search path actually belongs to 'glibc'.
+     (list (search-path-specification
+            (variable "TZDIR")
+            (files '("share/zoneinfo")))))
     (home-page "https://www.djangoproject.com/")
     (synopsis "High-level Python Web framework")
     (description
@@ -131,13 +140,14 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-3.2
   (package
     (inherit python-django-4.0)
-    (version "3.2.10")
+    (version "3.2.11")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1i6my7qrivj0ag9dq22lg0lq6maxapbdqrwy6v1cs2mlnhc8hkh7"))))
+                "0xbyl9fh9lk5hiwpw46s6hz98gs0fixrpq3myj5hh6vbbnz4mjb9"))))
+    (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
      (modify-inputs (package-propagated-inputs python-django-4.0)
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
@@ -146,13 +156,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 (define-public python-django-2.2
   (package
     (inherit python-django-3.2)
-    (version "2.2.25")
+    (version "2.2.26")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "171ll8m1wp684z1r0lz93l377jc6jyq63q5p7sqx8iqk6ypmxrmi"))))
+                "13siv3bcb2yrpzzsq2k0f1yc70ya8jkmaa5kc8x29ijjglk3g9fz"))))
     (native-inputs
      (modify-inputs (package-native-inputs python-django-3.2)
        (prepend ;; 2.2 requires Selenium for the test suite.
@@ -1033,9 +1043,7 @@ Django projects, which allows association of a number of tags with any
          (replace 'check
            (lambda* (#:key tests? inputs #:allow-other-keys)
              (if tests?
-                 (begin
-                   (setenv "TZDIR" (search-input-directory inputs "share/zoneinfo"))
-                   (invoke "python" "runtests.py"))
+                 (invoke "python" "runtests.py")
                  (format #t "test suite not run~%")))))))
     (native-inputs
      (list python-pytest python-pytest-django tzdata-for-tests))
@@ -1175,28 +1183,42 @@ FileFields during tests.")
 (define-public python-django-auth-ldap
   (package
     (name "python-django-auth-ldap")
-    (version "2.4.0")
+    (version "4.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django-auth-ldap" version))
               (sha256
                (base32
-                "0xk6cxiqz5j3q79bd54x64f26alrlc8p7k9wkp2c768w2k1vzz30"))))
+                "0fajn4bk7m1hk0mjz97q7vlfzh7ibzv8f4qn7zhkq26f4kk7jvr7"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((openldap (assoc-ref inputs "openldap")))
-                        ;; The tests need 'slapd' which is installed to the
-                        ;; libexec directory of OpenLDAP.
-                        (setenv "SLAPD" (string-append openldap "/libexec/slapd"))
-                        (setenv "SCHEMA"
-                                (string-append openldap "/etc/openldap/schema"))
-                        (invoke "python" "-m" "django" "test"
-                                "--settings" "tests.settings")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'build
+                 (lambda _
+                   ;; Set file modification times to the early 80's because
+                   ;; the Zip format does not support earlier timestamps.
+                   (setenv "SOURCE_DATE_EPOCH"
+                           (number->string (* 10 366 24 60 60)))
+                   (invoke "python" "-m" "build" "--wheel"
+                           "--no-isolation" ".")))
+               (replace 'check
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (setenv "SLAPD" (search-input-file inputs "/libexec/slapd"))
+                   (setenv "SCHEMA"
+                           (search-input-directory inputs "etc/openldap/schema"))
+                   (invoke "python" "-m" "django" "test"
+                           "--settings" "tests.settings")))
+               (replace 'install
+                 (lambda _
+                   (let ((whl (car (find-files "dist" "\\.whl$"))))
+                     (invoke "pip" "--no-cache-dir" "--no-input"
+                             "install" "--no-deps" "--prefix" #$output whl)))))))
     (native-inputs
-     (list openldap python-mock))
+     (list openldap-2.6 python-wheel python-setuptools-scm python-toml
+
+           ;; These can be removed after <https://bugs.gnu.org/46848>.
+           python-pypa-build python-pip))
     (propagated-inputs
      (list python-django python-ldap))
     (home-page "https://github.com/django-auth-ldap/django-auth-ldap")
@@ -1263,7 +1285,14 @@ to ElasticSearch.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r4zhqhs8y6cnplwyvcb0zpijizw1ifnszs38n4w8138657f9026"))))
+                "0r4zhqhs8y6cnplwyvcb0zpijizw1ifnszs38n4w8138657f9026"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Patch for Django 4.0 compatibility, taken from upstream pull
+               ;; request: https://github.com/miki725/django-url-filter/pull/103
+               '(substitute* "url_filter/validators.py"
+                  ((" ungettext_lazy")
+                   " ngettext_lazy")))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f            ;FIXME: Django raises "Apps aren't loaded yet"!?

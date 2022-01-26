@@ -85,6 +85,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages texinfo)
@@ -114,34 +115,9 @@
 ;; much more support for Java 1.6 than the latest release, but we need to
 ;; build 0.99 first to get a working version of javah.  ECJ, the development
 ;; version of GNU Classpath, and the latest version of JamVM make up the
-;; second stage JDK with which we can build the OpenJDK with the Icedtea 1.x
-;; build framework.  We then build the more recent JDKs Icedtea 2.x and
-;; Icedtea 3.x.
-
-(define-public libantlr3c
-  (package
-    (name "libantlr3c")
-    (version "3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://www.antlr3.org/download/C/"
-                       name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0lpbnb4dq4azmsvlhp6khq1gy42kyqyjv8gww74g5lm2y6blm4fa"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags (list "--enable-debuginfo"
-                               "--disable-static"
-                               ,@(if (target-64bit?)
-                                  `("--enable-64bit")
-                                  '()))))
-    (synopsis "ANTLR C Library")
-    (description "LIBANTLR3C provides run-time C libraries for ANTLR3 (ANother
-Tool for Language Recognition v3).")
-    (home-page "https://www.antlr3.org/")
-    (license license:bsd-3)))
+;; second stage JDK with which we can build the OpenJDK with the Icedtea 2.x
+;; build framework.  We then build the more recent JDK Icedtea 3.x, and all
+;; other versions of OpenJDK.
 
 (define jikes
   (package
@@ -161,64 +137,6 @@ Tool for Language Recognition v3).")
 defined in The Java Language Specification into the bytecoded instruction set
 and binary format defined in The Java Virtual Machine Specification.")
     (license license:ibmpl1.0)))
-
-(define-public drip
-  ;; Last release is from 2014, with a few important commits afterwards.
-  (let ((commit "a4bd00df0199e78243847f06cc04ecaea31f8f08"))
-    (package
-      (name "drip")
-      (version (git-version "0.2.4" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/ninjudd/drip")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0wzmjwfyldr3jn49517xd8yn7dgdk8h88qkga3kjyg1zc375ylg2"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       `(("jdk" ,icedtea "jdk")))
-      (arguments
-       `(#:tests? #f                    ; No tests.
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'install 'fix-wrapper
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((jps (search-input-file inputs "/bin/jps")))
-                 (substitute* "bin/drip"
-                   (("jps") jps)
-                   (("brew update && brew upgrade drip") "guix pull && guix install drip")
-                   ;; No need to make:
-                   (("\\(cd -- \"\\$drip_dir\" && make -s\\) \\|\\| exit 1") "")
-                   ;; No need to include source:
-                   (("\\[\\[ -r \\$drip_dir/src/org/flatland/drip/Main\\.java \\]\\]")
-                    "true"))
-                 #t)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (share (string-append out "/share/drip")))
-                 (mkdir-p bin)
-                 (for-each
-                  (lambda (file)
-                    (install-file (string-append "bin/" file) bin))
-                  '("drip" "drip_daemon" "drip_proxy"))
-                 (install-file "drip.jar" share)
-                 (substitute* (string-append bin "/drip")
-                   (("drip_dir=\\$bin_dir/..")
-                    (string-append "drip_dir=" share)))
-                 #t))))))
-      (home-page "https://github.com/ninjudd/drip")
-      (synopsis "Faster Java Virtual Machine launching")
-      (description "Drip is a launcher for the Java Virtual Machine that
-provides much faster startup times than the @command{java} command.  The @command{drip}
-script is intended to be a drop-in replacement for the @command{java} command,
-only faster.")
-      (license license:epl1.0))))
 
 ;; This is the last version of GNU Classpath that can be built without ECJ.
 (define classpath-bootstrap
@@ -252,10 +170,7 @@ only faster.")
          (add-after 'install 'install-data
            (lambda _ (invoke "make" "install-data"))))))
     (native-inputs
-     `(("jikes" ,jikes)
-       ("fastjar" ,fastjar)
-       ("libltdl" ,libltdl)
-       ("pkg-config" ,pkg-config)))
+     (list jikes fastjar libltdl pkg-config))
     (home-page "https://www.gnu.org/software/classpath/")
     (synopsis "Essential libraries for Java")
     (description "GNU Classpath is a project to create core class libraries
@@ -280,11 +195,9 @@ language.")
               (sha256
                (base32
                 "06lhi03l3b0h48pc7x58bk9my2nrcf1flpmglvys3wyad6yraf36"))
+              ;; Remove precompiled software.
               (snippet
-               '(begin
-                  ;; Remove precompiled software.
-                  (delete-file "lib/classes.zip")
-                  #t))))
+               '(delete-file "lib/classes.zip"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -303,11 +216,7 @@ language.")
                  (lambda _ (invoke "autoreconf" "-vif"))))
             '%standard-phases)))
     (inputs
-     `(("classpath" ,classpath-bootstrap)
-       ("jikes" ,jikes)
-       ("libffi" ,libffi)
-       ("zip" ,zip)
-       ("zlib" ,zlib)))
+     (list classpath-bootstrap jikes libffi zip zlib))
     (native-inputs
      (if (string-prefix? "aarch64" (or (%current-system)
                                        (%current-target-system)))
@@ -360,7 +269,7 @@ JNI.")
              (setenv "JAVAC" (search-input-file inputs "/bin/jikes"))
              (setenv "CLASSPATH" (search-input-file inputs "/lib/rt.jar"))))
          (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Ant complains if this file doesn't exist.
              (setenv "HOME" "/tmp")
              (with-output-to-file "/tmp/.ant.properties"
@@ -387,7 +296,7 @@ JNI.")
                (("depends=\"jars,test-jar\"") "depends=\"jars\""))
              (invoke "bash" "bootstrap.sh"
                      (string-append "-Ddist.dir="
-                                    (assoc-ref %outputs "out")))))
+                                    (assoc-ref outputs "out")))))
          (add-after 'build 'strip-jar-timestamps ;based on ant-build-system
            (lambda* (#:key outputs #:allow-other-keys)
              (define (repack-archive jar)
@@ -416,14 +325,10 @@ JNI.")
              (for-each repack-archive
                     (find-files
                      (string-append (assoc-ref %outputs "out") "/lib")
-                     "\\.jar$"))
-             #t))
+                     "\\.jar$"))))
          (delete 'install))))
     (native-inputs
-     `(("jikes" ,jikes)
-       ("jamvm" ,jamvm-1-bootstrap)
-       ("unzip" ,unzip)
-       ("zip" ,zip)))
+     (list jikes jamvm-1-bootstrap unzip zip))
     (home-page "https://ant.apache.org")
     (synopsis "Build tool for Java")
     (description
@@ -452,10 +357,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
     ;; bootstrapping the JDK.
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1))
-       #:tests? #f ; there are no tests
+     `(#:tests? #f ; there are no tests
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
@@ -467,8 +369,7 @@ build process and its dependencies, whereas Make uses Makefile format.")
                                          (assoc-ref inputs "ant-bootstrap")
                                          "/lib")
                                         "\\.jar$"))
-                      ":"))
-             #t))
+                      ":"))))
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The unpack phase enters the "org" directory by mistake.
@@ -490,14 +391,9 @@ Main-Class: org.eclipse.jdt.internal.compiler.batch.Main\n")))
              (let ((share (string-append (assoc-ref outputs "out")
                                          "/share/java/")))
                (mkdir-p share)
-               (install-file "ecj-bootstrap.jar" share)
-               #t))))))
+               (install-file "ecj-bootstrap.jar" share)))))))
     (native-inputs
-     `(("ant-bootstrap" ,ant-bootstrap)
-       ("unzip" ,unzip)
-       ("jikes" ,jikes)
-       ("jamvm" ,jamvm-1-bootstrap)
-       ("fastjar" ,fastjar)))
+     (list ant-bootstrap unzip jikes jamvm-1-bootstrap fastjar))
     (home-page "https://eclipse.org")
     (synopsis "Eclipse Java development tools core batch compiler")
     (description "This package provides the Eclipse Java core batch compiler
@@ -513,68 +409,62 @@ requirement for all GNU Classpath releases after version 0.93.")
     (arguments
      `(#:modules ((guix build utils))
        #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((bin    (string-append (assoc-ref %outputs "out") "/bin"))
-                (target (string-append bin "/javac"))
-                (guile  (string-append (assoc-ref %build-inputs "guile")
-                                       "/bin/guile"))
-                (ecj    (string-append (assoc-ref %build-inputs "ecj-bootstrap")
-                                       "/share/java/ecj-bootstrap.jar"))
-                (java   (string-append (assoc-ref %build-inputs "jamvm")
-                                       "/bin/jamvm"))
-                (bootcp (let ((jvmlib (string-append (assoc-ref %build-inputs "classpath")
-                                                     "/share/classpath")))
-                          (string-append jvmlib "/glibj.zip:"
-                                         jvmlib "/tools.zip"))))
-           (mkdir-p bin)
-           (with-output-to-file target
-             (lambda _
-               (format #t "#!~a --no-auto-compile\n!#\n" guile)
-               (write
-                `(begin (use-modules (ice-9 match)
-                                     (ice-9 receive)
-                                     (ice-9 hash-table)
-                                     (srfi srfi-1)
-                                     (srfi srfi-26))
-                        (define defaults
-                          '(("-bootclasspath" ,bootcp)
-                            ("-source" "1.5")
-                            ("-target" "1.5")
-                            ("-cp"     ".")))
-                        (define (main args)
-                          (let ((classpath (getenv "CLASSPATH")))
-                            (setenv "CLASSPATH"
-                                    (string-join (list ,ecj
-                                                       ,(string-append (assoc-ref %build-inputs "jamvm")
-                                                                       "/lib/rt.jar")
-                                                       (or classpath ""))
-                                                 ":")))
-                          (receive (vm-args other-args)
-                              ;; Separate VM arguments from arguments to ECJ.
-                              (partition (cut string-prefix? "-J" <>)
-                                         (fold (lambda (default acc)
-                                                 (if (member (first default) acc)
-                                                     acc (append default acc)))
-                                               args defaults))
-                            (apply system* ,java
-                                   (append
-                                    ;; Remove "-J" prefix
-                                    (map (cut string-drop <> 2) vm-args)
-                                    '("org.eclipse.jdt.internal.compiler.batch.Main")
-                                    (cons "-nowarn" other-args)))))
-                        ;; Entry point
-                        (let ((args (cdr (command-line))))
-                          (if (null? args)
-                              (format (current-error-port) "javac: no arguments given!\n")
-                              (main args)))))))
-           (chmod target #o755)
-           #t))))
+       ,#~(begin
+            (use-modules (guix build utils))
+            (let* ((bin    (string-append #$output "/bin"))
+                   (target (string-append bin "/javac"))
+                   (guile  (string-append (assoc-ref %build-inputs "guile")
+                                          "/bin/guile"))
+                   (ecj    (string-append #$(this-package-native-input "ecj-bootstrap")
+                                          "/share/java/ecj-bootstrap.jar"))
+                   (java   (string-append #$(this-package-native-input "jamvm")
+                                          "/bin/jamvm"))
+                   (bootcp (let ((jvmlib (string-append
+                                          #$(this-package-native-input "classpath")
+                                          "/share/classpath")))
+                             (string-append jvmlib "/glibj.zip:"
+                                            jvmlib "/tools.zip"))))
+              (mkdir-p bin)
+              (with-output-to-file target
+                (lambda _
+                  (format #t "#!~a --no-auto-compile\n!#\n" guile)
+                  (write
+                   `(begin (use-modules (ice-9 match)
+                                        (ice-9 receive)
+                                        (ice-9 hash-table)
+                                        (srfi srfi-1)
+                                        (srfi srfi-26))
+                           (define defaults
+                             '(("-bootclasspath" ,bootcp)
+                               ("-source" "1.5")
+                               ("-target" "1.5")
+                               ("-cp"     ".")))
+                           (define (main args)
+                             (let ((classpath (getenv "CLASSPATH")))
+                               (setenv "CLASSPATH"
+                                       (string-join (list ,ecj (or classpath ""))
+                                                    ":")))
+                             (receive (vm-args other-args)
+                                 ;; Separate VM arguments from arguments to ECJ.
+                                 (partition (cut string-prefix? "-J" <>)
+                                            (fold (lambda (default acc)
+                                                    (if (member (first default) acc)
+                                                        acc (append default acc)))
+                                                  args defaults))
+                               (apply system* ,java
+                                      (append
+                                          ;; Remove "-J" prefix
+                                          (map (cut string-drop <> 2) vm-args)
+                                          '("org.eclipse.jdt.internal.compiler.batch.Main")
+                                        (cons "-nowarn" other-args)))))
+                           ;; Entry point
+                           (let ((args (cdr (command-line))))
+                             (if (null? args)
+                                 (format (current-error-port) "javac: no arguments given!\n")
+                                 (main args)))))))
+              (chmod target #o755)))))
     (native-inputs
-     `(("guile" ,guile-2.2)
-       ("ecj-bootstrap" ,ecj-bootstrap)
-       ("jamvm" ,jamvm-1-bootstrap)
-       ("classpath" ,classpath-bootstrap)))
+     (list guile-3.0 ecj-bootstrap jamvm-1-bootstrap classpath-bootstrap))
     (description "This package provides a wrapper around the @dfn{Eclipse
 compiler for Java} (ecj) with a command line interface that is compatible with
 the standard javac executable.")))
@@ -619,13 +509,10 @@ the standard javac executable.")))
          (add-after 'install 'install-data
            (lambda _ (invoke "make" "install-data"))))))
     (native-inputs
-     `(("ecj-bootstrap" ,ecj-bootstrap)
-       ("ecj-javac-wrapper" ,ecj-javac-wrapper)
-       ("fastjar" ,fastjar)
-       ("jamvm" ,jamvm-1-bootstrap)
-       ("classpath" ,classpath-bootstrap)
-       ("libltdl" ,libltdl)
-       ("pkg-config" ,pkg-config)))))
+     (list classpath-bootstrap
+           ecj-bootstrap ecj-javac-wrapper
+           fastjar jamvm-1-bootstrap
+           libltdl pkg-config))))
 
 ;; We need this because classpath-bootstrap does not provide all of the tools
 ;; we need to build classpath-devel.
@@ -635,45 +522,42 @@ the standard javac executable.")))
     (source #f)
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((bash      (assoc-ref %build-inputs "bash"))
-                (jamvm     (assoc-ref %build-inputs "jamvm"))
-                (classpath (assoc-ref %build-inputs "classpath"))
-                (bin       (string-append (assoc-ref %outputs "out")
-                                          "/bin/")))
-           (mkdir-p bin)
-           (for-each (lambda (tool)
-                       (with-output-to-file (string-append bin tool)
-                         (lambda _
-                           ,@(if (string-prefix? "armhf" (or (%current-system)
-                                                             (%current-target-system)))
-                                 `((format #t "#!~a/bin/sh
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((bash      #$(this-package-native-input "bash-minimal"))
+                (jamvm     #$(this-package-native-input "jamvm"))
+                (classpath #$(this-package-native-input "classpath"))
+                (bin       (string-append #$output "/bin/")))
+            (mkdir-p bin)
+            (for-each (lambda (tool)
+                        (with-output-to-file (string-append bin tool)
+                          (lambda _
+                            #$@(if (string-prefix? "armhf" (or (%current-system)
+                                                               (%current-target-system)))
+                                   `((format #t "#!~a/bin/sh
 ~a/bin/jamvm -Xnocompact -classpath ~a/share/classpath/tools.zip \
 gnu.classpath.tools.~a.~a $@"
-                                   bash jamvm classpath tool
-                                   (if (string=? "native2ascii" tool)
-                                       "Native2ASCII" "Main")))
-                                 `((format #t "#!~a/bin/sh
+                                             bash jamvm classpath tool
+                                             (if (string=? "native2ascii" tool)
+                                                 "Native2ASCII" "Main")))
+                                   `((format #t "#!~a/bin/sh
 ~a/bin/jamvm -Xnocompact -Xnoinlining -classpath ~a/share/classpath/tools.zip \
 gnu.classpath.tools.~a.~a $@"
-                                   bash jamvm classpath tool
-                                   (if (string=? "native2ascii" tool)
-                                       "Native2ASCII" "Main"))))))
-                       (chmod (string-append bin tool) #o755))
-                     (list "javah"
-                           "rmic"
-                           "rmid"
-                           "orbd"
-                           "rmiregistry"
-                           "native2ascii"))
-           #t))))
+                                             bash jamvm classpath tool
+                                             (if (string=? "native2ascii" tool)
+                                                 "Native2ASCII" "Main"))))))
+                        (chmod (string-append bin tool) #o755))
+                      (list "javah"
+                            "rmic"
+                            "rmid"
+                            "orbd"
+                            "rmiregistry"
+                            "native2ascii"))))))
     (native-inputs
-     `(("bash" ,bash)
-       ("jamvm" ,jamvm-1-bootstrap)
-       ("classpath" ,classpath-0.99)))
+     (list bash-minimal jamvm-1-bootstrap classpath-0.99))
     (inputs '())
     (synopsis "Executables from GNU Classpath")
     (description "This package provides wrappers around the tools provided by
@@ -732,23 +616,15 @@ machine.")))
            (add-after 'unpack 'remove-unsupported-annotations
              (lambda _
                (substitute* (find-files "java" "\\.java$")
-                 (("@Override") ""))
-               #t))
+                 (("@Override") ""))))
            (add-after 'install 'install-data
              (lambda _ (invoke "make" "install-data"))))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)
-         ("gettext" ,gettext-minimal)
-         ("texinfo" ,texinfo)
-         ("classpath-jamvm-wrappers" ,classpath-jamvm-wrappers) ; for javah
-         ("ecj-bootstrap" ,ecj-bootstrap)
-         ("ecj-javac-wrapper" ,ecj-javac-wrapper)
-         ("fastjar" ,fastjar)
-         ("jamvm" ,jamvm-1-bootstrap)
-         ("libltdl" ,libltdl)
-         ("pkg-config" ,pkg-config))))))
+       (list autoconf automake libltdl libtool gettext-minimal texinfo
+             pkg-config
+             classpath-jamvm-wrappers  ;for javah
+             ecj-bootstrap ecj-javac-wrapper fastjar
+             jamvm-1-bootstrap)))))
 
 (define jamvm
   (package (inherit jamvm-1-bootstrap)
@@ -765,11 +641,9 @@ machine.")))
                (search-patches "jamvm-2.0.0-disable-branch-patching.patch"
                                "jamvm-2.0.0-opcode-guard.patch"
                                "jamvm-2.0.0-aarch64-support.patch"))
+              ;; Remove precompiled software.
               (snippet
-               '(begin
-                  ;; Remove precompiled software.
-                  (delete-file "src/classlib/gnuclasspath/lib/classes.zip")
-                  #t))))
+               '(delete-file "src/classlib/gnuclasspath/lib/classes.zip"))))
     (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments jamvm-1-bootstrap)
@@ -785,398 +659,111 @@ machine.")))
 (define ecj-javac-wrapper-final
   (package (inherit ecj-javac-wrapper)
     (native-inputs
-     `(("guile" ,guile-2.2)
-       ("ecj-bootstrap" ,ecj-bootstrap)
-       ("jamvm" ,jamvm)
-       ("classpath" ,classpath-devel)))))
+     (list guile-3.0 ecj-bootstrap jamvm classpath-devel))))
 
-;; The bootstrap JDK consisting of jamvm, classpath-devel,
-;; ecj-javac-wrapper-final cannot build Icedtea 2.x directly, because it's
-;; written in Java 7.  It can, however, build the unmaintained Icedtea 1.x,
-;; which uses Java 6 only.
-(define-public icedtea-6
+;; We jump ahead by patching the sources of ECJ 4.2.1 so that our bootstrap
+;; JDK can build it.  ECJ 4 allows us to skip the build of the first version
+;; of icedtea and build icedtea 2.x directly.
+(define-public ecj4-bootstrap
   (package
-    (name "icedtea")
-    (version "1.13.13")
+    (name "ecj-bootstrap")
+    (version "4.2.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "http://icedtea.wildebeest.org/download/source/icedtea6-"
-                    version ".tar.xz"))
+              (uri (string-append "http://archive.eclipse.org/eclipse/"
+                                  "downloads/drops4/R-" version
+                                  "-201209141800/ecjsrc-" version ".jar"))
               (sha256
                (base32
-                "0bg9sb4f7qbq77c0zf9m17p47ga0kf0r9622g9p12ysg26jd1ksg"))
-              (patches (search-patches
-                        "icedtea-6-extend-hotspot-aarch64-support.patch"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "Makefile.in"
-                    ;; do not leak information about the build host
-                    (("DISTRIBUTION_ID=\"\\$\\(DIST_ID\\)\"")
-                     "DISTRIBUTION_ID=\"\\\"guix\\\"\""))
-                  #t))))
+                "1x281p87m14zylvinkiz6gc23ss7pzlx419qjbql11jriwav4qfj"))))
+    ;; It would be so much easier if we could use the ant-build-system, but we
+    ;; cannot as we don't have ant at this point.  We use ecj for
+    ;; bootstrapping the JDK.
     (build-system gnu-build-system)
-    (outputs '("out"   ; Java Runtime Environment
-               "jdk"   ; Java Development Kit
-               "doc")) ; all documentation
     (arguments
-     `(;; There are many failing tests and many are known to fail upstream.
-       #:tests? #f
-
-       ;; The DSOs use $ORIGIN to refer to each other, but (guix build
-       ;; gremlin) doesn't support it yet, so skip this phase.
-       #:validate-runpath? #f
-
-       #:modules ((guix build utils)
-                  (guix build gnu-build-system)
-                  (srfi srfi-19))
-
-       #:configure-flags
-       `("--enable-bootstrap"
-         "--enable-nss"
-         "--without-rhino"
-         ,(string-append "--with-parallel-jobs="
-                         (number->string (parallel-job-count)))
-         "--disable-downloading"
-         "--disable-tests"
-         ,(string-append "--with-ecj="
-                         (assoc-ref %build-inputs "ecj")
-                         "/share/java/ecj-bootstrap.jar")
-         ,(string-append "--with-jar="
-                         (assoc-ref %build-inputs "fastjar")
-                         "/bin/fastjar")
-         ,(string-append "--with-jdk-home="
-                         (assoc-ref %build-inputs "classpath"))
-         ,(string-append "--with-java="
-                         (assoc-ref %build-inputs "jamvm")
-                         "/bin/jamvm"))
+     `(#:tests? #f                      ; there are no tests
        #:phases
        (modify-phases %standard-phases
          (replace 'unpack
-           (lambda* (#:key source inputs #:allow-other-keys)
-             (invoke "tar" "xvf" source)
-             (chdir (string-append "icedtea6-" ,version))
-             (mkdir "openjdk")
-             (copy-recursively (assoc-ref inputs "openjdk-src") "openjdk")
-             ;; The convenient OpenJDK source bundle is no longer
-             ;; available for download, so we have to take the sources
-             ;; from the Mercurial repositories and change the Makefile
-             ;; to avoid tests for the OpenJDK zip archive.
-             (with-directory-excursion "openjdk"
-               (for-each (lambda (part)
-                           (mkdir part)
-                           (copy-recursively
-                            (assoc-ref inputs
-                                       (string-append part "-src"))
-                            part))
-                         '("jdk" "hotspot" "corba"
-                           "langtools" "jaxp" "jaxws")))
-             (substitute* "patches/freetypeversion.patch"
-               (("REQUIRED_FREETYPE_VERSION = 2.2.1")
-                "REQUIRED_FREETYPE_VERSION = 2.10.1"))
-             (substitute* "Makefile.in"
-               (("echo \"ERROR: No up-to-date OpenJDK zip available\"; exit -1;")
-                "echo \"trust me\";")
-               ;; The contents of the bootstrap directory must be
-               ;; writeable but when copying from the store they are
-               ;; not.
-               (("mkdir -p lib/rt" line)
-                (string-append line "; chmod -R u+w $(BOOT_DIR)")))
-             (invoke "chmod" "-R" "u+w" "openjdk")))
-         (add-after 'unpack 'use-classpath
+           (lambda* (#:key source #:allow-other-keys)
+             (mkdir "src")
+             (with-directory-excursion "src"
+               (invoke "gjar" "-xf" source))
+             (chdir "src")))
+         (replace 'configure
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((jvmlib (assoc-ref inputs "classpath"))
-                   (jamvm  (assoc-ref inputs "jamvm")))
-               ;; Classpath does not provide rt.jar.
-               (substitute* "Makefile.in"
-                 (("\\$\\(SYSTEM_JDK_DIR\\)/jre/lib/rt.jar")
-                  (string-append jvmlib "/share/classpath/glibj.zip")))
-               ;; Make sure we can find all classes.
-               (setenv "CLASSPATH"
-                       (string-append jvmlib "/share/classpath/glibj.zip:"
-                                      jvmlib "/share/classpath/tools.zip:"
-                                      jamvm  "/lib/rt.jar"))
-               (setenv "JAVACFLAGS"
-                       (string-append "-cp "
-                                      jvmlib "/share/classpath/glibj.zip:"
-                                      jvmlib "/share/classpath/tools.zip")))
-             #t))
-         (add-after 'unpack 'patch-patches
-           (lambda _
-             ;; shebang in patches so that they apply cleanly
-             (substitute* '("patches/jtreg-jrunscript.patch"
-                            "patches/hotspot/hs23/drop_unlicensed_test.patch")
-               (("#!/bin/sh") (string-append "#!" (which "sh"))))
-             #t))
-         (add-after 'unpack 'fix-openjdk
-           (lambda _
-             (substitute* "openjdk/jdk/make/common/Defs-linux.gmk"
-               (("CFLAGS_COMMON  = -fno-strict-aliasing" all)
-                (string-append all " -fcommon")))
-             (substitute* "openjdk/hotspot/src/share/vm/code/relocInfo.hpp"
-               (("inline friend relocInfo prefix_relocInfo\\(int datalen = 0\\);")
-                "inline friend relocInfo prefix_relocInfo(int datalen);"))
-             (substitute*
-                 '("openjdk/jdk/src/solaris/native/java/net/PlainSocketImpl.c"
-                   "openjdk/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c")
-               (("#include <sys/sysctl.h>")
-                "#include <linux/sysctl.h>"))
-             ;; It looks like the "h = 31 * h + c" line of the jsum()
-             ;; function gets miscompiled. After a few iterations of the loop
-             ;; the result of "31 * h" is always 0x8000000000000000.
-             ;; Bad optimization maybe...
-             ;; Transform "31 * h + c" into a convoluted "32 * h + c - h"
-             ;; as a workaround.
-             (substitute* "openjdk/hotspot/src/share/vm/memory/dump.cpp"
-               (("h = 31 \\* h \\+ c;")
-                "jlong h0 = h;\nfor(int i = 0; i < 5; i++) h += h;\nh += c - h0;"))
-             ;; Our gcc version is higher than 4.3; replace the failing
-             ;; expression to test this by its result.
-             (substitute* "openjdk/jdk/make/sun/font/Makefile"
-               (("\"\\$\\(shell expr.*0\"")
-                "\"1\" \"0\""))))
-         (add-after 'unpack 'patch-paths
+             (setenv "CLASSPATH"
+                     (string-join
+                      (cons (search-input-file inputs "/lib/rt.jar")
+                            (find-files (string-append
+                                         (assoc-ref inputs "ant-bootstrap")
+                                         "/lib")
+                                        "\\.jar$"))
+                      ":"))
+             ;; This directive is not supported by our simple bootstrap JDK.
+             (substitute* (find-files "." "\\.java$")
+               (("@Override") ""))))
+         (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
-             ;; buildtree.make generates shell scripts, so we need to replace
-             ;; the generated shebang
-             (substitute* '("openjdk/hotspot/make/linux/makefiles/buildtree.make")
-               (("/bin/sh") (which "bash")))
+             ;; We can't compile these yet, but we don't need them at this
+             ;; point anyway.
+             (delete-file "org/eclipse/jdt/core/JDTCompilerAdapter.java")
+             (delete-file-recursively "org/eclipse/jdt/internal/antadapter")
 
-             (let ((corebin (string-append
-                             (assoc-ref inputs "coreutils") "/bin/"))
-                   (binbin  (string-append
-                             (assoc-ref inputs "binutils") "/bin/"))
-                   (grepbin (string-append
-                             (assoc-ref inputs "grep") "/bin/")))
-               (substitute* '("openjdk/jdk/make/common/shared/Defs-linux.gmk"
-                              "openjdk/corba/make/common/shared/Defs-linux.gmk")
-                 (("UNIXCOMMAND_PATH  = /bin/")
-                  (string-append "UNIXCOMMAND_PATH = " corebin))
-                 (("USRBIN_PATH  = /usr/bin/")
-                  (string-append "USRBIN_PATH = " corebin))
-                 (("DEVTOOLS_PATH *= */usr/bin/")
-                  (string-append "DEVTOOLS_PATH = " corebin))
-                 (("COMPILER_PATH *= */usr/bin/")
-                  (string-append "COMPILER_PATH = "
-                                 (assoc-ref inputs "gcc") "/bin/"))
-                 (("DEF_OBJCOPY *=.*objcopy")
-                  (string-append "DEF_OBJCOPY = " (which "objcopy"))))
+             ;; Create a simple manifest to make ecj executable.
+             (mkdir-p "META-INF")
+             (with-output-to-file "META-INF/MANIFESTS.MF"
+               (lambda _
+                 (display "Manifest-Version: 1.0
+Main-Class: org.eclipse.jdt.internal.compiler.batch.Main\n")))
 
-               ;; fix path to alsa header
-               (substitute* "openjdk/jdk/make/common/shared/Sanity.gmk"
-                 (("ALSA_INCLUDE=/usr/include/alsa/version.h")
-                  (string-append "ALSA_INCLUDE="
-                                 (assoc-ref inputs "alsa-lib")
-                                 "/include/alsa/version.h")))
+             ;; Compile it all!
+             (apply invoke "javac"
+                    (find-files "." "\\.java$"))
 
-               ;; fix hard-coded utility paths
-               (substitute* '("openjdk/jdk/make/common/shared/Defs-utils.gmk"
-                              "openjdk/corba/make/common/shared/Defs-utils.gmk")
-                 (("ECHO *=.*echo")
-                  (string-append "ECHO = " (which "echo")))
-                 (("^GREP *=.*grep")
-                  (string-append "GREP = " (which "grep")))
-                 (("EGREP *=.*egrep")
-                  (string-append "EGREP = " (which "egrep")))
-                 (("CPIO *=.*cpio")
-                  (string-append "CPIO = " (which "cpio")))
-                 (("READELF *=.*readelf")
-                  (string-append "READELF = " (which "readelf")))
-                 (("^ *AR *=.*ar")
-                  (string-append "AR = " (which "ar")))
-                 (("^ *TAR *=.*tar")
-                  (string-append "TAR = " (which "tar")))
-                 (("AS *=.*as")
-                  (string-append "AS = " (which "as")))
-                 (("LD *=.*ld")
-                  (string-append "LD = " (which "ld")))
-                 (("STRIP *=.*strip")
-                  (string-append "STRIP = " (which "strip")))
-                 (("NM *=.*nm")
-                  (string-append "NM = " (which "nm")))
-                 (("^SH *=.*sh")
-                  (string-append "SH = " (which "bash")))
-                 (("^FIND *=.*find")
-                  (string-append "FIND = " (which "find")))
-                 (("LDD *=.*ldd")
-                  (string-append "LDD = " (which "ldd")))
-                 (("NAWK *=.*(n|g)awk")
-                  (string-append "NAWK = " (which "gawk")))
-                 (("XARGS *=.*xargs")
-                  (string-append "XARGS = " (which "xargs")))
-                 (("UNZIP *=.*unzip")
-                  (string-append "UNZIP = " (which "unzip")))
-                 (("ZIPEXE *=.*zip")
-                  (string-append "ZIPEXE = " (which "zip")))
-                 (("SED *=.*sed")
-                  (string-append "SED = " (which "sed"))))
+             ;; Pack it all up!  We don't use "jar" here, because
+             ;; it doesn't produce reproducible zip archives.
+             ;; XXX: copied from (gnu build install)
+             (for-each (lambda (file)
+                         (let ((s (lstat file)))
+                           (unless (eq? (stat:type s) 'symlink)
+                             (utime file  0 0 0 0))))
+                       (find-files "." #:directories? #t))
 
-               ;; Some of these timestamps cause problems as they are more than
-               ;; 10 years ago, failing the build process.
-               (substitute*
-                   "openjdk/jdk/src/share/classes/java/util/CurrencyData.properties"
-                 (("AZ=AZM;2005-12-31-20-00-00;AZN") "AZ=AZN")
-                 (("MZ=MZM;2006-06-30-22-00-00;MZN") "MZ=MZN")
-                 (("RO=ROL;2005-06-30-21-00-00;RON") "RO=RON")
-                 (("TR=TRL;2004-12-31-22-00-00;TRY") "TR=TRY"))
-               #t)))
-         (add-before 'configure 'set-additional-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append (assoc-ref inputs "libxrender")
-                                    "/include/X11/extensions" ":"
-                                    (assoc-ref inputs "libxtst")
-                                    "/include/X11/extensions" ":"
-                                    (assoc-ref inputs "libxinerama")
-                                    "/include/X11/extensions" ":"
-                                    (or (getenv "CPATH") "")))
-             (setenv "ALT_CUPS_HEADERS_PATH"
-                     (string-append (assoc-ref inputs "cups")
-                                    "/include"))
-             (setenv "ALT_FREETYPE_HEADERS_PATH"
-                     (string-append (assoc-ref inputs "freetype")
-                                    "/include"))
-             (setenv "ALT_FREETYPE_LIB_PATH"
-                     (string-append (assoc-ref inputs "freetype")
-                                    "/lib"))
-             #t))
-         (add-before 'build 'disable-os-version-check
-           ;; allow build on linux major version change
-           (lambda _
-             (setenv "DISABLE_HOTSPOT_OS_VERSION_CHECK" "ok")
-             #t))
+             ;; It is important that the manifest appears first.
+             (apply invoke "zip" "-0" "-X" "ecj-bootstrap.jar"
+                    "META-INF/MANIFESTS.MF"
+                    (delete "./META-INF/MANIFESTS.MF"
+                            (find-files "." ".*" #:directories? #t)))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append (assoc-ref outputs "doc")
-                                       "/share/doc/icedtea"))
-                   (jre (assoc-ref outputs "out"))
-                   (jdk (assoc-ref outputs "jdk")))
-               (copy-recursively "openjdk.build/docs" doc)
-               (copy-recursively "openjdk.build/j2re-image" jre)
-               (copy-recursively "openjdk.build/j2sdk-image" jdk))
-             #t)))))
+             (let ((share (string-append (assoc-ref outputs "out")
+                                         "/share/java/")))
+               (mkdir-p share)
+               (install-file "ecj-bootstrap.jar" share)))))))
     (native-inputs
-     `(("ant" ,ant-bootstrap)
-       ("alsa-lib" ,alsa-lib)
-       ("attr" ,attr)
-       ("classpath" ,classpath-devel)
-       ("coreutils" ,coreutils)
-       ("cpio" ,cpio)
-       ("cups" ,cups)
-       ("ecj" ,ecj-bootstrap)
-       ("ecj-javac" ,ecj-javac-wrapper-final)
-       ("fastjar" ,fastjar)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("gtk" ,gtk+-2)
-       ("gawk" ,gawk)
-       ("giflib" ,giflib)
-       ("grep" ,grep)
-       ("jamvm" ,jamvm)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libnsl" ,libnsl)
-       ("libpng" ,libpng)
-       ("libtool" ,libtool)
-       ("libx11" ,libx11)
-       ("libxcomposite" ,libxcomposite)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxrender" ,libxrender)
-       ("libxslt" ,libxslt) ;for xsltproc
-       ("libxt" ,libxt)
-       ("libxtst" ,libxtst)
-       ("mit-krb5" ,mit-krb5)
-       ("nss" ,nss)
-       ("nss-certs" ,nss-certs)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("procps" ,procps) ;for "free", even though I'm not sure we should use it
-       ("unzip" ,unzip)
-       ("wget" ,wget)
-       ("which" ,which)
-       ("zip" ,zip)
-       ("zlib" ,zlib)
-       ("openjdk-src"
-        ,(origin
-           (method hg-fetch)
-           (uri (hg-reference
-                 (url "http://hg.openjdk.java.net/jdk6/jdk6/")
-                 (changeset "jdk6-b41")))
-           (file-name "jdk6-checkout")
-           (sha256
-            (base32
-             "14q47yfg586fs64w30g8mk92m5dkxsvr36zzh0ra99xk5x0x96mv"))))
-       ("jdk-src"
-        ,(origin
-           (method hg-fetch)
-           (uri (hg-reference
-                 (url "http://hg.openjdk.java.net/jdk6/jdk6/jdk/")
-                 (changeset "jdk6-b41")))
-           (file-name "jdk-checkout")
-           (sha256
-            (base32
-             "165824nhg1k1dx6zs9dny0j49rmk35jw5b13dmz8c77jfajml4v9"))))
-       ("hotspot-src"
-        ,(origin
-           (method hg-fetch)
-           (uri (hg-reference
-                 (url "http://hg.openjdk.java.net/jdk6/jdk6/hotspot/")
-                 (changeset "jdk6-b41")))
-           (file-name "hotspot-checkout")
-           (sha256
-            (base32
-             "07lc1z4k5dj9nrc1wvwmpvxr3xgxrdkdh53xb95skk5ij49yagfd"))))
-       ("corba-src"
-        ,(origin
-           (method hg-fetch)
-           (uri (hg-reference
-                 (url "http://hg.openjdk.java.net/jdk6/jdk6/corba/")
-                 (changeset "jdk6-b41")))
-           (file-name "corba-checkout")
-           (sha256
-            (base32
-             "1p9g1r9dnax2iwp7yb59qx7m4nmshqhwmrb2b8jj8zgbd9dl2i3q"))))
-       ("langtools-src"
-        ,(origin
-           (method hg-fetch)
-           (uri (hg-reference
-                 (url "http://hg.openjdk.java.net/jdk6/jdk6/langtools/")
-                 (changeset "jdk6-b41")))
-           (file-name "langtools-checkout")
-           (sha256
-            (base32
-             "1x52wd67fynbbd9ild6fb4wvba3f5hhwk03qdjfazd0a1qr37z3d"))))
-       ("jaxp-src"
-        ,(origin
-           (method hg-fetch)
-           (uri (hg-reference
-                 (url "http://hg.openjdk.java.net/jdk6/jdk6/jaxp/")
-                 (changeset "jdk6-b41")))
-           (file-name "jaxp-checkout")
-           (sha256
-            (base32
-             "0shlqrvzpr4nrkmv215lbxnby63s3yvbdh1yxcayznsyqwa4nlxm"))))
-       ("jaxws-src"
-        ,(origin
-           (method hg-fetch)
-           (uri (hg-reference
-                 (url "http://hg.openjdk.java.net/jdk6/jdk6/jaxws/")
-                 (changeset "jdk6-b41")))
-           (file-name "jaxws-checkout")
-           (sha256
-            (base32
-             "0835lkw8vib1xhp8lxnybhlvzdh699hbi4mclxanydjk63zbpxk0"))))))
-    (home-page "http://icedtea.classpath.org")
-    (synopsis "Java development kit")
-    (description
-     "This package provides the OpenJDK built with the IcedTea build harness.
-This version of the OpenJDK is no longer maintained and is only used for
-bootstrapping purposes.")
-    ;; IcedTea is released under the GPL2 + Classpath exception, which is the
-    ;; same license as both GNU Classpath and OpenJDK.
-    (license license:gpl2+)))
+     (list ant-bootstrap classpath-devel ecj-javac-wrapper-final jamvm
+           unzip zip))
+    (home-page "https://eclipse.org")
+    (synopsis "Eclipse Java development tools core batch compiler")
+    (description "This package provides the Eclipse Java core batch compiler
+for bootstrapping purposes.  The @dfn{Eclipse compiler for Java} (ecj) is a
+requirement for all GNU Classpath releases after version 0.93.  This version
+supports sufficient parts of Java 7 to build Icedtea 2.x.")
+    (license license:epl1.0)))
+
+(define ecj4-javac-wrapper
+  (package
+    (inherit ecj-javac-wrapper)
+    (native-inputs
+     (list guile-3.0 ecj4-bootstrap jamvm classpath-devel))))
+
+(define jamvm-with-ecj4
+  (package
+    (inherit jamvm)
+    (inputs
+     (modify-inputs (package-inputs jamvm)
+       (replace "ecj-javac-wrapper" ecj4-javac-wrapper)))))
 
 (define-public icedtea-7
   (let* ((version "2.6.13")
@@ -1225,9 +812,6 @@ bootstrapping purposes.")
          ;; gremlin) doesn't support it yet, so skip this phase.
          #:validate-runpath? #f
 
-         ;; Apparently, the C locale is needed for some of the tests.
-         #:locale "C"
-
          #:modules ((guix build utils)
                     (guix build gnu-build-system)
                     (ice-9 match)
@@ -1236,9 +820,10 @@ bootstrapping purposes.")
                     (srfi srfi-26))
 
          #:configure-flags
-         ;; TODO: package pcsc and sctp, and add to inputs
-         `("--disable-system-pcsc"
-           "--disable-system-sctp"
+         ;; TODO: package sctp and add to inputs
+         `("--disable-system-sctp"
+           "--enable-system-pcsc"
+           "--enable-system-lcms"
            "--enable-bootstrap"
            "--enable-nss"
            "--without-rhino"
@@ -1247,9 +832,17 @@ bootstrapping purposes.")
            "--disable-downloading"
            "--disable-tests"        ;they are run in the check phase instead
            "--with-openjdk-src-dir=./openjdk.src"
+           ,(string-append "--with-ecj="
+                           (assoc-ref %build-inputs "ecj4-javac-wrapper")
+                           "/bin/javac")
            ,(string-append "--with-jdk-home="
-                           (assoc-ref %build-inputs "jdk")))
-
+                           (assoc-ref %build-inputs "classpath"))
+           ,(string-append "--with-java="
+                           (assoc-ref %build-inputs "jamvm")
+                           "/bin/jamvm")
+           ,(string-append "--with-jar="
+                           (assoc-ref %build-inputs "classpath")
+                           "/bin/gjar"))
          #:phases
          (modify-phases %standard-phases
            (replace 'unpack
@@ -1273,8 +866,20 @@ bootstrapping purposes.")
                              (filter (cut string-suffix? "-drop" <>)
                                      (map (match-lambda
                                             ((name . _) name))
-                                          inputs))))
-                 #t)))
+                                          inputs)))))))
+           (add-after 'unpack 'use-classpath
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((tools  (search-input-file inputs "/share/classpath/tools.zip"))
+                     (rt.jar (search-input-file inputs "/lib/rt.jar")))
+                 ;; GNU Classpath does not provide rt.jar, but jamvm provides
+                 ;; Classpath's glibj.zip as rt.jar, so we just use that.
+                 (substitute* "Makefile.in"
+                   (("\\$\\(SYSTEM_JDK_DIR\\)/jre/lib/rt.jar") rt.jar))
+                 ;; Make sure we can find all classes.
+                 (setenv "CLASSPATH"
+                         (string-append rt.jar ":" tools))
+                 (setenv "JAVACFLAGS"
+                         (string-append "-cp " rt.jar ":" tools)))))
            (add-after 'unpack 'patch-bitrot
              (lambda _
                (substitute* '("patches/boot/revert-6973616.patch"
@@ -1285,8 +890,7 @@ bootstrapping purposes.")
                ;; included.  It is provided by the libc instead.
                (substitute* '("configure"
                               "openjdk.src/jdk/src/solaris/native/sun/nio/fs/LinuxNativeDispatcher.c")
-                 (("attr/xattr.h") "sys/xattr.h"))
-               #t))
+                 (("attr/xattr.h") "sys/xattr.h"))))
            (add-after 'unpack 'fix-openjdk
              (lambda _
                (substitute* "openjdk.src/jdk/make/common/Defs-linux.gmk"
@@ -1318,21 +922,20 @@ bootstrapping purposes.")
                                  "/include/X11/extensions"
                                  " -I" (assoc-ref inputs "libxinerama")
                                  "/include/X11/extensions"))
-                 (("\\$\\(wildcard /usr/include/X11/extensions\\)\\)") ""))
-               #t))
+                 (("\\$\\(wildcard /usr/include/X11/extensions\\)\\)") ""))))
            (add-after 'unpack 'patch-paths
-             (lambda _
+             (lambda* (#:key inputs #:allow-other-keys)
                ;; buildtree.make generates shell scripts, so we need to replace
                ;; the generated shebang
                (substitute* '("openjdk.src/hotspot/make/linux/makefiles/buildtree.make")
                  (("/bin/sh") (which "bash")))
 
                (let ((corebin (string-append
-                               (assoc-ref %build-inputs "coreutils") "/bin/"))
+                               (assoc-ref inputs "coreutils") "/bin/"))
                      (binbin  (string-append
-                               (assoc-ref %build-inputs "binutils") "/bin/"))
+                               (assoc-ref inputs "binutils") "/bin/"))
                      (grepbin (string-append
-                               (assoc-ref %build-inputs "grep") "/bin/")))
+                               (assoc-ref inputs "grep") "/bin/")))
                  (substitute* '("openjdk.src/jdk/make/common/shared/Defs-linux.gmk"
                                 "openjdk.src/corba/make/common/shared/Defs-linux.gmk")
                    (("UNIXCOMMAND_PATH  = /bin/")
@@ -1343,7 +946,7 @@ bootstrapping purposes.")
                     (string-append "DEVTOOLS_PATH = " corebin))
                    (("COMPILER_PATH *= */usr/bin/")
                     (string-append "COMPILER_PATH = "
-                                   (assoc-ref %build-inputs "gcc") "/bin/"))
+                                   (assoc-ref inputs "gcc") "/bin/"))
                    (("DEF_OBJCOPY *=.*objcopy")
                     (string-append "DEF_OBJCOPY = " (which "objcopy"))))
 
@@ -1351,7 +954,7 @@ bootstrapping purposes.")
                  (substitute* "openjdk.src/jdk/make/common/shared/Sanity.gmk"
                    (("ALSA_INCLUDE=/usr/include/alsa/version.h")
                     (string-append "ALSA_INCLUDE="
-                                   (assoc-ref %build-inputs "alsa-lib")
+                                   (assoc-ref inputs "alsa-lib")
                                    "/include/alsa/version.h")))
 
                  ;; fix hard-coded utility paths
@@ -1403,8 +1006,7 @@ bootstrapping purposes.")
                    (("AZ=AZM;2005-12-31-20-00-00;AZN") "AZ=AZN")
                    (("MZ=MZM;2006-06-30-22-00-00;MZN") "MZ=MZN")
                    (("RO=ROL;2005-06-30-21-00-00;RON") "RO=RON")
-                   (("TR=TRL;2004-12-31-22-00-00;TRY") "TR=TRY")))
-               #t))
+                   (("TR=TRL;2004-12-31-22-00-00;TRY") "TR=TRY")))))
            (add-before 'configure 'set-additional-paths
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "openjdk.src/jdk/make/common/shared/Sanity.gmk"
@@ -1432,13 +1034,11 @@ bootstrapping purposes.")
                                       "/include"))
                (setenv "ALT_FREETYPE_LIB_PATH"
                        (string-append (assoc-ref inputs "freetype")
-                                      "/lib"))
-               #t))
+                                      "/lib"))))
            (add-before 'build 'disable-os-version-check
-           ;; allow build on linux major version change
-           (lambda _
-             (setenv "DISABLE_HOTSPOT_OS_VERSION_CHECK" "ok")
-             #t))
+             ;; allow build on linux major version change
+             (lambda _
+               (setenv "DISABLE_HOTSPOT_OS_VERSION_CHECK" "ok")))
            (add-before 'check 'fix-test-framework
              (lambda _
                ;; Fix PATH in test environment
@@ -1450,8 +1050,7 @@ bootstrapping purposes.")
                (substitute* "openjdk.src/hotspot/test/test_env.sh"
                  (("/bin/rm") (which "rm"))
                  (("/bin/cp") (which "cp"))
-                 (("/bin/mv") (which "mv")))
-               #t))
+                 (("/bin/mv") (which "mv")))))
            (add-before 'check 'fix-hotspot-tests
              (lambda _
                (with-directory-excursion "openjdk.src/hotspot/test/"
@@ -1464,8 +1063,7 @@ bootstrapping purposes.")
                                 "runtime/7110720/Test7110720.sh")
                    (("/bin/rm") (which "rm"))
                    (("/bin/cp") (which "cp"))
-                   (("/bin/mv") (which "mv"))))
-               #t))
+                   (("/bin/mv") (which "mv"))))))
            (add-before 'check 'fix-jdk-tests
              (lambda _
                (with-directory-excursion "openjdk.src/jdk/test/"
@@ -1521,33 +1119,31 @@ bootstrapping purposes.")
                  (substitute* "java/rmi/activation/CommandEnvironment/SetChildEnv.java"
                    (("/bin/chmod") (which "chmod")))
                  (substitute* "java/util/zip/ZipFile/Assortment.java"
-                   (("/bin/sh") (which "sh"))))
-               #t))
+                   (("/bin/sh") (which "sh"))))))
            (replace 'check
-             (lambda _
+             (lambda* (#:key tests? #:allow-other-keys)
                ;; The "make check-*" targets always return zero, so we need to
                ;; check for errors in the associated log files to determine
                ;; whether any tests have failed.
-               (use-modules (ice-9 rdelim))
-               (let* ((error-pattern (make-regexp "^(Error|FAILED):.*"))
-                      (checker (lambda (port)
-                                 (let loop ()
-                                   (let ((line (read-line port)))
-                                     (cond
-                                      ((eof-object? line) #t)
-                                      ((regexp-exec error-pattern line)
-                                       (error "test failed"))
-                                      (else (loop)))))))
-                      (run-test (lambda (test)
-                                  (invoke "make" test)
-                                  (call-with-input-file
-                                      (string-append "test/" test ".log")
-                                    checker))))
-                 (when #f                 ; skip tests
+               (when tests?
+                 (use-modules (ice-9 rdelim))
+                 (let* ((error-pattern (make-regexp "^(Error|FAILED):.*"))
+                        (checker (lambda (port)
+                                   (let loop ()
+                                     (let ((line (read-line port)))
+                                       (cond
+                                        ((eof-object? line) #t)
+                                        ((regexp-exec error-pattern line)
+                                         (error "test failed"))
+                                        (else (loop)))))))
+                        (run-test (lambda (test)
+                                    (invoke "make" test)
+                                    (call-with-input-file
+                                        (string-append "test/" test ".log")
+                                      checker))))
                    (run-test "check-hotspot")
                    (run-test "check-langtools")
-                   (run-test "check-jdk"))
-                 #t)))
+                   (run-test "check-jdk")))))
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((doc (string-append (assoc-ref outputs "doc")
@@ -1556,8 +1152,7 @@ bootstrapping purposes.")
                      (jdk (assoc-ref outputs "jdk")))
                  (copy-recursively "openjdk.build/docs" doc)
                  (copy-recursively "openjdk.build/j2re-image" jre)
-                 (copy-recursively "openjdk.build/j2sdk-image" jdk))
-               #t))
+                 (copy-recursively "openjdk.build/j2sdk-image" jdk))))
            ;; Some of the libraries in the lib/amd64 folder link to libjvm.so.
            ;; But that shared object is located in the server/ folder, so it
            ;; cannot be found.  This phase creates a symbolic link in the
@@ -1590,14 +1185,14 @@ bootstrapping purposes.")
                                                       (string-drop-right
                                                         (%current-system) 6)))))))
                  (symlink (string-append lib-path "/server/libjvm.so")
-                          (string-append lib-path "/libjvm.so")))
-               #t))
+                          (string-append lib-path "/libjvm.so")))))
            ;; By default IcedTea only generates an empty keystore.  In order to
            ;; be able to use certificates in Java programs we need to generate a
            ;; keystore from a set of certificates.  For convenience we use the
            ;; certificates from the nss-certs package.
            (add-after 'install 'install-keystore
              (lambda* (#:key inputs outputs #:allow-other-keys)
+               (use-modules (ice-9 rdelim))
                (let* ((keystore  "cacerts")
                       (certs-dir (search-input-directory inputs
                                                          "etc/ssl/certs"))
@@ -1660,8 +1255,7 @@ bootstrapping purposes.")
                                               "/lib/security"))
                  (install-file keystore
                                (string-append (assoc-ref outputs "jdk")
-                                              "/jre/lib/security"))
-                 #t))))))
+                                              "/jre/lib/security"))))))))
       (native-inputs
        `(("openjdk-src"
           ,(drop "openjdk"
@@ -1694,10 +1288,14 @@ bootstrapping purposes.")
                        "icedtea-7-hotspot-aarch64-use-c++98.patch"))))
          ("ant" ,ant-bootstrap)
          ("attr" ,attr)
+         ("classpath" ,classpath-devel)
          ("coreutils" ,coreutils)
          ("diffutils" ,diffutils)       ;for tests
+         ("ecj4-javac-wrapper" ,ecj4-javac-wrapper)
+         ("fastjar" ,fastjar) ;only for the configure phase; we actually use gjar
          ("gawk" ,gawk)
          ("grep" ,grep)
+         ("jamvm" ,jamvm-with-ecj4)
          ("libtool" ,libtool)
          ("pkg-config" ,pkg-config)
          ("wget" ,wget)
@@ -1705,32 +1303,31 @@ bootstrapping purposes.")
          ("cpio" ,cpio)
          ("zip" ,zip)
          ("unzip" ,unzip)
-         ("fastjar" ,fastjar)
          ("libxslt" ,libxslt)           ;for xsltproc
          ("nss-certs" ,nss-certs)
          ("perl" ,perl)
-         ("procps" ,procps) ;for "free", even though I'm not sure we should use it
-         ("jdk" ,icedtea-6 "jdk")))
+         ("procps" ,procps)))  ;for "free", even though I'm not sure we should use it
       (inputs
-       `(("alsa-lib" ,alsa-lib)
-         ("cups" ,cups)
-         ("libx11" ,libx11)
-         ("libxcomposite" ,libxcomposite)
-         ("libxt" ,libxt)
-         ("libxtst" ,libxtst)
-         ("libxi" ,libxi)
-         ("libxinerama" ,libxinerama)
-         ("libxrender" ,libxrender)
-         ("libjpeg" ,libjpeg-turbo)
-         ("libpng" ,libpng)
-         ("mit-krb5" ,mit-krb5)
-         ("nss" ,nss)
-         ("giflib" ,giflib)
-         ("fontconfig" ,fontconfig)
-         ("freetype" ,freetype)
-         ("lcms" ,lcms)
-         ("zlib" ,zlib)
-         ("gtk" ,gtk+-2)))
+       (list alsa-lib
+             cups
+             fontconfig
+             freetype
+             giflib
+             gtk+-2
+             lcms
+             libjpeg-turbo
+             libpng
+             libx11
+             libxcomposite
+             libxi
+             libxinerama
+             libxrender
+             libxt
+             libxtst
+             mit-krb5
+             nss
+             pcsc-lite
+             zlib))
       (home-page "http://icedtea.classpath.org")
       (synopsis "Java development kit")
       (description
@@ -1745,7 +1342,7 @@ IcedTea build harness.")
       (license license:gpl2+))))
 
 (define-public icedtea-8
-  (let* ((version "3.7.0")
+  (let* ((version "3.19.0")
          (drop (lambda (name hash)
                  (origin
                    (method url-fetch)
@@ -1754,7 +1351,7 @@ IcedTea build harness.")
                          "/icedtea8/" version "/" name ".tar.xz"))
                    (sha256 (base32 hash))))))
     (package (inherit icedtea-7)
-      (version "3.7.0")
+      (version "3.19.0")
       (source (origin
                 (method url-fetch)
                 (uri (string-append
@@ -1762,19 +1359,17 @@ IcedTea build harness.")
                       version ".tar.xz"))
                 (sha256
                  (base32
-                  "09yqzn8rpccs7cyv89hhy5zlznpgqw5x3jz0w1ccp0cz1vgs8l5w"))
+                  "1cmms7cb2sav3ywc36ynqmybzx73sl279rm6j8i5nqrmp98ixmpf"))
                 (modules '((guix build utils)))
                 (snippet
-                 '(begin
-                    (substitute* '("configure"
-                                   "acinclude.m4")
-                      ;; Do not embed build time
-                      (("(DIST_ID=\"Custom build).*$" _ prefix)
-                       (string-append prefix "\"\n"))
-                      ;; Do not leak information about the build host
-                      (("DIST_NAME=\"\\$build_os\"")
-                       "DIST_NAME=\"guix\""))
-                    #t))))
+                 '(substitute* '("configure"
+                                 "acinclude.m4")
+                    ;; Do not embed build time
+                    (("(DIST_ID=\"Custom build).*$" _ prefix)
+                     (string-append prefix "\"\n"))
+                    ;; Do not leak information about the build host
+                    (("DIST_NAME=\"\\$build_os\"")
+                     "DIST_NAME=\"guix\"")))))
       (arguments
        `(#:imported-modules
          ((guix build ant-build-system)
@@ -1796,7 +1391,6 @@ IcedTea build harness.")
               `(let ((jdk (assoc-ref %build-inputs "jdk")))
                  `("CFLAGS=-fcommon"
                    "CXXFLAGS=-fcommon"
-                   ;;"--disable-bootstrap"
                    "--enable-bootstrap"
                    "--enable-nss"
                    ,(string-append "--with-parallel-jobs="
@@ -1814,6 +1408,7 @@ IcedTea build harness.")
                  (delete 'set-additional-paths)
                  (delete 'patch-patches)
                  (delete 'patch-bitrot)
+                 (delete 'use-classpath)
                  ;; Prevent the keytool from recording the current time when
                  ;; adding certificates at build time.
                  (add-after 'unpack 'patch-keystore
@@ -1859,8 +1454,7 @@ new Date();"))
                                       "warning: failed to substitute: ~a~%"
                                       file))))
                         (find-files "openjdk.src/jdk/src/solaris/native"
-                                    "\\.c|\\.h"))
-                       #t)))
+                                    "\\.c|\\.h")))))
                  (replace 'fix-openjdk
                    (lambda _
                      (substitute*
@@ -1880,45 +1474,45 @@ new Date();"))
                        ;; Install the nss.cfg file to JRE to enable SSL/TLS
                        ;; support via NSS.
                        (copy-file (string-append jdk "/jre/lib/security/nss.cfg")
-                                  (string-append jre "/lib/security/nss.cfg"))
-                       #t)))
+                                  (string-append jre "/lib/security/nss.cfg")))))
                  (add-after 'install 'strip-jar-timestamps
                    (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))))
       (native-inputs
        `(("jdk" ,icedtea-7 "jdk")
          ("openjdk-src"
           ,(drop "openjdk"
-                 "1mj6xgmw31i6qd30qi9dmv7160fbcfq5ikz1jwjihdg2793il19p"))
+                 "1l3bzmd3s38scxpwamfhnwbv7vndgjq6hz3bl58437fgl9kgbl69"))
          ("aarch32-drop"
           ,(drop "aarch32"
-                 "1wb8k5zm40zld0986dvmlh5xh3gyixbg9h26sl662zy92amhmyyg"))
+                 "0k4dwpi3x3lj41rj32xyxbn76r7cb2g2whh44r1z4iwhw1xd2lpq"))
          ("corba-drop"
           ,(drop "corba"
-                 "11ma4zz0599cy70xd219v7a8vin7p96xrhhz3wsaw6cjhkzpagah"))
+                 "0xhh6gf5gh5c6vf1607xcy49wnp5prch2rim13x14wvsn817xf0r"))
          ("jaxp-drop"
           ,(drop "jaxp"
-                 "14m1y0z0fbm5z5zjw3vnq85py8dma84bi3f9cw8rhdyc6skk8q4i"))
+                 "043g335rgi5ipl8dp3q2cc3gcfhxk77ipxs43sv344z71bn8xmxr"))
          ("jaxws-drop"
           ,(drop "jaxws"
-                 "09andnm6xaasnp963hgx42yiflifiljp9z7z85jrfyc5z8a5whmf"))
+                 "1pc0pv4v2mn2mjc0vp19d94v2150xigyhxsmckqasy647zcm6w0r"))
          ("jdk-drop"
           ,(drop "jdk"
-                 "0s6lcpc0zckz2fnq98aqf28nz9y3wbi41a3kyaqqa2abwbkm1zwl"))
+                 "1742lcm55l8zhi522x83v65ccr0rd6511q9rj7crw44x3ymdrhrv"))
          ("langtools-drop"
           ,(drop "langtools"
-                 "15wizy123vhk40chl1b4p552jf2pw2hdww0myf11qab425axz4nw"))
+                 "08iz7p2xcddlphipf6gahyabr5cawlnydap12p1n4f0md069b50b"))
          ("hotspot-drop"
           ,(drop "hotspot"
-                 "1ciz1w9j0kz7s1dxdhyqq71nla9icyz6qvn0b9z2zgkklqa98qmm"))
+                 "1ffaxfnb3yn1i7crivqigc1r1q0z6cp044i6nfring4z6c8pfhd2"))
          ("nashorn-drop"
           ,(drop "nashorn"
-                 "19pzl3ppaw8j6r5cnyp8qiw3hxijh3hdc46l39g5yfhdl4pr4hpa"))
+                 "15fn7cpm2i1npa88h57njxg0f8qkrqhrc30pb54d3hxlx5zyjl94"))
          ("shenandoah-drop"
           ,(drop "shenandoah"
-                 "0k33anxdzw1icn072wynfmmdjhsv50hay0j1sfkfxny12rb3vgdy"))
+                 "1jjzjjx1ykyhbc4llh8249dlr8j5g1ki6r7g9baj2mxyb9whc5nq"))
          ,@(fold alist-delete (package-native-inputs icedtea-7)
-                 '("jdk" "openjdk-src" "corba-drop" "jaxp-drop" "jaxws-drop"
-                   "jdk-drop" "langtools-drop" "hotspot-drop")))))))
+                 '("openjdk-src" "corba-drop" "jaxp-drop" "jaxws-drop"
+                   "jdk-drop" "langtools-drop" "hotspot-drop"
+                   "classpath" "ecj4-javac-wrapper" "jamvm" "fastjar")))))))
 
 (define-public openjdk9
   (package
@@ -2800,6 +2394,89 @@ new Date();"))
     (inputs
      (modify-inputs (package-inputs ant/java8)
        (prepend java-junit)))))
+
+(define-public libantlr3c
+  (package
+    (name "libantlr3c")
+    (version "3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://www.antlr3.org/download/C/"
+                       name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lpbnb4dq4azmsvlhp6khq1gy42kyqyjv8gww74g5lm2y6blm4fa"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list "--enable-debuginfo"
+                               "--disable-static"
+                               ,@(if (target-64bit?)
+                                  `("--enable-64bit")
+                                  '()))))
+    (synopsis "ANTLR C Library")
+    (description "LIBANTLR3C provides run-time C libraries for ANTLR3 (ANother
+Tool for Language Recognition v3).")
+    (home-page "https://www.antlr3.org/")
+    (license license:bsd-3)))
+
+(define-public drip
+  ;; Last release is from 2014, with a few important commits afterwards.
+  (let ((commit "a4bd00df0199e78243847f06cc04ecaea31f8f08"))
+    (package
+      (name "drip")
+      (version (git-version "0.2.4" "1" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ninjudd/drip")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0wzmjwfyldr3jn49517xd8yn7dgdk8h88qkga3kjyg1zc375ylg2"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       `(("jdk" ,icedtea "jdk")))
+      (arguments
+       `(#:tests? #f                    ; No tests.
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (add-before 'install 'fix-wrapper
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((jps (search-input-file inputs "/bin/jps")))
+                 (substitute* "bin/drip"
+                   (("jps") jps)
+                   (("brew update && brew upgrade drip") "guix pull && guix install drip")
+                   ;; No need to make:
+                   (("\\(cd -- \"\\$drip_dir\" && make -s\\) \\|\\| exit 1") "")
+                   ;; No need to include source:
+                   (("\\[\\[ -r \\$drip_dir/src/org/flatland/drip/Main\\.java \\]\\]")
+                    "true"))
+                 #t)))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin"))
+                      (share (string-append out "/share/drip")))
+                 (mkdir-p bin)
+                 (for-each
+                  (lambda (file)
+                    (install-file (string-append "bin/" file) bin))
+                  '("drip" "drip_daemon" "drip_proxy"))
+                 (install-file "drip.jar" share)
+                 (substitute* (string-append bin "/drip")
+                   (("drip_dir=\\$bin_dir/..")
+                    (string-append "drip_dir=" share)))
+                 #t))))))
+      (home-page "https://github.com/ninjudd/drip")
+      (synopsis "Faster Java Virtual Machine launching")
+      (description "Drip is a launcher for the Java Virtual Machine that
+provides much faster startup times than the @command{java} command.  The @command{drip}
+script is intended to be a drop-in replacement for the @command{java} command,
+only faster.")
+      (license license:epl1.0))))
 
 (define-public java-openjfx-build
   (package
@@ -6390,7 +6067,7 @@ these scripting language engines.")
     (native-inputs
      (list java-junit))
     (home-page "https://commons.apache.org/jxpath/")
-    (synopsis "Simple interpreter of an expression language called XPath.")
+    (synopsis "Simple interpreter of an expression language called XPath")
     (description "The org.apache.commons.jxpath package defines a simple
 interpreter of an expression language called XPath.  JXPath applies XPath
 expressions to graphs of objects of all kinds: JavaBeans, Maps, Servlet
@@ -7812,14 +7489,14 @@ JavaMail API.")
 (define-public java-log4j-api
   (package
     (name "java-log4j-api")
-    (version "2.16.0")
+    (version "2.17.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/logging/log4j/" version
                                   "/apache-log4j-" version "-src.tar.gz"))
               (sha256
                (base32
-                "1943lsqf3rywh11h6g5apyqm25am42cvrxpfc8sb9k8aqhlfvl0a"))))
+                "1bn9hrxyvw2d29z7mcd0frcqa8mbxmq59zb6b930zibkq68n1g01"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f ; tests require unpackaged software
@@ -8147,6 +7824,7 @@ time.")
      `(#:jar-name "slf4j-simple.jar"
        #:source-dir "slf4j-simple/src/main"
        #:test-dir "slf4j-simple/src/test"
+       #:test-exclude (list "**/*SimpleLoggerMultithreadedInitializationTest.java")
        #:phases
        (modify-phases %standard-phases
          ;; The tests need some test classes from slf4j-api
@@ -11175,7 +10853,7 @@ configuration and string construction.")
     (native-inputs
      (list java-junit java-hamcrest-core javacc-4))
     (home-page "https://commons.apache.org/proper/commons-jexl/")
-    (synopsis "Java Expression Language ")
+    (synopsis "Java Expression Language")
     (description "JEXL is a library intended to facilitate the implementation
 of dynamic and scripting features in applications and frameworks written in
 Java.  JEXL implements an Expression Language based on some extensions to the
@@ -11639,6 +11317,8 @@ application components to create, send, receive, and read messages.")
              "**/DurationFilterTest.java"
              "**/MailHandlerTest.java"
              "**/GetLocalAddressTest.java"
+             ;; SSLHandshakeException: No appropriate protocol
+             "**/WriteTimeoutSocketTest.java"
              ;; FIXME: both end with:
              ;; java.lang.ClassNotFoundException:
              ;; javax.mail.internet.MimeMultipartParseTest
@@ -11649,16 +11329,13 @@ application components to create, send, receive, and read messages.")
          (add-before 'configure 'move-version.java
            (lambda _
              (copy-file "mail/src/main/resources/javax/mail/Version.java"
-                        "mail/src/main/java/javax/mail/Version.java")
-             #t))
+                        "mail/src/main/java/javax/mail/Version.java")))
          (add-before 'build 'copy-resources
            (lambda _
              (copy-recursively "mail/src/main/resources/META-INF"
-                               "build/classes/META-INF")
-             #t)))))
+                               "build/classes/META-INF"))))))
     (native-inputs
-     `(("junit" ,java-junit)
-       ("hamcrest" ,java-hamcrest-core)))
+     (list java-junit java-hamcrest-core))
     (home-page "https://javaee.github.io/javamail/")
     (synopsis "Mail-related functionality in Java")
     (description "The JavaMail API provides a platform-independent and
@@ -11715,14 +11392,14 @@ protocol-independent framework to build mail and messaging applications.")
 (define-public java-kafka-clients
   (package
     (name "java-kafka-clients")
-    (version "1.0.0")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/kafka/" version "/kafka-"
                                   version "-src.tgz"))
               (sha256
                (base32
-                "1yxmnsmliwm7671q5yy9bl4jdqyyn00n26cggz9brwczx80w1vfq"))))
+                "1jn62q7z383nwhzv4ippsddf98sa1gnkszjjncj4ii3r8rzgw566"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-kafka-clients.jar"
@@ -11735,6 +11412,10 @@ protocol-independent framework to build mail and messaging applications.")
          "**/IntegrationTest.java"
          ;; Requires network
          "**/ClientUtilsTest.java"
+         ;; This test fails on i686
+         "**/SerializationTest.java"
+         ;; "protocol is disabled or cipher suites are inappropriate"
+         "**/SslTransportLayerTest.java"
          ;; End with errors that seem related to our powermock
          "**/KafkaProducerTest.java"
          "**/BufferPoolTest.java"
@@ -11743,20 +11424,20 @@ protocol-independent framework to build mail and messaging applications.")
     (inputs
      (list java-slf4j-api java-lz4))
     (native-inputs
-     `(("junit" ,java-junit)
-       ("hamcrest" ,java-hamcrest-all)
-       ("objenesis" ,java-objenesis)
-       ("asm" ,java-asm)
-       ("cglib" ,java-cglib)
-       ("javassist" ,java-jboss-javassist)
-       ("snappy" ,java-snappy)
-       ("easymock" ,java-easymock)
-       ("powermock" ,java-powermock-core)
-       ("powermock-easymock" ,java-powermock-api-easymock)
-       ("powermock-junit4-common" ,java-powermock-modules-junit4-common)
-       ("powermock-junit4" ,java-powermock-modules-junit4)
-       ("powermock-support" ,java-powermock-api-support)
-       ("java-bouncycastle" ,java-bouncycastle)))
+     (list java-asm
+           java-bouncycastle
+           java-cglib
+           java-easymock
+           java-hamcrest-all
+           java-jboss-javassist
+           java-junit
+           java-objenesis
+           java-powermock-api-easymock
+           java-powermock-api-support
+           java-powermock-core
+           java-powermock-modules-junit4
+           java-powermock-modules-junit4-common
+           java-snappy))
     (home-page "https://kafka.apache.org")
     (synopsis "Distributed streaming platform")
     (description "Kafka is a distributed streaming platform, which means:
@@ -12554,7 +12235,7 @@ the DOM level 3 load/save API's are in use.")
                           (find-files "build" "^jakarta-regexp-.*\\.jar$"))
                 #t))))))
     (home-page "https://attic.apache.org/projects/jakarta-regexp.html")
-    (synopsis "Regular expression parser generator for Java.")
+    (synopsis "Regular expression parser generator for Java")
     (description "@code{jakarta-regexp} is an old regular expression parser
 generator for Java.")
     (license license:asl2.0)))

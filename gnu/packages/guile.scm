@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -17,6 +17,7 @@
 ;;; Copyright © 2019 Taylan Kammer <taylan.kammer@gmail.com>
 ;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -186,7 +187,10 @@ without requiring the source code to be rewritten.")
    (outputs '("out" "debug"))
 
    (arguments
-    `(#:configure-flags '("--disable-static") ; saves 3 MiB
+    `(#:configure-flags
+      ,(if (target-x86-32?)               ;<https://issues.guix.gnu.org/49368>
+           ''("--disable-static" "CFLAGS=-g -O2 -fexcess-precision=standard")
+           ''("--disable-static"))                ;saves 3 MiB
 
       ;; Work around non-reproducible .go files as described in
       ;; <https://bugs.gnu.org/20272>, which affects 2.0, 2.2, and 3.0 so far.
@@ -272,7 +276,8 @@ without requiring the source code to be rewritten.")
      (substitute-keyword-arguments (package-arguments guile-2.0)
        ((#:configure-flags flags ''())
         (if (target-x86-32?)            ;<https://issues.guix.gnu.org/49368>
-            `(append ,flags '("CFLAGS=-g -O2 -fexcess-precision=standard"))
+            `(append '("--disable-static")
+                 '("CFLAGS=-g -O2 -fexcess-precision=standard"))
             flags))))
 
     (properties '((timeout . 72000)               ;20 hours
@@ -344,7 +349,7 @@ without requiring the source code to be rewritten.")
                       '("CFLAGS=-g -O2 -fexcess-precision=standard")
                       '())
                 "--enable-mini-gmp"
-                ,flags))
+                '("--disable-static")))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-before 'check 'disable-stack-overflow-test
@@ -408,9 +413,9 @@ without requiring the source code to be rewritten.")
                                                 ;  when heavily loaded)
 
 (define-public guile-next
-  (let ((version "3.0.5")
+  (let ((version "3.0.7")
         (revision "0")
-        (commit "91547abf54d5e0795afda2781259ab8923eb527b"))
+        (commit "d70c1dbebf9ac0fd45af4578c23983ec4a7da535"))
     (package
       (inherit guile-3.0)
       (name "guile-next")
@@ -424,7 +429,7 @@ without requiring the source code to be rewritten.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "09i1c77h2shygylfk0av31jsc1my6zjl230b2cx6vyl58q8c0cqy"))))
+                  "05rsk9lh5kchbav3lwfwgvgybrykqqjmkkc6689fhb3mjr5m3dqj"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
@@ -902,6 +907,29 @@ pure Scheme by using Guile's foreign function interface.")
     (description
      "This package provides a GNU Guile interface to the zstd (``zstandard'')
 compression library.")
+    (license license:gpl3+)))
+
+(define-public guile-lzma
+  (package
+    (name "guile-lzma")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://files.ngyro.com/guile-lzma/guile-lzma-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0pnfzk92p9y5ymjq6rq619b9fy0dflv56jwg00wlvvbjssb6i1ib"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake guile-3.0 guile-bytestructures pkg-config))
+    (inputs (list guile-3.0 xz))
+    (propagated-inputs (list guile-bytestructures))
+    (home-page "https://ngyro.com/software/guile-lzma.html")
+    (synopsis "Guile bindings for liblzma (XZ)")
+    (description "Guile-LZMA is a Guile wrapper for the liblzma (XZ)
+library.  It exposes an interface similar to other Guile compression
+libraries, like Guile-zlib.")
     (license license:gpl3+)))
 
 ;;; guile.scm ends here

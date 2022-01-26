@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
@@ -55,8 +55,10 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages wxwidgets)
@@ -188,7 +190,7 @@ for reading and writing.")
 (define-public erfa
   (package
     (name "erfa")
-    (version "1.7.3")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -197,7 +199,7 @@ for reading and writing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nh12dr7gk4ki55lz95pkm4fpf7kazirra3zax9pab6v4qql4hlw"))))
+        (base32 "0s9dpj0jdkqcg552f00jhd722czji4pffabmpys5pgi6djckq4f4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list automake autoconf libtool pkg-config))
@@ -612,13 +614,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "4.3.1")
+    (version "5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "0lfd6n7v7kas4wvacddnwgccax3ks908735dzilg7dsf7ci52f9d"))
+        (base32 "09rr9z2kn5qw34fqpwxgcwsn9m5aw6f0dd0pm232aa8k3qakw83h"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -690,7 +692,12 @@ accurately in real time at any rate desired.")
     (inputs
      (list cfitsio expat))
     (propagated-inputs
-     (list python-configobj python-numpy python-ply python-pyerfa))
+     (list python-configobj
+           python-numpy
+           python-packaging
+           python-ply
+           python-pyerfa
+           python-pyyaml))
     (home-page "https://www.astropy.org/")
     (synopsis "Core package for Astronomy in Python")
     (description
@@ -698,6 +705,226 @@ accurately in real time at any rate desired.")
 much of the core functionality and some common tools needed for performing
 astronomy and astrophysics.")
     (license license:bsd-3)))
+
+(define-public python-astropy-healpix
+  (package
+    (name "python-astropy-healpix")
+    (version "0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astropy-healpix" version))
+       (sha256
+        (base32 "1436ml03xkmvx4afzbhfj67ab91418sz1w3lq1b18r43qchnd6j0"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; This file is opened in both install and check phases.
+         (add-before 'install 'writable-compiler
+           (lambda _ (make-file-writable "astropy_healpix/_compiler.c")))
+         (add-before 'check 'writable-compiler
+           (lambda _ (make-file-writable "astropy_healpix/_compiler.c")))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               ;; Extensions have to be rebuilt before running the tests.
+               (invoke "python" "setup.py" "build_ext" "--inplace")
+               (invoke "python" "-m" "pytest"
+                       "--pyargs" "astropy_healpix")))))))
+    (native-inputs
+     (list python-extension-helpers
+           python-hypothesis
+           python-pytest-astropy
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (home-page "https://github.com/astropy/astropy-healpix")
+    (synopsis "HEALPix for Astropy")
+    (description "This package provides HEALPix to the Astropy project.")
+    (license license:bsd-3)))
+
+(define-public python-astroquery
+  (package
+    (name "python-astroquery")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astroquery" version))
+       (sha256
+        (base32 "06xy0qzqmps6z5vwfkh5fkhr151p7g94r2j0mvp1rc8zns22y010"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'writable-home
+           (lambda _                    ; some tests need a writable home
+             (setenv "HOME" (getcwd))))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest" "--pyargs" "astroquery"
+                       ;; Skip tests that require online data.
+                       "-m" "not remote_data")))))))
+    (propagated-inputs
+     (list python-astropy
+           python-beautifulsoup4
+           python-html5lib
+           python-keyring
+           python-numpy
+           python-pyvo
+           python-requests))
+    (native-inputs
+     (list python-flask
+           python-jinja2
+           python-matplotlib
+           python-pytest-astropy
+           python-pytest-dependency))
+    (home-page "https://www.astropy.org/astroquery/")
+    (synopsis "Access online astronomical data resources")
+    (description "Astroquery is a package that contains a collection of tools
+to access online Astronomical data.  Each web service has its own sub-package.")
+    (license license:bsd-3)))
+
+(define-public python-photutils
+  (package
+    (name "python-photutils")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "photutils" version))
+       (sha256
+        (base32 "1a8djakaya6w5iv9237gkcz39brqzgrfs2wqrl0izi1s85cfdymn"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:test-target "pytest"
+       #:phases
+       (modify-phases %standard-phases
+         ;; This file is opened in both install and check phases.
+         (add-before 'install 'writable-compiler
+           (lambda _ (make-file-writable "photutils/_compiler.c")))
+         (add-before 'check 'writable-compiler
+           (lambda _ (make-file-writable "photutils/_compiler.c"))))))
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-pytest-astropy
+           python-pytest-runner
+           python-setuptools-scm))
+    (home-page "https://github.com/astropy/photutils")
+    (synopsis "Source detection and photometry")
+    (description "Photutils is an Astropy package for detection and photometry
+of astronomical sources.")
+    (license license:bsd-3)))
+
+(define-public python-pyvo
+  (package
+    (name "python-pyvo")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyvo" version))
+       (sha256
+        (base32 "1lap703wxbyxqlbk85myirp4pkdnc6cg10xhfajfsvz5k0hm5ffw"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest" "--pyargs" "pyvo" "-k"
+                       (string-append   ; these tests use the network
+                        "not test_access_with_string"
+                        " and not test_access_with_list"
+                        " and not test_access_with_expansion"))))))))
+    (native-inputs
+     (list python-pytest-astropy python-requests-mock))
+    (propagated-inputs
+     (list python-astropy python-mimeparse python-pillow python-requests))
+    (home-page "https://github.com/astropy/pyvo")
+    (synopsis "Access Virtual Observatory data and services")
+    (description
+     "PyVO is a package providing access to remote data and services of the
+Virtual observatory (VO) using Python.")
+    (license license:bsd-3)))
+
+(define-public python-regions
+  (package
+    (name "python-regions")
+    (version "0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "regions" version))
+       (sha256
+        (base32 "1bjrcjchbw3xw1a26d5g198lh7vxpp9m5sal58r7f8mmr1d8g2dc"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:test-target "pytest"
+       #:phases
+       (modify-phases %standard-phases
+         ;; This doctest requires online data.
+         (add-after 'unpack 'delete-doctest
+           (lambda _ (delete-file "docs/masks.rst")))
+         ;; This file is opened in both install and check phases.
+         (add-before 'install 'writable-compiler
+           (lambda _ (make-file-writable "regions/_compiler.c")))
+         (add-before 'check 'writable-compiler
+           (lambda _ (make-file-writable "regions/_compiler.c")))
+         (add-before 'check 'writable-home
+           (lambda _  (setenv "HOME" (getcwd)))))))
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-pytest-arraydiff
+           python-pytest-astropy
+           python-pytest-runner
+           python-setuptools-scm))
+    (home-page "https://github.com/astropy/regions")
+    (synopsis "Package for region handling")
+    (description "Regions is an Astropy package for region handling.")
+    (license license:bsd-3)))
+
+(define-public python-astral
+  (package
+    (name "python-astral")
+    (version "2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "astral" version))
+       (sha256
+        (base32 "1gkggdibccmdy9glymw3kbrkzm6svvsg0lk56hhy92y4smkrj7g4"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-freezegun python-setuptools-scm))
+    (propagated-inputs
+     (list python-dataclasses python-pytest python-pytz))
+    (home-page "https://github.com/sffjunkie/astral")
+    (synopsis "Calculations for the position of the sun and moon")
+    (description "Astral is a Python module that calculates times for various
+positions of the sun: dawn, sunrise, solar noon, sunset, dusk, solar
+elevation, solar azimuth, rahukaalam, and the phases of the moon.")
+    (license license:asl2.0)))
 
 (define-public libnova
   (package
@@ -1170,13 +1397,13 @@ JPL ephemerides use to predict raw (x,y,z) planetary positions.")
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
-    (version "1.7.3")
+    (version "2.0.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyerfa" version))
        (sha256
-        (base32 "1jqqrxvrgly4r0br5f6dsy8nab2xmhz915vp6md5f31ysr2sdwvc"))
+        (base32 "0c6y1rm51kj8ahbr1vwbswck3ix77dc3zhc2fkg6w7iczrzn7m1g"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1189,14 +1416,11 @@ JPL ephemerides use to predict raw (x,y,z) planetary positions.")
        (modify-phases %standard-phases
          (add-before 'build 'use-system-liberfa
            (lambda _
-             (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1")
-             #t)))))
+             (setenv "PYERFA_USE_SYSTEM_LIBERFA" "1"))))))
     (native-inputs
-     `(("pytest-doctestplus" ,python-pytest-doctestplus)
-       ("python-pytest" ,python-pytest)
-       ("python-setuptools-scm" ,python-setuptools-scm)))
+     (list python-pytest-doctestplus python-pytest python-setuptools-scm))
     (inputs
-     `(("liberfa" ,erfa)))
+     (list erfa))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/liberfa/pyerfa")

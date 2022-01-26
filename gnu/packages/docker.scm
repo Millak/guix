@@ -126,7 +126,7 @@ client.")
            python-requests
            python-six
            python-texttable
-           python-websocket-client))
+           python-websocket-client-0.59))
     (home-page "https://www.docker.com/")
     (synopsis "Multi-container orchestration for Docker")
     (description "Docker Compose is a tool for defining and running
@@ -585,7 +585,7 @@ built-in registry server of Docker.")
        ("xz" ,xz)))
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)
-           go gotestsum pkg-config))
+           go-1.14 gotestsum pkg-config))
     (synopsis "Docker container component library, and daemon")
     (description "This package provides a framework to assemble specialized
 container systems.  It includes components for orchestration, image
@@ -665,7 +665,7 @@ provisioning etc.")
 (define-public cqfd
   (package
     (name "cqfd")
-    (version "5.2.1")
+    (version "5.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -674,7 +674,7 @@ provisioning etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zqgznfl7slfrddfpy2pfmablbvyf7296d3b3vcprilqb93cc7li"))))
+                "0gy4kjy6v52acfk6ffbg5sp02k6176khhkms7zlwmywq8591bpww"))))
     (build-system gnu-build-system)
     (arguments
      ;; The test suite requires a docker daemon and connectivity.

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Bonface Munyoki Kilyungi <bonfacemunyoki@gmail.com>
 ;;; Copyright © 2021 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
-;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -76,6 +76,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages crates-io)
@@ -372,7 +373,7 @@ single executable called @code{bam}.")
 (define-public bcftools
   (package
     (name "bcftools")
-    (version "1.12")
+    (version "1.14")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/samtools/bcftools/"
@@ -380,12 +381,11 @@ single executable called @code{bam}.")
                                   version "/bcftools-" version ".tar.bz2"))
               (sha256
                (base32
-                "1x94l1hy2pi3lbz0sxlbw0g6q5z5apcrhrlcwda94ns9n4r6a3ks"))
+                "1jqrma16fx8kpvb3c0462dg0asvmiv5yi8myqmc5ddgwi6p8ivxp"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Delete bundled htslib.
-                          (delete-file-recursively "htslib-1.12")
-                          #t))))
+                          (delete-file-recursively "htslib-1.14")))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -396,8 +396,7 @@ single executable called @code{bam}.")
          (add-before 'check 'patch-tests
            (lambda _
              (substitute* "test/test.pl"
-               (("/bin/bash") (which "bash")))
-             #t)))))
+               (("/bin/bash") (which "bash"))))))))
     (native-inputs
      (list htslib perl))
     (inputs
@@ -411,9 +410,25 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
     ;; The sources are dual MIT/GPL, but becomes GPL-only when USE_GPL=1.
     (license (list license:gpl3+ license:expat))))
 
+(define-public bcftools-1.12
+  (package/inherit bcftools
+    (version "1.12")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/samtools/bcftools/"
+                                  "releases/download/"
+                                  version "/bcftools-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1x94l1hy2pi3lbz0sxlbw0g6q5z5apcrhrlcwda94ns9n4r6a3ks"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Delete bundled htslib.
+                          (delete-file-recursively "htslib-1.12")))))
+    (native-inputs (list htslib-1.12 perl))))
+
 (define-public bcftools-1.10
-  (package (inherit bcftools)
-    (name "bcftools")
+  (package/inherit bcftools
     (version "1.10")
     (source (origin
               (method url-fetch)
@@ -426,11 +441,8 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Delete bundled htslib.
-                          (delete-file-recursively "htslib-1.10")
-                          #t))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list htslib-1.10 perl))))
+                          (delete-file-recursively "htslib-1.10")))))
+    (native-inputs (list htslib-1.10 perl))))
 
 (define-public bedops
   (package
@@ -1063,13 +1075,7 @@ Python.")
                (("^(.+)def test_from_hdf5_issue_731" m indent)
                 (string-append indent
                                "@npt.dec.skipif(True, msg='Guix')\n"
-                               m)))))
-
-         (add-before 'reset-gzip-timestamps 'make-files-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (file) (chmod file #o644))
-                         (find-files out "\\.gz"))))))))
+                               m))))))))
     (propagated-inputs
      (list python-anndata
            python-numpy
@@ -2315,7 +2321,7 @@ has several key features:
 (define-public python-pysam
   (package
     (name "python-pysam")
-    (version "0.16.0.1")
+    (version "0.18.0")
     (source (origin
               (method git-fetch)
               ;; Test data is missing on PyPi.
@@ -2325,11 +2331,10 @@ has several key features:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "168bwwm8c2k22m7paip8q0yajyl7xdxgnik0bgjl7rhqg0majz0f"))
+                "042ca27r6634xg2ixgvq1079cp714wmm6ml7bwc1snn0wxxzywfg"))
               (modules '((guix build utils)))
               (snippet '(begin
-                          ;; Drop bundled htslib. TODO: Also remove samtools
-                          ;; and bcftools.
+                          ;; FIXME: Unbundle samtools and bcftools.
                           (delete-file-recursively "htslib")))))
     (build-system python-build-system)
     (arguments
@@ -2346,35 +2351,24 @@ has several key features:
              (setenv "CFLAGS" "-D_CURSES_LIB=1")))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
-             ;; FIXME: These tests fail with "AttributeError: 'array.array'
-             ;; object has no attribute 'tostring'".
-             (delete-file "tests/AlignmentFile_test.py")
              (when tests?
                ;; Step out of source dir so python does not import from CWD.
                (with-directory-excursion "tests"
                  (setenv "HOME" "/tmp")
                  (invoke "make" "-C" "pysam_data")
                  (invoke "make" "-C" "cbcf_data")
-                 (invoke "pytest" "-k"
-                         (string-append
-                           ;; requires network access.
-                           "not FileHTTP"
-                           ;; bug in test suite with samtools update
-                           ;; https://github.com/pysam-developers/pysam/issues/961
-                           " and not TestHeaderBAM"
-                           " and not TestHeaderCRAM"
-                           " and not test_text_processing")))))))))
+                 ;; The FileHTTP test requires network access.
+                 (invoke "pytest" "-k" "not FileHTTP"))))))))
     (propagated-inputs
-     (list htslib-1.10))    ; Included from installed header files.
+     (list htslib))                    ; Included from installed header files.
     (inputs
      (list ncurses curl zlib))
     (native-inputs
      (list python-cython
            python-pytest
            ;; Dependencies below are are for tests only.
-           samtools-1.10
-           bcftools-1.10
-           python-nose))
+           samtools
+           bcftools))
     (home-page "https://github.com/pysam-developers/pysam")
     (synopsis "Python bindings to the SAMtools C API")
     (description
@@ -2583,13 +2577,6 @@ databases.")
      `(#:tests? #false
        #:phases
        (modify-phases %standard-phases
-         (add-before 'reset-gzip-timestamps 'make-files-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure .gz files are writable so that the
-             ;; 'reset-gzip-timestamps' phase can do its work.
-             (let ((out (assoc-ref outputs "out")))
-               (for-each make-file-writable
-                         (find-files out "\\.gz$")))))
          (add-after 'unpack 'use-python3-for-cython
            (lambda _
              (substitute* "setup.py"
@@ -2968,7 +2955,7 @@ and record oriented data modeling and the Semantic Web.")
 (define-public cwltool
   (package
     (name "cwltool")
-    (version "3.1.20211107152837")
+    (version "3.1.20220119140128")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2977,7 +2964,7 @@ and record oriented data modeling and the Semantic Web.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i3x9wdgpzgyc1askxymlhn0ps2x9xhqaax496iwpx66ab6132c4"))))
+                "1jmrm0qrqgka79avc1kq63fgh20gx6g07fc8p3iih4k85vhdyl3f"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3046,8 +3033,7 @@ and record oriented data modeling and the Semantic Web.")
            python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-pytest-runner
-           python-rdflib-jsonld))
+           python-pytest-runner))
     (home-page
      "https://github.com/common-workflow-language/common-workflow-language")
     (synopsis "Common Workflow Language reference implementation")
@@ -4785,7 +4771,7 @@ performance.")
 (define-public htslib
   (package
     (name "htslib")
-    (version "1.12")
+    (version "1.14")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4793,7 +4779,7 @@ performance.")
                     version "/htslib-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jplnvizgr0fyyvvmkfmnsywrrpqhid3760vw15bllz98qdi9012"))))
+                "0pwk8yhhvb85mi1d2qhwsb4samc3rmbcrq7b1s0jz0glaa7in8pd"))))
     (build-system gnu-build-system)
     ;; Let htslib translate "gs://" and "s3://" to regular https links with
     ;; "--enable-gcs" and "--enable-s3". For these options to work, we also
@@ -4819,9 +4805,20 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
     ;; the rest is released under the Expat license
     (license (list license:expat license:bsd-3))))
 
+(define-public htslib-1.12
+  (package/inherit htslib
+    (version "1.12")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/htslib/releases/download/"
+                    version "/htslib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1jplnvizgr0fyyvvmkfmnsywrrpqhid3760vw15bllz98qdi9012"))))))
+
 (define-public htslib-1.10
-  (package (inherit htslib)
-    (name "htslib")
+  (package/inherit htslib
     (version "1.10")
     (source (origin
               (method url-fetch)
@@ -4833,8 +4830,7 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
                 "0wm9ay7qgypj3mwx9zl1mrpnr36298b1aj5vx69l4k7bzbclvr3s"))))))
 
 (define-public htslib-1.9
-  (package (inherit htslib)
-    (name "htslib")
+  (package/inherit htslib
     (version "1.9")
     (source (origin
               (method url-fetch)
@@ -4847,8 +4843,7 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
 
 ;; This package should be removed once no packages rely upon it.
 (define htslib-1.3
-  (package
-    (inherit htslib)
+  (package/inherit htslib
     (version "1.3.1")
     (source (origin
               (method url-fetch)
@@ -4860,8 +4855,7 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
                 "1rja282fwdc25ql6izkhdyh8ppw8x2fs0w0js78zgkmqjlikmma9"))))))
 
 (define htslib-for-samtools-1.2
-  (package
-    (inherit htslib)
+  (package/inherit htslib
     (version "1.2.1")
     (source (origin
               (method url-fetch)
@@ -4882,6 +4876,18 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
      `(("zlib" ,zlib)))
     (native-inputs
      `(("perl" ,perl)))))
+
+(define htslib-for-stringtie
+  (package
+    (inherit htslib)
+    (source (origin
+              (inherit (package-source htslib))
+              (patches
+               (search-patches "htslib-for-stringtie.patch"))))
+    (arguments
+     `(#:configure-flags '("--with-libdeflate")))
+    (inputs
+     (list bzip2 libdeflate openssl))))
 
 (define-public idr
   (package
@@ -6135,6 +6141,44 @@ to the user's query of interest.")
 (define-public samtools
   (package
     (name "samtools")
+    (version "1.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "mirror://sourceforge/samtools/samtools/"
+                       version "/samtools-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0x3xdda78ac5vx66b3jdsv9sfhyz4npl4znl1zbaf3lbm6xdlhck"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Delete bundled htslib.
+                   (delete-file-recursively "htslib-1.14")))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list "--with-ncurses")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             (substitute* "test/test.pl"
+               ;; The test script calls out to /bin/bash
+               (("/bin/bash") (which "bash"))))))))
+    (native-inputs (list pkg-config))
+    (inputs
+     (list htslib ncurses perl python zlib))
+    (home-page "http://samtools.sourceforge.net")
+    (synopsis "Utilities to efficiently manipulate nucleotide sequence alignments")
+    (description
+     "Samtools implements various utilities for post-processing nucleotide
+sequence alignments in the SAM, BAM, and CRAM formats, including indexing,
+variant calling (in conjunction with bcftools), and a simple alignment
+viewer.")
+    (license license:expat)))
+
+(define-public samtools-1.12
+  (package/inherit samtools
     (version "1.12")
     (source
      (origin
@@ -6148,47 +6192,31 @@ to the user's query of interest.")
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Delete bundled htslib.
-                   (delete-file-recursively "htslib-1.12")
-                   #t))))
-    (build-system gnu-build-system)
+                   (delete-file-recursively "htslib-1.12")))))
     (arguments
-     `(#:modules ((ice-9 ftw)
-                  (ice-9 regex)
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       #:configure-flags (list "--with-ncurses")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* "test/test.pl"
-               ;; The test script calls out to /bin/bash
-               (("/bin/bash") (which "bash")))
-             #t))
-         (add-after 'install 'install-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
-               (install-file "libbam.a" lib)
-               #t)))
-         (add-after 'install 'install-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((include (string-append (assoc-ref outputs "out")
-                                           "/include/samtools/")))
-               (for-each (lambda (file)
-                           (install-file file include))
-                         (scandir "." (lambda (name) (string-match "\\.h$" name))))
-               #t))))))
+     (substitute-keyword-arguments (package-arguments samtools)
+       ((#:modules _ #f)
+        '((ice-9 ftw)
+          (ice-9 regex)
+          (guix build gnu-build-system)
+          (guix build utils)))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'install 'install-library
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
+                 (install-file "libbam.a" lib))))
+           (add-after 'install 'install-headers
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((include (string-append (assoc-ref outputs "out")
+                                             "/include/samtools/")))
+                 (for-each (lambda (file)
+                             (install-file file include))
+                           (scandir "." (lambda (name)
+                                          (string-match "\\.h$" name)))))))))))
     (native-inputs (list pkg-config))
     (inputs
-     (list htslib ncurses perl python zlib))
-    (home-page "http://samtools.sourceforge.net")
-    (synopsis "Utilities to efficiently manipulate nucleotide sequence alignments")
-    (description
-     "Samtools implements various utilities for post-processing nucleotide
-sequence alignments in the SAM, BAM, and CRAM formats, including indexing,
-variant calling (in conjunction with bcftools), and a simple alignment
-viewer.")
-    (license license:expat)))
+     (list htslib-1.12 ncurses perl python zlib))))
 
 (define-public samtools-1.10
   (package (inherit samtools)
@@ -6287,6 +6315,11 @@ viewer.")
        #:make-flags
        (list "LIBCURSES=-lncurses")
        ,@(substitute-keyword-arguments (package-arguments samtools)
+           ((#:modules _ #f)
+            '((ice-9 ftw)
+              (ice-9 regex)
+              (guix build gnu-build-system)
+              (guix build utils)))
            ((#:phases phases)
             `(modify-phases ,phases
                (replace 'install
@@ -6296,6 +6329,18 @@ viewer.")
                      (mkdir-p bin)
                      (install-file "samtools" bin)
                      #t)))
+               (add-after 'install 'install-library
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
+                     (install-file "libbam.a" lib))))
+               (add-after 'install 'install-headers
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((include (string-append (assoc-ref outputs "out")
+                                                 "/include/samtools/")))
+                     (for-each (lambda (file)
+                                 (install-file file include))
+                               (scandir "." (lambda (name)
+                                              (string-match "\\.h$" name)))))))
                (delete 'patch-tests)
                (delete 'configure))))))))
 
@@ -7103,23 +7148,49 @@ of these reads to align data quickly through a hash-based indexing scheme.")
 (define-public sortmerna
   (package
     (name "sortmerna")
-    (version "2.1b")
+    (version "4.3.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/biocore/sortmerna")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j3mbz4n25738yijmjbr5r4fyvkgm8v5vn3sshyfvmyqf5q9byqf"))))
-    (build-system gnu-build-system)
+         "0f8jfc8vsq6llhbb92p9yv7nbp566yqwfcmq3g2hw0n7d8hyl3a8"))))
+    (build-system cmake-build-system)
     (outputs '("out"      ;for binaries
                "db"))     ;for sequence databases
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #false ;unclear how to run them
+      #:configure-flags
+      #~(list "-DWITH_TESTS=ON"
+              "-DCMAKE_CXX_FLAGS=-pthread"
+              "-DZLIB_STATIC=OFF"
+              "-DROCKSDB_STATIC=OFF"
+              "-DPORTABLE=OFF" ;do not use static linking
+              (string-append "-DROCKSDB_HOME="
+                             #$(this-package-input "rocksdb"))
+              (string-append "-DRAPIDJSON_HOME="
+                             #$(this-package-input "rapidjson"))
+              (string-append "-DRapidJson_DIR="
+                             #$(this-package-input "rapidjson")
+                             "/lib/cmake/RapidJSON")
+              (string-append "-DRapidJSON_INCLUDE_DIR="
+                             #$(this-package-input "rapidjson")
+                             "/include"))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'find-concurrentqueue-headers
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Ensure that headers can be found
+             (setenv "CPLUS_INCLUDE_PATH"
+                     (string-append (search-input-directory
+                                     inputs "/include/concurrentqueue")
+                                    ":"
+                                    (or (getenv "CPLUS_INCLUDE_PATH") "")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
@@ -7127,14 +7198,16 @@ of these reads to align data quickly through a hash-based indexing scheme.")
                     (db    (assoc-ref outputs "db"))
                     (share
                      (string-append db "/share/sortmerna/rRNA_databases")))
-               (install-file "sortmerna" bin)
-               (install-file "indexdb_rna" bin)
+               (install-file "src/sortmerna" bin)
                (for-each (lambda (file)
                            (install-file file share))
-                         (find-files "rRNA_databases" ".*fasta"))
-               #t))))))
+                         (find-files "../source/data/rRNA_databases" ".*fasta"))))))))
     (inputs
-     (list zlib))
+     (list concurrentqueue
+           gflags ; because of rocksdb
+           rapidjson rocksdb zlib))
+    (native-inputs
+     (list pkg-config))
     (home-page "https://bioinfo.lifl.fr/RNA/sortmerna/")
     (synopsis "Biological sequence analysis tool for NGS reads")
     (description
@@ -7339,22 +7412,25 @@ against local background noises.")
 (define-public stringtie
   (package
     (name "stringtie")
-    (version "1.2.1")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ccb.jhu.edu/software/stringtie/dl/"
                                   "stringtie-" version ".tar.gz"))
               (sha256
                (base32
-                "1cqllsc1maq4kh92isi8yadgzbmnf042hlnalpk3y59aph1z3bfz"))
+                "08w3ish4y9kf9acp7k38iwi8ixa6j51m6qyf0vvfj7yz78a3ai3x"))
+              ;; This package bundles an annoying amount of third party source
+              ;; code.
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "samtools-0.1.18")
-                  #t))))
+               '(delete-file-recursively "htslib"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ;no test suite
+       #:make-flags '("LIBDEFLATE=-ldeflate"
+                      "LIBBZ2=-lbz2"
+                      "LIBLZMA=-llzma")
        #:phases
        (modify-phases %standard-phases
          ;; no configure script
@@ -7362,27 +7438,14 @@ against local background noises.")
          (add-before 'build 'use-system-samtools
            (lambda _
              (substitute* "Makefile"
-               (("stringtie: \\$\\{BAM\\}/libbam\\.a")
-                "stringtie: "))
-             (substitute* '("gclib/GBam.h"
-                            "gclib/GBam.cpp")
-               (("#include \"(bam|sam|kstring).h\"" _ header)
-                (string-append "#include <samtools/" header ".h>")))
-             #t))
-         (add-after 'unpack 'remove-duplicate-typedef
-           (lambda _
-             ;; This typedef conflicts with the typedef in
-             ;; glibc-2.25/include/bits/types.h
-             (substitute* "gclib/GThreads.h"
-               (("typedef long long __intmax_t;") ""))
-             #t))
+               ((" -lm") " -lm -lhts")
+               ((" \\$\\{HTSLIB\\}/libhts\\.a") " "))))
          (replace 'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-              (install-file "stringtie" bin)
-              #t))))))
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
+               (install-file "stringtie" bin)))))))
     (inputs
-     (list samtools-0.1 zlib))
+     (list bzip2 htslib-for-stringtie libdeflate zlib))
     (home-page "http://ccb.jhu.edu/software/stringtie/")
     (synopsis "Transcript assembly and quantification for RNA-Seq data")
     (description
@@ -7395,7 +7458,7 @@ other transcript assemblers, but also alignments of longer sequences that have
 been assembled from those reads.  To identify differentially expressed genes
 between experiments, StringTie's output can be processed either by the
 Cuffdiff or Ballgown programs.")
-    (license license:artistic2.0)))
+    (license license:expat)))
 
 (define-public taxtastic
   (package
@@ -7677,11 +7740,11 @@ single-cell data.")
       (license license:gpl3))))
 
 (define-public r-archr
-  (let ((commit "46b519ffb6f73edf132497ac31650d19ef055dc1")
+  (let ((commit "92ab814f86be0cea75c661f9827a9549c2cf47f5")
         (revision "1"))
     (package
       (name "r-archr")
-      (version (git-version "1.0.0" revision commit))
+      (version (git-version "1.0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -7690,8 +7753,7 @@ single-cell data.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "1zj3sdfhgn2q2256fmz61a92vw1wylyck632d7842d6knd0v92v8"))))
+          (base32 "1m1vp3kkpvd0fcviv5vb3gcbm3w91ih6gm9ivg48swnbqny44kqb"))))
       (properties `((upstream-name . "ArchR")))
       (build-system r-build-system)
       (propagated-inputs
@@ -7724,6 +7786,50 @@ single-cell data.")
       (description
        "This package is designed to streamline scATAC analyses in R.")
       (license license:gpl2+))))
+
+(define-public r-icellnet
+  ;; v1.0 tagged in 2020, last commit contains many fixes.
+  ;; DESCRIPTION says Version: 0.0.0.9000.
+  (let ((commit "b9c05488fb8b5ea69bd560018966eaf4e25f82a")
+        (revision "0"))
+    (package
+      (name "r-icellnet")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/soumelis-lab/ICELLNET")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0cld7d6xqnvd0zpcpg3sx73an6vdc9divzywgnn6zxnqcd987cnw"))))
+      (build-system r-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'enter-dir
+             (lambda _ (chdir "icellnet"))))))
+      (propagated-inputs
+       (list r-annotationdbi
+             r-data-table
+             r-dplyr
+             r-ggplot2
+             r-hgu133plus2-db
+             r-jetset
+             r-psych
+             r-reshape2
+             r-rlist))
+      (home-page "https://github.com/soumelis-lab/ICELLNET")
+      (synopsis "Transcriptomic-based framework to dissect cell communication")
+      (description "This packages provides a a transcriptomic-based framework
+to dissect cell communication in a global manner.  It integrates an original
+expert-curated database of ligand-receptor interactions taking into account
+multiple subunits expression.  Based on transcriptomic profiles (gene
+expression), this package allows to compute communication scores between cells
+and provides several visualization modes that can be helpful to dig into
+cell-cell interaction mechanism and extend biological knowledge.")
+      (license license:gpl3))))
 
 (define-public r-scde
   (package
@@ -7802,6 +7908,56 @@ of transcriptional heterogeneity among single cells.")
     (description "This package is intended to help users to efficiently
 analyze genomic data resulting from various experiments.")
     (license license:gpl2)))
+
+(define-public r-scseqcomm
+  (let ((commit "01076e703999f1a5aa76419d821b50aebe2b777a")
+        (revision "0"))
+    (package
+      (name "r-scseqcomm")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/sysbiobig/scseqcomm")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1fw5si47d6agnz5fibmp2b1sv08pbpwv1j71w57xbav9044i032q"))
+         ;; Delete bundled dependency.
+         (modules '((guix build utils)))
+         (snippet
+          '(delete-file-recursively "other_deps"))))
+      (build-system r-build-system)
+      (inputs
+       (list r-add2ggplot
+             r-chorddiag
+             r-doparallel
+             r-dplyr
+             r-foreach
+             ;;r-grid ;; listed in DESCRIPTION
+             r-gridextra
+             r-ggplot2
+             r-gtable
+             r-htmlwidgets
+             r-igraph
+             r-matrix
+             ;;r-methods ;; listed in DESCRIPTION
+             r-org-hs-eg-db
+             r-psych
+             r-rcolorbrewer
+             r-rlang
+             r-scico
+             r-tidygraph
+             r-topgo))
+      (native-inputs
+       (list r-knitr))
+      (home-page "https://gitlab.com/sysbiobig/scseqcomm")
+      (synopsis "Inter- and intra- cellular signaling from single cell RNA-seq")
+      (description "This package is tools for analysing intercellular and
+intracellular signaling from single cell RNA-seq (scRNA-seq) data.")
+      (license license:gpl3))))
 
 (define-public r-shaman
   (let ((commit "d6944e8ac7bd1dbd5c6cec646eafc1d19d0ca96f")
@@ -8949,7 +9105,7 @@ communication networks from scRNA-seq data.")
 (define-public sambamba
   (package
     (name "sambamba")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -8959,7 +9115,7 @@ communication networks from scRNA-seq data.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07dznzl6m8k7sw84jxw2kx6i3ymrapbmcmyh0fxz8wrybhw8fmwc"))))
+         "1zdkd1md5wk4la71p82pbclqqcm55abk23fk087da6186i1bsihl"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; there is no test target
@@ -8967,11 +9123,12 @@ communication networks from scRNA-seq data.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
-         (add-after 'unpack 'fix-ldc-version
-           (lambda _
+         (add-after 'unpack 'prepare-build-tools
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Makefile"
-               ;; We use ldc2 instead of ldmd2 to compile sambamba.
-               (("\\$\\(shell which ldmd2\\)") (which "ldc2")))))
+               (("\\$\\(shell which ldmd2\\)") (which "ldmd2")))
+             (setenv "CC" "gcc")
+             (setenv "D_LD" (which "ld.gold"))))
          (add-after 'unpack 'unbundle-prerequisites
            (lambda _
              (substitute* "Makefile"
@@ -8984,7 +9141,13 @@ communication networks from scRNA-seq data.")
                (copy-file (string-append "bin/sambamba-" ,version)
                           (string-append bin "/sambamba"))))))))
     (native-inputs
-     (list python))
+     `(("ld-gold-wrapper"
+        ;; Importing (gnu packages commencement) would introduce a cycle.
+        ,(module-ref (resolve-interface
+                      '(gnu packages commencement))
+                     'ld-gold-wrapper))
+       ("binutils-gold" ,binutils-gold)
+       ("python" ,python)))
     (inputs
      (list ldc lz4 zlib))
     (home-page "https://github.com/biod/sambamba")
@@ -10168,7 +10331,7 @@ API services.")
     (propagated-inputs
      (list python-biothings-client))
     (home-page "https://github.com/biothings/mygene.py")
-    (synopsis "Python Client for MyGene.Info services.")
+    (synopsis "Python Client for MyGene.Info services")
     (description "MyGene.Info provides simple-to-use REST web services
 to query/retrieve gene annotation data.  It's designed with simplicity
 and performance emphasized.  Mygene is a Python wrapper to access
@@ -11560,6 +11723,39 @@ known and yet unknown splice junctions.  Circular-to-linear ratios of circRNAs
 can be calculated, and a number of descriptive plots easily generated.")
     (license license:artistic2.0)))
 
+(define-public r-doubletfinder
+  (let ((commit "554097ba4e2c0ed7c28dc7f0b5b75277f3a50551")
+        (revision "1"))
+    (package
+      (name "r-doubletfinder")
+      (version (git-version "2.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/chris-mcginnis-ucsf/DoubletFinder")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1q1pnqw7ry4syp04wjmvz5bws6z4vg4c340ky07lk0vp577x2773"))))
+      (properties `((upstream-name . "DoubletFinder")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-fields r-kernsmooth r-rocr))
+      (home-page "https://github.com/chris-mcginnis-ucsf/DoubletFinder")
+      (synopsis "Identify doublets in single-cell RNA sequencing data")
+      (description
+       "DoubletFinder identifies doublets by generating artificial doublets
+from existing scRNA-seq data and defining which real cells preferentially
+co-localize with artificial doublets in gene expression space.  Other
+DoubletFinder package functions are used for fitting DoubletFinder to
+different scRNA-seq datasets.  For example, ideal DoubletFinder performance in
+real-world contexts requires optimal pK selection and homotypic doublet
+proportion estimation.  pK selection is achieved using pN-pK parameter sweeps
+and maxima identification in mean-variance-normalized bimodality coefficient
+distributions.  Homotypic doublet proportion estimation is achieved by finding
+the sum of squared cell annotation frequencies.")
+      (license license:cc0))))
+
 (define-public gffread
   ;; We cannot use the tagged release because it is not in sync with gclib.
   ;; See https://github.com/gpertea/gffread/issues/26
@@ -11842,7 +12038,7 @@ implementation differs in these ways:
        ("python-pytest" ,python-pytest)
        ("python-setuptools-scm" ,python-setuptools-scm)))
     (home-page "https://github.com/theislab/scanpy")
-    (synopsis "Single-Cell Analysis in Python.")
+    (synopsis "Single-Cell Analysis in Python")
     (description "Scanpy is a scalable toolkit for analyzing single-cell gene
 expression data.  It includes preprocessing, visualization, clustering,
 pseudotime and trajectory inference and differential expression testing.  The
@@ -13282,7 +13478,7 @@ includes a command line tool and an analysis pipeline.")
            star
            zlib))
     (home-page "https://github.com/suhrig/arriba")
-    (synopsis "Gene fusion detection from RNA-Seq data ")
+    (synopsis "Gene fusion detection from RNA-Seq data")
     (description
      "Arriba is a command-line tool for the detection of gene fusions from
 RNA-Seq data.  It was developed for the use in a clinical research setting.
@@ -14645,7 +14841,7 @@ genomes known to contain a given k-mer.")
     (native-inputs
      (list autoconf automake which))
     (home-page "https://csb5.github.io/lofreq/")
-    (synopsis "Sensitive variant calling from sequencing data ")
+    (synopsis "Sensitive variant calling from sequencing data")
     (description "LoFreq is a fast and sensitive variant-caller for inferring
 SNVs and indels from next-generation sequencing data.  It makes full use of
 base-call qualities and other sources of errors inherent in
@@ -14675,7 +14871,7 @@ usually ignored by other methods or only used for filtering.")
     (home-page "https://andersen-lab.github.io/ivar/html/")
     (synopsis "Tools for amplicon-based sequencing")
     (description "iVar is a computational package that contains functions
-broadly useful for viral amplicon-based sequencing. ")
+broadly useful for viral amplicon-based sequencing.")
     (license license:gpl3+)))
 
 (define-public python-pyliftover
@@ -15124,7 +15320,9 @@ for the analysis and visualization of raw nanopore signal.")
               (delete-file-recursively (string-append
                                          (site-packages inputs outputs)
                                          "/vcf/test")))))))
-    (native-inputs (list python-cython))
+    (native-inputs
+     ;; Older setuptools is needed for use_2to3.
+     (list python-cython python-setuptools))
     (propagated-inputs
      (list python-pysam python-rpy2))
     (home-page "https://github.com/jamescasbon/PyVCF")
@@ -15147,7 +15345,7 @@ parser for Python.")
    (inputs
     (list python-configparser python-pysam python-pyvcf))
    (home-page "https://github.com/mroosmalen/nanosv")
-   (synopsis "Structural variation detection tool for Oxford Nanopore data.")
+   (synopsis "Structural variation detection tool for Oxford Nanopore data")
    (description "NanoSV is a software package that can be used to identify
 structural genomic variations in long-read sequencing data, such as data
 produced by Oxford Nanopore Technologies’ MinION, GridION or PromethION
@@ -15326,7 +15524,7 @@ browser.")
     (native-inputs
      `(("cmake" ,cmake-minimal)))
     (home-page "https://github.com/nanoporetech/pyspoa")
-    (synopsis "Python bindings for the SIMD partial order alignment library ")
+    (synopsis "Python bindings for the SIMD partial order alignment library")
     (description
      "This package provides Python bindings for spoa, a C++ implementation of
 the @dfn{partial order alignment} (POA) algorithm (as described in

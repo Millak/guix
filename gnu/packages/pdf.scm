@@ -633,8 +633,7 @@ by using the poppler rendering engine.")
             (files '("lib/zathura")))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59
-       #:phases (modify-phases %standard-phases
+     `(#:phases (modify-phases %standard-phases
                   (add-before 'check 'start-xserver
                     ;; Tests require a running X server.
                     (lambda* (#:key inputs #:allow-other-keys)
@@ -1248,7 +1247,7 @@ python-pypdf2 instead.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.8.1")
+    (version "1.8.2")
     (source
      (origin
        (method git-fetch)
@@ -1257,7 +1256,7 @@ python-pypdf2 instead.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lcmlr7x4143f7wcn0m1ijlvch07nww2qfp3jfnacgy889ijvbfx"))))
+        (base32 "18bpnnwjx72d5ps06dr89mkixiwzc9hf5gr75k8qcnrkshl038v2"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f                      ;no tests
@@ -1275,7 +1274,10 @@ python-pypdf2 instead.")
     (inputs
      (list gtk+ poppler))
     (propagated-inputs
-     (list img2pdf python-dateutil python-pikepdf python-pycairo
+     (list img2pdf
+           python-dateutil
+           python-pikepdf
+           python-pycairo
            python-pygobject))
     (home-page "https://github.com/jeromerobert/pdfarranger")
     (synopsis "Merge, split and re-arrange pages from PDF documents")

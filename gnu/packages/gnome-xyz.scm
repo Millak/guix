@@ -14,6 +14,8 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,13 +37,19 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
+  #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -238,26 +246,29 @@ GNOME Shell.")
 (define-public gnome-shell-extension-clipboard-indicator
   (package
     (name "gnome-shell-extension-clipboard-indicator")
-    (version "34")
+    (version "39")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url (string-append "https://github.com/Tudmotu/"
-                                        "gnome-shell-extension-clipboard-indicator.git"))
+                    (url
+                     (string-append
+                      "https://github.com/Tudmotu/"
+                      "gnome-shell-extension-clipboard-indicator"))
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i00psc1ky70zljd14jzr627y7nd8xwnwrh4xpajl1f6djabh12s"))
+                "1kq6bzxki7lwmw690f4qml8pvfwafpqpsfnq2kyjhrp8nh39axwi"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove pre-compiled settings schemas and translations from
                ;; source, as they are generated as part of build. Upstream
                ;; includes them for people who want to run the software
                ;; directly from source tree.
-               '(begin (delete-file "schemas/gschemas.compiled")
-                       (for-each delete-file (find-files "locale" "\\.mo$"))
-                       #t))))
+               '(begin
+                  (delete-file "schemas/gschemas.compiled")
+                  (for-each delete-file
+                            (find-files "locale" "\\.mo$"))))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -268,14 +279,9 @@ GNOME Shell.")
          (add-before 'install 'compile-schemas
            (lambda _
              (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" "."))
-             #t))
-         (add-before 'install 'compile-locales
-           (lambda _ (invoke "./compile-locales.sh")
-                   #t)))))
+               (invoke "glib-compile-schemas" ".")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")))       ; for glib-compile-schemas
+     (list `(,glib "bin") gettext-minimal))
     (home-page "https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator")
     (synopsis "Clipboard manager extension for GNOME Shell")
     (description "Clipboard Indicator is a clipboard manager for GNOME Shell
@@ -534,6 +540,57 @@ currently focused application in the top panel of the GNOME shell.")
         (list license:gpl2
               license:gpl3)))))
 
+(define-public gnome-shell-extension-just-perfection
+  (package
+    (name "gnome-shell-extension-just-perfection")
+    (version "16.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/jrahmatzadeh/just-perfection/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05zbzgs92zqlmjq4h2q2gggrf1qiz8l6739zzg1x5090gvk4iak3"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("src"
+          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection"
+          #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.ui$"))
+         ("locale"
+          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection/"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'drop-executable-bits
+           (lambda _
+             (for-each
+              (lambda (file)
+                (let ((stat (lstat file)))
+                  (chmod file (logand (stat:mode stat) (lognot #o111)))))
+              (find-files "." #:directories? #f))))
+         (add-before 'install 'build
+           (lambda _
+             (invoke "glib-compile-schemas" "src/schemas")
+             (for-each
+              (lambda (file)
+                (let* ((base (basename file))
+                       (noext (substring base 0 (- (string-length base) 3)))
+                       (dest (string-append "locale/" noext "/LC_MESSAGES/"))
+                       (out (string-append dest "just-perfection.mo")))
+                  (mkdir-p dest)
+                  (invoke "msgfmt" "-c" file "-o" out)))
+              (find-files "po" "\\.po$")))))))
+    (native-inputs
+     (list `(,glib "bin") gettext-minimal))
+    (home-page "https://gitlab.gnome.org/jrahmatzadeh/just-perfection")
+    (synopsis "Customize GNOME Shell behaviour")
+    (description "Just Perfection allows you to change various settings, that
+GNOME Shell itself does not provide out of the box, such as the ability to hide
+certain elements or change animation speeds.")
+    (license license:gpl3)))
+
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
@@ -632,6 +689,218 @@ scrollable tiling of windows and per monitor workspaces.  It's inspired by paper
 notebooks and tiling window managers.")
     (license license:gpl3)))
 
+(define-public gpaste
+  (package
+    (name "gpaste")
+    (version "3.42.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Keruspe/GPaste")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k5qvgzwl357k72qfim5zfas2a0n6j24jnlm1v472l7h6gb6lssm"))
+              (patches
+               (search-patches "gpaste-fix-paths.patch"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list autoconf automake gettext-minimal gobject-introspection
+           (list glib "bin")            ; for glib-compile-resources
+           libtool pkg-config vala))
+    (inputs
+     (list appstream-glib libarchive gjs mutter graphene))
+    (arguments
+     (list #:meson meson-0.59      ;positional arguments error with meson 0.60
+           #:glib-or-gtk? #true
+           #:configure-flags
+           #~(list
+              (string-append "-Dcontrol-center-keybindings-dir="
+                             #$output "/share/gnome-control-center/keybindings")
+              (string-append "-Ddbus-services-dir="
+                             #$output "/share/dbus-1/services")
+              (string-append "-Dsystemd-user-unit-dir="
+                             #$output "/etc/systemd/user"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-introspection-install-dir
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (substitute* '("src/gnome-shell/extension.js"
+                                    "src/gnome-shell/prefs.js")
+                       (("@typelibPath@")
+                        (string-append out "/lib/girepository-1.0/")))))))))
+    (home-page "https://github.com/Keruspe/GPaste")
+    (synopsis "Clipboard management system for GNOME Shell")
+    (description "GPaste is a clipboard manager, a tool which allows you to
+keep a trace of what you’re copying and pasting.  Is is really useful when
+you go through tons of documentation and you want to keep around a bunch of
+functions you might want to use, for example.  The clipboard manager will
+store an history of everything you do, so that you can get back to older
+copies you now want to paste.")
+    (license license:bsd-2)))
+
+(define-public gnome-shell-extension-vertical-overview
+  (package
+    (name "gnome-shell-extension-vertical-overview")
+    (version "8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/RensAlthuis/vertical-overview")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "01vz48p3bh7p3ybdyw0s0ahs18lk2kzk9x4ad46s0dnwmmsyhww9"))
+       (file-name (git-file-name name version))
+       (snippet
+        '(begin (delete-file "schemas/gschemas.compiled")))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "vertical-overview@RensAlthuis.github.com")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list `(,glib "bin")))  ; for glib-compile-resources
+    (home-page "https://github.com/RensAlthuis/vertical-overview")
+    (synopsis "Provides a vertical overview in Gnome 40 and upper")
+    (description "This Gnome extension replaces the new horizontally oriented
+Gnome overview with something that resembles the old vertically oriented
+style.")
+    (license license:gpl3)))
+
+(define-public gnome-shell-extension-jiggle
+  (package
+    (name "gnome-shell-extension-jiggle")
+    (version "8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jeffchannell/jiggle/")
+             (commit version)))
+       (sha256
+        (base32
+         "1wbdx2bp22bdwj51ckgivwglkmckr7z8kfwvc8nv4y376hjz5jxz"))
+       (file-name (git-file-name name version))
+       (snippet
+        '(begin (delete-file "schemas/gschemas.compiled")))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "jiggle@jeffchannell.com")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-version
+           (lambda _
+             (substitute* "metadata.json"
+               (("\"40.0\"") "\"40\", \"41\""))))
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list `(,glib "bin")))  ; for glib-compile-resources
+    (home-page "https://github.com/jeffchannell/jiggle")
+    (synopsis "Mouse cursor enlargement for small and fast movements")
+    (description "Jiggle is a Gnome Shell extension that highlights the cursor
+position when the mouse is moved rapidly.")
+    (license license:gpl2)))
+
+(define-public gnome-shell-extension-burn-my-windows
+  (package
+    (name "gnome-shell-extension-burn-my-windows")
+    (version "7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Schneegans/Burn-My-Windows/")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "1513kh6dfvnaj5jq2mm7rv1k54v91hjckgim1dpqlxwnv4gi9krd"))
+       (file-name (git-file-name name version))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "burn-my-windows@schneegans.github.com")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$" "\\.gresource$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'compile-resources
+           (lambda _
+             (invoke "make" "resources/burn-my-windows.gresource")))
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list `(,glib "bin")))  ; for glib-compile-resources
+    (home-page "https://github.com/Schneegans/Burn-My-Windows")
+    (synopsis "Application closing effects extension")
+    (description "Burn My Windows is a shell extension that stylizes the
+animation of closing windowed applications.")
+    (license license:gpl3)))
+
+(define-public gnome-shell-extension-blur-my-shell
+  (package
+    (name "gnome-shell-extension-blur-my-shell")
+    (version "27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aunetx/blur-my-shell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0l318lgc2zrp8fskabiv28knwp3b5i2y8bd3164da4pkf1jsl468"))
+       (snippet
+        '(begin (delete-file "src/schemas/gschemas.compiled")))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "blur-my-shell@aunetx")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'cd-src
+           (lambda _ (chdir "src")))
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list (list glib "bin"))) ; for glib-compile-schemas
+    (home-page "https://github.com/aunetx/blur-my-shell")
+    (synopsis "Blurs different parts of the GNOME Shell")
+    (description "Blur My Shell adds a blur look to different parts of the
+GNOME Shell, including the top panel, dash and overview.")
+    (license license:gpl3)))
+
 (define-public arc-theme
   (package
     (name "arc-theme")
@@ -663,7 +932,7 @@ notebooks and tiling window managers.")
            optipng
            pkg-config
            sassc/libsass-3.5))
-    (synopsis "A flat GTK+ theme with transparent elements")
+    (synopsis "Flat GTK+ theme with transparent elements")
     (description "Arc is a flat theme with transparent elements for GTK 3, GTK
 2, and GNOME Shell which supports GTK 3 and GTK 2 based desktop environments
 like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
@@ -867,6 +1136,37 @@ variants.")
                    license:lgpl2.1         ; Some style sheets.
                    license:cc-by-sa4.0)))) ; Some icons
 
+(define-public eiciel
+  (package
+    (name "eiciel")
+    (version "0.9.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rofirrim/eiciel")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rhhw0h1hyg5kvxhjxkdz03vylgax6912mg8j4lvcz6wlsa4wkvj"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:tests? #f ; no tests
+       #:configure-flags
+       (list (string-append "-Dnautilus-extension-dir="
+                            (assoc-ref %outputs "out")
+                            "/lib/nautilus/site-extensions"))))
+    (native-inputs
+     (list gettext-minimal pkg-config))
+    (inputs
+     (list acl attr glibmm-2.64 gtkmm-3 nautilus))
+    (home-page "https://rofi.roger-ferrer.org/eiciel")
+    (synopsis "Manage extended file attributes")
+    (description "Eiciel is a plugin for nautilus to graphically edit ACL and
+extended file attributes.  It also functions as a standalone command.")
+    (license license:gpl2+)))
+
 (define-public markets
   (package
     (name "markets")
@@ -897,14 +1197,14 @@ variants.")
              (substitute* "build-aux/meson/postinstall.py"
                (("update-desktop-database") "true")))))))
     (inputs
-     `(("gtk3" ,gtk+)
-       ("gettext" ,gettext-minimal)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libsoup" ,libsoup)
-       ("json-glib" ,json-glib)
-       ("vala" ,vala)))
+     (list gtk+
+           gettext-minimal
+           gsettings-desktop-schemas
+           libgee
+           libhandy
+           libsoup-minimal-2
+           json-glib
+           vala))
     (native-inputs
      (list pkg-config
            `(,glib "bin"))) ; for 'glib-compile-resources'

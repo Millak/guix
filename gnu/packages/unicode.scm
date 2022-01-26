@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,25 +19,73 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages unicode)
+  #:use-module (gnu packages autotools)
+  #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial))
+
+(define-public libunibreak
+  (package
+    (name "libunibreak")
+    (version "5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/adah1972/libunibreak")
+                    (commit (string-append "libunibreak_"
+                              (string-replace-substring version "." "_")))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0r5dndhwsiy65lmavz3vdgal9nl8g97hbmdjg6zyq3zh5hs87vwf"))))
+    (build-system gnu-build-system)
+    (native-inputs
+      (list autoconf-wrapper
+            automake
+            libtool
+            ucd-next ; required for tests
+            ))
+    (arguments
+     `(#:parallel-tests? #f  ; parallel tests cause non-deterministic
+                             ; build failures
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs #:allow-other-keys)
+             (for-each (lambda (file)
+                         (copy-file
+                           (search-input-file inputs
+                             (string-append "/share/ucd/auxiliary/"
+                                            file))
+                           (string-append "src/" file)))
+                       '("LineBreakTest.txt"
+                         "WordBreakTest.txt"
+                         "GraphemeBreakTest.txt")))))))
+    (home-page "http://vimgadgets.sourceforge.net/libunibreak/")
+    (synopsis "Unicode line breaking and word breaking algorithms")
+    (description
+     "Libunibreak is an implementation of the line breaking and word
+breaking algorithms as described in Unicode Standard Annex 14 and
+Unicode Standard Annex 29.  It is designed to be used in a generic text
+renderer.")
+    (license zlib)))
 
 (define-public ucd
   (package
     (name "ucd")
-    (version "12.0.0")
+    (version "14.0.0")
     (source
      (origin
        (method url-fetch/zipbomb)
        (uri (string-append "https://www.unicode.org/Public/zipped/" version
                            "/UCD.zip"))
        (sha256
-        (base32
-         "1ighy39cjkmqnv1797wrxjz76mv1fdw7zp5j04q55bkwxsdkvrmh"))))
+        (base32 "001nq9w52ijma0vps40xwy2q6ylpyf1393lzb128ibypnmv54fh3"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -48,6 +97,20 @@
 files listing Unicode character properties and related data.  It also includes
 test data for conformance to several important Unicode algorithms.")
     (license unicode)))
+
+(define-public ucd-next
+  (package
+    (inherit ucd)
+    (name "ucd-next")
+    (version "14.0.0")
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://www.unicode.org/Public/zipped/" version
+                           "/UCD.zip"))
+       (sha256
+        (base32
+         "001nq9w52ijma0vps40xwy2q6ylpyf1393lzb128ibypnmv54fh3"))))))
 
 (define (unicode-emoji-file name version hash)
   (origin

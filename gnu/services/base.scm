@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,8 +36,9 @@
 (define-module (gnu services base)
   #:use-module (guix store)
   #:use-module (guix deprecation)
-  #:autoload   (guix diagnostics) (warning)
+  #:autoload   (guix diagnostics) (warning &fix-hint)
   #:autoload   (guix i18n) (G_)
+  #:use-module (guix combinators)
   #:use-module (gnu services)
   #:use-module (gnu services admin)
   #:use-module (gnu services shepherd)
@@ -54,7 +56,8 @@
                 #:select (alsa-utils crda eudev e2fsprogs fuse gpm kbd lvm2 rng-tools))
   #:use-module (gnu packages bash)
   #:use-module ((gnu packages base)
-                #:select (coreutils glibc glibc-utf8-locales))
+                #:select (coreutils glibc glibc-utf8-locales tar))
+  #:use-module ((gnu packages compression) #:select (gzip))
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
   #:autoload   (gnu packages hurd) (hurd)
   #:use-module (gnu packages package-management)
@@ -72,6 +75,8 @@
   #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:re-export (user-processes-service-type        ;backwards compatibility
@@ -192,6 +197,7 @@
             guix-publish-configuration-nar-path
             guix-publish-configuration-cache
             guix-publish-configuration-ttl
+            guix-publish-configuration-negative-ttl
             guix-publish-service-type
 
             gpm-configuration
@@ -1562,7 +1568,7 @@ archive' public keys, with GUIX."
   (timeout          guix-configuration-timeout    ;integer
                     (default 0))
   (log-compression  guix-configuration-log-compression
-                    (default 'bzip2))
+                    (default 'gzip))
   (discover?        guix-configuration-discover?
                     (default #f))
   (extra-options    guix-configuration-extra-options ;list of strings
@@ -1706,7 +1712,14 @@ proxy of 'guix-daemon'...~%")
                                  (string-append "GUIX_LOCPATH="
                                                 #$glibc-utf8-locales
                                                 "/lib/locale")
-                                 "LC_ALL=en_US.utf8")
+                                 "LC_ALL=en_US.utf8"
+                                 ;; Make 'tar' and 'gzip' available so
+                                 ;; that 'guix perform-download' can use
+                                 ;; them when downloading from Software
+                                 ;; Heritage via '(guix swh)'.
+                                 (string-append "PATH="
+                                                #$(file-append tar "/bin") ":"
+                                                #$(file-append gzip "/bin")))
                            (if proxy
                                (list (string-append "http_proxy=" proxy)
                                      (string-append "https_proxy=" proxy))
@@ -1817,7 +1830,9 @@ proxy of 'guix-daemon'...~%")
   (workers     guix-publish-configuration-workers ;#f | integer
                (default #f))
   (ttl         guix-publish-configuration-ttl     ;#f | integer
-               (default #f)))
+               (default #f))
+  (negative-ttl guix-publish-configuration-negative-ttl ;#f | integer
+                (default #f)))
 
 (define-deprecated (guix-publish-configuration-compression-level config)
   "Return a compression level, the old way."
@@ -1852,8 +1867,8 @@ raise a deprecation warning if the 'compression-level' field was used."
                    lst))))
 
   (match-record config <guix-publish-configuration>
-    (guix port host nar-path cache workers ttl cache-bypass-threshold
-          advertise?)
+    (guix port host nar-path cache workers ttl negative-ttl
+          cache-bypass-threshold advertise?)
     (list (shepherd-service
            (provision '(guix-publish))
            (requirement `(user-processes
@@ -1877,6 +1892,11 @@ raise a deprecation warning if the 'compression-level' field was used."
                            #$@(if ttl
                                   #~((string-append "--ttl="
                                                     #$(number->string ttl)
+                                                    "s"))
+                                  #~())
+                           #$@(if negative-ttl
+                                  #~((string-append "--negative-ttl="
+                                                    #$(number->string negative-ttl)
                                                     "s"))
                                   #~())
                            #$@(if cache
@@ -2388,6 +2408,22 @@ Linux @dfn{kernel mode setting} (KMS).")))
   "Return true if STR denotes an IPv6 address."
   (false-if-exception (->bool (inet-pton AF_INET6 str))))
 
+(define-compile-time-procedure (assert-valid-address (address string?))
+  "Ensure ADDRESS has a valid netmask."
+  (unless (cidr->netmask address)
+    (raise
+     (make-compound-condition
+      (formatted-message (G_ "address '~a' lacks a network mask")
+                         address)
+      (condition (&error-location
+                  (location
+                   (source-properties->location procedure-call-location))))
+      (condition (&fix-hint
+                  (hint (format #f (G_ "\
+Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
+                                address)))))))
+  address)
+
 (define-record-type* <static-networking>
   static-networking make-static-networking
   static-networking?
@@ -2405,7 +2441,8 @@ Linux @dfn{kernel mode setting} (KMS).")))
   network-address make-network-address
   network-address?
   (device    network-address-device)              ;string--e.g., "en01"
-  (value     network-address-value)               ;string--CIDR notation
+  (value     network-address-value                ;string--CIDR notation
+             (sanitize assert-valid-address))
   (ipv6?     network-address-ipv6?                ;Boolean
              (thunked)
              (default
@@ -2546,6 +2583,7 @@ to CONFIG."
                                                 #$(network-address-ipv6? address))
                                       ;; FIXME: loopback?
                                       (link-set #$(network-address-device address)
+                                                #:multicast-on #t
                                                 #:up #t)))
                                 addresses)
                         #$@(map (match-lambda
@@ -2716,7 +2754,7 @@ to handle."
   (static-networking
    (addresses (list (network-address
                      (device "lo")
-                     (value "127.0.0.1"))))
+                     (value "127.0.0.1/8"))))
    (requirement '())
    (provision '(loopback))))
 

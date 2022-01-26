@@ -17,7 +17,7 @@
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym+a@scratchpost.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017, 2020 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
@@ -54,6 +54,7 @@
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +115,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pantheon)
   #:use-module (gnu packages parallel)
@@ -485,6 +487,12 @@ database later.")
                    "-DBENCHMARK_ENABLE_INSTALL=OFF")
            #:phases
            #~(modify-phases %standard-phases
+               ;; Ceph uses leveldb and depends on RTTI.
+               (add-after 'unpack 'allow-RTTI
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("set\\(CMAKE_CXX_FLAGS \"\\$\\{CMAKE_CXX_FLAGS\\} -fno-rtti\"\\)")
+                      ""))))
                (add-after 'unpack 'unpack-third_party-sources
                  ;; These are only for testing, so copying source is fine.
                  (lambda _
@@ -504,14 +512,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.12")
+    (version "1.6.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "0ii3z2mhjrimc6mv5z5x6bwp1s2bbzppja4m3pnmd5zgh9gs74gj"))))
+        (base32 "1m5mhw9ybb8qcyi6hb5kwpqanqmlnz27r54ccabc4y7nhpfvl6mx"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -648,35 +656,93 @@ replacement for the code@{python-memcached} library.")
 auto-completion and syntax highlighting.")
   (license license:bsd-3)))
 
+(define-public python-pgspecial
+  (package
+    (name "python-pgspecial")
+    (version "1.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pgspecial" version))
+       (sha256
+        (base32 "00ddkf565rjcxmfml1z4mmkns1aq8x5s5g85xmnz2scln42y4irq"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-click python-sqlparse python-psycopg2))
+    (home-page "https://github.com/dbcli/pgspecial")
+    (synopsis
+     "Python implementation of PostgreSQL meta commands (backslash commands)")
+    (description
+     "This Python package provides an API to execute meta-commands (AKA
+\"special\", or \"backslash commands\") on PostgreSQL.")
+    (license license:bsd-3)))
+
+(define-public pgcli
+  (package
+    (name "pgcli")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pgcli" version))
+       (sha256
+        (base32 "1dy6yzak696107pqv83296h0xhc3ahlfaydm80593gwn37krgpkc"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-cli-helpers
+           python-click
+           python-configobj
+           python-pendulum
+           python-pgspecial
+           python-prompt-toolkit
+           python-psycopg2
+           python-pygments
+           python-setproctitle
+           python-sqlparse))
+    (native-inputs
+     (list python-ipython-sql))
+    (home-page "https://www.pgcli.com")
+    (synopsis "PostgreSQL CLI with autocompletion and syntax highlighting")
+    (description
+     "@code{pgcli} is a command line interface for PostgreSQL with
+autocompletion and syntax highlighting.")
+    (license license:bsd-3)))
+
 (define-public mycli
   (package
     (name "mycli")
     (version "1.24.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "mycli" version))
-        (sha256
-          (base32 "0rij9nw20zhqr7cqnkm8daw8b1wdc9zb6ny1ji9qz5557nz9i3bl"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mycli" version))
+       (sha256
+        (base32 "0rij9nw20zhqr7cqnkm8daw8b1wdc9zb6ny1ji9qz5557nz9i3bl"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f))                    ; tests expect a running MySQL
+     '(#:tests? #f                      ; tests expect a running MySQL
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'loosen-requirements
+                    (lambda _
+                      ;; Permit newer versions of sqlparse.
+                      (substitute* "setup.py"
+                        (("<0\\.4\\.0") "<0.5.0")))))))
     (propagated-inputs
-      (list python-cli-helpers
-            python-click
-            python-configobj
-            python-cryptography
-            python-prompt-toolkit
-            python-pyaes
-            python-pygments
-            python-pymysql
-            python-pyperclip
-            python-sqlparse))
+     (list python-cli-helpers
+           python-click
+           python-configobj
+           python-cryptography
+           python-prompt-toolkit
+           python-pyaes
+           python-pygments
+           python-pymysql
+           python-pyperclip
+           python-sqlparse))
     (home-page "https://www.mycli.net")
     (synopsis
-      "Terminal Client for MySQL with AutoCompletion and Syntax Highlighting")
+     "Terminal Client for MySQL with AutoCompletion and Syntax Highlighting")
     (description
-      "MyCLI is a command line interface for MySQL, MariaDB, and Percona with
+     "MyCLI is a command line interface for MySQL, MariaDB, and Percona with
 auto-completion and syntax highlighting.")
     (license license:bsd-3)))
 
@@ -1089,17 +1155,17 @@ and high-availability (HA).")
     (license license:gpl2)))                  ;'COPYING' says "version 2" only
 
 ;; Don't forget to update the other postgresql packages when upgrading this one.
-(define-public postgresql-13
+(define-public postgresql-14
   (package
     (name "postgresql")
-    (version "13.4")
+    (version "14.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kf0gcsrl5n25rjlvkh87aywmn28kbwvakm5c7j1qpr4j01y34za"))
+                "07x45iycqpps0qh3ingc09jgn9rpnmc3gixx0qprhf5flwg10g2d"))
               (patches (search-patches "postgresql-disable-resolve_symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1146,6 +1212,18 @@ TIMESTAMP.  It also supports storage of binary large objects, including
 pictures, sounds, or video.")
     (license (license:x11-style "file://COPYRIGHT"))))
 
+(define-public postgresql-13
+  (package
+    (inherit postgresql-14)
+    (version "13.4")
+    (source (origin
+              (inherit (package-source postgresql-14))
+              (uri (string-append "https://ftp.postgresql.org/pub/source/v"
+                                  version "/postgresql-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1kf0gcsrl5n25rjlvkh87aywmn28kbwvakm5c7j1qpr4j01y34za"))))))
+
 (define-public postgresql-11
   (package
     (inherit postgresql-13)
@@ -1188,7 +1266,7 @@ pictures, sounds, or video.")
 (define-public pgloader
   (package
     (name "pgloader")
-    (version "3.6.2")
+    (version "3.6.3")
     (source
      (origin
        (method git-fetch)
@@ -1196,7 +1274,7 @@ pictures, sounds, or video.")
              (url "https://github.com/dimitri/pgloader")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "06i1jd2za3ih5caj2b4vzlzags5j65vv8dfdbz0ggdrp40wfd5lh"))
+        (base32 "147dcf0rmi94p95dvifx8qy7602fvs041dv9wlg3q31ly13agwb5"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1204,62 +1282,59 @@ pictures, sounds, or video.")
      ;; dependent on Quicklisp, main build target is `pgloader-standalone' which
      ;; does not require Quicklisp workarounds. There is no `install' target
      ;; configured in Makefile.
-     `(#:tests? #f
-       #:strip-binaries? #f
-       #:make-flags
-       (list "pgloader-standalone" "BUILDAPP_SBCL=buildapp")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'set-home
-           (lambda _
-             (setenv "HOME" "/tmp")
-             #t))
-         (add-after 'unpack 'patch-Makefile
-           (lambda _
-             (substitute* "Makefile"
-               (("--sbcl.*") "--sbcl $(CL) --asdf-path . \\\n"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p bin)
-               (install-file "build/bin/pgloader"  bin))
-             #t)))))
+     (list #:tests? #f
+           #:strip-binaries? #f
+           #:make-flags
+           #~(list "pgloader-standalone" "BUILDAPP_SBCL=buildapp")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'set-home
+                 (lambda _
+                   (setenv "HOME" "/tmp")))
+               (add-after 'unpack 'patch-Makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("--sbcl.*") "--sbcl $(CL) --asdf-path . \\\n"))))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((bin (string-append #$output "/bin")))
+                     (mkdir-p bin)
+                     (install-file "build/bin/pgloader"  bin)))))))
     (native-inputs
      (list buildapp sbcl))
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("cl-abnf" ,sbcl-cl-abnf)
-       ("cl-base64" ,sbcl-cl-base64)
-       ("cl-csv" ,sbcl-cl-csv)
-       ("cl-fad" ,sbcl-cl-fad)
-       ("cl-log" ,sbcl-cl-log)
-       ("cl-markdown" ,sbcl-cl-markdown)
-       ("cl-mustache" ,sbcl-cl-mustache)
-       ("cl-ppcre" ,sbcl-cl-ppcre)
-       ("cl-sqlite" ,sbcl-cl-sqlite)
-       ("closer-mop" ,sbcl-closer-mop)
-       ("command-line-arguments" ,sbcl-command-line-arguments)
-       ("db3" ,sbcl-db3)
-       ("drakma" ,sbcl-drakma)
-       ("esrap" ,sbcl-esrap)
-       ("flexi-streams" ,sbcl-flexi-streams)
-       ("ixf" ,sbcl-ixf)
-       ("local-time" ,sbcl-local-time)
-       ("lparallel" ,sbcl-lparallel)
-       ("metabang-bind" ,sbcl-metabang-bind)
-       ("mssql" ,sbcl-mssql)
-       ("postmodern" ,sbcl-postmodern)
-       ("py-configparser" ,sbcl-py-configparser)
-       ("qmynd" ,sbcl-qmynd)
-       ("quri" ,sbcl-quri)
-       ("split-sequence" ,sbcl-split-sequence)
-       ("trivial-backtrace" ,sbcl-trivial-backtrace)
-       ("usocket" ,sbcl-usocket)
-       ("uuid" ,sbcl-uuid)
-       ("yason" ,sbcl-yason)
-       ("zs3" ,sbcl-zs3)))
+     (list sbcl-alexandria
+           sbcl-cl-abnf
+           sbcl-cl-base64
+           sbcl-cl-csv
+           sbcl-cl-fad
+           sbcl-cl-log
+           sbcl-cl-markdown
+           sbcl-cl-mustache
+           sbcl-cl-ppcre
+           sbcl-cl-sqlite
+           sbcl-closer-mop
+           sbcl-command-line-arguments
+           sbcl-db3
+           sbcl-drakma
+           sbcl-esrap
+           sbcl-flexi-streams
+           sbcl-ixf
+           sbcl-local-time
+           sbcl-lparallel
+           sbcl-metabang-bind
+           sbcl-mssql
+           sbcl-postmodern
+           sbcl-py-configparser
+           sbcl-qmynd
+           sbcl-quri
+           sbcl-split-sequence
+           sbcl-trivial-backtrace
+           sbcl-usocket
+           sbcl-uuid
+           sbcl-yason
+           sbcl-zs3))
     (home-page "https://pgloader.io/")
     (synopsis "Tool to migrate data to PostgreSQL")
     (description
@@ -1395,7 +1470,7 @@ including field and record folding.")
 (define-public rocksdb
   (package
     (name "rocksdb")
-    (version "6.25.3")
+    (version "6.26.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1404,7 +1479,7 @@ including field and record folding.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14150kd7hk8jjwpm28bf3a0agrhyapbq9lgnl00l385vfb73wnzl"))
+                "0mylma106w93kxhj89g9y1ccdq7m9m94wrmv5nyr17yc1zsk87sg"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1412,70 +1487,33 @@ including field and record folding.")
                   (delete-file "build_tools/gnu_parallel")
                   (substitute* "Makefile"
                     (("build_tools/gnu_parallel") "parallel"))))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          ;; Ceph requires that RTTI is enabled.
-                          "USE_RTTI=1"
-                          ;; Don't pass '-march=native' to the compiler.
-                          "PORTABLE=1"
-                          ;; Use a deterministic date stamp.
-                          "build_date=1970-01-01"
+     `(#:configure-flags
+       (list "-DROCKSDB_BUILD_SHARED=1"
+             ;; Ceph requires that RTTI is enabled.
+             "-DUSE_RTTI=1"
+             ;; Prevent the build from passing '-march=native' to the compiler.
+             "-DPORTABLE=1")
 
-                          ;; Running the full test suite takes hours and require
-                          ;; a lot of disk space.  Instead we only run a subset
-                          ;; that exercises platform-specific functionality.
-                          "ROCKSDBTESTS_PLATFORM_DEPENDENT=only")
-       #:test-target "check_some"
-       ;; Many tests fail on 32-bit platforms. There are multiple reports about
-       ;; this upstream, but it's not going to be supported any time soon.
-       #:tests? ,(if (%current-target-system)
-                     #f
-                     (let ((system (%current-system)))
-                       (or (string-prefix? "x86_64-linux" system)
-                           (string-prefix? "aarch64-linux" system))))
+       ;; Many tests fail on 32-bit platforms. There are multiple
+       ;; reports about this upstream, but it's not going to be
+       ;; supported any time soon.  What's worse: Release builds don't
+       ;; include tests, and overriding the build system to build
+       ;; tests anyway fails with missing TEST_ symbols.
+       #:tests? #false
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-Makefile
+         (add-after 'unpack 'patch-CMakeLists.txt
            (lambda _
-             (substitute* "Makefile"
-               ;; Don't depend on the static library when installing.
-               (("install: install-static")
-                "install:")
-               (("#!/bin/sh") (string-append "#!" (which "sh"))))))
-         (delete 'configure)
-         ;; The default target is only needed for tests and built on demand.
-         (delete 'build)
-         (add-before 'check 'mount-tmp
-           ;; Use the provided workspace directory for test files.
-           ;; Otherwise, /tmp is used which is a mount namespace on /gnu/store.
-           ;; This speeds up the build when the host /tmp is a proper tmpfs or
-           ;; other fast filesystem, as opposed to /gnu which may be a HDD.
+             (substitute* "CMakeLists.txt"
+               ;; build reproducibly
+               (("set\\(BUILD_DATE \"\\$\\{TS\\}\"")
+                "set(BUILD_DATE \"1970-01-01\""))))
+         (add-after 'unpack 'build-generically
            (lambda _
-             (let ((test-dir (string-append (getcwd) "/../test")))
-               (mkdir test-dir)
-               (setenv "TEST_TMPDIR" (canonicalize-path test-dir)))))
-         (add-before 'check 'disable-failing-tests
-           (lambda _
-             (substitute* "Makefile"
-               ;; These tests reliably fail due to "Too many open files".
-               (("^[[:blank:]]+env_test[[:blank:]]+\\\\") "\\")
-               (("^[[:blank:]]+persistent_cache_test[[:blank:]]+\\\\") "\\"))))
-         (add-after 'check 'clean
-           (lambda _
-             ;; Otherwise stale objects from the tests would interfere.
-             (invoke "make" "clean")))
-         (add-after 'clean 'build
-           ;; The default build target is a debug build for tests. The
-           ;; install target depends on the "shared_lib" release target
-           ;; so we build it here for clarity.
-           (lambda* (#:key (make-flags '()) parallel-build? #:allow-other-keys)
-             (apply invoke "make" "shared_lib"
-                    `(,@(if parallel-build?
-                            `("-j" ,(number->string (parallel-job-count)))
-                            '())
-                      ,@make-flags)))))))
+             (substitute* "CMakeLists.txt"
+               (("if\\(HAVE_SSE42\\)") "if(FALSE)")))))))
     (native-inputs
      (list parallel perl procps python which))
     (inputs
@@ -3056,13 +3094,13 @@ Database API 2.0T.")
 (define-public python-sqlalchemy
   (package
     (name "python-sqlalchemy")
-    (version "1.4.27")
+    (version "1.4.31")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "SQLAlchemy" version))
       (sha256
-       (base32 "031jbd0svrvwr3n52iibp9mkwsj9wicnck45yd26da5kmsfkas6p"))))
+       (base32 "06448s883bb8fgca33bn0pfaj15la0g4cax2mmx482kqwp8mjasq"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython ; for C extensions
@@ -3085,18 +3123,6 @@ provides a full suite of well known enterprise-level persistence patterns,
 designed for efficient and high-performing database access, adapted into a
 simple and Pythonic domain language.")
     (license license:x11)))
-
-(define-public python-sqlalchemy-1.3
-  (package
-    (inherit python-sqlalchemy)
-    (version "1.3.20")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "SQLAlchemy" version))
-       (sha256
-        (base32 "18b9am7bsqc4nj3d2h5r93i002apczxfvpfpcqbd6f0385zmrwnj"))))
-    (propagated-inputs '())))
 
 (define-public python2-sqlalchemy
   (package-with-python2 python-sqlalchemy))
@@ -3125,14 +3151,14 @@ framework.")
 (define-public python-sqlalchemy-utils
   (package
     (name "python-sqlalchemy-utils")
-    (version "0.32.21")
+    (version "0.38.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "SQLAlchemy-Utils" version))
         (sha256
          (base32
-          "1myn71dn8j74xglyh46f12sh8ywb7j0j732rzwq70kvwwnq32m73"))))
+          "1d6fq81489kqzxmk3l6f39sinw206lzs392frmpr5lsjzg9xc0cy"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; FIXME: Many tests require a running database server.
@@ -3393,25 +3419,126 @@ designed to be easy and intuitive to use.")
 (define-public python-psycopg2
   (package
     (name "python-psycopg2")
-    (version "2.9.2")
+    (version "2.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "psycopg2" version))
        (sha256
-        (base32 "1smvvs1ngqy0ymlp1d7f85j09j9v0z5dq14f1qky0j0qi7xajkd8"))))
+        (base32 "1099as8ind9kpz30rmqzc3nir668fmpkxwayrj2sjka3ycdiv14f"))))
     (build-system python-build-system)
     (arguments
      ;; Tests would require a postgresql database "psycopg2_test"
      ;; and a running postgresql database management service.
-     `(#:tests? #f)) ; TODO re-enable after providing a test-db.
+     '(#:tests? #f)) ; TODO re-enable after providing a test-db.
     (inputs
      (list postgresql)) ; libpq
-    (home-page "http://initd.org/psycopg/")
+    (home-page "https://www.psycopg.org/")
     (synopsis "Python PostgreSQL adapter")
     (description
      "psycopg2 is a thread-safe PostgreSQL adapter that implements DB-API
 2.0.")
+    (license license:lgpl3+)))
+
+(define-public python-psycopg-pool
+  (package
+    (name "python-psycopg-pool")
+    ;; The connection pooling code is on a different release cadence
+    ;; from the driver code, so fetch the latest PyPI release.
+    (version "3.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "psycopg-pool" version))
+              (sha256
+               (base32
+                "1nx139pwzsgrz253zjxw2sf8h713s79h4cp1falmpc39j08djb46"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f                  ;run for psycopg below
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This module requires 'psycopg', however psycopg needs this
+               ;; for its tests.  Disable sanity check to break the cycle.
+               (delete 'sanity-check))))
+    (home-page "https://www.psycopg.org/")
+    (synopsis "Connection pooler for psycopg")
+    (description
+     "This module provides connection pool implementations that can be used
+with the @code{psycopg} PostgreSQL driver.")
+    (license license:lgpl3+)))
+
+(define-public python-psycopg
+  (package
+    (name "python-psycopg")
+    (version "3.0.8")
+    (source (origin
+              ;; Fetch from git because PyPI contains only cythonized sources.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/psycopg/psycopg")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16i19jqd9lg9r7bc63ssh527cccrpf49g1nlayikk5qlswpzp75y"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'change-directory
+                 (lambda _
+                   (chdir "psycopg")))
+               (add-after 'build 'build-c-extensions
+                 (lambda _
+                   (with-directory-excursion "../psycopg_c"
+                     ((assoc-ref %standard-phases 'build)))))
+               (add-after 'install 'install-c-extensions
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   ;; For some reason setup.py refuses to install if the
+                   ;; installation directory is not on PYTHONPATH.
+                   (setenv "PYTHONPATH" (site-packages inputs outputs))
+                   (with-directory-excursion "../psycopg_c"
+                     ((assoc-ref %standard-phases 'install)
+                      #:inputs inputs
+                      #:outputs outputs))))
+               (add-before 'check 'start-postgresql
+                 (lambda _
+                   (let ((dbdir (string-append (getcwd) "/../pgdir")))
+                     (invoke "initdb" "-D" dbdir)
+                     (invoke "pg_ctl" "-D" dbdir
+                             "-o" (string-append "-k " dbdir)
+                             "-l" (string-append dbdir "/db.log")
+                             "start")
+
+	             (invoke "psql" "-h" dbdir "-d" "postgres"
+                             "-c" "CREATE DATABASE nixbld;"))))
+               (replace 'check
+                 (lambda* (#:key inputs tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "TZDIR" (search-input-directory inputs
+                                                             "share/zoneinfo"))
+                     (with-directory-excursion ".."
+                       (invoke "pytest" "-vv"
+                               "-o" "asyncio_mode=auto"
+                               ;; FIXME: Many of the typing tests are failing,
+                               ;; conveniently tagged as slow...
+                               "-k" "not slow"))))))))
+    (native-inputs
+     (list python-cython-3
+           python-mypy
+           python-psycopg-pool
+           python-pytest
+           python-pytest-asyncio
+           python-tenacity
+           pproxy
+           tzdata-for-tests))
+    (inputs
+     (list postgresql))
+    (home-page "https://www.psycopg.org/")
+    (synopsis "PostgreSQL driver for Python")
+    (description
+     "Psycopg 3 is a new implementation of the popular @code{psycopg2}
+database adapter for Python.")
     (license license:lgpl3+)))
 
 (define-public python-sadisplay
@@ -3685,13 +3812,13 @@ is designed to have a low barrier to entry.")
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
-    (version "0.4.1")
+    (version "0.4.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sqlparse" version))
               (sha256
                (base32
-                "1s2l0jgi1v7rk7smzb99iamasaz22apfkczsphn3ci4wh8pgv48g"))))
+                "1bkx52c2jh28c528b69qfk2ijfzw1laxx6lim7jr8fi6fh67600c"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3719,7 +3846,8 @@ is designed to have a low barrier to entry.")
     (synopsis "Non-validating SQL parser")
     (description "Sqlparse is a non-validating SQL parser for Python.  It
 provides support for parsing, splitting and formatting SQL statements.")
-    (license license:bsd-3)))
+    (license license:bsd-3)
+    (properties '((cpe-name . "sqlparse")))))
 
 (define-public python-sql
   (package

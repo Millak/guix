@@ -34,12 +34,12 @@
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018, 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2019, 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -60,11 +60,15 @@
 ;;; Copyright © 2020, 2021 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2021 Trevor Hass <thass@okstate.edu>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
+;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -826,44 +830,42 @@ patterns.")
                 "1h049mzqnlcfqwrhmzbq3pzzdglvy2bn9fj1p8wql7a60pn8sr32"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
-         (add-after 'unpack 'unpack-libgd
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libgd (assoc-ref inputs "libgd")))
-               (copy-recursively libgd "subprojects/libgd")
-               #t))))))
-    (inputs
-     `(("glib" ,glib)
-       ("gnome-autoar" ,gnome-autoar)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
-       ("gspell" ,gspell)
-       ("gtk+" ,gtk+)
-       ("json-glib" ,json-glib)
-       ("libcanberra" ,libcanberra)
-       ("libsoup" ,libsoup)
-       ("rest" ,rest)))
-    (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("itstool" ,itstool)
-       ("libgd"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://gitlab.gnome.org/GNOME/libgd")
-                 (commit "c7c7ff4e05d3fe82854219091cf116cce6b19de0")))
-           (file-name (git-file-name "libgd" version))
-           (sha256
-            (base32 "16yld0ap7qj1n96h4f2sqkjmibg7xx5xwkqxdfzam2nmyfdlrrrs"))))
-       ("pkg-config" ,pkg-config)))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson_post_install.py"
+                (("gtk-update-icon-cache") (which "true")))))
+          (add-after 'unpack 'unpack-libgd
+            (lambda _
+              (copy-recursively
+               #$(origin
+                   (method git-fetch)
+                   (uri (git-reference
+                         (url "https://gitlab.gnome.org/GNOME/libgd")
+                         (commit "c7c7ff4e05d3fe82854219091cf116cce6b19de0")))
+                   (file-name (git-file-name "libgd" version))
+                   (sha256
+                    (base32
+                     "16yld0ap7qj1n96h4f2sqkjmibg7xx5xwkqxdfzam2nmyfdlrrrs")))
+               "subprojects/libgd"))))))
+    (inputs (list glib
+                  gnome-autoar
+                  `(,gnome-online-accounts "lib")
+                  gspell
+                  gtk+
+                  json-glib
+                  libcanberra
+                  libsoup
+                  rest))
+    (native-inputs (list desktop-file-utils ;for update-desktop-database
+                         gettext-minimal
+                         `(,glib "bin")
+                         itstool
+                         pkg-config
+                         python))
     (home-page "https://wiki.gnome.org/Apps/Recipes")
     (synopsis "Discover recipes for preparing food")
     (description "GNOME Recipes helps you discover what to cook today,
@@ -886,8 +888,7 @@ tomorrow, the rest of the week and for special occasions.")
          "1bzi79plw6ji6qlckhxnwfnswy6jpnhzmmyanml2i2xg73hp6bg0"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:configure-flags
        (list "-Ddogtail=false"     ; Not available
              ;; Required for RUNPATH validation.
@@ -958,8 +959,7 @@ cloud integration is offered through GNOME Online Accounts.")
          "0lcdal4qdhclr8961p57xf010y92l6wwmkw86lyi9wy224z6gjr0"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-gnome-music
@@ -1001,6 +1001,7 @@ cloud integration is offered through GNOME Online Accounts.")
        ("libsoup" ,libsoup-minimal-2)
        ("pycairo" ,python-pycairo)
        ("pygobject" ,python-pygobject)
+       ("python" ,python)
        ("tracker" ,tracker)
        ("tracker-miners" ,tracker-miners)))
     (synopsis "Simple music player for GNOME desktop")
@@ -1494,8 +1495,7 @@ extraction, and lookup for applications on the desktop.")
               "06q3p4f8g9zr7a4mw3qr556mi0dg9qzrj8n46ybdz93fxs26aaj1"))))
    (build-system meson-build-system)
    (arguments
-    `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-      #:configure-flags '(;; Enable camera support for user selfie.
+    `(#:configure-flags '(;; Enable camera support for user selfie.
                           "-Dcheese=auto"
                           "-Dsystemd=false")
       #:phases (modify-phases %standard-phases
@@ -1560,8 +1560,7 @@ tour of all gnome components and allows the user to set them up.")
               "04r9ck9v4i0d31grbli1d4slw2d6dcsfkpaybkwbzi7wnj72l30x"))))
    (build-system meson-build-system)
    (arguments
-    `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-      #:glib-or-gtk? #t
+    `(#:glib-or-gtk? #t
       #:configure-flags
        `("-Dsystemduserunitdir=/tmp/empty"
          ;; Enable nautilus extension for file sharing.
@@ -1660,15 +1659,16 @@ to preview files on the GNOME desktop.")
        (list "-Dplugins=external,gst-launch,lms,media-export,
 mpris,playbin,ruih,tracker3")))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("docbook-xml" ,docbook-xml)
-       ("dockbook-xsl" ,docbook-xsl)
-       ("xsltproc" ,libxslt)))
+     (list gettext-minimal
+           `(,glib "bin")               ; for glib-compile-schemas, etc.
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config
+           python
+           vala
+           docbook-xml
+           docbook-xsl
+           libxslt))
     (inputs
      (list gdk-pixbuf
            gssdp
@@ -1855,7 +1855,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.12.2")
+    (version "1.12.3.1")
     (source
      (origin
        (method url-fetch)
@@ -1863,7 +1863,7 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "0f7l2pkyh3r1qk4hhavl7387l3bq5my3snpdppiavcpnji28dpa5"))))
+        (base32 "0fhmfxh6kbchggvpbin7d4g4fq5vc49y0w48wdkyxln5dswidss2"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list desktop-file-utils
@@ -1929,12 +1929,16 @@ and system administrators.")
                  (base32
                   "04r8dspa6nmicrifhi3sh46hqvyy88hzq37xx99q3q1mwsrpmwy8"))))
       (build-system meson-build-system)
+      (arguments `(#:meson ,meson-0.59))
       (inputs
        (list graphene
              gtk+-2
              libxml2
              libxslt
-             poppler
+
+             ;; XXX: PDF plugin fails to build with poppler 21.07.0.
+             ;; poppler
+
              ;; Without Python 2, build fails: plug-ins/python/meson.build:4:0:
              ;; ERROR: Unknown method "dependency" in object.
              python-2))
@@ -2036,8 +2040,7 @@ to other formats.")
          "0z2xa4w921bzpzj6gv88pvbrijcnnwni6jxynwz0ybaravyzaqha"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:phases (modify-phases %standard-phases
                   (add-after 'install 'wrap
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -2273,8 +2276,7 @@ and keep up to date translations of documentation.")
                 "1rr1ypb89p51b6428yqvczmpmylwjfnhnkgx78hzm3vxm3m15lff"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:configure-flags '("-Dlogind=libelogind")
+     `(#:configure-flags '("-Dlogind=libelogind")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -2323,8 +2325,7 @@ and keep up to date translations of documentation.")
                 "0hpyi0sz3gcqqs9lkwyk8b6hr39m3n27432x98kxr436jj37dk6j"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-post-install-script
            (lambda _
@@ -2593,8 +2594,7 @@ forgotten when the session ends.")
                 "0xrwls1bhvny8vvd7mfjy9p26zjch0pd6x6j9jn9g2ka6xwyrxqg"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:build-type "release"
        #:configure-flags
        '("-Dnautilus=false"
@@ -2669,25 +2669,24 @@ on the GNOME Desktop with a single simple application.")
          "1v9jagk679m01nji0acirynxinziv036618c7xc49l4nwmr9ja3p"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'patch-schemas
                     (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((theme (assoc-ref inputs "gnome-backgrounds")))
-                        (substitute* (find-files "schemas"
-                                                 "\\.gschema\\.xml\\.in$")
-                          ;; Provide the correct file name of the default
-                          ;; GNOME background, 'adwaita-timed.xml'.
-                          (("@datadir@/backgrounds/gnome")
-                           (string-append theme "/share/backgrounds/gnome"))
-                          ;; Do not reference fonts, that may not exist.
-                          (("'Source Code Pro 10'") "'Monospace 11'"))))))))
-    (inputs
-     (list glib gnome-backgrounds))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")             ; glib-compile-schemas, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)))
+                      (substitute* (find-files "schemas"
+                                               "\\.gschema\\.xml\\.in$")
+                        ;; Provide the correct file name of the default
+                        ;; GNOME background, 'adwaita-timed.xml'.
+                        (("@datadir@/backgrounds/gnome")
+                         (search-input-directory inputs
+                                                 "/share/backgrounds/gnome"))
+                        ;; Do not reference fonts, that may not exist.
+                        (("'Source Code Pro 10'") "'Monospace 11'")))))))
+    (inputs (list glib gnome-backgrounds))
+    (native-inputs (list gettext-minimal
+                         `(,glib "bin") ;glib-compile-schemas, etc.
+                         gobject-introspection
+                         pkg-config
+                         python))  ;for build-aux/meson/post-install.py
     (home-page "https://launchpad.net/gsettings-desktop-schemas")
     (synopsis "GNOME settings for various desktop components")
     (description "Gsettings-desktop-schemas contains a collection of GSettings
@@ -3187,8 +3186,7 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
                         "glade-test-widget-null-icon.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
@@ -3232,6 +3230,7 @@ current/manpages/docbook.xsl")
        ("docbook-xml" ,docbook-xml-4.2)
        ("docbook-xsl" ,docbook-xsl)
        ("glib:bin" ,glib "bin")
+       ("python" ,python)
        ("python-pygobject" ,python-pygobject)
        ("gobject-introspection" ,gobject-introspection)
 
@@ -4370,6 +4369,7 @@ engineering.")
        ("glib:bin" ,glib "bin")
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("vala" ,vala)
        ("xmllint" ,libxml2)))
     (home-page "https://wiki.gnome.org/Apps/Seahorse")
@@ -4470,6 +4470,7 @@ targeting the GNOME stack simple.")
        ("gobject-introspection" ,gobject-introspection)
        ("glib" ,glib "bin")             ; for glib-genmarshal, etc.
        ("gperf" ,gperf)
+       ("python" ,python)
        ("xmllint" ,libxml2)))
     (propagated-inputs
      (list gtk+ ; required by vte-2.91.pc
@@ -4498,11 +4499,8 @@ editors, IDEs, etc.")
                (base32
                 "0rnm5c6m3abbm81jsfdas0y80z299ny54gr4syn4bfrms3s4g19l"))))
     (build-system meson-build-system)
-    (native-inputs
-     (modify-inputs (package-native-inputs vte)
-       (prepend gtk-doc/stable)))
     (arguments
-     `(#:configure-flags '("-Ddocs=true")))
+     (list #:configure-flags #~(list "-Ddocs=false")))
   (synopsis "Enhanced VTE terminal widget")
   (description
    "VTE is a library (libvte) implementing a terminal emulator widget for
@@ -4617,6 +4615,7 @@ and RDP protocols.")
        ("glib:bin" ,glib "bin")
        ("gtk-doc" ,gtk-doc/stable)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("vala" ,vala)))
     (arguments
      `(#:glib-or-gtk? #t
@@ -4875,7 +4874,7 @@ libxml to ease remote use of the RESTful API.")
 (define-public libsoup-minimal
   (package
     (name "libsoup-minimal")
-    (version "3.0.3")
+    (version "3.0.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsoup/"
@@ -4883,7 +4882,7 @@ libxml to ease remote use of the RESTful API.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "0pp2s9rj7pp45ac99hbqszznln5ljj38cbc8lbljfc5fmm6v0rai"))))
+                "0ysnvvfd2f6w2z6g31spqqb8wgyamixc7mryzbbpyw0z15g8plsv"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dgtk_doc=false")
@@ -5095,7 +5094,6 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -5177,7 +5175,6 @@ once.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -5443,7 +5440,7 @@ faster results and to avoid unnecessary server load.")
 (define-public upower
   (package
     (name "upower")
-    (version "0.99.12")
+    (version "0.99.13")
     (source
      (origin
        (method git-fetch)
@@ -5455,7 +5452,7 @@ faster results and to avoid unnecessary server load.")
                                                 version)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00q63yc8vp5cq05vhpwq3qglapdm8hg0lrqkzdwkphk30qzb6hv6"))
+        (base32 "0khwg6jpq81dcylkpi7cn75bjzif0q9qscwvirrk41krma23iddj"))
        (patches (search-patches "upower-builddir.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -5468,8 +5465,7 @@ faster results and to avoid unnecessary server load.")
            ;; location.
            (substitute* "src/Makefile.am"
              (("^dbusconfdir =.*$")
-              "dbusconfdir = $(sysconfdir)/dbus-1/system.d\n"))
-           #t))))
+              "dbusconfdir = $(sysconfdir)/dbus-1/system.d\n"))))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:phases
@@ -5478,8 +5474,7 @@ faster results and to avoid unnecessary server load.")
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((umockdev (string-append (assoc-ref inputs "umockdev")
                                             "/lib")))
-               (setenv "LD_LIBRARY_PATH" umockdev))
-             #t)))
+               (setenv "LD_LIBRARY_PATH" umockdev)))))
        #:configure-flags (list "--localstatedir=/var"
                                (string-append "--with-udevrulesdir="
                                               (assoc-ref %outputs "out")
@@ -5497,6 +5492,7 @@ faster results and to avoid unnecessary server load.")
            ;; For tests.
            python-dbus
            python-dbusmock
+           python-packaging
            python-pygobject
            umockdev
            ;; For man pages.
@@ -5540,6 +5536,7 @@ service via the system message bus.")
      `(("glib:bin" ,glib "bin") ; for glib-mkenums
        ("gobject-introspection" ,gobject-introspection)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("vala" ,vala)
        ("intltool" ,intltool)
        ("python-pygobject" ,python-pygobject)))
@@ -5576,12 +5573,10 @@ services for numerous locations.")
        (patches (search-patches "gnome-settings-daemon-gc.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:configure-flags
        (list (string-append "-Dudev_dir="
-                            (assoc-ref %outputs "out")
-                            "/lib/udev/rules.d/")
+                            (assoc-ref %outputs "out") "/lib/udev")
              "-Dsystemd=false"
              ;; Otherwise, the RUNPATH will lack the final path component.
              (string-append "-Dc_link_args=-Wl,-rpath="
@@ -5632,7 +5627,7 @@ services for numerous locations.")
            cups
            gsettings-desktop-schemas
            libwacom
-           librsvg
+           (librsvg-for-system)
            xf86-input-wacom
            wayland
            network-manager
@@ -5751,7 +5746,6 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -6282,8 +6276,7 @@ discovery protocols.")
            grilo-plugins
            vala))
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
 
        ;; Disable automatic GStreamer plugin installation via PackageKit and
        ;; all that.
@@ -6432,11 +6425,12 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "0ddjwcd77nw0rxb5x5bz5hd671m8gya9827p8rsnb58x103kpai8"))))
+              "0ddjwcd77nw0rxb5x5bz5hd671m8gya9827p8rsnb58x103kpai8"))
+            ;; XXX: Remove when upgrading to 42.0
+            (patches (search-patches "eog-update-libportal-usage.patch"))))
    (build-system meson-build-system)
    (arguments
-    `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-      #:configure-flags
+    `(#:configure-flags
       ;; Otherwise, the RUNPATH will lack the final 'eog' path component.
       (list (string-append "-Dc_link_args=-Wl,-rpath="
                            (assoc-ref %outputs "out") "/lib/eog"))
@@ -6488,7 +6482,7 @@ supports image conversion, rotation, and slideshows.")
   ;; 'XDG_DATA_DIRS' appropriately set.
   (package
     (name "eog-plugins")
-    (version "3.26.7")
+    (version "3.26.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/eog-plugins/"
@@ -6496,7 +6490,7 @@ supports image conversion, rotation, and slideshows.")
                                   "eog-plugins-" version ".tar.xz"))
               (sha256
                (base32
-                "0gbvl54hjawcrj2cbkvsw5jx11p6jv1xkc58c8ikwwpb56gc3ric"))))
+                "1dcxdjp7x092wn0iq7975f9b05ksb5kl5mxmyiqmydrja91ryw40"))))
     (build-system gnu-build-system)
     (home-page "https://wiki.gnome.org/Apps/EyeOfGnome/Plugins")
     (synopsis "Extensions for the Eye of GNOME image viewer")
@@ -6567,8 +6561,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                 "1hlxl6368h6nyqp1888szxs9hnpcw98k3h23dgqi29xd38klzsmj"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:configure-flags
        (list "-Dsystemduserunitdir=no"
              "-Dtmpfilesdir=no"
@@ -6647,7 +6640,7 @@ DAV, and others.")
                    "-Dvapi=false")
                  '()))))
     (native-inputs
-     (list gobject-introspection pkg-config vala))
+     (list gobject-introspection pkg-config python vala))
     (propagated-inputs
      ;; Both of these are required by gusb.pc.
      (list glib libusb))
@@ -6675,7 +6668,7 @@ USB transfers with your high-level application or system daemon.")
 (define-public simple-scan
   (package
     (name "simple-scan")
-    (version "40.5")
+    (version "40.7")
     (source
      (origin
        (method url-fetch)
@@ -6683,28 +6676,28 @@ USB transfers with your high-level application or system daemon.")
                            (version-major version) "/"
                            "simple-scan-" version ".tar.xz"))
        (sha256
-        (base32 "195rh8zj5n497gj42rd77mvkdl15hk0i08ll5h4hb9kcrgj7jlzb"))))
+        (base32 "0lrxmk8xqvrb5gn5mpgqij133giwvrgavy49m55d7xssrd91hmbw"))))
     (build-system meson-build-system)
     ;; TODO: Fix icons in home screen, About dialogue, and scan menu.
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t))
-    (inputs
-     `(("gtk" ,gtk+)
-       ("zlib" ,zlib)
-       ("cairo" ,cairo)
-       ("colord" ,colord)
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gusb" ,gusb)
-       ("libhandy" ,libhandy)
-       ("libsane" ,sane-backends)))
+     `(#:glib-or-gtk? #t))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("itstool" ,itstool)
-       ("glib" ,glib "bin")             ; glib-compile-schemas, etc.
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xmllint" ,libxml2)))
+     (list gettext-minimal
+           itstool
+           `(,glib "bin")               ; glib-compile-schemas, etc.
+           pkg-config
+           python
+           vala
+           libxml2))
+    (inputs
+     (list gtk+
+           zlib
+           cairo
+           colord
+           gdk-pixbuf
+           gusb
+           libhandy
+           sane-backends))
     (home-page "https://gitlab.gnome.org/GNOME/simple-scan")
     (synopsis "Document and image scanner")
     (description
@@ -6787,7 +6780,7 @@ a secret password store, an adblocker, and a modern UI.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "40.3")
+    (version "41.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -6795,12 +6788,12 @@ a secret password store, an adblocker, and a modern UI.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "0r7m34xzz3shdfxf2abxb069izak3yv3ijlg29qy4pfmyawkilfs"))))
-
+                "0k7b22zq3z1kllzqxgwsvwb1lp0j6rjb3k1hvhna3i573wc4mpji"))
+              (patches
+               (search-patches "epiphany-update-libportal-usage.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -7116,6 +7109,7 @@ metadata in photo and video files of various formats.")
        ("glib:bin" ,glib "bin")
        ("itstool" ,itstool)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("vala" ,vala)))
     (inputs
      `(("gcr" ,gcr)
@@ -7158,6 +7152,7 @@ share them with others via social networking and more.")
            intltool
            itstool
            pkg-config
+           python
            `(,gtk+ "bin") ; gtk-update-icon-cache
            `(,glib "bin")))
     ;; TODO: Add libnautilus.
@@ -7190,8 +7185,7 @@ such as gzip tarballs.")
                (base32
                 "02z0xr6sv9ibl7awbw9j4y05hf4jk1zgvsbbmh7n27hhjvsvc8pl"))))
     (arguments
-     `(#:meson ,meson-0.59
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-gnome-session
@@ -7258,7 +7252,10 @@ configuration program to choose applications starting on login.")
                     (("☭") ""))))))
     (build-system meson-build-system)
     (arguments
-     '(#:configure-flags '("-Dinstalled_tests=false")
+     ;; Use meson-0.59, otherwise we'd get "ERROR: "install_dir" must be
+     ;; specified when installing a target".
+     `(#:meson ,meson-0.59
+       #:configure-flags '("-Dinstalled_tests=false")
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
@@ -7304,8 +7301,7 @@ javascript engine and the GObject introspection framework.")
                 "149ngl9qw6h59546lir1pa7hvw23ppsnqlj9mfqphmmn5jl99qsm"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:configure-flags
        ;; Otherwise, the RUNPATH will lack the final path component.
        (list (string-append "-Dc_link_args=-Wl,-rpath="
@@ -7546,6 +7542,7 @@ to display dialog boxes from the commandline and shell scripts.")
        ("adwaita-icon-theme" ,adwaita-icon-theme)
        ("libxcursor" ,libxcursor)       ;for XCURSOR_PATH
        ("pipewire" ,pipewire-0.3)
+       ("python" ,python)
        ("python-dbus" ,python-dbus)
        ("python-dbusmock" ,python-dbusmock)
        ("tini" ,tini)))                 ;acting as init (zombie reaper)
@@ -7858,6 +7855,13 @@ users.")
           (string-append "-Ddhclient=" dhclient)))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-dlopen-call-to-libjansson.so
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/libnm-glib-aux/nm-json-aux.c"
+               (("(handle = dlopen\\()soname" _ head)
+                (string-append
+                 head "\"" (search-input-file inputs
+                                              "lib/libjansson.so") "\"")))))
          (add-before 'configure 'pre-configure
            (lambda _
              ;; These tests try to test aspects of network-manager's
@@ -7876,12 +7880,7 @@ users.")
                ((".*test-link-linux.*") "")
                ((".*test-lldp.*") "")
                ((".*test-route-linux.*") "")
-               ((".*test-tc-linux.*") ""))
-             ;; FIXME: The jansson check fails (see:
-             ;; https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/issues/837
-             (substitute* "src/libnm-core-impl/tests/test-setting.c"
-               (("g_assert\\(nm_json_vt\\(\\)\\);")
-                "return TRUE;"))))
+               ((".*test-tc-linux.*") ""))))
          (add-after 'unpack 'patch-docbook-xml
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
@@ -8154,8 +8153,7 @@ Cisco's AnyConnect SSL VPN.")
                 "1gj6lqqi613j2m49v9i82lqg1rv7kwwc8z4nxjcwpaa0ins803f7"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:configure-flags
        '("-Dappindicator=yes")))
     (native-inputs
@@ -8509,7 +8507,6 @@ usage and information about running processes.")
                (base32
                 "1a9ynlwwkb3wpg293ym517vmrkk63y809mmcv9a21k5yr199x53c"))))
     (build-system meson-build-system)
-    (arguments `(#:meson ,meson-0.59))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for gdbus-codegen, etc.
        ("gtk+" ,gtk+ "bin") ; gtk-update-icon-cache
@@ -8534,7 +8531,7 @@ devices using the GNOME desktop.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "40.1")
+    (version "41.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8542,11 +8539,12 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0rr4d5m2a72vrb31jgyx49dp0s2pwgyxsrk4hyw5ym66wq63c3v1"))))
+                "0j72ixhli621psbrma86qxy0spv6gpjx6k9hg2jih97c6dmzqwc2"))
+              (patches (search-patches
+                        "gnome-control-center-libexecdir.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:configure-flags
        (list "-Dcheese=false"
              (string-append "-Dgnome_session_libexecdir="
@@ -8588,53 +8586,59 @@ devices using the GNOME desktop.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true"))))))))
+               (("gtk-update-icon-cache") (which "true")))))
+         (add-before 'install 'no-polkit-magic
+           ;; Meson ‘magically’ invokes pkexec, which fails (not setuid).
+           (lambda _
+             (setenv "PKEXEC_UID" "something"))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums, etc.
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)
-       ;; For tests
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("python-dbusmock" ,python-dbusmock)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list `(,glib "bin")               ;for glib-mkenums, etc.
+           intltool
+           pkg-config
+           python
+           libxslt
+           ;; For tests
+           hicolor-icon-theme
+           python-dbusmock
+           xorg-server-for-tests))
     (inputs
-     `(("accountsservice" ,accountsservice)
-       ("clutter-gtk" ,clutter-gtk)
-       ("colord-gtk" ,colord-gtk)
-       ("cups" ,cups)
-       ("dconf" ,dconf)
-       ("docbook-xsl" ,docbook-xsl)
-       ("gdk-pixbuf" ,gdk-pixbuf) ; for loading SVG files
-       ("gnome-bluetooth" ,gnome-bluetooth)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gnome-online-accounts" ,gnome-online-accounts)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
-       ("gnome-session" ,gnome-session)
-       ("gnome-settings-daemon" ,gnome-settings-daemon)
-       ("grilo" ,grilo)
-       ("gsound" ,gsound)
-       ("ibus" ,ibus)
-       ("libcanberra" ,libcanberra)
-       ("libgnomekbd" ,libgnomekbd)
-       ("libgudev" ,libgudev)
-       ("libgtop" ,libgtop)
-       ("libnma" ,libnma)
-       ("libpwquality" ,libpwquality)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libxml2" ,libxml2)
-       ("libwacom" ,libwacom)
-       ("mesa" ,mesa)
-       ("mit-krb5" ,mit-krb5)
-       ("modem-manager" ,modem-manager)
-       ("network-manager-applet" ,network-manager-applet)
-       ("polkit" ,polkit)
-       ("pulseaudio" ,pulseaudio)
-       ("smbclient" ,samba)
-       ("tzdata" ,tzdata)
-       ("udisks" ,udisks)
-       ("upower" ,upower)))
+     (list accountsservice
+           clutter-gtk
+           colord-gtk
+           cups
+           dconf
+           docbook-xsl
+           gcr
+           gnome-bluetooth
+           gnome-desktop
+           gnome-online-accounts
+           `(,gnome-online-accounts "lib")
+           gnome-session
+           gnome-settings-daemon
+           grilo
+           gsound
+           ibus
+           libcanberra
+           libgnomekbd
+           libgudev
+           libgtop
+           libnma
+           libpwquality
+           librsvg                      ;for loading SVG files
+           libsecret
+           libsoup-minimal-2
+           libxml2
+           libwacom
+           mesa
+           mit-krb5
+           modem-manager
+           network-manager-applet
+           polkit
+           pulseaudio
+           samba
+           tzdata
+           udisks
+           upower))
     (synopsis "Utilities to configure the GNOME desktop")
     (home-page "https://www.gnome.org/")
     (description
@@ -8658,8 +8662,7 @@ properties, screen resolution, and other GNOME parameters.")
                 "0ragmcln210zvzhc2br33yprbkj9drjzd7inp5sdxra0a7l73yaj"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:disallowed-references ,(list (gexp-input glib "bin")
                                       (gexp-input libxslt)
                                       (gexp-input ruby-sass))
@@ -8710,14 +8713,38 @@ properties, screen resolution, and other GNOME parameters.")
              (let ((out              (assoc-ref outputs "out"))
                    (gi-typelib-path  (getenv "GI_TYPELIB_PATH"))
                    (python-path      (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/gnome-shell")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))
+               (for-each
+                (lambda (prog)
+                  (wrap-program (string-append out "/bin/" prog)
+                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+                '("gnome-shell" "gnome-extensions-app"))
+               (substitute* (string-append out "/share/gnome-shell/"
+                                           "org.gnome.Shell.Extensions")
+                 (("imports\\.package\\.start" all)
+                  (string-append "'" gi-typelib-path "'.split(':').forEach("
+                                 "path => imports.gi.GIRepository.Repository."
+                                 "prepend_search_path(path));\n"
+                                 all)))
                (for-each
                 (lambda (prog)
                   (wrap-program (string-append out "/bin/" prog)
                     `("GUIX_PYTHONPATH"      ":" prefix (,python-path))
                     `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-                '("gnome-shell-extension-tool" "gnome-shell-perf-tool")))))
+                '("gnome-shell-perf-tool")))))
+         (add-after 'install 'rewire
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (for-each
+              (lambda (tool)
+                (call-with-output-file (string-append
+                                        (assoc-ref outputs "out")
+                                        "/bin/" tool)
+                  (lambda (port)
+                    (format port "#!~a
+printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
+\"gnome-extensions-app\" instead.\\n'"
+                            (search-input-file inputs "bin/bash")
+                            tool))))
+              '("gnome-shell-extension-tool" "gnome-shell-extension-prefs"))))
          (replace 'glib-or-gtk-wrap
            (let ((wrap (assoc-ref %standard-phases 'glib-or-gtk-wrap)))
              (lambda* (#:key inputs outputs #:allow-other-keys #:rest rest)
@@ -8801,7 +8828,11 @@ like switching to windows and launching applications.")
     (arguments
      `(#:glib-or-gtk? #t))   ; To wrap binaries and/or compile schemas
     (native-inputs
-     `(("gjs" ,gjs)
+     `(;; GJS depends on Rust, which is x86_64-only so far, so remove the GJS
+       ;; dependency on other platforms (FIXME).
+       ,@(if (target-x86-64?)
+             `(("gjs" ,gjs))
+             '())
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
        ("intltool" ,intltool)
@@ -8812,7 +8843,7 @@ like switching to windows and launching applications.")
        ("vala" ,vala)))
     (inputs
      `(("cairo" ,cairo)
-       ("librsvg" ,librsvg)
+       ("librsvg" ,(librsvg-for-system))
        ("glib" ,glib)
        ("gnutls" ,gnutls)
        ("libgcrypt" ,libgcrypt)
@@ -8912,6 +8943,7 @@ easy, safe, and automatic.")
        ("intltool" ,intltool)
        ("dbus" ,dbus)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("vala" ,vala)))
     (inputs
      `(("dbus" ,dbus)
@@ -8941,7 +8973,7 @@ found by Tracker.  This means that GNOME Music doesn't need to maintain a
 database of its own.
 
 If you need to go beyond simple searches, Tracker is also a linked data
-endpoint and it understands SPARQL. ")
+endpoint and it understands SPARQL.")
     ;; https://gitlab.gnome.org/GNOME/tracker/-/blob/master/COPYING:
     ;; src/libtracker-*/* and src/tracker-extract/* are covered by lgpl2.1+,
     ;; libstemmer is bsd-3 and the rest is gpl2+.
@@ -9064,7 +9096,7 @@ shared object databases, search tools and indexing.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "41.0")
+    (version "41.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9072,13 +9104,37 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rd1a0wjh2sc7mzw6m61rryvgxpi2lin4xj0x9khqw04q6nl3fgr"))))
+                "0bsqh241m43x3qb3z0mjakjic610ncl95zhjdgls649phnc30qry"))
+              (patches
+               ;; This patch is already upstream and can be removed next
+               ;; release.
+               (search-patches "nautilus-add-libportal-gtk3.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'make-extensible
+           (lambda _
+             (substitute* "src/nautilus-module.c"
+               (("static gboolean initialized = FALSE;" all)
+                (string-append all "
+const char *extension_path;
+char **extension_dirs, **d;
+")
+                )
+               (("load_module_dir \\(NAUTILUS_EXTENSIONDIR\\);" all)
+                (string-append all
+                               "
+extension_path = g_getenv (\"NAUTILUS_EXTENSION_PATH\");
+if (extension_path)
+{
+    extension_dirs = g_strsplit (extension_path, \":\", -1);
+    for (d = extension_dirs; d != NULL && *d != NULL; d++)
+        load_module_dir(*d);
+    g_strfreev(extension_dirs);
+}
+")))))
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
@@ -9088,35 +9144,40 @@ shared object databases, search tools and indexing.")
        ;;   Settings schema 'org.gnome.nautilus.preferences' is not installed
        #:tests? #f))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
-       ("glib:bin" ,glib "bin")         ; for glib-mkenums, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils     ; for update-desktop-database
+           `(,glib "bin")         ; for glib-mkenums, etc.
+           gobject-introspection
+           intltool
+           pkg-config
+           python))
     (inputs
-     `(("dconf" ,dconf)
-       ("gexiv2" ,gexiv2)
-       ("gvfs" ,gvfs)
-       ("exempi" ,exempi)
-       ("gnome-desktop" ,gnome-desktop)
-       ("gnome-autoar" ,gnome-autoar)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("json-glib" ,json-glib)
-       ("libhandy" ,libhandy)
-       ("libportal" ,libportal)
-       ("libseccomp" ,libseccomp)
-       ("libselinux" ,libselinux)
-       ("libsoup" ,libsoup-minimal-2) ; to satisfy tracker dependencies
-       ("tracker" ,tracker)
-       ("tracker-miners" ,tracker-miners)
-       ;; XXX: gtk+ is required by libnautilus-extension.pc
-       ;;
-       ;; Don't propagate it to reduces "profile pollution" of the 'gnome' meta
-       ;; package.  See:
-       ;; <http://lists.gnu.org/archive/html/guix-devel/2016-03/msg00283.html>.
-       ("gtk+" ,gtk+)
-       ("libexif" ,libexif)
-       ("libxml2" ,libxml2)))
+     (list dconf
+           gexiv2
+           gvfs
+           exempi
+           gnome-desktop
+           gnome-autoar
+           gst-plugins-base
+           json-glib
+           libhandy
+           libportal
+           libseccomp
+           libselinux
+           libsoup-minimal-2 ; to satisfy tracker dependencies
+           tracker
+           tracker-miners
+           ;; XXX: gtk+ is required by libnautilus-extension.pc
+           ;;
+           ;; Don't propagate it to reduces "profile pollution" of the 'gnome' meta
+           ;; package.  See:
+           ;; <http://lists.gnu.org/archive/html/guix-devel/2016-03/msg00283.html>.
+           gtk+
+           libexif
+           libxml2))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "NAUTILUS_EXTENSION_PATH")
+            (files '("lib/nautilus/site-extensions")))))
     (synopsis "File manager for GNOME")
     (home-page "https://wiki.gnome.org/Apps/Nautilus")
     (description
@@ -9144,6 +9205,7 @@ files.")
     (native-inputs
      `(("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
+       ("python" ,python)
        ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
        ("gtk+-bin" ,gtk+ "bin") ; for gtk-update-icon-cache
        ("itstool" ,itstool)
@@ -9164,7 +9226,7 @@ is complete it provides a graphical representation of each selected folder.")
 (define-public gnome-backgrounds
   (package
     (name "gnome-backgrounds")
-    (version "40.1")
+    (version "41.0")
     (source
      (origin
        (method url-fetch)
@@ -9173,10 +9235,9 @@ is complete it provides a graphical representation of each selected folder.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "03m7ldfk00cly9igrq0qizq1y0f45vijmm23f1dl5kh1lc6qmpv0"))))
+         "0i9id5z72dqddh94648zylyf41amqq5lhny8sbyg1v8v4q6sr88x"))))
     (build-system meson-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
+    (native-inputs (list gettext-minimal))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-backgrounds")
     (synopsis "Background images for the GNOME desktop")
     (description
@@ -9212,14 +9273,14 @@ can add your own files to the collection.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "build-aux/postinstall.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+               (("gtk-update-icon-cache") "true")))))))
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
        ("desktop-file-utils" ,desktop-file-utils) ; for update-desktop-database
        ("intltool" ,intltool)
        ("appstream-glib" ,appstream-glib)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("python" ,python)))
     (inputs
      (list gtk+ libcanberra libhandy libx11 libxext))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-screenshot")
@@ -9252,8 +9313,6 @@ beautifying border effects.")
        ("vala" ,vala)))
     (inputs
      (list dconf gtk+ libxml2))
-    (arguments
-     `(#:meson ,meson-0.59))
     (home-page "https://gitlab.gnome.org/GNOME/dconf-editor")
     (synopsis "Graphical editor for GNOME's dconf configuration system")
     (description
@@ -9350,8 +9409,7 @@ associations for GNOME.")
           libgweather
           libhandy))
    (arguments
-    `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-      #:glib-or-gtk? #t
+    `(#:glib-or-gtk? #t
       #:phases
       ,#~(modify-phases %standard-phases
            (add-after 'unpack 'fix-service-file
@@ -9548,7 +9606,8 @@ specified duration and save it as a GIF encoded animated image file.")
         (base32 "1c4r9rnrz5gazrfg0z2rcwax4nscs7z391bcjcl74k6ln3blwzpr"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
+     `(#:meson ,meson-0.59
+       #:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
@@ -9558,24 +9617,25 @@ specified duration and save it as a GIF encoded animated image file.")
                    (pylib (string-append (assoc-ref outputs "out")
                                          "/lib/python"
                                          ,(version-major+minor
-                                           (package-version python))
+                                           (package-version
+                                            (this-package-input "python")))
                                          "/site-packages")))
                (wrap-program prog
                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           pkg-config))
     (inputs
      (list gsettings-desktop-schemas
            gtk+
            libhandy-0.0
            libsecret
+           python
            python-beautifulsoup4
            python-pillow
            python-pyfavicon
@@ -9711,7 +9771,6 @@ desktop.  It supports world clock, stop watch, alarms, and count down timer.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        ;; gnome-calendar has to be installed before the tests can be run
        ;; https://bugzilla.gnome.org/show_bug.cgi?id=788224
        #:tests? #f
@@ -9747,7 +9806,7 @@ desktop.  It supports multiple calendars, month, week and year view.")
 (define-public gnome-todo
   (package
     (name "gnome-todo")
-    (version "40.1")
+    (version "41.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9755,44 +9814,50 @@ desktop.  It supports multiple calendars, month, week and year view.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1r1fb3zgjvkhx93by24j8cg1w1g3zvwr49vqkscjn261vqs44jq3"))))
+                "1r94880d4khbjhhfnhaba3y3d4hv2bri82rzfzxn27s5iybpqras"))
+              (patches (search-patches "gnome-todo-libportal.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       ;; XXX: Some tests fail with the following error:
-       ;; Settings schema 'org.gnome.todo' is not installed.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "build-aux/meson/meson_post_install.py"
+                (("gtk-update-icon-cache") "true"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases
+                       'check))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "GSETTINGS_SCHEMA_DIR"
+                      (string-append #$output "/share/glib-2.0/schemas")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("glib:bin" ,glib "bin")         ; For glib-compile-resources
-       ("gtk-bin" ,gtk "bin")           ; For gtk-update-icon-cache
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           gobject-introspection
+           `(,glib "bin")               ;for glib-compile-resources
+           `(,gtk "bin")                ;for gtk-update-icon-cache
+           itstool
+           pkg-config))
     (inputs
-     `(("rest" ,rest)                   ; For Todoist plugin
-       ("gtk" ,gtk)
-       ("json-glib" ,json-glib)         ; For Todoist plugin
-       ("libadwaita" ,libadwaita)
-       ("libedataserverui" ,evolution-data-server)
-       ("libical" ,libical)
-       ("libpeas" ,libpeas)
-       ("libportal" ,libportal)
-       ("python-pygobject" ,python-pygobject)
-       ("evolution-data-server" ,evolution-data-server)
-       ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)))
+     (list rest                         ;for Todoist plugin
+           gtk
+           json-glib                    ;for Todoist plugin
+           libadwaita
+           evolution-data-server
+           libical
+           libpeas
+           libportal
+           python-pygobject
+           evolution-data-server
+           `(,gnome-online-accounts "lib")
+           gsettings-desktop-schemas))
     (home-page "https://wiki.gnome.org/Apps/Todo")
     (synopsis "GNOME's ToDo Application")
-    (description
-     "GNOME To Do is a simplistic personal task manager designed to perfectly
-fit the GNOME desktop.")
+    (description "GNOME To Do is a simplistic personal task manager designed
+to perfectly fit the GNOME desktop.")
     (license license:gpl3+)))
 
 (define-public gnome-dictionary
@@ -9809,7 +9874,8 @@ fit the GNOME desktop.")
                 "1d8dhcfys788vv27v34i3s3x3jdvdi2kqn2a5p8c937a9hm0qr9f"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
+       #:meson ,meson-0.59
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -9818,12 +9884,12 @@ fit the GNOME desktop.")
              (substitute* "build-aux/meson/post-install.py"
                (("gtk-update-icon-cache") "true")))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
+     (list `(,glib "bin")
+           gobject-introspection
+           intltool
+           itstool
+           pkg-config
+           libxml2))
     (inputs
      (list gsettings-desktop-schemas gtk+))
     (home-page "https://wiki.gnome.org/Apps/Dictionary")
@@ -9850,7 +9916,6 @@ existing databases over the internet.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-       #:meson ,meson-0.59
        #:configure-flags '("-Dlocalstatedir=/tmp"
                            "-Dsysconfdir=/tmp")
        #:imported-modules ((guix build python-build-system)
@@ -9949,8 +10014,7 @@ functionality and behavior.")
            ;; Don't create 'icon-theme.cache'.
            (lambda _
              (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+               (("gtk-update-icon-cache") "true")))))))
     (inputs
      (list bdb
            dbus-glib
@@ -9960,12 +10024,13 @@ functionality and behavior.")
            readline
            telepathy-glib))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("python-dbusmock" ,python-dbusmock)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list `(,glib "bin")
+           gobject-introspection
+           python-dbusmock
+           intltool
+           pkg-config
+           python
+           vala))
     (synopsis "Library to aggregate data about people")
     (description "Libfolks is a library that aggregates information about people
 from multiple sources (e.g., Telepathy connection managers for IM contacts,
@@ -10082,7 +10147,7 @@ handling the startup notification side.")
 (define-public gnome-calculator
   (package
     (name "gnome-calculator")
-    (version "40.1")
+    (version "41.0")
     (source
      (origin
        (method url-fetch)
@@ -10091,7 +10156,7 @@ handling the startup notification side.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1xkazxbkpn1z5pfphhps7fc5q4yc8lp7f6b222n8bx5iyxhwbrkz"))))
+         "16fwwfnw1w8p53ffny6zkff5cfsmg7xax9kmfgb7czjqv15w0vd6"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -10102,21 +10167,22 @@ handling the startup notification side.")
              ;; Tests require a writable HOME.
              (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin") ; for glib-compile-schemas, gio-2.0.
-       ("gtk+:bin" ,gtk+ "bin") ; for gtk-update-icon-cache
-       ("itstool" ,itstool)
-       ("vala" ,vala)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin")               ;for glib-compile-schemas, gio-2.0.
+           `(,gtk+ "bin")               ;for gtk-update-icon-cache
+           itstool
+           vala
+           pkg-config
+           python))
     (inputs
-     `(("glib" ,glib)
-       ("gtksourceview" ,gtksourceview)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libxml2" ,libxml2)
-       ("mpc" ,mpc)
-       ("mpfr" ,mpfr)))
+     (list `(,glib "bin")
+           gtksourceview
+           libgee
+           libhandy
+           libsoup-minimal-2
+           libxml2
+           mpc
+           mpfr))
     (home-page "https://wiki.gnome.org/Apps/Calculator")
     (synopsis "Desktop calculator")
     (description
@@ -10282,7 +10348,7 @@ Bluefish supports many programming and markup languages.")
 (define-public gnome-system-monitor
   (package
     (name "gnome-system-monitor")
-    (version "40.1")
+    (version "41.0")
     (source
      (origin
        (method url-fetch)
@@ -10291,21 +10357,21 @@ Bluefish supports many programming and markup languages.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "06hxd4igxas2kyind5jwfq5qbfkknykpdfy2sy3anylhcx1hzczx"))))
+         "0pwy2c95rm0ym3x5pr6rqg7zh58crjxyns4r52q99ds937349z67"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
        #:configure-flags '("-Dsystemd=false")))
     (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-mkenums.
-       ("gtk+" ,gtk+ "bin") ; gtk-update-icon-cache
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("libgtop" ,libgtop)
-       ("polkit" ,polkit)
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin")               ;for glib-mkenums.
+           `(,gtk+ "bin")               ;gtk-update-icon-cache
+           intltool
+           itstool
+           libgtop
+           polkit
+           pkg-config))
     (inputs
-     (list gdk-pixbuf ; for loading SVG files.
+     (list gdk-pixbuf                   ;for loading SVG files.
            gtk+
            gtkmm-3
            libhandy
@@ -10373,7 +10439,7 @@ accessibility infrastructure.")
 (define-public orca
   (package
     (name "orca")
-    (version "40.0")
+    (version "41.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10382,7 +10448,7 @@ accessibility infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0hq0zdcn80ficpcffbk667907v6m7dih3dhyc7ss01mrj3iyw000"))))
+                "1gflnsv6d5qn5rh1f16yfa0q0yv8yvd0l5lbwrsdg7z18lafb5vn"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:phases
@@ -10392,8 +10458,7 @@ accessibility infrastructure.")
              (let ((xkbcomp (string-append
                              (assoc-ref inputs "xkbcomp") "/bin/xkbcomp")))
                (substitute* "src/orca/orca.py"
-                 (("'xkbcomp'") (format #f "'~a'" xkbcomp))))
-             #t))
+                 (("'xkbcomp'") (format #f "'~a'" xkbcomp))))))
          (add-after 'install 'wrap-orca
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
@@ -10404,25 +10469,24 @@ accessibility infrastructure.")
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
                    (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
                  `("GUIX_PYTHONPATH" ":" prefix
-                   (,(getenv "GUIX_PYTHONPATH")))))
-             #t)))))
+                   (,(getenv "GUIX_PYTHONPATH"))))))))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
+     (list intltool
+           itstool
+           pkg-config
+           libxml2))
     (inputs
-     `(("at-spi2-atk" ,at-spi2-atk)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("gtk+" ,gtk+)
-       ("python" ,python)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyatspi" ,python-pyatspi)
-       ("python-speechd" ,speech-dispatcher)
-       ("xkbcomp" ,xkbcomp)))
+     (list at-spi2-atk
+           gsettings-desktop-schemas
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           gtk+
+           python
+           python-pygobject
+           python-pyatspi
+           speech-dispatcher
+           xkbcomp))
     (synopsis
      "Screen reader for individuals who are blind or visually impaired")
     (home-page "https://wiki.gnome.org/Projects/Orca")
@@ -10638,8 +10702,7 @@ photo-booth-like software, such as Cheese.")
                 "0vyim2avlgq3a48rgdfz5g21kqk11mfb53b2l883340v88mp7ll8"))
               (patches (search-patches "cheese-vala-update.patch"))))
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        ;; Tests require GDK.
        #:tests? #f
        #:phases
@@ -10706,47 +10769,48 @@ apply fancy special effects and lets you share the fun with others.")
 (define-public passwordsafe
   (package
     (name "passwordsafe")
-    (version "5.0")
+    (version "5.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.gnome.org/World/PasswordSafe")
+             (url "https://gitlab.gnome.org/World/secrets")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xh64bbg10gnfzlck5jvqy2zk6hbk9cyqgv85xc9kbdvs8n4lhgh"))))
+        (base32 "0kd43j6i017wdsqj6d5gnxhfv4ijnh3xahlw7md2gh51i8p682j6"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/gnome-passwordsafe"))
-                   (pylib (string-append (assoc-ref outputs "out")
-                                         "/lib/python"
-                                         ,(version-major+minor
-                                           (package-version python))
-                                         "/site-packages")))
-               (wrap-program prog
-                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+     (list #:glib-or-gtk? #t
+           #:meson meson-0.59
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((prog (string-append #$output
+                                              "/bin/gnome-passwordsafe"))
+                         (pylib (string-append
+                                 #$output "/lib/python"
+                                 #$(version-major+minor
+                                    (package-version (this-package-input "python")))
+                                 "/site-packages")))
+                     (wrap-program prog
+                       `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
+                       `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           pkg-config))
     (inputs
      (list glib
            gsettings-desktop-schemas
            gtk+
            libhandy
            libpwquality
+           python
            python-pygobject
            python-pykeepass))
     (home-page "https://gitlab.gnome.org/World/PasswordSafe")
@@ -10841,7 +10905,7 @@ mp3, Ogg Vorbis and FLAC")
     (description
      "SoundConverter supports converting between many audio formats including
 Opus, Ogg Vorbis, FLAC and more.  It supports parallel conversion, and
-configurable file renaming. ")
+configurable file renaming.")
     (license license:gpl3)))
 
 (define-public workrave
@@ -11054,11 +11118,6 @@ functionality.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
-
-       ;; See
-       ;; <https://github.com/mesonbuild/meson/issues/9492#issuecomment-973117289>.
-       #:meson ,meson-0.59
-
        #:configure-flags
        ;; Ensure the RUNPATH contains all installed library locations.
        (list (string-append "-Dc_link_args=-Wl,-rpath="
@@ -11171,7 +11230,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
 (define-public libhandy
   (package
     (name "libhandy")
-    (version "1.2.3")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -11180,7 +11239,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ng2607cp4dfl169rj7zi8q5p6fzxy3a4l0glm7mj75yd1a603rz"))))
+        (base32 "19gl0xxybraw2iyn6cdi9w7nps825lb2bhav7d2x51wla0lq3kdc"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -11251,7 +11310,7 @@ for usage on small and big screens.")
 (define-public libgit2-glib
   (package
     (name "libgit2-glib")
-    (version "0.99.0.1")
+    (version "1.0.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11259,7 +11318,7 @@ for usage on small and big screens.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1pmrcnsa7qdda73c3dxf47733mwprmj5ljpw3acxbj6r8k27anp0"))))
+                "0mrb21cgqmbhbxqxwx76yry1ifqj1k4vy6455n6s034m6rlms2j6"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ;; For glib-mkenums
@@ -11294,8 +11353,7 @@ higher level porcelain stuff.")
                 "0npg4kqpwl992fgjd2cn3fh84aiwpdp9kd8z7rw2xaj2iazsm914"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-post-install-partially
@@ -11433,19 +11491,19 @@ library which detects when a file or a directory has been modified.")
 (define-public gnome-mahjongg
   (package
     (name "gnome-mahjongg")
-    (version "3.35.1")
+    (version "3.38.3")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.gnome.org/GNOME/gnome-mahjongg.git")
-                    (commit version)))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/" name "-"
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "019a66a4m5w4kkb0sm6gxj0wi54n06zdxdlmyqw7h8kbakjizv7l"))))
+                "144ia3zn9rhwa1xbdkvsz6m0dsysl6mxvqw9bnrlh845hmyy9cfj"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t))
+     `(#:meson ,meson-0.59
+       #:glib-or-gtk? #t))
     (native-inputs
      `(("appstream-glib" ,appstream-glib)
        ("gettext" ,gettext-minimal)
@@ -11457,10 +11515,10 @@ library which detects when a file or a directory has been modified.")
     (propagated-inputs
      (list dconf))
     (inputs
-     (list glib gtk+ librsvg))
+     (list glib gtk+))
     (synopsis "Mahjongg tile-matching game")
     (description "GNOME Mahjongg is a game based on the classic Chinese
-tile-matching game Mahjong.  It features multiple board layouts, tile themes,
+tile-matching game Mahjongg.  It features multiple board layouts, tile themes,
 and a high score table.")
     (home-page "https://wiki.gnome.org/Apps/Mahjongg")
     (license license:gpl2+)))
@@ -11506,7 +11564,7 @@ index files needed for Adwaita to be used outside of GNOME.")
 (define-public gnote
   (package
     (name "gnote")
-    (version "40.2")
+    (version "41.2")
     (source
      (origin
        (method url-fetch)
@@ -11514,8 +11572,16 @@ index files needed for Adwaita to be used outside of GNOME.")
                            (version-major version)  "/"
                            "gnote-" version ".tar.xz"))
        (sha256
-        (base32 "01fqdfgcl32cf40jw9q0h7f5bghl1lvf89vln1lh41ncrk0iw6vy"))))
-    (build-system glib-or-gtk-build-system)
+        (base32 "0gs2j988rwfrxckb8qxlkyxnvqsv30q32myqish6hssfa51yzc11"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'skip-gtk-update-icon-cache
+                    ;; Don't create 'icon-theme.cache'.
+                    (lambda _
+                      (substitute* "post-install.py"
+                        (("gtk-update-icon-cache") "true")))))))
     (native-inputs
      (list desktop-file-utils
            `(,glib "bin")
@@ -11523,7 +11589,7 @@ index files needed for Adwaita to be used outside of GNOME.")
            intltool
            itstool
            pkg-config
-           unittest-cpp)) ;FIXME: not found by pkg-config
+           python))
     (inputs
      (list glibmm
            gsettings-desktop-schemas
@@ -11535,16 +11601,15 @@ index files needed for Adwaita to be used outside of GNOME.")
            libxml2
            libxslt))
     (synopsis "Note-taking application for the GNOME desktop")
-    (description
-     "Gnote is a note-taking application written for the GNOME desktop
-environment.")
+    (description "Gnote is a note-taking application written for the GNOME
+desktop environment.")
     (home-page "https://wiki.gnome.org/Apps/Gnote")
     (license license:gpl3+)))
 
 (define-public polari
   (package
     (name "polari")
-    (version "40.1")
+    (version "41.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/polari/"
@@ -11552,18 +11617,16 @@ environment.")
                                   "/polari-" version ".tar.xz"))
               (sha256
                (base32
-                "001h9gppn79gnj7dl61jl9gas5wmbjdx0v8xwsx7v4xsv2hwz91g"))))
+                "1ss0x8idwar1q9p9535kzqb8idy7k2r48vrbjiyccw03cs0mzc53"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-gtk-update-icon-cache
            (lambda _
              (substitute* "meson/meson-postinstall.sh"
-               (("gtk-update-icon-cache") (which "true")))
-             #t))
+               (("gtk-update-icon-cache") (which "true")))))
          (add-after 'install 'fix-desktop-file
            ;; Hardcode launcher to be on the safe side
            (lambda* (#:key outputs #:allow-other-keys)
@@ -11576,8 +11639,7 @@ environment.")
              (let ((prog (string-append (assoc-ref outputs "out")
                                         "/bin/polari")))
                (wrap-program prog
-                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (inputs
      (list glib
            gsettings-desktop-schemas
@@ -11619,42 +11681,42 @@ integrate seamlessly with the GNOME desktop.")
         (search-patches "gnome-boxes-add-guix-logo.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:meson ,meson-0.59         ;positional arguments error with meson 0.60
-       #:glib-or-gtk? #t
+     `(#:glib-or-gtk? #t
        #:configure-flags (list "-Drdp=false"
                                (string-append "-Dc_link_args=-Wl,-rpath="
                                               (assoc-ref %outputs "out")
                                               "/lib/gnome-boxes"))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")                   ;for glib-compile-resources
-       ("gtk+:bin" ,gtk+ "bin")                   ;for gtk-update-icon-cache
-       ("desktop-file-utils" ,desktop-file-utils) ;for update-desktop-database
-       ("itstool" ,itstool)
-       ("intltool" ,intltool)
-       ("vala" ,vala)
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin")               ;for glib-compile-resources
+           `(,gtk+ "bin")               ;for gtk-update-icon-cache
+           desktop-file-utils           ;for update-desktop-database
+           itstool
+           intltool
+           vala
+           pkg-config
+           python))
     (inputs
-     `(("libarchive" ,libarchive)
-       ("glib-networking" ,glib-networking) ;for TLS support
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk" ,gtk+)
-       ("gtk-vnc" ,gtk-vnc)
-       ("gtksourceview" ,gtksourceview)
-       ("json-glib" ,json-glib)
-       ("libhandy" ,libhandy)
-       ("libosinfo" ,libosinfo)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup-minimal-2)
-       ("libusb" ,libusb)
-       ("libvirt" ,libvirt)
-       ("libvirt-glib" ,libvirt-glib)
-       ("libxml" ,libxml2)
-       ("spice-gtk" ,spice-gtk)
-       ("sparql-query" ,sparql-query)
-       ("vte" ,vte)
-       ("webkitgtk" ,webkitgtk-with-libsoup2) ;for webkit2gtk-4.0
-       ("tracker" ,tracker)
-       ("libgudev" ,libgudev)))
+     (list libarchive
+           glib-networking              ;for TLS support
+           gsettings-desktop-schemas
+           gtk+
+           gtk-vnc
+           gtksourceview
+           json-glib
+           libhandy
+           libosinfo
+           libsecret
+           libsoup-minimal-2
+           libusb
+           libvirt
+           libvirt-glib
+           libxml2
+           spice-gtk
+           sparql-query
+           vte
+           webkitgtk-with-libsoup2      ;for webkit2gtk-4.0
+           tracker
+           libgudev))
     (home-page "https://wiki.gnome.org/Apps/Boxes")
     (synopsis "View, access, and manage remote and virtual systems")
     (description "GNOME Boxes is a simple application to view, access, and
@@ -11922,13 +11984,13 @@ GTK+.  It integrates well with the GNOME desktop environment.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:meson ,meson-0.59              ;fails with 0.60
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-meson
            (lambda _
              (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))
-             #t))
+               (("gtk-update-icon-cache") "true"))))
          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((prog (string-append (assoc-ref outputs "out")
@@ -11936,7 +11998,8 @@ GTK+.  It integrates well with the GNOME desktop environment.")
                    (pylib (string-append (assoc-ref outputs "out")
                                          "/lib/python"
                                          ,(version-major+minor
-                                           (package-version python))
+                                           (package-version
+                                            (this-package-input "python")))
                                          "/site-packages")))
                (wrap-program prog
                  `("PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
@@ -11951,6 +12014,7 @@ GTK+.  It integrates well with the GNOME desktop environment.")
            gtk+
            libhandy
            pandoc
+           python
            python-chardet
            python-levenshtein
            python-regex
@@ -11960,10 +12024,10 @@ GTK+.  It integrates well with the GNOME desktop environment.")
            python-pypandoc
            webkitgtk))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)
-       ("sassc" ,sassc)))
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           sassc))
     (home-page "https://gitlab.gnome.org/somas/apostrophe")
     (synopsis "Markdown editor written in Python with GTK+")
     (description "Apostrophe is a GTK+ based distraction-free Markdown editor.
@@ -12014,6 +12078,7 @@ It uses pandoc as back-end for parsing Markdown.")
        ("libevdev" ,libevdev)
        ("libsystemd" ,elogind)
        ("libunistring" ,libunistring)
+       ("python" ,python)
        ("python-evdev" ,python-evdev)
        ("python-pygobject" ,python-pygobject)
        ("udev" ,eudev)))
@@ -12049,21 +12114,21 @@ your operating-system definition:
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("python-flake8" ,python-flake8)))
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           python-flake8))
     (inputs
-     `(("adwaita-icon-theme" ,adwaita-icon-theme)
-       ("gtk" ,gtk+)
-       ("gtk:bin" ,gtk+ "bin")
-       ("libratbag" ,libratbag)
-       ("librsvg" ,librsvg)
-       ("python-evdev" ,python-evdev)
-       ("python-lxml" ,python-lxml)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)))
+     (list adwaita-icon-theme
+           gtk+
+           `(,gtk+ "bin")
+           libratbag
+           python
+           python-evdev
+           python-lxml
+           python-pycairo
+           python-pygobject))
     (arguments
      `(#:imported-modules ((guix build python-build-system)
                            ,@%meson-build-system-modules)
@@ -12076,8 +12141,7 @@ your operating-system definition:
          (add-after 'unpack 'dont-update-gtk-icon-cache
            (lambda _
              (substitute* "meson.build"
-               (("meson.add_install_script('meson_install.sh')") ""))
-             #t))
+               (("meson.add_install_script('meson_install.sh')") ""))))
          ;; TODO: Switch to wrap-script when it is fixed.
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap))
@@ -12085,8 +12149,7 @@ your operating-system definition:
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program
                  (string-append (assoc-ref outputs "out" )"/bin/piper")
-               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))
-             #t)))))
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (home-page "https://github.com/libratbag/piper/")
     (synopsis "Configure bindings and LEDs on gaming mice")
     (description "Piper is a GTK+ application for configuring gaming mice with
@@ -12102,7 +12165,7 @@ provided there is a DBus service present:
 (define-public parlatype
   (package
     (name "parlatype")
-    (version "3.0")
+    (version "3.1")
     (source
      (origin
        (method git-fetch)
@@ -12111,7 +12174,7 @@ provided there is a DBus service present:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mvzagkg9kq2ji6mffi37mdjxmlj3wa65d4lcayij9hsmjlklnzs"))))
+        (base32 "0cqrzbkyksfsm57riirmjkwf2nf2dgl1xpps1wvqxpij475qcb9b"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -12134,12 +12197,12 @@ provided there is a DBus service present:
                (wrap-program (string-append out "/bin/parlatype")
                  `("GST_PLUGIN_SYSTEM_PATH" ":" = (,gst-plugin-path)))))))))
     (native-inputs
-     `(("appstream-glib" ,appstream-glib)
-       ("desktop-file-utils" ,desktop-file-utils) ;for desktop-file-validate
-       ("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")             ;for glib-compile-resources
-       ("pkg-config" ,pkg-config)
-       ("yelp-tools" ,yelp-tools)))
+     (list appstream-glib
+           desktop-file-utils           ;for desktop-file-validate
+           gettext-minimal
+           `(,glib "bin")               ;for glib-compile-resources
+           pkg-config
+           yelp-tools))
     (inputs
      (list gst-plugins-base
            gst-plugins-good
@@ -12273,80 +12336,82 @@ libraries.  Applications do not need to be recompiled--or even restarted.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04p031i999dccbnlbysmr6f93x7dji7b559j6yhdsqbqgxb7ncan"))))
+                "04p031i999dccbnlbysmr6f93x7dji7b559j6yhdsqbqgxb7ncan"))
+              (patches
+               (search-patches "gnome-builder-update-libportal.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and compile schemas
-       #:configure-flags (list "-Dnetwork_tests=false"
-                               ;; TODO: Enable all plugins...
-                               ;; Flatpak plugin wants libsoup 2
-                               "-Dplugin_flatpak=false"
-                               ;; ... except this one.
-                               "-Dplugin_update_manager=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-meson
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "build-aux/meson/post_install.py"
-               (("gtk-update-icon-cache") "true")
-               (("update-desktop-database") "true"))
-             (substitute* "src/libide/meson.build"
-               (("/usr/lib")
-                (string-append (assoc-ref inputs "python-pygobject")
-                               "/lib")))))
-         (add-after 'configure 'fix-ninja
-           (lambda _
-             ;; #43296: meson(?) incorrectly assumes we want to link
-             ;;         this PIE against a static libselinux.
-             (substitute* "build.ninja"
-               (("libselinux\\.a") "libselinux.so"))
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t)))))
-    (inputs
-     `(("cmark" ,cmark)
-       ("clang" ,clang)
-       ("devhelp" ,devhelp-with-libsoup2)
-       ("glade" ,glade3)
-       ("gspell" ,gspell)
-       ("gtk+" ,gtk+)
-       ("json-glib" ,json-glib)
-       ("jsonrpc-glib" ,jsonrpc-glib)
-       ("libdazzle" ,libdazzle)
-       ("libgit2-glib" ,libgit2-glib)
-       ("libpeas" ,libpeas)
-       ("libportal" ,libportal)
-       ("libsoup" ,libsoup-minimal-2)
-       ("llvm" ,llvm)
-       ("python-pygobject" ,python-pygobject)
-       ("sysprof" ,sysprof)
-       ("template-glib" ,template-glib)
-       ("vte" ,vte)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
-    (propagated-inputs
-     (list gtksourceview))         ;needed for settings
-    (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils) ;for desktop-file-validate
-       ("glib:bin" ,glib "bin")
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xorg-server" ,xorg-server-for-tests)))
+     (list
+      #:glib-or-gtk? #t ;To wrap binaries and compile schemas
+      #:configure-flags
+      #~(list "-Dnetwork_tests=false"
+              ;; TODO: Enable all plugins...
+              ;; Flatpak plugin wants libsoup 2
+              "-Dplugin_flatpak=false"
+              ;; ... except this one.
+              "-Dplugin_update_manager=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-meson
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "build-aux/meson/post_install.py"
+                (("gtk-update-icon-cache") "true")
+                (("update-desktop-database") "true"))
+              (substitute* "src/libide/meson.build"
+                (("/usr/lib") (string-append (assoc-ref inputs
+                                                        "python-pygobject")
+                                             "/lib")))))
+          (add-after 'configure 'fix-ninja
+            (lambda _
+              ;; #43296: meson(?) incorrectly assumes we want to link
+              ;; this PIE against a static libselinux.
+              (substitute* "build.ninja"
+                (("libselinux\\.a") "libselinux.so"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (inputs (list cmark
+                  clang
+                  devhelp-with-libsoup2
+                  glade3
+                  gspell
+                  gtk+
+                  json-glib
+                  jsonrpc-glib
+                  libdazzle
+                  libgit2-glib
+                  libpeas
+                  libportal
+                  libsoup-minimal-2
+                  llvm
+                  python
+                  python-pygobject
+                  sysprof
+                  template-glib
+                  vte
+                  webkitgtk-with-libsoup2))
+    (propagated-inputs (list gtksourceview)) ; needed for settings
+    (native-inputs (list desktop-file-utils  ; for desktop-file-validate
+                         `(,glib "bin")
+                         gettext-minimal
+                         pkg-config
+                         python              ; for meson scripts
+                         vala
+                         xorg-server-for-tests))
     (home-page "https://wiki.gnome.org/Apps/Builder")
     (synopsis "Toolsmith for GNOME-based applications")
-    (description "Builder aims to be an integrated development
-environment (IDE) for writing GNOME-based software.  It features fuzzy search,
-auto-completion, a mini code map, documentation browsing, Git integration, an
-integrated profiler via Sysprof, debugging support, and more.")
+    (description
+     "Builder aims to be an integrated development environment (IDE) for
+writing GNOME-based software.  It features fuzzy search, auto-completion,
+a mini code map, documentation browsing, Git integration, an integrated
+profiler via Sysprof, debugging support, and more.")
     (license license:gpl3+)))
 
 (define-public komikku
   (package
     (name "komikku")
-    (version "0.35.2")
+    (version "0.36.1")
     (source
      (origin
        (method git-fetch)
@@ -12356,7 +12421,7 @@ integrated profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11iq2mc8k7ny70vb0iqfjhj1hii0wvr4cv2p6b5rnjqdp6hc63n9"))))
+         "0iqis1b248gj1jb1yzw5dcs99bm078hixg9ir0vb961ymwzv2mmc"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -12387,6 +12452,7 @@ integrated profiler via Sysprof, debugging support, and more.")
            libhandy
            libnotify
            libsecret
+           python
            python-beautifulsoup4
            python-brotli
            python-cloudscraper
@@ -12532,8 +12598,7 @@ your data.")
     (propagated-inputs
      (list gtksourceview)) ; required for source view
     (arguments
-     `(#:meson ,meson-0.59
-       #:build-type "release"
+     `(#:build-type "release"
        #:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
@@ -12679,3 +12744,48 @@ successor of @code{libhandy} for GTK4.")
     (description "@code{gnome-power-manager} is a tool for viewing present and
 historical battery usage and related statistics.")
     (license license:gpl2)))
+
+(define-public xffm+
+  (package
+    (name "xffm+")
+    (version "0.94")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/xffm/xffm+/xffm+-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "0gwbgmjzlgv9ba95cgaigjnc9njzi7qznhvzp0qrnnlq3nbcm1k1"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; No tests exist
+       #:configure-flags
+       (let ((shared-mime-info (assoc-ref %build-inputs "shared-mime-info"))
+             (out (assoc-ref %outputs "out")))
+         (list (string-append "-DFREEDESKTOP_GLOBS=" shared-mime-info
+                              "/share/mime/globs")
+               (string-append "-DFREEDESKTOP_ALIAS=" shared-mime-info
+                              "/share/mime/aliases")
+               (string-append "-DFREEDESKTOP_ICONS=" shared-mime-info
+                              "/share/mime/generic-icons")
+               (string-append "-DCMAKE_INSTALL_PREFIX=" out)
+               (string-append "-DPREFIX_BIN=" out "/bin")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-installation-destination
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+              ;; This is done so we can override.
+              (("^set.CMAKE_INSTALL_PREFIX") "set(QCMAKE_INSTALL_PREFIX")
+              ;; This is done so we can override.
+              (("`set.PREFIX_BIN") "set(QPREFIX_BIN")))))))
+    (native-inputs
+     (list cmake pkg-config intltool gnu-gettext))
+    (inputs
+     (list glib gtk+ libx11 libsm libxv libxaw libxcb libxkbfile
+           shared-mime-info))
+    (synopsis "File manager")
+    (description "This package provides a graphical file manager.")
+    (home-page "http://xffm.org/")
+    (license license:gpl3+)
+    (properties '((upstream-name . "xffm")))))

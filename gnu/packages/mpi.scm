@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
@@ -448,12 +448,12 @@ arrays) that expose a buffer interface.")
                 "1farz5zfx4cd0c3a0wb9pgfypzw0xxql1j1294z1sxslga1ziyjb"))))
     (build-system gnu-build-system)
     (inputs
-     `(("zlib" ,zlib)
-       ("hwloc" ,hwloc-2 "lib")
-       ("slurm" ,slurm)
+     `(,zlib
+       (,hwloc-2 "lib")
+       ,slurm
        ,@(if (and (not (%current-target-system))
                   (member (%current-system) (package-supported-systems ucx)))
-             `(("ucx" ,ucx))
+             (list ucx)
              '())))
     (native-inputs
      (list perl which gfortran))
@@ -490,8 +490,7 @@ arrays) that expose a buffer interface.")
                       (substitute* (find-files "." "f77tof90")
                         (("/usr/bin/env") (which "env")))
                       (substitute* (find-files "." "\\.sh$")
-                        (("/bin/sh") (which "sh")))
-                      #t))
+                        (("/bin/sh") (which "sh")))))
                   (add-before 'configure 'fix-makefile
                     (lambda _
                       ;; Remove "@hwloclib@" from 'pmpi_convenience_libs'.
@@ -501,8 +500,30 @@ arrays) that expose a buffer interface.")
                         (("^pmpi_convenience_libs = (.*) @hwloclib@ (.*)$" _
                           before after)
                          (string-append "pmpi_convenience_libs = "
-                                        before " " after)))
-                      #t)))))
+                                        before " " after)))))
+                  (add-before 'configure 'define-gfortran-wrapper
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      ;; 'configure' checks whether the Fortran compiler
+                      ;; allows argument type mismatch.  Since gfortran >= 10
+                      ;; does not, provide a wrapper that passes
+                      ;; '-fallow-argument-mismatch' to get the desired
+                      ;; behavior.
+                      (mkdir-p ".gfortran-wrapper/bin")
+                      (call-with-output-file ".gfortran-wrapper/bin/gfortran"
+                        (lambda (port)
+                          (display (string-append "#!" (which "sh") "\n")
+                                   port)
+                          (display
+                           (string-append "exec \"" (which "gfortran")
+                                          "\" -fallow-argument-mismatch"
+                                          " \"$@\"\n")
+                           port)
+                          (chmod port #o755)))
+
+                      (setenv "PATH"
+                              (string-append (getcwd) "/"
+                                             ".gfortran-wrapper/bin:"
+                                             (getenv "PATH"))))))))
     (home-page "https://www.mpich.org/")
     (synopsis "Implementation of the Message Passing Interface (MPI)")
     (description

@@ -12,7 +12,7 @@
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -34,7 +34,7 @@
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020, 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2020–2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -79,7 +79,9 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
@@ -95,6 +97,7 @@
   #:use-module (gnu packages coq)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages datamash)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -270,7 +273,7 @@ interactive dialogs to guide them.")
     (arguments
      '(#:configure-flags '("--with-hdf4" "--with-hdf5" "--enable-python"
                            "LIBS= -lz -lpcre -lexpat")))
-    (synopsis "A common interface to various earth observation data formats")
+    (synopsis "Common interface to various earth observation data formats")
     (description
      "The Common Data Access toolbox (CODA) provides a set of interfaces for
 reading remote sensing data from earth observation data files.  It consists of
@@ -316,7 +319,7 @@ triangulations.")
 (define-public python-cvxopt
   (package
     (name "python-cvxopt")
-    (version "1.2.3")
+    (version "1.2.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -325,7 +328,7 @@ triangulations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kiy2m62xgs2d5id6dnnwy4vap85cd70p7pgkb9nh23qf9xnak7b"))))
+                "114z34wwx1bsv4q6xj9p5q99dffgnj9s4i4arx10g191xq9q8i5y"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -353,9 +356,6 @@ for convex optimization applications straightforward by building on Python’s
 extensive standard library and on the strengths of Python as a high-level
 programming language.")
     (license license:gpl3+)))
-
-(define-public python2-cvxopt
-  (package-with-python2 python-cvxopt))
 
 (define-public units
   (package
@@ -576,6 +576,10 @@ and C++.  It includes a wide range of mathematical routines, with over 1000
 functions in total.  Subject areas covered by the library include:
 differential equations, linear algebra, Fast Fourier Transforms and random
 numbers.")
+
+    ;; Linear algebra routines should benefit from SIMD optimizations.
+    (properties `((tunable? . #t)))
+
     (license license:gpl3+)))
 
 ;; TODO: Merge back into the gsl package as a separate output.
@@ -1010,6 +1014,67 @@ banded linear systems, least squares problems, eigenvalue problems, and
 singular value problems.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
+
+(define-public feedgnuplot
+  (package
+    (name "feedgnuplot")
+    (version "1.60")
+    (home-page "https://github.com/dkogan/feedgnuplot")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0403hwlian2s431m36qdzcczhvfjvh7128m64hmmwbbrgh0n7md7"))))
+    (build-system perl-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'adjust-tests
+           (lambda _
+             (substitute* "t/plots.t"
+               ;; XXX: The vnlog tests uses 'echo' with escaped strings,
+               ;; but does not enable escape interpretation.
+               (("echo -n ")
+                "echo -ne "))))
+         (add-after 'install 'install-documentation
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (doc (string-append out "/share/doc/feedgnuplot")))
+               (mkdir-p doc)
+               (invoke "pod2html" "--title=feedgnuplot" "bin/feedgnuplot"
+                       "--outfile" (string-append doc "/feedgnuplot.html")))))
+       (add-after 'install 'wrap
+         (lambda* (#:key inputs outputs #:allow-other-keys)
+           (let* ((out (assoc-ref outputs "out"))
+                  (gnuplot (search-input-file inputs "/bin/gnuplot"))
+                  ;; XXX: We need List::MoreUtils as well as its supporting
+                  ;; (propagated) modules; for now just refer to labels.
+                  (modules '("perl-list-moreutils" "perl-exporter-tiny"))
+                  (PERL5LIB (string-join
+                             (map (lambda (input)
+                                    (string-append (assoc-ref inputs input)
+                                                   "/lib/perl5/site_perl"))
+                                  modules)
+                             ":")))
+             (wrap-program (string-append out "/bin/feedgnuplot")
+               `("PERL5LIB" ":" suffix (,PERL5LIB))
+               `("PATH" ":" suffix (,(dirname gnuplot))))))))))
+    (inputs
+     (list gnuplot perl-list-moreutils vnlog))
+    (native-inputs
+     ;; For tests.
+     (list perl-ipc-run perl-string-shellquote))
+    (synopsis "Pipe-oriented plotting tool")
+    (description
+     "@command{feedgnuplot} is a tool to plot realtime and stored data
+from the command line, using @command{gnuplot}.  It can read data from
+a pipe or file, make a variety of transformations, and render the result
+in the terminal or with an external viewer.")
+    (license license:gpl1+))) ;any version
 
 (define-public gnuplot
   (package
@@ -2369,7 +2434,7 @@ satisfiability checking (SAT).")
 (define-public ceres
   (package
     (name "ceres-solver")
-    (version "1.14.0")
+    (version "2.0.0")
     (home-page "http://ceres-solver.org/")
     (source (origin
               (method url-fetch)
@@ -2377,7 +2442,7 @@ satisfiability checking (SAT).")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "13lfxy8x58w8vprr0nkbzziaijlh0vvqshgahvcgw0mrqdgh0i27"))))
+                "00vng9vnmdb1qga01m0why90m0041w7bn6kxa2h4m26aflfqla8h"))))
     (build-system cmake-build-system)
     (arguments
      ;; TODO: Build HTML user documentation and install separately.
@@ -2396,11 +2461,11 @@ satisfiability checking (SAT).")
     (propagated-inputs
      (list glog))                           ;for #include <glog/glog.h>
     (inputs
-     `(("eigen" ,eigen)
-       ("blas" ,openblas)
-       ("lapack" ,lapack)
-       ("suitesparse" ,suitesparse)
-       ("gflags" ,gflags)))
+     (list eigen
+           openblas
+           lapack
+           suitesparse
+           gflags))
     (synopsis "C++ library for solving large optimization problems")
     (description
      "Ceres Solver is a C++ library for modeling and solving large,
@@ -2411,7 +2476,56 @@ can solve two kinds of problems:
 @item non-linear least squares problems with bounds constraints;
 @item general unconstrained optimization problems.
 @end enumerate\n")
-    (license license:bsd-3)))
+    (license license:bsd-3)
+
+    ;; Mark as tunable to take advantage of SIMD code in Eigen.
+    (properties `((tunable? . #t)))))
+
+(define-public ceres-solver-benchmarks
+  (package
+    (inherit ceres)
+    (name "ceres-solver-benchmarks")
+    (arguments
+     '(#:modules ((ice-9 popen)
+                  (ice-9 rdelim)
+                  (guix build utils)
+                  (guix build cmake-build-system))
+
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin")))
+                        (define flags
+                          (string-tokenize
+                           (read-line (open-pipe* OPEN_READ
+                                                  "pkg-config" "eigen3"
+                                                  "--cflags"))))
+
+                        (define (compile-file top-dir)
+                          (lambda (file)
+                            (let ((source (string-append file ".cc")))
+                              (format #t "building '~a'...~%" file)
+                              (apply invoke "c++" "-fopenmp" "-O2" "-g" "-DNDEBUG"
+                                     source "-lceres" "-lbenchmark" "-lglog"
+                                     "-pthread"
+                                     "-o" (string-append bin "/" file)
+                                     "-I" top-dir flags))))
+
+                        (mkdir-p bin)
+                        (with-directory-excursion "internal/ceres"
+                          (for-each (compile-file "..")
+                                    '("schur_eliminator_benchmark"
+                                      "small_blas_gemm_benchmark"
+                                      "small_blas_gemv_benchmark"))
+                          (with-directory-excursion "autodiff_benchmarks"
+                            ((compile-file "../..") "autodiff_benchmarks"))))))
+                  (delete 'check)
+                  (delete 'install))))
+    (inputs (modify-inputs (package-inputs ceres)
+              (prepend googlebenchmark ceres)))
+    (synopsis "Benchmarks of the Ceres optimization problem solver")))
 
 ;; For a fully featured Octave, users are strongly recommended also to install
 ;; the following packages: less, ghostscript, gnuplot.
@@ -4859,7 +4973,7 @@ Failure to do so will result in a library with poor performance.")
 (define-public cglm
   (package
     (name "cglm")
-    (version "0.8.2")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
@@ -4868,11 +4982,10 @@ Failure to do so will result in a library with poor performance.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lcfl9ph4bnl3hckpx4hzwh8r4llnw94ik75igc5qy38wk468gmk"))))
-    (build-system cmake-build-system)
+        (base32 "0zgckh56vcdar3a4n51r84wrizyd2ssqal4nsvxd4qdjm0rvb4h0"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DCGLM_USE_TEST=ON")))
+     `(#:configure-flags '("-Dbuild_tests=true")))
     (home-page "https://github.com/recp/cglm")
     (synopsis "Mathematics C library for graphics programming")
     (description
@@ -5155,14 +5268,16 @@ A unique design feature of Trilinos is its focus on packages.")
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.3.1")
+    (version "9.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32 "1f0sqvlxvl0myqcn0q6xrn1vnp5pgx143lai4a4jkh1dmdv4cbx6"))
+        (base32 "1s0kawnljg24jj6nibwrif5gxdgg2daqfylhqqpl1lvmzmmxfhak"))
+       (patches (search-patches "dealii-fix-compiliation-with-boost-1.78.patch"
+                                "dealii-fix-sundials.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -5173,16 +5288,14 @@ A unique design feature of Trilinos is its focus on packages.")
     (outputs '("out" "doc"))
     (native-inputs
      ;; Required to build the documentation.
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("perl" ,perl)))
+      (list graphviz doxygen perl))
     (inputs
-     `(("arpack" ,arpack-ng)
-       ("blas" ,openblas)
-       ("gfortran" ,gfortran)
-       ("lapack" ,lapack)
-       ("muparser" ,muparser)
-       ("zlib" ,zlib)))
+      (list arpack-ng
+            openblas
+            gfortran
+            lapack
+            muparser
+            zlib))
     (propagated-inputs
      ;; Some scripts are installed into share/deal.II/scripts that require
      ;; perl and python, but they are not executable (and some are missing the
@@ -5676,15 +5789,14 @@ Longest Commons Subsequence of a set of strings.")
 (define-public jacal
   (package
     (name "jacal")
-    (version "1c4")
+    (version "1c7")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://groups.csail.mit.edu/mac/ftpdir/scm/jacal-"
                     version ".zip"))
-              (sha256 (base32
-                       "055zrn12a1dmy0dqkwrkq3fklbhg3yir6vn0lacp4mvbg8573a3q"))
-              (patches (search-patches "jacal-fix-texinfo.patch"))))
+              (sha256
+               (base32 "06a5sx9ikd62bpnd898g3yk818b020b1a27mk7dbfla2zizib4xz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -5710,7 +5822,7 @@ Longest Commons Subsequence of a set of strings.")
                         (chmod wrapper #o555))))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "./configure"
+             (invoke "sh" "configure"
                      (string-append "--prefix="
                                     (assoc-ref outputs "out"))))))))
     (inputs (list scm))
@@ -6249,7 +6361,7 @@ linear algebra primitives specifically targeting graph analytics.")
 (define-public dune-common
   (package
     (name "dune-common")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
@@ -6257,14 +6369,18 @@ linear algebra primitives specifically targeting graph analytics.")
                            version "/dune-common-" version ".tar.gz"))
        (sha256
         (base32
-         "140q1zh44cr5yrjwg4b5ga803rkqv55vk30l2cqm29aklj1wb0rw"))))
+         "0sidwdkyrrqjkqhpvrlc991pzi5xzlvxk91s2n7qk3widwy7fch2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list gmp metis openblas python superlu))
     (native-inputs
@@ -6282,7 +6398,7 @@ Differences} (FD).")
 (define-public dune-geometry
   (package
     (name "dune-geometry")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
@@ -6290,14 +6406,18 @@ Differences} (FD).")
                            version "/dune-geometry-" version ".tar.gz"))
        (sha256
         (base32
-         "1cicvlwbyyw76npicnblxckyvhbfn3ip8isydiv3hlrlz8zcg5nr"))))
+         "068mh3fd110xl27rwxqlqy4d9cpqw2vqm2pzfrripiaqscb3byfy"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list dune-common
            ;; Optional
@@ -6319,7 +6439,7 @@ This package contains the basic DUNE geometry classes.")
 (define-public dune-uggrid
   (package
     (name "dune-uggrid")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method git-fetch)
@@ -6329,14 +6449,18 @@ This package contains the basic DUNE geometry classes.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "192miqgmfj6jwk969gydzpbv9ki7jg5nky3ydnrwa2nq29b5xkh0"))))
+         "11qz52g9d5k96fqik2lyi80xryw174rnny074pj70ardl6zzz83p"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list dune-common))
     (native-inputs
@@ -6355,7 +6479,7 @@ This package contains the DUNE UG grid classes.")
 (define-public dune-grid
   (package
     (name "dune-grid")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
@@ -6363,14 +6487,18 @@ This package contains the DUNE UG grid classes.")
                            version "/dune-grid-" version ".tar.gz"))
        (sha256
         (base32
-         "17fjz30qazjgl11sryyxnw9klai4yz1ji4bs68013xcxc5hdv27s"))))
+         "15iws03hkbmr4a4rqqb0rriz1m8szl96wdr7gw0jmrcnlzbdbbx5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list dune-common
            dune-geometry
@@ -6397,7 +6525,7 @@ This package contains the basic DUNE grid classes.")
 (define-public dune-istl
   (package
     (name "dune-istl")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
@@ -6405,8 +6533,7 @@ This package contains the basic DUNE grid classes.")
                            version "/dune-istl-" version ".tar.gz"))
        (sha256
         (base32
-         "0gl3wgz5rs6sb4m83440ny45sbx7z7lnbi3gx6r9nm3rvy5j33f9"))
-       (patches (search-patches "dune-istl-2.7-fix-non-mpi-tests.patch"))))
+         "1cy69s1266hvnh8blznlvvkrf8i2g640rc3mf7kp872wgvdz4nb9"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -6424,8 +6551,12 @@ This package contains the basic DUNE grid classes.")
                         ":"))
                #t)))
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list dune-common
            ;; Optional
@@ -6455,7 +6586,7 @@ aggregation-based algebraic multigrid.")
 (define-public dune-localfunctions
   (package
     (name "dune-localfunctions")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
@@ -6463,7 +6594,7 @@ aggregation-based algebraic multigrid.")
                            version "/dune-localfunctions-" version ".tar.gz"))
        (sha256
         (base32
-         "1yih59h6vngii696bx1c2vil02lriij4kz0nc583mjn9kiaqxfqd"))))
+         "031i42anrhi0ngpvp42rdjbkic7v3008fwild9xg7flffwvnpshg"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -6481,8 +6612,12 @@ aggregation-based algebraic multigrid.")
                         ":"))
                #t)))
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list dune-common
            dune-geometry
@@ -6507,97 +6642,111 @@ assemble global function spaces on finite-element grids.")
     (license license:gpl2)))
 
 (define-public dune-alugrid
-  (package
-    (name "dune-alugrid")
-    (version "2.7.0-git-81d35682")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.dune-project.org/extensions/dune-alugrid.git")
-             (commit "81d356827c84454b971937db02c02b90bbcd7fe5")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0z54lwfp53prcrs94k8gwh047l9z642jll3l56xlyfr69z0b2zz1"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-include
-           (lambda _
-             (substitute* "dune/alugrid/test/test-alugrid.cc"
-               (("doc/grids/gridfactory/testgrids")
-                "doc/dune-grid/grids/gridfactory/testgrids"))
-             #t))
-         (add-after 'build 'build-tests
-           (lambda* (#:key inputs make-flags #:allow-other-keys)
-             (setenv "CPLUS_INCLUDE_PATH"
-                     (string-append (assoc-ref inputs "dune-grid") "/share"))
-             (apply invoke "make" "build_tests" make-flags))))))
-    (inputs
-     (list dune-common
-           dune-geometry
-           dune-grid
-           ;; Optional
-           metis
-           openblas
-           python
-           superlu
-           gmp
-           zlib))
-    (native-inputs
-     (list gfortran pkg-config))
-    (home-page "https://dune-project.org/")
-    (synopsis "Distributed and Unified Numerics Environment")
-    (description "ALUGrid is an adaptive, loadbalancing, unstructured
+  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17,
+  ;; unfortunately there was no tag for any 2.7 release.
+  (let ((commit "51bde29a2dfa7cfac4fb73d40ffd42b9c1eb1d3d"))
+    (package
+      (name "dune-alugrid")
+      (version (git-version "2.7.1" "0" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.dune-project.org/extensions/dune-alugrid.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0z16wg6llzxs7vjg2yilg31vwnkz8k050j6bspg3blbym0razy15"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-include
+             (lambda _
+               (substitute* "dune/alugrid/test/test-alugrid.cc"
+                 (("doc/grids/gridfactory/testgrids")
+                  "doc/dune-grid/grids/gridfactory/testgrids"))
+               #t))
+           (add-after 'build 'build-tests
+             (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+               (setenv "CPLUS_INCLUDE_PATH"
+                       (string-append (assoc-ref inputs "dune-grid") "/share"))
+               (apply invoke "make" "build_tests"
+                      `(,@(if parallel-build?
+                              `("-j" ,(number->string (parallel-job-count)))
+                              '())
+                        ,@make-flags)))))))
+      (inputs
+       (list dune-common
+             dune-geometry
+             dune-grid
+             ;; Optional
+             metis
+             openblas
+             python
+             superlu
+             gmp
+             zlib))
+      (native-inputs
+       (list gfortran pkg-config))
+      (home-page "https://dune-project.org/")
+      (synopsis "Distributed and Unified Numerics Environment")
+      (description "ALUGrid is an adaptive, loadbalancing, unstructured
 implementation of the DUNE grid interface supporting either simplices or
 cubes.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public dune-subgrid
-  (package
-    (name "dune-subgrid")
-    (version "2.7.0-git-2103a363")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-         (url "https://git.imp.fu-berlin.de/agnumpde/dune-subgrid")
-         (commit "2103a363f32e8d7b60e66eee7ddecf969f6cf762")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-          "1wsjlypd3835c3arqjkw836cxx5q67zy447wa65q634lf6f6v9ia"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
-    (inputs
-     (list dune-common
-           dune-geometry
-           dune-grid
-           ;; Optional
-           metis
-           openblas
-           gmp))
-    (native-inputs
-     (list gfortran pkg-config))
-    (home-page "http://numerik.mi.fu-berlin.de/dune-subgrid/index.php")
-    (synopsis "Distributed and Unified Numerics Environment")
-    (description "The dune-subgrid module marks elements of
+  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17.
+  ;; Unfortunately the dune-subgrid repository contains no release tags.
+  (let ((commit "45d1ee9f3f711e209695deee97912f4954f7f280"))
+    (package
+      (name "dune-subgrid")
+      (version (git-version "2.7.1" "0" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+           (url "https://git.imp.fu-berlin.de/agnumpde/dune-subgrid")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+            "0xjf7865wil7kzym608kv3nc3ff3m3nlqich4k9wjyvy3lz6panh"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'build 'build-tests
+             (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+               (apply invoke "make" "build_tests"
+                      `(,@(if parallel-build?
+                              `("-j" ,(number->string (parallel-job-count)))
+                              '())
+                        ,@make-flags)))))))
+      (inputs
+       (list dune-common
+             dune-geometry
+             dune-grid
+             ;; Optional
+             metis
+             openblas
+             gmp))
+      (native-inputs
+       (list gfortran pkg-config))
+      (home-page "http://numerik.mi.fu-berlin.de/dune-subgrid/index.php")
+      (synopsis "Distributed and Unified Numerics Environment")
+      (description "The dune-subgrid module marks elements of
 another hierarchical dune grid.  The set of marked elements can then be
 accessed as a hierarchical dune grid in its own right.  Dune-Subgrid
 provides the full grid interface including adaptive mesh refinement.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public dune-typetree
   (package
     (name "dune-typetree")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method git-fetch)
@@ -6607,14 +6756,18 @@ provides the full grid interface including adaptive mesh refinement.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rhv25yg0q1hw50c8wlfqhgwrjl4mh62zq9v14ilwgzbfgxmpiy7"))))
+         "1kx9k8i7pdw6l6ny6nq85v5p1nd6yxldzaj8k3nizaz3q1j407pv"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list dune-common
            ;; Optional
@@ -6635,7 +6788,7 @@ operating on statically typed trees of objects.")
 (define-public dune-functions
   (package
     (name "dune-functions")
-    (version "2.7.0")
+    (version "2.7.1")
     (source
      (origin
        (method git-fetch)
@@ -6645,7 +6798,7 @@ operating on statically typed trees of objects.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1na4gcih0kin37ksj2xj07ds04v7zx53pjdhm1hzy55jjfqdjk8h"))))
+         "04dhr4asnl38bf1gp8hrk31maav33m7q71lhl2n5yk1q1x6i77nw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -6657,8 +6810,12 @@ operating on statically typed trees of objects.")
                      "--exclude-regex gridviewfunctionspacebasistest")
             #t))
          (add-after 'build 'build-tests
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "build_tests" make-flags))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "build_tests"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (inputs
      (list dune-common
            dune-istl
@@ -6682,44 +6839,47 @@ implemented as callable objects, and bases of finite element spaces.")
     (license (list license:lgpl3+ license:gpl2))))
 
 (define-public dune-pdelab
-  (package
-    (name "dune-pdelab")
-    (version "2.7.0-git-476fe437")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.dune-project.org/pdelab/dune-pdelab")
-             (commit "476fe43763fa6f459c5e4658e2a2b4b5582db834")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0cs36piqzn6rq0j2ih3ab3q3q9yg199wk72k5qi86pkzh7i7fdn1"))))
-    (build-system cmake-build-system)
-    (arguments '(#:tests? #f)) ; XXX: the tests cannot be compiled
-    (inputs
-     (list dune-common
-           dune-istl
-           dune-localfunctions
-           dune-geometry
-           dune-grid
-           dune-typetree
-           dune-functions
-           ;; Optional
-           openblas
-           eigen
-           metis
-           python
-           superlu
-           gmp))
-    (native-inputs
-     (list gfortran pkg-config))
-    (home-page "https://dune-project.org/")
-    (synopsis "Differential equations solver toolbox")
-    (description "PDELab is a partial differential equations solver toolbox
+  ;; This was the last commit on the releases/2.7 branch as of 2021-12-17,
+  ;; unfortunately there was no tag for any 2.7 release.
+  (let ((commit "09aef74d95661d18a7789d2f517ae77797eec738"))
+    (package
+      (name "dune-pdelab")
+      (version (git-version "2.7.1" "0" commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.dune-project.org/pdelab/dune-pdelab")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0nv69ayr4gln9m1s94z9zkrxqi8nzar3z6awnvgqz595nmjf82ac"))))
+      (build-system cmake-build-system)
+      (arguments '(#:tests? #f)) ; XXX: the tests cannot be compiled
+      (inputs
+       (list dune-common
+             dune-istl
+             dune-localfunctions
+             dune-geometry
+             dune-grid
+             dune-typetree
+             dune-functions
+             ;; Optional
+             openblas
+             eigen
+             metis
+             python
+             superlu
+             gmp))
+      (native-inputs
+       (list gfortran pkg-config))
+      (home-page "https://dune-project.org/")
+      (synopsis "Differential equations solver toolbox")
+      (description "PDELab is a partial differential equations solver toolbox
 built on top of DUNE, the Distributed and Unified Numerics Environment.")
-    ;; Either GPL version 2 with "runtime exception" or LGPLv3+.
-    (license (list license:lgpl3+ license:gpl2))))
+      ;; Either GPL version 2 with "runtime exception" or LGPLv3+.
+      (license (list license:lgpl3+ license:gpl2)))))
 
 (define add-openmpi-to-dune-package
   (let ((dune-package?
@@ -6729,8 +6889,8 @@ built on top of DUNE, the Distributed and Unified Numerics Environment.")
         (if (dune-package? p)
             (package (inherit p)
               (name (string-append (package-name p) "-openmpi"))
-              (inputs `(,@(package-inputs p)
-                        ("openmpi" ,openmpi)))
+              (inputs (modify-inputs (package-inputs p)
+                        (append openmpi)))
               (arguments
                (substitute-keyword-arguments (package-arguments p)
                  ((#:phases phases '%standard-phases)
@@ -7195,14 +7355,14 @@ of C, Java, or Ada programs.")
 (define-public frama-c
   (package
     (name "frama-c")
-    (version "23.1")
+    (version "24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://frama-c.com/download/frama-c-"
-                                  version "-Vanadium.tar.gz"))
+                                  version "-Chromium.tar.gz"))
               (sha256
                (base32
-                "1rgkq9sg436smw005ag0j6y3xryhjn18a07m5wjfrfp0s1438nnj"))))
+                "0x1xgip50jdz1phsb9rzwf2ra8lshn1hmd9g967xia402wrg3sjf"))))
     (build-system ocaml-build-system)
     (arguments
      `(#:tests? #f; no test target in Makefile

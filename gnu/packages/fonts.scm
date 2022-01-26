@@ -42,6 +42,8 @@
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1039,42 +1041,82 @@ work well in user interface (UI) environments.")
 Sans Pro family.")
     (license license:silofl1.1)))
 
-(define-public font-fira-mono
-  (package
-    (name "font-fira-mono")
-    (version "3.206")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://carrois.com/downloads/fira_mono_3_2/"
-                                  "FiraMonoFonts"
-                                  (string-replace-substring version "." "")
-                                  ".zip"))
-              (sha256
-               (base32
-                "1z65x0dw5dq6rs6p9wyfrir50rlh95vgzsxr8jcd40nqazw4jhpi"))))
-    (build-system font-build-system)
-    (home-page "https://mozilla.github.io/Fira/")
-    (synopsis "Mozilla's monospace font")
-    (description "This is the typeface used by Mozilla in Firefox OS.")
-    (license license:silofl1.1)))
-
 (define-public font-fira-sans
+  ;; Fira Sans v4.203 (which corresponds to Fira Mono v3.206) is the final
+  ;; version to include UFO sources. It is the same version packaged by other
+  ;; notable distributors, including Google Fonts. Note that the "reserved
+  ;; font name" was removed by the copyright holders.
+  ;;
+  ;; The upstream release includes a "Fira Code" which "is Fira Mono 3.206
+  ;; with less Line Space (1.0) – does not include programming ligatures". We
+  ;; do not package that: our 'font-fira-code' package (like e.g. Debian's
+  ;; "fonts-firacode") is the much better known Fira Code font by Nikita
+  ;; Prokopov, which is an older, independent adaptation of Fira Mono. For the
+  ;; historical relationship between them, see:
+  ;; https://github.com/mozilla/Fira/issues/218
+  ;;
+  ;; For a lengthy discussion of the available sources and versions,
+  ;; see: https://github.com/LiberalArtist/FiraSans/
+  ;;
+  ;; See also:
+  ;;   - https://github.com/mozilla/Fira/pull/219
+  ;;   - https://github.com/bBoxType/FiraSans/issues/4#issuecomment-695833327
   (package
     (name "font-fira-sans")
-    (version "4.202")
+    (version "4.203")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/mozilla/Fira")
-                     (commit version)))
+                     (url "https://github.com/bBoxType/FiraSans")
+                     (commit "a606927401bcc3951587339fee53aa882856b51b")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "116j26gdj5g1r124b4669372f7490vfjqw7apiwp2ggl0am5xd0w"))))
+                "1r9kb7v9jg83nnxwkl6gx9ix1rng3ksr7v33qrm46qb4fhwsyc2n"))))
     (build-system font-build-system)
+    (arguments
+     `(#:modules
+       ((ice-9 match)
+        (ice-9 regex)
+        (guix build utils)
+        (guix build font-build-system))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (define-values (pkg-name _version)
+               (package-name->name+version
+                (strip-store-file-name (assoc-ref outputs "out"))))
+             (define variant
+               (string-capitalize
+                (match:substring (string-match "fira-([a-z]+)" pkg-name) 1)))
+             (match (find-files "." (format #f "^Fira_~a_[0-9]" variant)
+                                #:directories? #t)
+               ((dir)
+                (chdir dir))))))))
+    ;; While the repository has moved,
+    ;; this specimen still works well as the home-page:
     (home-page "https://mozilla.github.io/Fira/")
-    (synopsis "Mozilla's Fira Sans Font")
-    (description "This is the typeface used by Mozilla in Firefox OS.")
+    (synopsis
+     "Humanist sans-serif with numerous weights emphasizing legibility")
+    (description "Fira Sans is a humanist sans-serif typeface with an emphasis
+on legibility, commissioned by Mozilla from Erik Spiekermann and Ralph du
+Carrois.  The large family includes 2,709 glyphs in normal, condensed, and
+compressed cuts at 11 weights (plus 6 experimental weights), each with
+corresponding italics.
+
+The package @code{font-fira-mono} provides a corresponding monospace cut.")
+    (license license:silofl1.1)))
+
+(define-public font-fira-mono
+  (package
+    (inherit font-fira-sans)
+    (name "font-fira-mono")
+    (version "3.206")
+    (synopsis "Monospace cut of Fira Sans")
+    (description
+     "Fira Mono is a monospace cut of Fira Sans (see @code{font-fira-sans}).
+It includes regular, medium, and bold weights.")
     (license license:silofl1.1)))
 
 (define-public font-fira-go
@@ -1095,30 +1137,41 @@ Sans Pro family.")
     (synopsis "Multilingual extension of the Fira Sans font family")
     (description "FiraGO is a multilingual extension of the Fira Sans font
 family.  Based on the Fira Sans 4.3 glyph set, FiraGO adds support for the
-Arabic, Devanagari, Georgian, Hebrew and Thai scripts.")
+Arabic, Devanagari, Georgian, Hebrew and Thai scripts.
+
+Note that FiraGO does not include corresponding source.")
+    ;; See:
+    ;;   - https://github.com/bBoxType/FiraGO/issues/42
+    ;;   - https://github.com/bBoxType/FiraSans/issues/4#issuecomment-699882058
+    ;; For further discussion, see comments on font-fira-sans.
     (license license:silofl1.1)))
 
 (define-public font-fira-code
   (package
     (name "font-fira-code")
-    (version "5.2")
+    (version "6.2")
     (source
      (origin
+       ;; changing to git-fetch would require building from source
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/tonsky/FiraCode/releases/"
                            "download/" version
                            "/Fira_Code_v" version ".zip"))
        (sha256
-        (base32 "1zayrb6k0gd7xdvx7yx44dpip767q0bzhqwf4j6nf8nx02z746jj"))))
+        (base32 "0y9y7snyrr30z75kxz2zgh6q6hizcbzsf41xv6gxh97bm1dr2j89"))))
     (build-system font-build-system)
-    (home-page "https://mozilla.github.io/Fira/")
+    ;; This font began as an independent derived work of Fira Mono.
+    ;; It was never affiliated with Mozilla.
+    ;; See comments on font-fira-sans for further discussion.
+    (home-page "https://github.com/tonsky/FiraCode")
     (synopsis "Monospaced font with programming ligatures")
     (description
-     "Fira Code is an extension of the Fira Mono font containing a set of ligatures
-for common programming multi-character combinations.  This is just a font rendering
-feature: underlying code remains ASCII-compatible.  This helps to read and understand
-code faster.  For some frequent sequences like .. or //, ligatures allow us to
-correct spacing.")
+     "Fira Code is a monospace font by Nikita Prokopov featuring ligatures for
+common programming multi-character combinations.  It began as an extension of
+Fira Mono.  The ligatures are just a font rendering feature: underlying code
+remains ASCII-compatible.  They are designed to help people to read and
+understand code faster.  For some frequent sequences like @code{..} or
+@code{//}, ligatures are used to simulate proportional spacing.")
     (license license:silofl1.1)))
 
 (define-public font-awesome
@@ -1591,7 +1644,7 @@ emphasis while still being readable.")
 (define-public font-openmoji
   (package
     (name "font-openmoji")
-    (version "12.4.0")
+    (version "13.1.0")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1601,7 +1654,7 @@ emphasis while still being readable.")
                        "/openmoji-font.zip"))
        (sha256
         (base32
-         "0wvvg5vnc950h8v23wfgjyi7rv89mgm5hqq6viqv0bxcc3azglxb"))))
+         "0xmy3hr38v03f1riwxmxdibb7iwj0qz288inqaha3pwq7pj7ln45"))))
     (build-system font-build-system)
     (native-inputs
      (list unzip))
@@ -1831,6 +1884,25 @@ files (TTF).")
      "Mononoki is a typeface by Matthias Tellen, created to enhance code
 formatting.")
     (home-page "https://madmalik.github.io/mononoki/")
+    (license license:silofl1.1)))
+
+(define-public font-plemoljp
+  (package
+    (name "font-plemoljp")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/yuru7/PlemolJP/releases/download/"
+                    "v" version "/PlemolJP_v" version ".zip"))
+              (sha256
+               (base32
+                "03cwzkqg09c87lmsx9xfzdrlgjml93bhhp1dqq3qkpdfww30wkaw"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/yuru7/PlemolJP")
+    (synopsis "Plex Mono Language JP")
+    (description "PlemolJP (Plex Mono Language JP) is a Japanese programming
+font that is a composite of IBM Plex Mono and IBM Plex Sans JP.")
     (license license:silofl1.1)))
 
 (define-public font-public-sans
@@ -2288,3 +2360,107 @@ road signage typefaces, adapted for on-screen display and user interfaces.
 Overpass includes proportional and monospace variants.")
     (license (list license:silofl1.1
                    license:lgpl2.1))))
+
+(define-public font-cormorant
+  (package
+    (name "font-cormorant")
+    (version "3.609")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CatharsisFonts/Cormorant")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fjp2xk4bjx8i6jamkyjq2fdr7324fh41pbn634iwnhdvvawvbav"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/CatharsisFonts/Cormorant")
+    (synopsis
+     "Extravagant display serif typeface in the spirit of Garamond")
+    (description
+     "Cormorant is an extravagant display serif typeface inspired by
+the Garamond heritage.  The design goal of Cormorant was to distill
+the aesthetic essence of Garamond, unfetter it from the limitations of
+metal printing, and allow it to bloom into its natural refined form at
+high definition.  Cormorant is characterized by scandalously small
+counters, razor-sharp serifs, dangerously smooth curves, and
+flamboyantly tall accents.  While many implementations of Garamond at
+small optical sizes already exist, Cormorant aims for the sparsely
+populated niche of display-size counterparts that exploit the high
+resolution of contemporary screens and print media to the fullest.")
+    (license license:silofl1.1)))
+
+(define-public font-bravura
+  (package
+    (name "font-bravura")
+    (version "1.393")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/steinbergmedia/bravura")
+             ;; Should be:
+             ;;   (string-append "bravura-" version)
+             ;; but missing tag for 1.393. Requested upstream at:
+             ;; https://github.com/steinbergmedia/bravura/issues/61
+             (commit "3df1714e6f9d522a8d2b6ee6888fa3e68e71199d")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d0a2z1gl0kzfnd5z0nv2gd226qwll13kis2xrhx213w6r849180"))))
+    (build-system font-build-system)
+    (home-page "https://www.smufl.org/fonts/")
+    (synopsis
+     "OpenType music font and SMuFL reference implementation")
+    (description
+     "Bravura is an OpenType music font and the reference implementation for
+the W3C Standard Music Font Layout (SMuFL).  Bravura draws on the heritage of
+the finest European music engraving of the 19th and early 20th centuries, with
+a bolder and more substantial look than most other music fonts: thin strokes
+are slightly thicker than in other fonts, improving the overall ``blackness''
+of the font and its legibility when read at a distance.
+
+In addition to Bravura itself, which is for use with music notation
+software (such as MuseScore), the family includes a Bravura Text variant
+optimized for using musical symbols inline with regular text.")
+    (license license:silofl1.1)))
+
+(define-public font-charter
+  (let ((butterick-version "210112")) ;; yymmdd
+    (package
+      (name "font-charter")
+      (version (string-append "2.0.0-" butterick-version))
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "https://practicaltypography.com/fonts/Charter%20"
+                             butterick-version ".zip"))
+         (file-name (string-append name "-" version ".zip"))
+         (sha256
+          (base32 "1j8iv2dl695zrabs2knb7jsky8mjis29a2ddpna4by8mlvqrf0ml"))))
+      (outputs '("out" "woff2"))
+      (build-system font-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'install 'install-woff2
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((dest (string-append (assoc-ref outputs "woff2")
+                                          "/share/fonts/woff2")))
+                 (for-each (lambda (file)
+                             (install-file file dest))
+                           (find-files "." "\\.woff2$"))))))))
+      (home-page "https://practicaltypography.com/charter.html")
+      (synopsis "Charter fonts in OpenType and TrueType formats")
+      (description "Charter was designed by Matthew Carter in 1987 and was
+contributed by Bitstream to the X Consortium in 1992.  This package provides
+OpenType, TrueType, and @acronym{WOFF2, Web Open Font Format 2} versions
+converted from the Type 1 originals by Matthew Butterick.")
+      (license
+       (license:non-copyleft
+        "file://Charter license.txt"
+        (string-append
+         "Bitstream contributed the Charter family "
+         "to the X Consortium in 1992.  "
+         "The license is also embedded in the font metadata."))))))
+/

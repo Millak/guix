@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
@@ -217,14 +217,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.25")
+    (version "2.26")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "0zh1lqgsfhz8cmn6ajvcrfbn9iq2ls3adi2g17syzj8xiwvspaj1"))))
+        (base32 "061w86jffyi49m4d9n974a3pd1svbw3azmh0qx8h2v7h0178791l"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -247,14 +247,15 @@ cards.")
        #:install-source? #f
        #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bitflags" ,rust-bitflags-1.3)
+        ("rust-bitflags" ,rust-bitflags-1)
         ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-2)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-cxx" ,rust-cxx-1)
         ("rust-fastrand" ,rust-fastrand-1)
         ("rust-gettext-rs" ,rust-gettext-rs-0.7)
+        ("rust-lexopt" ,rust-lexopt-0.2)
         ("rust-libc" ,rust-libc-0.2)
+        ("rust-md5" ,rust-md5-0.7)
         ("rust-natord" ,rust-natord-1)
         ("rust-nom" ,rust-nom-7)
         ("rust-once-cell" ,rust-once-cell-1)
@@ -301,6 +302,7 @@ interface that might look familiar to @command{mutt} or @command{slrn} users.
 Newsboat supports OPML import/exports, HTML rendering, podcasts (with
 @command{podboat}), off-line reading, searching and storing articles to your
 file system, and many more features.")
+    (properties '((release-monitoring-url . "https://newsboat.org/news.atom")))
     (license (list license:gpl2+        ; filter/*
                    license:expat))))    ; everything else
 
@@ -461,6 +463,7 @@ a simple interface that makes it easy to organize and browse feeds.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (delete 'sanity-check)         ; Tries to read environment variables.
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)

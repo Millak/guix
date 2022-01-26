@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -13,7 +13,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
-;;; Copyright © 2020, 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2020, 2021, 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -370,7 +370,8 @@ in C/C++.")
      `(#:tests? #f ; FIXME: all tests pass, but then the check phase fails anyway.
        #:test-target "check-jstests"
        #:configure-flags
-       ,#~`("--enable-ctypes"
+       ,#~(quasiquote
+           ("--enable-ctypes"
             "--enable-optimize"
             "--enable-pie"
             "--enable-readline"
@@ -387,7 +388,7 @@ in C/C++.")
             ;; This is important because without it gjs will segfault during the
             ;; configure phase.  With jemalloc only the standalone mozjs console
             ;; will work.
-            "--disable-jemalloc")
+            "--disable-jemalloc"))
        #:phases
        (modify-phases %standard-phases
          ;; Make sure pkg-config will be found.
@@ -455,7 +456,10 @@ in C/C++.")
          "--enable-hardening"
          "--enable-optimize"
          "--enable-release"
-         "--enable-rust-simd"
+         ;; FIXME: rust-simd is disabled otherwise the build fails with
+         ;; "error: `[u32; 64]` is forbidden as the type of a const generic
+         ;; parameter".
+         "--disable-rust-simd"
          "--enable-readline"
          "--enable-shared-js"
          "--with-system-icu"
@@ -694,8 +698,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "91.4.0-guix0-preview1")
-(define %icecat-build-id "20211207000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "91.5.0-guix0-preview1")
+(define %icecat-build-id "20220111000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -717,11 +721,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "09xkzk27krzyj1qx8cjjn2zpnws1cncka75828kk7ychnjfq48p7"))))
+              "04y8nj1f065b3dn354f1ns3cm9xp4kljr5ippvmfdqr7cb4xjp7l"))))
 
-         (upstream-icecat-base-version "91.4.0") ; maybe older than base-version
+         (upstream-icecat-base-version "91.5.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "dd79d69e5dc6e6e751195001f322b30746be6903")
+         (gnuzilla-commit "c0a504578cb694522c65bb6c36396df8142d4a2a")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -733,7 +737,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "1vv97wmgdmkwddh8n30dak5l8akzbw49ca0w6krhq9dnj7n74cxh"))))
+              "016g8vdr6w6six4f705cmbdrfknmy4bk1qjjrvsdpah4bf6c2s2c"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1316,11 +1320,11 @@ standards of the IceCat project.")
        (cpe-version . ,(first (string-split version #\-)))))))
 
 ;; Update this together with icecat!
-(define %icedove-build-id "20211207000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20220111000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
-    (version "91.4.0")
+    (version "91.5")
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1461,7 +1465,12 @@ standards of the IceCat project.")
                        (string-append (getcwd) "/mach_state"))
                (setenv "MOZCONFIG"
                        (string-append (getcwd) "/.mozconfig"))
-               (setenv "CC" "gcc")
+
+               (setenv "AR" "llvm-ar")
+               (setenv "NM" "llvm-nm")
+               (setenv "CC" "clang")
+               (setenv "CXX" "clang++")
+
                (setenv "MOZ_NOSPAM" "1")
                (setenv "MACH_USE_SYSTEM_PYTHON" "1")
                (setenv "PYTHON"
@@ -1601,7 +1610,7 @@ standards of the IceCat project.")
         ;; in the Thunderbird release tarball.  We don't use the release
         ;; tarball because it duplicates the Icecat sources and only adds the
         ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "ab6dfcf3a37bf53aac1a9d632d45ee51047050bb"))
+        ,(let ((changeset "bcd2aab51cd0889d506d29455210d65602b97430"))
            (origin
              (method hg-fetch)
              (uri (hg-reference
@@ -1610,10 +1619,10 @@ standards of the IceCat project.")
              (file-name (string-append "thunderbird-" version "-checkout"))
              (sha256
               (base32
-               "00zj1k3c8p66ylf9n7xp42y6kiv3h6hf8ba7bk6f8wj3hh0r2hrd")))))
+               "0aj8a8qbm71n34yi58y04bn4h9zz2rciz0cm3hh58rsmcqs1s9ym")))))
        ("cargo" ,rust "cargo")
-       ("clang" ,clang)
-       ("llvm" ,llvm)
+       ("clang" ,clang-11)
+       ("llvm" ,llvm-11)
        ("m4" ,m4)
        ("nasm" ,nasm)
        ("node" ,node)

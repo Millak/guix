@@ -1,11 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020, 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Peter Lo <peterloleungyau@gmail.com>
 ;;; Copyright © 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -626,13 +626,13 @@ based on mapping using Entrez Gene identifiers.")
 (define-public r-org-hs-eg-db
   (package
     (name "r-org-hs-eg-db")
-    (version "3.7.0")
+    (version "3.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Hs.eg.db" version 'annotation))
               (sha256
                (base32
-                "1qxz9l80yg3qdqszs6dsscp7lrpfi1bgd0pxh9j7q34vprzwhdim"))))
+                "0mnddv42ll0sc0zxf7hkgilslykbvfn7xgxg1g8qi57q2dmpwb6j"))))
     (properties
      `((upstream-name . "org.Hs.eg.db")))
     (build-system r-build-system)
@@ -954,6 +954,26 @@ annotations.")
     (description
      "This package provides a set of annotation maps describing the entire
 Disease Ontology.")
+    (license license:artistic2.0)))
+
+(define-public r-hgu133plus2-db
+  (package
+    (name "r-hgu133plus2-db")
+    (version "3.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "hgu133plus2.db" version 'annotation))
+       (sha256
+        (base32 "0i6cfk7ahql4fcgrq0dai9gkjbsahyzd9iv4lqv1ad58fzkmipnx"))))
+    (properties `((upstream-name . "hgu133plus2.db")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-org-hs-eg-db))
+    (home-page "https://bioconductor.org/packages/hgu133plus2.db")
+    (synopsis "Affymetrix Affymetrix HG-U133_Plus_2 Array annotation data")
+    (description
+     "This package provides Affymetrix HG-U133_Plus_2 array annotation
+data (chip hgu133plus2) assembled using data from public repositories.")
     (license license:artistic2.0)))
 
 (define-public r-pfam-db
@@ -1302,9 +1322,7 @@ downloaded from Encode.")
     (version "1.14.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "http://bioconductor.org/packages/release/data/experiment"
-                    "/src/contrib/pasilla_" version ".tar.gz"))
+              (uri (bioconductor-uri "pasilla" version 'experiment))
               (sha256
                (base32
                 "0h124i2fb2lbj2k48zzf1n7ldqa471bs26fbd9vw50299aqx28x0"))))
@@ -1966,6 +1984,33 @@ closely reconstructs the mutational profile.")
     (license license:gpl2+)))
 
 ;; This is a CRAN package, but it depends on Bioconductor packages.
+(define-public r-jetset
+  (package
+    (name "r-jetset")
+    (version "3.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "jetset" version))
+       (sha256
+        (base32 "0c99h5npsv2gf5d59s4qhkaqmjhbwa3prcykk24wzhnpfq6y6xhp"))))
+    (properties `((upstream-name . "jetset")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi r-org-hs-eg-db))
+    (home-page "http://www.cbs.dtu.dk/biotools/jetset/")
+    (synopsis "One-to-one gene-probeset mapping for Affymetrix human microarrays")
+    (description
+     "This package provides a one-to-one mapping from gene to \"best\" probe
+set for four Affymetrix human gene expression microarrays: hgu95av2, hgu133a,
+hgu133plus2, and u133x3p.  On Affymetrix gene expression microarrays, a single
+gene may be measured by multiple probe sets.  This can present a mild
+conundrum when attempting to evaluate a gene \"signature\" that is defined by
+gene names rather than by specific probe sets.  This package also includes the
+pre-calculated probe set quality scores that were used to define the
+mapping.")
+    (license license:artistic2.0)))
+
+;; This is a CRAN package, but it depends on Bioconductor packages.
 (define-public r-nmf
   (package
     (name "r-nmf")
@@ -2474,13 +2519,13 @@ powerful online queries from gene annotation to database mining.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.28.1")
+    (version "1.28.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "04s6y7q9dvg26fazs6lzkm668zpl3136j9gd5hkyihyrf4a1w3g3"))))
+                "0lkp7m2l66zq8yl788mkvi9kpb1haywxpf6ip9xl5y6iwm1w2b8p"))))
     (properties
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
@@ -2659,13 +2704,13 @@ analysis.")
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
-    (version "1.30.2")
+    (version "1.30.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChIPseeker" version))
               (sha256
                (base32
-                "1nr5p1h9131rvbpnh2kizzx9q6f4ycq6rzxy1yqg2pczqcg7hy4x"))))
+                "1f9m1p1viiigkmv15r2mknjrfw047jw1fylpqz5ipigc3jrphj1g"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -3266,13 +3311,13 @@ alignments.")
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
-    (version "1.46.1")
+    (version "1.46.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicFeatures" version))
               (sha256
                (base32
-                "1dm049r7k41m8zzp5b332fw3ah3jpzzgpcb21icxwhlg483ipjyv"))))
+                "0a3shdzc1r0f12q9w679hgj8ywrwbg36z7k0yp47dgfjl14lachk"))))
     (properties
      `((upstream-name . "GenomicFeatures")))
     (build-system r-build-system)
@@ -4472,6 +4517,56 @@ this package.  It also provides functionalities for visualizing, summarizing
 and comparing the clusterings.")
     (license license:expat)))
 
+(define-public r-transcriptr
+  (package
+    (name "r-transcriptr")
+    (version "1.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "transcriptR" version))
+       (sha256
+        (base32 "1p5l2z3szx3qh02x7r81ajl7yc5wqsri6q6pzw83livmalcli5yy"))))
+    (properties `((upstream-name . "transcriptR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-caret
+           r-chipseq
+           r-e1071
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicfeatures
+           r-genomicranges
+           r-ggplot2
+           r-iranges
+           r-proc
+           r-reshape2
+           r-rsamtools
+           r-rtracklayer
+           r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/transcriptR")
+    (synopsis "Primary transcripts detection and quantification")
+    (description
+     "The differences in the RNA types being sequenced have an impact on the
+resulting sequencing profiles.  mRNA-seq data is enriched with reads derived
+from exons, while GRO-, nucRNA- and chrRNA-seq demonstrate a substantial
+broader coverage of both exonic and intronic regions.  The presence of
+intronic reads in GRO-seq type of data makes it possible to use it to
+computationally identify and quantify all de novo continuous regions of
+transcription distributed across the genome.  This type of data, however, is
+more challenging to interpret and less common practice compared to mRNA-seq.
+One of the challenges for primary transcript detection concerns the
+simultaneous transcription of closely spaced genes, which needs to be properly
+divided into individually transcribed units.  The R package transcriptR
+combines RNA-seq data with ChIP-seq data of histone modifications that mark
+active Transcription Start Sites (TSSs), such as, H3K4me3 or H3K9/14Ac to
+overcome this challenge.  The advantage of this approach over the use of, for
+example, gene annotations is that this approach is data driven and therefore
+able to deal also with novel and case specific events.")
+    (license license:gpl3)))
+
 (define-public r-trajectoryutils
   (package
     (name "r-trajectoryutils")
@@ -4567,13 +4662,13 @@ that integrates the various evidences.")
 (define-public r-structuralvariantannotation
   (package
     (name "r-structuralvariantannotation")
-    (version "1.10.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "StructuralVariantAnnotation" version))
        (sha256
-        (base32 "1pw7d39944dwk5gw6q7igcn866zpqwz01ljaha2ih5dfvmhxka8n"))))
+        (base32 "009l27kb9gvwwf57dwxfribhfhvn4z5pw8yc847l6pkbzqggx678"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -4669,14 +4764,14 @@ unmodeled, or latent sources of noise.")
 (define-public r-systempiper
   (package
     (name "r-systempiper")
-    (version "2.0.1")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "systemPipeR" version))
        (sha256
         (base32
-         "1r0qc1pyff9nvjix21xjd6fmka06ywr4ipr8szm52hq41hwaiqgq"))))
+         "1j91pyfjsqngxxlxjqc477pznlfax4vayrks2q12rxw76ija80hf"))))
     (properties `((upstream-name . "systemPipeR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4765,6 +4860,39 @@ length, weighted by sample-specific transcript abundance estimates, is
 provided as a matrix which can be used as an offset for different expression
 of gene-level counts.")
     (license license:gpl2+)))
+
+;; This is a CRAN package, but it depends on a Bioconductor package.
+(define-public r-valr
+  (package
+    (name "r-valr")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "valr" version))
+       (sha256
+        (base32
+         "0dd41irvibh6rwi52bw4zg4m7wpyihlp1kdkb8fdji3csw2fiz4k"))))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-broom
+           r-dplyr
+           r-ggplot2
+           r-rcpp
+           r-readr
+           r-rlang
+           r-rtracklayer ;bioconductor package
+           r-stringr
+           r-tibble))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://github.com/rnabioco/valr")
+    (synopsis "Genome interval arithmetic in R")
+    (description
+     "This package enables you to read and manipulate genome intervals and
+signals.  It provides functionality similar to command-line tool suites within
+R, enabling interactive analysis and visualization of genome-scale data.")
+    (license license:expat)))
 
 (define-public r-variantannotation
   (package
@@ -5191,14 +5319,14 @@ signal in the input, that lead to spurious peaks during peak calling.")
 (define-public r-diffbind
   (package
     (name "r-diffbind")
-    (version "3.4.0")
+    (version "3.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DiffBind" version))
        (sha256
         (base32
-         "15p4jd9k520va6kzizkgsl4a18kh5r8i50qfdkv7xazsfhvxjm3i"))))
+         "1bz03ls7pkb09p6nkz7gfnhjlh06mgbp3j98ppnzibiar3cjrnfj"))))
     (properties `((upstream-name . "DiffBind")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6212,14 +6340,14 @@ possible, parallelization is achieved using the BiocParallel framework.")
 (define-public r-destiny
   (package
     (name "r-destiny")
-    (version "3.4.0")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "destiny" version))
        (sha256
         (base32
-         "1i7f5q02zvpfaxhd76fbw0h1wfgjphyn5hrmrjpvlnv4ardzsir2"))))
+         "01662p5j9l12ylf5a5djg4cjppd2n3chrygzw8nnrcf1806xn58y"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -6554,14 +6682,14 @@ independent of the p-value under the null hypothesis.")
 (define-public r-icobra
   (package
     (name "r-icobra")
-    (version "1.22.1")
+    (version "1.22.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "iCOBRA" version))
        (sha256
         (base32
-         "05j3h314l2bw8n61h1nyiqhm3z7c1axycn4p3xkfccq5i4mcqvn2"))))
+         "1ln8l2cp6dqg6zv7s0qnmw5ii93v5sgp0b1nwswl52zdd8mivwxy"))))
     (properties `((upstream-name . "iCOBRA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6798,6 +6926,7 @@ several functions from the R igraph package.")
                 (uri (git-reference
                       (url "https://github.com/pneuvial/sanssouci.git")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "13ycdd790qw64qy2zdvcrpj3fc8as628rsly32438d3rifnlc5sk"))))
@@ -7743,14 +7872,14 @@ All the visualization methods are developed based on ggplot2 graphics.")
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
-    (version "4.2.0")
+    (version "4.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "clusterProfiler" version))
        (sha256
         (base32
-         "18y7482sw0awlhazikq13r2r0zid9ksk942rma87m448y1cq2fi5"))))
+         "08jhcbanz24x7zdkxznxz787g0nk3jfzd7zsap13sra7qnwaswq4"))))
     (properties
      `((upstream-name . "clusterProfiler")))
     (build-system r-build-system)
@@ -8719,14 +8848,14 @@ decomposition algorithms.")
 (define-public r-yapsa
   (package
     (name "r-yapsa")
-    (version "1.19.0")
+    (version "1.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "YAPSA" version))
        (sha256
         (base32
-         "0fgcbskz96p5815nywsnqv2gzn7g93m438hpd5rpg85srg4wrpdj"))))
+         "08r05fzpraggbxv15lx0b68kjlkysp0rcdlm6n9avzmlsdqplb2h"))))
     (properties `((upstream-name . "YAPSA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8748,7 +8877,7 @@ decomposition algorithms.")
            r-keggrest
            r-limsolve
            r-magrittr
-           r-pmcmr
+           r-pmcmrplus
            r-pracma
            r-reshape2
            r-somaticsignatures
@@ -9375,6 +9504,7 @@ Gaussian distributions.")
          "0ardmryx6ac7v6n900a1klrrldvbmh7bxvy8ldz8rwid19h29ikr"))))
     (properties `((upstream-name . "Rbowtie")))
     (build-system r-build-system)
+    (inputs (list zlib))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/Rbowtie/")
@@ -9826,14 +9956,14 @@ cluster count and membership by stability evidence in unsupervised analysis.")
 (define-public r-cytolib
   (package
     (name "r-cytolib")
-    (version "2.6.0")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "01r5dfjil1i526kb5gj9c8x9agi90x0bh7lzykbpn0g6s2hznbzi"))))
+         "16m5w6cp28p4fs2p8c8rjcg1d686xl8mpas816i7zxfh8m0bcqc9"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
     (native-inputs
@@ -10849,6 +10979,8 @@ with multiple R processes supported by the package @code{parallel}.")
            r-methylumi
            r-minfi
            r-watermelon))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://bioconductor.org/packages/bigmelon/")
     (synopsis "Illumina methylation array analysis for large experiments")
     (description
@@ -11237,14 +11369,14 @@ data.")
 (define-public r-universalmotif
   (package
     (name "r-universalmotif")
-    (version "1.12.1")
+    (version "1.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "universalmotif" version))
        (sha256
         (base32
-         "0d6zrwbc4i2npl29idm1icwa62wdx47z9s8yx7k662v3qagwpj16"))))
+         "1p9zdrsxqn4ayvbj05xgpzpbzkzrh7k0d62x10069687vfl6dlxg"))))
     (properties
      `((upstream-name . "universalmotif")))
     (build-system r-build-system)
@@ -11287,14 +11419,14 @@ motifs, and others.")
 (define-public r-activedriverwgs
   (package
     (name "r-activedriverwgs")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActiveDriverWGS" version))
        (sha256
         (base32
-         "06mvakdc8d2pn91p0sr4ixc561s4ia5h1cvd1p7pqd6s50dy4say"))))
+         "13b5yazgv9kckcp6gck183mh1m0q8lc5ixagmcy9s8kv2wz7wq45"))))
     (properties
      `((upstream-name . "ActiveDriverWGS")))
     (build-system r-build-system)
@@ -11302,6 +11434,9 @@ motifs, and others.")
      (list r-biostrings
            r-bsgenome
            r-bsgenome-hsapiens-ucsc-hg19
+           r-bsgenome-hsapiens-ucsc-hg38
+           r-bsgenome-mmusculus-ucsc-mm9
+           r-bsgenome-mmusculus-ucsc-mm10
            r-genomeinfodb
            r-genomicranges
            r-iranges
@@ -11322,14 +11457,14 @@ using whole genome sequencing data.")
 (define-public r-activepathways
   (package
     (name "r-activepathways")
-    (version "1.0.2")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActivePathways" version))
        (sha256
         (base32
-         "1hxy760x141ykrpqdbfldq4ggj1svj3lsrpwi4rb2x7r4lna937l"))))
+         "1prhwx0nnwy2q62l2r0z31mhk4mq6xdr6mjihdlwpwgwq4rfi60y"))))
     (properties
      `((upstream-name . "ActivePathways")))
     (build-system r-build-system)
@@ -11720,14 +11855,14 @@ searching and clustering.")
 (define-public r-bioassayr
   (package
     (name "r-bioassayr")
-    (version "1.32.0")
+    (version "1.32.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bioassayR" version))
        (sha256
         (base32
-         "1nfp1alva6qim5rbhg9j9w97p2n4z21ghr4j489lqklkcs4d030f"))))
+         "0pa8d7p9asp36wddkg779i3b9m12rxik56c54bmclnammr0cz89i"))))
     (properties `((upstream-name . "bioassayR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13858,19 +13993,21 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "2.5-0")
+    (version "2.6-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "1fqmhw0mhdl6az1gpg0byvx5snhz1pl3fqikhyfjcjrc9xbsq8yw"))))
+         "0fr5pyc43hly5ry5bbygibbh9mnql7vl4r5qz42d0ry4hahyxa4w"))))
     (build-system r-build-system)
     (inputs
      (list gsl))
     (propagated-inputs
-     (list r-lme4
+     (list r-doparallel
+           r-foreach
+           r-lme4
            r-nnet
            r-rcpp
            r-rcpparmadillo
@@ -14045,13 +14182,13 @@ starting site, start codon, stop codon and transcription ending site.")
 (define-public r-sushi
   (package
     (name "r-sushi")
-    (version "1.31.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Sushi" version))
               (sha256
                (base32
-                "1cj4palsq99vnwihp6z9mw0f8w9qj2vq8zwnabf3bgg0l1wpsc7c"))))
+                "073mh1d063ph5zk1d8kipgblr4l1ixqbxflhq4669761fi2frlw4"))))
     (properties `((upstream-name . "Sushi")))
     (build-system r-build-system)
     (propagated-inputs
@@ -14445,14 +14582,14 @@ the Bioconductor project.")
 (define-public r-biodb
   (package
     (name "r-biodb")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biodb" version))
        (sha256
         (base32
-         "1z4adapsnpw6fwanihdz43r11ijypxs5wbndb1i98j8kb7wf308k"))))
+         "0b5zva16r4kz8736h3djjgmh35nxmlin4f374rb4i2s55zsrb638"))))
     (properties `((upstream-name . "biodb")))
     (build-system r-build-system)
     (propagated-inputs
@@ -15006,13 +15143,13 @@ estimates, etc.")
 (define-public r-tcgabiolinks
   (package
     (name "r-tcgabiolinks")
-    (version "2.22.1")
+    (version "2.22.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TCGAbiolinks" version))
        (sha256
-        (base32 "0114pwbxg6mdhv94g556krl08ig7nwaafrryxbjha4hvn0xwy36l"))))
+        (base32 "0l7hfwgd8aiqv2k98jchkr3sdp9hwdg7pzm3bnvr6k7p93ifr6wc"))))
     (properties `((upstream-name . "TCGAbiolinks")))
     (build-system r-build-system)
     (propagated-inputs
@@ -15061,14 +15198,14 @@ starburst plots) in order to easily develop complete analysis pipelines.")
 (define-public r-tximeta
   (package
     (name "r-tximeta")
-    (version "1.12.3")
+    (version "1.12.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tximeta" version))
        (sha256
         (base32
-         "15l1jvfis7xzxwwnlqs8xpaf212v1lx513np2dc4l4h7rqhclm2v"))))
+         "1lm2r64d6sdfzvxcabgs0214cdc5dl9pfx562acjcxz5mb101g9g"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
     (propagated-inputs

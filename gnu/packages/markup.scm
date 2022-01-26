@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
@@ -29,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -36,12 +37,16 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages compression)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages web))
 
 (define-public hoedown
@@ -117,34 +122,39 @@ convert it to structurally valid XHTML (or HTML).")
                                    "See License.text in the distribution."))))
 
 (define-public lowdown
-  (package
-    (name "lowdown")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://kristaps.bsd.lv/lowdown/snapshots/lowdown-"
-                           version ".tar.gz"))
-       (sha256
-        (base32 "15v2kk4ffqw3n6y6n9plch4qcib3ynnhw0ih8wn2v9qgn4jssp5p"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "regress"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "./configure"
-                       (string-append "PREFIX=" out)
-                       (string-append "MANDIR=" out "/share/man"))))))))
-    (native-inputs
-     (list which))
-    (home-page "https://kristaps.bsd.lv/lowdown/")
-    (synopsis "Simple Markdown translator")
-    (description "Lowdown is a Markdown translator producing HTML5,
+  (let ((commit "1de10c1d71bfb4348ae0beaec8b1547d5e114969")
+        (revision "1"))
+    (package
+      (name "lowdown")
+      (version (git-version "0.10.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kristapsdz/lowdown")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wh07nkiihvp1m79sj4qlnqklnn0rfp3hwls8sqcp0bfd96wpa1h"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:test-target "regress"
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda _
+                (invoke "./configure"
+                        (string-append "PREFIX=" #$output)
+                        (string-append "MANDIR=" #$output "/share/man")))))
+        #:make-flags #~(list "CFLAGS=-fPIC")))
+      (native-inputs
+       (list which))
+      (home-page "https://kristaps.bsd.lv/lowdown/")
+      (synopsis "Simple Markdown translator")
+      (description "Lowdown is a Markdown translator producing HTML5,
 roff documents in the ms and man formats, LaTeX, gemini, and terminal output.")
-    (license license:isc)))
+      (license license:isc))))
 
 (define-public discount
   (package
@@ -237,10 +247,83 @@ implementation.
 @end example")
     (license license:perl-license)))
 
+(define-public python-cmarkgfm
+  (package
+    (name "python-cmarkgfm")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cmarkgfm" version))
+              (sha256
+               (base32
+                "06cw49bzxl3k7m8993cyi5zqxvk817z8ghhr9xqq5gx8klpiap56"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Delete bundled cmark and generated headers.
+                  (for-each delete-file-recursively
+                            '("third_party/cmark" "generated"))))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-cmark-gfm
+                 (lambda _
+                   ;; This package needs the cmark-gfm source files
+                   ;; to generate FFI bindings.
+                   (copy-recursively #+(package-source (this-package-input
+                                                        "cmark-gfm"))
+                                     "third_party/cmark")))
+               (add-after 'unpack 'install-cmark-headers
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; XXX: Loosely based on 'regenerate' from noxfile.py.
+                   (let ((version.h (search-input-file
+                                     inputs "/include/cmark-gfm_version.h")))
+                     (for-each (lambda (file)
+                                 (install-file file "generated/unix/"))
+                               (cons version.h
+                                     (find-files (dirname version.h)
+                                                 "_export\\.h$"))))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests? (invoke "pytest" "-vv" "tests")))))))
+    (native-inputs (list python-pytest))
+    (inputs (list cmark-gfm))
+    (propagated-inputs (list python-cffi-1.15))
+    (home-page "https://github.com/theacodes/cmarkgfm")
+    (synopsis "Python bindings for GitHub's fork of cmark")
+    (description
+     "This package provides a minimal set of Python bindings for the
+GitHub cmark fork (@code{cmark-gfm}).")
+    (license license:expat)))
+
+(define-public python-markdownify
+  (package
+    (name "python-markdownify")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "markdownify" version))
+       (sha256
+        (base32
+         "0msvrsgq9jigbgg7r7iq7ql5bgslmbxd8sq0nmpbxrjwqypgs7w2"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-flake8 python-beautifulsoup4 python-six))
+    (home-page
+     "https://github.com/matthewwithanm/python-markdownify")
+    (synopsis "Converts HTML to Markdown")
+    (description "This package provides @code{markdownify} a Python library to
+convert HTML to Markdown.")
+    (license license:expat)))
+
 (define-public cmark
   (package
     (name "cmark")
-    (version "0.29.0")
+    (version "0.30.2")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -249,16 +332,7 @@ implementation.
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0r7jpqhgnssq444i8pwji2g36058vfzwkl70wbiwj13h4w5rfc8f"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Mimic upstream commit 68c3a91166347 to fix a test failure
-                 ;; when using Python 3.8.  Remove for versions > 0.29.
-                 ;; See <https://github.com/commonmark/cmark/issues/313>.
-                 (substitute* "test/normalize.py"
-                   (("cgi") "html"))
-                 #t))))
+               "1426snw3mq8qmpdxznkhsyy75xd9v9nwlc7sph08qpdz8xnp4hr2"))))
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "test"))
@@ -276,6 +350,33 @@ for parsing and rendering CommonMark.")
     ;; licensed. The CommonMark specification is Creative Commons CC-BY-SA 4.0
     ;; licensed. See 'COPYING' in the source distribution for more information.
     (license (list license:bsd-2 license:expat license:cc-by-sa4.0))))
+
+(define-public cmark-gfm
+  (package
+    (inherit cmark)
+    (name "cmark-gfm")
+    (version "0.29.0.gfm.2")
+    (home-page "https://github.com/github/cmark-gfm")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vz6zs3m22k7jzfj4782lahciwfjlbi4m3qz5crsmssip3rwdy7h"))))
+    (arguments
+     '(#:test-target "test"
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'install-config
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        ;; XXX: cmark-gfm-core-extensions.h includes this file.
+                        (install-file "src/config.h"
+                                      (string-append out "/include"))))))))
+    (synopsis "GitHub flavored CommonMark")
+    (description
+     "This package is a fork of @code{cmark}, with GitHub-specific Markdown
+additions.")))
 
 (define-public smu
   (package

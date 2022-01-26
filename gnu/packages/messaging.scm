@@ -31,6 +31,7 @@
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,6 +89,7 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages less)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libreoffice)
@@ -549,31 +551,31 @@ your private keys, no previous conversation is compromised.")
 
 (define-public libsignal-protocol-c
   (package
-  (name "libsignal-protocol-c")
-  (version "2.3.3")
-  (source (origin
-           (method git-fetch)
-           (uri (git-reference
-                  (url "https://github.com/WhisperSystems/libsignal-protocol-c")
-                  (commit (string-append "v" version))))
-           (file-name (git-file-name name version))
-           (sha256
-            (base32
-             "0z5p03vk15i6h870azfjgyfgxhv31q2vq6rfhnybrnkxq2wqzwhk"))))
-  (arguments
-   `(;; Required for proper linking and for tests to run.
-     #:configure-flags '("-DBUILD_SHARED_LIBS=on" "-DBUILD_TESTING=1")))
-  (build-system cmake-build-system)
-  (inputs (list ;; Required for tests:
-                check openssl))
-  (native-inputs (list pkg-config))
-  (home-page "https://github.com/WhisperSystems/libsignal-protocol-c")
-  (synopsis "Implementation of a ratcheting forward secrecy protocol")
-  (description "libsignal-protocol-c is an implementation of a ratcheting
+   (name "libsignal-protocol-c")
+   (version "2.3.3")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                   (url "https://github.com/WhisperSystems/libsignal-protocol-c")
+                   (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0z5p03vk15i6h870azfjgyfgxhv31q2vq6rfhnybrnkxq2wqzwhk"))))
+   (arguments
+    `(;; Required for proper linking and for tests to run.
+      #:configure-flags '("-DBUILD_SHARED_LIBS=on" "-DBUILD_TESTING=1")))
+   (build-system cmake-build-system)
+   (inputs (list ;; Required for tests:
+                 check openssl))
+   (native-inputs (list pkg-config))
+   (home-page "https://github.com/WhisperSystems/libsignal-protocol-c")
+   (synopsis "Implementation of a ratcheting forward secrecy protocol")
+   (description "libsignal-protocol-c is an implementation of a ratcheting
 forward secrecy protocol that works in synchronous and asynchronous
 messaging environments.  It can be used with messaging software to provide
 end-to-end encryption.")
-  (license license:gpl3+)))
+   (license license:gpl3+)))
 
 (define-public axc
   (package
@@ -1253,6 +1255,7 @@ of xmpppy.")
        ("gst-plugins-base" ,gst-plugins-base)
        ("gtk+" ,gtk+)
        ("gupnp-igd" ,gupnp-igd)
+       ("libnice" ,libnice)
        ("libsecret" ,libsecret)
        ("libsoup" ,libsoup)
        ("libxss" ,libxscrnsaver)
@@ -1663,9 +1666,9 @@ messenger protocol.")
             (wrap-program (string-append (assoc-ref outputs "out")
                                          "/bin/utox")
             ;; For GtkFileChooserDialog.
-            `("GSETTINGS_SCHEMA_DIR" =
-              (,(string-append (assoc-ref inputs "gtk+")
-                               "/share/glib-2.0/schemas")))))))))
+             `("GSETTINGS_SCHEMA_DIR" =
+               (,(string-append (assoc-ref inputs "gtk+")
+                                "/share/glib-2.0/schemas")))))))))
    (inputs
     `(("dbus" ,dbus)
       ("filteraudio" ,filteraudio)
@@ -2286,7 +2289,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.5.1")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -2295,7 +2298,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xznfx2bhw0ahwmkxm0rs05vz05ijk5k4190rj6qp3bvb9byiajh"))))
+        (base32 "1a3ki45rf1fm7y4b74li76aqd4qc4y5ga5r163s0cwcpj9mp8c45"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2306,13 +2309,15 @@ QMatrixClient project.")
          (add-before 'configure 'disable-network-tests
            (lambda _
              (substitute* "CMakeLists.txt"
-               (("add_test\\((BasicConnectivity|ClientAPI|MediaAPI|Encryption|Pushrules)")
-                "# add_test"))
-             #t)))))
+               (("add_test\\((BasicConnectivity|ClientAPI|Devices|MediaAPI|Encryption|Pushrules)")
+                "# add_test")))))))
     (build-system cmake-build-system)
     (inputs
      (list boost
+           coeurl
+           curl
            json-modern-cxx
+           libevent
            libolm
            libsodium
            openssl
@@ -2329,7 +2334,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.8.2")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2338,80 +2343,81 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0362hkbprc6jqlgmvzwxyvify4b1ldjakyqdz55m25xsypbpv2f3"))
+        (base32 "1akhnngxkxbjwjkg5ispl6j5s2ylbcj92r3zxqqry4gbfxbjpx8k"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "third_party")))))
     (arguments
-     `(#:tests? #f                      ;no test target
-       #:configure-flags
-       '("-DCMAKE_BUILD_TYPE=Release"
-         "-DBUILD_DOCS=ON"
-         ;; Fix required because we are using a static SingleApplication
-         "-DCMAKE_CXX_FLAGS= \"-DQAPPLICATION_CLASS=QApplication\" "
-         ;; Compile Qml will make Nheko faster, but you will need to recompile
-         ;; it, when you update Qt.  That's fine for us.
-         "-DCOMPILE_QML=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-dependencies
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((single-app (assoc-ref inputs "single-application")))
-               (substitute* "CMakeLists.txt"
-                 ;; Remove include and source dirs,replace with the correct one
-                 (("third_party/blurhash/blurhash.cpp") "")
-                 (("third_party/cpp-httplib-0.5.12")
-                  (string-append "\"" single-app "/include\""))
-                 (("add_subdirectory.*third_party/SingleApplication.*") "")
-                 ;; Link using the correct static/shared libs
-                 (("SingleApplication::SingleApplication")
-                  (string-append
-                   ;; Dynamic libraries
-                   "httplib" "\n" "blurhash" "\n"
-                   ;; Static library
-                   single-app "/lib/libSingleApplication.a"))))))
-         (add-after 'unpack 'fix-determinism
-           (lambda _
-             ;; Make Qt deterministic.
-             (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/nheko")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
+     (list
+      #:tests? #f                       ;no test target
+      #:configure-flags
+      #~(list "-DCMAKE_BUILD_TYPE=Release"
+              "-DBUILD_DOCS=ON"
+              ;; Fix required because we are using a static SingleApplication
+              "-DCMAKE_CXX_FLAGS= \"-DQAPPLICATION_CLASS=QApplication\" "
+              ;; Compile Qml will make Nheko faster, but you will need to recompile
+              ;; it, when you update Qt.  That's fine for us.
+              "-DCOMPILE_QML=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-dependencies
+            (lambda _
+              (let ((single-app #$(this-package-input "single-application-qt5")))
+                (substitute* "CMakeLists.txt"
+                  ;; Remove include and source dirs,replace with the correct one
+                  (("third_party/blurhash/blurhash.cpp") "")
+                  (("third_party/cpp-httplib-0.5.12")
+                   (string-append "\"" single-app "/include\""))
+                  (("add_subdirectory.*third_party/SingleApplication.*") "")
+                  ;; Link using the correct static/shared libs
+                  (("SingleApplication::SingleApplication")
+                   (string-append
+                    ;; Dynamic libraries
+                    "httplib" "\n" "blurhash" "\n"
+                    ;; Static library
+                    single-app "/lib/libSingleApplication.a"))))))
+          (add-after 'unpack 'fix-determinism
+            (lambda _
+              ;; Make Qt deterministic.
+              (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (let ((gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program (string-append #$output "/bin/nheko")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
     (build-system qt-build-system)
     (inputs
-     `(("boost" ,boost)
-       ("blurhash" ,blurhash)
-       ("cpp-httplib" ,cpp-httplib)
-       ("cmark" ,cmark)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-bad" ,gst-plugins-bad)   ; sdp & webrtc for voip
-       ("gst-plugins-good" ,gst-plugins-good) ; rtpmanager for voip
-       ("json-modern-cxx" ,json-modern-cxx)
-       ("libnice" ,libnice)                   ; for voip
-       ("libolm" ,libolm)
-       ("lmdb" ,lmdb)
-       ("lmdbxx" ,lmdbxx)
-       ("mtxclient" ,mtxclient)
-       ("openssl" ,openssl)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtkeychain" ,qtkeychain)
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtsvg" ,qtsvg)
-       ("spdlog" ,spdlog)
-       ("single-application" ,single-application-qt5)
-       ("zlib" ,zlib)))
+     (list boost
+           blurhash
+           cpp-httplib
+           cmark
+           coeurl
+           curl
+           gst-plugins-base
+           gst-plugins-bad              ; sdp & webrtc for voip
+           gst-plugins-good             ; rtpmanager for voip
+           json-modern-cxx
+           libevent
+           libnice                      ; for voip
+           libolm
+           lmdb
+           lmdbxx
+           mtxclient
+           openssl
+           qtbase-5
+           qtdeclarative
+           qtkeychain
+           qtgraphicaleffects
+           qtmultimedia
+           qtquickcontrols2
+           qtsvg
+           spdlog
+           single-application-qt5
+           xcb-util-wm
+           zlib))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)))
+     (list doxygen graphviz pkg-config qttools))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
@@ -2461,13 +2467,13 @@ QMatrixClient project.")
 (define-public hangups
   (package
     (name "hangups")
-    (version "0.4.15")
+    (version "0.4.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hangups" version))
        (sha256
-        (base32 "1fa58m6zgvsawp2h1maj82wn6lpdllhbficmcjm78n5bg1hv7f4m"))))
+        (base32 "11szzszwfszc28xvlsh0bahxy3cgibzsirbfjh5m8vj60lzipqm3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2488,7 +2494,7 @@ QMatrixClient project.")
            python-async-timeout
            python-configargparse
            python-mechanicalsoup
-           python-protobuf-3.6
+           python-protobuf
            python-readlike
            python-reparser
            python-requests
@@ -2592,45 +2598,43 @@ replacement.")
     (license license:gpl2+)))
 
 (define-public tdlib
-  (let ((commit "34ba9b21f365b8d3bdc36808c2d665ca5cd128f6"))
-    (package
-      (name "tdlib")
-      (version "1.7.10")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tdlib/td")
-               (commit commit)))
-         (sha256
-          (base32 "06fbdh1jypz0p1rf6xbpias4kx7xplq9xjd9vz177vwj9icq3wki"))
-         (file-name (git-file-name name version))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:tests? #t
-         #:configure-flags
-         (list "-DCMAKE_BUILD_TYPE=Release"
-               "-DTD_ENABLE_LTO=OFF")   ; FIXME: Get LTO to work.
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'remove-failing-tests
-             (lambda _
-               (substitute* "test/CMakeLists.txt"
-                 ;; The test cases are compiled into a distinct binary
-                 ;; which uses mtproto.cpp to attempt to connect to
-                 ;; a remote server. Removing this file from the sources
-                 ;; list disables those specific test cases.
-                 (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") ""))
-               #t)))))
-      (native-inputs
-       (list gperf openssl zlib php doxygen))
-      (synopsis "Cross-platform library for building Telegram clients")
-      (description "Tdlib is a cross-platform library for creating custom
+  (package
+    (name "tdlib")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tdlib/td")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #t
+       #:configure-flags
+       (list "-DCMAKE_BUILD_TYPE=Release"
+             "-DTD_ENABLE_LTO=OFF")     ; FIXME: Get LTO to work.
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-failing-tests
+           (lambda _
+             (substitute* "test/CMakeLists.txt"
+               ;; The test cases are compiled into a distinct binary
+               ;; which uses mtproto.cpp to attempt to connect to
+               ;; a remote server. Removing this file from the sources
+               ;; list disables those specific test cases.
+               (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
+    (native-inputs
+     (list gperf openssl zlib php doxygen))
+    (synopsis "Cross-platform library for building Telegram clients")
+    (description "Tdlib is a cross-platform library for creating custom
 Telegram clients following the official Telegram API.  It can be easily used
 from almost any programming language with a C-FFI and features first-class
 support for high performance Telegram Bot creation.")
-      (home-page "https://core.telegram.org/tdlib")
-      (license license:boost1.0))))
+    (home-page "https://core.telegram.org/tdlib")
+    (license license:boost1.0)))
 
 (define-public purple-mm-sms
   (package

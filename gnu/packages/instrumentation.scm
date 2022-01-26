@@ -23,25 +23,35 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages))
+  #:use-module (guix packages)
+  #:use-module (srfi srfi-26)
+  #:use-module (guix utils))
 
 (define-public babeltrace
   (package
@@ -57,19 +67,23 @@
     (build-system gnu-build-system)
 
     (arguments
-     `(;; FIXME - When Python's bindings are enabled, tests do not pass.
-       #:configure-flags '("--enable-debug-info"
-                           "--enable-man-pages"
-                           "--disable-python-bindings"
-                           "--disable-python-plugins")
-                         #:phases
-                         (modify-phases %standard-phases
-                           ;; These are recommended in the project's README for a development
-                           ;; build configuration.
-                           (add-before 'configure 'set-environment-variables
-                             (lambda _
-                               (setenv "BABELTRACE_DEV_MODE" "1")
-                               (setenv "BABELTRACE_MINIMAL_LOG_LEVEL" "TRACE"))))))
+     `(#:tests? #f  ; FIXME - When Python's bindings are enabled, tests do not
+                    ; pass.
+       #:make-flags
+       ,#~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+       #:configure-flags
+       '("--enable-debug-info"
+         "--enable-man-pages"
+         "--enable-python-bindings"
+         "--enable-python-plugins")
+       #:phases
+       (modify-phases %standard-phases
+         ;; These are recommended in the project's README for a development
+         ;; build configuration.
+         (add-before 'configure 'set-environment-variables
+           (lambda _
+             (setenv "BABELTRACE_DEV_MODE" "1")
+             (setenv "BABELTRACE_MINIMAL_LOG_LEVEL" "TRACE"))))))
     (inputs
      (list glib))
     ;; NOTE - elfutils is used for the LTTng debug information filter
@@ -147,17 +161,57 @@ create a new one out of an ELF file for analysis or modification.  It come
 with a handful of C++ libraries.")
     (license license:lgpl2.1+)))
 
+(define-public flamegraph
+  ;; No new version since 2019, but there's still some new important commits.
+  (let ((commit "810687f180f3c4929b5d965f54817a5218c9d89b")
+        (revision "1"))
+    (package
+      (name "flamegraph")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/brendangregg/FlameGraph")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lg02mxzdsm9szn4vcmx76c1bw9gqmxqk8n6v63v03036sc83s22"))))
+      (build-system copy-build-system)
+      (arguments
+       `(#:install-plan
+         ',(map (cut list <> "bin/")
+                '("flamegraph.pl"
+                  "stackcollapse.pl"
+                  "stackcollapse-perf.pl"
+                  "stackcollapse-pmc.pl"
+                  "stackcollapse-stap.pl"
+                  "stackcollapse-instruments.pl"
+                  "stackcollapse-vtune.pl"
+                  "stackcollapse-jstack.pl"
+                  "stackcollapse-gdb.pl"
+                  "stackcollapse-go.pl"
+                  "stackcollapse-vsprof.pl"
+                  "stackcollapse-wcp.pl"))))
+      (inputs (list perl))
+      (home-page "http://www.brendangregg.com/flamegraphs.html")
+      (synopsis "Stack trace visualizer")
+      (description "Flamegraph is a collection of scripts that generate
+interactive SVGs out of traces genated from various tracing tools.  It comes
+with the script @command{flamegraph.pl} and many stackcollapse scripts.")
+      (license license:cddl1.0))))
+
 (define-public lttng-ust
   (package
     (name "lttng-ust")
-    (version "2.13.0")
+    (version "2.13.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-ust/"
                                   "lttng-ust-" version ".tar.bz2"))
               (sha256
                (base32
-                "0l0p6y2zrd9hgd015dhafjmpcj7waz762n6wf5ws1xlwcwrwkr2l"))))
+                "1p7d94r275yvby6zqfxaswdl1q46zxbc8x5rkhnjxrp1d41byrsn"))))
     (build-system gnu-build-system)
     (inputs
      (list liburcu numactl))
@@ -174,14 +228,14 @@ to ring buffers shared with a consumer daemon.")
 (define-public lttng-tools
   (package
     (name "lttng-tools")
-    (version "2.13.1")
+    (version "2.13.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-tools/"
                                   "lttng-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "1df8ag2a1yyjn6hz6wxgcz0p847cq91b8inf0zyhgz1im1yxzrng"))))
+                "1gfp9y24lpaiz4lcmbp30yd400jmh99mlay9gb8pz9qd080bmlnf"))))
     (build-system gnu-build-system)
     (arguments
      `( ;; FIXME - Currently there's a segmentation fault by swig when enabling
@@ -232,3 +286,61 @@ daemon @code{lttng-sessiond} that acts as a tracing registry, the @command{lttng
 line for tracing control, a @code{lttng-ctl} library for tracing control and a
 @code{lttng-relayd} for network streaming.")
     (license (list  license:gpl2 license:lgpl2.1))))
+
+(define-public uftrace
+  (package
+    (name "uftrace")
+    (version "0.11")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/namhyung/uftrace")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0gk0hv3rnf5czvazz1prg21rf9qlniz42g5b389n8a29hqj4q6xr"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list
+        (string-append "CC=" ,(cc-for-target)))
+       ;; runtest hang at some point -- probably dues to
+       ;; failed socket connection -- but we want to keep the
+       ;; unit tests.  Change the target to "test" when fixed.
+       #:test-target "unittest"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs target #:allow-other-keys)
+             (let ((arch ,(system->linux-architecture
+                           (or (%current-target-system)
+                               (%current-system)))))
+               (setenv "ARCH"
+                       (cond
+                        ((string=? arch "arm64") "aarch64")
+                        (else arch)))
+               (when target
+                 (setenv "CROSS_COMPILE" (string-append target "-"))))
+             (setenv "SHELL" (which "sh"))
+             (invoke "./configure"
+                     (string-append "--prefix="
+                                    (assoc-ref outputs "out"))))))))
+    (inputs
+     (list capstone
+           elfutils
+           libunwind
+           ncurses))
+    (native-inputs
+     (list luajit
+           pandoc
+           pkg-config
+           python-wrapper))
+    (home-page "https://github.com/namhyung/uftrace")
+    (synopsis "Function graph tracer for C/C++/Rust")
+    (description "uftrace is a tool for tracing and analyzing the execution of
+programs written in C/C++.  It is heavily inspired by the ftrace framework of
+the Linux kernel, while supporting userspace programs.  It supports various
+kind of commands and filters to help analysis of the program execution and
+performance.  It provides the command @command{uftrace}.  User that want to do
+scripting need to install python-3 or luajit in their profile.")
+    (license license:gpl2)))

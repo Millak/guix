@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2015, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -33,6 +33,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages code)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
@@ -77,18 +78,19 @@
 (define-public cflow
   (package
     (name "cflow")
-    (version "1.6")
+    (version "1.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/cflow/cflow-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1mzd3yf0dfv8h2av5vsxxlhpk21nw064h91b2kgfrdz92r0pnj1l"))))
+                "11khr78090jjyqa2l26bdz0myjx6b212lz216dhjc7h0z754c4fh"))))
     (build-system gnu-build-system)
 
     ;; Needed to have cflow-mode.el installed.
-    (native-inputs `(("emacs" ,emacs-minimal)))
+    (native-inputs
+     (list emacs-minimal))
     (arguments
      '(#:configure-flags (list (string-append "CPPFLAGS="
                                               "-D" "CFLOW_PREPROC=\\\""
@@ -129,77 +131,78 @@ highlighting your own code that seemed comprehensible when you wrote it.")
 (define-public global                             ; a global variable
   (package
     (name "global")
-    (version "6.6.7")
+    (version "6.6.8")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/global/global-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0g4aslm2zajq605py11s4rs1wdnzcqhkh7bc2xl5az42adzzg839"))))
+               "1kaphc3gml89p8dpdgh2is8hj46wj05689kxj0bmh5q759rxk4vg"))))
     (build-system gnu-build-system)
-    (inputs
-      `(("bash" ,bash-minimal)                    ; for wrap-program
-        ("coreutils" ,coreutils)
-        ("ctags" ,universal-ctags)
-        ("libltdl" ,libltdl)
-        ("ncurses" ,ncurses)
-        ("python-pygments" ,python-pygments)
-        ("python-wrapper" ,python-wrapper)
-        ("sqlite" ,sqlite)))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-ncurses="
-                            (assoc-ref %build-inputs "ncurses"))
-             (string-append "--with-sqlite3="
-                            (assoc-ref %build-inputs "sqlite"))
-             (string-append "--with-universal-ctags="
-                            (assoc-ref %build-inputs "ctags") "/bin/ctags")
-             (string-append "--sysconfdir="
-                            (assoc-ref %outputs "out") "/share/gtags")
-             "--localstatedir=/var"         ; This needs to be a writable location.
-             "--disable-static")
+     (list #:configure-flags
+           #~(list (string-append "--with-ncurses="
+                                  #$(this-package-input "ncurses"))
+                   (string-append "--with-sqlite3="
+                                  #$(this-package-input "sqlite"))
+                   (string-append "--with-universal-ctags="
+                                  #$(this-package-input "universal-ctags")
+                                  "/bin/ctags")
+                   (string-append "--sysconfdir="
+                                  #$output "/share/gtags")
+                   "--localstatedir=/var" ; This needs to be a writable location.
+                   "--disable-static")
 
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-globash
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((echo (string-append
-                           (assoc-ref inputs "coreutils") "/bin/echo")))
-               (substitute* "globash/globash.in"
-                 (("/bin/echo") echo)))))
-         (add-after 'post-install 'install-plugins
-           (lambda _
-             (with-directory-excursion "plugin-factory"
-               (invoke "make" "install"))))
-         (add-before 'install 'dont-install-to-/var
-           (lambda _
-             (substitute* "gozilla/Makefile"
-               (("DESTDIR\\)\\$\\{localstatedir\\}") "TMPDIR)"))))
-         (add-after 'install-plugins 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program
-               (string-append (assoc-ref outputs "out")
-                              "/share/gtags/script/pygments_parser.py")
-               `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))))
-        (add-after 'install 'post-install
-          (lambda* (#:key outputs #:allow-other-keys)
-            ;; Install the plugin files in the right place.
-            (let* ((out  (assoc-ref outputs "out"))
-                   (data (string-append out "/share/gtags"))
-                   (vim  (string-append out "/share/vim/vimfiles/plugin"))
-                   (lisp (string-append out "/share/emacs/site-lisp/"
-                                        ,(package-name this-package) "-"
-                                        ,(package-version this-package))))
-              (mkdir-p lisp)
-              (mkdir-p vim)
-              (rename-file (string-append data "/gtags.el")
-                           (string-append lisp "/gtags.el"))
-              (rename-file (string-append data "/gtags.vim")
-                           (string-append vim "/gtags.vim"))
-              (rename-file (string-append data "/gtags-cscope.vim")
-                           (string-append vim "/gtags-cscope.vim"))
-              #t))))))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-globash
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "globash/globash.in"
+                     (("/bin/echo")
+                      (search-input-file inputs "bin/echo")))))
+               (add-after 'post-install 'install-plugins
+                 (lambda _
+                   (with-directory-excursion "plugin-factory"
+                     (invoke "make" "install"))))
+               (add-before 'install 'dont-install-to-/var
+                 (lambda _
+                   (substitute* "gozilla/Makefile"
+                     (("DESTDIR\\)\\$\\{localstatedir\\}")
+                      "TMPDIR)"))))
+               (add-after 'install-plugins 'wrap-program
+                 (lambda _
+                   (wrap-program
+                       (string-append #$output
+                                      "/share/gtags/script/pygments_parser.py")
+                     `("GUIX_PYTHONPATH" ":" prefix
+                       (,(getenv "GUIX_PYTHONPATH"))))))
+               (add-after 'install 'post-install
+                 (lambda _
+                   ;; Install the plugin files in the right place.
+                   (let* ((data (string-append #$output "/share/gtags"))
+                          (vim  (string-append #$output
+                                               "/share/vim/vimfiles/plugin"))
+                          (lisp (string-append #$output "/share/emacs/site-lisp/"
+                                               #$(package-name this-package) "-"
+                                               #$(package-version this-package))))
+                     (mkdir-p lisp)
+                     (mkdir-p vim)
+                     (rename-file (string-append data "/gtags.el")
+                                  (string-append lisp "/gtags.el"))
+                     (rename-file (string-append data "/gtags.vim")
+                                  (string-append vim  "/gtags.vim"))
+                     (rename-file (string-append data "/gtags-cscope.vim")
+                                  (string-append vim  "/gtags-cscope.vim"))))))))
+    (inputs
+      (list bash-minimal                ; for wrap-program
+            coreutils
+            universal-ctags
+            libltdl
+            ncurses
+            python-pygments
+            python-wrapper
+            sqlite))
     (home-page "https://www.gnu.org/software/global/")
     (synopsis "Cross-environment source code tag system")
     (description
@@ -561,7 +564,7 @@ results and determine build stability.")
 (define-public kcov
   (package
     (name "kcov")
-    (version "39")
+    (version "40")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -570,7 +573,7 @@ results and determine build stability.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09wf1k4dlpdhqjjgq2bibmgy8i3z32wf0zxhd2px2dvg92m4zwqr"))))
+                "0zayhmx6s377bxmkmvl9d9vjzfbpvh1k9ba6np4zdjvjjq327xag"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no test target
@@ -588,9 +591,9 @@ results and determine build stability.")
      (list python))
     (home-page "https://github.com/SimonKagstrom/kcov")
     (synopsis "Code coverage tester for compiled languages, Python and Bash")
-    (description "Kcov is a FreeBSD/Linux/OSX code coverage tester for compiled
-languages, Python and Bash.  Kcov was originally a fork of Bcov, but has since
-evolved to support a large feature set in addition to that of Bcov.
+    (description "Kcov is a code coverage tester for compiled languages,
+Python and Bash.  It was originally a fork of Bcov, but has since evolved to
+support a large feature set in addition to that of Bcov.
 
 Kcov uses DWARF debugging information for compiled programs to make it
 possible to collect coverage information without special compiler switches.")

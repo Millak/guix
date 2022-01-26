@@ -3,9 +3,10 @@
 ;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2019, 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -253,14 +254,14 @@ to docs.openstack.org and developer.openstack.org.")
 (define-public python-os-testr
   (package
     (name "python-os-testr")
-    (version "0.8.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "os-testr" version))
        (sha256
         (base32
-         "0mknd9hlmxmihr755gjkxyjp180380jajq5i3zm34q7y7bi62lss"))))
+         "10xaqg3wxly13652hdvh9c69y4s12ird0ircffya3kvpl5pky0pz"))))
     (build-system python-build-system)
     (arguments
      ;; os-testr uses itself to run the tests. It seems like pbr writes the
@@ -268,9 +269,9 @@ to docs.openstack.org and developer.openstack.org.")
      ;; when building the package. Skip the tests for now.
      `(#:tests? #f))
     (propagated-inputs
-     (list python-subunit))
+     (list python-stestr))
     (native-inputs
-     (list python-pbr python-testtools python-babel))
+     (list python-babel python-pbr python-testrepository python-testtools))
     (home-page "https://www.openstack.org/")
     (synopsis "Testr wrapper to provide functionality for OpenStack projects")
     (description
@@ -363,35 +364,24 @@ common features used in Tempest.")
 (define-public python-oslo.config
   (package
     (name "python-oslo.config")
-    (version "5.2.0")
+    (version "8.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "oslo.config" version))
        (sha256
         (base32
-         "0ymf7jxbq29fifyvkwhfiys1qvljqfxdw8ajwzwaf3yiqidgpxqd"))))
+         "0q3v4yicqls9zsfxkmh5mrgz9dailaz3ir25p458gj6dg3bldhx0"))))
     (build-system python-build-system)
+    (arguments '(#:tests? #f))          ;XXX circular dependency on oslo.log
     (propagated-inputs
      (list python-debtcollector
            python-netaddr
            python-oslo.i18n
-           python-pbr
            python-rfc3986
-           python-six
+           python-requests
            python-stevedore
            python-pyyaml))
-    (native-inputs
-     (list python-bandit
-           python-coverage
-           python-mock
-           python-openstackdocstheme
-           python-oslotest
-           python-reno
-           python-sphinx
-           python-testrepository
-           python-testscenarios
-           python-testtools))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo Configuration API")
     (description
@@ -449,15 +439,12 @@ pipeline and used by various modules such as logging.")
         (base32
          "0kjcdw4bk3mi4vqmqwhhq053kxbbbj05si6nwxd1pzx33z067ky3"))))
     (build-system python-build-system)
+    (arguments
+     '(#:tests? #f))                 ;avoid circular dependency on oslo.config
     (propagated-inputs
      (list python-babel python-six))
     (native-inputs
-     (list python-pbr
-           ;; Tests
-           python-mock
-           python-mox3
-           python-oslotest
-           python-testscenarios))
+     (list python-pbr))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo internationalization (i18n) library")
     (description
@@ -469,19 +456,23 @@ in an application or library.")
 (define-public python-oslo.log
   (package
   (name "python-oslo.log")
-  (version "3.36.0")
+  (version "4.6.1")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "oslo.log" version))
       (sha256
         (base32
-          "0h7hplf1h8k24v75m3mq1jlrl74x5ynyr4hwgffsg5campxnza4x"))))
+          "0dlnxjci9mpwhgfv19fy1z7xrdp8m95skrj5dr60all3pr7n22f6"))))
   (build-system python-build-system)
+  (arguments
+   '(#:phases (modify-phases %standard-phases
+                (replace 'check
+                  (lambda* (#:key tests? #:allow-other-keys)
+                    (when tests? (invoke "stestr" "run")))))))
   (propagated-inputs
    (list python-dateutil
          python-debtcollector
-         python-monotonic
          python-oslo.config
          python-oslo.context
          python-oslo.i18n
@@ -491,8 +482,7 @@ in an application or library.")
          python-pyinotify
          python-six))
   (native-inputs
-    (list python-mock python-oslotest python-subunit
-          python-testrepository python-testtools))
+    (list python-fixtures python-oslotest python-stestr python-testtools))
   (home-page "https://launchpad.net/oslo")
   (synopsis "Python logging library of the Oslo project")
   (description
@@ -504,22 +494,25 @@ handlers and support for context specific logging (like resource id’s etc).")
 (define-public python-oslo.serialization
   (package
     (name "python-oslo.serialization")
-    (version "2.24.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "oslo.serialization" version))
        (sha256
         (base32
-         "08bxkp98c617y58x630xq44iiffm7f0f3cwh6zbnlkgq0zgh7jk1"))))
+         "10sdgvyb0d3lcmb8b4l5gs40bkfbai08kvsdwp658dxd2yqf21rh"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests? (invoke "stestr" "run")))))))
     (propagated-inputs
-      (list python-msgpack python-netaddr python-oslo.utils python-six
-            python-pytz))
+      (list python-msgpack python-oslo.utils python-pbr python-pytz))
     (native-inputs
-      (list python-pbr
-            ;; Tests.
-            python-mock python-oslo.i18n python-oslotest))
+     ;; For tests.
+      (list python-netaddr python-oslo.i18n python-oslotest python-stestr))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo serialization library")
     (description
@@ -620,35 +613,37 @@ for debugging, and better support for mocking results.")
 (define-public python-oslo.utils
   (package
     (name "python-oslo.utils")
-    (version "3.36.2")
+    (version "4.12.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "oslo.utils" version))
         (sha256
           (base32
-           "1ipjcgg9z697wmibhcbg5lqpk5gafakdx4qkff3w255zr0mvw04r"))))
+           "0kfgr6lr3r34nzmkvnyywr0x3lkwpwy35m1dj4rkk3ydqvi1xaip"))))
     (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests? (invoke "stestr" "run")))))))
     (propagated-inputs
       (list python-debtcollector
             python-oslo.i18n
             python-iso8601
-            python-monotonic
             python-netaddr
             python-netifaces
+            python-pbr
+            python-packaging-next
             python-pyparsing
-            python-pytz
-            python-six))
+            python-pytz))
     (native-inputs
-      (list python-pbr
-            ;; Tests.
-            python-bandit
-            python-ddt
+     ;; For tests.
+      (list python-ddt
+            python-eventlet
             python-fixtures
-            python-oslo.config
             python-oslotest
-            python-mock
-            python-testrepository
+            python-stestr
             python-testscenarios
             python-testtools))
     (home-page "https://launchpad.net/oslo")

@@ -74,7 +74,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "197")
+    (version "199")
     (source
      (origin
        (method git-fetch)
@@ -83,7 +83,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wpwzjqv7pbah55hmajyca7mmz7xv98mg0yqknjzmrjvfnm6azgw"))
+        (base32 "0wy1nd52a4rzqhhdcdi3pfgrixz3w3q7qfc9mpc9zraq5cj94l7n"))
        (patches
         (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
@@ -157,7 +157,6 @@
              binwalk
              python-pytest
              python-chardet
-             python-black
              python-h5py
              python-pypdf2
              python-progressbar33
