@@ -53,17 +53,17 @@
        ("gtk" ,gtk+-2)
        ("libxml2" ,libxml2)
        ("pango" ,pango)
-       ("python" ,python-2)))
+       ("python" ,python)))
     (native-inputs
-     `(("groff" ,groff)
-       ("pkg-config" ,pkg-config)
-
-       ;; For tests.
-       ("bc" ,bc)
-       ("perl" ,perl)                   ; will also build Perl bindings
-       ("tzdata" ,tzdata-for-tests)))
+     (list groff
+           pkg-config
+           ;; For tests.
+           bc
+           perl ; will also build Perl bindings
+           tzdata-for-tests))
     (arguments
-     '(#:phases
+     `(#:disallowed-references (,tzdata-for-tests)
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'pre-configure
            (lambda _
@@ -73,9 +73,7 @@
          (add-before 'check 'prepare-test-environment
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "TZDIR"
-                     (string-append (assoc-ref inputs "tzdata")
-                                    "/share/zoneinfo"))
-             #t))
+                     (search-input-directory inputs "share/zoneinfo"))))
          (add-after 'install 'remove-native-input-references
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))

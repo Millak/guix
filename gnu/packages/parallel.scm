@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
@@ -61,14 +61,14 @@
 (define-public parallel
   (package
     (name "parallel")
-    (version "20210922")
+    (version "20220122")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/parallel/parallel-"
                           version ".tar.bz2"))
       (sha256
-       (base32 "0rjd9636sgmnhaww2q8rbnpwhpq1aqg3df6rmpdm880zqi7skp6y"))))
+       (base32 "003y6f3bidfzd2jcswl7sk3a69fnvy0pjns4v0m5gjib84hil8mq"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -82,8 +82,7 @@
                   ;; $Global::shell = $ENV{'PARALLEL_SHELL'} ||
                   ;;  parent_shell($$) || $ENV{'SHELL'} || "/bin/sh";
                   (("/bin/sh\\\";\n$") (string-append (which "sh") "\";\n"))))
-              (list "src/parallel" "src/sem"))
-             #t))
+              (list "src/parallel" "src/sem"))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -92,8 +91,7 @@
                    ,(map (lambda (input)
                            (string-append (assoc-ref inputs input) "/bin"))
                          '("perl"
-                           "procps"))))
-               #t)))
+                           "procps")))))))
          (add-after 'wrap-program 'post-install-test
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke (string-append
@@ -101,8 +99,7 @@
                      "echo"
                      ":::" "1" "2" "3"))))))
     (inputs
-     `(("perl" ,perl)
-       ("procps" ,procps)))
+     (list perl procps))
     (home-page "https://www.gnu.org/software/parallel/")
     (synopsis "Build and execute command lines in parallel")
     (description
@@ -154,8 +151,7 @@ execution is also possible.")
     (build-system gnu-build-system)
     (arguments `(#:tests? #f)) ;; No tests
     (native-inputs
-     `(("flex" ,flex)
-       ("which" ,which)))
+     (list flex which))
     (home-page "http://www.maier-komor.de/xjobs.html")
     (properties `((release-monitoring-url . ,home-page)))
     (synopsis
@@ -201,13 +197,13 @@ when jobs finish.")
                 #t))))
    ;; FIXME: More optional inputs could be added,
    ;; in particular mysql and gtk+.
-   (inputs `(("freeipmi" ,freeipmi)
-             ("hwloc" ,hwloc-2 "lib")
-             ("json-c" ,json-c)
-             ("linux-pam" , linux-pam)
-             ("munge" ,munge)
-             ("numactl" ,numactl)
-             ("readline" ,readline)))
+   (inputs (list freeipmi
+                 `(,hwloc-2 "lib")
+                 json-c
+                 linux-pam
+                 munge
+                 numactl
+                 readline))
    (native-inputs
     `(("autoconf" ,autoconf)
       ("expect" ,expect)
@@ -321,9 +317,9 @@ by managing a queue of pending work.")
     (build-system gnu-build-system)
     (arguments `(#:tests? #f)) ; The tests require "bats".
     (inputs
-     `(("slurm" ,slurm)))
+     (list slurm))
     (native-inputs
-     `(("which" ,which)))
+     (list which))
     (home-page "https://github.com/natefoo/slurm-drmaa")
     (synopsis "Distributed resource management application API for SLURM")
     (description
@@ -366,10 +362,9 @@ cluster/resource management systems.")
                                             value "\n")))
                           #t))))))
       (inputs
-       `(("slurm" ,slurm)))
+       (list slurm))
       (propagated-inputs
-       `(("python-ipython" ,python-ipython)
-         ("python-pandas" ,python-pandas)))
+       (list python-ipython python-pandas))
       (synopsis "Control the SLURM batch scheduler from Jupyter Notebook")
       (description
        "This package implements Jupyter/IPython
@@ -403,9 +398,7 @@ command---e.g., @code{%salloc}, @code{%sbatch}, etc.")
       (build-system cmake-build-system)
       (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
       (inputs
-       `(("googletest" ,googletest)
-         ("googlebenchmark" ,googlebenchmark)
-         ("fxdiv" ,fxdiv)))
+       (list googletest googlebenchmark fxdiv))
       (synopsis "Efficient thread pool implementation")
       (description
        "The pthreadpool library implements an efficient and portable thread
@@ -434,8 +427,7 @@ features.")
       (build-system cmake-build-system)
       (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
       (inputs
-       `(("googletest" ,googletest)
-         ("googlebenchmark" ,googlebenchmark)))
+       (list googletest googlebenchmark))
       (synopsis "C/C++ library to obtain information about the CPU")
       (description
        "The cpuinfo library provides a C/C++ and a command-line interface to

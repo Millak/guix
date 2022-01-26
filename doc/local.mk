@@ -22,8 +22,8 @@
 # along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 # If adding a language, update the following variables, and info_TEXINFOS.
-MANUAL_LANGUAGES = de es fa fr it ko pt_BR ru sk zh_CN
-COOKBOOK_LANGUAGES = de fa fr ko ru sk zh_Hans
+MANUAL_LANGUAGES = de es fa fi fr it ko pt_BR ru sk zh_CN
+COOKBOOK_LANGUAGES = de es fa fi fr ko ru sk zh_Hans
 
 # Arg1: A list of languages codes.
 # Arg2: The file name stem.
@@ -35,6 +35,7 @@ info_TEXINFOS = %D%/guix.texi			\
   %D%/guix.de.texi				\
   %D%/guix.es.texi				\
   %D%/guix.fa.texi				\
+  %D%/guix.fi.texi				\
   %D%/guix.fr.texi				\
   %D%/guix.it.texi				\
   %D%/guix.ko.texi				\
@@ -44,7 +45,9 @@ info_TEXINFOS = %D%/guix.texi			\
   %D%/guix.zh_CN.texi				\
   %D%/guix-cookbook.texi			\
   %D%/guix-cookbook.de.texi			\
+  %D%/guix-cookbook.es.texi			\
   %D%/guix-cookbook.fa.texi			\
+  %D%/guix-cookbook.fi.texi			\
   %D%/guix-cookbook.fr.texi			\
   %D%/guix-cookbook.ko.texi			\
   %D%/guix-cookbook.ru.texi			\
@@ -80,7 +83,8 @@ EXTRA_DIST +=					\
 OS_CONFIG_EXAMPLES_TEXI =			\
   %D%/os-config-bare-bones.texi			\
   %D%/os-config-desktop.texi			\
-  %D%/os-config-lightweight-desktop.texi
+  %D%/os-config-lightweight-desktop.texi	\
+  %D%/he-config-bare-bones.scm
 
 TRANSLATED_INFO = 						\
   $(call lang_to_texinfo,$(MANUAL_LANGUAGES),guix)		\
@@ -97,46 +101,31 @@ PO4A_PARAMS += -k 0 # produce an output even if the translation is not complete
 PO4A_PARAMS += -f texinfo # texinfo format
 
 # When a change to guix.texi occurs, it is not translated immediately.
-# Because @pxref and @xref commands are reference to a section by name, they
+# Because @pxref and @xref commands are references to sections by name, they
 # should be translated. If a modification adds a reference to a section, this
 # reference is not translated, which means it references a section that does not
 # exist.
-# This command loops through the translated files looking for references. For
-# each of these references, it tries to find the translation and replaces the
-# reference name, even in untranslated strings.
-# The last sed is a multiline sed because some references span multiple lines.
 define xref_command
-cat "$@.tmp" | egrep '@p?x?ref' -A1 | sed 'N;s|--\n||g;P;D' | sed 's|^| |g' | \
-        tr -d '\012' | sed 's|\(@p\?x\?ref\)|\n\1|g' | egrep '@p?x?ref' | \
-        sed 's|^.*@p\?x\?ref{\([^,}]*\).*$$|\1|g' | sort | uniq | while read e; do \
-    if [ -n "$$e" ]; then \
-      line=$$(grep -n "^msgid \"$$e\"" "$<" | cut -f1 --delimiter=":") ;\
-      ((line++)) ;\
-      if [ "$$line" != "1" ]; then \
-	translation=$$(head -n "$$line" "$<" | tail -1 | grep msgstr | sed 's|msgstr "\([^"]*\)"|\1|') ;\
-	if [ "$$translation" != "" ]; then \
-	      sed "N;s@\(p\?x\?ref\){$$(echo $$e | sed 's| |[\\n ]|g')\(,\|}\)@\1{$$translation\2@g;P;D" -i "$@.tmp" ;\
-	fi ;\
-      fi ;\
-   fi ;\
-done
+$(top_srcdir)/pre-inst-env $(GUILE) --no-auto-compile	\
+  "$(top_srcdir)/build-aux/convert-xref.scm"		\
+  $@.tmp $<
 endef
 
-$(srcdir)/%D%/guix.%.texi: po/doc/guix-manual.%.po $(srcdir)/%D%/contributing.%.texi
+$(srcdir)/%D%/guix.%.texi: po/doc/guix-manual.%.po $(srcdir)/%D%/contributing.%.texi guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A_TRANSLATE) $(PO4A_PARAMS) -m "%D%/guix.texi" -p "$<" -l "$@.tmp"
 	-sed -i "s|guix\.info|$$(basename "$@" | sed 's|texi$$|info|')|" "$@.tmp"
-	-$(AM_V_POXREF)$(xref_command)
+	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
-$(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po
+$(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A_TRANSLATE) $(PO4A_PARAMS) -m "%D%/guix-cookbook.texi" -p "$<" -l "$@.tmp"
 	-sed -i "s|guix-cookbook\.info|$$(basename "$@" | sed 's|texi$$|info|')|" "$@.tmp"
-	-$(AM_V_POXREF)$(xref_command)
+	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
-$(srcdir)/%D%/contributing.%.texi: po/doc/guix-manual.%.po
+$(srcdir)/%D%/contributing.%.texi: po/doc/guix-manual.%.po guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A_TRANSLATE) $(PO4A_PARAMS) -m "%D%/contributing.texi" -p "$<" -l "$@.tmp"
-	-$(AM_V_POXREF)$(xref_command)
+	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
 %D%/os-config-%.texi: gnu/system/examples/%.tmpl

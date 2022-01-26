@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,15 +59,10 @@
                 "1bk3as5yw9y5nmq6l15nr46aby34phmvsx9kxgqnm5pd5q2b5h57"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-dateutil" ,python-dateutil)
-       ("python-jupyter-core" ,python-jupyter-core)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-traitlets" ,python-traitlets)))
+     (list python-dateutil python-jupyter-core python-pyzmq
+           python-traitlets))
     (native-inputs
-     `(("python-ipykernel" ,python-ipykernel)
-       ("python-ipython" ,python-ipython)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)))
+     (list python-ipykernel python-ipython python-mock python-pytest))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter protocol implementation")
     (description
@@ -88,17 +84,14 @@ protocol} to be used by both clients and kernels.")
                 "0i7a78dn89ca8h0a42giyxwcmk6y4wrdr7q8h2ax9vybb84c795q"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-dateutil" ,python-dateutil)
-       ("python-entrypoints" ,python-entrypoints)
-       ("python-jupyter-core" ,python-jupyter-core)
-       ("python-jupyter-protocol" ,python-jupyter-protocol)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-traitlets" ,python-traitlets)))
+     (list python-dateutil
+           python-entrypoints
+           python-jupyter-core
+           python-jupyter-protocol
+           python-pyzmq
+           python-traitlets))
     (native-inputs
-     `(("python-ipykernel" ,python-ipykernel)
-       ("python-ipython" ,python-ipython)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)))
+     (list python-ipykernel python-ipython python-mock python-pytest))
     (home-page "https://jupyter.org")
     (synopsis "Discover, launch, and communicate with Jupyter kernels")
     (description
@@ -140,9 +133,8 @@ launching and using Jupyter kernels.")
                                               "\\.py$"))
                         #t))))))
     (propagated-inputs
-     `(("python-jupyter-kernel-mgmt" ,python-jupyter-kernel-mgmt)
-       ("python-jupyter-protocol" ,python-jupyter-protocol)
-       ("python-jsonschema" ,python-jsonschema)))
+     (list python-jupyter-kernel-mgmt python-jupyter-protocol
+           python-jsonschema))
     (synopsis "Test Jupyter kernels")
     (description
      "@code{jupyter_kernel_test} is a tool for testing Jupyter kernels.  It
@@ -170,21 +162,20 @@ Messaging Protocol}.")
                            "-DDISABLE_ARCH_NATIVE=ON" ;no '-march=native'
                            "-DBUILD_TESTING=ON")))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-
-       ;; The following inputs are used by the test suite.
-       ("googletest" ,googletest)
-       ("python-pytest" ,python-pytest)
-       ("python" ,python-3)
-       ("python-jupyter-kernel-test" ,python-jupyter-kernel-test)
-       ("python-jupyter-client" ,python-jupyter-client)))
+     (list pkg-config
+           ;; The following inputs are used by the test suite.
+           googletest
+           python-pytest
+           python-3
+           python-jupyter-kernel-test
+           python-jupyter-client))
     (inputs
-     `(("xtl" ,xtl)
-       ("json-modern-cxx" ,json-modern-cxx)
-       ("cppzmq" ,cppzmq)
-       ("zeromq" ,zeromq)
-       ("openssl" ,openssl)
-       ("util-linux" ,util-linux "lib")))         ;libuuid
+     (list xtl
+           json-modern-cxx
+           cppzmq
+           zeromq
+           openssl
+           `(,util-linux "lib")))         ;libuuid
     (home-page "https://quantstack.net/xeus")
     (synopsis "C++ implementation of the Jupyter Kernel protocol")
     (description
@@ -212,7 +203,7 @@ alternative Python kernel for Jupyter.")
     (build-system python-build-system)
     (arguments '(#:tests? #false)) ; there are no tests
     (propagated-inputs
-     `(("python-pygments" ,python-pygments)))
+     (list python-pygments))
     (home-page "https://jupyter.org")
     (synopsis "Pygments theme using JupyterLab CSS variables")
     (description
@@ -233,17 +224,11 @@ the JupyterLab CSS variables.")
          "0r015c0m713d19asmpimsw6bk2sqv2lpd2nccgjzjdj5h1crg0bg"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-deprecation" ,python-deprecation)
-       ("python-packaging" ,python-packaging)
-       ("python-setuptools" ,python-setuptools)
-       ("python-tomlkit" ,python-tomlkit)
-       ("python-wheel" ,python-wheel)))
+     (list python-deprecation python-packaging python-setuptools
+           python-tomlkit python-wheel))
     (native-inputs
-     `(("python-pypa-build" ,python-pypa-build)
-       ("python-coverage" ,python-coverage)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-mock" ,python-pytest-mock)))
+     (list python-pypa-build python-coverage python-pytest
+           python-pytest-cov python-pytest-mock))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter packaging utilities")
     (description "This package provides tools to help build and install
@@ -286,31 +271,31 @@ JavaScript build steps.")
                          ;; Integration tests require a server.
                          "-m" "not integration_test"))))))))
     (propagated-inputs
-     `(("python-anyio" ,python-anyio)
-       ("python-argon2-cffi" ,python-argon2-cffi)
-       ("python-ipython-genutils" ,python-ipython-genutils)
-       ("python-jinja2" ,python-jinja2)
-       ("python-jupyter-client" ,python-jupyter-client)
-       ("python-jupyter-core" ,python-jupyter-core)
-       ("python-nbconvert" ,python-nbconvert)
-       ("python-nbformat" ,python-nbformat)
-       ("python-prometheus-client" ,python-prometheus-client)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-requests-unixsocket" ,python-requests-unixsocket)
-       ("python-send2trash" ,python-send2trash)
-       ("python-terminado" ,python-terminado)
-       ("python-tornado" ,python-tornado-6)
-       ("python-traitlets" ,python-traitlets)
-       ("python-websocket-client" ,python-websocket-client)))
+     (list python-anyio
+           python-argon2-cffi
+           python-ipython-genutils
+           python-jinja2
+           python-jupyter-client
+           python-jupyter-core
+           python-nbconvert
+           python-nbformat
+           python-prometheus-client
+           python-pyzmq
+           python-requests-unixsocket
+           python-send2trash
+           python-terminado
+           python-tornado-6
+           python-traitlets
+           python-websocket-client))
     (native-inputs
-     `(("python-coverage" ,python-coverage)
-       ("python-ipykernel" ,python-ipykernel)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-console-scripts" ,python-pytest-console-scripts)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-mock" ,python-pytest-mock)
-       ("python-pytest-tornasync" ,python-pytest-tornasync)
-       ("python-requests" ,python-requests)))
+     (list python-coverage
+           python-ipykernel
+           python-pytest
+           python-pytest-console-scripts
+           python-pytest-cov
+           python-pytest-mock
+           python-pytest-tornasync
+           python-requests))
     (home-page "https://jupyter.org")
     (synopsis "Core services, APIs, and REST endpoints for Jupyter web applications")
     (description
@@ -331,8 +316,7 @@ endpoints—to Jupyter web applications.")
          "0y7vhhas3qndiypcpcfnhrj9n92v2w4hdc86nn620s9h9nl2j6jw"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-jupyter-packaging" ,python-jupyter-packaging)
-       ("python-setuptools" ,python-setuptools)))
+     (list python-jupyter-packaging python-setuptools))
     (home-page "https://github.com/jupyter-widgets/ipywidgets")
     (synopsis "Interactive widgets for Jupyter Notebooks")
     (description "ipywidgets, also known as jupyter-widgets or simply widgets,
@@ -355,31 +339,28 @@ are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
     ;; nbconvert.
     (arguments '(#:tests? #false))
     (propagated-inputs
-     `(("python-async-generator" ,python-async-generator)
-       ("python-jupyter-client" ,python-jupyter-client)
-       ("python-nbformat" ,python-nbformat)
-       ("python-nest-asyncio" ,python-nest-asyncio)
-       ("python-traitlets" ,python-traitlets)))
+     (list python-async-generator python-jupyter-client python-nbformat
+           python-nest-asyncio python-traitlets))
     (native-inputs
-     `(("python-black" ,python-black)
-       ("python-bumpversion" ,python-bumpversion)
-       ("python-check-manifest" ,python-check-manifest)
-       ("python-codecov" ,python-codecov)
-       ("python-coverage" ,python-coverage)
-       ("python-flake8" ,python-flake8)
-       ;; ("python-ipykernel" ,python-ipykernel)
-       ;; ("python-ipython" ,python-ipython)
-       ;; ("python-ipywidgets" ,python-ipywidgets)
-       ("python-mypy" ,python-mypy)
-       ("python-pip" ,python-pip)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-setuptools" ,python-setuptools)
-       ("python-testpath" ,python-testpath)
-       ("python-tox" ,python-tox)
-       ("python-twine" ,python-twine)
-       ("python-wheel" ,python-wheel)
-       ("python-xmltodict" ,python-xmltodict)))
+     (list python-black
+           python-bumpversion
+           python-check-manifest
+           python-codecov
+           python-coverage
+           python-flake8
+           ;; ("python-ipykernel" ,python-ipykernel)
+           ;; ("python-ipython" ,python-ipython)
+           ;; ("python-ipywidgets" ,python-ipywidgets)
+           python-mypy
+           python-pip
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-testpath
+           python-tox
+           python-twine
+           python-wheel
+           python-xmltodict))
     (home-page "https://jupyter.org")
     (synopsis "Client library for executing notebooks")
     (description
@@ -390,16 +371,16 @@ nbconvert's @code{ExecutePreprocessor.}")
 (define-public repo2docker
   (package
     (name "repo2docker")
-    (version "2021.03.0")
+    (version "2021.08.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/jupyterhub/repo2docker/")
-                    (commit "2021.03.0")))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18w8rgf7fpf79kx36y2c3xi3d52i41z112l3sz719d8kg0bir16m"))))
+                "111irpghzys0s5ixs8paskz7465cls1sm9d5bg45a15jklcw84a9"))))
     (outputs '("out" "doc"))
     (build-system python-build-system)
     (arguments
@@ -419,29 +400,31 @@ nix-shell-wrapper|repo2docker-entrypoint)")
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "doc"))
                              (doc (string-append out "/share/doc/"
-                                                 ,name)))
+                                                 ,(package-name this-package))))
                         (setenv "PYTHONPATH"
                                 (string-append (getcwd) ":"
-                                               (getenv "PYTHONPATH")))
+                                               (getenv "GUIX_PYTHONPATH")))
+                        ;; Don't treat warnings as errors.
+                        (substitute* "docs/Makefile"
+                          (("(SPHINXOPTS[[:blank:]]+= )-W" _ group)
+                           group))
                         (with-directory-excursion "docs"
                           (invoke  "make" "html")
                           (copy-recursively "build/html"
                                             (string-append doc "/html")))))))))
     (inputs
-     `(("python-traitlets" ,python-traitlets)
-       ("python-toml" ,python-toml)
-       ("python-semver" ,python-semver)
-       ("python-ruamel.yaml" ,python-ruamel.yaml)
-       ("python-requests" ,python-requests)
-       ("python-json-logger" ,python-json-logger)
-       ("python-jinja2" ,python-jinja2)
-       ("python-escapism" ,python-escapism)
-       ("python-docker" ,python-docker)))
+     (list python-traitlets
+           python-toml
+           python-semver
+           python-ruamel.yaml
+           python-requests
+           python-json-logger
+           python-jinja2
+           python-escapism
+           python-docker))
     (native-inputs
-     `(("python-sphinx" ,python-sphinx)
-       ("python-recommonmark" ,python-recommonmark)
-       ("python-sphinxcontrib-autoprogram" ,python-sphinxcontrib-autoprogram)
-       ("python-pydata-sphinx-theme" ,python-pydata-sphinx-theme)))
+     (list python-sphinx python-entrypoints python-recommonmark
+           python-sphinxcontrib-autoprogram python-pydata-sphinx-theme))
     (home-page "https://repo2docker.readthedocs.io/en/latest/index.html#")
     (synopsis "Generate docker images from repositories")
     (description
@@ -484,11 +467,9 @@ Docker registry.")
               (invoke "python" "-m" "bash_kernel.install" "--prefix" out)
               #t))))))
    (inputs
-     `(("bash" ,bash)))
+     (list bash))
    (propagated-inputs
-     `(("python-pexpect" ,python-pexpect)
-       ("python-ipykernel" ,python-ipykernel)
-       ("python-jupyter-client" ,python-jupyter-client)))
+     (list python-pexpect python-ipykernel python-jupyter-client))
    (home-page "https://github.com/takluyver/bash_kernel")
    (synopsis "Jupyter kernel for Bash")
    (description "A bash shell kernel for Jupyter.")
@@ -525,14 +506,10 @@ Docker registry.")
                  (string-append "--InstallKernelSpec.prefix=" out))
                #t))))))
     (native-inputs
-     `(("python-traitlets" ,python-traitlets)
-       ("python-jupyter-client" ,python-jupyter-client)
-       ("python-notebook" ,python-notebook)
-       ("python-ipykernel" ,python-ipykernel)
-       ("python-html5lib" ,python-html5lib-0.9)))
+     (list python-traitlets python-jupyter-client python-notebook
+           python-ipykernel python-html5lib-0.9))
     (propagated-inputs
-     `(("python-sparqlwrapper" ,python-sparqlwrapper)
-       ("python-pygments" ,python-pygments)))
+     (list python-sparqlwrapper python-pygments))
     (home-page "https://github.com/paulovn/sparql-kernel")
     (synopsis "Jupyter kernel for SPARQL")
     (description "This module installs a Jupyter kernel for SPARQL.  It allows
@@ -553,19 +530,17 @@ a notebook.")
          "0krfc95yjlhjdmrsladhy6lpf4xs1zw49nmkyl4pkykndglvwa1m"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-jupyter-client" ,python-jupyter-client)
-       ("python-jupyter-server" ,python-jupyter-server)
-       ("python-nbclient" ,python-nbclient)
-       ("python-nbconvert" ,python-nbconvert)))
+     (list python-jupyter-client python-jupyter-server python-nbclient
+           python-nbconvert))
     (native-inputs
-     `(("python-ipywidgets" ,python-ipywidgets)
-       ("python-jupyter-packaging" ,python-jupyter-packaging)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-tornasync" ,python-pytest-tornasync)
-       ("python-setuptools" ,python-setuptools)
-       ("python-tornado" ,python-tornado-6)))
+     (list python-ipywidgets
+           python-jupyter-packaging
+           python-matplotlib
+           python-mock
+           python-pytest
+           python-pytest-tornasync
+           python-setuptools
+           python-tornado-6))
     (home-page "https://github.com/voila-dashboards/voila")
     (synopsis "Render live Jupyter notebooks with interactive widgets")
     (description

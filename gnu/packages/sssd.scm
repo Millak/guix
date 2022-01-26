@@ -2,6 +2,8 @@
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
+;;; Copyright © 2021, 2022 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,12 +24,14 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages augeas)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -49,6 +53,62 @@
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
+
+(define-public adcli
+  (package
+    (name "adcli")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/realmd/adcli.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mwzd5vakdsssdvs6vljqpp8pw8i97n5lhxvmn9dn9720am7hfv7"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       ;; The net tool is used to update the stored machine key for samba.
+       (list (string-append "--with-samba-data-tool="
+                            (assoc-ref %build-inputs "samba") "/bin/net"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'use-local-docbook
+           ;; Patch Makefile and docs to use local docbook resources.
+           (lambda _
+             (let* ((docbook-xml (assoc-ref %build-inputs "docbook-xml"))
+                    (docbook-xsl (assoc-ref %build-inputs "docbook-xsl"))
+                    (xsldir (string-append docbook-xsl "/xml/xsl/docbook-xsl-"
+                                           ,(package-version docbook-xsl))))
+                    (with-directory-excursion "doc"
+                      (substitute*
+                          '("Makefile.am" "adcli.xml" "adcli-devel.xml" "adcli-docs.xml")
+                        (("http://docbook.sourceforge.net/release/xsl/current(/[^\"]*)" _ path)
+                         (string-append xsldir path))
+                        (("http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd")
+                         (string-append docbook-xml "/xml/dtd/docbook/docbookx.dtd")))
+                      (substitute* "Makefile.am"
+                        (("\\$\\(XMLTO\\)" xmlto)
+                         (string-append xmlto " --searchpath " xsldir "/html"))))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           docbook-xml
+           docbook-xsl
+           libtool
+           libxslt
+           util-linux ; For `rev` command used in tests.
+           xmlto))
+    (inputs
+     (list cyrus-sasl mit-krb5 samba openldap))
+    (home-page "https://gitlab.freedesktop.org/realmd/adcli/")
+    (synopsis "Helper library and tools for Active Directory client operations")
+    (description "@command{adcli} is a command‐line tool to join a computer to
+an Active Directory domain.  It can also update the machine password and
+manage user, group and computer accounts for a domain.")
+    (license license:lgpl2.1+)))
 
 (define-public ding-libs
   (package
@@ -91,7 +151,9 @@ fundamental object types for C.")
                (base32
                 "1h6hwibaf3xa2w6qpzjiiywmfj6zkgbz4r2isf3gd0xm6vq7n6if"))
               (patches (search-patches "sssd-fix-samba.patch"
-                                       "sssd-system-directories.patch"))))
+                                       "sssd-system-directories.patch"
+                                       "sssd-collision-with-external-nss-symbol.patch"
+                                       "sssd-fix-samba-4.15.3.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -135,42 +197,55 @@ fundamental object types for C.")
            (lambda _
              (substitute* "src/tests/responder_socket_access-tests.c"
                (("tcase_add_test\\(tc_utils, resp_str_to_array_test\\);") ""))
-             #t)))))
+             #t))
+         (add-after 'unpack 'add-config-in
+           (lambda _
+             (let ((config.h (open-file "config.h.in" "a")))
+               (display (string-append "
+/* Missing in commits on original repo, dunno why but won't work without. */
+#undef SMB_HAS_NEW_NDR_PULL_STEAL_SWITCH
+")
+                        config.h)
+               (close config.h))))
+         (add-before 'configure 'autoconf
+           (lambda _
+             (invoke "autoconf"))))))
     (inputs
-     `(("augeas" ,augeas)
-       ("bind" ,isc-bind "utils")
-       ("c-ares" ,c-ares)
-       ("curl" ,curl)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("dbus" ,dbus)
-       ("ding-libs" ,ding-libs)
-       ("glib" ,glib)
-       ("gnutls" ,gnutls)
-       ("http-parser" ,http-parser)
-       ("jansson" ,jansson)
-       ("ldb" ,ldb)
-       ("libselinux" ,libselinux)
-       ("libsemanage" ,libsemanage)
-       ("libunistring" ,libunistring)
-       ("linux-pam" ,linux-pam)
-       ("mit-krb5" ,mit-krb5)
-       ("nss" ,nss)
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)
-       ("pcre" ,pcre)
-       ("popt" ,popt)
-       ("samba" ,samba)
-       ("talloc" ,talloc)
-       ("tdb" ,tdb)
-       ("tevent" ,tevent)))
+     (list augeas
+           `(,isc-bind "utils")
+           c-ares
+           curl
+           cyrus-sasl
+           dbus
+           ding-libs
+           glib
+           gnutls
+           http-parser
+           jansson
+           ldb
+           libselinux
+           libsemanage
+           libunistring
+           linux-pam
+           mit-krb5
+           nss
+           openldap
+           openssl
+           pcre
+           popt
+           samba
+           talloc
+           tdb
+           tevent))
     (native-inputs
-     `(("check" ,check-0.14)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml)
-       ("libxml2" ,libxml2)             ; for xmllint
-       ("libxslt" ,libxslt)
-       ("pkg-config" ,pkg-config)
-       ("util-linux" ,util-linux "lib"))) ;for uuid.h, reqired for KCM
+     (list autoconf-2.69
+           check-0.14
+           docbook-xsl
+           docbook-xml
+           libxml2 ; for xmllint
+           libxslt
+           pkg-config
+           `(,util-linux "lib"))) ;for uuid.h, reqired for KCM
     (home-page "https://pagure.io/SSSD/sssd/")
     (synopsis "System security services daemon")
     (description "SSSD is a system daemon.  Its primary function is to provide

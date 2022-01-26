@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,7 +61,7 @@
 (define-public php
   (package
     (name "php")
-    (version "7.4.22")
+    (version "7.4.26")
     (home-page "https://secure.php.net/")
     (source (origin
               (method url-fetch)
@@ -68,7 +69,10 @@
                                   "php-" version ".tar.xz"))
               (sha256
                (base32
-                "1s5xjy1cchlg0vfxic73wy2wip8spfjr094hzzyc76plsbbqq1wf"))
+                "1y0f1xgfi8cks6npdhrycg8r9g3q0pikqgf5h4xafpy8znmb61g3"))
+              (patches
+               (search-patches "php-bug-74093-test.patch"
+                               "php-openssl_x509_checkpurpose_basic.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -81,8 +85,7 @@
                             ;;"fileinfo/libmagic" ; a patched version of libmagic
                             '("gd/libgd"
                               "pcre/pcre2lib"
-                              "xmlrpc/libxmlrpc"))
-                  #t))))
+                              "xmlrpc/libxmlrpc"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -93,7 +96,7 @@
          (list (with "--with-bz2" "bzip2")
                (with "--with-curl" "curl")
                (with "--with-gdbm" "gdbm")
-               (with "--with-gettext" "glibc") ; libintl.h
+               (with "--with-gettext" "libc")  ; libintl.h
                (with "--with-gmp" "gmp")
                (with "--with-ldap" "openldap")
                (with "--with-ldap-sasl" "cyrus-sasl")
@@ -195,6 +198,20 @@
                                 "sapi/cli/tests/cli_process_title_unix.phpt"
                                 "sapi/cli/tests/upload_2G.phpt"
                                 "Zend/tests/concat_003.phpt")))
+                   '())
+
+             ,@(if (target-ppc64le?)
+                   ;; Drop tests known to fail on powerpc64le.
+                   '((for-each delete-file
+                               (list
+                                ;; phpdbg watchpoints don't work.
+                                ;; Bug tracked upstream at:
+                                ;; https://bugs.php.net/bug.php?id=81408
+                                "sapi/phpdbg/tests/watch_001.phpt"
+                                "sapi/phpdbg/tests/watch_003.phpt"
+                                "sapi/phpdbg/tests/watch_004.phpt"
+                                "sapi/phpdbg/tests/watch_005.phpt"
+                                "sapi/phpdbg/tests/watch_006.phpt")))
                    '())
 
              ;; Drop tests that are known to fail.
@@ -326,7 +343,9 @@
                          ;; Expects an empty Array; gets one with " " in it.
                          "ext/pcre/tests/bug80118.phpt"
                          ;; Renicing a process fails in the build environment.
-                         "ext/standard/tests/general_functions/proc_nice_basic.phpt"))
+                         "ext/standard/tests/general_functions/proc_nice_basic.phpt"
+                         ;; Can fail on fast machines?
+                         "Zend/tests/bug74093.phpt"))
 
              ;; Accomodate two extra openssl errors flanking the expected one:
              ;; random number generator:RAND_{load,write}_file:Cannot open file
@@ -351,7 +370,6 @@
        ("cyrus-sasl" ,cyrus-sasl)
        ("gd" ,gd)
        ("gdbm" ,gdbm)
-       ("glibc" ,glibc)
        ("gmp" ,gmp)
        ("gnutls" ,gnutls)
        ("icu4c" ,icu4c)

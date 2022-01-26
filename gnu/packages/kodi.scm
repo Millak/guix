@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -256,10 +257,8 @@ generator library for C++.")
     (arguments
      '(#:configure-flags '("SH=sh")))
     (native-inputs
-     `(("ghostscript" ,ghostscript) ; ps2pdf
-       ("groff" ,groff)
-       ("libtool" ,libtool)
-       ("which" ,which)))
+     (list ghostscript ; ps2pdf
+           groff libtool which))
     (synopsis "fuzzy comparison of strings")
     (description
      "The fstrcmp project provides a library that is used to make fuzzy
@@ -348,8 +347,7 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
 
              (substitute* "xbmc/platform/linux/LinuxTimezone.cpp"
                (("/usr/share/zoneinfo")
-                (string-append (assoc-ref inputs "tzdata")
-                               "/share/zoneinfo")))
+                (search-input-directory inputs "share/zoneinfo")))
 
              ;; Don't phone home to check for updates.
              (substitute* "system/addon-manifest.xml"
@@ -404,7 +402,7 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
        ("ffmpeg" ,ffmpeg)
        ("flac" ,flac)
        ("flatbuffers" ,flatbuffers)
-       ("fmt" ,fmt)
+       ("fmt" ,fmt-7)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("fribidi" ,fribidi)
@@ -499,9 +497,7 @@ plug-in system.")
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system trivial-build-system)
       (inputs
-       `(("bash"        ,bash)
-         ("curl"        ,curl)
-         ("mps-youtube" ,mps-youtube)))
+       (list bash curl mps-youtube))
       (arguments
        `(#:modules ((guix build utils))
          #:builder
@@ -509,8 +505,8 @@ plug-in system.")
            (use-modules (guix build utils))
            (copy-recursively (assoc-ref %build-inputs "source") ".")
            (substitute* "kodi-cli"
-             (("/bin/bash") (string-append (assoc-ref %build-inputs "bash")
-                                           "/bin/bash"))
+             (("/bin/bash")
+              (search-input-file %build-inputs "/bin/bash"))
              (("output=\\$\\((curl)" all curl)
               (string-append "output=$("
                              (assoc-ref %build-inputs "curl")

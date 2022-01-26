@@ -23,11 +23,14 @@
 (define-module (gnu packages clojure)
   #:use-module (gnu packages)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages maven)
+  #:use-module (gnu packages readline)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system clojure)
   #:use-module (ice-9 match))
 
@@ -118,23 +121,7 @@
            (add-after 'install-license-files 'install-doc
              (cut install-doc #:doc-dirs '("doc/clojure/") <...>))
            (add-after 'install-doc 'install-javadoc
-             (install-javadoc "target/javadoc/"))
-           (add-after 'install 'make-wrapper
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (wrapper (string-append out "/bin/clojure")))
-                 (mkdir-p (string-append out "/bin"))
-                 (with-output-to-file wrapper
-                   (lambda _
-                     (display
-                      (string-append
-                       "#!"
-                       (which "sh")
-                       "\n\n"
-                       (assoc-ref inputs "jre") "/bin/java -jar "
-                       out "/share/java/clojure.jar \"$@\"\n"))))
-                 (chmod wrapper #o555))
-               #t)))))
+             (install-javadoc "target/javadoc/")))))
       (native-inputs libraries)
       (home-page "https://clojure.org/")
       (synopsis "Lisp dialect running on the JVM")
@@ -162,6 +149,62 @@ designs.")
                      license:bsd-3
                      license:asl2.0
                      license:cpl1.0)))))
+
+(define-public clojure-tools
+  (package
+    (name "clojure-tools")
+    (version "1.10.3.1040")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.clojure.org/install/clojure-tools-"
+                           version
+                           ".tar.gz"))
+       (sha256 (base32 "0xvr9nmk9q789vp32zmmzj4macv8v7y9ivnfd6lf7i8vxgg6hvgv"))
+       ;; Remove AOT compiled JAR.  The other JAR only contains uncompiled
+       ;; Clojure source code.
+       (snippet
+        `(delete-file ,(string-append "clojure-tools-" version ".jar")))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("deps.edn" "lib/clojure/")
+         ("example-deps.edn" "lib/clojure/")
+         ("exec.jar" "lib/clojure/libexec/")
+         ("clojure" "bin/")
+         ("clj" "bin/"))
+       #:modules ((guix build copy-build-system)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (ice-9 match))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "clojure"
+               (("PREFIX") (string-append (assoc-ref outputs "out") "/lib/clojure")))
+             (substitute* "clj"
+               (("BINDIR") (string-append (assoc-ref outputs "out") "/bin"))
+               (("rlwrap") (which "rlwrap")))))
+         (add-after 'fix-paths 'copy-tools-deps-alpha-jar
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "clojure"
+               (("\\$install_dir/libexec/clojure-tools-\\$version\\.jar")
+                (string-join
+                 (append-map (match-lambda
+                               ((label . dir)
+                                (find-files dir "\\.jar$")))
+                             inputs)
+                 ":"))))))))
+    (inputs (list rlwrap
+                  clojure
+                  clojure-tools-deps-alpha
+                  java-commons-logging-minimal))
+    (home-page "https://clojure.org/releases/tools")
+    (synopsis "CLI tools for the Clojure programming language")
+    (description "The Clojure command line tools can be used to start a
+Clojure repl, use Clojure and Java libraries, and start Clojure programs.")
+    (license license:epl1.0)))
 
 (define-public clojure-algo-generic
   (package
@@ -207,7 +250,7 @@ that can be implemented for any data type.")
        #:test-dirs '("src/test/clojure/")
        #:doc-dirs '()))
     (native-inputs
-     `(("clojure-tools-macro" ,clojure-tools-macro)))
+     (list clojure-tools-macro))
     (synopsis
      "Monad Macros and Definitions")
     (description
@@ -242,6 +285,66 @@ defining and using monads and useful monadic functions.")
 It supports Clojure 1.5.1 and later as well as ClojureScript.")
       (home-page "https://github.com/clojure/core.match")
       (license license:epl1.0))))
+
+(define-public clojure-data-codec
+  (package
+    (name "clojure-data-codec")
+    (version "0.1.1")
+    (home-page "https://github.com/clojure/data.codec")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "data.codec-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "192df1dmbwvf1x837mi731n9x94bdypaz18va45plzgdsh4xx6dr"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (native-inputs (list java-commons-codec
+                         clojure-test-check))
+    (synopsis "Native codec implementations for Clojure")
+    (description "Native codec implementations for Clojure.  Currently only
+base64 has been implemented.  Implements the standard base64 encoding
+character set, but does not yet support automatic fixed line-length encoding.
+All operations work on either byte arrays or Input/OutputStreams.  Performance
+is on par with Java implementations, e.g., Apache commons-codec.")
+    (license license:epl1.0)))
+
+(define-public clojure-data-xml
+  (package
+    (name "clojure-data-xml")
+    (version "0.2.0-alpha6")
+    (home-page "https://github.com/clojure/data.xml")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "data.xml-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08vglcapq7sd9zhw8dw1y7dcdks7f21w1pw9p05i475i3bw4cf94"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (propagated-inputs (list clojure-data-codec))
+    (synopsis "Clojure library for reading and writing XML data")
+    (description "@code{data.xml} is a Clojure library for reading and writing
+XML data. @code{data.xml} has the following features:
+
+Parses XML documents into Clojure data structures
+Emits XML from Clojure data structures
+No additional dependencies if using JDK >= 1.6
+Uses StAX internally
+lazy - should allow parsing and emitting of large XML documents")
+    (license license:epl1.0)))
 
 (define-public clojure-instaparse
   (let ((commit "dcfffad5b065e750f0f5835f017cdd8188b8ca2e")
@@ -295,6 +398,33 @@ tree.
       (home-page "https://github.com/Engelberg/instaparse")
       (license license:epl1.0))))
 
+(define-public clojure-test-check
+  (package
+    (name "clojure-test-check")
+    (version "1.1.1")
+    (home-page "https://github.com/clojure/test.check")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09jvlibnxhjv0l57y0sa7yy5in67gq4sssag77hv2d980mwdnls6"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()))
+    (synopsis "QuickCheck for Clojure")
+    (description "@code{test.check} is a Clojure property-based testing tool
+inspired by QuickCheck.  The core idea of @code{test.check} is that instead of
+enumerating expected input and output for unit tests, you write properties
+about your function that should hold true for all inputs.  This lets you write
+concise, powerful tests.")
+    (license license:epl1.0)))
+
 (define-public clojure-tools-macro
   (package
     (name "clojure-tools-macro")
@@ -340,4 +470,94 @@ tree.
     (description
      "The @code{tools.cli} library provides Clojure programmers with tools to
 work with command-line arguments.")
+    (license license:epl1.0)))
+
+(define-public clojure-tools-deps-alpha
+  (package
+    (name "clojure-tools-deps-alpha")
+    (version "0.12.1104")
+    (home-page "https://github.com/clojure/tools.deps.alpha")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "174m83n5m3arai2vbg434zjibbsr3r4pp7lz3adja8lxq7g21r80"))))
+    (build-system clojure-build-system)
+    (arguments
+     `(#:source-dirs '("src/main/clojure" "src/main/resources")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()
+       ;; FIXME: Could not initialize class org.eclipse.aether.transport.http.SslSocketFactory
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         ;; FIXME: Currently, the S3 transporter depends on ClojureScript,
+         ;; which is very difficult to package due to dependencies on Java
+         ;; libraries with non-standard build systems. Instead of actually
+         ;; packaging these libraries, we just remove the S3 transporter that
+         ;; depends on them.
+         (add-after 'unpack 'remove-s3-transporter
+           (lambda _
+             (for-each delete-file
+                       (list
+                        (string-append
+                         "src/main/clojure/clojure/"
+                         "tools/deps/alpha/util/s3_aws_client.clj")
+                        (string-append
+                         "src/main/clojure/clojure/"
+                         "tools/deps/alpha/util/s3_transporter.clj")
+                        (string-append
+                         "src/test/clojure/clojure/"
+                         "tools/deps/alpha/util/test_s3_transporter.clj")))
+             (substitute*
+                 "src/main/clojure/clojure/tools/deps/alpha/util/maven.clj"
+               (("clojure.tools.deps.alpha.util.s3-transporter")
+                "")))))))
+    (propagated-inputs (list maven-resolver-api
+                             maven-resolver-spi
+                             maven-resolver-impl
+                             maven-resolver-util
+                             maven-resolver-connector-basic
+                             maven-resolver-provider
+                             maven-core
+                             maven-resolver-transport-http
+                             maven-resolver-transport-file
+                             clojure-tools-gitlibs
+                             clojure-tools-cli
+                             clojure-data-xml))
+    (synopsis "Clojure library supporting clojure-tools")
+    (description "This package provides a functional API for transitive
+dependency graph expansion and the creation of classpaths.")
+    (license license:epl1.0)))
+
+(define-public clojure-tools-gitlibs
+  (package
+    (name "clojure-tools-gitlibs")
+    (version "2.4.172")
+    (home-page "https://github.com/clojure/tools.gitlibs")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19d83wigmigy66f5i61a3ishg7zrlv8jngj8m9brsh9v38a0fwdr"))))
+    (build-system clojure-build-system)
+    (arguments
+     '(#:source-dirs '("src/main/clojure")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()
+       ;; Tests attempt to clone git repositories from the internet.
+       #:tests? #f))
+    (synopsis "Retrieve, cache, and programmatically access git libraries")
+    (description "To access git dependencies (for example, via
+@code{tools.deps}), one must download git directories and working trees as
+indicated by git SHAs.  This library provides this functionality and also
+keeps a cache of git directories and working trees that can be reused.")
     (license license:epl1.0)))

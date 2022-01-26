@@ -22,7 +22,7 @@
 @set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
-Copyright @copyright{} 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès@*
+Copyright @copyright{} 2012-2022 Ludovic Courtès@*
 Copyright @copyright{} 2013, 2014, 2016 Andreas Enge@*
 Copyright @copyright{} 2013 Nikita Karetnikov@*
 Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
@@ -30,10 +30,10 @@ Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
 Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021 Leo Famulari@*
-Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus@*
+Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
-Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner@*
+Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
 Copyright @copyright{} 2016 John Darrington@*
 Copyright @copyright{} 2016, 2017 Nikita Gillmann@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020 Jan Nieuwenhuizen@*
@@ -50,7 +50,7 @@ Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020 Hartmut Goebel@*
 Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
-Copyright @copyright{} 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice@*
+Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
 Copyright @copyright{} 2017, 2018, 2019, 2020 Arun Isaac@*
@@ -69,9 +69,9 @@ Copyright @copyright{} 2019 Ivan Petkov@*
 Copyright @copyright{} 2019 Jakob L. Kreuze@*
 Copyright @copyright{} 2019 Kyle Andrews@*
 Copyright @copyright{} 2019 Alex Griffin@*
-Copyright @copyright{} 2019, 2020, 2021 Guillaume Le Vaillant@*
+Copyright @copyright{} 2019, 2020, 2021, 2022 Guillaume Le Vaillant@*
 Copyright @copyright{} 2020 Liliana Marie Prikler@*
-Copyright @copyright{} 2019, 2020 Simon Tournier@*
+Copyright @copyright{} 2019, 2020, 2021, 2022 Simon Tournier@*
 Copyright @copyright{} 2020 Wiktor Żelazny@*
 Copyright @copyright{} 2020 Damien Cassou@*
 Copyright @copyright{} 2020 Jakub Kądziołka@*
@@ -79,7 +79,7 @@ Copyright @copyright{} 2020 Jack Hill@*
 Copyright @copyright{} 2020 Naga Malleswari@*
 Copyright @copyright{} 2020, 2021 Brice Waegeneire@*
 Copyright @copyright{} 2020 R Veera Kumar@*
-Copyright @copyright{} 2020 Pierre Langlois@*
+Copyright @copyright{} 2020, 2021 Pierre Langlois@*
 Copyright @copyright{} 2020 pinoaffe@*
 Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020, 2021 Alexandru-Sergiu Marton@*
@@ -96,7 +96,10 @@ Copyright @copyright{} 2021 Domagoj Stolfa@*
 Copyright @copyright{} 2021 Hui Lu@*
 Copyright @copyright{} 2021 pukkamustard@*
 Copyright @copyright{} 2021 Alice Brenon@*
+Copyright @copyright{} 2021 Josselin Poiret@*
 Copyright @copyright{} 2021 Andrew Tropin@*
+Copyright @copyright{} 2021 Sarah Morgensen@*
+Copyright @copyright{} 2021 Josselin Poiret@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -118,6 +121,7 @@ Documentation License''.
 
 @dircategory Software development
 @direntry
+* guix shell: (guix)Invoking guix shell.      Creating software environments.
 * guix environment: (guix)Invoking guix environment.  Building development environments with Guix.
 * guix build: (guix)Invoking guix build.      Building packages.
 * guix pack: (guix)Invoking guix pack.        Creating binary bundles.
@@ -261,6 +265,7 @@ Channels
 
 Development
 
+* Invoking guix shell::         Spawning one-off software environments.
 * Invoking guix environment::   Setting up development environments.
 * Invoking guix pack::          Creating software bundles.
 * The GCC toolchain::           Working with languages supported by GCC.
@@ -274,6 +279,7 @@ Programming Interface
 * Build Systems::               Specifying how packages are built.
 * Build Phases::                Phases of the build process of a package.
 * Build Utilities::             Helpers for your package definitions and more.
+* Search Paths::                Declaring search path environment variables.
 * The Store::                   Manipulating the package store.
 * Derivations::                 Low-level interface to package derivations.
 * The Store Monad::             Purely functional interface to the store.
@@ -293,6 +299,7 @@ Utilities
 * Invoking guix hash::          Computing the cryptographic hash of a file.
 * Invoking guix import::        Importing package definitions.
 * Invoking guix refresh::       Updating package definitions.
+* Invoking guix style::         Styling package definitions.
 * Invoking guix lint::          Finding errors in package definitions.
 * Invoking guix size::          Profiling disk usage.
 * Invoking guix graph::         Visualizing the graph of packages.
@@ -316,6 +323,7 @@ System Configuration
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
 * Mapped Devices::              Block device extra processing.
+* Swap Space::                  Backing RAM with disk space.
 * User Accounts::               Specifying user accounts.
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
@@ -339,7 +347,8 @@ Services
 * Base Services::               Essential system services.
 * Scheduled Job Execution::     The mcron service.
 * Log Rotation::                The rottlog service.
-* Networking Services::         Network setup, SSH daemon, etc.
+* Networking Setup::            Setting up network interfaces.
+* Networking Services::         Firewall, SSH daemon, etc.
 * Unattended Upgrades::         Automated system upgrades.
 * X Window::                    Graphical display.
 * Printing Services::           Local and remote printer support.
@@ -375,6 +384,7 @@ Defining Services
 * Service Types and Services::  Types and services.
 * Service Reference::           API reference.
 * Shepherd Services::           A particular type of service.
+* Complex Configurations::      Defining bindings for complex configurations.
 
 Installing Debugging Files
 
@@ -531,12 +541,18 @@ way for you to give it a try is by setting up an instance of
 (@pxref{transparent-emulation-qemu, @code{hurd-vm-service-type}}).
 @xref{Contributing}, on how to help!
 
-@item mips64el-linux (deprecated)
+@item mips64el-linux (unsupported)
 little-endian 64-bit MIPS processors, specifically the Loongson series,
 n32 ABI, and Linux-Libre kernel.  This configuration is no longer fully
 supported; in particular, there is no ongoing work to ensure that this
 architecture still works.  Should someone decide they wish to revive this
 architecture then the code is still available.
+
+@item powerpc-linux (unsupported)
+big-endian 32-bit PowerPC processors, specifically the PowerPC G4 with
+AltiVec support, and Linux-Libre kernel.  This configuration is not
+fully supported and there is no ongoing work to ensure this architecture
+works.
 
 @item powerpc64le-linux
 little-endian 64-bit Power ISA processors, Linux-Libre kernel.  This
@@ -549,6 +565,15 @@ build (@pxref{Tracking Bugs and Patches}).  That said, the Guix
 community is actively working on improving this support, and now is a
 great time to try it and get involved!
 
+@item riscv64-linux
+little-endian 64-bit RISC-V processors, specifically RV64GC, and
+Linux-Libre kernel. This playform is available as a "technology preview":
+although it is supported, substitutes are not yet available from the
+build farm (@pxref{Substitutes}), and some packages may fail to build
+(@pxref{Tracking Bugs and Patches}).  That said, the Guix community is
+actively working on improving this support, and now is a great time to
+try it and get involved!
+
 @end table
 
 With Guix@tie{}System, you @emph{declare} all aspects of the operating system
@@ -560,7 +585,8 @@ Manual}), the well-known GNU utilities and tool chain, as well as the
 graphical environment or system services of your choice.
 
 Guix System is available on all the above platforms except
-@code{mips64el-linux} and @code{powerpc64le-linux}.
+@code{mips64el-linux}, @code{powerpc-linux}, @code{powerpc64le-linux} and
+@code{riscv64-linux}.
 
 @noindent
 For information on porting to other architectures or kernels,
@@ -868,7 +894,8 @@ GNU Guix is available for download from its website at
 GNU Guix depends on the following packages:
 
 @itemize
-@item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x;
+@item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,
+version 3.0.3 or later;
 @item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
 0.1.0 or later;
 @item
@@ -1153,6 +1180,11 @@ user @file{nobody};
 a writable @file{/tmp} directory.
 @end itemize
 
+The chroot does not contain a @file{/home} directory, and the @env{HOME}
+environment variable is set to the non-existent
+@file{/homeless-shelter}.  This helps to highlight inappropriate uses of
+@env{HOME} in the build scripts of packages.
+
 You can influence the directory where the daemon stores build trees
 @i{via} the @env{TMPDIR} environment variable.  However, the build tree
 within the chroot is always called @file{/tmp/guix-build-@var{name}.drv-0},
@@ -1235,9 +1267,10 @@ The @file{/etc/guix/machines.scm} file typically looks like this:
         (systems (list "aarch64-linux"))
         (host-key "ssh-rsa AAAAB3Nza@dots{}")
         (user "alice")
-        (private-key
-         (string-append (getenv "HOME")
-                        "/.ssh/identity-for-guix"))))
+
+        ;; Remember 'guix offload' is spawned by
+        ;; 'guix-daemon' as root.
+        (private-key "/root/.ssh/identity-for-guix")))
 @end lisp
 
 @noindent
@@ -1674,7 +1707,7 @@ Compress build logs according to @var{type}, one of @code{gzip},
 
 Unless @option{--lose-logs} is used, all the build logs are kept in the
 @var{localstatedir}.  To save space, the daemon automatically compresses
-them with Bzip2 by default.
+them with gzip by default.
 
 @item --discover[=yes|no]
 Whether to discover substitute servers on the local network using mDNS
@@ -1912,12 +1945,12 @@ themselves.
 @subsection X11 Fonts
 
 @cindex fonts
-The majority of graphical applications use Fontconfig to locate and
-load fonts and perform X11-client-side rendering.  The @code{fontconfig}
-package in Guix looks for fonts in @file{$HOME/.guix-profile}
-by default.  Thus, to allow graphical applications installed with Guix
-to display fonts, you have to install fonts with Guix as well.
-Essential font packages include @code{gs-fonts}, @code{font-dejavu}, and
+The majority of graphical applications use Fontconfig to locate and load
+fonts and perform X11-client-side rendering.  The @code{fontconfig}
+package in Guix looks for fonts in @file{$HOME/.guix-profile} by
+default.  Thus, to allow graphical applications installed with Guix to
+display fonts, you have to install fonts with Guix as well.  Essential
+font packages include @code{font-ghostscript}, @code{font-dejavu}, and
 @code{font-gnu-freefont}.
 
 @cindex @code{fc-cache}
@@ -2489,13 +2522,24 @@ mkfs.ext4 -L my-root /dev/sda2
 If you are instead planning to encrypt the root partition, you can use
 the Cryptsetup/LUKS utilities to do that (see @inlinefmtifelse{html,
 @uref{https://linux.die.net/man/8/cryptsetup, @code{man cryptsetup}},
-@code{man cryptsetup}} for more information).  Assuming you want to
-store the root partition on @file{/dev/sda2}, the command sequence would
-be along these lines:
+@code{man cryptsetup}} for more information).
+
+@quotation Warning
+Note that GRUB can unlock LUKS2 devices since version 2.06, but only
+supports the PBKDF2 key derivation function, which is not the default
+for @command{cryptsetup luksFormat}.  You can check which key derivation
+function is being used by a device by running @command{cryptsetup
+luksDump @var{device}}, and looking for the PBKDF field of your
+keyslots.
+@end quotation
+
+Assuming you want to store the root partition on @file{/dev/sda2}, the
+command sequence to format it as a LUKS2 partition would be along these
+lines:
 
 @example
-cryptsetup luksFormat /dev/sda2
-cryptsetup open --type luks /dev/sda2 my-partition
+cryptsetup luksFormat --type luks2 --pbkdf pbkdf2 /dev/sda2
+cryptsetup open /dev/sda2 my-partition
 mkfs.ext4 -L my-root /dev/mapper/my-partition
 @end example
 
@@ -2512,10 +2556,9 @@ system relative to this path.  If you have opted for @file{/boot/efi} as an
 EFI mount point for example, mount it at @file{/mnt/boot/efi} now so it is
 found by @code{guix system init} afterwards.
 
-Finally, if you plan to use one or more swap partitions (@pxref{Memory
-Concepts, swap space,, libc, The GNU C Library Reference Manual}), make
-sure to initialize them with @command{mkswap}.  Assuming you have one
-swap partition on @file{/dev/sda3}, you would run:
+Finally, if you plan to use one or more swap partitions (@pxref{Swap
+Space}), make sure to initialize them with @command{mkswap}.  Assuming
+you have one swap partition on @file{/dev/sda3}, you would run:
 
 @example
 mkswap /dev/sda3
@@ -2806,8 +2849,8 @@ you should add them to @file{~/.bash_profile} (or equivalent file if you
 do not use Bash) so that environment variables are set next time you
 spawn a shell.  You only need to do this once and other search paths
 environment variables will be taken care of similarly---e.g., if you
-eventually install @code{python} and Python libraries, @code{PYTHONPATH}
-will be defined.
+eventually install @code{python} and Python libraries,
+@env{GUIX_PYTHONPATH} will be defined.
 
 You can go on installing packages at your will.  To list installed
 packages, run:
@@ -3066,10 +3109,10 @@ substitutes: they can force a local build and @emph{challenge} providers
 (@pxref{Invoking guix challenge}).
 
 Control over the build environment is a feature that is also useful for
-developers.  The @command{guix environment} command allows developers of
+developers.  The @command{guix shell} command allows developers of
 a package to quickly set up the right development environment for their
 package, without having to manually install the dependencies of the
-package into their profile (@pxref{Invoking guix environment}).
+package into their profile (@pxref{Invoking guix shell}).
 
 @cindex replication, of software environments
 @cindex provenance tracking, of software artifacts
@@ -3233,7 +3276,7 @@ As an example, @var{file} might contain a definition like this
 Developers may find it useful to include such a @file{guix.scm} file
 in the root of their project source tree that can be used to test
 development snapshots and create reproducible development environments
-(@pxref{Invoking guix environment}).
+(@pxref{Invoking guix shell}).
 
 The @var{file} may also contain a JSON representation of one or more
 package definitions.  Running @code{guix package -f} on
@@ -3340,6 +3383,17 @@ objects, like this:
  '("emacs" "guile@@2.2" "guile@@2.2:debug"))
 @end lisp
 
+@findex package->development-manifest
+You might also want to create a manifest for all the dependencies of a
+package, rather than the package itself:
+
+@lisp
+(package->development-manifest (specification->package "emacs"))
+@end lisp
+
+The example above gives you all the software required to develop Emacs,
+similar to what @command{guix environment emacs} provides.
+
 @xref{export-manifest, @option{--export-manifest}}, to learn how to
 obtain a manifest file from an existing profile.
 
@@ -3390,7 +3444,8 @@ libraries in the user's profile (@pxref{Environment Variables,,, gcc,
 Using the GNU Compiler Collection (GCC)}).  If GCC and, say, the C
 library are installed in the profile, then @option{--search-paths} will
 suggest setting these variables to @file{@var{profile}/include} and
-@file{@var{profile}/lib}, respectively.
+@file{@var{profile}/lib}, respectively (@pxref{Search Paths}, for info
+on search path specifications associated with packages.)
 
 The typical use case is to define these environment variables in the
 shell:
@@ -3551,23 +3606,25 @@ Show details about @var{package}, taken from the list of available packages, in
 recutils manual}).
 
 @example
-$ guix package --show=python | recsel -p name,version
-name: python
-version: 2.7.6
+$ guix package --show=guile | recsel -p name,version
+name: guile
+version: 3.0.5
 
-name: python
-version: 3.3.5
+name: guile
+version: 3.0.2
+
+name: guile
+version: 2.2.7
+@dots{}
 @end example
 
 You may also specify the full name of a package to only get details about a
 specific version of it (this time using the @command{guix show} alias):
 @example
-$ guix show python@@3.4 | recsel -p name,version
-name: python
-version: 3.4.3
+$ guix show guile@@3.0.5 | recsel -p name,version
+name: guile
+version: 3.0.5
 @end example
-
-
 
 @item --list-installed[=@var{regexp}]
 @itemx -I [@var{regexp}]
@@ -5547,31 +5604,402 @@ If you are a software developer, Guix provides tools that you should find
 helpful---independently of the language you're developing in.  This is what
 this chapter is about.
 
-The @command{guix environment} command provides a convenient way to set up
-@dfn{development environments} containing all the dependencies and tools
-necessary to work on the software package of your choice.  The @command{guix
+The @command{guix shell} command provides a convenient way to set up
+one-off software environments, be it for development purposes or to run
+a command without installing it in your profile.  The @command{guix
 pack} command allows you to create @dfn{application bundles} that can be
 easily distributed to users who do not run Guix.
 
 @menu
+* Invoking guix shell::         Spawning one-off software environments.
 * Invoking guix environment::   Setting up development environments.
 * Invoking guix pack::          Creating software bundles.
 * The GCC toolchain::           Working with languages supported by GCC.
 * Invoking guix git authenticate:: Authenticating Git repositories.
 @end menu
 
-@node Invoking guix environment
-@section Invoking @command{guix environment}
+@node Invoking guix shell
+@section Invoking @command{guix shell}
 
 @cindex reproducible build environments
 @cindex development environments
 @cindex @command{guix environment}
 @cindex environment, package build environment
-The purpose of @command{guix environment} is to assist hackers in
-creating reproducible development environments without polluting their
-package profile.  The @command{guix environment} tool takes one or more
-packages, builds all of their inputs, and creates a shell
-environment to use them.
+The purpose of @command{guix shell} is to make it easy to create one-off
+software environments, without changing one's profile.  It is typically
+used to create development environments; it is also a convenient way to
+run applications without ``polluting'' your profile.
+
+@quotation Note
+The @command{guix shell} command was recently introduced to supersede
+@command{guix environment} (@pxref{Invoking guix environment}).  If you
+are familiar with @command{guix environment}, you will notice that it is
+similar but also---we hope!---more convenient.
+@end quotation
+
+The general syntax is:
+
+@example
+guix shell [@var{options}] [@var{package}@dots{}]
+@end example
+
+The following example creates an environment containing Python and NumPy,
+building or downloading any missing package, and runs the
+@command{python3} command in that environment:
+
+@example
+guix shell python python-numpy -- python3
+@end example
+
+Development environments can be created as in the example below, which
+spawns an interactive shell containing all the dependencies and
+environment variables needed to work on Inkscape:
+
+@example
+guix shell --development inkscape
+@end example
+
+Exiting the shell places the user back in the original environment
+before @command{guix shell} was invoked.  The next garbage collection
+(@pxref{Invoking guix gc}) may clean up packages that were installed in
+the environment and that are no longer used outside of it.
+
+As an added convenience, when running from a directory that contains a
+@file{manifest.scm} or a @file{guix.scm} file (in this order), possibly
+in a parent directory, @command{guix shell} automatically loads the
+file---provided the directory is listed in
+@file{~/.config/guix/shell-authorized-directories}, and only for
+interactive use:
+
+@example
+guix shell
+@end example
+
+This provides an easy way to define, share, and enter development
+environments.
+
+By default, the shell session or command runs in an @emph{augmented}
+environment, where the new packages are added to search path environment
+variables such as @code{PATH}.  You can, instead, choose to create an
+@emph{isolated} environment containing nothing but the packages you
+asked for.  Passing the @option{--pure} option clears environment
+variable definitions found in the parent environment@footnote{Be sure to
+use the @option{--check} option the first time you use @command{guix
+shell} interactively to make sure the shell does not undo the effect of
+@option{--pure}.}; passing @option{--container} goes one step further by
+spawning a @dfn{container} isolated from the rest of the system:
+
+@example
+guix shell --container emacs gcc-toolchain
+@end example
+
+The command above spawns an interactive shell in a container where
+nothing but @code{emacs}, @code{gcc-toolchain}, and their dependencies
+is available.  The container lacks network access and shares no files
+other than the current working directory with the surrounding
+environment.  This is useful to prevent access to system-wide resources
+such as @file{/usr/bin} on foreign distros.
+
+This @option{--container} option can also prove useful if you wish to
+run a security-sensitive application, such as a web browser, in an
+isolated environment.  For example, the command below launches
+Ungoogled-Chromium in an isolated environment, this time sharing network
+access with the host and preserving its @code{DISPLAY} environment
+variable, but without even sharing the current directory:
+
+@example
+guix shell --container --network --no-cwd ungoogled-chromium \
+  --preserve='^DISPLAY$' -- chromium
+@end example
+
+@vindex GUIX_ENVIRONMENT
+@command{guix shell} defines the @env{GUIX_ENVIRONMENT}
+variable in the shell it spawns; its value is the file name of the
+profile of this environment.  This allows users to, say, define a
+specific prompt for development environments in their @file{.bashrc}
+(@pxref{Bash Startup Files,,, bash, The GNU Bash Reference Manual}):
+
+@example
+if [ -n "$GUIX_ENVIRONMENT" ]
+then
+    export PS1="\u@@\h \w [dev]\$ "
+fi
+@end example
+
+@noindent
+...@: or to browse the profile:
+
+@example
+$ ls "$GUIX_ENVIRONMENT/bin"
+@end example
+
+The available options are summarized below.
+
+@table @code
+@item --check
+Set up the environment and check whether the shell would clobber
+environment variables.  It's a good idea to use this option the first
+time you run @command{guix shell} for an interactive session to make
+sure your setup is correct.
+
+For example, if the shell modifies the @env{PATH} environment variable,
+report it since you would get a different environment than what you
+asked for.
+
+Such problems usually indicate that the shell startup files are
+unexpectedly modifying those environment variables.  For example, if you
+are using Bash, make sure that environment variables are set or modified
+in @file{~/.bash_profile} and @emph{not} in @file{~/.bashrc}---the
+former is sourced only by log-in shells.  @xref{Bash Startup Files,,,
+bash, The GNU Bash Reference Manual}, for details on Bash start-up
+files.
+
+@item --development
+@itemx -D
+Cause @command{guix shell} to include in the environment the
+dependencies of the following package rather than the package itself.
+This can be combined with other packages.  For instance, the command
+below starts an interactive shell containing the build-time dependencies
+of GNU@tie{}Guile, plus Autoconf, Automake, and Libtool:
+
+@example
+guix shell -D guile autoconf automake libtool
+@end example
+
+@item --expression=@var{expr}
+@itemx -e @var{expr}
+Create an environment for the package or list of packages that
+@var{expr} evaluates to.
+
+For example, running:
+
+@example
+guix shell -D -e '(@@ (gnu packages maths) petsc-openmpi)'
+@end example
+
+starts a shell with the environment for this specific variant of the
+PETSc package.
+
+Running:
+
+@example
+guix shell -e '(@@ (gnu) %base-packages)'
+@end example
+
+starts a shell with all the base system packages available.
+
+The above commands only use the default output of the given packages.
+To select other outputs, two element tuples can be specified:
+
+@example
+guix shell -e '(list (@@ (gnu packages bash) bash) "include")'
+@end example
+
+@item --file=@var{file}
+@itemx -f @var{file}
+Create an environment containing the package or list of packages that
+the code within @var{file} evaluates to.
+
+As an example, @var{file} might contain a definition like this
+(@pxref{Defining Packages}):
+
+@lisp
+@verbatiminclude environment-gdb.scm
+@end lisp
+
+With the file above, you can enter a development environment for GDB by
+running:
+
+@example
+guix shell -D -f gdb-devel.scm
+@end example
+
+@item --manifest=@var{file}
+@itemx -m @var{file}
+Create an environment for the packages contained in the manifest object
+returned by the Scheme code in @var{file}.  This option can be repeated
+several times, in which case the manifests are concatenated.
+
+This is similar to the same-named option in @command{guix package}
+(@pxref{profile-manifest, @option{--manifest}}) and uses the same
+manifest files.
+
+@item --pure
+Unset existing environment variables when building the new environment, except
+those specified with @option{--preserve} (see below).  This has the effect of
+creating an environment in which search paths only contain package inputs.
+
+@item --preserve=@var{regexp}
+@itemx -E @var{regexp}
+When used alongside @option{--pure}, preserve the environment variables
+matching @var{regexp}---in other words, put them on a ``white list'' of
+environment variables that must be preserved.  This option can be repeated
+several times.
+
+@example
+guix shell --pure --preserve=^SLURM openmpi @dots{} \
+  -- mpirun @dots{}
+@end example
+
+This example runs @command{mpirun} in a context where the only environment
+variables defined are @env{PATH}, environment variables whose name starts
+with @samp{SLURM}, as well as the usual ``precious'' variables (@env{HOME},
+@env{USER}, etc.).
+
+@item --search-paths
+Display the environment variable definitions that make up the
+environment.
+
+@item --system=@var{system}
+@itemx -s @var{system}
+Attempt to build for @var{system}---e.g., @code{i686-linux}.
+
+@item --container
+@itemx -C
+@cindex container
+Run @var{command} within an isolated container.  The current working
+directory outside the container is mapped inside the container.
+Additionally, unless overridden with @option{--user}, a dummy home
+directory is created that matches the current user's home directory, and
+@file{/etc/passwd} is configured accordingly.
+
+The spawned process runs as the current user outside the container.  Inside
+the container, it has the same UID and GID as the current user, unless
+@option{--user} is passed (see below).
+
+@item --network
+@itemx -N
+For containers, share the network namespace with the host system.
+Containers created without this flag only have access to the loopback
+device.
+
+@item --link-profile
+@itemx -P
+For containers, link the environment profile to @file{~/.guix-profile}
+within the container and set @code{GUIX_ENVIRONMENT} to that.
+This is equivalent to making @file{~/.guix-profile} a symlink to the
+actual profile within the container.
+Linking will fail and abort the environment if the directory already
+exists, which will certainly be the case if @command{guix shell}
+was invoked in the user's home directory.
+
+Certain packages are configured to look in @file{~/.guix-profile} for
+configuration files and data;@footnote{For example, the
+@code{fontconfig} package inspects @file{~/.guix-profile/share/fonts}
+for additional fonts.}  @option{--link-profile} allows these programs to
+behave as expected within the environment.
+
+@item --user=@var{user}
+@itemx -u @var{user}
+For containers, use the username @var{user} in place of the current
+user.  The generated @file{/etc/passwd} entry within the container will
+contain the name @var{user}, the home directory will be
+@file{/home/@var{user}}, and no user GECOS data will be copied.  Furthermore,
+the UID and GID inside the container are 1000.  @var{user}
+need not exist on the system.
+
+Additionally, any shared or exposed path (see @option{--share} and
+@option{--expose} respectively) whose target is within the current user's
+home directory will be remapped relative to @file{/home/USER}; this
+includes the automatic mapping of the current working directory.
+
+@example
+# will expose paths as /home/foo/wd, /home/foo/test, and /home/foo/target
+cd $HOME/wd
+guix shell --container --user=foo \
+     --expose=$HOME/test \
+     --expose=/tmp/target=$HOME/target
+@end example
+
+While this will limit the leaking of user identity through home paths
+and each of the user fields, this is only one useful component of a
+broader privacy/anonymity solution---not one in and of itself.
+
+@item --no-cwd
+For containers, the default behavior is to share the current working
+directory with the isolated container and immediately change to that
+directory within the container.  If this is undesirable,
+@option{--no-cwd} will cause the current working directory to @emph{not}
+be automatically shared and will change to the user's home directory
+within the container instead.  See also @option{--user}.
+
+@item --expose=@var{source}[=@var{target}]
+@itemx --share=@var{source}[=@var{target}]
+For containers, @option{--expose} (resp. @option{--share}) exposes the
+file system @var{source} from the host system as the read-only
+(resp. writable) file system @var{target} within the container.  If
+@var{target} is not specified, @var{source} is used as the target mount
+point in the container.
+
+The example below spawns a Guile REPL in a container in which the user's
+home directory is accessible read-only via the @file{/exchange}
+directory:
+
+@example
+guix shell --container --expose=$HOME=/exchange guile -- guile
+@end example
+
+@item --rebuild-cache
+@cindex caching, of profiles
+@cindex caching, in @command{guix shell}
+In most cases, @command{guix shell} caches the environment so that
+subsequent uses are instantaneous.  Least-recently used cache entries
+are periodically removed.  The cache is also invalidated, when using
+@option{--file} or @option{--manifest}, anytime the corresponding file
+is modified.
+
+The @option{--rebuild-cache} forces the cached environment to be
+refreshed.  This is useful when using @option{--file} or
+@option{--manifest} and the @command{guix.scm} or @command{manifest.scm}
+file has external dependencies, or if its behavior depends, say, on
+environment variables.
+
+@item --root=@var{file}
+@itemx -r @var{file}
+@cindex persistent environment
+@cindex garbage collector root, for environments
+Make @var{file} a symlink to the profile for this environment, and
+register it as a garbage collector root.
+
+This is useful if you want to protect your environment from garbage
+collection, to make it ``persistent''.
+
+When this option is omitted, @command{guix shell} caches profiles so
+that subsequent uses of the same environment are instantaneous---this is
+comparable to using @option{--root} except that @command{guix shell}
+takes care of periodically removing the least-recently used garbage
+collector roots.
+
+In some cases, @command{guix shell} does not cache profiles---e.g., if
+transformation options such as @option{--with-latest} are used.  In
+those cases, the environment is protected from garbage collection only
+for the duration of the @command{guix shell} session.  This means that
+next time you recreate the same environment, you could have to rebuild
+or re-download packages.
+
+@xref{Invoking guix gc}, for more on GC roots.
+@end table
+
+@command{guix shell} also supports all of the common build options that
+@command{guix build} supports (@pxref{Common Build Options}) as well as
+package transformation options (@pxref{Package Transformation Options}).
+
+@node Invoking guix environment
+@section Invoking @command{guix environment}
+
+The purpose of @command{guix environment} is to assist in creating
+development environments.
+
+@quotation Deprecation warning
+The @command{guix environment} command is deprecated in favor of
+@command{guix shell}, which performs similar functions but is more
+convenient to use.  @xref{Invoking guix shell}.
+
+Being deprecated, @command{guix environment} is slated for eventual
+removal, but the Guix project is committed to keeping it until May 1st,
+2023.  Please get in touch with us at @email{guix-devel@@gnu.org} if you
+would like to discuss it.
+@end quotation
 
 The general syntax is:
 
@@ -5648,11 +6076,11 @@ guix environment guile -- make -j4
 
 In other situations, it is more convenient to specify the list of
 packages needed in the environment.  For example, the following command
-runs @command{python} from an environment containing Python@tie{}2.7 and
+runs @command{python} from an environment containing Python@tie{}3 and
 NumPy:
 
 @example
-guix environment --ad-hoc python2-numpy python-2.7 -- python
+guix environment --ad-hoc python-numpy python -- python3
 @end example
 
 Furthermore, one might want the dependencies of a package and also some
@@ -5705,6 +6133,11 @@ guix environment --preserve='^DISPLAY$' --container --network \
 The available options are summarized below.
 
 @table @code
+@item --check
+Set up the environment and check whether the shell would clobber
+environment variables.  @xref{Invoking guix shell, @option{--check}},
+for more info.
+
 @item --root=@var{file}
 @itemx -r @var{file}
 @cindex persistent environment
@@ -6429,6 +6862,7 @@ package definitions.
 * Build Systems::               Specifying how packages are built.
 * Build Phases::                Phases of the build process of a package.
 * Build Utilities::             Helpers for your package definitions and more.
+* Search Paths::                Declaring search path environment variables.
 * The Store::                   Manipulating the package store.
 * Derivations::                 Low-level interface to package derivations.
 * The Store Monad::             Purely functional interface to the store.
@@ -6527,7 +6961,7 @@ package looks like this:
                 "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-silent-rules")))
-    (inputs `(("gawk" ,gawk)))
+    (inputs (list gawk))
     (synopsis "Hello, GNU world: An example GNU package")
     (description "Guess what GNU Hello prints!")
     (home-page "https://www.gnu.org/software/hello/")
@@ -6599,8 +7033,16 @@ The @code{arguments} field specifies options for the build system
 @cindex quoting
 @findex '
 @findex quote
+@cindex backquote (quasiquote)
+@findex `
+@findex quasiquote
+@cindex comma (unquote)
+@findex ,
+@findex unquote
 What about these quote (@code{'}) characters?  They are Scheme syntax to
 introduce a literal list; @code{'} is synonymous with @code{quote}.
+Sometimes you'll also see @code{`} (a backquote, synonymous with
+@code{quasiquote}) and @code{,} (a comma, synonymous with @code{unquote}).
 @xref{Expression Syntax, quoting,, guile, GNU Guile Reference Manual},
 for details.  Here the value of the @code{arguments} field is a list of
 arguments passed to the build system down the road, as with @code{apply}
@@ -6615,23 +7057,9 @@ Reference Manual}).
 
 @item
 The @code{inputs} field specifies inputs to the build process---i.e.,
-build-time or run-time dependencies of the package.  Here, we define an
-input called @code{"gawk"} whose value is that of the @code{gawk}
+build-time or run-time dependencies of the package.  Here, we add
+an input, a reference to the @code{gawk}
 variable; @code{gawk} is itself bound to a @code{<package>} object.
-
-@cindex backquote (quasiquote)
-@findex `
-@findex quasiquote
-@cindex comma (unquote)
-@findex ,
-@findex unquote
-@findex ,@@
-@findex unquote-splicing
-Again, @code{`} (a backquote, synonymous with @code{quasiquote}) allows
-us to introduce a literal list in the @code{inputs} field, while
-@code{,} (a comma, synonymous with @code{unquote}) allows us to insert a
-value in that list (@pxref{Expression Syntax, unquote,, guile, GNU Guile
-Reference Manual}).
 
 Note that GCC, Coreutils, Bash, and other essential tools do not need to
 be specified as inputs here.  Instead, @code{gnu-build-system} takes care
@@ -6741,19 +7169,41 @@ list, typically containing sequential keyword-value pairs.
 @itemx @code{native-inputs} (default: @code{'()})
 @itemx @code{propagated-inputs} (default: @code{'()})
 @cindex inputs, of packages
-These fields list dependencies of the package.  Each one is a list of
-tuples, where each tuple has a label for the input (a string) as its
-first element, a package, origin, or derivation as its second element,
-and optionally the name of the output thereof that should be used, which
-defaults to @code{"out"} (@pxref{Packages with Multiple Outputs}, for
-more on package outputs).  For example, the list below specifies three
-inputs:
+These fields list dependencies of the package.  Each element of these
+lists is either a package, origin, or other ``file-like object''
+(@pxref{G-Expressions}); to specify the output of that file-like object
+that should be used, pass a two-element list where the second element is
+the output (@pxref{Packages with Multiple Outputs}, for more on package
+outputs).  For example, the list below specifies three inputs:
 
 @lisp
+(list libffi libunistring
+      `(,glib "bin"))      ;the "bin" output of GLib
+@end lisp
+
+In the example above, the @code{"out"} output of @code{libffi} and
+@code{libunistring} is used.
+
+@quotation Compatibility Note
+Until version 1.3.0, input lists were a list of tuples,
+where each tuple has a label for the input (a string) as its
+first element, a package, origin, or derivation as its second element,
+and optionally the name of the output thereof that should be used, which
+defaults to @code{"out"}.  For example, the list below is equivalent to
+the one above, but using the @dfn{old input style}:
+
+@lisp
+;; Old input style (deprecated).
 `(("libffi" ,libffi)
   ("libunistring" ,libunistring)
-  ("glib:bin" ,glib "bin"))  ;the "bin" output of Glib
+  ("glib:bin" ,glib "bin"))  ;the "bin" output of GLib
 @end lisp
+
+This style is now deprecated; it is still supported but support will be
+removed in a future version.  It should not be used for new package
+definitions.  @xref{Invoking guix style}, on how to migrate to the new
+style.
+@end quotation
 
 @cindex cross compilation, package dependencies
 The distinction between @code{native-inputs} and @code{inputs} is
@@ -6793,7 +7243,21 @@ Outputs}, for typical uses of additional outputs.
 @item @code{native-search-paths} (default: @code{'()})
 @itemx @code{search-paths} (default: @code{'()})
 A list of @code{search-path-specification} objects describing
-search-path environment variables honored by the package.
+search-path environment variables honored by the package.  @xref{Search
+Paths}, for more on search path specifications.
+
+As for inputs, the distinction between @code{native-search-paths} and
+@code{search-paths} only matters when cross-compiling.  In a
+cross-compilation context, @code{native-search-paths} applies
+exclusively to native inputs whereas @code{search-paths} applies only to
+host inputs.
+
+Packages such as cross-compilers care about target inputs---for
+instance, our (modified) GCC cross-compiler has
+@env{CROSS_C_INCLUDE_PATH} in @code{search-paths}, which allows it to
+pick @file{.h} files for the target system and @emph{not} those of
+native inputs.  For the majority of packages though, only
+@code{native-search-paths} makes sense.
 
 @item @code{replacement} (default: @code{#f})
 This must be either @code{#f} or a package object that will be used as a
@@ -6840,11 +7304,76 @@ cross-compiling:
   ;; When cross-compiled, Guile, for example, depends on
   ;; a native version of itself.  Add it here.
   (native-inputs (if (%current-target-system)
-                     `(("self" ,this-package))
+                     (list this-package)
                      '())))
 @end lisp
 
 It is an error to refer to @code{this-package} outside a package definition.
+@end deffn
+
+The following helper procedures are provided to help deal with package
+inputs.
+
+@deffn {Scheme Procedure} lookup-package-input @var{package} @var{name}
+@deffnx {Scheme Procedure} lookup-package-native-input @var{package} @var{name}
+@deffnx {Scheme Procedure} lookup-package-propagated-input @var{package} @var{name}
+@deffnx {Scheme Procedure} lookup-package-direct-input @var{package} @var{name}
+Look up @var{name} among @var{package}'s inputs (or native, propagated,
+or direct inputs).  Return it if found, @code{#f} otherwise.
+
+@var{name} is the name of a package depended on.  Here's how you might
+use it:
+
+@lisp
+(use-modules (guix packages) (gnu packages base))
+
+(lookup-package-direct-input coreutils "gmp")
+@result{} #<package gmp@@6.2.1 @dots{}>
+@end lisp
+
+In this example we obtain the @code{gmp} package that is among the
+direct inputs of @code{coreutils}.
+@end deffn
+
+@cindex development inputs, of a package
+@cindex implicit inputs, of a package
+Sometimes you will want to obtain the list of inputs needed to
+@emph{develop} a package---all the inputs that are visible when the
+package is compiled.  This is what the @code{package-development-inputs}
+procedure returns.
+
+@deffn {Scheme Procedure} package-development-inputs @var{package} @
+   [@var{system}] [#:target #f]
+Return the list of inputs required by @var{package} for development
+purposes on @var{system}.  When @var{target} is true, return the inputs
+needed to cross-compile @var{package} from @var{system} to
+@var{triplet}, where @var{triplet} is a triplet such as
+@code{"aarch64-linux-gnu"}.
+
+Note that the result includes both explicit inputs and implicit
+inputs---inputs automatically added by the build system (@pxref{Build
+Systems}).  Let us take the @code{hello} package to illustrate that:
+
+@lisp
+(use-modules (gnu packages base) (guix packages))
+
+hello
+@result{} #<package hello@@2.10 gnu/packages/base.scm:79 7f585d4f6790>
+
+(package-direct-inputs hello)
+@result{} ()
+
+(package-development-inputs hello)
+@result{} (("source" @dots{}) ("tar" #<package tar@@1.32 @dots{}>) @dots{})
+@end lisp
+
+In this example, @code{package-direct-inputs} returns the empty list,
+because @code{hello} has zero explicit dependencies.  Conversely,
+@code{package-development-inputs} includes inputs implicitly added by
+@code{gnu-build-system} that are required to build @code{hello}: tar,
+gzip, GCC, libc, Bash, and more.  To visualize it, @command{guix graph
+hello} would show you explicit inputs, whereas @command{guix graph -t
+bag hello} would include implicit inputs (@pxref{Invoking guix graph}).
 @end deffn
 
 Because packages are regular Scheme objects that capture a complete
@@ -7127,20 +7656,56 @@ optional dependency, you can define a variant that removes that
 dependency like so:
 
 @lisp
-(use-modules (gnu packages gdb)    ;for 'gdb'
-             (srfi srfi-1))        ;for 'alist-delete'
+(use-modules (gnu packages gdb))   ;for 'gdb'
 
 (define gdb-sans-guile
   (package
     (inherit gdb)
-    (inputs (alist-delete "guile"
-                          (package-inputs gdb)))))
+    (inputs (modify-inputs (package-inputs gdb)
+              (delete "guile")))))
 @end lisp
 
-The @code{alist-delete} call above removes the tuple from the
-@code{inputs} field that has @code{"guile"} as its first element
-(@pxref{SRFI-1 Association Lists,,, guile, GNU Guile Reference
-Manual}).
+The @code{modify-inputs} form above removes the @code{"guile"} package
+from the @code{inputs} field of @code{gdb}.  The @code{modify-inputs}
+macro is a helper that can prove useful anytime you want to remove, add,
+or replace package inputs.
+
+@deffn {Scheme Syntax} modify-inputs @var{inputs} @var{clauses}
+Modify the given package inputs, as returned by @code{package-inputs} & co.,
+according to the given clauses.  Each clause must have one of the
+following forms:
+
+@table @code
+@item (delete @var{name}@dots{})
+Delete from the inputs packages with the given @var{name}s (strings).
+
+@item (append @var{package}@dots{})
+Add @var{package}s to the end of the input list.
+
+@item (prepend @var{package}@dots{})
+Add @var{package}s to the front of the input list.
+@end table
+
+The example below removes the GMP and ACL inputs of Coreutils and adds
+libcap to the back of the input list:
+
+@lisp
+(modify-inputs (package-inputs coreutils)
+  (delete "gmp" "acl")
+  (append libcap))
+@end lisp
+
+The example below replaces the @code{guile} package from the inputs of
+@code{guile-redis} with @code{guile-2.2}:
+
+@lisp
+(modify-inputs (package-inputs guile-redis)
+  (replace "guile" guile-2.2))
+@end lisp
+
+The last type of clause is @code{prepend}, to add inputs to the front of
+the list.
+@end deffn
 
 In some cases, you may find it useful to write functions
 (``procedures'', in Scheme parlance) that return a package based on some
@@ -7157,8 +7722,7 @@ depends on it:
     (name name)
     (version "3.0")
     ;; several fields omitted
-    (inputs
-     `(("lua" ,lua)))
+    (inputs (list lua))
     (synopsis "Socket library for Lua")))
 
 (define-public lua5.1-socket
@@ -7845,9 +8409,10 @@ julia} packages, which essentially is similar to running @samp{julia -e
 @env{JULIA_LOAD_PATH} contains the paths to all Julia package inputs.
 Tests are run by calling @code{/test/runtests.jl}.
 
-The Julia package name is read from the file @file{Project.toml}.  This
-value can be overridden by passing the argument @code{#:julia-package-name}
-(which must be correctly capitalized).
+The Julia package name and uuid is read from the file
+@file{Project.toml}.  These values can be overridden by passing the
+argument @code{#:julia-package-name} (which must be correctly
+capitalized) or @code{#:julia-package-uuid}.
 
 Julia packages usually manage their binary dependencies via
 @code{JLLWrappers.jl}, a Julia package that creates a module (named
@@ -7875,12 +8440,10 @@ MbedTLS package:
               (find-files "src/wrappers/" "\\.jl$"))))
 @end lisp
 
-Some older packages that aren't using @file{Package.toml} yet, will require
-this file to be created, too.  The function @code{julia-create-package-toml}
-helps creating the file.  You need to pass the outputs and the source of the
-package, its name (the same as the @code{file-name} parameter), the package
-uuid, the package version, and a list of dependencies specified by their name
-and their uuid.
+Some older packages that aren't using @file{Project.toml} yet, will
+require this file to be created, too.  It is internally done if the
+arguments @code{#:julia-package-name} and @code{#:julia-package-uuid}
+are provided.
 @end defvr
 
 @defvr {Scheme Variable} maven-build-system
@@ -7998,8 +8561,9 @@ packages, which consists in running @code{python setup.py build} and
 then @code{python setup.py install --prefix=/gnu/store/@dots{}}.
 
 For packages that install stand-alone Python programs under @code{bin/},
-it takes care of wrapping these programs so that their @env{PYTHONPATH}
-environment variable points to all the Python libraries they depend on.
+it takes care of wrapping these programs so that their
+@env{GUIX_PYTHONPATH} environment variable points to all the Python
+libraries they depend on.
 
 Which Python package is used to perform the build can be specified with
 the @code{#:python} parameter.  This is a useful way to force a package
@@ -8011,6 +8575,13 @@ By default guix calls @code{setup.py} under control of
 @code{setuptools}, much like @command{pip} does.  Some packages are not
 compatible with setuptools (and pip), thus you can disable this by
 setting the @code{#:use-setuptools?} parameter to @code{#f}.
+
+If a @code{"python"} output is available, the package is installed into it
+instead of the default @code{"out"} output. This is useful for packages that
+include a Python package as only a part of the software, and thus want to
+combine the phases of @code{python-build-system} with another build system.
+Python bindings are a common usecase.
+
 @end defvr
 
 @defvr {Scheme Variable} perl-build-system
@@ -8231,9 +8802,7 @@ implements the build procedure for packages that use
 
 It adds both Meson and @uref{https://ninja-build.org/, Ninja} to the set
 of inputs, and they can be changed with the parameters @code{#:meson}
-and @code{#:ninja} if needed.  The default Meson is
-@code{meson-for-build}, which is special because it doesn't clear the
-@code{RUNPATH} of binaries and libraries when they are installed.
+and @code{#:ninja} if needed.
 
 This build system is an extension of @code{gnu-build-system}, but with the
 following phases changed to some specific for Meson:
@@ -8251,8 +8820,10 @@ The phase runs @code{ninja} to build the package in parallel by default, but
 this can be changed with @code{#:parallel-build?}.
 
 @item check
-The phase runs @code{ninja} with the target specified in @code{#:test-target},
-which is @code{"test"} by default.
+The phase runs @samp{meson test} with a base set of options that cannot
+be overridden.  This base set of options can be extended via the
+@code{#:test-options} argument, for example to select or skip a specific
+test suite.
 
 @item install
 The phase runs @code{ninja install} and can not be changed.
@@ -8264,11 +8835,11 @@ Apart from that, the build system also adds the following phases:
 
 @item fix-runpath
 This phase ensures that all binaries can find the libraries they need.
-It searches for required libraries in subdirectories of the package being
-built, and adds those to @code{RUNPATH} where needed.  It also removes
-references to libraries left over from the build phase by
-@code{meson-for-build}, such as test dependencies, that aren't actually
-required for the program to run.
+It searches for required libraries in subdirectories of the package
+being built, and adds those to @code{RUNPATH} where needed.  It also
+removes references to libraries left over from the build phase by
+@code{meson}, such as test dependencies, that aren't actually required
+for the program to run.
 
 @item glib-or-gtk-wrap
 This phase is the phase provided by @code{glib-or-gtk-build-system}, and it
@@ -8347,6 +8918,10 @@ standard list of phases.  For @code{gnu-build-system}, the main build
 phases are the following:
 
 @table @code
+@item set-paths
+Define search path environment variables for all the input packages,
+including @env{PATH} (@pxref{Search Paths}).
+
 @item unpack
 Unpack the source tarball, and change the current directory to the
 extracted source tree.  If the source is actually a directory, copy it
@@ -8647,12 +9222,14 @@ Make @var{file} writable for its owner.
 @end deffn
 
 @deffn {Scheme Procedure} copy-recursively @var{source} @var{destination} @
-  [#:log (current-output-port)] [#:follow-symlinks? #f] [#:keep-mtime? #f]
+  [#:log (current-output-port)] [#:follow-symlinks? #f] @
+  [#:copy-file copy-file] [#:keep-mtime? #f] [#:keep-permissions? #t]
 Copy @var{source} directory to @var{destination}.  Follow symlinks if
-@var{follow-symlinks?}  is true; otherwise, just preserve them.  When
-@var{keep-mtime?} is true, keep the modification time of the files in
-@var{source} on those of @var{destination}.  Write verbose output to the
-@var{log} port.
+@var{follow-symlinks?}  is true; otherwise, just preserve them.  Call
+@var{copy-file} to copy regular files.  When @var{keep-mtime?} is true,
+keep the modification time of the files in @var{source} on those of
+@var{destination}.  When @var{keep-permissions?} is true, preserve file
+permissions.  Write verbose output to the @var{log} port.
 @end deffn
 
 @deffn {Scheme Procedure} delete-file-recursively @var{dir} @
@@ -8673,7 +9250,7 @@ the corresponding positional regexp sub-expression.  For example:
   (("hello")
    "good morning\n")
   (("foo([a-z]+)bar(.*)$" all letters end)
-   (string-append "baz" letter end)))
+   (string-append "baz" letters end)))
 @end lisp
 
 Here, anytime a line of @var{file} contains @code{hello}, it is replaced
@@ -8734,6 +9311,105 @@ the root of the Guix source tree:
 @deffn {Scheme Procedure} which @var{program}
 Return the complete file name for @var{program} as found in
 @code{$PATH}, or @code{#f} if @var{program} could not be found.
+@end deffn
+
+@deffn {Scheme Procedure} search-input-file @var{inputs} @var{name}
+@deffnx {Scheme Procedure} search-input-directory @var{inputs} @var{name}
+Return the complete file name for @var{name} as found in @var{inputs};
+@code{search-input-file} searches for a regular file and
+@code{search-input-directory} searches for a directory.  If @var{name}
+could not be found, an exception is raised.
+
+Here, @var{inputs} must be an association list like @code{inputs} and
+@code{native-inputs} as available to build phases (@pxref{Build
+Phases}).
+@end deffn
+
+Here is a (simplified) example of how @code{search-input-file} is used
+in a build phase of the @code{wireguard-tools} package:
+
+@lisp
+(add-after 'install 'wrap-wg-quick
+  (lambda* (#:key inputs outputs #:allow-other-keys)
+    (let ((coreutils (string-append (assoc-ref inputs "coreutils")
+                                    "/bin")))
+      (wrap-program (search-input-file outputs "bin/wg-quick")
+        #:sh (search-input-file inputs "bin/bash")
+        `("PATH" ":" prefix ,(list coreutils))))))
+@end lisp
+
+@subsection Program Invocation
+
+@cindex program invocation, from Scheme
+@cindex invoking programs, from Scheme
+You'll find handy procedures to spawn processes in this module,
+essentially convenient wrappers around Guile's @code{system*}
+(@pxref{Processes, @code{system*},, guile, GNU Guile Reference Manual}).
+
+@deffn {Scheme Procedure} invoke @var{program} @var{args}@dots{}
+Invoke @var{program} with the given @var{args}.  Raise an
+@code{&invoke-error} exception if the exit code is non-zero; otherwise
+return @code{#t}.
+
+The advantage compared to @code{system*} is that you do not need to
+check the return value.  This reduces boilerplate in shell-script-like
+snippets for instance in package build phases.
+@end deffn
+
+@deffn {Scheme Procedure} invoke-error? @var{c}
+Return true if @var{c} is an @code{&invoke-error} condition.
+@end deffn
+
+@deffn {Scheme Procedure} invoke-error-program @var{c}
+@deffnx {Scheme Procedure} invoke-error-arguments @var{c}
+@deffnx {Scheme Procedure} invoke-error-exit-status @var{c}
+@deffnx {Scheme Procedure} invoke-error-term-signal @var{c}
+@deffnx {Scheme Procedure} invoke-error-stop-signal @var{c}
+Access specific fields of @var{c}, an @code{&invoke-error} condition.
+@end deffn
+
+@deffn {Scheme Procedure} report-invoke-error @var{c} [@var{port}]
+Report to @var{port} (by default the current error port) about @var{c},
+an @code{&invoke-error} condition, in a human-friendly way.
+
+Typical usage would look like this:
+
+@lisp
+(use-modules (srfi srfi-34) ;for 'guard'
+             (guix build utils))
+
+(guard (c ((invoke-error? c)
+           (report-invoke-error c)))
+  (invoke "date" "--imaginary-option"))
+
+@print{} command "date" "--imaginary-option" failed with status 1
+@end lisp
+@end deffn
+
+@deffn {Scheme Procedure} invoke/quiet @var{program} @var{args}@dots{}
+Invoke @var{program} with @var{args} and capture @var{program}'s
+standard output and standard error.  If @var{program} succeeds, print
+nothing and return the unspecified value; otherwise, raise a
+@code{&message} error condition that includes the status code and the
+output of @var{program}.
+
+Here's an example:
+
+@lisp
+(use-modules (srfi srfi-34) ;for 'guard'
+             (srfi srfi-35) ;for 'message-condition?'
+             (guix build utils))
+
+(guard (c ((message-condition? c)
+           (display (condition-message c))))
+  (invoke/quiet "date")  ;all is fine
+  (invoke/quiet "date" "--imaginary-option"))
+
+@print{} 'date --imaginary-option' exited with status 1; output follows:
+
+    date: unrecognized option '--imaginary-option'
+    Try 'date --help' for more information.
+@end lisp
 @end deffn
 
 @subsection Build Phases
@@ -8812,6 +9488,185 @@ executable files to be installed:
 @end lisp
 
 @c TODO: Add more examples.
+
+@node Search Paths
+@section Search Paths
+
+@cindex search path
+Many programs and libraries look for input data in a @dfn{search path},
+a list of directories: shells like Bash look for executables in the
+command search path, a C compiler looks for @file{.h} files in its
+header search path, the Python interpreter looks for @file{.py}
+files in its search path, the spell checker has a search path for
+dictionaries, and so on.
+
+Search paths can usually be defined or overridden @i{via} environment
+variables (@pxref{Environment Variables,,, libc, The GNU C Library
+Reference Manual}).  For example, the search paths mentioned above can
+be changed by defining the @env{PATH}, @env{C_INCLUDE_PATH},
+@env{PYTHONPATH} (or @env{GUIX_PYTHONPATH}), and @env{DICPATH}
+environment variables---you know, all these something-PATH variables
+that you need to get right or things ``won't be found''.
+
+You may have noticed from the command line that Guix ``knows'' which
+search path environment variables should be defined, and how.  When you
+install packages in your default profile, the file
+@file{~/.guix-profile/etc/profile} is created, which you can ``source''
+from the shell to set those variables.  Likewise, if you ask
+@command{guix shell} to create an environment containing Python and
+NumPy, a Python library, and if you pass it the @option{--search-paths}
+option, it will tell you about @env{PATH} and @env{GUIX_PYTHONPATH}
+(@pxref{Invoking guix shell}):
+
+@example
+$ guix shell python python-numpy --pure --search-paths
+export PATH="/gnu/store/@dots{}-profile/bin"
+export GUIX_PYTHONPATH="/gnu/store/@dots{}-profile/lib/python3.9/site-packages"
+@end example
+
+When you omit @option{--search-paths}, it defines these environment
+variables right away, such that Python can readily find NumPy:
+
+@example
+$ guix shell python python-numpy -- python3
+Python 3.9.6 (default, Jan  1 1970, 00:00:01)
+[GCC 10.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import numpy
+>>> numpy.version.version
+'1.20.3'
+@end example
+
+For this to work, the definition of the @code{python} package
+@emph{declares} the search path it cares about and its associated
+environment variable, @env{GUIX_PYTHONPATH}.  It looks like this:
+
+@lisp
+(package
+  (name "python")
+  (version "3.9.9")
+  ;; some fields omitted...
+  (native-search-paths
+   (list (search-path-specification
+          (variable "GUIX_PYTHONPATH")
+          (files (list "lib/python/3.9/site-packages"))))))
+@end lisp
+
+What this @code{native-search-paths} field says is that, when the
+@code{python} package is used, the @env{GUIX_PYTHONPATH} environment
+variable must be defined to include all the
+@file{lib/python/3.9/site-packages} sub-directories encountered in its
+environment.  (The @code{native-} bit means that, if we are in a
+cross-compilation environment, only native inputs may be added to the
+search path; @pxref{package Reference, @code{search-paths}}.)
+In the NumPy example above, the profile where
+@code{python} appears contains exactly one such sub-directory, and
+@env{GUIX_PYTHONPATH} is set to that.  When there are several
+@file{lib/python/3.9/site-packages}---this is the case in package build
+environments---they are all added to @env{GUIX_PYTHONPATH}, separated by
+colons (@code{:}).
+
+@quotation Note
+Notice that @env{GUIX_PYTHONPATH} is specified as part of the definition
+of the @code{python} package, and @emph{not} as part of that of
+@code{python-numpy}.  This is because this environment variable
+``belongs'' to Python, not NumPy: Python actually reads the value of
+that variable and honors it.
+
+Corollary: if you create a profile that does not contain @code{python},
+@code{GUIX_PYTHONPATH} will @emph{not} be defined, even if it contains
+packages that provide @file{.py} files:
+
+@example
+$ guix shell python-numpy --search-paths --pure
+export PATH="/gnu/store/@dots{}-profile/bin"
+@end example
+
+This makes a lot of sense if we look at this profile in isolation: no
+software in this profile would read @env{GUIX_PYTHONPATH}.
+@end quotation
+
+Of course, there are many variations on that theme: some packages honor
+more than one search path, some use separators other than colon, some
+accumulate several directories in their search path, and so on.  A more
+complex example is the search path of libxml2: the value of the
+@env{XML_CATALOG_FILES} environment variable is space-separated, it must
+contain a list of @file{catalog.xml} files (not directories), which are
+to be found in @file{xml} sub-directories---nothing less.  The search
+path specification looks like this:
+
+@lisp
+(package
+  (name "libxml2")
+  ;; some fields omitted
+  (native-search-paths
+   (list (search-path-specification
+          (variable "XML_CATALOG_FILES")
+          (separator " ")
+          (files '("xml"))
+          (file-pattern "^catalog\\.xml$")
+          (file-type 'regular)))))
+@end lisp
+
+Worry not, search path specifications are usually not this tricky.
+
+The @code{(guix search-paths)} module defines the data type of search
+path specifications and a number of helper procedures.  Below is the
+reference of search path specifications.
+
+@deftp {Data Type} search-path-specification
+The data type for search path specifications.
+
+@table @asis
+@item @code{variable}
+The name of the environment variable for this search path (a string).
+
+@item @code{files}
+The list of sub-directories (strings) that should be added to the search
+path.
+
+@item @code{separator} (default: @code{":"})
+The string used to separate search path components.
+
+As a special case, a @code{separator} value of @code{#f} specifies a
+``single-component search path''---in other words, a search path that
+cannot contain more than one element.  This is useful in some cases,
+such as the @code{SSL_CERT_DIR} variable (honored by OpenSSL, cURL, and
+a few other packages) or the @code{ASPELL_DICT_DIR} variable (honored by
+the GNU Aspell spell checker), both of which must point to a single
+directory.
+
+@item @code{file-type} (default: @code{'directory})
+The type of file being matched---@code{'directory} or @code{'regular},
+though it can be any symbol returned by @code{stat:type} (@pxref{File
+System, @code{stat},, guile, GNU Guile Reference Manual}).
+
+In the libxml2 example above, we would match regular files; in the
+Python example, we would match directories.
+
+@item @code{file-pattern} (default: @code{#f})
+This must be either @code{#f} or a regular expression specifying
+files to be matched @emph{within} the sub-directories specified by the
+@code{files} field.
+
+Again, the libxml2 example shows a situation where this is needed.
+@end table
+@end deftp
+
+How do you turn search path specifications on one hand and a bunch of
+directories on the other hand in a set of environment variable
+definitions?  That's the job of @code{evaluate-search-paths}.
+
+@deffn {Scheme Procedure} evaluate-search-paths @var{search-paths} @
+  @var{directories} [@var{getenv}]
+Evaluate @var{search-paths}, a list of search-path specifications, for
+@var{directories}, a list of directory names, and return a list of
+specification/value pairs.  Use @var{getenv} to determine the current
+settings and report only settings not already effective.
+@end deffn
+
+The @code{(guix profiles)} provides a higher-level helper procedure,
+@code{load-profile}, that sets the environment variables of a profile.
 
 @node The Store
 @section The Store
@@ -9636,11 +10491,11 @@ headers, which comes in handy in this case:
 
 (with-imported-modules (source-module-closure
                          '((guix build utils)
-                           (gnu build vm)))
+                           (gnu build image)))
   (gexp->derivation "something-with-vms"
                     #~(begin
                         (use-modules (guix build utils)
-                                     (gnu build vm))
+                                     (gnu build image))
                         @dots{})))
 @end lisp
 
@@ -10233,6 +11088,7 @@ the Scheme programming interface of Guix in a convenient way.
 * Invoking guix hash::          Computing the cryptographic hash of a file.
 * Invoking guix import::        Importing package definitions.
 * Invoking guix refresh::       Updating package definitions.
+* Invoking guix style::         Styling package definitions.
 * Invoking guix lint::          Finding errors in package definitions.
 * Invoking guix size::          Profiling disk usage.
 * Invoking guix graph::         Visualizing the graph of packages.
@@ -10475,6 +11331,67 @@ available options and a synopsis (these options are not shown in the
 @option{--help} output for brevity).
 
 @table @code
+
+@cindex performance, tuning code
+@cindex optimization, of package code
+@cindex tuning, of package code
+@cindex SIMD support
+@cindex tunable packages
+@cindex package multi-versioning
+@item --tune[=@var{cpu}]
+Use versions of the packages marked as ``tunable'' optimized for
+@var{cpu}.  When @var{cpu} is @code{native}, or when it is omitted, tune
+for the CPU on which the @command{guix} command is running.
+
+Valid @var{cpu} names are those recognized by the underlying compiler,
+by default the GNU Compiler Collection.  On x86_64 processors, this
+includes CPU names such as @code{nehalem}, @code{haswell}, and
+@code{skylake} (@pxref{x86 Options, @code{-march},, gcc, Using the GNU
+Compiler Collection (GCC)}).
+
+As new generations of CPUs come out, they augment the standard
+instruction set architecture (ISA) with additional instructions, in
+particular instructions for single-instruction/multiple-data (SIMD)
+parallel processing.  For example, while Core2 and Skylake CPUs both
+implement the x86_64 ISA, only the latter supports AVX2 SIMD
+instructions.
+
+The primary gain one can expect from @option{--tune} is for programs
+that can make use of those SIMD capabilities @emph{and} that do not
+already have a mechanism to select the right optimized code at run time.
+Packages that have the @code{tunable?} property set are considered
+@dfn{tunable packages} by the @option{--tune} option; a package
+definition with the property set looks like this:
+
+@lisp
+(package
+  (name "hello-simd")
+  ;; ...
+
+  ;; This package may benefit from SIMD extensions so
+  ;; mark it as "tunable".
+  (properties '((tunable? . #t))))
+@end lisp
+
+Other packages are not considered tunable.  This allows Guix to use
+generic binaries in the cases where tuning for a specific CPU is
+unlikely to provide any gain.
+
+Tuned packages are built with @code{-march=@var{CPU}}; under the hood,
+the @option{-march} option is passed to the actual wrapper by a compiler
+wrapper.  Since the build machine may not be able to run code for the
+target CPU micro-architecture, the test suite is not run when building a
+tuned package.
+
+To reduce rebuilds to the minimum, tuned packages are @emph{grafted}
+onto packages that depend on them (@pxref{Security Updates, grafts}).
+Thus, using @option{--no-grafts} cancels the effect of @option{--tune}.
+
+We call this technique @dfn{package multi-versioning}: several variants
+of tunable packages may be built, one for each CPU variant.  It is the
+coarse-grain counterpart of @dfn{function multi-versioning} as
+implemented by the GNU tool chain (@pxref{Function Multiversioning,,,
+gcc, Using the GNU Compiler Collection (GCC)}).
 
 @item --with-source=@var{source}
 @itemx --with-source=@var{package}=@var{source}
@@ -11046,14 +11963,14 @@ a container similar to the one the build daemon creates:
 $ guix build -K foo
 @dots{}
 $ cd /tmp/guix-build-foo.drv-0
-$ guix environment --no-grafts -C foo --ad-hoc strace gdb
+$ guix shell --no-grafts -C -D foo strace gdb
 [env]# source ./environment-variables
 [env]# cd foo-1.2
 @end example
 
-Here, @command{guix environment -C} creates a container and spawns a new
-shell in it (@pxref{Invoking guix environment}).  The @command{--ad-hoc
-strace gdb} part adds the @command{strace} and @command{gdb} commands to
+Here, @command{guix shell -C} creates a container and spawns a new
+shell in it (@pxref{Invoking guix shell}).  The @command{strace gdb}
+part adds the @command{strace} and @command{gdb} commands to
 the container, which you may find handy while debugging.  The
 @option{--no-grafts} option makes sure we get the exact same
 environment, with ungrafted packages (@pxref{Security Updates}, for more
@@ -11067,7 +11984,7 @@ remove @file{/bin/sh}:
 @end example
 
 (Don't worry, this is harmless: this is all happening in the throw-away
-container created by @command{guix environment}.)
+container created by @command{guix shell}.)
 
 The @command{strace} command is probably not in the search path, but we
 can run:
@@ -11175,13 +12092,13 @@ store.
 @cindex @command{guix hash}
 The @command{guix hash} command computes the hash of a file.
 It is primarily a convenience tool for anyone contributing to the
-distribution: it computes the cryptographic hash of a file, which can be
+distribution: it computes the cryptographic hash of one or more files, which can be
 used in the definition of a package (@pxref{Defining Packages}).
 
 The general syntax is:
 
 @example
-guix hash @var{option} @var{file}
+guix hash @var{option} @var{file} ...
 @end example
 
 When @var{file} is @code{-} (a hyphen), @command{guix hash} computes the
@@ -11195,7 +12112,7 @@ following options:
 Compute a hash using the specified @var{algorithm}, @code{sha256} by
 default.
 
-@var{algorithm} must the name of a cryptographic hash algorithm
+@var{algorithm} must be the name of a cryptographic hash algorithm
 supported by Libgcrypt @i{via} Guile-Gcrypt---e.g., @code{sha512} or
 @code{sha3-256} (@pxref{Hash Functions,,, guile-gcrypt, Guile-Gcrypt
 Reference Manual}).
@@ -11213,16 +12130,35 @@ in the definitions of packages.
 
 @item --recursive
 @itemx -r
-Compute the hash on @var{file} recursively.
+The @option{--recursive} option is deprecated in favor of
+@option{--serializer=nar} (see below); @option{-r} remains accepted as a
+convenient shorthand.
 
-In this case, the hash is computed on an archive containing @var{file},
-including its children if it is a directory.  Some of the metadata of
-@var{file} is part of the archive; for instance, when @var{file} is a
-regular file, the hash is different depending on whether @var{file} is
-executable or not.  Metadata such as time stamps has no impact on the
-hash (@pxref{Invoking guix archive}).
+@item --serializer=@var{type}
+@itemx -S @var{type}
+Compute the hash on @var{file} using @var{type} serialization.
+
+@var{type} may be one of the following:
+
+@table @code
+@item none
+This is the default: it computes the hash of a file's contents.
+
+@item nar
+Compute the hash of a ``normalized archive'' (or ``nar'') containing
+@var{file}, including its children if it is a directory.  Some of the
+metadata of @var{file} is part of the archive; for instance, when
+@var{file} is a regular file, the hash is different depending on whether
+@var{file} is executable or not.  Metadata such as time stamps have no
+impact on the hash (@pxref{Invoking guix archive}, for more info on the
+nar format).
 @c FIXME: Replace xref above with xref to an ``Archive'' section when
 @c it exists.
+
+@item git
+Compute the hash of the file or directory as a Git ``tree'', following
+the same method as the Git version control system.
+@end table
 
 @item --exclude-vcs
 @itemx -x
@@ -11237,7 +12173,7 @@ Reference}):
 @example
 $ git clone http://example.org/foo.git
 $ cd foo
-$ guix hash -rx .
+$ guix hash -x --serializer=nar .
 @end example
 @end table
 
@@ -11305,11 +12241,17 @@ information, including package dependencies.  For maximum efficiency, it
 is recommended to install the @command{unzip} utility, so that the
 importer can unzip Python wheels and gather data from them.
 
-The command below imports metadata for the @code{itsdangerous} Python
-package:
+The command below imports metadata for the latest version of the
+@code{itsdangerous} Python package:
 
 @example
 guix import pypi itsdangerous
+@end example
+
+You can also ask for a specific version:
+
+@example
+guix import pypi itsdangerous@@1.1.0
 @end example
 
 @table @code
@@ -11409,6 +12351,12 @@ The command command below imports metadata for the Cairo R package:
 guix import cran Cairo
 @end example
 
+You can also ask for a specific version:
+
+@example
+guix import cran rasterVis@@0.50.3
+@end example
+
 When @option{--recursive} is added, the importer will traverse the
 dependency graph of the given upstream package recursively and generate
 package expressions for all those packages that are not yet in Guix.
@@ -11445,33 +12393,20 @@ guix import cran --archive=git https://github.com/immunogenomics/harmony
 @item texlive
 @cindex TeX Live
 @cindex CTAN
-Import metadata from @uref{https://www.ctan.org/, CTAN}, the
-comprehensive TeX archive network for TeX packages that are part of the
-@uref{https://www.tug.org/texlive/, TeX Live distribution}.
+Import TeX package information from the TeX Live package database for
+TeX packages that are part of the @uref{https://www.tug.org/texlive/,
+TeX Live distribution}.
 
-Information about the package is obtained through the XML API provided
-by CTAN, while the source code is downloaded from the SVN repository of
-the Tex Live project.  This is done because the CTAN does not keep
-versioned archives.
+Information about the package is obtained from the TeX Live package
+database, a plain text file that is included in the @code{texlive-bin}
+package.  The source code is downloaded from possibly multiple locations
+in the SVN repository of the Tex Live project.
 
 The command command below imports metadata for the @code{fontspec}
 TeX package:
 
 @example
 guix import texlive fontspec
-@end example
-
-When @option{--archive=@var{directory}} is added, the source code is
-downloaded not from the @file{latex} sub-directory of the
-@file{texmf-dist/source} tree in the TeX Live SVN repository, but from
-the specified sibling @var{directory} under the same root.
-
-The command below imports metadata for the @code{ifxetex} package from
-CTAN while fetching the sources from the directory
-@file{texmf/source/generic}:
-
-@example
-guix import texlive --archive=generic ifxetex
 @end example
 
 @item json
@@ -11748,13 +12683,19 @@ coexist.
 @cindex egg
 Import metadata for @uref{https://wiki.call-cc.org/eggs, CHICKEN eggs}.
 The information is taken from @file{PACKAGE.egg} files found in the
-@uref{git://code.call-cc.org/eggs-5-latest, eggs-5-latest} Git
+@uref{git://code.call-cc.org/eggs-5-all, eggs-5-all} Git
 repository.  However, it does not provide all the information that we
 need, there is no ``description'' field, and the licenses used are not
 always precise (BSD is often used instead of BSD-N).
 
 @example
 guix import egg sourcehut
+@end example
+
+You can also ask for a specific version:
+
+@example
+guix import egg arrays@@1.0
 @end example
 
 Additional options include:
@@ -12143,6 +13084,144 @@ token procured from @uref{https://github.com/settings/tokens} or
 otherwise.
 
 
+@node Invoking guix style
+@section Invoking @command{guix style}
+
+The @command{guix style} command helps packagers style their package
+definitions according to the latest fashionable trends.  The command
+currently provides the following styling rules:
+
+@itemize
+@item
+formatting package definitions according to the project's conventions
+(@pxref{Formatting Code});
+
+@item
+rewriting package inputs to the ``new style'', as explained below.
+@end itemize
+
+The way package inputs are written is going through a transition
+(@pxref{package Reference}, for more on package inputs).  Until version
+1.3.0, package inputs were written using the ``old style'', where each
+input was given an explicit label, most of the time the package name:
+
+@lisp
+(package
+  ;; @dots{}
+  ;; The "old style" (deprecated).
+  (inputs `(("libunistring" ,libunistring)
+            ("libffi" ,libffi))))
+@end lisp
+
+Today, the old style is deprecated and the preferred style looks like
+this:
+
+@lisp
+(package
+  ;; @dots{}
+  ;; The "new style".
+  (inputs (list libunistring libffi)))
+@end lisp
+
+Likewise, uses of @code{alist-delete} and friends to manipulate inputs
+is now deprecated in favor of @code{modify-inputs} (@pxref{Defining
+Package Variants}, for more info on @code{modify-inputs}).
+
+In the vast majority of cases, this is a purely mechanical change on the
+surface syntax that does not even incur a package rebuild.  Running
+@command{guix style -S inputs} can do that for you, whether you're working on
+packages in Guix proper or in an external channel.
+
+The general syntax is:
+
+@example
+guix style [@var{options}] @var{package}@dots{}
+@end example
+
+This causes @command{guix style} to analyze and rewrite the definition
+of @var{package}@dots{} or, when @var{package} is omitted, of @emph{all}
+the packages.  The @option{--styling} or @option{-S} option allows you
+to select the style rule, the default rule being @code{format}---see
+below.
+
+The available options are listed below.
+
+@table @code
+@item --dry-run
+@itemx -n
+Show source file locations that would be edited but do not modify them.
+
+@item --styling=@var{rule}
+@itemx -S @var{rule}
+Apply @var{rule}, one of the following styling rules:
+
+@table @code
+@item format
+Format the given package definition(s)---this is the default styling
+rule.  For example, a packager running Guix on a checkout
+(@pxref{Running Guix Before It Is Installed}) might want to reformat the
+definition of the Coreutils package like so:
+
+@example
+./pre-inst-env guix style coreutils
+@end example
+
+@item inputs
+Rewrite package inputs to the ``new style'', as described above.  This
+is how you would rewrite inputs of package @code{whatnot} in your own
+channel:
+
+@example
+guix style -L ~/my/channel -S inputs whatnot
+@end example
+
+Rewriting is done in a conservative way: preserving comments and bailing
+out if it cannot make sense of the code that appears in an inputs field.
+The @option{--input-simplification} option described below provides
+fine-grain control over when inputs should be simplified.
+@end table
+
+@item --load-path=@var{directory}
+@itemx -L @var{directory}
+Add @var{directory} to the front of the package module search path
+(@pxref{Package Modules}).
+
+@item --expression=@var{expr}
+@itemx -e @var{expr}
+Style the package @var{expr} evaluates to.
+
+For example, running:
+
+@example
+guix style -e '(@@ (gnu packages gcc) gcc-5)'
+@end example
+
+styles the @code{gcc-5} package definition.
+
+@item --input-simplification=@var{policy}
+When using the @code{inputs} styling rule, with @samp{-S inputs}, this
+option specifies the package input simplification policy for cases where
+an input label does not match the corresponding package name.
+@var{policy} may be one of the following:
+
+@table @code
+@item silent
+Simplify inputs only when the change is ``silent'', meaning that the
+package does not need to be rebuilt (its derivation is unchanged).
+
+@item safe
+Simplify inputs only when that is ``safe'' to do: the package might need
+to be rebuilt, but the change is known to have no observable effect.
+
+@item always
+Simplify inputs even when input labels do not match package names, and
+even if that might have an observable effect.
+@end table
+
+The default is @code{silent}, meaning that input simplifications do not
+trigger any package rebuild.
+@end table
+
 @node Invoking guix lint
 @section Invoking @command{guix lint}
 
@@ -12271,6 +13350,13 @@ declare them as in this example:
 @item formatting
 Warn about obvious source code formatting issues: trailing white space,
 use of tabulations, etc.
+
+@item input-labels
+Report old-style input labels that do not match the name of the
+corresponding package.  This aims to help migrate from the ``old input
+style''.  @xref{package Reference}, for more information on package
+inputs and input styles.  @xref{Invoking guix style}, on how to migrate
+to the new style.
 @end table
 
 The general syntax is:
@@ -13263,8 +14349,8 @@ is subject to radical change in the future.
 
 The purpose of @command{guix container} is to manipulate processes
 running within an isolated environment, commonly known as a
-``container'', typically created by the @command{guix environment}
-(@pxref{Invoking guix environment}) and @command{guix system container}
+``container'', typically created by the @command{guix shell}
+(@pxref{Invoking guix shell}) and @command{guix system container}
 (@pxref{Invoking guix system}) commands.
 
 The general syntax is:
@@ -13450,7 +14536,7 @@ listed.}.  Here's an example of the information it returns:
 $ sudo guix processes
 SessionPID: 19002
 ClientPID: 19090
-ClientCommand: guix environment --ad-hoc python
+ClientCommand: guix shell python
 
 SessionPID: 19402
 ClientPID: 19367
@@ -13564,6 +14650,7 @@ instance to support new system services.
 * operating-system Reference::  Detail of operating-system declarations.
 * File Systems::                Configuring file system mounts.
 * Mapped Devices::              Block device extra processing.
+* Swap Space::                  Backing RAM with disk space.
 * User Accounts::               Specifying user accounts.
 * Keyboard Layout::             How the system interprets key strokes.
 * Locales::                     Language and cultural convention settings.
@@ -13710,7 +14797,7 @@ your operating system declaration:
     (mingetty-service-type config =>
                            (mingetty-configuration
                             (inherit config)
-                            ;; Automatially log in as "guest".
+                            ;; Automatically log in as "guest".
                             (auto-login "guest")))))
 
 (operating-system
@@ -13732,7 +14819,7 @@ configuration, but with a few modifications.
 
 @cindex encrypted disk
 The configuration for a typical ``desktop'' usage, with an encrypted
-root partition, the X11 display
+root partition, a swap file on the root partition, the X11 display
 server, GNOME and Xfce (users can choose which of these desktop
 environments to use at the log-in screen by pressing @kbd{F1}), network
 management, power management, and more, would look like this:
@@ -13930,38 +15017,9 @@ A list of mapped devices.  @xref{Mapped Devices}.
 @item @code{file-systems}
 A list of file systems.  @xref{File Systems}.
 
-@cindex swap devices
-@cindex swap space
 @item @code{swap-devices} (default: @code{'()})
-A list of UUIDs, file system labels, or strings identifying devices or
-files to be used for ``swap
-space'' (@pxref{Memory Concepts,,, libc, The GNU C Library Reference
-Manual}).  Here are some examples:
-
-@table @code
-@item (list (uuid "4dab5feb-d176-45de-b287-9b0a6e4c01cb"))
-Use the swap partition with the given UUID@.  You can learn the UUID of a
-Linux swap partition by running @command{swaplabel @var{device}}, where
-@var{device} is the @file{/dev} file name of that partition.
-
-@item (list (file-system-label "swap"))
-Use the partition with label @code{swap}.  Again, the
-@command{swaplabel} command allows you to view and change the label of a
-Linux swap partition.
-
-@item (list "/swapfile")
-Use the file @file{/swapfile} as swap space.
-
-@item (list "/dev/sda3" "/dev/sdb2")
-Use the @file{/dev/sda3} and @file{/dev/sdb2} partitions as swap space.
-We recommend referring to swap devices by UUIDs or labels as shown above
-instead.
-@end table
-
-It is possible to specify a swap file in a file system on a mapped
-device (under @file{/dev/mapper}), provided that the necessary device
-mapping and file system are also specified.  @xref{Mapped Devices} and
-@ref{File Systems}.
+@cindex swap devices
+A list of swap spaces.  @xref{Swap Space}.
 
 @item @code{users} (default: @code{%base-user-accounts})
 @itemx @code{groups} (default: @code{%base-groups})
@@ -14551,7 +15609,8 @@ It is also desirable to encrypt swap space, since swap space may contain
 sensitive data.  One way to accomplish that is to use a swap file in a
 file system on a device mapped via LUKS encryption.  In this way, the
 swap file is encrypted because the entire device is encrypted.
-@xref{Preparing for Installation,,Disk Partitioning}, for an example.
+@xref{Swap Space}, or @xref{Preparing for Installation,,Disk
+Partitioning}, for an example.
 
 A RAID device formed of the partitions @file{/dev/sda1} and @file{/dev/sdb1}
 may be declared as follows:
@@ -14582,6 +15641,106 @@ be declared as follows:
 Devices @file{/dev/mapper/vg0-alpha} and @file{/dev/mapper/vg0-beta} can
 then be used as the @code{device} of a @code{file-system} declaration
 (@pxref{File Systems}).
+
+@node Swap Space
+@section Swap Space
+@cindex swap space
+
+Swap space, as it is commonly called, is a disk area specifically
+designated for paging: the process in charge of memory management
+(the Linux kernel or Hurd's default pager) can decide that some memory
+pages stored in RAM which belong to a running program but are unused
+should be stored on disk instead.  It unloads those from the RAM,
+freeing up precious fast memory, and writes them to the swap space.  If
+the program tries to access that very page, the memory management
+process loads it back into memory for the program to use.
+
+A common misconception about swap is that it is only useful when small
+amounts of RAM are available to the system.  However, it should be noted
+that kernels often use all available RAM for disk access caching to make
+I/O faster, and thus paging out unused portions of program memory will
+expand the RAM available for such caching.
+
+For a more detailed description of how memory is managed from the
+viewpoint of a monolithic kernel, @xref{Memory
+Concepts,,, libc, The GNU C Library Reference Manual}.
+
+The Linux kernel has support for swap partitions and swap files: the
+former uses a whole disk partition for paging, whereas the second uses a
+file on a file system for that (the file system driver needs to support
+it).  On a comparable setup, both have the same performance, so one
+should consider ease of use when deciding between them.  Partitions are
+``simpler'' and do not need file system support, but need to be
+allocated at disk formatting time (logical volumes notwithstanding),
+whereas files can be allocated and deallocated at any time.
+
+Note that swap space is not zeroed on shutdown, so sensitive data (such
+as passwords) may linger on it if it was paged out.  As such, you should
+consider having your swap reside on an encrypted device (@pxref{Mapped
+Devices}).
+
+@deftp {Data Type} swap-space
+Objects of this type represent swap spaces.  They contain the following
+members:
+
+@table @asis
+@item @code{target}
+The device or file to use, either a UUID, a @code{file-system-label} or
+a string, as in the definition of a @code{file-system} (@pxref{File
+Systems}).
+
+@item @code{dependencies} (default: @code{'()})
+A list of @code{file-system} or @code{mapped-device} objects, upon which
+the availability of the space depends.  Note that just like for
+@code{file-system} objects, dependencies which are needed for boot and
+mounted in early userspace are not managed by the Shepherd, and so
+automatically filtered out for you.
+
+@item @code{priority} (default: @code{#f})
+Only supported by the Linux kernel.  Either @code{#f} to disable swap
+priority, or an integer between 0 and 32767.  The kernel will first use
+swap spaces of higher priority when paging, and use same priority spaces
+on a round-robin basis.  The kernel will use swap spaces without a set
+priority after prioritized spaces, and in the order that they appeared in
+(not round-robin).
+
+@item @code{discard?} (default: @code{#f})
+Only supported by the Linux kernel.  When true, the kernel will notify
+the disk controller of discarded pages, for example with the TRIM
+operation on Solid State Drives.
+
+@end table
+@end deftp
+
+Here are some examples:
+
+@lisp
+(swap-space (target (uuid "4dab5feb-d176-45de-b287-9b0a6e4c01cb")))
+@end lisp
+
+Use the swap partition with the given UUID@.  You can learn the UUID of a
+Linux swap partition by running @command{swaplabel @var{device}}, where
+@var{device} is the @file{/dev} file name of that partition.
+
+@lisp
+(swap-space
+  (target (file-system-label "swap"))
+  (dependencies (list lvm-device)))
+@end lisp
+
+Use the partition with label @code{swap}, which can be found after the
+@var{lvm-device} mapped device has been opened.  Again, the
+@command{swaplabel} command allows you to view and change the label of a
+Linux swap partition.
+
+@lisp
+(swap-space
+  (target "/btrfs/swapfile")
+  (dependencies (list btrfs-fs)))
+@end lisp
+
+Use the file @file{/btrfs/swapfile} as swap space, which is present on the
+@var{btrfs-fs} filesystem.
 
 @node User Accounts
 @section User Accounts
@@ -14648,6 +15807,11 @@ account is created.
 
 @item @code{comment} (default: @code{""})
 A comment about the account, such as the account owner's full name.
+
+Note that, for non-system accounts, users are free to change their real
+name as it appears in @file{/etc/passwd} using the @command{chfn}
+command.  When they do, their choice prevails over the system
+administrator's choice; reconfiguring does @emph{not} change their name.
 
 @item @code{home-directory}
 This is the name of the home directory for the account.
@@ -15098,7 +16262,8 @@ declaration.
 * Base Services::               Essential system services.
 * Scheduled Job Execution::     The mcron service.
 * Log Rotation::                The rottlog service.
-* Networking Services::         Network setup, SSH daemon, etc.
+* Networking Setup::            Setting up network interfaces.
+* Networking Services::         Firewall, SSH daemon, etc.
 * Unattended Upgrades::         Automated system upgrades.
 * X Window::                    Graphical display.
 * Printing Services::           Local and remote printer support.
@@ -15733,7 +16898,7 @@ The number of seconds of silence and the number of seconds of activity,
 respectively, after which a build process times out.  A value of zero
 disables the timeout.
 
-@item @code{log-compression} (default: @code{'bzip2})
+@item @code{log-compression} (default: @code{'gzip})
 The type of compression used for build logs---one of @code{gzip},
 @code{bzip2}, or @code{none}.
 
@@ -15998,6 +17163,11 @@ cache miss.  @xref{Invoking guix publish,
 When it is an integer, this denotes the @dfn{time-to-live} in seconds
 of the published archives.  @xref{Invoking guix publish, @option{--ttl}},
 for more information.
+
+@item @code{negative-ttl} (default: @code{#f})
+When it is an integer, this denotes the @dfn{time-to-live} in
+seconds for the negative lookups.  @xref{Invoking guix publish,
+@option{--negative-ttl}}, for more information.
 @end table
 @end deftp
 
@@ -16320,11 +17490,202 @@ The list of syslog-controlled files to be rotated.  By default it is:
 "/var/log/maillog")}.
 @end defvr
 
-@node Networking Services
-@subsection Networking Services
+@node Networking Setup
+@subsection Networking Setup
 
-The @code{(gnu services networking)} module provides services to configure
-the network interface.
+The @code{(gnu services networking)} module provides services to
+configure network interfaces and set up networking on your machine.
+Those services provide different ways for you to set up your machine: by
+declaring a static network configuration, by running a Dynamic Host
+Configuration Protocol (DHCP) client, or by running daemons such as
+NetworkManager and Connman that automate the whole process,
+automatically adapt to connectivity changes, and provide a high-level
+user interface.
+
+On a laptop, NetworkManager and Connman are by far the most convenient
+options, which is why the default desktop services include
+NetworkManager (@pxref{Desktop Services, @code{%desktop-services}}).
+For a server, or for a virtual machine or a container, static network
+configuration or a simple DHCP client are often more appropriate.
+
+This section describes the various network setup services available,
+starting with static network configuration.
+
+@defvr {Scheme Variable} static-networking-service-type
+This is the type for statically-configured network interfaces.  Its
+value must be a list of @code{static-networking} records.  Each of them
+declares a set of @dfn{addresses}, @dfn{routes}, and @dfn{links}, as
+show below.
+
+@cindex network interface controller (NIC)
+@cindex NIC, networking interface controller
+Here is the simplest configuration, with only one network interface
+controller (NIC) and only IPv4 connectivity:
+
+@lisp
+;; Static networking for one NIC, IPv4-only.
+(service static-networking-service-type
+         (list (static-networking
+                (addresses
+                 (list (network-address
+                        (device "eno1")
+                        (value "10.0.2.15/24"))))
+                (routes
+                 (list (network-route
+                        (destination "default")
+                        (gateway "10.0.2.2"))))
+                (name-servers '("10.0.2.3")))))
+@end lisp
+
+The snippet above can be added to the @code{services} field of your
+operating system configuration (@pxref{Using the Configuration System}).
+It will configure your machine to have 10.0.2.15 as its IP address, with
+a 24-bit netmask for the local network---meaning that any 10.0.2.@var{x}
+address is on the local area network (LAN).  Traffic to addresses
+outside the local network is routed @i{via} 10.0.2.2.  Host names are
+resolved by sending domain name system (DNS) queries to 10.0.2.3.
+@end defvr
+
+@deftp {Data Type} static-networking
+This is the data type representing a static network configuration.
+
+As an example, here is how you would declare the configuration of a
+machine with a single network interface controller (NIC) available as
+@code{eno1}, and with one IPv4 and one IPv6 address:
+
+@lisp
+;; Network configuration for one NIC, IPv4 + IPv6.
+(static-networking
+ (addresses (list (network-address
+                   (device "eno1")
+                   (value "10.0.2.15/24"))
+                  (network-address
+                   (device "eno1")
+                   (value "2001:123:4567:101::1/64"))))
+ (routes (list (network-route
+                (destination "default")
+                (gateway "10.0.2.2"))
+               (network-route
+                (destination "default")
+                (gateway "2020:321:4567:42::1"))))
+ (name-servers '("10.0.2.3")))
+@end lisp
+
+If you are familiar with the @command{ip} command of the
+@uref{https://wiki.linuxfoundation.org/networking/iproute2,
+@code{iproute2} package} found on Linux-based systems, the declaration
+above is equivalent to typing:
+
+@example
+ip address add 10.0.2.15/24 dev eno1
+ip address add 2001:123:4567:101::1/64 dev eno1
+ip route add default via inet 10.0.2.2
+ip route add default via inet6 2020:321:4567:42::1
+@end example
+
+Run @command{man 8 ip} for more info.  Venerable GNU/Linux users will
+certainly know how to do it with @command{ifconfig} and @command{route},
+but we'll spare you that.
+
+The available fields of this data type are as follows:
+
+@table @asis
+@item @code{addresses}
+@itemx @code{links} (default: @code{'()})
+@itemx @code{routes} (default: @code{'()})
+The list of @code{network-address}, @code{network-link}, and
+@code{network-route} records for this network (see below).
+
+@item @code{name-servers} (default: @code{'()})
+The list of IP addresses (strings) of domain name servers.  These IP
+addresses go to @file{/etc/resolv.conf}.
+
+@item @code{provision} (default: @code{'(networking)})
+If true, this should be a list of symbols for the Shepherd service
+corresponding to this network configuration.
+
+@item @code{requirement} (default @code{'()})
+The list of Shepherd services depended on.
+@end table
+@end deftp
+
+@deftp {Data Type} network-address
+This is the data type representing the IP address of a network
+interface.
+
+@table @code
+@item device
+The name of the network interface for this address---e.g.,
+@code{"eno1"}.
+
+@item value
+The actual IP address and network mask, in
+@uref{https://en.wikipedia.org/wiki/CIDR#CIDR_notation, @acronym{CIDR,
+Classless Inter-Domain Routing} notation}, as a string.
+
+For example, @code{"10.0.2.15/24"} denotes IPv4 address 10.0.2.15 on a
+24-bit sub-network---all 10.0.2.@var{x} addresses are on the same local
+network.
+
+@item ipv6?
+Whether @code{value} denotes an IPv6 address.  By default this is
+automatically determined.
+@end table
+@end deftp
+
+@deftp {Data Type} network-route
+This is the data type representing a network route.
+
+@table @asis
+@item @code{destination}
+The route destination (a string), either an IP address or
+@code{"default"} to denote the default route.
+
+@item @code{source} (default: @code{#f})
+The route source.
+
+@item @code{device} (default: @code{#f})
+The device used for this route---e.g., @code{"eno2"}.
+
+@item @code{ipv6?} (default: auto)
+Whether this is an IPv6 route.  By default this is automatically
+determined based on @code{destination} or @code{gateway}.
+
+@item @code{gateway} (default: @code{#f})
+IP address (a string) through which traffic is routed.
+@end table
+@end deftp
+
+@deftp {Data Type} network-link
+Data type for a network link (@pxref{Link,,, guile-netlink,
+Guile-Netlink Manual}).
+
+@table @code
+@item name
+The name of the link---e.g., @code{"v0p0"}.
+
+@item type
+A symbol denoting the type of the link---e.g., @code{'veth}.
+
+@item arguments
+List of arguments for this type of link.
+@end table
+@end deftp
+
+@cindex loopback device
+@defvr {Scheme Variable} %loopback-static-networking
+This is the @code{static-networking} record representing the ``loopback
+device'', @code{lo}, for IP addresses 127.0.0.1 and ::1, and providing
+the @code{loopback} Shepherd service.
+@end defvr
+
+@cindex networking, with QEMU
+@cindex QEMU, networking
+@defvr {Scheme Variable} %qemu-static-networking
+This is the @code{static-networking} record representing network setup
+when using QEMU's user-mode network stack on @code{eth0} (@pxref{Using
+the user mode network stack,,, QEMU, QEMU Documentation}).
+@end defvr
 
 @cindex DHCP, networking service
 @defvr {Scheme Variable} dhcp-client-service-type
@@ -16332,154 +17693,6 @@ This is the type of services that run @var{dhcp}, a Dynamic Host Configuration
 Protocol (DHCP) client, on all the non-loopback network interfaces.  Its value
 is the DHCP client package to use, @code{isc-dhcp} by default.
 @end defvr
-
-@deffn {Scheme Procedure} dhcpd-service-type
-This type defines a service that runs a DHCP daemon.  To create a
-service of this type, you must supply a @code{<dhcpd-configuration>}.
-For example:
-
-@lisp
-(service dhcpd-service-type
-         (dhcpd-configuration
-          (config-file (local-file "my-dhcpd.conf"))
-          (interfaces '("enp0s25"))))
-@end lisp
-@end deffn
-
-@deftp {Data Type} dhcpd-configuration
-@table @asis
-@item @code{package} (default: @code{isc-dhcp})
-The package that provides the DHCP daemon.  This package is expected to
-provide the daemon at @file{sbin/dhcpd} relative to its output
-directory.  The default package is the
-@uref{https://www.isc.org/products/DHCP, ISC's DHCP server}.
-@item @code{config-file} (default: @code{#f})
-The configuration file to use.  This is required.  It will be passed to
-@code{dhcpd} via its @code{-cf} option.  This may be any ``file-like''
-object (@pxref{G-Expressions, file-like objects}).  See @code{man
-dhcpd.conf} for details on the configuration file syntax.
-@item @code{version} (default: @code{"4"})
-The DHCP version to use.  The ISC DHCP server supports the values ``4'',
-``6'', and ``4o6''.  These correspond to the @code{dhcpd} program
-options @code{-4}, @code{-6}, and @code{-4o6}.  See @code{man dhcpd} for
-details.
-@item @code{run-directory} (default: @code{"/run/dhcpd"})
-The run directory to use.  At service activation time, this directory
-will be created if it does not exist.
-@item @code{pid-file} (default: @code{"/run/dhcpd/dhcpd.pid"})
-The PID file to use.  This corresponds to the @code{-pf} option of
-@code{dhcpd}.  See @code{man dhcpd} for details.
-@item @code{interfaces} (default: @code{'()})
-The names of the network interfaces on which dhcpd should listen for
-broadcasts.  If this list is not empty, then its elements (which must be
-strings) will be appended to the @code{dhcpd} invocation when starting
-the daemon.  It may not be necessary to explicitly specify any
-interfaces here; see @code{man dhcpd} for details.
-@end table
-@end deftp
-
-@defvr {Scheme Variable} static-networking-service-type
-This is the type for statically-configured network interfaces.
-@c TODO Document <static-networking> data structures.
-@end defvr
-
-@deffn {Scheme Procedure} static-networking-service @var{interface} @var{ip} @
-       [#:netmask #f] [#:gateway #f] [#:name-servers @code{'()}] @
-       [#:requirement @code{'(udev)}]
-Return a service that starts @var{interface} with address @var{ip}.  If
-@var{netmask} is true, use it as the network mask.  If @var{gateway} is true,
-it must be a string specifying the default network gateway.  @var{requirement}
-can be used to declare a dependency on another service before configuring the
-interface.
-
-This procedure can be called several times, one for each network
-interface of interest.  Behind the scenes what it does is extend
-@code{static-networking-service-type} with additional network interfaces
-to handle.
-
-For example:
-
-@lisp
-(static-networking-service "eno1" "192.168.1.82"
-                           #:gateway "192.168.1.2"
-                           #:name-servers '("192.168.1.2"))
-@end lisp
-@end deffn
-
-@cindex wicd
-@cindex wireless
-@cindex WiFi
-@cindex network management
-@deffn {Scheme Procedure} wicd-service [#:wicd @var{wicd}]
-Return a service that runs @url{https://launchpad.net/wicd,Wicd}, a network
-management daemon that aims to simplify wired and wireless networking.
-
-This service adds the @var{wicd} package to the global profile, providing
-several commands to interact with the daemon and configure networking:
-@command{wicd-client}, a graphical user interface, and the @command{wicd-cli}
-and @command{wicd-curses} user interfaces.
-@end deffn
-
-@cindex ModemManager
-
-@defvr {Scheme Variable} modem-manager-service-type
-This is the service type for the
-@uref{https://wiki.gnome.org/Projects/ModemManager, ModemManager}
-service.  The value for this service type is a
-@code{modem-manager-configuration} record.
-
-This service is part of @code{%desktop-services} (@pxref{Desktop
-Services}).
-@end defvr
-
-@deftp {Data Type} modem-manager-configuration
-Data type representing the configuration of ModemManager.
-
-@table @asis
-@item @code{modem-manager} (default: @code{modem-manager})
-The ModemManager package to use.
-
-@end table
-@end deftp
-
-@cindex USB_ModeSwitch
-@cindex Modeswitching
-
-@defvr {Scheme Variable} usb-modeswitch-service-type
-This is the service type for the
-@uref{https://www.draisberghof.de/usb_modeswitch/, USB_ModeSwitch}
-service.  The value for this service type is
-a @code{usb-modeswitch-configuration} record.
-
-When plugged in, some USB modems (and other USB devices) initially present
-themselves as a read-only storage medium and not as a modem.  They need to be
-@dfn{modeswitched} before they are usable.  The USB_ModeSwitch service type
-installs udev rules to automatically modeswitch these devices when they are
-plugged in.
-
-This service is part of @code{%desktop-services} (@pxref{Desktop
-Services}).
-@end defvr
-
-@deftp {Data Type} usb-modeswitch-configuration
-Data type representing the configuration of USB_ModeSwitch.
-
-@table @asis
-@item @code{usb-modeswitch} (default: @code{usb-modeswitch})
-The USB_ModeSwitch package providing the binaries for modeswitching.
-
-@item @code{usb-modeswitch-data} (default: @code{usb-modeswitch-data})
-The package providing the device data and udev rules file used by
-USB_ModeSwitch.
-
-@item @code{config-file} (default: @code{#~(string-append #$usb-modeswitch:dispatcher "/etc/usb_modeswitch.conf")})
-Which config file to use for the USB_ModeSwitch dispatcher.  By default the
-config file shipped with USB_ModeSwitch is used which disables logging to
-@file{/var/log} among other default settings.  If set to @code{#f}, no config
-file is used.
-
-@end table
-@end deftp
 
 @cindex NetworkManager
 
@@ -16617,6 +17830,139 @@ List of additional command-line arguments to pass to the daemon.
 @end table
 @end deftp
 
+@cindex wicd
+@cindex wireless
+@cindex WiFi
+@cindex network management
+@deffn {Scheme Procedure} wicd-service [#:wicd @var{wicd}]
+Return a service that runs @url{https://launchpad.net/wicd,Wicd}, a network
+management daemon that aims to simplify wired and wireless networking.
+
+This service adds the @var{wicd} package to the global profile, providing
+several commands to interact with the daemon and configure networking:
+@command{wicd-client}, a graphical user interface, and the @command{wicd-cli}
+and @command{wicd-curses} user interfaces.
+@end deffn
+
+@cindex ModemManager
+Some networking devices such as modems require special care, and this is
+what the services below focus on.
+
+@defvr {Scheme Variable} modem-manager-service-type
+This is the service type for the
+@uref{https://wiki.gnome.org/Projects/ModemManager, ModemManager}
+service.  The value for this service type is a
+@code{modem-manager-configuration} record.
+
+This service is part of @code{%desktop-services} (@pxref{Desktop
+Services}).
+@end defvr
+
+@deftp {Data Type} modem-manager-configuration
+Data type representing the configuration of ModemManager.
+
+@table @asis
+@item @code{modem-manager} (default: @code{modem-manager})
+The ModemManager package to use.
+
+@end table
+@end deftp
+
+@cindex USB_ModeSwitch
+@cindex Modeswitching
+
+@defvr {Scheme Variable} usb-modeswitch-service-type
+This is the service type for the
+@uref{https://www.draisberghof.de/usb_modeswitch/, USB_ModeSwitch}
+service.  The value for this service type is
+a @code{usb-modeswitch-configuration} record.
+
+When plugged in, some USB modems (and other USB devices) initially present
+themselves as a read-only storage medium and not as a modem.  They need to be
+@dfn{modeswitched} before they are usable.  The USB_ModeSwitch service type
+installs udev rules to automatically modeswitch these devices when they are
+plugged in.
+
+This service is part of @code{%desktop-services} (@pxref{Desktop
+Services}).
+@end defvr
+
+@deftp {Data Type} usb-modeswitch-configuration
+Data type representing the configuration of USB_ModeSwitch.
+
+@table @asis
+@item @code{usb-modeswitch} (default: @code{usb-modeswitch})
+The USB_ModeSwitch package providing the binaries for modeswitching.
+
+@item @code{usb-modeswitch-data} (default: @code{usb-modeswitch-data})
+The package providing the device data and udev rules file used by
+USB_ModeSwitch.
+
+@item @code{config-file} (default: @code{#~(string-append #$usb-modeswitch:dispatcher "/etc/usb_modeswitch.conf")})
+Which config file to use for the USB_ModeSwitch dispatcher.  By default the
+config file shipped with USB_ModeSwitch is used which disables logging to
+@file{/var/log} among other default settings.  If set to @code{#f}, no config
+file is used.
+
+@end table
+@end deftp
+
+
+@node Networking Services
+@subsection Networking Services
+
+The @code{(gnu services networking)} module discussed in the previous
+section provides services for more advanced setups: providing a DHCP
+service for others to use, filtering packets with iptables or nftables,
+running a WiFi access point with @command{hostapd}, running the
+@command{inetd} ``superdaemon'', and more.  This section describes
+those.
+
+@deffn {Scheme Procedure} dhcpd-service-type
+This type defines a service that runs a DHCP daemon.  To create a
+service of this type, you must supply a @code{<dhcpd-configuration>}.
+For example:
+
+@lisp
+(service dhcpd-service-type
+         (dhcpd-configuration
+          (config-file (local-file "my-dhcpd.conf"))
+          (interfaces '("enp0s25"))))
+@end lisp
+@end deffn
+
+@deftp {Data Type} dhcpd-configuration
+@table @asis
+@item @code{package} (default: @code{isc-dhcp})
+The package that provides the DHCP daemon.  This package is expected to
+provide the daemon at @file{sbin/dhcpd} relative to its output
+directory.  The default package is the
+@uref{https://www.isc.org/products/DHCP, ISC's DHCP server}.
+@item @code{config-file} (default: @code{#f})
+The configuration file to use.  This is required.  It will be passed to
+@code{dhcpd} via its @code{-cf} option.  This may be any ``file-like''
+object (@pxref{G-Expressions, file-like objects}).  See @code{man
+dhcpd.conf} for details on the configuration file syntax.
+@item @code{version} (default: @code{"4"})
+The DHCP version to use.  The ISC DHCP server supports the values ``4'',
+``6'', and ``4o6''.  These correspond to the @code{dhcpd} program
+options @code{-4}, @code{-6}, and @code{-4o6}.  See @code{man dhcpd} for
+details.
+@item @code{run-directory} (default: @code{"/run/dhcpd"})
+The run directory to use.  At service activation time, this directory
+will be created if it does not exist.
+@item @code{pid-file} (default: @code{"/run/dhcpd/dhcpd.pid"})
+The PID file to use.  This corresponds to the @code{-pf} option of
+@code{dhcpd}.  See @code{man dhcpd} for details.
+@item @code{interfaces} (default: @code{'()})
+The names of the network interfaces on which dhcpd should listen for
+broadcasts.  If this list is not empty, then its elements (which must be
+strings) will be appended to the @code{dhcpd} invocation when starting
+the daemon.  It may not be necessary to explicitly specify any
+interfaces here; see @code{man dhcpd} for details.
+@end table
+@end deftp
+
 @cindex hostapd service, for Wi-Fi access points
 @cindex Wi-Fi access points, hostapd service
 @defvr {Scheme Variable} hostapd-service-type
@@ -16678,6 +18024,7 @@ network that can be seen on @code{wlan0}, by default.
 
 The service's value is a @code{hostapd-configuration} record.
 @end defvr
+
 
 @cindex iptables
 @defvr {Scheme Variable} iptables-service-type
@@ -17144,7 +18491,17 @@ The value for this service type is a
 @command{rsync-configuration} record as in this example:
 
 @lisp
-(service rsync-service-type)
+;; Export two directories over rsync.  By default rsync listens on
+;; all the network interfaces.
+(service rsync-service-type
+         (rsync-configuration
+           (modules (list (rsync-module
+                            (name "music")
+                            (file-name "/srv/zik")
+                            (read-only? #f))
+                          (rsync-module
+                            (name "movies")
+                            (file-name "/home/charlie/movies"))))))
 @end lisp
 
 See below for details about @code{rsync-configuration}.
@@ -17156,6 +18513,10 @@ Data type representing the configuration for @code{rsync-service}.
 @table @asis
 @item @code{package} (default: @var{rsync})
 @code{rsync} package to use.
+
+@item @code{address} (default: @code{#f})
+IP address on which @command{rsync} listens for incoming connections.
+If unspecified, it defaults to listening on all available addresses.
 
 @item @code{port-number} (default: @code{873})
 TCP port on which @command{rsync} listens for incoming connections.  If port
@@ -17171,34 +18532,55 @@ Name of the file where @command{rsync} writes its lock file.
 @item @code{log-file} (default: @code{"/var/log/rsyncd.log"})
 Name of the file where @command{rsync} writes its log file.
 
-@item @code{use-chroot?} (default: @var{#t})
-Whether to use chroot for @command{rsync} shared directory.
-
-@item @code{share-path} (default: @file{/srv/rsync})
-Location of the @command{rsync} shared directory.
-
-@item @code{share-comment} (default: @code{"Rsync share"})
-Comment of the @command{rsync} shared directory.
-
-@item @code{read-only?} (default: @var{#f})
-Read-write permissions to shared directory.
-
-@item @code{timeout} (default: @code{300})
-I/O timeout in seconds.
-
-@item @code{user} (default: @var{"root"})
+@item @code{user} (default: @code{"root"})
 Owner of the @code{rsync} process.
 
-@item @code{group} (default: @var{"root"})
+@item @code{group} (default: @code{"root"})
 Group of the @code{rsync} process.
 
-@item @code{uid} (default: @var{"rsyncd"})
+@item @code{uid} (default: @code{"rsyncd"})
 User name or user ID that file transfers to and from that module should take
 place as when the daemon was run as @code{root}.
 
-@item @code{gid} (default: @var{"rsyncd"})
+@item @code{gid} (default: @code{"rsyncd"})
 Group name or group ID that will be used when accessing the module.
 
+@item @code{modules} (default: @code{%default-modules})
+List of ``modules''---i.e., directories exported over rsync.  Each
+element must be a @code{rsync-module} record, as described below.
+@end table
+@end deftp
+
+@deftp {Data Type} rsync-module
+This is the data type for rsync ``modules''.  A module is a directory
+exported over the rsync protocol.  The available fields are as follows:
+
+@table @asis
+@item @code{name}
+The module name.  This is the name that shows up in URLs.  For example,
+if the module is called @code{music}, the corresponding URL will be
+@code{rsync://host.example.org/music}.
+
+@item @code{file-name}
+Name of the directory being exported.
+
+@item @code{comment} (default: @code{""})
+Comment associated with the module.  Client user interfaces may display
+it when they obtain the list of available modules.
+
+@item @code{read-only?} (default: @code{#t})
+Whether or not client will be able to upload files.  If this is false,
+the uploads will be authorized if permissions on the daemon side permit
+it.
+
+@item @code{chroot?} (default: @code{#t})
+When this is true, the rsync daemon changes root to the module's
+directory before starting file transfers with the client.  This improves
+security, but requires rsync to run as root.
+
+@item @code{timeout} (default: @code{300})
+Idle time in seconds after which the daemon closes a connection with the
+client.
 @end table
 @end deftp
 
@@ -18146,19 +19528,26 @@ example the @code{windowmaker} or @code{openbox} packages---preferably
 by adding it to the @code{packages} field of your operating system
 definition (@pxref{operating-system Reference, system-wide packages}).
 
+@anchor{wayland-gdm}
+GDM also supports Wayland: it can itself use Wayland instead of X11 for
+its user interface, and it can also start Wayland sessions.  The former is
+required for the latter, to enable, set @code{wayland?} to @code{#t} in
+@code{gdm-configuration}.
+
 @defvr {Scheme Variable} gdm-service-type
 This is the type for the @uref{https://wiki.gnome.org/Projects/GDM/, GNOME
 Desktop Manager} (GDM), a program that manages graphical display servers and
 handles graphical user logins.  Its value must be a @code{gdm-configuration}
 (see below).
 
-@cindex session types (X11)
-@cindex X11 session types
+@cindex session types
 GDM looks for @dfn{session types} described by the @file{.desktop} files in
-@file{/run/current-system/profile/share/xsessions} and allows users to choose
-a session from the log-in screen.  Packages such as @code{gnome}, @code{xfce},
-and @code{i3} provide @file{.desktop} files; adding them to the system-wide
-set of packages automatically makes them available at the log-in screen.
+@file{/run/current-system/profile/share/xsessions} (for X11 sessions) and
+@file{/run/current-system/profile/share/wayland-sessions} (for Wayland
+sessions) and allows users to choose a session from the log-in screen.
+Packages such as @code{gnome}, @code{xfce}, @code{i3} and @code{sway} provide
+@file{.desktop} files; adding them to the system-wide set of packages
+automatically makes them available at the log-in screen.
 
 In addition, @file{~/.xsession} files are honored.  When available,
 @file{~/.xsession} must be an executable that starts a window manager
@@ -18191,6 +19580,13 @@ File name of the @code{dbus-daemon} executable.
 
 @item @code{gdm} (default: @code{gdm})
 The GDM package to use.
+
+@item @code{wayland?} (default: @code{#f})
+When true, enables Wayland in GDM, necessary to use Wayland sessions.
+
+@item @code{wayland-session} (default: @code{gdm-wayland-session-wrapper})
+The Wayland session wrapper to use, needed to setup the
+environment.
 @end table
 @end deftp
 
@@ -18211,8 +19607,7 @@ and tty8.
 @lisp
 (use-modules (gnu services)
              (gnu services desktop)
-             (gnu services xorg)
-             (srfi srfi-1))  ;for 'remove'
+             (gnu services xorg))
 
 (operating-system
   ;; ...
@@ -18673,6 +20068,12 @@ programs.
 Defaults to @samp{"lp"}.
 @end deftypevr
 
+@deftypevr {@code{files-configuration} parameter} string log-file-group
+Specifies the group name or ID that will be used for log files.
+
+Defaults to @samp{"lpadmin"}.
+@end deftypevr
+
 @deftypevr {@code{files-configuration} parameter} string log-file-perm
 Specifies the permissions for all log files that the scheduler writes.
 
@@ -19101,7 +20502,7 @@ Defaults to @samp{1048576}.
 Specifies the maximum amount of time to allow between files in a
 multiple file print job, in seconds.
 
-Defaults to @samp{300}.
+Defaults to @samp{900}.
 @end deftypevr
 
 @deftypevr {@code{cups-configuration} parameter} string page-log-format
@@ -19312,7 +20713,7 @@ Defaults to @samp{#f}.
 @deftypevr {@code{cups-configuration} parameter} non-negative-integer timeout
 Specifies the HTTP request timeout, in seconds.
 
-Defaults to @samp{300}.
+Defaults to @samp{900}.
 
 @end deftypevr
 
@@ -19413,11 +20814,12 @@ expected.
 
 The desktop environments in Guix use the Xorg display server by
 default.  If you'd like to use the newer display server protocol
-called Wayland, you need to use the @code{sddm-service} instead of
-GDM as the graphical login manager.  You should then
-select the ``GNOME (Wayland)'' session in SDDM@.  Alternatively you can
-also try starting GNOME on Wayland manually from a TTY with the
-command ``XDG_SESSION_TYPE=wayland exec dbus-run-session
+called Wayland, you need to enable Wayland support in GDM
+(@pxref{wayland-gdm}).  Another solution is to use the
+@code{sddm-service} instead of GDM as the graphical login manager.
+You should then select the ``GNOME (Wayland)'' session in SDDM@.
+Alternatively you can also try starting GNOME on Wayland manually from a
+TTY with the command ``XDG_SESSION_TYPE=wayland exec dbus-run-session
 gnome-session``.  Currently only GNOME has support for Wayland.
 
 @defvr {Scheme Variable} gnome-desktop-service-type
@@ -19788,7 +21190,7 @@ a system which relies on @code{%desktop-services}, you may use
 
 (operating-system
   @dots{}
-  (services %my-desktop-services)
+  (services %my-desktop-services))
 @end lisp
 @end defvr
 
@@ -20159,7 +21561,7 @@ configuration.
 @item @code{ident-file} (default: @code{%default-postgres-ident})
 Filename or G-expression for the user name mapping configuration.
 
-@item @code{socket-directory} (default: @code{#false})
+@item @code{socket-directory} (default: @code{"/var/run/postgresql"})
 Specifies the directory of the Unix-domain socket(s) on which PostgreSQL
 is to listen for connections from client applications. If set to
 @code{""} PostgreSQL does not listen on any Unix-domain sockets, in
@@ -22742,9 +24144,9 @@ service found under @file{/var/lib/jami} are recreated every time the
 service starts.
 
 Jami accounts and their corresponding backup archives can be generated
-using either the @code{jami-qt} or @code{jami-gnome} Jami clients.  The
-accounts should not be password-protected, but it is wise to ensure
-their files are only readable by @samp{root}.
+using the @code{jami} or @code{jami-gnome} Jami clients.  The accounts
+should not be password-protected, but it is wise to ensure their files
+are only readable by @samp{root}.
 
 The next example shows how to declare that only some contacts should be
 allowed to communicate with a given account:
@@ -22859,7 +24261,7 @@ The complete set of available configuration options is detailed below.
 Available @code{jami-configuration} fields are:
 
 @table @asis
-@item @code{jamid} (default: @code{libring}) (type: package)
+@item @code{jamid} (default: @code{libjami}) (type: package)
 The Jami daemon package to use.
 
 @item @code{dbus} (default: @code{dbus}) (type: package)
@@ -26112,6 +27514,12 @@ complete example}.
 
 @item @code{package} (default: @code{hpcguix-web})
 The hpcguix-web package to use.
+
+@item @code{address} (default: @code{"127.0.0.1"})
+The IP address to listen to.
+
+@item @code{port} (default: @code{5000})
+The port number to listen to.
 @end table
 @end deftp
 
@@ -26798,9 +28206,6 @@ A list of acl identifiers.
 
 @item @code{semantic-checks?} (default: @code{#f})
 When set, this adds more semantic checks to the zone.
-
-@item @code{disable-any?} (default: @code{#f})
-When set, this forbids queries of the ANY type.
 
 @item @code{zonefile-sync} (default: @code{0})
 The delay between a modification in memory and on disk.  0 means immediate
@@ -27658,6 +29063,9 @@ The IP addresses to be assigned to the above interface.
 
 @item @code{port} (default: @code{51820})
 The port on which to listen for incoming connections.
+
+@item @code{dns} (default: @code{#f})
+The DNS server(s) to announce to VPN clients via DHCP.
 
 @item @code{private-key} (default: @code{"/etc/wireguard/private.key"})
 The private key file for the interface.  It is automatically generated if
@@ -29623,6 +31031,53 @@ Return the name of @var{platform}---a string such as @code{"arm"}.
 @end deffn
 
 
+@subsubheading QEMU Guest Agent
+
+@cindex emulation
+
+The QEMU guest agent provides control over the emulated system to the
+host.  The @code{qemu-guest-agent} service runs the agent on Guix
+guests.  To control the agent from the host, open a socket by invoking
+QEMU with the following arguments:
+
+@example
+qemu-system-x86_64 \
+	-chardev socket,path=/tmp/qga.sock,server=on,wait=off,id=qga0 \
+	-device virtio-serial \
+	-device virtserialport,chardev=qga0,name=org.qemu.guest_agent.0 \
+	...
+@end example
+
+This creates a socket at @file{/tmp/qga.sock} on the host.  Once the
+guest agent is running, you can issue commands with @code{socat}:
+
+@example
+$ guix shell socat -- socat unix-connect:/tmp/qga.sock stdio
+@{"execute": "guest-get-host-name"@}
+@{"return": @{"host-name": "guix"@}@}
+@end example
+
+See @url{https://wiki.qemu.org/Features/GuestAgent,QEMU guest agent
+documentation} for more options and commands.
+
+@defvr {Scheme Variable} qemu-guest-agent-service-type
+Service type for the QEMU guest agent service.
+@end defvr
+
+@deftp {Data Type} qemu-guest-agent-configuration
+Configuration for the @code{qemu-guest-agent} service.
+
+@table @asis
+@item @code{qemu} (default: @code{qemu-minimal})
+The QEMU package to use.
+
+@item @code{device} (default: @code{""})
+File name of the device or socket the agent uses to communicate with the
+host.  If empty, QEMU uses a default file name.
+@end table
+@end deftp
+
+
 @subsubheading The Hurd in a Virtual Machine
 
 @cindex @code{hurd}
@@ -29645,8 +31100,7 @@ When the service is running, you can view its console by connecting to
 it with a VNC client, for example with:
 
 @example
-guix environment --ad-hoc tigervnc-client -- \
-         vncviewer localhost:5900
+guix shell tigervnc-client -- vncviewer localhost:5900
 @end example
 
 The default configuration (see @code{hurd-vm-configuration} below)
@@ -29851,11 +31305,18 @@ cluster node that supports multiple storage backends, and installs the
                            "ganeti-instance-guix" "ganeti-instance-debootstrap"))
                     %base-packages))
   (services
-   (append (list (static-networking-service "eth0" "192.168.1.201"
-                                            #:netmask "255.255.255.0"
-                                            #:gateway "192.168.1.254"
-                                            #:name-servers '("192.168.1.252"
-                                                             "192.168.1.253"))
+   (append (list (service static-networking-service-type
+                          (list (static-networking
+                                 (addresses
+                                  (list (network-address
+                                         (device "eth0")
+                                         (value "192.168.1.201/24"))))
+                                 (routes
+                                  (list (network-route
+                                         (destination "default")
+                                         (gateway "192.168.1.254"))))
+                                 (name-servers '("192.168.1.252"
+                                                 "192.168.1.253")))))
 
                  ;; Ganeti uses SSH to communicate between nodes.
                  (service openssh-service-type
@@ -30226,7 +31687,7 @@ It takes a @code{ganeti-luxid-configuration} object.
 @end defvr
 
 @deftp {Data Type} ganeti-luxid-configuration
-This is the configuration for the @code{ganeti-wconfd} service.
+This is the configuration for the @code{ganeti-luxid} service.
 
 @table @asis
 @item @code{ganeti} (default: @code{ganeti})
@@ -31908,12 +33369,6 @@ running an @dfn{agent}.  The build daemon is still used to build the
 derivations, but the Guix Build Coordinator manages allocating builds
 and working with the results.
 
-@quotation Note
-This service is considered experimental.  Configuration options may be
-changed in a backwards-incompatible manner, and not all features have
-been thorougly tested.
-@end quotation
-
 The Guix Build Coordinator consists of one @dfn{coordinator}, and one or
 more connected @dfn{agent} processes.  The coordinator process handles
 clients submitting builds, and allocating builds to agents.  The agent
@@ -31977,7 +33432,7 @@ Service type for a Guix Build Coordinator agent.  Its value must be a
 Data type representing the configuration a Guix Build Coordinator agent.
 
 @table @asis
-@item @code{package} (default: @code{guix-build-coordinator})
+@item @code{package} (default: @code{guix-build-coordinator/agent-only})
 The Guix Build Coordinator package to use.
 
 @item @code{user} (default: @code{"guix-build-coordinator-agent"})
@@ -32754,6 +34209,17 @@ Enable or disable debug output.
 @item @code{enable-iptables?} (default @code{#t})
 Enable or disable the addition of iptables rules.
 
+@item @code{environment-variables} (default: @code{()})
+List of environment variables to set for @command{dockerd}.
+
+This must be a list of strings where each string has the form
+@samp{@var{key}=@var{value}} as in this example:
+
+@lisp
+(list "LANGUAGE=eo:ca:eu"
+      "TMPDIR=/tmp/dockerd")
+@end lisp
+
 @end table
 @end deftp
 
@@ -32855,8 +34321,7 @@ The common way to create this file is as follows:
 (let* ((out       (assoc-ref %outputs "out"))
        (targetdir (string-append out "/share/" ,name))
        (app       (string-append out "/bin/" ,name))
-       (Rbin      (string-append (assoc-ref %build-inputs "r-min")
-                                 "/bin/Rscript")))
+       (Rbin      (search-input-file %build-inputs "/bin/Rscript")))
   ;; @dots{}
   (mkdir-p (string-append out "/bin"))
   (call-with-output-file app
@@ -32962,14 +34427,27 @@ should be setuid root.
 The @code{setuid-programs} field of an @code{operating-system}
 declaration contains a list of @code{<setuid-program>} denoting the
 names of programs to have a setuid or setgid bit set (@pxref{Using the
-Configuration System}).  For instance, the @command{passwd} program,
-which is part of the Shadow package, with a setuid root can be
+Configuration System}).  For instance, the @command{mount.nfs} program,
+which is part of the nfs-utils package, with a setuid root can be
 designated like this:
 
-@example
+@lisp
 (setuid-program
-  (program (file-append #$shadow "/bin/passwd")))
-@end example
+  (program (file-append nfs-utils "/sbin/mount.nfs")))
+@end lisp
+
+And then, to make @command{mount.nfs} setuid on your system, add the
+previous example to your operating system declaration by appending it to
+@code{%setuid-programs} like this:
+
+@lisp
+(operating-system
+  ;; Some fields omitted...
+  (setuid-programs
+    (append (list (setuid-program
+                    (program (file-append nfs-utils "/sbin/mount.nfs")))
+                  %setuid-programs))))
+@end lisp
 
 @deftp {Data Type} setuid-program
 This data type represents a program with a setuid or setgid bit set.
@@ -33903,7 +35381,7 @@ guix system delete-generations
 @end example
 
 You can also select the generations you want to delete.  The example below
-deletes all the system generations that are more than two month old:
+deletes all the system generations that are more than two months old:
 
 @example
 guix system delete-generations 2m
@@ -33941,8 +35419,8 @@ passed.
 @cindex virtual machine
 @cindex VM
 @anchor{guix system vm}
-Build a virtual machine that contains the operating system declared in
-@var{file}, and return a script to run that virtual machine (VM).
+Build a virtual machine (VM) that contains the operating system declared
+in @var{file}, and return a script to run that VM.
 
 @quotation Note
 The @code{vm} action and others below
@@ -33961,7 +35439,18 @@ emulated machine:
 $ /gnu/store/@dots{}-run-vm.sh -m 1024 -smp 2 -nic user,model=virtio-net-pci
 @end example
 
+It's possible to combine the two steps into one:
+
+@example
+$ $(guix system vm my-config.scm) -m 1024 -smp 2 -nic user,model=virtio-net-pci
+@end example
+
 The VM shares its store with the host system.
+
+By default, the root file system of the VM is mounted volatile; the
+@option{--persistent} option can be provided to make it persistent
+instead.  In that case, the VM disk-image file will be copied from the
+store to the @env{TMPDIR} directory to make it writable.
 
 Additional file systems can be shared between the host and the VM using
 the @option{--share} and @option{--expose} command-line options: the former
@@ -33984,24 +35473,24 @@ store of the host can then be mounted.
 The @option{--full-boot} option forces a complete boot sequence, starting
 with the bootloader.  This requires more disk space since a root image
 containing at least the kernel, initrd, and bootloader data files must
-be created.  The @option{--image-size} option can be used to specify the
-size of the image.
+be created.
+
+The @option{--image-size} option can be used to specify the size of the
+image.
+
+The @option{--no-graphic} option will instruct @command{guix system} to
+spawn a headless VM that will use the invoking tty for IO.  Among other
+things, this enables copy-pasting, and scrollback.  Use the @kbd{ctrl-a}
+prefix to issue QEMU commands; e.g. @kbd{ctrl-a h} prints a help,
+@kbd{ctrl-a x} quits the VM, and @kbd{ctrl-a c} switches between the
+QEMU monitor and the VM.
 
 @cindex System images, creation in various formats
 @cindex Creating system images in various formats
 @item image
-@itemx docker-image
-Return a virtual machine, disk image, or Docker image of the operating
-system declared in @var{file} that stands alone.  By default,
-@command{guix system} estimates the size of the image needed to store
-the system, but you can use the @option{--image-size} option to specify
-a value.  Docker images are built to contain exactly what they need, so
-the @option{--image-size} option is ignored in the case of
-@code{docker-image}.
-
 @cindex image, creating disk images
-The @code{image} command can produce various image types.  The
-image type can be selected using the @option{--image-type} option.  It
+The @code{image} command can produce various image types.  The image
+type can be selected using the @option{--image-type} option.  It
 defaults to @code{efi-raw}.  When its value is @code{iso9660}, the
 @option{--label} option can be used to specify a volume ID with
 @code{image}.  By default, the root file system of a disk image is
@@ -34044,11 +35533,11 @@ uses the SeaBIOS BIOS by default, expecting a bootloader to be installed
 in the Master Boot Record (MBR).
 
 @cindex docker-image, creating docker images
-When using @code{docker-image}, a Docker image is produced.  Guix builds
-the image from scratch, not from a pre-existing Docker base image.  As a
-result, it contains @emph{exactly} what you define in the operating
-system configuration file.  You can then load the image and launch a
-Docker container using commands like the following:
+When using the @code{docker} image type, a Docker image is produced.
+Guix builds the image from scratch, not from a pre-existing Docker base
+image.  As a result, it contains @emph{exactly} what you define in the
+operating system configuration file.  You can then load the image and
+launch a Docker container using commands like the following:
 
 @example
 image_id="$(docker load < guix-system-docker-image.tar.gz)"
@@ -34473,6 +35962,16 @@ returned by @command{guix describe}) to determine whether commits
 currently in use are descendants of those deployed.  When this is not
 the case and @code{allow-downgrades?} is false, it raises an error.
 This ensures you do not accidentally downgrade remote machines.
+
+@item @code{safety-checks?} (default: @code{#t})
+Whether to perform ``safety checks'' before deployment.  This includes
+verifying that devices and file systems referred to in the operating
+system configuration actually exist on the target machine, and making
+sure that Linux modules required to access storage devices at boot time
+are listed in the @code{initrd-modules} field of the operating system.
+
+These safety checks ensure that you do not inadvertently deploy a system
+that would fail to boot.  Be careful before turning them off!
 @end table
 @end deftp
 
@@ -34623,7 +36122,7 @@ VM@.  To enable that you'll also have to pass the following flags to @command{qe
 @example
 -device virtio-serial-pci,id=virtio-serial0,max_ports=16,bus=pci.0,addr=0x5
 -chardev spicevmc,name=vdagent,id=vdagent
--device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,
+-device virtserialport,nr=1,bus=virtio-serial0.0,chardev=vdagent,\
 name=com.redhat.spice.0
 @end example
 
@@ -34642,6 +36141,7 @@ them in the first place?  And what is a service anyway?
 * Service Types and Services::  Types and services.
 * Service Reference::           API reference.
 * Shepherd Services::           A particular type of service.
+* Complex Configurations::      Defining bindings for complex configurations.
 @end menu
 
 @node Service Composition
@@ -34934,6 +36434,15 @@ original in the resulting list.  Because a service's service parameters
 are created using @code{define-record-type*}, you can write a succinct
 @var{body} that evaluates to the new service parameters by using the
 @code{inherit} feature that @code{define-record-type*} provides.
+
+Clauses can also have the following form:
+
+@lisp
+(delete @var{type})
+@end lisp
+
+Such a clause removes all services of the given @var{type} from
+@var{services}.
 
 @xref{Using the Configuration System}, for example usage.
 
@@ -35366,6 +36875,376 @@ system:
 This service represents PID@tie{}1.
 @end defvr
 
+@node Complex Configurations
+@subsection Complex Configurations
+@cindex complex configurations
+Some programs might have rather complex configuration files or formats,
+and to make it easier to create Scheme bindings for these configuration
+files, you can use the utilities defined in the @code{(gnu services
+configuration)} module.
+
+The main utility is the @code{define-configuration} macro, which you
+will use to define a Scheme record type (@pxref{Record Overview,,,
+guile, GNU Guile Reference Manual}).  The Scheme record will be
+serialized to a configuration file by using @dfn{serializers}, which are
+procedures that take some kind of Scheme value and returns a
+G-expression (@pxref{G-Expressions}), which should, once serialized to
+the disk, return a string.  More details are listed below.
+
+@deffn {Scheme Syntax} define-configuration @var{name} @var{clause1} @
+@var{clause2} ...
+Create a record type named @code{@var{name}} that contains the
+fields found in the clauses.
+
+A clause can have one of the following forms:
+
+@example
+(@var{field-name}
+ (@var{type} @var{default-value})
+ @var{documentation})
+ 
+(@var{field-name}
+ (@var{type} @var{default-value})
+ @var{documentation}
+ @var{serializer})
+
+(@var{field-name}
+ (@var{type})
+ @var{documentation})
+
+(@var{field-name}
+ (@var{type})
+ @var{documentation}
+ @var{serializer})
+@end example
+
+@var{field-name} is an identifier that denotes the name of the field in
+the generated record.
+
+@var{type} is the type of the value corresponding to @var{field-name};
+since Guile is untyped, a predicate
+procedure---@code{@var{type}?}---will be called on the value
+corresponding to the field to ensure that the value is of the correct
+type.  This means that if say, @var{type} is @code{package}, then a
+procedure named @code{package?} will be applied on the value to make
+sure that it is indeed a @code{<package>} object.
+
+@var{default-value} is the default value corresponding to the field; if
+none is specified, the user is forced to provide a value when creating
+an object of the record type.
+
+@c XXX: Should these be full sentences or are they allow to be very
+@c short like package synopses?
+@var{documentation} is a string formatted with Texinfo syntax which
+should provide a description of what setting this field does.
+
+@var{serializer} is the name of a procedure which takes two arguments,
+the first is the name of the field, and the second is the value
+corresponding to the field.  The procedure should return a string or
+G-expression (@pxref{G-Expressions}) that represents the content that
+will be serialized to the configuration file.  If none is specified, a
+procedure of the name @code{serialize-@var{type}} will be used.
+
+A simple serializer procedure could look like this:
+
+@lisp
+(define (serialize-boolean field-name value)
+  (let ((value (if value "true" "false")))
+    #~(string-append #$field-name #$value)))
+@end lisp  
+
+In some cases multiple different configuration records might be defined
+in the same file, but their serializers for the same type might have to
+be different, because they have different configuration formats.  For
+example, the @code{serialize-boolean} procedure for the Getmail service
+would have to be different for the one for the Transmission service.  To
+make it easier to deal with this situation, one can specify a serializer
+prefix by using the @code{prefix} literal in the
+@code{define-configuration} form.  This means that one doesn't have to
+manually specify a custom @var{serializer} for every field.
+
+@lisp
+(define (foo-serialize-string field-name value)
+  @dots{})
+
+(define (bar-serialize-string field-name value)
+  @dots{})
+  
+(define-configuration foo-configuration
+  (label
+   (string)
+   "The name of label.")
+  (prefix foo-))
+
+(define-configuration bar-configuration
+  (ip-address
+   (string)
+   "The IPv4 address for this device.")
+  (prefix bar-))
+@end lisp
+
+However, in some cases you might not want to serialize any of the values
+of the record, to do this, you can use the @code{no-serialization}
+literal.  There is also the @code{define-configuration/no-serialization}
+macro which is a shorthand of this.
+
+@lisp
+;; Nothing will be serialized to disk.
+(define-configuration foo-configuration
+  (field
+   (string "test")
+   "Some documentation.")
+  (no-serialization))
+
+;; The same thing as above.
+(define-configuration/no-serialization bar-configuration
+  (field
+   (string "test")
+   "Some documentation."))
+@end lisp   
+@end deffn
+
+@deffn {Scheme Syntax} define-maybe @var{type}
+Sometimes a field should not be serialized if the user doesn’t specify a
+value.  To achieve this, you can use the @code{define-maybe} macro to
+define a ``maybe type''; if the value of a maybe type is set to the
+@code{disabled}, it will not be serialized.
+
+When defining a ``maybe type'', the corresponding serializer for the
+regular type will be used by default.  For example, a field of type
+@code{maybe-string} will be serialized using the @code{serialize-string}
+procedure by default, you can of course change this by specifying a
+custom serializer procedure.  Likewise, the type of the value would have
+to be a string, unless it is set to the @code{disabled} symbol.
+
+@lisp
+(define-maybe string)
+
+(define (serialize-string field-name value)
+  @dots{})
+
+(define-configuration baz-configuration
+  (name
+   ;; Nothing will be serialized by default.  If set to a string, the
+   ;; `serialize-string' procedure will be used to serialize the string.
+   (maybe-string 'disabled)
+   "The name of this module."))
+@end lisp
+
+Like with @code{define-configuration}, one can set a prefix for the
+serializer name by using the @code{prefix} literal.
+
+@lisp
+(define-maybe integer
+  (prefix baz-))
+
+(define (baz-serialize-interger field-name value)
+  @dots{})
+@end lisp
+
+There is also the @code{no-serialization} literal, which when set means
+that no serializer will be defined for the ``maybe type'', regardless of
+its value is @code{disabled} or not.
+@code{define-maybe/no-serialization} is a shorthand for specifying the
+@code{no-serialization} literal.
+
+@lisp
+(define-maybe/no-serialization symbol)
+
+(define-configuration/no-serialization test-configuration
+  (mode
+   (maybe-symbol 'disabled)
+   "Docstring."))
+@end lisp
+@end deffn
+
+@deffn {Scheme Procedure} serialize-configuration @var{configuration} @
+@var{fields}
+Return a G-expression that contains the values corresponding to the
+@var{fields} of @var{configuration}, a record that has been generated by
+@code{define-configuration}.  The G-expression can then be serialized to
+disk by using something like @code{mixed-text-file}.
+@end deffn
+
+@deffn {Scheme Procedure} validate-configuration @var{configuration}
+@var{fields}
+Type-check @var{fields}, a list of field names of @var{configuration}, a
+configuration record created by @code{define-configuration}.
+@end deffn
+
+@deffn {Scheme Procedure} empty-serializer @var{field-name} @var{value}
+A serializer that just returns an empty string.  The
+@code{serialize-package} procedure is an alias for this.
+@end deffn
+
+Once you have defined a configuration record, you will most likely also
+want to document it so that other people know to use it.  To help with
+that, there are two procedures, both of which are documented below.
+
+@deffn {Scheme Procedure} generate-documentation @var{documentation} @
+@var{documentation-name}
+Generate a Texinfo fragment from the docstrings in @var{documentation},
+a list of @code{(@var{label} @var{fields} @var{sub-documentation} ...)}.
+@var{label} should be a symbol and should be the name of the
+configuration record.  @var{fields} should be a list of all the fields
+available for the configuration record.
+
+@var{sub-documentation} is a @code{(@var{field-name}
+@var{configuration-name})} tuple.  @var{field-name} is the name of the
+field which takes another configuration record as its value, and
+@var{configuration-name} is the name of that configuration record.
+
+@var{sub-documentation} is only needed if there are nested configuration
+records.  For example, the @code{getmail-configuration} record
+(@pxref{Mail Services}) accepts a @code{getmail-configuration-file}
+record in one of its @code{rcfile} field, therefore documentation for
+@code{getmail-configuration-file} is nested in
+@code{getmail-configuration}.
+
+@lisp
+(generate-documentation
+  `((getmail-configuration ,getmail-configuration-fields
+     (rcfile getmail-configuration-file))
+    @dots{})
+  'getmail-configuration)
+@end lisp
+
+@var{documentation-name} should be a symbol and should be the name of
+the configuration record.
+
+@end deffn
+
+@deffn {Scheme Procedure} configuration->documentation
+@var{configuration-symbol}
+Take @var{configuration-symbol}, the symbol corresponding to the name
+used when defining a configuration record with
+@code{define-configuration}, and print the Texinfo documentation of its
+fields.  This is useful if there aren’t any nested configuration records
+since it only prints the documentation for the top-level fields.
+@end deffn
+
+As of right now, there is no automated way to generate documentation for
+configuration records and put them in the manual.  Instead, every
+time you make a change to the docstrings of a configuration record, you
+have to manually call @code{generate-documentation} or
+@code{configuration->documentation}, and paste the output into the
+@file{doc/guix.texi} file.
+
+@c TODO: Actually test this
+Below is an example of a record type created using
+@code{define-configuration} and friends.
+
+@lisp
+(use-modules (gnu services)
+             (guix gexp)
+             (gnu services configuration)
+             (srfi srfi-26)
+             (srfi srfi-1))
+
+;; Turn field names, which are Scheme symbols into strings
+(define (uglify-field-name field-name)
+  (let ((str (symbol->string field-name)))
+    ;; field? -> is-field
+    (if (string-suffix? "?" str)
+        (string-append "is-" (string-drop-right str 1))
+        str)))
+
+(define (serialize-string field-name value)
+  #~(string-append #$(uglify-field-name field-name) " = " #$value "\n"))
+
+(define (serialize-integer field-name value)
+  (serialize-string field-name (number->string value)))
+
+(define (serialize-boolean field-name value)
+  (serialize-string field-name (if value "true" "false")))
+
+(define (serialize-contact-name field-name value)
+  #~(string-append "\n[" #$value "]\n"))
+
+(define (list-of-contact-configurations? lst)
+  (every contact-configuration? lst))
+
+(define (serialize-list-of-contact-configurations field-name value)
+  #~(string-append #$@@(map (cut serialize-configuration <>
+                                contact-configuration-fields)
+                           value)))
+
+(define (serialize-contacts-list-configuration configuration)
+  (mixed-text-file
+   "contactrc"
+   #~(string-append "[Owner]\n"
+                    #$(serialize-configuration
+                       configuration contacts-list-configuration-fields))))
+
+(define-maybe integer)
+(define-maybe string)
+
+(define-configuration contact-configuration
+  (name
+   (string)
+   "The name of the contact."
+   serialize-contact-name)
+  (phone-number
+   (maybe-integer 'disabled)
+   "The person's phone number.")
+  (email
+   (maybe-string 'disabled)
+   "The person's email address.")
+  (married?
+   (boolean)
+   "Whether the person is married."))
+
+(define-configuration contacts-list-configuration
+  (name
+   (string)
+   "The name of the owner of this contact list.")
+  (email
+   (string)
+   "The owner's email address.")
+  (contacts
+   (list-of-contact-configurations '())
+   "A list of @@code@{contact-configuation@} records which contain
+information about all your contacts."))
+@end lisp
+
+A contacts list configuration could then be created like this:
+
+@lisp
+(define my-contacts
+  (contacts-list-configuration
+   (name "Alice")
+   (email "alice@@example.org")
+   (contacts
+    (list (contact-configuration
+           (name "Bob")
+           (phone-number 1234)
+           (email "bob@@gnu.org")
+           (married? #f))
+          (contact-configuration
+           (name "Charlie")
+           (phone-number 0000)
+           (married? #t))))))
+@end lisp
+
+After serializing the configuration to disk, the resulting file would
+look like this:
+
+@example
+[owner]
+name = Alice
+email = alice@@example.org
+
+[Bob]
+phone-number = 1234
+email = bob@@gnu.org
+is-married = false
+
+[Charlie]
+phone-number = 0
+is-married = true
+@end example
+
+
 @node Home Configuration
 @chapter Home Configuration
 @cindex home configuration
@@ -35435,12 +37314,26 @@ still in an experimental stage, though.
 @section Declaring the Home Environment
 The home environment is configured by providing a
 @code{home-environment} declaration in a file that can be passed to the
-@command{guix home} command (@pxref{Invoking guix home}).  A simple
-setup can include Bash and a custom text configuration, like in the
-example below.  Don't be afraid to declare home environment parts, which
-overlaps with your current dotfiles, before installing any configuration
-files, Guix Home will back up existing config files to a separate place
-in the home folder.
+@command{guix home} command (@pxref{Invoking guix home}).  The easiest
+way to get started is by generating an initial configuration with
+@command{guix home import}:
+
+@example
+guix home import ~/src/guix-config
+@end example
+
+The @command{guix home import} command reads some of the ``dot files''
+such as @file{~/.bashrc} found in your home directory and copies them to
+the given directory, @file{~/src/guix-config} in this case; it also
+reads the contents of your profile, @file{~/.guix-profile}, and, based
+on that, it populates @file{~/src/guix-config/home-configuration.scm}
+with a Home configuration that resembles your current configuration.
+
+A simple setup can include Bash and a custom text configuration, like in
+the example below.  Don't be afraid to declare home environment parts,
+which overlaps with your current dot files: before installing any
+configuration files, Guix Home will back up existing config files to a
+separate place in the home directory.
 
 @quotation Note
 It is highly recommended that you manage your shell or shells with Guix
@@ -35463,9 +37356,27 @@ There is no daemon (at least not necessarily) related to a home service,
 a home service is just an element that is used to declare part of home
 environment and extend other parts of it.  The extension mechanism
 discussed in the previous chapter (@pxref{Defining Services}) should not
-be confused with @ref{Shepherd Services}.  Using this extension
+be confused with Shepherd services (@pxref{Shepherd Services}).  Using this extension
 mechanism and some Scheme code that glues things together gives the user
 the freedom to declare their own, very custom, home environments.
+
+Once you have a configuration file that suits your needs, you can
+reconfigure your home by running:
+
+@example
+guix home reconfigure config.scm
+@end example
+
+This ``builds'' your home environment and creates @file{~/.guix-home}
+pointing to it.  Voilà!
+
+@quotation Note
+Make sure the operating system has elogind, systemd, or a similar
+mechanism to create the XDG run-time directory and has the
+@env{XDG_RUNTIME_DIR} variable set.  Failing that, the
+@file{on-first-login} script will not execute anything, and processes
+like user Shepherd and its descendants will not start.
+@end quotation
 
 @node Configuring the Shell
 @section Configuring the Shell
@@ -35534,7 +37445,7 @@ Service}; declare daemons by extending @ref{Shepherd Home Service}; add
 commands, which will be invoked on by the Bash by extending
 @ref{Shells Home Services, @code{home-bash-service-type}}.
 
-A good way to discover avaliable home services is using the
+A good way to discover available home services is using the
 @command{guix home search} command (@pxref{Invoking guix home}).  After
 the required home services are found, include its module with the
 @code{use-modules} form (@pxref{use-modules,, Using Guile Modules,
@@ -35555,9 +37466,9 @@ services)}.
 
 @node Essential Home Services
 @subsection Essential Home Services
-There are a few essential services defined in @code{(gnu
-home-services)}, they are mostly for internal use and are required to
-build a home environment, but some of them will be useful for the end
+There are a few essential home services defined in
+@code{(gnu services)}, they are mostly for internal use and are required
+to build a home environment, but some of them will be useful for the end
 user.
 
 @cindex environment variables
@@ -35622,7 +37533,7 @@ The service of this type will be instantiated by every home environment
 automatically, there is no need to define it, but you may want to extend
 it with a list of packages if you want to install additional packages
 into your profile.  Other services, which need to make some programs
-avaliable to the user will also extend this service type.
+available to the user will also extend this service type.
 
 The extension value is just a list of packages:
 
@@ -35658,9 +37569,9 @@ redundant executions of the script if multiple login shells are spawned.
 
 It can be extended with a gexp.  However, to autostart an application,
 users @emph{should not} use this service, in most cases it's better to extend
-@code{home-shpeherd-service-type} with a Shepherd service
+@code{home-shepherd-service-type} with a Shepherd service
 (@pxref{Shepherd Services}), or extend the shell's startup file with
-required command using the appropriate service type.
+the required command using the appropriate service type.
 @end defvr
 
 @defvr {Scheme Variable} home-activation-service-type
@@ -35702,10 +37613,10 @@ Available @code{home-shell-profile-configuration} fields are:
 @item @code{profile} (default: @code{()}) (type: text-config)
 @code{home-shell-profile} is instantiated automatically by
 @code{home-environment}, DO NOT create this service manually, it can
-only be extended.  @code{profile} is a list of strings or gexps, which
+only be extended.  @code{profile} is a list of file-like objects, which
 will go to @file{~/.profile}.  By default @file{~/.profile} contains the
-initialization code, which have to be evaluated by login shell to make
-home-environment's profile avaliable to the user, but other commands can
+initialization code which must be evaluated by the login shell to make
+home-environment's profile available to the user, but other commands can
 be added to the file if it is really necessary.  In most cases shell's
 configuration files are preferred places for user's customizations.
 Extend home-shell-profile service only if you really know what you do.
@@ -35716,6 +37627,7 @@ Extend home-shell-profile service only if you really know what you do.
 
 @subsubheading Bash Home Service
 
+@anchor{home-bash-configuration}
 @deftp {Data Type} home-bash-configuration
 Available @code{home-bash-configuration} fields are:
 
@@ -35724,32 +37636,85 @@ Available @code{home-bash-configuration} fields are:
 The Bash package to use.
 
 @item @code{guix-defaults?} (default: @code{#t}) (type: boolean)
-Add sane defaults like reading @file{/etc/bashrc}, coloring output for
-@code{ls} provided by guix to @file{.bashrc}.
+Add sane defaults like reading @file{/etc/bashrc} and coloring the output of
+@command{ls} to the end of the @file{.bashrc} file.
 
 @item @code{environment-variables} (default: @code{()}) (type: alist)
-Association list of environment variables to set for the Bash session.
+Association list of environment variables to set for the Bash session.  The
+rules for the @code{home-environment-variables-service-type} apply
+here (@pxref{Essential Home Services}).  The contents of this field will be
+added after the contents of the @code{bash-profile} field.
+
+@item @code{aliases} (default: @code{()}) (type: alist)
+Association list of aliases to set for the Bash session.  The aliases
+will be defined after the contents of the @code{bashrc} field has been
+put in the @file{.bashrc} file.  The alias will automatically be quoted,
+so something line this:
+
+@lisp
+'((\"ls\" . \"ls -alF\"))
+@end lisp
+
+turns into
+
+@example
+alias ls=\"ls -alF\"
+@end example
 
 @item @code{bash-profile} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.bash_profile}.
+List of file-like objects, which will be added to @file{.bash_profile}.
 Used for executing user's commands at start of login shell (In most
 cases the shell started on tty just after login).  @file{.bash_login}
 won't be ever read, because @file{.bash_profile} always present.
 
 @item @code{bashrc} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.bashrc}.  Used
+List of file-like objects, which will be added to @file{.bashrc}.  Used
 for executing user's commands at start of interactive shell (The shell
 for interactive usage started by typing @code{bash} or by terminal app
 or any other program).
 
 @item @code{bash-logout} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.bash_logout}.
+List of file-like objects, which will be added to @file{.bash_logout}.
 Used for executing user's commands at the exit of login shell.  It won't
 be read in some cases (if the shell terminates by exec'ing another
 process for example).
 
 @end table
+@end deftp
 
+You can extend the Bash service by using the @code{home-bash-extension}
+configuration record, whose fields most mirror that of
+@code{home-bash-configuration} (@pxref{home-bash-configuration}).  The
+contents of the extensions will be added to the end of the corresponding
+Bash configuration files (@pxref{Bash Startup Files,,, bash, The GNU
+Bash Reference Manual}.
+
+@deftp {Data Type} home-bash-extension
+Available @code{home-bash-extension} fields are:
+
+@table @asis
+@item @code{environment-variables} (default: @code{()}) (type: alist)
+Additional environment variables to set.  These will be combined with the
+environment variables from other extensions and the base service to form one
+coherent block of environment variables.
+
+@item @code{aliases} (default: @code{()}) (type: alist)
+Additional aliases to set.  These will be combined with the aliases from
+other extensions and the base service.
+
+@item @code{bash-profile} (default: @code{()}) (type: text-config)
+Additional text blocks to add to @file{.bash_profile}, which will be combined
+with text blocks from other extensions and the base service.
+
+@item @code{bashrc} (default: @code{()}) (type: text-config)
+Additional text blocks to add to @file{.bashrc}, which will be combined
+with text blocks from other extensions and the base service.
+
+@item @code{bash-logout} (default: @code{()}) (type: text-config)
+Additional text blocks to add to @file{.bash_logout}, which will be combined
+with text blocks from other extensions and the base service.
+
+@end table
 @end deftp
 
 @subsubheading Zsh Home Service
@@ -35771,30 +37736,30 @@ Shell startup process will continue with
 Association list of environment variables to set for the Zsh session.
 
 @item @code{zshenv} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.zshenv}.  Used
+List of file-like objects, which will be added to @file{.zshenv}.  Used
 for setting user's shell environment variables.  Must not contain
 commands assuming the presence of tty or producing output.  Will be read
 always.  Will be read before any other file in @env{ZDOTDIR}.
 
 @item @code{zprofile} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.zprofile}.  Used
+List of file-like objects, which will be added to @file{.zprofile}.  Used
 for executing user's commands at start of login shell (In most cases the
 shell started on tty just after login).  Will be read before
 @file{.zlogin}.
 
 @item @code{zshrc} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.zshrc}.  Used
+List of file-like objects, which will be added to @file{.zshrc}.  Used
 for executing user's commands at start of interactive shell (The shell
 for interactive usage started by typing @code{zsh} or by terminal app or
 any other program).
 
 @item @code{zlogin} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.zlogin}.  Used
+List of file-like objects, which will be added to @file{.zlogin}.  Used
 for executing user's commands at the end of starting process of login
 shell.
 
 @item @code{zlogout} (default: @code{()}) (type: text-config)
-List of strings or gexps, which will be added to @file{.zlogout}.  Used
+List of file-like objects, which will be added to @file{.zlogout}.  Used
 for executing user's commands at the exit of login shell.  It won't be
 read in some cases (if the shell terminates by exec'ing another process
 for example).
@@ -35810,7 +37775,7 @@ for example).
 @cindex mcron
 @cindex scheduling jobs
 
-The @code{(gnu home-services mcron)} module provides an interface to
+The @code{(gnu home services mcron)} module provides an interface to
 GNU@tie{}mcron, a daemon to run jobs at scheduled times (@pxref{Top,,,
 mcron, GNU@tie{}mcron}).  The information about system's mcron is
 applicable here (@pxref{Scheduled Job Execution}), the only difference
@@ -35844,9 +37809,15 @@ specifications,, mcron, GNU@tie{}mcron}).
 @end deftp
 
 @node Shepherd Home Service
-@subsection Managing User's Daemons
+@subsection Managing User Daemons
 
-@cindex shepherd services
+@cindex shepherd services, for users
+The @code{(gnu home services shepherd)} module supports the definitions
+of per-user Shepherd services (@pxref{Introduction,,, shepherd, The GNU
+Shepherd Manual}).  You extend @code{home-shepherd-service-type} with
+new services; Guix Home then takes care of starting the @code{shepherd}
+daemon for you when you log in, which in turns starts the services you
+asked for.
 
 @defvr {Scheme Variable} home-shepherd-service-type
 The service type for the userland Shepherd, which allows one to manage
@@ -35857,10 +37828,10 @@ init process (PID 1), but almost all other information described in
 This is the service type that extensions target when they want to create
 shepherd services (@pxref{Service Types and Services}, for an example).
 Each extension must pass a list of @code{<shepherd-service>}.  Its
-value must be a @code{shepherd-configuration}, as described below.
+value must be a @code{home-shepherd-configuration}, as described below.
 @end defvr
 
-@deftp {Data Type} shepherd-configuration
+@deftp {Data Type} home-shepherd-configuration
 This data type represents the Shepherd's configuration.
 
 @table @code
@@ -35890,7 +37861,7 @@ guix home @var{options}@dots{} @var{action} @var{file}
 
 @var{file} must be the name of a file containing a
 @code{home-environment} declaration.  @var{action} specifies how the
-home environment is instantiated, but there are few auxuliary actions
+home environment is instantiated, but there are few auxiliary actions
 which don't instantiate it.  Currently the following values are
 supported:
 
@@ -35906,51 +37877,34 @@ regular expressions, sorted by relevance:
 @example
 $ guix home search shell
 name: home-shell-profile
-location: gnu/home-services/shells.scm:73:2
+location: gnu/home/services/shells.scm:100:2
 extends: home-files
-description: Create `~/.profile', which is used for environment initialization
-+ of POSIX compatible login shells.  Can be extended with a list of strings or
-+ gexps.
+description: Create `~/.profile', which is used for environment initialization of POSIX compliant login shells.
++ This service type can be extended with a list of file-like objects.
 relevance: 6
 
-name: home-zsh-plugin-manager
-location: gnu/home-services/shellutils.scm:28:2
-extends: home-zsh home-profile
-description: Install plugins in profile and configure Zsh to load them.
-relevance: 1
-
-name: home-zsh-direnv
-location: gnu/home-services/shellutils.scm:69:2
-extends: home-profile home-zsh
-description: Enables `direnv' for `zsh'.  Adds hook to `.zshrc' and installs a
-+ package in the profile.
-relevance: 1
-
-name: home-zsh-autosuggestions
-location: gnu/home-services/shellutils.scm:43:2
-extends: home-zsh-plugin-manager home-zsh
-description: Enables Fish-like fast/unobtrusive autosuggestions for `zsh' and
-+ sets reasonable default values for some plugin's variables to improve perfomance
-+ and adjust behavior: `(history completion)' is set for strategy, manual rebind
-+ and async are enabled.
-relevance: 1
+name: home-fish
+location: gnu/home/services/shells.scm:640:2
+extends: home-files home-profile
+description: Install and configure Fish, the friendly interactive shell.
+relevance: 3
 
 name: home-zsh
-location: gnu/home-services/shells.scm:236:2
+location: gnu/home/services/shells.scm:290:2
 extends: home-files home-profile
 description: Install and configure Zsh.
 relevance: 1
 
 name: home-bash
-location: gnu/home-services/shells.scm:388:2
+location: gnu/home/services/shells.scm:508:2
 extends: home-files home-profile
-description: Install and configure Bash.
+description: Install and configure GNU Bash.
 relevance: 1
 
 @dots{}
 @end example
 
-As for @command{guix package --search}, the result is written in
+As for @command{guix search}, the result is written in
 @code{recutils} format, which makes it easy to filter the output
 (@pxref{Top, GNU recutils databases,, recutils, GNU recutils manual}).
 
@@ -35960,7 +37914,7 @@ Switching means that the activation script will be evaluated and (in
 basic scenario) symlinks to configuration files generated from
 @code{home-environment} declaration will be created in @file{~}.  If the
 file with the same path already exists in home folder it will be moved
-to @file{~/TIMESTAMP-guix-home-legacy-configs-backup}, where TIMESTAMP
+to @file{~/@var{timestamp}-guix-home-legacy-configs-backup}, where @var{timestamp}
 is a current UNIX epoch time.
 
 @quotation Note
@@ -35973,7 +37927,7 @@ This effects all the configuration specified in @var{file}.  The command
 starts Shepherd services specified in @var{file} that are not currently
 running; if a service is currently running, this command will arrange
 for it to be upgraded the next time it is stopped (e.g.@: by @code{herd
-stop X} or @code{herd restart X}).
+stop @var{service}} or @code{herd restart @var{service}}).
 
 This command creates a new generation whose number is one greater than
 the current generation (as reported by @command{guix home
@@ -36061,7 +38015,7 @@ guix home delete-generations
 @end example
 
 You can also select the generations you want to delete.  The example below
-deletes all the home generations that are more than two month old:
+deletes all the home generations that are more than two months old:
 
 @example
 guix home delete-generations 2m
@@ -36090,6 +38044,33 @@ generations that are up to 10 days old:
 @example
 $ guix home list-generations 10d
 @end example
+
+@item import
+Generate a @dfn{home environment} from the packages in the default
+profile and configuration files found in the user's home directory.  The
+configuration files will be copied to the specified directory, and a
+@file{home-configuration.scm} will be populated with the home
+environment.  Note that not every home service that exists is supported
+(@pxref{Home Services}).
+
+@example
+$ guix home import ~/guix-config
+guix home: '/home/alice/guix-config' populated with all the Home configuration files
+@end example
+
+@end table
+
+@var{options} can contain any of the common build options (@pxref{Common
+Build Options}).  In addition, @var{options} can contain one of the
+following:
+
+@table @option
+
+@item --expression=@var{expr}
+@itemx -e @var{expr}
+Consider the home-environment @var{expr} evaluates to.
+This is an alternative to specifying a file which evaluates to a home
+environment.
 
 @end table
 
@@ -36122,7 +38103,9 @@ $ info -k TLS
 @end example
 
 @noindent
-The command below searches for the same keyword in man pages:
+The command below searches for the same keyword in man
+pages@footnote{The database searched by @command{man -k} is only created
+in profiles that contain the @code{man-db} package.}:
 
 @example
 $ man -k TLS
@@ -36217,6 +38200,20 @@ GDB}):
 
 From there on, GDB will pick up debugging information from the
 @file{.debug} files under @file{~/.guix-profile/lib/debug}.
+
+Below is an alternative GDB script which is useful when working with
+other profiles.  It takes advantage of the optional Guile integration in
+GDB.  This snippet is included by default on Guix System in the
+@file{~/.gdbinit} file.
+
+@example
+guile
+(use-modules (gdb))
+(execute (string-append "set debug-file-directory "
+                        (or (getenv "GDB_DEBUG_FILE_DIRECTORY")
+                            "~/.guix-profile/lib/debug")))
+end
+@end example
 
 In addition, you will most likely want GDB to be able to show the source
 code being debugged.  To do that, you will have to unpack the source

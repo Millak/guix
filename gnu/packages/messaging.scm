@@ -3,13 +3,13 @@
 ;;; Copyright © 2014, 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016, 2017, 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
-;;; Copyright © 2017, 2018, 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2018, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
@@ -29,6 +29,9 @@
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +61,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
@@ -85,6 +89,8 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages less)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages linux)
@@ -134,6 +140,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -170,8 +177,7 @@
                  ;; Use absolute path of 'xdg-open' program.
                  (("xdg-open") xdg-open))))))))
     (inputs
-     `(("go-github-com-pkg-errors" ,go-github-com-pkg-errors)
-       ("xdg-utils" ,xdg-utils)))
+     (list go-github-com-pkg-errors xdg-utils))
     (home-page "https://roob.re/omemo-wget")
     (synopsis "Program to download and decrypt @code{aesgcm://} URLs")
     (description "OMEMO-wget is a tool to handle cryptographic URLs, generated
@@ -238,7 +244,7 @@ Its design goals are simplicity and stability.")
 (define-public libgnt
   (package
     (name "libgnt")
-    (version "2.14.1")
+    (version "2.14.3")
     (source
      (origin
        (method url-fetch)
@@ -246,7 +252,7 @@ Its design goals are simplicity and stability.")
         (string-append "mirror://sourceforge/pidgin/libgnt/"
                        version "/libgnt-" version ".tar.xz"))
        (sha256
-        (base32 "1n2bxg0ignn53c08cp69pj4sdg53kwlqn23rincyjmpr327fdhsy"))))
+        (base32 "08v14fjcx2wx6c573wllq015l6zc8qkpz8rrl6qhp7crf9zlbxap"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -259,16 +265,14 @@ Its design goals are simplicity and stability.")
                (("'/usr'")
                 (string-append "'"
                                (assoc-ref inputs "ncurses")
-                               "'")))
-             #t))
+                               "'")))))
          (add-before 'configure 'patch-docbook-xml
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "doc"
                (substitute* "libgnt-docs.xml"
                  (("http://www.oasis-open.org/docbook/xml/4.1.2/")
                   (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t))
+                                 "/xml/dtd/docbook/"))))))
          (add-after 'install 'move-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -276,8 +280,7 @@ Its design goals are simplicity and stability.")
                (mkdir-p (string-append doc "/share"))
                (rename-file
                 (string-append out "/share/gtk-doc")
-                (string-append doc "/share/gtk-doc"))
-               #t))))))
+                (string-append doc "/share/gtk-doc"))))))))
     (native-inputs
      `(("docbook-xml" ,docbook-xml-4.1.2)
        ("glib:bin" ,glib "bin")
@@ -285,7 +288,7 @@ Its design goals are simplicity and stability.")
        ("gtk-doc" ,gtk-doc)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("ncurses" ,ncurses)))
+     (list ncurses))
     (propagated-inputs
      `(("glib" ,glib)
        ("libxml" ,libxml2)
@@ -313,26 +316,25 @@ user interfaces in a fast and easy way.  It is based on GLib and ncurses.")
         (base32 "1s16cripy5w9k12534qb012iwc5m9qcjyrywgsziyn3kl3i0aa8h"))))
     (build-system gnu-build-system)
     (arguments
+     ;; 'test/manual/userconfig.h' contains definitions in lieu of
+     ;; declarations, hence '-fcommon'.
      `(#:configure-flags
-       (list
-        "--disable-static")
+       (list "--disable-static" "CFLAGS=-O2 -g -fcommon")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-shebangs
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "protobufgen.sh"
                (("/bin/sh")
-                (string-append (assoc-ref inputs "bash")
-                               "/bin/sh")))
-             #t)))))
+                (search-input-file inputs "/bin/sh"))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("bash" ,bash)
-       ("doxygen" ,doxygen)
-       ("libtool" ,libtool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           bash
+           doxygen
+           libtool
+           perl
+           pkg-config))
     (inputs
      `(("curl" ,curl)
        ("expat" ,expat)
@@ -341,7 +343,7 @@ user interfaces in a fast and easy way.  It is based on GLib and ncurses.")
        ("openssl" ,openssl)
        ("zlib" ,zlib)))
     (propagated-inputs
-     `(("gnutls" ,gnutls)))
+     (list gnutls))
     (synopsis "Library for handling the protocol of Gadu-Gadu")
     (description "LibGadu is library for handling Gadu-Gadu instant messenger
 protocol.  The library is written in C and aims to be operating system and
@@ -376,11 +378,7 @@ environment independent.")
              (delete-file "Makefile.in")
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool perl pkg-config))
     (synopsis "SILC ToolKit")
     (description "SILC (Secure Internet Live Conferencing) is a modern and secure
 conferencing protocol.  It provides all the common conferencing services like
@@ -392,6 +390,46 @@ conferencing.")
      (list
       license:gpl2+
       license:bsd-2))))
+
+(define-public qxmpp
+  (package
+    (name "qxmpp")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/qxmpp-project/qxmpp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1knpq1jkwk0lxdwczbmzf7qrjvlxba9yr40nbq9s5nqkcx6q1c3i"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DBUILD_EXAMPLES=false"
+                               "-DWITH_GSTREAMER=true")
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "ctest" "-E"
+                       (string-join ;; These tests use the network.
+                        (list "tst_qxmppiceconnection"
+                              "tst_qxmppcallmanager"
+                              "tst_qxmpptransfermanager")
+                        "|"))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list gstreamer qtbase-5))
+    (home-page "https://github.com/qxmpp-project/qxmpp")
+    (synopsis "XMPP client and server library")
+    (description
+     "QXmpp is a XMPP client and server library written in C++ and uses the Qt
+framework.  It builds XMPP clients complying with the XMPP Compliance Suites
+2021 for IM and Advanced Mobile.")
+    (license license:lgpl2.1+)))
 
 (define-public meanwhile
   (package
@@ -411,13 +449,9 @@ conferencing.")
         (base32 "1k1gvmx1ikm0y1mdmm495rzkb00pl170jfaf2dy0n5aiiknkk7q3"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("doxygen" ,doxygen)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake doxygen libtool pkg-config))
     (propagated-inputs
-     `(("glib" ,glib)))
+     (list glib))
     (synopsis "Library for Lotus Instant Messaging")
     (description "Meanwhile is a library for connecting to a LIM (Lotus Instant
 Messaging, formerly Lotus Sametime, formerly VPBuddy) community.  It uses a
@@ -453,19 +487,17 @@ TCP sessions from existing clients.")
                 "'CC', 'gcc'"))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-setuptools" ,python-setuptools)
-       ("python-sphinx" ,python-sphinx)))
+     (list pkg-config python-setuptools python-sphinx))
     (inputs
-     `(("python-mpd2" ,python-mpd2)
-       ("python-potr" ,python-potr)
-       ("python-pyasn1" ,python-pyasn1)
-       ("python-pyasn1-modules" ,python-pyasn1-modules)
-       ("python-pygments" ,python-pygments)
-       ("python-pyinotify" ,python-pyinotify)
-       ;("python" ,python)
-       ("python-qrcode" ,python-qrcode)
-       ("python-slixmpp" ,python-slixmpp)))
+     (list python-mpd2
+           python-potr
+           python-pyasn1
+           python-pyasn1-modules
+           python-pygments
+           python-pyinotify
+           ;("python" ,python)
+           python-qrcode
+           python-slixmpp))
     (synopsis "Console Jabber/XMPP Client")
     (description "Poezio is a free console XMPP client (the protocol on which
 the Jabber IM network is built).
@@ -494,11 +526,11 @@ powerful, standard and open protocol.")
         (search-patches "libotr-test-auth-fix.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl)))                 ; for the test suite
+     (list perl))                 ; for the test suite
     (inputs
-     `(("libgpg-error" ,libgpg-error)))
+     (list libgpg-error))
     (propagated-inputs
-     `(("libgcrypt" ,libgcrypt)))    ; libotr headers include gcrypt.h
+     (list libgcrypt))    ; libotr headers include gcrypt.h
     (synopsis "Off-the-Record (OTR) Messaging Library and Toolkit")
     (description "OTR allows you to have private conversations over instant
 messaging by providing: (1) Encryption: No one else can read your instant
@@ -519,32 +551,99 @@ your private keys, no previous conversation is compromised.")
 
 (define-public libsignal-protocol-c
   (package
-  (name "libsignal-protocol-c")
-  (version "2.3.3")
-  (source (origin
-           (method git-fetch)
-           (uri (git-reference
-                  (url "https://github.com/WhisperSystems/libsignal-protocol-c")
-                  (commit (string-append "v" version))))
-           (file-name (git-file-name name version))
-           (sha256
-            (base32
-             "0z5p03vk15i6h870azfjgyfgxhv31q2vq6rfhnybrnkxq2wqzwhk"))))
-  (arguments
-   `(;; Required for proper linking and for tests to run.
-     #:configure-flags '("-DBUILD_SHARED_LIBS=on" "-DBUILD_TESTING=1")))
-  (build-system cmake-build-system)
-  (inputs `( ;; Required for tests:
-            ("check" ,check)
-            ("openssl" ,openssl)))
-  (native-inputs `(("pkg-config" ,pkg-config)))
-  (home-page "https://github.com/WhisperSystems/libsignal-protocol-c")
-  (synopsis "Implementation of a ratcheting forward secrecy protocol")
-  (description "libsignal-protocol-c is an implementation of a ratcheting
+   (name "libsignal-protocol-c")
+   (version "2.3.3")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                   (url "https://github.com/WhisperSystems/libsignal-protocol-c")
+                   (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0z5p03vk15i6h870azfjgyfgxhv31q2vq6rfhnybrnkxq2wqzwhk"))))
+   (arguments
+    `(;; Required for proper linking and for tests to run.
+      #:configure-flags '("-DBUILD_SHARED_LIBS=on" "-DBUILD_TESTING=1")))
+   (build-system cmake-build-system)
+   (inputs (list ;; Required for tests:
+                 check openssl))
+   (native-inputs (list pkg-config))
+   (home-page "https://github.com/WhisperSystems/libsignal-protocol-c")
+   (synopsis "Implementation of a ratcheting forward secrecy protocol")
+   (description "libsignal-protocol-c is an implementation of a ratcheting
 forward secrecy protocol that works in synchronous and asynchronous
 messaging environments.  It can be used with messaging software to provide
 end-to-end encryption.")
-  (license license:gpl3+)))
+   (license license:gpl3+)))
+
+(define-public axc
+  (package
+    (name "axc")
+    (version "0.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gkdr/axc")
+             (commit (string-append "v" version))))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           ;; Submodules
+           (delete-file-recursively "lib")))
+       (file-name
+        (git-file-name name version))
+       (sha256
+        (base32 "05sv7l6lk0xk4wb2bspc2sdpygrb1f0szzi82a1kyfm0fjz887b3"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (setenv "CC" "gcc")
+                        (setenv "PREFIX" out)))))
+       #:parallel-tests? #f))
+    (native-inputs (list cmocka pkg-config))
+    (inputs (list glib libgcrypt libsignal-protocol-c sqlite))
+    (synopsis "Client library for libsignal-protocol-c")
+    (description "This is a client library for @code{libsignal-protocol-c}.
+It implements the necessary interfaces using @code{libgcrypt} and
+@code{sqlite}.")
+    (home-page "https://github.com/gkdr/axc")
+    (license license:gpl3)))                  ;GPLv3-only, per license headers
+
+(define-public libomemo
+  (package
+    (name "libomemo")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gkdr/libomemo")
+             (commit (string-append "v" version))))
+       (file-name
+        (git-file-name name version))
+       (sha256
+        (base32 "1q3vyj8zk3vm0a4v6w8qya5dhk2yw04bga8799a0zl6907nf122k"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (setenv "CC" "gcc")
+                        (setenv "PREFIX" out)))))
+       #:parallel-tests? #f))
+    (native-inputs (list cmocka pkg-config))
+    (inputs (list glib libgcrypt minixml sqlite))
+    (synopsis "OMEMO C library")
+    (description "This library implements @acronym{OMEMO, OMEMO Multi-End
+Message and Object Encryption} of XMPP (XEP-0384) in C.")
+    (home-page "https://github.com/gkdr/libomemo")
+    (license license:expat)))
 
 (define-public bitlbee
   (package
@@ -557,14 +656,10 @@ end-to-end encryption.")
               (sha256
                (base32 "0zhhcbcr59sx9h4maf8zamzv2waya7sbsl7w74gbyilvy93dw5cz"))))
     (build-system gnu-build-system)
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ;; Note: Change to 'check' for versions > 3.6.
-                     ("check" ,check-0.12)))
-    (inputs `(("glib" ,glib)
-              ("libotr" ,libotr)
-              ("gnutls" ,gnutls)
-              ("python" ,python)
-              ("perl" ,perl)))
+    (native-inputs (list pkg-config
+                         ;; Note: Change to 'check' for versions > 3.6.
+                         check-0.12))
+    (inputs (list glib libotr gnutls python perl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -643,14 +738,14 @@ identi.ca and status.net).")
              (let ((sh (which "sh")))
                (substitute* "autogen.sh" (("/bin/sh") sh))
                (setenv "CONFIG_SHELL" sh)))))))
-    (inputs `(("glib" ,glib)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("autoconf" ,autoconf)
-                     ("automake" ,automake)
-                     ("texinfo" ,texinfo)
-                     ("libtool" ,libtool)
-                     ("bitlbee" ,bitlbee) ; needs bitlbee headers
-                     ("bash" ,bash)))
+    (inputs (list glib))
+    (native-inputs (list pkg-config
+                         autoconf
+                         automake
+                         texinfo
+                         libtool
+                         bitlbee ; needs bitlbee headers
+                         bash))
     (synopsis "Discord plugin for Bitlbee")
     (description "Bitlbee-discord is a plugin for Bitlbee which provides
 access to servers running the Discord protocol.")
@@ -694,11 +789,8 @@ access to servers running the Discord protocol.")
          #:make-flags (list "CC=gcc"
                             ,(string-append "PLUGIN_VERSION=" version))
          #:tests? #f))
-      (inputs `(("glib" ,glib)
-                ("json-glib" ,json-glib)
-                ("discount" ,discount)
-                ("pidgin" ,pidgin)))
-      (native-inputs `(("pkg-config" ,pkg-config)))
+      (inputs (list glib json-glib discount pidgin))
+      (native-inputs (list pkg-config))
       (synopsis "Purple plug-in to access Mattermost instant messaging")
       (description
        "Purple-Mattermost is a plug-in for Purple, the instant messaging library
@@ -709,15 +801,14 @@ used by Pidgin and Bitlbee, among others, to access
 (define-public hexchat
   (package
     (name "hexchat")
-    (version "2.14.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://dl.hexchat.net/hexchat/hexchat-"
-                                  version ".tar.xz"))
-              (patches (search-patches "hexchat-add-libera-chat.patch"))
-              (sha256
-               (base32
-                "10p829jm1r6kidkgf5lhqhyqc5mxdcq96q3zhadsckasvc9rs6lh"))))
+    (version "2.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dl.hexchat.net/hexchat/hexchat-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "0dnwhb2gi08i5v79vq0y2izs89wyk3by96jv99kgkidjic3k2bj1"))))
     (build-system meson-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
                      ("glib:bin" ,glib "bin")       ;need glib-genmarshal
@@ -728,14 +819,16 @@ used by Pidgin and Bitlbee, among others, to access
               ("enchant" ,enchant)
               ("gtk" ,gtk+-2)
               ("libcanberra" ,libcanberra)
-              ("libnotify" ,libnotify)
-              ("libproxy" ,libproxy)
               ("openssl" ,openssl)
 
               ;; Bindings for add-on scripts.
               ("luajit" ,luajit)
               ("perl-xml-parser" ,perl-xml-parser)
-              ("python-2" ,python-2)))
+              ("python" ,python)
+              ("python-cffi" ,python-cffi)
+
+              ;; For the ensuing WRAP-PROGRAM.
+              ("bash-minimal" ,bash-minimal)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -747,8 +840,15 @@ used by Pidgin and Bitlbee, among others, to access
              ;; just skip this code.
              (substitute* "meson_post_install.py"
                (("if 'DESTDIR' not in os.environ:")
-                 "if False:"))
-             #t)))))
+                "if False:"))))
+         (add-after 'install 'wrap-program
+           ;; Let it ‘initialize the Python-CFFI embedding logic’ at run time.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (wrap-program (string-append bin "/hexchat")
+                 `("GUIX_PYTHONPATH" ":" prefix
+                   (,(getenv "GUIX_PYTHONPATH"))))))))))
     (synopsis "Graphical IRC client")
     (description
      "HexChat lets you connect to multiple IRC networks at once.  The main
@@ -773,10 +873,7 @@ dictionaries.  HexChat can be extended with multiple addons.")
               (patches (search-patches "ngircd-handle-zombies.patch"))))
     (build-system gnu-build-system)
     ;; Needed for the test suite.
-    (native-inputs `(("procps" ,procps)
-                     ("expect" ,expect)
-                     ("inetutils" ,inetutils)
-                     ("openssl" ,openssl)))
+    (native-inputs (list procps expect inetutils openssl))
     ;; XXX Add libident.
     (inputs `(("zlib" ,zlib)
               ("libwrap" ,tcp-wrappers)
@@ -894,8 +991,7 @@ authentication.")
        ("tcl" ,tcl)
        ("tk" ,tk)))
     (propagated-inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+-2)))
+     (list glib gtk+-2))
     (arguments
      `(#:configure-flags
        (list
@@ -956,17 +1052,15 @@ many popular chat protocols.")
         (base32 "1i5s9rrgbyss9rszq6c6y53hwqyw1k86s40cpsfx5ccl9bprxdgl"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal intltool pkg-config))
     (inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+-2)
-       ("libgcrypt" ,libgcrypt)
-       ("libgpg-error" ,libgpg-error)
-       ("libotr" ,libotr)
-       ("perl" ,perl)
-       ("pidgin" ,pidgin)))
+     (list glib
+           gtk+-2
+           libgcrypt
+           libgpg-error
+           libotr
+           perl
+           pidgin))
     (home-page "https://otr.cypherpunks.ca/")
     (synopsis "Off-the-Record Messaging plugin for Pidgin")
     (description "Pidgin-OTR is a plugin that adds support for OTR to the Pidgin
@@ -1015,12 +1109,12 @@ control of your private keys, no previous conversation is compromised.")
        ("googletest-source" ,(package-source googletest))
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("cyrus-sasl" ,cyrus-sasl)
-       ("icu4c" ,icu4c)
-       ("openssl" ,openssl)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("zlib" ,zlib)))
+     (list cyrus-sasl
+           icu4c
+           openssl
+           perl
+           python
+           zlib))
     (home-page "https://wiki.znc.in/ZNC")
     (synopsis "IRC network bouncer")
     (description "ZNC is an @dfn{IRC network bouncer} or @dfn{BNC}.  It can
@@ -1032,25 +1126,25 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "2.0.2")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "nbxmpp" version))
        (sha256
-        (base32 "1482fva70i01w60fk70c0fhqmqgzi1fb4xflllz2v6c8mdqkd1m3"))))
+        (base32 "1s2phiipq7ks8vrd93p96dzd5wgmgg8q9h2rxsnh2gg7iy06gj9c"))))
     (build-system python-build-system)
     (native-inputs
-     `(("glib:bin" ,glib "bin")))
+     (list `(,glib "bin")))
     (inputs
-     `(("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("libsoup" ,libsoup)
-       ("python-gssapi" ,python-gssapi)
-       ("python-idna" ,python-idna)
-       ("python-precis-i18n" ,python-precis-i18n)
-       ("python-pygobject" ,python-pygobject)))
+     (list glib
+           glib-networking
+           libsoup-minimal-2
+           python-gssapi
+           python-idna
+           python-precis-i18n
+           python-pygobject))
     (synopsis "Non-blocking XMPP Module")
     (description "Python-nbxmpp is a Python library that provides a way for
 Python applications to use the XMPP network.  This library was initially a fork
@@ -1061,7 +1155,7 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
@@ -1070,7 +1164,7 @@ of xmpppy.")
                        (version-major+minor version)
                        "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "1vjzv8zg9s393xw81klcgbkn4h6j2blzla9iil5kqfrw7wmldskh"))
+        (base32 "1337qkpcv7j0fgws9scnk82mn2l7s17060vmrbh3ihinmxmbxg6x"))
        (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
@@ -1086,11 +1180,11 @@ of xmpppy.")
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-tests
            (lambda _
+             ;; XXX Gajim builds fine on some (my) machines but fails elsewhere:
              ;; ModuleNotFoundError: No module named 'gajim.gui.emoji_data'
              ;; https://dev.gajim.org/gajim/gajim/-/issues/10478
              (delete-file "test/lib/gajim_mocks.py")
-             (delete-file "test/unit/test_gui_interface.py")
-             #t))
+             (delete-file "test/unit/test_gui_interface.py")))
          (replace 'check
            (lambda _
              ;; Tests require a running X server.
@@ -1098,8 +1192,11 @@ of xmpppy.")
              (setenv "DISPLAY" ":1")
              ;; For missing '/etc/machine-id'.
              (setenv "DBUS_FATAL_WARNINGS" "0")
-             (invoke "dbus-launch" "python" "./setup.py" "test")
-             #t))
+             (invoke "dbus-launch" "python" "./setup.py" "test")))
+         ;; Loading gajim_remote require running session bus,
+         ;; which in-turn requires running elogind for XDG_RUNTIME_DIR;
+         ;; neither of which are possible inside build environment.
+         (delete 'sanity-check)
          (add-after 'install 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
          (add-after 'install 'glib-or-gtk-wrap
@@ -1115,8 +1212,7 @@ of xmpppy.")
                     (wrap-program file
                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("gajim" "gajim-remote" "gajim-history-manager")))
-             #t)))))
+                '("gajim" "gajim-remote" "gajim-history-manager"))))))))
     (native-search-paths
      (list
       (search-path-specification
@@ -1127,7 +1223,7 @@ of xmpppy.")
          "share/gajim/plugins")))
       ;; Gajim needs to use the propagated inputs of its plugins.
       (search-path-specification
-       (variable "PYTHONPATH")
+       (variable "GUIX_PYTHONPATH")
        (files
         (list
          (string-append
@@ -1135,7 +1231,7 @@ of xmpppy.")
           ;; FIXME: Cannot use this expression as it would
           ;; introduce a circular dependency at the top level.
           ;; (version-major+minor (package-version python))
-          "3.8"
+          "3.9"
           "/site-packages"))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -1159,11 +1255,13 @@ of xmpppy.")
        ("gst-plugins-base" ,gst-plugins-base)
        ("gtk+" ,gtk+)
        ("gupnp-igd" ,gupnp-igd)
+       ("libnice" ,libnice)
        ("libsecret" ,libsecret)
        ("libsoup" ,libsoup)
        ("libxss" ,libxscrnsaver)
        ("network-manager" ,network-manager)
        ("python-css-parser" ,python-css-parser)
+       ("python-dbus" ,python-dbus)
        ("python-keyring" ,python-keyring)
        ("python-nbxmpp" ,python-nbxmpp)
        ("python-packaging" ,python-packaging)
@@ -1173,7 +1271,7 @@ of xmpppy.")
        ("python-pygobject" ,python-pygobject)
        ("python-pyopenssl" ,python-pyopenssl)))
     (propagated-inputs
-     `(("dconf" ,dconf)))
+     (list dconf))
     (synopsis "Fully-featured XMPP client")
     (description "Gajim aims to be an easy to use and fully-featured XMPP chat
 client.  It is extensible via plugins, supports end-to-end encryption (OMEMO
@@ -1207,10 +1305,8 @@ and OpenPGP) and available in 29 languages.")
            (copy-recursively source share)
            #t))))
     (propagated-inputs
-     `(("python-axolotl" ,python-axolotl)
-       ("python-axolotl-curve25519" ,python-axolotl-curve25519)
-       ("python-cryptography" ,python-cryptography)
-       ("python-qrcode" ,python-qrcode)))
+     (list python-axolotl python-axolotl-curve25519 python-cryptography
+           python-qrcode))
     (synopsis "Gajim OMEMO plugin")
     (description "Gajim-OMEMO is a plugin that adds support for the OMEMO
 Encryption to Gajim.  OMEMO is an XMPP Extension Protocol (XEP) for secure
@@ -1245,9 +1341,7 @@ multi-client end-to-end encryption.")
            (copy-recursively source share)
            #t))))
     (propagated-inputs
-     `(("python-cryptography" ,python-cryptography)
-       ("python-gnupg" ,python-gnupg)
-       ("python-gpg" ,python-gpg)))
+     (list python-cryptography python-gnupg python-gpg))
     (synopsis "Gajim OpenPGP plugin")
     (description "Gajim-OpenPGP is a plugin that adds support for the OpenPGP
 Encryption to Gajim.")
@@ -1257,7 +1351,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
@@ -1265,7 +1359,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "13rk8b0sj35az32c0ii173g9ww231awmyb4jlk56jy38hpyp7x1g"))))
+        (base32 "0r5qn9k88d5rh8zzj9gs3bk3dsm795r0pgxs3kawyrsrqr8ny1ry"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1300,7 +1394,7 @@ Encryption to Gajim.")
      ;; NOTE: Commented-out lines are to be enabled in v0.3.0.
      `(("atk" ,atk)
        ("cairo" ,cairo)
-       ("gdk-pixbuf" ,gdk-pixbuf+svg)
+       ("librsvg" ,librsvg)
        ("glib" ,glib)
        ("glib-networking" ,glib-networking)
        ("gpgme" ,gpgme)
@@ -1316,7 +1410,7 @@ Encryption to Gajim.")
        ("libgee" ,libgee)
        ("libnice" ,libnice)
        ("libsignal-protocol-c" ,libsignal-protocol-c)
-       ("libsoup" ,libsoup)
+       ("libsoup" ,libsoup-minimal-2)
        ;;("libsrtp" ,libsrtp)             ;for calls support
        ("pango" ,pango)
        ("qrencode" ,qrencode)
@@ -1332,14 +1426,14 @@ default.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.11.9")
+    (version "0.11.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "02gzvsaq0l5lx608sfh7hfz14s6yfsr4sr4kzcsqd1cxljp35h6c"))))
+                "1q84s9cq7cgzd295qxa2iy0r3vd3v3chbck62bdx3pd6skk19my6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
@@ -1355,16 +1449,14 @@ default.")
              ;; The configure script aborts when it encounters unexpected
              ;; arguments.  Make it more tolerant.
              (substitute* "configure"
-               (("exit 1") ""))
-             #t))
+               (("exit 1") ""))))
          (add-after 'unpack 'fix-makefile
            (lambda _
              (substitute* "GNUmakefile"
                ;; prosodyctl needs to read the configuration file.
                (("^INSTALLEDCONFIG =.*") "INSTALLEDCONFIG = /etc/prosody\n")
                ;; prosodyctl needs a place to put auto-generated certificates.
-               (("^INSTALLEDDATA =.*") "INSTALLEDDATA = /var/lib/prosody\n"))
-             #t))
+               (("^INSTALLEDDATA =.*") "INSTALLEDDATA = /var/lib/prosody\n"))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Make sure all executables in "bin" find the required Lua
@@ -1400,17 +1492,16 @@ default.")
                              `("LUA_PATH"  ";" = (,lua-path))
                              `("LUA_CPATH" ";" = (,lua-cpath))
                              `("PATH" ":" prefix ,path)))
-                         (find-files bin ".*"))
-               #t))))))
+                         (find-files bin ".*"))))))))
     (inputs
-     `(("libidn" ,libidn)
-       ("openssl" ,openssl)
-       ("lua" ,lua-5.2)
-       ("lua5.2-bitop" ,lua5.2-bitop)
-       ("lua5.2-expat" ,lua5.2-expat)
-       ("lua5.2-socket" ,lua5.2-socket)
-       ("lua5.2-filesystem" ,lua5.2-filesystem)
-       ("lua5.2-sec" ,lua5.2-sec)))
+     (list libidn
+           openssl
+           lua-5.2
+           lua5.2-bitop
+           lua5.2-expat
+           lua5.2-socket
+           lua5.2-filesystem
+           lua5.2-sec))
     (home-page "https://prosody.im/")
     (synopsis "Jabber (XMPP) server")
     (description "Prosody is a modern XMPP communication server.  It aims to
@@ -1504,15 +1595,9 @@ and prevent message loss.")
       (build-system gnu-build-system)
       (arguments `(#:tests? #f)) ; FIXME: tests hang, some fail.
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)
-         ("check" ,check)
-         ("pkg-config" ,pkg-config)))
+       (list autoconf automake libtool check pkg-config))
       (inputs
-       `(("libsodium" ,libsodium)
-         ("opus" ,opus)
-         ("libvpx" ,libvpx)))
+       (list libsodium opus libvpx))
       (synopsis "Library for the Tox encrypted messenger protocol")
       (description
        "C library implementation of the Tox encrypted messenger protocol.")
@@ -1541,11 +1626,9 @@ and prevent message loss.")
                      ; for now.
     (build-system cmake-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (propagated-inputs
-     `(("libsodium" ,libsodium)
-       ("opus" ,opus)
-       ("libvpx" ,libvpx)))
+     (list libsodium opus libvpx))
     (home-page "https://tox.chat")
     (synopsis "Library for the Tox encrypted messenger protocol")
     (description
@@ -1577,16 +1660,15 @@ messenger protocol.")
           (lambda* (#:key inputs outputs #:allow-other-keys)
             (substitute* "../source/src/xlib/gtk.c"
                          (("libgtk-3.so")
-                         (string-append (assoc-ref inputs "gtk+")
-                                        "/lib/libgtk-3.so")))))
+                          (search-input-file inputs "/lib/libgtk-3.so")))))
         (add-after 'install 'wrap-program
           (lambda* (#:key inputs outputs #:allow-other-keys)
             (wrap-program (string-append (assoc-ref outputs "out")
                                          "/bin/utox")
             ;; For GtkFileChooserDialog.
-            `("GSETTINGS_SCHEMA_DIR" =
-              (,(string-append (assoc-ref inputs "gtk+")
-                               "/share/glib-2.0/schemas")))))))))
+             `("GSETTINGS_SCHEMA_DIR" =
+               (,(string-append (assoc-ref inputs "gtk+")
+                                "/share/glib-2.0/schemas")))))))))
    (inputs
     `(("dbus" ,dbus)
       ("filteraudio" ,filteraudio)
@@ -1601,8 +1683,7 @@ messenger protocol.")
       ("openal" ,openal)
       ("v4l-utils" ,v4l-utils)))
    (native-inputs
-    `(("check" ,check)
-      ("pkg-config" ,pkg-config)))
+    (list check pkg-config))
    (synopsis "Lightweight Tox client")
    (description
     "uTox is a lightweight Tox client.  Tox is a distributed and secure
@@ -1613,7 +1694,7 @@ instant messenger with audio and video chat capabilities.")
 (define-public qtox
   (package
     (name "qtox")
-    (version "1.17.3")
+    (version "1.17.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/qTox/qTox/releases"
@@ -1621,54 +1702,51 @@ instant messenger with audio and video chat capabilities.")
                                   "/v" version ".tar.gz"))
               (sha256
                (base32
-                "11n7si9wdpf80iwkvbspp14dh5jrwm7hxkj8vqhn5pkc48c5bh9j"))
+                "086hvm0q2vl2lq8zlp8s9sivlic6sg7ga5ixz01hbsyrashvil63"))
               (file-name (string-append name "-" version ".tar.gz"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-reproducibility-issues
-           (lambda _
-             (substitute* "src/main.cpp"
-               (("__DATE__") "\"\"")
-               (("__TIME__") "\"\"")
-               (("TIMESTAMP") "\"\""))
-             #t))
-         (add-after 'unpack 'disable-network-tests
-           (lambda _
-             ;; These tests require network access.
-             (substitute* "cmake/Testing.cmake"
-               (("auto_test\\(core core\\)") "# auto_test(core core)")
-               (("auto_test\\(net bsu\\)") "# auto_test(net bsu)"))
-             #t))
-         ;; Ensure that icons are found at runtime.
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/qtox")
-                 `("QT_PLUGIN_PATH" prefix
-                   ,(list (string-append (assoc-ref inputs "qtsvg")
-                                         "/lib/qt5/plugins/"))))))))))
-    (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("filteraudio" ,filteraudio)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+-2)
-       ("libsodium" ,libsodium)
-       ("c-toxcore" ,c-toxcore)
-       ("libvpx" ,libvpx)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libx11" ,libx11)
-       ("libexif" ,libexif)
-       ("sqlite" ,sqlite)
-       ("openal" ,openal)
-       ("qrencode" ,qrencode)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("sqlcipher" ,sqlcipher)))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-reproducibility-issues
+                 (lambda _
+                   (substitute* "src/main.cpp"
+                     (("__DATE__") "\"\"")
+                     (("__TIME__") "\"\"")
+                     (("TIMESTAMP") "\"\""))))
+               (add-after 'unpack 'disable-network-tests
+                 (lambda _
+                   ;; These tests require network access.
+                   (substitute* "cmake/Testing.cmake"
+                     (("auto_test\\(core core\\)") "# auto_test(core core)")
+                     (("auto_test\\(net bsu\\)") "# auto_test(net bsu)"))))
+               ;; Ensure that icons are found at runtime.
+               (add-after 'install 'wrap-executable
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (wrap-program (string-append out "/bin/qtox")
+                       `("QT_PLUGIN_PATH" prefix
+                         ,(list (search-input-directory
+                                 inputs "lib/qt5/plugins/"))))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qmake" ,qttools)))
+     (list pkg-config qttools))
+    (inputs
+     (list ffmpeg
+           filteraudio
+           glib
+           gtk+-2
+           libsodium
+           c-toxcore
+           libvpx
+           libxscrnsaver
+           libx11
+           libexif
+           sqlite
+           openal
+           qrencode
+           qtbase-5
+           qtsvg
+           sqlcipher))
     (home-page "https://qtox.github.io/")
     (synopsis "Tox chat client using Qt")
     (description "qTox is a Tox client that follows the Tox design
@@ -1690,7 +1768,7 @@ connect with friends and family without anyone else listening in.")
          "1d3jhnj8rgzxyxjwfa22vh45qwzjvxw1qh8fz6b7nfkj3zvk9jvf"))))
     (build-system gnu-build-system)
     (inputs
-     `(("ncurses" ,ncurses)))
+     (list ncurses))
     (home-page "https://ytalk.ourproject.org")
     (synopsis "Multi-user chat program")
     (description "Ytalk is a replacement for the BSD talk program.  Its main
@@ -1712,11 +1790,9 @@ with several different talk daemons at the same time.")
         (base32 "1jgrd07qr9jvbb5hcmhrqz4w4lvwc51m30jls1fgxf1f5az6455f"))))
     (build-system gnu-build-system)
     (inputs
-     `(("libidn" ,libidn)
-       ("gnutls" ,gnutls)
-       ("zlib" ,zlib)))
+     (list libidn gnutls zlib))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (synopsis "Portable high-level Jabber/XMPP library for C++")
     (description
      "gloox is a full-featured Jabber/XMPP client library,
@@ -1741,10 +1817,9 @@ into existing applications.")
          "0vsjclglkwgbyd9m5ad642fyysxw2x725nhq4r2m9pvqaq6s5yf2"))))
     (build-system perl-build-system)
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (inputs
-     `(("perl-curses" ,perl-curses)
-       ("perl-io-socket-ssl" ,perl-io-socket-ssl)))
+     (list perl-curses perl-io-socket-ssl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1816,9 +1891,7 @@ for @uref{https://torproject.org,tor} router) and many more.")
                 "14q89fxap05ajkfn20rnhc6b1h4i3i2adyr7y6hs5zqwb2lcmc1p"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl)
-       ("netcat" ,netcat)
-       ("procps" ,procps)))
+     (list perl netcat procps))
     (arguments
      `(#:make-flags
        (list "CC=gcc"
@@ -1870,10 +1943,9 @@ including psyced.")
        ("krb5" ,mit-krb5)
        ("libidn" ,libidn)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("check" ,check)
-       ("glib" ,glib "bin")             ; gtester
-       ("gtk-doc" ,gtk-doc)))
+     (list pkg-config check
+           `(,glib "bin") ; gtester
+           gtk-doc))
     (home-page "https://mcabber.com/")
     (description
      "Loudmouth is a lightweight and easy-to-use C library for programming
@@ -1904,14 +1976,14 @@ protocol allows.")
         "--enable-enchant"
         "--enable-aspell")))
     (inputs
-     `(("gpgme" ,gpgme)
-       ("libotr" ,libotr)
-       ("aspell" ,aspell)
-       ("enchant" ,enchant-1.6)
-       ("libidn" ,libidn)
-       ("glib" ,glib)
-       ("ncurses" ,ncurses)
-       ("loudmouth" ,loudmouth)))
+     (list gpgme
+           libotr
+           aspell
+           enchant-1.6
+           libidn
+           glib
+           ncurses
+           loudmouth))
     (native-inputs
      `(("perl" ,perl)
        ("pkg-config" ,pkg-config)
@@ -1938,7 +2010,9 @@ support, and more.")
                 "1rmrn7a1bb7vm26yaklrvx008a9qhwc32s57dwrlf40lv9gffwny"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "CFLAGS=-fcommon")
+       #:phases
        (modify-phases %standard-phases
          ;; For 'system' commands in Scheme code.
          (add-after 'install 'wrap-program
@@ -1954,17 +2028,14 @@ support, and more.")
                          (list bash coreutils less))))
                #t))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)
-       ("texinfo" ,texinfo)))
+     (list autoconf automake pkg-config texinfo))
     (inputs
-     `(("bash" ,bash)
-       ("glib" ,glib)
-       ("guile" ,guile-2.0)
-       ("less" ,less)
-       ("loudmouth" ,loudmouth)
-       ("readline" ,readline)))
+     (list bash
+           glib
+           guile-2.0
+           less
+           loudmouth
+           readline))
     (synopsis "Extensible console-based Jabber client")
     (description
      "GNU Freetalk is a command-line Jabber/XMPP chat client.  It notably uses
@@ -1998,13 +2069,9 @@ is also scriptable and extensible via Guile.")
                (("'\\^xmpp_'") "'.'"))
              #t)))))
     (inputs
-     `(("expat" ,expat)
-       ("openssl" ,openssl)))
+     (list expat openssl))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (synopsis "C library for writing XMPP clients")
     (description "Libmesode is a fork of libstrophe for use with Profanity
 XMPP Client.  In particular, libmesode provides extra TLS functionality such as
@@ -2037,13 +2104,9 @@ manual SSL certificate verification.")
                (("'\\^xmpp_'") "'.'"))
              #t)))))
     (inputs
-     `(("expat" ,expat)
-       ("openssl" ,openssl)))
+     (list expat openssl))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (synopsis "C library for writing XMPP clients")
     (description "Libstrophe is a minimal XMPP library written in C.  It has
 almost no external dependencies, only an XML parsing library (expat or libxml
@@ -2055,7 +2118,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.10.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
@@ -2064,7 +2127,7 @@ are both supported).")
                        version ".tar.gz"))
        (sha256
         (base32
-         "137z77514fgj2dk13d12g4jrn6gs5k85nwrk1r1kiv7rj0jy61aa"))))
+         "0idx0a5g077a57q462w01m0h8i4vyvabzlj87p8527wpqbv4s6vg"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2079,12 +2142,12 @@ are both supported).")
         "--enable-omemo"
         "--enable-icons-and-clipboard")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("autoconf-archive" ,autoconf-archive)
-       ("automake" ,automake)
-       ("cmocka" ,cmocka)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           autoconf-archive
+           automake
+           cmocka
+           libtool
+           pkg-config))
     (inputs
      `(("curl" ,curl)
        ("expat" ,expat)
@@ -2122,7 +2185,7 @@ using ncurses and libmesode, inspired by Irssi.")
          "0b9wa0h3xc31wpqlvgxgnvqp5wgx3kwsf5s9432m5cj8ycx6zcmv"))))
     (build-system gnu-build-system)
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (arguments
      `(#:configure-flags
        (list (string-append "--libdir="
@@ -2174,21 +2237,21 @@ building the IRC clients and bots.")
              (setenv "ENABLE_PYTHON" "1")
              #t)))))
     (inputs
-     `(("c-toxcore" ,c-toxcore)
-       ("curl" ,curl)
-       ("freealut" ,freealut)
-       ("gdk-pixbuf" ,gdk-pixbuf)       ; for libnotify.pc
-       ("libconfig" ,libconfig)
-       ("libnotify" ,libnotify)
-       ("libpng" ,libpng)
-       ("libvpx" ,libvpx)
-       ("libx11" ,libx11)
-       ("ncurses" ,ncurses)
-       ("openal" ,openal)
-       ("python" ,python)
-       ("qrencode" ,qrencode)))
+     (list c-toxcore
+           curl
+           freealut
+           gdk-pixbuf ; for libnotify.pc
+           libconfig
+           libnotify
+           libpng
+           libvpx
+           libx11
+           ncurses
+           openal
+           python
+           qrencode))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://github.com/JFreegman/toxic")
     (synopsis "Tox chat client using ncurses")
     (description "Toxic is a console-based instant messaging client, using
@@ -2211,8 +2274,7 @@ notifications, and Python scripting support.")
         (base32 "0gkwr3yw6k2m0j8cc085b5p2q788rf5nhp1p5hc5d55pc7mci2qs"))))
     (build-system cmake-build-system)
     (inputs
-     `(("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)))
+     (list qtbase-5 qtmultimedia))
     (arguments
      `(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")
        #:tests? #f))                    ; no tests
@@ -2227,7 +2289,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.5.1")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -2236,7 +2298,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xznfx2bhw0ahwmkxm0rs05vz05ijk5k4190rj6qp3bvb9byiajh"))))
+        (base32 "1a3ki45rf1fm7y4b74li76aqd4qc4y5ga5r163s0cwcpj9mp8c45"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2247,21 +2309,22 @@ QMatrixClient project.")
          (add-before 'configure 'disable-network-tests
            (lambda _
              (substitute* "CMakeLists.txt"
-               (("add_test\\((BasicConnectivity|ClientAPI|MediaAPI|Encryption|Pushrules)")
-                "# add_test"))
-             #t)))))
+               (("add_test\\((BasicConnectivity|ClientAPI|Devices|MediaAPI|Encryption|Pushrules)")
+                "# add_test")))))))
     (build-system cmake-build-system)
     (inputs
-     `(("boost" ,boost)
-       ("json-modern-cxx" ,json-modern-cxx)
-       ("libolm" ,libolm)
-       ("libsodium" ,libsodium)
-       ("openssl" ,openssl)
-       ("spdlog" ,spdlog)
-       ("zlib" ,zlib)))
+     (list boost
+           coeurl
+           curl
+           json-modern-cxx
+           libevent
+           libolm
+           libsodium
+           openssl
+           spdlog
+           zlib))
     (native-inputs
-     `(("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)))
+     (list googletest pkg-config))
     (home-page "https://github.com/Nheko-Reborn/mtxclient")
     (synopsis "Client API library for the Matrix protocol")
     (description "@code{mtxclient} is a C++ library that implements client API
@@ -2271,7 +2334,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.8.2")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2280,80 +2343,81 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0362hkbprc6jqlgmvzwxyvify4b1ldjakyqdz55m25xsypbpv2f3"))
+        (base32 "1akhnngxkxbjwjkg5ispl6j5s2ylbcj92r3zxqqry4gbfxbjpx8k"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "third_party")))))
     (arguments
-     `(#:tests? #f                      ;no test target
-       #:configure-flags
-       '("-DCMAKE_BUILD_TYPE=Release"
-         "-DBUILD_DOCS=ON"
-         ;; Fix required because we are using a static SingleApplication
-         "-DCMAKE_CXX_FLAGS= \"-DQAPPLICATION_CLASS=QApplication\" "
-         ;; Compile Qml will make Nheko faster, but you will need to recompile
-         ;; it, when you update Qt.  That's fine for us.
-         "-DCOMPILE_QML=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-dependencies
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((single-app (assoc-ref inputs "single-application")))
-               (substitute* "CMakeLists.txt"
-                 ;; Remove include and source dirs,replace with the correct one
-                 (("third_party/blurhash/blurhash.cpp") "")
-                 (("third_party/cpp-httplib-0.5.12")
-                  (string-append "\"" single-app "/include\""))
-                 (("add_subdirectory.*third_party/SingleApplication.*") "")
-                 ;; Link using the correct static/shared libs
-                 (("SingleApplication::SingleApplication")
-                  (string-append
-                   ;; Dynamic libraries
-                   "httplib" "\n" "blurhash" "\n"
-                   ;; Static library
-                   single-app "/lib/libSingleApplication.a"))))))
-         (add-after 'unpack 'fix-determinism
-           (lambda _
-             ;; Make Qt deterministic.
-             (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/nheko")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
+     (list
+      #:tests? #f                       ;no test target
+      #:configure-flags
+      #~(list "-DCMAKE_BUILD_TYPE=Release"
+              "-DBUILD_DOCS=ON"
+              ;; Fix required because we are using a static SingleApplication
+              "-DCMAKE_CXX_FLAGS= \"-DQAPPLICATION_CLASS=QApplication\" "
+              ;; Compile Qml will make Nheko faster, but you will need to recompile
+              ;; it, when you update Qt.  That's fine for us.
+              "-DCOMPILE_QML=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-dependencies
+            (lambda _
+              (let ((single-app #$(this-package-input "single-application-qt5")))
+                (substitute* "CMakeLists.txt"
+                  ;; Remove include and source dirs,replace with the correct one
+                  (("third_party/blurhash/blurhash.cpp") "")
+                  (("third_party/cpp-httplib-0.5.12")
+                   (string-append "\"" single-app "/include\""))
+                  (("add_subdirectory.*third_party/SingleApplication.*") "")
+                  ;; Link using the correct static/shared libs
+                  (("SingleApplication::SingleApplication")
+                   (string-append
+                    ;; Dynamic libraries
+                    "httplib" "\n" "blurhash" "\n"
+                    ;; Static library
+                    single-app "/lib/libSingleApplication.a"))))))
+          (add-after 'unpack 'fix-determinism
+            (lambda _
+              ;; Make Qt deterministic.
+              (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (let ((gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program (string-append #$output "/bin/nheko")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
     (build-system qt-build-system)
     (inputs
-     `(("boost" ,boost)
-       ("blurhash" ,blurhash)
-       ("cpp-httplib" ,cpp-httplib)
-       ("cmark" ,cmark)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-bad" ,gst-plugins-bad)   ; sdp & webrtc for voip
-       ("gst-plugins-good" ,gst-plugins-good) ; rtpmanager for voip
-       ("json-modern-cxx" ,json-modern-cxx)
-       ("libnice" ,libnice)                   ; for voip
-       ("libolm" ,libolm)
-       ("lmdb" ,lmdb)
-       ("lmdbxx" ,lmdbxx)
-       ("mtxclient" ,mtxclient)
-       ("openssl" ,openssl)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtkeychain" ,qtkeychain)
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtsvg" ,qtsvg)
-       ("spdlog" ,spdlog)
-       ("single-application" ,single-application-qt5)
-       ("zlib" ,zlib)))
+     (list boost
+           blurhash
+           cpp-httplib
+           cmark
+           coeurl
+           curl
+           gst-plugins-base
+           gst-plugins-bad              ; sdp & webrtc for voip
+           gst-plugins-good             ; rtpmanager for voip
+           json-modern-cxx
+           libevent
+           libnice                      ; for voip
+           libolm
+           lmdb
+           lmdbxx
+           mtxclient
+           openssl
+           qtbase-5
+           qtdeclarative
+           qtkeychain
+           qtgraphicaleffects
+           qtmultimedia
+           qtquickcontrols2
+           qtsvg
+           spdlog
+           single-application-qt5
+           xcb-util-wm
+           zlib))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools)))
+     (list doxygen graphviz pkg-config qttools))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
@@ -2380,15 +2444,15 @@ notification, emojis, E2E encryption, and voip calls.")
         (base32 "1q9ddz4rs02a0w3lwrsjnh59khv38cq9f0kv09vnwvazvayn87ck"))))
     (build-system qt-build-system)
     (inputs
-     `(("libqmatrixclient" ,libqmatrixclient)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtquickcontrols" ,qtquickcontrols)
-       ("qtquickcontrols2" ,qtquickcontrols2)
-       ("qtsvg" ,qtsvg)
-       ("qttools" ,qttools)
-       ("xdg-utils" ,xdg-utils)))
+     (list libqmatrixclient
+           qtbase-5
+           qtdeclarative
+           qtmultimedia
+           qtquickcontrols
+           qtquickcontrols2
+           qtsvg
+           qttools
+           xdg-utils))
     (arguments
      `(#:tests? #f))                    ; no tests
     (home-page "https://matrix.org/docs/projects/client/quaternion.html")
@@ -2403,13 +2467,13 @@ QMatrixClient project.")
 (define-public hangups
   (package
     (name "hangups")
-    (version "0.4.14")
+    (version "0.4.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hangups" version))
        (sha256
-        (base32 "15qbbafcrdkx73xz9y30qa3d8nj6mgrp2m41749i5nn1qywmikk8"))))
+        (base32 "11szzszwfszc28xvlsh0bahxy3cgibzsirbfjh5m8vj60lzipqm3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2419,27 +2483,24 @@ QMatrixClient project.")
            (lambda _
              (substitute* "setup.py"
                (("==") ">=")
-               ((",<.*'") "'"))
-             #t))
+               ((",<.*'") "'"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "pytest" "hangups"))
-             #t)))))
+               (invoke "pytest" "hangups")))))))
     (propagated-inputs
-     `(("python-aiohttp" ,python-aiohttp)
-       ("python-appdirs" ,python-appdirs)
-       ("python-async-timeout" ,python-async-timeout)
-       ("python-configargparse" ,python-configargparse)
-       ("python-mechanicalsoup" ,python-mechanicalsoup)
-       ("python-protobuf" ,python-protobuf-3.6)
-       ("python-readlike" ,python-readlike)
-       ("python-reparser" ,python-reparser)
-       ("python-requests" ,python-requests)
-       ("python-urwid" ,python-urwid)))
+     (list python-aiohttp
+           python-appdirs
+           python-async-timeout
+           python-configargparse
+           python-mechanicalsoup
+           python-protobuf
+           python-readlike
+           python-reparser
+           python-requests
+           python-urwid))
     (native-inputs
-     `(("python-httpretty" ,python-httpretty)
-       ("python-pytest" ,python-pytest)))
+     (list python-httpretty python-pytest))
     (home-page "https://hangups.readthedocs.io/")
     (synopsis "Instant messaging client for Google Hangouts")
     (description
@@ -2490,12 +2551,12 @@ messaging that aren’t available to clients that connect over XMPP.")
        ("gettext" ,gettext-minimal)
        ("which" ,which)))
     (inputs
-     `(("pidgin" ,pidgin)
-       ("libgcrypt" ,libgcrypt)
-       ("libwebp" ,libwebp)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+-2)
-       ("zlib" ,zlib)))
+     (list pidgin
+           libgcrypt
+           libwebp
+           glib
+           gtk+-2
+           zlib))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2539,22 +2600,22 @@ replacement.")
 (define-public tdlib
   (package
     (name "tdlib")
-    (version "1.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tdlib/td")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "0dfir57ljcn98mkg061c5642qb93wh2lm1n4nngpl3na9vvfk75i"))
-              (file-name (git-file-name name version))))
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tdlib/td")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #t
        #:configure-flags
        (list "-DCMAKE_BUILD_TYPE=Release"
-             "-DTD_ENABLE_LTO=OFF") ; FIXME: Get LTO to work.
+             "-DTD_ENABLE_LTO=OFF")     ; FIXME: Get LTO to work.
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-failing-tests
@@ -2564,14 +2625,9 @@ replacement.")
                ;; which uses mtproto.cpp to attempt to connect to
                ;; a remote server. Removing this file from the sources
                ;; list disables those specific test cases.
-               (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") ""))
-             #t)))))
+               (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
     (native-inputs
-     `(("gperf" ,gperf)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)
-       ("php" ,php)
-       ("doxygen" ,doxygen)))
+     (list gperf openssl zlib php doxygen))
     (synopsis "Cross-platform library for building Telegram clients")
     (description "Tdlib is a cross-platform library for creating custom
 Telegram clients following the official Telegram API.  It can be easily used
@@ -2609,12 +2665,94 @@ support for high performance Telegram Bot creation.")
      `(("glib:bin" ,glib "bin")
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("modem-manager" ,modem-manager)
-       ("pidgin" ,pidgin)))
+     (list modem-manager pidgin))
     (synopsis "Libpurple plugin for SMS via ModemManager")
     (description "Plugin for libpurple to allow sending SMS using ModemManager.")
     (home-page "https://source.puri.sm/Librem5/purple-mm-sms")
     (license license:gpl2+)))
+
+(define-public purple-lurch
+  (package
+    (name "purple-lurch")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/gkdr/lurch")
+                       (commit (string-append "v" version))))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           ;; Submodules
+           (delete-file-recursively "lib")))
+       (file-name
+        (git-file-name name version))
+       (sha256
+        (base32 "1ipd9gwh04wbqv6c10yxi02lc2yjsr02hwjycgxhl4r9x8b33psd"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'configure
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        (substitute* "Makefile"
+                          (("^PURPLE_PLUGIN_DIR = .*")
+                           (string-append "PURPLE_PLUGIN_DIR = " out
+                                          "/lib/purple-2\n")))
+                        (setenv "CC" "gcc")))))
+       #:parallel-tests? #f))
+    (native-inputs (list cmocka pkg-config))
+    (inputs (list axc
+                  glib
+                  libgcrypt
+                  libomemo
+                  libsignal-protocol-c
+                  libxml2
+                  minixml
+                  pidgin
+                  sqlite))
+    (synopsis "OMEMO Encryption for libpurple")
+    (description "Purple-lurch plugin adds end-to-end encryption support
+through the Double Ratchet (Axolotl) algorithm, to @code{libpurple}
+applications using @acronym{XMPP, Extensible Messaging and Presence Protocol},
+through its standard XEP-0384: @acronym{OMEMO, OMEMO Multi-End Message and
+Object Encryption} Encryption.  It provides confidentiality, (weak) forward
+secrecy, break-in recovery, authentication, integrity, deniability, and
+asynchronicity.")
+    (home-page "https://github.com/gkdr/lurch")
+    (license license:gpl3+)))
+
+(define-public libphonenumber
+  (package
+   (name "libphonenumber")
+   (version "8.11.3")
+   (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/libphonenumber")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06y3mh1d1mks6d0ynxp3980g712nkf8l5nyljpybsk326b246hg9"))))
+   (arguments
+    `(#:test-target "tests"
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'change-directory
+          (lambda _ (chdir "cpp"))))))
+   (build-system cmake-build-system)
+   (native-inputs
+    (list googletest pkg-config))
+   (inputs
+    (list boost protobuf icu4c))
+   (synopsis "Library for parsing and using phone numbers")
+   (description
+    "This package provides a C++ library for parsing, formatting, and
+validating international phone numbers.")
+   (home-page "https://github.com/google/libphonenumber")
+   (license license:asl2.0)))
+
 
 (define-public chatty
  (package
@@ -2643,18 +2781,17 @@ support for high performance Telegram Bot creation.")
       ("glib:bin" ,glib "bin")
       ("pkg-config" ,pkg-config)))
    (inputs
-    `(("feedbackd" ,feedbackd)
-      ("folks" ,folks)
-      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-      ("libgcrypt" ,libgcrypt)
-      ("libgee" ,libgee)
-      ("libhandy" ,libhandy-0.0)
-      ("pidgin" ,pidgin)
-      ("purple-mm-sms" ,purple-mm-sms)
-      ("sqlite" ,sqlite)))
+    (list feedbackd
+          folks
+          gsettings-desktop-schemas
+          libgcrypt
+          libgee
+          libhandy-0.0
+          pidgin
+          purple-mm-sms
+          sqlite))
    (propagated-inputs
-    `(("adwaita-icon-theme" ,adwaita-icon-theme)
-      ("evolution-data-server" ,evolution-data-server)))
+    (list adwaita-icon-theme evolution-data-server))
    (synopsis "Mobile client for XMPP and SMS messaging")
    (description "Chatty is a chat program for XMPP and SMS.  It works on mobile
 as well as on desktop platforms.  It's based on libpurple and ModemManager.")
@@ -2675,7 +2812,7 @@ as well as on desktop platforms.  It's based on libpurple and ModemManager.")
          "1yq7y329baa1ly488rw125c3mvsnsa7kjkik602xv1xpkz8p73al"))))
     (build-system cmake-build-system)
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (synopsis "Message broker")
     (description "This package provides Eclipse Mosquitto, a message broker
 that implements the MQTT protocol versions 5.0, 3.1.1 and 3.1.  Mosquitto
@@ -2721,11 +2858,9 @@ as phones, embedded computers or microcontrollers.")
                   "\"../build"))
                #t)))))
       (inputs
-       `(("qtbase" ,qtbase-5)
-         ("qtdeclarative" ,qtdeclarative)
-         ("qtwebchannel" ,qtwebchannel)))
+       (list qtbase-5 qtdeclarative qtwebchannel))
       (propagated-inputs
-       `(("qtwebengine" ,qtwebengine)))
+       (list qtwebengine))
       (home-page "https://movim.eu/")
       (synopsis "Desktop Application for Movim")
       (description
@@ -2888,27 +3023,19 @@ designed for experienced users.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'cd-to-zulip-dir
-           (lambda _
-             (chdir "zulip")
-             #t))
+           (lambda _ (chdir "zulip")))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (let ((test-zulip "../tools/test-zulip"))
                (when tests?
                  (add-installed-pythonpath inputs outputs)
-                 (setenv "PYTHONPATH" (string-append ".:" (getenv "PYTHONPATH")))
                  (patch-shebang test-zulip)
-                 (invoke test-zulip))
-               #t))))))
+                 (invoke test-zulip))))))))
     (propagated-inputs
-     `(("python-matrix-client" ,python-matrix-client)
-       ("python-pyopenssl" ,python-pyopenssl)
-       ("python-requests" ,python-requests)
-       ("python-six" ,python-six)))
+     (list python-matrix-client python-pyopenssl python-requests
+           python-six))
     (native-inputs
-     `(("python-cython" ,python-cython)
-       ("python-distro" ,python-distro)
-       ("python-pytest" ,python-pytest)))
+     (list python-cython python-distro python-pytest))
     (home-page "https://github.com/zulip/python-zulip-api")
     (synopsis "Zulip's API Python bindings")
     (description
@@ -2950,17 +3077,15 @@ designed for experienced users.")
                (invoke "pytest"))
              #t)))))
     (inputs
-     `(("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-lxml" ,python-lxml)
-       ("python-mypy-extensions" ,python-mypy-extensions)
-       ("python-urwid" ,python-urwid)
-       ("python-urwid-readline" ,python-urwid-readline)
-       ("python-zulip" ,python-zulip)))
+     (list python-beautifulsoup4
+           python-lxml
+           python-mypy-extensions
+           python-urwid
+           python-urwid-readline
+           python-zulip))
     (native-inputs
-     `(("python-distro" ,python-distro)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-mock" ,python-pytest-mock)))
+     (list python-distro python-pytest python-pytest-cov
+           python-pytest-mock))
     (home-page "https://github.com/zulip/zulip-terminal")
     (synopsis "Zulip's official terminal client")
     (description "This package contains Zulip's official terminal client.")
@@ -2992,5 +3117,150 @@ keybase, matrix, microsoft teams, nextcloud, mumble, vk and more with REST
 API.  Mattermost is not required.")
     (home-page "https://github.com/42wim/matterbridge")
     (license license:asl2.0)))
+
+(define-public pounce
+  (package
+    (name "pounce")
+    (version "3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://git.causal.agency/pounce/snapshot/pounce-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1w4x34bspkqvk9p7bfj0zmvmbzvxb7lxrrr3g6lrfdj9f3qzfxpp"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ;there are no tests
+       #:make-flags
+       (list
+        (string-append "CC=" ,(cc-for-target))
+        (string-append "PREFIX=" %output))))
+    (native-inputs
+     (list pkg-config universal-ctags))
+    (inputs
+     (list libressl))
+    (home-page "https://code.causal.agency/june/pounce")
+    (synopsis "Simple multi-client TLS-only IRC bouncer")
+    (description
+     "@command{pounce} is a multi-client, TLS-only IRC bouncer.  It maintains
+a persistent connection to an IRC server, acting as a proxy and buffer for
+a number of clients.")
+    (license license:gpl3+)))
+
+(define-public weechat-matrix
+  (package
+    (name "weechat-matrix")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poljar/weechat-matrix")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1iv55n4k05139f7jzkhczgw4qp6qwilrvfsy3c6v2m1kxffj12d3"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'build)
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((weechat-python (string-append (assoc-ref outputs "out")
+                                                   "/share/weechat/python")))
+               ;; Avoid circular import by renaming the matrix module to
+               ;; weechat_matrix.
+               (substitute* (cons "main.py"
+                                  (append (find-files "matrix")
+                                          (find-files "tests")))
+                 (("from matrix") "from weechat_matrix")
+                 (("import matrix") "import weechat_matrix"))
+               ;; Install python modules.
+               (invoke "make" "install-lib"
+                       (string-append "INSTALLDIR="
+                                      (site-packages inputs outputs)
+                                      "/weechat_matrix"))
+               ;; Extend PYTHONPATH to find installed python modules.
+               (add-installed-pythonpath inputs outputs)
+               ;; Augment sys.path so that dependencies are found.
+               (substitute* "main.py"
+                 (("import os\n" all)
+                  (apply string-append
+                         all
+                         "import sys\n"
+                         (map (lambda (path)
+                                (string-append "sys.path.append('" path "')\n"))
+                              (string-split (getenv "GUIX_PYTHONPATH") #\:)))))
+               ;; Install script.
+               (mkdir-p weechat-python)
+               (copy-file "main.py"
+                          (string-append weechat-python "/matrix.py")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (inputs
+     (list python-matrix-nio python-pygments python-pyopenssl
+           python-webcolors))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/poljar/weechat-matrix")
+    (synopsis "Weechat Matrix protocol script")
+    (description "@code{weechat-matrix} is a Python plugin for Weechat that lets
+Weechat communicate over the Matrix protocol.")
+    (license license:isc)))
+
+(define-public weechat-wee-slack
+  (package
+    (name "weechat-wee-slack")
+    (version "2.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wee-slack/wee-slack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0xfklr0gsc9jgxfyrrb2j756lclz9g8imcb0pk0xgyj8mhsw23zk"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'build)
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; Augment sys.path so that dependencies are found.
+             (substitute* "wee_slack.py"
+               (("import sys\n" all)
+                (apply string-append
+                       all
+                       (map (lambda (path)
+                              (string-append "sys.path.append('" path "')\n"))
+                            (string-split (getenv "GUIX_PYTHONPATH") #\:)))))
+             ;; Install script.
+             (install-file "wee_slack.py"
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/weechat/python"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest")))))))
+    (inputs
+     (list python-websocket-client))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/wee-slack/wee-slack")
+    (synopsis "Weechat Slack script")
+    (description "@code{weechat-wee-slack} is a WeeChat native client for
+Slack.  It provides supplemental features only available in the web/mobile
+clients such as synchronizing read markers, typing notification, threads (and
+more)!  It connects via the Slack API, and maintains a persistent websocket
+for notification of events.")
+    (license license:expat)))
 
 ;;; messaging.scm ends here

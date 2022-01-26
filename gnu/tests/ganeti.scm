@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>.
+;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -52,18 +52,15 @@
     (hosts-file (plain-file "hosts" (format #f "
 127.0.0.1       localhost
 ::1             localhost
-10.0.2.2        gnt1.example.com gnt1
+10.0.2.15       gnt1.example.com gnt1
 192.168.254.254 ganeti.example.com
 ")))
 
     (packages (append (list ganeti-instance-debootstrap ganeti-instance-guix)
                       %base-packages))
     (services
-     (append (list (static-networking-service "eth0" "10.0.2.2"
-                                              #:netmask "255.255.255.0"
-                                              #:gateway "10.0.2.1"
-                                              #:name-servers '("10.0.2.1"))
-
+     (append (list (service static-networking-service-type
+                            (list %qemu-static-networking))
                    (service openssh-service-type
                             (openssh-configuration
                              (permit-root-login 'prohibit-password)))
@@ -83,8 +80,7 @@
                           (master-netdev "eth0")
                           (hvparams '())
                           (extra-packages '())
-                          (rapi-port 5080)
-                          (noded-port 1811))
+                          (rapi-port 5080))
   "Run tests in %GANETI-OS."
   (define os
     (marionette-operating-system
@@ -96,7 +92,6 @@
                           (guix combinators))))
 
   (define %forwarded-rapi-port 5080)
-  (define %forwarded-noded-port 1811)
 
   (define vm
     (virtual-machine
@@ -104,22 +99,20 @@
      ;; Some of the daemons are fairly memory-hungry.
      (memory-size 512)
      ;; Forward HTTP ports so we can access them from the "outside".
-     (port-forwardings `((,%forwarded-rapi-port . ,rapi-port)
-                         (,%forwarded-noded-port . ,noded-port)))))
+     (port-forwardings `((,%forwarded-rapi-port . ,rapi-port)))))
 
   (define test
     (with-imported-modules '((gnu build marionette))
       #~(begin
           (use-modules (srfi srfi-11) (srfi srfi-64)
                        (web uri) (web client) (web response)
+                       (ice-9 iconv)
                        (gnu build marionette))
 
           (define marionette
             (make-marionette (list #$vm)))
 
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "ganeti")
 
           ;; Ganeti uses the Shepherd to start/stop daemons, so make sure
@@ -213,18 +206,19 @@
                          "watcher" "continue"))
              marionette))
 
-          ;; Try accessing the RAPI.  This causes an expected failure:
-          ;;   https://github.com/ganeti/ganeti/issues/1502
-          ;; Run it anyway for easy testing of potential fixes.
+          ;; Try accessing the RAPI.
           (test-equal "http-get RAPI version"
-            '(200 "2")
+            '(200 "2\n")
             (let-values
                 (((response text)
                   (http-get #$(simple-format
                                #f "http://localhost:~A/version"
                                %forwarded-rapi-port)
-                            #:decode-body? #t)))
-              (list (response-code response) text)))
+                            #:decode-body? #f)))
+              (list (response-code response)
+                    ;; The API response lacks a content-type, so
+                    ;; (http-client) won't decode it for us.
+                    (bytevector->string text "UTF-8"))))
 
           (test-equal "gnt-os list"
             "debootstrap+default\nguix+default\n"
@@ -248,8 +242,7 @@
                          "destroy" "--yes-do-it"))
              marionette))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 1)))))
+          (test-end))))
 
   (gexp->derivation (string-append "ganeti-" hypervisor "-test") test))
 

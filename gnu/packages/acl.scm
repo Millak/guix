@@ -40,7 +40,7 @@
 (define-public acl
   (package
     (name "acl")
-    (version "2.2.53")
+    (version "2.3.1")
     (source
      (origin
       (method url-fetch)
@@ -48,7 +48,7 @@
                           version ".tar.gz"))
       (sha256
        (base32
-        "1ir6my3w74s6nfbgbqgzj6w570sn0qjf3524zx8xh67lqrjrigh6"))))
+        "1bqi7hj0xkpivwg7lx5cv3yvs9ks1i6azvpgbvfpzcq1i736233n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
@@ -86,7 +86,7 @@
                ((".*test/cp\\.test.*") "")
                ((".*test/setfacl-X\\.test.*") ""))
              #t)))))
-    (inputs `(("attr" ,attr)))
+    (inputs (list attr))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("perl" ,perl)))
@@ -114,23 +114,23 @@
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-tests
            (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; These tests operate on real files, but our tempfs does not support
-             ;; ACLs
+             ;; These tests operate on real files, but our tmpfs does not support
+             ;; ACLs.
              (substitute* "tests/test_acls.py"
                (("( *)def test_applyto(_extended(_mixed)?)?" match indent)
-                (string-append indent "@pytest.mark.skip(reason=\"guix\")\n" match)))
-             #t))
+                (string-append indent "@pytest.mark.skip(reason=\"guix\")\n"
+                               match)))))
          (replace 'check
            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
              (when tests?
                (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests"))
-               #t)))))
-    (inputs `(("acl" ,acl)))
-    (native-inputs `(("python-pytest" ,python-pytest)))
+               (invoke "pytest" "tests")))))))
+    (inputs (list acl))
+    (native-inputs (list python-pytest))
     (home-page "https://pylibacl.k1024.org/")
-    (synopsis "POSIX.1e ACLs for python")
-    (description "Python 3.4+ extension module that allows you to manipulate
-the POSIX.1e Access Control Lists present in some OS/file-systems
-combinations.")
+    (synopsis "POSIX.1e @acronym{ACLs, access control lists} for Python")
+    (description
+     "This Python extension module manipulates the POSIX.1e @acronym{ACLs,
+Access Control Lists} available on many file systems.  These allow more
+fine-grained access control than traditional user/group permissions.")
     (license lgpl2.1+)))

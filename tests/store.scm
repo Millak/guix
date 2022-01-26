@@ -490,6 +490,34 @@
             (equal? (map derivation-file-name (drop d 16)) batch3)
             lst)))))
 
+(test-equal "map/accumulate-builds and different store"
+  '(d2)                               ;see <https://issues.guix.gnu.org/46756>
+  (let* ((b  (add-text-to-store %store "build" "echo $foo > $out" '()))
+         (s  (add-to-store %store "bash" #t "sha256"
+                           (search-bootstrap-binary "bash"
+                                                    (%current-system))))
+         (d1 (derivation %store "first"
+                         s `("-e" ,b)
+                         #:env-vars `(("foo" . ,(random-text)))
+                         #:sources (list b s)))
+         (d2 (derivation %store "second"
+                         s `("-e" ,b)
+                         #:env-vars `(("foo" . ,(random-text))
+                                      ("bar" . "baz"))
+                         #:sources (list b s))))
+    (with-store alternate-store
+      (with-build-handler (lambda (continue store things mode)
+                            ;; If this handler is called, it means that
+                            ;; 'map/accumulate-builds' triggered a build,
+                            ;; which it shouldn't since the inner
+                            ;; 'build-derivations' call is for another store.
+                            'failed)
+        (map/accumulate-builds %store
+                               (lambda (drv)
+                                 (build-derivations alternate-store (list d2))
+                                 'd2)
+                               (list d1))))))
+
 (test-assert "mapm/accumulate-builds"
   (let* ((d1 (run-with-store %store
                (gexp->derivation "foo" #~(mkdir #$output))))
@@ -570,7 +598,8 @@
                  (d (build-expression->derivation
                      %store "foo" `(display ,s)
                      #:guile-for-build
-                     (package-derivation s %bootstrap-guile (%current-system)))))
+                     (package-derivation %store %bootstrap-guile
+                                         (%current-system)))))
             (guard (c ((store-protocol-error? c) #t))
               (build-derivations %store (list d))))))))
    "Here’s a Greek letter: λ."))
@@ -731,7 +760,9 @@
 
 (test-assert "substitute, deduplication"
   (with-store s
-    (let* ((c   (random-text))                     ; contents of the output
+    ;; Note: C must be longer than %DEDUPLICATION-MINIMUM-SIZE.
+    (let* ((c   (string-concatenate
+                 (make-list 200 (random-text))))  ; contents of the output
            (g   (package-derivation s %bootstrap-guile))
            (d1  (build-expression->derivation s "substitute-me"
                                               `(begin ,c (exit 1))
@@ -911,6 +942,84 @@
                ;; Should fail.
                (build-derivations s (list d))
                #f))))))
+
+(test-equal "substitute query and large size"
+  (+ 100 (expt 2 63))                     ;<https://issues.guix.gnu.org/51983>
+  (with-store s
+    (let* ((size (+ 100 (expt 2 63)))      ;does not fit in signed 'long long'
+           (item (string-append (%store-prefix)
+                                "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-bad-size")))
+      ;; Create fake substituter data, to be read by 'guix substitute'.
+      (call-with-output-file (string-append (%substitute-directory)
+                                            "/" (store-path-hash-part item)
+                                            ".narinfo")
+        (lambda (port)
+          (format port "StorePath: ~a
+URL: http://example.org
+Compression: none
+NarSize: ~a
+NarHash: sha256:0fj9vhblff2997pi7qjj7lhmy7wzhnjwmkm2hmq6gr4fzmg10s0w
+References: 
+System: x86_64-linux~%"
+                  item size)))
+
+      ;; Remove entry from the local cache.
+      (false-if-exception
+       (delete-file-recursively (string-append (getenv "XDG_CACHE_HOME")
+                                               "/guix/substitute")))
+
+      ;; Make sure 'guix substitute' correctly communicates the above
+      ;; data.
+      (set-build-options s #:use-substitutes? #t
+                         #:substitute-urls (%test-substitute-urls))
+      (match (pk 'spi (substitutable-path-info s (list item)))
+        (((? substitutable? s))
+         (and (equal? (substitutable-path s) item)
+              (substitutable-nar-size s)))))))
+
+(test-equal "substitute and large size"
+  (+ 100 (expt 2 31))                     ;<https://issues.guix.gnu.org/46212>
+  (with-store s
+    (let* ((size (+ 100 (expt 2 31)))            ;does not fit in signed 'int'
+           (item (string-append (%store-prefix)
+                                "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-bad-size-"
+                                (random-text)))
+           (nar  (string-append (%substitute-directory) "/nar")))
+      ;; Create a dummy nar to allow for substitution.
+      (call-with-output-file nar
+        (lambda (port)
+          (write-file-tree (store-path-package-name item) port
+                           #:file-type+size (lambda _
+                                              (values 'regular 12))
+                           #:file-port (lambda _
+                                         (open-input-string "Hello world.")))))
+
+      ;; Create fake substituter data, to be read by 'guix substitute'.
+      (call-with-output-file (string-append (%substitute-directory)
+                                            "/" (store-path-hash-part item)
+                                            ".narinfo")
+        (lambda (port)
+          (format port "StorePath: ~a
+URL: file://~a
+Compression: none
+NarSize: ~a
+NarHash: sha256:~a
+References: 
+System: x86_64-linux~%"
+                  item nar size
+                  (bytevector->nix-base32-string (gcrypt:file-sha256 nar)))))
+
+      ;; Remove entry from the local cache.
+      (false-if-exception
+       (delete-file-recursively (string-append (getenv "XDG_CACHE_HOME")
+                                               "/guix/substitute")))
+
+      ;; Make sure 'guix substitute' correctly communicates the above
+      ;; data.
+      (set-build-options s #:use-substitutes? #t
+                         #:substitute-urls (%test-substitute-urls))
+      (ensure-path s item)
+      (path-info-nar-size (query-path-info s item)))))
 
 (test-assert "export/import several paths"
   (let* ((texts (unfold (cut >= <> 10)

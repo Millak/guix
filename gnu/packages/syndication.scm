@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,7 +67,7 @@
 (define-public cawbird
   (package
     (name "cawbird")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -75,7 +76,7 @@
              (commit (string-append "v"version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lmrgcj1ky1vhzynl36k6ba3ws089x4qdrnkjk3lbr334kicx9na"))))
+        (base32 "17575cp5qcgsqf37y3xqg3vr6l2j8bbbkmy2c1l185rxghfacida"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -109,8 +110,7 @@
                (setenv "XDG_DATA_DIRS"
                        (string-append (getenv "XDG_DATA_DIRS")
                                       ":" (assoc-ref outputs "out") "/share"))
-               (invoke "meson" "test"))
-             #t))
+               (invoke "meson" "test"))))
          (add-after 'glib-or-gtk-wrap 'wrap-paths
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -119,8 +119,7 @@
                     (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
                (wrap-program (string-append bin "cawbird")
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-             #t)))))
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
@@ -147,7 +146,7 @@
        ("sqlite" ,sqlite)
        ("x11" ,libx11)))
     (propagated-inputs
-     `(("dconf" ,dconf)))
+     (list dconf))
     (synopsis "Client for Twitter")
     (description "Cawbird is a Twitter client built with GTK and Vala.
 It supports all features except non-mention notifications, polls, threads and
@@ -184,9 +183,8 @@ cards.")
                                           (package-version python))
                                         "/site-packages")))
                (wrap-program (string-append bin "giara")
-                 `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH") ,lib))
-                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))
-             #t)))))
+                 `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH") ,lib))
+                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
@@ -208,9 +206,9 @@ cards.")
        ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
        ("python-requests" ,python-requests)
-       ("webkitgtk" ,webkitgtk)))
+       ("webkitgtk" ,webkitgtk-with-libsoup2)))
     (propagated-inputs
-     `(("dconf" ,dconf)))
+     (list dconf))
     (synopsis "Client for Reddit")
     (description "Giara is a reddit app, built with Python, GTK and Handy.")
     (home-page "https://giara.gabmus.org/")
@@ -219,14 +217,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.24")
+    (version "2.26")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1yvggkb29qykxlvrysb6yyf5piwsvzv0zla8jn2ihmm2rj40chk2"))))
+        (base32 "061w86jffyi49m4d9n974a3pd1svbw3azmh0qx8h2v7h0178791l"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -235,40 +233,40 @@ cards.")
        ;; For building documentation.
        ("asciidoctor" ,ruby-asciidoctor)))
     (inputs
-     `(("curl" ,curl)
-       ("json-c" ,json-c)
-       ("libxml2" ,libxml2)
-       ("ncurses" ,ncurses)
-       ("stfl" ,stfl)
-       ("sqlite" ,sqlite)))
+     (list curl
+           json-c
+           libxml2
+           ncurses
+           stfl
+           sqlite))
     (arguments
      `(#:modules ((guix build cargo-build-system)
                   (guix build utils)
                   ((guix build gnu-build-system) #:prefix gnu:))
        #:vendor-dir "vendor"
-       #:rust ,rust-1.48    ; or newer
        #:install-source? #f
        #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-2)
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-cxx" ,rust-cxx-1)
+        ("rust-fastrand" ,rust-fastrand-1)
         ("rust-gettext-rs" ,rust-gettext-rs-0.7)
+        ("rust-lexopt" ,rust-lexopt-0.2)
         ("rust-libc" ,rust-libc-0.2)
+        ("rust-md5" ,rust-md5-0.7)
         ("rust-natord" ,rust-natord-1)
-        ("rust-nom" ,rust-nom-6)
+        ("rust-nom" ,rust-nom-7)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rand" ,rust-rand-0.8)
         ("rust-url" ,rust-url-2)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
        (("rust-cxx-build" ,rust-cxx-build-1)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-proptest" ,rust-proptest-0.9)
+        ("rust-proptest" ,rust-proptest-1)
         ("rust-section-testing" ,rust-section-testing-0.0))
        #:phases
        (modify-phases %standard-phases
@@ -276,29 +274,21 @@ cards.")
            (lambda* (#:key vendor-dir #:allow-other-keys)
              ;; Don't keep the whole tarball in the vendor directory
              (delete-file-recursively
-               (string-append vendor-dir "/" ,name "-" ,version ".tar.xz"))
-             #t))
+               (string-append vendor-dir "/" ,name "-" ,version ".tar.xz"))))
          (add-after 'unpack 'patch-source
-           (lambda _
+           (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "Makefile"
-               (("Cargo.lock") ""))
-             #t))
+               (("Cargo.lock") "")
+               ;; Replace the prefix in the Makefile.
+               (("/usr/local") (assoc-ref outputs "out")))))
          (replace 'build
-           (lambda* args
-             ((assoc-ref gnu:%standard-phases 'build)
-              #:make-flags
-              (list (string-append "prefix=" (assoc-ref %outputs "out"))))))
+           (assoc-ref gnu:%standard-phases 'build))
          (replace 'check
-           (lambda* args
+           (lambda args
              ((assoc-ref gnu:%standard-phases 'check)
-              #:test-target "test"
-              #:make-flags
-              (list (string-append "prefix=" (assoc-ref %outputs "out"))))))
+              #:test-target "test")))
          (replace 'install
-           (lambda* args
-             ((assoc-ref gnu:%standard-phases 'install)
-              #:make-flags
-              (list (string-append "prefix=" (assoc-ref %outputs "out")))))))))
+           (assoc-ref gnu:%standard-phases 'install)))))
     (native-search-paths
      ;; Newsboat respects CURL_CA_BUNDLE.
      (package-native-search-paths curl))
@@ -312,6 +302,7 @@ interface that might look familiar to @command{mutt} or @command{slrn} users.
 Newsboat supports OPML import/exports, HTML rendering, podcasts (with
 @command{podboat}), off-line reading, searching and storing articles to your
 file system, and many more features.")
+    (properties '((release-monitoring-url . "https://newsboat.org/news.atom")))
     (license (list license:gpl2+        ; filter/*
                    license:expat))))    ; everything else
 
@@ -334,8 +325,8 @@ file system, and many more features.")
        ;; For building documentation.
        ("asciidoc" ,asciidoc)))
     (inputs
-     `(("json-c" ,json-c-0.13)
-       ,@(alist-delete "json-c" (package-inputs newsboat))))
+     (modify-inputs (package-inputs newsboat)
+       (replace "json-c" json-c-0.13)))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -375,40 +366,40 @@ file system, and many more features.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                   (python-path       (getenv "PYTHONPATH")))
+                   (python-path       (getenv "GUIX_PYTHONPATH")))
                (wrap-program (string-append out "/bin/liferea")
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("PYTHONPATH" ":" prefix (,python-path))))
+                 `("GUIX_PYTHONPATH" ":" prefix (,python-path))))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("which" ,which)))
+     (list autoconf
+           automake
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           intltool
+           libtool
+           pkg-config
+           which))
     (inputs
-     `(("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("gnome-keyring" ,gnome-keyring)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gstreamer" ,gstreamer)
-       ("json-glib" ,json-glib)
-       ("libnotify" ,libnotify)
-       ("libpeas" ,libpeas)
-       ("libsecret" ,libsecret)
-       ("libsoup" ,libsoup)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("pango" ,pango)
-       ("python" ,python)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("sqlite" ,sqlite)
-       ("webkitgtk" ,webkitgtk)))
+     (list glib
+           glib-networking
+           gnome-keyring
+           gsettings-desktop-schemas
+           gstreamer
+           json-glib
+           libnotify
+           libpeas
+           libsecret
+           libsoup-minimal-2
+           libxml2
+           libxslt
+           pango
+           python
+           python-pycairo
+           python-pygobject
+           sqlite
+           webkitgtk-with-libsoup2))
     (home-page "https://lzone.de/liferea/")
     (synopsis "News reader for GTK/GNOME")
     (description "Liferea is a desktop feed reader/news aggregator that
@@ -434,24 +425,22 @@ a simple interface that makes it easy to organize and browse feeds.")
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" (getcwd))
              (setenv "TERM" "linux")
-             (setenv "TERMINFO" (string-append (assoc-ref inputs "ncurses")
-                                               "/share/terminfo"))
-             #t)))
+             (setenv "TERMINFO"
+                     (search-input-directory inputs "share/terminfo"))))
+         ;; Loading this as a library requires a controlling terminal, etc.
+         (delete 'sanity-check))
        #:tests? #f)) ; tests fail: _curses.error: nocbreak() returned ERR
     (propagated-inputs
-     `(("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-decorator" ,python-decorator)
-       ("python-kitchen" ,python-kitchen)
-       ("python-requests" ,python-requests)
-       ("python-six" ,python-six)))
+     (list python-beautifulsoup4 python-decorator python-kitchen
+           python-requests python-six))
     (native-inputs
-     `(("ncurses" ,ncurses)
-       ("python-coveralls" ,python-coveralls)
-       ("python-coverage" ,python-coverage)
-       ("python-mock" ,python-mock)
-       ("python-pylint" ,python-pylint)
-       ("python-pytest" ,python-pytest)
-       ("python-vcrpy" ,python-vcrpy)))
+     (list ncurses
+           python-coveralls
+           python-coverage
+           python-mock
+           python-pylint
+           python-pytest
+           python-vcrpy))
     (home-page "https://github.com/michael-lazar/rtv")
     (synopsis "Terminal viewer for Reddit (Reddit Terminal Viewer)")
     (description
@@ -474,24 +463,22 @@ a simple interface that makes it easy to organize and browse feeds.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (delete 'sanity-check)         ; Tries to read environment variables.
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (add-installed-pythonpath inputs outputs)
              (when tests?
                (invoke "pytest")))))))
     (inputs
-     `(("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-decorator" ,python-decorator)
-       ("python-kitchen" ,python-kitchen)
-       ("python-requests" ,python-requests)
-       ("python-six" ,python-six)))
+     (list python-beautifulsoup4 python-decorator python-kitchen
+           python-requests python-six))
     (native-inputs
-     `(("python-coverage" ,python-coverage)
-       ("python-coveralls" ,python-coveralls)
-       ("python-mock" ,python-mock)
-       ("python-pylint" ,python-pylint)
-       ("python-pytest" ,python-pytest)
-       ("python-vcrpy" ,python-vcrpy)))
+     (list python-coverage
+           python-coveralls
+           python-mock
+           python-pylint
+           python-pytest
+           python-vcrpy))
     (home-page "https://gitlab.com/ajak/tuir")
     (synopsis "Terminal viewer for Reddit (Terminal UI for Reddit)")
     (description
@@ -515,8 +502,7 @@ a simple interface that makes it easy to organize and browse feeds.")
     (arguments
      `(#:python ,python-2.7))
     (inputs
-     `(("python2-feedparser" ,python2-feedparser)
-       ("python2-pytidylib" ,python2-pytidylib)))
+     (list python2-feedparser python2-pytidylib))
     (home-page "https://offog.org/code/rawdog/")
     (synopsis "RSS Aggregator Without Delusions Of Grandeur")
     (description
@@ -566,14 +552,9 @@ formats, including all versions of RSS and Atom.")
                                     (assoc-ref inputs "qttools")
                                     "/bin/lrelease")))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
-     `(("qtwebkit" ,qtwebkit)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
-       ("phonon" ,phonon)
-       ("sqlite" ,sqlite)))
+     (list qtwebkit qtbase-5 qtmultimedia phonon sqlite))
     (home-page "https://quiterss.org/")
     (synopsis "RSS/Atom news feeds reader written on Qt/C++")
     (description "QuiteRSS is an RSS/Atom news feeds reader written on Qt/C++
@@ -600,13 +581,13 @@ that aims to be quite fast and comfortable to its user.")
          (add-after 'unpack 'patch-mpv-path
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "gfeeds/confManager.py"
-               (("mpv") (string-append (assoc-ref inputs "mpv") "/bin/mpv")))
+               (("mpv") (search-input-file inputs "/bin/mpv")))
              #t))
          (add-after 'install 'wrap-gfeeds
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (string-append
                             (assoc-ref outputs "out") "/bin/gfeeds")
-               `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH")))
+               `("PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))
                `("XDG_DATA_DIRS" ":" prefix (,(getenv "XDG_DATA_DIRS"))))
              #t)))))
@@ -616,26 +597,26 @@ that aims to be quite fast and comfortable to its user.")
        ("gtk+:bin" ,gtk+ "bin")
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("glib" ,glib)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("libhandy" ,libhandy)
-       ("mpv" ,mpv)
-       ("python" ,python)
-       ("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-dateutil" ,python-dateutil)
-       ("python-feedparser" ,python-feedparser)
-       ("python-html5lib" ,python-html5lib)
-       ("python-listparser" ,python-listparser)
-       ("python-lxml" ,python-lxml)
-       ("python-pillow" ,python-pillow)
-       ("python-pygments" ,python-pygments)
-       ("python-pytz" ,python-pytz)
-       ("python-readability" ,python-readability)
-       ("python-requests" ,python-requests)
-       ("webkitgtk" ,webkitgtk)
-       ("python-pygobject" ,python-pygobject)))
+     (list glib
+           gsettings-desktop-schemas
+           gtk+
+           hicolor-icon-theme
+           libhandy
+           mpv
+           python
+           python-beautifulsoup4
+           python-dateutil
+           python-feedparser
+           python-html5lib
+           python-listparser
+           python-lxml
+           python-pillow
+           python-pygments
+           python-pytz
+           python-readability
+           python-requests
+           webkitgtk
+           python-pygobject))
     (home-page "https://gfeeds.gabmus.org/")
     (synopsis "Easy-to-use GTK+ RSS/Atom feed reader")
     (description "Feeds is an RSS/Atom feed reader made with GTK+

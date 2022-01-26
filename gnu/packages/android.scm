@@ -4,12 +4,14 @@
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2017, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Sergey Trofimov <sarg@sarg.org.ru>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +31,7 @@
 (define-module (gnu packages android)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system android-ndk)
   #:use-module (guix build-system gnu)
@@ -43,6 +46,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pcre)
@@ -52,7 +56,9 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
@@ -188,6 +194,28 @@ use their packages mostly unmodified in our Android NDK build system.")
      (base32
       checksum))))
 
+(define (android-platform-development version)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://android.googlesource.com/platform/development")
+          (commit (string-append "android-" version))))
+    (file-name (string-append "android-platform-development-"
+                              version "-checkout"))
+    (sha256
+     (base32 "0s92961yycg8wsga40i7fvbfmf1a5i6j2gk64j2jiy7s0hfd4rc3"))))
+
+(define (android-platform-frameworks-native version)
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://android.googlesource.com/platform/frameworks/native")
+          (commit (string-append "android-" version))))
+    (file-name (string-append "android-platform-frameworks-native-"
+                              version "-checkout"))
+    (sha256
+     (base32 "00dgx27wma7wzivniy8zyw2443fi2xx8gyxii081m0fwamqd3jrm"))))
+
 (define-public android-liblog
   (package
     (name "android-liblog")
@@ -215,7 +243,7 @@ use their packages mostly unmodified in our Android NDK build system.")
                  "../include/android" (string-append out "/include/android")))
              #t)))))
     (home-page "https://developer.android.com/")
-    (synopsis "Logging library from the Android platform.")
+    (synopsis "Logging library from the Android platform")
     (description "@code{liblog} represents an interface to the volatile Android
 Logging system for NDK (Native) applications and libraries and contain
 interfaces for either writing or reading logs.  The log buffers are divided up
@@ -309,7 +337,7 @@ various Android core host applications.")
          (add-after 'unpack 'enter-source
            (lambda _ (chdir "libsparse") #t)))))
     (inputs
-     `(("zlib" ,zlib)))
+     (list zlib))
     (home-page "https://developer.android.com/")
     (synopsis "Android platform sparse library")
     (description "@code{android-libsparse} is a library in common use by the
@@ -340,11 +368,9 @@ various Android core host applications.")
                                  (string-append out "/include/ziparchive"))
                #t))))))
     (inputs
-     `(("zlib" ,zlib)))
+     (list zlib))
     (native-inputs
-     `(("android-libbase" ,android-libbase)
-       ("android-libutils" ,android-libutils)
-       ("android-liblog" ,android-liblog)))
+     (list android-libbase android-libutils android-liblog))
     (home-page "https://developer.android.com/")
     (synopsis "Android platform ZIP library")
     (description "@code{android-libziparchive} is a library in common use by the
@@ -360,10 +386,12 @@ various Android core host applications.")
     (arguments
      `(#:tests? #f ; Test failure: sysdeps_poll.fd_count
        #:make-flags
-       (list "CFLAGS=-Wno-error"
-             "CXXFLAGS=-fpermissive -Wno-error -std=gnu++14 -D_Nonnull= -D_Nullable= -I ."
-             (string-append "LDFLAGS=-Wl,-rpath=" (assoc-ref %outputs "out") "/lib "
-                            "-Wl,-rpath=" (assoc-ref %build-inputs "openssl") "/lib -L ."))
+       ,#~(list
+           "CFLAGS=-Wno-error"
+           "CXXFLAGS=-fpermissive -Wno-error -std=gnu++14 -D_Nonnull= -D_Nullable= -I ."
+           (string-append
+            "LDFLAGS=-Wl,-rpath=" #$output "/lib "
+            "-Wl,-rpath=" #$(this-package-input "openssl") "/lib -L ."))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-source
@@ -385,10 +413,7 @@ various Android core host applications.")
              (install-file "diagnose_usb.h" (string-append (assoc-ref outputs "out") "/include"))
              #t)))))
     (inputs
-     `(("android-libbase" ,android-libbase)
-       ("android-libcutils" ,android-libcutils)
-       ("android-liblog" ,android-liblog)
-       ("openssl" ,openssl)))
+     (list android-libbase android-libcutils android-liblog openssl))
     (home-page "https://developer.android.com/studio/command-line/adb.html")
     (synopsis "Android Debug Bridge")
     (description
@@ -507,11 +532,11 @@ that is safe to use for user space.  It also includes
               (("#ifdef HOST") "#ifdef XXX"))
              #t)))))
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (native-inputs
-     `(("android-bionic-uapi" ,android-bionic-uapi)
-       ;; pcre is inlined by our package.
-       ("pcre" ,pcre)))
+     (list android-bionic-uapi
+           ;; pcre is inlined by our package.
+           pcre))
     (home-page "https://developer.android.com/")
     (synopsis "Android version of the SELinux libraries and utilities")
     (description
@@ -530,29 +555,25 @@ the core SELinux management utilities.")
     (build-system android-ndk-build-system)
     (arguments
      `(#:make-flags
-       (list (string-append "CPPFLAGS="
-                            ;"-Wno-error "
-                            "-I "
-                            (assoc-ref %build-inputs "android-libselinux")
-                            "/include "
-                            "-I " (assoc-ref %build-inputs "android-libsparse")
-                            "/include "
-                            "-I " (assoc-ref %build-inputs "android-libcutils")
-                            "/include "
-                            "-I " (assoc-ref %build-inputs "android-liblog") "/include "
-                            "-I ../core/include")
-             "CFLAGS=-Wno-error"
-             "install-libext4_utils_host.a"
-             (string-append "prefix=" (assoc-ref %outputs "out")))
+       ,#~(list
+           (string-append
+            "CPPFLAGS="
+            ;"-Wno-error "
+            "-I " #$(this-package-input "android-libselinux") "/include "
+            "-I " #$(this-package-input "android-libsparse")  "/include "
+            "-I " #$(this-package-input "android-libcutils")  "/include "
+            "-I " #$(this-package-input "android-liblog") "/include "
+            "-I ../core/include")
+           "CFLAGS=-Wno-error"
+           "install-libext4_utils_host.a"
+           (string-append "prefix=" #$output))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'unpack-core
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "core")
-             (with-directory-excursion "core"
-               (invoke "tar" "axf" (assoc-ref inputs "android-core")
-                             "--strip-components=1"))
-             #t))
+             (copy-recursively (assoc-ref inputs "android-core")
+                               "core")))
          (add-after 'unpack-core 'enter-source
            (lambda _ (chdir "ext4_utils") #t))
          (replace 'install
@@ -561,11 +582,8 @@ the core SELinux management utilities.")
                (copy-recursively "." (string-append out "/include")))
              #t)))))
     (inputs
-     `(("android-libcutils" ,android-libcutils)
-       ("android-liblog" ,android-liblog)
-       ("android-libselinux" ,android-libselinux)
-       ("android-libsparse" ,android-libsparse)
-       ("zlib" ,zlib)))
+     (list android-libcutils android-liblog android-libselinux
+           android-libsparse zlib))
     (native-inputs
      `(("android-core" ,(android-platform-system-core version))))
     (home-page "https://developer.android.com/")
@@ -585,6 +603,9 @@ Android core.")
        (modify-phases %standard-phases
          (add-after 'unpack 'enter-source
            (lambda _ (chdir "f2fs_utils") #t))
+         (add-before 'build 'set-compilation-flags
+           (lambda _
+             (setenv "CFLAGS" "-fcommon")))
          (add-after 'install 'install-headers
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively "." (string-append (assoc-ref outputs "out")
@@ -600,11 +621,8 @@ Android core.")
                (install-file "mkf2fsuserimg.sh" bin)
                #t))))))
     (inputs
-     `(("f2fs-tools" ,f2fs-tools-1.7)
-       ("android-libselinux" ,android-libselinux)
-       ("android-libsparse" ,android-libsparse)
-       ("android-libcutils" ,android-libcutils)
-       ("zlib" ,zlib)))
+     (list f2fs-tools-1.7 android-libselinux android-libsparse
+           android-libcutils zlib))
     (home-page "https://developer.android.com/")
     (synopsis "Android f2fs utils")
     (description "@code{android-f2fs-utils} is a library in common use by the
@@ -641,8 +659,7 @@ file system.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively "../include/utils" (string-append (assoc-ref outputs "out") "/include/utils")))))))
     (inputs
-     `(("android-safe-iop" ,android-safe-iop)
-       ("android-libcutils" ,android-libcutils)))
+     (list android-safe-iop android-libcutils))
     (native-inputs
      `(("android-bionic-uapi" ,android-bionic-uapi)
        ("android-liblog" ,android-liblog)
@@ -668,7 +685,8 @@ file system.")
          (add-after 'enter-source 'patch-source
            (lambda _
              (substitute* "Android.mk"
-              (("libext4_utils_host") "libext4_utils_host libselinux libpcre"))
+               (("libext4_utils_host") "libext4_utils_host libselinux libpcre")
+               (("\\$\\(shell git .*\\)") ,version))
              #t))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
@@ -678,22 +696,22 @@ file system.")
                (install-file "fastboot" bin)
                #t))))))
     (inputs
-     `(("adb" ,adb)
-       ("android-safe-iop" ,android-safe-iop)
-       ("android-ext4-utils" ,android-ext4-utils)
-       ("android-f2fs-utils" ,android-f2fs-utils)
-       ("android-libbase" ,android-libbase)
-       ("android-libcutils" ,android-libcutils)
-       ("android-liblog" ,android-liblog)
-       ("android-libutils" ,android-libutils)
-       ("android-libsparse" ,android-libsparse)
-       ("android-libziparchive" ,android-libziparchive)
-       ("android-libselinux" ,android-libselinux)
-       ("pcre" ,pcre)
-       ("mkbootimg" ,mkbootimg)
-       ("zlib" ,zlib)))
+     (list adb
+           android-safe-iop
+           android-ext4-utils
+           android-f2fs-utils
+           android-libbase
+           android-libcutils
+           android-liblog
+           android-libutils
+           android-libsparse
+           android-libziparchive
+           android-libselinux
+           pcre
+           mkbootimg
+           zlib))
     (native-inputs
-     `(("xz" ,xz)))
+     (list xz))
     (home-page "https://developer.android.com/studio/command-line/")
     (synopsis "Android image flasher")
     (description
@@ -703,7 +721,7 @@ file system.")
 (define-public android-udev-rules
   (package
     (name "android-udev-rules")
-    (version "20200613")
+    (version "20210501")
     (source
      (origin
        (method git-fetch)
@@ -712,7 +730,7 @@ file system.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cf5br8x6iwxc1cifv0i1klw7skgs8hghdx6qlqby68kyqg81bb2"))))
+        (base32 "0pl1wfd7k9vz8mvy2jb2icc5f11c5p07aixpyhjs6gi5cyaywm5f"))))
     (build-system trivial-build-system)
     (native-inputs `(("source" ,source)))
     (arguments
@@ -722,8 +740,7 @@ file system.")
          (use-modules (guix build utils))
          (let ((source (assoc-ref %build-inputs "source")))
            (install-file (string-append source "/51-android.rules")
-                         (string-append %output "/lib/udev/rules.d"))
-           #t))))
+                         (string-append %output "/lib/udev/rules.d"))))))
     (home-page "https://github.com/M0Rf30/android-udev-rules")
     (synopsis "udev rules for Android devices")
     (description "Provides a set of udev rules to allow using Android devices
@@ -736,6 +753,132 @@ it.
 @emph{Simply installing this package will not have any effect.}  It is meant
 to be passed to the @code{udev} service.")
     (license license:gpl3+)))
+
+(define-public android-platform-frameworks-native-headers
+  (package
+    (name "android-platform-frameworks-native-headers")
+    (version (android-platform-version))
+    (source (android-platform-frameworks-native version))
+    (build-system trivial-build-system)
+    (arguments
+     `(#:modules ((guix build utils))
+       #:builder
+       (begin
+         (use-modules (guix build utils))
+         (let ((source (assoc-ref %build-inputs "source"))
+               (include (string-append %output "/include/android")))
+           (mkdir-p include)
+           (copy-recursively (string-append source "/include/android")
+                             (string-append include)) ; "/android"))
+           ))))
+    (home-page "https://android.googlesource.com/platform/frameworks/native/")
+    (synopsis "Headers for Android development from
+android-platform-frameworks-native")
+    (description "This package contains headers used for developing software
+for Android.  More precicely the headers from include/android in
+platform/frameworks/native.")
+    (license license:asl2.0)))
+
+(define-public libetc1
+  (package
+    (name "libetc1")
+    (version (android-platform-version))
+    (source (android-platform-frameworks-native version))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'create-Makefile
+           (lambda _
+             ;; No useful makefile is shipped, so we create one.
+             (with-output-to-file "Makefile"
+               (lambda _
+                 (display
+                  (string-append
+                   "NAME = libETC1\n"
+                   "SOURCES = opengl/libs/ETC1/etc1.cpp\n"
+                   "CXXFLAGS += -fPIC\n"
+                   "CPPFLAGS += -Iopengl/include\n"
+                   "LDFLAGS += -shared -Wl,-soname,$(NAME).so.0\n"
+                   "$(NAME).so.0: $(SOURCES)\n"
+                   "	$(CXX) $^ -o $@ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)\n"
+                   "build: $(NAME).so.0"))
+                 #t))))
+         (add-after 'unpack 'remove-unused-stuff-to-reduce-warnings
+           (lambda _
+             (delete-file-recursively "opengl/libs/tools")))
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib"))
+                    (include (string-append out "/include")))
+               (install-file "libETC1.so.0" lib)
+               (with-directory-excursion lib
+                 (symlink "libETC1.so.0" "libETC1.so"))
+               (copy-recursively "opengl/include/ETC1"
+                                 (string-append include "/ETC1"))))))))
+    (home-page "https://android.googlesource.com/platform/frameworks/native/")
+    (synopsis "ETC1 compression library")
+    (description "Ericsson Texture Compression (ETC) is a lossy texture
+compression technique developed in collaboration with Ericsson Research in
+early 2005.  libETC1 provides the encoding and decoding of ETC1 compression
+algorithm.")
+    (license license:asl2.0)))
+
+(define-public etc1tool
+  (package
+    (name "etc1tool")
+    (version (android-platform-version))
+    (source (android-platform-development version))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'create-Makefile
+           (lambda _
+             ;; No useful makefile is shipped, so we create one.
+             (with-output-to-file "Makefile"
+               (lambda _
+                 (display
+                  (string-append
+                   "NAME = etc1tool\n"
+                   "SOURCES = tools/etc1tool/etc1tool.cpp\n"
+                   "CPPFLAGS += -Iinclude\n"
+                   "LDFLAGS += -lpng -lETC1\n"
+                   "$(NAME): $(SOURCES)\n"
+                   "	$(CXX) $^ -o $@ $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)\n"
+                   "build: $(NAME)"))
+                 #t))))
+         (add-before 'build 'fix-typos-in-help
+           (lambda _
+             (substitute* "tools/etc1tool/etc1tool.cpp"
+               ((" apropriate ") " appropriate "))
+             #t))
+         ;; TODO: Add man-page from Debian
+         (delete 'configure)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "etc1tool" bin)))))))
+    (inputs
+     `(("libetc1" ,libetc1)
+       ("libpng" ,libpng)))
+    (home-page "https://developer.android.com/studio/command-line/etc1tool.html")
+    (synopsis "Encode and decode PNG images to resp. from the ETC1 compression
+standard.")
+    (description
+     "@command{etc1} is a command line utility that lets you encode PNG images
+to the ETC1 compression standard and decode ETC1 compressed images back to
+PNG.  This tool is part of the Android SDK for working with media files for
+game apps.
+
+The standard for the ETC1 texture format can be found at
+@uref{http://www.khronos.org/registry/gles/extensions/OES/OES_compressed_ETC1_RGB8_texture.txt}.")
+    (license license:asl2.0)))
 
 (define-public git-repo
   (package
@@ -828,7 +971,7 @@ to be passed to the @code{udev} service.")
     (native-inputs
      `(("pytest" ,python-pytest)))
     (home-page "https://code.google.com/p/git-repo/")
-    (synopsis "Helps to manage many Git repositories.")
+    (synopsis "Helps to manage many Git repositories")
     (description "Repo is a tool built on top of Git.  Repo helps manage many
 Git repositories, does the uploads to revision control systems, and automates
 parts of the development workflow.  Repo is not meant to replace Git, only to
@@ -894,21 +1037,18 @@ safest way, on a file image.")
              (invoke "nosetests" "--with-coverage" "--with-timer"
                      "--timer-top-n" "50"))))))
     (native-inputs
-     `(("python-codecov" ,python-codecov)
-       ("python-coverage" ,python-coverage)
-       ("python-mock" ,python-mock)
-       ("python-nose" ,python-nose)
-       ("python-nose-timer" ,python-nose-timer)))
+     (list python-codecov python-coverage python-mock python-nose
+           python-nose-timer))
     (propagated-inputs
-     `(("python-asn1crypto" ,python-asn1crypto)
-       ("python-colorama" ,python-colorama)
-       ("python-future" ,python-future)
-       ("python-ipython" ,python-ipython)
-       ("python-lxml" ,python-lxml)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-networkx" ,python-networkx)
-       ("python-pygments" ,python-pygments)
-       ("python-pyperclip" ,python-pyperclip)))
+     (list python-asn1crypto
+           python-colorama
+           python-future
+           python-ipython
+           python-lxml
+           python-matplotlib
+           python-networkx
+           python-pygments
+           python-pyperclip))
     (home-page "https://github.com/androguard/androguard")
     (synopsis "Python tool to play with Android files")
     (description
@@ -916,17 +1056,84 @@ safest way, on a file image.")
 useful for reverse engineering, analysis of Android applications and more.")
     (license license:asl2.0)))
 
+(define-public python-android-backup
+  (package
+    (name "python-android-backup")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "android_backup" version))
+       (sha256
+        (base32
+         "15wb2lyjj2fpf7bhvmgpqn0mglsjj11zfvbjycx7mnidisgnljw6"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pycrypto))
+    (home-page "https://github.com/bluec0re/android-backup-tools")
+    (synopsis "Unpack and repack android backups")
+    (description "This package allows you to unpack and repack Android
+backups.  It supports encrypted archives.")
+    (license license:asl2.0)))
+
+(define-public python-miio
+  (package
+    (name "python-miio")
+    (version "0.5.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-miio" version))
+       (sha256
+        (base32
+         "0a4f5ybjvibawwxcjm3r9nnrzf1yff6wwgy05yzyk0bb3rmc99fp"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "pytest" "miio")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-mock
+           python-sphinx
+           python-sphinx-click
+           python-sphinx-rtd-theme
+           python-sphinxcontrib-apidoc))
+    (propagated-inputs
+     (list python-android-backup
+           python-appdirs
+           python-attrs
+           python-click
+           python-construct
+           python-croniter
+           python-cryptography
+           python-defusedxml
+           python-importlib-metadata
+           python-netifaces
+           python-pytz
+           python-pyyaml
+           python-tqdm
+           python-zeroconf))
+    (home-page "https://github.com/rytilahti/python-miio")
+    (synopsis "Control Xiaomi smart appliances")
+    (description "This package provides library and command line interface
+for communicating with Xiaomi smart appliances over miIO and MIoT protocols.")
+    (license license:gpl3+)))
+
 (define-public fdroidserver
   (package
     (name "fdroidserver")
     (version "1.1.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fdroidserver" version))
-        (sha256
-         (base32
-          "0m07f791z45w7r2dzx4yb6s54b3c3wykm3w9hn25p2jcyax082a2"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fdroidserver" version))
+       (sha256
+        (base32
+         "0m07f791z45w7r2dzx4yb6s54b3c3wykm3w9hn25p2jcyax082a2"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -943,28 +1150,25 @@ useful for reverse engineering, analysis of Android applications and more.")
                (("docker-py >= 1.9, < 2.0") "docker >= 1.9"))
              #t)))))
     (propagated-inputs
-     `(("python-androguard" ,python-androguard)
-       ("python-apache-libcloud" ,python-apache-libcloud)
-       ("python-clint" ,python-clint)
-       ("python-defusedxml" ,python-defusedxml)
-       ("python-docker" ,python-docker)
-       ("python-gitpython" ,python-gitpython)
-       ("python-mwclient" ,python-mwclient)
-       ("python-paramiko" ,python-paramiko)
-       ("python-pillow" ,python-pillow)
-       ("python-pyasn1" ,python-pyasn1)
-       ("python-pyasn1-modules" ,python-pyasn1-modules)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-qrcode" ,python-qrcode)
-       ("python-ruamel.yaml" ,python-ruamel.yaml)
-       ("python-requests" ,python-requests)
-       ("python-vagrant" ,python-vagrant)))
+     (list python-androguard
+           python-apache-libcloud
+           python-clint
+           python-defusedxml
+           python-docker
+           python-gitpython
+           python-mwclient
+           python-paramiko
+           python-pillow
+           python-pyasn1
+           python-pyasn1-modules
+           python-pyyaml
+           python-qrcode
+           python-ruamel.yaml
+           python-requests
+           python-vagrant))
     (native-inputs
-     `(("python-babel" ,python-babel)
-       ("python-bcrypt" ,python-bcrypt)
-       ("python-docker-pycreds" ,python-docker-pycreds)
-       ("python-pynacl" ,python-pynacl)
-       ("python-websocket-client" ,python-websocket-client)))
+     (list python-babel python-bcrypt python-docker-pycreds python-pynacl
+           python-websocket-client))
     (home-page "https://f-droid.org")
     (synopsis "F-Droid server tools")
     (description
@@ -993,7 +1197,7 @@ main repository.")
        #:tests? #f  ; TODO: Inputs missing.
        #:install-source? #f))
     (inputs
-     `(("go-github-com-kr-pretty" ,go-github-com-kr-pretty)))
+     (list go-github-com-kr-pretty))
     ;(native-inputs
     ; `(("go-github-com-rogpeppe-go-internal-testscript"
     ;    ,go-github-com-rogpeppe-go-internal-testscript)))
@@ -1026,13 +1230,6 @@ connected devices via ADB.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'enjarify-wrapper-inherit-pythonpath
-           ;; enjarify sets PYTHONPATH from a shell script, overwriting
-           ;; PYTHONPATH set from guix. Comment out this line.
-           (lambda _
-             (substitute* "enjarify.sh"
-               (("export PYTHONPATH") "# export PYTHONPATH"))
-             #t))
          (add-before 'check 'fixup-expected-test-results
            ;; Upstream adjusted this test in commit:
            ;; 3ae884a6485af82d300515813f537685b08dd800
@@ -1053,7 +1250,7 @@ connected devices via ADB.")
                  (mkdir-p (string-append out "/bin/"))
                  (copy-file "enjarify.sh" (string-append out "/bin/enjarify"))
                  #t))))))
-    (native-inputs `(("openjdk" ,openjdk12)))
+    (native-inputs (list openjdk12))
     (synopsis "Translate Dalvik bytecode to equivalent Java bytecode")
     (description "Android applications are Java programs that run on a
 customized virtual machine, which is part of the Android operating system, the

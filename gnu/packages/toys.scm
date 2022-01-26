@@ -61,10 +61,9 @@
            #t))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("imake" ,imake)))
+     (list imake))
     (inputs
-     `(("libx11" ,libx11)
-       ("libxext" ,libxext)))
+     (list libx11 libxext))
     (arguments
      `(#:tests? #f ; no tests
        #:phases
@@ -113,7 +112,7 @@ mouse pointer around the screen while you work.")
         (base32 "1zrfd71zx2px2xpapg45s8xvi81xii63yl0h60q72j71zh4sif8b"))))
     (build-system gnu-build-system)
     (inputs
-     `(("ncurses" ,ncurses)))
+     (list ncurses))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -178,10 +177,9 @@ typing @command{sl} instead of @command{ls}.")
              #t)))
        #:tests? #f))                    ; no test suite
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)))
+     (list bison flex))
     (inputs
-     `(("perl" ,perl)))
+     (list perl))
     (home-page "https://joeyh.name/code/filters/")
     (synopsis "Various amusing text filters")
     (description
@@ -230,15 +228,15 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
 (define-public xsnow
   (package
     (name "xsnow")
-    (version "2.0.22")
+    (version "3.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://www.ratrabbit.nl/ratrabbit/system/files/xsnow/xsnow-"
+             "https://www.ratrabbit.nl/downloads/xsnow/xsnow-"
              version ".tar.gz"))
        (sha256
-        (base32 "1880643fal6l7bskqbm4zfbr2s719698mkx4pchrxkjpb240sj0z"))))
+        (base32 "17pxc955jgkjan8ax0lw3b3sibw7aikc7p9qbxsp0w7g7jkxf666"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -251,14 +249,10 @@ The GNU project hosts a similar collection of filters, the GNU talkfilters.")
                 (string-append prefix "bin")))
              #t)))))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("libx11" ,libx11)
-       ("libxpm" ,libxpm)
-       ("libxt" ,libxt)
-       ("libxxml2" ,libxml2)))
+     (list gtk+ libx11 libxpm libxt libxml2))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
-    (home-page "https://www.ratrabbit.nl/ratrabbit/content/xsnow/introduction")
+     (list pkg-config))
+    (home-page "https://www.ratrabbit.nl/ratrabbit/xsnow/index.html")
     (synopsis "Let it snow on the desktop")
     (description "@code{Xsnow} animates snowfall and Santa with reindeer on
 the desktop background.  Additional customizable effects include wind, stars
@@ -329,10 +323,9 @@ of the Nyan Cat / Poptart Cat animation.")
                                         ,(package-version this-package))))
                (install-file "README.md" doc)))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("scdoc" ,scdoc)))
+     (list pkg-config scdoc))
     (inputs
-     `(("ncurses" ,ncurses)))
+     (list ncurses))
     (home-page "https://gitlab.com/jallbrit/cbonsai")
     (synopsis "Grow bonsai trees in a terminal")
     (description "Cbonsai is a bonsai tree generator using ASCII art.  It

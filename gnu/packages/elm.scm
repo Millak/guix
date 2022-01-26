@@ -52,42 +52,32 @@
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'update-constraints
+         (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "elm.cabal"
-               (("ansi-terminal >= 0\\.8 && < 0\\.9,")
-                "ansi-terminal >= 0.8 && < 0.10,")
-               (("containers >= 0\\.5\\.8\\.2 && < 0\\.6,")
-                "containers >= 0.5.8.2 && < 0.7,")
-               (("http-client >= 0\\.5 && < 0\\.6,")
-                "http-client >= 0.5 && < 0.7,")
-               (("language-glsl >= 0\\.0\\.2 && < 0\\.3,")
-                "language-glsl >= 0.0.2 && < 0.4,")
-               (("network >= 2\\.4 && < 2\\.7,")
-                "network >= 2.4 && < 2.9,"))
-             #t)))))
+               (("(ansi-terminal|containers|network|http-client|language-glsl)\\s+[^,]+" all dep)
+                dep)))))))
     (inputs
-     `(("ghc-ansi-terminal" ,ghc-ansi-terminal)
-       ("ghc-ansi-wl-pprint" ,ghc-ansi-wl-pprint)
-       ("ghc-edit-distance" ,ghc-edit-distance)
-       ("ghc-file-embed" ,ghc-file-embed)
-       ("ghc-http" ,ghc-http)
-       ("ghc-http-client" ,ghc-http-client)
-       ("ghc-http-client-tls" ,ghc-http-client-tls)
-       ("ghc-http-types" ,ghc-http-types)
-       ("ghc-language-glsl" ,ghc-language-glsl)
-       ("ghc-logict" ,ghc-logict)
-       ("ghc-network" ,ghc-network)
-       ("ghc-raw-strings-qq" ,ghc-raw-strings-qq)
-       ("ghc-scientific" ,ghc-scientific)
-       ("ghc-sha" ,ghc-sha)
-       ("ghc-snap-core" ,ghc-snap-core)
-       ("ghc-snap-server" ,ghc-snap-server)
-       ("ghc-unordered-containers"
-        ,ghc-unordered-containers)
-       ("ghc-utf8-string" ,ghc-utf8-string)
-       ("ghc-vector" ,ghc-vector)
-       ("ghc-zip-archive" ,ghc-zip-archive)))
+     (list ghc-ansi-terminal
+           ghc-ansi-wl-pprint
+           ghc-edit-distance
+           ghc-file-embed
+           ghc-http
+           ghc-http-client
+           ghc-http-client-tls
+           ghc-http-types
+           ghc-language-glsl
+           ghc-logict
+           ghc-network
+           ghc-raw-strings-qq
+           ghc-scientific
+           ghc-sha
+           ghc-snap-core
+           ghc-snap-server
+           ghc-unordered-containers
+           ghc-utf8-string
+           ghc-vector
+           ghc-zip-archive))
     (home-page "https://elm-lang.org")
     (synopsis "Programming language for Web applications")
     (description

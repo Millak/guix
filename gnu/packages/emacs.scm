@@ -18,7 +18,7 @@
 ;;; Copyright © 2018, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Jesse John Gildersleve <jessejohngildersleve@zohomail.eu>
 ;;; Copyright © 2019 Valentin Ignatev <valentignatev@gmail.com>
-;;; Copyright © 2019 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2019, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -54,6 +54,7 @@
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)     ; for librsvg
   #:use-module (gnu packages gtk)
@@ -63,6 +64,7 @@
   #:use-module (gnu packages mail)      ; for mailutils
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -71,6 +73,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix utils)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
 (define-public emacs
@@ -128,7 +131,7 @@
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-program-file-names
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("src/callproc.c"
                             "lisp/term.el"
                             "lisp/htmlfontify.el"
@@ -136,6 +139,23 @@
                             "lisp/progmodes/sh-script.el")
                (("\"/bin/sh\"")
                 (format #f "~s" (which "sh"))))
+             (substitute* "lisp/doc-view.el"
+               (("\"(gs|dvipdf|ps2pdf)\"" all what)
+                (let ((ghostscript (assoc-ref inputs "ghostscript")))
+                  (if ghostscript
+                      (string-append "\"" ghostscript "/bin/" what "\"")
+                      all)))
+               (("\"(pdftotext)\"" all what)
+                (let ((poppler (assoc-ref inputs "poppler")))
+                  (if poppler
+                      (string-append "\"" poppler "/bin/" what "\"")
+                      all))))
+             ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
+             ;; respectively when looking for GVFS processes.
+             (substitute* "lisp/net/tramp-gvfs.el"
+               (("\\(tramp-compat-process-running-p \"(.*)\"\\)" all process)
+                (format #f "(or ~a (tramp-compat-process-running-p ~s))"
+                        all (string-append "." process "-real"))))
              #t))
          (add-before 'configure 'fix-/bin/pwd
            (lambda _
@@ -166,8 +186,11 @@
                (with-output-to-file (string-append lisp-dir "/site-start.el")
                  (lambda ()
                    (display
-                    (string-append "(when (require 'guix-emacs nil t)\n"
-                                   "  (guix-emacs-autoload-packages))\n"))))
+                    (string-append
+                     "(when (require 'guix-emacs nil t)\n"
+                     "  (guix-emacs-autoload-packages)\n"
+                     "  (advice-add 'package-load-all-descriptors"
+                     " :after #'guix-emacs-load-package-descriptors))"))))
                ;; Remove the extraneous subdirs.el file, as it causes Emacs to
                ;; add recursively all the the sub-directories of a profile's
                ;; share/emacs/site-lisp union when added to EMACSLOADPATH,
@@ -182,15 +205,13 @@
            (lambda* (#:key outputs target #:allow-other-keys)
              (let* ((libexec (string-append (assoc-ref outputs "out")
                                             "/libexec"))
-                    ;; each of these find-files should return one file
-                    (pdmp (find-files libexec "^emacs\\.pdmp$"))
-                    (pdmp-real (find-files libexec
-                                           "^\\.emacs\\.pdmp-real$")))
-               (for-each (lambda (wrapper real)
-                           (delete-file wrapper)
-                           (rename-file real wrapper))
-                         pdmp pdmp-real))
-             #t))
+                    ;; each of these ought to only match a single file,
+                    ;; but even if not (find-files) sorts by string<,
+                    ;; so the Nth element in one maps to the Nth element of
+                    ;; the other
+                    (pdmp (find-files libexec "\\.pdmp$"))
+                    (pdmp-real (find-files libexec "\\.pdmp-real$")))
+               (for-each rename-file pdmp-real pdmp))))
          (add-after 'glib-or-gtk-wrap 'strip-double-wrap
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Directly copy emacs-X.Y to emacs, so that it is not wrapped
@@ -224,16 +245,7 @@
                             ;; environment variables from emacs.
                             ;; Likewise, we don't need to patch helper binaries
                             ;; like etags, ctags or ebrowse.
-                            "^emacs(-[0-9]+(\\.[0-9]+)*)?$"))
-               #t)))
-         (add-before 'reset-gzip-timestamps 'make-compressed-files-writable
-           ;; The 'reset-gzip-timestamps phase will throw a permission error
-           ;; if gzip files aren't writable then.  This phase is needed when
-           ;; building from a git checkout.
-           (lambda _
-             (for-each make-file-writable
-                       (find-files %output ".*\\.t?gz$"))
-             #t)))))
+                            "^emacs(-[0-9]+(\\.[0-9]+)*)?$"))))))))
     (inputs
      `(("gnutls" ,gnutls)
        ("ncurses" ,ncurses)
@@ -260,13 +272,16 @@
        ("acl" ,acl)
        ("jansson" ,jansson)
        ("gmp" ,gmp)
+       ("ghostscript" ,ghostscript)
+       ("poppler" ,poppler)
 
        ;; When looking for libpng `configure' links with `-lpng -lz', so we
        ;; must also provide zlib as an input.
        ("libpng" ,libpng)
        ("zlib" ,zlib)
-
-       ("librsvg" ,librsvg)
+       ("librsvg" ,@(if (target-x86-64?)
+                         (list librsvg-bootstrap)
+                         (list librsvg-2.40)))
        ("libxpm" ,libxpm)
        ("libxml2" ,libxml2)
        ("libice" ,libice)
@@ -322,8 +337,8 @@ languages.")
           (base32
            "0igjm9kwiswn2dpiy2k9xikbdfc7njs07ry48fqz70anljj8y7y3"))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ,@(package-native-inputs emacs))))))
+       (modify-inputs (package-native-inputs emacs)
+         (prepend autoconf))))))
 
 (define-public emacs-next-pgtk
   (let ((commit "ae18c8ec4f0ef37c8c9cda473770ff47e41291e2")
@@ -347,10 +362,9 @@ languages.")
          ((#:configure-flags flags ''())
           `(cons* "--with-pgtk" "--with-xwidgets" ,flags))))
       (propagated-inputs
-       `(("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-         ("glib-networking" ,glib-networking)))
+       (list gsettings-desktop-schemas glib-networking))
       (inputs
-       `(("webkitgtk" ,webkitgtk)
+       `(("webkitgtk" ,webkitgtk-with-libsoup2)
          ,@(package-inputs emacs-next)))
       (home-page "https://github.com/masm11/emacs")
       (synopsis "Emacs text editor with @code{pgtk} and @code{xwidgets} support")
@@ -396,7 +410,7 @@ editor (with xwidgets support)")
            (delete 'restore-emacs-pdmp)
            (delete 'strip-double-wrap)))))
     (inputs
-     `(("webkitgtk" ,webkitgtk)
+     `(("webkitgtk" ,webkitgtk-with-libsoup2)
        ("libxcomposite" ,libxcomposite)
        ,@(package-inputs emacs)))))
 
@@ -541,12 +555,12 @@ This package contains the library database.")
          "0jp61y09xqj10mclpip48qlfhniw8gwy8b28cbzxy8hq8pkwmfkq"))))
     (build-system gnu-build-system)
     (inputs
-     `(("fribidi" ,fribidi)
-       ("gd" ,gd)
-       ("libotf" ,libotf)
-       ("libxft" ,libxft)
-       ("libxml2" ,libxml2)
-       ("m17n-db" ,m17n-db)))
+     (list fribidi
+           gd
+           libotf
+           libxft
+           libxml2
+           m17n-db))
     (arguments
      `(#:parallel-build? #f))
     ;; With `guix lint' the home-page URI returns a small page saying

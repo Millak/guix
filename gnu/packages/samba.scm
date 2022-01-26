@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2015, 2017 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015, 2017, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
@@ -9,7 +9,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +27,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages samba)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -55,6 +56,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -64,19 +67,19 @@
 (define-public cifs-utils
   (package
     (name "cifs-utils")
-    (version "6.13")
+    (version "6.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/linux-cifs/"
                            "cifs-utils/cifs-utils-" version ".tar.bz2"))
        (sha256 (base32
-                "0mnhcc4ayj2vn2azhk45fnal1hibsv0q2c4ihkxcrjhkhrn7in23"))))
+                "1f2n0yzqsy5v5qv83731bi0mi86rrh11z8qjy1gjj8al9c3yh2b6"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake pkg-config
+           ;; To generate the manpages.
+           python-docutils)) ; rst2man
     (inputs
      `(("keytuils" ,keyutils)
        ("linux-pam" ,linux-pam)
@@ -85,23 +88,31 @@
        ("samba" ,samba)
        ("talloc" ,talloc)))
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       (list "--enable-man")
+       #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'trigger-bootstrap
+           ;; The shipped configure script is buggy, e.g., it contains a
+           ;; unexpanded literal ‘LIBCAP_NG_PATH’ line).
+           (lambda _
+             (delete-file "configure")))
          (add-before 'configure 'set-root-sbin
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Don't try to install into "/sbin".
              (setenv "ROOTSBINDIR"
-                     (string-append (assoc-ref outputs "out") "/sbin"))
-             #t))
-         (add-before 'install 'create-man8dir
+                     (string-append (assoc-ref outputs "out") "/sbin"))))
+         (add-before 'install 'install-man-pages
            ;; Create a directory that isn't created since version 6.10.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/share/man/man8"))
-               #t))))))
+           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (apply invoke "make" "install-man"
+                    `(,@(if parallel-build?
+                            `("-j" ,(number->string (parallel-job-count)))
+                            '())
+                      ,@make-flags)))))))
     (synopsis "User-space utilities for Linux CIFS (Samba) mounts")
     (description "@code{cifs-utils} is a set of user-space utilities for
-mounting and managing @dfn{Common Internet File System} (CIFS) shares using
+mounting and managing @acronym{CIFS, Common Internet File System} shares using
 the Linux kernel CIFS client.")
     (home-page "https://wiki.samba.org/index.php/LinuxCIFS_utils")
     ;; cifs-utils is licensed as GPL3 or later, but 3 files contain LGPL code.
@@ -172,99 +183,95 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
-    (version "4.13.10")
+    (version "4.15.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/samba/stable/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "00q5hf2r71dyma785dckcyksv3082mqfgyy9q6k6rc6kqjwkirzh"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; XXX: Some bundled libraries (e.g, popt, cmocka) are used from
-           ;; the system, but their bundled sources must be kept as they
-           ;; include the WAF scripts used for detecting them.
-           (delete-file-recursively "third_party/pyiso8601")
-           #t))))
+        (base32 "1nrp85aya0pbbqdqjaqcw82cnzzys16yls37hi2h6mci8d09k4si"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("TEST_OPTIONS=--quick") ;some tests are very long
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'setup-docbook-stylesheets
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Append Samba's own DTDs to XML_CATALOG_FILES
-             ;; (c.f. docs-xml/build/README).
-             (copy-file "docs-xml/build/catalog.xml.in"
-                        "docs-xml/build/catalog.xml")
-             (substitute* "docs-xml/build/catalog.xml"
-               (("/@abs_top_srcdir@")
-                (string-append (getcwd) "/docs-xml")))
-             ;; Honor XML_CATALOG_FILES.
-             (substitute* "buildtools/wafsamba/wafsamba.py"
-               (("XML_CATALOG_FILES=\"\\$\\{SAMBA_CATALOGS\\}" all)
-                (string-append all " $XML_CATALOG_FILES")))
-             #t))
-         (replace 'configure
-           ;; Samba uses a custom configuration script that runs WAF.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (libdir (string-append out "/lib")))
-               (invoke "./configure"
-                       "--enable-selftest"
-                       "--enable-fhs"
-                       (string-append "--prefix=" out)
-                       "--sysconfdir=/etc"
-                       "--localstatedir=/var"
-                       ;; Install public and private libraries into
-                       ;; a single directory to avoid RPATH issues.
-                       (string-append "--libdir=" libdir)
-                       (string-append "--with-privatelibdir=" libdir)))))
-         (add-before 'install 'disable-etc,var-samba-directories-setup
-           (lambda _
-             (substitute* "dynconfig/wscript"
-               (("bld\\.INSTALL_DIR.*") ""))
-             #t)))
-       ;; FIXME: The test suite seemingly hangs after failing to provision the
-       ;; test environment.
-       #:tests? #f))
+     (list
+      #:make-flags #~(list "TEST_OPTIONS=--quick") ;some tests are very long
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'setup-docbook-stylesheets
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Append Samba's own DTDs to XML_CATALOG_FILES
+              ;; (c.f. docs-xml/build/README).
+              (copy-file "docs-xml/build/catalog.xml.in"
+                         "docs-xml/build/catalog.xml")
+              (substitute* "docs-xml/build/catalog.xml"
+                (("/@abs_top_srcdir@")
+                 (string-append (getcwd) "/docs-xml")))
+              ;; Honor XML_CATALOG_FILES.
+              (substitute* "buildtools/wafsamba/wafsamba.py"
+                (("XML_CATALOG_FILES=\"\\$\\{SAMBA_CATALOGS\\}" all)
+                 (string-append all " $XML_CATALOG_FILES")))))
+          (replace 'configure
+            ;; Samba uses a custom configuration script that runs WAF.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((libdir (string-append #$output "/lib")))
+                (invoke "./configure"
+                        "--enable-selftest"
+                        "--enable-fhs"
+                        (string-append "--prefix=" #$output)
+                        "--sysconfdir=/etc"
+                        "--localstatedir=/var"
+                        ;; Install public and private libraries into
+                        ;; a single directory to avoid RPATH issues.
+                        (string-append "--libdir=" libdir)
+                        (string-append "--with-privatelibdir=" libdir)
+                        "--with-system-mitkrb5" ;#$(this-package-input "mit-krb5")
+                        (string-append "--with-system-mitkdc="
+                                       (search-input-file inputs "sbin/krb5kdc"))
+                        "--with-experimental-mit-ad-dc"))))
+          (add-before 'install 'disable-etc,var-samba-directories-setup
+            (lambda _
+              (substitute* "dynconfig/wscript"
+                (("bld\\.INSTALL_DIR.*") "")))))
+      ;; FIXME: The test suite seemingly hangs after failing to provision the
+      ;; test environment.
+      #:tests? #f))
     (inputs
-     `(("acl" ,acl)
-       ("cmocka" ,cmocka)
-       ("cups" ,cups)
-       ("gamin" ,gamin)
-       ("dbus" ,dbus)
-       ("gpgme" ,gpgme)
-       ("gnutls" ,gnutls)
-       ("heimdal" ,heimdal)
-       ("jansson" ,jansson)
-       ("libarchive" ,libarchive)
-       ("libtirpc" ,libtirpc)
-       ("linux-pam" ,linux-pam)
-       ("lmdb" ,lmdb)
-       ("openldap" ,openldap)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("popt" ,popt)
-       ("readline" ,readline)
-       ("tdb" ,tdb)))
+     (list acl
+           cmocka
+           cups
+           gamin
+           dbus
+           gpgme
+           gnutls
+           jansson
+           libarchive
+           libtirpc
+           linux-pam
+           lmdb
+           mit-krb5
+           openldap
+           perl
+           python
+           popt
+           readline
+           tdb))
     (propagated-inputs
      ;; In Requires or Requires.private of pkg-config files.
-     `(("ldb" ,ldb)
-       ("talloc" ,talloc)
-       ("tevent" ,tevent)))
+     (list ldb talloc tevent))
     (native-inputs
-     `(("perl-parse-yapp" ,perl-parse-yapp)
-       ("pkg-config" ,pkg-config)
-       ("python-iso8601" ,python-iso8601)
-       ("rpcsvc-proto" ,rpcsvc-proto)   ; for 'rpcgen'
-       ;; For generating man pages.
-       ("docbook-xml" ,docbook-xml-4.2)
-       ("docbook-xsl" ,docbook-xsl)
-       ("xsltproc" ,libxslt)
-       ("libxml2" ,libxml2)))           ;for XML_CATALOG_FILES
+     (list perl-parse-yapp
+           pkg-config
+           python-cryptography          ;for krb5 tests
+           python-dnspython
+           python-iso8601
+           python-markdown
+           rpcsvc-proto                 ;for 'rpcgen'
+           python-pyasn1                ;for krb5 tests
+           ;; For generating man pages.
+           docbook-xml-4.2
+           docbook-xsl
+           libxslt
+           libxml2))                    ;for XML_CATALOG_FILES
     (home-page "https://www.samba.org/")
     (synopsis
      "The standard Windows interoperability suite of programs for GNU and Unix")
@@ -276,6 +283,19 @@ DOS and Windows, OS/2, GNU/Linux and many others.
 Samba is an important component to seamlessly integrate Linux/Unix Servers and
 Desktops into Active Directory environments using the winbind daemon.")
     (license gpl3+)))
+
+(define-public samba/fixed
+  ;; Version that rarely changes, depended on by libsoup.
+  (hidden-package
+   (package/inherit samba
+     (version "4.15.3")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://download.samba.org/pub/samba/stable/"
+                            "samba-" version ".tar.gz"))
+        (sha256
+         (base32 "1nrp85aya0pbbqdqjaqcw82cnzzys16yls37hi2h6mci8d09k4si")))))))
 
 (define-public talloc
   (package
@@ -301,9 +321,9 @@ Desktops into Active Directory environments using the winbind daemon.")
                (invoke "./configure"
                        (string-append "--prefix=" out))))))))
     (native-inputs
-     `(("which" ,which)))
+     (list which))
     (inputs
-     `(("python" ,python)))
+     (list python))
     (home-page "https://talloc.samba.org")
     (synopsis "Hierarchical, reference counted memory pool system")
     (description
@@ -367,12 +387,9 @@ destructors.  It is the core memory allocator used in Samba.")
                        (string-append "--prefix=" out)
                        "--bundled-libraries=NONE")))))))
     (native-inputs
-     `(("cmocka" ,cmocka)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("which" ,which)))
+     (list cmocka pkg-config python which))
     (propagated-inputs
-     `(("talloc" ,talloc))) ; required by tevent.pc
+     (list talloc)) ; required by tevent.pc
     (synopsis "Event system library")
     (home-page "https://tevent.samba.org/")
     (description
@@ -384,14 +401,14 @@ many event types, including timers, signals, and the classic file descriptor eve
 (define-public ldb
   (package
     (name "ldb")
-    (version "2.4.0")
+    (version "2.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.samba.org/ftp/ldb/ldb-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "10rd1z2llqz8xdx6m7yyxb9a118gx2xxwri18bhkkab9n1w55rvn"))
+                "13yd7lavbx8bxwnmzl0j7xnl2gl4wmnn0q9g7n3y7bvbnhm07hb9"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -400,8 +417,7 @@ many event types, including timers, signals, and the classic file descriptor eve
                               (unless (or (string-prefix? "third_party/waf" file)
                                           (string-suffix? "wscript" file))
                                 (delete-file file)))
-                            (find-files "third_party"))
-                  #t))))
+                            (find-files "third_party"))))))
     (build-system gnu-build-system)
     (arguments
      '(;; LMDB is only supported on 64-bit systems, yet the test suite
@@ -419,14 +435,10 @@ many event types, including timers, signals, and the classic file descriptor eve
                                       "/lib/ldb/modules")
                        "--bundled-libraries=NONE")))))))
     (native-inputs
-     `(("cmocka" ,cmocka)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("which" ,which)))
+     (list cmocka pkg-config python which))
     (propagated-inputs
      ;; ldb.pc refers to all these.
-     `(("talloc" ,talloc)
-       ("tdb" ,tdb)))
+     (list talloc tdb))
     (inputs
      `(,@(if (target-64bit?)
              `(("lmdb" ,lmdb))
@@ -475,8 +487,8 @@ key-value pair databases and a real LDAP database.")
                   (string-append libpcap "/include/pcap-bpf.h")))
                #t))))))
     (inputs
-     `(("libpcap" ,libpcap)
-       ("openssl" ,(@ (gnu packages tls) openssl))))
+     (list libpcap
+           (@ (gnu packages tls) openssl)))
     (synopsis "Implementation of the Point-to-Point Protocol")
     (home-page "https://ppp.samba.org/")
     (description

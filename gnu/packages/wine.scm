@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -43,7 +43,6 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
@@ -75,7 +74,7 @@
 (define-public wine
   (package
     (name "wine")
-    (version "6.16")
+    (version "7.0")
     (source
      (origin
        (method url-fetch)
@@ -87,7 +86,7 @@
               (string-append "https://dl.winehq.org/wine/source/" dir
                              "wine-" version ".tar.xz")))
        (sha256
-        (base32 "1s7sz1rimax4kxij1ngkwnx4hcljwjq3q5gksz22k8cq1l2r4l39"))))
+        (base32 "0sq8vsr8jf1a8fanh76rq7vyxm8h0cc4ckirjy7v2p08biyy4hsv"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("bison" ,bison)
@@ -96,28 +95,25 @@
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)))
     (inputs
+     ;; Some libraries like libjpeg are now compiled into native PE objects.
+     ;; The ELF objects provided by Guix packages are of no use.  Whilst this
+     ;; is technically bundling, it's quite defensible.  It might be possible
+     ;; to build some of these from Guix PACKAGE-SOURCE but attempts were not
+     ;; fruitful so far.  See <https://www.winehq.org/announce/7.0>.
      `(("alsa-lib" ,alsa-lib)
        ("dbus" ,dbus)
        ("cups" ,cups)
        ("eudev" ,eudev)
-       ("faudio" ,faudio)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("gnutls" ,gnutls)
        ("gst-plugins-base" ,gst-plugins-base)
-       ("lcms" ,lcms)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
        ("libgphoto2" ,libgphoto2)
-       ("libmpg123" ,mpg123)
        ("libldap" ,openldap)
        ("libnetapi" ,samba)
        ("libsane" ,sane-backends)
        ("libpcap" ,libpcap)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
        ("libusb" ,libusb)
-       ("libtiff" ,libtiff)
        ("libICE" ,libice)
        ("libX11" ,libx11)
        ("libXi" ,libxi)
@@ -180,10 +176,15 @@
                         `("VK_ICD_FILENAMES" ":" =
                           (,(string-append icd
                                            "/radeon_icd.i686.json" ":"
-                                           icd "/intel_icd.i686.json"))))
-                      #t)))))
+                                           icd "/intel_icd.i686.json")))))))))
              (_
               `()))
+         (add-after 'unpack 'patch-SHELL
+           (lambda _
+             (substitute* "configure"
+               ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
+               (("/bin/sh")
+                (which "bash")))))
          (add-after 'configure 'patch-dlopen-paths
            ;; Hardcode dlopened sonames to absolute paths.
            (lambda _
@@ -193,17 +194,13 @@
                                (search-path library-path soname))))
                (substitute* "include/config.h"
                  (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname))))
-               #t)))
-         (add-after 'patch-generated-file-shebangs 'patch-makefile
+                  (format #f "~a\"~a\"" defso (find-so soname)))))))
+         (add-after 'patch-generated-file-shebangs 'patch-makedep
            (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "Makefile") ; Makefile is first regenerated
-             (substitute* "Makefile"
-               (("-lntdll" id)
-                (string-append id
-                               " -Wl,-rpath=" (assoc-ref outputs "out")
-                               "/lib/wine32/wine/$(ARCH)-unix")))
-             #t)))))
+             (substitute* "tools/makedep.c"
+               (("output_filenames\\( unix_libs \\);" all)
+                (string-append all
+                               "output ( \" -Wl,-rpath=%s \", so_dir );"))))))))
     (home-page "https://www.winehq.org/")
     (synopsis "Implementation of the Windows API (32-bit only)")
     (description
@@ -222,8 +219,8 @@ integrate Windows applications into your desktop.")
   (package
     (inherit wine)
     (name "wine64")
-    (inputs `(("wine" ,wine)
-              ,@(package-inputs wine)))
+    (inputs (modify-inputs (package-inputs wine)
+              (prepend wine)))
     (arguments
      `(#:make-flags
        (list "SHELL=bash"
@@ -263,15 +260,18 @@ integrate Windows applications into your desktop.")
                       #t)))))
              (_
               `()))
-         (add-after 'patch-generated-file-shebangs 'patch-makefile
+         (add-after 'unpack 'patch-SHELL
+           (lambda _
+             (substitute* "configure"
+               ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
+               (("/bin/sh")
+                (which "bash")))))
+         (add-after 'patch-generated-file-shebangs 'patch-makedep
            (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "make" "Makefile") ; Makefile is first regenerated
-             (substitute* "Makefile"
-               (("-lntdll" id)
-                (string-append id
-                               " -Wl,-rpath=" (assoc-ref outputs "out")
-                               "/lib/wine64/wine/$(ARCH)-unix")))
-             #t))
+             (substitute* "tools/makedep.c"
+               (("output_filenames\\( unix_libs \\);" all)
+                (string-append all
+                               "output ( \" -Wl,-rpath=%s \", so_dir );")))))
          (add-after 'install 'copy-wine32-binaries
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((wine32 (assoc-ref %build-inputs "wine"))
@@ -282,23 +282,20 @@ integrate Windows applications into your desktop.")
                ;; Copy the real 32-bit wine-preloader instead of the wrapped
                ;; version.
                (copy-file (string-append wine32 "/bin/.wine-preloader-real")
-                          (string-append out "/bin/wine-preloader"))
-               #t)))
+                          (string-append out "/bin/wine-preloader")))))
          (add-after 'install 'copy-wine32-libraries
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((wine32 (assoc-ref %build-inputs "wine"))
                     (out (assoc-ref %outputs "out")))
                (copy-recursively (string-append wine32 "/lib/wine32")
-                                 (string-append out "/lib/wine32"))
-               #t)))
+                                 (string-append out "/lib/wine32")))))
          (add-after 'compress-documentation 'copy-wine32-manpage
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((wine32 (assoc-ref %build-inputs "wine"))
                     (out (assoc-ref %outputs "out")))
                ;; Copy the missing man file for the wine binary from wine.
                (copy-file (string-append wine32 "/share/man/man1/wine.1.gz")
-                          (string-append out "/share/man/man1/wine.1.gz"))
-               #t)))
+                          (string-append out "/share/man/man1/wine.1.gz")))))
          (add-after 'configure 'patch-dlopen-paths
            ;; Hardcode dlopened sonames to absolute paths.
            (lambda _
@@ -308,8 +305,7 @@ integrate Windows applications into your desktop.")
                                (search-path library-path soname))))
                (substitute* "include/config.h"
                  (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname))))
-               #t))))
+                  (format #f "~a\"~a\"" defso (find-so soname))))))))
        #:configure-flags
        (list "--enable-win64"
              (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib/wine64"))
@@ -325,13 +321,19 @@ integrate Windows applications into your desktop.")
   (package
     (inherit wine)
     (name "wine-minimal")
-    (native-inputs (fold alist-delete (package-native-inputs wine)
-               '("gettext" "perl" "pkg-config")))
+    (native-inputs (modify-inputs (package-native-inputs wine)
+                     (delete "gettext" "perl" "pkg-config")))
     (inputs `())
     (arguments
      `(#:validate-runpath? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-SHELL
+           (lambda _
+             (substitute* "configure"
+               ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
+               (("/bin/sh")
+                (which "bash")))))
          (add-after 'configure 'patch-dlopen-paths
            ;; Hardcode dlopened sonames to absolute paths.
            (lambda _
@@ -341,8 +343,7 @@ integrate Windows applications into your desktop.")
                                (search-path library-path soname))))
                (substitute* "include/config.h"
                  (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname))))
-               #t))))
+                  (format #f "~a\"~a\"" defso (find-so soname))))))))
        #:configure-flags
        (list "--without-freetype"
              "--without-x")
@@ -364,8 +365,7 @@ integrate Windows applications into your desktop.")
         (base32 "0d5m9pvafr0iw99ny7rgzfmw7zw45q5wfcw68zj88mvzs47xkgms"))))
     (build-system trivial-build-system)
     (native-inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)))
+     (list bash coreutils))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -413,15 +413,15 @@ integrate Windows applications into your desktop.")
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
           (base32 "1bc4zmqpdqs1ncz3qisp8a313pqzi5a31gq1s99ivb60vk325rcr")))))
-    (inputs `(("autoconf" ,autoconf)    ; for autoreconf
-              ("ffmpeg" ,ffmpeg)
-              ("gtk+" ,gtk+)
-              ("libva" ,libva)
-              ("mesa" ,mesa)
-              ("python" ,python)
-              ("util-linux" ,util-linux) ; for hexdump
-              ("wine-staging-patchset-data" ,wine-staging-patchset-data)
-              ,@(package-inputs wine)))
+    (inputs (modify-inputs (package-inputs wine)
+              (prepend autoconf ; for autoreconf
+                       ffmpeg
+                       gtk+
+                       libva
+                       mesa
+                       python
+                       util-linux ; for hexdump
+                       wine-staging-patchset-data)))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -435,10 +435,10 @@ integrate Windows applications into your desktop.")
                     (let* ((out (assoc-ref outputs "out"))
                            (icd (string-append out "/share/vulkan/icd.d")))
                       (mkdir-p icd)
-                      (copy-file (string-append (assoc-ref inputs "mesa")
+                      (copy-file (search-input-file inputs
                                  "/share/vulkan/icd.d/radeon_icd.i686.json")
                                  (string-append icd "/radeon_icd.i686.json"))
-                      (copy-file (string-append (assoc-ref inputs "mesa")
+                      (copy-file (search-input-file inputs
                                  "/share/vulkan/icd.d/intel_icd.i686.json")
                                  (string-append icd "/intel_icd.i686.json"))
                       (wrap-program (string-append out "/bin/wine-preloader")
@@ -490,8 +490,8 @@ integrated into the main branch.")
   (package
     (inherit wine-staging)
     (name "wine64-staging")
-    (inputs `(("wine-staging" ,wine-staging)
-              ,@(package-inputs wine-staging)))
+    (inputs (modify-inputs (package-inputs wine-staging)
+              (prepend wine-staging)))
     (arguments
      `(#:make-flags
        (list "SHELL=bash"
@@ -609,10 +609,7 @@ version)")
                                (string-append (assoc-ref %build-inputs "source")
                                               "/build-wine32.txt"))))
     (native-inputs
-     ;; Since 1.5 dxvk needs gcc-8.1.  See
-     ;; https://github.com/doitsujin/dxvk/issues/1292#issuecomment-567067373.
-     `(("gcc" ,gcc-9)
-       ("glslang" ,glslang)))
+     `(("glslang" ,glslang)))
     (inputs
      `(("wine" ,wine-staging)))
     (synopsis "Vulkan-based D3D9, D3D10 and D3D11 implementation for Wine")

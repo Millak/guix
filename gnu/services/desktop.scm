@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
@@ -40,6 +40,7 @@
   #:use-module (gnu services sound)
   #:use-module ((gnu system file-systems)
                 #:select (%elogind-file-systems file-system))
+  #:autoload   (gnu services sddm) (sddm-service-type)
   #:use-module (gnu system)
   #:use-module (gnu system setuid)
   #:use-module (gnu system shadow)
@@ -867,22 +868,34 @@ rules.")
   gnome-desktop-configuration?
   (gnome gnome-package (default gnome)))
 
-(define (gnome-polkit-settings config)
-  "Return the list of GNOME dependencies that provide polkit actions and
-rules."
+(define (gnome-packages config packages)
+  "Return the list of GNOME dependencies from CONFIG which names are part of
+the given PACKAGES list."
   (let ((gnome (gnome-package config)))
     (map (lambda (name)
            ((package-direct-input-selector name) gnome))
-         '("gnome-settings-daemon"
-           "gnome-control-center"
-           "gnome-system-monitor"
-           "gvfs"))))
+         packages)))
+
+(define (gnome-udev-rules config)
+  "Return the list of GNOME dependencies that provide udev rules."
+  (gnome-packages config '("gnome-settings-daemon")))
+
+(define (gnome-polkit-settings config)
+  "Return the list of GNOME dependencies that provide polkit actions and
+rules."
+  (gnome-packages config
+                  '("gnome-settings-daemon"
+                    "gnome-control-center"
+                    "gnome-system-monitor"
+                    "gvfs")))
 
 (define gnome-desktop-service-type
   (service-type
    (name 'gnome-desktop)
    (extensions
-    (list (service-extension polkit-service-type
+    (list (service-extension udev-service-type
+                             gnome-udev-rules)
+          (service-extension polkit-service-type
                              gnome-polkit-settings)
           (service-extension profile-service-type
                              (compose list
@@ -1021,7 +1034,7 @@ rules."
                         (use-modules (guix build utils))
                         (let ((directory "/tmp/.X11-unix"))
                           (mkdir-p directory)
-                          (chmod directory #o777))))))
+                          (chmod directory #o1777))))))
 
 ;;;
 ;;; Enlightenment desktop service.
@@ -1187,9 +1200,17 @@ or setting its password with passwd.")))
 ;;; The default set of desktop services.
 ;;;
 
-(define %desktop-services
+(define* (desktop-services-for-system #:optional
+                                      (system (or (%current-target-system)
+                                                  (%current-system))))
   ;; List of services typically useful for a "desktop" use case.
-  (cons* (service gdm-service-type)
+
+  ;; Since GDM depends on Rust (gdm -> gnome-shell -> gjs -> mozjs -> rust)
+  ;; and Rust is currently unavailable on non-x86_64 platforms, default to
+  ;; SDDM there (FIXME).
+  (cons* (if (string-prefix? "x86_64" system)
+             (service gdm-service-type)
+             (service sddm-service-type))
 
          ;; Screen lockers are a pretty useful thing and these are small.
          (screen-locker-service slock)
@@ -1247,5 +1268,8 @@ or setting its password with passwd.")))
          (service alsa-service-type)
 
          %base-services))
+
+(define-syntax %desktop-services
+  (identifier-syntax (desktop-services-for-system)))
 
 ;;; desktop.scm ends here

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -13,9 +13,12 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2019, 2020 Adrian Malacoda <malacoda@monarch-pass.net>
-;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2020, 2021, 2022 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +54,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages databases)
@@ -65,6 +69,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libreoffice)  ;for hunspell
   #:use-module (gnu packages image)
@@ -75,6 +80,7 @@
   #:use-module (gnu packages node)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
@@ -113,9 +119,9 @@
        ("pkg-config" ,pkg-config)
        ("python" ,python-2)))
     (propagated-inputs
-     `(("nspr" ,nspr))) ; in the Requires.private field of mozjs-17.0.pc
+     (list nspr)) ; in the Requires.private field of mozjs-17.0.pc
     (inputs
-     `(("zlib" ,zlib)))
+     (list zlib))
     (arguments
      `(;; XXX: parallel build fails, lacking:
        ;;   mkdir -p "system_wrapper_js/"
@@ -190,8 +196,7 @@ in C/C++.")
                                 '("--host=aarch64-unknown-linux-gnu")
                                 '())))))))))
     (inputs
-     `(("libffi" ,libffi)
-       ("zlib" ,zlib)))))
+     (list libffi zlib))))
 
 (define-public mozjs-38
   (package
@@ -274,10 +279,7 @@ in C/C++.")
        ("pkg-config" ,pkg-config)
        ("python-2" ,python-2)))
     (inputs
-     `(("libffi" ,libffi)
-       ("readline" ,readline)
-       ("icu4c" ,icu4c)
-       ("zlib" ,zlib)))))
+     (list libffi readline icu4c zlib))))
 
 (define-public mozjs-52
   ;; No releases yet at <https://archive.mozilla.org/pub/spidermonkey/releases/>.
@@ -338,15 +340,13 @@ in C/C++.")
                (let ((out (assoc-ref outputs "out")))
                  (setenv "SHELL" (which "sh"))
                  (setenv "CONFIG_SHELL" (which "sh"))
-                 (setenv "AUTOCONF" (string-append (assoc-ref inputs "autoconf")
-                                                   "/bin/autoconf"))
+                 (setenv "AUTOCONF" (which "autoconf"))
                  (apply invoke "./configure"
                         (cons (string-append "--prefix=" out)
                               configure-flags))))))))
       (native-inputs
-       `(("autoconf" ,autoconf-2.13)
-         ("automake" ,automake)
-         ,@(package-native-inputs mozjs-38))))))
+       (modify-inputs (package-native-inputs mozjs-38)
+         (prepend autoconf-2.13 automake))))))
 
 (define-public mozjs-60
   ;; No releases yet at <https://archive.mozilla.org/pub/spidermonkey/releases/>.
@@ -355,7 +355,7 @@ in C/C++.")
   ;; we take the Debian version instead, because it is easier to work with.
   (package
     (inherit mozjs-38)
-    (version "60.2.3-2")
+    (version "60.2.3-4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -364,27 +364,46 @@ in C/C++.")
               (file-name (git-file-name "mozjs" version))
               (sha256
                (base32
-                "091w050rwzrdcbgyi934k2viyccmlqxrp13sm2mql71mabb5dai6"))))
+                "1xl6avsj9gkgma71p56jzs7nasc767k3n1frnmri5pad4rj94bij"))))
     (arguments
      `(#:tests? #f ; FIXME: all tests pass, but then the check phase fails anyway.
        #:test-target "check-jstests"
        #:configure-flags
-       '("--enable-ctypes"
-         "--enable-optimize"
-         "--enable-pie"
-         "--enable-readline"
-         "--enable-shared-js"
-         "--enable-system-ffi"
-         "--with-system-nspr"
-         "--with-system-zlib"
-         "--with-system-icu"
-         "--with-intl-api"
-         ;; This is important because without it gjs will segfault during the
-         ;; configure phase.  With jemalloc only the standalone mozjs console
-         ;; will work.
-         "--disable-jemalloc")
+       ,#~(quasiquote
+           ("--enable-ctypes"
+            "--enable-optimize"
+            "--enable-pie"
+            "--enable-readline"
+            "--enable-shared-js"
+            "--enable-system-ffi"
+            "--with-system-nspr"
+            #$@(if (%current-target-system)
+                   #~(,(string-append "--with-nspr-prefix="
+                                      #$(this-package-input "nspr")))
+                   #~())
+            "--with-system-zlib"
+            "--with-system-icu"
+            "--with-intl-api"
+            ;; This is important because without it gjs will segfault during the
+            ;; configure phase.  With jemalloc only the standalone mozjs console
+            ;; will work.
+            "--disable-jemalloc"
+            ;; Mozilla deviates from Autotools conventions due to historical
+            ;; reasons.
+            #$@(if (%current-target-system)
+                   #~(#$(string-append
+                         "--host="
+                         (nix-system->gnu-triplet (%current-system)))
+                      #$(string-append "--target=" (%current-target-system)))
+                   #~())))
        #:phases
        (modify-phases %standard-phases
+         ;; Make sure pkg-config will be found.
+         ,@(if (%current-target-system)
+               `((add-before 'configure 'set-PKG-CONFIG
+                   (lambda _
+                     (setenv "PKG_CONFIG" ,(pkg-config-for-target)))))
+               '())
          (replace 'configure
            (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
              ;; The configure script does not accept environment variables as
@@ -395,8 +414,7 @@ in C/C++.")
                (chdir "run-configure-from-here")
                (setenv "SHELL" (which "sh"))
                (setenv "CONFIG_SHELL" (which "sh"))
-               (setenv "AUTOCONF" (string-append (assoc-ref inputs "autoconf")
-                                                 "/bin/autoconf"))
+               (setenv "AUTOCONF" (which "autoconf"))
                (apply invoke "../js/src/configure"
                       (cons (string-append "--prefix=" out)
                             configure-flags))
@@ -418,7 +436,7 @@ in C/C++.")
 (define-public mozjs-78
   (package
     (inherit mozjs-60)
-    (version "78.13.0")
+    (version "78.15.0")
     (source (origin
               (method url-fetch)
               ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
@@ -427,7 +445,7 @@ in C/C++.")
                                   version "esr.source.tar.xz"))
               (sha256
                (base32
-                "0v2g5clp9qlsbqfjb6yz614nq8x8c4k1p6m4axyv6g27qbiaky8r"))))
+                "0l91cxdc5v9fps79ckb1kid4gw6v5qng1jd9zvaacwaiv628shx4"))))
     (arguments
      `(#:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
        #:modules ((guix build cargo-utils)
@@ -445,7 +463,10 @@ in C/C++.")
          "--enable-hardening"
          "--enable-optimize"
          "--enable-release"
-         "--enable-rust-simd"
+         ;; FIXME: rust-simd is disabled otherwise the build fails with
+         ;; "error: `[u32; 64]` is forbidden as the type of a const generic
+         ;; parameter".
+         "--disable-rust-simd"
          "--enable-readline"
          "--enable-shared-js"
          "--with-system-icu"
@@ -477,8 +498,7 @@ in C/C++.")
                (chdir "run-configure-from-here")
                (setenv "SHELL" (which "sh"))
                (setenv "CONFIG_SHELL" (which "sh"))
-               (setenv "AUTOCONF" (string-append (assoc-ref inputs "autoconf")
-                                                 "/bin/autoconf"))
+               (setenv "AUTOCONF" (which "autoconf"))
                (apply invoke "../js/src/configure"
                       (cons (string-append "--prefix=" out)
                             configure-flags))
@@ -554,18 +574,16 @@ in C/C++.")
        ("rust" ,rust)
        ("cargo" ,rust "cargo")))
     (inputs
-     `(("icu4c" ,icu4c-68)
-       ("readline" ,readline)
-       ("zlib" ,zlib)))))
+     (list icu4c readline zlib))))
 
 (define mozilla-compare-locales
   (origin
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/l10n/compare-locales/")
-          (changeset "RELEASE_8_0_0")))
+          (changeset "RELEASE_8_1_0")))
     (file-name "mozilla-compare-locales")
-    (sha256 (base32 "0052wq92sg4i776x407b5838jx9h3phl9xy69m2q34f31n3gdyk2"))))
+    (sha256 (base32 "00bpkaqf2ng1nn9ajyb5mli0jq58q5fm2n3yy90jy0hp4q2gbs50"))))
 
 (define (mozilla-locale locale changeset hash-string)
   (origin
@@ -585,108 +603,110 @@ in C/C++.")
   (mozilla-locales
    ;;                      sha256                            changeset    locale
    ;;---------------------------------------------------------------------------
-   ("1q1p7nl97478hkf1msbbcdh98k6fn87xwqihbw8np00ll5gk9k4v" "97cf3c155484" "ach")
-   ("0sajpblp639l448xywx7xlybjr5dm0rfrzx511a8pa9wn7dma4mf" "46929b4dda4e" "af")
-   ("04s756aaf1yyli1dn1vfdjymgyjs1pz2n7jvz76j27x4nzdgss7l" "96ffd2b04ba3" "an")
-   ("16nw7slm7irsnjf81r6zl273kbzri8sdbimzgzxwm0vh6xr61rgs" "1c4231166ddf" "ar")
-   ("0i0qrj4j8zjv55cisbmr21dp8mz933hc9wkpn3abz5k5pn84gpry" "bc4384b8be78" "ast")
-   ("1r77mmwg9x1jfa7g5lqa31rgyfrnix1zj80ibn5rq9gyhhsdrwbd" "dd56aead51fa" "az")
-   ("1kzjpy5bnvps8di72ksynhbhc9bpw1ml6hvphm74z8dz55ai4c18" "9d2bff64ddfb" "be")
-   ("1fygvjgph3siknfm7l0fh9y4ava72z1rxkip1zgmcdgq7jz8wzpf" "3808f4fe4db6" "bg")
-   ("1x9nlqia441xh04rhkmkw6qrgpwnyqw0grrf5n2qw96939wnmgl7" "5ca8752ed8df" "bn")
-   ("18yyxqzab44bgqx7h052d5nxyhv0l5bidgr16z1b3ak2crsfyx9q" "4c5d30ca9bf2" "br")
-   ("11bschjz7pgsm4r1qan5l4s3nkzm5jb0kivpp186wd1xsjci5bjb" "cf2478a7eae1" "bs")
-   ("12bak64nl6qi092l55xv330vh38mfsicrrf4wi693nn7zqb3mbpw" "4aa2cc349211" "ca")
-   ("0p97d7pnxqs971rr5c57i6cw3mx1mp3iasa0xdmdk0zpz9pjd3s4" "806914072144" "ca-valencia")
-   ("1rligf98h9r16mw3r3n5jalzi74xn2dnh6hkiixp7s2bvhjicwa4" "db2163383129" "cak")
-   ("18y5j8ljh72mj2nbx0m64mi3fyjbwyx992i004sv3zvs4d4z18w4" "d1d09eedddde" "cs")
-   ("12i4m9q6f8sl8arm8ja4gs4sl9m59p3kddlqi68srpz9mk66rqxz" "1caf58c64227" "cy")
-   ("16wacsd23zd4j0yi6vbj033wylia8hlpswx949x5hy1h9817j4vn" "9ef3b56aa243" "da")
-   ("1ddxnqpfi1wnciwmzkvvjinb51h22bg70r0dn7db17q64p4271rk" "a050b0eaec0a" "de")
-   ("0gw5h52rw3bc2lwffnv845sjwwj22gmabchmpa1rw2y6087dc7zk" "613135cb0759" "dsb")
-   ("0v17da37w1kbs73i6xql4c9xng6rfachyylpy3w8hpibpvi7i30n" "903db7c76b31" "el")
-   ("0ky1nj4kp070nriw0igsa64l39plcv2365zl8lqpbydyp6clwc3m" "6bb74673e9aa" "en-CA")
-   ("15jck6si2l4h5lrs8zjx56y97p70njpi26nnq6xfmvj1dk5qb4g2" "c06bd83a9295" "en-GB")
-   ("1gc400n8j8qk70vdw7fkf4m9yviia35cmj6361pxnyvsjrgm4qvm" "ae0fda5114c4" "eo")
-   ("0y01lahdrd3krsh6nrr3iw36r2x4advh5qw54vf92w11l3aiyvfz" "0c294dc9ce40" "es-AR")
-   ("16jjbsfa62dxk36ccziv7nmh26c1s0b05960in6zs5nnfrv4yh35" "7c30b2981fb4" "es-CL")
-   ("0qh8c8f8dsv1v56n1mcpn84l39bpnqfl8v8iacq12zh322srr549" "ad1444f4f833" "es-ES")
-   ("1vh3hm5r4ch6mk3ymbk12b9rppwc75fmbi0i7cml82kxsi77bzw5" "0a26cdb23536" "es-MX")
-   ("159l92jxx48lgba1g8ig3mdzhwsf3jpg3nx1g9blq4majk5hqr6q" "65a38a830795" "et")
-   ("1ha8y1wbgb66dqm26x1q2xwygy7bblkjz40y9vh5d2qlpr3fn0av" "21e0930b221d" "eu")
-   ("0rq4pcw6klm0bbljm1wdfvna8bpa35cm47hh2s63i2xdax4scahf" "5a4bb020cf09" "fa")
-   ("1py2594gsvpgrxnplz278ffb7grsf384kzjskrl1zyps0jw8fb1x" "4a4f712cd4aa" "ff")
-   ("1dyd55ngsglp1w2gh0yaacwb0vsq23gdvnj76f2x6g39h1li9s0z" "9c51cd915e2b" "fi")
-   ("0kimwivpq6pr63jh1k9fszsv8bi8vns3scg76mmnvbhh2ca8q7wj" "4f9e24a696ee" "fr")
-   ("1sbbnnp12lgy5qan2kix02942830b1969bd7jxrv7piwqfch9i06" "9e21a0eeb5b1" "fy-NL")
-   ("0dsvvyfrzkx5h44gqgdci7arb8h4lq48w20cnr8fc7j17grvnkzz" "999a995bc09d" "ga-IE")
-   ("1487msbsgrfzmyijhf6a4wbqdjpd7b7ki9nwrjjjjlnbw0h0ljpb" "6a9ddcab3240" "gd")
-   ("1kzc4fwr18kgisdzba2acj1ag8mxbifqpk5p30jv68nmvqfsvl8d" "51eb5e352db9" "gl")
-   ("13gy3wn44kcxr7j3sbl69fp415875f4vb0gm91hx0fysqlvryhcs" "b9de1ffe3224" "gn")
-   ("0w5nvzpjn5vr35c1852rlff581vpy71nc096cz125852kyqkzkc3" "5b3307475ada" "gu-IN")
-   ("1ycakc4qpy9vcy50j3ricryjfnjr9v3a5ijj6bbfl4y6aks157fy" "c742df968ffd" "he")
-   ("1b2jf83c500wm5wcdnijq0b7y4m8n6271smq8pygahn5nq17f0gq" "1a3039a52b8a" "hi-IN")
-   ("19bbw8ix5m83cf4yarcmjl7jqa8xfabwqnh3nj6vi52rwvn7whk5" "8dc50e269ef3" "hr")
-   ("12rrsvgg6bb2h8fhni7jbx8pv983q8ym5fhfjim957n9q2yp5db6" "67e40f48dec7" "hsb")
-   ("0apyh713p3hrlj8041xwblcssahbmsqp9v9hbmb50ayf4z850kr1" "40073a597b1b" "hu")
-   ("0q0r076lq250d3vmnz9d92wj137c2v8i362c2avmkgp5zr3mcl0z" "2ea33335afdb" "hy-AM")
-   ("0qza33gdc1i9259dwd2f7vd78s0a6rg34aqdkhcn7f2l6ybw6xd6" "930041db15eb" "ia")
-   ("1211h0gp7gianh3qf76w04gfzk4n2bnyc9i8dviyz0vh4cjbx11m" "08811a49b41c" "id")
-   ("12lcr841g1j7453s7gb51vrvxmshx4ha3h1jx4vh8wr891xv8l6a" "2f7a8d31e0ba" "is")
-   ("1x585g0r2kcv0d3phnxx85bk5g0pi1yl0hwp4idv19yc9hslr04s" "188357cc04b4" "it")
-   ("09v35g9v7j6x0p1hggydm3a1rmq2fh4z7g1l88z3w5k6wq2nhj1b" "45cee0ba4771" "ja")
-   ("0prs3vycfvvaffjigdgyxiq41ak2rc34lnan5a6cwdqjgy7z450s" "d60a19d9bf17" "ja-JP-mac")
-   ("1nskzm8rgczrbgcxlzzq5zqdfd456ad0cylq27nf0wjiyq6kjzcm" "00cb00e78672" "ka")
-   ("0g6zznmhiam172nm7g2qzfpk415mna8kiihm73z2sdns64xb3ymg" "77a293a4bced" "kab")
-   ("17dld9lrym7rpvpvnkssivp4wx1f11zpk86wczbq1h52qgd70p55" "2c9b33a56d5d" "kk")
-   ("1nlzl8930c8ql3yq425wyqlxvq8arrjv20xpm5g7yfxd54av89ac" "9cddd42af05c" "km")
-   ("07hkrcdksvrqk816yimd036dlw15nc4sjk4gmw16ywbp093v0mqq" "e0c2969a8398" "kn")
-   ("08aqggvk3qbv5bzks9i1iba9akhkpm01d2c9k0zf41mpr2r5yfg2" "827567d0dafc" "ko")
-   ("0vagaiwy80bs1k3gkacshlzb5zchkcshx0ypwirvayc63sw4yl8l" "694b2a24e868" "lij")
-   ("1r43kp1kzahrbza0hiyavqplk9h08pzsb6rpjy79jr6l1iqb89sy" "d6728db7e060" "lt")
-   ("0sq2wbsj79xl7fi454k6q5xdhxyck1whjz315rv37vphqpx86b9b" "61e9b33f4d94" "lv")
-   ("0q8jxg1af22hs9wjdf0jd3bqk4rafxyzvsjl35k75am7l2y1fl3c" "9e482f6dd72c" "mk")
-   ("1zsfzjrzbc58d30a9yz12h5vphywgpw8xg6y6zn3677a785dvr20" "1fd2763336a4" "mr")
-   ("1rzygkkpn1a59daygd3hdaqph2np6sqvpgh68j0xr4il958ymnsm" "67ddab62dab4" "ms")
-   ("16jp6w5gizfxs7jvncg3ly13m59vqvh4rlmjd0q23m5g5ff9sklc" "3ed015b51bf3" "my")
-   ("1wfv023j67lb4iyf49fsknwm4z3xy0xqcf25b2nzanggxj26n01x" "d01801233a8f" "nb-NO")
-   ("1946vfia58vbjfippb5pfsskbjj95w7hb340smn6ry2vmza99mxp" "582defb08fb2" "ne-NP")
-   ("12w5ywh4c3s55y3zqc48cp1gcpwwjg444yfh1bghhhb9ni1xkh5i" "05f6359a29a6" "nl")
-   ("17jb076320cgkw1ypwmws2vjxsqlv2ww8aaisa3j334vbrw1m4zx" "50b41a1ddded" "nn-NO")
-   ("1y840j0v5zdgj94cbacy6j1snf44rynmzxq3yk8i26arcar62akl" "a6a138531a44" "oc")
-   ("0jq1hq4xhqxpa26r8pb1bgbaljgfkhn9l6p5pbnslkllpbh70q6l" "e70a3afaef25" "pa-IN")
-   ("1hih138skwy2gb8q10ngg6zalrk3aa3d549mg79gqzxbi5zy19fw" "e035f33389eb" "pl")
-   ("1hhif4hx4k351wm1bzykzycfzb5q8msxmiwh5r1cy32rh8wkxwhh" "54098495f37f" "pt-BR")
-   ("0gkjs12rxjml1m3mljskpz1gr6aph0c31nwpwdqybfg54w9qslib" "3fdf021f624e" "pt-PT")
-   ("0anyvwd9v6mr8y3ww33s6qnxkawqn5lz65vrxx3m3kzky63ai1xk" "794f9374eb87" "rm")
-   ("1p4drj25gsfv7lwgm5saazh38iqrh53952n8i4bmxpn0nadbm2n5" "71ce18bcf6cc" "ro")
-   ("17yssf4axd3zvncl4ka4wkfnwcn0z0arp3390vb9cps67na29p36" "3a9587227699" "ru")
-   ("0xk6rksspcw1222v4rgk5a6gzrpx64k29hm7p9qkqwd70s34yj46" "c020582a72ce" "si")
-   ("1ax5ibydyn7sj208r66zcxlcr8dxdqrw28vqyjif4jx583rp4lfp" "745a699b7f51" "sk")
-   ("13rin7hm1dv8g0hbcv8mp2hiwpk1k5bhzvkqpqajkkik4lx523mc" "8e437e2351ef" "sl")
-   ("0yh5jkl5zw3f7x1w2w6zfj3dyvcl4wj1zv4di7qsq2nl2yyizf7x" "2d99e2eff94f" "son")
-   ("0vzq7s27jsdbw5k59wfykysg1kd8w229ab5d4zjdf30l59igkahh" "69bbdf07bd80" "sq")
-   ("1mwivvs8vrk6vjq6i33kwlrlisra7dy35521ayps9p2rz2dll4rr" "215df5c5125c" "sr")
-   ("0g97yz1rg5cfflj8vvq3sqliyvm06x818z9yldfh5rjg1y6n9fjd" "8be00a1a50d4" "sv-SE")
-   ("0ii02jn3lh2i6d0s95whx9aj6w3x8axc7w1rlzj0lc2s9n52krz3" "170a84339dbe" "ta")
-   ("1ss7symad2crapxjqc0xhc0n17l79r5vf7flvkgk7npjky4vb7nv" "72a79a304f7f" "te")
-   ("11iqmg8zamgscnvs4n2xpw3g9azn6w38qs313wiwm86pyx6694ss" "8e91ce3064c5" "th")
-   ("1zgkvn9flb8by62ip9r3gmpgxwgkww1zhml5mwa0djq3ppfdgi1c" "0f914d0cda56" "tl")
-   ("1filkhdak6dbrd83q602x1qw1703nlm53nm9gcyab8s16gsx6ylz" "62ca6a8eaeba" "tr")
-   ("0cgagdy0ixprk3knczdmkqxkmx4ybmshhh0956kxbd0iab0dfcf6" "f110ccac4cde" "trs")
-   ("1f1ghk67zwnwc5x3nk82vcv94nf8glngkfya1hg074q3088sj9pa" "56c0102d5f1c" "uk")
-   ("0iyw1b2jjylkdwxv9sxvj4ikxl64sx612b2dvvmf1di8bw86w74r" "7d53bce5ae98" "ur")
-   ("1q83cp5pfgs8l03zirwi8r5qp8qyh4zvxdx1ilgaqqlyg42yql7c" "9b500e1a054d" "uz")
-   ("1d4nkybz2hk64ay04k965b9lc5nhhpmzcs5ww3b6q4n93rf9c2z7" "2a000025928a" "vi")
-   ("1cnrsfnyl3sw3sxsggmjwydvphb2diy0vzknvxdhpnvq3ln18hga" "74724087c25b" "xh")
-   ("1j6l66v1xw27z8w78mpsnmqgv8m277mf4r0hgqcrb4zx7xc2vqyy" "527e5e090608" "zh-CN")
-   ("1frwx35klpyz3sdwrkz7945ivb2dwaawhhyfnz4092h9hn7rc4ky" "6cd366ad2947" "zh-TW")))
+   ("0f2lkv79gqf46f74905mab3zwyz1532chxlf9d28s548p1hw6lv9" "8312cd2e0777" "ach")
+   ("1v5jpmd0b04mizm9pjffp4r9q121vpq3yzkkxcgmrcwj4gc5jb2y" "21bf766c19d8" "af")
+   ("1fqjiq2la543z5pbbvd9kfs0wdc2phmqjbxascfsak854qy1z9f9" "34b6a4f0790d" "an")
+   ("0pl6j99xnali25glyr3g9fmj67v9vqmhd9k74i97f8q5n4xmv3ym" "513c3e8dac97" "ar")
+   ("0d1fbk9jcai19pi8b7i4y4r0gscqi1inr9dbahd6h0xbxfwc0zif" "19ca0cd0d1bf" "ast")
+   ("08f9b63wxxy28zaimjn1ab9w51bvrarc3pp75s7v6kzm5bk1jwic" "44aa0dad7964" "az")
+   ("15pksy9bgaxcbcnvvp8jwqnqxvvhq9vnljpai6jlh52yyrsglbwi" "5e4499355167" "be")
+   ("0gdg84jp1i4il4nc6gwaswdhc4ljbb9inyip7vhkng09v3pmwm0h" "98d006107851" "bg")
+   ("0i6vl0ag74phj4l38cvds1ds3jjdal1c8d7hy6pf4aqrp4ai32mh" "2ca52cbb680a" "bn")
+   ("16yavargwq8rhipzpmrrvyh68g3a6disz9g5m8xbhxvixhcsi5fr" "ce92556a0a90" "br")
+   ("1512dzp394pj66i13nsz76qh6fmjpz7r7fmvk8d0h7pjk0d6n0dy" "1c79dabdb120" "bs")
+   ("19wg0kbr2ihbn4lscsxg9agz04r8bsih4692vfgb6nyn1z8vx2i0" "a22912c01617" "ca")
+   ("1ixpzjb7caq1d9c7c044rxg3ymxs3hjw120kq85v004jrrb4d9c6" "34bf3fd631d4" "ca-valencia")
+   ("1abizdmd1c56syni1aanwwrfvmgzz25fmimbj2324bcw801ma9h0" "e2e4ba2c37bc" "cak")
+   ("0wgrg2wiz1jcj52nd4zl4shfkjhbngfj6p1gw1ywj266hk8g6pvw" "a60792bff6ff" "cs")
+   ("132f29111jd2z9yxpakkyri80mi2ggnik6zxaxqrp4vlcrd1fxd2" "66369fcad8c7" "cy")
+   ("04lpic3cxdj1imcwjkbk81avp9dpa1c9b1zcchrr1a4vyy4yfjpy" "af198d43f7d6" "da")
+   ("1h0rkwlsqls8k1qi1y68plw6xk0z2c5xc2y4nqywiirl71yz7fi5" "816fcef20c05" "de")
+   ("11lzdyl1h42zb1x2yxiv3r0wih8jy1gr0gzs5d1isdq53sa9cqnq" "962e5a544415" "dsb")
+   ("146jgrhl41k6zbxg58hxh1s088padsjz7ny8nm59i9i8d00jpv0a" "e7c49fd88463" "el")
+   ("1qppr44hdnrb1z1igcd1p0w5sy9vpihzilkl2w44y0v0v9rigppv" "5a0e35b08a48" "en-CA")
+   ("1v2irfms24cx9g5s6r1glmp2c000wi91axyca1pn37s7c01r0n4b" "72f8c5d8305d" "en-GB")
+   ("1y0rbbmax1w6jy4jacy27xgy4aqnd43izysw8qjwm0qhhfjvf3xh" "40994fca693d" "eo")
+   ("0kmjvinqpb3y81mqda1qq8k202aa36as9z1z775745bx6sbvkggz" "6cf3c836995d" "es-AR")
+   ("06rvd1z3l0r7hwnsnw90i0f5j2ysbv6wd3cl64g0bgifmwjk75hi" "8727dda3935e" "es-CL")
+   ("0gzw1rn9nzpgcrrc10indnbqqpax87azczrfxv8mn5n56j734hc0" "5351aba49895" "es-ES")
+   ("0bnmgisxfkb6rb12avhipbsj1yr0dyv56qjj9471gnc2ppq7k3c9" "dd834a4af402" "es-MX")
+   ("1951975h9w813qxanbk3frjz7c8knzx5rvq9i82j9i6x6a3fh6fi" "1f2150796079" "et")
+   ("1vkb5rd0k6vh9dbll3fhyzg8rfpkxxkd2rxwf66b8l3hg4fqd7f2" "2911663f4a7c" "eu")
+   ("1cj9zblfp94h86m7zd762bfmcfz0yxc1q4ra35s4wnnlqajarzwj" "04ec3c3bbe92" "fa")
+   ("1ininsyzaj7xd8ppmklm3zglgw1i0nhdy43iiyva32hb592zxy4m" "0cf866f9bc4e" "ff")
+   ("1hc308d71iygarrpliv7pxjz49gxwqg10d0pv8j4sbb2pw39bprl" "04a600fc54a4" "fi")
+   ("02nl54db9130rg59wmrrnh0z726fg5ir1njfcnhxagb4g5b7s69f" "64a3576df276" "fr")
+   ("1qbby23qlkxjz3vwlk8pd2w1w4cxdff8cq7j0ipk44mijkxkry0c" "c84177dfa254" "fy-NL")
+   ("1x23pg36ld5qnrmdn149rkl85ia8lmiqbzcac2bm0iqprnjdszii" "31590cffac56" "ga-IE")
+   ("005fpyr1lvw23dja3yrzx4y8wdih7vx6ljjpisf4pd3k5zai4x81" "ba4f274ac4a1" "gd")
+   ("0kdlb5q74n0fl5fxfy873s392kry69dmdl8b4gvqdyh5sy66vsqm" "56b41bdcd401" "gl")
+   ("0v8r8b0nrk1l4xipzhq16klmh0pinzcrma0s0gyhgzqqli6z7aym" "59e2afb65c08" "gn")
+   ("1grb1lq1f9p5jxgh9v78jl1wswxmsqxkcssm35l30k6y24pglr0m" "33b4409fb615" "gu-IN")
+   ("172fg55y8l90ix4c8s5x7f8mg6rc7779p6l852cnnkfqjgqa5a5f" "92f9f8238189" "he")
+   ("0i52nmg0yv3y1y3rkinxcyh51mgjksk7c3jlc8014801m3zvyxj7" "00090f7a2a3f" "hi-IN")
+   ("074q8n00yq54kzk632dwbs64r0sygvybbvwpd6hbvfpn38lz8hxf" "6e4a3fdc01f3" "hr")
+   ("1jxiz8zyxbpnwgk5xkwfxlr5f1zfyc88jcsajy8wcaifdkld3cwn" "7fd9bc25e49d" "hsb")
+   ("0ca11pmkzyd9ccrnrbmk0jrpcb03k88v4zivxblnxj4w03g0hyhq" "ce3b378ce950" "hu")
+   ("1yszljbh8f7w6lckfw22jwximy3yhis4430lfynfb8lh9nm0fw59" "c91a4a3e8821" "hy-AM")
+   ("0hhl8b8szqlhjdxhsa81zmgr303kr0jx5d6rzbi840qwf01h12sz" "4f235acc839e" "ia")
+   ("063yfk3nz3kignbri7r9sr3jwr5p9yyqc6sckgqs94hx6lvc355p" "fface86a34e4" "id")
+   ("1qszxkgliall4haaq6v0xayxikq43ddcdsn1d4m1mwyp7gdpbry5" "5978ae767b44" "is")
+   ("1fsfz9iz5pdd5r9ckdal6grvddchsc4r3r8gn4w6f2bja6vpbs05" "0c7d2a0e1304" "it")
+   ("1phkw0apiicgbw2nq3g392xncw1v2c4yac595h3nchs4q6rp9pd9" "1c923f3e88b9" "ja")
+   ("1y4gc4l6g72nphhsw4aqhcl80a7wi9qdy61h66c6jc6h14i7278d" "66f700940cfa" "ja-JP-mac")
+   ("0iqwj0y19zqcdclnn92z490s1g9vh2qr9gmkyfnpsz69llxidx1j" "49b4a7c6bb2c" "ka")
+   ("111nm2khff0zxnqqfc68rbi3j0b1nx5r4xai7b8yymyv1i0qbsxd" "4854facbd60b" "kab")
+   ("12p7lg2p6pcqdlb4bqbz5isxilw2r9vb8344sh8zrvv9cb9jq04f" "d2fda8a1b287" "kk")
+   ("142vpw9npqgc8b5zcg5cy2lh07s4mg8xfbaymg44fb4j3s6agw88" "3a5a1cae9b93" "km")
+   ("00v1sd2byj2ksxw1020z142cdlxa7ri2v1rzjrhay9l465bj3k8x" "6ed122b33cac" "kn")
+   ("1s07yhwzpxj0l5vj5lzbvgw115sjx1g2zgbqca5wln95dds39npl" "49bc07645a47" "ko")
+   ("1b4brfww0w7x1h3ff19i6xi8xq2cb1hxysilira6yq4rb6vhlmly" "93f04df12616" "lij")
+   ("1i30my0bbgm9z02rxxi7x4vc69bs3bnjs9l2q6jd8xvs1ga3vc7n" "e1f4e0d87509" "lt")
+   ("1bjh4xlx6562hxq527cqcn4b5295dsdpwn4c4y5ci902nlh6fc8l" "daea4ba4e7f4" "lv")
+   ("0vig42slcx6bhpisyc1bnyklr95lbv7vqd1ckiywp5c5qzfa9afi" "0c4ca0f4fc17" "mk")
+   ("10qfnkqi2snmgvm4vcrmp2489klchv3hn2c4rmkdhi5bilfk42jx" "9be8d5951976" "mr")
+   ("1bkn8ds3fyz710ck4gg4g5vpv23bi573ssm9xbiyl8y59pvbig9b" "0f44d0bcfda2" "ms")
+   ("1j9af3axbijn0s8y96310mvgaq5a36m0r3ij550jv5bv52862crj" "ccbf0c4355d6" "my")
+   ("0lspnp9jn3rrgz3djnmc0qrb6ymigvqnr3fb0jbhmf83r4yfs8z1" "a6cf2c6e3594" "nb-NO")
+   ("1xp2884m9gqm9gaakc747bd9j55wssrh3qsf4y4k02ijh08sfmwb" "c1636a1a7507" "ne-NP")
+   ("0y1fxp9pxia6x2wxdharh2ynvzdqcmzpya1gdb89pcv5qyrzqgcl" "60ed1c2397a6" "nl")
+   ("1nbp924p7fp2c76ym71wp34vk96z89i4g2rfgpsi54cgv42a6vgq" "a7f9a3d35875" "nn-NO")
+   ("1yrmhyvb6skypcyvi6j3py51sdkq9vn35zkryx6rdp8ygqwm1va7" "9ac29828960e" "oc")
+   ("0rn2414ji1icar627arf5rjwl9r9vxhznbfsyxgrmrf0p6dp72fv" "87720cc32205" "pa-IN")
+   ("09lam6yaprc8zyisq0pcdj4afpg930c2x3x47gdxnqfyhmcfygs7" "56b2c592ffba" "pl")
+   ("0mbc1a8wvjs3k928qh0k800d230251i0rw0myhdpc6mk3xjna7i5" "89f1b173c9b1" "pt-BR")
+   ("1v1qa5slllz78222rlqr4b8k7c8dapmx8d7s5nb90wdffic0zcqy" "27adc5dad781" "pt-PT")
+   ("04k6h5d7c740lz1hx1vavj6p0fmhgn9mm3nwvk4p9iccy5nw5pmf" "83e2e4833fc3" "rm")
+   ("0f0hz792wr17mgi6n190dliqx67479aqg3y2ak0jg0fiz2c8qr7p" "69cdc288966f" "ro")
+   ("17yngj0v30687m7fa1ls0g86vjg8jzxs7bnsca91jpxf3ij44xp6" "03046775600f" "ru")
+   ("1fvz23nphs9i4gdkx9fcy5ahdk2f879281pchclwi0qlciq7digr" "61ea93a50fff" "sco")
+   ("0yc1iwqbnpnf1i7yz3zqrx6g8pinc7l53pvbczywfkq3rz6wmmf5" "2b134d24c046" "si")
+   ("0kizljksn2vn4yw7qlv7c8h2m75f7n9ddg6n6ag3hwxxip83hn4y" "6d69c24dc8db" "sk")
+   ("1ll936b18wy464623jc5smf3c6dpimh0qwn28a991h7zcw31n3kp" "29e195d1d160" "sl")
+   ("14w9n994z9gf0wx7vrqisyxkngvhmmnayx8r0vwiq8k7jy81sxlm" "60a3b235fe1d" "son")
+   ("0z7bcfvq6x6dxf4d4bbjsg36r5npkr89087b0j360ljampk6c2fn" "8588cbc89847" "sq")
+   ("1fcq9g89lhzckzr2qb6x0w0z6q486n9jdqfi6h70dx8b069b3jfj" "198f7e89f10d" "sr")
+   ("0ap3m1sbibnaj9s2l139m7l8cc8s2ky4jlxwgzbxdzvqxfz7n954" "b098e2ebc049" "sv-SE")
+   ("0k93gnwfs5mahb9vz1c65ddcbkav0cwhxnrww3qk7gcmn7q88gqk" "25951b964d5b" "szl")
+   ("0b0v5pcwvhvhg8vlzy26g3j0m1r8svrpq07hq0q7lxldwlb48phz" "94659c83c9d8" "ta")
+   ("1v35cl6m3ikzsriq6zkjzjs3p9bhl8zmbp2gl14mga1f1zy4kcah" "eb59646a5d36" "te")
+   ("0y3r30mjgxngjraqmf5cm00kgqx2pvhbvy8sfxb3fhypv9vda3yr" "10d257301a2d" "th")
+   ("1inyqk495py20jwjvs4yl0n5ncf3hhb896bs1lwfsgpvbvr5hbq1" "9be6adca0e51" "tl")
+   ("0vsirjs655cia9n8dys2r84bvg303hcxkk2w6a9j3dkbifq5ymk6" "51354c936bf6" "tr")
+   ("050x882c0ywil290k4g861njw70ffw2y55dqk3w0kffi972mm909" "d7510f2d01dc" "trs")
+   ("001ykwxkwibavbi1k42b1hmysb3gmrwcs68zmw96m1vc80p29nz1" "4d1fa878042b" "uk")
+   ("0lsz6jlmmsqdg47pdx8b1djjvcavi0wlyr0mkpyhjgpginag21zx" "ad3035f28183" "ur")
+   ("0d3ggm3q76pkpg4n3lz2ji4pbb47n885byqxbp7sk6n9vlgzir7l" "8ea7a5a051db" "uz")
+   ("0v7d8y6xsr6yf2s1sjxnsjmw0hdnj91f0w2da6spkifb52lmbv6v" "67fe2acb306f" "vi")
+   ("0j8l09vzqlw4zlkyp6wkh44c5gr1xgbcmnawks1zj7xz02ambwii" "abc22dfb6d84" "xh")
+   ("1c01pbyswixkjg42714fvfy33b09mpdbf4d8f8kcs88c86jpf07z" "d6d6f9bb6113" "zh-CN")
+   ("0yq8fqdz862pnlbvfsqfc152rhpsqgncvp8bqkd653mdfv4qkwr4" "0cbdc5f1a048" "zh-TW")))
 
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "78.14.0-guix0-preview1")
-(define %icecat-build-id "20210907000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "91.5.0-guix0-preview1")
+(define %icecat-build-id "20220111000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -708,11 +728,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1ymjlg6p23c510m764pqr4sldrvk0c7g490a29js2cqc2nj2h3ma"))))
+              "04y8nj1f065b3dn354f1ns3cm9xp4kljr5ippvmfdqr7cb4xjp7l"))))
 
-         (upstream-icecat-base-version "78.7.0") ; maybe older than base-version
+         (upstream-icecat-base-version "91.5.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "abfe5eebaca3c2787f1a9505669393674493c177")
+         (gnuzilla-commit "c0a504578cb694522c65bb6c36396df8142d4a2a")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -724,7 +744,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "00ws3540x5whpicc5fx4k949ff73cqvajz6jp13ahn49wqdads47"))))
+              "016g8vdr6w6six4f705cmbdrfknmy4bk1qjjrvsdpah4bf6c2s2c"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -749,10 +769,10 @@ in C/C++.")
                     (icecat-dir
                      (string-append "icecat-" #$%icecat-version)))
 
-                (mkdir "/tmp/bin")
                 (set-path-environment-variable
                  "PATH" '("bin")
-                 (list "/tmp"
+                 (list #+rename
+                       #+python
                        #+(canonical-package bash)
                        #+(canonical-package coreutils)
                        #+(canonical-package findutils)
@@ -762,11 +782,20 @@ in C/C++.")
                        #+(canonical-package grep)
                        #+(canonical-package bzip2)
                        #+(canonical-package gzip)
-                       #+(canonical-package tar)
-                       #+rename))
+                       #+(canonical-package tar)))
 
-                (symlink #+(file-append rename "/bin/rename")
-                         "/tmp/bin/prename")
+                (set-path-environment-variable
+                 "PYTHONPATH"
+                 (list #+(format #f "lib/python~a/site-packages"
+                                 (version-major+minor
+                                  (package-version python))))
+                 '#+(cons python-jsonschema
+                          (map second
+                               (package-transitive-propagated-inputs
+                                python-jsonschema))))
+
+                ;; Needed by the 'makeicecat' script.
+                (setenv "RENAME_CMD" "rename")
 
                 ;; We copy the gnuzilla source directory because it is
                 ;; read-only in 'gnuzilla-source', and the makeicecat script
@@ -783,20 +812,22 @@ in C/C++.")
                           "-p1" "--input" #+makeicecat-patch)
                   (patch-shebang "makeicecat")
                   (substitute* "makeicecat"
-                    (("^FFMAJOR=(.*)" all ffmajor)
+                    (("^readonly FFMAJOR=(.*)" all ffmajor)
                      (unless (string=? #$major-version
                                        (string-trim-both ffmajor))
                        ;; The makeicecat script cannot be expected to work
                        ;; properly on a different version of Firefox, even if
                        ;; no errors occur during execution.
                        (error "makeicecat major version mismatch"))
-                     (string-append "FFMAJOR=" #$major-version "\n"))
-                    (("^FFMINOR=.*")
-                     (string-append "FFMINOR=" #$minor-version "\n"))
-                    (("^FFSUB=.*")
-                     (string-append "FFSUB=" #$sub-version "\n"))
-                    (("^DATA=.*")
-                     "DATA=/tmp/gnuzilla/data\n")
+                     (string-append "readonly FFMAJOR=" #$major-version "\n"))
+                    (("^readonly FFMINOR=.*")
+                     (string-append "readonly FFMINOR=" #$minor-version "\n"))
+                    (("^readonly FFSUB=.*")
+                     (string-append "readonly FFSUB=" #$sub-version "\n"))
+                    (("^readonly DATADIR=.*")
+                     "readonly DATADIR=/tmp/gnuzilla/data\n")
+                    (("^readonly SOURCEDIR=.*")
+                     (string-append "readonly SOURCEDIR=" icecat-dir "\n"))
                     (("/bin/sed")
                      #+(file-append (canonical-package sed) "/bin/sed"))))
 
@@ -834,14 +865,15 @@ in C/C++.")
                                       #:log (%make-void-port "w"))
                     (delete-file "compare-locales/.gitignore")
                     (delete-file "compare-locales/.hgignore")
-                    (delete-file "compare-locales/.hgtags"))
+                    (delete-file "compare-locales/.hgtags")))
 
-                  (format #t "Running makeicecat script...~%")
-                  (force-output)
-                  (invoke "bash" "/tmp/gnuzilla/makeicecat"))
+                (format #t "Running makeicecat script...~%")
+                (force-output)
+                (invoke "bash" "/tmp/gnuzilla/makeicecat")
 
                 (format #t "Packing IceCat source tarball...~%")
                 (force-output)
+                (setenv "XZ_DEFAULTS" (string-join (%xz-parallel-args)))
                 (invoke "tar" "cfa" #$output
                         ;; Avoid non-determinism in the archive.  We set the
                         ;; mtime of files in the archive to early 1980 because
@@ -852,9 +884,7 @@ in C/C++.")
                         "--owner=root:0"
                         "--group=root:0"
                         "--sort=name"
-                        icecat-dir)
-
-                #t))))))))
+                        icecat-dir)))))))))
 
 (define-public icecat
   (package
@@ -872,12 +902,15 @@ in C/C++.")
        ("gtk+" ,gtk+)
        ("gtk+-2" ,gtk+-2)
        ;; UNBUNDLE-ME! ("graphite2" ,graphite2)
+       ("cairo" ,cairo)
        ("pango" ,pango)
        ("freetype" ,freetype)
+       ("font-dejavu" ,font-dejavu)
        ;; UNBUNDLE-ME! ("harfbuzz" ,harfbuzz)
        ("libcanberra" ,libcanberra)
        ("libgnome" ,libgnome)
        ("libjpeg-turbo" ,libjpeg-turbo)
+       ("libpng-apng" ,libpng-apng)
        ;; UNBUNDLE-ME! ("libogg" ,libogg)
        ;; UNBUNDLE-ME! ("libtheora" ,libtheora) ; wants theora-1.2, not yet released
        ;; UNBUNDLE-ME! ("libvorbis" ,libvorbis)
@@ -889,29 +922,31 @@ in C/C++.")
        ("libxt" ,libxt)
        ("libffi" ,libffi)
        ("ffmpeg" ,ffmpeg)
-       ;; UNBUNDLE-ME! ("libvpx" ,libvpx)
-       ("icu4c" ,icu4c-67)
+       ("libvpx" ,libvpx)
+       ("icu4c" ,icu4c)
        ("pixman" ,pixman)
        ("pulseaudio" ,pulseaudio)
        ("mesa" ,mesa)
+       ("pciutils" ,pciutils)
        ("mit-krb5" ,mit-krb5)
+       ("hunspell" ,hunspell)
+       ("libnotify" ,libnotify)
        ;; See <https://bugs.gnu.org/32833>
        ;;   and related comments in the 'remove-bundled-libraries' phase.
        ;; UNBUNDLE-ME! ("nspr" ,nspr)
        ;; UNBUNDLE-ME! ("nss" ,nss)
        ("shared-mime-info" ,shared-mime-info)
-       ;; UNBUNDLE-ME! ("sqlite" ,sqlite)
+       ("sqlite" ,sqlite)
        ("eudev" ,eudev)
        ("unzip" ,unzip)
        ("zip" ,zip)
-       ;; UNBUNDLE-ME! ("zlib" ,zlib)
-       ))
+       ("zlib" ,zlib)))
     (native-inputs
      ;; The following patches are specific to the Guix packaging of IceCat,
      ;; and therefore we prefer to leave them out of 'source', which should be
      ;; a tarball suitable for compilation on any system that IceCat supports.
      ;; (Bug fixes and security fixes, however, should go in 'source').
-     `(;; XXX TODO: Adapt these patches to IceCat 68.
+     `(;; XXX TODO: Adapt these patches to IceCat 91.
        ;; ("icecat-avoid-bundled-libraries.patch"
        ;;  ,(search-patch "icecat-avoid-bundled-libraries.patch"))
        ;; ("icecat-use-system-graphite2+harfbuzz.patch"
@@ -921,11 +956,11 @@ in C/C++.")
 
        ("patch" ,(canonical-package patch))
 
-       ("rust" ,rust-1.41)
-       ("cargo" ,rust-1.41 "cargo")
-       ("rust-cbindgen" ,rust-cbindgen-0.14)
-       ("llvm" ,llvm)
-       ("clang" ,clang)
+       ("rust" ,rust)
+       ("cargo" ,rust "cargo")
+       ("rust-cbindgen" ,rust-cbindgen-0.19)
+       ("llvm" ,llvm-11)
+       ("clang" ,clang-11)
        ("perl" ,perl)
        ("node" ,node)
        ("python" ,python)
@@ -934,16 +969,17 @@ in C/C++.")
        ("yasm" ,yasm)
        ("nasm" ,nasm)  ; XXX FIXME: only needed on x86_64 and i686
        ("pkg-config" ,pkg-config)
-       ("autoconf" ,autoconf-2.13)
+       ("m4" ,m4)
        ("which" ,which)))
     (arguments
-     `(#:tests? #f          ; no check target
-       #:out-of-source? #t  ; must be built outside of the source directory
+     `(#:tests? #f  ;not worth the cost
 
-       #:configure-flags `("--enable-default-toolkit=cairo-gtk3-wayland"
+       ;; Some dynamic lib was determined at runtime, so rpath check may fail.
+       #:validate-runpath? #f
 
+       #:configure-flags `("--enable-application=browser"
                            "--with-distribution-id=org.gnu"
-
+                           "--enable-geckodriver"
                            ;; Do not require addons in the global app or
                            ;; system directories to be signed by Mozilla.
                            "--with-unsigned-addon-scopes=app,system"
@@ -960,6 +996,12 @@ in C/C++.")
                            ;; disable it.
                            "--disable-debug"
                            "--disable-debug-symbols"
+
+                           "--enable-rust-simd"
+                           "--enable-release"
+                           "--enable-optimize"
+                           "--enable-strip"
+                           "--disable-elf-hack"
 
                            ;; Clang is needed to build Stylo, Mozilla's new
                            ;; CSS engine.  We must specify the clang paths
@@ -981,7 +1023,8 @@ in C/C++.")
 
                            ;; Avoid bundled libraries.
                            "--with-system-jpeg"        ; must be libjpeg-turbo
-                           ;; UNBUNDLE-ME! "--with-system-zlib"
+                           "--with-system-png"         ; must be libpng-apng
+                           "--with-system-zlib"
                            ;; UNBUNDLE-ME! "--with-system-bz2"
                            ;; UNBUNDLE-ME! "--with-system-libevent"
                            ;; UNBUNDLE-ME! "--with-system-ogg"
@@ -1001,26 +1044,14 @@ in C/C++.")
                            "--enable-system-pixman"
                            "--enable-system-ffi"
                            ;; UNBUNDLE-ME! "--enable-system-sqlite"
-
-                           ;; Fails with "--with-system-png won't work because
-                           ;; the system's libpng doesn't have APNG support".
-                           ;; According to
-                           ;; http://sourceforge.net/projects/libpng-apng/ ,
-                           ;; "the Animated Portable Network Graphics (APNG)
-                           ;; is an unofficial extension of the Portable
-                           ;; Network Graphics (PNG) format";
-                           ;; we probably do not wish to support it.
-                           ;; "--with-system-png"
                            )
 
        #:imported-modules ,%cargo-utils-modules ;for `generate-all-checksums'
 
        #:modules ((ice-9 ftw)
-                  (ice-9 rdelim)
-                  (ice-9 regex)
                   (ice-9 match)
-                  (srfi srfi-34)
-                  (srfi srfi-35)
+                  (srfi srfi-1)
+                  (srfi srfi-26)
                   (rnrs bytevectors)
                   (rnrs io ports)
                   (guix elf)
@@ -1040,8 +1071,7 @@ in C/C++.")
                               (format #t "applying '~a'...~%" file)
                               (invoke patch "--force" "--no-backup-if-mismatch"
                                       "-p1" "--input" file))))
-                         (or native-inputs inputs)))
-             #t))
+                         (or native-inputs inputs)))))
          (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
            (lambda _
              ;; Remove bundled libraries that we don't use, since they may
@@ -1090,56 +1120,45 @@ in C/C++.")
                          ;; UNBUNDLE-ME! "gfx/graphite2"
                          "js/src/ctypes/libffi"
                          ;; UNBUNDLE-ME! "db/sqlite3"
-                         ))
-             #t))
-         (add-after 'remove-bundled-libraries 'link-libxul-with-libraries
-           (lambda _
-             ;; libxul.so dynamically opens libraries, so here we explicitly
-             ;; link them into libxul.so instead.
-             ;;
-             ;; TODO: It might be preferable to patch in absolute file names in
-             ;; calls to dlopen or PR_LoadLibrary, but that didn't seem to
-             ;; work.  More investigation is needed.
-             (substitute* "toolkit/library/moz.build"
-               (("^# This library needs to be last" all)
-                (string-append "OS_LIBS += [
-    'GL', 'gnome-2', 'canberra', 'Xss', 'cups', 'gssapi_krb5',
-    'avcodec', 'avutil', 'pulse' ]\n\n"
-                               all)))
-             #t))
-         (add-after 'link-libxul-with-libraries 'fix-ffmpeg-runtime-linker
+                         ))))
+         (add-after 'remove-bundled-libraries 'fix-ffmpeg-runtime-linker
            (lambda* (#:key inputs #:allow-other-keys)
              (let* ((ffmpeg (assoc-ref inputs "ffmpeg"))
                     (libavcodec (string-append ffmpeg "/lib/libavcodec.so")))
                ;; Arrange to load libavcodec.so by its absolute file name.
                (substitute* "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                  (("libavcodec\\.so")
-                  libavcodec))
-               ;; Populate the sandbox read-path whitelist as needed by ffmpeg.
-               (let* ((mime-info (assoc-ref inputs "shared-mime-info"))
-                      (libavcodec-runpath (call-with-input-file libavcodec
-                                            (compose elf-dynamic-info-runpath
-                                                     elf-dynamic-info
-                                                     parse-elf
-                                                     get-bytevector-all)))
-                      (whitelist (cons (string-append mime-info "/share/mime/")
-                                       (map (lambda (dir)
-                                              (string-append dir "/"))
-                                            libavcodec-runpath)))
-                      (whitelist-string (string-join whitelist ","))
-                      (port (open-file "browser/app/profile/icecat.js" "a")))
-                 (format #t "setting 'security.sandbox.content.read_path_whitelist' to '~a'~%"
-                         whitelist-string)
-                 (format port "~%pref(\"security.sandbox.content.read_path_whitelist\", ~S);~%"
-                         whitelist-string)
-                 (close-output-port port))
-               #t)))
-         (replace 'bootstrap
-           (lambda _
-             (invoke "sh" "-c" "autoconf old-configure.in > old-configure")
-             ;; 'configure' must be newer than 'old-configure.in', or else the
-             ;; build system will raise an alarm and abort.
-             (invoke "touch" "configure")))
+                  libavcodec)))))
+         (add-after 'fix-ffmpeg-runtime-linker 'build-sandbox-whitelist
+           (lambda* (#:key inputs #:allow-other-keys)
+             (define (runpath-of lib)
+               (call-with-input-file lib
+                 (compose elf-dynamic-info-runpath
+                          elf-dynamic-info
+                          parse-elf
+                          get-bytevector-all)))
+             (define (runpaths-of-input label)
+               (let* ((dir (string-append (assoc-ref inputs label) "/lib"))
+                      (libs (find-files dir "\\.so$")))
+                 (append-map runpath-of libs)))
+             ;; Populate the sandbox read-path whitelist as needed by ffmpeg.
+             (let* ((whitelist
+                     (map (cut string-append <> "/")
+                          (delete-duplicates
+                           `(,(string-append (assoc-ref inputs "shared-mime-info")
+                                             "/share/mime")
+                             ,(string-append (assoc-ref inputs "font-dejavu")
+                                             "/share/fonts")
+                             "/run/current-system/profile/share/fonts"
+                             ,@(append-map runpaths-of-input
+                                           '("mesa" "ffmpeg"))))))
+                    (whitelist-string (string-join whitelist ","))
+                    (port (open-file "browser/app/profile/icecat.js" "a")))
+               (format #t "setting 'security.sandbox.content.read_path_whitelist' to '~a'~%"
+                       whitelist-string)
+               (format port "~%pref(\"security.sandbox.content.read_path_whitelist\", ~S);~%"
+                       whitelist-string)
+               (close-output-port port))))
          (add-after 'patch-source-shebangs 'patch-cargo-checksums
            (lambda _
              (use-modules (guix build cargo-utils))
@@ -1168,8 +1187,8 @@ in C/C++.")
                            "intl"
                            "servo"
                            "security/manager/ssl"
-                           "build")))
-             #t))
+                           "build")))))
+         (delete 'bootstrap)
          (replace 'configure
            ;; configure does not work followed by both "SHELL=..." and
            ;; "CONFIG_SHELL=..."; set environment variables instead
@@ -1177,57 +1196,92 @@ in C/C++.")
              (let* ((out (assoc-ref outputs "out"))
                     (bash (which "bash"))
                     (abs-srcdir (getcwd))
-                    (srcdir (string-append "../" (basename abs-srcdir)))
                     (flags `(,(string-append "--prefix=" out)
                              ,(string-append "--with-l10n-base="
                                              abs-srcdir "/l10n")
                              ,@configure-flags)))
                (setenv "SHELL" bash)
                (setenv "CONFIG_SHELL" bash)
-               (setenv "AUTOCONF" (which "autoconf")) ; must be autoconf-2.13
-               (setenv "CC" "gcc")  ; apparently needed when Stylo is enabled
-               (setenv "MOZ_BUILD_DATE" ,%icecat-build-id) ; avoid timestamp
+
+               (setenv "AR" "llvm-ar")
+               (setenv "NM" "llvm-nm")
+               (setenv "CC" "clang")
+               (setenv "CXX" "clang++")
                (setenv "LDFLAGS" (string-append "-Wl,-rpath="
                                                 (assoc-ref outputs "out")
                                                 "/lib/icecat"))
-               (mkdir "../build")
-               (chdir "../build")
+
+               (setenv "MACH_USE_SYSTEM_PYTHON" "1")
+               (setenv "MOZ_NOSPAM" "1")
+               (setenv "MOZ_BUILD_DATE" ,%icecat-build-id) ; avoid timestamp
+
                (format #t "build directory: ~s~%" (getcwd))
                (format #t "configure flags: ~s~%" flags)
-               (apply invoke bash
-                      (string-append srcdir "/configure")
-                      flags))))
+
+               (call-with-output-file "mozconfig"
+                 (lambda (out)
+                   (for-each (lambda (flag)
+                               (format out "ac_add_options ~a\n" flag))
+                             flags)))
+
+               (invoke "./mach" "configure"))))
          (replace 'build
-           ;; The build system often spuriously fails.  See
-           ;; <https://bugs.gentoo.org/show_bug.cgi?id=680934>.  To
-           ;; work around this, we try the standard 'build' phase up
-           ;; to 5 times.
-           (lambda args
-             (let ((build (assoc-ref %standard-phases 'build)))
-               (let retry ((remaining-attempts 5))
-                 (if (= remaining-attempts 1)
-                     (apply build args)
-                     (guard (c ((invoke-error? c)
-                                (format #t "~%Retrying build! (~a attempts remaining)~%~%"
-                                        (- remaining-attempts 1))
-                                (force-output)
-                                (retry (- remaining-attempts 1))))
-                       (apply build args)))))))
+           (lambda* (#:key (make-flags '()) (parallel-build? #t)
+                     #:allow-other-keys)
+             (apply invoke "./mach" "build"
+                    ;; mach will use parallel build if possible by default
+                    `(,@(if parallel-build?
+                            '()
+                            '("-j1"))
+                      ,@make-flags))))
          (add-after 'build 'neutralise-store-references
            (lambda _
              ;; Mangle the store references to compilers & other build tools in
              ;; about:buildconfig, reducing IceCat's closure by 1 GiB on x86-64.
-             (substitute*
-                 "dist/bin/chrome/toolkit/content/global/buildconfig.html"
-               (((format #f "(~a/)([0-9a-df-np-sv-z]{32})"
-                         (regexp-quote (%store-directory)))
-                 _ store hash)
-                (string-append store
-                               (string-take hash 8)
-                               "<!-- Guix: not a runtime dependency -->"
-                               (string-drop hash 8))))
-             #t))
-         (add-before 'configure 'install-desktop-entry
+             (let* ((obj-dir (match (scandir "." (cut string-prefix? "obj-" <>))
+                               ((dir) dir)))
+                    (file (string-append
+                           obj-dir
+                           "/dist/bin/chrome/toolkit/content/global/buildconfig.html")))
+               (substitute* file
+                 (("[0-9a-df-np-sv-z]{32}" hash)
+                  (string-append (string-take hash 8)
+                                 "<!-- Guix: not a runtime dependency -->"
+                                 (string-drop hash 8)))))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "./mach" "install")
+             ;; The geckodriver binary is not installed by the above, for some
+             ;; reason.  Use 'find-files' to avoid having to deal with the
+             ;; system/architecture-specific file name.
+             (install-file (first (find-files "." "geckodriver"))
+                           (string-append (assoc-ref outputs "out") "/bin"))))
+         (add-after 'install 'wrap-program
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (lib (string-append out "/lib"))
+                    (gtk (assoc-ref inputs "gtk+"))
+                    (gtk-share (string-append gtk "/share"))
+                    (ld-libs (map (lambda (label)
+                                    (string-append (assoc-ref inputs label)
+                                                   "/lib"))
+                              '("libpng-apng"
+                                "libxscrnsaver"
+                                "mesa"
+                                "pciutils"
+                                "mit-krb5"
+                                "eudev"
+                                "pulseaudio"
+                                ;; For the integration of native notifications
+                                "libnotify"))))
+               (wrap-program (car (find-files lib "^icecat$"))
+                 `("XDG_DATA_DIRS" prefix (,gtk-share))
+                 ;; The following line is commented out because the icecat
+                 ;; package on guix has been observed to be unstable when
+                 ;; using wayland, and the bundled extensions stop working.
+                 ;;   `("MOZ_ENABLE_WAYLAND" = ("1"))
+                 `("LD_LIBRARY_PATH" prefix ,ld-libs)))))
+         (add-after 'wrap-program 'install-desktop-entry
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Install the '.desktop' file.
              (let* ((desktop-file "taskcluster/docker/icecat-snap/icecat.desktop")
@@ -1239,8 +1293,7 @@ in C/C++.")
                  (("Icon=.*")          "Icon=icecat\n")
                  (("NewWindow")        "new-window")
                  (("NewPrivateWindow") "new-private-window"))
-               (install-file desktop-file applications)
-               #t)))
+               (install-file desktop-file applications))))
          (add-after 'install-desktop-entry 'install-icons
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -1254,39 +1307,17 @@ in C/C++.")
                       (copy-file file (string-append icons "/icecat.png"))))
                   '("default16.png" "default22.png" "default24.png"
                     "default32.png" "default48.png" "content/icon64.png"
-                    "mozicon128.png" "default256.png"))
-                 #t))))
-         ;; This fixes the file chooser crash that happens with GTK 3.
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (gtk (assoc-ref inputs "gtk+"))
-                    (gtk-share (string-append gtk "/share"))
-                    (ld-libs (map (lambda (lib)
-                                    (string-append (assoc-ref inputs lib)
-                                                   "/lib"))
-                              '("libxscrnsaver"
-                                "mesa"
-                                "mit-krb5"
-                                "eudev"
-                                "pulseaudio"))))
-               (wrap-program (car (find-files lib "^icecat$"))
-                 `("XDG_DATA_DIRS" prefix (,gtk-share))
-                 ;; The following line is commented out because the icecat
-                 ;; package on guix has been observed to be unstable when
-                 ;; using wayland, and the bundled extensions stop working.
-                 ;;   `("MOZ_ENABLE_WAYLAND" = ("1"))
-                 `("LD_LIBRARY_PATH" prefix ,ld-libs))
-               #t))))))
+                    "mozicon128.png" "default256.png")))))))))
     (home-page "https://www.gnu.org/software/gnuzilla/")
     (synopsis "Entirely free browser derived from Mozilla Firefox")
     (description
      "IceCat is the GNU version of the Firefox browser.  It is entirely free
 software, which does not recommend non-free plugins and addons.  It also
-features built-in privacy-protecting features.
+features built-in privacy-protecting features.  This package also includes the
+@command{geckodriver} command, which can be useful for automated web
+testing.
 
-WARNING: IceCat 78 has not yet been released by the upstream IceCat project.
+WARNING: IceCat 91 has not yet been released by the upstream IceCat project.
 This is a preview release, and does not currently meet the privacy-respecting
 standards of the IceCat project.")
     (license license:mpl2.0)     ;and others, see toolkit/content/license.html
@@ -1296,11 +1327,11 @@ standards of the IceCat project.")
        (cpe-version . ,(first (string-split version #\-)))))))
 
 ;; Update this together with icecat!
-(define %icedove-build-id "20210810000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20220111000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
-    (version "78.13.0")
+    (version "91.5")
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1319,7 +1350,6 @@ standards of the IceCat project.")
              (mkdir "comm")
              (copy-recursively (assoc-ref inputs "thunderbird-sources")
                                "comm")
-             (delete-file-recursively "obj-x86_64-pc-linux-gnu")
              (delete-file "sourcestamp.txt")
              #t))
          (add-after 'patch-source-shebangs 'patch-cargo-checksums
@@ -1341,14 +1371,12 @@ standards of the IceCat project.")
          (add-after 'patch-source-shebangs 'fix-profile-setting
            (lambda _
              (substitute* "comm/mail/moz.configure"
-               (("'MOZ_DEDICATED_PROFILES', True")
-                "'MOZ_DEDICATED_PROFILES', False"))
+               (("MOZ_DEDICATED_PROFILES, True")
+                "MOZ_DEDICATED_PROFILES, False"))
              #t))
          (add-after 'prepare-thunderbird-sources 'rename-to-icedove
            (lambda _
              (substitute* "comm/mail/confvars.sh"
-               (("MOZ_APP_BASENAME=Thunderbird")
-                "MOZ_APP_BASENAME=Icedove\nMOZ_APP_DISPLAYNAME=Icedove")
                (("MOZ_APP_NAME=thunderbird")
                 "MOZ_APP_NAME=icedove")
                (("MOZ_UPDATER=1")
@@ -1392,7 +1420,8 @@ standards of the IceCat project.")
                               "enterprisepolicies/schemas/moz.build")
                  (("Thunderbird") "Icedove")))
              (substitute* '("comm/mailnews/base/prefs/content/accountUtils.js"
-                            "comm/common/src/customizeToolbar.js")
+                            "comm/mail/base/content/customizeToolbar.js"
+                            "comm/suite/components/customizeToolbar.js")
                (("AppConstants.MOZ_APP_NAME (.)= \"thunderbird" _ e)
                 (format #f "AppConstants.MOZ_APP_NAME ~a= \"icedove" e)))
 
@@ -1426,6 +1455,7 @@ standards of the IceCat project.")
                                "<!-- Guix: not a runtime dependency -->"
                                (string-drop hash 8))))
              #t))
+         (delete 'bootstrap)
          (replace 'configure
            (lambda* (#:key inputs outputs configure-flags #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1436,22 +1466,24 @@ standards of the IceCat project.")
                              ,@configure-flags))
                     (mozconfig (string-append (getcwd) "/.mozconfig")))
                (setenv "SHELL" bash)
-               (setenv "AUTOCONF"
-                       (string-append (assoc-ref %build-inputs
-                                                 "autoconf")
-                                      "/bin/autoconf"))
                (setenv "CONFIG_SHELL" bash)
                (setenv "QA_CONFIGURE_OPTIONS" ".*")
                (setenv "MOZBUILD_STATE_PATH"
                        (string-append (getcwd) "/mach_state"))
                (setenv "MOZCONFIG"
                        (string-append (getcwd) "/.mozconfig"))
-               (setenv "CC" "gcc")
+
+               (setenv "AR" "llvm-ar")
+               (setenv "NM" "llvm-nm")
+               (setenv "CC" "clang")
+               (setenv "CXX" "clang++")
+
                (setenv "MOZ_NOSPAM" "1")
+               (setenv "MACH_USE_SYSTEM_PYTHON" "1")
                (setenv "PYTHON"
-                       (string-append (assoc-ref inputs "python2")
-                                      "/bin/python"))
+                       (search-input-file inputs "/bin/python"))
                (setenv "MOZ_BUILD_DATE" ,%icedove-build-id) ; avoid timestamp
+               (setenv "MOZ_APP_NAME" "icedove")
                (setenv "LDFLAGS" (string-append "-Wl,-rpath="
                                                 (assoc-ref outputs "out")
                                                 "/lib/icedove"))
@@ -1471,7 +1503,6 @@ standards of the IceCat project.")
                      "ac_add_options --disable-updater\n"
                      "ac_add_options --disable-webrtc\n"
                      "ac_add_options --enable-application=comm/mail\n"
-                     "ac_add_options --enable-calendar\n"
                      "ac_add_options --enable-default-toolkit=\"cairo-gtk3\"\n"
                      "ac_add_options --enable-optimize\n"
                      "ac_add_options --enable-pulseaudio\n"
@@ -1488,7 +1519,7 @@ standards of the IceCat project.")
                      "ac_add_options --with-system-jpeg\n"
                      "ac_add_options --with-system-libevent\n"
                      "ac_add_options --with-system-nspr\n"
-                     "ac_add_options --with-system-nss\n"
+                     ;"ac_add_options --with-system-nss\n"
                      "ac_add_options --with-system-zlib\n"
                      "ac_add_options --with-user-appdir=\\.icedove\n"
                      "mk_add_options MOZ_MAKE_FLAGS=-j"
@@ -1553,7 +1584,7 @@ standards of the IceCat project.")
        ("gtk+" ,gtk+)
        ("gtk+-2" ,gtk+-2)
        ("hunspell" ,hunspell)
-       ("icu4c" ,icu4c-67)
+       ("icu4c" ,icu4c)
        ("libcanberra" ,libcanberra)
        ("libevent" ,libevent)
        ("libffi" ,libffi)
@@ -1568,8 +1599,9 @@ standards of the IceCat project.")
        ("libxt" ,libxt)
        ("mesa" ,mesa)
        ("mit-krb5" ,mit-krb5)
-       ("nspr" ,nspr)
-       ("nss" ,nss)
+       ("nspr" ,nspr-4.32)
+       ; FIXME: create nss >= 3.68 after core-updates merge
+       ;("nss" ,nss)
        ("pango" ,pango)
        ("pixman" ,pixman)
        ("pulseaudio" ,pulseaudio)
@@ -1585,28 +1617,28 @@ standards of the IceCat project.")
         ;; in the Thunderbird release tarball.  We don't use the release
         ;; tarball because it duplicates the Icecat sources and only adds the
         ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "adcfedf831da719455116546865f9a5faea848a6"))
+        ,(let ((changeset "bcd2aab51cd0889d506d29455210d65602b97430"))
            (origin
              (method hg-fetch)
              (uri (hg-reference
-                   (url "https://hg.mozilla.org/releases/comm-esr78")
+                   (url "https://hg.mozilla.org/releases/comm-esr91")
                    (changeset changeset)))
              (file-name (string-append "thunderbird-" version "-checkout"))
              (sha256
               (base32
-               "1dahf3y8bm3kh7amf341wnmh82a2r0ksqihc6dwiakh6x86a94cm")))))
-       ("autoconf" ,autoconf-2.13)
-       ("cargo" ,rust-1.41 "cargo")
-       ("clang" ,clang)
-       ("llvm" ,llvm)
+               "0aj8a8qbm71n34yi58y04bn4h9zz2rciz0cm3hh58rsmcqs1s9ym")))))
+       ("cargo" ,rust "cargo")
+       ("clang" ,clang-11)
+       ("llvm" ,llvm-11)
+       ("m4" ,m4)
        ("nasm" ,nasm)
        ("node" ,node)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python)
        ("python2" ,python-2.7)
-       ("rust" ,rust-1.41)
-       ("rust-cbindgen" ,rust-cbindgen-0.14)
+       ("rust" ,rust)
+       ("rust-cbindgen" ,rust-cbindgen-0.19)
        ("which" ,which)
        ("yasm" ,yasm)))
     (home-page "https://www.thunderbird.net")
@@ -1667,8 +1699,7 @@ Thunderbird.  It supports email, news feeds, chat, calendar and contacts.")
                 "17yyyxp47z4m8hnflcq34rc1y871515kr3f1y42j1l0yx3g0il07"))))
     (build-system trivial-build-system)
     (inputs
-     `(("nss" ,nss)
-       ("python" ,python)))
+     (list nss python))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -1691,3 +1722,41 @@ Thunderbird.  It supports email, news feeds, chat, calendar and contacts.")
     (description "Firefox Decrypt is a tool to extract passwords from
 Mozilla (Firefox, Waterfox, Thunderbird, SeaMonkey) profiles.")
     (license license:gpl3+)))
+
+(define-public lz4json
+  (package
+    (name "lz4json")
+    (version "2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/andikleen/lz4json")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xxn8yzr6j8j6prmbj6mxspdczigarfiv3vlm9k70yxmky65ijh3"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list lz4))
+    (arguments
+     `(#:tests? #f                              ; no check target
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)                    ; no configure script
+         (replace 'install                      ; no install target
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (man (string-append out "/share/man/man1")))
+               (install-file "lz4jsoncat" bin)
+               (install-file "lz4jsoncat.1" man)))))
+       #:make-flags `(,(string-append "CC=" ,(cc-for-target)))))
+    (home-page "https://github.com/andikleen/lz4json")
+    (synopsis "C decompress tool for mozilla lz4json format")
+    (description
+     "@code{lz4json} is a little utility to unpack lz4json files as generated
+by Firefox's bookmark backups and session restore.  This is a different format
+from what the normal lz4 utility expects.  The data is dumped to stdout.")
+    (license license:bsd-2)))

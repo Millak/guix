@@ -311,7 +311,7 @@ Protocol (DHCP) client, on all the non-loopback network interfaces.")))
 (define-record-type* <dhcpd-configuration>
   dhcpd-configuration make-dhcpd-configuration
   dhcpd-configuration?
-  (package   dhcpd-configuration-package ;<package>
+  (package   dhcpd-configuration-package ;file-like
              (default isc-dhcp))
   (config-file   dhcpd-configuration-config-file ;file-like
                  (default #f))
@@ -427,6 +427,8 @@ daemon is responsible for allocating IP addresses to its client.")))
   ;; Default set of NTP servers. These URLs are managed by the NTP Pool project.
   ;; Within Guix, Leo Famulari <leo@famulari.name> is the administrative contact
   ;; for this NTP pool "zone".
+  ;; The full list of available URLs are 0.guix.pool.ntp.org,
+  ;; 1.guix.pool.ntp.org, 2.guix.pool.ntp.org, and 3.guix.pool.ntp.org.
   (list
    (ntp-server
     (type 'pool)
@@ -743,7 +745,7 @@ demand.")))
 ;;; can evaluate: (configuration->documentation 'opendht-configuration)
 (define-configuration/no-serialization opendht-configuration
   (opendht
-   (package opendht)
+   (file-like opendht)
    "The @code{opendht} package to use.")
   (peer-discovery?
    (boolean #false)
@@ -1149,7 +1151,7 @@ and @command{wicd-curses} user interfaces."
                    (default network-manager))
   (dns network-manager-configuration-dns
        (default "default"))
-  (vpn-plugins network-manager-configuration-vpn-plugins ;list of <package>
+  (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
                (default '())))
 
 (define network-manager-activation
@@ -1452,7 +1454,7 @@ whatever the thing is supposed to do).")))
 (define-record-type* <wpa-supplicant-configuration>
   wpa-supplicant-configuration make-wpa-supplicant-configuration
   wpa-supplicant-configuration?
-  (wpa-supplicant     wpa-supplicant-configuration-wpa-supplicant ;<package>
+  (wpa-supplicant     wpa-supplicant-configuration-wpa-supplicant ;file-like
                       (default wpa-supplicant))
   (requirement        wpa-supplicant-configuration-requirement    ;list of symbols
                       (default '(user-processes loopback syslogd)))
@@ -2124,7 +2126,7 @@ of the IPFS peer-to-peer storage network.")))
 (define-record-type* <keepalived-configuration>
   keepalived-configuration make-keepalived-configuration
   keepalived-configuration?
-  (keepalived  keepalived-configuration-keepalived  ;<package>
+  (keepalived  keepalived-configuration-keepalived  ;file-like
                (default keepalived))
   (config-file keepalived-configuration-config-file ;file-like
                (default #f)))

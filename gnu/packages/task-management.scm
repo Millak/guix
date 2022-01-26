@@ -35,6 +35,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -104,7 +105,7 @@ following the Japanese kanban (boarding) style.")
           (base32 "0c8zn7l0xq65wp07h7mxnb5ww56d1443l2vkjvx5sj6wpcchfn0s"))))
       (build-system python-build-system)
       (native-inputs
-       `(("python-cram" ,python-cram)))
+       (list python-cram))
       (synopsis "Command-line todo list manager")
       (description
        "@command{t} is a command-line todo list manager for people that want
@@ -115,18 +116,18 @@ to finish tasks, not organize them.")
 (define-public taskwarrior
   (package
     (name "taskwarrior")
-    (version "2.5.3")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://taskwarrior.org/download/task-" version ".tar.gz"))
        (sha256 (base32
-                "0fwnxshhlha21hlgg5z1ad01w13zm1hlmncs274y5n8i15gdfhvj"))))
+                "0kq8n2y4srax48yp7shz7ngac0q75dnvdbr9z9f9ldyqncr61ah0"))))
     (build-system cmake-build-system)
     (inputs
-     `(("gnutls" ,gnutls)
-       ("util-linux" ,util-linux "lib")))
+     (list gnutls
+           `(,util-linux "lib")))
     (arguments
      `(#:tests? #f ; No tests implemented.
        #:phases
@@ -143,7 +144,7 @@ and querying data, exposing task data in multiple formats to other tools.")
 (define-public dstask
   (package
     (name "dstask")
-    (version "0.24.1")
+    (version "0.25")
     (source
      (origin
        (method git-fetch)
@@ -152,7 +153,7 @@ and querying data, exposing task data in multiple formats to other tools.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03rl2wh58xd6a80ji43c7ak3h0ysi3ddg570pn8ry24s7s45zsz2"))))
+        (base32 "1m83zc2zqvpcbjng92jvlnk0biw4krv12wjvjas66jbbk3sjghcy"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/naggie/dstask"
@@ -178,8 +179,7 @@ and querying data, exposing task data in multiple formats to other tools.")
                  (install-file "dstask" bindir)
                  (install-file "dstask-import" bindir)
                  (install-file ".dstask-bash-completions.sh" bash-completion)
-                 (install-file ".dstask-zsh-completions.sh" zsh-completion)))
-             #t)))))
+                 (install-file ".dstask-zsh-completions.sh" zsh-completion))))))))
     (synopsis "CLI-based TODO manager with git-based sync + markdown notes per task")
     (description "dstask is a personal task tracker that uses git for
 synchronization.  It offers a note command to attach a Markdown based note to
@@ -190,7 +190,7 @@ a task.")
 (define-public blanket
   (package
     (name "blanket")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -199,7 +199,7 @@ a task.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rk9xxiflj8rf75q56s907xp3jzxc7r88njlmxg07gl6i35mmcmi"))))
+        (base32 "00i821zqfbigxmc709322r16z75qsw4rg23yhv35gza9sl65bzkg"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -211,11 +211,11 @@ a task.")
              (let* ((out               (assoc-ref outputs "out"))
                     (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
                     (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                    (python-path       (getenv "PYTHONPATH")))
+                    (python-path       (getenv "GUIX_PYTHONPATH")))
                (wrap-program (string-append out "/bin/blanket")
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                 `("PYTHONPATH" ":" prefix (,python-path))))
+                 `("GUIX_PYTHONPATH" ":" prefix (,python-path))))
              #t)))))
     (native-inputs
      `(("desktop-file-utils" ,desktop-file-utils)
@@ -225,14 +225,15 @@ a task.")
        ("gtk+:bin" ,gtk+ "bin")
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("appstream-glib" ,appstream-glib)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gst-plugins-bad" ,gst-plugins-bad)
-       ("gst-plugins-good" ,gst-plugins-good) ;for ScaleTempo plugin
-       ("gtk+" ,gtk+)
-       ("libhandy" ,libhandy)
-       ("python-gst" ,python-gst)
-       ("python-pygobject" ,python-pygobject)))
+     (list appstream-glib
+           gsettings-desktop-schemas
+           gst-plugins-bad
+           gst-plugins-good ;for ScaleTempo plugin
+           gtk+
+           libhandy
+           python
+           python-gst
+           python-pygobject))
     (home-page "https://github.com/rafaelmardojai/blanket")
     (synopsis "Ambient sound and noise player")
     (description
@@ -240,3 +241,53 @@ a task.")
 to with the goal of improving your focus and enhancing your productivity.
 You can also use it to fall asleep in a noisy environment.")
     (license license:gpl3+)))
+
+(define-public todoman
+  (package
+    (name "todoman")
+    (version "4.1.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "todoman" version))
+        (sha256
+          (base32 "1j2h5cv8wnmw41fpz1ggsgi599qhk184cas9kgd92glj3m4alg6f"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             (substitute* '("tests/test_cli.py" "tests/test_formatter.py")
+               (("tests\\.helpers") "helpers"))))
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "tests" "-k"
+                       (string-append
+                        ;; Test expects wrong output string.
+                        "not test_bad_start_date "
+                        ;; Unknown failure
+                        "and not test_default_command_args"))))))))
+    (native-inputs
+      (list python-setuptools-scm
+            python-pytest
+            python-pytest-cov
+            python-freezegun))
+    (propagated-inputs
+      (list python-atomicwrites
+            python-click
+            python-click-log
+            python-dateutil
+            python-humanize
+            python-icalendar
+            python-parsedatetime
+            python-pyxdg
+            python-urwid))
+    (home-page "https://todoman.readthedocs.io/")
+    (synopsis "CalDav-based todo manager")
+    (description "Todoman is a simple, standards-based, cli todo (aka: task)
+manager.  Todos are stored into icalendar files, which means you can sync
+them via CalDAV using, for example, @code{vdirsyncer}.")
+    (license license:isc)))
+

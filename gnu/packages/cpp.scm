@@ -8,9 +8,9 @@
 ;;; Copyright © 2019 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
@@ -18,6 +18,13 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Milkey Mouse <milkeymouse@meme.institute>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
+;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,9 +76,80 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
+
+(define-public argagg
+  (let ((commit "79e4adfa2c6e2bfbe63da05cc668eb9ad5596748") (revision "0"))
+    (package
+      (name "argagg")
+      (version (git-version "0.4.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vietjtnguyen/argagg")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1flkgh524lq3024p7ld5lg743s1v7qnbmgv77578rzmn2rjzr77n"))))
+      (build-system cmake-build-system)
+      (outputs '("out" "doc"))
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (add-after 'install 'move-doc
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (let* ((name ,(package-name argagg)) (out (assoc-ref
+                                                                   outputs
+                                                                   "out"))
+                               (doc (assoc-ref outputs "doc")))
+                          (mkdir-p (string-append doc "/share/doc"))
+                          (rename-file
+                           (string-append out "/share/doc/" name)
+                           (string-append doc "/share/doc/" name))))))))
+      (native-inputs (list doxygen))
+      (home-page "https://github.com/vietjtnguyen/argagg")
+      (synopsis "C++11 command line argument parser")
+      (description
+       "ArgAgg is yet another C++ command line argument/option
+parser.  It was written as a simple and idiomatic alternative to other
+frameworks like getopt, Boost program options, TCLAP, and others.  The goal is
+to achieve the majority of argument parsing needs in a simple manner with an
+easy to use API.")
+      (license license:expat))))
+
+(define-public asmjit
+  (let ((commit "4ec760a3d1f69e32ba460ecd2513f29b8428700b")
+        (revision "0"))
+    (package
+      (name "asmjit")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/asmjit/asmjit")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0skgccbpamcbg1byawfq5n6jzxgj64hnc7jznvk35nkskaaz1nlb"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags #~(list "-DASMJIT_TEST=TRUE")))
+      (home-page "https://asmjit.com/")
+      (synopsis "Machine code generation for C++")
+      (description "AsmJit is a lightweight library for machine code
+generation written in C++ language.  It can generate machine code for X86 and
+X86_64 architectures with the support for the whole instruction set from
+legacy MMX to the newest AVX-512 and AMX.  It has a type-safe API that allows
+C++ compiler to do semantic checks at compile-time even before the assembled
+code is generated or executed.  It also provides an optional register
+allocator that makes it easy to generate complex code without a significant
+development effort.")
+      (license license:zlib))))
 
 (define-public range-v3
   (package
@@ -86,14 +164,14 @@
          (commit version)))
        (file-name
         (git-file-name name version))
+       (patches (search-patches "range-v3-build-with-gcc10.patch"))
        (sha256
         (base32 "18230bg4rq9pmm5f8f65j444jpq56rld4fhmpham8q3vr1c1bdjh"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("perl" ,perl)))
+     (list doxygen gcc-9 perl))
     (inputs
-     `(("boost" ,boost)))
+     (list boost))
     (synopsis "Range library for C++14/17/20")
     (description "Range-v3 is an extension of the Standard Template Library that
 makes its iterators and algorithms more powerful by making them composable.
@@ -106,7 +184,7 @@ range-v3 ranges are an abstraction layer on top of iterators.")
       (license:x11-style "file:///LICENSE.txt")
       ;; SGI STL
       license:sgifreeb2.0
-      ;;; LibC++ (dual-licensed)
+;;; LibC++ (dual-licensed)
       license:expat
       license:ncsa
       ;; Others
@@ -128,13 +206,13 @@ range-v3 ranges are an abstraction layer on top of iterators.")
         (git-file-name name version))
        (patches
         (search-patches
-         "c++-gsl-find-system-gtest.patch"))
+         "c++-gsl-find-system-gtest.patch"
+         "c++-gsl-move-array-bounds-tests.patch"))
        (sha256
         (base32 "0gbvr48f03830g3154bjhw92b8ggmg6wwh5xyb8nppk9v6w752l0"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)))
+     (list googletest pkg-config))
     (synopsis "Guidelines Support Library")
     (description "c++-gsl contains functions and types that are suggested for
 use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
@@ -144,7 +222,7 @@ use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
 (define-public libzen
   (package
     (name "libzen")
-    (version "0.4.38")
+    (version "0.4.39")
     (source (origin
               (method url-fetch)
               ;; Warning: This source has proved unreliable 1 time at least.
@@ -155,11 +233,9 @@ use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
                                   "libzen_" version ".tar.bz2"))
               (sha256
                (base32
-                "1nkygc17sndznpcf71fdrhwpm8z9a3hc9csqlafwswh49axhfkjr"))))
+                "1rwaxmid9iv65n0y6xlcyxxydsvihjni9ldxpg6pbqz43amp49xx"))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list autoconf automake libtool))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -167,8 +243,7 @@ use by the C++ Core Guidelines maintained by the Standard C++ Foundation.")
        (modify-phases %standard-phases
          (add-after 'unpack 'pre-configure
            (lambda _
-             (chdir "Project/GNU/Library")
-             #t)))))
+             (chdir "Project/GNU/Library"))))))
     (home-page "https://github.com/MediaArea/ZenLib")
     (synopsis "C++ utility library")
     (description "ZenLib is a C++ utility library.  It includes classes for handling
@@ -203,7 +278,7 @@ operating system functions.")
              (substitute* "src/unit_tests/unit_tests.cmake"
                (("misc/library_test.cpp") ""))
              #t)))))
-    (native-inputs `(("pkg-config" ,pkg-config)))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/rttrorg/rttr/")
     (synopsis "C++ Reflection Library")
     (description
@@ -234,11 +309,9 @@ the name of the library itself, which is written in C++.")
          '("-DWITH_TESTS=ON"            ; To run the test suite
            "-DRCT_RTTI_ENABLED=ON")))
       (native-inputs
-       `(("cppunit" ,cppunit)
-         ("pkg-config" ,pkg-config)))
+       (list cppunit pkg-config))
       (inputs
-       `(("openssl" ,openssl)
-         ("zlib" ,zlib)))
+       (list openssl zlib))
       (home-page "https://github.com/Andersbakken/rct")
       (synopsis "C++ library providing Qt-like APIs on top of the STL")
       (description "Rct is a set of C++ tools that provide nicer (more Qt-like)
@@ -261,7 +334,7 @@ the name of the library itself, which is written in C++.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments '(#:tests? #f))          ; no tests
-    (native-inputs `(("pkg-config" ,pkg-config)))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/aseba-community/dashel")
     (synopsis "Data stream helper encapsulation library")
     (description
@@ -289,7 +362,7 @@ combination of these streams.")
      `(#:configure-flags (list "-DBUILD_TESTS=ON")
        #:test-target "xtest"))
     (native-inputs
-     `(("googletest" ,googletest)))
+     (list googletest))
     (home-page "https://github.com/QuantStack/xsimd")
     (synopsis "C++ wrappers for SIMD intrinsics and math implementations")
     (description
@@ -299,6 +372,53 @@ batches of numbers with the same arithmetic operators as for single values.
 It also provides accelerated implementation of common mathematical functions
 operating on batches.")
     (license license:bsd-3)))
+
+(define-public google-highway
+  (package
+    (name "google-highway")
+    (version "0.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/highway")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yjwgnrpd9m99x2nqf6ld28zc6y9nlsxqg128bxxmja1gg4g4qdz"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
+    (native-inputs
+     (list googletest))
+    (home-page "https://github.com/google/highway")
+    (synopsis "SIMD library with runtime dispatch")
+    (description "Highway is a performance-portable, length-agnostic C++
+library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
+    (license license:asl2.0)))
+
+(define-public xsmimd-benchmark
+  (package
+    (inherit xsimd)
+    (name "xsimd-benchmark")
+    (arguments
+     `(#:configure-flags (list "-DBUILD_BENCHMARK=ON")
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'remove-march=native
+                    (lambda _
+                      (substitute* "benchmark/CMakeLists.txt"
+                        (("-march=native") ""))))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; Install nothing but the executable.
+                      (let ((out (assoc-ref outputs "out")))
+                        (install-file "benchmark/benchmark_xsimd"
+                                      (string-append out "/bin"))))))))
+    (synopsis "Benchmark of the xsimd library")
+
+    ;; Mark as tunable to take advantage of SIMD code in xsimd/xtensor.
+    (properties '((tunable? . #t)))))
 
 (define-public chaiscript
   (package
@@ -353,7 +473,7 @@ functions, class methods, and stl containers.
                 (modules '((guix build utils)))
                 (snippet '(delete-file-recursively "./test/thirdparty"))))
       (native-inputs
-       `(("catch2" ,catch-framework2-1)))
+       (list catch-framework2-1))
       (build-system cmake-build-system)
       (arguments
        `(#:phases
@@ -365,10 +485,8 @@ functions, class methods, and stl containers.
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (inc (string-append out "/include/fifo_map")))
-                 (with-directory-excursion
-                     (string-append "../" ,name "-" ,version "-checkout")
-                   (install-file "src/fifo_map.hpp" inc)
-                   #t)))))))
+                 (with-directory-excursion "../source"
+                   (install-file "src/fifo_map.hpp" inc))))))))
       (synopsis "FIFO-ordered associative container for C++")
       (description "Fifo_map is a C++ header only library for associative
 container which uses the order in which keys were inserted to the container
@@ -443,14 +561,11 @@ as ordering relation.")
               (base32
                "0nzsjzlvk14dazwh7k2jb1dinb0pv9jbx5jsyn264wvva0y7daiv")))))))
     (inputs
-     `(("fifo-map" ,fifo-map)))
+     (list fifo-map))
     (synopsis "JSON parser and printer library for C++")
     (description "JSON for Modern C++ is a C++ JSON library that provides
 intuitive syntax and trivial integration.")
     (license license:expat)))
-
-(define-public nlohmann-json-cpp
-  (deprecated-package "nlohmann-json-cpp" json-modern-cxx))
 
 (define-public xtl
   (package
@@ -467,8 +582,7 @@ intuitive syntax and trivial integration.")
                 "1kd9zl4h6nrsg29hq13vwp4zhfj8sa90vj40726lpw6vxz48k4di"))
               (file-name (git-file-name name version))))
     (native-inputs
-     `(("googletest" ,googletest)
-       ("json-modern-cxx" ,json-modern-cxx)))
+     (list googletest json-modern-cxx))
     (arguments
      `(#:configure-flags
        '("-DBUILD_TESTS=ON")
@@ -489,7 +603,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
 (define-public ccls
   (package
     (name "ccls")
-    (version "0.20201219")
+    (version "0.20210330")
     (source
      (origin
        (method git-fetch)
@@ -497,16 +611,15 @@ tools (containers, algorithms) used by other QuantStack packages.")
              (url "https://github.com/MaskRay/ccls")
              (commit version)))
        (sha256
-        (base32 "0nkg92rgb1x6scpiwdamfrd1ag87j7ajxyn5qi861r916m5mh9m8"))
+        (base32 "0zzdn7c7a244djqwcsd7rvgclcdacyf9d0vkxpfspl83k2554alf"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f))                    ; no check target
     (inputs
-     `(("rapidjson" ,rapidjson)))
+     (list rapidjson))
     (native-inputs
-     `(("clang" ,clang)
-       ("llvm" ,llvm)))
+     (list clang llvm))
     (home-page "https://github.com/MaskRay/ccls")
     (synopsis "C/C++/Objective-C language server")
     (description
@@ -516,6 +629,49 @@ code analysis and supports cross references, hierarchies, completion and
 syntax highlighting.  @code{ccls} is derived from @code{cquery} which is not
 maintained anymore.")
     (license license:asl2.0)))
+
+(define-public concurrentqueue
+  (package
+    (name "concurrentqueue")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cameron314/concurrentqueue/")
+             (commit "3747268264d0fa113e981658a99ceeae4dad05b7")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n5v7n27llzg7khg1jvi35jrcf9v6adw8gaic9ndxn65dp723ssy"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #false)) ;no check target
+    (home-page "https://github.com/cameron314/concurrentqueue/")
+    (synopsis "Multi-producer, multi-consumer lock-free concurrent queue for C++11")
+    (description
+     "This package provides a fast multi-producer, multi-consumer lock-free
+concurrent queue for C++11.")
+    (license license:bsd-2)))
+
+(define-public spscqueue
+  (package
+    (name "spscqueue")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rigtorp/SPSCQueue/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1428cj9x318afvnvnkhg0711iy4czqn86fi7ysgfhw91asa316rc"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/rigtorp/SPSCQueue/")
+    (synopsis "Single producer single consumer queue written in C++11")
+    (description
+     "This package provides a single producer single consumer wait-free and
+lock-free fixed size queue written in C++11.")
+    (license license:expat)))
 
 (define-public gperftools
   (package
@@ -536,11 +692,9 @@ maintained anymore.")
       ;; https://bugs.gnu.org/46562
      '(#:parallel-tests? #f))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ;; For tests.
-       ("perl" ,perl)))
+     (list autoconf automake libtool
+           ;; For tests.
+           perl))
     (home-page "https://github.com/gperftools/gperftools")
     (synopsis "Multi-threaded malloc() and performance analysis tools for C++")
     (description
@@ -604,11 +758,9 @@ tools:
                  (invoke "make"))))))))
     (native-inputs
      ;; required to build shared lib
-     `(("python" ,python)))
+     (list python))
     (inputs
-     `(("brotli" ,brotli)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list brotli openssl zlib))
     (home-page "https://github.com/yhirose/cpp-httplib")
     (synopsis "C++ HTTP/HTTPS server and client library")
     (description "cpp-httplib is a C++11 single-file cross platform blocking
@@ -641,9 +793,7 @@ library.")
              #t)))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-runner" ,python-pytest-runner)))
+     (list python-pytest python-pytest-cov python-pytest-runner))
     (home-page "https://github.com/cpplint/cpplint")
     (synopsis "Static code checker for C++")
     (description "@code{cpplint} is a command-line tool to check C/C++ files
@@ -673,7 +823,7 @@ and make @code{cpplint} usable in wider contexts.")
       ;; Enable building of shared library.
       #:configure-flags `("-DBUILD_SHARED_LIBS=1")))
    (native-inputs
-    `(("pkg-config" ,pkg-config)))
+    (list pkg-config))
    (synopsis "Process IO library")
    (description "reproc (Redirected Process) is a C/C++ library that
 simplifies starting, stopping and communicating with external programs.  The
@@ -685,7 +835,7 @@ code and retrieving their output.")
 (define-public sobjectizer
   (package
     (name "sobjectizer")
-    (version "5.6.1")
+    (version "5.7.2.6")
     (source
      (origin
        (method git-fetch)
@@ -693,7 +843,7 @@ code and retrieving their output.")
              (url "https://github.com/Stiffstream/sobjectizer")
              (commit (string-append "v." version))))
        (sha256
-        (base32 "0jfai7sqxnnjkms38krm7mssj5l79nb3pllkbyj4j581a7l5j6l5"))
+        (base32 "0n6smpjkkkw0xab8wcpy3p0dpw2v9sxgwl6azl3am6abmv4mff12"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -781,7 +931,7 @@ point and then, after each tween step, plugging back the result.")
                (("check_target\\(gtest_main\\)") "")
                (("check_target\\(gmock\\)") "")))))))
     (native-inputs
-     `(("googletest" ,googletest)))
+     (list googletest))
     (home-page "https://abseil.io")
     (synopsis "Augmented C++ standard library")
     (description "Abseil is a collection of C++ library code designed to
@@ -854,7 +1004,7 @@ standard GNU style syntax for options.")
 (define-public folly
   (package
     (name "folly")
-    (version "2021.04.26.00")
+    (version "2021.10.04.00")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -863,7 +1013,7 @@ standard GNU style syntax for options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s3jb02qjl9f4gfj01pa01cilkfpc4p0gbpn6bg5vcicyj76garg"))))
+                "1h7apl42idymqra0xgw7s5ys3dxrqd8gq0f99g048k4g5fxl64s9"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests must be explicitly enabled
@@ -871,26 +1021,23 @@ standard GNU style syntax for options.")
        ;; Leave tests disabled; see https://github.com/facebook/folly/issues/1456
        #:tests? #f))
     (propagated-inputs
-     `(("boost" ,boost)
-       ("gflags" ,gflags)
-       ("glog" ,glog)
-       ("liburing" ,liburing)))
+     (list boost gflags glog liburing))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("double-conversion" ,double-conversion)
-       ("fmt" ,fmt)
-       ("libaio" ,libaio)
-       ("libevent" ,libevent)
-       ("libiberty" ,libiberty)
-       ("libsodium" ,libsodium)
-       ("libunwind" ,libunwind)
-       ("lz4" ,lz4)
-       ("openssl" ,openssl)
-       ("snappy" ,snappy)
-       ("zlib" ,zlib)
-       ("zstd" ,zstd "lib")))
+     (list bzip2
+           double-conversion
+           fmt
+           libaio
+           libevent
+           libiberty
+           libsodium
+           libunwind
+           lz4
+           openssl
+           snappy
+           zlib
+           `(,zstd "lib")))
     (native-inputs
-     `(("googletest" ,googletest)))
+     (list googletest))
     (synopsis "Collection of C++ components complementing the standard library")
     (description
      "Folly (acronymed loosely after Facebook Open Source Library) is a library
@@ -900,10 +1047,53 @@ of C++14 components that complements @code{std} and Boost.")
     (supported-systems '("aarch64-linux" "x86_64-linux"))
     (license license:asl2.0)))
 
+(define-public aws-crt-cpp
+  (let* ((commit "b6d311d76b504bf8ace5134d3fca0e672c36c9c3")
+         (revision "1"))
+    (package
+      (name "aws-crt-cpp")
+      ; Update only when updating aws-sdk-cpp, and when updating also update
+      ; versions of library dependencies linked from from
+      ; https://github.com/awslabs/aws-crt-cpp/tree/{aws-crt-cpp commit}/crt
+      (version (git-version "0.17.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/awslabs/aws-crt-cpp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n0nlbz91j3ycwwrh9652f0h5qr2sj5b1l0i5sg40ajzs7wvzd32"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags
+         (list "-DBUILD_DEPS=OFF"
+               "-DBUILD_SHARED_LIBS=ON"
+               (string-append "-DCMAKE_PREFIX_PATH="
+                            (assoc-ref %build-inputs "aws-c-common"))
+               "-DENABLE_NET_TESTS=OFF")))
+      (propagated-inputs
+       (list aws-c-auth
+             aws-c-cal
+             aws-c-event-stream
+             aws-c-http
+             aws-c-mqtt
+             aws-c-s3))
+      (synopsis "C++ wrapper for Amazon Web Services C libraries")
+      (description "The AWS Common Runtime (CRT) library provides a C++ wrapper
+implementation for the following @acronym{AWS,Amazon Web Services} C libraries:
+aws-c-auth, aws-c-cal, aws-c-common, aws-c-compression, aws-c-event-stream,
+aws-c-http, aws-c-io, aws-c-mqtt, aws-checksums, and s2n.")
+      (home-page "https://github.com/awslabs/aws-crt-cpp")
+      (license license:asl2.0))))
+
 (define-public aws-sdk-cpp
   (package
     (name "aws-sdk-cpp")
-    (version "1.8.159")
+    ; When updating also check for a tagged update to aws-crt-cpp from
+    ; https://github.com/aws/aws-sdk-cpp/tree/main/crt
+    (version "1.9.136")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -912,22 +1102,20 @@ of C++14 components that complements @code{std} and Boost.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jpfv9x82nq7hcix9in7qgrc8009dwpg6gr96hlgmcvqrqckd2r9"))))
+                "0ap7g7nmbnrcajy3b788bnpqd87dwmg83dhll1q8qzli04bcg47i"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests are run during the build phase.
        #:tests? #f
        #:configure-flags
-       '("-DBUILD_SHARED_LIBS=ON"
-         "-DBUILD_DEPS=OFF")))
+       (list "-DBUILD_DEPS=OFF"
+             "-DBUILD_SHARED_LIBS=ON"
+             (string-append "-DCMAKE_PREFIX_PATH="
+                            (assoc-ref %build-inputs "aws-c-common")))))
     (propagated-inputs
-     `(("aws-c-common" ,aws-c-common)
-       ("aws-c-event-stream" ,aws-c-event-stream)))
+     (list aws-crt-cpp))
     (inputs
-     `(("aws-checksums" ,aws-checksums)
-       ("curl" ,curl)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list curl openssl pulseaudio zlib))
     (synopsis "Amazon Web Services SDK for C++")
     (description
      "The AWS SDK for C++ provides a C++11 interface to the @acronym{AWS,Amazon
@@ -963,7 +1151,7 @@ services including database, analytic, and machine learning technologies.")
            (lambda _
              (invoke "./tests"))))))
     (native-inputs
-     `(("catch2" ,catch-framework2)))
+     (list catch-framework2))
     (synopsis "C++11/14/17 std::expected with functional-style extensions")
     (description "@code{std::expected} is proposed as the preferred way to
 represent objects which will either have an expected value, or an unexpected
@@ -989,8 +1177,6 @@ provides a number of utilities to make coding with expected cleaner.")
                (base32
                 "1x47radgsifgz3vn2561mlvf4cq46ii33cpyqf01znm56iirwq89"))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("gcc" ,gcc-9)))
     (synopsis "C++17 header only library for compile time reflection of enums")
     (description "Magic Enum offers static reflection of enums, with
 conversions to and from strings, iteration and related functionality.")
@@ -1036,8 +1222,7 @@ conversions to and from strings, iteration and related functionality.")
                (("^    PROPERTIES FOLDER \"Extern\"\\)") ""))
              #t)))))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("googletest" ,googletest)))
+     (list doxygen googletest))
     (synopsis "Command line parser for C++11")
     (description
      "CLI11 is a command line parser for C++11 and beyond that provides a rich
@@ -1048,7 +1233,7 @@ feature set with a simple and intuitive interface.")
 (define-public caf
   (package
     (name "caf")
-    (version "0.18.0")
+    (version "0.18.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1057,13 +1242,13 @@ feature set with a simple and intuitive interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c3spd6vm1h9qhlk5c4fdwi6nbqx5vwz2zvv6qp0rj1hx6xpq3cx"))))
+                "04b4kjisb5wzq6pilh8xzbxn7qcjgppl8k65hfv0zi0ja8fyp1xk"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
        '("-DCAF_ENABLE_EXAMPLES=OFF")))
     (inputs
-     `(("openssl" ,openssl)))
+     (list openssl))
     (synopsis "C++ implementation of the actor model")
     (description "The C++ Actor Framework (CAF) offers a high-level C++17
 programming environment using the actor model for concurrent, distributed
@@ -1071,9 +1256,38 @@ computation.")
     (home-page "https://www.actor-framework.org/")
     (license license:bsd-3)))
 
+(define-public clipper
+  (package
+    (name "clipper")
+    (version "6.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/polyclipping"
+                           "/clipper_ver" version ".zip"))
+       (sha256
+        (base32 "09q6jc5k7p9y5d75qr2na5d1gm0wly5cjnffh127r04l47c20hx1"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                      ;no check target
+       #:phases (modify-phases %standard-phases
+                  (replace 'unpack
+                    (lambda* (#:key source #:allow-other-keys)
+                      (and (invoke "unzip" source)
+                           (chdir "cpp")))))))
+    (native-inputs
+     `(("unzip" ,unzip)))
+    (home-page "https://sourceforge.net/projects/polyclipping")
+    (synopsis "Polygon and line clipping and offsetting library")
+    (description
+     "The Clipper library performs line & polygon clipping - intersection,
+union, difference & exclusive-or, and line & polygon offsetting.
+The library is based on Vatti's clipping algorithm.")
+    (license license:boost1.0)))
+
 (define-public pcg-cpp
-  (let ((commit "5b5cac8d61339e810c5dbb4692d868a1d7ca1b2d")
-        (revision "1"))
+  (let ((commit "ffd522e7188bef30a00c74dc7eb9de5faff90092")
+        (revision "2"))
     (package
       (name "pcg-cpp")
       (version (git-version "0.98.1" revision commit))
@@ -1085,7 +1299,7 @@ computation.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1s9dcd4iydlc1xj9m6f7c52nlyx99klk043sk7arqy6kp7gdaa33"))))
+                  "0yxyqaphcc38zilpwpmssrl8ly1v6dimscqk2f4rcv1h22dinnqx"))))
       (build-system gnu-build-system)
       (arguments
        `(#:test-target "test"
@@ -1099,6 +1313,34 @@ Linear Congruential Generator (LCG) with a permutation function to increase
 output randomness while retaining speed, simplicity, and conciseness.")
       (home-page "https://www.pcg-random.org")
       (license (list license:expat license:asl2.0))))) ; dual licensed
+
+(define-public libconfini
+  (package
+    (name "libconfini")
+    (version "1.16.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/madmurphy/libconfini")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01g8ai2z4fwshk06k824j6ib8nfb3cwxs5kqpqjvv4k5ayzm892h"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _ (invoke "sh" "bootstrap" "--noconfigure"))))))
+    (native-inputs
+     (list autoconf automake libtool))
+    (home-page "https://madmurphy.github.io/libconfini/html/index.html")
+    (synopsis "INI file parser")
+    (description "@code{libconfini} is an INI file parser library written in
+C.  It focuses on standardization and parsing exactness and is at ease with
+almost every type of file containing key/value pairs.")
+    (license license:gpl3+)))
 
 (define-public libcutl
   (package
@@ -1129,8 +1371,8 @@ output randomness while retaining speed, simplicity, and conciseness.")
                                ;;"--with-external-boost"
                                "--with-external-expat")))
     (inputs
-     `(;;("boost ,boost)
-       ("expat" ,expat)))
+     (list ;;("boost ,boost)
+           expat))
     (home-page "https://www.codesynthesis.com/projects/libcutl/")
     (synopsis "C++ utility library with generic and independent components")
     (description "libcutl is a C++ utility library.  It contains a collection
@@ -1175,7 +1417,7 @@ pointers, containers, compiler building blocks, etc.")
                        #:include-regexp ("\\.so$")))
                     args))))))
     (native-inputs
-     `(("build" ,build)))
+     (list build))
     (inputs
      `(("libcutl" ,libcutl)
        ("libxerces-c" ,xerces-c)))
@@ -1223,9 +1465,9 @@ and a traversal mechanism.")
                 (string-append "edge_dispatcher::" all)))))
          (delete 'configure))))
     (native-inputs
-     `(("build" ,build)))
+     (list build))
     (inputs
-     `(("libcutl" ,libcutl)))
+     (list libcutl))
     (synopsis "C++ Command Line Interface (CLI) definition language")
     (description "@code{cli} is a domain-specific language (DSL) for defining
 command line interfaces of C++ programs.  It allows you to describe the
@@ -1266,16 +1508,13 @@ documentation.")
                                                     ,version)))))
                   (delete 'configure))))
     (native-inputs
-     `(("build" ,build)
-       ("cli" ,cli)))
+     (list build cli))
     (inputs
-     `(("libcutl" ,libcutl)
-       ("libnsl" ,libnsl)
-       ("libxsd-frontend" ,libxsd-frontend)))
+     (list libcutl libnsl libxsd-frontend))
     (propagated-inputs
      ;; The code XSD generates requires the following library at run time;
      ;; propagate it for convenience.
-     `(("xerces-c" ,xerces-c)))
+     (list xerces-c))
     (synopsis "XML Data Binding for C++")
     (description "CodeSynthesis XSD (also known as libxsd or xsdcxx) is an XML
 Schema to C++ data binding compiler.  Provided with an XML instance
@@ -1319,12 +1558,37 @@ of reading and writing XML.")
      `(#:configure-flags '("-DUSE_SYSTEM_GTEST=ON" "-DUSE_SYSTEM_JSON=ON"
                            "-DBUILD_STATIC_LIBS=OFF")))
     (native-inputs
-     `(("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)))
+     (list googletest pkg-config))
     (inputs
-     `(("json-modern-cxx" ,json-modern-cxx)))
+     (list json-modern-cxx))
     (home-page "https://jsonnet.org/")
     (synopsis "Data templating language")
     (description "Jsonnet is a templating language extending JSON
 syntax with variables, conditions, functions and more.")
+    (license license:asl2.0)))
+
+(define-public simdjson
+  (package
+    (name "simdjson")
+    (version "1.0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simdjson/simdjson")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05i5jnqd7ngps79cws16ls48gnx08ykkkib3n2hbrdhr1wwrnv7a"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f                      ; tests require downloading dependencies
+       #:configure-flags
+       '("-DBUILD_SHARED_LIBS=ON")))
+    (synopsis "JSON parser for C++ using SIMD instructions")
+    (description
+     "The simdjson library uses commonly available SIMD instructions and
+microparallel algorithms to implement a strict JSON parser with UTF-8
+validation.")
+    (home-page "https://github.com/simdjson/simdjson")
     (license license:asl2.0)))

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -71,8 +71,7 @@
                          (find-files "trusted.gpg" "\\.gpg$")))
              #t)))))
     (native-inputs
-     `(("gnupg" ,gnupg)
-       ("jetring" ,jetring)))
+     (list gnupg jetring))
     (home-page "https://packages.qa.debian.org/d/debian-archive-keyring.html")
     (synopsis "GnuPG archive keys of the Debian archive")
     (description
@@ -80,6 +79,70 @@
 contains the archive keys used for that.")
     (license (list license:public-domain ; the keys
                    license:gpl2+)))) ; see debian/copyright
+
+(define-public debian-ports-archive-keyring
+  (package
+    (name "debian-ports-archive-keyring")
+    (version "2021.12.30")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://debian/pool/main/d"
+                            "/debian-ports-archive-keyring"
+                            "/debian-ports-archive-keyring_" version ".tar.xz"))
+        (sha256
+         (base32
+          "14f9hklr8gdlp782j5ijmm0nh061zcfw9vwpr8smb7rdfzk4wk70"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f              ; No test suite.
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)    ; No configure script.
+         (replace 'build
+           (lambda _
+             ;; gpg options derived from the debian/rules file.
+             (let ((gpg-options (list "--no-options" "--no-default-keyring"
+                                      "--no-auto-check-trustdb" "--no-keyring"
+                                      "--import-options" "import-export"
+                                      "--import")))
+               (with-output-to-file "debian-ports-archive-keyring.gpg"
+                 (lambda _
+                   (apply invoke "gpg"
+                          (append gpg-options (find-files "active-keys")))))
+               (with-output-to-file "debian-ports-archive-keyring-removed.gpg"
+                 (lambda _
+                   (apply invoke "gpg"
+                          (append gpg-options (find-files "removed-keys")))))
+               (mkdir "trusted.gpg")
+               (for-each
+                 (lambda (key)
+                   (with-output-to-file
+                     (string-append "trusted.gpg/" (basename key ".key") ".gpg")
+                     (lambda _
+                       (apply invoke "gpg" (append gpg-options (list key))))))
+                 (find-files "active-keys"))
+               #t)))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (apt (string-append out "/etc/apt/trusted.gpg.d/"))
+                    (key (string-append out "/share/keyrings/")))
+               (install-file "debian-ports-archive-keyring.gpg" key)
+               (install-file "debian-ports-archive-keyring-removed.gpg" key)
+               (for-each (lambda (file)
+                           (install-file file apt))
+                         (find-files "trusted.gpg" "\\.gpg$")))
+             #t)))))
+    (native-inputs
+     (list gnupg))
+    (home-page "https://tracker.debian.org/pkg/debian-ports-archive-keyring")
+    (synopsis "GnuPG archive keys of the Debian ports archive")
+    (description
+     "The Debian ports-archive digitally signs its Release files.  This package
+contains the archive keys used for that.")
+    ;; "The keys in the keyrings don't fall under any copyright."
+    (license license:public-domain)))
 
 (define-public ubuntu-keyring
   (package
@@ -113,8 +176,7 @@ contains the archive keys used for that.")
                                (find-files "." "ubuntu-[am].*\\.gpg$")))
                    #t)))
     (native-inputs
-     `(("tar" ,tar)
-       ("gzip" ,gzip)))
+     (list tar gzip))
     (home-page "https://launchpad.net/ubuntu/+source/ubuntu-keyring")
     (synopsis "GnuPG keys of the Ubuntu archive")
     (description
@@ -126,7 +188,7 @@ contains the archive keys used for that.")
 (define-public debootstrap
   (package
     (name "debootstrap")
-    (version "1.0.124")
+    (version "1.0.126")
     (source
       (origin
         (method git-fetch)
@@ -135,7 +197,7 @@ contains the archive keys used for that.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0pbvrp7gb87pwmjika5hy97342mdfvm0gmy23ag8xz1nnpmn160j"))))
+         (base32 "0hfx6k86kby4xf0xqskpllq00g159j4khh66hfi6dhcdb91dgyd7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -195,7 +257,7 @@ contains the archive keys used for that.")
        ("gnupg" ,gnupg)
        ("wget" ,wget)))
     (native-inputs
-     `(("perl" ,perl)))
+     (list perl))
     (home-page "https://tracker.debian.org/pkg/debootstrap")
     (synopsis "Bootstrap a basic Debian system")
     (description "Debootstrap is used to create a Debian base system from
@@ -207,7 +269,7 @@ unpacking them into a directory which can eventually be chrooted into.")
 (define-public debianutils
   (package
     (name "debianutils")
-    (version "4.11.1")
+    (version "5.5-1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -216,20 +278,10 @@ unpacking them into a directory which can eventually be chrooted into.")
               (file-name (git-file-name "debianutils" version))
               (sha256
                (base32
-                "18ypb7fivch53wwrdf73yhf1fhkwn9kvw1kfdc1m450241d6191w"))))
+                "1sbdjcb44g2s1zxjf9kxrp9drf9mmh6b49a9z3k428gmc6zsci4r"))))
     (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'bootstrap 'create-translations
-                    (lambda _
-                      (with-directory-excursion "po4a"
-                        (invoke "po4a" "--no-backups" "po4a.conf"))
-                      #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("po4a" ,po4a)))
+     (list autoconf automake gettext-minimal po4a))
     (home-page "https://packages.debian.org/unstable/debianutils")
     (synopsis "Miscellaneous shell utilities")
     (description
@@ -271,8 +323,7 @@ debian/copyright for more information.")))))
                             "PREFIX=/")
          #:phases (modify-phases %standard-phases (delete 'configure))))
       (inputs
-       `(("wget" ,wget)
-         ("perl" ,perl)))
+       (list wget perl))
       (home-page "http://apt-mirror.github.io/")
       (synopsis "Script for mirroring a Debian repository")
       (description
@@ -284,7 +335,7 @@ other apt sources typically provided by open source developers.")
 (define-public dpkg
   (package
     (name "dpkg")
-    (version "1.20.9")
+    (version "1.21.0")
     (source
       (origin
         (method git-fetch)
@@ -293,8 +344,7 @@ other apt sources typically provided by open source developers.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "16wlb8hwbdvxar187bjd4pzdzj95g3l2ryi2khqqmwbyca4sjm1n"))))
+         (base32 "0g33cyd0qbyfdrphcw8m8ikj2hxqpjbyxbhvnp751515c8hgc4rx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -303,8 +353,7 @@ other apt sources typically provided by open source developers.")
            (lambda _
              (patch-shebang "get-version")
              (with-output-to-file ".dist-version"
-               (lambda () (display ,version)))
-             #t))
+               (lambda () (display ,version)))))
          (add-after 'unpack 'set-perl-libdir
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out  (assoc-ref outputs "out"))
@@ -312,8 +361,7 @@ other apt sources typically provided by open source developers.")
                (setenv "PERL_LIBDIR"
                        (string-append out
                                       "/lib/perl5/site_perl/"
-                                      ,(package-version perl)))
-               #t))))))
+                                      ,(package-version perl)))))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -322,12 +370,12 @@ other apt sources typically provided by open source developers.")
        ("pkg-config" ,pkg-config)
        ("perl-io-string" ,perl-io-string)))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("libmd" ,libmd)
-       ("ncurses" ,ncurses)
-       ("perl" ,perl)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list bzip2
+           libmd
+           ncurses
+           perl
+           xz
+           zlib))
     (home-page "https://wiki.debian.org/Teams/Dpkg")
     (synopsis "Debian package management system")
     (description "This package provides the low-level infrastructure for
@@ -372,15 +420,14 @@ handling the installation and removal of Debian software packages.")
                           (string-append zsh "_reprepro"))
                #t))))))
     (inputs
-     `(("bdb" ,bdb)
-       ("bzip2" ,bzip2)
-       ("gpgme" ,gpgme)
-       ("libarchive" ,libarchive)
-       ("xz" ,xz)
-       ("zlib" ,zlib)))
+     (list bdb
+           bzip2
+           gpgme
+           libarchive
+           xz
+           zlib))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (home-page "https://salsa.debian.org/brlink/reprepro")
     (synopsis "Debian package repository producer")
     (description "Reprepro is a tool to manage a repository of Debian packages

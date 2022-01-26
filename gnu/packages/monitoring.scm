@@ -27,6 +27,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages monitoring)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -56,6 +57,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rrdtool)
@@ -86,7 +88,7 @@
                   #t))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (inputs
      `(("zlib" ,zlib)
        ("libpng-apng" ,libpng)
@@ -181,8 +183,7 @@ etc. via a Web interface.  Features include:
              (string-append "--with-libpcre="
                             (assoc-ref %build-inputs "pcre")))))
     (inputs
-     `(("libiconv" ,libiconv)
-       ("pcre" ,pcre)))
+     (list libiconv pcre))
     (home-page "https://www.zabbix.com/")
     (synopsis "Distributed monitoring solution (client-side agent)")
     (description "This package provides a distributed monitoring
@@ -235,14 +236,14 @@ solution (client-side agent)")
                                (assoc-ref %build-inputs "zlib"))
                 ,flags))))
     (inputs
-     `(("curl" ,curl)
-       ("libevent" ,libevent)
-       ("gnutls" ,gnutls)
-       ("postgresql" ,postgresql)
-       ("zlib" ,zlib)
-       ("net-snmp" ,net-snmp)
-       ("curl" ,curl)
-       ,@(package-inputs zabbix-agentd)))
+     (modify-inputs (package-inputs zabbix-agentd)
+       (prepend curl
+                libevent
+                gnutls
+                postgresql
+                zlib
+                net-snmp
+                curl)))
     (synopsis "Distributed monitoring solution (server-side)")
     (description "This package provides a distributed monitoring
 solution (server-side)")))
@@ -287,7 +288,7 @@ through a text-based interface.")
 (define-public python-pyzabbix
   (package
     (name "python-pyzabbix")
-    (version "0.8.2")
+    (version "1.0.0")
     (home-page "https://github.com/lukecyca/pyzabbix")
     ;; No tests on PyPI, use the git checkout.
     (source
@@ -297,7 +298,7 @@ through a text-based interface.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15rrnpkv94wx6748hh4sd120v6x25rkbd6vlz6hfrhvjwxz5lgjl"))))
+         "146pv8bj6pv8max1lkm07560b9zcc268c927kff6rcib47qxfnn2"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -310,14 +311,13 @@ through a text-based interface.")
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (if tests?
-                          (invoke "python" "setup.py" "nosetests")
-                          (format #t "test suite not run~")))))))
+                          (invoke "nosetests")
+                          (format #t "test suite not run~%")))))))
     (native-inputs
-     `(;; For tests.
-       ("python-httpretty" ,python-httpretty)
-       ("python-nose" ,python-nose)))
+     ;; For tests.
+     (list python-httpretty python-nose))
     (propagated-inputs
-     `(("python-requests" ,python-requests)))
+     (list python-requests python-semantic-version))
     (synopsis "Python interface to the Zabbix API")
     (description
      "@code{pyzabbix} is a Python module for working with the Zabbix API.")
@@ -337,8 +337,7 @@ through a text-based interface.")
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))          ; no tests
     (inputs
-     `(("libpcap" ,libpcap)
-       ("zlib" ,zlib)))
+     (list libpcap zlib))
     (home-page "https://unix4lyfe.org/darkstat/")
     (synopsis "Network statistics gatherer")
     (description
@@ -358,15 +357,16 @@ HTTP.  Features:
 (define-public python-whisper
   (package
     (name "python-whisper")
-    (version "1.0.2")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "whisper" version))
        (sha256
         (base32
-         "1v1bi3fl1i6p4z4ki692bykrkw6907dn3mfq0151f70lvi3zpns3"))))
+         "1bk29w09zcpsv8hp0g0al7nwrxa07z0ycls3mbh83wfavk83aprl"))))
     (build-system python-build-system)
+    (native-inputs (list python-six))
     (home-page "http://graphiteapp.org/")
     (synopsis "Fixed size round-robin style database for Graphite")
     (description "Whisper is one of three components within the Graphite
@@ -396,10 +396,7 @@ historical data.")
          (add-after 'unpack 'do-not-install-to-/opt
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
     (propagated-inputs
-     `(("python-cachetools" ,python-cachetools)
-       ("python-txamqp" ,python-txamqp)
-       ("python-urllib3" ,python-urllib3)
-       ("python-whisper" ,python-whisper)))
+     (list python-cachetools python-txamqp python-urllib3 python-whisper))
     (home-page "http://graphiteapp.org/")
     (synopsis "Backend data caching and persistence daemon for Graphite")
     (description "Carbon is a backend data caching and persistence daemon for
@@ -435,24 +432,21 @@ and persisting them to disk using the Whisper time-series library.")
          (add-after 'unpack 'do-not-install-to-/opt
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
     (propagated-inputs
-     `(("python-cairocffi" ,python-cairocffi)
-       ("python-pytz" ,python-pytz)
-       ("python-whisper" ,python-whisper)
-       ("python-django" ,python-django-2.2)
-       ("python-django-tagging" ,python-django-tagging)
-       ("python-scandir" ,python-scandir)
-       ("python-urllib3" ,python-urllib3)
-       ("python-pyparsing" ,python-pyparsing)
-       ("python-txamqp" ,python-txamqp)))
+     (list python-cairocffi
+           python-pytz
+           python-whisper
+           python-django-2.2
+           python-django-tagging
+           python-scandir
+           python-urllib3
+           python-pyparsing
+           python-txamqp))
     (home-page "https://graphiteapp.org/")
     (synopsis "Scalable realtime graphing system")
     (description "Graphite is a scalable real-time graphing system that does
 two things: store numeric time-series data, and render graphs of this data on
 demand.")
     (license license:asl2.0)))
-
-(define-public python2-graphite-web
-  (deprecated-package "python2-graphite-web" graphite-web))
 
 (define-public python-prometheus-client
   (package
@@ -469,7 +463,7 @@ demand.")
      '(;; No included tests.
        #:tests? #f))
     (propagated-inputs
-     `(("python-twisted" ,python-twisted)))
+     (list python-twisted))
     (home-page
      "https://github.com/prometheus/client_python")
     (synopsis "Python client for the Prometheus monitoring system")
@@ -538,12 +532,9 @@ written in Go with pluggable metric collectors.")
                                             "/lib/udev/rules.d"))
                #t)))))
       (inputs
-       `(("python-prometheus-client" ,python-prometheus-client)
-         ("python-pyudev" ,python-pyudev)))
+       (list python-prometheus-client python-pyudev))
       (native-inputs
-       `(("python-pytest" ,python-pytest)
-         ("python-pytest-mock" ,python-pytest-mock)
-         ("python-pytest-runner" ,python-pytest-runner)))
+       (list python-pytest python-pytest-mock python-pytest-runner))
       (home-page "https://github.com/yrro/temper-exporter")
       (synopsis "Prometheus exporter for PCSensor TEMPer sensor devices")
       (description
@@ -554,7 +545,7 @@ devices.")
 (define-public fswatch
   (package
     (name "fswatch")
-    (version "1.15.0")
+    (version "1.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -563,13 +554,13 @@ devices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yz65jsbgdx4cmy16x24wz5di352lvyi7fp6jm90bhgl1vpzxlsx"))))
+                "1zsvc8arza2ypnnmv4m0qfpnldmy1zh10q6wss05ibmanslfj2ql"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)))
+     (list autoconf automake gettext-minimal libtool))
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (synopsis "File system monitor")
     (description "This package provides a file system monitor.")
     (home-page "https://github.com/emcrisostomo/fswatch")
@@ -598,14 +589,9 @@ devices.")
                       ;; Required because of patched sources.
                       (invoke "autoreconf" "-vfi"))))))
     (inputs
-     `(("rrdtool" ,rrdtool)
-       ("curl" ,curl)
-       ("libyajl" ,libyajl)))
+     (list rrdtool curl libyajl))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (home-page "https://collectd.org/")
     (synopsis "Collect system and application performance metrics periodically")
     (description
@@ -631,7 +617,7 @@ future system load (i.e., capacity planning).")
                (base32
                 "0jw6yij8va0f292g4xkf9lp9sxkzfgv67ajw49g3vq42q47ld7cv"))))
     (build-system gnu-build-system)
-    (inputs `(("ncurses" ,ncurses)))
+    (inputs (list ncurses))
     (arguments '(#:tests? #f)) ;; No included tests.
     (home-page "http://www.maier-komor.de/hostscope.html")
     (properties `((release-monitoring-url . ,home-page)))

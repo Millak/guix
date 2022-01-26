@@ -116,7 +116,7 @@
             (variable "MINETEST_MOD_PATH")
             (files '("share/minetest/mods")))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("coreutils" ,coreutils)
        ("curl" ,curl)
@@ -136,7 +136,7 @@
        ("openal" ,openal)
        ("sqlite" ,sqlite)))
     (propagated-inputs
-     `(("minetest-data" ,minetest-data)))
+     (list minetest-data))
     (synopsis "Infinite-world block sandbox game")
     (description
      "Minetest is a sandbox construction game.  Players can create and destroy
@@ -187,21 +187,46 @@ numeric identifier TOPIC-ID on the official Minetest forums."
   (string-append "https://forum.minetest.net/viewtopic.php?t="
                  (number->string topic-id)))
 
-(define-public minetest-basic-materials
+(define-public minetest-moreores
   (package
-    (name "minetest-basic-materials")
-    ;; Upstream uses dates as version numbers.
-    (version "2021-01-30")
+    (name "minetest-moreores")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/VanessaE/basic_materials.git")
-             (commit "e72665b2ed98d7be115779a32d35e6d9ffa231bd")))
-       (sha256
-        (base32 "0v6l3lrjgshy4sccjhfhmfxc3gk0cdy73qb02i9wd2vw506v5asx"))
+             (url "https://github.com/minetest-mods/moreores")
+             (commit (string-append "v" version))))
+       (sha256 (base32 "1chfqbc6bb27aacjc67j5l5wcdvmcsvk2rfmangipd7nwini3y34"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
+    (home-page (minetest-topic 549))
+    (synopsis "Additional ore types, tools, swords, and rails for Minetest")
+    (description
+     "This Minetest mod adds new ore types to the game (mithril, silver) as well
+as swords and tools made of different materials.  It also adds copper rails.")
+    (license license:zlib)
+    (properties `((upstream-name . "Calinou/moreores")))))
+
+(define-public minetest-basic-materials
+  (package
+    (name "minetest-basic-materials")
+    ;; Upstream uses dates as version numbers.
+    (version "2021-12-26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mt-mods/basic_materials")
+             (commit "0893974b054a2191b5e2d5447ee4fc73f9c35f6a")))
+       (sha256
+        (base32 "0p4nnfsjv7284zmgr781zkyjbp049wp1jy1l7n585zzj181ns57p"))
+       (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (propagated-inputs
+     ;; basic_materials:silver_wire cannot be crafted without
+     ;; moreores:silver_ingot.
+     (list minetest-moreores))
     (home-page (minetest-topic 21000))
     (synopsis "Some \"basic\" materials and items for other Minetest mods to use")
     (description
@@ -228,7 +253,7 @@ like steel bars and chains, wire, plastic strips and sheets, and more.")
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
-     `(("minetest-unifieddyes" ,minetest-unifieddyes)))
+     (list minetest-unifieddyes))
     (home-page (minetest-topic 2411))
     (synopsis "Painted wood in Minetest")
     (description
@@ -274,20 +299,19 @@ special items, intending to make an interesting adventure.")
     (name "minetest-homedecor-modpack")
     ;; Upstream doesn't tag releases, so use the release title from
     ;; ContentDB as version.
-    (version "2021-03-27-1")
+    (version "2021-12-26")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/VanessaE/homedecor_modpack")
-             (commit "9ffe2b7d691133e1a067546574fbe7364fd02f32")))
+             (url "https://github.com/mt-mods/homedecor_modpack")
+             (commit "a8fceb249d63f081855cfba1fbd6e2aa86365224")))
        (sha256
-        (base32 "1lfajqvc2adf9hqskghky4arccqzpjw4i9a01hv4qcckvivm04ag"))
+        (base32 "1lqcycgkykd86853jjr50m1qv2as2dlqf52gbds4mhiafslnp9mi"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
-     `(("minetest-basic-materials" ,minetest-basic-materials)
-       ("minetest-unifieddyes" ,minetest-unifieddyes)))
+     (list minetest-basic-materials minetest-unifieddyes))
     (home-page (minetest-topic 2041))
     (synopsis "Home decor mod for Minetest")
     (description
@@ -365,15 +389,15 @@ closely as the engine allows.")
     (name "minetest-mobs")
     ;; Upstream does not tag release, so use the ContentDB release
     ;; title instead.
-    (version "2021-07-22")
+    (version "2021-12-12")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://notabug.org/TenPlus1/mobs_redo")
-             (commit "9f46182bb4b1a390f9a140bc2b443f3cda702332")))
+             (commit "6a4a02f3fbf1038c69e72aaafa52a1e7d6106da8")))
        (sha256
-        (base32 "026kqjis4lipgskjivb3jh9ris3iz80vy2q1jvgxhxmfghjjzp4j"))
+        (base32 "0vgv7jpm9v3dwq4l9jxdd5z14yq164w8kin1d05jfv3ck4hwlwvr"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (home-page (minetest-topic 9917))
@@ -394,19 +418,19 @@ add some mobs, a mod like e.g. @code{mobs_animal} provided by the
     (name "minetest-mobs-animal")
     ;; Upstream does not use version numbers, so use the release title
     ;; from ContentDB instead;
-    (version "2021-07-24")
+    (version "2021-11-14")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://notabug.org/TenPlus1/mobs_animal")
-             (commit "c2fa3e300c79c7dd80b6fe91a8b5082bb6b3d934")))
+             (commit "3e15456bce7779aa0dc09a8890f7b5180c1ac771")))
        (sha256
-        (base32 "1j719f079ia9vjxrmjrcj8s6jvaz5kgs1r4dh66z8ql6s70kx7vh"))
+        (base32 "08686mj3jh8fsziqp878jpaj5267s4n6i86dr1gnxyxbsrjraqpn"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
-     `(("minetest-mobs" ,minetest-mobs)))
+     (list minetest-mobs))
     (home-page "https://notabug.org/TenPlus1/mobs_animal")
     (synopsis "Add animals to Minetest")
     (description
@@ -432,7 +456,7 @@ bunnies, chickens, cows, kittens, rats, sheep, warthogs, penguins and pandas.")
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
-     `(("minetest-basic-materials" ,minetest-basic-materials)))
+     (list minetest-basic-materials))
     (home-page (minetest-topic 2155))
     (synopsis "Pipes, item-transport tubes and related devices for Minetest")
     (description
@@ -452,20 +476,19 @@ breakers simulate a player punching a node.")
     (name "minetest-technic")
     ;; Upstream doesn't keep version numbers, so use the release
     ;; date on ContentDB instead.
-    (version "2021-04-15")
+    (version "2021-09-11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/minetest-mods/technic")
-             (commit "1c219487d3f4dd03c01ff9aa1f298c7c18c7e189")))
+             (commit "140701c99efb60d81bf63c9a9087720b21c414ca")))
        (sha256
-        (base32 "1k9hdgzp7jnhsk6rgrlrv1lr5xrmh8ln4wv6r25v6f0fwbyj57sf"))
+        (base32 "1fkhcv8sg3kxfadc2jnfdw6bxxkkkcczsh4bf62rgwwmv2ky7zrx"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
-     `(("minetest-pipeworks" ,minetest-pipeworks)
-       ("minetest-basic-materials" ,minetest-basic-materials)))
+     (list minetest-pipeworks minetest-basic-materials))
     (home-page (minetest-topic 2538))
     (synopsis "Machinery and automation for Minetest")
     (description
@@ -529,7 +552,7 @@ arrow and bow, but @code{minetest-throwing-arrows} does.")
          (file-name (git-file-name name version))))
       (build-system minetest-mod-build-system)
       (propagated-inputs
-       `(("minetest-throwing" ,minetest-throwing)))
+       (list minetest-throwing))
       (home-page (minetest-topic 16365))
       (synopsis "Arrows and bows for Minetest")
       (description
@@ -578,7 +601,7 @@ to and from the file system.")
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
-     `(("minetest-basic-materials" ,minetest-basic-materials)))
+     (list minetest-basic-materials))
     (home-page (minetest-topic 2178))
     (synopsis
      "Unified Dyes expands the standard dye set of Minetest to up to 256 colours")
@@ -595,15 +618,15 @@ for general colour handling.")
     (name "minetest-unified-inventory")
     ;; Upstream doesn't keep version numbers, so use the release title
     ;; on ContentDB instead.
-    (version "2021-03-25-1")
+    (version "2021-12-26")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/minetest-mods/unified_inventory")
-             (commit "c044f5e3b08f0c68ab028d757b2fa63d9a1b0370")))
+             (commit "d6688872c84417d2f61d6f5e607aea39d78920aa")))
        (sha256
-        (base32 "198g945gzbfl0kps46gwjw0c601l3b3wvn4c7dw8manskri1jr4g"))
+        (base32 "1rlw96s2yyxdbz0h9byayyx9nsbqdr4ric91w0k3dkjr71aj8a3b"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (home-page (minetest-topic 12767))
@@ -682,7 +705,7 @@ stopping before signals.
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
-     `(("minetest-advtrains" ,minetest-advtrains)))
+     (list minetest-advtrains))
     (home-page
      "http://advtrains.de/wiki/doku.php?id=usage:trains:basic_trains")
     (synopsis "Collection of basic trains for the Advanced Trains mod")

@@ -4,7 +4,7 @@
 ;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2017, 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2017, 2019, 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -31,6 +31,7 @@
   #:use-module ((guix licenses) #:select (gpl2+ gpl3+ bsd-3))
   #:use-module (gnu packages)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
@@ -52,73 +53,81 @@
 (define-public gettext-minimal
   (package
     (name "gettext-minimal")
-    (version "0.20.1")
+    (version "0.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gettext/gettext-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0p3zwkk27wm2m2ccfqm57nj7vqkmfpn7ja1nf65zmhz8qqs5chb6"))))
+                "04kbg1sx0ncfrsbr85ggjslqkzzb243fcw9nyh3rrv1a22ihszf7"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                            ;9 MiB of HTML
     (inputs
-     `(("libunistring" ,libunistring)
-       ("libxml2" ,libxml2)
-
-       ;; TODO: ncurses is only needed for the 'libtextstyle' library.
-       ;; The next version of gettext can use a separate libtextstyle,
-       ;; but for now we include it here in 'gettext-minimal'.
-       ("ncurses" ,ncurses)))
+     (list libunistring
+           libxml2
+           ;; TODO: ncurses is only needed for the 'libtextstyle' library.
+           ;; The next version of gettext can use a separate libtextstyle,
+           ;; but for now we include it here in 'gettext-minimal'.
+           ncurses))
     (arguments
-     `(#:configure-flags '("--with-included-libunistring=no"
-                           "--with-included-libxml=no")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'patch-source-shebangs 'patch-fixed-paths
-           (lambda _
-             (substitute* '("gettext-tools/config.h.in"
-                            "gettext-tools/gnulib-tests/init.sh"
-                            "gettext-tools/tests/init.sh"
-                            "gettext-tools/system-tests/run-test")
-               (("/bin/sh") "sh"))
-             (substitute* '("gettext-tools/src/project-id"
-                            "gettext-tools/projects/KDE/trigger"
-                            "gettext-tools/projects/GNOME/trigger")
-               (("/bin/pwd") "pwd"))
-             #t))
-        (add-before 'check 'patch-tests
-         (lambda* (#:key inputs #:allow-other-keys)
-           (let* ((bash (which "sh")))
-             ;; Some of the files we're patching are
-             ;; ISO-8859-1-encoded, so choose it as the default
-             ;; encoding so the byte encoding is preserved.
-             (with-fluids ((%default-port-encoding #f))
-               (substitute*
-                   (find-files "gettext-tools/tests"
-                               "^(lang-sh|msg(exec|filter)-[0-9])")
-                 (("#![[:blank:]]/bin/sh")
-                  (format #f "#!~a" bash)))
+     (list #:configure-flags #~'("--with-included-libunistring=no"
+                                 "--with-included-libxml=no")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'patch-source-shebangs 'patch-fixed-paths
+                 (lambda _
+                   (substitute* '("gettext-tools/config.h.in"
+                                  "gettext-tools/gnulib-tests/init.sh"
+                                  "gettext-tools/tests/init.sh"
+                                  "gettext-tools/system-tests/run-test")
+                     (("/bin/sh") "sh"))
+                   (substitute* '("gettext-tools/src/project-id"
+                                  "gettext-tools/projects/KDE/trigger"
+                                  "gettext-tools/projects/GNOME/trigger")
+                     (("/bin/pwd") "pwd"))
+                   #t))
+               (add-before 'check 'patch-tests
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let* ((bash (which "sh")))
+                     ;; Some of the files we're patching are
+                     ;; ISO-8859-1-encoded, so choose it as the default
+                     ;; encoding so the byte encoding is preserved.
+                     (with-fluids ((%default-port-encoding #f))
+                       (substitute*
+                           (find-files "gettext-tools/tests"
+                                       "^(lang-sh|msg(exec|filter)-[0-9])")
+                         (("#![[:blank:]]/bin/sh")
+                          (format #f "#!~a" bash)))
 
-               (substitute* (cons "gettext-tools/src/msginit.c"
-                                  (find-files "gettext-tools/gnulib-tests"
-                                              "posix_spawn"))
-                 (("/bin/sh")
-                  bash))
+                       (substitute* (cons "gettext-tools/src/msginit.c"
+                                          (find-files "gettext-tools/gnulib-tests"
+                                                      "posix_spawn"))
+                         (("/bin/sh")
+                          bash))
 
-               (substitute* "gettext-tools/src/project-id"
-                 (("/bin/pwd")
-                  "pwd"))
+                       (substitute* "gettext-tools/src/project-id"
+                         (("/bin/pwd")
+                          "pwd"))
 
-               #t)))))
+                       ;; Work around Gnulib test failures on armhf-linux.
+                       #$@(if (target-arm32?)
+                              #~((with-directory-excursion "gettext-tools"
+                                   (invoke "patch" "--force" "-p1" "-i"
+                                           #$(local-file
+                                              (search-patch
+                                               "coreutils-gnulib-tests.patch")))))
+                              '())
+
+                       #t)))))
 
        ;; When tests fail, we want to know the details.
-       #:make-flags '("VERBOSE=yes"
-                      ,@(if (hurd-target?)
-                            ;; Linking to libgettextlib.so makes test-raise fail
-                            '("XFAIL_TESTS=test-raise")
-                            '()))))
+       #:make-flags #~'("VERBOSE=yes"
+                        #$@(if (hurd-target?)
+                               ;; Linking to libgettextlib.so makes test-raise fail
+                               '("XFAIL_TESTS=test-raise")
+                               '()))))
     (home-page "https://www.gnu.org/software/gettext/")
     (synopsis
      "Tools and documentation for translation (used to build other packages)")
@@ -144,16 +153,16 @@ translated messages from the catalogs.  Nearly all GNU packages use Gettext.")
     (arguments
      (substitute-keyword-arguments (package-arguments gettext-minimal)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'add-emacs-autoloads
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Make 'po-mode' and other things available by default.
-               (with-directory-excursion
-                   (string-append (assoc-ref outputs "out")
-                                  "/share/emacs/site-lisp")
-                 (symlink "start-po.el" "gettext-autoloads.el")
-                 #t)))))))
-    (native-inputs `(("emacs" ,emacs-minimal))) ; for Emacs tools
+        #~(modify-phases #$phases
+            (add-after 'install 'add-emacs-autoloads
+              (lambda* (#:key outputs #:allow-other-keys)
+                ;; Make 'po-mode' and other things available by default.
+                (with-directory-excursion
+                    (string-append (assoc-ref outputs "out")
+                                   "/share/emacs/site-lisp")
+                  (symlink "start-po.el" "gettext-autoloads.el")
+                  #t)))))))
+    (native-inputs `(("emacs" ,emacs-minimal)))   ; for Emacs tools
     (synopsis "Tools and documentation for translation")))
 
 (define-public libtextstyle
@@ -199,22 +208,21 @@ color, font attributes (weight, posture), or underlining.")
         (base32 "0kgbm0af7jwpfspa2xxiy9nc2l1r2s1rhbhz4r229zcqv49ak6sq"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-bump2version" ,python-bump2version)
-       ("python-flake8" ,python-flake8)
-       ("python-flake8-implicit-str-concat" ,python-flake8-implicit-str-concat)
-       ("python-flake8-print" ,python-flake8-print)
-       ("python-isort" ,python-isort)
-       ("python-pre-commit" ,python-pre-commit)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-sphinx" ,python-sphinx)
-       ("python-sphinx-argparse" ,python-sphinx-argparse)
-       ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
-       ("python-twine" ,python-twine)
-       ("python-yamllint" ,python-yamllint)))
+     (list python-bump2version
+           python-flake8
+           python-flake8-implicit-str-concat
+           python-flake8-print
+           python-isort
+           python-pre-commit
+           python-pytest
+           python-pytest-cov
+           python-sphinx
+           python-sphinx-argparse
+           python-sphinx-rtd-theme
+           python-twine
+           python-yamllint))
     (propagated-inputs
-     `(("python-polib" ,python-polib)
-       ("python-pymd4c" ,python-pymd4c)))
+     (list python-polib python-pymd4c))
     (home-page "https://github.com/mondeja/mdpo")
     (synopsis "Markdown file translation utilities using pofiles")
     (description
@@ -238,24 +246,19 @@ from Markdown files.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-programs
-          (lambda* (#:key outputs #:allow-other-keys)
+          (lambda* (#:key inputs outputs #:allow-other-keys)
             ;; Make sure all executables in "bin" find the Perl modules
-            ;; provided by this package at runtime.
+            ;; required by this package at runtime.
             (let* ((out  (assoc-ref outputs "out"))
                    (bin  (string-append out "/bin/"))
-                   (path (string-append out "/lib/perl5/site_perl")))
+                   (Pod::Parser (assoc-ref inputs "perl-pod-parser"))
+                   (path (string-append out "/lib/perl5/site_perl:"
+                                        Pod::Parser "/lib/perl5/site_perl")))
               (for-each (lambda (file)
                           (wrap-program file
                             `("PERL5LIB" ":" prefix (,path))))
                         (find-files bin "\\.*$"))
               #t)))
-         (add-before 'reset-gzip-timestamps 'make-compressed-files-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (for-each make-file-writable
-                       (find-files (string-append (assoc-ref outputs "out")
-                                                  "/share/man")
-                                   ".*\\.gz$"))
-             #t))
          (add-after 'unpack 'patch-docbook-xml
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (find-files "." ".*\\.xml(-good)?")
@@ -263,6 +266,13 @@ from Markdown files.")
                 (string-append (assoc-ref inputs "docbook-xml")
                                "/xml/dtd/docbook/")))
              #t))
+         (add-before 'build 'do-not-override-PERL5LIB
+           (lambda _
+             ;; Don't hard-code PERL5LIB to include just the build directory
+             ;; so that the build script finds modules from inputs.
+             (substitute* "Po4aBuilder.pm"
+               (("PERL5LIB=lib") ""))
+             (setenv "PERL5LIB" (string-append (getenv "PERL5LIB") ":lib"))))
          (add-before 'check 'disable-failing-tests
            (lambda _
              ;; FIXME: these tests require SGMLS.pm.
@@ -286,6 +296,8 @@ from Markdown files.")
        ("perl-test-pod" ,perl-test-pod)
        ("perl-yaml-tiny" ,perl-yaml-tiny)
        ("texlive" ,texlive-tiny)))
+    (inputs
+     (list perl-pod-parser))
     (home-page "https://po4a.org/")
     (synopsis "Scripts to ease maintenance of translations")
     (description

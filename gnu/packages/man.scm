@@ -4,10 +4,12 @@
 ;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +27,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages man)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix git-download)
   #:use-module (guix download)
@@ -36,6 +39,7 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages less)
   #:use-module (gnu packages perl)
@@ -50,10 +54,9 @@
     (source
      (origin
        (method url-fetch)
-       (uri
-        (string-append "https://sourceforge.net/projects/xmltoman/files/"
-                       "xmltoman/xmltoman-" version ".tar.gz/xmltoman-"
-                       version ".tar.gz/download"))
+       (uri (string-append "mirror://sourceforge/xmltoman/xmltoman/"
+                           "xmltoman-" version ".tar.gz/"
+                           "xmltoman-" version ".tar.gz"))
        (sha256
         (base32 "1c0lvzr7kdy63wbn1jv6s126ds7add3pxqb0vlxd3v5a2sir91wl"))))
     (build-system gnu-build-system)
@@ -67,8 +70,7 @@
        (modify-phases %standard-phases
          (delete 'configure))))
     (propagated-inputs
-     `(("perl" ,perl)
-       ("perl-xml-parser" ,perl-xml-parser)))
+     (list perl perl-xml-parser))
     (synopsis "XML to Man converter")
     (description "XMLtoMan and XMLMantoHTML are two small scripts to convert xml
 to man pages in groff format or html.  It features the usual man page items such
@@ -133,83 +135,89 @@ a flexible and convenient way.")
                 "0mk7n7yn6scy785jhg1j14b3q9l0cgvpry49r0ldjsnizbnrjv5n"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'patch-test-shebangs
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Patch shebangs in test scripts.
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("#! /bin/sh")
-                              (string-append "#!" (which "sh")))))
-                         (remove file-is-directory?
-                                 (find-files "src/tests" ".*")))
-               #t)))
-         (add-after 'unpack 'patch-absolute-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/man.c"
-               (("\"iconv\"")
-                (string-append "\"" (which "iconv") "\"")))
-             ;; Embed an absolute reference to "preconv", otherwise it
-             ;; falls back to searching in PATH and ultimately fails
-             ;; to render unicode data (see <https://bugs.gnu.org/30785>).
-             (substitute* "lib/encodings.c"
-               (("groff_preconv = NULL")
-                (string-append "groff_preconv = \""
-                               (assoc-ref inputs "groff-minimal")
-                               "/bin/preconv\"")))
-             #t)))
-       #:configure-flags
-       (let ((groff (assoc-ref %build-inputs "groff"))
-             (groff-minimal (assoc-ref %build-inputs "groff-minimal"))
-             (less  (assoc-ref %build-inputs "less"))
-             (gzip  (assoc-ref %build-inputs "gzip"))
-             (bzip2 (assoc-ref %build-inputs "bzip2"))
-             (xz    (assoc-ref %build-inputs "xz"))
-             (util  (assoc-ref %build-inputs "util-linux")))
-         ;; Invoke groff, less, gzip, bzip2, and xz directly from the store.
-         (append (list ;; Disable setuid man user.
-                       "--disable-setuid"
-                       ;; Don't constrain ownership of system-wide cache files.
-                       ;; Otherwise creating the manpage database fails with
-                       ;; man-db > 2.7.5.
-                       "--disable-cache-owner"
-                       (string-append "--with-pager=" less "/bin/less")
-                       (string-append "--with-gzip=" gzip "/bin/gzip")
-                       (string-append "--with-bzip2=" bzip2 "/bin/gzip")
-                       (string-append "--with-xz=" xz "/bin/xz")
-                       (string-append "--with-col=" util "/bin/col")
-                       ;; The default systemd directories ignore --prefix.
-                       (string-append "--with-systemdsystemunitdir="
-                                      %output "/lib/systemd/system")
-                       (string-append "--with-systemdtmpfilesdir="
-                                      %output "/lib/tmpfiles.d"))
-                 (map (lambda (prog)
-                        (string-append "--with-" prog "=" groff-minimal
-                                       "/bin/" prog))
-                      '("nroff" "eqn" "neqn" "tbl" "refer" "pic"))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'patch-source-shebangs 'patch-test-shebangs
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Patch shebangs in test scripts.
+                   (let ((out (assoc-ref outputs "out")))
+                     (for-each (lambda (file)
+                                 (substitute* file
+                                   (("#! /bin/sh")
+                                    (string-append "#!" (which "sh")))))
+                               (remove file-is-directory?
+                                       (find-files "src/tests" ".*")))
+                     #t)))
+               (add-after 'unpack 'patch-absolute-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/man.c"
+                     (("\"iconv\"")
+                      (string-append "\"" (which "iconv") "\"")))
+                   ;; Embed an absolute reference to "preconv", otherwise it
+                   ;; falls back to searching in PATH and ultimately fails
+                   ;; to render unicode data (see <https://bugs.gnu.org/30785>).
+                   (substitute* "lib/encodings.c"
+                     (("groff_preconv = NULL")
+                      (string-append "groff_preconv = \""
+                                     (assoc-ref inputs "groff-minimal")
+                                     "/bin/preconv\"")))
+                   #t)))
+           #:configure-flags
+           #~(let ((groff (assoc-ref %build-inputs "groff"))
+                   (groff-minimal (assoc-ref %build-inputs "groff-minimal"))
+                   (less  (assoc-ref %build-inputs "less"))
+                   (gzip  (assoc-ref %build-inputs "gzip"))
+                   (bzip2 (assoc-ref %build-inputs "bzip2"))
+                   (xz    (assoc-ref %build-inputs "xz"))
+                   (util  (assoc-ref %build-inputs "util-linux")))
+               ;; Invoke groff, less, gzip, bzip2, & xz directly from the store.
+               (append (list ;; Disable setuid man user.
+                        "--disable-setuid"
+                        ;; Don't constrain ownership of system-wide cache files.
+                        ;; Otherwise creating the manpage database fails with
+                        ;; man-db > 2.7.5.
+                        "--disable-cache-owner"
+                        (string-append "--with-pager=" less "/bin/less")
+                        (string-append "--with-gzip=" gzip "/bin/gzip")
+                        (string-append "--with-bzip2=" bzip2 "/bin/gzip")
+                        (string-append "--with-xz=" xz "/bin/xz")
+                        (string-append "--with-col=" util "/bin/col")
+                        ;; The default systemd directories ignore --prefix.
+                        ;; XXX TODO: Replace with simply #$OUTPUT on staging.
+                        (string-append "--with-systemdsystemunitdir="
+                                       #$(if (%current-target-system)
+                                             #~#$output
+                                             #~%output)
+                                       "/lib/systemd/system")
+                        (string-append "--with-systemdtmpfilesdir="
+                                       #$(if (%current-target-system)
+                                             #~#$output
+                                             #~%output)
+                                       "/lib/tmpfiles.d"))
+                   (map (lambda (prog)
+                          (string-append "--with-" prog "=" groff-minimal
+                                         "/bin/" prog))
+                        '("nroff" "eqn" "neqn" "tbl" "refer" "pic"))))
 
-       ;; At run time we should refer to GROFF-MINIMAL, not GROFF (the latter
-       ;; pulls in Perl.)
-       #:disallowed-references (,groff)
+           ;; At run time we should refer to GROFF-MINIMAL, not GROFF (the latter
+           ;; pulls in Perl.)
+           #:disallowed-references
+           (list groff)
 
-       #:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (srfi srfi-1))))
+           #:modules '((guix build gnu-build-system)
+                       (guix build utils)
+                       (srfi srfi-1))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("flex" ,flex)
-       ("groff" ,groff)))   ;needed at build time (troff, grops, soelim, etc.)
+     (list pkg-config flex groff))   ;needed at build time (troff, grops, soelim, etc.)
     (inputs
-     `(("gdbm" ,gdbm)
-       ("groff-minimal" ,groff-minimal)
-       ("less" ,less)
-       ("libpipeline" ,libpipeline)
-       ;; FIXME: 4.8 and later can use libseccomp, but it causes test
-       ;; failures in the build chroot.
-       ;;("libseccomp" ,libseccomp)
-       ("util-linux" ,util-linux)))
+     (list gdbm
+           groff-minimal
+           less
+           libpipeline
+           ;; FIXME: 4.8 and later can use libseccomp, but it causes test
+           ;; failures in the build chroot.
+           ;;("libseccomp" ,libseccomp)
+           util-linux))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
@@ -252,8 +260,8 @@ the traditional flat-text whatis databases.")
                         (("^PREFIX=.*")
                          (string-append "PREFIX=" (assoc-ref outputs "out")
                                         "\n"))))))))
-    (native-inputs `(("perl" ,perl)))             ;used to run tests
-    (inputs `(("zlib" ,zlib)))
+    (native-inputs (list perl))             ;used to run tests
+    (inputs (list zlib))
     (native-search-paths
      (list (search-path-specification
             (variable "MANPATH")
@@ -307,9 +315,11 @@ Linux kernel and C library interfaces employed by user-space programs.")
     (license license:gpl2+)))
 
 (define-public help2man
+  ;; TODO: Manual pages for languages not available from the implicit
+  ;; input "locales" contain the original (English) text.
   (package
     (name "help2man")
-    (version "1.47.13")
+    (version "1.48.5")
     (source
      (origin
       (method url-fetch)
@@ -317,18 +327,28 @@ Linux kernel and C library interfaces employed by user-space programs.")
                           version ".tar.xz"))
       (sha256
        (base32
-        "08q5arxz4j4pyx5q4712c2rn7p7dw7as9xg38yvmsh1c3ynvpy5p"))))
+        "1gl24n9am3ivhql1gs9lffb415irg758fhxyk4ryssiflk5f8fb7"))))
     (build-system gnu-build-system)
     (arguments `(;; There's no `check' target.
-                 #:tests? #f))
+                 #:tests? #f
+                 #:phases
+                 (modify-phases %standard-phases
+                   (add-after 'unpack 'patch-help2man-with-perl-gettext
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (let ((lib (assoc-ref inputs "perl-gettext"))
+                             (fmt "use lib '~a/lib/perl5/site_perl';~%~a"))
+                         (substitute* "help2man.PL"
+                           (("^use Locale::gettext.*$" load)
+                            (format #f fmt lib load))))
+                       #t)))))
     (inputs
      `(("perl" ,perl)
-       ;; TODO: Add these optional dependencies.
-       ;; ("perl-LocaleGettext" ,perl-LocaleGettext)
-       ;; ("gettext" ,gettext-minimal)
-       ))
+       ,@(if (%current-target-system)
+             '()
+             `(("perl-gettext" ,perl-gettext)))))
     (native-inputs
-     `(("perl" ,perl)))
+     `(("perl" ,perl)
+       ("gettext" ,gettext-minimal)))
     (home-page "https://www.gnu.org/software/help2man/")
     (synopsis "Automatically generate man pages from program --help")
     (description
@@ -385,7 +405,7 @@ in C99.")
        #:make-flags (list (string-append "prefix=" (assoc-ref %outputs "out")))
        #:phases (modify-phases %standard-phases (delete 'configure))))
     (inputs
-     `(("gawk" ,gawk)))
+     (list gawk))
     (home-page "https://github.com/mvertes/txt2man")
     (synopsis "Convert text to man page")
     (description "Txt2man converts flat ASCII text to man page format.")

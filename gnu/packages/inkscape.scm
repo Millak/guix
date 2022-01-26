@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Boris A. Dekshteyn <boris.dekshteyn@gmail.com>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
@@ -55,82 +55,15 @@
 (define-public inkscape
   (package
     (name "inkscape")
-    (version "0.92.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://media.inkscape.org/dl/"
-                                  "resources/file/"
-                                  "inkscape-" version ".tar.bz2"))
-              (patches (search-patches "inkscape-poppler-0.76.patch"))
-              (sha256
-               (base32
-                "0pjinhjibfsz1aywdpgpj3k23xrsszpj4a1ya5562dkv2yl2vv2p"))))
-    (build-system cmake-build-system)
-    (inputs
-     `(("aspell" ,aspell)
-       ("gtkmm" ,gtkmm-2)
-       ("gtk" ,gtk+-2)
-       ("gsl" ,gsl)
-       ("poppler" ,poppler)
-       ("libpng" ,libpng)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("libgc" ,libgc)
-       ("freetype" ,freetype)
-       ("popt" ,popt)
-       ("potrace" ,potrace)
-       ("python" ,python-2)
-       ("lcms" ,lcms)
-       ("boost" ,boost)))
-    (native-inputs
-     `(("intltool" ,intltool)
-       ("glib" ,glib "bin")
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
-    ;; FIXME: tests require gmock
-    (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-icon-cache-generator
-           (lambda _
-             (substitute* "share/icons/application/CMakeLists.txt"
-              (("gtk-update-icon-cache") "true"))
-             #t))
-         (add-after 'unpack 'adjust-for-new-poppler
-           (lambda _
-             (substitute* (find-files "src/extension/internal/pdfinput")
-               ;; Needed for Poppler 0.82.
-               (("Unicode \\*u") "Unicode const *u")
-               ;; Needed for Poppler 0.83.
-               (("\\(GfxPath") "(const GfxPath")
-               (("GfxSubpath") "const GfxSubpath")
-               (("new GlobalParams\\(\\)")
-                "std::unique_ptr<GlobalParams>(new GlobalParams())")
-               (("new GlobalParams\\(poppler_datadir\\)")
-                "std::unique_ptr<GlobalParams>(new GlobalParams(poppler_datadir))"))
-             #t)))))
-    (home-page "https://inkscape.org/")
-    (synopsis "Vector graphics editor")
-    (description "Inkscape is a vector graphics editor.  What sets Inkscape
-apart is its use of Scalable Vector Graphics (SVG), an XML-based W3C standard,
-as the native format.")
-    (license license:gpl2+)))
-
-(define-public inkscape-1.1
-  (package
-    (name "inkscape")
-    (version "1.1")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.inkscape.org/dl/"
                            "resources/file/"
                            "inkscape-" version ".tar.xz"))
-       (patches (search-patches "inkscape-1.1-fix-build-witch-gcc7.5.patch"))
        (sha256
-        (base32
-         "1rlm2wqg8bgdxkdvnadh49wfp0mrbrk7d8n4vdcjyw6z7z7firki"))
+        (base32 "1bvqg5xfs3m6r7qfdhmgzwhd1hx8wvg3nhvhmalwzcdm6ffhpjmf"))
        (modules '((guix build utils)
                   (ice-9 format)))
        (snippet
@@ -211,12 +144,10 @@ endif()~%~%"
            ;; Lift the requirement on the double-conversion library, as
            ;; it is only needed by lib2geom, which is now unbundled.
            (substitute* "CMakeScripts/DefineDependsandFlags.cmake"
-             ((".*find_package\\(DoubleConversion.*") ""))
-           #t))))
+             ((".*find_package\\(DoubleConversion.*") ""))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #t
-       #:test-target "check"            ;otherwise some test binaries are missing
+     `(#:test-target "check"            ;otherwise some test binaries are missing
        #:imported-modules (,@%cmake-build-system-modules
                            (guix build glib-or-gtk-build-system))
        #:modules ((guix build cmake-build-system)
@@ -224,11 +155,13 @@ endif()~%~%"
                   (guix build utils))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+           (assoc-ref glib-or-gtk:%standard-phases
+                      'generate-gdk-pixbuf-loaders-cache-file))
          (add-after 'unpack 'patch-icon-cache-generator
            (lambda _
              (substitute* "share/icons/application/CMakeLists.txt"
-               (("gtk-update-icon-cache") "true"))
-             #t))
+               (("gtk-update-icon-cache") "true"))))
          (add-after 'unpack 'disable-latex-export-tests
            ;; FIXME: For some reason the test.pdf_tex file generated by the
            ;; "--export-latex" lacks "some text" in its content when run in
@@ -236,14 +169,11 @@ endif()~%~%"
            (lambda _
              (substitute* "testfiles/cli_tests/CMakeLists.txt"
                (("add_cli_test\\(export-latex")
-                "message(TEST_DISABLED: export-latex"))
-             #t))
+                "message(TEST_DISABLED: export-latex"))))
          (add-after 'unpack 'set-home
            ;; Mute Inkscape warnings during tests.
            (lambda _
-             (setenv "HOME" (getcwd))
-             (format #t "ARGS is set to: ~a" (getenv "ARGS"))
-             #t))
+             (setenv "HOME" (getcwd))))
          ;; Move the check phase after the install phase, as when run in the
          ;; tests, Inkscape relies on files that are not yet installed, such
          ;; as the "share/inkscape/ui/units.xml" file.
@@ -259,13 +189,13 @@ endif()~%~%"
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/inkscape")
-                 `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH")))))
-             #t)))))
+                 `("GUIX_PYTHONPATH" ":" prefix
+                   (,(getenv "GUIX_PYTHONPATH"))))))))))
     (inputs
      `(("aspell" ,aspell)
        ("autotrace" ,autotrace)
        ("gdl" ,gdl-minimal)
-       ("gtkmm" ,gtkmm)
+       ("gtkmm" ,gtkmm-3)
        ("gtk" ,gtk+)
        ("gtkspell3" ,gtkspell3)
        ("gsl" ,gsl)
@@ -276,7 +206,7 @@ endif()~%~%"
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("libgc" ,libgc)
-       ("libsoup" ,libsoup-minimal)
+       ("libsoup" ,libsoup-minimal-2)
        ("libcdr" ,libcdr)
        ("libvisio" ,libvisio)
        ("libwpd" ,libwpd)
@@ -292,12 +222,12 @@ endif()~%~%"
        ("python-numpy" ,python-numpy)
        ("python-lxml" ,python-lxml)))
     (native-inputs
-     `(("imagemagick" ,imagemagick)     ;for tests
-       ("intltool" ,intltool)
-       ("glib" ,glib "bin")
-       ("googletest" ,googletest)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list imagemagick ;for tests
+           intltool
+           `(,glib "bin")
+           googletest
+           perl
+           pkg-config))
     (home-page "https://inkscape.org/")
     (synopsis "Vector graphics editor")
     (description "Inkscape is a vector graphics editor.  What sets Inkscape

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -28,6 +28,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
@@ -56,14 +57,14 @@
          "0j46wab4b09s3favjzp3zs1cn2sn8pr7qyngs5wn31hpqqxbbz76"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-pep517" ,python-pep517)
-       ("python-setuptools" ,python-setuptools)
-       ("python-setuptools-scm" ,python-setuptools-scm/next)
-       ("python-coverage" ,python-coverage)
-       ("python-coveralls" ,python-coveralls)
-       ("python-pyannotate" ,python-pyannotate)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)))
+     (list python-pep517
+           python-setuptools
+           python-setuptools-scm
+           python-coverage
+           python-coveralls
+           python-pyannotate
+           python-pytest
+           python-pytest-cov))
     (home-page "https://github.com/miurahr/multivolume")
     (synopsis "Treat multiple files as one")
     (description "MultiVolumefile is a Python library that provides a
@@ -84,19 +85,44 @@ were a single file.")
          "1jcczrb8zgg6w7v76w1wpz3nw75fghk3xwxkn09ll7kck7sdf68d"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-cffi" ,python-cffi)
-       ("python-toml" ,python-toml)
-       ("python-setuptools-scm" ,python-setuptools-scm/next)))
+     (list python-cffi python-toml python-setuptools-scm))
     (native-inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-coverage" ,python-coverage)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)))
+     (list python-setuptools python-coverage python-pytest
+           python-pytest-cov))
     (home-page "https://github.com/miurahr/bcj-cffi")
     (synopsis "Branch / Call /Jump CFFI library in Python")
     (description "This package provides an implementation of the Branch / Call /
 Jump conversion filter by CFFI for Python.")
     (license license:lgpl2.1+)))
+
+(define-public python-isal
+  (package
+    (name "python-isal")
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "isal" version))
+       (sha256
+        (base32 "1bxj7r24p974pqfgym485s90ydhzji9q7zyfg3sf8fycm9ya01wd"))
+       ;; Remove bundles isa-l source code
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "src/isal/isa-l"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'use-dynamic-linking
+           (lambda _ (setenv "PYTHON_ISAL_LINK_DYNAMIC" "1"))))))
+    (inputs (list isa-l))
+    (native-inputs (list python-cython))
+    (home-page "https://github.com/pycompression/python-isal")
+    (synopsis "Python bindings for the ISA-L compression library")
+    (description
+     "This package aims to provide faster zlib and gzip compatible compression
+and decompression by implementing Python bindings for the ISA-L library.")
+    (license license:expat)))
 
 (define-public python-ppmd-cffi
   (package
@@ -111,14 +137,14 @@ Jump conversion filter by CFFI for Python.")
          "01wcd9l6pp6hivdmd275qh9dhcwficjqfl67hxix5n07vvq7jzz0"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-cffi" ,python-cffi)))
+     (list python-cffi))
     (native-inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-setuptools-scm" ,python-setuptools-scm/next)
-       ("python-pep517" ,python-pep517)
-       ("python-coverage" ,python-coverage)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-cov" ,python-pytest-cov)))
+     (list python-setuptools
+           python-setuptools-scm
+           python-pep517
+           python-coverage
+           python-pytest
+           python-pytest-cov))
     (home-page "https://github.com/miurahr/ppmd")
     (synopsis "Prediction by Partial Matching compression library")
     (description "PPMd is a compression algorithm library using the Prediction
@@ -139,26 +165,26 @@ several possible methods.")
          "1zmgp7yax328fj8yj8pj4l7yh78hp727j6wk12vfi6nmi82wl32i"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-bcj-cffi" ,python-bcj-cffi)
-       ("python-multivolumefile" ,python-multivolumefile)
-       ("python-ppmd-cffi" ,python-ppmd-cffi)
-       ("python-pycryptodome" ,python-pycryptodome)
-       ("python-pyzstd" ,python-pyzstd)
-       ("python-texttable" ,python-texttable)
-       ("python-zstandard" ,python-zstandard)))
+     (list python-bcj-cffi
+           python-multivolumefile
+           python-ppmd-cffi
+           python-pycryptodome
+           python-pyzstd
+           python-texttable
+           python-zstandard))
     (native-inputs
-     `(("python-setuptools" ,python-setuptools)
-       ("python-setuptools-scm" ,python-setuptools-scm/next)
-       ("python-coverage" ,python-coverage)
-       ("python-coveralls" ,python-coveralls)
-       ("python-libarchive-c" ,python-libarchive-c)
-       ("python-py-cpuinfo" ,python-py-cpuinfo)
-       ("python-pyannotate" ,python-pyannotate)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-benchmark" ,python-pytest-benchmark)
-       ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-remotedata" ,python-pytest-remotedata)
-       ("python-pytest-timeout" ,python-pytest-timeout)))
+     (list python-setuptools
+           python-setuptools-scm
+           python-coverage
+           python-coveralls
+           python-libarchive-c
+           python-py-cpuinfo
+           python-pyannotate
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-remotedata
+           python-pytest-timeout))
     (home-page "https://github.com/miurahr/py7zr")
     (synopsis "7-zip in Python")
     (description "This package provides py7zr, which implements 7-zip
@@ -192,7 +218,7 @@ Python.")
                                "')")))
              #t)))))
     (inputs
-     `(("lzo" ,lzo)))
+     (list lzo))
     (home-page "https://github.com/jd-boyd/python-lzo")
     (synopsis "Python bindings for the LZO data compression library")
     (description
@@ -223,11 +249,9 @@ Python strings.")
            #t))))
     (build-system python-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-nose" ,python-nose)
-       ("python-setuptools-scm" ,python-setuptools-scm)))
+     (list pkg-config python-nose python-setuptools-scm))
     (inputs
-     `(("lz4" ,lz4)))
+     (list lz4))
     (home-page "https://github.com/python-lz4/python-lz4")
     (synopsis "LZ4 bindings for Python")
     (description
@@ -252,7 +276,7 @@ the LZ4 frame format.")
          "18ly9pppy2yspxzw7k1b23wk77k7m44rz2g0271bqgqrk3jn3yhs"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-future" ,python-future)))
+     (list python-future))
     (home-page "https://github.com/gkovacs/lz-string-python")
     (synopsis "String compression")
     (description "Lz-string is a string compressor library for Python.")
@@ -260,26 +284,6 @@ the LZ4 frame format.")
 
 (define-public python2-lzstring
   (package-with-python2 python-lzstring))
-
-(define-public python-brotli
-  (package
-    (name "python-brotli")
-    (version "1.0.9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Brotli" version ".zip"))
-        (sha256
-         (base32
-          "0f4433s4wv9masc303kkb1s0a09x81xwr8pdvj0kyxzdl05826sd"))))
-    (build-system python-build-system)
-    (native-inputs
-     `(("unzip" ,unzip)))
-    (home-page "https://github.com/google/brotli")
-    (synopsis "Python bindings for the Brotli compression library")
-    (description
-     "This package provides python bindings for the Brotli compression library.")
-    (license license:asl2.0)))
 
 (define-public bitshuffle
   (package
@@ -379,9 +383,9 @@ install: libbitshuffle.so
          "0v3qayhqv7vyzydpydwcp51bqciw8p2ajddw68x5k8zppc0vx3yk"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-more-itertools" ,python-more-itertools)))
+     (list python-more-itertools))
     (native-inputs
-     `(("python-setuptools-scm" ,python-setuptools-scm)))
+     (list python-setuptools-scm))
     (home-page "https://github.com/jaraco/zipp")
     (synopsis
      "Backport of pathlib-compatible object wrapper for zip files")
@@ -413,6 +417,38 @@ wrapper.  It provides a backport of the @code{Path} object.")
     (native-inputs
      `(("python-setuptools-scm" ,python2-setuptools-scm))))))
 
+(define-public python-zopfli
+  (package
+    (name "python-zopfli")
+    (version "0.1.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zopfli" version ".zip"))
+       (sha256
+        (base32 "0yqdwvlpbvhhri0qmzag076ddi0sv43qjlk17l0siylfib03rpkq"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'use-system-zopfli
+                     (lambda _
+                       (setenv "USE_SYSTEM_ZOPFLI" "1")))
+                   (add-before 'build 'set-version
+                     (lambda _
+                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "python" "tests/tests.py" "-v")))))))
+    (native-inputs (list unzip python-setuptools-scm))
+    (inputs (list zopfli))
+    (home-page "https://github.com/fonttools/py-zopfli")
+    (synopsis "Python bindings for Zopfli")
+    (description "@code{pyzopfli} is a straight forward wrapper around the
+@code{ZlibCompress} method of the the @code{zopfli} library.")
+    (license license:asl2.0)))
+
 (define-public python-zstandard
   (package
     (name "python-zstandard")
@@ -425,7 +461,7 @@ wrapper.  It provides a backport of the @code{Path} object.")
         (base32 "0by9z7nxnkzhmza075q6q91rs8lnpf91129k8ppv7kymbwshipjj"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-hypothesis" ,python-hypothesis)))
+     (list python-hypothesis))
     (home-page "https://github.com/indygreg/python-zstandard")
     (synopsis "Zstandard bindings for Python")
     (description "This project provides Python bindings for interfacing with

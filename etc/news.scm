@@ -1,11 +1,11 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;; Copyright © 2019, 2020, 2021 Florian Pelz <pelzflorian@pelzflorian.de>
+;; Copyright © 2019–2022 Florian Pelz <pelzflorian@pelzflorian.de>
 ;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -16,6 +16,7 @@
 ;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;; Copyright © 2021 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;
 ;; Copying and distribution of this file, with or without modification, are
 ;; permitted in any medium without royalty provided the copyright notice and
@@ -23,7 +24,312 @@
 
 (channel-news
  (version 0)
-(entry (commit "a2324d8b56eabf8117bca220a507cc791edffd2e")
+
+ (entry (commit "c4fe13c294cc1e31dd8a49ce3981f603fb169e0a")
+        (title
+         (en "@command{guix style} can format package definitions")
+         (de "@command{guix style} kann Paketdefinitionen formatieren")
+         (fr "@command{guix style} peut mettre en forme les définitions de paquets"))
+        (body
+         (en "The recently-introduced @command{guix style} command can now be
+used to automatically format package definitions according to the Guix
+project's formatting guidelines.  If you contribute packages to Guix or to a
+third-party channel, you may find it useful.
+
+The new @option{--styling} option can currently be passed one of the following
+@dfn{styling rules}: @code{format}, to format package definitions, or
+@code{inputs}, to remove labels from package inputs.  Omitting
+@option{--styling} is equivalent to passing @samp{--styling=format};
+previously it was equivalent to @samp{--styling=inputs}.
+
+Run @code{info \"(guix) Invoking guix style\"}, for more info.")
+         (de "Der kürzlich eingeführte Befehl @command{guix style} kann jetzt
+benutzt werden, um Paketdefinitionen automatisch nach den
+Formatierungsrichtlinien des Guix-Projekts zu formatieren. Wenn Sie Pakete zu
+Guix oder zu einem Drittanbieterkanal beitragen, könnte Ihnen das helfen.
+
+Für die neue Befehlszeilenoption @option{--styling} können Sie derzeit eine
+der folgenden @dfn{Stilregeln} angeben: @code{format}, wodurch
+Paketdefinitionen formatiert werden, oder @code{inputs}, wodurch die
+Bezeichnungen aus Paketeingaben entfernt werden. Wenn Sie {--styling}
+weglassen, passiert das Gleiche wie wenn Sie @samp{--styling=format} angeben;
+früher war es das Gleiche wie @samp{--styling=inputs}.
+
+Führen Sie @command{info \"(guix) Invoking guix style\"} aus, um mehr
+Informationen zu erhalten.")
+         (fr "La commande @command{guix style}, récemment introduite, peut
+désormais être utilisée pour mettre en forme des définitions de paquets
+suivant les règles de style du projet Guix.  Si vous contribuez des paquets à
+Guix ou à un canal tiers, cela peut vous être utile.
+
+La nouvelle option @option{--style} peut pour le moment recevoir une des deux
+@dfn{règles de style} suivantes : @code{format}, pour mettre en forme les
+définitions de paquet, ou @code{inputs}, pour retirer les étiquettes des
+champs @code{inputs} des paquets.  Omettre @option{--styling} revient à passer
+@samp{--styling=format} ; auparavant c'était équivalent à
+@samp{--styling=inputs}.
+
+Lancer @command{info \"(guix.fr) Invoquer guix style\"}, pour plus
+d'informations.")))
+
+ (entry (commit "d090e9c37d693f5a0f381482c17fb03462cb6a48")
+        (title
+         (en "New @option{--tune} option for CPU micro-architecture tuning")
+         (de "Neue Option @option{--tune} ermöglicht mikroarchitekturspezifische Optimierungen")
+         (fr "Nouvelle option @option{--tune} pour optimiser pour une
+micro-architecture"))
+        (body
+         (en "The new @option{--tune} package transformation option instructs
+Guix to tune relevant packages for the micro-architecture of the host CPU.
+This lets the compiler use single-instruction/multiple-data (SIMD)
+instructions beyond the baseline instruction set architecture (ISA), which can
+noticeably improve performance in some cases such as linear algebra code.
+
+As an example, here is how you would install the GNU Astronomy Utilities
+against an optimized variant of the GNU Scientific Library (GSL):
+
+@example
+guix install gnuastro --tune
+@end example
+
+Run @command{info \"(guix) Package Transformation Options\"} for more
+information.")
+         (de "Die neue Paketumwandlungsoption @option{--tune} lässt Guix die
+betroffenen Pakete an die im Prozessor dieses Rechners benutzte
+Mikroarchitektur anpassen.  Dadurch kann der Compiler Befehle für
+Single-Instruction/Multiple-Data (SIMD) einsetzen, die über den gemeinsamen
+Befehlssatz hinausgehen. Das kann in manchen Fällen die Leistung beträchtlich
+steigern, etwa für Berechnungen der linearen Algebra.
+
+Zum Beispiel würden Sie so die GNU-Astronomieprogramme unter Nutzung einer
+optimierten Variante der GNU Scientific Library (GSL) installieren:
+
+@example
+guix install gnuastro --tune
+@end example
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "La nouvelle option de transformation de paquets @option{--tune}
+demande à Guix d'optimiser les paquets pour lesquels c'est pertinent pour la
+micro-architecture du processeur hôte.  Cela permet au compilateur d'utiliser
+des instructions vectorielles (SIMD) en plus des instructions de base de
+l'architecture, ce qui peut sensiblement améliorer les performance dans
+certains cas tels que pour du code d'algèbre linéaire.
+
+Par exemple, voici comment installer les Utilitaires d'astronomie GNU de
+manière à ce qu'ils utilisent une variante optimisée de la Bibliothèque
+scientifique GNU (GSL) :
+
+@example
+guix install gnuastro --tune
+@end example
+
+Lancer @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus d'informations.")))
+
+ (entry (commit "ea2fd313d52dc62593b478acf5c3e7ea052c45de")
+        (title
+         (en "@samp{integer expected from stream}?  Update your Guix daemon")
+         (de "@samp{integer expected from stream}? Aktualisieren Sie Ihren Guix-Daemon")
+         (nl "@samp{integer expected from stream}?  Werk je Guix daemon bij"))
+        (body
+         (en "We recently fixed a bug where substitution would fail with
+@samp{error: integer expected from stream}.  Be sure to update your system's
+Guix package that provides the @command{guix-daemon} if you haven't done so
+recently.  Run @command{info \"(guix) Upgrading Guix\"} for instructions.")
+         (de "Unlängst haben wir einen Fehler behoben, dass die Substitution
+mit der Fehlermeldung @samp{error: integer expected from stream}
+fehlschlägt. Bitte aktualisieren Sie daher Ihr systemweites Guix-Paket, das
+@command{guix-daemon} zur Verfügung stellt, wenn es noch nicht geschehen
+ist. Führen Sie @command{info \"(guix.de) Aktualisieren von Guix\"} aus für
+genaue Anweisungen.")
+         (nl "Onlangs herstelden we een fout waarbij substitutie mislukt met
+een @samp{error: integer expected from stream}.  Werk zeker je systeemwijde
+Guix-pakket bij, dat de @command{guix-daemon} levert, als dat nog niet is
+gebeurd.  Voer @command{info \"(guix) Upgrading Guix\"} uit voor meer uitleg.")))
+
+ (entry (commit "223f1b1eb3707f1d3ef91200dd616ee6c8b77db0")
+        (title
+         (en "Improved static networking support on Guix System")
+         (de "Bessere Unterstützung für statische Netzwerkanbindungen auf Guix System")
+         (fr "Meilleure prise en charge des réseaux statiques sur Guix System"))
+        (body
+         (en "Support for declarative static networking setup on Guix System
+has been improved.  It now allows you to list IPv4 and IPv6 addresses in
+routes in a flexible way, similar to what you would do with the @command{ip}
+command, but in a declarative fashion, as in this example:
+
+@lisp
+;; Static networking for one NIC, IPv4-only.
+(service static-networking-service-type
+         (list (static-networking
+                (addresses
+                 (list (network-address
+                        (device \"eno1\")
+                        (value \"10.0.2.15/24\"))))
+                (routes
+                 (list (network-route
+                        (destination \"default\")
+                        (gateway \"10.0.2.2\"))))
+                (name-servers '(\"10.0.2.3\")))))
+@end lisp
+
+The @code{static-networking-service} procedure remains available but is
+deprecated.  Run @command{info \"(guix) Networking Setup\"} for more
+information.")
+         (de "Die deklarative Konfiguration für statische Netzwerkanbindungen
+auf Guix System wurde verbessert.  Sie können jetzt die IPv4- und
+IPv6-Adressen in Routen flexibel auflisten, ähnlich wie Sie es mit dem
+@command{ip}-Befehl tun würden, aber auf deklarative Weise wie in diesem
+Beispiel:
+
+@lisp
+;; Statische Netzwerkkonfiguration mit einer Netzwerkkarte, nur IPv4.
+(service static-networking-service-type
+         (list (static-networking
+                (addresses
+                 (list (network-address
+                        (device \"eno1\")
+                        (value \"10.0.2.15/24\"))))
+                (routes
+                 (list (network-route
+                        (destination \"default\")
+                        (gateway \"10.0.2.2\"))))
+                (name-servers '(\"10.0.2.3\")))))
+@end lisp
+
+Die Prozedur @code{static-networking-service} gibt es noch, aber sie gilt als
+veraltet.  Führen Sie @command{info \"(guix) Networking Setup\"} aus für
+weitere Informationen.")
+         (fr "La configuration déclarative et statique du réseau est mieux
+prise en charge sur Guix System.  Il est maintenant possible d'énumérer des
+adresses IPv6 et IPv4 et les chemins avec plus de flexibilité, un peu comme ce
+qu'on peut faire avec la commande @command{ip} mais de manière déclarative,
+comme dans cet exemple :
+
+@lisp
+;; Réseau statique à une seule interface, IPv4 seulement.
+(service static-networking-service-type
+         (list (static-networking
+                (addresses
+                 (list (network-address
+                        (device \"eno1\")
+                        (value \"10.0.2.15/24\"))))
+                (routes
+                 (list (network-route
+                        (destination \"default\")
+                        (gateway \"10.0.2.2\"))))
+                (name-servers '(\"10.0.2.3\")))))
+@end lisp
+
+La procédure @code{static-networking-service} reste disponible mais elle est
+obsolète.  Lancer @command{info \"(guix) Networking Setup\"} pour plus
+d'informations.")))
+
+ (entry (commit "52cb5cf5b852117b5151a67af187d80764849ad3")
+        (title
+          (en "Icedove 91: profile folder moved to @file{~/.thunderbird}")
+          (de "Icedove 91: Profilordner jetzt unter @file{~/.thunderbird}"))
+        (body
+          (en "Icedove 91 expects your profile folder under @file{~/.thunderbird}.
+You need to manually copy your Icedove profiles from @file{~/.icedove} to
+@file{~./thunderbird}.  It may be required to start Icedove with
+@option{--ProfileManager} for the first time after the migration.")
+          (de "Icedove 91 erwartet Ihren Profilordner unter @file{~/.thunderbird}.
+Dafür müssen sie Ihre Icedove-Profile von @file{~/.icedove} nach
+@file{~/.thunderbird} kopieren.  Eventuell muss Icedove das erste Mal nach der
+Migration mit @option{--ProfileManager} gestartet werden.")))
+
+ (entry (commit "746584e0ca200e7bf51b139ceb36c19ea81d6ef1")
+        (title
+         (en "New @command{guix shell} command supersedes @command{guix
+environment}")
+         (de "Neuer Befehl @command{guix shell} löst @command{guix
+environment} ab")
+         (fr "Nouvelle commande @command{guix shell} en remplacement de
+@command{guix environment}"))
+        (body
+         (en "A new @command{guix shell} command is now available.  It is
+similar to @command{guix environment}, but with a more convenient interface
+(@command{guix environment} is deprecated but will remain available until May,
+1st 2023).  The main difference compared to @command{guix environment} is that
+the \"ad hoc\" mode is the default.  Thus, to create an interactive
+environment containing Python, NumPy, and SciPy, you would run:
+
+@example
+guix shell python python-numpy python-scipy
+@end example
+
+To get a development environment for, say, Inkscape, pass the @option{-D}
+flag:
+
+@example
+guix shell -D inkscape
+@end example
+
+Another difference is that running @command{guix shell} without arguments
+loads @file{manifest.scm} or @file{guix.scm} for the current directory or an
+ancestor, provided you allowed it.  The command maintains a cache to speed up
+access to such environments.
+
+Run @command{info \"(guix) Invoking guix shell\"} for more information.")
+         (de "Ein neuer Befehl @command{guix shell} ist ab jetzt
+verfügbar. Er ähnelt @command{guix environment}, ist aber leichter zu
+benutzen (@command{guix environment} gilt als veraltet, bleibt aber
+bis zum 1.@: Mai 2023 verfügbar). Der größte Unterschied ist, dass das
+Verhalten mit @option{--ad-hoc} nun der Normalfall ist. D.h.@: um eine
+interaktive Umgebung mit Python, NumPy und SciPy zu bekommen, lautet
+der Befehl:
+
+@example
+guix shell python python-numpy python-scipy
+@end example
+
+Wenn Sie eine Entwicklungsumgebung für, sagen wir, Inkscape schaffen
+wollen, übergeben Sie die Option @option{-D}:
+
+@example
+guix shell -D inkscape
+@end example
+
+Noch ein Unterschied ist, dass wenn Sie @command{guix shell} ohne
+Argumente ausführen, @file{manifest.scm} oder @file{guix.scm} aus dem
+aktuellen Arbeitsverzeichnis oder einem übergeordneten Verzeichnis
+geladen wird, wenn Sie die Berechtigung dazu erteilt haben. Für den
+Befehl wird ein Zwischenspeicher vorgehalten, damit Sie schneller auf
+solche Umgebungen zugreifen können.
+
+Führen Sie @command{info \"(guix) Invoking guix shell\"} aus, um mehr
+zu erfahren.")
+         (fr "Une nouvelle commande, @command{guix shell}, est maintenant
+disponible.  Elle est similaire à @command{guix environment}, mais avec une
+interface plus pratique (@command{guix environment} est désuet mais restera
+disponible jusqu'au 1er mai 2023).  La principale différence par rapport à
+@command{guix environment} est que le mode par défaut est le mode \"ad hoc\".
+Pour créer un environnement interactif contenant Python, NumPy et SciPy, il
+faut donc lancer :
+
+@example
+guix shell python python-numpy python-scipy
+@end example
+
+Pour obtenir un environnement de développement pour Inkscape, par exemple,
+passer l'option @option{-D} :
+
+@example
+guix shell -D inkscape
+@end example
+
+Une autre différence est qu'en lançant @command{guix shell} sans argument, le
+fichier @file{manifest.scm} ou @file{guix.scm} du répertoire courant ou d'un
+parent est automatiquement chargé, à condition de l'avoir autorisé.  La
+commande garde un cache pour accélérer l'accès à ces environnements.
+
+Lancer @command{info \"(guix.fr) Invoquer guix shell\"} pour plus
+d'informations.")))
+
+ (entry (commit "a2324d8b56eabf8117bca220a507cc791edffd2e")
         (title
          (en "Guix Home is a part of GNU Guix")
          (de "Guix Home ist jetzt Teil von GNU Guix")
@@ -154,6 +460,90 @@ Voir @command{info \"(guix.fr) Répliquer Guix\"}.
 Ce recours à Software Heritage fonctionne aussi pour les autres clones Git que
 Guix peut faire, comme lorsqu'on utilise @option{--with-commit} et les options
 de transformation de paquet similaires.")))
+
+ (entry (commit "db4681a4c17d282a661552f2f57e5c453d02e414")
+        (title
+         (en "@code{gdm-service-type} now supports Wayland")
+         (de "@code{gdm-service-type} bietet nun Unterstützung für Wayland")
+         (fr "@code{gdm-service-type} prend maintenant en charge Wayland"))
+        (body
+         (en "@code{gdm-service-type} has been updated to support being launched
+as a Wayland client, and to launch Wayland sessions. The @code{wayland?} boolean
+field in @code{gdm-configuration} controls whether GDM starts in Wayland or X
+mode. See @command{info \"(guix) X Window\"} for more information.
+
+Wayland mode for GDM will soon become the default in Guix, so if your
+hardware doesn't support Wayland (Nvidia users are the most concerned here),
+please consider disabling it now.")
+         (de "@code{gdm-service-type} wurde um Unterstützung dafür
+aktualisiert, als Wayland-Client gestartet zu werden und Wayland-Sitzungen zu
+starten.  Der Boolesche Wert im Feld @code{wayland?} in
+@code{gdm-configuration} bestimmt, ob GDM im Wayland- oder X-Modus gestartet
+wird.  Siehe @command{info \"(guix.de) X Window\"} für weitere Informationen.
+
+Bald wird der Wayland-Modus für GDM die Vorgabeeinstellung in Guix werden,
+daher sollten Sie, wenn Ihre Hardware kein Wayland unterstützt (Nvidia-Nutzer
+betrifft dies am ehesten), ihn jetzt ausdrücklich abschalten.")
+         (fr "@code{gdm-service-type} a été mis à jour et peut maintenant être
+lancé comme client Wayland, ainsi que lancer des sessions Wayland. Le champ
+booléen @code{wayland?} de @code{gdm-configuration} contrôle le mode dans lequel
+GDM est lancé (Wayland ou X). Pour plus d'informations, voir
+@command{info \"(guix) X Window\"} (en anglais).
+
+GDM sera bientôt lancé en mode Wayland par défaut sur Guix, donc si votre matériel
+ne le prend pas en charge (les utilisateur·ices de cartes Nvidia sont les plus
+concerné·es), merci de le désactiver dès maintenant.")))
+
+ (entry (commit "f23803af2018a148fb088f2516d79c20d6bf95f0")
+        (title
+         (en "Input labels can now be omitted in package definitions")
+         (de "Eingaben in Paketdefinitionen brauchen keine Bezeichnungen mehr"))
+        (body
+         (en "If you have written package definitions before, you may know
+that package inputs required a bit of boilerplate: each input needs to have an
+associated label (a string), which you can refer to in ``build-side code''.
+
+Input labels are now unnecessary, meaning that you can write code like:
+
+@lisp
+(package
+  ;; @dots{}
+  (inputs (list libunistring libffi libgc)))
+@end lisp
+
+Notice that the @code{inputs} field is simplified compared to the ``old
+style''.  When needed, you can now use g-expressions (gexps) to refer to
+another package in build-side code.  Additionally, the new
+@code{modify-inputs} macro facilitates common operations on inputs---deleting,
+replacing, adding inputs.
+
+To ease transition to the ``new style'', a new @command{guix style} command is
+provided.  Run @command{info \"(guix) Invoking guix style\"} for more info.")
+         (de "Wenn Sie bereits Paketdefinitionen verfasst haben,
+erinnern Sie sich vielleicht, dass Sie für Paketeingaben manches
+doppelt schreiben mussten: Jede Eingabe wird assoziiert mit einer
+Bezeichnung (als Zeichenkette), auf die Sie sich in
+„erstellungsseitigem Code“ beziehen können.
+
+Diese Eingabebezeichnungen sind @emph{nicht} mehr nötig.  Sie können
+jetzt solchen Code schreiben:
+
+@lisp
+(package
+  ;; …
+  (inputs (list libunistring libffi libgc)))
+@end lisp
+
+Achten Sie auf das gegenüber früher vereinfachte @code{inputs}-Feld.
+Wenn nötig können Sie in erstellungsseitigem Code G-Ausdrücke (gexps)
+benutzen, um andere Pakete zu referenzieren.  Des Weiteren erleichtert
+das Makro @code{modify-inputs} geläufige Operationen auf Eingaben —
+das Löschen, Ersetzen, Hinzufügen von Eingaben.
+
+Um den Übergang zum „neuen Stil“ zu erleichtern, steht ein neuer
+Befehl @command{guix style} zur Verfügung.  Führen Sie @command{info
+\"(guix) Invoking guix style\"} aus, um mehr Informationen zu
+erhalten.")))
 
  (entry (commit "82daab42811a2e3c7684ebdf12af75ff0fa67b99")
         (title

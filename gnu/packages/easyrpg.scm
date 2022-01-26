@@ -31,6 +31,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages xdisorg)
@@ -40,7 +41,7 @@
 (define-public liblcf
   (package
     (name "liblcf")
-    (version "0.6.2")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -48,14 +49,13 @@
                     "/liblcf-" version ".tar.gz"))
               (sha256
                (base32
-                "0n2k4brd264jg9p6918x7dnb2iimpzjh8q3v1fws58450xbgnkqc"))))
+                "10ghpwww5r3iwlaw1mvf6kamn142nyr2zwdabqghy3k4xv837cih"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (propagated-inputs
      ;; Required by 'liblcf.pc'.
-     `(("expat" ,expat)
-       ("icu" ,icu4c)))
+     (list expat icu4c))
     (home-page "https://easyrpg.org/")
     (synopsis "Library to handle RPG Maker 2000 and 2003 game data")
     (description
@@ -76,7 +76,7 @@ It can read and write LCF and XML files.")
 (define-public easyrpg-player
   (package
     (name "easyrpg-player")
-    (version "0.6.2.3")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -84,30 +84,32 @@ It can read and write LCF and XML files.")
                     "/easyrpg-player-" version ".tar.gz"))
               (sha256
                (base32
-                "1lahbhgyhky0hgd3xwhgg2nm8mfa9p2i1fzxi00561hnk2ya86pm"))))
+                "1hm4hdi4l8c9jw0x3kcm6iwgfv8parlfj13va3r3p90040gs7s8l"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
        (list (string-append "--with-bash-completion-dir="
                             %output "/etc/bash_completion.d/"))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("freetype" ,freetype)
-       ("harfbuzz" ,harfbuzz)
-       ("liblcf" ,liblcf)
-       ("libpng" ,libpng)
-       ("libsndfile" ,libsndfile)
-       ("libvorbis" ,libvorbis)
-       ("libxmp" ,libxmp)
-       ("mpg123" ,mpg123)
-       ("opusfile" ,opusfile)
-       ("pixman" ,pixman)
-       ("sdl2-mixer" ,sdl2-mixer)
-       ("sdl2" ,sdl2)
-       ("speexdsp" ,speexdsp)
-       ("wildmidi" ,wildmidi)
-       ("zlib" ,zlib)))
+     (list fluidsynth
+           fmt
+           freetype
+           harfbuzz
+           liblcf
+           libpng
+           libsndfile
+           libvorbis
+           libxmp
+           mpg123
+           opusfile
+           pixman
+           sdl2-mixer
+           sdl2
+           speexdsp
+           wildmidi
+           zlib))
     (home-page "https://easyrpg.org/")
     (synopsis "Play RPG Maker 2000 and 2003 games")
     (description

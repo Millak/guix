@@ -41,16 +41,16 @@
 
 (define-configuration docker-configuration
   (docker
-   (package docker)
+   (file-like docker)
    "Docker daemon package.")
   (docker-cli
-   (package docker-cli)
+   (file-like docker-cli)
    "Docker client package.")
   (containerd
-   (package containerd)
+   (file-like containerd)
    "containerd package.")
   (proxy
-   (package docker-libnetwork-cmd-proxy)
+   (file-like docker-libnetwork-cmd-proxy)
    "The proxy package to support inter-container and outside-container
 loop-back communications.")
   (enable-proxy?
@@ -62,6 +62,9 @@ loop-back communications.")
   (enable-iptables?
    (boolean #t)
    "Enable addition of iptables rules (enabled by default).")
+  (environment-variables
+   (list '())
+   "Environment variables to set for dockerd")
   (no-serialization))
 
 (define %docker-accounts
@@ -102,6 +105,7 @@ loop-back communications.")
   (let* ((docker (docker-configuration-docker config))
          (enable-proxy? (docker-configuration-enable-proxy? config))
          (enable-iptables? (docker-configuration-enable-iptables? config))
+         (environment-variables (docker-configuration-environment-variables config))
          (proxy (docker-configuration-proxy config))
          (debug? (docker-configuration-debug? config)))
     (shepherd-service
@@ -132,6 +136,8 @@ loop-back communications.")
                            (if #$enable-iptables?
                                "--iptables"
                                "--iptables=false"))
+                     #:environment-variables
+                     (list #$@environment-variables)
                      #:pid-file "/var/run/docker.pid"
                      #:log-file "/var/log/docker.log"))
            (stop #~(make-kill-destructor)))))

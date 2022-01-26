@@ -59,42 +59,47 @@
         "113nlmidxy9kjr45kg9x3ngar4951mvag1js2a3j8nxcz34wxsv4"))))
     (build-system gnu-build-system)
     (inputs
-     ;; TODO: remove `if' in the next rebuild cycle.
-     (if (%current-target-system)
-         `(("bash" ,bash-minimal)
-           ("perl" ,perl)
-           ("m4" ,m4))
-         '()))
-    (native-inputs
-     `(("perl" ,perl)
+     `(("bash" ,bash-minimal)
+       ("perl" ,perl)
        ("m4" ,m4)))
+    (native-inputs
+     (list perl m4))
     (arguments
      `(;; XXX: testsuite: 209 and 279 failed.  The latter is an impurity.  It
        ;; should use our own "cpp" instead of "/lib/cpp".
        #:tests? #f
-       ,@(if (%current-target-system)
-             `(#:phases
-               (modify-phases %standard-phases
-                 (add-after 'install 'patch-non-shebang-references
-                   (lambda* (#:key build inputs outputs #:allow-other-keys)
-                     ;; `patch-shebangs' patches shebangs only, and the Perl
-                     ;; scripts use a re-exec feature that references the
-                     ;; build hosts' perl.  Also, BASH and M4 store references
-                     ;; hide in the scripts.
-                     (let ((bash (assoc-ref inputs "bash"))
-                           (m4 (assoc-ref inputs "m4"))
-                           (perl (assoc-ref inputs "perl"))
-                           (out  (assoc-ref outputs "out"))
-                           (store-directory (%store-directory)))
-                      (substitute* (find-files (string-append out "/bin"))
-                        (((string-append store-directory "/[^/]*-bash-[^/]*"))
-                         bash)
-                        (((string-append store-directory "/[^/]*-m4-[^/]*"))
-                         m4)
-                        (((string-append store-directory "/[^/]*-perl-[^/]*"))
-                         perl))
-                      #t)))))
-             '())))
+       #:phases
+       (modify-phases %standard-phases
+         ,@(if (%current-target-system)
+               '((add-after 'install 'patch-non-shebang-references
+                    (lambda* (#:key build inputs outputs #:allow-other-keys)
+                      ;; `patch-shebangs' patches shebangs only, and the Perl
+                      ;; scripts use a re-exec feature that references the
+                      ;; build hosts' perl.  Also, BASH and M4 store references
+                      ;; hide in the scripts.
+                      (let ((bash (assoc-ref inputs "bash"))
+                            (m4 (assoc-ref inputs "m4"))
+                            (perl (assoc-ref inputs "perl"))
+                            (out  (assoc-ref outputs "out"))
+                            (store-directory (%store-directory)))
+                        (substitute* (find-files (string-append out "/bin"))
+                          (((string-append store-directory "/[^/]*-bash-[^/]*"))
+                           bash)
+                          (((string-append store-directory "/[^/]*-m4-[^/]*"))
+                           m4)
+                          (((string-append store-directory "/[^/]*-perl-[^/]*"))
+                           perl))))))
+               '())
+         (add-after 'install 'unpatch-shebangs
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Scripts that "autoconf -i" installs (config.guess,
+             ;; config.sub, and install-sh) must use a regular shebang
+             ;; rather than a reference to the store.  Restore it.
+             (let* ((out (assoc-ref outputs "out"))
+                    (build-aux (string-append
+                                out "/share/autoconf/build-aux")))
+               (substitute* (find-files build-aux)
+                 (("^#!.*/bin/sh") "#!/bin/sh"))))))))
     (home-page "https://www.gnu.org/software/autoconf/")
     (synopsis "Create source code configuration scripts")
     (description
@@ -134,19 +139,7 @@ know anything about Autoconf or M4.")
                                                (executable-file? file)))
                                  (find-files "bin"
                                              (lambda (file stat)
-                                               (executable-file? file)))))
-               #t))
-           (add-after 'install 'unpatch-shebangs
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Scripts that "autoconf -i" installs (config.guess,
-               ;; config.sub, and install-sh) must use a regular shebang
-               ;; rather than a reference to the store.  Restore it.
-               ;; TODO: Move this phase to 'autoconf-2.69'.
-               (let* ((out (assoc-ref outputs "out"))
-                      (build-aux (string-append
-                                  out "/share/autoconf/build-aux")))
-                 (substitute* (find-files build-aux)
-                   (("^#!.*/bin/sh") "#!/bin/sh")))))))))))
+                                               (executable-file? file)))))))))))))
 
 (define-public autoconf autoconf-2.69)
 
@@ -216,9 +209,9 @@ files with a system-specific shebang."
     (inputs `(("guile"
                ;; XXX: Kludge to hide the circular dependency.
                ,(module-ref (resolve-interface '(gnu packages guile))
-                            'guile-2.0))
+                            'guile-3.0/fixed))
               ("autoconf" ,autoconf)
-              ("bash" ,bash)))
+              ("bash" ,bash-minimal)))
     (arguments
      '(#:modules ((guix build utils))
        #:builder
@@ -316,7 +309,7 @@ contributed as free software by the community.")
                (base32
                 "0gv7g61ja9q9zg1m30k4snqwwy1kq7b4df6sb7d2qra7kbdq8af1"))))
     (build-system gnu-build-system)
-    (inputs `(("perl" ,perl)))
+    (inputs (list perl))
     (synopsis "Process generated build logs")
     (description "Autobuild is a package that processes build logs generated
 when building software.  Autobuild is primarily focused on packages using
@@ -331,24 +324,21 @@ output is indexed in many ways to simplify browsing.")
 (define-public automake
   (package
     (name "automake")
-    (version "1.16.2")
+    (version "1.16.3")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/automake/automake-"
                                  version ".tar.xz"))
              (sha256
               (base32
-                "1l7dkqbsmbf94ax29jj1jf6a0r6ikc8jybg1p5m0c3ki7pg5ki6c"))
+                "0fmz2fhmzcpacnprl5msphvaflwiy0hvpgmqlgfny72ddijzfazz"))
              (patches
               (search-patches "automake-skip-amhello-tests.patch"))))
     (build-system gnu-build-system)
     (inputs
-     ;; TODO: remove `if' in the next rebuild cycle.
-     (if (%current-target-system)
-         `(("autoconf" ,autoconf-wrapper)
-           ("bash" ,bash-minimal)
-           ("perl" ,perl))
-         '()))
+     `(("autoconf" ,autoconf-wrapper)
+       ("bash" ,bash-minimal)
+       ("perl" ,perl)))
     (native-inputs
      `(("autoconf" ,autoconf-wrapper)
        ("perl" ,perl)))
@@ -444,6 +434,20 @@ intuitive format and then Automake works with Autoconf to produce a robust
 Makefile, simplifying the entire process for the developer.")
     (license gpl2+)))                      ; some files are under GPLv3+
 
+(define-public automake-1.16.5
+  (package
+    (inherit automake)
+    (version "1.16.5")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://gnu/automake/automake-"
+                                 version ".tar.xz"))
+             (sha256
+              (base32
+                "0sdl32qxdy7m06iggmkkvf7j520rmmgbsjzbm7fgnxwxdp6mh7gh"))
+             (patches
+              (search-patches "automake-skip-amhello-tests.patch"))))))
+
 (define-public libtool
   (package
     (name "libtool")
@@ -457,7 +461,7 @@ Makefile, simplifying the entire process for the developer.")
                 "0vxj52zm709125gwv9qqlw02silj8bnjnh4y07arrz60r31ai1vw"))
               (patches (search-patches "libtool-skip-tests2.patch"))))
     (build-system gnu-build-system)
-    (propagated-inputs `(("m4" ,m4)))
+    (propagated-inputs (list m4))
     (native-inputs `(("m4" ,m4)
                      ("perl" ,perl)
                      ;; XXX: this shouldn't be necessary, but without it test
@@ -493,11 +497,19 @@ Makefile, simplifying the entire process for the developer.")
                (("/bin/sh")
                 (string-append bash "/bin/sh")))
              #t)))
-         (add-after 'patch-source-shebangs 'restore-ltmain-shebang
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "build-aux/ltmain.in"
-               (("^#!.*/bin/sh$") "#!/bin/sh"))
-             #t)))))
+         ;; These files may be copied into source trees by libtoolize,
+         ;; therefore they must not point to store file names that would be
+         ;; leaked with tarballs generated by make dist.
+         (add-after 'install 'restore-build-aux-shebang
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (dir (string-append out "/share/libtool/build-aux")))
+               (for-each (lambda (file)
+                           (format #t "restoring shebang on `~a'~%" file)
+                           (substitute* file
+                             (("^#!.*/bin/sh") "#!/bin/sh")))
+                         (find-files dir ".*"))
+               #t))))))
 
     (synopsis "Generic shared library support tools")
     (description
@@ -546,7 +558,7 @@ complexity of working with shared libraries across platforms.")
                           (install-file "doc/config.sub.1" man1)
                           #t))))))
       (native-inputs
-       `(("help2man" ,help2man)))
+       (list help2man))
       (home-page "https://savannah.gnu.org/projects/config")
       (synopsis "Ubiquitous config.guess and config.sub scripts")
       (description "The `config.guess' script tries to guess a canonical system triple,
@@ -602,7 +614,7 @@ configuration in nearly all GNU packages (and many others).")
                (("/usr/bin/env python") (which "python3")))
              #t)))))
     (inputs
-     `(("python" ,python-3)))
+     (list python-3))
     (synopsis "@command{configure} interface for Python-based packages")
     (description
      "GNU pyconfigure provides template files for easily implementing

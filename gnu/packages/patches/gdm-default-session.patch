@@ -4,11 +4,9 @@ and not in the directories listed in $XDG_DATA_DIRS.  The latter includes
 /run/current-system/profile, and only then.
 
 Fixes <https://bugs.gnu.org/37831>.
-
-diff -ur a/daemon/gdm-session.c b/daemon/gdm-session.c
---- a/daemon/gdm-session.c	2019-09-25 10:40:24.000000000 -0400
-+++ b/daemon/gdm-session.c	2020-04-18 18:30:02.671856808 -0400
-@@ -348,24 +348,18 @@
+--- a/daemon/gdm-session.c	2021-07-23 15:16:15.164201000 +0000
++++ b/daemon/gdm-session.c	2021-09-26 08:18:58.730134555 +0000
+@@ -354,25 +354,19 @@
          GArray *search_array = NULL;
          char **search_dirs;
          int i;
@@ -19,22 +17,24 @@ diff -ur a/daemon/gdm-session.c b/daemon/gdm-session.c
                  DMCONFDIR "/Sessions/",
                  DATADIR "/gdm/BuiltInSessions/",
 -                DATADIR "/xsessions/",
-+                "/run/current-system/profile/share/xsessions/"
++                "/run/current-system/profile/share/xsessions/",
          };
  
-         static const char *wayland_search_dir = DATADIR "/wayland-sessions/";
+-        static const char *wayland_search_dir = DATADIR "/wayland-sessions/";
++        static const char *wayland_search_dir = "/run/current-system/profile/share/wayland-sessions/";
  
          search_array = g_array_new (TRUE, TRUE, sizeof (char *));
  
--        for (i = 0; system_data_dirs[i]; i++) {
--                gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
--                g_array_append_val (search_array, dir);
--        }
+         if (type == NULL || g_str_equal (type, "x11")) {
+-                for (i = 0; system_data_dirs[i]; i++) {
+-                        gchar *dir = g_build_filename (system_data_dirs[i], "xsessions", NULL);
+-                        g_array_append_val (search_array, dir);
+-                }
 -
-         g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
+                 g_array_append_vals (search_array, x_search_dirs, G_N_ELEMENTS (x_search_dirs));
+         }
  
- #ifdef ENABLE_WAYLAND_SUPPORT
-@@ -373,16 +367,7 @@
+@@ -382,16 +376,7 @@
  #ifdef ENABLE_USER_DISPLAY_SERVER
                  g_array_prepend_val (search_array, wayland_search_dir);
  
@@ -54,7 +54,7 @@ diff -ur a/daemon/gdm-session.c b/daemon/gdm-session.c
 diff -ur a/libgdm/gdm-sessions.c b/libgdm/gdm-sessions.c
 --- a/libgdm/gdm-sessions.c	2019-10-07 04:53:35.000000000 -0400
 +++ b/libgdm/gdm-sessions.c	2020-04-18 18:31:42.491348691 -0400
-@@ -245,19 +245,12 @@
+@@ -245,35 +245,23 @@
                  "/etc/X11/sessions/",
                  DMCONFDIR "/Sessions/",
                  DATADIR "/gdm/BuiltInSessions/",
@@ -75,7 +75,12 @@ diff -ur a/libgdm/gdm-sessions.c b/libgdm/gdm-sessions.c
          for (i = 0; i < G_N_ELEMENTS (xorg_search_dirs); i++) {
                  g_ptr_array_add (xorg_search_array, g_strdup (xorg_search_dirs[i]));
          }
-@@ -269,11 +262,6 @@
+ 
+ #ifdef ENABLE_WAYLAND_SUPPORT
+         const char *wayland_search_dirs[] = {
+-                DATADIR "/wayland-sessions/",
++                "/run/current-system/profile/share/wayland-sessions/",
+         };
  
          wayland_search_array = g_ptr_array_new_with_free_func (g_free);
  

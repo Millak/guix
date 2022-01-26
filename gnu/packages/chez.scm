@@ -71,7 +71,7 @@
 (define-public chez-scheme
   (package
     (name "chez-scheme")
-    (version "9.5.4")
+    (version "9.5.6")
     (source
      (origin
        (method git-fetch)
@@ -79,14 +79,10 @@
              (url "https://github.com/cisco/ChezScheme")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0prgn2z9l888j93ydxaf04ph424g0fi3a8w7f8m0b2r7fr1v7388"))
+        (base32 "07s433hn1z2slfc026sidrpzxv3a8narcd40qqr1xrpb9012xdky"))
        (file-name (git-file-name name version))
-       (patches
-        (search-patches
-         ;; backported from upstream: remove on next release
-         "chez-scheme-build-util-paths-backport.patch"))
        (snippet
-        ;; remove bundled libraries
+        ;; Remove bundled libraries.
         (with-imported-modules '((guix build utils))
           #~(begin
               (use-modules (guix build utils))
@@ -114,8 +110,10 @@
        ;; for docs
        ("stex" ,stex)
        ("xorg-rgb" ,xorg-rgb)
-       ("texlive" ,(texlive-union (list texlive-latex-oberdiek
-                                        texlive-generic-epsf)))
+       ("texlive" ,(texlive-updmap.cfg (list texlive-dvips-l3backend
+                                             texlive-epsf
+                                             texlive-fonts-ec
+                                             texlive-oberdiek)))
        ("ghostscript" ,ghostscript)
        ("netpbm" ,netpbm)))
     (native-search-paths
@@ -142,8 +140,7 @@
                            (assoc-ref (or native-inputs inputs) dep))
                          (copy-recursively src dep
                                            #:keep-mtime? #t))
-                       '("nanopass" "stex"))
-               #t))
+                       '("nanopass" "stex"))))
          ;; NOTE: the custom Chez 'configure' script doesn't allow
          ;; unrecognized flags, such as those automatically added
          ;; by `gnu-build-system`.
@@ -167,10 +164,10 @@
                ;; Some makefiles (for tests) don't seem to propagate CC
                ;; properly, so we take it out of their hands:
                (setenv "CC" ,(cc-for-target))
+               (setenv "HOME" "/tmp")
                (apply invoke
                       "./configure"
-                      flags)
-               #t)))
+                      flags))))
          ;; The binary file name is called "scheme" as is the one from MIT/GNU
          ;; Scheme.  We add a symlink to use in case both are installed.
          (add-after 'install 'install-symlink
@@ -184,8 +181,7 @@
                (map (lambda (file)
                       (symlink file (string-append (dirname file)
                                                    "/" name ".boot")))
-                    (find-files lib "scheme.boot"))
-               #t)))
+                    (find-files lib "scheme.boot")))))
          ;; Building explicitly lets us avoid using substitute*
          ;; to re-write makefiles.
          (add-after 'install-symlink 'prepare-stex
@@ -214,8 +210,7 @@
                            '("ReadMe" ; includes the license
                              "doc/stex.html"
                              "doc/stex.css"
-                             "doc/stex.pdf"))
-                 #t))))
+                             "doc/stex.pdf"))))))
          ;; Building the documentation requires stex and a running scheme.
          ;; FIXME: this is probably wrong for cross-compilation
          (add-after 'prepare-stex 'install-doc
@@ -248,8 +243,7 @@
                  (symlink "release_notes/release_notes.pdf"
                           "release_notes.pdf")
                  (symlink "csug/csug9_5.pdf"
-                          "csug.pdf"))
-               #t))))))
+                          "csug.pdf"))))))))
     ;; Chez Scheme does not have a  MIPS backend.
     ;; FIXME: Debian backports patches to get armhf working.
     ;; We should too. It is the Chez machine type arm32le
@@ -281,7 +275,7 @@ and 32-bit PowerPC architectures.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("chez-scheme" ,chez-scheme)))
+     (list chez-scheme))
     (arguments
      `(#:make-flags (let ((out (assoc-ref %outputs "out")))
                       (list (string-append "PREFIX=" out)
@@ -316,11 +310,10 @@ and 32-bit PowerPC architectures.")
       (native-inputs
        `(("chez-scheme" ,chez-scheme)
          ("ghostscript" ,ghostscript)
-         ("texlive" ,(texlive-union (list texlive-charter
-                                          texlive-latex-oberdiek
-                                          texlive-generic-epsf
+         ("texlive" ,(texlive-updmap.cfg (list texlive-oberdiek
+                                          texlive-epsf
                                           texlive-metapost
-                                          texlive-fonts-charter
+                                          texlive-charter
                                           texlive-pdftex
                                           texlive-context
                                           texlive-cm
@@ -334,12 +327,6 @@ and 32-bit PowerPC architectures.")
                       #:tests? #f        ; no tests
                       #:phases
                       (modify-phases %standard-phases
-                        (add-before 'build 'set-HOME
-                          (lambda _
-                            ;; FIXME: texlive-union does not find the built
-                            ;; metafonts, so it tries to generate them in HOME.
-                            (setenv "HOME" "/tmp")
-                            #t))
                         ;; This package has a custom "bootstrap" script that
                         ;; is meant to be run from the Makefile.
                         (delete 'bootstrap)
@@ -382,7 +369,7 @@ programming in Scheme.")
       (native-inputs
        `(("chez-scheme" ,chez-scheme)
          ("chez-web" ,chez-web)
-         ("texlive" ,(texlive-union (list texlive-pdftex)))))
+         ("texlive" ,(texlive-updmap.cfg (list texlive-pdftex)))))
       (arguments
        `(#:tests? #f              ; no tests
          #:phases
@@ -485,9 +472,9 @@ Chez Scheme.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
-     `(("chez-srfi" ,chez-srfi))) ; for tests
+     (list chez-srfi)) ; for tests
     (native-inputs
-     `(("chez-scheme" ,chez-scheme)))
+     (list chez-scheme))
     (arguments
      `(#:make-flags ,(chez-make-flags name version)
        #:test-target "test"
@@ -514,11 +501,11 @@ Chez Scheme.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
-     `(("chez-matchable" ,chez-matchable))) ; for tests
+     (list chez-matchable)) ; for tests
     (propagated-inputs
-     `(("chez-srfi" ,chez-srfi))) ; for irregex-utils
+     (list chez-srfi)) ; for irregex-utils
     (native-inputs
-     `(("chez-scheme" ,chez-scheme)))
+     (list chez-scheme))
     (arguments
      `(#:make-flags ,(chez-make-flags name version)
        #:test-target "test"
@@ -546,9 +533,9 @@ syntax, with various aliases for commonly used patterns.")
        (file-name (string-append name "-" version ".tar.gz"))))
     (build-system gnu-build-system)
     (propagated-inputs
-     `(("chez-srfi" ,chez-srfi))) ; for irregex-utils
+     (list chez-srfi)) ; for irregex-utils
     (native-inputs
-     `(("chez-scheme" ,chez-scheme)))
+     (list chez-scheme))
     (arguments
      `(#:make-flags ,(chez-make-flags name version)
        #:test-target "chez-check"
@@ -586,9 +573,9 @@ strings.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
-     `(("chez-srfi" ,chez-srfi)))       ; for tests
+     (list chez-srfi))       ; for tests
     (native-inputs
-     `(("chez-scheme" ,chez-scheme)))
+     (list chez-scheme))
     (arguments
      `(#:make-flags ,(chez-make-flags name version)
        #:test-target "test"
@@ -616,12 +603,11 @@ required to port the program @code{Scmutils} to Chez Scheme.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
-     `(("chez-srfi" ,chez-srfi)))       ; for tests
+     (list chez-srfi))       ; for tests
     (native-inputs
-     `(("chez-scheme" ,chez-scheme)))
+     (list chez-scheme))
     (propagated-inputs
-     `(("chez-mit" ,chez-mit)
-       ("chez-srfi" ,chez-srfi)))
+     (list chez-mit chez-srfi))
     (arguments
      `(#:make-flags ,(chez-make-flags name version)
        #:tests? #f                      ; no test suite

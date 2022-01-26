@@ -2,13 +2,15 @@
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2018-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,17 +58,17 @@
 (define-public node
   (package
     (name "node")
-    (version "10.24.0")
+    (version "10.24.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "1k1srdis23782hnd1ymgczs78x9gqhv77v0am7yb54gqcspp70hm"))
+                "032801kg24j04xmf09m0vxzlcz86sv21s24lv9l4cfv08k1c4byp"))
               (modules '((guix build utils)))
               (snippet
-               `(begin
+               '(begin
                   ;; Patch for compatibility with ICU 68 and newer, which
                   ;; removed the public TRUE and FALSE macros.
                   (substitute* '("deps/v8/src/objects/intl-objects.cc"
@@ -88,8 +90,7 @@
                     (("deps/http_parser/http_parser.gyp") "")
                     (("deps/uv/include/\\*.h") "")
                     (("deps/uv/uv.gyp") "")
-                    (("deps/zlib/zlib.gyp") ""))
-                  #t))))
+                    (("deps/zlib/zlib.gyp") ""))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--shared-cares"
@@ -103,16 +104,29 @@
        ;; Run only the CI tests.  The default test target requires additional
        ;; add-ons from NPM that are not distributed with the source.
        #:test-target "test-ci-js"
+       #:modules
+       ((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-1)
+        (ice-9 match))
        #:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'patch-files
+         (add-before 'configure 'patch-hardcoded-program-references
            (lambda* (#:key inputs #:allow-other-keys)
+
              ;; Fix hardcoded /bin/sh references.
-             (substitute* '("lib/child_process.js"
-                            "lib/internal/v8_prof_polyfill.js"
-                            "test/parallel/test-child-process-spawnsync-shell.js"
-                            "test/parallel/test-stdio-closed.js"
-                            "test/sequential/test-child-process-emfile.js")
+             (substitute*
+                 (let ((common
+                        '("lib/child_process.js"
+                          "lib/internal/v8_prof_polyfill.js"
+                          "test/parallel/test-child-process-spawnsync-shell.js"
+                          "test/parallel/test-stdio-closed.js"
+                          "test/sequential/test-child-process-emfile.js"))
+                       ;; not in bootstap node:
+                       (sigxfsz "test/parallel/test-fs-write-sigxfsz.js"))
+                   (if (file-exists? sigxfsz)
+                       (cons sigxfsz common)
+                       common))
                (("'/bin/sh'")
                 (string-append "'" (assoc-ref inputs "bash") "/bin/sh'")))
 
@@ -122,7 +136,10 @@
                             "test/parallel/test-child-process-exec-env.js")
                (("'/usr/bin/env'")
                 (string-append "'" (assoc-ref inputs "coreutils")
-                               "/bin/env'")))
+                               "/bin/env'")))))
+         (add-after 'patch-hardcoded-program-references
+             'delete-problematic-tests
+           (lambda* (#:key inputs #:allow-other-keys)
 
              ;; FIXME: These tests fail in the build container, but they don't
              ;; seem to be indicative of real problems in practice.
@@ -134,6 +151,10 @@
 
              ;; This requires a DNS resolver.
              (delete-file "test/parallel/test-dns.js")
+
+             ;; This test is timing-sensitive, and fails sporadically on
+             ;; slow, busy, or even very fast machines.
+             (delete-file "test/parallel/test-fs-utimes.js")
 
              ;; FIXME: This test fails randomly:
              ;; https://github.com/nodejs/node/issues/31213
@@ -217,64 +238,92 @@
                (setenv "CXX" ,(cxx-for-target))
                (setenv "PKG_CONFIG" ,(pkg-config-for-target))
                (apply invoke
-                      (string-append (assoc-ref (or native-inputs inputs)
-                                                "python")
-                                     "/bin/python")
-                      "configure" flags))))
-         (add-after 'patch-shebangs 'patch-npm-shebang
+                      (let ((inpts (or native-inputs inputs)))
+                        (with-exception-handler
+                            (lambda (e)
+                              (if (search-error? e)
+                                  (search-input-file inpts "/bin/python3")
+                                  (raise-exception e)))
+                          (lambda ()
+                            (search-input-file inpts "/bin/python"))))
+                      "configure"
+                      flags))))
+         (add-after 'patch-shebangs 'patch-nested-shebangs
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; Based on the implementation of patch-shebangs
+             ;; from (guix build gnu-build-system).
+             (let ((path (append-map (match-lambda
+                                       ((_ . dir)
+                                        (list (string-append dir "/bin")
+                                              (string-append dir "/sbin")
+                                              (string-append dir "/libexec"))))
+                                     (append outputs inputs))))
+               (for-each
+                (lambda (file)
+                  (patch-shebang file path))
+                (find-files (search-input-directory outputs "lib/node_modules")
+                            (lambda (file stat)
+                              (executable-file? file))
+                            #:stat lstat)))))
+         (add-after 'install 'install-npmrc
+           ;; Note: programs like node-gyp only receive these values if
+           ;; they are started via `npm` or `npx`.
+           ;; See: https://github.com/nodejs/node-gyp#npm-configuration
            (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((bindir (string-append (assoc-ref outputs "out")
-                                           "/bin"))
-                    (npm    (string-append bindir "/npm"))
-                    (target (readlink npm)))
-               (with-directory-excursion bindir
-                 (patch-shebang target (list bindir))))))
-         (add-after 'install 'patch-node-shebang
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((bindir (string-append (assoc-ref outputs "out")
-                                           "/bin"))
-                    (npx    (readlink (string-append bindir "/npx"))))
-               (with-directory-excursion bindir
-                 (patch-shebang npx (list bindir)))))))))
+             (let* ((out (assoc-ref outputs "out")))
+               (with-output-to-file
+                   ;; Use the config file "primarily for distribution
+                   ;; maintainers" rather than "{prefix}/etc/npmrc",
+                   ;; especially because node-build-system uses --prefix
+                   ;; to install things to their store paths:
+                   (string-append out "/lib/node_modules/npm/npmrc")
+                 (lambda ()
+                   ;; Tell npm (mostly node-gyp) where to find our
+                   ;; installed headers so it doesn't try to
+                   ;; download them from the internet:
+                   (format #t "nodedir=~a\n" out)))))))))
     (native-inputs
-     `(;; Runtime dependencies for binaries used as a bootstrap.
-       ("c-ares" ,c-ares)
-       ("http-parser" ,http-parser)
-       ("icu4c" ,icu4c)
-       ("libuv" ,libuv)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)
-       ;; Regular build-time dependencies.
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("procps" ,procps)
-       ("python" ,python-2)
-       ("util-linux" ,util-linux)))
+     ;; Runtime dependencies for binaries used as a bootstrap.
+     (list c-ares
+           http-parser
+           icu4c
+           libuv
+           `(,nghttp2 "lib")
+           openssl
+           zlib
+           ;; Regular build-time dependencies.
+           perl
+           pkg-config
+           procps
+           python-2
+           util-linux))
     (native-search-paths
      (list (search-path-specification
             (variable "NODE_PATH")
             (files '("lib/node_modules")))))
     (inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)
-       ("c-ares" ,c-ares)
-       ("http-parser" ,http-parser)
-       ("icu4c" ,icu4c)
-       ("libuv" ,libuv)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list bash-minimal
+           coreutils
+           c-ares
+           http-parser
+           icu4c
+           libuv
+           `(,nghttp2 "lib")
+           openssl
+           python-wrapper               ;for node-gyp (supports python3)
+           zlib))
     (synopsis "Evented I/O for V8 JavaScript")
-    (description "Node.js is a platform built on Chrome's JavaScript runtime
+    (description
+     "Node.js is a platform built on Chrome's JavaScript runtime
 for easily building fast, scalable network applications.  Node.js uses an
 event-driven, non-blocking I/O model that makes it lightweight and efficient,
 perfect for data-intensive real-time applications that run across distributed
 devices.")
     (home-page "https://nodejs.org/")
     (license license:expat)
-    (properties '((max-silent-time . 7200)     ;2h, needed on ARM
-                  (timeout . 21600)))))        ;6h
+    (properties '((max-silent-time . 7200)   ;2h, needed on ARM
+                  (timeout . 21600)          ;6h
+                  (cpe-name . "node.js")))))
 
 ;; This should be the latest version of node that still builds without
 ;; depending on llhttp.
@@ -301,7 +350,9 @@ devices.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies '("tap")))))))
     (home-page "https://github.com/npm/node-semver")
     (properties '((hidden? . #t)))
     (synopsis "Parses semantic versions strings")
@@ -330,7 +381,13 @@ devices.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies '("eslint"
+                                    "expect.js"
+                                    "husky"
+                                    "lint-staged"
+                                    "mocha")))))))
     (home-page "https://github.com/zeit/ms#readme")
     (properties '((hidden? . #t)))
     (synopsis "Tiny millisecond conversion utility")
@@ -358,7 +415,9 @@ formats to milliseconds.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies `("chai" "mocha")))))))
     (home-page "https://github.com/darkskyapp/binary-search#readme")
     (properties '((hidden? . #t)))
     (synopsis "Tiny binary search function with comparators")
@@ -385,8 +444,20 @@ formats to milliseconds.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))
-    (inputs `(("node-ms" ,node-ms-bootstrap)))
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies `("brfs"
+                                    "browserify"
+                                    "coveralls"
+                                    "istanbul"
+                                    "karma"
+                                    "karma-browserify"
+                                    "karma-chrome-launcher"
+                                    "karma-mocha"
+                                    "mocha"
+                                    "mocha-lcov-reporter"
+                                    "xo")))))))
+    (inputs (list node-ms-bootstrap))
     (home-page "https://github.com/visionmedia/debug#readme")
     (properties '((hidden? . #t)))
     (synopsis "Small debugging utility")
@@ -439,21 +510,26 @@ Node.js and web browsers.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda _
+             (delete-dependencies `("@types/mocha"
+                                    "@types/node"
+                                    "mocha"
+                                    "ts-node"
+                                    "tslint"
+                                    "typescript"))))
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((esbuild (string-append (assoc-ref inputs "esbuild")
-                                           "/bin/esbuild")))
+             (let ((esbuild (search-input-file inputs "/bin/esbuild")))
                (invoke esbuild
                        "--platform=node"
                        "--outfile=lib/builder.js"
                        "--bundle"
                        "src/builder.ts")))))))
     (inputs
-     `(("node-binary-search" ,node-binary-search-bootstrap)
-       ("node-debug" ,node-debug-bootstrap)))
+     (list node-binary-search-bootstrap node-debug-bootstrap))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/indutny/llparse-builder#readme")
     (properties '((hidden? . #t)))
     (synopsis "Graph builder for consumption by llparse")
@@ -495,21 +571,27 @@ Node.js and web browsers.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies `("@types/debug"
+                                    "@types/mocha"
+                                    "@types/node"
+                                    "mocha"
+                                    "ts-node"
+                                    "tslint"
+                                    "typescript"))))
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((esbuild (string-append (assoc-ref inputs "esbuild")
-                                           "/bin/esbuild")))
+             (let ((esbuild (search-input-file inputs "/bin/esbuild")))
                (invoke esbuild
                        "--platform=node"
                        "--outfile=lib/frontend.js"
                        "--bundle"
                        "src/frontend.ts")))))))
     (inputs
-     `(("node-debug" ,node-debug-bootstrap)
-       ("node-llparse-builder" ,node-llparse-builder-bootstrap)))
+     (list node-debug-bootstrap node-llparse-builder-bootstrap))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/indutny/llparse-frontend#readme")
     (properties '((hidden? . #t)))
     (synopsis "Frontend for the llparse compiler")
@@ -550,21 +632,29 @@ Node.js and web browsers.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure)
+         (add-after 'patch-dependencies 'delete-dependencies
+           (lambda args
+             (delete-dependencies `("@types/debug"
+                                    "@types/mocha"
+                                    "@types/node"
+                                    "esm"
+                                    "llparse-test-fixture"
+                                    "mocha"
+                                    "ts-node"
+                                    "tslint"
+                                    "typescript"))))
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((esbuild (string-append (assoc-ref inputs "esbuild")
-                                           "/bin/esbuild")))
+             (let ((esbuild (search-input-file inputs "/bin/esbuild")))
                (invoke esbuild
                        "--platform=node"
                        "--outfile=lib/api.js"
                        "--bundle"
                        "src/api.ts")))))))
     (inputs
-     `(("node-debug" ,node-debug-bootstrap)
-       ("node-llparse-frontend" ,node-llparse-frontend-bootstrap)))
+     (list node-debug-bootstrap node-llparse-frontend-bootstrap))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/nodejs/llparse#readme")
     (properties '((hidden? . #t)))
     (synopsis "Compile incremental parsers to C code")
@@ -575,7 +665,7 @@ parser definition into a C output.")
 (define-public llhttp-bootstrap
   (package
     (name "llhttp")
-    (version "2.1.3")
+    (version "2.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -584,7 +674,7 @@ parser definition into a C output.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pqj7kyyzr1zs4h9yzn5rdxnxspm3wqgsv00765dd42fszlmrmk8"))
+                "115mwyds9655p76lhglxg2blc1ksgrix6zhigaxnc2q6syy3pa6x"))
               (patches (search-patches "llhttp-bootstrap-CVE-2020-8287.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -606,10 +696,9 @@ parser definition into a C output.")
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (let ((esbuild (string-append
-                              (assoc-ref (or native-inputs inputs) "esbuild")
-                              "/bin/esbuild")))
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (let ((esbuild (search-input-file (or native-inputs inputs)
+                                               "/bin/esbuild")))
                (invoke esbuild
                        "--platform=node"
                        "--outfile=bin/generate.js"
@@ -646,14 +735,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "14.16.0")
+    (version "14.18.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.xz"))
               (sha256
                (base32
-                "19nz2mhmn6ikahxqyna1dn25pb5v3z9vsz9zb2flb6zp2yk4hxjf"))
+                "026nd6vihjdqz4jn0slg89m8m5vvkvjzgg1aip3dcg9lrm1w8fkq"))
               (modules '((guix build utils)))
               (snippet
                `(begin
@@ -685,7 +774,7 @@ source files.")
              (lambda* (#:key native-inputs inputs #:allow-other-keys)
                (let* ((inputs        (or native-inputs inputs))
                       (c-ares        (assoc-ref inputs "c-ares"))
-                      (google-brotli (assoc-ref inputs "google-brotli"))
+                      (brotli        (assoc-ref inputs "brotli"))
                       (icu4c         (assoc-ref inputs "icu4c"))
                       (nghttp2       (assoc-ref inputs "nghttp2"))
                       (openssl       (assoc-ref inputs "openssl"))
@@ -704,73 +793,15 @@ source files.")
                     (string-append target
                                    "'ldflags': ['-Wl,-rpath="
                                    c-ares "/lib:"
-                                   google-brotli "/lib:"
+                                   brotli "/lib:"
                                    icu4c "/lib:"
                                    nghttp2 "/lib:"
                                    openssl "/lib:"
                                    libuv "/lib:"
                                    zlib "/lib"
                                    "'],"))))))
-           (replace 'configure
-             ;; Node's configure script is actually a python script, so we can't
-             ;; run it with bash.
-             (lambda* (#:key outputs (configure-flags '()) native-inputs inputs
-                       #:allow-other-keys)
-               (let* ((prefix (assoc-ref outputs "out"))
-                      (xflags ,(if (%current-target-system)
-                                   `'("--cross-compiling"
-                                     ,(string-append
-                                       "--dest-cpu="
-                                       (match (%current-target-system)
-                                         ((? (cut string-prefix? "arm" <>))
-                                          "arm")
-                                         ((? (cut string-prefix? "aarch64" <>))
-                                          "arm64")
-                                         ((? (cut string-prefix? "i686" <>))
-                                          "ia32")
-                                         ((? (cut string-prefix? "x86_64" <>))
-                                          "x64")
-                                         ((? (cut string-prefix? "powerpc64" <>))
-                                          "ppc64")
-                                         (_ "unsupported"))))
-                                   ''()))
-                      (flags (cons
-                               (string-append "--prefix=" prefix)
-                               (append xflags configure-flags))))
-                 (format #t "build directory: ~s~%" (getcwd))
-                 (format #t "configure flags: ~s~%" flags)
-                 ;; Node's configure script expects the CC environment variable to
-                 ;; be set.
-                 (setenv "CC_host" "gcc")
-                 (setenv "CXX_host" "g++")
-                 (setenv "CC" ,(cc-for-target))
-                 (setenv "CXX" ,(cxx-for-target))
-                 (setenv "PKG_CONFIG" ,(pkg-config-for-target))
-                 (apply invoke
-                        (string-append (assoc-ref (or native-inputs inputs)
-                                                  "python")
-                                       "/bin/python3")
-                        "configure" flags))))
-           (replace 'patch-files
+           (replace 'delete-problematic-tests
              (lambda* (#:key inputs #:allow-other-keys)
-               ;; Fix hardcoded /bin/sh references.
-               (substitute* '("lib/child_process.js"
-                              "lib/internal/v8_prof_polyfill.js"
-                              "test/parallel/test-child-process-spawnsync-shell.js"
-                              "test/parallel/test-fs-write-sigxfsz.js"
-                              "test/parallel/test-stdio-closed.js"
-                              "test/sequential/test-child-process-emfile.js")
-                 (("'/bin/sh'")
-                  (string-append "'" (assoc-ref inputs "bash") "/bin/sh'")))
-
-               ;; Fix hardcoded /usr/bin/env references.
-               (substitute* '("test/parallel/test-child-process-default-options.js"
-                              "test/parallel/test-child-process-env.js"
-                              "test/parallel/test-child-process-exec-env.js")
-                 (("'/usr/bin/env'")
-                  (string-append "'" (assoc-ref inputs "coreutils")
-                                 "/bin/env'")))
-
                ;; FIXME: These tests fail in the build container, but they don't
                ;; seem to be indicative of real problems in practice.
                (for-each delete-file
@@ -781,6 +812,13 @@ source files.")
                (for-each delete-file
                          '("test/parallel/test-dns.js"
                            "test/parallel/test-dns-lookupService-promises.js"))
+
+               ;; These tests require networking.
+               (delete-file "test/parallel/test-https-agent-unref-socket.js")
+
+               ;; This test is timing-sensitive, and fails sporadically on
+               ;; slow, busy, or even very fast machines.
+               (delete-file "test/parallel/test-fs-utimes.js")
 
                ;; FIXME: This test fails randomly:
                ;; https://github.com/nodejs/node/issues/31213
@@ -806,8 +844,9 @@ source files.")
                ;; TODO: Regenerate certs instead.
                (for-each delete-file
                          '("test/parallel/test-tls-passphrase.js"
-                           "test/parallel/test-tls-server-verify.js"))
-
+                           "test/parallel/test-tls-server-verify.js"))))
+           (add-after 'delete-problematic-tests 'replace-llhttp-sources
+             (lambda* (#:key inputs #:allow-other-keys)
                ;; Replace pre-generated llhttp sources
                (let ((llhttp (assoc-ref inputs "llhttp")))
                  (copy-file (string-append llhttp "/src/llhttp.c")
@@ -819,31 +858,32 @@ source files.")
                  (copy-file (string-append llhttp "/include/llhttp.h")
                             "deps/llhttp/include/llhttp.h"))))))))
     (native-inputs
-     `(;; Runtime dependencies for binaries used as a bootstrap.
-       ("c-ares" ,c-ares)
-       ("google-brotli" ,google-brotli)
-       ("icu4c" ,icu4c-67)
-       ("libuv" ,libuv-for-node)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)
-       ;; Regular build-time dependencies.
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("procps" ,procps)
-       ("python" ,python)
-       ("util-linux" ,util-linux)))
+     (list ;; Runtime dependencies for binaries used as a bootstrap.
+           c-ares-for-node
+           brotli
+           icu4c-67
+           libuv-for-node
+           `(,nghttp2 "lib")
+           openssl
+           zlib
+           ;; Regular build-time dependencies.
+           perl
+           pkg-config
+           procps
+           python
+           util-linux))
     (inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)
-       ("c-ares" ,c-ares)
-       ("icu4c" ,icu4c-67)
-       ("libuv" ,libuv-for-node)
-       ("llhttp" ,llhttp-bootstrap)
-       ("google-brotli" ,google-brotli)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))))
+     (list bash-minimal
+           coreutils
+           c-ares-for-node
+           icu4c-67
+           libuv-for-node
+           llhttp-bootstrap
+           brotli
+           `(,nghttp2 "lib")
+           openssl
+           python-wrapper ;; for node-gyp (supports python3)
+           zlib))))
 
 (define-public libnode
   (package/inherit node
@@ -854,5 +894,5 @@ source files.")
         `(cons* "--shared" "--without-npm" ,flags))
        ((#:phases phases '%standard-phases)
         `(modify-phases ,phases
-           (delete 'patch-npm-shebang)
-           (delete 'patch-node-shebang)))))))
+           (delete 'install-npmrc)
+           (delete 'patch-nested-shebangs)))))))

@@ -288,6 +288,9 @@ FILE-SYSTEMS."
     ,@(if (find (file-system-type-predicate "jfs") file-systems)
           (list jfs_fsck/static)
           '())
+    ,@(if (find (file-system-type-predicate "ntfs") file-systems)
+          (list ntfsfix/static)
+          '())
     ,@(if (find (file-system-type-predicate "f2fs") file-systems)
           (list f2fs-fsck/static)
           '())
@@ -349,7 +352,8 @@ FILE-SYSTEMS."
     "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
     "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
     ,@(if (string-match "^(x86_64|i[3-6]86)-" system)
-          '("pata_acpi" "pata_atiixp"    ;for ATA controllers
+          '("framebuffer_coreboot"       ;for display during early (Core)boot
+            "pata_acpi" "pata_atiixp"    ;for ATA controllers
             "isci")                      ;for SAS controllers like Intel C602
           '())
 

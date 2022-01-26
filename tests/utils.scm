@@ -3,6 +3,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -288,6 +289,45 @@ skip these tests."
    (string-closest "hello" '("helo" "hello" "halo"))
    (string-closest "hello" '("kikoo" "helo" "hihihi" "halo"))
    (string-closest "hello" '("aaaaa" "12345" "hellohello" "h"))))
+
+(test-equal "target-linux?"
+  '(#t #f #f #t)
+  (map target-linux?
+       '("i686-linux-gnu" "i686-w64-mingw32"
+         ;; Checking that "gnu" is present is not sufficient,
+         ;; as GNU/Hurd exists.
+         "i686-pc-gnu"
+         ;; Some targets have a suffix.
+         "arm-linux-gnueabihf")))
+
+(test-equal "target-mingw?"
+  '(#f #f #t)
+  (map target-mingw?
+       '("i686-linux-gnu" "i686-pc-gnu"
+         "i686-w64-mingw32")))
+
+(test-equal "target-x86-32?"
+  '(#f #f #f #t #t #t #t #f)
+  ;; These are (according to Wikipedia) two RISC architectures
+  ;; by Intel and presumably not compatible with the x86-32 series.
+  (map target-x86-32?
+       '("i860-gnu" "i960-gnu"
+         ;; This is a 16-bit architecture
+         "i286-gnu"
+         ;; These are part of the x86-32 series.
+         "i386-gnu" "i486-gnu" "i586-gnu" "i686-gnu"
+         ;; Maybe this one will exist some day, but not yet.
+         "i786-gnu")))
+
+(test-equal "target-x86-64?"
+  '(#t #f #f #f)
+  (map target-x86-64?
+       `("x86_64-linux-gnu" "i386-linux-gnu"
+         ;; Just because it includes "64" doesn't make it 64-bit.
+         "aarch64-linux-gnu"
+         ;; Note that (expt 2 109) in decimal notation starts with 64.
+         ;; However, it isn't 32-bit.
+         ,(format #f "x86_~a-linux-gnu" (expt 2 109)))))
 
 (test-end)
 

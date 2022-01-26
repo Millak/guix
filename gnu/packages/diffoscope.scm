@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
@@ -34,6 +34,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages file)      ;for 'file-next'
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnome)
@@ -49,6 +50,7 @@
   #:use-module (gnu packages mono)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages pascal)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages python-web)
@@ -72,25 +74,27 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "177")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://salsa.debian.org/reproducible-builds/diffoscope.git")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "02np9dq7jnq48lcmz4k1hvwc6xiqgjhrwr1vsbsfw8rxnp9vs0a5"))))
+    (version "199")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://salsa.debian.org/reproducible-builds/diffoscope.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wy1nd52a4rzqhhdcdi3pfgrixz3w3q7qfc9mpc9zraq5cj94l7n"))
+       (patches
+        (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
-                  ;; This test is broken because our `file` package has a
-                  ;; bug in berkeley-db file type detection.
-                  (add-after 'unpack 'remove-berkeley-test
+                  ;; These tests are broken because our `file` package has a
+                  ;; bug in berkeley-db and wasm file type detection.
+                  (add-after 'unpack 'remove-broken-file-type-detection-test
                     (lambda _
                       (delete-file "tests/comparators/test_berkeley_db.py")
-                      #t))
+                      (delete-file "tests/comparators/test_wasm.py")))
                   (add-after 'unpack 'embed-tool-references
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "diffoscope/comparators/utils/compare.py"
@@ -106,101 +110,119 @@
                         (("\\['stat',")
                          (string-append "['" (which "stat") "',"))
                         (("\\['getfacl',")
-                         (string-append "['" (which "getfacl") "',")))
-                      #t))
+                         (string-append "['" (which "getfacl") "',")))))
                   (add-after 'build 'build-man-page
                     (lambda* (#:key (make-flags '()) #:allow-other-keys)
                       (apply invoke "make" "-C" "doc" make-flags)))
                   (add-before 'check 'writable-test-data
                     (lambda _
                       ;; Tests may need write access to tests directory.
-                      (for-each make-file-writable (find-files "tests"))
-                      #t))
+                      (for-each make-file-writable (find-files "tests"))))
+                  (add-before 'check 'fix-failing-test
+                    (lambda _
+                      ;; There is no user name mapping in the build environment.
+                      ;; Pytest made it so much harder than should be necessary,
+                      ;; so I'm leaving… this here in case I ever need it again:
+                      ;; (substitute* "tests/comparators/test_squashfs.py"
+                      ;;   (("^def test_symlink_root.*" match)     ; no, I don't
+                      ;;    (string-append                         ; know Python
+                      ;;     match "\n    raise ValueError("       ; why do you
+                      ;;     "differences_root[1].unified_diff)\n"))) ; ask
+                      (substitute* "tests/data/squashfs_root_expected_diff"
+                        (("root/root")
+                         '"0/0      "))))
                   (add-before 'check 'delete-failing-test
+                    ;; Please add new tests to fix-failing-test and not here ;-)
                     (lambda _
                       ;; This requires /sbin to be in $PATH.
-                      (delete-file "tests/test_tools.py")
-                      #t))
+                      (delete-file "tests/test_tools.py")))
                   (add-after 'install 'install-man-page
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
                              (man (string-append out "/share/man/man1")))
-                        (install-file "doc/diffoscope.1" man)
-                        #t))))))
-    (inputs `(("rpm" ,rpm)              ;for rpm-python
-              ("python-debian" ,python-debian)
-              ("python-libarchive-c" ,python-libarchive-c)
-              ("python-magic" ,python-magic)
-              ("python-tlsh" ,python-tlsh)
-              ("acl" ,acl)              ;for getfacl
-              ("colordiff" ,colordiff)
-              ("xxd" ,xxd)))
-    (native-inputs `(("help2man" ,help2man)
-                     ;; Below are modules used for tests.
-                     ("python-pytest" ,python-pytest)
-                     ("python-chardet" ,python-chardet)
-                     ("python-binwalk" ,python-binwalk)
-                     ("python-black" ,python-black)
-                     ("python-h5py" ,python-h5py)
-                     ("python-pypdf2" ,python-pypdf2)
-                     ("python-progressbar33" ,python-progressbar33)
-                     ;; The test suite skips tests when these are missing.
-                     ,@(match (%current-system)
-                         ;; ghc is only available on x86 currently.
-                         ((or "x86_64-linux" "i686-linux")
-                          `(("ghc" ,ghc)))
-                         (_
-                          `()))
-                     ,@(match (%current-system)
-                         ;; openjdk and dependent packages are only
-                         ;; available on x86_64 currently.
-                         ((or "x86_64-linux")
-                          `(("enjarify" ,enjarify)
-                            ;; no unversioned openjdk available
-                            ("openjdk:jdk" ,openjdk12 "jdk")))
-                         (_
-                          `()))
-                     ("abootimg" ,abootimg)
-                     ("bdb" ,bdb)
-                     ("binutils" ,binutils)
-                     ("bzip2" ,bzip2)
-                     ("cdrtools" ,cdrtools)
-                     ("colord" ,colord)
-                     ("cpio" ,cpio)
-                     ("docx2txt" ,docx2txt)
-                     ("dtc" ,dtc)
-                     ("e2fsprogs" ,e2fsprogs)
-                     ("ffmpeg" ,ffmpeg)
-                     ("gettext" ,gettext-minimal)
-                     ("ghostscript" ,ghostscript)
-                     ("giflib:bin" ,giflib "bin")
-                     ("gnumeric" ,gnumeric)
-                     ("gnupg" ,gnupg)
-                     ("hdf5" ,hdf5)
-                     ("imagemagick" ,imagemagick)
-                     ("libarchive" ,libarchive)
-                     ("llvm" ,llvm)
-                     ("lz4" ,lz4)
-                     ("mono" ,mono)
-                     ("ocaml" ,ocaml)
-                     ("odt2txt" ,odt2txt)
-                     ("openssh" ,openssh)
-                     ("openssl" ,openssl)
-                     ("pgpdump" ,pgpdump)
-                     ("poppler" ,poppler)
-                     ("python-jsbeautifier" ,python-jsbeautifier)
-                     ("r-minimal" ,r-minimal)
-                     ("rpm" ,rpm)
-                     ("sng" ,sng)
-                     ("sqlite" ,sqlite)
-                     ("squashfs-tools" ,squashfs-tools)
-                     ("tcpdump" ,tcpdump)
-                     ("unzip" ,unzip)
-                     ("wabt" ,wabt)
-                     ("xxd" ,xxd)
-                     ("xz" ,xz)
-                     ("zip" ,zip)
-                     ("zstd" ,zstd)))
+                        (install-file "doc/diffoscope.1" man)))))))
+    (inputs (list rpm ;for rpm-python
+                  python-debian
+                  python-libarchive-c
+                  python-magic
+                  python-tlsh
+                  acl ;for getfacl
+                  colordiff
+                  xxd))
+    (native-inputs
+     (append
+       (list help2man
+
+             ;; Below are packages used for tests.
+             binwalk
+             python-pytest
+             python-chardet
+             python-h5py
+             python-pypdf2
+             python-progressbar33
+
+             abootimg
+             bdb
+             binutils
+             bzip2
+             cdrtools
+             colord
+             cpio
+             docx2txt
+             dtc
+             e2fsprogs
+             ffmpeg
+
+             ;; XXX: Must be the same version as python-magic uses;
+             ;; remove when 'file' is updated.
+             file-next
+
+             fpc
+             gettext-minimal
+             ghostscript
+             `(,giflib "bin")
+             gnumeric
+             gnupg
+             hdf5
+             imagemagick
+             libarchive
+             llvm
+             lz4
+             mono
+             ocaml
+             odt2txt
+             openssh
+             openssl
+             pgpdump
+             poppler
+             python-jsbeautifier
+             r-minimal
+             rpm
+             sng
+             sqlite
+             squashfs-tools
+             tcpdump
+             unzip
+             wabt
+             xxd
+             xz
+             zip
+             zstd)
+
+       ;; Also for tests.  The test suite skips tests when these are missing.
+       (match (%current-system)
+         ;; ghc is only available on x86 currently.
+         ((or "x86_64-linux" "i686-linux")
+          (list ghc))
+         (_ '()))
+       (match (%current-system)
+         ;; openjdk and dependent packages are only
+         ;; available on x86_64 currently.
+         ((or "x86_64-linux")
+          (list enjarify)
+          ;; No unversioned openjdk available.
+          (list `(,openjdk12 "jdk")))
+         (_ '()))))
     (home-page "https://diffoscope.org/")
     (synopsis "Compare files, archives, and directories in depth")
     (description
@@ -217,7 +239,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.16")
+    (version "0.7.18")
     (source
      (origin
        (method git-fetch)
@@ -227,12 +249,9 @@ install.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0s7gyixk868dw6yqxsb1sq24mgg9ilz5s2yidd5j0zhl683n7dw9"))))
+         "19lwsxq53isgfkvlxvxqqmbjfcim3lhcxwk7m9ddfjiynhq74949"))))
     (inputs
-     `(("python-debian" ,python-debian)
-       ("python-distro" ,python-distro)
-       ("python-libarchive-c" ,python-libarchive-c)
-       ("python-rstr" ,python-rstr)))
+     (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs
      `(("diffoscope" ,diffoscope)
        ("help2man" ,help2man)
@@ -310,10 +329,9 @@ them in detail for later analysis.")
                           (string-append share "/doc/" ,name "-" ,version)))
              #t)))))
     (propagated-inputs
-     `(("python-requests" ,python-requests)))
+     (list python-requests))
     (native-inputs
-     `(("gzip" ,gzip)
-       ("python-docutils" ,python-docutils)))
+     (list gzip python-docutils))
     (build-system python-build-system)
     (home-page "https://try.diffoscope.org")
     (synopsis "Client for remote diffoscope service")

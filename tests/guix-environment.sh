@@ -119,6 +119,13 @@ test `readlink "$gcroot"` = "$expected"
 guix environment --bootstrap -r "$gcroot" --ad-hoc guile-bootstrap \
      -- guile -c 1
 test `readlink "$gcroot"` = "$expected"
+
+# Make sure '-p' works as expected.
+test $(guix environment -p "$gcroot" -- "$SHELL" -c 'echo $GUIX_ENVIRONMENT') = "$expected"
+paths1="$(guix environment -p "$gcroot" --search-paths)"
+paths2="$(guix environment --bootstrap --ad-hoc guile-bootstrap --search-paths)"
+test "$paths1" = "$paths2"
+
 rm "$gcroot"
 
 # Try '-r' with a relative file name.
@@ -192,7 +199,7 @@ then
 
     # Make sure the bootstrap binaries are all listed where they belong.
     grep -E "^export PATH=\"$profile/bin\""         "$tmpdir/a"
-    grep -E "^export CPATH=\"$profile/include\""    "$tmpdir/a"
+    grep -E "^export C_INCLUDE_PATH=\"$profile/include\"" "$tmpdir/a"
     grep -E "^export LIBRARY_PATH=\"$profile/lib\"" "$tmpdir/a"
     for dep in bootstrap-binaries-0 gcc-bootstrap-0 glibc-bootstrap-0
     do
@@ -206,8 +213,8 @@ then
     # as returned by '--search-paths'.
     guix environment --bootstrap --no-substitutes --pure \
          -e '(@ (guix tests) gnu-make-for-tests)' \
-         -- /bin/sh -c 'echo $PATH $CPATH $LIBRARY_PATH' > "$tmpdir/b"
-    ( . "$tmpdir/a" ; echo $PATH $CPATH $LIBRARY_PATH ) > "$tmpdir/c"
+         -- /bin/sh -c 'echo $PATH $C_INCLUDE_PATH $LIBRARY_PATH' > "$tmpdir/b"
+    ( . "$tmpdir/a" ; echo $PATH $C_INCLUDE_PATH $LIBRARY_PATH ) > "$tmpdir/c"
     cmp "$tmpdir/b" "$tmpdir/c"
 
     rm "$tmpdir"/*
@@ -228,7 +235,7 @@ then
 
     # Make sure the bootstrap binaries are all listed where they belong.
     grep -E "^export PATH=\"$profile/bin\""         "$tmpdir/a"
-    grep -E "^export CPATH=\"$profile/include\""    "$tmpdir/a"
+    grep -E "^export C_INCLUDE_PATH=\"$profile/include\"" "$tmpdir/a"
     grep -E "^export LIBRARY_PATH=\"$profile/lib\"" "$tmpdir/a"
     for dep in bootstrap-binaries-0 gcc-bootstrap-0 glibc-bootstrap-0 \
 				    guile-bootstrap

@@ -1,12 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -83,9 +84,7 @@
                               (assoc-ref %outputs "out")
                               "/lib/cups"))))
       (inputs
-       `(("ghostscript" ,ghostscript)
-         ("cups" ,cups)
-         ("zlib" ,zlib)))
+       (list ghostscript cups zlib))
       (home-page "https://github.com/pdewacht/brlaser")
       (synopsis "Brother laser printer driver")
       (description "Brlaser is a CUPS driver for Brother laser printers.  This
@@ -128,7 +127,7 @@ driver is known to work with these printers:
 (define-public cups-filters
   (package
     (name "cups-filters")
-    (version "1.27.4")
+    (version "1.28.9")
     (source(origin
               (method url-fetch)
               (uri
@@ -136,7 +135,7 @@ driver is known to work with these printers:
                               "cups-filters-" version ".tar.xz"))
               (sha256
                (base32
-                "110b1xhb5vfpcx0zq9kkas7pj281skx5dpnnr22idx509jfdzj8b"))
+                "1bk0x1rrb8wqbhh5c979ppgy6s2kqss8mjdlahgcjvd79wm3fs9g"))
               (modules '((guix build utils)))
               (snippet
                ;; install backends, banners and filters to cups-filters output
@@ -196,29 +195,31 @@ driver is known to work with these printers:
                         #t)))
                   (add-after 'install 'wrap-filters
                     (lambda* (#:key inputs outputs #:allow-other-keys)
-                      ;; Some filters expect to find 'gs' in $PATH.  We cannot
-                      ;; just hard-code its absolute file name in the source
+                      ;; Some filters expect to find things in $PATH.  We cannot
+                      ;; just hard-code all absolute file names in the source
                       ;; because foomatic-rip, for example, has tests like
                       ;; 'startswith(cmd, "gs")'.
                       (let ((out         (assoc-ref outputs "out"))
-                            (ghostscript (assoc-ref inputs "ghostscript")))
+                            (ghostscript (assoc-ref inputs "ghostscript"))
+                            (grep        (assoc-ref inputs "grep")))
                         (for-each (lambda (file)
                                     (wrap-program file
                                       `("PATH" ":" prefix
-                                        (,(string-append ghostscript
-                                                         "/bin")))))
+                                        (,(string-append ghostscript "/bin:"
+                                                         grep "/bin")))))
                                   (find-files (string-append
                                                out "/lib/cups/filter")))
                         #t))))))
     (native-inputs
-     `(("glib" ,glib "bin") ; for gdbus-codegen
-       ("pkg-config" ,pkg-config)))
+     (list `(,glib "bin") ; for gdbus-codegen
+           pkg-config))
     (inputs
      `(("avahi"        ,avahi)
        ("fontconfig"   ,fontconfig)
        ("freetype"     ,freetype)
-       ("font-dejavu"  ,font-dejavu) ; also needed by test suite
+       ("font-dejavu"  ,font-dejavu)    ; also needed by test suite
        ("ghostscript"  ,ghostscript/cups)
+       ("grep"         ,grep)
        ("ijs"          ,ijs)
        ("dbus"         ,dbus)
        ("lcms"         ,lcms)
@@ -251,16 +252,20 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
 (define-public cups-minimal
   (package
     (name "cups-minimal")
-    (version "2.3.3")
-    (replacement cups-minimal/fixed)
+    (version "2.3.3op2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/apple/cups/releases/download/v"
-                           version "/cups-" version "-source.tar.gz"))
+       (method git-fetch)
+       ;; Version maintained by the OpenPrinting organization, NOT a fork.  The
+       ;; CUPS author tracks the current Apple CUPS sources and includes common
+       ;; changes and bug fixes for GNU/Linux.  See its README and for example
+       ;; <https://github.com/apple/cups/issues/5917#issuecomment-819465891>.
+       (uri (git-reference
+             (url "https://github.com/OpenPrinting/cups")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1vpk0b2vq830f8fvf9z8qjsm5k141i7pi8djbinpnr78pi4dj7r6"))))
+        (base32 "126d6kd3pkhmsvbcflkcpk3y30iqlkdqyvrk9aqq88vbxzjd5ia6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -273,21 +278,37 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'never-cupsAdminGetServerSettings
+           ;; Instead of querying the daemon directly, this part of CUPS assumes
+           ;; that (1) it has access to a cupsd.conf under CUPS_SERVERROOT, and
+           ;; (2) the file's contents apply to the running daemon.  (1) is false
+           ;; at least on Guix Systems resulting in extremely long delays when
+           ;; loading the Web interface's /admin page.  (2) isn't valid anywhere
+           ;; because it ignores, e.g., -c FILE.
+           ;; Upstream considers this code on ‘life support’ so just neuter it.
+	   (lambda _
+	     (substitute* "cgi-bin/admin.c"
+	       (("!cupsAdminGetServerSettings" match)
+		(string-append "0 && " match)))))
+         (add-after 'unpack 'remove-Web-UI-server-settings
+           ;; The /admin page's server configuration form is questionable for
+           ;; the same reason as cupsAdminGetServerSettings, and won't work at
+           ;; all on Guix Systems.  Remove it entirely.
+           (lambda _
+             ;; SUBSTITUTE* and a patch both have (dis)advantages.  This is
+             ;; shorter & should ensure that no translation is forgotten.
+             (substitute* (find-files "templates" "^admin\\.tmpl$")
+               ((" class=\"halves\"") "")
+               (("<FORM.* ACTION=\"/jobs.*</FORM>" match)
+                (string-append match "</P>{BROKEN? "))
+               (("</FORM>}" match)
+                (string-append match "}")))))
          (add-before 'configure 'patch-makedefs
            (lambda _
              (substitute* "Makedefs.in"
                (("INITDIR.*=.*@INITDIR@") "INITDIR = @prefix@/@INITDIR@")
                (("/bin/sh") (which "sh")))
              #t))
-         ;; Make the compressed manpages writable so that the
-         ;; reset-gzip-timestamps phase does not error out.
-         (add-before 'reset-gzip-timestamps 'make-manpages-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man")))
-               (for-each (lambda (file) (chmod file #o644))
-                         (find-files man "\\.gz"))
-               #t)))
          (add-before 'build 'patch-tests
            (lambda _
              (substitute* "tools/ippeveprinter.c"
@@ -295,11 +316,10 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
                 "#elif defined(HAVE_AVAHI)"))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("zlib"  ,zlib)
-       ("gnutls" ,gnutls)))
-    (home-page "https://www.cups.org")
+     (list zlib gnutls))
+    (home-page "https://openprinting.github.io/")
     (synopsis "The Common Unix Printing System")
     (description
      "CUPS is a printing system that uses the Internet Printing Protocol
@@ -313,148 +333,128 @@ device-specific programs to convert and print many types of files.")
     ;; CUPS is Apache 2.0 with exceptions, see the NOTICE file.
     (license license:asl2.0)))
 
-(define cups-minimal/fixed
-  (package-with-extra-patches
-   cups-minimal
-   (search-patches "cups-CVE-2020-10001.patch")))
-
 (define-public cups
   (package/inherit cups-minimal
     (name "cups")
     (arguments
-     `(;; Three tests fail:
-       ;; * two tests in ipp-1.1.test related to "RFC 2911 section 3.2.6:
-       ;;   Get-Jobs Operation"
-       ;; * test of number of error/warning messages, probably related to a
-       ;;   missing font.
-       #:tests? #f
-       #:configure-flags
-       '("--disable-launchd"
-         "--disable-systemd")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-makedefs
-           (lambda _
-             (substitute* "Makedefs.in"
-               (("INITDIR.*=.*@INITDIR@") "INITDIR = @prefix@/@INITDIR@")
-               (("/bin/sh") (which "sh")))
-             #t))
-         (add-before 'check 'patch-tests
-           (lambda _
-             (let ((filters (assoc-ref %build-inputs "cups-filters"))
-                   (catpath (string-append
-                             (assoc-ref %build-inputs "coreutils") "/bin/"))
-                   (testdir (string-append (getcwd) "/tmp/")))
-               (mkdir testdir)
-               (substitute* "test/run-stp-tests.sh"
-                 ((" *BASE=/tmp/") (string-append "BASE=" testdir))
+     (substitute-keyword-arguments (package-arguments cups-minimal)
+       ((#:tests? _ #t)
+        ;; Three tests fail:
+        ;; * two tests in ipp-1.1.test related to "RFC 2911 section 3.2.6:
+        ;;   Get-Jobs Operation"
+        ;; * test of number of error/warning messages, probably related to a
+        ;;   missing font.
+        #f)
+       ((#:configure-flags _ '())
+        `(list "--disable-launchd"
+               "--disable-systemd"))
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-before 'check 'patch-tests
+             (lambda _
+               (let ((filters (assoc-ref %build-inputs "cups-filters"))
+                     (catpath (string-append
+                               (assoc-ref %build-inputs "coreutils") "/bin/"))
+                     (testdir (string-append (getcwd) "/tmp/")))
+                 (mkdir testdir)
+                 (substitute* "test/run-stp-tests.sh"
+                   ((" *BASE=/tmp/") (string-append "BASE=" testdir))
 
-                 ;; allow installation of filters from output dir and from
-                 ;; cups-filters
-                 (("for dir in /usr/libexec/cups/filter /usr/lib/cups/filter")
-                  (string-append
-                   "for dir in "
-                   (assoc-ref %outputs "out") "/lib/cups/filter "
-                   filters "/lib/cups/filter"))
+                   ;; Allow installation of filters from the output directory
+                   ;; and from cups-filters.
+                   (("for dir in /usr/libexec/cups/filter /usr/lib/cups/filter")
+                    (string-append
+                     "for dir in "
+                     (assoc-ref %outputs "out") "/lib/cups/filter "
+                     filters "/lib/cups/filter"))
 
-                 ;; check for charsets in cups-filters output
-                 (("/usr/share/cups/charsets")
-                  (string-append filters "/share/cups/charsets"))
+                   ;; Check for charsets in the default cups-filters output.
+                   (("/usr/share/cups/charsets")
+                    (string-append filters "/share/cups/charsets"))
 
-                 ;; install additional required filters
-                 (("instfilter texttopdf texttopdf pdf")
-                  (string-append
-                   "instfilter texttopdf texttopdf pdf;"
-                   "instfilter imagetoraster imagetoraster raster;"
-                   "instfilter gstoraster gstoraster raster;"
-                   "instfilter urftopdf urftopdf pdf;"
-                   "instfilter rastertopdf rastertopdf pdf;"
-                   "instfilter pstopdf pstopdf pdf"))
+                   ;; Install additional required filters.
+                   (("instfilter texttopdf texttopdf pdf")
+                    (string-append
+                     "instfilter texttopdf texttopdf pdf;"
+                     "instfilter imagetoraster imagetoraster raster;"
+                     "instfilter gstoraster gstoraster raster;"
+                     "instfilter urftopdf urftopdf pdf;"
+                     "instfilter rastertopdf rastertopdf pdf;"
+                     "instfilter pstopdf pstopdf pdf"))
 
-                 ;; specify location of lpstat binary
-                 (("description=\"`lpstat -l")
-                  "description=\"`../systemv/lpstat -l")
+                   ;; Specify the location of the lpstat binary.
+                   (("description=\"`lpstat -l")
+                    "description=\"`../systemv/lpstat -l")
 
-                 ;; patch shebangs of embedded scripts
-                 (("#!/bin/sh") (string-append "#!" (which "sh")))
+                   ;; Patch the shebangs of embedded scripts.
+                   (("#!/bin/sh") (string-append "#!" (which "sh")))
 
-                 ;; also link mime definitions from cups-filters
-                 ;; to enable the additional filters for the test suite
-                 (("ln -s \\$root/conf/mime\\.types")
-                  (string-append
-                   "ln -s " filters
-                   "/share/cups/mime/cupsfilters.types $BASE/share/mime; "
-                   "ln -s $root/conf/mime.types"))
-                 (("ln -s \\$root/conf/mime\\.convs")
-                  (string-append
-                   "ln -s " filters
-                   "/share/cups/mime/cupsfilters.convs $BASE/share/mime; "
-                   "ln -s $root/conf/mime.convs")))
+                   ;; Also link MIME definitions from cups-filters
+                   ;; to enable the additional filters for the test suite.
+                   (("ln -s \\$root/conf/mime\\.types")
+                    (string-append
+                     "ln -s " filters
+                     "/share/cups/mime/cupsfilters.types $BASE/share/mime; "
+                     "ln -s $root/conf/mime.types"))
+                   (("ln -s \\$root/conf/mime\\.convs")
+                    (string-append
+                     "ln -s " filters
+                     "/share/cups/mime/cupsfilters.convs $BASE/share/mime; "
+                     "ln -s $root/conf/mime.convs")))
 
-               ;; fix search path for "cat"
-               (substitute* "cups/testfile.c"
-                 (("cupsFileFind\\(\"cat\", \"/bin\"")
-                  (string-append "cupsFileFind(\"cat\", \"" catpath "\""))
-                 (("cupsFileFind\\(\"cat\", \"/bin:/usr/bin\"")
-                  (string-append "cupsFileFind(\"cat\", \"" catpath "\"")))
-               #t)))
-         ;; Make the compressed manpages writable so that the
-         ;; reset-gzip-timestamps phase does not error out.
-         (add-before 'reset-gzip-timestamps 'make-manpages-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man")))
-               (for-each (lambda (file) (chmod file #o644))
-                         (find-files man "\\.gz"))
-               #t)))
-         (add-after 'install 'install-cups-filters-symlinks
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (cups-filters (assoc-ref inputs "cups-filters")))
-               ;; charsets
-               (symlink
-                (string-append cups-filters "/share/cups/charsets")
-                (string-append out "/share/charsets"))
+                 ;; Fix the search path for the "cat" command.
+                 (substitute* "cups/testfile.c"
+                   (("cupsFileFind\\(\"cat\", \"/bin\"")
+                    (string-append "cupsFileFind(\"cat\", \"" catpath "\""))
+                   (("cupsFileFind\\(\"cat\", \"/bin:/usr/bin\"")
+                    (string-append "cupsFileFind(\"cat\", \"" catpath "\""))))))
+           (add-after 'install 'install-cups-filters-symlinks
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out"))
+                     (cups-filters (assoc-ref inputs "cups-filters")))
+                 ;; Charsets.
+                 (symlink
+                  (string-append cups-filters "/share/cups/charsets")
+                  (string-append out "/share/charsets"))
 
-               ;; mime types, driver file, ppds
-               (for-each
-                (lambda (f)
-                  (symlink (string-append cups-filters f)
-                           (string-append out f)))
-                '("/share/cups/mime/cupsfilters.types"
-                  "/share/cups/mime/cupsfilters.convs"
-                  "/share/cups/drv/cupsfilters.drv"
-                  "/share/ppd"))
+                 ;; MIME types, driver files, and PPDs.
+                 (for-each
+                  (lambda (f)
+                    (symlink (string-append cups-filters f)
+                             (string-append out f)))
+                  '("/share/cups/mime/cupsfilters.types"
+                    "/share/cups/mime/cupsfilters.convs"
+                    "/share/cups/drv/cupsfilters.drv"
+                    "/share/ppd"))
 
-               ;; filters
-               (for-each
-                (lambda (f)
-                  (symlink f
-                           (string-append out "/lib/cups/filter" (basename f))))
-                (find-files (string-append cups-filters "/lib/cups/filter")))
+                 ;; Filters.
+                 (for-each
+                  (lambda (f)
+                    (symlink f
+                             (string-append out "/lib/cups/filter"
+                                            (basename f))))
+                  (find-files (string-append cups-filters "/lib/cups/filter")))
 
-               ;; backends
-               (for-each
-                (lambda (f)
-                  (symlink (string-append cups-filters f)
-                           (string-append out "/lib/cups/backend/"
-                                          (basename f))))
-                '("/lib/cups/backend/parallel"
-                  "/lib/cups/backend/serial"))
+                 ;; Backends.
+                 (for-each
+                  (lambda (f)
+                    (symlink (string-append cups-filters f)
+                             (string-append out "/lib/cups/backend/"
+                                            (basename f))))
+                  '("/lib/cups/backend/parallel"
+                    "/lib/cups/backend/serial"))
 
-               ;; banners
-               (let ((banners "/share/cups/banners"))
-                 (delete-file-recursively (string-append out banners))
-                 (symlink (string-append cups-filters banners)
-                          (string-append out banners)))
+                 ;; Banners.
+                 (let ((banners "/share/cups/banners"))
+                   (delete-file-recursively (string-append out banners))
+                   (symlink (string-append cups-filters banners)
+                            (string-append out banners)))
 
-               ;; assorted data
-               (let ((data "/share/cups/data"))
-                 (delete-file-recursively (string-append out data))
-                 (symlink (string-append cups-filters data)
-                          (string-append out data)))
-
-               #t))))))
+                 ;; Assorted data.
+                 (let ((data "/share/cups/data"))
+                   (delete-file-recursively (string-append out data))
+                   (symlink (string-append cups-filters data)
+                            (string-append out data))))))))))
     (inputs
      `(("avahi" ,avahi)
        ("gnutls" ,gnutls)
@@ -474,11 +474,7 @@ device-specific programs to convert and print many types of files.")
                 "0a52jw6rm7lr5nbyksiia0rn7sasyb5cjqcb95z1wxm2yprgi6lm"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("glib" ,glib)
-       ("polkit" ,polkit)
-       ("cups" ,cups)))
+     (list intltool pkg-config glib polkit cups))
     (home-page "https://www.freedesktop.org/wiki/Software/cups-pk-helper/")
     (synopsis "PolicyKit helper to configure CUPS with fine-grained privileges")
     (description
@@ -490,14 +486,14 @@ should only be used as part of the Guix cups-pk-helper service.")
 (define-public hplip
   (package
     (name "hplip")
-    (version "3.21.8")
+    (version "3.21.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "076fjzgw86q817c660h1vzwdp00cyjr49b9bfi7qkhphq6am4gpi"))
+                "0q3adcp8iygravp4bq4gw14jk20c5rhnawj1333qyw8yvlghw8yy"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -512,9 +508,13 @@ should only be used as part of the Guix cups-pk-helper service.")
                   (delete-file "prnt/hpcups/ImageProcessor.h")
                   (substitute* "Makefile.in"
                     ((" -lImageProcessor ") " ")
-                    (("(\\@HPLIP_BUILD_TRUE\\@[[:blank:]]*).*libImageProcessor.*"
+                    ;; Turn shell commands inside an if…fi into harmless no-ops.
+                    (("^(\\@HPLIP_BUILD_TRUE\\@[[:blank:]]*).*libImageProcessor.*"
                       _ prefix)
-                     (string-append prefix ":; \\\n")))
+                     (string-append prefix ": ; \\\n"))
+                    ;; Remove the lines adding file targets altogether.
+                    (("^\\@FULL_BUILD_TRUE\\@.*libImageProcessor.*")
+                     ""))
 
                   ;; Install binaries under libexec/hplip instead of
                   ;; share/hplip; that'll at least ensure they get stripped.
@@ -523,8 +523,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                     (("^dat2drvdir =.*")
                      "dat2drvdir = $(pkglibexecdir)\n")
                     (("^locatedriverdir =.*")
-                     "locatedriverdir = $(pkglibexecdir)\n"))
-                  #t))))
+                     "locatedriverdir = $(pkglibexecdir)\n"))))))
     (build-system gnu-build-system)
     (outputs (list "out" "ppd"))
     (home-page "https://developers.hp.com/hp-linux-imaging-and-printing")
@@ -589,8 +588,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                  ;; FIXME Use beginning-of-word in regexp.
                  (("[[:blank:]]plugin\\.py[[:blank:]]") " ")
                  (("/usr/include/libusb-1.0")
-                  (string-append (assoc-ref inputs "libusb")
-                                 "/include/libusb-1.0"))
+                  (search-input-directory inputs "/include/libusb-1.0"))
                  (("hplip_statedir =.*$")
                   ;; Don't bail out while trying to create
                   ;; /var/lib/hplip.  We can safely change its value
@@ -613,8 +611,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                   (string-append "rulessystemdir = " out
                                  "/lib/systemd/system"))
                  (("/etc/sane.d")
-                  (string-append out "/etc/sane.d")))
-               #t)))
+                  (string-append out "/etc/sane.d"))))))
          (add-before 'configure 'fix-build-with-python-3.8
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((python (assoc-ref inputs "python")))
@@ -625,15 +622,13 @@ should only be used as part of the Guix cups-pk-helper service.")
                  (setenv "C_INCLUDE_PATH"
                          (string-append python "/include/python"
                                         (python:python-version python)
-                                        ":" (getenv "C_INCLUDE_PATH"))))
-               #t)))
+                                        ":" (getenv "C_INCLUDE_PATH")))))))
          (add-after 'install 'install-models-dat
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (models-dir (string-append out
                                                "/share/hplip/data/models")))
-               (install-file "data/models/models.dat" models-dir))
-             #t))
+               (install-file "data/models/models.dat" models-dir))))
          (add-after 'install 'wrap-binaries
            ;; Scripts in /bin are all symlinks to .py files in /share/hplip.
            ;; Symlinks are immune to the Python build system's 'WRAP phase,
@@ -644,7 +639,7 @@ should only be used as part of the Guix cups-pk-helper service.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin"))
-                    (python (assoc-ref inputs "python")))
+                    (site (python:site-packages inputs outputs)))
                (with-directory-excursion bin
                  (for-each (lambda (file)
                              (let ((target (readlink file)))
@@ -653,19 +648,15 @@ should only be used as part of the Guix cups-pk-helper service.")
                                  (lambda _
                                    (format #t
                                            "#!~a~@
-                                           export PYTHONPATH=\"~a:~a\"~@
+                                           export GUIX_PYTHONPATH=\"~a:~a\"~@
                                            exec -a \"$0\" \"~a/~a\" \"$@\"~%"
                                            (which "bash")
-                                           (string-append
-                                            out "/lib/python"
-                                            (python:python-version python)
-                                            "/site-packages")
-                                           (getenv "PYTHONPATH")
+                                           site
+                                           (getenv "GUIX_PYTHONPATH")
                                            bin target)))
                                (chmod file #o755)))
                   (find-files "." (lambda (file stat)
-                                    (eq? 'symlink (stat:type stat)))))
-                 #t)))))))
+                                    (eq? 'symlink (stat:type stat))))))))))))
 
     ;; Note that the error messages printed by the tools in the case of
     ;; missing dependencies are often downright misleading.
@@ -685,8 +676,7 @@ should only be used as part of the Guix cups-pk-helper service.")
        ("sane-backends" ,sane-backends-minimal)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)))))
+     (list perl pkg-config))))
 
 (define-public hplip-minimal
   (package/inherit hplip
@@ -728,11 +718,9 @@ should only be used as part of the Guix cups-pk-helper service.")
     (home-page
      "https://wiki.linuxfoundation.org/openprinting/database/foomatic")
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list perl pkg-config))
     (inputs
-     `(("dbus" ,dbus)
-       ("a2ps" ,a2ps)))
+     (list dbus a2ps))
     (arguments
      '( ;; Specify the installation directories.
        #:configure-flags (list (string-append "ac_cv_path_CUPS_BACKENDS="
@@ -747,7 +735,7 @@ should only be used as part of the Guix cups-pk-helper service.")
                                (string-append "ac_cv_path_PPR_LIB="
                                               (assoc-ref %outputs "out")
                                               "/lib/ppr/lib")
-
+                               "CFLAGS=-fcommon"
                                ;; For some reason these are misdiagnosed.
                                "ac_cv_func_malloc_0_nonnull=yes"
                                "ac_cv_func_realloc_0_nonnull=yes")
@@ -846,14 +834,12 @@ printer/driver specific, but spooler-independent PPD file.")
        #:tests? #f                                ;no tests
        #:make-flags '("CC=gcc")))
     (inputs
-     `(("coreutils" ,coreutils)
-       ("sed" ,sed)
-       ("ghostscript" ,ghostscript)
-       ("foomatic-filters" ,foomatic-filters)))   ;for 'foomatic-rip'
+     (list coreutils sed ghostscript foomatic-filters))   ;for 'foomatic-rip'
     (native-inputs
-     `(("bc" ,bc)
-       ("groff" ,groff)))
-    (home-page "http://foo2zjs.rkkda.com/")
+     (list bc groff))
+    ;; The domain has expired and no one has meaningfully taken up the torch.
+    (home-page (string-append "https://web.archive.org/web/20210129024712/"
+                              "http://foo2zjs.rkkda.com/"))
     (synopsis "Printer driver for ZjStream-based printers")
     (description
      "foo2zjs is a printer driver for printers that use the Zenographics
@@ -914,8 +900,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
                  (for-each (cut invoke "gzip" "-9" <>)
                            (find-files "share/cups" "\\.ppd$")))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (inputs
      `(("cups" ,cups-minimal)))
     (synopsis "ESC/P-R printer driver")
@@ -926,9 +911,6 @@ printers.  It can be used only with printers that support the Epson@tie{}ESC/P-R
 language.")
     (home-page "http://download.ebz.epson.net/dsc/search/01/search/?OSC=LX")
     (license license:gpl2+)))
-
-(define-public escpr
-  (deprecated-package "escpr" epson-inkjet-printer-escpr))
 
 (define-public splix
   ;; Last released in 2009 <https://sourceforge.net/projects/splix/files/>.
@@ -1018,7 +1000,7 @@ obtained and installed separately.")
      '(;; Tests require CUPS to be running
        #:tests? #f))
     (inputs
-     `(("cups" ,cups)))
+     (list cups))
     (home-page "https://github.com/zdohnal/pycups")
     (synopsis "Python bindings for libcups")
     (description

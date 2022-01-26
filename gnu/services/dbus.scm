@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -50,7 +50,7 @@
 (define-record-type* <dbus-configuration>
   dbus-configuration make-dbus-configuration
   dbus-configuration?
-  (dbus      dbus-configuration-dbus              ;<package>
+  (dbus      dbus-configuration-dbus              ;file-like
              (default dbus))
   (services  dbus-configuration-services          ;list of <package>
              (default '())))
@@ -106,6 +106,10 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
         (define (services->sxml services)
           ;; Return the SXML 'includedir' clauses for DIRS.
           `(busconfig
+             ;; Increase this timeout to 60 seconds to work around race-y
+             ;; failures such as <https://issues.guix.gnu.org/52051> on slow
+             ;; computers with slow I/O.
+            (limit (@ (name "auth_timeout")) "60000")
             (servicehelper "/run/setuid-programs/dbus-daemon-launch-helper")
 
             ;; First, the '.service' files of services subject to activation.
@@ -300,10 +304,19 @@ tuples, are all set as environment variables when the bus daemon launches it."
 (define-record-type* <polkit-configuration>
   polkit-configuration make-polkit-configuration
   polkit-configuration?
-  (polkit   polkit-configuration-polkit           ;<package>
-            (default polkit))
-  (actions  polkit-configuration-actions          ;list of <package>
+  (polkit   polkit-configuration-polkit           ;file-like
+            (default %default-polkit))
+  (actions  polkit-configuration-actions          ;list of file-like
             (default '())))
+
+(define %default-polkit
+  ;; The default polkit package.
+  (let-system (system target)
+    ;; Since mozjs depends on Rust, which is currently x86_64-only, use
+    ;; polkit-duktape on other systems.
+    (if (string-prefix? "x86_64-" (or target system))
+        polkit-mozjs
+        polkit-duktape)))
 
 (define %polkit-accounts
   (list (user-group (name "polkitd") (system? #t))

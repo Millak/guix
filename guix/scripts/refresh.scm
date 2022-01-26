@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -8,6 +8,7 @@
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,7 +27,6 @@
 
 (define-module (guix scripts refresh)
   #:use-module (guix ui)
-  #:use-module (gcrypt hash)
   #:use-module (guix scripts)
   #:use-module ((guix scripts build) #:select (%standard-build-options))
   #:use-module (guix store)
@@ -38,6 +38,7 @@
   #:use-module (guix scripts graph)
   #:use-module (guix monads)
   #:use-module (guix gnupg)
+  #:use-module (guix hash)
   #:use-module (gnu packages)
   #:use-module ((gnu packages commencement) #:select (%final-inputs))
   #:use-module (ice-9 match)
@@ -314,14 +315,14 @@ KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
 values: 'interactive' (default), 'always', and 'never'.  When WARN? is true,
 warn about packages that have no matching updater."
   (if (lookup-updater package updaters)
-      (let-values (((version tarball source)
+      (let-values (((version output source)
                     (package-update store package updaters
                                     #:key-download key-download))
                    ((loc)
                     (or (package-field-location package 'version)
                         (package-location package))))
         (when version
-          (if (and=> tarball file-exists?)
+          (if (and=> output file-exists?)
               (begin
                 (info loc
                       (G_ "~a: updating from version ~a to version ~a...~%")
@@ -329,26 +330,41 @@ warn about packages that have no matching updater."
                       (package-version package) version)
                 (for-each
                  (lambda (change)
-                   (format (current-error-port)
-                           (match (list (upstream-input-change-action change)
-                                        (upstream-input-change-type change))
-                             (('add 'regular)
-                              (G_ "~a: consider adding this input: ~a~%"))
-                             (('add 'native)
-                              (G_ "~a: consider adding this native input: ~a~%"))
-                             (('add 'propagated)
-                              (G_ "~a: consider adding this propagated input: ~a~%"))
-                             (('remove 'regular)
-                              (G_ "~a: consider removing this input: ~a~%"))
-                             (('remove 'native)
-                              (G_ "~a: consider removing this native input: ~a~%"))
-                             (('remove 'propagated)
-                              (G_ "~a: consider removing this propagated input: ~a~%")))
-                           (package-name package)
-                           (upstream-input-change-name change)))
+                   (define field
+                     (match (upstream-input-change-type change)
+                       ('native 'native-inputs)
+                       ('propagated 'propagated-inputs)
+                       (_ 'inputs)))
+
+                   (define name
+                     (package-name package))
+                   (define loc
+                     (package-field-location package field))
+                   (define change-name
+                     (upstream-input-change-name change))
+
+                   (match (list (upstream-input-change-action change)
+                                (upstream-input-change-type change))
+                     (('add 'regular)
+                      (info loc (G_ "~a: consider adding this input: ~a~%")
+                            name change-name))
+                     (('add 'native)
+                      (info loc (G_ "~a: consider adding this native input: ~a~%")
+                            name change-name))
+                     (('add 'propagated)
+                      (info loc (G_ "~a: consider adding this propagated input: ~a~%")
+                            name change-name))
+                     (('remove 'regular)
+                      (info loc (G_ "~a: consider removing this input: ~a~%")
+                            name change-name))
+                     (('remove 'native)
+                      (info loc (G_ "~a: consider removing this native input: ~a~%")
+                            name change-name))
+                     (('remove 'propagated)
+                      (info loc (G_ "~a: consider removing this propagated input: ~a~%")
+                            name change-name))))
                  (upstream-source-input-changes source))
-                (let ((hash (call-with-input-file tarball
-                              port-sha256)))
+                (let ((hash (file-hash* output)))
                   (update-package-source package source hash)))
               (warning (G_ "~a: version ~a could not be \
 downloaded and authenticated; not updating~%")

@@ -82,6 +82,7 @@
   #:export (check-description-style
             check-inputs-should-be-native
             check-inputs-should-not-be-an-input-at-all
+            check-input-labels
             check-wrapper-inputs
             check-patch-file-names
             check-patch-headers
@@ -321,6 +322,21 @@ markup is valid return a plain-text version of DESCRIPTION, otherwise #f."
                       (G_ "Texinfo markup in description is invalid")
                       #:field 'description))))
 
+  (define (check-description-typo description typo-corrections)
+    "Check that DESCRIPTION does not contain typo, with optional correction"
+    (append-map
+     (match-lambda
+      ((typo . correction)
+       (if (string-contains description typo)
+           (list
+            (make-warning package
+                          (G_
+                           (format #false
+                                   "description contains typo '~a'~@[, should be '~a'~]"
+                                   typo correction))))
+           '())))
+     typo-corrections))
+
   (define (check-trademarks description)
     "Check that DESCRIPTION does not contain '™' or '®' characters.  See
 http://www.gnu.org/prep/standards/html_node/Trademarks.html."
@@ -401,6 +417,10 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
          (check-not-empty description)
          (check-quotes description)
          (check-trademarks description)
+         (check-description-typo description '(("This packages" . "This package")
+                                               ("This modules" . "This module")
+                                               ("allows to" . #f)
+                                               ("permits to" . #f)))
          ;; Use raw description for this because Texinfo rendering
          ;; automatically fixes end of sentence space.
          (check-end-of-sentence-space description)
@@ -458,6 +478,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
             "help2man"
             "intltool"
             "itstool"
+            "kdoctools"
             "libtool"
             "m4"
             "qttools"
@@ -503,6 +524,37 @@ of a package, and INPUT-NAMES, a list of package specifications such as
          (package-input-intersection (package-direct-inputs package)
                                      input-names))))
 
+(define (check-input-labels package)
+  "Emit a warning for labels that differ from the corresponding package name."
+  (define (check input-kind package-inputs)
+    (define (warning label name)
+      (make-warning package
+                    (G_ "label '~a' does not match package name '~a'")
+                    (list label name)
+                    #:field input-kind))
+
+    (append-map (match-lambda
+                  (((? string? label) (? package? dependency))
+                   (if (string=? label (package-name dependency))
+                       '()
+                       (list (warning label (package-name dependency)))))
+                  (((? string? label) (? package? dependency) output)
+                   (let ((expected (string-append (package-name dependency)
+                                                  ":" output)))
+                     (if (string=? label expected)
+                         '()
+                         (list (warning label expected)))))
+                  (_
+                   '()))
+                (package-inputs package)))
+
+  (append-map (match-lambda
+                ((kind proc)
+                 (check kind proc)))
+              `((native-inputs ,package-native-inputs)
+                (inputs ,package-inputs)
+                (propagated-inputs ,package-propagated-inputs))))
+
 (define (report-wrap-program-error package wrapper-name)
   "Warn that \"bash-minimal\" is missing from 'inputs', while WRAPPER-NAME
 requires it."
@@ -519,9 +571,7 @@ or \"bash-minimal\" is not in its inputs. 'wrap-script' is not supported."
                                        input-names)))
   (define (check-procedure-body body)
     (match body
-      ;; Explicitely setting an interpreter is acceptable,
-      ;; #:sh support is added on 'core-updates'.
-      ;; TODO(core-updates): remove mention of core-updates.
+      ;; Explicitely setting an interpreter is acceptable.
       (('wrap-program _ '#:sh . _) '())
       (('wrap-program _ . _)
        (list (report-wrap-program-error package 'wrap-program)))
@@ -938,8 +988,12 @@ patch could not be found."
 
      ;; Check whether we're reaching tar's maximum file name length.
      (let ((prefix (string-length (%distro-directory)))
-           (margin (string-length "guix-2.0.0rc3-10000-1234567890/"))
-           (max    99))
+           ;; Margin approximating the largest path that "make dist" might
+           ;; create, with a release candidate version, 123456 commits, and
+           ;; git commit hash abcde0.
+           (margin (string-length "guix-92.0.0rc3-123456-abcde0/"))
+           ;; Tested maximum patch file length for ustar format.
+           (max    151))
        (filter-map (match-lambda
                      ((? string? patch)
                       (if (> (+ margin (if (string-prefix? (%distro-directory)
@@ -949,7 +1003,7 @@ patch could not be found."
                              max)
                           (make-warning
                            package
-                           (G_ "~a: file name is too long")
+                           (G_ "~a: file name is too long, which may break 'make dist'")
                            (list (basename patch))
                            #:field 'patch-file-names)
                           #f))
@@ -1556,7 +1610,7 @@ Heritage and missing from the Disarchive database")
                          (#f '())
                          (id
                           (list (make-warning package
-                                              (G_ "
+                                              (G_ "\
 Disarchive entry refers to non-existent SWH directory '~a'")
                                               (list id)
                                               #:field 'source)))))))
@@ -1755,6 +1809,10 @@ them for PACKAGE."
      (name        'inputs-should-not-be-input)
      (description "Identify inputs that shouldn't be inputs at all")
      (check       check-inputs-should-not-be-an-input-at-all))
+   (lint-checker
+     (name        'input-labels)
+     (description "Identify input labels that do not match package names")
+     (check       check-input-labels))
    (lint-checker
      (name        'wrapper-inputs)
      (description "Make sure 'wrap-program' can finds its interpreter.")

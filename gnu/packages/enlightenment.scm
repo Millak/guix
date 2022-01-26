@@ -50,6 +50,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
@@ -69,7 +70,7 @@
 (define-public efl
   (package
     (name "efl")
-    (version "1.25.1")
+    (version "1.26.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -77,12 +78,13 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "0svybbrvpf6q955y6fclxh3md64z0dgmh0x54x2j60503hhs071m"))))
+                "0hm6i1f2g4mwj726rc6na38xhys1plbv9swrlc9hrpa87mz6gac6"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("check" ,check-0.14)
+     `(("check" ,check)
        ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("python" ,python)))
     (inputs
      `(("curl" ,curl)
        ("giflib" ,giflib)
@@ -91,7 +93,11 @@
        ("ibus" ,ibus)
        ("mesa" ,mesa)
        ("libraw" ,libraw)
-       ("librsvg" ,librsvg)
+       ;; Only enable the optional SVG support on x86_64, as this is the only
+       ;; architecture where librsvg can be built.
+       ,@(if (target-x86-64?)
+             `(("librsvg" ,librsvg))
+             '())
        ("libspectre" ,libspectre)
        ("libtiff" ,libtiff)
        ("libxau" ,libxau)
@@ -127,6 +133,7 @@
        ("libjpeg" ,libjpeg-turbo)
        ("libsndfile" ,libsndfile)
        ("libpng" ,libpng)
+       ("libunwind" ,libunwind)
        ("libx11" ,libx11)
        ("libxkbcommon" ,libxkbcommon)
        ("luajit" ,luajit)
@@ -136,20 +143,23 @@
        ("wayland" ,wayland)
        ("zlib" ,zlib)))
     (arguments
-     `(#:configure-flags '("-Dembedded-lz4=false"
-                           "-Dbuild-examples=false"
-                           "-Decore-imf-loaders-disabler=scim"
-                           "-Dglib=true"
-                           "-Dmount-path=/run/setuid-programs/mount"
-                           "-Dunmount-path=/run/setuid-programs/umount"
-                           ;(string-append "-Ddictionaries-hyphen-dir="
-                           ;               (assoc-ref %build-inputs "hyphen")
-                           ;               "/share/hyphen")
-                           "-Dnetwork-backend=connman"
-                           ;; for wayland
-                           "-Dwl=true"
-                           "-Ddrm=true")
-       #:tests? #f ; Many tests fail due to timeouts and network requests.
+     `(#:configure-flags
+       `("-Dembedded-lz4=false"
+         "-Dbuild-examples=false"
+         "-Decore-imf-loaders-disabler=scim"
+         "-Dglib=true"
+         "-Dmount-path=/run/setuid-programs/mount"
+         "-Dunmount-path=/run/setuid-programs/umount"
+         "-Dnetwork-backend=connman"
+         ;; Add 'rsvg' to the default list (json, avif, heif) of disabled loaders
+         ;; unless librsvg is available.
+         ,,@(if (target-x86-64?)
+                '()
+                (list "-Devas-loaders-disabler=json,avif,heif,rsvg"))
+         ;; For Wayland.
+         "-Dwl=true"
+         "-Ddrm=true")
+       #:tests? #f     ; Many tests fail due to timeouts and network requests.
        #:phases
        (modify-phases %standard-phases
          ;; If we don't hardcode the location of libcurl.so and others then we
@@ -171,8 +181,7 @@
                   (string-append sndfile lib libsnd)))
                (substitute* "src/lib/elput/elput_logind.c"
                  (("libelogind.so.0" libelogind)
-                  (string-append elogind "/lib/" libelogind)))
-               #t)))
+                  (string-append elogind "/lib/" libelogind))))))
          (add-after 'unpack 'fix-install-paths
            (lambda _
              (substitute* "dbus-services/meson.build"
@@ -181,11 +190,10 @@
              (substitute* "src/tests/elementary/meson.build"
                (("dir_data") "meson.source_root(), 'test-output'"))
              (substitute* "data/eo/meson.build"
-               (("'usr', 'lib'") "'./' + dir_lib"))
-             #t))
+               (("'usr', 'lib'") "'./' + dir_lib"))))
          (add-after 'unpack 'set-home-directory
            ;; FATAL: Cannot create run dir '/homeless-shelter/.run' - errno=2
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (home-page "https://www.enlightenment.org/about-efl")
     (synopsis "Enlightenment Foundation Libraries")
     (description
@@ -199,7 +207,7 @@ removable devices or support for multimedia.")
 (define-public terminology
   (package
     (name "terminology")
-    (version "1.9.0")
+    (version "1.12.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -207,15 +215,14 @@ removable devices or support for multimedia.")
                               "terminology/terminology-" version ".tar.xz"))
               (sha256
                (base32
-                "0v74858yvrrfy0l2pq7yn6izvqhpkb9gw2jpd3a3khjwv8kw6frz"))
+                "1aasddf2343qj798b5s8qwif3lxj4pyjax6fa9sfi6if9icdkkpq"))
               (modules '((guix build utils)))
               ;; Remove the bundled fonts.
               (snippet
                '(begin
                   (delete-file-recursively "data/fonts")
                   (substitute* "data/meson.build"
-                    (("subdir\\('fonts'\\)") ""))
-                  #t))))
+                    (("subdir\\('fonts'\\)") ""))))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -227,25 +234,26 @@ removable devices or support for multimedia.")
        (modify-phases %standard-phases
          (add-after 'unpack 'set-home-directory
            ;; FATAL: Cannot create run dir '/homeless-shelter/.run' - errno=2
-           (lambda _ (setenv "HOME" "/tmp") #t))
+           (lambda _ (setenv "HOME" "/tmp")))
          (replace 'check
-           (lambda _
-             (with-directory-excursion
-               (string-append "../" ,name "-" ,version "/tests")
-               (invoke "sh" "run_tests.sh" "--verbose"
-                       "-t" "../../build/src/bin/tytest"))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion
+                 (string-append "../" ,name "-" ,version "/tests")
+                 (invoke "sh" "run_tests.sh" "--verbose"
+                         "-t" "../../build/src/bin/tytest")))))
          (add-after 'install 'remove-test-binary
            (lambda* (#:key outputs #:allow-other-keys)
              ;; This file is not meant to be installed.
              (delete-file (string-append (assoc-ref outputs "out")
-                                         "/bin/tytest"))
-             #t)))))
+                                         "/bin/tytest")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           perl
+           pkg-config
+           python))
     (inputs
-     `(("efl" ,efl)))
+     (list efl))
     (home-page "https://www.enlightenment.org/about-terminology")
     (synopsis "Powerful terminal emulator based on EFL")
     (description
@@ -258,7 +266,7 @@ contents and more.")
 (define-public rage
   (package
     (name "rage")
-    (version "0.3.1")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -267,18 +275,18 @@ contents and more.")
                 version ".tar.xz"))
               (sha256
                (base32
-                "04fdk23bbgvni212zrfy4ndg7vmshbsjgicrhckdvhay87pk9i75"))))
+                "03yal7ajh57x2jhmygc6msf3gzvqkpmzkqzj6dnam5sim8cq9rbw"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-home-directory
            ;; FATAL: Cannot create run dir '/homeless-shelter/.run' - errno=2
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("efl" ,efl)))
+     (list efl))
     (home-page "https://www.enlightenment.org/about-rage")
     (synopsis "Video and audio player based on EFL")
     (description
@@ -289,7 +297,7 @@ Libraries with some extra bells and whistles.")
 (define-public enlightenment
   (package
     (name "enlightenment")
-    (version "0.24.2")
+    (version "0.25.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -297,21 +305,16 @@ Libraries with some extra bells and whistles.")
                               "enlightenment/enlightenment-" version ".tar.xz"))
               (sha256
                (base32
-                "1wfz0rwwsx7c1mkswn4hc9xw1i6bsdirhxiycf7ha2vcipqy465y"))
+                "0i1424vsc929h36hx04646pbrjiya6nc1nqr6s15xwvfv7imzw1c"))
               (patches (search-patches "enlightenment-fix-setuid-path.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
-       (let ((efl (assoc-ref %build-inputs "efl")))
-         (list "-Dsystemd=false"
-               "-Dpackagekit=false"
-               "-Dwl=true"
-               (string-append "-Dedje-cc=" efl "/bin/edje_cc")
-               (string-append "-Deldbus-codegen=" efl "/bin/eldbus-codegen")
-               (string-append "-Deet=" efl "/bin/eet")))
+       (list "-Dsystemd=false"
+             "-Dpackagekit=false"
+             "-Dwl=true")
        #:phases
        (modify-phases %standard-phases
-         (delete 'bootstrap) ; We don't want to run the autogen script.
          (add-before 'configure 'set-system-actions
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" "/tmp")
@@ -349,8 +352,7 @@ Libraries with some extra bells and whistles.")
                  (("/bin/umount") "/run/setuid-programs/umount")
                  (("/usr/bin/eject") "/run/current-system/profile/bin/eject"))
                (substitute* "src/bin/system/e_system_power.c"
-                 (("systemctl") "loginctl"))
-               #t))))))
+                 (("systemctl") "loginctl"))))))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
@@ -360,21 +362,20 @@ Libraries with some extra bells and whistles.")
        ("bluez" ,bluez)
        ("dbus" ,dbus)
        ("freetype" ,freetype)
+       ("libdrm" ,libdrm)
+       ("libexif" ,libexif)
        ("libxcb" ,libxcb)
        ("libxext" ,libxext)
        ("linux-pam" ,linux-pam)
-       ("puleseaudio" ,pulseaudio)
+       ("pulseaudio" ,pulseaudio)
        ("setxkbmap" ,setxkbmap)
        ("xcb-util-keysyms" ,xcb-util-keysyms)
        ("xkeyboard-config" ,xkeyboard-config)
        ("xorg-server-xwayland" ,xorg-server-xwayland)))
     (propagated-inputs
-     `(("efl" ,efl)
-       ("libxkbcommon" ,libxkbcommon)
-       ("wayland-protocols" ,wayland-protocols)
-
-       ;; Default font that applications such as IceCat require.
-       ("font-dejavu" ,font-dejavu)))
+     (list efl libxkbcommon wayland-protocols
+           ;; Default font that applications such as IceCat require.
+           font-dejavu))
     (home-page "https://www.enlightenment.org/about-enlightenment")
     (synopsis "Lightweight desktop environment")
     (description
@@ -383,9 +384,6 @@ file manager, wide range of configuration options, plugin system allowing to
 unload unused functionality, with support for touchscreen and suitable for
 embedded systems.")
     (license license:bsd-2)))
-
-(define-public enlightenment-wayland
-  (deprecated-package "enlightenment-wayland" enlightenment))
 
 (define-public python-efl
   (package
@@ -434,11 +432,9 @@ embedded systems.")
             (delete-file "tests/ecore/test_11_con.py")
             #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-cython" ,python-cython)))
+     (list pkg-config python-cython))
     (inputs
-     `(("efl" ,efl)
-       ("python-dbus" ,python-dbus)))
+     (list efl python-dbus))
     (home-page "https://www.enlightenment.org/")
     (synopsis "Python bindings for EFL")
     (description
@@ -479,8 +475,7 @@ Libraries stack (eo, evas, ecore, edje, emotion, ethumb and elementary).")
        ("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("clang" ,clang)
-       ("efl" ,efl)))
+     (list clang efl))
     (home-page "https://www.enlightenment.org/about-edi")
     (synopsis "Development environment for Enlightenment")
     (description "EDI is a development environment designed for and built using
@@ -512,9 +507,7 @@ and in creating applications based on the Enlightenment Foundation Library suite
                        (("'/usr/")"'"))
              #t)))))
     (propagated-inputs
-     `(("python2-efl" ,python2-efl)
-       ("python2-pypdf2" ,python2-pypdf2)
-       ("python2-pyxdg" ,python2-pyxdg)))
+     (list python2-efl python2-pypdf2 python2-pyxdg))
     (synopsis "Simple PDF viewer")
     (description
      "Simple PDF viewer based on the Enlightenment Foundation Libraries.")
@@ -524,26 +517,25 @@ and in creating applications based on the Enlightenment Foundation Library suite
 (define-public ephoto
   (package
     (name "ephoto")
-    (version "1.5")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.enlightenment.org/rel/"
                            "apps/ephoto/ephoto-" version ".tar.xz"))
        (sha256
-        (base32 "1q7v9abjp9jrs08xc7pqaac64yzax24dk1snjb9rciarzzh3mlzy"))))
-    (build-system gnu-build-system)
+        (base32 "1lvhcs4ba8h3z78nyycbww8mj4cscb8k200dcc3cdy8vrvrp7g1n"))))
+    (build-system meson-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-home-directory
            ;; FATAL: Cannot create run dir '/homeless-shelter/.run' - errno=2
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     `(("check" ,check)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("efl" ,efl)))
+     (list efl))
     (home-page "https://smhouston.us/projects/ephoto/")
     (synopsis "EFL image viewer/editor/manipulator/slideshow creator")
     (description "Ephoto is an image viewer and editor written using the
@@ -571,14 +563,14 @@ directories.
 (define-public evisum
   (package
     (name "evisum")
-    (version "0.5.13")
+    (version "0.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://download.enlightenment.org/rel/apps/"
                             "evisum/evisum-" version ".tar.xz"))
         (sha256
-         (base32 "1rjqvida4anh7gqjp6xrpk6kmhqb66r733yyr2ixphgxn33p3iac"))))
+         (base32 "1ip3rmp0hcn0pk6lv089cayx18p1b2wycgvwpnf7ghbdxg7n4q15"))))
     (build-system meson-build-system)
     (arguments
      '(#:tests? #f                      ; no tests
@@ -588,10 +580,10 @@ directories.
            (lambda _
              (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           pkg-config))
     (inputs
-     `(("efl" ,efl)))
+     (list efl))
     (home-page "https://www.enlightenment.org")
     (synopsis "EFL process viewer")
     (description
@@ -625,13 +617,9 @@ directories.
                   (string-append "join(\"" out "/share/epour\"")))
                #t))))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("python-distutils-extra" ,python-distutils-extra)))
+     (list intltool python-distutils-extra))
     (inputs
-     `(("libtorrent-rasterbar" ,libtorrent-rasterbar)
-       ("python-dbus" ,python-dbus)
-       ("python-efl" ,python-efl)
-       ("python-pyxdg" ,python-pyxdg)))
+     (list libtorrent-rasterbar python-dbus python-efl python-pyxdg))
     (home-page "https://www.enlightenment.org")
     (synopsis "EFL Bittorrent client")
     (description "Epour is a BitTorrent client based on the @dfn{Enlightenment

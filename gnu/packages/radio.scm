@@ -26,6 +26,7 @@
 
 (define-module (gnu packages radio)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -143,11 +144,9 @@ useful in modems implemented with @dfn{digital signal processing} (DSP).")
               (base32 "1n6dbg13q8ga5qhg1yiszwly4jj0rxqr6f1xwm9waaly5z493xsd"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (inputs
-     `(("fftwf" ,fftwf)
-       ("libfec" ,libfec)))
+     (list fftwf libfec))
     (arguments
      `(;; For reproducibility, disable use of SSE3, SSE4.1, etc.
        #:configure-flags '("--enable-simdoverride")
@@ -185,9 +184,9 @@ mathematical operations, and much more.")
          "0lmvsnb4xw4hmz6zs0z5ilsah5hjz29g1s0050n59fllskqr3b8k"))))
     (build-system cmake-build-system)
     (inputs
-     `(("libusb" ,libusb)))
+     (list libusb))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (arguments
      `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
                            "-DINSTALL_UDEV_RULES=ON")
@@ -236,9 +235,9 @@ this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
         (base32 "0n699i5a9fzzhf80fcjlqq6p2a013rzlwmwv4nmwfafy6c8cr924"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libusb" ,libusb)))
+     (list libusb))
     (arguments
      '(#:configure-flags '("-DINSTALL_UDEV_RULES=ON")
        #:tests? #f ; No tests
@@ -283,8 +282,7 @@ with this package.  E.g.: @code{(udev-rules-service 'airspyhf airspyhf)}")
         (base32 "1dy25zxk7wmg7ik82dx7h3bbbynvalbz1dxsl7kgm3374yxhnixv"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("python" ,python)
-       ("swig" ,swig)))
+     (list python swig))
     (native-search-paths
      (list (search-path-specification
             (variable "SOAPY_SDR_PLUGIN_PATH")
@@ -312,8 +310,7 @@ defined radio hardware devices with a common API.")
         (base32 "04krqinglgkjvx7klqik6yn8rb4mlpwzb6zvnmvm7szqci2agggz"))))
     (build-system cmake-build-system)
     (inputs
-     `(("airspyhf" ,airspyhf)
-       ("soapysdr" ,soapysdr)))
+     (list airspyhf soapysdr))
     (arguments
      `(#:tests? #f))  ; No test suite
     (home-page "https://github.com/pothosware/SoapyAirspyHF/wiki")
@@ -341,8 +338,7 @@ SoapySDR library.")
           (base32 "0l5890a240i1fan88jjdxaqswk3as410nlrv12a698fy9npqh4w4"))))
       (build-system cmake-build-system)
       (inputs
-       `(("hackrf" ,hackrf)
-         ("soapysdr" ,soapysdr)))
+       (list hackrf soapysdr))
       (arguments
        `(#:tests? #f))  ; No test suite
       (home-page "https://github.com/pothosware/SoapyHackRF/wiki")
@@ -366,8 +362,7 @@ SoapySDR library.")
         (base32 "1dlnryj6k20pk7w7v4v13y099r7ikhvlzbgzgphmi5cxkdv0shrd"))))
     (build-system cmake-build-system)
     (inputs
-     `(("rtl-sdr" ,rtl-sdr)
-       ("soapysdr" ,soapysdr)))
+     (list rtl-sdr soapysdr))
     (arguments
      `(#:tests? #f))  ; No test suite
     (home-page "https://github.com/pothosware/SoapyRTLSDR/wiki")
@@ -379,19 +374,17 @@ SoapySDR library.")
 (define-public chirp
   (package
     (name "chirp")
-    (version "20201121")
+    (version "20211016")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://trac.chirp.danplanet.com/chirp_daily/daily-"
                            version "/chirp-daily-" version ".tar.gz"))
        (sha256
-        (base32 "092jryb1jn9li6zj243awv6piz1lhghqsm4phrz7j0rgqf76dy4n"))))
+        (base32 "13xzqnhvnw6yipv4izkq0s9ykyl9pc5ifpr1ii8xfp28ch706qyw"))))
     (build-system python-build-system)
     (inputs
-     `(("python2-libxml2" ,python2-libxml2)
-       ("python2-pygtk" ,python2-pygtk)
-       ("python2-pyserial" ,python2-pyserial)))
+     (list python2-libxml2 python2-pygtk python2-pyserial))
     (arguments
      `(#:python ,python-2))
     (home-page "https://chirp.danplanet.com")
@@ -420,8 +413,7 @@ memory contents between them.")
           (base32 "0i7vkjjrq392gs9qaibr7j3v4hijqqg8458dn21dwh16ncrvr9bp"))))
       (build-system cmake-build-system)
       (inputs
-       `(("libpng" ,libpng)
-         ("libsndfile" ,libsndfile)))
+       (list libpng libsndfile))
       (arguments
        `(#:tests? #f))  ; no tests
       (home-page "https://github.com/Xerbo/aptdec")
@@ -464,12 +456,9 @@ and a dedicated receiver.")
                 "esac\nAC_SUBST([ICONV], [\"-liconv\"])"))
              #t)))))
     (inputs
-     `(("libiconv" ,libiconv)
-       ("libsndfile" ,libsndfile)
-       ("liquid-dsp" ,liquid-dsp)))
+     (list libiconv libsndfile liquid-dsp))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (home-page "https://github.com/windytan/redsea")
     (synopsis "Lightweight RDS to JSON decoder")
     (description "redsea is a lightweight command-line @dfn{FM Radio Data
@@ -505,10 +494,10 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        ("python-pyzmq" ,python-pyzmq)
        ("python-scipy" ,python-scipy)
        ("python-sphinx" ,python-sphinx)
-       ("texlive" ,(texlive-union (list texlive-amsfonts/patched
-                                        texlive-latex-amsmath
-                                        ;; TODO: Add newunicodechar.
-                                        texlive-latex-graphics)))
+       ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
+                                             texlive-latex-amsmath
+                                             ;; TODO: Add newunicodechar.
+                                             texlive-latex-graphics)))
        ("xorg-server" ,xorg-server-for-tests)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -535,6 +524,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
        ("python-pyqt" ,python-pyqt-without-qtwebkit)
+       ("python-pyqtgraph" ,python-pyqtgraph)
        ("python-pyyaml" ,python-pyyaml)
        ("qtbase" ,qtbase-5)
        ("qwt" ,qwt)
@@ -582,8 +572,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
          (add-before 'check 'set-test-environment
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" "/tmp")
-             (system (string-append (assoc-ref inputs "xorg-server")
-                                    "/bin/Xvfb :1 &"))
+             (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
              #t))
          (replace 'check
@@ -597,7 +586,10 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
                            '(;; https://github.com/gnuradio/gnuradio/issues/3871
                              "qa_header_payload_demux"
                              ;; https://github.com/gnuradio/gnuradio/issues/4348
-                             "qa_packet_headerparser_b")
+                             "qa_packet_headerparser_b"
+                             ;; qa_rotator_cc sometimes fails, it looks like
+                             ;; a floating point number precision issue.
+                             "qa_rotator_cc")
                            "|"))))
          (add-after 'install 'wrap-python
            (assoc-ref python:%standard-phases 'wrap))
@@ -624,7 +616,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
             (variable "GRC_BLOCKS_PATH")
             (files '("share/gnuradio/grc/blocks")))
            (search-path-specification
-            (variable "PYTHONPATH")
+            (variable "GUIX_PYTHONPATH")
             (files (list (string-append "lib/python"
                                         (version-major+minor
                                          (package-version python))
@@ -656,26 +648,22 @@ environment.")
           (base32 "1pk5gnyznfyy510lbqzg9ijcb1fnhmn547n24aiqyrxd6i6vv1ki"))))
       (build-system cmake-build-system)
       (native-inputs
-       `(("doxygen" ,doxygen)
-         ("pkg-config" ,pkg-config)
-         ("pybind11" ,pybind11)
-         ("python-mako" ,python-mako)
-         ("python-six" ,python-six)))
+       (list doxygen pkg-config pybind11 python-mako python-six))
       (inputs
-       `(("airspyhf" ,airspyhf)
-         ("boost" ,boost)
-         ("fftwf" ,fftwf)
-         ("gmp" ,gmp)
-         ("gnuradio" ,gnuradio)
-         ("hackrf" ,hackrf)
-         ("libsndfile" ,libsndfile)
-         ("log4cpp" ,log4cpp)
-         ("python" ,python)
-         ("python-numpy" ,python-numpy)
-         ("python-pyqt" ,python-pyqt)
-         ("rtl-sdr" ,rtl-sdr)
-         ("soapysdr" ,soapysdr)
-         ("volk" ,volk)))
+       (list airspyhf
+             boost
+             fftwf
+             gmp
+             gnuradio
+             hackrf
+             libsndfile
+             log4cpp
+             python
+             python-numpy
+             python-pyqt
+             rtl-sdr
+             soapysdr
+             volk))
       (arguments
        `(#:modules ((guix build cmake-build-system)
                     ((guix build python-build-system) #:prefix python:)
@@ -714,12 +702,12 @@ to access different radio hardware.")
        ("doxygen" ,doxygen)
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)
-       ("texlive" ,(texlive-union (list texlive-amsfonts/patched
+       ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                         texlive-latex-amsmath
                                         ;; TODO: Add newunicodechar.
                                         texlive-latex-graphics)))))
     (inputs
-     `(("fftwf" ,fftwf)))
+     (list fftwf))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -727,9 +715,7 @@ to access different radio hardware.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "git-version-gen"
                (("/bin/sh")
-                (string-append (assoc-ref inputs "bash")
-                               "/bin/bash")))
-             #t)))))
+                (search-input-file inputs "/bin/bash"))))))))
     (synopsis "DSP primitives for SDR")
     (description
      "This a C-language library for common DSP (Digital Signal Processing)
@@ -755,20 +741,20 @@ primitives for SDR (Software Defined Radio).")
           (base32 "12p193ngcs65nd3lynry119nhv40mikamqkw37wdln7lawx3nw7p"))))
       (build-system cmake-build-system)
       (native-inputs
-       `(("doxygen" ,doxygen)
-         ("pkg-config" ,pkg-config)
-         ("pybind11" ,pybind11)
-         ("python" ,python)
-         ("python-numpy" ,python-numpy)
-         ("python-six" ,python-six)))
+       (list doxygen
+             pkg-config
+             pybind11
+             python
+             python-numpy
+             python-six))
       (inputs
-       `(("boost" ,boost)
-         ("fftwf" ,fftwf)
-         ("gmp" ,gmp)
-         ("gnuradio" ,gnuradio)
-         ("libosmo-dsp" ,libosmo-dsp)
-         ("log4cpp" ,log4cpp)
-         ("volk" ,volk)))
+       (list boost
+             fftwf
+             gmp
+             gnuradio
+             libosmo-dsp
+             log4cpp
+             volk))
       (synopsis "GNU Radio block to correct IQ imbalance")
       (description
      "This is a GNU Radio block to correct IQ imbalance in quadrature
@@ -797,21 +783,19 @@ to the fix block above.
         (base32 "01p9cnwjxas3pkqr9m5fnrgm45cji0sfdqqa51hzy7izx9vgzaf8"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("pybind11" ,pybind11)
-       ("python-six" ,python-six)))
+     (list pkg-config pybind11 python-six))
     (inputs
-     `(("boost" ,boost)
-       ("gmp" ,gmp)
-       ("gnuradio" ,gnuradio)
-       ("log4cpp" ,log4cpp)
-       ("python" ,python)
-       ("python-construct" ,python-construct)
-       ("python-numpy" ,python-numpy)
-       ("python-pyaml" ,python-pyaml)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-requests" ,python-requests)
-       ("volk" ,volk)))
+     (list boost
+           gmp
+           gnuradio
+           log4cpp
+           python
+           python-construct
+           python-numpy
+           python-pyaml
+           python-pyzmq
+           python-requests
+           volk))
     (arguments
      `(#:modules ((guix build cmake-build-system)
                   ((guix build python-build-system) #:prefix python:)
@@ -838,35 +822,35 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.14.4")
+    (version "2.15.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/csete/gqrx")
+             (url "https://github.com/gqrx-sdr/gqrx")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m4ncydihz4n4i80c252vk3c5v672yab1jv85n6ndn7a92xv3ilq"))))
+        (base32 "0r5pdj2l6zs2zvkc1bd7kg9vzx25pcgiw025n5yc841m8yg6n2c9"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("boost" ,boost)
-       ("fftwf" ,fftwf)
-       ("gmp" ,gmp)
-       ("gnuradio" ,gnuradio)
-       ("gr-iqbal" ,gr-iqbal)
-       ("gr-osmosdr" ,gr-osmosdr)
-       ("jack" ,jack-1)
-       ("libsndfile" ,libsndfile)
-       ("log4cpp" ,log4cpp)
-       ("portaudio" ,portaudio)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("volk" ,volk)))
+     (list alsa-lib
+           boost
+           fftwf
+           gmp
+           gnuradio
+           gr-iqbal
+           gr-osmosdr
+           jack-1
+           libsndfile
+           log4cpp
+           portaudio
+           pulseaudio
+           qtbase-5
+           qtsvg
+           volk))
     (arguments
      `(#:tests? #f))                    ; no tests
     (synopsis "Software defined radio receiver")
@@ -890,24 +874,21 @@ using GNU Radio and the Qt GUI toolkit.")
         (base32 "0y43241s3p8qzn7x6x28v5v2bf934riznj14bb7m6k6vgd849qzl"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake gettext-minimal pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("fltk" ,fltk)
-       ("eudev" ,eudev)
-       ("hamlib" ,hamlib)
-       ("libpng" ,libpng)
-       ("libsamplerate" ,libsamplerate)
-       ("libusb" ,libusb)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)
-       ("portaudio" ,portaudio)
-       ("pulseaudio" ,pulseaudio)))
+     (list alsa-lib
+           fltk
+           eudev
+           hamlib
+           libpng
+           libsamplerate
+           libusb
+           libx11
+           libxext
+           libxfixes
+           libxft
+           portaudio
+           pulseaudio))
     (synopsis "Software modem for amateur radio use")
     (description
      "Fldigi is a software modem for amateur radio use.  It is a sound card
@@ -932,15 +913,9 @@ hardware.")
         (base32 "0vxn1wy5b2zfq20k93rfgq34m1nd3mxd74h8l98f90d85fhcqggy"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake pkg-config))
     (inputs
-     `(("fltk" ,fltk)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)))
+     (list fltk libx11 libxext libxfixes libxft))
     (synopsis "Radio transceiver control program")
     (description
      "Flrig is a transceiver control program for amateur radio use.
@@ -952,7 +927,7 @@ or USB connection.")
 (define-public flamp
   (package
     (name "flamp")
-    (version "2.2.05")
+    (version "2.2.07")
     (source
      (origin
        (method git-fetch)
@@ -961,18 +936,12 @@ or USB connection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ll2wbhyh1sb4iqsypwrd118mrgw3vbsdbz442qhk4r6l8kjzblq"))))
+        (base32 "0rygd5w04nspxdj8qj81gpb3mgijvlmii74s1f4mihqs5kb8nwh6"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake pkg-config))
     (inputs
-     `(("fltk" ,fltk)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)))
+     (list fltk libx11 libxext libxfixes libxft))
     (synopsis "Tool for AMP file transfer")
     (description
      "FLAMP is a program for transferring files by radio waves using AMP
@@ -995,15 +964,9 @@ or USB connection.")
         (base32 "0xkhr82smfr7wpb9xl05wf7bz3vi2mr4xkcr2s8v6mblhgsdhqwg"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake pkg-config))
     (inputs
-     `(("fltk" ,fltk)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)
-       ("libxfixes" ,libxfixes)
-       ("libxft" ,libxft)))
+     (list fltk libx11 libxext libxfixes libxft))
     (synopsis "File encapsulation program")
     (description
      "Flwrap is a software utility for amateur radio use.  Its purpose is to
@@ -1050,11 +1013,9 @@ for correctness.")
              #t)))
        #:tests? #f)) ; no test suite
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("libusb" ,libusb)))
+     (list fftw fftwf libusb))
     (home-page "https://greatscottgadgets.com/hackrf/")
     (synopsis "User-space library and utilities for HackRF SDR")
     (description
@@ -1068,7 +1029,7 @@ you must extend 'udev-service-type' with this package.  E.g.:
 (define-public hamlib
   (package
     (name "hamlib")
-    (version "4.2")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
@@ -1076,20 +1037,17 @@ you must extend 'udev-service-type' with this package.  E.g.:
              "https://github.com/Hamlib/Hamlib/releases/download/"
              version "/hamlib-" version ".tar.gz"))
        (sha256
-        (base32 "1m8gb20i8ga6ndnnw187ry1h4z8wx27v1hl7c610r6ky60pv4072"))))
+        (base32 "0c578m04zs8dllbd4cv6nxb44y0dn8kiapzkih84ycfjzmnkhdrl"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("lua" ,lua)
-       ("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("swig" ,swig)
-       ("tcl" ,tcl)))
+     (list doxygen
+           lua
+           pkg-config
+           python-wrapper
+           swig
+           tcl))
     (inputs
-     `(("gd" ,gd)
-       ("libusb" ,libusb)
-       ("libxml2" ,libxml2)
-       ("readline" ,readline)))
+     (list gd libusb libxml2 readline))
     (arguments
      `(#:configure-flags '("--disable-static"
                            "--with-lua-binding"
@@ -1110,7 +1068,7 @@ users.")
   (package
     (inherit hamlib)
     (name "wsjtx-hamlib")
-    (version "2.3.1")
+    (version "2.5.2")
     (source
      (origin
        (method git-fetch)
@@ -1119,7 +1077,7 @@ users.")
              (commit (string-append "wsjtx-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m4yzjcqs7a1w4lghyyckpkiy96jxdjijddxarqr3a37cl2rz23j"))))
+        (base32 "1bgf7bz2280739a7ip7lvpns0i7x6svryxfmsp32cff2dr146lz3"))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
@@ -1153,17 +1111,14 @@ users.")
      '(#:configure-flags
        (list "--enable-fldigi-xmlrpc")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake perl pkg-config))
     (inputs
-     `(("cmocka" ,cmocka)
-       ("glib" ,glib)
-       ("hamlib" ,hamlib)
-       ("libusb" ,libusb) ;`Requires.private: libusb-1.0` in hamlib pkg-config
-       ("ncurses" ,ncurses)
-       ("xmlrpc-c" ,xmlrpc-c)))
+     (list cmocka
+           glib
+           hamlib
+           libusb ;`Requires.private: libusb-1.0` in hamlib pkg-config
+           ncurses
+           xmlrpc-c))
     (home-page "https://tlf.github.io/")
     (synopsis "Amateur radio contest logging for the terminal")
     (description "TLF is a @acronym{Text User Interface, TUI} amateur radio
@@ -1195,7 +1150,7 @@ instances over the network, and general QSO and DXpedition logging.")
 (define-public wsjtx
   (package
     (name "wsjtx")
-    (version "2.3.1")
+    (version "2.5.2")
     (source
      (origin
        (method git-fetch)
@@ -1204,14 +1159,10 @@ instances over the network, and general QSO and DXpedition logging.")
              (commit (string-append "wsjtx-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mdr4l7zii08615yn7z91spnvnqm5i9390bra9lz3aqyxrsiim91"))))
+        (base32 "01346f2x3jc0gbzdi7ihzr9rxibnbzn31ix0879qfavrv8l31k1s"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("gfortran" ,gfortran)
-       ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)
-       ("ruby-asciidoctor" ,ruby-asciidoctor)))
+     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
     (inputs
      `(("boost" ,boost)
        ("fftw" ,fftw)
@@ -1222,20 +1173,7 @@ instances over the network, and general QSO and DXpedition logging.")
        ("qtmultimedia" ,qtmultimedia)
        ("qtserialport" ,qtserialport)))
     (arguments
-     `(#:tests? #f ; No test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'work-around-runtime-bug
-           (lambda _
-             ;; Some of the programs in this package fail to find symbols
-             ;; in libm at runtime. Adding libm manually at the end of the
-             ;; library lists when linking the programs seems to help.
-             ;; TODO: find exactly what is wrong in the way the programs
-             ;; are built.
-             (substitute* "CMakeLists.txt"
-               (("target_link_libraries \\((.*)\\)" all libs)
-                (string-append "target_link_libraries (" libs " m)")))
-             #t)))))
+     `(#:tests? #f)) ; No test suite
     (synopsis "Weak-signal ham radio communication program")
     (description
      "WSJT-X implements communication protocols or modes called FT4, FT8,
@@ -1266,11 +1204,7 @@ weak-signal conditions.")
            #t))))
     (build-system qt-build-system)
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("gfortran" ,gfortran)
-       ("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)
-       ("ruby-asciidoctor" ,ruby-asciidoctor)))
+     (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
     (inputs
      `(("boost" ,boost)
        ("fftw" ,fftw)
@@ -1290,19 +1224,7 @@ weak-signal conditions.")
                (("DESTINATION /usr/share")
                 (string-append "DESTINATION "
                                (assoc-ref outputs "out")
-                               "/share")))
-             #t))
-         (add-after 'fix-paths 'work-around-runtime-bug
-           (lambda _
-             ;; Some of the programs in this package fail to find symbols
-             ;; in libm at runtime. Adding libm manually at the end of the
-             ;; library lists when linking the programs seems to help.
-             ;; TODO: find exactly what is wrong in the way the programs
-             ;; are built.
-             (substitute* "CMakeLists.txt"
-               (("target_link_libraries \\((.*)\\)" all libs)
-                (string-append "target_link_libraries (" libs " m)")))
-             #t))
+                               "/share")))))
          (add-after 'unpack 'fix-hamlib
            (lambda _
              (substitute* "CMake/Modules/Findhamlib.cmake"
@@ -1312,8 +1234,7 @@ weak-signal conditions.")
   set (ENV{PKG_CONFIG_PATH} \"${__pc_path}\")"))
              (substitute* "HamlibTransceiver.hpp"
                (("#ifdef JS8_USE_LEGACY_HAMLIB")
-                "#if 1"))
-             #t)))))
+                "#if 1")))))))
     (synopsis "Weak-signal ham radio communication program")
     (description
      "JS8Call is a software using the JS8 digital mode (a derivative of the FT8
@@ -1325,42 +1246,19 @@ operators.")
 (define-public xnec2c
   (package
     (name "xnec2c")
-    (version "4.1.1")
+    (version "4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://www.5b4az.org/pkg/nec2/xnec2c/xnec2c-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1myvlkfybb2ha8l0h96ca3iz206zzy9z5iizm0sbab2zzp78n1r9"))))
+        (base32 "0jprahww6jvwq616lkq80sac166ffy0fp83gr5kvjc9k4pcls00n"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("gtk+" ,gtk+)))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-makefile
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* '("Makefile.am" "Makefile.in")
-               ;; The DESTDIR variable does not get replaced the prefix
-               ;; in the final Makefile, so let's do here.
-               (("\\$\\(DESTDIR\\)/usr")
-                (assoc-ref outputs "out")))
-             #t))
-         (add-after 'fix-makefile 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Increase the max length of the path to the glade file,
-             ;; so that the '/gnu/store/...' path can fit in.
-             (substitute* '("src/shared.c" "src/shared.h")
-               (("char xnec2c_glade\\[64\\];")
-                "char xnec2c_glade[256];"))
-             ;; Fix hard coded references to '/usr/...'.
-             (substitute* '("src/geom_edit.c" "src/main.c")
-               (("\"/usr")
-                (string-append "\"" (assoc-ref outputs "out"))))
-             #t)))))
+     (list gtk+))
     (synopsis "Antenna modeling software")
     (description
      "Xnec2c is a GTK3-based graphical version of nec2c, a translation to the
@@ -1374,7 +1272,7 @@ gain and standing wave ratio.")
 (define-public dump1090
   (package
     (name "dump1090")
-    (version "5.0")
+    (version "6.1")
     (source
      (origin
        (method git-fetch)
@@ -1383,15 +1281,12 @@ gain and standing wave ratio.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fckfcgypmplzl1lidd04jxiabczlfx9mv21d6rbsfknghsjpn03"))))
+        (base32 "13ssp2c3s18rszpmm3rpvicqvgvfiirsjf294m6r1sf3ji7ygd9q"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("hackrf" ,hackrf)
-       ("libusb" ,libusb)
-       ("ncurses" ,ncurses)
-       ("rtl-sdr" ,rtl-sdr)))
+     (list hackrf libusb ncurses rtl-sdr))
     (arguments
      `(#:test-target "test"
        #:make-flags
@@ -1404,8 +1299,7 @@ gain and standing wave ratio.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
                (install-file "dump1090" bin)
-               (install-file "view1090" bin)
-               #t))))))
+               (install-file "view1090" bin)))))))
     (synopsis "Mode S decoder for rtl-sdr devices")
     (description
      "Dump1090 is a Mode S decoder specifically designed for rtl-sdr devices.
@@ -1417,7 +1311,7 @@ their position, altitude, speed, etc.")
 (define-public rtl-433
   (package
     (name "rtl-433")
-    (version "21.05")
+    (version "21.12")
     (source
      (origin
        (method git-fetch)
@@ -1426,15 +1320,12 @@ their position, altitude, speed, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f60nvahsplv1yszacc49mlbcnacgs1nwhdf8y9srmzg08xrfnfk"))))
+        (base32 "0ygxs35zvgnamhqdwk1akcwagcirzpi4wndzgf9d23faiv4cm01a"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("libusb" ,libusb)
-       ("openssl" ,openssl)
-       ("rtl-sdr" ,rtl-sdr)
-       ("soapysdr" ,soapysdr)))
+     (list libusb openssl rtl-sdr soapysdr))
     (synopsis "Decoder for radio transmissions in ISM bands")
     (description
      "This is a generic data receiver, mainly for decoding radio transmissions
@@ -1457,8 +1348,7 @@ from devices on the 433 MHz, 868 MHz, 315 MHz, 345 MHz and 915 MHz ISM bands.")
         (base32 "01716cfhxfzsab9zjply9giaa4nn4b7rm3p3vizrwi7n253yiwm2"))))
     (build-system cmake-build-system)
     (inputs
-     `(("libx11" ,libx11)
-       ("pulseaudio" ,pulseaudio)))
+     (list libx11 pulseaudio))
     (arguments
      '(#:tests? #f))                    ; no test suite
     (home-page "https://github.com/EliasOenal/multimon-ng")
@@ -1495,12 +1385,9 @@ modes:
         (base32 "1h5k402wjlj7xjniggwf0x7a5srlgglc2x4hy6lz6c30zwa7z8fm"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-cython" ,python-cython)))
+     (list python-cython))
     (inputs
-     `(("python-numpy" ,python-numpy)
-       ("python-pyqt" ,python-pyqt)
-       ("python-pyserial" ,python-pyserial)
-       ("python-scipy" ,python-scipy)))
+     (list python-numpy python-pyqt python-pyserial python-scipy))
     (arguments
      '(#:tests? #f))
     (home-page "https://github.com/NanoVNA-Saver/nanovna-saver")
@@ -1513,40 +1400,34 @@ NanoVNA vector network analyzers.")
 (define-public qsstv
   (package
     (name "qsstv")
-    (version "9.4.4")
+    (version "9.5.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://users.telenet.be/on4qz/qsstv/downloads/"
                            "qsstv_" version ".tar.gz"))
        (sha256
-        (base32 "0f9hx6sy418cb23fadll298pqbc5l2lxsdivi4vgqbkvx7sw58zi"))))
+        (base32 "0s3sivc0xan6amibdiwfnknrl3248wzgy98w6gyxikl0qsjpygy0"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("fftw" ,fftw)
-       ("fftwf" ,fftwf)
-       ("hamlib" ,hamlib)
-       ("openjpeg" ,openjpeg)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("v4l-utils" ,v4l-utils)))
+     (list alsa-lib
+           fftw
+           fftwf
+           hamlib
+           openjpeg
+           pulseaudio
+           qtbase-5
+           v4l-utils))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-newer-hamlib-support
-           (lambda _
-             (substitute* "qsstv/rig/rigcontrol.cpp"
-               (("FILPATHLEN")
-                "HAMLIB_FILPATHLEN"))))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (invoke "qmake"
-                     (string-append "PREFIX=" (assoc-ref outputs "out")))
-             #t)))))
+                     (string-append "PREFIX=" (assoc-ref outputs "out"))))))))
     (home-page "http://users.telenet.be/on4qz/qsstv/")
     (synopsis "Program for receiving and transmitting SSTV and HAMDRM")
     (description
@@ -1570,8 +1451,7 @@ NanoVNA vector network analyzers.")
         (base32 "0xmz64m02knbrpasfij4rrq53ksxna5idxwgabcw4n2b1ig7pyx5"))))
     (build-system cmake-build-system)
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("hamlib" ,hamlib)))
+     (list alsa-lib hamlib))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1607,7 +1487,7 @@ It can perform as:
         (base32 "14lzgldqzbbzydsy1cai3wln3hpyj1yhj8ji3wygyzr616fq9f7i"))))
     (build-system gnu-build-system)
     (inputs
-     `(("ao" ,ao)))
+     (list ao))
     (home-page "https://www.nongnu.org/aldo/")
     (synopsis "Morse code tutor")
     (description
@@ -1635,12 +1515,9 @@ methods:
         (base32 "15wriwv91583kmmyijbzam3dpclzmg4qjyfzjv5f75x9b0gqabxm"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("ncurses" ,ncurses)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)))
+     (list alsa-lib ncurses pulseaudio qtbase-5))
     (arguments
      `(#:configure-flags '("--disable-static")
        #:phases
@@ -1655,8 +1532,7 @@ methods:
                 "-lncurses"))
              (substitute* "src/libcw/libcw_pa.c"
                (("libpulse-simple.so" all)
-                (string-append (assoc-ref inputs "pulseaudio")
-                               "/lib/" all))))))))
+                (search-input-file inputs "/lib/libpulse-simple.so"))))))))
     (home-page "http://unixcw.sourceforge.net/")
     (synopsis "Morse code library and programs")
     (description
@@ -1691,7 +1567,8 @@ intended for people who want to learn receiving and sending morse code.")
        ("osm-gps-map" ,osm-gps-map)
        ("pulseaudio" ,pulseaudio)))
     (arguments
-     `(#:tests? #f ; No test suite
+     `(#:configure-flags '("-DCMAKE_C_FLAGS=-fcommon")
+       #:tests? #f ; No test suite
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-paths
@@ -1724,15 +1601,14 @@ Identification System) messages sent by ships and coast stations.")
      '(#:import-path "github.com/nonoo/kappanhang"
        #:install-source? #f))
     (inputs
-     `(("go-github-com-akosmarton-papipes",go-github-com-akosmarton-papipes)
-       ("go-github-com-fatih-color" ,go-github-com-fatih-color)
-       ("go-github-com-google-goterm" ,go-github-com-google-goterm)
-       ("go-github-com-mattn-go-isatty" ,go-github-com-mattn-go-isatty)
-       ("go-github-com-mesilliac-pulse-simple"
-        ,go-github-com-mesilliac-pulse-simple)
-       ("go-github-com-pborman-getopt" ,go-github-com-pborman-getopt)
-       ("go-go-uber-org-multierr" ,go-go-uber-org-multierr)
-       ("go-go-uber-org-zap" ,go-go-uber-org-zap)))
+     (list go-github-com-akosmarton-papipes
+           go-github-com-fatih-color
+           go-github-com-google-goterm
+           go-github-com-mattn-go-isatty
+           go-github-com-mesilliac-pulse-simple
+           go-github-com-pborman-getopt
+           go-go-uber-org-multierr
+           go-go-uber-org-zap))
     (home-page "https://github.com/nonoo/kappanhang")
     (synopsis "Client for Icom RS-BA1 server")
     (description
@@ -1751,30 +1627,30 @@ Compatible hardware/software:
 (define-public dream
   (package
     (name "dream")
-    (version "2.1.1")
+    (version "2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/drm/dream/" version
-                           "/dream-" version "-svn808.tar.gz"))
+                           "/dream_" version ".orig.tar.gz"))
        (sha256
-        (base32 "01dv6gvljz64zrjbr08mybr9aicvpq2c6qskww46lngdjyhk8xs1"))))
+        (base32 "0mpg341b0vnm6ym0cag9zri9w6kw012rv68zdmmi2hlvq7iiw8gp"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("faad2" ,faad2)
-       ("fftw" ,fftw)
-       ("libsndfile" ,libsndfile)
-       ("libpcap" ,libpcap)
-       ("opus" ,opus)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("qtwebkit" ,qtwebkit)
-       ("qwt" ,qwt)
-       ("speexdsp" ,speexdsp)
-       ("zlib" ,zlib)))
+     (list faad2
+           fftw
+           libsndfile
+           libpcap
+           opus
+           pulseaudio
+           qtbase-5
+           qtsvg
+           qtwebkit
+           qwt
+           speexdsp
+           zlib))
     (arguments
      `(#:tests? #f
        #:phases
@@ -1789,24 +1665,18 @@ Compatible hardware/software:
                 (string-append "documentation.path = "
                                (assoc-ref outputs "out")
                                "/share/man/man1"))
-               (("/usr/include/pulse/")
-                (string-append (assoc-ref inputs "pulseaudio")
-                               "/include/pulse/"))
+               (("/usr/include/pulse")
+                (search-input-directory inputs "/include/pulse"))
                (("/usr/include/sndfile\\.h")
-                (string-append (assoc-ref inputs "libsndfile")
-                               "/include/sndfile.h"))
-               (("/usr/include/opus/")
-                (string-append (assoc-ref inputs "opus")
-                               "/include/opus/"))
-               (("/usr/include/speex/")
-                (string-append (assoc-ref inputs "speexdsp")
-                               "/include/speex/"))
-               (("/usr/include/qwt/")
-                (string-append (assoc-ref inputs "qwt")
-                               "/include/qwt/"))
+                (search-input-file inputs "/include/sndfile.h"))
+               (("/usr/include/opus")
+                (search-input-directory inputs "/include/opus"))
+               (("/usr/include/speex")
+                (search-input-directory inputs "/include/speex"))
+               (("/usr/include/qwt")
+                (search-input-directory inputs "/include/qwt"))
                (("\\$\\$OUT_PWD/include/neaacdec\\.h")
-                (string-append (assoc-ref inputs "faad2")
-                               "/include/neaacdec.h")))))
+                (search-input-file inputs "/include/neaacdec.h")))))
          (replace 'configure
            (lambda _
              (invoke "qmake"))))))
@@ -1832,22 +1702,22 @@ receiver.")
         (base32 "1xl1lanw0xgmgks67dbfb2h52jxnrd1i2zik56v0q8dwsr7f0daw"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("faad2" ,faad2)
-       ("fftwf" ,fftwf)
-       ("lame" ,lame)
-       ("libusb" ,libusb)
-       ("mpg123" ,mpg123)
-       ("rtl-sdr" ,rtl-sdr)
-       ("qtbase" ,qtbase-5)
-       ("qtcharts" ,qtcharts)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtgraphicaleffects" ,qtgraphicaleffects)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtquickcontrols2" ,qtquickcontrols2)
-       ("soapysdr" ,soapysdr)))
+     (list alsa-lib
+           faad2
+           fftwf
+           lame
+           libusb
+           mpg123
+           rtl-sdr
+           qtbase-5
+           qtcharts
+           qtdeclarative
+           qtgraphicaleffects
+           qtmultimedia
+           qtquickcontrols2
+           soapysdr))
     (arguments
      `(#:configure-flags '("-DRTLSDR=ON"
                            "-DSOAPYSDR=ON")
@@ -1877,7 +1747,7 @@ defined radio with support for rtl-sdr.")
           (base32 "0ic35130lf66lk3wawgc5bcg711l7chv9al1hzdc1xrmq9qf9hri"))))
       (build-system gnu-build-system)
       (inputs
-       `(("fftwf" ,fftwf)))
+       (list fftwf))
       (arguments
        `(#:make-flags
          (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
@@ -1985,9 +1855,7 @@ Codec.")
           (base32 "0j339kx3n2plgfw7ikpp7b81h5n68wmsgflwljbh2sy8j62faik9"))))
       (build-system cmake-build-system)
       (inputs
-       `(("faad2" ,faad2)
-         ("fftwf" ,fftwf)
-         ("zlib" ,zlib)))
+       (list faad2 fftwf zlib))
       (arguments
        `(#:tests? #f  ; No test suite.
          #:phases
@@ -2016,8 +1884,7 @@ Audio Broadcasting}.")
         (base32 "0jgzpv4d6ckd0sdq6438rjh3m6knj6gx63627fajch74hxrvclzj"))))
     (build-system cmake-build-system)
     (inputs
-     `(("mbelib" ,mbelib)
-       ("serialdv" ,serialdv)))
+     (list mbelib serialdv))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:configure-flags
@@ -2044,7 +1911,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "6.16.1")
+    (version "6.17.5")
     (source
      (origin
        (method git-fetch)
@@ -2053,60 +1920,68 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g9h4cy8k9dqlwkfk4lkk2d2s003bckzskm3vra87ndmgq1nfbzv"))))
+        (base32 "1g9972q78nxl62hpyn029s85ny5jj9dxlmmfqyz3l9sd6kdv9kl6"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("pkg-config" ,pkg-config)))
+     (list doxygen graphviz pkg-config))
     (inputs
-     `(("airspyhf" ,airspyhf)
-       ("alsa-lib" ,alsa-lib)
-       ("aptdec" ,aptdec)
-       ("boost" ,boost)
-       ("cm256cc" ,cm256cc)
-       ("codec2" ,codec2)
-       ("dsdcc" ,dsdcc)
-       ("faad2" ,faad2)
-       ("ffmpeg" ,ffmpeg)
-       ("fftwf" ,fftwf)
-       ("hackrf" ,hackrf)
-       ("libdab" ,libdab)
-       ("libusb" ,libusb)
-       ("mbelib" ,mbelib)
-       ("opencv" ,opencv)
-       ("opus" ,opus)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("qtcharts" ,qtcharts)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtlocation" ,qtlocation)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtserialport" ,qtserialport)
-       ("qtspeech" ,qtspeech)
-       ("qtwebsockets" ,qtwebsockets)
-       ("rtl-sdr" ,rtl-sdr)
-       ("serialdv" ,serialdv)
-       ("soapysdr" ,soapysdr)
-       ("sgp4" ,sgp4)
-       ("zlib" ,zlib)))
+     (list airspyhf
+           alsa-lib
+           aptdec
+           boost
+           cm256cc
+           codec2
+           dsdcc
+           faad2
+           ffmpeg
+           fftwf
+           hackrf
+           libdab
+           libusb
+           mbelib
+           opencv
+           opus
+           pulseaudio
+           qtbase-5
+           qtcharts
+           qtdeclarative
+           qtlocation
+           qtmultimedia
+           qtquickcontrols2
+           qtserialport
+           qtspeech
+           qtwebsockets
+           rtl-sdr
+           serialdv
+           soapysdr
+           sgp4
+           zlib))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:configure-flags
-       (list (string-append "-DAPT_DIR="
-                            (assoc-ref %build-inputs "aptdec"))
-             (string-append "-DDAB_DIR="
-                            (assoc-ref %build-inputs "libdab"))
-             (string-append "-DDSDCC_DIR="
-                            (assoc-ref %build-inputs "dsdcc"))
-             (string-append "-DMBE_DIR="
-                            (assoc-ref %build-inputs "mbelib"))
-             (string-append "-DSERIALDV_DIR="
-                            (assoc-ref %build-inputs "serialdv"))
-             (string-append "-DSGP4_DIR="
-                            (assoc-ref %build-inputs "sgp4"))
-             (string-append "-DSOAPYSDR_DIR="
-                            (assoc-ref %build-inputs "soapysdr")))))
+       ,#~(list (string-append "-DAPT_DIR="
+                               #$(this-package-input "aptdec"))
+                (string-append "-DDAB_DIR="
+                               #$(this-package-input "libdab"))
+                (string-append "-DDSDCC_DIR="
+                               #$(this-package-input "dsdcc"))
+                (string-append "-DMBE_DIR="
+                               #$(this-package-input "mbelib"))
+                (string-append "-DSERIALDV_DIR="
+                               #$(this-package-input "serialdv"))
+                (string-append "-DSGP4_DIR="
+                               #$(this-package-input "sgp4"))
+                (string-append "-DSOAPYSDR_DIR="
+                               #$(this-package-input "soapysdr")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-boost-compatibility
+           (lambda _
+             (substitute*
+                 '("plugins/channelrx/noisefigure/noisefigure.cpp"
+                   "plugins/channelrx/noisefigure/noisefigureenrdialog.cpp")
+               (("boost::math::barycentric_rational<double>")
+                "boost::math::interpolators::barycentric_rational<double>")))))))
     (home-page "https://github.com/f4exb/sdrangel/wiki")
     (synopsis "Software defined radio")
     (description
@@ -2117,7 +1992,7 @@ various hardware.")
 (define-public sdr++
   (package
     (name "sdr++")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -2126,14 +2001,14 @@ various hardware.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mplhys07l4bqv3q301ayh35468mg0hpxp5zgrps7gkjyf3v6idr"))))
+        (base32 "1xwbz6yyca6wmzad5ykxw6i0r8jzc7i3jbzq7mhp8caiymd6knw3"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gcc" ,gcc-10) ; A GCC more recent than version 7 is required.
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
      `(("airspyhf" ,airspyhf)
        ("alsa-lib" ,alsa-lib)
+       ("codec2" ,codec2)
        ("fftwf" ,fftwf)
        ("glew" ,glew)
        ("glfw" ,glfw)
@@ -2148,7 +2023,8 @@ various hardware.")
     (arguments
      `(#:tests? #f ; No test suite.
        #:configure-flags '("-DOPT_BUILD_AIRSPY_SOURCE=OFF"
-                           "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF")
+                           "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+                           "-DOPT_BUILD_M17_DECODER=ON")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-paths
@@ -2177,11 +2053,9 @@ various hardware.")
         (base32 "1x6nyn429pk0f7lqzskrgsbq09mq5787xd4piic95add6n1cc355"))))
     (build-system qt-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("fftwf" ,fftwf)
-       ("liquid-dsp" ,liquid-dsp)
-       ("qtbase" ,qtbase-5)))
+     (list fftwf liquid-dsp qtbase-5))
     (home-page "https://github.com/miek/inspectrum")
     (synopsis "Radio signal analyser")
     (description
@@ -2192,22 +2066,19 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "1.0")
+    (version "1.2d")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/eliggett/wfview")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16a9afm0nkqx4pzwfxisspybimhqdyr3yjpr7ac7wgpp3520ikzi"))))
+        (base32 "1kpkwxhcacgmprbr8xz840rj9a22513vxrh2q7d3js5i1dva8j2z"))))
     (build-system qt-build-system)
     (inputs
-     `(("qcustomplot" ,qcustomplot)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia" ,qtmultimedia)
-       ("qtserialport" ,qtserialport)))
+     (list opus qcustomplot qtbase-5 qtmultimedia qtserialport))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:phases
@@ -2221,23 +2092,12 @@ software-defined radio receivers.")
                (("/usr/share")
                 (string-append (assoc-ref outputs "out") "/share")))))
          (replace 'configure
-           (lambda _
+           (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p "build")
              (chdir "build")
-             (invoke "qmake" "../wfview.pro")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (install-file "wfview"
-                             (string-append out "/bin"))
-               (install-file "wfview.png"
-                             (string-append out "/share/pixmaps"))
-               (install-file "wfview.desktop"
-                             (string-append out "/share/applications"))
-               (let ((dir (string-append
-                           out "/share/wfview/stylesheets/qdarkstyle")))
-                 (mkdir-p dir)
-                 (copy-recursively "qdarkstyle" dir))))))))
+             (invoke "qmake"
+                     (string-append "PREFIX=" (assoc-ref outputs "out"))
+                     "../wfview.pro"))))))
     (home-page "https://wfview.org/")
     (synopsis "Software to control Icom radios")
     (description
@@ -2268,12 +2128,9 @@ spectrum waterfall.  It supports at least the following models:
         (base32 "13ipyh39l7p420j1j9kvwyskv2nqnimls1a3z1klsa1zivds9k7q"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("fftwf" ,fftwf)
-       ("libsndfile" ,libsndfile)
-       ("pulseaudio" ,pulseaudio)))
+     (list alsa-lib fftwf libsndfile pulseaudio))
     (home-page "http://www.whence.com/minimodem/")
     (synopsis "Software audio FSK modem")
     (description
@@ -2303,12 +2160,12 @@ Caller-ID.")
           (base32 "0dbc6n4pxsa73wzxny773khc73r1dn3ma5hi7xv76vcykjvzkdi3"))))
       (build-system python-build-system)
       (inputs
-       `(("python-future" ,python-future)
-         ("python-ipython" ,python-ipython)
-         ("python-numpy" ,python-numpy)
-         ("python-pyserial" ,python-pyserial)
-         ("python-pyside-2" ,python-pyside-2)
-         ("python-pyusb" ,python-pyusb)))
+       (list python-future
+             python-ipython
+             python-numpy
+             python-pyserial
+             python-pyside-2
+             python-pyusb))
       (arguments
        `(#:tests? #f  ; Tests want to use a serial port
          #:phases
@@ -2358,7 +2215,7 @@ this package.  E.g.: @code{(udev-rules-service 'rfcat rfcat)}")
           (base32 "0qr8q00cv6q0ikjrph0qh07mlbvgk4yimccpkn3ir8ib5ma0r9sr"))))
       (build-system cmake-build-system)
       (inputs
-       `(("soapysdr" ,soapysdr)))
+       (list soapysdr))
       (arguments
        `(#:tests? #f)) ; No test suite.
       (home-page "https://github.com/rxseger/rx_tools")
@@ -2374,7 +2231,7 @@ of devices than RTL-SDR.")
 (define-public gnss-sdr
   (package
     (name "gnss-sdr")
-    (version "0.0.14")
+    (version "0.0.15")
     (source
      (origin
        (method git-fetch)
@@ -2383,7 +2240,7 @@ of devices than RTL-SDR.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kjh9bnf6h9q71bnn8nrwlc80wcnkib97ylzvb102acii4p0fm08"))))
+        (base32 "1m41rnlfr1nrzbg382jfsk5x0by2ym48v3innd2rbc6phd85q223"))))
     (build-system cmake-build-system)
     (native-inputs
      `(("gfortran" ,gfortran)
@@ -2393,22 +2250,22 @@ of devices than RTL-SDR.")
        ("python" ,python)
        ("python-mako" ,python-mako)))
     (inputs
-     `(("armadillo" ,armadillo)
-       ("boost" ,boost)
-       ("gflags" ,gflags)
-       ("glog" ,glog)
-       ("gmp" ,gmp)
-       ("gnuradio" ,gnuradio)
-       ("gr-osmosdr" ,gr-osmosdr)
-       ("lapack" ,lapack)
-       ("libpcap" ,libpcap)
-       ("log4cpp" ,log4cpp)
-       ("matio" ,matio)
-       ("openblas" ,openblas)
-       ("openssl" ,openssl)
-       ("protobuf" ,protobuf)
-       ("pugixml" ,pugixml)
-       ("volk" ,volk)))
+     (list armadillo
+           boost
+           gflags
+           glog
+           gmp
+           gnuradio
+           gr-osmosdr
+           lapack
+           libpcap
+           log4cpp
+           matio
+           openblas
+           openssl
+           protobuf
+           pugixml
+           volk))
     (arguments
      `(#:configure-flags
        (list "-DENABLE_GENERIC_ARCH=ON"
@@ -2421,14 +2278,6 @@ of devices than RTL-SDR.")
                             (assoc-ref %build-inputs "googletest-source")))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; Some tests fail to compile when the FILESYSTEM package is
-             ;; available, so we disable it (and the tests will use Boost
-             ;; Filesystem instead).
-             (substitute* "CMakeLists.txt"
-               (("find_package\\(FILESYSTEM COMPONENTS Final Experimental\\)")
-                ""))))
          (add-before 'check 'set-home
            (lambda _
              (setenv "HOME" "/tmp"))))))

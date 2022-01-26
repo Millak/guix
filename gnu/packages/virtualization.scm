@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018. 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018. 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Andy Patterson <ajpatter@uwaterloo.ca>
@@ -14,13 +14,17 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2021 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Dion Mendel <guix@dm9.info>
 ;;; Copyright © 2021 Andrew Whatson <whatson@gmail.com>
+;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +71,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -85,6 +90,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
@@ -126,6 +132,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -146,7 +153,7 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "6.0.0")
+    (version "6.2.0")
     (source
      (origin
        (method url-fetch)
@@ -154,11 +161,9 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "1f9hz8rf12jm8baa7kda34yl4hyl0xh0c4ap03krfjx23i3img47"))
-       (patches (search-patches "qemu-CVE-2021-20203.patch"
-                                "qemu-meson-compat.patch"
-                                "qemu-sphinx-compat.patch"
-                                "qemu-build-info-manual.patch"))
+         "0iavlsy9hin8k38230j8lfmyipx3965zljls1dp34mmc8n75vqb8"))
+       (patches (search-patches "qemu-build-info-manual.patch"
+                                "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -172,7 +177,7 @@
      `(#:tests? ,(or (%current-target-system)
                      (not (string=? "i686-linux" (%current-system))))
        #:configure-flags
-       (let ((gcc (string-append (assoc-ref %build-inputs "gcc") "/bin/gcc"))
+       (let ((gcc (search-input-file %build-inputs "/bin/gcc"))
              (out (assoc-ref %outputs "out")))
          (list (string-append "--cc=" gcc)
                ;; Some architectures insist on using HOST_CC.
@@ -211,18 +216,17 @@
                ((".*'test-char':.*" all)
                 (string-append "# " all)))))
          (add-after 'patch-source-shebangs 'patch-embedded-shebangs
-           (lambda _
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
              ;; Ensure the executables created by these source files reference
              ;; /bin/sh from the store so they work inside the build container.
              (substitute* '("block/cloop.c" "migration/exec.c"
-                            "net/tap.c" "tests/qtest/libqtest.c")
-               (("/bin/sh") (which "sh")))
-             (substitute* "Makefile"
-               (("SHELL = /usr/bin/env bash -o pipefail")
-                "SHELL = bash -o pipefail"))
-             (substitute* "tests/qemu-iotests/check"
+                            "net/tap.c" "tests/qtest/libqtest.c"
+                            "tests/qtest/vhost-user-blk-test.c")
+               (("/bin/sh") (search-input-file inputs "/bin/sh")))
+             (substitute* "tests/qemu-iotests/testenv.py"
                (("#!/usr/bin/env python3")
-                (string-append "#!" (which "python3"))))))
+                (string-append "#!" (search-input-file (or native-inputs inputs)
+                                                       "/bin/python3"))))))
          (add-before 'configure 'fix-optionrom-makefile
            (lambda _
              ;; Work around the inability of the rules defined in this
@@ -250,7 +254,7 @@
          ;; Configure, build and install QEMU user-emulation static binaries.
          (add-after 'configure 'configure-user-static
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((gcc (string-append (assoc-ref inputs "gcc") "/bin/gcc"))
+             (let* ((gcc (search-input-file inputs "/bin/gcc"))
                     (static (assoc-ref outputs "static"))
                     ;; This is the common set of configure flags; it is
                     ;; duplicated here to isolate this phase from manipulations
@@ -304,50 +308,50 @@ exec smbd $@")))
                (mkdir-p qemu-doc)
                (rename-file (string-append out "/share/doc/qemu")
                             (string-append qemu-doc "/html"))))))))
-    (inputs                             ; TODO: Add optional inputs.
-     `(("alsa-lib" ,alsa-lib)
-       ("attr" ,attr)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+)
-       ("libaio" ,libaio)
-       ("libattr" ,attr)
-       ("libcacard" ,libcacard)  ; smartcard support
-       ("libcap-ng" ,libcap-ng)  ; virtfs support requires libcap-ng & libattr
-       ("libdrm" ,libdrm)
-       ("libepoxy" ,libepoxy)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libseccomp" ,libseccomp)
-       ("libusb" ,libusb)               ;USB pass-through support
-       ("mesa" ,mesa)
-       ("ncurses" ,ncurses)
-       ;; ("pciutils" ,pciutils)
-       ("pixman" ,pixman)
-       ("pulseaudio" ,pulseaudio)
-       ("sdl2" ,sdl2)
-       ("spice" ,spice)
-       ("usbredir" ,usbredir)
-       ("util-linux" ,util-linux)
-       ("vde2" ,vde2)
-       ("virglrenderer" ,virglrenderer)
-       ("zlib" ,zlib)))
-    (native-inputs `(("gettext" ,gettext-minimal)
-                     ("glib:bin" ,glib "bin") ; gtester, etc.
-                     ("perl" ,perl)
-                     ("flex" ,flex)
-                     ("bison" ,bison)
-                     ;; Using meson 0.57.1 enables reproducible QEMU builds.
-                     ("meson" ,meson-next)
-                     ("ninja" ,ninja)
-                     ("pkg-config" ,pkg-config)
-                     ("python-wrapper" ,python-wrapper)
-                     ("python-sphinx" ,python-sphinx)
-                     ("texinfo" ,texinfo)
-                     ;; The following static libraries are required to build
-                     ;; the static output of QEMU.
-                     ("glib-static" ,glib-static)
-                     ("pcre:static" ,pcre "static")
-                     ("zlib:static" ,zlib "static")))
+    (inputs
+     (list alsa-lib
+           bash-minimal
+           glib
+           gtk+
+           libaio
+           libcacard                    ;smartcard support
+           attr libcap-ng               ;VirtFS support
+           libdrm
+           libepoxy
+           libjpeg-turbo
+           libpng
+           libseccomp
+           libusb                       ;USB pass-through support
+           mesa
+           ncurses
+           ;; ("pciutils" ,pciutils)
+           pixman
+           pulseaudio
+           sdl2
+           spice
+           usbredir
+           util-linux
+           vde2
+           virglrenderer
+           zlib))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")               ;gtester, etc.
+           perl
+           flex
+           bison
+           meson
+           ninja
+           pkg-config
+           python-wrapper
+           python-sphinx
+           python-sphinx-rtd-theme
+           texinfo
+           ;; The following static libraries are required to build
+           ;; the static output of QEMU.
+           `(,glib "static")
+           `(,pcre "static")
+           `(,zlib "static")))
     (home-page "https://www.qemu.org")
     (synopsis "Machine emulator and virtualizer")
     (description
@@ -419,12 +423,29 @@ server and embedded PowerPC, and S390 guests.")
            (delete 'install-user-static)))))
 
     ;; Remove dependencies on optional libraries, notably GUI libraries.
-    (native-inputs (fold alist-delete (package-native-inputs qemu)
-                         '("gettext" "glib:static" "pcre:static" "zlib:static")))
-    (inputs (fold alist-delete (package-inputs qemu)
-                  '("libusb" "mesa" "sdl2" "spice" "virglrenderer" "gtk+"
-                    "usbredir" "libdrm" "libepoxy" "pulseaudio" "vde2"
-                    "libcacard")))))
+    (native-inputs (filter (lambda (input)
+                             (match input
+                               ;; Work around the fact that modify-inputs can not
+                               ;; delete specific outputs; i.e. here we should keep
+                               ;; `(,glib "bin"), but not `(,glib "static").
+                               ((label package output)
+                                (not (string=? "static" output)))
+                               (_ input)))
+                           (modify-inputs (package-native-inputs qemu)
+                             (delete "gettext-minimal"))))
+    (inputs (modify-inputs (package-inputs qemu)
+              (delete "libusb"
+                      "mesa"
+                      "sdl2"
+                      "spice"
+                      "virglrenderer"
+                      "gtk+"
+                      "usbredir"
+                      "libdrm"
+                      "libepoxy"
+                      "pulseaudio"
+                      "vde2"
+                      "libcacard")))))
 
 (define (system->qemu-target system)
   (cond
@@ -437,28 +458,90 @@ server and embedded PowerPC, and S390 guests.")
                                     ((arch kernel) arch)
                                     (_ system))))))
 
+(define-public libx86emu
+  (package
+    (name "libx86emu")
+    (version "3.5")
+    (home-page "https://github.com/wfeldt/libx86emu")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url home-page)
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11nj3y7maz9ch15b1c2b69gd8d7mpaha377zpdbvfsmg5w9zz93l"))
+       (modules
+        '((guix build utils)))
+       (snippet
+        `(begin
+           ;; Remove git2log program file.
+           (delete-file "git2log")
+           ;; Remove variables that depends on git2log.
+           (substitute* "Makefile"
+             (("GIT2LOG.*=.*$") "")
+             (("GITDEPS.*=.*$") "")
+             (("BRANCH.*=.*$") ""))))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (include (string-append out "/include"))
+                    (lib (string-append out "/lib")))
+               ;; Correct the values of version and install directories.
+               (substitute* "Makefile"
+                 (("VERSION.*=.*$")
+                  (string-append "VERSION := "
+                                 ,version "\n"))
+                 (("PREFIX.*=.*$")
+                  (string-append "PREFIX := " out "\n"))
+                 (("MAJOR_VERSION.*=.*$")
+                  (string-append "MAJOR_VERSION := "
+                                 ,(version-major version) "\n"))
+                 (("LIBDIR.*=.*$")
+                  (string-append "LIBDIR = " lib "\n"))
+                 (("/usr/include") include)))))
+         (delete 'configure))))         ; no configure script
+    (native-inputs
+     (list nasm perl))
+    (synopsis "Library for x86 emulation")
+    (description "Libx86emu is a small library to emulate x86 instructions.  The
+focus here is not a complete emulation but to cover enough for typical
+firmware blobs.  You can
+@enumerate
+@item intercept any memory access or directly map real memory ranges
+@item intercept any i/o access, map real i/o ports, or block any real i/o
+@item intercept any interrupt
+@item add a hook to run after each instruction
+@item recognize a special x86 instruction that can trigger logging
+@item use integrated logging
+@end enumerate")
+    (license (license:x11-style "file://LICENSE"))))
+
 (define-public ganeti
   (package
     (name "ganeti")
-    ;; Note: we use a pre-release for Python 3 compatibility as well as many
-    ;; other fixes.
-    (version "3.0.0beta1-24-g024cc9fa2")
+    (version "3.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ganeti/ganeti")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1ll34qd2mifni3bhg7cnir3xfnkafig8ch33qndqwrsby0y5ssia"))
+               (base32 "1i7gx0sdx9316fnldbv738s0ihym1370nhc1chk0biandkl8vvq0"))
               (file-name (git-file-name name version))
               (patches (search-patches "ganeti-shepherd-support.patch"
                                        "ganeti-shepherd-master-failover.patch"
-                                       "ganeti-deterministic-manual.patch"
-                                       "ganeti-drbd-compat.patch"
-                                       "ganeti-os-disk-size.patch"
+                                       "ganeti-sphinx-compat.patch"
+                                       "ganeti-haskell-compat.patch"
                                        "ganeti-haskell-pythondir.patch"
-                                       "ganeti-disable-version-symlinks.patch"
-                                       "ganeti-preserve-PYTHONPATH.patch"))))
+                                       "ganeti-disable-version-symlinks.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules (,@%gnu-build-system-modules
@@ -466,7 +549,10 @@ server and embedded PowerPC, and S390 guests.")
                            (guix build python-build-system))
        #:modules (,@%gnu-build-system-modules
                   ((guix build haskell-build-system) #:prefix haskell:)
-                  ((guix build python-build-system) #:select (python-version))
+                  ((guix build python-build-system) #:select (site-packages))
+                  (srfi srfi-1)
+                  (srfi srfi-26)
+                  (ice-9 match)
                   (ice-9 rdelim))
 
        ;; The default test target includes a lot of checks that are only really
@@ -505,6 +591,20 @@ server and embedded PowerPC, and S390 guests.")
                             ,(system->qemu-target (%current-system))))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-version-constraints
+           (lambda _
+             ;; Loosen version constraints for compatibility with Stackage 18.10.
+             (substitute* "cabal/ganeti.template.cabal"
+               (("(.*base64-bytestring.*) < 1\\.1" _ match)
+                (string-append match " < 1.2"))
+               (("(.*QuickCheck.*) < 2\\.14" _ match)
+                (string-append match " < 2.15")))))
+         (add-after 'unpack 'pyparsing-compat
+           (lambda _
+             ;; Adjust for Pyparsing 3.0.  Remove for Ganeti 3.0.2+.
+             (substitute* "lib/qlang.py"
+               (("operatorPrecedence")
+                "infixNotation"))))
          (add-after 'unpack 'create-vcs-version
            (lambda _
              ;; If we are building from a git checkout, we need to create a
@@ -513,10 +613,9 @@ server and embedded PowerPC, and S390 guests.")
              (unless (file-exists? "vcs-version")
                (call-with-output-file "vcs-version"
                  (lambda (port)
-                   (format port "v~a~%" ,version))))
-             #t))
+                   (format port "v~a~%" ,version))))))
          (add-after 'unpack 'patch-absolute-file-names
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("lib/utils/process.py"
                             "lib/utils/text.py"
                             "src/Ganeti/Constants.hs"
@@ -526,22 +625,22 @@ server and embedded PowerPC, and S390 guests.")
                             "test/py/ganeti.utils.process_unittest.py"
                             "test/py/ganeti.utils.text_unittest.py"
                             "test/py/ganeti.utils.wrapper_unittest.py")
-               (("/bin/sh") (which "sh"))
-               (("/bin/bash") (which "bash"))
-               (("/usr/bin/env") (which "env"))
-               (("/bin/true") (which "true")))
+               (("/bin/sh") (search-input-file inputs "/bin/sh"))
+               (("/bin/bash") (search-input-file inputs "/bin/bash"))
+               (("/usr/bin/env") (search-input-file inputs "/bin/env"))
+               (("/bin/true") (search-input-file inputs "/bin/true")))
 
              ;; This script is called by the node daemon at startup to perform
              ;; sanity checks on the cluster IP addresses, and it is also used
              ;; in a master-failover scenario.  Add absolute references to
              ;; avoid propagating these executables.
              (substitute* "tools/master-ip-setup"
-               (("arping") (which "arping"))
-               (("ndisc6") (which "ndisc6"))
-               (("fping") (which "fping"))
-               (("grep") (which "grep"))
-               (("ip addr") (string-append (which "ip") " addr")))
-             #t))
+               (("arping") (search-input-file inputs "/bin/arping"))
+               (("ndisc6") (search-input-file inputs "/bin/ndisc6"))
+               (("fping") (search-input-file inputs "/sbin/fping"))
+               (("grep") (search-input-file inputs "/bin/grep"))
+               (("ip addr") (string-append (search-input-file inputs "/sbin/ip")
+                                           " addr")))))
          (add-after 'unpack 'override-builtin-PATH
            (lambda _
              ;; Ganeti runs OS install scripts and similar with a built-in
@@ -549,8 +648,7 @@ server and embedded PowerPC, and S390 guests.")
              (substitute* "src/Ganeti/Constants.hs"
                (("/sbin:/bin:/usr/sbin:/usr/bin")
                 "/run/setuid-programs:/run/current-system/profile/sbin:\
-/run/current-system/profile/bin"))
-             #t))
+/run/current-system/profile/bin"))))
          (add-after 'bootstrap 'patch-sphinx-version-detection
            (lambda _
              ;; The build system runs 'sphinx-build --version' to verify that
@@ -558,8 +656,8 @@ server and embedded PowerPC, and S390 guests.")
              ;; .sphinx-build-real executable name created by the Sphinx wrapper.
              (substitute* "configure"
                (("\\$SPHINX --version 2>&1")
-                "$SPHINX --version 2>&1 | sed 's/.sphinx-build-real/sphinx-build/g'"))
-             #t))
+                "$SPHINX --version 2>&1 \
+| sed 's/.sphinx-build-real/sphinx-build/g'"))))
 
          ;; The build system invokes Cabal and GHC, which do not work with
          ;; GHC_PACKAGE_PATH: <https://github.com/haskell/cabal/issues/3728>.
@@ -573,13 +671,11 @@ server and embedded PowerPC, and S390 guests.")
                (("\\$\\(CABAL\\)")
                 "$(CABAL) --package-db=../package.conf.d")
                (("\\$\\(GHC\\)")
-                "$(GHC) -package-db=../package.conf.d"))
-             #t))
+                "$(GHC) -package-db=../package.conf.d"))))
          (add-after 'configure 'make-ghc-use-shared-libraries
            (lambda _
              (substitute* "Makefile"
-               (("HFLAGS =") "HFLAGS = -dynamic -fPIC"))
-             #t))
+               (("HFLAGS =") "HFLAGS = -dynamic -fPIC"))))
          (add-after 'configure 'fix-installation-directories
            (lambda _
              (substitute* "Makefile"
@@ -589,8 +685,7 @@ server and embedded PowerPC, and S390 guests.")
                ;; Similarly, do not attempt to install the sample ifup scripts
                ;; to /etc/ganeti.
                (("\\$\\(DESTDIR\\)\\$\\(ifupdir\\)")
-                "$(DESTDIR)${prefix}$(ifupdir)"))
-             #t))
+                "$(DESTDIR)${prefix}$(ifupdir)"))))
          (add-before 'build 'adjust-tests
            (lambda _
              ;; Disable tests that can not run.  Do it early to prevent
@@ -609,36 +704,16 @@ server and embedded PowerPC, and S390 guests.")
                 "")
                ;; This test requires networking.
                (("test/py/import-export_unittest\\.bash")
-                ""))
-
-             ;; Many of the Makefile targets reset PYTHONPATH before running
-             ;; the Python interpreter, which does not work very well for us.
-             (substitute* "Makefile"
-               (("PYTHONPATH=")
-                (string-append "PYTHONPATH=" (getenv "PYTHONPATH") ":")))
-             #t))
+                ""))))
          (add-after 'build 'build-bash-completions
            (lambda _
-             (let ((orig-pythonpath (getenv "PYTHONPATH")))
-               (setenv "PYTHONPATH" (string-append ".:" orig-pythonpath))
-               (invoke "./autotools/build-bash-completion")
-               (setenv "PYTHONPATH" orig-pythonpath)
-               #t)))
+             (setenv "PYTHONPATH" ".")
+             (invoke "./autotools/build-bash-completion")
+             (unsetenv "PYTHONPATH")))
          (add-before 'check 'pre-check
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Set TZDIR so that time zones are found.
-             (setenv "TZDIR" (string-append (assoc-ref inputs "tzdata")
-                                            "/share/zoneinfo"))
-
-             ;; This test checks whether PYTHONPATH is untouched, and extends
-             ;; it to include test directories if so.  Add an else branch for
-             ;; our modified PYTHONPATH, in order to prevent a confusing test
-             ;; failure where expired certificates are not cleaned because
-             ;; check-cert-expired is silently crashing.
-             (substitute* "test/py/ganeti-cleaner_unittest.bash"
-               (("then export PYTHONPATH=(.*)" all testpath)
-                (string-append all "else export PYTHONPATH="
-                               (getenv "PYTHONPATH") ":" testpath "\n")))
+             (setenv "TZDIR" (search-input-directory inputs "share/zoneinfo"))
 
              (substitute* "test/py/ganeti.utils.process_unittest.py"
                ;; This test attempts to run an executable with
@@ -661,15 +736,14 @@ server and embedded PowerPC, and S390 guests.")
                (for-each (lambda (file)
                            (symlink "../../src/htools" file))
                          '("hspace" "hscan" "hinfo" "hbal" "hroller"
-                           "hcheck" "hail" "hsqueeze")))
-             #t))
+                           "hcheck" "hail" "hsqueeze")))))
          (add-after 'install 'install-bash-completions
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (compdir (string-append out "/etc/bash_completion.d")))
                (mkdir-p compdir)
                (copy-file "doc/examples/bash_completion"
-                             (string-append compdir "/ganeti"))
+                          (string-append compdir "/ganeti"))
                ;; The one file contains completions for many different
                ;; executables.  Create symlinks for found completions.
                (with-directory-excursion compdir
@@ -688,24 +762,20 @@ server and embedded PowerPC, and S390 guests.")
                                       ;; Note that 'burnin' is listed with the
                                       ;; absolute file name, which is why we
                                       ;; run everything through 'basename'.
-                                      (cons (basename (car (reverse (string-split
-                                                                     line #\ ))))
-                                            progs))
-                                (loop (read-line port) progs))))))))
-               #t)))
-         ;; Wrap all executables with PYTHONPATH.  We can't borrow the phase
-         ;; from python-build-system because we also need to wrap the scripts
-         ;; in $out/lib/ganeti such as "node-daemon-setup".
+                                      (match (string-split line #\ )
+                                        ((commands ... prog)
+                                         (cons (basename prog) progs))))
+                                (loop (read-line port) progs)))))))))))
+         ;; Wrap all executables with GUIX_PYTHONPATH.  We can't borrow
+         ;; the phase from python-build-system because we also need to wrap
+         ;; the scripts in $out/lib/ganeti such as "node-daemon-setup".
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (sbin (string-append out "/sbin"))
                     (lib (string-append out "/lib"))
-                    (python (assoc-ref inputs "python"))
-                    (major+minor (python-version python))
-                    (PYTHONPATH (string-append lib "/python" major+minor
-                                               "/site-packages:"
-                                               (getenv "PYTHONPATH"))))
+                    (PYTHONPATH (string-append (site-packages inputs outputs)
+                                               ":" (getenv "GUIX_PYTHONPATH"))))
                (define (shell-script? file)
                  (call-with-ascii-input-file file
                    (lambda (port)
@@ -715,7 +785,7 @@ server and embedded PowerPC, and S390 guests.")
                             (or (string-contains shebang "/bin/bash")
                                 (string-contains shebang "/bin/sh")))))))
 
-               (define (wrap? file)
+               (define* (wrap? file #:rest _)
                  ;; Do not wrap shell scripts because some are meant to be
                  ;; sourced, which breaks if they are wrapped.  We do wrap
                  ;; the Haskell executables because some call out to Python
@@ -726,11 +796,11 @@ server and embedded PowerPC, and S390 guests.")
 
                (for-each (lambda (file)
                            (wrap-program file
-                             `("PYTHONPATH" ":" prefix (,PYTHONPATH))))
-                         (filter wrap?
-                                 (append (find-files (string-append lib "/ganeti"))
-                                         (find-files sbin))))
-               #t))))))
+                             `("GUIX_PYTHONPATH" ":" prefix
+                               (,PYTHONPATH))))
+                         (append-map (cut find-files <> wrap?)
+                                     (list (string-append lib "/ganeti")
+                                           sbin)))))))))
     (native-inputs
      `(("haskell" ,ghc)
        ("cabal" ,cabal-install)
@@ -760,42 +830,40 @@ server and embedded PowerPC, and S390 guests.")
        ("shelltestrunner" ,shelltestrunner)
        ("tzdata" ,tzdata-for-tests)))
     (inputs
-     `(("arping" ,iputils)              ;must be the iputils version
-       ("curl" ,curl)
-       ("fping" ,fping)
-       ("iproute2" ,iproute)
-       ("ndisc6" ,ndisc6)
-       ("socat" ,socat)
-       ("qemu" ,qemu-minimal)           ;for qemu-img
-       ("ghc-attoparsec" ,ghc-attoparsec)
-       ("ghc-base64-bytestring" ,ghc-base64-bytestring)
-       ("ghc-cryptonite" ,ghc-cryptonite)
-       ("ghc-curl" ,ghc-curl)
-       ("ghc-hinotify" ,ghc-hinotify)
-       ("ghc-hslogger" ,ghc-hslogger)
-       ("ghc-json" ,ghc-json)
-       ("ghc-lens" ,ghc-lens)
-       ("ghc-lifted-base" ,ghc-lifted-base)
-       ("ghc-network" ,ghc-network)
-       ("ghc-old-time" ,ghc-old-time)
-       ("ghc-psqueue" ,ghc-psqueue)
-       ("ghc-regex-pcre" ,ghc-regex-pcre)
-       ("ghc-utf8-string" ,ghc-utf8-string)
-       ("ghc-zlib" ,ghc-zlib)
-
-       ;; For the optional metadata daemon.
-       ("ghc-snap-core" ,ghc-snap-core)
-       ("ghc-snap-server" ,ghc-snap-server)
-
-       ("python" ,python)
-       ("python-pyopenssl" ,python-pyopenssl)
-       ("python-simplejson" ,python-simplejson)
-       ("python-pyparsing" ,python-pyparsing)
-       ("python-pyinotify" ,python-pyinotify)
-       ("python-pycurl" ,python-pycurl)
-       ("python-bitarray" ,python-bitarray)
-       ("python-paramiko" ,python-paramiko)
-       ("python-psutil" ,python-psutil)))
+     (list iputils                      ;for 'arping'
+           curl
+           fping
+           iproute
+           ndisc6
+           socat
+           qemu-minimal                 ;for qemu-img
+           ghc-attoparsec
+           ghc-base64-bytestring
+           ghc-cryptonite
+           ghc-curl
+           ghc-hinotify
+           ghc-hslogger
+           ghc-json
+           ghc-lens
+           ghc-lifted-base
+           ghc-network
+           ghc-old-time
+           ghc-psqueue
+           ghc-regex-pcre
+           ghc-utf8-string
+           ghc-zlib
+           ;; For the optional metadata daemon.
+           ghc-snap-core
+           ghc-snap-server
+           python
+           python-pyopenssl
+           python-simplejson
+           python-pyparsing
+           python-pyinotify
+           python-pycurl
+           python-bitarray
+           python-paramiko
+           python-psutil))
     (home-page "https://www.ganeti.org/")
     (synopsis "Cluster-based virtual machine management system")
     (description
@@ -830,8 +898,7 @@ commodity hardware.")
     (arguments
      '(#:configure-flags '("--sysconfdir=/etc" "--localstatedir=/var")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (inputs
      `(("util-linux" ,util-linux)
        ("qemu-img" ,qemu-minimal)))
@@ -922,8 +989,7 @@ Guix to build virtual machines.")
                                  "variants.list"))
                       #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (inputs
      `(("debianutils" ,debianutils)
        ("debootstrap" ,debootstrap)
@@ -939,7 +1005,7 @@ Debian or a derivative using @command{debootstrap}.")
 (define-public libosinfo
   (package
     (name "libosinfo")
-    (version "1.7.1")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
@@ -947,7 +1013,7 @@ Debian or a derivative using @command{debootstrap}.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1s97sv24bybggjx6hgqba2qdqz3ivfpd4cmkh4zm5y59sim109mv"))))
+         "0nd360c9ampw8hb6xh5g45q858df2r4jj9q88bcl6gzgaj0l3wxl"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -962,10 +1028,9 @@ Debian or a derivative using @command{debootstrap}.")
              (substitute* "osinfo/osinfo_loader.c"
                (("path = DATA_DIR.*")
                 (string-append "path = \"" (assoc-ref inputs "osinfo-db")
-                               "/share/osinfo\";")))
-             #t)))))
+                               "/share/osinfo\";"))))))))
     (inputs
-     `(("libsoup" ,libsoup)
+     `(("libsoup" ,libsoup-minimal-2)
        ("libxml2" ,libxml2)
        ("libxslt" ,libxslt)
        ("osinfo-db" ,osinfo-db)))
@@ -1006,7 +1071,7 @@ all common programming languages.  Vala bindings are also provided.")
 (define-public lxc
   (package
     (name "lxc")
-    (version "4.0.10")
+    (version "4.0.11")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1014,35 +1079,30 @@ all common programming languages.  Vala bindings are also provided.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1sgsic9dzj3wv2k5bx2vhcgappivhp1glkqfc2yrgr6jas052351"))))
+                "0b7hv4n8b3lndhr0jf9j1gkbzxm8897a1myjsfgwzad9gkhq395g"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("docbook2x" ,docbook2x)))
+     (list pkg-config docbook2x))
     (inputs
-     `(("gnutls" ,gnutls)
-       ("libcap" ,libcap)
-       ("libseccomp" ,libseccomp)
-       ("libselinux" ,libselinux)))
+     (list gnutls libcap libseccomp libselinux))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--docdir=" (assoc-ref %outputs "out")
-                            "/share/doc/" ,name "-" ,version)
-             "--sysconfdir=/etc"
-             "--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out         (assoc-ref outputs "out"))
-                    (bashcompdir (string-append out "/etc/bash_completion.d")))
-               (invoke "make" "install"
-                       (string-append "bashcompdir=" bashcompdir)
-                       ;; Don't install files into /var and /etc.
-                       "LXCPATH=/tmp/var/lib/lxc"
-                       "localstatedir=/tmp/var"
-                       "sysconfdir=/tmp/etc"
-                       "sysconfigdir=/tmp/etc/default")))))))
+     (list #:configure-flags
+           #~(list (string-append "--docdir=" #$output "/share/doc/"
+                                  #$name "-" #$version)
+                   "--sysconfdir=/etc"
+                   "--localstatedir=/var")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (invoke "make" "install"
+                           (string-append "bashcompdir=" #$output
+                                          "/etc/bash_completion.d")
+                           ;; Don't install files into /var and /etc.
+                           "LXCPATH=/tmp/var/lib/lxc"
+                           "localstatedir=/tmp/var"
+                           "sysconfdir=/tmp/etc"
+                           "sysconfigdir=/tmp/etc/default"))))))
     (synopsis "Linux container tools")
     (home-page "https://linuxcontainers.org/")
     (description
@@ -1054,7 +1114,7 @@ manage system or application containers.")
 (define-public lxcfs
   (package
     (name "lxcfs")
-    (version "4.0.9")
+    (version "4.0.11")
     (home-page "https://github.com/lxc/lxcfs")
     (source (origin
               (method git-fetch)
@@ -1063,16 +1123,13 @@ manage system or application containers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zx58lair8hwi4bxm5h7i8n1j5fcdgw5cr6f4wk9qhks0sr5dip5"))))
+                "02cgzh97cgxh9iyf7gkn5ikdc0sfzqfjj6al0hikdf9rbwcscqwd"))))
     (arguments
      '(#:configure-flags '("--localstatedir=/var")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("fuse" ,fuse)))
+     (list fuse))
     (build-system gnu-build-system)
     (synopsis "FUSE-based file system for LXC")
     (description "LXCFS is a small FUSE file system written with the intention
@@ -1083,7 +1140,7 @@ It started as a side project of LXC but can be used by any run-time.")
 (define-public lxd
   (package
     (name "lxd")
-    (version "4.17")
+    (version "4.22")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1091,7 +1148,7 @@ It started as a side project of LXC but can be used by any run-time.")
                     "lxd-" version "/lxd-" version ".tar.gz"))
               (sha256
                (base32
-                "1kzmgyg5kw3zw9qa6jabld6rmb53b6yy69h7y9znsdlf74jllljl"))))
+                "119345936fcm1vv06k82k9hvj5yjf9jdrwqm9ccphhl5mswf8xq9"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/lxc/lxd"
@@ -1105,22 +1162,17 @@ It started as a side project of LXC but can be used by any run-time.")
          (add-after 'unpack 'unpack-dist
            (lambda* (#:key import-path #:allow-other-keys)
              (with-directory-excursion (string-append "src/" import-path)
-               ;; remove the link back to the top level
-               (delete-file (string-append "_dist/src/" import-path))
-               ;; move all the deps into the src directory
-               (copy-recursively "_dist/src" "../../.."))
-             #t))
+               ;; Move all the dependencies into the src directory.
+               (copy-recursively "_dist/src" "../../.."))))
          (replace 'build
            (lambda* (#:key import-path #:allow-other-keys)
              (with-directory-excursion (string-append "src/" import-path)
-               (invoke "make" "build" "CC=gcc" "TAG_SQLITE3=libsqlite3")
-               #t)))
+               (invoke "make" "build" "CC=gcc" "TAG_SQLITE3=libsqlite3"))))
          (replace 'check
            (lambda* (#:key tests? import-path #:allow-other-keys)
              (when tests?
                (with-directory-excursion (string-append "src/" import-path)
-                 (invoke "make" "check" "CC=gcc" "TAG_SQLITE3=libsqlite3")))
-             #t))
+                 (invoke "make" "check" "CC=gcc" "TAG_SQLITE3=libsqlite3")))))
          (replace 'install
            (lambda* (#:key inputs outputs import-path #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1131,7 +1183,7 @@ It started as a side project of LXC but can be used by any run-time.")
                     (completions-dir
                      (string-append out "/share/bash-completion/completions")))
                (with-directory-excursion (string-append "src/" import-path)
-                 ;; wrap lxd with runtime dependencies
+                 ;; Wrap lxd with run-time dependencies.
                  (wrap-program (string-append bin-dir "lxd")
                    `("PATH" ":" prefix
                      ,(fold (lambda (input paths)
@@ -1144,24 +1196,23 @@ It started as a side project of LXC but can be used by any run-time.")
                             '("bash" "acl" "rsync" "tar" "xz" "btrfs-progs"
                               "gzip" "dnsmasq" "squashfs-tools" "iproute2"
                               "criu" "iptables"))))
-                 ;; remove unwanted binaries
+                 ;; Remove unwanted binaries.
                  (for-each (lambda (prog)
                              (delete-file (string-append bin-dir prog)))
                            '("deps" "macaroon-identity" "generate"))
-                 ;; install documentation
+                 ;; Install documentation.
                  (for-each (lambda (file)
                              (install-file file doc-dir))
                            (find-files "doc"))
-                 ;; install bash completion
+                 ;; Install bash completion.
                  (rename-file "scripts/bash/lxd-client" "scripts/bash/lxd")
-                 (install-file "scripts/bash/lxd" completions-dir)))
-             #t)))))
+                 (install-file "scripts/bash/lxd" completions-dir))))))))
     (native-inputs
-     `(;; test dependencies:
-       ;; ("go-github-com-rogpeppe-godeps" ,go-github-com-rogpeppe-godeps)
-       ;; ("go-github-com-tsenart-deadcode" ,go-github-com-tsenart-deadcode)
-       ;; ("go-golang-org-x-lint" ,go-golang-org-x-lint)
-       ("pkg-config" ,pkg-config)))
+     (list ;; Test dependencies:
+           ;; ("go-github-com-rogpeppe-godeps" ,go-github-com-rogpeppe-godeps)
+           ;; ("go-github-com-tsenart-deadcode" ,go-github-com-tsenart-deadcode)
+           ;; ("go-golang-org-x-lint" ,go-golang-org-x-lint)
+           pkg-config))
     (inputs
      `(("acl" ,acl)
        ("eudev" ,eudev)
@@ -1169,7 +1220,7 @@ It started as a side project of LXC but can be used by any run-time.")
        ("libraft" ,libraft)
        ("libcap" ,libcap)
        ("lxc" ,lxc)
-       ;; runtime dependencies:
+       ;; Run-time dependencies.
        ("bash" ,bash-minimal)
        ("rsync" ,rsync)
        ("tar" ,tar)
@@ -1193,14 +1244,14 @@ pretty simple, REST API.")
 (define-public libvirt
   (package
     (name "libvirt")
-    (version "7.5.0")
+    (version "7.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/libvirt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "15987ihnsjvcgi11dzcf1k3zp1si2d4wcxj0r0i30brc0d4pn44h"))
+        (base32 "131fyxb05rrcr9ih4mhhjyw3cgsxh5l12vj4y109q9vlynsz5742"))
        (patches (search-patches "libvirt-add-install-prefix.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -1221,7 +1272,6 @@ pretty simple, REST API.")
              (string-append "-Dinstall_prefix=" (assoc-ref %outputs "out"))
              "--sysconfdir=/etc"
              "--localstatedir=/var")
-       #:meson ,meson-0.55
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'skip-directory-confusion
@@ -1296,21 +1346,14 @@ to integrate other virtualization mechanisms if needed.")
                 "1gdcvqz88qkp402zra9csc6391f2xki1270x683n6ixakl3gf8w4"))))
     (build-system meson-build-system)
     (inputs
-     `(("openssl" ,openssl)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("lvm2" ,lvm2)                   ; for libdevmapper
-       ("libyajl" ,libyajl)))
+     (list openssl cyrus-sasl lvm2 ; for libdevmapper
+           libyajl))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)
-       ("glib" ,glib "bin")
-       ("vala" ,vala)))
+     (list pkg-config intltool
+           `(,glib "bin") vala))
     (propagated-inputs
      ;; ‘Required:’ by the installed .pc files.
-     `(("glib" ,glib)
-       ("libvirt" ,libvirt)
-       ("libxml2" ,libxml2)
-       ("gobject-introspection" ,gobject-introspection)))
+     (list glib libvirt libxml2 gobject-introspection))
     (home-page "https://libvirt.org")
     (synopsis "GLib wrapper around libvirt")
     (description "libvirt-glib wraps the libvirt library to provide a
@@ -1328,14 +1371,14 @@ three libraries:
 (define-public python-libvirt
   (package
     (name "python-libvirt")
-    (version "7.3.0")
+    (version "7.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://libvirt.org/sources/python/libvirt-python-"
                            version ".tar.gz"))
        (sha256
-        (base32 "15pn8610ybf03xff3vbz3apz2ph42k2kh6k19r020l9nvc6jcv37"))))
+        (base32 "0nakisj2ady5a41k4zc95k0kp749f4ppmxgr91b1h1dzbzxcydc5"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1350,12 +1393,11 @@ three libraries:
                (setenv "LIBVIRT_API_COVERAGE" "whynot")
                (invoke "python" "setup.py" "test")))))))
     (inputs
-     `(("libvirt" ,libvirt)))
+     (list libvirt))
     (propagated-inputs
-     `(("python-lxml" ,python-lxml)))
+     (list python-lxml))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-pytest" ,python-pytest)))
+     (list pkg-config python-pytest))
     (home-page "https://libvirt.org")
     (synopsis "Python bindings to libvirt")
     (description "This package provides Python bindings to the libvirt
@@ -1398,8 +1440,8 @@ virtualization library.")
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Xen is not available for now - so only patch qemu.
              (substitute* "virtManager/createconn.py"
-               (("/usr(/bin/qemu-system)" _ suffix)
-                (string-append (assoc-ref inputs "qemu") suffix)))
+               (("/usr(/bin/qemu-system-[a-zA-Z0-9_-]+)" _ suffix)
+                (search-input-file inputs suffix)))
              #t))
          (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -1433,26 +1475,26 @@ virtualization library.")
              #t))
          (add-after 'install 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'install 'glib-or-gtk-wrap
+         (add-after 'wrap 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (inputs
-     `(("dconf" ,dconf)
-       ("gtk+" ,gtk+)
-       ("gtk-vnc" ,gtk-vnc)
-       ("gtksourceview" ,gtksourceview)
-       ("libvirt" ,libvirt)
-       ("libvirt-glib" ,libvirt-glib)
-       ("libosinfo" ,libosinfo)
-       ("vte" ,vte)
-       ("python-libvirt" ,python-libvirt)
-       ("python-requests" ,python-requests)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-libxml2" ,python-libxml2)
-       ("spice-gtk" ,spice-gtk)))
+     (list dconf
+           gtk+
+           gtk-vnc
+           gtksourceview
+           libvirt
+           libvirt-glib
+           libosinfo
+           vte
+           python-libvirt
+           python-requests
+           python-pycairo
+           python-pygobject
+           python-libxml2
+           spice-gtk))
     ;; virt-manager searches for qemu-img or kvm-img in the PATH.
     (propagated-inputs
-     `(("qemu" ,qemu)))
+     (list qemu))
     (native-inputs
      `(("glib" ,glib "bin")             ; glib-compile-schemas
        ("gobject-introspection" ,gobject-introspection)
@@ -1480,14 +1522,16 @@ domains, their live performance and resource utilization statistics.")
 (define-public criu
   (package
     (name "criu")
-    (version "3.15")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://download.openvz.org/criu/criu-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "09d0j24x0cyc7wkgi7cnxqgfjk7kbdlm79zxpj8d356sa3rw2z24"))))
+    (version "3.16.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/checkpoint-restore/criu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1riw15197fnrs254jl7wks9x8bdml76kf1vnqkkgyypr13dnq55g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -1496,21 +1540,17 @@ domains, their live performance and resource utilization statistics.")
        (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
              (string-append "LIBDIR=" (assoc-ref %outputs "out")
                             "/lib")
-             (string-append "ASCIIDOC=" (assoc-ref %build-inputs "asciidoc")
-                            "/bin/asciidoc")
-             (string-append "XMLTO=" (assoc-ref %build-inputs "xmlto")
-                            "/bin/xmlto"))
+             (string-append "ASCIIDOC="
+                            (search-input-file %build-inputs
+                                               "/bin/asciidoc"))
+             (string-append "PYTHON=python3")
+             (string-append "XMLTO="
+                            (search-input-file %build-inputs
+                                               "/bin/xmlto")))
        #:phases
        (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The includes for libnl are located in a sub-directory.
-             (setenv "C_INCLUDE_PATH"
-                     (string-append (assoc-ref inputs "libnl")
-                                    "/include/libnl3:"
-                                    (or (getenv "C_INCLUDE_PATH") "")))
-             #t))
-         (add-after 'configure 'fix-documentation
+         (delete 'configure)            ; no configure script
+         (add-after 'unpack 'fix-documentation
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "Documentation/Makefile"
                (("-m custom.xsl")
@@ -1519,50 +1559,43 @@ domains, their live performance and resource utilization statistics.")
                  (assoc-ref inputs "docbook-xsl") "/xml/xsl/"
                  ,(package-name docbook-xsl) "-"
                  ,(package-version docbook-xsl)
-                 "/manpages/docbook.xsl")))
-             #t))
+                 "/manpages/docbook.xsl")))))
          (add-after 'unpack 'hardcode-variables
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Hardcode arm version detection
              (substitute* "Makefile"
-               (("ARMV.*:=.*") "ARMV := 7\n"))
-             ;; We are currently using python-2
-             (substitute* "crit/Makefile"
-               (("\\$\\(PYTHON\\)") "python2"))
-             (substitute* "lib/Makefile"
-               (("\\$\\(PYTHON\\)")
-                (string-append (assoc-ref inputs "python")
-                               "/bin/python")))
-             #t))
+               (("ARMV.*:=.*") "ARMV := 7\n"))))
          (add-before 'build 'fix-symlink
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The file 'images/google/protobuf/descriptor.proto' points to
              ;; /usr/include/..., which obviously does not exist.
              (let* ((file "google/protobuf/descriptor.proto")
                     (target (string-append "images/" file))
-                    (source (string-append (assoc-ref inputs "protobuf")
-                                           "/include/" file)))
+                    (source (search-input-file
+                             inputs
+                             (string-append "include/" file))))
                (delete-file target)
-               (symlink source target)
-               #t)))
+               (symlink source target))))
          (add-after 'install 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Make sure 'crit' runs with the correct PYTHONPATH.
-             (let* ((out (assoc-ref outputs "out"))
-                    (path (string-append out
-                                         "/lib/python"
-                                         (string-take (string-take-right
-                                                       (assoc-ref inputs "python") 5) 3)
-                                         "/site-packages:"
-                                         (getenv "PYTHONPATH"))))
+             (let* ((out  (assoc-ref outputs "out"))
+                    (site (string-append out "/lib/python"
+                                         ,(version-major+minor
+                                           (package-version python))
+                                         "/site-packages"))
+                    (path (getenv "GUIX_PYTHONPATH")))
                (wrap-program (string-append out "/bin/crit")
-                 `("PYTHONPATH" ":" prefix (,path))))
-             #t)))))
+                 `("GUIX_PYTHONPATH" ":" prefix (,site ,path))))))
+         (add-after 'install 'delete-static-libraries
+           ;; Not building/installing these at all doesn't seem to be supported.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (for-each delete-file (find-files out "\\.a$"))))))))
     (inputs
      `(("protobuf" ,protobuf)
-       ("python" ,python-2)
-       ("python2-protobuf" ,python2-protobuf)
-       ("python2-ipaddr" ,python2-ipaddr)
+       ("python" ,python)
+       ("python-protobuf" ,python-protobuf)
        ("iproute" ,iproute)
        ("libaio" ,libaio)
        ("libcap" ,libcap)
@@ -1571,13 +1604,13 @@ domains, their live performance and resource utilization statistics.")
        ("libbsd" ,libbsd)
        ("nftables" ,nftables)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("perl" ,perl)
-       ("protobuf-c" ,protobuf-c)
-       ("asciidoc" ,asciidoc)
-       ("xmlto" ,xmlto)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)))
+     (list pkg-config
+           perl
+           protobuf-c
+           asciidoc
+           xmlto
+           docbook-xml
+           docbook-xsl))
     (home-page "https://criu.org")
     (synopsis "Checkpoint and restore in user space")
     (description "Using this tool, you can freeze a running application (or
@@ -1613,72 +1646,91 @@ Machine Protocol.")
     (license license:gpl3+)))
 
 (define-public looking-glass-client
-  (let ((commit "182c4752d57690da7f99d5e788de9b8baea33895"))
-    (package
-     (name "looking-glass-client")
-     (version (string-append "a12-" (string-take commit 7)))
-     (source
-      (origin
+  (package
+    (name "looking-glass-client")
+    (version "B5")
+    (source
+     (origin
        (method git-fetch)
-       (uri (git-reference (url "https://github.com/gnif/LookingGlass")
-                           (commit commit)))
+       (uri (git-reference
+             (url "https://github.com/gnif/LookingGlass")
+             (commit version)
+             (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "02bq46ndmzq9cihazzn7xq1x7q5nzm7iw4l9lqzihxcxp9famkhw"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Do not create binaries optimized for the CPU of the build machine,
-           ;; for reproducibility and compatibility.  TODO: in the next version
-           ;; of looking glass, this is exposed as a CMake configure option.
-           (substitute* "client/CMakeLists.txt"
-             (("-march=native")
-              ""))
-           #t))))
-     (build-system cmake-build-system)
-     (inputs `(("fontconfig" ,fontconfig)
-               ("glu" ,glu)
-               ("mesa" ,mesa)
-               ("openssl" ,openssl)
-               ("sdl2" ,sdl2)
-               ("sdl2-ttf" ,sdl2-ttf)
-               ("spice-protocol" ,spice-protocol)
-               ("wayland" ,wayland)))
-     (native-inputs `(("libconfig" ,libconfig)
-                      ("nettle" ,nettle)
-                      ("pkg-config" ,pkg-config)))
-     (arguments
-      `(#:tests? #f ;; No tests are available.
-        #:make-flags '("CC=gcc")
-        #:phases (modify-phases %standard-phases
-                   (add-before 'configure 'chdir-to-client
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (chdir "client")
-                       #t))
-                   (add-after 'chdir-to-client 'add-missing-include
-                     (lambda _
-                       ;; Mimic upstream commit b9797529893, required since the
-                       ;; update to Mesa 19.2.
-                       (substitute* "renderers/egl/shader.h"
-                         (("#include <stdbool\\.h>")
-                          "#include <stdbool.h>\n#include <stddef.h>"))
-                       #t))
-                   (replace 'install
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (install-file "looking-glass-client"
-                                     (string-append (assoc-ref outputs "out")
-                                                    "/bin"))
-                       #t)))))
-     (home-page "https://looking-glass.hostfission.com")
-     (synopsis "KVM Frame Relay (KVMFR) implementation")
-     (description "Looking Glass allows the use of a KVM (Kernel-based Virtual
+         "09mn544x5hg1z31l92ksk7fi7yj9r8xdk0dcl9fk56ivcr452ylm"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list bash-minimal
+           fontconfig
+           freetype
+           glu
+           gmp
+           libglvnd
+           libiberty
+           libx11
+           libxcursor
+           libxfixes
+           libxi
+           libxinerama
+           libxkbcommon
+           libxpresent
+           libxrandr
+           libxscrnsaver
+           mesa
+           openssl
+           sdl2
+           sdl2-ttf
+           spice-protocol
+           wayland
+           wayland-protocols
+           `(,zlib "static")))
+    (native-inputs (list libconfig nettle pkg-config))
+    (arguments
+     `(#:tests? #f ;; No tests are available.
+       #:make-flags '("CC=gcc")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'configure 'chdir-to-client
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (chdir "client")
+                      #t))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (install-file "looking-glass-client"
+                                    (string-append (assoc-ref outputs "out")
+                                                   "/bin"))
+                      #t))
+                  (add-after 'install 'wrapper
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (wrap-program
+                          (string-append (assoc-ref outputs "out")
+                                         "/bin/looking-glass-client")
+                        `("LD_LIBRARY_PATH" ":" prefix
+                          ,(map (lambda (name)
+                                  (let ((input (assoc-ref inputs name)))
+                                    (string-append input "/lib")))
+                                '("gmp"
+                                  "libxi"
+                                  "nettle"
+                                  "mesa"
+                                  "wayland"
+                                  "fontconfig-minimal"
+                                  "freetype"
+                                  "libx11"
+                                  "libxfixes"
+                                  "libxscrnsaver"
+                                  "libxinerama"))))
+                      #t)))))
+    (home-page "https://looking-glass.io/")
+    (synopsis "KVM Frame Relay (KVMFR) implementation")
+    (description "Looking Glass allows the use of a KVM (Kernel-based Virtual
 Machine) configured for VGA PCI Pass-through without an attached physical
-monitor, keyboard or mouse.  It displays the VM's rendered contents on your main
-monitor/GPU.")
-     ;; This package requires SSE instructions.
-     (supported-systems '("i686-linux" "x86_64-linux"))
-     (license license:gpl2+))))
+monitor, keyboard or mouse.  It displays the VM's rendered contents on your
+main monitor/GPU.")
+    ;; This package requires SSE instructions.
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (license license:gpl2+)))
 
 (define-public runc
   (package
@@ -1720,7 +1772,7 @@ monitor/GPU.")
      `(("go-md2man" ,go-github-com-go-md2man)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("libseccomp" ,libseccomp)))
+     (list libseccomp))
     (synopsis "Open container initiative runtime")
     (home-page "https://opencontainers.org/")
     (description
@@ -1792,17 +1844,16 @@ Open Container Initiative (OCI) image layout and its tagged images.")
                 "0n22sdif437ddg5ch0ipwim3fg0n6ihc9bfi52qkhy3r1grz04hs"))))
     (build-system go-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("go-github-com-go-md2man" ,go-github-com-go-md2man)))
+     (list pkg-config go-github-com-go-md2man))
     (inputs
-     `(("btrfs-progs" ,btrfs-progs)
-       ("eudev" ,eudev)
-       ("libassuan" ,libassuan)
-       ("libselinux" ,libselinux)
-       ("libostree" ,libostree)
-       ("lvm2" ,lvm2)
-       ("glib" ,glib)
-       ("gpgme" ,gpgme)))
+     (list btrfs-progs
+           eudev
+           libassuan
+           libselinux
+           libostree
+           lvm2
+           glib
+           gpgme))
     (arguments
      '(#:import-path "github.com/containers/skopeo"
        #:install-source? #f
@@ -1872,7 +1923,7 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.4.1")
+    (version "0.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/containers/bubblewrap/"
@@ -1880,7 +1931,8 @@ virtual machines.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "00ycgi6q2yngh06bnz50wkvar6r2jnjf3j158grhi9k13jdrpimr"))))
+                "0608l2sjwhnb1c0mslah1h6yjvqr17wk60by6i710qwxg4rszz8n"))
+               (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1896,7 +1948,9 @@ virtual machines.")
                (substitute* "tests/test-run.sh"
                  (("/var/tmp") tmp-dir)
                  ;; Tests create a temporary python script, so fix its shebang.
-                 (("/usr/bin/env python") (which "python"))
+                 (("/usr/bin/env python3") (which "python3"))
+                 ;; Tests call /usr/bin/env, so fix its path.
+                 (("/usr/bin/env") (which "env"))
                  ;; Some tests try to access /usr, but that doesn't exist.
                  ;; Give them /gnu instead.
                  (("/usr") "/gnu")
@@ -1905,18 +1959,21 @@ virtual machines.")
                  (("--ro-bind /lib /lib") "--ro-bind /gnu /lib")
                  (("  */bin/bash") (which "bash"))
                  (("/bin/sh") (which "sh"))
-                 (("findmnt") (which "findmnt"))))
+                 (("findmnt") (which "findmnt")))
+               (substitute* "tests/libtest.sh"
+                 (("/var/tmp") tmp-dir)
+                 (("/usr") "/gnu")
+                 (("--ro-bind /bin /bin") "--ro-bind /gnu /bin")
+                 (("--ro-bind /sbin /sbin") "--ro-bind /gnu /sbin")
+                 (("--ro-bind /lib /lib") "--ro-bind /gnu /lib")))
              #t))
          ;; Remove the directory we gave to tests to have a clean package.
          (add-after 'check 'remove-tmp-dir
            (lambda* (#:key outputs #:allow-other-keys)
              (delete-file-recursively (string-append (assoc-ref outputs "out") "/tmp"))
              #t)))))
-    (inputs
-     `(("libcap" ,libcap)))
-    (native-inputs
-     `(("python" ,python-wrapper)
-       ("util-linux" ,util-linux)))
+    (inputs (list libcap))
+    (native-inputs (list python-wrapper util-linux))
     (home-page "https://github.com/containers/bubblewrap")
     (synopsis "Unprivileged sandboxing tool")
     (description "Bubblewrap is aimed at running applications in a sandbox,
@@ -1942,7 +1999,7 @@ by default and can be made read-only.")
     (arguments
      `(#:tests? #f))                    ; no tests exist
     (inputs
-     `(("libxrandr" ,libxrandr)))
+     (list libxrandr))
     (home-page "http://bochs.sourceforge.net/")
     (synopsis "Emulator for x86 PC")
     (description
@@ -1956,11 +2013,11 @@ DOS or Microsoft Windows.")
 (define-public xen
   (package
     (name "xen")
-    (version "4.14.1")
+    (version "4.14.1")               ; please update the mini-os input as well
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "git://xenbits.xenproject.org/xen.git")
+                    (url "https://xenbits.xen.org/git-http/xen.git")
                     (commit (string-append "RELEASE-" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -2132,11 +2189,13 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
        ,(origin
          (method git-fetch)
          (uri (git-reference
-               (url "http://xenbits.xen.org/git-http/mini-os.git")
-               (commit (string-append "xen-RELEASE-" version))))
+               (url "https://xenbits.xen.org/git-http/mini-os.git")
+               ;; This corresponds to (string-append "xen-RELEASE-" version))
+               ;; at time of packaging, but upstream has unfortunately modified
+               ;; existing tags in the past.
+               (commit "0b4b7897e08b967a09bed2028a79fabff82342dd")))
          (sha256
-          (base32
-           "1i8pcl19n60i2m9vlg79q3nknpj209c9ic5x10wxaicx45kc107f"))
+          (base32 "1i8pcl19n60i2m9vlg79q3nknpj209c9ic5x10wxaicx45kc107f"))
          (file-name "mini-os-git-checkout")))
        ("perl" ,perl)
        ; TODO: markdown
@@ -2159,7 +2218,7 @@ which is a hypervisor.")
 (define-public osinfo-db-tools
   (package
     (name "osinfo-db-tools")
-    (version "1.8.0")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-tools-"
@@ -2167,23 +2226,19 @@ which is a hypervisor.")
 
               (sha256
                (base32
-                "038q3gzdbkfkhpicj0755mw1q4gbvn57pslpw8n2dp3lds9im0g9"))))
+                "1h23a8nzdxjyvw44dwh903563n3b1z5skx8g0b1p1v5cif3iqpr5"))))
     (build-system meson-build-system)
     (inputs
-     `(("libsoup" ,libsoup)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("json-glib" ,json-glib)
-       ("libarchive" ,libarchive)))
+     (list libsoup-minimal-2 libxml2 libxslt json-glib libarchive))
     (native-inputs
-     `(("perl" ,perl)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ;; Tests
-       ("python" ,python)
-       ("pytest" ,python-pytest)
-       ("requests" ,python-requests)))
+     (list perl
+           gobject-introspection
+           gettext-minimal
+           pkg-config
+           ;; Tests
+           python
+           python-pytest
+           python-requests))
     (home-page "https://gitlab.com/libosinfo/osinfo-db-tools")
     (synopsis "Tools for managing the osinfo database")
     (description "This package contains a set of tools to assist
@@ -2193,14 +2248,14 @@ administrators and developers in managing the database.")
 (define-public osinfo-db
   (package
     (name "osinfo-db")
-    (version "20210809")
+    (version "20211216")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://releases.pagure.org/libosinfo/osinfo-db-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "16gas6ahxwim1vdjlc4p1gm6q5gfy25h82ngykcm94x69sl6qsan"))))
+                "10hhpciqk4lzsj66zkdvghd1i5zh6hg1fn9as4qhwcr1wnqfgv09"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -2214,11 +2269,9 @@ administrators and developers in managing the database.")
                  (string-append (assoc-ref %build-inputs "osinfo-db-tools")
                                 "/bin/osinfo-db-import")))
            (mkdir-p osinfo-dir)
-           (invoke osinfo-db-import "--dir" osinfo-dir source)
-           #t))))
+           (invoke osinfo-db-import "--dir" osinfo-dir source)))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("osinfo-db-tools" ,osinfo-db-tools)))
+     (list intltool osinfo-db-tools))
     (home-page "https://gitlab.com/libosinfo/osinfo-db")
     (synopsis "Database of information about operating systems")
     (description "Osinfo-db provides the database files for use with the
@@ -2248,20 +2301,16 @@ use with virtualization provisioning tools")
                          ">="))
                       #t)))))
     (propagated-inputs
-     `(("python-beautifultable" ,python-beautifultable)
-       ("python-click" ,python-click)
-       ("python-importlib-resources"
-        ,python-importlib-resources)
-       ("python-lark-parser" ,python-lark-parser)
-       ("python-marshmallow" ,python-marshmallow)
-       ("python-progressbar2" ,python-progressbar2)
-       ("python-requests" ,python-requests)
-       ("python-toml" ,python-toml)))
+     (list python-beautifultable
+           python-click
+           python-importlib-resources
+           python-lark-parser
+           python-marshmallow
+           python-progressbar2
+           python-requests
+           python-toml))
     (native-inputs
-     `(("python-black" ,python-black)
-       ("python-mypy" ,python-mypy)
-       ("python-pyhamcrest" ,python-pyhamcrest)
-       ("python-twine" ,python-twine)))
+     (list python-black python-mypy python-pyhamcrest python-twine))
     (home-page
      "https://github.com/ALSchwalm/transient")
     (synopsis

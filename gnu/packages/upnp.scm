@@ -63,7 +63,7 @@
      ;; the configure phase.
      `(#:make-flags
        (list
-        (string-append "SH=" (assoc-ref %build-inputs "bash") "/bin/sh")
+        (string-append "SH=" (search-input-file %build-inputs "/bin/sh"))
         (string-append "INSTALLPREFIX=" (assoc-ref %outputs "out"))
         ,(string-append "CC=" (cc-for-target))
 
@@ -96,16 +96,16 @@ over IRC, instant messaging, network games, and most server software.")
 (define-public libupnp
   (package
     (name "libupnp")
-    (version "1.14.7")
+    (version "1.14.12")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://github.com/pupnp/pupnp/releases/download"
                           "/release-" version "/libupnp-" version".tar.bz2"))
       (sha256
-       (base32 "093wmhk7rdmg2ixyam4hpxa43g25555jgb3i4y7223mwhr5aqrkv"))))
+       (base32 "1b5mnn01cx840paggxrajg63gqzmw8mi4p14jhi9r4qyvam80709"))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (build-system gnu-build-system)
     (arguments
      ;; The tests require a network device capable of multicasting which is

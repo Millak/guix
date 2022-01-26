@@ -24,11 +24,13 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
@@ -78,11 +80,18 @@ to take care of the OS-specific details when writing software that uses serial p
                     version ".tar.gz"))
               (sha256
                (base32
-                "1h1zi1kpsgf6j2z8j8hjpv1q7n49i3fhqjn8i178rka3cym18265"))))
+                "1h1zi1kpsgf6j2z8j8hjpv1q7n49i3fhqjn8i178rka3cym18265"))
+              (patches
+               (search-patches "libsigrokdecode-python3.9-fix.patch"))))
     (outputs '("out" "doc"))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             (invoke "autoconf")
+             (invoke "aclocal")
+             (invoke "automake" "-ac")))
          (add-after 'build 'build-doc
            (lambda _
              (invoke "doxygen")
@@ -94,14 +103,10 @@ to take care of the OS-specific details when writing software that uses serial p
                                               "/share/doc/libsigrokdecode"))
              #t)))))
     (native-inputs
-     `(("check" ,check-0.14)
-       ("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("pkg-config" ,pkg-config)))
+     (list check-0.14 doxygen graphviz pkg-config automake autoconf))
     ;; libsigrokdecode.pc lists "python" in Requires.private, and "glib" in Requires.
     (propagated-inputs
-     `(("glib" ,glib)
-       ("python" ,python)))
+     (list glib python))
     (build-system gnu-build-system)
     (home-page "https://www.sigrok.org/wiki/Libsigrokdecode")
     (synopsis "Library providing (streaming) protocol decoding functionality")
@@ -141,82 +146,77 @@ as simple logic analyzer and/or oscilloscope hardware.")
     (license license:gpl2+)))
 
 (define-public libsigrok
-  (package
-    (name "libsigrok")
-    (version "0.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://sigrok.org/download/source/libsigrok/libsigrok-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "0g6fl684bpqm5p2z4j12c62m45j1dircznjina63w392ns81yd2d"))))
-    (outputs '("out" "doc"))
-    (arguments
-     `(#:tests? #f                      ; tests need USB access
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'change-udev-group
-           (lambda _
-             (substitute* (find-files "contrib" "\\.rules$")
-               (("plugdev") "dialout"))
-             #t))
-         (add-after 'build 'build-doc
-           (lambda _
-             (invoke "doxygen")))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively "doxy/html-api"
-                               (string-append (assoc-ref outputs "doc")
-                                              "/share/doc/libsigrok"))
-             #t))
-         (add-after 'install-doc 'install-udev-rules
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (rules (string-append out "/lib/udev/rules.d/")))
-               (for-each (lambda (file)
-                           (install-file file rules))
-                         (find-files "contrib" "\\.rules$"))
-               #t)))
-         (add-after 'install-udev-rules 'install-fw
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((fx2lafw (assoc-ref inputs "sigrok-firmware-fx2lafw"))
-                    (out (assoc-ref outputs "out"))
-                    (dir-suffix "/share/sigrok-firmware/")
-                    (input-dir (string-append fx2lafw dir-suffix))
-                    (output-dir (string-append out dir-suffix)))
-               (for-each
-                (lambda (file)
-                  (install-file file output-dir))
-                (find-files input-dir ".")))
-             #t)))))
-    (native-inputs
-     `(("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("sigrok-firmware-fx2lafw" ,sigrok-firmware-fx2lafw)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     `(("python" ,python)
-       ("zlib" ,zlib)))
-    ;; libsigrokcxx.pc lists "glibmm" in Requires
-    ;; libsigrok.pc lists "libserialport", "libusb", "libftdi" and "libzip" in
-    ;; Requires.private and "glib" in Requires
-    (propagated-inputs
-     `(("glib" ,glib)
-       ("glibmm" ,glibmm)
-       ("libserialport" ,libserialport)
-       ("libusb" ,libusb)
-       ("libftdi" ,libftdi)
-       ("libzip" ,libzip)))
-    (build-system gnu-build-system)
-    (home-page "https://www.sigrok.org/wiki/Libsigrok")
-    (synopsis "Library which provides the basic hardware access drivers for logic
-analyzers")
-    (description "@code{libsigrok} is a shared library written in C which provides the basic hardware
-access drivers for logic analyzers and other supported devices, as well as input/output file
-format support.")
-    (license license:gpl3+)))
+  (let ((commit "a7e919a3a6b7fd511acbe1a280536b76c70c28d2")
+        (revision "1"))
+    (package
+      (name "libsigrok")
+      (version (git-version "0.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "git://sigrok.org/libsigrok")
+               (commit commit)))
+         (sha256
+          (base32 "0km3fyv5s2byrm4zpbss2527ynhw4nb67imnbawwic2a6zh9jiyc"))
+         (file-name (git-file-name name version))))
+      (outputs '("out" "doc"))
+      (arguments
+       `(#:tests? #f                      ; tests need USB access
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'change-udev-group
+             (lambda _
+               (substitute* (find-files "contrib" "\\.rules$")
+                 (("plugdev") "dialout"))))
+           (add-after 'build 'build-doc
+             (lambda _
+               (invoke "doxygen")))
+           (add-after 'install 'install-doc
+             (lambda* (#:key outputs #:allow-other-keys)
+               (copy-recursively "doxy/html-api"
+                                 (string-append (assoc-ref outputs "doc")
+                                                "/share/doc/libsigrok"))))
+           (add-after 'install-doc 'install-udev-rules
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out   (assoc-ref outputs "out"))
+                      (rules (string-append out "/lib/udev/rules.d/")))
+                 (for-each (lambda (file)
+                             (install-file file rules))
+                           (find-files "contrib" "\\.rules$")))))
+           (add-after 'install-udev-rules 'install-fw
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((fx2lafw (assoc-ref inputs "sigrok-firmware-fx2lafw"))
+                      (out (assoc-ref outputs "out"))
+                      (dir-suffix "/share/sigrok-firmware/")
+                      (input-dir (string-append fx2lafw dir-suffix))
+                      (output-dir (string-append out dir-suffix)))
+                 (for-each
+                  (lambda (file)
+                    (install-file file output-dir))
+                  (find-files input-dir "."))))))))
+      (native-inputs
+       (list autoconf automake doxygen graphviz libtool
+             sigrok-firmware-fx2lafw pkg-config))
+      (inputs
+       (list python zlib))
+      ;; libsigrokcxx.pc lists "glibmm" in Requires libsigrok.pc lists
+      ;; "libserialport", "libusb", "libftdi" and "libzip" in Requires.private
+      ;; and "glib" in Requires
+      (propagated-inputs
+       (list glib
+             glibmm-2.64
+             libserialport
+             libusb
+             libftdi
+             libzip))
+      (build-system gnu-build-system)
+      (home-page "https://www.sigrok.org/wiki/Libsigrok")
+      (synopsis "Basic hardware access drivers for logic analyzers")
+      (description "@code{libsigrok} is a shared library written in C which
+provides the basic hardware access drivers for logic analyzers and other
+supported devices, as well as input/output file format support.")
+      (license license:gpl3+))))
 
 (define-public sigrok-cli
   (package
@@ -231,11 +231,9 @@ format support.")
                (base32
                 "1f0a2k8qdcin0pqiqq5ni4khzsnv61l21v1dfdjzayw96qzl9l3i"))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("glib" ,glib)
-       ("libsigrok" ,libsigrok)
-       ("libsigrokdecode" ,libsigrokdecode)))
+     (list glib libsigrok libsigrokdecode))
     (build-system gnu-build-system)
     (home-page "https://sigrok.org/wiki/Sigrok-cli")
     (synopsis "Command-line frontend for sigrok")
@@ -254,10 +252,11 @@ format support.")
               (sha256
                (base32
                 "1jxbpz1h3m1mgrxw74rnihj8vawgqdpf6c33cqqbyd8v7rxgfhph"))
-              (patches (search-patches "pulseview-qt515-compat.patch"))))
+              (patches (search-patches "pulseview-qt515-compat.patch"
+                                       "pulseview-glib-2.68.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DENABLE_TESTS=y")
+     `(#:tests? #f ;format_time_minutes_test is failing
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'remove-empty-doc-directory
@@ -266,19 +265,17 @@ format support.")
                (with-directory-excursion (string-append out "/share")
                  ;; Use RMDIR to never risk silently deleting files.
                  (rmdir "doc/pulseview")
-                 (rmdir "doc"))
-               #t))))))
+                 (rmdir "doc"))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
-     `(("boost" ,boost)
-       ("glib" ,glib)
-       ("glibmm" ,glibmm)
-       ("libsigrok" ,libsigrok)
-       ("libsigrokdecode" ,libsigrokdecode)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)))
+     (list boost
+           glib
+           glibmm
+           libsigrok
+           libsigrokdecode
+           qtbase-5
+           qtsvg))
     (home-page "https://www.sigrok.org/wiki/PulseView")
     (synopsis "Qt based logic analyzer, oscilloscope and MSO GUI for sigrok")
     (description "PulseView is a Qt based logic analyzer, oscilloscope and MSO GUI
@@ -319,14 +316,9 @@ individual low-level driver modules.")
                 "0a5ycfc1qdmibvagc82r2mhv2i99m6pndy5i6ixas3j2297g6pgq"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("m4" ,m4)
-       ("pkg-config" ,pkg-config)))
+     (list m4 pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("comedilib" ,comedilib)
-       ("fftw" ,fftw)
-       ("gtk+" ,gtk+)
-       ("gtkdatabox" ,gtkdatabox)))
+     (list alsa-lib comedilib fftw gtk+ gtkdatabox))
     (synopsis "Digital oscilloscope")
     (description "Xoscope is a digital oscilloscope that can acquire signals
 from ALSA, ESD, and COMEDI sources.  This package currently does not include

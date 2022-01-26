@@ -26,6 +26,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
@@ -74,9 +75,9 @@
                 "1syygi1x40rdryih3galr4q8yg1w5bvdzl75hd27v1xq0l5bz3d0"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (inputs
-     `(("readline" ,readline)))
+     (list readline))
     (arguments
      `(#:tests? #f ; no check target
        #:phases
@@ -97,20 +98,20 @@ formal verification.")
 (define-public iverilog
   (package
     (name "iverilog")
-    (version "10.3")
+    (version "11.0")
     (source (origin
               (method url-fetch)
               (uri
-               (string-append "ftp://ftp.icarus.com/pub/eda/verilog/v10/"
+               (string-append "ftp://ftp.icarus.com/pub/eda/verilog/v11/"
                               "verilog-" version ".tar.gz"))
               (sha256
                (base32
-                "1vv88ckvfwq7mrysyjnilsrcrzm9d173kp9w5ivwh6rdw7klbgc6"))))
+                "1mamlrkpb2gb00g7xdddaknrvwi4jr4ng6cfjhwngzk3ddhqaiym"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))))
     (native-inputs
-     `(("flex" ,flex)
-       ("bison" ,bison)
-       ("ghostscript" ,ghostscript)))   ; ps2pdf
+     (list flex bison ghostscript))   ; ps2pdf
     (home-page "http://iverilog.icarus.com/")
     (synopsis "FPGA Verilog simulation and synthesis tool")
     (description "Icarus Verilog is a Verilog simulation and synthesis tool.
@@ -201,23 +202,23 @@ For synthesis, the compiler generates netlists in the desired format.")
                                                                 iverilog "\"")))
                      #t))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("gawk" , gawk) ; for the tests and "make" progress pretty-printing
-       ("tcl" ,tcl) ; tclsh for the tests
-       ("iverilog" ,iverilog))) ; for the tests
+     (list pkg-config
+           python
+           bison
+           flex
+           gawk ; for the tests and "make" progress pretty-printing
+           tcl ; tclsh for the tests
+           iverilog)) ; for the tests
     (inputs
-     `(("tcl" ,tcl)
-       ("readline" ,readline)
-       ("libffi" ,libffi)
-       ("graphviz" ,graphviz)
-       ("psmisc" ,psmisc)
-       ("xdot" ,xdot)
-       ("abc" ,abc)))
+     (list tcl
+           readline
+           libffi
+           graphviz
+           psmisc
+           xdot
+           abc))
     (propagated-inputs
-     `(("z3" ,z3))) ; should be in path for yosys-smtbmc
+     (list z3)) ; should be in path for yosys-smtbmc
     (home-page "http://www.clifford.at/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
@@ -258,7 +259,7 @@ For synthesis, the compiler generates netlists in the desired format.")
               #t))
           (delete 'configure))))
     (inputs
-     `(("libftdi" ,libftdi)))
+     (list libftdi))
     (native-inputs
      `(("python-3" ,python)
        ("pkg-config" ,pkg-config)))
@@ -285,12 +286,12 @@ Includes the actual FTDI connector.")
            (base32
             "1fmxsywgs45g88ra7ips5s2niiiwrkyxdcy742ws18dfk2y4vi9c"))))
       (inputs
-       `(("boost" ,boost)
-         ("eigen" ,eigen)
-         ("icestorm" ,icestorm)
-         ("python" ,python)
-         ("qtbase" ,qtbase-5)
-         ("yosys" ,yosys)))
+       (list boost
+             eigen
+             icestorm
+             python
+             qtbase-5
+             yosys))
       (build-system cmake-build-system)
       (arguments
        `(#:configure-flags `("-DARCH=ice40"
@@ -335,7 +336,7 @@ FOSS FPGA place and route tool.")
              (("#!/usr/bin/python") "#!/usr/bin/python2"))
            #t)))))
     (inputs
-     `(("icestorm" ,icestorm)))
+     (list icestorm))
     (native-inputs
      `(("git" ,git)  ; for determining its own version string
        ("yosys" ,yosys) ; for tests
@@ -349,7 +350,7 @@ FOSS FPGA place and route tool.")
 (define-public gtkwave
   (package
     (name "gtkwave")
-    (version "3.3.110")
+    (version "3.3.111")
     (source
      (origin
        (method url-fetch)
@@ -359,11 +360,10 @@ FOSS FPGA place and route tool.")
                   (string-append "http://gtkwave.sourceforge.net/"
                                  "gtkwave-" version ".tar.gz")))
        (sha256
-        (base32 "1hslmg39j9rays0cyash8zvrrbfyc55jdpq7hwc47ksr7bayvip4"))))
+        (base32 "15n2gv2hd7h23cci95ij7yr71fkxppb209sfdsmmngh3fik09rpn"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gperf" ,gperf)
-       ("pkg-config" ,pkg-config)))
+     (list gperf pkg-config))
     (inputs
      `(("tcl" ,tcl)
        ("tk" ,tk)
@@ -400,7 +400,7 @@ simulator trace files (@dfn{FST}).")
         (base32 "1kq11if64zj84gv4w1q7l16fp17xjxl2wv5hc9dibr1z3m1gy67l"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-colorama" ,python-colorama)))
+     (list python-colorama))
     (home-page "https://m-labs.hk/gateware/migen/")
     (synopsis "Python toolbox for building complex digital hardware")
     (description
@@ -426,13 +426,13 @@ constructed by a Python program.")
     (home-page "http://www.myhdl.org/")
     (synopsis "Python as a Hardware Description Language")
     (description "This package provides a library to turn Python into
-a hardware description and verification language. ")
+a hardware description and verification language.")
     (license license:lgpl2.1+)))
 
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.5.2")
+    (version "1.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -441,7 +441,7 @@ a hardware description and verification language. ")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1hjshyliaqi4vrw4q760rwmq6hvbpsvr2h4zl34k5j457004dy9l"))))
+                "1gjpwblp8isplyad3b6fl7cb5qv1rn3lf9qgf4l139y97cp2mm4s"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -452,16 +452,16 @@ a hardware description and verification language. ")
            (lambda _
              (delete-file "autogen.sh"))))))
     (native-inputs
-     `(("automake" ,automake)
-       ("autoconf" ,autoconf)
-       ("flex" ,flex)
-       ("gettext" ,gnu-gettext)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("which" ,which)
-       ("check" ,check))) ; for the tests
+     (list automake
+           autoconf
+           flex
+           gnu-gettext
+           libtool
+           pkg-config
+           which
+           check)) ; for the tests
     (inputs
-     `(("llvm" ,llvm-9)))
+     (list llvm-9))
     (synopsis "VHDL compiler and simulator")
     (description "This package provides a VHDL compiler and simulator.")
     (home-page "https://github.com/nickg/nvc")
@@ -479,7 +479,7 @@ a hardware description and verification language. ")
              "systemc/systemc-" version ".tar.gz"))
        (sha256
         (base32 "0gvv3xmhiwx1izmzy06yslzqzh6ygrgmw53xqfmyvbz5a6ivk0ap"))))
-    (native-inputs `(("perl" ,perl)))
+    (native-inputs (list perl))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-debug")))
     (home-page "https://accellera.org/community/systemc")
@@ -518,8 +518,7 @@ using different abstraction levels.")
        ("gettext" ,gettext-minimal)
        ("python" ,python)))
     (inputs
-     `(("perl" ,perl)
-       ("systemc" ,systemc)))
+     (list perl systemc))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags

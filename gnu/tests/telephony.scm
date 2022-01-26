@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gnu.org>.
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>.
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -138,9 +138,7 @@ accounts provisioning feature of the service."
           (define marionette
             (make-marionette (list #$vm)))
 
-          (mkdir #$output)
-          (chdir #$output)
-
+          (test-runner-current (system-test-runner #$output))
           (test-begin "jami")
 
           (test-assert "service is running"
@@ -176,7 +174,7 @@ accounts provisioning feature of the service."
                   ;; in the service; use retries.
                   (with-retries 20 1
                     (not (zero? (status:exit-val
-                                 (system* "pgrep" "dring")))))))
+                                 (system* "pgrep" "jamid")))))))
              marionette))
 
           (test-assert "service can be restarted"
@@ -341,8 +339,7 @@ accounts provisioning feature of the service."
                              account-details)))))
              marionette))
 
-          (test-end)
-          (exit (= (test-runner-fail-count (test-runner-current)) 0)))))
+          (test-end))))
 
   (gexp->derivation (if provisioning?
                         "jami-provisioning-test"

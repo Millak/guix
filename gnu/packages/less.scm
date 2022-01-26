@@ -45,7 +45,7 @@
        (sha256
         (base32 "044fl3izmsi8n1vqzsqdp65q0qyyn5kmsg4sk7id0mxzx15zbbba"))))
     (build-system gnu-build-system)
-    (inputs `(("ncurses" ,ncurses)))
+    (inputs (list ncurses))
     (home-page "https://www.gnu.org/software/less/")
     (synopsis "Paginator for terminals")
     (description
@@ -59,7 +59,7 @@ text editors.")
 (define-public lesspipe
   (package
     (name "lesspipe")
-    (version "1.89")
+    (version "1.91")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -68,7 +68,7 @@ text editors.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lxf0m4bgwhpwmwa5q2vklk31yhiaz049kpm4n2hqiyb5mlpa94a"))))
+                "04dqvq6j4h451xqbvxzv6pv679hzzfm39pdm5vg7h3r45gzg0kps"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no tests
@@ -79,22 +79,19 @@ text editors.")
                         (delete-file "Makefile") ; force generating
                         (invoke "./configure"
                                 (string-append "--prefix=" out)
-                                "--yes")
-                        #t)))
+                                "--yes"))))
                   (add-before 'install 'patch-tput-and-file
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "lesspipe.sh"
                         (("tput colors")
-                         (string-append (assoc-ref inputs "ncurses")
-                                        "/bin/tput colors"))
+                         (string-append (search-input-file inputs "/bin/tput")
+                                        " colors"))
                         (("file -")
-                         (string-append (assoc-ref inputs "file")
-                                        "/bin/file -")))
-                      #t)))))
+                         (string-append (search-input-file inputs "/bin/file")
+                                        " -"))))))))
     (inputs
-     `(("file" ,file)
-       ("ncurses" ,ncurses)))  ; for tput
-    (native-inputs `(("perl" ,perl)))
+     (list file ncurses))  ; for tput
+    (native-inputs (list perl))
     (home-page "https://github.com/wofr06/lesspipe")
     (synopsis "Input filter for less")
     (description "To browse files, the excellent viewer @code{less} can be

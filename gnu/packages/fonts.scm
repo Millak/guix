@@ -35,13 +35,15 @@
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
 ;;; Copyright © 2020, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2020 Simen Endsjø <simendsjo@gmail.com>
+;;; Copyright © 2020, 2021 Simen Endsjø <simendsjo@gmail.com>
 ;;; Copyright © 2020 Tim Van den Langenbergh <tmt_vdl@gmx.com>
 ;;; Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -187,7 +189,7 @@ itself."))))
               (uri "https://typodermicfonts.com/wp-content/uploads/2017/06/canada1500.zip")
               (sha256
                (base32
-                "052rwhyfcz6q0g0nsr21bkbg2qb6sw7wzins5hv80qhdhi77sdaj"))))
+                "0cdcb89ab6q7b6jd898bnvrd1sifbd2xr42qgji98h8d5cq4b6fp"))))
     (build-system font-build-system)
     (home-page "https://typodermicfonts.com/canada1500/")
     (synopsis "Canadian typeface that supports English, French and Aboriginal languages")
@@ -197,21 +199,45 @@ includes lining and old-style numerals, tabular and proportional.  Greek,
 Cyrillic, Canadian Syllabics and most Latin based languages are supported.")
     (license license:cc0)))
 
-(define-public font-cantarell
+(define-public font-abattis-cantarell
   (package
     (name "font-abattis-cantarell")
-    (version "0.301")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/cantarell-fonts/"
-                                  (version-major+minor version)
-                                  "/cantarell-fonts-" version ".tar.xz"))
-              (sha256
-               (base32
-                "10sycxscs9kzl451mhygyj2qj8qlny8pamskb86np7izq05dnd9x"))))
-    (build-system meson-build-system)
+    (version "0.303")
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://gitlab.gnome.org/GNOME/cantarell-fonts/-/"
+                           "jobs/1515399/artifacts/download"))
+       (file-name (string-append name "-" version "-static"))
+       (sha256
+        (base32 "1dz551xrrhx6l40j57ksk2alllrihghg4947z1r88dpcq3snpn1s"))))
+    (build-system font-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-source
+           ;; The actual OTF fonts are prebuilt (building them requires at least
+           ;; the currently unpackaged psautohint and its numerous dependencies;
+           ;; TODO), but unpack the source so that COPYING is installed later.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "tar" "--strip-components=1" "-xvf"
+                     (string-append "build/meson-dist/cantarell-fonts-"
+                                    ,version ".tar.xz"))))
+         (add-after 'unpack 'unpack-variable-font
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((variable-font (assoc-ref inputs "variable-font")))
+               (copy-recursively (string-append variable-font "/prebuilt")
+                                 ".")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))   ; for msgfmt
+     `(("variable-font"
+        ,(origin
+           (method url-fetch/zipbomb)
+           (uri (string-append "https://gitlab.gnome.org/GNOME/cantarell-fonts/-/"
+                               "jobs/1515398/artifacts/download"))
+           (file-name (string-append name "-" version "-variable"))
+           (sha256
+            (base32 "0z93pbkxidsx3y98rsl2jm2qpvxv5pj0w870xhnsciglw6pc9a9i"))))
+       ("unzip" ,unzip)))
     (home-page "https://wiki.gnome.org/Projects/CantarellFonts")
     (synopsis "Cantarell sans-serif typeface")
     (description "The Cantarell font family is a contemporary Humanist
@@ -296,7 +322,7 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
                                    (find-files "." "")))))))
        #:test-target "tests"))
     ;; FreeFont anno 2012 requires a FontForge built with Python 2.
-    (native-inputs `(("fontforge" ,fontforge-20190801)))
+    (native-inputs (list fontforge-20190801))
     (home-page "https://www.gnu.org/software/freefont/")
     (synopsis "Unicode-encoded outline fonts")
     (description
@@ -307,21 +333,18 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
     (properties '((upstream-name . "freefont")
                   (ftp-directory . "/gnu/freefont")))))
 
-(define-public font-gnu-freefont-ttf
-  (deprecated-package "font-gnu-freefont-ttf" font-gnu-freefont))
-
 (define-public font-liberation
   (package
     (name "font-liberation")
-    (version "2.1.4")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://github.com/liberationfonts/liberation-fonts/"
-             "files/6418984/liberation-fonts-ttf-" version ".tar.gz"))
+             "files/7261482/liberation-fonts-ttf-" version ".tar.gz"))
        (sha256
-        (base32 "1vx5q5bif9d1cn5pvm78203sf4may2mch72aa1hx1a8avl959y16"))))
+        (base32 "1l15iwk0x75621q67qlh9wv561c0gc7x0kh9l9rrz29qpxlwd4bi"))))
     (build-system font-build-system)
     (home-page "https://github.com/liberationfonts")
     (synopsis "Fonts compatible with Arial, Times New Roman, and Courier New")
@@ -372,7 +395,7 @@ and Bitstream Vera Sans Mono).
                          (find-files "." "\\.sfd$"))
                #t))))))
     (native-inputs
-     `(("fontforge" ,fontforge)))
+     (list fontforge))
     (home-page "http://www.linuxlibertine.org/")
     (synopsis "Serif and sans serif typefaces")
     (description "The Linux Libertine fonts is a set of typefaces containing
@@ -452,11 +475,7 @@ The unified Libertinus family consists of:
                (apply invoke "make" "install-otb" (string-append "prefix=" otb)
                       make-flags)))))))
     (native-inputs
-     `(("bdftopcf" ,bdftopcf)
-       ("font-util" ,font-util)
-       ("mkfontdir" ,mkfontdir)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list bdftopcf font-util mkfontdir pkg-config python))
     (home-page "http://terminus-font.sourceforge.net/")
     (synopsis "Simple bitmap programming font")
     (description "Terminus Font is a clean, fixed-width bitmap font, designed
@@ -719,7 +738,7 @@ for use at smaller text sizes")))
 (define-public font-gnu-unifont
   (package
     (name "font-gnu-unifont")
-    (version "13.0.06")
+    (version "14.0.01")
     (source
      (origin
        (method url-fetch)
@@ -729,22 +748,21 @@ for use at smaller text sizes")))
              (string-append "mirror://gnu/unifont/unifont-"
                             version "/unifont-" version ".tar.gz")))
        (sha256
-        (base32 "09g91g0gv76sadslp70m5xwfk3jf8kh7rpk2pz3l2hpldnjggpk8"))))
+        (base32 "0wkdn8h20pprna5a3hbny0qk2mgksrbxs2y6ng6qarj6rkpdmlbs"))))
     (build-system gnu-build-system)
     (outputs '("out"   ; TrueType version
                "pcf"   ; PCF (bitmap) version
                "psf"   ; PSF (console) version
                "bin")) ; Utilities to manipulate '.hex' format
     (arguments
-     '(#:tests? #f          ; no check target
+     `(#:tests? #f          ; no check target
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
-         (replace
-          'configure
-          (lambda _ (setenv "CC" "gcc") #t))
-         (replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
+         (delete 'configure)
+         (replace 'install
+          (lambda* (#:key make-flags outputs #:allow-other-keys)
             (let* ((ttf (string-append (assoc-ref outputs "out")
                                        "/share/fonts/truetype"))
                    (pcf (string-append (assoc-ref outputs "pcf")
@@ -752,20 +770,19 @@ for use at smaller text sizes")))
                    (psf (string-append (assoc-ref outputs "psf")
                                        "/share/consolefonts"))
                    (bin (assoc-ref outputs "bin")))
-              (invoke "make"
-                      (string-append "PREFIX=" bin)
-                      (string-append "TTFDEST=" ttf)
-                      (string-append "PCFDEST=" pcf)
-                      (string-append "CONSOLEDEST=" psf)
-                      "install")
+              (apply invoke "make" "install"
+                     (string-append "PREFIX=" bin)
+                     (string-append "TTFDEST=" ttf)
+                     (string-append "PCFDEST=" pcf)
+                     (string-append "CONSOLEDEST=" psf)
+                     make-flags)
               ;; Move Texinfo file to the right place.
               (mkdir (string-append bin "/share/info"))
               (invoke "gzip" "-9n" "doc/unifont.info")
               (install-file "doc/unifont.info.gz"
-                            (string-append bin "/share/info"))
-              #t))))))
+                            (string-append bin "/share/info"))))))))
     (inputs
-     `(("perl" ,perl))) ; for utilities
+     (list perl)) ; for utilities
     (synopsis
      "Large bitmap font covering Unicode's Basic Multilingual Plane")
     (description
@@ -821,7 +838,7 @@ visual language \"Material Design\".")
 (define-public font-borg-sans-mono
   (package
     (name "font-borg-sans-mono")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
@@ -830,7 +847,7 @@ visual language \"Material Design\".")
              "/releases/download/v" version "/borg-sans-mono.zip"))
        (sha256
         (base32
-         "0q16gw3ry9hpgbl2636qq00ap59xyx15jf3gzvx2ybz3gja164c4"))))
+         "0xzi866ag9w4q114bn984yjfy72pmfs563v5yy1rkbqycphgwwyp"))))
     (build-system font-build-system)
     (home-page "https://github.com/charje/borg-sans-mono")
     (synopsis "The Borg Sans Mono font")
@@ -956,7 +973,7 @@ Powerline support.")
 (define-public font-adobe-source-code-pro
   (package
     (name "font-adobe-source-code-pro")
-    (version "2.030R-ro-1.050R-it")
+    (version "2.032R-ro-1.052R-it-1.012R-VAR")
     (source
      (origin
        (method git-fetch)
@@ -965,10 +982,12 @@ Powerline support.")
              (commit (regexp-substitute/global
                       ;; The upstream tag uses "/" between the roman and italic
                       ;; versions, so substitute our "-" separator here.
-                      #f "R-ro-" version 'pre "R-ro/" 'post))))
+                      #f "((R-ro)|(R-it))(-)" version
+                      'pre 1 "/" 'post
+                      ))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hc5kflr8xzqgdm0c3gbgb1paygznxmnivkylid69ipc7wnicx1n"))))
+        (base32 "1lqchm8z0ah5y675ycmciqvr8y1v1gcj22ysfs443gm291vy0z4v"))))
     (build-system font-build-system)
     (home-page "https://github.com/adobe-fonts/source-code-pro")
     (synopsis
@@ -1022,42 +1041,82 @@ work well in user interface (UI) environments.")
 Sans Pro family.")
     (license license:silofl1.1)))
 
-(define-public font-fira-mono
-  (package
-    (name "font-fira-mono")
-    (version "3.206")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://carrois.com/downloads/fira_mono_3_2/"
-                                  "FiraMonoFonts"
-                                  (string-replace-substring version "." "")
-                                  ".zip"))
-              (sha256
-               (base32
-                "1z65x0dw5dq6rs6p9wyfrir50rlh95vgzsxr8jcd40nqazw4jhpi"))))
-    (build-system font-build-system)
-    (home-page "https://mozilla.github.io/Fira/")
-    (synopsis "Mozilla's monospace font")
-    (description "This is the typeface used by Mozilla in Firefox OS.")
-    (license license:silofl1.1)))
-
 (define-public font-fira-sans
+  ;; Fira Sans v4.203 (which corresponds to Fira Mono v3.206) is the final
+  ;; version to include UFO sources. It is the same version packaged by other
+  ;; notable distributors, including Google Fonts. Note that the "reserved
+  ;; font name" was removed by the copyright holders.
+  ;;
+  ;; The upstream release includes a "Fira Code" which "is Fira Mono 3.206
+  ;; with less Line Space (1.0) – does not include programming ligatures". We
+  ;; do not package that: our 'font-fira-code' package (like e.g. Debian's
+  ;; "fonts-firacode") is the much better known Fira Code font by Nikita
+  ;; Prokopov, which is an older, independent adaptation of Fira Mono. For the
+  ;; historical relationship between them, see:
+  ;; https://github.com/mozilla/Fira/issues/218
+  ;;
+  ;; For a lengthy discussion of the available sources and versions,
+  ;; see: https://github.com/LiberalArtist/FiraSans/
+  ;;
+  ;; See also:
+  ;;   - https://github.com/mozilla/Fira/pull/219
+  ;;   - https://github.com/bBoxType/FiraSans/issues/4#issuecomment-695833327
   (package
     (name "font-fira-sans")
-    (version "4.202")
+    (version "4.203")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/mozilla/Fira")
-                     (commit version)))
+                     (url "https://github.com/bBoxType/FiraSans")
+                     (commit "a606927401bcc3951587339fee53aa882856b51b")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "116j26gdj5g1r124b4669372f7490vfjqw7apiwp2ggl0am5xd0w"))))
+                "1r9kb7v9jg83nnxwkl6gx9ix1rng3ksr7v33qrm46qb4fhwsyc2n"))))
     (build-system font-build-system)
+    (arguments
+     `(#:modules
+       ((ice-9 match)
+        (ice-9 regex)
+        (guix build utils)
+        (guix build font-build-system))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (define-values (pkg-name _version)
+               (package-name->name+version
+                (strip-store-file-name (assoc-ref outputs "out"))))
+             (define variant
+               (string-capitalize
+                (match:substring (string-match "fira-([a-z]+)" pkg-name) 1)))
+             (match (find-files "." (format #f "^Fira_~a_[0-9]" variant)
+                                #:directories? #t)
+               ((dir)
+                (chdir dir))))))))
+    ;; While the repository has moved,
+    ;; this specimen still works well as the home-page:
     (home-page "https://mozilla.github.io/Fira/")
-    (synopsis "Mozilla's Fira Sans Font")
-    (description "This is the typeface used by Mozilla in Firefox OS.")
+    (synopsis
+     "Humanist sans-serif with numerous weights emphasizing legibility")
+    (description "Fira Sans is a humanist sans-serif typeface with an emphasis
+on legibility, commissioned by Mozilla from Erik Spiekermann and Ralph du
+Carrois.  The large family includes 2,709 glyphs in normal, condensed, and
+compressed cuts at 11 weights (plus 6 experimental weights), each with
+corresponding italics.
+
+The package @code{font-fira-mono} provides a corresponding monospace cut.")
+    (license license:silofl1.1)))
+
+(define-public font-fira-mono
+  (package
+    (inherit font-fira-sans)
+    (name "font-fira-mono")
+    (version "3.206")
+    (synopsis "Monospace cut of Fira Sans")
+    (description
+     "Fira Mono is a monospace cut of Fira Sans (see @code{font-fira-sans}).
+It includes regular, medium, and bold weights.")
     (license license:silofl1.1)))
 
 (define-public font-fira-go
@@ -1078,30 +1137,41 @@ Sans Pro family.")
     (synopsis "Multilingual extension of the Fira Sans font family")
     (description "FiraGO is a multilingual extension of the Fira Sans font
 family.  Based on the Fira Sans 4.3 glyph set, FiraGO adds support for the
-Arabic, Devanagari, Georgian, Hebrew and Thai scripts.")
+Arabic, Devanagari, Georgian, Hebrew and Thai scripts.
+
+Note that FiraGO does not include corresponding source.")
+    ;; See:
+    ;;   - https://github.com/bBoxType/FiraGO/issues/42
+    ;;   - https://github.com/bBoxType/FiraSans/issues/4#issuecomment-699882058
+    ;; For further discussion, see comments on font-fira-sans.
     (license license:silofl1.1)))
 
 (define-public font-fira-code
   (package
     (name "font-fira-code")
-    (version "5.2")
+    (version "6.2")
     (source
      (origin
+       ;; changing to git-fetch would require building from source
        (method url-fetch/zipbomb)
        (uri (string-append "https://github.com/tonsky/FiraCode/releases/"
                            "download/" version
                            "/Fira_Code_v" version ".zip"))
        (sha256
-        (base32 "1zayrb6k0gd7xdvx7yx44dpip767q0bzhqwf4j6nf8nx02z746jj"))))
+        (base32 "0y9y7snyrr30z75kxz2zgh6q6hizcbzsf41xv6gxh97bm1dr2j89"))))
     (build-system font-build-system)
-    (home-page "https://mozilla.github.io/Fira/")
+    ;; This font began as an independent derived work of Fira Mono.
+    ;; It was never affiliated with Mozilla.
+    ;; See comments on font-fira-sans for further discussion.
+    (home-page "https://github.com/tonsky/FiraCode")
     (synopsis "Monospaced font with programming ligatures")
     (description
-     "Fira Code is an extension of the Fira Mono font containing a set of ligatures
-for common programming multi-character combinations.  This is just a font rendering
-feature: underlying code remains ASCII-compatible.  This helps to read and understand
-code faster.  For some frequent sequences like .. or //, ligatures allow us to
-correct spacing.")
+     "Fira Code is a monospace font by Nikita Prokopov featuring ligatures for
+common programming multi-character combinations.  It began as an extension of
+Fira Mono.  The ligatures are just a font rendering feature: underlying code
+remains ASCII-compatible.  They are designed to help people to read and
+understand code faster.  For some frequent sequences like @code{..} or
+@code{//}, ligatures are used to simulate proportional spacing.")
     (license license:silofl1.1)))
 
 (define-public font-awesome
@@ -1258,7 +1328,7 @@ guix repl <<EOF
              (ice-9 string-fun)
              (gnu packages fonts))
 
-(let ((new-version "7.0.3")
+(let ((new-version "11.2.0")
       (iosevka-hashes #nil)
       (iosevka-fails #nil))
   (for-each (lambda (font)
@@ -1292,7 +1362,7 @@ EOF
 (define-public font-iosevka
   (package
     (name "font-iosevka")
-    (version "7.0.3")
+    (version "11.2.0")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1300,7 +1370,7 @@ EOF
                            "/releases/download/v" version
                            "/ttc-iosevka-" version ".zip"))
        (sha256
-        (base32 "08n1c2j38vd1qrf18ilgvq6rl7z9yrsyq9ljf037yiw6zlphx4da"))))
+        (base32 "16a5bbjy9kn62pbrmam6jvcki4xvbakxbqzv72kkpz7p10b10vz7"))))
     (build-system font-build-system)
     (home-page "https://be5invis.github.io/Iosevka/")
     (synopsis "Coders' typeface, built from code")
@@ -1323,7 +1393,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-slab-" version ".zip"))
        (sha256
-        (base32 "1ggrbl8gi2hv8yiw7vw8cajlv7nkz8i975165cayyzppjlrfs3nr"))))))
+        (base32 "068nd8wph44r9ka3fd7b5jhph505w08ibn3dmd7czdcp1fkr7dhi"))))))
 
 (define-public font-iosevka-term
   (package
@@ -1337,7 +1407,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttf-iosevka-term-" version ".zip"))
        (sha256
-        (base32 "1jmbp3hni99l92653b356nbmj45kd54kbl6c6ws1k5jxydrjglrh"))))
+        (base32 "0a22pnr74l87ajprcki3j3fc5cryfr5krpxang0b51grkdb9l724"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1358,7 +1428,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version "/"
                            "ttf-iosevka-term-slab-" version ".zip"))
        (sha256
-        (base32 "19fc6jbkv0aif6ds9ddxaarz2ambzln7y6k2qjsczwlbznr8cf09"))))
+        (base32 "00nsykwa1r198wrh85d42vbjwpxxsmzdn3i4fighdrd3c99fbv60"))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1379,7 +1449,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-aile-" version ".zip"))
        (sha256
-        (base32 "1bkrk4dqkj45fbaac2n61a5kwxs3bk6sdm5hanw7g2h4xb83fi8d"))))))
+        (base32 "11xajywv20ah6yg3a0sqv2lp5phg8yv268dw2myz3ciazwnvdpqq"))))))
 
 (define-public font-iosevka-curly
   (package
@@ -1393,7 +1463,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-" version ".zip"))
        (sha256
-        (base32 "12jdb38dlbwa58q0b0sf9sp1dcafzp9dcf71jf1wrlnn8047vxyx"))))))
+        (base32 "1ss11pdrk7k0kwbaklllz4mb961j6issjp53jpp7p9pvs4qad8xf"))))))
 
 (define-public font-iosevka-curly-slab
   (package
@@ -1407,7 +1477,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "releases/download/v" version  "/"
                            "ttc-iosevka-curly-slab-" version ".zip"))
        (sha256
-        (base32 "0zn21bxyj0ni4vbdarwam2piixzvkdk769vg3k4fl3h03q56cj24"))))))
+        (base32 "141jyarpmln5q3cjyq79nw9kfm55vaiy3cin3rlamghrhjw8wg9q"))))))
 
 (define-public font-iosevka-etoile
   (package
@@ -1421,7 +1491,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/ttc-iosevka-etoile-" version ".zip"))
        (sha256
-        (base32 "0lnpdvv20g2bg6rwl0gv83bkbgfmkbyfxshhpw9vprfs2g8k6lil"))))))
+        (base32 "097b8acia49fqpsy3w6ldk73k4abn6z9mlkl1p4iw99k26ip1sy7"))))))
 
 (define-public font-sarasa-gothic
   (package
@@ -1443,7 +1513,7 @@ programming.  Iosevka is completely generated from its source code.")
                       (mkdir "source")
                       (chdir "source")
                       (invoke "7z" "x" source))))))
-    (native-inputs `(("p7zip" ,p7zip)))
+    (native-inputs (list p7zip))
     (home-page "https://github.com/be5invis/Sarasa-Gothic")
     (license license:silofl1.1)
     (synopsis "Sarasa Gothic / 更纱黑体 / 更紗黑體 / 更紗ゴシック / 사라사 고딕")
@@ -1559,7 +1629,7 @@ resolutions.")
          (base32
           "11ml7v4iyf3hr0fbnkwz8afb8vi58wbcfnmn4gyvrwh9jk5pybdr"))))
     (build-system font-build-system)
-    (native-inputs `(("unzip" ,unzip)))
+    (native-inputs (list unzip))
     (home-page "https://opendyslexic.org/")
     (synopsis "Font for dyslexics and high readability")
     (description "OpenDyslexic is a font designed to help readability for some
@@ -1571,13 +1641,10 @@ swapping.  The italic style for OpenDyslexic has been crafted to be used for
 emphasis while still being readable.")
     (license license:silofl1.1)))
 
-(define-public font-open-dyslexic
-  (deprecated-package "font-open-dyslexic" font-opendyslexic))
-
 (define-public font-openmoji
   (package
     (name "font-openmoji")
-    (version "12.4.0")
+    (version "13.1.0")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1587,10 +1654,10 @@ emphasis while still being readable.")
                        "/openmoji-font.zip"))
        (sha256
         (base32
-         "0wvvg5vnc950h8v23wfgjyi7rv89mgm5hqq6viqv0bxcc3azglxb"))))
+         "0xmy3hr38v03f1riwxmxdibb7iwj0qz288inqaha3pwq7pj7ln45"))))
     (build-system font-build-system)
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (home-page "https://openmoji.org")
     (synopsis "Font for rendering emoji characters")
     (description
@@ -1659,7 +1726,7 @@ ExtraLight, Light, Book, Medium, Semibold, Bold & ExtraBold")
                          (find-files "." "^Nachlieli.*\\.sfd$"))
                #t))))))
     (native-inputs
-     `(("fontforge" ,fontforge)))
+     (list fontforge))
     (home-page "http://culmus.sourceforge.net/")
     (synopsis "TrueType Hebrew Fonts for X11")
     (description "14 Hebrew trivial families.  Contain ASCII glyphs from various
@@ -1819,6 +1886,25 @@ formatting.")
     (home-page "https://madmalik.github.io/mononoki/")
     (license license:silofl1.1)))
 
+(define-public font-plemoljp
+  (package
+    (name "font-plemoljp")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/yuru7/PlemolJP/releases/download/"
+                    "v" version "/PlemolJP_v" version ".zip"))
+              (sha256
+               (base32
+                "03cwzkqg09c87lmsx9xfzdrlgjml93bhhp1dqq3qkpdfww30wkaw"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/yuru7/PlemolJP")
+    (synopsis "Plex Mono Language JP")
+    (description "PlemolJP (Plex Mono Language JP) is a Japanese programming
+font that is a composite of IBM Plex Mono and IBM Plex Sans JP.")
+    (license license:silofl1.1)))
+
 (define-public font-public-sans
   (package
     (name "font-public-sans")
@@ -1944,25 +2030,25 @@ in small sizes, the text looks crisper.")
 (define-public font-juliamono
   (package
     (name "font-juliamono")
-    (version "0.031")
+    (version "0.043")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cormullion/juliamono")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/cormullion/juliamono/releases/download/"
+             "v" version "/JuliaMono-ttf.tar.gz"))
        (sha256
-        (base32 "0pcz2qaw0g0gak4plvhgg3m76h4gamffa373r52dzx0qwn1i1cf1"))))
+        (base32
+         "0vb7n9yqgasnxzps13ckklay5bla6b0i79pzmfqvjms1r37079gh"))))
     (build-system font-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-website-folder
-           ;; This folder contains other unrelated fonts.
-           (lambda _
-             (delete-file-recursively "website")
-             #t)))))
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'unpack
+                    (lambda* (#:key source #:allow-other-keys)
+                      (mkdir "source")
+                      (chdir "source")
+                      (invoke "tar" "xzf" source))))))
+    (native-inputs (list tar))
     (home-page "https://github.com/cormullion/juliamono")
     (synopsis "Monospaced font for programming")
     (description
@@ -2050,7 +2136,7 @@ It comes in seven weights and Roman, Italic and Oblique styles.")
        ("harfbuzz" ,harfbuzz "bin")
        ("python" ,python-minimal)
        ("python-fonttools" ,python-fonttools)
-       ("python-google-brotli" ,python-google-brotli)))
+       ("python-brotli" ,python-brotli)))
     (arguments
      `(#:make-flags (list "PY=python3"
                           (string-append "DESTDIR=" %output)
@@ -2187,7 +2273,7 @@ suitable for a wide range of uses.")
 (define-public font-cozette
   (package
     (name "font-cozette")
-    (version "1.9.3")
+    (version "1.13.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2196,21 +2282,28 @@ suitable for a wide range of uses.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mb5ns6705piwgjw1g10czsakhyc1jnvxh342ixw8m5f1gf4595n"))))
+                "178i812n4sfsvid7jhnm683jlxqmrv4ck6qbb4nwyllhwg3gyq60"))))
     (build-system font-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'dont-depend-on-git
+           (lambda _
+             (substitute* "build.py"
+               ;; Merely importing this module requires a git repository.
+               ;; We don't use get_changelog, so just disable the import.
+               (("from cozette_builder\\.changeloggen import get_changelog")
+                ""))))
          (add-before 'install 'build
            (lambda _
              (invoke "python3" "build.py" "fonts"))))))
     (native-inputs
-     `(("fontforge" ,fontforge)
-       ("python" ,python)
-       ("python-crayons" ,python-crayons)
-       ("python-fonttools" ,python-fonttools)
-       ("python-numpy" ,python-numpy)
-       ("python-pillow" ,python-pillow)))
+     (list fontforge
+           python
+           python-crayons
+           python-fonttools
+           python-numpy
+           python-pillow))
     (home-page "https://github.com/slavfox/Cozette")
     (synopsis "Bitmap programming font")
     (description "Cozette is a 6x13px (bounding box) bitmap font based on Dina
@@ -2242,16 +2335,16 @@ half of the twentieth century.")
 (define-public font-overpass
   (package
     (name "font-overpass")
-    (version "3.0.4")
+    (version "3.0.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/RedHatOfficial/Overpass")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pl7zpwlx0j2xv23ahnpmbb4a5d6ib2cjck5mxqzi3jjk25rk9kb"))))
+        (base32 "1vsp94h7v5sn29hajv2ng94gyx4pqb0xgvn3gf7jp2q80gdv8pkm"))))
     (build-system font-build-system)
     (arguments
      `(#:phases
@@ -2267,3 +2360,107 @@ road signage typefaces, adapted for on-screen display and user interfaces.
 Overpass includes proportional and monospace variants.")
     (license (list license:silofl1.1
                    license:lgpl2.1))))
+
+(define-public font-cormorant
+  (package
+    (name "font-cormorant")
+    (version "3.609")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CatharsisFonts/Cormorant")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fjp2xk4bjx8i6jamkyjq2fdr7324fh41pbn634iwnhdvvawvbav"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/CatharsisFonts/Cormorant")
+    (synopsis
+     "Extravagant display serif typeface in the spirit of Garamond")
+    (description
+     "Cormorant is an extravagant display serif typeface inspired by
+the Garamond heritage.  The design goal of Cormorant was to distill
+the aesthetic essence of Garamond, unfetter it from the limitations of
+metal printing, and allow it to bloom into its natural refined form at
+high definition.  Cormorant is characterized by scandalously small
+counters, razor-sharp serifs, dangerously smooth curves, and
+flamboyantly tall accents.  While many implementations of Garamond at
+small optical sizes already exist, Cormorant aims for the sparsely
+populated niche of display-size counterparts that exploit the high
+resolution of contemporary screens and print media to the fullest.")
+    (license license:silofl1.1)))
+
+(define-public font-bravura
+  (package
+    (name "font-bravura")
+    (version "1.393")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/steinbergmedia/bravura")
+             ;; Should be:
+             ;;   (string-append "bravura-" version)
+             ;; but missing tag for 1.393. Requested upstream at:
+             ;; https://github.com/steinbergmedia/bravura/issues/61
+             (commit "3df1714e6f9d522a8d2b6ee6888fa3e68e71199d")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d0a2z1gl0kzfnd5z0nv2gd226qwll13kis2xrhx213w6r849180"))))
+    (build-system font-build-system)
+    (home-page "https://www.smufl.org/fonts/")
+    (synopsis
+     "OpenType music font and SMuFL reference implementation")
+    (description
+     "Bravura is an OpenType music font and the reference implementation for
+the W3C Standard Music Font Layout (SMuFL).  Bravura draws on the heritage of
+the finest European music engraving of the 19th and early 20th centuries, with
+a bolder and more substantial look than most other music fonts: thin strokes
+are slightly thicker than in other fonts, improving the overall ``blackness''
+of the font and its legibility when read at a distance.
+
+In addition to Bravura itself, which is for use with music notation
+software (such as MuseScore), the family includes a Bravura Text variant
+optimized for using musical symbols inline with regular text.")
+    (license license:silofl1.1)))
+
+(define-public font-charter
+  (let ((butterick-version "210112")) ;; yymmdd
+    (package
+      (name "font-charter")
+      (version (string-append "2.0.0-" butterick-version))
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "https://practicaltypography.com/fonts/Charter%20"
+                             butterick-version ".zip"))
+         (file-name (string-append name "-" version ".zip"))
+         (sha256
+          (base32 "1j8iv2dl695zrabs2knb7jsky8mjis29a2ddpna4by8mlvqrf0ml"))))
+      (outputs '("out" "woff2"))
+      (build-system font-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'install 'install-woff2
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((dest (string-append (assoc-ref outputs "woff2")
+                                          "/share/fonts/woff2")))
+                 (for-each (lambda (file)
+                             (install-file file dest))
+                           (find-files "." "\\.woff2$"))))))))
+      (home-page "https://practicaltypography.com/charter.html")
+      (synopsis "Charter fonts in OpenType and TrueType formats")
+      (description "Charter was designed by Matthew Carter in 1987 and was
+contributed by Bitstream to the X Consortium in 1992.  This package provides
+OpenType, TrueType, and @acronym{WOFF2, Web Open Font Format 2} versions
+converted from the Type 1 originals by Matthew Butterick.")
+      (license
+       (license:non-copyleft
+        "file://Charter license.txt"
+        (string-append
+         "Bitstream contributed the Charter family "
+         "to the X Consortium in 1992.  "
+         "The license is also embedded in the font metadata."))))))
+/

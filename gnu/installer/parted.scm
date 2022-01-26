@@ -26,6 +26,7 @@
   #:use-module ((gnu build file-systems)
                 #:select (canonicalize-device-spec
                           find-partition-by-label
+                          find-partition-by-uuid
                           read-partition-uuid
                           read-luks-partition-uuid))
   #:use-module ((gnu build linux-boot)
@@ -80,7 +81,7 @@
 
             with-delay-device-in-use?
             force-device-sync
-            non-install-devices
+            eligible-devices
             partition-user-type
             user-fs-type-name
             partition-filesystem-user-type
@@ -345,35 +346,59 @@ fail. See rereadpt function in wipefs.c of util-linux for an explanation."
   (with-null-output-ports
    (invoke "dmsetup" "remove_all")))
 
-(define (installation-device)
-  "Return the installation device path."
+(define (installer-root-partition-path)
+  "Return the root partition path, or #f if it could not be detected."
   (let* ((cmdline (linux-command-line))
          (root (find-long-option "--root" cmdline)))
     (and root
-         (canonicalize-device-spec (uuid root)))))
+         (or (and (access? root F_OK) root)
+             (find-partition-by-label root)
+             (and=> (uuid root)
+                    find-partition-by-uuid)))))
 
-(define (non-install-devices)
-  "Return all the available devices, except the install device."
-  (define (read-only? device)
-    (dynamic-wind
-    (lambda ()
-      (device-open device))
-    (lambda ()
-      (device-read-only? device))
-    (lambda ()
-      (device-close device))))
+;; Minimal installation device size.
+(define %min-device-size
+  (* 2 GIBIBYTE-SIZE)) ;2GiB
 
-  ;; If parted reports that a device is read-only it is probably the
-  ;; installation device. However, as this detection does not always work,
-  ;; compare the device path to the installation device path read from the
-  ;; command line.
-  (let ((install-device (installation-device)))
-    (remove (lambda (device)
-              (let ((file-name (device-path device)))
-                (or (read-only? device)
-                    (and install-device
-                         (string=? file-name install-device)))))
-            (devices))))
+(define (eligible-devices)
+  "Return all the available devices except the install device and the devices
+which are smaller than %MIN-DEVICE-SIZE."
+
+  (define the-installer-root-partition-path
+    (installer-root-partition-path))
+
+  (define (small-device? device)
+    (let ((length (device-length device))
+          (sector-size (device-sector-size device)))
+      (and (< (* length sector-size) %min-device-size)
+           (syslog "~a is not eligible because it is smaller than ~a.~%"
+                   (device-path device)
+                   (unit-format-custom-byte device
+                                            %min-device-size
+                                            UNIT-GIGABYTE)))))
+
+  ;; Read partition table of device and compare each path to the one
+  ;; we're booting from to determine if it is the installation
+  ;; device.
+  (define (installation-device? device)
+    ;; When using CDROM based installation, the root partition path may be the
+    ;; device path.
+    (and (or (string=? the-installer-root-partition-path
+                       (device-path device))
+             (let ((disk (disk-new device)))
+               (and disk
+                    (any (lambda (partition)
+                           (string=? the-installer-root-partition-path
+                                     (partition-get-path partition)))
+                         (disk-partitions disk)))))
+         (syslog "~a is not eligible because it is the installation device.~%"
+                 (device-path device))))
+
+  (remove
+   (lambda (device)
+     (or (installation-device? device)
+         (small-device? device)))
+   (devices)))
 
 
 ;;
@@ -1414,9 +1439,11 @@ USER-PARTITIONS, or return nothing."
             (let* ((uuids (map (lambda (file)
                                  (uuid->string (read-partition-uuid file)))
                                swap-devices)))
-              `((swap-devices (list ,@(map (lambda (uuid)
-                                             `(uuid ,uuid))
-                                           uuids))))))
+              `((swap-devices
+                 (list ,@(map (lambda (uuid)
+                                `(swap-space
+                                  (target (uuid ,uuid))))
+                              uuids))))))
       ,@(if (null? encrypted-partitions)
             '()
             `((mapped-devices

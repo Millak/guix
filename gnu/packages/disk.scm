@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +59,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -65,10 +67,12 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-web)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
@@ -89,6 +93,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system scons)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -140,7 +145,7 @@
                                  "/share/man/man8"))
                  #t))))))
       (native-inputs
-       `(("pkg-config" ,pkg-config)))
+       (list pkg-config))
       (inputs
        `(("util-linux:lib" ,util-linux "lib"))) ; libblkid
       (home-page "https://bcache.evilpiepirate.org")
@@ -208,15 +213,14 @@ and write-back caching.")
                (("`which udevil 2>/dev/null`") "/run/setuid-programs/udevil"))
              #t)))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (inputs
-     `(("cifs-utils" ,cifs-utils)
-       ("curlftpfs" ,curlftpfs)
-       ("eudev" ,eudev)
-       ("fakeroot" ,fakeroot)
-       ("glib" ,glib)
-       ("sshfs" ,sshfs)))
+     (list cifs-utils
+           curlftpfs
+           eudev
+           fakeroot
+           glib
+           sshfs))
     (synopsis "Device and file system manager")
     (description "udevil is a command line program that mounts and unmounts
 removable devices without a password, shows device info, and monitors device
@@ -248,9 +252,8 @@ tmpfs/ramfs filesystems.")
                (("/usr/bin/python") (which "python")))
              #t)))))
     (inputs
-     `(("lvm2" ,lvm2)
-       ("readline" ,readline)
-       ("util-linux" ,util-linux "lib")))
+     (list lvm2 readline
+           `(,util-linux "lib")))
     (native-inputs
      `(("gettext" ,gettext-minimal)
 
@@ -334,8 +337,7 @@ tables, and it understands a variety of different formats.")
                (substitute* "autogen.sh"
                  (("\\./configure") "")))))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)))
+       (list autoconf automake))
       (home-page "https://github.com/baruch/gpart")
       (synopsis "Guess and recover PC-style partition tables")
       (description
@@ -423,7 +425,7 @@ scheme.")
      `(#:configure-flags (list (string-append "CXX=" ,(cxx-for-target)))))
     (home-page "https://www.gnu.org/software/ddrescue/ddrescue.html")
     (synopsis "Data recovery utility")
-    (native-inputs `(("lzip" ,lzip)))
+    (native-inputs (list lzip))
     (description
      "GNU ddrescue is a fully automated data recovery tool.  It copies data
 from one file to another, working to rescue data in case of read errors.  The
@@ -447,13 +449,12 @@ to recover data more efficiently by only reading the necessary blocks.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--enable-compat-symlinks")
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          "CC=gcc")))
+       #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
+                          (string-append "CC=" ,(cc-for-target)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ;; For tests.
-       ("xxd" ,xxd)))
+     (list autoconf automake
+           ;; For tests.
+           xxd))
     (home-page "https://github.com/dosfstools/dosfstools")
     (synopsis "Utilities for making and checking MS-DOS FAT file systems")
     (description
@@ -488,7 +489,7 @@ which respectively make and check MS-DOS FAT file systems.")
              ;; Add fsck.vfat symlink to match the Linux driver name.
              (symlink exe "fsck.vfat")
              #t)))))
-    (inputs `(("dosfstools" ,dosfstools/static)))
+    (inputs (list dosfstools/static))
     (home-page (package-home-page dosfstools))
     (synopsis "Statically linked fsck.fat from dosfstools")
     (description "This package provides a statically-linked @command{fsck.fat}
@@ -569,17 +570,13 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
       ;; as '/dev/disk/by-id'
      `(#:tests? #f))
     (inputs
-     `(("util-linux" ,util-linux "lib")
-       ("parted" ,parted)
-       ("glib" ,glib)
-       ("gtkmm" ,gtkmm)
-       ("libxml2" ,libxml2)))
+     (list `(,util-linux "lib") parted glib gtkmm-3 libxml2))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("lvm2" ,lvm2) ; for tests
-       ("yelp-tools" ,yelp-tools)
-       ("pkg-config" ,pkg-config)))
+     (list intltool
+           itstool
+           lvm2 ; for tests
+           yelp-tools
+           pkg-config))
     (home-page "https://gparted.org/")
     (synopsis "Partition editor to graphically manage disk partitions")
     (description "GParted is a GNOME partition editor for creating,
@@ -637,10 +634,9 @@ systems.  Output format is completely customizable.")
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "install-extra" make-flags))))))
     (inputs
-     `(("eudev" ,eudev)
-       ("parted" ,parted)))
+     (list eudev parted))
     (home-page "http://oss.digirati.com.br/f3/")
-    (synopsis "Test real capacity of flash memory cards and such.")
+    (synopsis "Test real capacity of flash memory cards and such")
     (description "F3 (Fight Flash Fraud or Fight Fake Flash) tests the full
 capacity of a flash card (flash drive, flash disk, pendrive).  F3 writes to
 the card and then checks if can read it.  It will assure you haven't been sold
@@ -674,12 +670,11 @@ a card with a smaller capacity than stated.")
              (invoke "python" "-m" "unittest" "discover" "-v")
              #t)))))
     (native-inputs
-     `(("e2fsprogs" ,e2fsprogs)
-       ("pkg-config" ,pkg-config)))
+     (list e2fsprogs pkg-config))
     (propagated-inputs
-     `(("python-six" ,python-six)))
+     (list python-six))
     (inputs
-     `(("parted" ,parted)))
+     (list parted))
     (home-page "https://github.com/dcantrell/pyparted")
     (synopsis "Parted bindings for Python")
     (description "This package provides @code{parted} bindings for Python.")
@@ -700,10 +695,9 @@ a card with a smaller capacity than stated.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("glib" ,glib)
-       ("sqlite" ,sqlite)))
+     (list glib sqlite))
     (arguments
      `(#:tests? #f                      ; no test suite
        #:phases
@@ -743,12 +737,11 @@ Duperemove can also take input from the @command{fdupes} program.")
                 "0lfjrpv3z4h0knd3v94fijrw2zjba51mrp3mjqx2c98wr428l26f"))))
     (build-system python-build-system)
     (inputs
-     `(("w3m" ,w3m)))
+     (list w3m))
     (native-inputs
-     `(("which" ,which)
-
-       ;; For tests.
-       ("python-pytest" ,python-pytest)))
+     (list which
+           ;; For tests.
+           python-pytest))
     (arguments
      '( ;; The 'test' target runs developer tools like pylint, which fail.
        #:test-target "test_pytest"
@@ -790,9 +783,7 @@ automatically finding out which program to use for what file type.")
                 "16rhfz6sjwxlmss1plb2wv2i3jq6wza02rmz1d2jrlnsq67p98vc"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("swig" ,swig)
-       ("python" ,python-3)))           ; used to generate the Python bindings
+     (list pkg-config swig python-3))           ; used to generate the Python bindings
     (inputs
      `(("cryptsetup" ,cryptsetup)
        ("nss" ,nss)
@@ -821,7 +812,7 @@ passphrases.")
 (define-public ndctl
   (package
     (name "ndctl")
-    (version "71.1")
+    (version "72.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -830,43 +821,47 @@ passphrases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vi61bm9wyawklswh9mj9zdp28ar7r97qckwnhgiyila73fb3jx2"))))
+                "1lvrhlad5n43bal053ihgbwr1k4ka2kscrjwr9rs5xnf2vy7204v"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("automake" ,automake)
-       ("autoconf" ,autoconf)
-       ("bash-completion" ,bash-completion)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libtool" ,libtool)
-       ("libxml2" ,libxml2)
-       ("pkg-config" ,pkg-config)
-       ("xmlto" ,xmlto)
-       ;; Required for offline docbook generation.
-       ("which" ,which)))
-    (inputs
-     `(("eudev" ,eudev)
-       ("json-c" ,json-c)
-       ("keyutils" ,keyutils)
-       ("kmod" ,kmod)
-       ("util-linux" ,util-linux "lib")))
     (arguments
-     `(#:configure-flags
-       (list "--disable-asciidoctor"    ; use docbook-xsl instead
-             "--without-systemd")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-FHS-file-names
-           (lambda _
-             (substitute* "git-version-gen"
-               (("/bin/sh") (which "sh")))
-             (substitute* "git-version"
-               (("/bin/bash") (which "bash")))
-             #t)))
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "BASH_COMPLETION_DIR=" out
-                              "/share/bash-completion/completions")))))
+     (list #:configure-flags
+           #~(list "--disable-asciidoctor" ; use docbook-xsl instead
+                   "--without-systemd")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-version
+                 ;; Our VERSION's always better than the build's poor guess.
+                 (lambda _
+                   (with-output-to-file "version"
+                     (lambda _ (display #$version)))))
+               (add-after 'unpack 'patch-FHS-file-names
+                 (lambda _
+                   (substitute* "git-version-gen"
+                     (("/bin/sh") (which "sh")))
+                   (substitute* "git-version"
+                     (("/bin/bash") (which "bash"))))))
+           #:make-flags
+           #~(list (string-append "BASH_COMPLETION_DIR=" #$output
+                                  "/share/bash-completion/completions"))))
+    (native-inputs
+     (list asciidoc
+           automake
+           autoconf
+           bash-completion
+           docbook-xsl
+           libtool
+           libxml2
+           pkg-config
+           xmlto
+           ;; Required for offline docbook generation.
+           which))
+    (inputs
+     (list eudev
+           iniparser
+           json-c
+           keyutils
+           kmod
+           `(,util-linux "lib")))
     (home-page "https://github.com/pmem/ndctl")
     (synopsis "Manage the non-volatile memory device sub-system in the Linux kernel")
     (description
@@ -889,8 +884,8 @@ libnvdimm (non-volatile memory device) sub-system in the Linux kernel.")
                (base32
                 "1n7vsqvh7y6yvil682q129d21yhb0cmvd5fvsbkza7ypd78inhlk"))))
     (build-system gnu-build-system)
-    (inputs `(("lvm2" ,lvm2)))
-    (native-inputs `(("which" ,which)))
+    (inputs (list lvm2))
+    (native-inputs (list which))
     (arguments
      `(#:tests? #f                      ; No tests.
        ;; Prevent a race condition where some target would attempt to link
@@ -922,16 +917,15 @@ to create devices with respective mappings for the ATARAID sets discovered.")
 (define-public libblockdev
   (package
     (name "libblockdev")
-    (version "2.25")
+    (version "2.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/storaged-project/"
                                   "libblockdev/releases/download/"
                                   version "-1/libblockdev-" version ".tar.gz"))
-              (patches (search-patches "libblockdev-glib-compat.patch"))
               (sha256
                (base32
-                "0s0nazkpzpn4an00qghjkk9n7gdm5a8dqfr5hfnlk5mk5lma8njm"))))
+                "0sg068jb87ljhn8yazrqxi6ri10ic2sh1lp6ikd2nqxc6l5y3h64"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -947,23 +941,22 @@ to create devices with respective mappings for the ATARAID sets discovered.")
        ("python" ,python-wrapper)
        ("util-linux" ,util-linux)))
     (inputs
-     `(("btrfs-progs" ,btrfs-progs)
-       ("cryptsetup" ,cryptsetup)
-       ("dosfstools" ,dosfstools)
-       ("dmraid" ,dmraid)
-       ("eudev" ,eudev)
-       ("glib" ,glib)
-       ("kmod" ,kmod)
-       ("libbytesize" ,libbytesize)
-       ("libyaml" ,libyaml)
-       ("lvm2" ,lvm2)
-       ("mdadm" ,mdadm)
-       ("ndctl" ,ndctl)
-       ("nss" ,nss)
-       ("parted" ,parted)
-       ("volume-key" ,volume-key)
-       ;; ("xfsprogs" ,xfsprogs) ; TODO: Package?
-       ))
+     (list btrfs-progs
+           cryptsetup
+           dosfstools
+           dmraid
+           eudev
+           glib
+           kmod
+           libbytesize
+           libyaml
+           lvm2
+           mdadm
+           ndctl
+           nss
+           parted
+           volume-key
+           xfsprogs))
     (home-page "https://github.com/storaged-project/libblockdev")
     (synopsis "Library for manipulating block devices")
     (description
@@ -1045,7 +1038,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
-    (version "13")
+    (version "25")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1054,11 +1047,14 @@ on your file system and offers to remove it.  @command{rmlint} can find:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ld3q75v8rvp169w5p85z1vznqs9bhck6bm2f6fykxx16hmpb6ga"))))
+                "014cybng6hc9y3ma74hpc1ac3rkz4ydflx8jbmvx81rdd08rzwz7"))))
     (build-system go-build-system)
     (native-inputs
      `(("go-github.com-mattn-go-runewidth" ,go-github.com-mattn-go-runewidth)
-       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)))
+       ("go-github.com-nsf-termbox-go" ,go-github.com-nsf-termbox-go)
+       ("go-golang-org-x-term" ,go-golang-org-x-term)
+       ("go-gopkg-in-djherbis-times-v1" ,go-gopkg-in-djherbis-times-v1)
+       ("go-github-com-gdamore-tcell-v2" ,go-github-com-gdamore-tcell-v2)))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
     (home-page "https://github.com/gokcehan/lf")
@@ -1123,8 +1119,7 @@ since they are better handled by external tools.")
                    (("~/.config/xfe") xfe)))
                #t))))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (inputs
      `(("bash" ,bash)
        ("coreutils" ,coreutils)
@@ -1190,7 +1185,7 @@ that support this feature).")
 (define-public memkind
   (package
     (name "memkind")
-    (version "1.11.0")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1198,19 +1193,15 @@ that support this feature).")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32
-                "0w5hws12l167mbr4n6a6fl0mhf8mci61fsn55lh2cxz33f7q8n2x"))))
+               (base32 "1s52vl2jlrdc8nxnvf993x9mcag56qxcaniiijhmsv42a26hvjk4"))))
     (build-system gnu-build-system)
     (inputs
-     `(;; memkind patched jemalloc to add je_arenalookupx,
-       ;; je_check_reallocatex--i.e. they forked jemalloc.
-       ;("jemalloc" ,jemalloc)
-       ("ndctl" ,ndctl)
-       ("numactl" ,numactl)))
+     (list ;; memkind patched jemalloc to add je_arenalookupx,
+           ;; je_check_reallocatex--i.e. they forked jemalloc.
+           ;("jemalloc" ,jemalloc)
+           ndctl numactl))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list autoconf automake libtool))
     (arguments
      `(#:configure-flags
        (list (string-append "--docdir=" (assoc-ref %outputs "out")
@@ -1225,8 +1216,7 @@ that support this feature).")
                 (("/bin/sh") (which "sh")))
                (invoke "autoconf")
                (substitute* "configure"
-                (("/bin/sh") (which "sh"))))
-             #t)))))
+                (("/bin/sh") (which "sh")))))))))
     (home-page "https://github.com/memkind/memkind")
     (synopsis "Heap manager with memory kinds (for NUMA)")
     (description "This package provides a user-extensible heap manager
@@ -1235,8 +1225,8 @@ and a partitioning of the heap between kinds of memory (for NUMA).")
     (license license:bsd-3)))
 
 (define-public mmc-utils
-  (let ((commit "e9654ebc4a6a48642848822c4a1355a9de4958d1")
-        (revision "0"))
+  (let ((commit "3969aa4804edb8aed7bcb3c958e49d0c7388b067")
+        (revision "1"))
     (package
       (name "mmc-utils")
       (version (git-version "0.1" revision commit))
@@ -1244,12 +1234,11 @@ and a partitioning of the heap between kinds of memory (for NUMA).")
         (origin
           (method git-fetch)
           (uri (git-reference
-                 (url "https://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc-utils.git")
+                 (url "https://git.kernel.org/pub/scm/utils/mmc/mmc-utils.git")
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
-           (base32
-            "1dbsppsmky0r4z6kxwczrw8pih8bhc2pb61gsvs986r4xy6jr17a"))))
+           (base32 "0pvcm685x63afvp8795jd4vn4zs8psh8bs6j2yvk1kgrawpyk10g"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f ; No test suite
@@ -1265,7 +1254,8 @@ and a partitioning of the heap between kinds of memory (for NUMA).")
                (let* ((out (assoc-ref outputs "out"))
                       (man1 (string-append out "/share/man/man1")))
                  (install-file "man/mmc.1" man1)))))))
-      (home-page "https://git.kernel.org/pub/scm/linux/kernel/git/cjb/mmc-utils.git/")
+      (home-page
+       "https://www.kernel.org/doc/html/latest/driver-api/mmc/mmc-tools.html")
       (synopsis "Configure MMC storage devices from userspace")
       (description "mmc-utils is a command-line tool for configuring and
 inspecting MMC storage devices from userspace.")
@@ -1294,10 +1284,9 @@ inspecting MMC storage devices from userspace.")
              (invoke "nosetests" "-v"
                      "--exclude" "test_bmap_helpers"))))))
     (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-nose" ,python-nose)))
+     (list python-mock python-nose))
     (propagated-inputs
-     `(("python-six" ,python-six)))
+     (list python-six))
     (home-page "https://github.com/intel/bmap-tools")
     (synopsis "Create block map for a file or copy a file using block map")
     (description "Bmaptool is a tool for creating the block map (bmap) for a
@@ -1338,15 +1327,9 @@ reliably with @code{bmaptool} than with traditional tools, like @code{dd} or
                     (doc (string-append out "/share/doc/" ,name "-" ,version)))
                (copy-recursively "examples" (string-append doc "/examples"))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("pango" ,pango)
-       ("tokyocabinet" ,tokyocabinet)
-       ("ncurses" ,ncurses)))
+     (list cairo pango tokyocabinet ncurses))
     (home-page "http://duc.zevv.nl")
     (synopsis "Library and suite of tools for inspecting disk usage")
     (description "Duc maintains a database of accumulated sizes of
@@ -1356,3 +1339,47 @@ some tools, or create fancy graphs showing you where your bytes are.
 Duc comes with console utilities, ncurses and X11 user interfaces and a CGI
 wrapper for disk usage querying and visualisation.")
     (license license:lgpl3+)))
+
+(define-public qdirstat
+  (package
+    (name "qdirstat")
+    (version "1.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/shundhammer/qdirstat")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "079rmy3j0442y5gjh6la6w1j6jaw83wklamrf19yxi20zsm99xs7"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (system* "qmake"
+                      (string-append "INSTALL_PREFIX="
+                                     (assoc-ref outputs "out")))))
+         (add-after 'install 'wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program (string-append
+                            (assoc-ref outputs "out")
+                            "/bin/qdirstat-cache-writer")
+               `("PERL5LIB" ":" prefix
+                 (,(string-append
+                    (assoc-ref inputs "perl-uri-escape")
+                    "/lib/perl5/site_perl")))))))))
+    (build-system gnu-build-system)
+    (inputs
+     (list bash-minimal
+           perl
+           perl-uri-escape
+           qtbase-5
+           zlib))
+    (synopsis "Storage utilisation visualization tool")
+    (description
+     "QDirStat is a graphical application to show where your disk space has
+gone and to help you to clean it up.")
+    (home-page "https://github.com/shundhammer/qdirstat")
+    (license license:gpl2)))

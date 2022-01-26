@@ -3,6 +3,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,9 +23,11 @@
 (define-module (gnu packages avahi)
   #:use-module ((guix licenses) #:select (lgpl2.1+))
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -40,25 +43,24 @@
     (version "0.8")
     (home-page "https://avahi.org")
     (source (origin
-             (method url-fetch)
-             (uri (string-append home-page "/download/avahi-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "1npdixwxxn3s9q1f365x9n9rc5xgfz39hxf23faqvlrklgbhj0q6"))
-             (patches (search-patches "avahi-localstatedir.patch"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Fix version constraint in the avahi-libevent pkg-config file.
-                 ;; This can be removed for Avahi versions > 0.8.
-                 (substitute* "avahi-libevent.pc.in"
-                   (("libevent-2\\.1\\.5")
-                    "libevent >= 2.1.5"))
-                 #t))))
+              (method url-fetch)
+              (uri (string-append home-page "/download/avahi-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1npdixwxxn3s9q1f365x9n9rc5xgfz39hxf23faqvlrklgbhj0q6"))
+              (patches (search-patches "avahi-localstatedir.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Fix version constraint in the avahi-libevent pkg-config file.
+                  ;; This can be removed for Avahi versions > 0.8.
+                  (substitute* "avahi-libevent.pc.in"
+                    (("libevent-2\\.1\\.5")
+                     "libevent >= 2.1.5"))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--with-distro=none"
+     `(#:configure-flags '("--with-distro=none"
                            "--disable-static"
                            "--localstatedir=/var" ; for the DBus socket
                            "--disable-python"
@@ -68,13 +70,29 @@
                            "--enable-tests"
                            "--disable-qt4" "--disable-qt5"
                            "--disable-gtk" "--disable-gtk3"
-                           "--enable-compat-libdns_sd")))
+                           "--enable-compat-libdns_sd"
+                           ,@(if (%current-target-system)
+                                 '("ac_cv_prog_have_pkg_config=yes")
+                                 '()))
+       #:modules ((srfi srfi-26)
+                  (guix build utils)
+                  (guix build gnu-build-system))
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-after 'patch-shebangs 'patch-more-shebangs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (define path
+                  `(,(dirname (search-input-file inputs "bin/sh"))))
+                (for-each
+                 (cut patch-shebang <> path)
+                 (find-files (string-append #$output "/etc/avahi"))))))))
     (inputs
-     `(("dbus" ,dbus)
+     `(("bash-minimal" ,bash-minimal)
+       ("dbus" ,dbus)
        ("expat" ,expat)
        ("gdbm" ,gdbm)
        ("glib" ,glib)
-       ("libcap" ,libcap-2.31)       ;to enable chroot support in avahi-daemon
+       ("libcap" ,libcap)            ;to enable chroot support in avahi-daemon
        ("libdaemon" ,libdaemon)
        ("libevent" ,libevent)))
     (native-inputs

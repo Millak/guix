@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
@@ -31,7 +31,7 @@
   #:use-module (gnu system image)
   #:use-module (gnu system install)
   #:use-module (gnu system vm)
-  #:use-module ((gnu build vm) #:select (qemu-command))
+  #:use-module ((gnu build marionette) #:select (qemu-command))
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages commencement)       ;for 'guile-final'
@@ -355,7 +355,7 @@ IMAGE, a disk image.  The QEMU VM has access to MEMORY-SIZE MiB of RAM."
                 (format #t "creating writable image from '~a'...~%" image)
                 (unless (zero? (system* #+(file-append qemu-minimal
                                                        "/bin/qemu-img")
-                                        "create" "-f" "qcow2"
+                                        "create" "-f" "qcow2" "-F" "qcow2"
                                         "-o"
                                         (string-append "backing_file=" image)
                                         "disk.img"))
@@ -925,7 +925,7 @@ reboot\n")
 
   (operating-system
     (host-name "bootroot")
-    (timezone "Europe/Madrid")
+    (timezone "Europe/Paris")
     (locale "en_US.UTF-8")
 
     (bootloader (bootloader-configuration
@@ -1168,7 +1168,7 @@ RAID-0 (stripe) root partition.")
 
   (operating-system
     (host-name "hurd")
-    (timezone "America/Montreal")
+    (timezone "Europe/Paris")
     (locale "en_US.UTF-8")
     (bootloader (bootloader-configuration
                  (bootloader grub-bootloader)
@@ -1679,11 +1679,15 @@ build (current-guix) and then store a couple of full system images.")
     ;; encryption support.  The installer produces a UUID for the partition;
     ;; this "UUID" is explicitly set in 'gui-test-program' to the value shown
     ;; below.
-    (swap-devices (if encrypted?
-                      '()
-                      (list (uuid "11111111-2222-3333-4444-123456789abc"))))
-    (services (cons (service dhcp-client-service-type)
-                    (operating-system-user-services %minimal-os-on-vda)))))
+    (swap-devices
+     (if encrypted?
+         '()
+         (list
+          (swap-space
+           (target (uuid "11111111-2222-3333-4444-123456789abc"))))))
+    (services (cons* (service dhcp-client-service-type)
+                     (service ntp-service-type)
+                     (operating-system-user-services %minimal-os-on-vda)))))
 
 (define* (installation-target-desktop-os-for-gui-tests
           #:key (encrypted? #f))

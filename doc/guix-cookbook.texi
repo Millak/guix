@@ -57,10 +57,12 @@ its API, and related concepts.
 @c TRANSLATORS: You can replace the following paragraph with information on
 @c how to join your own translation team and how to report issues with the
 @c translation.
-If you would like to translate this document in your native language, consider
-joining
+This manual is also available in French (@pxref{Top,,, guix-cookbook.fr,
+Livre de recettes de GNU Guix}) and German (@pxref{Top,,,
+guix-cookbook.de, GNU-Guix-Kochbuch}).  If you would like to translate
+this document in your native language, consider joining
 @uref{https://translate.fedoraproject.org/projects/guix/documentation-cookbook,
-Weblate}.
+Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual}).
 
 @menu
 * Scheme tutorials::            Meet your new favorite language!
@@ -793,10 +795,8 @@ another, more sophisticated package (slightly modified from the source):
                   "17pjvprmdrx4h6bb1hhc98w9qi6ki7yl57f090n9kbhswxqfs7s3"))
                 (patches (search-patches "libgit2-mtime-0.patch"))
                 (modules '((guix build utils)))
-                (snippet '(begin
-                            ;; Remove bundled software.
-                            (delete-file-recursively "deps")
-                            #true))))
+                ;; Remove bundled software.
+                (snippet '(delete-file-recursively "deps"))))
       (build-system cmake-build-system)
       (outputs '("out" "debug"))
       (arguments
@@ -810,23 +810,19 @@ another, more sophisticated package (slightly modified from the source):
                  (("#!/bin/sh") (string-append "#!" (which "sh"))))
                (substitute* "tests/clar/fs.h"
                  (("/bin/cp") (which "cp"))
-                 (("/bin/rm") (which "rm")))
-               #true))
+                 (("/bin/rm") (which "rm")))))
            ;; Run checks more verbosely.
            (replace 'check
              (lambda _ (invoke "./libgit2_clar" "-v" "-Q")))
            (add-after 'unpack 'make-files-writable-for-tests
              (lambda _ (for-each make-file-writable (find-files "." ".*")))))))
       (inputs
-       `(("libssh2" ,libssh2)
-         ("http-parser" ,http-parser)
-         ("python" ,python-wrapper)))
+       (list libssh2 http-parser python-wrapper))
       (native-inputs
-       `(("pkg-config" ,pkg-config)))
+       (list pkg-config))
       (propagated-inputs
        ;; These two libraries are in 'Requires.private' in libgit2.pc.
-       `(("openssl" ,openssl)
-         ("zlib" ,zlib)))
+       (list openssl zlib))
       (home-page "https://libgit2.github.com/")
       (synopsis "Library providing Git core methods")
       (description
@@ -890,22 +886,6 @@ Snippets might need additional Guile modules which can be imported from the
 
 @subsubsection Inputs
 
-First, a syntactic comment: See the quasi-quote / comma syntax?
-
-@lisp
-    (native-inputs
-     `(("pkg-config" ,pkg-config)))
-@end lisp
-
-is equivalent to
-
-@lisp
-    (native-inputs
-     (list (list "pkg-config" pkg-config)))
-@end lisp
-
-You'll mostly see the former because it's shorter.
-
 There are 3 different input types.  In short:
 
 @table @asis
@@ -938,6 +918,24 @@ dependencies can be safely garbage-collected.
 It also matters when a substitute is available, in which case only the @emph{inputs}
 and @emph{propagated inputs} will be fetched: the @emph{native inputs} are not required to
 install a package from a substitute.
+
+@quotation Note
+You may see here and there snippets where package inputs are written
+quite differently, like so:
+
+@lisp
+;; The "old style" for inputs.
+(inputs
+ `(("libssh2" ,libssh2)
+   ("http-parser" ,http-parser)
+   ("python" ,python-wrapper)))
+@end lisp
+
+This is the ``old style'', where each input in the list is explicitly
+given a label (a string).  It is still supported but we recommend using
+the style above instead.  @xref{package Reference,,, guix, GNU Guix
+Reference Manual}, for more info.
+@end quotation
 
 @subsubsection Outputs
 
@@ -1224,10 +1222,7 @@ $ guix import cran --recursive walrus
             "1nk2glcvy4hyksl5ipq2mz8jy4fss90hx6cq98m3w96kzjni6jjj"))))
     (build-system r-build-system)
     (propagated-inputs
-      `(("r-ggplot2" ,r-ggplot2)
-        ("r-jmvcore" ,r-jmvcore)
-        ("r-r6" ,r-r6)
-        ("r-wrs2" ,r-wrs2)))
+      (list r-ggplot2 r-jmvcore r-r6 r-wrs2))
     (home-page "https://github.com/jamovi/walrus")
     (synopsis "Robust Statistical Methods")
     (description
@@ -1286,8 +1281,7 @@ noticed that a significant number of them have a @code{inherit} field:
               (sha256
                (base32
                 "17fpahgh5dyckgz7rwqvzgnhx53cx9kr2xw0szprc6bnqy977fi8"))))
-    (native-inputs
-     `(("gtk-encode-symbolic-svg" ,gtk+ "bin")))))
+    (native-inputs (list `(,gtk+ "bin")))))
 @end lisp
 
 All unspecified fields are inherited from the parent package.  This is very
@@ -1436,37 +1430,34 @@ The @code{linux-libre} kernel package definition is actually a procedure which
 creates a package.
 
 @lisp
-(define* (make-linux-libre version hash supported-systems
-                           #:key
-                           ;; A function that takes an arch and a variant.
-                           ;; See kernel-config for an example.
-                           (extra-version #false)
-                           (configuration-file #false)
-                           (defconfig "defconfig")
-                           (extra-options %default-extra-linux-options)
-                           (patches (list %boot-logo-patch)))
+(define* (make-linux-libre* version gnu-revision source supported-systems
+                            #:key
+                            (extra-version #f)
+                            ;; A function that takes an arch and a variant.
+                            ;; See kernel-config for an example.
+                            (configuration-file #f)
+                            (defconfig "defconfig")
+                            (extra-options %default-extra-linux-options))
   ...)
 @end lisp
 
-The current @code{linux-libre} package is for the 5.1.x series, and is
+The current @code{linux-libre} package is for the 5.15.x series, and is
 declared like this:
 
 @lisp
-(define-public linux-libre
-  (make-linux-libre %linux-libre-version
-                    %linux-libre-hash
-                    '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux")
-                    #:patches %linux-libre-5.1-patches
-                    #:configuration-file kernel-config))
+(define-public linux-libre-5.15
+  (make-linux-libre* linux-libre-5.15-version
+                     linux-libre-5.15-gnu-revision
+                     linux-libre-5.15-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 @end lisp
 
 Any keys which are not assigned values inherit their default value from the
 @code{make-linux-libre} definition.  When comparing the two snippets above,
-you may notice that the code comment in the first doesn't actually refer to
-the @code{#:extra-version} keyword; it is actually for
-@code{#:configuration-file}.  Because of this, it is not actually easy to
-include a custom kernel configuration from the definition, but don't worry,
-there are other ways to work with what we do have.
+notice the code comment that refers to @code{#:configuration-file}.  Because of
+this, it is not actually easy to include a custom kernel configuration from the
+definition, but don't worry, there are other ways to work with what we do have.
 
 There are two ways to create a kernel with a custom kernel configuration.  The
 first is to provide a standard @file{.config} file during the build process by
@@ -1566,14 +1557,15 @@ custom kernel:
           (@@@@ (gnu packages linux) %default-extra-linux-options)))
 
 (define-public linux-libre-macbook41
-  ;; XXX: Access the internal 'make-linux-libre' procedure, which is
+  ;; XXX: Access the internal 'make-linux-libre*' procedure, which is
   ;; private and unexported, and is liable to change in the future.
-  ((@@@@ (gnu packages linux) make-linux-libre) (@@@@ (gnu packages linux) %linux-libre-version)
-                      (@@@@ (gnu packages linux) %linux-libre-hash)
-                      '("x86_64-linux")
-                      #:extra-version "macbook41"
-                      #:patches (@@@@ (gnu packages linux) %linux-libre-5.1-patches)
-                      #:extra-options %macbook41-config-options))
+  ((@@@@ (gnu packages linux) make-linux-libre*)
+   (@@@@ (gnu packages linux) linux-libre-version)
+   (@@@@ (gnu packages linux) linux-libre-gnu-revision)
+   (@@@@ (gnu packages linux) linux-libre-source)
+   '("x86_64-linux")
+   #:extra-version "macbook41"
+   #:extra-options %macbook41-config-options))
 @end lisp
 
 In the above example @code{%file-systems} is a collection of flags enabling

@@ -1,12 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2016, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -40,6 +40,9 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 François J. <francois-oss@avalenn.eu>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +114,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
@@ -168,6 +172,43 @@
      "GNU Bazaar is a version control system that allows you to record
 changes to project files over time.  It supports both a distributed workflow
 as well as the classic centralized workflow.")
+    (license license:gpl2+)))
+
+(define-public breezy
+  (package
+    (name "breezy")
+    (version "3.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://launchpad.net/brz/"
+                           (version-major+minor version) "/" version
+                           "/+download/breezy-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0p6q545xpmxa6fgvkjglfpqpybg33817vhw0a82az8i83bmnicp0"))))
+    (build-system python-build-system)
+    ;; TODO: Maybe regenerate C files with Cython?
+    (inputs
+     `(("gettext" ,gettext-minimal)
+       ("python-configobj" ,python-configobj)
+       ("python-dulwich" ,python-dulwich)
+       ("python-fastimport" ,python-fastimport)
+       ("python-paramiko" ,python-paramiko)
+       ("python-patiencediff" ,python-patiencediff)
+       ("python-pycryptodome" ,python-pycryptodome)
+       ("python-pygpgme" ,python-pygpgme)))
+    (arguments
+     `(#:tests? #f))                    ; no tests in release tarball
+    (home-page "https://www.breezy-vcs.org/")
+    (synopsis "Decentralized revision control system")
+    (description
+     "Breezy (@command{brz}) is a decentralized revision control system.  By
+default, Breezy provides support for both the
+@uref{https://www.bazaar-vcs.org, Bazaar} and @uref{https://www.git-scm.com,
+Git} file formats.  Breezy is backwards compatible with Bazaar's disk format
+and protocols.  One of the key differences with Bazaar is that Breezy runs on
+Python 3.3 and later, rather than on Python 2.")
     (license license:gpl2+)))
 
 (define git-cross-configure-flags
@@ -611,11 +652,23 @@ everything from small to very large projects with speed and efficiency.")
        ("native-perl" ,perl)
        ("gettext" ,gettext-minimal)))
     (inputs
-     `(("curl" ,curl)                             ;for HTTP(S) access
-       ("expat" ,expat)                           ;for 'git push' over HTTP(S)
-       ("openssl" ,openssl)
-       ("perl" ,perl)
-       ("zlib" ,zlib)))))
+     (list curl ;for HTTP(S) access
+           expat ;for 'git push' over HTTP(S)
+           openssl
+           perl
+           zlib))))
+
+(define-public git-minimal/fixed
+  ;; Version that rarely changes, depended on by Graphene/GTK+.
+  (package/inherit git-minimal
+    (version "2.33.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kernel.org/software/scm/git/git-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0bqz401dyp8wnjj3k5ahrniwk4dalndysqazzwdvv25hqbkacm70"))))))
 
 (define-public git2cl
   (let ((commit "1d74d4c0d933fc69ed5cec838c73502584dead05"))
@@ -633,7 +686,7 @@ everything from small to very large projects with speed and efficiency.")
                   "0wnnbm2sjvfj0qrksj89jlnl69miwl0vk3wrrvgvpclgys3na2g1"))))
       (build-system copy-build-system)
       (inputs
-       `(("perl" ,perl)))
+       (list perl))
       (arguments
        `(#:install-plan '(("git2cl" "bin/git2cl"))))
       (home-page "https://savannah.nongnu.org/projects/git2cl")
@@ -682,12 +735,12 @@ logs to GNU ChangeLog format.")
                    (git (assoc-ref inputs "git")))
                (wrap-program (string-append out "/bin/gl")
                  `("PATH" ":" prefix (,(string-append git "/bin")))
-                 `("PYTHONPATH" ":" =
+                 `("GUIX_PYTHONPATH" ":" =
                    (,(string-append out "/lib/python"
                                     ,(version-major+minor
                                       (package-version python))
                                     "/site-packages:")
-                    ,(getenv "PYTHONPATH"))))
+                    ,(getenv "GUIX_PYTHONPATH"))))
                #t))))))
     (native-inputs
      `(("git-for-tests" ,git-minimal)))
@@ -734,6 +787,71 @@ to GitHub contributions calendar.")
 (define-public libgit2
   (package
     (name "libgit2")
+    (version "1.3.0")
+    (source (origin
+              ;; Since v1.1.1, release artifacts are no longer offered (see:
+              ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vgpb2175a5dhqiy1iwywwppahgqhi340i8bsvafjpvkw284vazd"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "deps"))))
+    (build-system cmake-build-system)
+    (outputs '("out" "debug"))
+    (arguments
+     `(#:configure-flags
+       (list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
+             "-DREGEX_BACKEND=pcre2"
+             "-DUSE_HTTP_PARSER=system"
+             ,@(if (%current-target-system)
+                   `((string-append
+                      "-DPKG_CONFIG_EXECUTABLE="
+                      (search-input-file
+                       %build-inputs
+                       (string-append "/bin/" ,(%current-target-system)
+                                      "-pkg-config"))))
+                   '()))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-hardcoded-paths
+           (lambda _
+             (substitute* "tests/repo/init.c"
+               (("#!/bin/sh") (string-append "#!" (which "sh"))))
+             (substitute* "tests/clar/fs.h"
+               (("/bin/cp") (which "cp"))
+               (("/bin/rm") (which "rm")))))
+         ;; Run checks more verbosely, unless we are cross-compiling.
+         (replace 'check
+           (lambda* (#:key (tests? #t) #:allow-other-keys)
+             (if tests?
+                 (invoke "./libgit2_clar" "-v" "-Q")
+                 ;; Tests may be disabled if cross-compiling.
+                 (format #t "Test suite not run.~%")))))))
+    (inputs
+     (list libssh2 http-parser))
+    (native-inputs
+     (list pkg-config python))
+    (propagated-inputs
+     ;; These libraries are in 'Requires.private' in libgit2.pc.
+     (list openssl pcre2 zlib))
+    (home-page "https://libgit2.org/")
+    (synopsis "Library providing Git core methods")
+    (description
+     "Libgit2 is a portable, pure C implementation of the Git core methods
+provided as a re-entrant linkable library with a solid API, allowing you to
+write native speed custom Git applications in any language with bindings.")
+    ;; GPLv2 with linking exception
+    (license license:gpl2)))
+
+(define-public libgit2-1.1
+  (package
+    (inherit libgit2)
+    (name "libgit2")
     (version "1.1.0")
     (source (origin
               (method url-fetch)
@@ -746,74 +864,7 @@ to GitHub contributions calendar.")
               (patches (search-patches "libgit2-mtime-0.patch"))
               (snippet '(begin
                           (delete-file-recursively "deps") #t))
-              (modules '((guix build utils)))))
-    (build-system cmake-build-system)
-    (outputs '("out" "debug"))
-    (arguments
-     `(#:configure-flags
-       (list "-DUSE_NTLMCLIENT=OFF" ;TODO: package this
-             "-DREGEX_BACKEND=pcre2"
-             "-DUSE_HTTP_PARSER=system"
-             ,@(if (%current-target-system)
-                   `((string-append
-                      "-DPKG_CONFIG_EXECUTABLE="
-                      (assoc-ref %build-inputs "pkg-config")
-                      "/bin/" ,(%current-target-system) "-pkg-config"))
-                   '()))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-hardcoded-paths
-           (lambda _
-             (substitute* "tests/repo/init.c"
-               (("#!/bin/sh") (string-append "#!" (which "sh"))))
-             (substitute* "tests/clar/fs.h"
-               (("/bin/cp") (which "cp"))
-               (("/bin/rm") (which "rm")))
-             #t))
-         ;; Run checks more verbosely, unless we are cross-compiling.
-         (replace 'check
-           (lambda* (#:key (tests? #t) #:allow-other-keys)
-             (if tests?
-                 (invoke "./libgit2_clar" "-v" "-Q")
-                 ;; Tests may be disabled if cross-compiling.
-                 (format #t "Test suite not run.~%")))))))
-    (inputs
-     `(("libssh2" ,libssh2)
-       ("http-parser" ,http-parser)))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python)))
-    (propagated-inputs
-     ;; These libraries are in 'Requires.private' in libgit2.pc.
-     `(("openssl" ,openssl)
-       ("pcre2" ,pcre2)
-       ("zlib" ,zlib)))
-    (home-page "https://libgit2.org/")
-    (synopsis "Library providing Git core methods")
-    (description
-     "Libgit2 is a portable, pure C implementation of the Git core methods
-provided as a re-entrant linkable library with a solid API, allowing you to
-write native speed custom Git applications in any language with bindings.")
-    ;; GPLv2 with linking exception
-    (license license:gpl2)))
-
-(define-public libgit2-0.28
-  (package
-    (inherit libgit2)
-    (version "0.28.5")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/libgit2/libgit2/releases/"
-                            "download/v" version
-                            "/libgit2-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0hjgpqjjmkciw1i8jqkx9q2vhdc4fc99qajhrj2bq8ziwsp6hyrb"))
-        (patches (search-patches "libgit2-mtime-0.patch"))
-        (modules '((guix build utils)))
-        (snippet '(begin
-                    (delete-file-recursively "deps") #t))))))
+              (modules '((guix build utils)))))))
 
 (define-public git-crypt
   (package
@@ -830,11 +881,9 @@ write native speed custom Git applications in any language with bindings.")
         (base32 "1ba5s0fvmd9hhnfhfsjrm40v0qpxfnwc8vmm55m0k4dryzkzx66q"))))
     (build-system gnu-build-system)
     (inputs
-     `(("git" ,git)
-       ("openssl" ,openssl)))
+     (list git openssl))
     (native-inputs
-     `(("docbook-xsl" ,docbook-xsl)
-       ("libxslt" ,libxslt)))
+     (list docbook-xsl libxslt))
     (arguments
      `(#:tests? #f ; No tests.
        #:phases
@@ -873,16 +922,16 @@ to lock down your entire repository.")
 (define-public git-remote-gcrypt
   (package
    (name "git-remote-gcrypt")
-   (version "1.3")
+   (version "1.4")
    (source (origin
              (method git-fetch)
              (uri (git-reference
                    (url "https://git.spwhitton.name/git-remote-gcrypt")
                    (commit version)))
-             (file-name (string-append name "-" version "-checkout"))
+             (file-name (git-file-name name version))
              (sha256
               (base32
-               "0n8fzvr6y0pxrbvkywlky2bd8jvi0ayp4n9hwi84l1ldmv4a40dh"))))
+               "1x5ca1fi0hyn5w5mnz230x27bqr8j78adnzmlc7cbhzr13q36y5q"))))
    (build-system trivial-build-system)
    (arguments
     `(#:modules ((guix build utils))
@@ -892,8 +941,7 @@ to lock down your entire repository.")
                          (output (assoc-ref %outputs "out"))
                          (bindir (string-append output "/bin")))
                     (install-file (string-append source "/git-remote-gcrypt")
-                                  bindir)
-                    #t))))
+                                  bindir)))))
    (home-page "https://spwhitton.name/tech/code/git-remote-gcrypt/")
    (synopsis "Whole remote repository encryption")
    (description "git-remote-gcrypt is a Git remote helper to push and pull from
@@ -988,16 +1036,13 @@ collaboration using typical untrusted file hosts or services.")
               (lambda (file)
                 (wrap-program (string-append (assoc-ref outputs "out")
                                              "/lib/cgit/filters/" file)
-                  `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH")))))
+                  `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
               '("syntax-highlighting.py"
                 "html-converters/md2html"))
              #t)))))
     (native-inputs
      ;; For building manpage.
-     `(("asciidoc" ,asciidoc)
-       ("gzip" ,gzip)
-       ("bzip2" ,bzip2)
-       ("xz" ,xz)))
+     (list asciidoc gzip bzip2 xz))
     (inputs
      `(;; Building cgit requires a Git source tree.
        ("git-source"
@@ -1045,12 +1090,10 @@ a built-in cache to decrease server I/O pressure.")
                                (assoc-ref inputs "git") "/bin/git"
                                "'"))
                (("/usr/sbin/sendmail")
-                (string-append (assoc-ref inputs "sendmail")
-                               "/sbin/sendmail")))
-             #t)))))
+                (search-input-file inputs
+                                   "/sbin/sendmail"))))))))
     (inputs
-     `(("git" ,git)
-       ("sendmail" ,sendmail)))
+     (list git sendmail))
     (home-page "https://github.com/git-multimail/git-multimail")
     (synopsis "Send notification emails for Git pushes")
     (description
@@ -1141,10 +1184,9 @@ default) of the repository.")
                       (setenv "TRAVIS" "1")
                       (invoke "nosetests" "-v"))))))
     (propagated-inputs
-     `(("python-smmap" ,python-smmap)))
+     (list python-smmap))
     (native-inputs
-     `(("git" ,git)
-       ("python-nose" ,python-nose)))
+     (list git python-nose))
     (home-page "https://github.com/gitpython-developers/gitdb")
     (synopsis "Python implementation of the Git object database")
     (description
@@ -1157,13 +1199,13 @@ allowing to handle large objects with a small memory footprint.")
 (define-public python-gitpython
   (package
     (name "python-gitpython")
-    (version "3.1.0")
+    (version "3.1.24")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "GitPython" version))
               (sha256
                (base32
-                "1jzllsy9lwc9yibccgv7h9naxisazx2n3zmpy21c8n5xhysw69p4"))))
+                "1rarp97cpjnhi106k2yhb7kygdyflmlgq0icxv3ggzl4wvszv0yz"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ;XXX: Tests can only be run within the GitPython repository.
@@ -1174,15 +1216,13 @@ allowing to handle large objects with a small memory footprint.")
                         (("git_exec_name = \"git\"")
                          (string-append "git_exec_name = \""
                                         (assoc-ref inputs "git")
-                                        "/bin/git\"")))
-                      #t)))))
+                                        "/bin/git\""))))))))
     (inputs
-     `(("git" ,git)))
+     (list git))
     (propagated-inputs
-     `(("python-gitdb" ,python-gitdb)))
+     (list python-gitdb python-typing-extensions))
     (native-inputs
-     `(("python-ddt" ,python-ddt)
-       ("python-nose" ,python-nose)))
+     (list python-ddt python-nose))
     (home-page "https://github.com/gitpython-developers/GitPython")
     (synopsis "Python library for interacting with Git repositories")
     (description
@@ -1249,7 +1289,7 @@ will work.")
                (base32
                 "13q4mnrxr03wz2dkhzy73j384g299m4d545cnhxcaznvdwfany4h"))))
     (build-system gnu-build-system)
-    (inputs `(("shflags" ,shflags)))
+    (inputs (list shflags))
     (arguments
      '(#:tests? #f                    ; no tests
        #:make-flags (list (string-append "prefix="
@@ -1292,9 +1332,9 @@ lot easier.")
         (base32 "1jp74qsgw3f9c8xgaaqvmhfh4ar3n1ns5ncm8glvqyywlxldxi0n"))))
     (build-system python-build-system)
     (native-inputs
-     `(("perl" ,perl)))
+     (list perl))
     (inputs
-     `(("git" ,git)))
+     (list git))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1344,13 +1384,9 @@ manipulate them in various ways.")
         (base32 "1gx5nbqyprgy6picns5hxky3lyzkqfq3xhm614f0wcdi58xrsdh0"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("which" ,which)))
+     (list which))
     (inputs
-     `(("git" ,git)
-       ("perl" ,perl)
-       ("perl-test-harness" ,perl-test-harness)
-       ("perl-shell-command" ,perl-shell-command)
-       ("perl-test-most" ,perl-test-most)))
+     (list git perl perl-test-harness perl-shell-command perl-test-most))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -1434,8 +1470,7 @@ also walk each side of a merge and test those changes individually.")
                   (delete 'build)
                   (add-before 'install 'patch-scripts
                     (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((perl (string-append (assoc-ref inputs "perl")
-                                                 "/bin/perl")))
+                      (let ((perl (search-input-file inputs "/bin/perl")))
                         ;; This seems to take care of every shell script that
                         ;; invokes Perl.
                         (substitute* (find-files "." ".*")
@@ -1472,8 +1507,7 @@ also walk each side of a merge and test those changes individually.")
                       (substitute* '("src/lib/Gitolite/Hooks/PostUpdate.pm"
                                      "src/lib/Gitolite/Hooks/Update.pm")
                         (("/usr/bin/perl")
-                         (string-append (assoc-ref inputs "perl")
-                                        "/bin/perl")))
+                         (search-input-file inputs "/bin/perl")))
 
                       (substitute* "src/lib/Gitolite/Common.pm"
                         (("\"ssh-keygen")
@@ -1511,15 +1545,11 @@ also walk each side of a merge and test those changes individually.")
                                   (list out coreutils findutils git))))
                         #t))))))
     (inputs
-     `(("perl" ,perl)
-       ("coreutils" ,coreutils)
-       ("findutils" ,findutils)
-       ("inetutils" ,inetutils)))
+     (list perl coreutils findutils inetutils))
     ;; git and openssh are propagated because trying to patch the source via
     ;; regexp matching is too brittle and prone to false positives.
     (propagated-inputs
-     `(("git" ,git)
-       ("openssh" ,openssh)))
+     (list git openssh))
     (home-page "https://gitolite.com")
     (synopsis "Git access control layer")
     (description
@@ -1578,18 +1608,15 @@ control to Git repositories.")
                  `("GUILE_LOAD_PATH" ":" prefix (,mods))
                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,objs)))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("guile" ,guile-3.0)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake guile-3.0 pkg-config))
     (inputs
-     `(("guile" ,guile-3.0)
-       ("guile-commonmark" ,guile-commonmark)
-       ("guile-fibers" ,guile-fibers)
-       ("guile-gcrypt" ,guile-gcrypt)
-       ("guile-git" ,guile-git)
-       ("guile-syntax-highlight" ,guile-syntax-highlight-for-gitile)
-       ("gnutls" ,gnutls)))
+     (list guile-3.0
+           guile-commonmark
+           guile-fibers
+           guile-gcrypt
+           guile-git
+           guile-syntax-highlight-for-gitile
+           gnutls))
     (home-page "https://git.lepiller.eu/gitile")
     (synopsis "Simple Git forge written in Guile")
     (description "Gitile is a Git forge written in Guile that lets you
@@ -1599,17 +1626,16 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit")
-    (version "2.15.0")
+    (version "2.16.0")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
+       (method git-fetch)               ; no tests in PyPI release
        (uri (git-reference
              (url "https://github.com/pre-commit/pre-commit")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hyynhg52qq8rd37cwk2gl1jjy7hpqh74zl2lg89kkdhhx0xfiaj"))))
+        (base32 "1sf9mqpiv3pgzi6aar7xfna9v7n63lgm7d7b24fhni0jxn56384b"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1642,40 +1668,31 @@ visualize your public Git repositories on a web interface.")
                        ;; Ruby and Node tests require node and gem.
                        "--ignore=tests/languages/node_test.py"
                        "--ignore=tests/languages/ruby_test.py"
-                       ;; FIXME: Python tests fail because of distlib version
-                       ;; mismatch.  Even with python-distlib/next it is
-                       ;; pulling version 0.3.0, while 0.3.1 is required.
-                       "--ignore=tests/languages/python_test.py" "-k"
+                       "-k"
                        (string-append
                         ;; TODO: these tests fail with AssertionError.  It may
                         ;; be possible to fix them.
                         "not test_install_existing_hooks_no_overwrite"
                         " and not test_uninstall_restores_legacy_hooks"
-                        " and not test_installed_from_venv")))))
-         (add-before 'reset-gzip-timestamps 'make-gz-writable
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure .gz files are writable so that the
-             ;; 'reset-gzip-timestamps' phase can do its work.
-             (let ((out (assoc-ref outputs "out")))
-               (for-each make-file-writable
-                         (find-files out "\\.gz$"))))))))
+                        " and not test_installed_from_venv"
+                        " and not test_healthy_venv_creator"))))))))
     (native-inputs
      `(("git" ,git-minimal)
        ("python-covdefaults" ,python-covdefaults)
        ("python-coverage" ,python-coverage)
-       ("python-distlib" ,python-distlib/next)
+       ("python-distlib" ,python-distlib)
        ("python-pytest" ,python-pytest)
        ("python-pytest-env" ,python-pytest-env)
        ("python-re-assert" ,python-re-assert)
        ("which" ,which)))
     ;; Propagate because pre-commit is also used as a module.
     (propagated-inputs
-     `(("python-cfgv" ,python-cfgv)
-       ("python-identify" ,python-identify)
-       ("python-nodeenv" ,python-nodeenv)
-       ("python-pyyaml" ,python-pyyaml)
-       ("python-toml" ,python-toml)
-       ("python-virtualenv" ,python-virtualenv)))
+     (list python-cfgv
+           python-identify
+           python-nodeenv
+           python-pyyaml
+           python-toml
+           python-virtualenv))
     (home-page "https://pre-commit.com/")
     (synopsis "Framework for managing and maintaining pre-commit hooks")
     (description
@@ -1756,18 +1773,16 @@ execution of any hook written in any language before every commit.")
                          ;; output by default.  Prevent timeouts due to silence.
                          "-v"))))))))
     (native-inputs
-     `(("python-docutils", python-docutils)
-       ;; The following inputs are only needed to run the tests.
-       ("python-nose" ,python-nose)
-       ("unzip" ,unzip)
-       ("which" ,which)))
+     (list python-docutils
+           ;; The following inputs are only needed to run the tests.
+           python-nose unzip which))
     (inputs
-     `(("python" ,python)))
+     (list python))
     ;; Find third-party extensions.
     (native-search-paths
      (list (search-path-specification
             (variable "HGEXTENSIONPATH")
-            (files '("lib/python3.8/site-packages/hgext3rd")))))
+            (files '("lib/python3.9/site-packages/hgext3rd")))))
     (home-page "https://www.mercurial-scm.org/")
     (synopsis "Decentralized version control system")
     (description
@@ -1795,7 +1810,7 @@ interface.")
      ;; Tests need mercurial source code.
      '(#:tests? #f))
     (propagated-inputs
-      `(("mercurial" ,mercurial)))
+      (list mercurial))
     (home-page "https://www.mercurial-scm.org/doc/evolution/")
     (synopsis "Flexible evolution of Mercurial history")
     (description "Evolve is a Mercurial extension for faster and safer mutable
@@ -1838,10 +1853,8 @@ history.  It implements the changeset evolution concept for Mercurial.")
          (modify-phases %standard-phases
            (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gpg (string-append (assoc-ref inputs "gnupg")
-                                       "/bin/gpg"))
-                   (openssl (string-append (assoc-ref inputs "openssl")
-                                           "/bin/openssl")))
+             (let ((gpg (search-input-file inputs "/bin/gpg"))
+                   (openssl (search-input-file inputs "/bin/openssl")))
                (substitute* "commitsigs.py"
                  (("b'gpg',") (string-append "b'" gpg "',"))
                  (("b'openssl',") (string-append "b'" openssl "',")))))))
@@ -1851,10 +1864,9 @@ history.  It implements the changeset evolution concept for Mercurial.")
                                              (assoc-ref %build-inputs "python"))
                                             "/site-packages/hgext3rd/commitsigs.py")))))
       (native-inputs
-       `(("python" ,python)))
+       (list python))
       (inputs
-       `(("gnupg" ,gnupg)
-         ("openssl" ,openssl)))
+       (list gnupg openssl))
       (home-page "https://foss.heptapod.net/mercurial/commitsigs")
       (synopsis "Automatic signing of changeset hashes")
       (description "This package provides a Mercurial extension for signing
@@ -1876,12 +1888,9 @@ can be used for signing.")
                "0y46dbhiblcvg8k41bdydr3fivghwk73z040ki5825d24ynf67ng"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list perl pkg-config))
     (inputs
-     `(("libxml2" ,libxml2)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
+     (list libxml2 openssl zlib))
     (arguments
      `(;; FIXME: Add tests once reverse address lookup is fixed in glibc, see
        ;; https://sourceware.org/bugzilla/show_bug.cgi?id=16475
@@ -1975,9 +1984,9 @@ following features:
                                         "-Wl,-rpath="
                                         out "/lib")))))))))
     (native-inputs
-      `(("pkg-config" ,pkg-config)
-        ;; For the Perl bindings.
-        ("swig" ,swig)))
+      (list pkg-config
+            ;; For the Perl bindings.
+            swig))
     (inputs
       `(("apr" ,apr)
         ("apr-util" ,apr-util)
@@ -2011,7 +2020,17 @@ projects, from individuals to large-scale enterprise operations.")
                "1if5pa4iip2p70gljm54nggfdnsfjxa4cqz8fpj07lvsijary39s"))
              (patches (search-patches "rcs-5.10.0-no-stdin.patch"))))
     (build-system gnu-build-system)
-    (native-inputs `(("ed" ,ed)))
+    (arguments `(#:phases
+                 (modify-phases %standard-phases
+                   (add-after 'install 'install-rcsfreeze
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (bin (string-append out "/bin"))
+                              (man1 (string-append out "/share/man/man1")))
+                         (chmod "src/rcsfreeze" #o755)
+                         (install-file "src/rcsfreeze" bin)
+                         (install-file "man/rcsfreeze.1" man1)))))))
+    (native-inputs (list ed))
     (home-page "https://www.gnu.org/software/rcs/")
     (synopsis "Per-file local revision control system")
     (description
@@ -2021,6 +2040,49 @@ CVS, Subversion, and Git.  This can make it suitable for system
 administration files, for example, which are often inherently local to one
 machine.")
     (license license:gpl3+)))
+
+(define-public rcs-blame
+  (package
+    (name "rcs-blame")
+    (version "1.3.1-20210207")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://invisible-mirror.net/archives/rcs-blame/blame-"
+                   version ".tgz"))
+             (sha256
+              (base32
+               "1j0brsvdx3hlbwchddafh8r2xmxv5vg4ahpd68v4bb9xhcq6pcih"))))
+    (build-system gnu-build-system)
+    (home-page "https://invisible-island.net/rcs-blame/rcs-blame.html")
+    (synopsis "Display the last modification for each line in an RCS file")
+    (description
+     "@code{blame} outputs an annotated revision from each RCS file.  An
+annotated RCS file describes the revision and date in which each line was
+added to the file, and the author of each line.")
+    (license license:gpl2+)))
+
+(define-public rcshist
+  (package
+    (name "rcshist")
+    (version "1.04-20190106")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "https://invisible-mirror.net/archives/rcshist/rcshist-"
+                   version ".tgz"))
+             (sha256
+              (base32
+               "01ab3xwgm934lxr8bm758am3vxwx4hxx7cc9prbgqj5nh30vdg1n"))))
+    (build-system gnu-build-system)
+    (home-page "https://invisible-island.net/rcshist/rcshist.html")
+    (synopsis "Display RCS change history")
+    (description
+     "The @code{rcshist} utility displays the complete revision history of a
+set of RCS files including log messages and patches.  It can also display the
+patch associated with a particular revision of an RCS file.")
+    (license (list license:bsd-2
+                   license:bsd-3))))  ; bsd_queue.h
 
 (define-public cvs
   (package
@@ -2040,8 +2102,7 @@ machine.")
      ;; XXX: The test suite looks flawed, and the package is obsolete anyway.
      '(#:tests? #f
        #:configure-flags (list "--with-external-zlib")))
-    (inputs `(("zlib" ,zlib)
-              ("nano" ,nano)))                    ; the default editor
+    (inputs (list zlib nano))                    ; the default editor
     (home-page "http://cvs.nongnu.org")
     (synopsis "Historical centralized version control system")
     (description
@@ -2074,10 +2135,9 @@ RCS, PRCS, and Aegis packages.")
      `(("git" ,git)
        ("python" ,python-wrapper)))
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ;; These are needed for the tests.
-       ("cvs" ,cvs)
-       ("rcs" ,rcs)))
+     (list asciidoc
+           ;; These are needed for the tests.
+           cvs rcs))
     (home-page "http://www.catb.org/esr/cvs-fast-export/")
     (synopsis "Export an RCS or CVS history as a fast-import stream")
     (description "This program analyzes a collection of RCS files in a CVS
@@ -2103,10 +2163,10 @@ masters from remote CVS hosts.")
               (base32
                "0am6axxdvkm2vwgg0gjrd930yv4dlsdbf0rdv0zh5bhy1ir64rph"))))
     (build-system gnu-build-system)
-    (inputs `(("perl" ,perl)))
+    (inputs (list perl))
     (native-inputs
-     `(("emacs" ,emacs-minimal)     ; for `ctags'
-       ("inetutils" ,inetutils)))   ; for `hostname', used in the tests
+     (list emacs-minimal ; for `ctags'
+           inetutils))   ; for `hostname', used in the tests
     (home-page "https://www.gnu.org/software/vc-dwim/")
     (synopsis "Version-control-agnostic ChangeLog diff and commit tool")
     (description
@@ -2173,8 +2233,7 @@ reviewing large, complex patch files.")
                (substitute* "tests/Makefile"
                  (("test-delta ") ""))))))))
     ;; These are needed for the tests
-    (native-inputs `(("git" ,git)
-                     ("cvs" ,cvs)))
+    (native-inputs (list git cvs))
     (home-page "https://www.gnu.org/software/cssc/")
     (synopsis "File-based version control like SCCS")
     (description  "GNU CSSC provides a replacement for the legacy Unix source
@@ -2209,16 +2268,16 @@ accessed and migrated on modern systems.")
        ("zlib" ,zlib)
        ("gettext" ,gettext-minimal)))
     (native-inputs
-     `(("bison" ,bison)
-       ("groff" ,groff)
-       ("perl" ,perl)
-       ;; Various tests require the following:
-       ("cvs" ,cvs)
-       ("flex" ,flex)
-       ("cook" ,cook)
-       ("subversion" ,subversion)
-       ("rcs" ,rcs)
-       ("ed" ,ed)))
+     (list bison
+           groff
+           perl
+           ;; Various tests require the following:
+           cvs
+           flex
+           cook
+           subversion
+           rcs
+           ed))
     (arguments
      `(#:configure-flags (list "--with-no-aegis-configured"
                                "--sharedstatedir=/var/com/aegis"
@@ -2330,18 +2389,17 @@ any project with more than one developer, is one of Aegis's major functions.")
      `(("python" ,python-wrapper)
        ("tzdata" ,tzdata)))
     (native-inputs
-     `( ;; For building documentation.
-       ("asciidoc" ,asciidoc)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxml2" ,libxml2)
-       ("xmlto" ,xmlto)
-
-       ;; For tests.
-       ("cvs" ,cvs)
-       ("git" ,git)
-       ("mercurial" ,mercurial)
-       ("subversion" ,subversion)))
+     (list ;; For building documentation.
+           asciidoc
+           docbook-xml
+           docbook-xsl
+           libxml2
+           xmlto
+           ;; For tests.
+           cvs
+           git
+           mercurial
+           subversion))
     (home-page "http://www.catb.org/~esr/reposurgeon/")
     (synopsis "Edit version-control repository history")
     (description "Reposurgeon enables risky operations that version-control
@@ -2358,7 +2416,7 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.4")
+    (version "2.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2366,14 +2424,12 @@ from Subversion to any supported Distributed Version Control System (DVCS).")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "19va4jn46s0vjv9f337g3ad6hy1f285ynl27i9gkd9l70b9q90n4"))))
+                "04skfsw5wkf6p47lis7x4xyfbpjik3id1km75q0fd2g8xa5jrfi4"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("xmlto" ,xmlto)))
+     (list asciidoc xmlto))
     (inputs
-     `(("ncurses" ,ncurses)
-       ("readline" ,readline)))
+     (list ncurses readline))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2404,8 +2460,7 @@ output of the @code{git} command.")
        (sha256
         (base32 "1x1cbn2b27h5r0ah5xc06fkalfdci2ngrgd4wibxjw0h88h0nvgq"))))
     (build-system gnu-build-system)
-    (native-inputs `(("autoconf" ,autoconf)
-                     ("automake" ,automake)))
+    (native-inputs (list autoconf automake))
     (home-page "https://github.com/0-wiz-0/findnewest/releases")
     (synopsis "Print the modification time of the latest file")
     (description
@@ -2445,14 +2500,14 @@ modification time.")
                            "perl-uri" "perl-try-tiny"))))
                #t))))))
     (inputs
-     `(("perl" ,perl)
-       ("perl-encode-locale" ,perl-encode-locale)
-       ("perl-html-parser" ,perl-html-parser)
-       ("perl-http-date" ,perl-http-date)
-       ("perl-http-message" ,perl-http-message)
-       ("perl-libwww" ,perl-libwww)
-       ("perl-try-tiny" ,perl-try-tiny)
-       ("perl-uri" ,perl-uri)))
+     (list perl
+           perl-encode-locale
+           perl-html-parser
+           perl-http-date
+           perl-http-message
+           perl-libwww
+           perl-try-tiny
+           perl-uri))
     (home-page "https://myrepos.branchable.com/")
     (synopsis "Multiple repository management tool")
     (description
@@ -2489,8 +2544,7 @@ Mercurial, Bazaar, Darcs, CVS, Fossil, and Veracity.")
                (for-each (lambda (file) (install-file file man))
                          (find-files "." "\\.1$"))))))))
     (propagated-inputs
-     `(("python-packaging" ,python-packaging)
-       ("python-requests" ,python-requests)))
+     (list python-packaging python-requests))
     (home-page
      "https://git.kernel.org/pub/scm/utils/grokmirror/grokmirror.git")
     (synopsis "Framework to smartly mirror git repositories")
@@ -2520,9 +2574,7 @@ based on a manifest file published by servers.")
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ; No tests.
     (inputs
-     `(("python-dkimpy" ,python-dkimpy)
-       ("python-dnspython" ,python-dnspython)
-       ("python-requests" ,python-requests)))
+     (list python-dkimpy python-dnspython python-requests))
     (home-page "https://git.kernel.org/pub/scm/utils/b4/b4.git")
     (synopsis "Tool for working with patches in public-inbox archives")
     (description
@@ -2558,10 +2610,8 @@ Features include:
        #:builder
        (begin
          (use-modules (guix build utils))
-         (let ((bash (string-append (assoc-ref %build-inputs "bash")
-                                    "/bin/bash"))
-               (rclone (string-append (assoc-ref %build-inputs "rclone")
-                                      "/bin/rclone")))
+         (let ((bash (search-input-file %build-inputs "/bin/bash"))
+               (rclone (search-input-file %build-inputs "/bin/rclone")))
            (copy-file (string-append (assoc-ref %build-inputs "source")
                                      "/git-annex-remote-rclone")
                       "git-annex-remote-rclone")
@@ -2572,8 +2622,7 @@ Features include:
                          (string-append %output "/bin"))
            #t))))
     (inputs
-     `(("bash" ,bash)
-       ("rclone" ,rclone)))
+     (list bash rclone))
     (home-page "https://github.com/DanielDent/git-annex-remote-rclone")
     (synopsis "Use rclone-supported cloud storage providers with git-annex")
     (description "This wrapper around rclone makes any destination supported
@@ -2583,28 +2632,27 @@ by rclone usable with git-annex.")
 (define-public fossil
   (package
     (name "fossil")
-    (version "2.11")
+    (version "2.17")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-              "https://www.fossil-scm.org/index.html/uv/"
-              "fossil-src-" version ".tar.gz"))
+             "https://www.fossil-scm.org/home/tarball/"
+             "f48180f2ff3169651a725396d4f7d667c99a92873b9c3df7eee2f144be7a0721"
+             "/fossil-src-" version ".tar.gz"))
        (sha256
-        (base32 "0c9nzx42wxfmym9vf1pnbdb1c7gp7a7zqky60izxsph7w2xh8nix"))
+        (base32 "1gvx6xzrw1a8snlq9qmr6099r44ifghg0h0fw4jazqmmyxriqzsw"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "compat") #t))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("tcl" ,tcl)                     ;for configuration only
-       ("which" ,which)                 ;for tests only
-       ("ed" ,ed)))                     ;ditto
+     (list tcl                          ;for configuration only
+           which                        ;for tests only
+           ed))                         ;ditto
     (inputs
-     `(("openssl" ,openssl)
-       ("zlib" ,zlib)
-       ("sqlite" ,sqlite)))
+     (list openssl zlib sqlite-next))   ;SQLite 3.37 or later
     (arguments
      `(#:configure-flags (list "--with-openssl=auto"
                                "--disable-internal-sqlite")
@@ -2613,8 +2661,7 @@ by rclone usable with git-annex.")
                   (add-after 'patch-source-shebangs 'patch-sh
                     (lambda _
                       (substitute* '("auto.def")
-                        (("/bin/sh") (which "sh")))
-                      #t))
+                        (("/bin/sh") (which "sh")))))
                   (replace 'configure
                     (lambda* (#:key outputs (configure-flags '())
                               #:allow-other-keys)
@@ -2624,13 +2671,11 @@ by rclone usable with git-annex.")
                              "./configure"
                              (string-append "--prefix="
                                             (assoc-ref outputs "out"))
-                             configure-flags)
-                      #t))
+                             configure-flags)))
                   (add-before 'check 'test-setup
                     (lambda _
                       (setenv "USER" "guix")
-                      (setenv "TZ" "UTC")
-                      #t)))))
+                      (setenv "TZ" "UTC"))))))
     (home-page "https://fossil-scm.org")
     (synopsis "Software configuration management system")
     (description
@@ -2643,25 +2688,27 @@ a built-in wiki, built-in file browsing, built-in tickets system, etc.")
 (define-public stagit
   (package
     (name "stagit")
-    (version "0.7.2")
+    (version "1.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://dl.2f30.org/releases/"
-                                  name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "git://git.codemadness.org/stagit")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m3s9g1z9szbjrhm8sic91xh6f2bfpi56rskdkqd5wc4wdycpyi5"))))
+                "0j2242vx5pbwdv79gcjxdbrwii48qphr8gk1lk7szj2irxdql171"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; No tests
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list (string-append "CC=" ,(cc-for-target))
                           (string-append "PREFIX=" %output))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)))) ; No configure script
     (inputs
-     `(("libgit2" ,libgit2)))
-    (home-page "https://2f30.org/")
+     (list libgit2))
+    (home-page "https://git.codemadness.org/stagit/")
     (synopsis "Static git page generator")
     (description "Stagit creates static pages for git repositories, the results can
 be served with a HTTP file server of your choice.")
@@ -2686,17 +2733,17 @@ be served with a HTTP file server of your choice.")
                             (assoc-ref %build-inputs "boost")
                             "/lib"))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("boost"     ,boost)
-       ("ftgl"      ,ftgl)
-       ("glew"      ,glew)
-       ("glm"       ,glm)
-       ("glu"       ,glu)
-       ("libpng"    ,libpng)
-       ("mesa"      ,mesa)
-       ("pcre"      ,pcre)
-       ("sdl-union" ,(sdl-union (list sdl2 sdl2-image)))))
+     (list boost
+           ftgl
+           glew
+           glm
+           glu
+           libpng
+           mesa
+           pcre
+           (sdl-union (list sdl2 sdl2-image))))
     (home-page "https://gource.io/")
     (synopsis "3D visualisation tool for source control repositories")
     (description "@code{gource} provides a software version control
@@ -2740,8 +2787,7 @@ specific files and directories.")
              (invoke "./srctest"))))))
     (native-inputs
      ;; For testing.
-     `(("git" ,git)
-       ("perl" ,perl)))
+     (list git perl))
     (inputs
      `(("python" ,python-wrapper)
        ("rcs" ,rcs)))
@@ -2785,8 +2831,7 @@ directory full of HOWTOs.")
                #t))
            (add-before 'install 'patch-git
              (lambda* (#:key inputs #:allow-other-keys)
-               (let ((git (string-append (assoc-ref inputs "git")
-                                         "/bin/git")))
+               (let ((git (search-input-file inputs "/bin/git")))
                  (substitute* "bin/git-when-merged"
                    (("'git'") (string-append "'" git "'")))
                  #t)))
@@ -2794,7 +2839,7 @@ directory full of HOWTOs.")
              (lambda* (#:key outputs #:allow-other-keys)
                (wrap-program (string-append (assoc-ref outputs "out")
                                             "/bin/git-when-merged")
-                 `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH"))))
+                 `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
                #t)))))
       (inputs
        `(("git" ,git)
@@ -2830,8 +2875,7 @@ how information about the merge is displayed.")
          (delete 'configure)
          (add-before 'install 'patch-git
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((git (string-append (assoc-ref inputs "git")
-                                       "/bin/git")))
+             (let ((git (search-input-file inputs "/bin/git")))
                (substitute* "git-imerge"
                  (("'git'") (string-append "'" git "'")))
                #t)))
@@ -2839,7 +2883,7 @@ how information about the merge is displayed.")
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
                                           "/bin/git-imerge")
-               `("PYTHONPATH" ":" prefix (,(getenv "PYTHONPATH"))))
+               `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
              #t)))))
     (inputs
      `(("git" ,git)
@@ -2884,16 +2928,16 @@ interrupted, published, and collaborated on while in progress.")
                (invoke "make" "man"))
              #t))
          (add-after 'install 'install-man-pages
-           (lambda _
+           (lambda* (#:key outputs #:allow-other-keys)
              (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
-               (let ((out (assoc-ref %outputs "out")))
+               (let ((out (assoc-ref outputs "out")))
                  (for-each
                    (lambda (manpage)
                      (install-file manpage (string-append out "/share/man/man1")))
                    (find-files "." "^git-lfs.*\\.1$"))))
              #t)))))
     ;; make `ronn` available during build for man page generation
-    (native-inputs `(("ronn-ng" ,ronn-ng)))
+    (native-inputs (list ronn-ng))
     (home-page "https://git-lfs.github.com/")
     (synopsis "Git extension for versioning large files")
     (description
@@ -2917,7 +2961,7 @@ file contents on a remote server.")
         (base32 "11n46bngvca5wbdbfcxzjhjbfdbad7sgf7h9gf956cb1q8swsdm0"))))
     (build-system copy-build-system)
     (inputs
-     `(("xdg-utils" ,xdg-utils)))
+     (list xdg-utils))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2983,7 +3027,7 @@ guessing the URL pattern from the @code{origin} remote.")
 
        #:test-target "test"))
     (native-inputs
-     `(("which" ,which)))
+     (list which))
     (synopsis "Historical distributed version-control system")
     (description
      "GNU Arch, aka. @code{tla}, was one of the first free distributed
@@ -2996,7 +3040,7 @@ for historians.")
 (define-public diff-so-fancy
   (package
     (name "diff-so-fancy")
-    (version "1.3.0")
+    (version "1.4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3005,10 +3049,9 @@ for historians.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0aavxahzha2mms4vdwysk79pa6wzswpfwgsq2hwaxnaf66maahfl"))))
+                "11vkq5njjlvjipic7db44ga875n61drszw1qrdzwxmmfmnz425zz"))))
     (inputs
-     `(("perl" ,perl)
-       ("ncurses" ,ncurses)))
+     (list perl ncurses))
     (build-system copy-build-system)
     (arguments
      '(#:phases
@@ -3018,8 +3061,7 @@ for historians.")
              (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
                (substitute* "diff-so-fancy"
                  (("use lib.*$")
-                  (string-append "use lib '" lib "';\n")))
-               #t)))
+                  (string-append "use lib '" lib "';\n"))))))
          (add-after 'install 'symlink-executable
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -3027,8 +3069,7 @@ for historians.")
                    (perl (assoc-ref inputs "perl")))
                (wrap-program (string-append out "/bin/diff-so-fancy")
                  `("PATH" ":" prefix (,(string-append ncurses "/bin")
-                                      ,(string-append perl "/bin"))))
-               #t))))
+                                      ,(string-append perl "/bin"))))))))
        #:install-plan
        '(("lib" "lib")
          ("diff-so-fancy" "bin/"))))
@@ -3111,10 +3152,10 @@ defects faster.")
                   "1k03zgcbhl91cgyh4k7ywyjp00y63q4bqbimncqh5b3lni8l8j5l"))))
       (build-system python-build-system)
       (native-inputs
-       `(("git" ,git) ;for tests
-         ("python-pytest" ,python-pytest)))
+       (list git ;for tests
+             python-pytest))
       (propagated-inputs
-       `(("python-pyyaml" ,python-pyyaml)))
+       (list python-pyyaml))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
@@ -3123,11 +3164,10 @@ defects faster.")
                (substitute* "tests/test_main.py"
                  (("'gita\\\\n'") "'source\\n'")
                  (("'gita'") "'source'"))
-               (invoke (string-append (assoc-ref inputs "git") "/bin/git")
+               (invoke (search-input-file inputs "/bin/git")
                        "init")
                (add-installed-pythonpath inputs outputs)
-               (invoke (string-append (assoc-ref inputs "python-pytest")
-                                      "/bin/pytest")
+               (invoke (search-input-file inputs "/bin/pytest")
                        "-vv" "tests")))
            (add-after 'install 'install-shell-completions
              (lambda* (#:key outputs #:allow-other-keys)
@@ -3206,6 +3246,52 @@ makes a directory under a specific root directory (by default @file{~/ghq})
 using the remote repository URL's host and path.")
     (license license:expat)))
 
+(define-public tkrev
+  (package
+    (name "tkrev")
+    (version "9.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://sourceforge/tkcvs/tkrev_" version ".tar.gz"))
+       (sha256
+        (base32 "0bpfbhkngzmwy476mfc69mkd94l0m2wxznrn0qzd81s450yxjw2q"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'build)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (invoke "wish" "doinstall.tcl" "-nox" out)
+               (install-file "contrib/tkdirdiff" bin))))
+         (add-after 'install 'wrap-programs
+           (lambda* (#:key outputs #:allow-other-keys)
+             (for-each
+               (lambda (file)
+                 (wrap-program (string-append (assoc-ref outputs "out")
+                                              "/bin/" file)
+                   `("PATH" ":" prefix (,(dirname (which "wish"))))))
+               '("tkdiff"
+                 "tkdirdiff"
+                 "tkrev")))))
+       #:tests? #f))
+    (inputs
+     (list tk))
+    (home-page "https://tkcvs.sourceforge.io")
+    (synopsis "Graphical interface to CVS, Subversion, Git, and RCS")
+    (description
+     "TkRev (formerly TkCVS) is a Tcl/Tk-based graphical interface to the CVS,
+Subversion and Git configuration management systems.  It will also help with
+RCS.  It shows the status of the files in the current working directory, and
+has tools for tagging, merging, checking in/out, and other user operations.
+TkDiff is included for browsing and merging your changes.")
+    (license license:gpl2+)))
+
 (define-public git-filter-repo
   (package
     (name "git-filter-repo")
@@ -3228,7 +3314,7 @@ using the remote repository URL's host and path.")
        '(("git-filter-repo" "libexec/git-core/")
          ("Documentation/man1/" "share/man/man1")
          ("/" "" #:include ()))))
-    (inputs `(("python" ,python)))                ;for the shebang
+    (inputs (list python))                ;for the shebang
     (home-page "https://github.com/newren/git-filter-repo")
     (synopsis "Quickly rewrite Git repository history")
     (description

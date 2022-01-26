@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,15 +38,17 @@
   #:use-module (guix import utils)
   #:use-module (guix http-client)
   #:use-module (guix git)
+  #:use-module (guix hash)
   #:use-module ((guix serialization) #:select (write-file))
   #:use-module (guix store)
   #:use-module (guix ui)
-  #:use-module (gcrypt hash)
   #:use-module (guix base32)
   #:use-module (guix upstream)
   #:use-module (guix packages)
+  #:use-module (guix memoization)
   #:use-module ((guix utils) #:select (call-with-temporary-output-file))
   #:export (elpa->guix-package
+            guix-package->elpa-name
             %elpa-updater
             elpa-recursive-import))
 
@@ -228,27 +231,6 @@ keywords to values."
     (close-port port)
     (data->recipe (cons ':name data))))
 
-;; XXX adapted from (guix scripts hash)
-(define (file-hash file select? recursive?)
-  ;; Compute the hash of FILE.
-  (if recursive?
-      (let-values (((port get-hash) (open-sha256-port)))
-        (write-file file port #:select? select?)
-        (force-output port)
-        (get-hash))
-      (call-with-input-file file port-sha256)))
-
-;; XXX taken from (guix scripts hash)
-(define (vcs-file? file stat)
-  (case (stat:type stat)
-    ((directory)
-     (member (basename file) '(".bzr" ".git" ".hg" ".svn" "CVS")))
-    ((regular)
-     ;; Git sub-modules have a '.git' file that is a regular text file.
-     (string=? (basename file) ".git"))
-    (else
-     #f)))
-
 (define (git-repository->origin recipe url)
   "Fetch origin details from the Git repository at URL for the provided MELPA
 RECIPE."
@@ -270,7 +252,7 @@ RECIPE."
        (sha256
         (base32
          ,(bytevector->nix-base32-string
-           (file-hash directory (negate vcs-file?) #t)))))))
+           (file-hash* directory #:recursive? #true)))))))
 
 (define* (melpa-recipe->origin recipe)
   "Fetch origin details from the MELPA recipe and associated repository for
@@ -337,9 +319,10 @@ the package named PACKAGE-NAME."
 type '<elpa-package>'."
 
   (define melpa-recipe
-    (if (eq? repo 'melpa)
-        (package-name->melpa-recipe (elpa-package-name pkg))
-        #f))
+    ;; XXX: Call 'identity' to work around a Guile 3.0.[5-7] compiler bug:
+    ;; <https://bugs.gnu.org/48368>.
+    (and (eq? (identity repo) 'melpa)
+         (package-name->melpa-recipe (elpa-package-name pkg))))
 
   (define name (elpa-package-name pkg))
 
@@ -352,9 +335,7 @@ type '<elpa-package>'."
                           (elpa-package-inputs pkg))))
 
   (define dependencies
-    (map (lambda (n)
-           (let ((new-n (elpa-name->package-name n)))
-             (list new-n (list 'unquote (string->symbol new-n)))))
+    (map (compose string->symbol elpa-name->package-name)
          dependencies-names))
 
   (define (maybe-inputs input-type inputs)
@@ -362,8 +343,7 @@ type '<elpa-package>'."
       (()
        '())
       ((inputs ...)
-       (list (list input-type
-                   (list 'quasiquote inputs))))))
+       (list (list input-type `(list ,@inputs))))))
 
   (define melpa-source
     (melpa-recipe->origin melpa-recipe))
@@ -381,7 +361,8 @@ type '<elpa-package>'."
                         (sha256
                          (base32
                           ,(if tarball
-                               (bytevector->nix-base32-string (file-sha256 tarball))
+                               (bytevector->nix-base32-string
+                                (file-hash* tarball #:recursive? #false))
                                "failed to download package")))))))
       (build-system emacs-build-system)
       ,@(maybe-inputs 'propagated-inputs dependencies)
@@ -390,7 +371,7 @@ type '<elpa-package>'."
             '())
       (home-page ,(elpa-package-home-page pkg))
       (synopsis ,(elpa-package-synopsis pkg))
-      (description ,(elpa-package-description pkg))
+      (description ,(beautify-description (elpa-package-description pkg)))
       (license ,license))
    dependencies-names))
 
@@ -414,14 +395,18 @@ type '<elpa-package>'."
 ;;; Updates.
 ;;;
 
+(define (guix-package->elpa-name package)
+  "Given a Guix package, PACKAGE, return the upstream name on ELPA."
+  (or (and=> (package-properties package)
+             (cut assq-ref <> 'upstream-name))
+      (if (string-prefix? "emacs-" (package-name package))
+          (string-drop (package-name package) 6)
+          (package-name package))))
+
 (define (latest-release package)
   "Return an <upstream-release> for the latest release of PACKAGE."
-  (define name
-    (if (string-prefix? "emacs-" (package-name package))
-        (string-drop (package-name package) 6)
-        (package-name package)))
-
-  (define repo 'gnu)
+  (define name (guix-package->elpa-name package))
+  (define repo (elpa-repository package))
 
   (match (elpa-package-info name repo)
     (#f
@@ -440,11 +425,20 @@ type '<elpa-package>'."
         (urls (list url))
         (signature-urls (list (string-append url ".sig"))))))))
 
-(define package-from-gnu.org?
-  (url-predicate (lambda (url)
-                   (let ((uri (string->uri url)))
-                     (and uri
-                          (string=? (uri-host uri) "elpa.gnu.org"))))))
+(define elpa-repository
+  (memoize
+   (url-predicate (lambda (url)
+                    (let ((uri (string->uri url)))
+                      (and uri
+                           (cond
+                            ((string=? (uri-host uri) "elpa.gnu.org")
+                             'gnu)
+                            ((string=? (uri-host uri) "elpa.nongnu.org")
+                             'nongnu)
+                            (else #f))))))))
+
+(define (package-from-elpa-repository? package)
+  (member (elpa-repository package) '(gnu nongnu)))
 
 (define %elpa-updater
   ;; The ELPA updater.  We restrict it to packages hosted on elpa.gnu.org
@@ -452,7 +446,7 @@ type '<elpa-package>'."
   (upstream-updater
    (name 'elpa)
    (description "Updater for ELPA packages")
-   (pred package-from-gnu.org?)
+   (pred package-from-elpa-repository?)
    (latest latest-release)))
 
 (define elpa-guix-name (cut guix-name "emacs-" <>))

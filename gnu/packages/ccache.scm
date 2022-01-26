@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages ccache)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:select (gpl3+))
   #:use-module (guix download)
@@ -31,36 +32,37 @@
 (define-public ccache
   (package
     (name "ccache")
-    (version "4.4.1")
+    (version "4.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ccache/ccache/releases/download/v"
                            version "/ccache-" version ".tar.xz"))
        (sha256
-        (base32 "0nc1mlmj92lfa25d12nzf5n55az6zfx38n0z1qqkkzjxn6sxzmpb"))
-       (patches
-        (search-patches "ccache-fix-basedir-test.patch"))))
+        (base32 "05wmflxdc8h3d00gr3kilr5dmrqxj6lcmq9ic575ydi60fz6w62i"))))
     (build-system cmake-build-system)
-    (native-inputs `(("perl" ,perl)     ; for test/run
-                     ("which" ,(@ (gnu packages base) which))))
-    (inputs `(("zlib" ,zlib)
-              ("zstd" ,zstd "lib")))
+    (native-inputs (list perl ; for test/run
+                         (@ (gnu packages base) which)))
+    (inputs (list zlib
+                  `(,zstd "lib")))
     (arguments
-     '( ;; The Redis backend must be explicitly disabled to build without Redis.
-       #:configure-flags
-       '("-DREDIS_STORAGE_BACKEND=OFF")
-
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'setup-tests
-           (lambda _
-             (substitute* '("unittest/test_hashutil.cpp" "test/suites/base.bash")
-               (("#!/bin/sh") (string-append "#!" (which "sh"))))))
-         (add-before 'check 'set-home
-           ;; Tests require a writable HOME.
-           (lambda _
-             (setenv "HOME" (getenv "TMPDIR")))))))
+     (list #:configure-flags
+           ;; The backend must be explicitly disabled to build without Redis.
+           #~(list "-DREDIS_STORAGE_BACKEND=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'fix-shell
+                 ;; Run early whilst we're still in the source directory.
+                 (lambda _
+                   (substitute* (list "test/run"
+                                      "test/suites/base.bash"
+                                      "unittest/test_hashutil.cpp")
+                     (("compgen -e") "env | cut -d= -f1")
+                     (("#!/bin/sh") (string-append "#!" (which "sh"))))))
+               (add-before 'check 'set-home
+                 ;; Tests require a writable HOME.
+                 (lambda _
+                   (setenv "HOME" (getenv "TMPDIR")))))))
     (home-page "https://ccache.dev/")
     (synopsis "Compiler cache")
     (description

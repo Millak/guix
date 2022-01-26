@@ -17,14 +17,16 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu home)
-  #:use-module (gnu home-services)
-  #:use-module (gnu home-services symlink-manager)
-  #:use-module (gnu home-services shells)
-  #:use-module (gnu home-services xdg)
-  #:use-module (gnu home-services fontutils)
+  #:use-module (gnu home services)
+  #:use-module (gnu home services symlink-manager)
+  #:use-module (gnu home services shells)
+  #:use-module (gnu home services xdg)
+  #:use-module (gnu home services fontutils)
   #:use-module (gnu services)
   #:use-module (guix records)
   #:use-module (guix diagnostics)
+  #:use-module (guix gexp)
+  #:use-module (guix store)
 
   #:export (home-environment
             home-environment?
@@ -104,3 +106,11 @@ of HOME-PROVENANCE-SERVICE-TYPE to its services."
     (inherit he)
     (services (cons (service home-provenance-service-type config-file)
                     (home-environment-user-services he)))))
+
+(define-gexp-compiler (home-environment-compiler (he <home-environment>)
+                                                 system target)
+  ((store-lift
+    (lambda (store)
+      (run-with-store store (home-environment-derivation he)
+                      #:system system
+                      #:target target)))))

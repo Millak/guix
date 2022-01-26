@@ -78,14 +78,9 @@
         "--disable-static"
         "--enable-fake")))
     (native-inputs
-     `(("latex2html" ,latex2html)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("swig" ,swig)))
+     (list latex2html pkg-config python-wrapper swig))
     (inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+-2)
-       ("libusb" ,libusb-compat)))
+     (list glib gtk+-2 libusb-compat))
     (synopsis "Portable Braille Library")
     (description "Libbraille is a library to easily access Braille displays and
 terminals.")
@@ -95,22 +90,24 @@ terminals.")
 (define-public brltty
   (package
     (name "brltty")
-    (version "6.2")
+    (version "6.4")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "https://brltty.app/archive/brltty-" version ".tar.gz"))
        (sha256
-        (base32 "0m0cq3p1cwp52n81si621gij82w3mdqwgr39m6bs652pmk5na72l"))))
+        (base32 "0zybi9i9izv25g0wphl0snddrhb6xl5879y4pkpjpnxq61wm9gry"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:tests? #f                      ; No target
+
+       ;; High parallelism may cause errors such as:
+       ;;  ranlib: ./libbrlapi_stubs.a: error reading brlapi_stubs.o: file truncated
+       #:parallel-build? #f
+
        #:configure-flags
        (list
-        (string-append "--with-tcl-config="
-                       (assoc-ref %build-inputs "tcl")
-                       "/lib/tclConfig.sh")
         (string-append "--with-libbraille="
                        (assoc-ref %build-inputs "libbraille"))
         (string-append "--with-espeak_ng="
@@ -152,50 +149,48 @@ terminals.")
                 (string-append "extra_link_args = ['-Wl,-rpath="
                                (assoc-ref outputs "out")
                                "/lib'], "
-                               "extra_compile_args = ")))
-             #t)))))
+                               "extra_compile_args = "))))))))
     (native-inputs
-     `(("clisp" ,clisp)
-       ("cython" ,python-cython)
-       ("doxygen" ,doxygen)
-       ("gettext" ,gettext-minimal)
-       ("java" ,icedtea "jdk")
-       ;; ("linuxdoc" ,linuxdoc-tools)
-       ("ocaml" ,ocaml)
-       ("ocamlfind" ,ocaml-findlib)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("tcl" ,tcl)))
+     (list clisp
+           python-cython
+           doxygen
+           gettext-minimal
+           `(,icedtea "jdk")
+           ;; ("linuxdoc" ,linuxdoc-tools)
+           ocaml
+           ocaml-findlib
+           pkg-config
+           python-wrapper
+           tcl))
     (inputs
-     `(("alsa" ,alsa-lib)
-       ("atspi2" ,at-spi2-core)
-       ("bluez" ,bluez)
-       ("dbus" ,dbus)
-       ("espeak" ,espeak)
-       ("espeak-ng" ,espeak-ng)
-       ("expat" ,expat)
-       ("festival" ,festival)
-       ("flite" ,flite)
-       ("glib" ,glib)
-       ("gpm" ,gpm)
-       ("iconv" ,libiconv)
-       ("icu" ,icu4c)
-       ("libbraille" ,libbraille)
-       ("libpcre2" ,pcre2)
-       ("linux-headers" ,linux-libre-headers)
-       ("louis" ,liblouis)
-       ("ncurses" ,ncurses)
-       ("polkit" ,polkit)
-       ("speech-dispatcher" ,speech-dispatcher)
-       ("util-linux" ,util-linux)
-       ("util-linux:lib" ,util-linux "lib")
-       ("x11" ,libx11)
-       ("xaw" ,libxaw)
-       ("xaw3d" ,libxaw3d)
-       ("xext" ,libxext)
-       ("xfixes" ,libxfixes)
-       ("xt" ,libxt)
-       ("xtst" ,libxtst)))
+     (list alsa-lib
+           at-spi2-core
+           bluez
+           dbus
+           espeak
+           espeak-ng
+           expat
+           festival
+           flite
+           glib
+           gpm
+           libiconv
+           icu4c
+           libbraille
+           pcre2
+           liblouis
+           ncurses
+           polkit
+           speech-dispatcher
+           util-linux
+           `(,util-linux "lib")
+           libx11
+           libxaw
+           libxaw3d
+           libxext
+           libxfixes
+           libxt
+           libxtst))
     (synopsis "Braille TTY")
     (description "BRLTTY is a background process (daemon) which provides access
 to the Linux/Unix console (when in text mode) for a blind person using a
@@ -223,19 +218,17 @@ incorporated.")
                                "--without-docs"
                                "--with-notification")))
     (inputs
-     `(("libxml2" ,libxml2)
-       ("libglade" ,libglade)
-       ("librsvg" ,librsvg)
-       ("gstreamer" ,gstreamer)
-       ("cairo" ,cairo)
-       ("gtk+" ,gtk+)
-       ("libxtst" ,libxtst)
-       ("libxcomposite" ,libxcomposite)
-       ("libnotify" ,libnotify)))
+     (list libxml2
+           libglade
+           librsvg
+           gstreamer
+           cairo
+           gtk+
+           libxtst
+           libxcomposite
+           libnotify))
     (native-inputs
-     `(("gettext-minimal" ,gettext-minimal)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal intltool pkg-config))
     (home-page "http://florence.sourceforge.net/")
     (synopsis "Extensible, scalable virtual keyboard for X11")
     (description
@@ -268,9 +261,9 @@ available to help to click.")
                   "14pyzc4ws1mj859xs9n4x83wzxxvd3bh5bdxzr6nv267xwx1mq68"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("pkg-config" ,pkg-config)))
+       (list pkg-config))
       (inputs
-       `(("hidapi" ,hidapi)))
+       (list hidapi))
       (arguments
        `(#:tests? #f ; no tests
          #:make-flags (list (string-append "CC=" ,(cc-for-target)))
@@ -315,7 +308,7 @@ devices have vendorId:productId = 0c45:7403 or 0c45:7404.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (inputs
-     `(("libX11" ,libx11)))
+     (list libx11))
     (home-page "https://gitlab.com/amiloradovsky/magnify")
     (synopsis "Tiny screen magnifier for X11")
     (description

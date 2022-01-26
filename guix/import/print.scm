@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,14 +26,20 @@
   #:use-module (guix build-system)
   #:use-module (gnu packages)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (guix import utils)
   #:use-module (ice-9 control)
   #:use-module (ice-9 match)
   #:export (package->code))
 
-;; FIXME: the quasiquoted arguments field may contain embedded package
-;; objects, e.g. in #:disallowed-references; they will just be printed with
-;; their usual #<package ...> representation, not as variable names.
+(define (redundant-input-labels? inputs)
+  "Return #t if input labels in the INPUTS list are redundant."
+  (every (match-lambda
+           ((label (? package? package) . _)
+            (string=? label (package-name package)))
+           (_ #f))
+         inputs))
+
 (define (package->code package)
   "Return an S-expression representing the source code that produces PACKAGE
 when evaluated."
@@ -72,6 +79,11 @@ when evaluated."
       (file-type (quote ,(search-path-specification-file-type spec)))
       (file-pattern ,(search-path-specification-file-pattern spec))))
 
+  (define (factorized-uri-code uri version)
+    (match (factorize-uri uri version)
+      ((? string? uri) uri)
+      ((factorized ...) `(string-append ,@factorized))))
+
   (define (source->code source version)
     (let ((uri       (origin-uri source))
           (method    (origin-method source))
@@ -89,9 +101,14 @@ when evaluated."
                              (guix hg-download)
                              (guix svn-download)))
                       (procedure-name method)))
-         (uri (string-append ,@(match (factorize-uri uri version)
-                                 ((? string? uri) (list uri))
-                                 (factorized factorized))))
+         (uri ,(if version
+                   (match uri
+                     ((? string? uri)
+                      (factorized-uri-code uri version))
+                     ((lst ...)
+                      `(list
+                        ,@(map (cut factorized-uri-code <> version) uri))))
+                   uri))
          ,(if (equal? (content-hash-algorithm hash) 'sha256)
               `(sha256 (base32 ,(bytevector->nix-base32-string
                                  (content-hash-value hash))))
@@ -101,24 +118,62 @@ when evaluated."
          ;; FIXME: in order to be able to throw away the directory prefix,
          ;; we just assume that the patch files can be found with
          ;; "search-patches".
-         ,@(if (null? patches) '()
-               `((patches (search-patches ,@(map basename patches))))))))
+         ,@(cond ((null? patches)
+                  '())
+                 ((every string? patches)
+                  `((patches (search-patches ,@(map basename patches)))))
+                 (else
+                  `((patches (list ,@(map (match-lambda
+                                            ((? string? file)
+                                             `(search-patch ,file))
+                                            ((? origin? origin)
+                                             (source->code origin #f)))
+                                          patches)))))))))
 
-  (define (package-lists->code lsts)
-    (list 'quasiquote
-          (map (match-lambda
-                 ((? symbol? s)
-                  (list (symbol->string s) (list 'unquote s)))
-                 ((label pkg . out)
-                  (let ((mod (package-module-name pkg)))
-                    (cons* label
-                           ;; FIXME: using '@ certainly isn't pretty, but it
-                           ;; avoids having to import the individual package
-                           ;; modules.
-                           (list 'unquote
-                                 (list '@ mod (variable-name pkg mod)))
-                           out))))
-               lsts)))
+  (define (variable-reference module name)
+    ;; FIXME: using '@ certainly isn't pretty, but it avoids having to import
+    ;; the individual package modules.
+    (list '@ module name))
+
+  (define (object->code obj quoted?)
+    (match obj
+      ((? package? package)
+       (let* ((module (package-module-name package))
+              (name   (variable-name package module)))
+         (if quoted?
+             (list 'unquote (variable-reference module name))
+             (variable-reference module name))))
+      ((? origin? origin)
+       (let ((code (source->code origin #f)))
+         (if quoted?
+             (list 'unquote code)
+             code)))
+      ((lst ...)
+       (let ((lst (map (cut object->code <> #t) lst)))
+         (if quoted?
+             lst
+             (list 'quasiquote lst))))
+      (obj
+       obj)))
+
+  (define (inputs->code inputs)
+    (if (redundant-input-labels? inputs)
+        `(list ,@(map (match-lambda    ;no need for input labels ("new style")
+                        ((_ package)
+                         (let* ((module (package-module-name package))
+                                (name   (variable-name package module)))
+                           (variable-reference module name)))
+                        ((_ package output)
+                         (let* ((module (package-module-name package))
+                                (name   (variable-name package module)))
+                           (list 'quasiquote
+                                 (list
+                                  (list 'unquote
+                                        (variable-reference module name))
+                                  output)))))
+                      inputs))
+        (list 'quasiquote                  ;preserve input labels (deprecated)
+              (object->code inputs #t))))
 
   (let ((name                (package-name package))
         (version             (package-version package))
@@ -154,19 +209,20 @@ when evaluated."
                                           '-build-system)))
          ,@(match arguments
              (() '())
-             (args `((arguments ,(list 'quasiquote args)))))
+             (_  `((arguments
+                    ,(list 'quasiquote (object->code arguments #t))))))
          ,@(match outputs
              (("out") '())
              (outs `((outputs (list ,@outs)))))
          ,@(match native-inputs
              (() '())
-             (pkgs `((native-inputs ,(package-lists->code pkgs)))))
+             (pkgs `((native-inputs ,(inputs->code pkgs)))))
          ,@(match inputs
              (() '())
-             (pkgs `((inputs ,(package-lists->code pkgs)))))
+             (pkgs `((inputs ,(inputs->code pkgs)))))
          ,@(match propagated-inputs
              (() '())
-             (pkgs `((propagated-inputs ,(package-lists->code pkgs)))))
+             (pkgs `((propagated-inputs ,(inputs->code pkgs)))))
          ,@(if (lset= string=? supported-systems %supported-systems)
                '()
                `((supported-systems (list ,@supported-systems))))

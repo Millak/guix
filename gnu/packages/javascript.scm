@@ -5,6 +5,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages web)
@@ -80,14 +82,13 @@
          (use-modules (guix build utils))
          (chdir (assoc-ref %build-inputs "source"))
          (let ((target (string-append %output "/share/javascript/context-menu")))
-           (apply invoke (string-append (assoc-ref %build-inputs "esbuild")
-                                        "/bin/esbuild")
+           (apply invoke (search-input-file %build-inputs "/bin/esbuild")
                   "--bundle"
                   "--tsconfig=tsconfig.json"
                   (string-append "--outdir=" target)
                   (find-files "ts" "\\.ts$"))))))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/zorkow/context-menu")
     (synopsis "Generic context menu")
     (description "This package provides a reimplementation of the MathJax
@@ -188,6 +189,125 @@ plugins or software to be installed on the browser.  So the page author can
 write web documents that include mathematics and be confident that readers will
 be able to view it naturally and easily.")))
 
+(define-public js-mathjax-3
+  (package
+    (name "js-mathjax")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mathjax/MathJax-src")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "05lm6nw7rzpcc5yz7xsjxi4id9369vvnrksx82nglxrqrpws97wx"))
+       (patches (search-patches "mathjax-disable-webpack.patch"
+                                "mathjax-no-a11y.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'prepare-sources
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; All a11y components depend on speech-rule-engine, which cannot be
+             ;; built from source. Since this only affects accessibility, remove them.
+             (delete-file-recursively "ts/a11y")
+             (delete-file-recursively "components/src/a11y")
+             (delete-file-recursively "components/src/sre")
+             (delete-file-recursively "components/src/node-main")
+
+             ;; Copy sources of dependencies, so we can create symlinks.
+             (mkdir-p "node_modules")
+             (with-directory-excursion "node_modules"
+               (for-each
+                (lambda (p)
+                 (copy-recursively (assoc-ref inputs (string-append "node-" p)) p))
+                '("mj-context-menu" "mhchemparser")))
+
+             ;; Make sure esbuild can find imports. This way we don’t have to rewrite files.
+             (symlink "ts" "js")
+             (symlink "ts" "node_modules/mj-context-menu/js")))
+         (delete 'configure)
+         (replace 'build
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((esbuild (string-append (assoc-ref inputs "esbuild")
+                                           "/bin/esbuild"))
+                   (node (string-append (assoc-ref inputs "node")
+                                        "/bin/node"))
+                   (target (string-append (assoc-ref outputs "out")
+                                          "/share/javascript/mathjax/es5")))
+               ;; Preprocess files and generate lib/ subdirs.
+               (invoke node "components/bin/makeAll")
+               ;; Build components.
+               (apply
+                invoke
+                esbuild
+                "--bundle"
+                "--minify"
+                ;; esbuild cannot transpile some features to ES5, so use ES6 instead.
+                "--target=es6"
+                (string-append "--outdir=" target)
+                "--sourcemap"
+                "--outbase=components/src"
+                "--define:__dirname=\"/\""
+                ;; In the browser the global object is window, see
+                ;; https://developer.mozilla.org/en-US/docs/Glossary/Global_object
+                "--define:global=window"
+                ;; Find all component entry points, which have the same name as their
+                ;; parent directory.
+                (filter
+                 (lambda (f)
+                     (string=?
+                       (basename (dirname f))
+                       (string-drop-right (basename f) 3)))
+                 (find-files "components/src" "\\.js$")))
+               ;; Move all .js files into their parent directory, where MathJax
+               ;; expects them.
+               (for-each
+                 (lambda (f)
+                     (rename-file f (string-append (dirname (dirname f)) "/" (basename f))))
+                 (find-files target "\\.js(\\.map)?$"))
+               ;; Copy font files.
+               (copy-recursively
+                 "ts/output/chtml/fonts/tex-woff-v2"
+                 (string-append target "/output/chtml/fonts/woff-v2")))))
+         (delete 'check)
+         (delete 'install))))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("node" ,node-lts)
+       ("node-mj-context-menu"
+        ,(let ((name "context-menu")
+               (version "0.6.1"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/zorkow/context-menu.git")
+                    (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1q063l6477z285j6h5wvccp6iswvlp0jmb96sgk32sh0lf7nhknh")))))
+       ("node-mhchemparser"
+        ,(let ((name "mhchemparser")
+               ;; Version 4.1.1. There are no tags.
+               (version "b1bd0670df7e9bbd5a724ac642aa2664d6e500b3"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/mhchem/mhchemParser.git")
+                    (commit version)))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1g72kbxzf9f2igidpma3jwk28ln4bp3qhwspmhnm79baf3701dgv")))))))
+    (home-page "https://www.mathjax.org/")
+    (synopsis (package-synopsis js-mathjax))
+    (description (package-description js-mathjax))
+    (license license:asl2.0)))
+
 (define-public js-commander
   (package
     (name "js-commander")
@@ -209,8 +329,7 @@ be able to view it naturally and easily.")))
        (begin
          (use-modules (guix build utils))
          (chdir (assoc-ref %build-inputs "source"))
-         (let ((esbuild (string-append (assoc-ref %build-inputs "esbuild")
-                                       "/bin/esbuild"))
+         (let ((esbuild (search-input-file %build-inputs "/bin/esbuild"))
                (target (string-append %output "/share/javascript/commander")))
            (invoke esbuild
                    "--bundle"
@@ -220,11 +339,11 @@ be able to view it naturally and easily.")))
                    (string-append "--outfile=" target "/index.min.js")
                    "index.js")))))
     (native-inputs
-     `(("esbuild" ,esbuild)))
+     (list esbuild))
     (home-page "https://github.com/tj/commander.js")
     (synopsis "Library for node.js command-line interfaces")
     (description "Commander.js aims to be the complete solution for node.js
-command-line interfaces.  ")
+command-line interfaces.")
     (license license:expat)))
 
 (define-public js-xmldom-sre
@@ -251,8 +370,7 @@ command-line interfaces.  ")
          (begin
            (use-modules (guix build utils))
            (chdir (assoc-ref %build-inputs "source"))
-           (let ((esbuild (string-append (assoc-ref %build-inputs "esbuild")
-                                         "/bin/esbuild"))
+           (let ((esbuild (search-input-file %build-inputs "/bin/esbuild"))
                  (target (string-append %output "/share/javascript/xmldom-sre")))
              (invoke esbuild
                      "--bundle"
@@ -261,7 +379,7 @@ command-line interfaces.  ")
                      (string-append "--outfile=" target "/dom-parser.min.js")
                      "dom-parser.js")))))
       (native-inputs
-       `(("esbuild" ,esbuild)))
+       (list esbuild))
       (home-page "https://github.com/zorkow/xmldom/")
       (synopsis "DOM parser and XML serializer")
       (description "This is a fork of the xmldom library.  It allows the use
@@ -430,7 +548,7 @@ detection.")
      `(#:javascript-files '("media/js/dataTables.bootstrap.js"
                             "media/js/jquery.dataTables.js")))
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (home-page "https://datatables.net")
     (synopsis "DataTables plug-in for jQuery")
     (description "DataTables is a table enhancing plug-in for the jQuery
@@ -556,7 +674,7 @@ external server.")
 (define-public mujs
   (package
     (name "mujs")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -565,7 +683,7 @@ external server.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ivqz06fq8v36p2gkjh64vgv0gm7nghds0n42vrv7vm46phdffvb"))))
+        (base32 "0qizld89qw24i9v6i2j9cxjyqn425xbiqfp1b7qfrkyxqkn0byws"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -580,7 +698,7 @@ external server.")
              (string-append "prefix=" (assoc-ref %outputs "out")))
        #:tests? #f))                    ; no tests
     (inputs
-     `(("readline" ,readline)))
+     (list readline))
     (home-page "https://mujs.com/")
     (synopsis "JavaScript interpreter written in C")
     (description "MuJS is a lightweight Javascript interpreter designed for
@@ -637,12 +755,31 @@ Javascript and a small built-in standard library with C library wrappers.")
                 "19szwxzvl2g65fw95ggvb8h0ma5bd9vvnnccn59hwnc4dida1x4n"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; No tests.
+     `(#:tests? #f                      ; No tests.
        #:make-flags (list "-f" "Makefile.sharedlibrary"
                           (string-append "INSTALL_PREFIX=" %output))
        #:phases
        (modify-phases %standard-phases
-         (delete 'configure))))
+         (delete 'configure)
+         ;; At least another major GNU/Linux distribution carries their own
+         ;; .pc file with this package.
+         (add-after 'install 'install-pkg-config
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (pkg-config-dir (string-append out "/lib/pkgconfig")))
+               (mkdir-p pkg-config-dir)
+               (with-output-to-file (string-append pkg-config-dir "/duktape.pc")
+                 (lambda _
+                   (format #t "prefix=~@*~a~@
+                               libdir=${prefix}/lib~@
+                               includedir=${prefix}/include~@
+
+                               Name: duktape~@
+                               Description: Embeddable Javascript engine~@
+                               Version: ~a~@
+                               Libs: -L${libdir} -lduktape~@
+                               Cflags: -I${includedir}~%"
+                           out ,version)))))))))
     (home-page "https://duktape.org/")
     (synopsis "Small embeddable Javascript engine")
     (description "Duktape is an embeddable Javascript engine, with a focus on

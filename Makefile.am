@@ -81,6 +81,7 @@ MODULES =					\
   guix/base64.scm				\
   guix/ci.scm					\
   guix/cpio.scm					\
+  guix/cpu.scm					\
   guix/deprecation.scm				\
   guix/docker.scm	   			\
   guix/records.scm				\
@@ -96,8 +97,10 @@ MODULES =					\
   guix/discovery.scm				\
   guix/android-repo-download.scm		\
   guix/bzr-download.scm            		\
+  guix/extracting-download.scm			\
   guix/git-download.scm				\
   guix/hg-download.scm				\
+  guix/hash.scm					\
   guix/swh.scm					\
   guix/monads.scm				\
   guix/monad-repl.scm				\
@@ -228,7 +231,6 @@ MODULES =					\
   guix/build/union.scm				\
   guix/build/profiles.scm			\
   guix/build/compile.scm			\
-  guix/build/rpath.scm				\
   guix/build/cvs.scm				\
   guix/build/svn.scm				\
   guix/build/syscalls.scm                       \
@@ -239,6 +241,7 @@ MODULES =					\
   guix/build/emacs-utils.scm			\
   guix/build/java-utils.scm			\
   guix/build/lisp-utils.scm			\
+  guix/build/meson-configuration.scm		\
   guix/build/maven/java.scm			\
   guix/build/maven/plugin.scm			\
   guix/build/maven/pom.scm			\
@@ -293,6 +296,7 @@ MODULES =					\
   guix/scripts/refresh.scm			\
   guix/scripts/repl.scm				\
   guix/scripts/describe.scm			\
+  guix/scripts/style.scm			\
   guix/scripts/system.scm			\
   guix/scripts/system/search.scm		\
   guix/scripts/system/reconfigure.scm		\
@@ -315,6 +319,7 @@ MODULES =					\
   guix/scripts/import/stackage.scm		\
   guix/scripts/import/texlive.scm  		\
   guix/scripts/environment.scm			\
+  guix/scripts/shell.scm			\
   guix/scripts/publish.scm			\
   guix/scripts/edit.scm				\
   guix/scripts/size.scm				\
@@ -374,10 +379,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
-  gnu/packages/aux-files/linux-libre/5.14-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.14-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.14-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.14-x86_64.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-arm.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-i686.conf	\
+  gnu/packages/aux-files/linux-libre/5.15-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/5.10-arm.conf	\
   gnu/packages/aux-files/linux-libre/5.10-arm64.conf	\
   gnu/packages/aux-files/linux-libre/5.10-i686.conf	\
@@ -398,6 +403,9 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/4.4-i686.conf	\
   gnu/packages/aux-files/linux-libre/4.4-x86_64.conf	\
   gnu/packages/aux-files/pack-audit.c			\
+  gnu/packages/aux-files/python/sanity-check.py		\
+  gnu/packages/aux-files/python/sitecustomize.py	\
+  gnu/packages/aux-files/renpy/renpy.in	\
   gnu/packages/aux-files/run-in-namespace.c
 
 # Templates, examples.
@@ -473,7 +481,9 @@ SCM_TESTS =					\
   tests/graph.scm				\
   tests/gremlin.scm				\
   tests/hackage.scm				\
+  tests/home-import.scm				\
   tests/import-git.scm				\
+  tests/import-github.scm			\
   tests/import-utils.scm			\
   tests/inferior.scm				\
   tests/lint.scm				\
@@ -511,6 +521,7 @@ SCM_TESTS =					\
   tests/swh.scm				\
   tests/syscalls.scm				\
   tests/system.scm				\
+  tests/style.scm				\
   tests/texlive.scm				\
   tests/transformations.scm			\
   tests/ui.scm					\
@@ -546,10 +557,12 @@ SH_TESTS =					\
   tests/guix-package-aliases.sh			\
   tests/guix-package-net.sh			\
   tests/guix-system.sh				\
+  tests/guix-home.sh				\
   tests/guix-archive.sh				\
   tests/guix-authenticate.sh			\
   tests/guix-environment.sh			\
   tests/guix-environment-container.sh		\
+  tests/guix-shell.sh				\
   tests/guix-graph.sh				\
   tests/guix-describe.sh			\
   tests/guix-repl.sh     			\
@@ -638,21 +651,24 @@ EXTRA_DIST +=						\
   build-aux/check-final-inputs-self-contained.scm	\
   build-aux/check-channel-news.scm			\
   build-aux/compile-as-derivation.scm			\
+  build-aux/convert-xref.scm			\
   build-aux/generate-authors.scm			\
   build-aux/test-driver.scm				\
   build-aux/update-guix-package.scm			\
   build-aux/update-NEWS.scm				\
   tests/test.drv					\
-  tests/signing-key.pub					\
-  tests/signing-key.sec					\
   tests/cve-sample.json					\
-  tests/civodul.key					\
-  tests/rsa.key						\
-  tests/dsa.key						\
-  tests/ed25519.key					\
-  tests/ed25519.sec					\
-  tests/ed25519bis.key					\
-  tests/ed25519bis.sec					\
+  tests/keys/signing-key.pub				\
+  tests/keys/signing-key.sec				\
+  tests/keys/civodul.pub				\
+  tests/keys/rsa.pub					\
+  tests/keys/dsa.pub					\
+  tests/keys/ed25519.pub				\
+  tests/keys/ed25519.sec				\
+  tests/keys/ed25519-2.pub				\
+  tests/keys/ed25519-2.sec				\
+  tests/keys/ed25519-3.pub				\
+  tests/keys/ed25519-3.sec				\
   build-aux/config.rpath				\
   bootstrap						\
   doc/build.scm						\
@@ -697,8 +713,6 @@ $(1): $(2)
 	  --completed $(3)					\
 	  $$(filter %.scm,$$^)
 
-.PHONY: $(1)
-
 endef
 
 # Split compilation in several steps, each of which building a subset of
@@ -710,22 +724,31 @@ MODULES_CORE     = guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULE
 MODULES_PACKAGES = $(filter gnu/packages/%,$(MODULES))
 MODULES_SYSTEM   = gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
 MODULES_CLI      = $(filter guix/scripts/%,$(MODULES))
+MODULES_PO       = guix/build/po.scm
 
 $(eval $(call guile-compilation-rule,make-core-go,	\
   $(MODULES_CORE) guix/config.scm $(dist_noinst_DATA),	\
   0))
+.PHONY: make-core-go
 
 $(eval $(call guile-compilation-rule,make-packages-go,	\
   $(MODULES_PACKAGES) make-core-go,			\
   $(words $(MODULES_CORE))))
+.PHONY: make-packages-go
 
 $(eval $(call guile-compilation-rule,make-system-go,	\
   $(MODULES_SYSTEM) make-packages-go make-core-go,	\
   $(words $(MODULES_CORE) $(MODULES_PACKAGES))))
+.PHONY: make-system-go
 
 $(eval $(call guile-compilation-rule,make-cli-go,			\
   $(MODULES_CLI) make-system-go make-packages-go make-core-go,		\
   $(words $(MODULES_CORE) $(MODULES_PACKAGES) $(MODULES_SYSTEM))))
+.PHONY: make-cli-go
+
+$(eval $(call guile-compilation-rule,guix/build/po.go,			\
+  $(MODULES_PO),							\
+  0))
 
 SUFFIXES = .go
 
@@ -944,7 +967,7 @@ release: dist-with-updated-version all
             --system=$$system --fallback						\
 	    gnu/system/install.scm` ;							\
 	  if [ ! -f "$$image" ] ; then							\
-	    echo "failed to produced Guix installation image for $$system" >&2 ;	\
+	    echo "failed to produce Guix installation image for $$system" >&2 ;	\
 	    exit 1 ;									\
 	  fi ;										\
 	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_IMAGE_BASE).$$system.iso.tmp" ;	\
@@ -959,7 +982,7 @@ release: dist-with-updated-version all
 	    --system=$$system --fallback						\
 	    gnu/system/examples/vm-image.tmpl` ;					\
 	  if [ ! -f "$$image" ] ; then							\
-	    echo "failed to produced Guix VM image for $$system" >&2 ;			\
+	    echo "failed to produce Guix VM image for $$system" >&2 ;			\
 	    exit 1 ;									\
 	  fi ;										\
 	  cp "$$image" "$(releasedir)/$(GUIX_SYSTEM_VM_IMAGE_BASE).$$system.qcow2";	\

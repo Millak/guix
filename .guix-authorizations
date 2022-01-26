@@ -6,8 +6,6 @@
 
  (("AD17 A21E F8AE D8F1 CC02  DBD9 F7D5 C9BF 765C 61E3"
    (name "andreas"))
-  ("2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5"
-   (name "ajgrf"))
   ("4FB9 9F49 2B12 A365 7997  E664 8246 0C08 2A0E E98F"
    (name "alezost"))
   ("50F3 3E2E 5B0C 3D90 0424  ABE8 9BDC F497 A4BB CC7F"
@@ -16,21 +14,9 @@
    (name "apteryx"))
   ("7F73 0343 F2F0 9F3C 77BF  79D3 2E25 EE8B 6180 2BB3"
    (name "arunisaac"))
-  (;; primary: "3B12 9196 AE30 0C3C 0E90  A26F A715 5567 3271 9948"
-   "9A2B 401E D001 0650 1584  BAAC 8BC4 F447 6E8A 8E00"
-   (name "atheia"))
-  (;; primary: "BE62 7373 8E61 6D6D 1B3A  08E8 A21A 0202 4881 6103"
-   "39B3 3C8D 9448 0D2D DCC2  A498 8B44 A0CD C7B9 56F2"
-   (name "bandali"))
   (;; primary: "34FF 38BC D151 25A6 E340  A0B5 3453 2F9F AFCA 8B8E"
    "A3A4 B419 0074 087C A7DE  5698 BC45 CA67 E2F8 D007"
    (name "bavier"))
-  ("45CC 63B8 5258 C9D5 5F34  B239 D37D 0EA7 CECC 3912"
-   (name "biscuolo"))
-  ("7988 3B9F 7D6A 4DBF 3719  0367 2506 A96C CF63 0B21"
-   (name "boskovits"))
-  ("E82A C026 95D6 FF02 43CA  1E5C F6C5 2DD1 BA27 CB87"
-   (name "brettgilio"))
   (;; primary: "8929 BBC5 73CD 9206 3DDD 979D 3D36 CAA0 116F 0F99"
    "1C9B F005 1A1A 6A44 5257 599A A949 03A1 66A1 8FAE"
    (name "bricewge"))
@@ -50,8 +36,6 @@
    (name "davexunit"))
   ("8CCB A7F5 52B9 CBEA E1FB  2915 8328 C747 0FF1 D807" ;FIXME: to be confirmed!
    (name "davexunit (2nd)"))
-  ("53C4 1E6E 41AA FE55 335A  CA5E 446A 2ED4 D940 BF14"
-   (name "daviwil"))
   ("A28B F40C 3E55 1372 662D  14F7 41AA E7DC CA3D 8351"
    (name "efraim"))
   (;; primary: "2453 02B1 BAB1 F867 FDCA  96BC 8F3F 861F 82EB 7A9A"
@@ -61,8 +45,6 @@
    (name "hoebjo"))
   ("B943 509D 633E 80DD 27FC  4EED 634A 8DFF D3F6 31DF"
    (name "htgoebel"))
-  ("7440 26BA 7CA3 C668 E940  1D53 0B43 1E98 3705 6942"
-   (name "ipetkov"))
   (;; primary: "66A5 6D9C 9A98 BE7F 719A  B401 2652 5665 AE72 7D37"
    "0325 78A6 8298 94E7 2AA2  66F5 D415 BF25 3B51 5976"
    (name "iyzsong"))
@@ -79,19 +61,17 @@
    (name "lbraun (professional)"))
   ("ACC2 3BA0 59F7 CCF4 08F0  43AD 442A 84B8 C70E 2F87"
    (name "lilyp"))
-  ("45E5 75FA 53EA 8BD6 1BCE  0B4E 3ADC 75F0 13D6 78F9"
-   (name "leungbk"))
   (;; primary: "4F71 6F9A 8FA2 C80E F1B5  E1BA 5E35 F231 DE1A C5E0"
    "B051 5948 F1E7 D3C1 B980  38A0 2646 FA30 BACA 7F08"
    (name "lfam"))
-  ("8887 84C4 1459 ACCB 83E7  E84C 634C 6E89 79FA BEC2"
-   (name "m1gu3l"))
   ("CBF5 9755 CBE7 E7EF EF18  3FB1 DD40 9A15 D822 469D"
    (name "marusich"))
   ("BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"
    (name "mbakke"))
   ("D919 0965 CE03 199E AF28  B3BE 7CEF 2984 7562 C516"
    (name "mhw"))
+  ("B845 5B7F FAD5 E8E9 5DEF  4296 637B 0B13 8065 B68A"
+   (name "monego"))
   ("4008 6A7E 0252 9B60 31FB  8607 8354 7635 3176 9CA6"
    (name "mothacehe"))
   (;; primary: "F5BC 5534 C36F 0087 B39D  36EF 1C9D C4FE B9DB 7C4B"
@@ -109,12 +89,8 @@
   (;; primary: "B68B DF22 73F9 DA0E 63C1  8A32 515B F416 9242 D600"
    "C699 ED09 E51B CE89 FD1D  A078 AAC7 E891 896B 568A"
    (name "pgarlick"))
-  ("3A86 380E 58A8 B942 8D39  60E1 327C 1EF3 8DF5 4C32"
-   (name "phant0mas"))
   ("CD2D 5EAA A98C CB37 DA91  D6B0 5F58 1664 7F8B E551"
    (name "raghavgururajan"))
-  ("74D6 A930 F44B 9B84 9EA5  5606 C166 AA49 5F7F 189C"
-   (name "reepca"))
   ("BCA6 89B6 3655 3801 C3C6  2150 197A 5888 235F ACAC"
    (name "rekado"))
   (;; From commit cc51c03ff867d4633505354819c6d88af88bf919 (March 2020).

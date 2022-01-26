@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages rdf)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix git-download)
@@ -48,6 +50,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -70,10 +73,7 @@
                "1vc02im4mpc28zxzgli68k6j0dakh0k3s389bm436yvqajxg19xd"))))
     (build-system gnu-build-system)
     (inputs
-     `(("curl" ,curl)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("zlib" ,zlib)))
+     (list curl libxml2 libxslt zlib))
     (arguments
      `(#:parallel-tests? #f))
     (home-page "https://librdf.org/raptor/")
@@ -105,8 +105,8 @@ HTML and JSON.")
                                       "clucene-contribs-lib.patch"))))
     (build-system cmake-build-system)
     (inputs
-     `(("boost" ,boost) ; could also use bundled copy
-       ("zlib" ,zlib)))
+     (list boost ; could also use bundled copy
+           zlib))
     (arguments
      `(#:test-target "cl_test"
        #:configure-flags '("-DBUILD_CONTRIBS_LIB=ON")
@@ -126,7 +126,7 @@ Java Lucene text search engine API to C++.")
 (define-public lucene++
   (package
     (name "lucene++")
-    (version "3.0.7")
+    (version "3.0.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -135,19 +135,35 @@ Java Lucene text search engine API to C++.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06b37fly6l27zc6kbm93f6khfsv61w792j8xihfagpcm9cfz2zi1"))))
+                "12v7r62f7pqh5h210pb74sfx6h70lj4pgfpva8ya2d55fn0qxrr2"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (substitute* (list "src/config/core/CMakeLists.txt"
+                                      "src/config/contrib/CMakeLists.txt")
+                     (("include/pkgconfig")
+                      "lib/pkgconfig")
+                     (("include/cmake")
+                      "share/cmake/lucene++"))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       ;; CXX_FLAGS suggested in a closed issue on github:
-       ;; https://github.com/luceneplusplus/LucenePlusPlus/issues/100
-       (list "-Wno-dev" "-DCMAKE_CXX_FLAGS=-DBOOST_VARIANT_USE_RELAXED_GET_BY_DEFAULT"
-             ;; Install in lib64 break rpath
-             "-DCMAKE_INSTALL_LIBDIR:PATH=lib")))
+     (list #:configure-flags
+           #~(list (string-append "-DLIB_DESTINATION:PATH="
+                                  #$output "/lib")
+                   "-DINSTALL_GTEST:BOOL=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 ;; XXX Tests are built unconditionally during the 'build phase.
+                 ;; There's no ‘test’ target.  README.md suggests running this.
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "src/test/lucene++-tester"
+                             "--test_dir=../source/src/test/testfiles")))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("boost" ,boost)))
+     (list boost zlib))
     (home-page "https://github.com/luceneplusplus/LucenePlusPlus")
     (synopsis "Text search engine")
     (description "Lucene++ is an up to date C++ port of the popular Java
@@ -186,10 +202,7 @@ Lucene library, a high-performance, full-featured text search engine.")
        ("cyrus-sasl" ,cyrus-sasl)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/swh/LRDF")
     (synopsis "Lightweight RDF library for accessing LADSPA plugin metadata")
     (description
@@ -212,17 +225,13 @@ taxonomic inference capability.")
                "0z6rrwn4jsagvarg8d5zf0j352kjgi33py39jqd29gbhcnncj939"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl)
-       ("perl-xml-dom" ,perl-xml-dom) ; for the tests
-       ("pkg-config" ,pkg-config)))
+     (list perl perl-xml-dom ; for the tests
+           pkg-config))
     (inputs
-     `(("libgcrypt" ,libgcrypt)
-       ("libxml2" ,libxml2)
-       ("mpfr" ,mpfr)
-       ("pcre" ,pcre)
-       ("util-linux" ,util-linux "lib")))
+     (list libgcrypt libxml2 mpfr pcre
+           `(,util-linux "lib")))
     (propagated-inputs
-     `(("raptor2" ,raptor2))) ; stipulated by rasqal.pc
+     (list raptor2)) ; stipulated by rasqal.pc
     (arguments
      `(#:parallel-tests? #f
        ; test failure reported upstream, see
@@ -253,12 +262,12 @@ Turtle/N3 and read them in SPARQL XML, RDF/XML and Turtle/N3.")
                "109n0kp39p966dpiasad2bb7q66rwbcb9avjvimw28chnpvlf66y"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl) ; needed for installation
-       ("pkg-config" ,pkg-config)))
+     (list perl ; needed for installation
+           pkg-config))
     (propagated-inputs
-     `(("rasqal" ,rasqal))) ; in Requires.private field of .pc
+     (list rasqal)) ; in Requires.private field of .pc
     (inputs
-     `(("bdb" ,bdb)))
+     (list bdb))
     (home-page "http://librdf.org/")
     (synopsis "RDF library")
     (description "The Redland RDF Library (librdf) provides the RDF API
@@ -323,11 +332,11 @@ ideal (e.g. in LV2 implementations or embedded applications).")
                                    (assoc-ref outputs "out") "/lib"))
             #t)))))
     (inputs
-     `(("pcre" ,pcre)))
+     (list pcre))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (propagated-inputs
-     `(("serd" ,serd)))                 ; required by sord-0.pc
+     (list serd))                 ; required by sord-0.pc
     (home-page "https://drobilla.net/software/sord/")
     (synopsis "C library for storing RDF data in memory")
     (description
@@ -337,31 +346,35 @@ ideal (e.g. in LV2 implementations or embedded applications).")
 (define-public python-rdflib
   (package
     (name "python-rdflib")
-    (version "4.2.2")
+    (version "6.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rdflib" version))
         (sha256
          (base32
-          "0398c714znnhaa2x7v51b269hk20iz073knq2mvmqp2ma92z27fs"))))
+          "0m7pyq771vl4zf9xd3pxjbg7x6ac97b3djfbv9qq9fch56ps1gwd"))))
     (build-system python-build-system)
     (arguments
-     '(;; FIXME: Three test failures. Should be fixed next release.
-       #:tests? #f))
-       ;; #:phases
-       ;; (modify-phases %standard-phases
-       ;;   (replace 'check
-       ;;     (lambda _
-       ;;       ;; Run tests from the build directory so python3 only
-       ;;       ;; sees the installed 2to3 version.
-       ;;       (invoke "nosetests" "--where=./build/src"))))))
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'adjust-tests
+           (lambda _
+             (for-each delete-file
+                       '(;; This test needs a font that is not shipped.
+                         "test/test_so_69984830.py"
+                         ;; These tests need internet access.
+                         "test/jsonld/test_onedotone.py"
+                         "test/test_sparql_service.py"
+                         "test/test_graph.py"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv" "test/")))))))
     (native-inputs
-     `(("python-nose" ,python-nose)))
+     (list python-pytest))
     (propagated-inputs
-      `(("python-html5lib" ,python-html5lib)
-        ("python-isodate" ,python-isodate)
-        ("python-pyparsing" ,python-pyparsing)))
+      (list python-html5lib python-isodate python-pyparsing))
     (home-page "https://github.com/RDFLib/rdflib")
     (synopsis "Python RDF library")
     (description
@@ -370,25 +383,42 @@ powerful language for representing information.")
     (license (license:non-copyleft "file://LICENSE"
                                    "See LICENSE in the distribution."))))
 
-(define-public python2-rdflib
-  (package-with-python2 python-rdflib))
+(define-public python-rdflib-5
+  (package
+    (inherit python-rdflib)
+    (version "5.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "rdflib" version))
+        (sha256
+         (base32
+          "0mdi7xh4zcr3ngqwlgqdqf0i5bxghwfddyxdng1zwpiqkpa9s53q"))))
+    ;; XXX: Lazily disable tests because they require a lot of work
+    ;; and this package is only transitional.
+    (arguments '(#:tests? #f))))
 
+(define-public python2-rdflib
+  (package-with-python2 python-rdflib-5))
+
+;; Note: This package is only needed for rdflib < 6.0; supersede when
+;; the above are removed.
 (define-public python-rdflib-jsonld
   (package
     (name "python-rdflib-jsonld")
-    (version "0.5.0")
+    (version "0.6.2")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rdflib-jsonld" version))
         (sha256
          (base32
-          "1v85f4hdlrrk0l1najmqmm79ijrvcj259kwsrrxiq1q5chr5azag"))))
+          "0qrshlqzv5g5bign7kjja3xf7hyk7xgayr3yd0qlqda1kl0x6z0h"))))
     (build-system python-build-system)
     (native-inputs
-     `(("python-nose" ,python-nose)))
+     (list python-nose))
     (propagated-inputs
-     `(("python-rdflib" ,python-rdflib)))
+     (list python-rdflib))
     (home-page "https://github.com/RDFLib/rdflib-jsonld")
     (synopsis "rdflib extension adding JSON-LD parser and serializer")
     (description "This package provides an rdflib extension adding JSON-LD
@@ -408,7 +438,7 @@ parser and serializer.")
           "0x7yz0lvqb6mkhl5fbml27sppmscgpf8v2ism9jzzf0h982ffzxm"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-rdflib" ,python-rdflib)))
+     (list python-rdflib))
     (home-page "https://github.com/hsolbrig/CFGraph")
     (synopsis "RDF Collections flattener for rdflib")
     (description
@@ -430,13 +460,9 @@ parser and serializer.")
                 "1vsq80jnix6cy78ayag7v8ajyw7h8dqyad1q6xkf2hzz3skvr34z"))))
     (build-system gnu-build-system)
     (inputs
-     `(("serd" ,serd)
-       ("zlib" ,zlib)))
+     (list serd zlib))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/rdfhdt/hdt-cpp")
     (synopsis "C++ implementation of the HDT compression format")
     (description "Header Dictionary Triples (HDT) is a compression format for
@@ -461,9 +487,10 @@ C++ library as well as various command-line tools to to work with HDT.")
     (arguments
      '(#:tests? #f)) ; The test suite simply queries external HTTP endpoints.
     (native-inputs
-     `(("python-nose" ,python-nose)))
+     ;; Build with setuptools <58 to get lib2to3 support.
+     (list python-nose python-setuptools))
     (propagated-inputs
-     `(("python-rdflib" ,python-rdflib)))
+     (list python-rdflib))
     (home-page "https://rdflib.dev/sparqlwrapper/")
     (synopsis "SPARQL Endpoint interface to Python")
     (description "Python wrapper around a SPARQL service.  It helps in creating

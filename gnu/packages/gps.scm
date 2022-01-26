@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Guillaume Le Vaillant <glv@posteo.net>
@@ -82,14 +82,9 @@
      `(#:configure-flags
        '("--with-zlib=system")))
     (inputs
-     `(("expat" ,expat)
-       ("libusb" ,libusb)
-       ("qtbase" ,qtbase-5)
-       ("zlib" ,zlib)))
+     (list expat libusb qtbase-5 zlib))
     (native-inputs
-     `(("which" ,which)
-       ("qttools" ,qttools)
-       ("libxml2" ,libxml2)))              ;'xmllint' needed for the KML tests
+     (list which qttools libxml2))              ;'xmllint' needed for the KML tests
     (home-page "https://www.gpsbabel.org/")
     (synopsis "Convert and exchange data with GPS and map programs")
     (description
@@ -127,14 +122,9 @@ manipulate maps.")
                                "\n")))
              #t)))))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("libxml2" ,libxml2)
-       ("exiv2" ,exiv2)))
+     (list gtk+ libxml2 exiv2))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("libxslt" ,libxslt)))
+     (list pkg-config docbook-xml docbook-xsl libxslt))
     (home-page "https://dfandrich.github.io/gpscorrelate/")
     (synopsis "GPS photo correlation tool to geo-localize images")
     (description
@@ -148,7 +138,7 @@ between two other data points.")
 (define-public gama
   (package
     (name "gama")
-    (version "2.15")
+    (version "2.17")
     (source
       (origin
         (method url-fetch)
@@ -156,20 +146,18 @@ between two other data points.")
                             version ".tar.gz"))
         (sha256
          (base32
-          "1lsa7k9anxla2r3wxzg2yhxgxlp8xibz56gaxhgf5rd3mzf51flx"))
+          "1x8qz43q254mz0fyna9pxxna2sj8pcrm8bwxw840d36lh1qj6983"))
         (modules '((guix build utils)))
         (snippet
          '(begin
             (delete-file-recursively "lib/expat")
-            (for-each delete-file (find-files "doc/fig" "\\.pdf$"))
-            #t))))
+            (for-each delete-file (find-files "doc/fig" "\\.pdf$"))))))
     (build-system gnu-build-system)
     (arguments '(#:parallel-tests? #f)) ; race condition
     (native-inputs
-     `(("libxml2" ,libxml2)))
+     (list libxml2))
     (inputs
-     `(("expat" ,expat)
-       ("sqlite" ,sqlite)))
+     (list expat sqlite))
     (home-page "https://www.gnu.org/software/gama/")
     (synopsis "Adjustment of geodetic networks")
     (description
@@ -182,7 +170,7 @@ coordinates as well as partial support for adjustments in global coordinate syst
 (define-public gpxsee
   (package
     (name "gpxsee")
-    (version "7.37")
+    (version "10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -191,7 +179,7 @@ coordinates as well as partial support for adjustments in global coordinate syst
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fpb43smh0kwic5pdxs46c0hkqj8g084h72pa024x1my6w12y9b8"))))
+                "0kj7130imhppb0bam34a1xr2lxk76fyida31idzvfk3m7z39w02w"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -206,9 +194,9 @@ coordinates as well as partial support for adjustments in global coordinate syst
                      (string-append "PREFIX="
                                     (assoc-ref outputs "out"))))))))
     (inputs
-     `(("qtbase" ,qtbase-5)))
+     (list qtbase-5 qtlocation))
     (native-inputs
-     `(("qttools" ,qttools)))
+     (list qttools))
     (home-page "https://www.gpxsee.org")
     (synopsis "GPS log file viewer and analyzer")
     (description
@@ -221,31 +209,30 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
 (define-public gpsd
   (package
     (name "gpsd")
-    (version "3.23")
+    (version "3.23.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download-mirror.savannah.gnu.org"
                            "/releases/gpsd/gpsd-" version ".tar.xz"))
        (sha256
-        (base32 "1px9im0qfn8k7mnvjcw5myakzd7mad2drwyzji400hpwyswjjr73"))))
+        (base32 "1hd8b09is4gd73lpsdywxxdx11iijikmqgxd0y57pic3yxnlcb6a"))))
     (build-system scons-build-system)
     (native-inputs
-     `(("bc" ,bc)
-       ("pkg-config" ,pkg-config)))
+     (list bc pkg-config))
     (inputs
-     `(("bluez" ,bluez)
-       ("dbus" ,dbus)
-       ("gtk+" ,gtk+)
-       ("libcap" ,libcap)
-       ("libusb" ,libusb)
-       ("ncurses" ,ncurses)
-       ("python" ,python)
-       ("python-pycairo" ,python-pycairo)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyserial" ,python-pyserial)
-       ("python-wrapper" ,python-wrapper)
-       ("qtbase" ,qtbase-5)))
+     (list bluez
+           dbus
+           gtk+
+           libcap
+           libusb
+           ncurses
+           python
+           python-pycairo
+           python-pygobject
+           python-pyserial
+           python-wrapper
+           qtbase-5))
     (arguments
      `(#:scons-flags
        (list (string-append "prefix=" %output)
@@ -261,8 +248,7 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
              (setenv "TAR" "noop")
              (substitute* "SConscript"
                (("envs = \\{\\}")
-                "envs = os.environ"))
-             #t))
+                "envs = os.environ"))))
          (add-after 'install 'wrap-python-scripts
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -281,10 +267,9 @@ such as elevation, speed, heart rate, power, temperature, and gear shifts.")
                                              ":")))
                (for-each (lambda (script)
                            (wrap-program (string-append out "/bin/" script)
-                             `("PYTHONPATH" ":" prefix (,pythonpath))))
+                             `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
                          '("gegps" "gpscat" "gpsfake" "gpsprof"
-                           "ubxtool" "xgps" "xgpsspeed" "zerk")))
-             #t)))))
+                           "ubxtool" "xgps" "xgpsspeed" "zerk"))))))))
     (synopsis "GPS service daemon")
     (description
      "@code{gpsd} is a service daemon that monitors one or more GPSes or AIS

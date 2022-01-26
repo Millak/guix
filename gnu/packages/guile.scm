@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -16,6 +16,8 @@
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 Taylan Kammer <taylan.kammer@gmail.com>
 ;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 Timothy Sample <samplet@ngyro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,9 +64,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
   #:use-module (guix deprecation)
-  #:use-module (guix utils)
-  #:use-module (ice-9 match)
-  #:use-module ((srfi srfi-1) #:prefix srfi-1:))
+  #:use-module (guix utils))
 
 ;;; Commentary:
 ;;;
@@ -85,7 +85,12 @@
               "0l200a0v7h8bh0cwz6v7hc13ds39cgqsmfrks55b1rbj5vniyiy3"))
             (patches (search-patches "guile-1.8-cpp-4.5.patch"))))
    (build-system gnu-build-system)
-   (arguments '(#:configure-flags '("--disable-error-on-warning")
+   (arguments '(#:configure-flags '("--disable-error-on-warning"
+
+                                    ;; Build with '-O1' to work around GC
+                                    ;; crash on x86_64:
+                                    ;; <https://issues.guix.gnu.org/50427>.
+                                    "CFLAGS=-O1 -g -Wall")
 
                 ;; Insert a phase before `configure' to patch things up.
                 #:phases
@@ -104,21 +109,24 @@
 
                       ;; The usual /bin/sh...
                       (substitute* "ice-9/popen.scm"
-                        (("/bin/sh") (which "sh")))
-                      #t)))))
+                        (("/bin/sh") (which "sh"))))))
+
+                ;; XXX: Several numerical tests and tests related to
+                ;; 'inet-pton' fail on glibc 2.33/GCC 10.  Disable them.
+                ;; TODO: Remove this package when its dependents no longer
+                ;; need it.
+                #:tests? #f))
 
    ;; When cross-compiling, a native version of Guile itself is needed.
    (native-inputs (if (%current-target-system)
                       `(("self" ,this-package))
                       '()))
 
-   (inputs `(("gawk" ,gawk)
-             ("readline" ,readline)))
+   (inputs (list gawk readline))
 
    ;; Since `guile-1.8.pc' has "Libs: ... -lgmp -lltdl", these must be
    ;; propagated.
-   (propagated-inputs `(("gmp" ,gmp)
-                        ("libltdl" ,libltdl)))
+   (propagated-inputs (list gmp libltdl))
 
    (native-search-paths
     (list (search-path-specification
@@ -179,7 +187,15 @@ without requiring the source code to be rewritten.")
    (outputs '("out" "debug"))
 
    (arguments
-    `(#:configure-flags '("--disable-static") ; saves 3 MiB
+    `(#:configure-flags
+      ,(if (target-x86-32?)               ;<https://issues.guix.gnu.org/49368>
+           ''("--disable-static" "CFLAGS=-g -O2 -fexcess-precision=standard")
+           ''("--disable-static"))                ;saves 3 MiB
+
+      ;; Work around non-reproducible .go files as described in
+      ;; <https://bugs.gnu.org/20272>, which affects 2.0, 2.2, and 3.0 so far.
+      #:parallel-build? #f
+
       #:phases
       (modify-phases %standard-phases
         ,@(if (hurd-system?)
@@ -246,7 +262,8 @@ without requiring the source code to be rewritten.")
                 "013mydzhfswqci6xmyc1ajzd59pfbdak15i0b090nhr9bzm7dxyd"))
               (modules '((guix build utils)))
               (patches (search-patches
-                        "guile-2.2-skip-oom-test.patch"))
+                        "guile-2.2-skip-oom-test.patch"
+                        "guile-2.2-skip-so-test.patch"))
 
               ;; Remove the pre-built object files.  Instead, build everything
               ;; from source, at the expense of significantly longer build
@@ -255,6 +272,14 @@ without requiring the source code to be rewritten.")
                           (for-each delete-file
                                     (find-files "prebuilt" "\\.go$"))
                           #t))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-2.0)
+       ((#:configure-flags flags ''())
+        (if (target-x86-32?)            ;<https://issues.guix.gnu.org/49368>
+            `(append '("--disable-static")
+                 '("CFLAGS=-g -O2 -fexcess-precision=standard"))
+            flags))))
+
     (properties '((timeout . 72000)               ;20 hours
                   (max-silent-time . 36000)))     ;10 hours (needed on ARM
                                                   ;  when heavily loaded)
@@ -285,21 +310,75 @@ without requiring the source code to be rewritten.")
   (package
     (inherit guile-2.2)
     (name "guile")
-    (version "3.0.2")
+    (version "3.0.7")
     (source (origin
               (inherit (package-source guile-2.2))
+              (patches '())     ; We no longer need the patches.
               (uri (string-append "mirror://gnu/guile/guile-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "12lziar4j27j9whqp2n18427q45y9ghq7gdd8lqhmj1k0lr7vi2k"))))
+                "1dwiwsrpm4f96alfnz6wibq378242z4f16vsxgy1n9r00v3qczgm"))
+              ;; Replace the snippet because the oom-test still
+              ;; fails on some 32-bit architectures.
+              (snippet '(begin
+                          (substitute* "test-suite/standalone/Makefile.in"
+                            (("test-out-of-memory") ""))
+                          (for-each delete-file
+                                    (find-files "prebuilt" "\\.go$"))))))
+
+    ;; Build with the bundled mini-GMP to avoid interference with GnuTLS' own
+    ;; use of GMP via Nettle: <https://issues.guix.gnu.org/46330>.
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs guile-2.2)
+       (delete "gmp" "libltdl")))
     (arguments
-     ;; XXX: JIT-enabled Guile crashes in obscure ways on GNU/Hurd.
-     (if (hurd-target?)
-         (substitute-keyword-arguments (package-arguments guile-2.2)
-           ((#:configure-flags flags ''())
-            `(cons "--disable-jit" ,flags)))
-         (package-arguments guile-2.2)))
+     (substitute-keyword-arguments (package-arguments guile-2.0)
+       ((#:configure-flags flags ''())
+        ;; XXX: JIT-enabled Guile crashes in obscure ways on GNU/Hurd.
+        `(cons* ,@(if (hurd-target?)
+                      '("--disable-jit")
+                      '())
+                ;; -fexcess-precision=standard is required when compiling for
+                ;; i686-linux, otherwise "numbers.test" will fail
+                ;; (see <https://issues.guix.gnu.org/49368> and
+                ;; <https://issues.guix.gnu.org/49659>).
+                ;; TODO: Keep this in GUILE-2.2 and remove from here on next
+                ;; rebuild cycle.
+                ,@(if (target-x86-32?)
+                      '("CFLAGS=-g -O2 -fexcess-precision=standard")
+                      '())
+                "--enable-mini-gmp"
+                '("--disable-static")))
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'check 'disable-stack-overflow-test
+             (lambda _
+               ;; This test can invoke the "OOM killer", especially when
+               ;; running on emulated hardware (QEMU).  Skip it.
+               (substitute* "test-suite/standalone/test-stack-overflow"
+                 (("!#")
+                  "!#\n(exit 77)\n"))))
+
+           ,@(if (string-prefix? "powerpc-" (%current-system))
+                 `((add-after 'unpack 'adjust-bootstrap-flags
+                     (lambda _
+                       ;; Upstream knows about suggested solution.
+                       ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45214
+                       (substitute* "bootstrap/Makefile.in"
+                         (("^GUILE_OPTIMIZATIONS.*")
+                          "GUILE_OPTIMIZATIONS = -O1 -Oresolve-primitives -Ocps\n")))))
+                 '())
+           ,@(if (or (target-ppc32?)
+                     (target-riscv64?))
+               `((add-after 'unpack 'skip-failing-fdes-test
+                   (lambda _
+                     ;; ERROR: ((system-error "seek" "~A" ("Bad file descriptor") (9)))
+                     (substitute* "test-suite/tests/ports.test"
+                       (("fdes not closed\"" all) (string-append all "(exit 77)")))
+                     #t)))
+               '())))))
+
     (native-search-paths
      (list (search-path-specification
             (variable "GUILE_LOAD_PATH")
@@ -310,31 +389,7 @@ without requiring the source code to be rewritten.")
                      "share/guile/site/3.0")))))))
 
 (define-public guile-3.0-latest
-  ;; TODO: Make this 'guile-3.0' on the next rebuild cycle.
-  (package
-    (inherit guile-3.0)
-    (version "3.0.7")
-    (source (origin
-              (inherit (package-source guile-3.0)) ;preserve snippet
-              (patches '())
-              (uri (string-append "mirror://gnu/guile/guile-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1dwiwsrpm4f96alfnz6wibq378242z4f16vsxgy1n9r00v3qczgm"))))
-
-    ;; Build with the bundled mini-GMP to avoid interference with GnuTLS' own
-    ;; use of GMP via Nettle: <https://issues.guix.gnu.org/46330>.  Use
-    ;; LIBGC/DISABLE-MUNMAP to work around <https://bugs.gnu.org/40525>.
-    ;; Remove libltdl, which is no longer used.
-    (propagated-inputs
-     `(("bdw-gc" ,libgc/disable-munmap)
-       ,@(srfi-1:fold srfi-1:alist-delete (package-propagated-inputs guile-3.0)
-                      '("gmp" "libltdl" "bdw-gc"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments guile-3.0)
-       ((#:configure-flags flags ''())
-        `(cons "--enable-mini-gmp" ,flags))))))
+  guile-3.0)
 
 (define-public guile-3.0/libgc-7
   ;; Using libgc-7 avoid crashes that can occur, particularly when loading
@@ -344,8 +399,8 @@ without requiring the source code to be rewritten.")
    (package
      (inherit guile-3.0-latest)
      (propagated-inputs
-      `(("bdw-gc" ,libgc-7)
-        ,@(srfi-1:alist-delete "bdw-gc" (package-propagated-inputs guile-3.0)))))))
+      (modify-inputs (package-propagated-inputs guile-3.0)
+        (replace "bdw-gc" libgc-7))))))
 
 (define-public guile-3.0/fixed
   ;; A package of Guile that's rarely changed.  It is the one used in the
@@ -358,9 +413,9 @@ without requiring the source code to be rewritten.")
                                                 ;  when heavily loaded)
 
 (define-public guile-next
-  (let ((version "3.0.5")
+  (let ((version "3.0.7")
         (revision "0")
-        (commit "91547abf54d5e0795afda2781259ab8923eb527b"))
+        (commit "d70c1dbebf9ac0fd45af4578c23983ec4a7da535"))
     (package
       (inherit guile-3.0)
       (name "guile-next")
@@ -374,7 +429,7 @@ without requiring the source code to be rewritten.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "09i1c77h2shygylfk0av31jsc1my6zjl230b2cx6vyl58q8c0cqy"))))
+                  "05rsk9lh5kchbav3lwfwgvgybrykqqjmkkc6689fhb3mjr5m3dqj"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
@@ -386,14 +441,14 @@ without requiring the source code to be rewritten.")
                  (delete-file "test-suite/tests/version.test")
                  #t))))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)
-         ("flex" ,flex)
-         ("gettext" ,gnu-gettext)
-         ("texinfo" ,texinfo)
-         ("gperf" ,gperf)
-         ,@(package-native-inputs guile-3.0)))
+       (modify-inputs (package-native-inputs guile-3.0)
+         (prepend autoconf
+                  automake
+                  libtool
+                  flex
+                  gnu-gettext
+                  texinfo
+                  gperf)))
       (synopsis "Development version of GNU Guile"))))
 
 (define* (make-guile-readline guile #:optional (name "guile-readline"))
@@ -403,7 +458,8 @@ without requiring the source code to be rewritten.")
     (source (package-source guile))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-silent-rules")
+     '(#:configure-flags '("--disable-silent-rules"
+                           "--enable-mini-gmp")   ;for Guile >= 3.0.6
        #:phases (modify-phases %standard-phases
                   (add-before 'build 'chdir
                     (lambda* (#:key outputs #:allow-other-keys)
@@ -479,39 +535,6 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                            (guile-variant-package-name "guile2.2")
                            #:deep? #f))
 
-(define-syntax define-deprecated-guile3.0-package
-  (lambda (s)
-    "Define a deprecated package alias for \"guile3.0-something\"."
-    (syntax-case s ()
-      ((_ name)
-       (and (identifier? #'name)
-            (string-prefix? "guile3.0-" (symbol->string (syntax->datum
-                                                         #'name))))
-       (let ((->guile (lambda (str)
-                        (let ((base (string-drop str
-                                                 (string-length "guile3.0-"))))
-                          (string-append "guile-" base)))))
-         (with-syntax ((package-name (symbol->string (syntax->datum #'name)))
-                       (package
-                         (datum->syntax
-                          #'name
-                          (string->symbol
-                           (->guile (symbol->string (syntax->datum
-                                                     #'name))))))
-                       (old-name
-                        ;; XXX: This is the name generated by
-                        ;; 'define-deprecated'.
-                        (datum->syntax
-                         #'name
-                         (symbol-append '% (syntax->datum #'name)
-                                        '/deprecated))))
-           #'(begin
-               (define-deprecated name package
-                 (deprecated-package package-name package))
-               (export old-name))))))))
-
-(define-deprecated-guile3.0-package guile3.0-readline)
-
 (define-public guile-for-guile-emacs
   (let ((commit "15ca78482ac0dd2e3eb36dcb31765d8652d7106d")
         (revision "1"))
@@ -545,18 +568,18 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                  ;; FAIL: test-out-of-memory
                  (substitute* "test-suite/standalone/Makefile.am"
                    (("(check_SCRIPTS|TESTS) \\+= test-out-of-memory") ""))
-                 
+
                  (patch-shebang "build-aux/git-version-gen")
                  (invoke "sh" "autogen.sh")
                  #t))))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)
-         ("flex" ,flex)
-         ("texinfo" ,texinfo)
-         ("gettext" ,gettext-minimal)
-         ,@(package-native-inputs guile-2.2))))))
+       (modify-inputs (package-native-inputs guile-2.2)
+         (prepend autoconf
+                  automake
+                  libtool
+                  flex
+                  texinfo
+                  gettext-minimal))))))
 
 
 ;;;
@@ -578,9 +601,8 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")))   ;to prevent guild warnings
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("guile" ,guile-2.2)))
-    (inputs `(("guile" ,guile-2.2)))
+    (native-inputs (list pkg-config guile-2.2))
+    (inputs (list guile-2.2))
     (synopsis "JSON module for Guile")
     (description
      "Guile-JSON supports parsing and building JSON documents according to the
@@ -618,12 +640,8 @@ specification.  These are the main features:
               (sha256
                (base32
                 "0nj0684qgh6ppkbdyxqfyjwsv2qbyairxpi8fzrhsi3xnc7jn4im"))))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("guile" ,guile-3.0)))
-    (inputs `(("guile" ,guile-3.0)))))
-
-(define-public guile3.0-json
-  (deprecated-package "guile3.0-json" guile-json-3))
+    (native-inputs (list pkg-config guile-3.0))
+    (inputs (list guile-3.0))))
 
 (define-public guile-json-4
   (package
@@ -679,10 +697,8 @@ specification.  These are the main features:
                          (format #f "(dynamic-link \"~a/lib/libgdbm.so\")"
                                  (assoc-ref inputs "gdbm"))))
                       #t)))))
-    (native-inputs
-     `(("guile" ,guile-3.0)))
-    (inputs
-     `(("gdbm" ,gdbm)))
+    (native-inputs (list guile-3.0))
+    (inputs (list gdbm))
     (home-page "https://github.com/ijp/guile-gdbm")
     (synopsis "Guile bindings to the GDBM library via Guile's FFI")
     (description
@@ -695,8 +711,6 @@ Guile's foreign function interface.")
 
 (define-public guile2.2-gdbm-ffi
   (package-for-guile-2.2 guile-gdbm-ffi))
-
-(define-deprecated-guile3.0-package guile3.0-gdbm-ffi)
 
 (define-public guile-sqlite3
   (package
@@ -713,14 +727,8 @@ Guile's foreign function interface.")
                 "1nryy9j3bk34i0alkmc9bmqsm0ayz92k1cdf752mvhyjjn8nr928"))
               (file-name (string-append name "-" version "-checkout"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("guile" ,guile-3.0)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     `(("guile" ,guile-3.0)
-       ("sqlite" ,sqlite)))
+    (native-inputs (list autoconf automake guile-3.0 pkg-config))
+    (inputs (list guile-3.0 sqlite))
     (synopsis "Access SQLite databases from Guile")
     (description
      "This package provides Guile bindings to the SQLite database system.")
@@ -731,8 +739,6 @@ Guile's foreign function interface.")
 
 (define-public guile2.2-sqlite3
   (package-for-guile-2.2 guile-sqlite3))
-
-(define-deprecated-guile3.0-package guile3.0-sqlite3)
 
 (define-public guile-bytestructures
   (package
@@ -760,13 +766,8 @@ Guile's foreign function interface.")
                              (doc (string-append out "/share/doc/" package)))
                         (install-file "README.md" doc)
                         #t))))))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)
-       ("guile" ,guile-3.0)))
-    (inputs
-     `(("guile" ,guile-3.0)))
+    (native-inputs (list autoconf automake pkg-config guile-3.0))
+    (inputs (list guile-3.0))
     (synopsis "Structured access to bytevector contents for Guile")
     (description
      "Guile bytestructures offers a system imitating the type system
@@ -783,8 +784,6 @@ type system, elevating types to first-class status.")
 (define-public guile2.2-bytestructures
   (package-for-guile-2.2 guile-bytestructures))
 
-(define-deprecated-guile3.0-package guile3.0-bytestructures)
-
 (define-public guile-git
   (package
     (name "guile-git")
@@ -798,22 +797,18 @@ type system, elevating types to first-class status.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11a51acibwi2hpaygmrpn6nwbr4lqalc87ihrgj3mhz6swbsk9n7"))))
+                "11a51acibwi2hpaygmrpn6nwbr4lqalc87ihrgj3mhz6swbsk9n7"))
+              (patches (search-patches
+                        "guile-git-adjust-for-libgit2-1.2.0.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")))     ; to prevent guild warnings
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("texinfo" ,texinfo)
-       ("guile" ,guile-3.0)
-       ("guile-bytestructures" ,guile-bytestructures)))
+     (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
-     `(("guile" ,guile-3.0)
-       ("libgit2" ,libgit2)))
+     (list guile-3.0 libgit2))
     (propagated-inputs
-     `(("guile-bytestructures" ,guile-bytestructures)))
+     (list guile-bytestructures))
     (synopsis "Guile bindings for libgit2")
     (description
      "This package provides Guile bindings to libgit2, a library to
@@ -825,8 +820,6 @@ manipulate repositories of the Git version control system.")
 
 (define-public guile2.0-git
   (package-for-guile-2.0 guile-git))
-
-(define-deprecated-guile3.0-package guile3.0-git)
 
 (define-public guile-zlib
   (package
@@ -850,16 +843,8 @@ manipulate repositories of the Git version control system.")
     (arguments
      '(#:make-flags
        '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)
-       ,@(if (%current-target-system)
-             `(("guile" ,guile-3.0))   ;for 'guild compile' and 'guile-3.0.pc'
-             '())))
-    (inputs
-     `(("guile" ,guile-3.0)
-       ("zlib" ,zlib)))
+    (native-inputs (list autoconf automake pkg-config guile-3.0))
+    (inputs (list guile-3.0 zlib))
     (synopsis "Guile bindings to zlib")
     (description
      "This package provides Guile bindings for zlib, a lossless
@@ -889,16 +874,8 @@ Guile's foreign function interface.")
     (arguments
      '(#:make-flags
        '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)
-       ,@(if (%current-target-system)
-             `(("guile" ,guile-3.0))   ;for 'guild compile' and 'guile-3.0.pc'
-             '())))
-    (inputs
-     `(("guile" ,guile-3.0)
-       ("lzlib" ,lzlib)))
+    (native-inputs (list autoconf automake pkg-config guile-3.0))
+    (inputs (list guile-3.0 lzlib))
     (synopsis "Guile bindings to lzlib")
     (description
      "This package provides Guile bindings for lzlib, a C library for
@@ -924,18 +901,35 @@ pure Scheme by using Guile's foreign function interface.")
                (base32
                 "1c8l7829b5yx8wdc0mrhzjfwb6h9hb7cd8dfxcr71a7vlsi86310"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)
-       ("guile" ,guile-3.0)))
-    (inputs
-     `(("zstd" ,zstd "lib")
-       ("guile" ,guile-3.0)))
+    (native-inputs (list autoconf automake pkg-config guile-3.0))
+    (inputs (list `(,zstd "lib") guile-3.0))
     (synopsis "GNU Guile bindings to the zstd compression library")
     (description
      "This package provides a GNU Guile interface to the zstd (``zstandard'')
 compression library.")
+    (license license:gpl3+)))
+
+(define-public guile-lzma
+  (package
+    (name "guile-lzma")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://files.ngyro.com/guile-lzma/guile-lzma-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0pnfzk92p9y5ymjq6rq619b9fy0dflv56jwg00wlvvbjssb6i1ib"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake guile-3.0 guile-bytestructures pkg-config))
+    (inputs (list guile-3.0 xz))
+    (propagated-inputs (list guile-bytestructures))
+    (home-page "https://ngyro.com/software/guile-lzma.html")
+    (synopsis "Guile bindings for liblzma (XZ)")
+    (description "Guile-LZMA is a Guile wrapper for the liblzma (XZ)
+library.  It exposes an interface similar to other Guile compression
+libraries, like Guile-zlib.")
     (license license:gpl3+)))
 
 ;;; guile.scm ends here

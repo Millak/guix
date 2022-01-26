@@ -205,7 +205,7 @@
        ;; for uploading compiled patches and firmware
        ("dfu-util" ,dfu-util-for-axoloti)))
     (native-inputs
-     `(("unzip" ,unzip)))
+     (list unzip))
     (home-page "http://www.axoloti.com/")
     (synopsis "Audio development environment for the Axoloti core board")
     (description
@@ -318,8 +318,8 @@ runtime.")
                    (lambda ()
                      (let* ((dir       (string-append (assoc-ref outputs "out")
                                                       "/share/axoloti"))
-                            (runtime   (string-append (assoc-ref inputs "axoloti-runtime")
-                                                      "/share/axoloti"))
+                            (runtime   (search-input-directory inputs
+                                                               "share/axoloti"))
                             (toolchain (assoc-ref inputs "cross-toolchain"))
                             (includes  (string-append
                                         toolchain
@@ -351,9 +351,8 @@ runtime.")
        ("java-jgit" ,java-jgit-4.2)
        ("axoloti-runtime" ,axoloti-runtime)))
     (native-inputs
-     `(("ant" ,ant)
-       ("zip" ,zip) ; for repacking the jar
-       ("unzip" ,unzip)))
+     (list ant zip ; for repacking the jar
+           unzip))
     (description
      "The Axoloti patcher offers a “patcher” environment similar to Pure Data
 for sketching digital audio algorithms.  The patches run on a standalone
@@ -374,11 +373,9 @@ patcher application.")))
        (sha256
         (base32 "022p993wf9l9mp6vg94x592vfqd1k1sjrq5f6x45h5r16qy6bdzh"))
        (modules '((guix build utils)))
+       ;; Remove pre-built Java binaries.
        (snippet
-        '(begin
-           ;; Remove pre-built Java binaries.
-           (delete-file-recursively "lib/")
-           #t))))
+        '(delete-file-recursively "lib/"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; there's a Java test which is run as part of the Java build.
@@ -530,16 +527,16 @@ patcher application.")))
                ;; Install old firmware
                (let ((target (string-append share "/old_firmware/firmware-1.0.12"))
                      (old-firmware
-                      (string-append (assoc-ref inputs "axoloti-runtime")
-                                     "/share/axoloti/firmware/")))
+                      (search-input-directory inputs
+                                              "share/axoloti/firmware")))
                  (mkdir-p target)
                  (install-file (string-append old-firmware
-                                              "flasher/flasher_build/flasher.bin")
+                                              "/flasher/flasher_build/flasher.bin")
                                target)
                  ;; TODO: the old file differs from the file that is included
                  ;; in this repository as the old firmware.
                  (install-file (string-append old-firmware
-                                              "build/axoloti.bin")
+                                              "/build/axoloti.bin")
                                target))
 
                ;; We do this to ensure that this package retains references to
@@ -574,8 +571,7 @@ patcher application.")))
                                        " -Dsun.java2d.renderer=org.marlin.pisces.MarlinRenderingEngine"
                                        " -Daxoloti_release=" share
                                        " -jar " dir "/Axoloti.jar")))))
-                 (chmod target #o555))
-               #t)))
+                 (chmod target #o555)))))
          (add-after 'install 'strip-jar-timestamps
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs

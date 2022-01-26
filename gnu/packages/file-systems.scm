@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
+;;; Copyright © 2021 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages file-systems)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -87,7 +89,7 @@
 (define-public autofs
   (package
     (name "autofs")
-    (version "5.1.7")
+    (version "5.1.8")
     (source
      (origin
        (method url-fetch)
@@ -95,7 +97,7 @@
                            "v" (version-major version) "/"
                            "autofs-" version ".tar.xz"))
        (sha256
-        (base32 "1myfz6a3wj2c4j9h5g44zj796fdi82jhp1s92w2hg6xp2632csx3"))))
+        (base32 "1zf0fgf6kr9amxq5amlgsp1v13sizwl3wvx2xl7b4r2nhmci0gdk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -117,8 +119,7 @@
            (lambda _
              (substitute* "configure"
                (("^searchpath=\".*\"")
-                "searchpath=\"$PATH\""))
-             #t))
+                "searchpath=\"$PATH\""))))
          (add-before 'configure 'fix-rpath
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -131,24 +132,20 @@
            (lambda _
              (substitute* "modules/Makefile"
                (("ln -fs lookup_yp.so" match)
-                (string-append "# " match)))
-             #t)))))
+                (string-append "# " match))))))))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("pkg-config" ,pkg-config)
-       ("rpcsvc-proto" ,rpcsvc-proto)))
+     (list bison flex pkg-config rpcsvc-proto))
     (inputs
-     `(("cyrus-sasl" ,cyrus-sasl)
-       ("e2fsprogs" ,e2fsprogs)         ; for e[234]fsck
-       ("libtirpc" ,libtirpc)
-       ("libxml2" ,libxml2)             ; needed for LDAP, SASL
-       ("mit-krb5" ,mit-krb5)           ; needed for LDAP, SASL
-       ("nfs-utils" ,nfs-utils)         ; for mount.nfs
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)             ; needed for SASL
-       ("sssd" ,sssd)
-       ("util-linux" ,util-linux)))     ; for mount, umount
+     (list cyrus-sasl
+           e2fsprogs ; for e[234]fsck
+           libtirpc
+           libxml2 ; needed for LDAP, SASL
+           mit-krb5 ; needed for LDAP, SASL
+           nfs-utils ; for mount.nfs
+           openldap
+           openssl ; needed for SASL
+           sssd
+           util-linux))     ; for mount, umount
     ;; XXX A directory index is the closest thing this has to a home page.
     (home-page "https://www.kernel.org/pub/linux/daemons/autofs/")
     (synopsis "Kernel-based automounter for Linux")
@@ -185,9 +182,9 @@ large and/or frequently changing (network) environment.")
        ;; ("ruby" ,ruby)
        ;; ("valgrind" ,valgrind)
        ;; ("which" ,which)
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("fuse" ,fuse)))
+     (list fuse))
     (home-page "https://bindfs.org")
     (synopsis "Bind mount a directory and alter permission bits")
     (description
@@ -199,7 +196,7 @@ another location, similar to @command{mount --bind}.  It can be used for:
 @item Sharing a directory with a list of users (or groups).
 @item Modifying permission bits using rules with chmod-like syntax.
 @item Changing the permissions with which files are created.
-@end itemize ")
+@end itemize")
     (license license:gpl2+)))
 
 (define-public cachefilesd-inotify
@@ -252,14 +249,14 @@ unmaintained---to use the @code{inotify} API instead of the deprecated
 (define-public davfs2
   (package
     (name "davfs2")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.savannah.nongnu.org/releases/"
                            "davfs2/davfs2-" version ".tar.gz"))
        (sha256
-        (base32 "0l1vnv5lfigciwg17p10zxwhzj4qw2d9kw30prr7g4dxhmb6fsrf"))))
+        (base32 "1h65j2py59b97wbzzjhp4wbkk6351v3hrjscjcfab0p5xi4bjgnf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -278,16 +275,14 @@ unmaintained---to use the @code{inotify} API instead of the deprecated
              (substitute* "etc/Makefile.in"
                (("(dist_pkgdata_DATA =.*) davfs2.conf secrets(.*)"
                  _ prefix suffix)
-                (string-append prefix suffix)))
-             #t))
+                (string-append prefix suffix)))))
          (add-after 'unpack 'patch-file-names
            (lambda _
              ;; Don't auto-load the FUSE kernel module.  That's up to root.
              ;; XXX If/when we restore the previous behaviour, make sure not
              ;; to introduce a security hole when mount.davfs is setuid.
              (substitute* "src/kernel_interface.c"
-               (("/sbin/modprobe") "/modprobe/disabled"))
-             #t))
+               (("/sbin/modprobe") "/modprobe/disabled"))))
          (replace 'install
            (lambda* (#:key make-flags outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -295,11 +290,10 @@ unmaintained---to use the @code{inotify} API instead of the deprecated
                       (string-append "pkgsysconfdir=" out "/etc")
                       make-flags)))))))
     (inputs
-     `(("neon" ,neon)
-
-       ;; Neon requires but doesn't propagate zlib, nor would we want that.
-       ;; XZ as well, but that's already present in the build environment.
-       ("zlib" ,zlib)))
+     (list neon
+           ;; Neon requires but doesn't propagate zlib, nor would we want that.
+           ;; XZ as well, but that's already present in the build environment.
+           zlib))
     (home-page "https://savannah.nongnu.org/projects/davfs2")
     (synopsis "Mount remote WebDAV resources in the local file system")
     (description
@@ -359,19 +353,17 @@ ones.")
         (base32 "1ry2sdkfbg4bwcldk42g1i3wa3z4pr9yh9dil6ilhwcvhqiw41zc"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake pkg-config))
     (inputs
-     `(("bzip2" ,bzip2)
-       ("e2fsprogs" ,e2fsprogs)
-       ("libgcrypt" ,libgcrypt)
-       ("lz4" ,lz4)
-       ("lzo" ,lzo)
-       ("util-linux" ,util-linux "lib")
-       ("xz" ,xz)
-       ("zlib" ,zlib)
-       ("zstd:lib" ,zstd "lib")))
+     (list bzip2
+           e2fsprogs
+           libgcrypt
+           lz4
+           lzo
+           `(,util-linux "lib")
+           xz
+           zlib
+           `(,zstd "lib")))
     (synopsis "File system back-up, deployment, and migration tool")
     (description
      "FSArchiver saves the contents of a file system to a compressed archive
@@ -402,11 +394,9 @@ is corrupted you'll lose the affected file(s) but not the whole back-up.")
          "04slwhr6ap9xcc27wphk22ad8yn79ngyy5z10lxams3k5liahvc2"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("fuse" ,fuse)
-       ("glib" ,glib)
-       ("libgphoto2" ,libgphoto2)))
+     (list fuse glib libgphoto2))
     (synopsis "Virtual file system for libgphoto2 using FUSE")
     (description "GPhotoFS is a FUSE file system module to mount your camera as
 a file system on Linux.  This allow using your camera with any tool able to read
@@ -415,8 +405,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "d214908864b3d245a265f029a29a1eb731834e3c")
-        (revision "10"))
+  (let ((commit "b19d9f92e12c2e78d6e306e6cb7f8a7d9a7875f3")
+        (revision "13"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -428,63 +418,56 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0w0678lp4crwxdsxih7j653sj8yp6dinmw68kmdbagdspgcv00g9"))))
+          (base32 "1ixb1fk58yjk8alpcf9a7h0fnkvpbsjxd766iz9h7qa6r1r77a6c"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:make-flags
-         (list ,(string-append "VERSION=" version) ; bogus vX.Y-nogit otherwise
-               (string-append "PREFIX=" (assoc-ref %outputs "out"))
-               "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
-               ,(string-append "CC=" (cc-for-target))
-               ,(string-append "PKG_CONFIG=" (pkg-config-for-target))
-               "PYTEST=pytest")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (add-after 'install 'promote-mount.bcachefs.sh
-             ;; XXX The (optional) mount.bcachefs helper requires rust:cargo.
-             ;; This alternative shell script does the job well enough for now.
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-               (with-directory-excursion (string-append out "/sbin")
-                 (rename-file "mount.bcachefs.sh" "mount.bcachefs")
-                 ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
-                 (wrap-program "mount.bcachefs"
-                   `("PATH" ":" prefix
-                     ,(cons (string-append out "/sbin")
-                            (map (lambda (input)
-                                     (string-append (assoc-ref inputs input)
-                                                    "/bin"))
-                                   (list "coreutils"
-                                         "gawk"
-                                         "util-linux"))))))))))
-         #:tests? #f))                  ; XXX 6 valgrind tests fail
+       (list #:make-flags
+             #~(list (string-append "VERSION=" #$version) ; ‘v…-nogit’ otherwise
+                     (string-append "PREFIX=" #$output)
+                     "INITRAMFS_DIR=$(PREFIX)/share/initramfs-tools"
+                     (string-append "CC=" #$(cc-for-target))
+                     (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
+                     "PYTEST=pytest")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)    ; no configure script
+                 (add-after 'install 'promote-mount.bcachefs.sh
+                   ;; XXX The (optional) ‘mount.bcachefs’ requires rust:cargo.
+                   ;; This shell alternative does the job well enough for now.
+                   (lambda _
+                     (with-directory-excursion (string-append #$output "/sbin")
+                       (rename-file "mount.bcachefs.sh" "mount.bcachefs")
+                       ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
+                       (wrap-program "mount.bcachefs"
+                         `("PATH" ":" prefix
+                           ,(list (string-append #$output            "/sbin")
+                                  (string-append #$coreutils-minimal "/bin")
+                                  (string-append #$gawk              "/bin")
+                                  (string-append #$util-linux        "/bin"))))))))
+             #:tests? #f))                  ; XXX 6 valgrind tests fail
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-
-         ;; For tests.
-         ("python-pytest" ,python-pytest)
-         ("valgrind" ,valgrind)
-
-         ;; For generating documentation with rst2man.
-         ("python" ,python)
-         ("python-docutils" ,python-docutils)))
+       (list pkg-config
+             ;; For tests.
+             python-pytest
+             valgrind
+             ;; For generating documentation with rst2man.
+             python
+             python-docutils))
       (inputs
-       `(("eudev" ,eudev)
-         ("keyutils" ,keyutils)
-         ("libaio" ,libaio)
-         ("libscrypt" ,libscrypt)
-         ("libsodium" ,libsodium)
-         ("liburcu" ,liburcu)
-         ("util-linux:lib" ,util-linux "lib") ; lib{blkid,uuid}
-         ("lz4" ,lz4)
-         ("zlib" ,zlib)
-         ("zstd:lib" ,zstd "lib")
-
-         ;; Only for mount.bcachefs.sh.
-         ("coreutils" ,coreutils-minimal)
-         ("gawk" ,gawk)
-         ("util-linux" ,util-linux)))
+       (list eudev
+             keyutils
+             libaio
+             libscrypt
+             libsodium
+             liburcu
+             `(,util-linux "lib")
+             lz4
+             zlib
+             `(,zstd "lib")
+             ;; Only for mount.bcachefs.sh.
+             coreutils-minimal
+             gawk
+             util-linux))
       (home-page "https://bcachefs.org/")
       (synopsis "Tools to create and manage bcachefs file systems")
       (description
@@ -501,48 +484,56 @@ performance and other characteristics.")
       (license license:gpl2+))))
 
 (define-public bcachefs-tools/static
-   (package
-     (inherit bcachefs-tools)
-     (name "bcachefs-tools-static")
-     (arguments
-      (substitute-keyword-arguments (package-arguments bcachefs-tools)
-        ((#:make-flags make-flags)
-         `(append ,make-flags
-                  (list "LDFLAGS=-static")))))
-     (inputs
-      `(("eudev:static" ,eudev "static")
-        ("libscrypt:static" ,libscrypt "static")
-        ("lz4:static" ,lz4 "static")
-        ("util-linux:static" ,util-linux "static") ; lib{blkid,uuid}
-        ("zlib" ,zlib "static")
-        ("zstd:static" ,zstd "static")
-        ,@(package-inputs bcachefs-tools)))))
+  (package
+    (inherit bcachefs-tools)
+    (name "bcachefs-tools-static")
+    (arguments
+     (substitute-keyword-arguments (package-arguments bcachefs-tools)
+       ((#:make-flags make-flags)
+        #~(append #$make-flags
+              (list "LDFLAGS=-static")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'skip-shared-library
+              (lambda _
+                (substitute* "Makefile"
+                  ;; Building the shared library with ‘-static’ obviously fails…
+                  (("^((all|install):.*)\\blib\\b(.*)" _ prefix suffix)
+                   (string-append prefix suffix "\n"))
+                  ;; …as does installing a now non-existent file.
+                  ((".*\\$\\(INSTALL\\).* lib.*") ""))))))))
+    (inputs (modify-inputs (package-inputs bcachefs-tools)
+              (prepend `(,eudev "static")
+                       `(,keyutils "static")
+                       `(,libscrypt "static")
+                       `(,lz4 "static")
+                       `(,util-linux "static")
+                       `(,zlib "static")
+                       `(,zstd "static"))))))
 
 (define-public bcachefs/static
   (package
     (name "bcachefs-static")
     (version (package-version bcachefs-tools))
-    (build-system trivial-build-system)
     (source #f)
-    (inputs
-     `(("bcachefs-tools" ,bcachefs-tools/static)))
+    (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 ftw)
-                      (srfi srfi-26))
-         (let* ((bcachefs-tools (assoc-ref %build-inputs "bcachefs-tools"))
-                (out (assoc-ref %outputs "out")))
-           (mkdir-p out)
-           (with-directory-excursion out
-             (install-file (string-append bcachefs-tools
-                                          "/sbin/bcachefs")
-                           "sbin")
-             (remove-store-references "sbin/bcachefs")
-             (invoke "sbin/bcachefs" "version") ; test suite
-             #t)))))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils)
+                            (ice-9 ftw)
+                            (srfi srfi-26))
+               (mkdir-p #$output)
+               (with-directory-excursion #$output
+                 (install-file (string-append #$(this-package-input
+                                                 "bcachefs-tools-static")
+                                              "/sbin/bcachefs")
+                               "sbin")
+                 (remove-store-references "sbin/bcachefs")
+                 (invoke "sbin/bcachefs" "version"))))) ; test suite
+    (inputs
+     (list bcachefs-tools/static))
     (home-page (package-home-page bcachefs-tools))
     (synopsis "Statically-linked bcachefs command from bcachefs-tools")
     (description "This package provides the statically-linked @command{bcachefs}
@@ -552,7 +543,7 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public exfatprogs
   (package
     (name "exfatprogs")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -561,16 +552,13 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19pbybgbfnvjb3n944ihrn1r8ch4dm8dr0d44d6w7p63dcp372xy"))))
+        (base32 "14lgwvbg6jibsdpzpcj484p9q4ixawyjxi9hw23w89c6870gglw9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        (list "--disable-static")))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/exfatprogs/exfatprogs")
     (synopsis "Tools to create, check, and repair exFAT file systems")
     (description
@@ -594,39 +582,33 @@ Extensible File Allocation Table} file systems.  Included are
          "1h8ggvhw30n2r6w11n1s458ypggdqx6ldwd61ma4yd7binrlpjq1"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("docbook-xml" ,docbook-xml)
-       ("libxml2" ,libxml2)
-       ("libxslt" ,libxslt)
-       ("pkg-config" ,pkg-config)))
+     (list asciidoc docbook-xml libxml2 libxslt pkg-config))
     (inputs
-     `(("fuse" ,fuse)
-       ("gnutls" ,gnutls)))
+     (list fuse gnutls))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'install
-           ;; There's no ‘install’ target. Install all variants manually.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man1 (string-append out "/share/man/man1")))
-               (mkdir-p bin)
-               (mkdir-p man1)
-               (for-each
-                (lambda (variant)
-                  (let ((man1-page (string-append variant ".1")))
-                    (install-file variant bin)
-                    (install-file man1-page man1)))
-                (list "httpfs2"
-                      "httpfs2-mt"
-                      "httpfs2-ssl"
-                      "httpfs2-ssl-mt")))
-             #t)))
-       #:make-flags (list "CC=gcc")
-       #:parallel-build? #f             ; can result in missing man pages
-       #:tests? #f))                    ; no tests
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ; no configure script
+               (replace 'install
+                 ;; There's no ‘install’ target. Install all variants manually.
+                 (lambda _
+                   (let* ((bin (string-append #$output "/bin"))
+                          (man1 (string-append #$output "/share/man/man1")))
+                     (mkdir-p bin)
+                     (mkdir-p man1)
+                     (for-each
+                      (lambda (variant)
+                        (let ((man1-page (string-append variant ".1")))
+                          (install-file variant bin)
+                          (install-file man1-page man1)))
+                      (list "httpfs2"
+                            "httpfs2-mt"
+                            "httpfs2-ssl"
+                            "httpfs2-ssl-mt"))))))
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:parallel-build? #f         ; can result in missing man pages
+           #:tests? #f))                ; no tests
     (home-page "https://sourceforge.net/projects/httpfs/")
     (synopsis "Mount remote files over HTTP")
     (description "httpfs2 is a @code{fuse} file system for mounting any
@@ -654,7 +636,7 @@ single file can be mounted.")
                                 "jfsutils-include-systypes.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("util-linux" ,util-linux "lib")))
+     (list `(,util-linux "lib")))
     (home-page "http://jfs.sourceforge.net/home.html")
     (synopsis "Utilities for managing JFS file systems")
     (description
@@ -730,10 +712,9 @@ from the jfsutils package.  It is meant to be used in initrds.")
          "1pnrj0h8sgqwgsc18vz3fkqsp6vhigdbi75vdj0si1r6wgslnr7z"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("fuse" ,fuse)
-       ("attr" ,attr)))
+     (list fuse attr))
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (delete 'configure))  ; no configure script
@@ -838,11 +819,9 @@ All of this is accomplished without a centralized metadata server.")
               (("4426192") "12814800"))
              #t)))))
     (inputs
-     `(("curl" ,curl)
-       ("glib" ,glib)
-       ("fuse" ,fuse)))
+     (list curl glib fuse))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "http://curlftpfs.sourceforge.net/")
     (synopsis "Mount remote file systems over FTP")
     (description
@@ -852,14 +831,14 @@ All of this is accomplished without a centralized metadata server.")
 (define-public libeatmydata
   (package
     (name "libeatmydata")
-    (version "129")
+    (version "130")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.flamingspork.com/projects/libeatmydata/"
                            "libeatmydata-" version ".tar.gz"))
        (sha256
-        (base32 "1qycv1cvy6fr3v5rxilnsqxllwyfbqlcairlh31x2dnjsx28jnqf"))))
+        (base32 "1h212l2s0g3pv6q96d94dk7kpp9qzyxqydrrcgyp7zqjwvbiqws8"))))
     (build-system gnu-build-system)
     (arguments
      ;; All tests pass---but only if the host kernel allows PTRACE_TRACEME.
@@ -872,7 +851,8 @@ All of this is accomplished without a centralized metadata server.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* (list "eatmydata.in" "eatmydata.sh.in")
                (("basename|readlink|uname" command)
-                (string-append (assoc-ref inputs "coreutils") "/bin/" command)))))
+                (search-input-file inputs
+                                   (string-append "bin/" command))))))
          (add-before 'patch-file-names 'tighten-symlink-mode
            ;; When the ‘eatmydata’ helper detects that it's a symlink, it will
            ;; transparently invoke the command of the same name.  However, it's
@@ -900,14 +880,14 @@ All of this is accomplished without a centralized metadata server.")
            (method url-fetch)
            (uri (string-append "https://deb.debian.org/debian/pool/main/"
                                "libe/libeatmydata/libeatmydata_" version
-                               "-1.debian.tar.xz"))
+                               "-2.debian.tar.xz"))
            (sha256
-            (base32 "0q6kx1bf870jj52a2vm5p5xlrr89g2zs8wyhlpn80pys9p28nikx"))))
+            (base32 "1sg9g1nv3wl9ymzz33ig4ns563npkbxj67a64m7p34cc813jl95w"))))
        ;; For the test suite.
        ("strace" ,strace)
        ("which" ,which)))
     (inputs
-     `(("coreutils" ,coreutils)))
+     (list coreutils))
     (home-page "https://www.flamingspork.com/projects/libeatmydata/")
     (synopsis "Transparently ignore calls to synchronize data safely to disk")
     (description
@@ -924,7 +904,7 @@ Please, @emph{do not} use something called ``eat my data'' in such cases!
 
 However, it does not make sense to accept this performance hit if the data is
 unimportant and you can afford to lose all of it in the event of a crash, for
-example when running a software test suite.  Adding @code{}libeatmydata.so} to
+example when running a software test suite.  Adding @file{libeatmydata.so} to
 the @env{LD_PRELOAD} environment of such tasks will override all C library data
 synchronisation functions with custom @i{no-op} ones that do nothing and
 immediately return success.
@@ -948,10 +928,7 @@ A simple @command{eatmydata} script is included that does this for you.")
     (build-system gnu-build-system)
     (home-page "https://github.com/sahlberg/libnfs")
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (synopsis "Client library for accessing NFS shares")
     (description "LIBNFS is a client library for accessing NFS shares over a
 network.  LIBNFS offers three different APIs, for different use :
@@ -1006,9 +983,7 @@ network.  LIBNFS offers three different APIs, for different use :
                  (install-file "../source/README.md" doc)
                  #t))))))
       (inputs
-       `(("bzip2" ,bzip2)
-         ("fuse" ,fuse)
-         ("zlib" ,zlib)))
+       (list bzip2 fuse zlib))
       (synopsis "Read-only FUSE driver for the APFS file system")
       (description "APFS-FUSE is a read-only FUSE driver for the @dfn{Apple File
 System} (APFS).  It is currently in an experimental state — it may not be able
@@ -1019,8 +994,8 @@ APFS.")
 
 (define-public xfstests
   ;; The last release (1.1.0) is from 2011.
-  (let ((revision "0")
-        (commit "1c18b9ec2fcc94bd05ecdd136aa51c97bf3fa70d"))
+  (let ((revision "1")
+        (commit "bae1d15f6421cbe99b3e2e134c39d50248e7c261"))
     (package
       (name "xfstests")
       (version (git-version "1.1.0" revision commit))
@@ -1032,7 +1007,7 @@ APFS.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0rrv0rs9nhaza0jk5k0bj27w4lcd1s4a1ls8nr679qi02bgx630x"))))
+          (base32 "01y7dx5sx1xg3dycqlp2b6azclz3xcnx7vdy2rr6zmf210501xd9"))))
       (build-system gnu-build-system)
       (arguments
        `(#:phases
@@ -1050,11 +1025,9 @@ APFS.")
                                              (assoc-ref inputs "bash")
                                              match))
                              (("/bin/(rm|true)" match)
-                              (string-append (assoc-ref inputs "coreutils")
-                                             match))
+                              (search-input-file inputs match))
                              (("/usr(/bin/time)" _ match)
-                              (string-append (assoc-ref inputs "time")
-                                             match))))
+                              (search-input-file inputs match))))
                          (append (find-files "common" ".*")
                                  (find-files "tests" ".*")
                                  (find-files "tools" ".*")
@@ -1101,8 +1074,7 @@ APFS.")
                  (with-output-to-file helper
                    (lambda _
                      (format #t "#!~a --no-auto-compile\n!#\n"
-                             (string-append (assoc-ref inputs "guile")
-                                            "/bin/guile"))
+                             (search-input-file inputs "/bin/guile"))
                      (write
                       `(begin
                          (define (try proc dir)
@@ -1143,9 +1115,7 @@ xfstest's \"~a\" command (with any OPTIONs) as documented below.\n\n"
                              status))))))
                  (chmod helper #o755)))))))
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)))
+       (list autoconf automake libtool))
       (inputs
        `(("acl" ,acl)
          ("attr" ,attr)
@@ -1175,7 +1145,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.0")
+    (version "2.1.2")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1184,7 +1154,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "0kzkggwznp4m3503f2m4lcinbl99jg50j4asrwfpfk1862vdrgb0"))))
+           (base32 "1rxrr329y6zgkcqv0gah8bgi9ih6pqaay7mnk4xqlrhzgb8z3315"))))
     (build-system linux-module-build-system)
     (arguments
      `(;; The ZFS kernel module should not be downloaded since the license
@@ -1278,8 +1248,7 @@ with the included @command{xfstests-check} helper.")
                (substitute* '("Makefile.am" "Makefile.in")
                  (("\\$\\(prefix)/src") (string-append src "/src")))
                (substitute* (find-files "udev/rules.d/" ".rules.in$")
-                 (("/sbin/modprobe") (string-append kmod "/bin/modprobe"))))
-             #t))
+                 (("/sbin/modprobe") (string-append kmod "/bin/modprobe"))))))
          (replace 'build
            (lambda _ (invoke "make")))
          (replace 'install
@@ -1294,12 +1263,10 @@ with the included @command{xfstests-check} helper.")
                        (string-append "INSTALL_MOD_PATH=" moddir)
                        "INSTALL_MOD_STRIP=1")
                (install-file "contrib/bash_completion.d/zfs"
-                             (string-append out "/share/bash-completion/completions"))
-               #t))))))
+                             (string-append out
+                                            "/share/bash-completion/completions"))))))))
     (native-inputs
-     `(("attr" ,attr)
-       ("kmod" ,kmod)
-       ("pkg-config" ,pkg-config)))
+     (list attr kmod pkg-config))
     (inputs
      `(("eudev" ,eudev)
        ("kmod-runtime" ,kmod)
@@ -1340,7 +1307,7 @@ community.")
      ;; Note: if you are inheriting from the above zfs package in order
      ;; to provide a specific stable kernel version, you should also
      ;; inherit this package and replace the sole input below.
-     `(("zfs" ,zfs)))
+     (list zfs))
     (arguments
      `(#:tests? #f ; No tests
        #:phases
@@ -1430,15 +1397,15 @@ On Guix System, you will need to invoke the included shell scripts as
              (substitute* '("libfuse/lib/mount_util.c"
                             "libfuse/util/mount_util.c")
                (("/bin/(u?)mount" _ maybe-u)
-                (string-append (assoc-ref inputs "util-linux")
-                               "/bin/" maybe-u "mount")))
+                (search-input-file inputs
+                                   (string-append "bin/" maybe-u
+                                                  "mount"))))
              (substitute* '("libfuse/util/mount.mergerfs.c")
                (("/bin/sh" command)
                 (string-append (assoc-ref inputs "bash-minimal") command))))))))
     ;; Mergerfs bundles a heavily modified copy of fuse.
     (inputs
-     `(("bash-minimal" ,bash-minimal)
-       ("util-linux" ,util-linux)))
+     (list bash-minimal util-linux))
     (home-page "https://github.com/trapexit/mergerfs")
     (synopsis "Featureful union file system")
     (description "mergerfs is a union file system geared towards simplifying
@@ -1467,9 +1434,7 @@ is similar to mhddfs, unionfs, and aufs.")
           (base32 "15pgym6c4viy57ccgp28dnqwh12f3gr02axg86y578aqa2yaa0ad"))))
       (build-system copy-build-system)
       (inputs
-       `(("python" ,python)
-         ("python-xattr" ,python-xattr)
-         ("rsync" ,rsync)))
+       (list python python-xattr rsync))
       (arguments
        '(#:install-plan
          '(("src/" "bin/"))
@@ -1484,10 +1449,9 @@ is similar to mhddfs, unionfs, and aufs.")
                   (string-append "'" (assoc-ref inputs "coreutils") "/bin/rm'")))
                (substitute* "src/mergerfs.mktrash"
                  (("xattr")
-                  (string-append (assoc-ref inputs "python-xattr") "/bin/xattr"))
+                  (search-input-file inputs "/bin/xattr"))
                  (("mkdir")
-                  (string-append (assoc-ref inputs "coreutils") "/bin/mkdir")))
-               #t)))))
+                  (search-input-file inputs "/bin/mkdir"))))))))
       (synopsis "Tools to help manage data in a mergerfs pool")
       (description "mergerfs-tools is a suite of programs that can audit
 permissions and ownership of files and directories on a mergerfs volume,
@@ -1501,26 +1465,19 @@ compatible directories.")
 (define-public python-dropbox
   (package
     (name "python-dropbox")
-    (version "11.5.0")
+    (version "11.25.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "dropbox" version))
         (sha256
-         (base32
-          "16bxx9xqx2s4d9khrw57a0bj4q7nc6kq355wl4pfddn9cqvh9rg2"))))
+         (base32 "0vq9c2hp2amsxr2ys2mlgqp6a8hxmvrcwav70ri7wjzalfs32gj6"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f))  ; Tests require a network connection.
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-pytest-runner" ,python-pytest-runner)))
+     (list python-pytest python-pytest-runner))
     (propagated-inputs
-     `(("python-certifi" ,python-certifi)
-       ("python-chardet" ,python-chardet)
-       ("python-requests" ,python-requests)
-       ("python-six" ,python-six)
-       ("python-stone" ,python-stone)
-       ("python-urllib3" ,python-urllib3)))
+     (list python-requests python-six python-stone))
     (home-page "https://www.dropbox.com/developers")
     (synopsis "Official Dropbox API Client")
     (description "This package provides a Python SDK for integrating with the
@@ -1533,24 +1490,28 @@ Dropbox API v2.")
     (version "1.0.51")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "dbxfs" version))
+        ;; Release tarball contains files not in git repository.
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://thelig.ht/code/dbxfs")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
          (base32
-          "1zz82d0mnql55397x4jx7z5rn857rf9zhjv895j93wpxdq10xwvk"))
+          "0bidb1gg5lqa1561f20qnj7gy323q65qwzfrb8h8gs6dsl3g6yfg"))
         (patches (search-patches "dbxfs-remove-sentry-sdk.patch"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; tests requires safefs
     (propagated-inputs
-     `(("python-appdirs" ,python-appdirs)
-       ("python-block-tracing" ,python-block-tracing)
-       ("python-dropbox" ,python-dropbox)
-       ("python-keyring" ,python-keyring)
-       ("python-keyrings.alt" ,python-keyrings.alt)
-       ("python-privy" ,python-privy)
-       ("python-userspacefs" ,python-userspacefs)))
-  (home-page "https://github.com/rianhunter/dbxfs")
+     (list python-appdirs
+           python-block-tracing
+           python-dropbox
+           python-keyring
+           python-keyrings.alt
+           python-privy
+           python-userspacefs))
+  (home-page "https://thelig.ht/code/dbxfs/")
   (synopsis "User-space file system for Dropbox")
   (description
    "@code{dbxfs} allows you to mount your Dropbox folder as if it were a
@@ -1575,7 +1536,7 @@ local file system using FUSE.")
     (arguments
      `(#:import-path "github.com/hanwen/go-fuse"))
     (propagated-inputs
-     `(("go-golang-org-x-sys" ,go-golang-org-x-sys)))
+     (list go-golang-org-x-sys))
     (home-page "https://github.com/hanwen/go-fuse")
     (synopsis "FUSE bindings for Go")
     (description
@@ -1616,10 +1577,9 @@ local file system using FUSE.")
                  (for-each (cut install-file <> (string-append doc "/examples"))
                            (find-files "." "^config\\."))))))))
       (native-inputs
-       `(("pkg-config" ,pkg-config)))
+       (list pkg-config))
       (inputs
-       `(("fuse" ,fuse)
-         ("pcre" ,pcre)))
+       (list fuse pcre))
       (home-page "https://github.com/sloonz/rewritefs")
       (synopsis "FUSE file system that changes particular file names")
       (description
@@ -1660,8 +1620,7 @@ the XDG directory specification from @file{~/.@var{name}} to
                (rename-file (string-append out "/bin/TMSU")
                             (string-append out "/bin/tmsu"))))))))
     (inputs
-     `(("go-github-com-mattn-go-sqlite3" ,go-github-com-mattn-go-sqlite3)
-       ("go-github-com-hanwen-fuse" ,go-github-com-hanwen-fuse)))
+     (list go-github-com-mattn-go-sqlite3 go-github-com-hanwen-fuse))
     (home-page "https://github.com/oniony/TMSU")
     (synopsis "Tag files and access them through a virtual file system")
     (description
@@ -1693,10 +1652,7 @@ set up.")
        (list (string-append "--docdir=" (assoc-ref %outputs "out")
                             "/share/doc/" ,name "-" ,version))))
     (native-inputs
-     `(("automake" ,automake)
-       ("autoconf" ,autoconf)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list automake autoconf libtool pkg-config))
     (home-page "https://github.com/pali/udftools")
     (synopsis "Tools to manage UDF file systems and DVD/CD-R(W) drives")
     (description "@code{udftools} is a set of programs for reading

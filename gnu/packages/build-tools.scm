@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Corentin Bocquillon <corentin@nybble.fr>
-;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -44,7 +44,6 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
-  #:use-module (gnu packages gcc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
@@ -91,7 +90,7 @@
     (native-inputs
      `(("python" ,python-2)))
     (inputs
-     `(("lua" ,lua)))
+     (list lua))
     (home-page "https://matricks.github.io/bam/")
     (synopsis "Fast and flexible build system")
     (description "Bam is a fast and flexible build system.  Bam uses Lua to
@@ -103,29 +102,32 @@ makes a few sacrifices to acquire fast full and incremental build times.")
 (define-public bear
   (package
     (name "bear")
-    (version "3.0.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rizsotto/Bear")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (patches (search-patches
-                        "bear-disable-preinstall-tests.patch"))
-              (sha256
-               (base32
-                "15r22sbk5bibrhf54lf0shiqw1gnsik24fr5as96w3hnj6iahgwn"))))
+    (version "3.0.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rizsotto/Bear")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0klbk99qphibrp2944w8gn6x1dwwgrbm7f2bh530wjp5h3bpkr45"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'disable-TEST_BEFORE_INSTALL
+                    (lambda _
+                      (substitute* "CMakeLists.txt"
+                        ;; Delete the matching line—and comment out the next.
+                        ((".*TEST_(BEFORE_INSTALL|COMMAND).*") "#"))))
                   (add-before 'check 'set-build-environment
                     (lambda _
-                      (setenv "CC" "gcc")
-                      #t))
-                  ;; TODO: Test Configuration is Incomplete
+                      (setenv "CC" "gcc")))
                   (replace 'check
-                    (lambda _
-                      (invoke "ctest"))))))
+                    ;; TODO: Test configuration is incomplete.
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "ctest")))))))
     (inputs
      `(("c-ares" ,c-ares)
        ("fmt" ,fmt)
@@ -137,7 +139,6 @@ makes a few sacrifices to acquire fast full and incremental build times.")
        ("spdlog" ,spdlog)))
     (native-inputs
      `(("abseil-cpp" ,abseil-cpp)
-       ("gcc-9" ,gcc-9) ; for <filesystem>, #44896
        ("googletest" ,googletest)
        ("openssl" ,openssl)
        ("pkg-config" ,pkg-config)
@@ -154,19 +155,19 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20210206")
+    (version "20211212")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "07n9avzdg6gifrzyddnyzada5s5rzklvbqfpv5drljpxcgpqpvwg"))))
+        (base32 "17lywks7fy5538vwyyvbvxcq5mgnd5si7f2qgw85sgqj7mdr4xdd"))))
     (build-system gnu-build-system)
     (inputs
-     `(("bash" ,bash-minimal)))
+     (list bash-minimal))
     (native-inputs
-     `(("coreutils" ,coreutils)))
+     (list coreutils))
     (arguments
      `(#:tests? #f                      ; test during build
        #:phases
@@ -180,8 +181,7 @@ generate such a compilation database.")
            (lambda _
              (substitute* "unit-tests/Makefile"
                (("cmd-interrupt") "")
-               (("varmod-localtime") ""))
-             #t)))
+               (("varmod-localtime") "")))))
        #:configure-flags
        (list
         (string-append
@@ -264,7 +264,7 @@ files and generates build instructions for the Ninja build system.")
 (define-public meson
   (package
     (name "meson")
-    (version "0.53.2")
+    (version "0.60.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mesonbuild/meson/"
@@ -272,19 +272,30 @@ files and generates build instructions for the Ninja build system.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "07y2hh9dfn1m9g4bsy49nbn3vdmd0b2iwr8bxg19fhqq6c7q73ry"))))
+                "13mrrizg4vl6n5k7fz6amyafnn3i097dcarr552qc0ca6nlmzjl7"))
+              (patches (search-patches
+                        "meson-allow-dirs-outside-of-prefix.patch"))))
     (build-system python-build-system)
     (arguments
-     `(;; FIXME: Tests require many additional inputs, a fix for the RUNPATH
-       ;; patch in meson-for-build, and patching many hard-coded file system
-       ;; locations in "run_unittests.py".
+     `(;; FIXME: Tests require many additional inputs and patching many
+       ;; hard-coded file system locations in "run_unittests.py".
        #:tests? #f
        #:phases (modify-phases %standard-phases
                   ;; Meson calls the various executables in out/bin through the
                   ;; Python interpreter, so we cannot use the shell wrapper.
-                  (delete 'wrap))))
-    (inputs `(("ninja" ,ninja)))
-    (propagated-inputs `(("python" ,python)))
+                  (replace 'wrap
+                    (lambda* (#:key outputs inputs #:allow-other-keys)
+                      (let ((python-version
+                             (python-version (assoc-ref inputs "python")))
+                            (output (assoc-ref outputs "out")))
+                        (substitute* (string-append output "/bin/meson")
+                          (("# EASY-INSTALL-ENTRY-SCRIPT")
+                           (format #f "\
+import sys
+sys.path.insert(0, '~a/lib/python~a/site-packages')
+# EASY-INSTALL-ENTRY-SCRIPT"
+                                   output python-version)))))))))
+    (inputs (list python-wrapper ninja))
     (home-page "https://mesonbuild.com/")
     (synopsis "Build system designed to be fast and user-friendly")
     (description
@@ -296,12 +307,11 @@ files}, are written in a custom domain-specific language (@dfn{DSL}) that
 resembles Python.")
     (license license:asl2.0)))
 
-;; Added temporarily for packages that need it.
-;; TODO: Remove when core-updates is merged.
-(define-public meson-0.55
-  (package
-    (inherit meson)
-    (version "0.55.1")
+;;; This older Meson variant is kept for now for gtkmm and others that may
+;;; have problems with 0.60.
+(define-public meson-0.59
+  (package/inherit meson
+    (version "0.59.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mesonbuild/meson/"
@@ -309,31 +319,9 @@ resembles Python.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1070kjiirxxdfppmrhi3wsc6rykay1zlciqrzayjhjg0hkw42mrv"))))))
-
-(define-public meson-next
-  (package
-    (inherit meson)
-    (version "0.57.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mesonbuild/meson/"
-                                  "releases/download/" version  "/meson-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1iac7p99zfgkznq4qlnkk7b8xwwlilcrnkf33sczm56yqnqyg0rs"))))))
-
-(define-public meson-for-build
-  (package
-    (inherit meson)
-    (name "meson-for-build")
-    (source (origin
-              (inherit (package-source meson))
-              (patches (search-patches "meson-for-build-rpath.patch"))))
-
-    ;; People should probably install "meson", not "meson-for-build".
-    (properties `((hidden? . #t)))))
+                "117cm8794h291lca1wljz1pwnzidgbvrpg3mw3np6ksma368hyd7"))
+              (patches (search-patches
+                        "meson-allow-dirs-outside-of-prefix.patch"))))))
 
 (define-public premake4
   (package
@@ -348,7 +336,7 @@ resembles Python.")
                 "1017rd0wsjfyq2jvpjjhpszaa7kmig6q1nimw76qx3cjz2868lrn"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("unzip" ,unzip))) ; for unpacking the source
+     (list unzip)) ; for unpacking the source
     (arguments
      `(#:make-flags (list (string-append "CC=" ,(cc-for-target)))
        #:tests? #f ; No test suite
@@ -455,12 +443,11 @@ other lower-level build files.")))
                    (display "au BufNewFile,BufRead Tupfile,*.tup setf tup")))
                #t))))))
     (inputs
-     `(("fuse" ,fuse)
-       ("pcre" ,pcre)
-       ("pcre" ,pcre "bin") ; pcre-config
-       ("sqlite" ,sqlite)))
+     (list fuse pcre
+           `(,pcre "bin") ; pcre-config
+           sqlite))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "http://gittup.org/tup/")
     (synopsis "Fast build system that's hard to get wrong")
     (description "Tup is a generic build system based on a directed acyclic
@@ -497,11 +484,9 @@ a build worked by accident.")
                 (string-append bin "osc"))
                #t))))))
     (native-inputs
-     `(("python-chardet" ,python-chardet)))
+     (list python-chardet))
     (inputs
-     `(("python-m2crypto" ,python-m2crypto)
-       ("python-pycurl" ,python-pycurl)
-       ("rpm" ,rpm)))                   ; for python-rpm
+     (list python-m2crypto python-pycurl rpm))                   ; for python-rpm
     (home-page "https://github.com/openSUSE/osc")
     (synopsis "Open Build Service command line tool")
     (description "@command{osc} is a command line interface to the Open Build
@@ -530,10 +515,9 @@ be reached via direct API calls.")
              (substitute* "setup.py" (("^ *'shutilwhich'\n") ""))
              (substitute* "compiledb/compiler.py" (("shutilwhich") "shutil")))))))
     (propagated-inputs
-      `(("python-bashlex" ,python-bashlex)
-        ("python-click" ,python-click)))
+      (list python-bashlex python-click))
     (native-inputs
-      `(("python-pytest" ,python-pytest)))
+      (list python-pytest))
     (home-page
       "https://github.com/nickdiego/compiledb")
     (synopsis

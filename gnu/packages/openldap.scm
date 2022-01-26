@@ -2,11 +2,13 @@
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +55,7 @@
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:select (openldap2.8 lgpl2.1+ gpl3+ psfl expat))
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
@@ -61,8 +64,7 @@
 (define-public openldap
   (package
    (name "openldap")
-   (replacement openldap-2.4.57)
-   (version "2.4.50")
+   (version "2.4.57")
    (source (origin
              (method url-fetch)
              ;; See <http://www.openldap.org/software/download/> for a list of
@@ -78,16 +80,10 @@
                          "openldap-release/openldap-" version ".tgz")))
              (sha256
               (base32
-               "1f46nlfwmys110j36sifm7ah8m8f3s10c3vaiikmmigmifapvdaw"))))
+               "0nmlyqhc52v24b4awh914sczmvxbazgq2cnlycvb9dgcwvhlgfn7"))))
    (build-system gnu-build-system)
-   (inputs `(("bdb" ,bdb-5.3)
-             ("cyrus-sasl" ,cyrus-sasl)
-             ("gnutls" ,gnutls)
-             ("libgcrypt" ,libgcrypt)
-             ("zlib" ,zlib)))
-   (native-inputs `(("libtool" ,libtool)
-                    ("groff" ,groff)
-                    ("bdb" ,bdb-5.3)))
+   (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
+   (native-inputs (list libtool groff bdb-5.3))
    (arguments
     `(#:tests? #f
       #:configure-flags
@@ -126,17 +122,18 @@
    (license openldap2.8)
    (home-page "https://www.openldap.org/")))
 
-(define-public openldap-2.4.57
+;; TODO: Update the main package in the next rebuild cycle.
+(define-public openldap-2.6
   (package
     (inherit openldap)
-    (version "2.4.57")
+    (version "2.6.1")
     (source (origin
               (method url-fetch)
               ;; See <http://www.openldap.org/software/download/> for a list of
               ;; mirrors.
               (uri (list (string-append
-                          "ftp://mirror.switch.ch/mirror/OpenLDAP/"
-                          "openldap-release/openldap-" version ".tgz")
+                          "http://mirror.eu.oneandone.net/software/openldap"
+                          "/openldap-release/openldap-" version ".tgz")
                          (string-append
                           "https://www.openldap.org/software/download/OpenLDAP/"
                           "openldap-release/openldap-" version ".tgz")
@@ -145,19 +142,39 @@
                           "openldap-release/openldap-" version ".tgz")))
               (sha256
                (base32
-                "0nmlyqhc52v24b4awh914sczmvxbazgq2cnlycvb9dgcwvhlgfn7"))))))
+                "1wz6f3g3bbqgbbxs20zlappmmhapqbl791c0waibhz9djsk6wmwx"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openldap)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'patch-sasl-path
+              ;; Give -L arguments for cyrus-sasl to avoid propagation.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((krb5 (search-input-file inputs "/lib/libkrb5.so")))
+                  (substitute* (string-append #$output "/lib/libldap.la")
+                    (("-lkrb5" lib)
+                     (string-append "-L" (dirname krb5) "/lib " lib))))))
+            (add-after 'install 'provide-ldap_r
+              (lambda _
+                ;; The re-entrant libldap_r no longer exists since 2.6
+                ;; as it has become the default: provide a linker alias
+                ;; for now.
+                (call-with-output-file (string-append #$output
+                                                      "/lib/libldap_r.so")
+                  (lambda (port)
+                    (format port "INPUT ( libldap.so )~%")))))))))))
 
 (define-public nss-pam-ldapd
   (package
     (name "nss-pam-ldapd")
-    (version "0.9.11")
+    (version "0.9.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://arthurdejong.org/nss-pam-ldapd/"
                                   "nss-pam-ldapd-" version ".tar.gz"))
               (sha256
                (base32
-                "1dna3r0q6sjhhlkhcp8x2zkslrd4y7701kk6fl5r940sdph1pmyh"))))
+                "050fzcmxmf6y15dlcffc4gxr3wkk7fliqqwhlwqzbjwk8vkn3mn6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -178,13 +195,9 @@
              (substitute* "Makefile.in"
                (("\\$\\(DESTDIR\\)\\$\\(NSLCD_CONF_PATH\\)")
                 (string-append (assoc-ref outputs "out")
-                               "/etc/nslcd.conf.example")))
-             #t)))))
+                               "/etc/nslcd.conf.example"))))))))
     (inputs
-     `(("linux-pam" ,linux-pam)
-       ("openldap" ,openldap)
-       ("mit-krb5" ,mit-krb5)
-       ("python" ,python)))
+     (list linux-pam openldap mit-krb5 python))
     (home-page "https://arthurdejong.org/nss-pam-ldapd")
     (synopsis "NSS and PAM modules for LDAP")
     (description "nss-pam-ldapd provides a @dfn{Name Service Switch} (NSS)
@@ -198,35 +211,29 @@ an LDAP server.")
 (define-public python-ldap
   (package
     (name "python-ldap")
-    (version "3.3.1")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-ldap" version))
        (sha256
         (base32
-         "198as30xy6p760niqps2zdvq2xcmr765h06pmda8fa9y077wl4a7"))))
+         "04hd7rdm59i7wrykx0nggzxx1p42wkm296j483yy0wayqa7lqik0"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'configure-openldap-locations
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((openldap (assoc-ref inputs "openldap")))
-               (setenv "SLAPD"
-                       (string-append openldap
-                                      "/libexec/slapd"))
-               (setenv "SCHEMA"
-                       (string-append openldap
-                                      "/etc/openldap/schema/")))
-             #t)))))
+             (let ((slapd (search-input-file inputs "libexec/slapd"))
+                   (schema (search-input-directory
+                            inputs "etc/openldap/schema")))
+               (setenv "SLAPD" slapd)
+               (setenv "SCHEMA" schema)))))))
     (inputs
-     `(("openldap" ,openldap)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("mit-krb5" ,mit-krb5)))
+     (list openldap-2.6 cyrus-sasl mit-krb5))
     (propagated-inputs
-     `(("python-pyasn1" ,python-pyasn1)
-       ("python-pyasn1-modules" ,python-pyasn1-modules)))
+     (list python-pyasn1 python-pyasn1-modules))
     (home-page "https://www.python-ldap.org/")
     (synopsis "Python modules for implementing LDAP clients")
     (description
@@ -237,20 +244,20 @@ servers from Python programs.")
 (define-public 389-ds-base
   (package
     (name "389-ds-base")
-    (version "1.4.0.31")
+    (version "1.4.4.17")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://releases.pagure.org/389-ds-base/"
-                                  "389-ds-base-" version ".tar.bz2"))
+              (uri (string-append "https://github.com/389ds/389-ds-base/archive/"
+                                  "389-ds-base-" version ".tar.gz"))
               (sha256
                (base32
-                "1rs218iqxyclccsdqb529favdsmz88zw785lsxd9ln43ja3x3l65"))))
+                "0i8m4crbnjjhfb7cq758rd0fxyz36i291yq6fykkprjykz9s3zv4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((srfi srfi-1)
                   (guix build gnu-build-system)
                   ((guix build python-build-system)
-                   #:select (python-version))
+                   #:select (add-installed-pythonpath python-version))
                   (guix build utils))
        #:imported-modules ((guix build python-build-system)
                            ,@%gnu-build-system-modules)
@@ -277,12 +284,17 @@ servers from Python programs.")
            (lambda _
              (substitute* "include/ldaputil/certmap.h"
                (("nss3/cert.h") "nss/cert.h"))
+             (substitute* "src/lib389/lib389/utils.py"
+               (("'/sbin/ip'")
+                (string-append "'" (which "ip") "'")))
              (substitute* "src/lib389/lib389/nss_ssl.py"
                (("'/usr/bin/certutil'")
                 (string-append "'" (which "certutil") "'"))
+               (("'/usr/bin/openssl'")
+                (string-append "'" (which "openssl") "'"))
                (("'/usr/bin/c_rehash'")
-                (string-append "'" (which "perl") "', '" (which "c_rehash") "'")))
-             #t))
+                (string-append "'" (which "perl") "', '"
+                               (which "c_rehash") "'")))))
          (add-after 'unpack 'overwrite-default-locations
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -300,8 +312,7 @@ servers from Python programs.")
                (substitute* '("src/lib389/lib389/instance/setup.py"
                               "src/lib389/lib389/instance/remove.py")
                  (("etc_dirsrv_path = .*")
-                  "etc_dirsrv_path = '/etc/dirsrv/'\n"))
-               #t)))
+                  "etc_dirsrv_path = '/etc/dirsrv/'\n")))))
          (add-after 'unpack 'fix-install-location-of-python-tools
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -310,18 +321,16 @@ servers from Python programs.")
                                 (python-version (assoc-ref inputs "python"))
                                 "/site-packages/")))
                ;; Install directory must be on PYTHONPATH.
-               (setenv "PYTHONPATH"
-                       (string-append (getenv "PYTHONPATH")
-                                      ":" pythondir))
+               (add-installed-pythonpath inputs outputs)
                ;; Install directory must exist.
                (mkdir-p pythondir)
                (substitute* "src/lib389/setup.py"
                  (("/usr") out))
                (substitute* "Makefile.am"
                  (("setup.py install --skip-build" m)
-                  (string-append m " --prefix=" out
-                                 " --root=/ --single-version-externally-managed"))))
-             #t))
+                  (string-append
+                   m " --prefix=" out
+                   " --root=/ --single-version-externally-managed"))))))
          (add-after 'build 'build-python-tools
            (lambda* (#:key make-flags #:allow-other-keys)
              ;; Set DETERMINISTIC_BUILD to override the embedded mtime in pyc
@@ -330,27 +339,23 @@ servers from Python programs.")
              ;; Use deterministic hashes for strings, bytes, and datetime
              ;; objects.
              (setenv "PYTHONHASHSEED" "0")
-             (apply invoke "make" "lib389" make-flags)
-             #t))
+             (apply invoke "make" "lib389" make-flags)))
          (add-after 'install 'install-python-tools
            (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "lib389-install" make-flags)
-             #t))
+             (apply invoke "make" "lib389-install" make-flags)))
          (add-after 'install-python-tools 'wrap-python-tools
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
-                    (path (getenv "PYTHONPATH")))
+                    (pythonpath (getenv "GUIX_PYTHONPATH")))
                (for-each (lambda (file)
                            (wrap-program (string-append out file)
-                             `("PYTHONPATH" ":" prefix (,path))))
+                             `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
                          '("/sbin/dsconf"
                            "/sbin/dscreate"
                            "/sbin/dsctl"
                            "/sbin/dsidm"
                            "/bin/ds-logpipe.py"
-                           "/bin/ds-replcheck"
-                           "/bin/readnsstate")))
-             #t)))))
+                           "/bin/ds-replcheck"))))))))
     (inputs
      `(("bdb" ,bdb)
        ("cracklib" ,cracklib)
@@ -358,6 +363,7 @@ servers from Python programs.")
        ("gnutls" ,gnutls)
        ("httpd" ,httpd)
        ("icu4c" ,icu4c)
+       ("iproute" ,iproute)
        ("libevent" ,libevent)
        ("libselinux" ,libselinux)
        ("linux-pam" ,linux-pam)
@@ -365,7 +371,7 @@ servers from Python programs.")
        ("net-snmp" ,net-snmp)
        ("nspr" ,nspr)
        ("nss" ,nss)
-       ("nss:bin" ,nss "bin") ; for certutil
+       ("nss:bin" ,nss "bin")           ; for certutil
        ("openldap" ,openldap)
        ("openssl" ,openssl)             ; #included by net-snmp
        ("pcre" ,pcre)
@@ -419,9 +425,7 @@ Other features include:
          "013bl6h1m3f7vg1lk89d4vi28wbf31zdcs4f9g8css7ngx63v6px"))))
     (build-system python-build-system)
     (inputs
-     `(("mit-krb5" ,mit-krb5)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("openldap" ,openldap)))
+     (list mit-krb5 cyrus-sasl openldap))
     ;; disabling tests, since they require docker and extensive setup
     (arguments `(#:tests? #f))
     (home-page "https://github.com/noirello/bonsai")
@@ -431,4 +435,3 @@ Other features include:
 are mapped to a special Python case-insensitive dictionary, tracking the
 changes of the dictionary to modify the entry on the server easily.")
     (license expat)))
-

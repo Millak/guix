@@ -11,6 +11,11 @@
 ;;; Copyright © 2020 Ellis Kenyo <me@elken.dev>
 ;;; Copyright © 2020 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Songlin Jiang <hollowman@hollowman.ml>
+;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,13 +37,19 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
+  #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -76,11 +87,10 @@
                (("^\"\\$srcdir/configure\".*") ""))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     ;; When Arc is missing an icon, it looks in the Moka icon theme for it.
     (propagated-inputs
-     `(("moka-icon-theme" ,moka-icon-theme)))
+     (list moka-icon-theme))
     (synopsis "Arc icon theme")
     (description "The Arc icon theme provides a set of icons matching the
 style of the Arc GTK theme.  Icons missing from the Arc theme are provided by
@@ -143,8 +153,7 @@ the Obsidian icon theme.")
              (substitute* "meson.build"
                (("meson.add_install_script.*") "")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)))
+     (list autoconf automake))
     (synopsis "Faba icon theme")
     (description
      "Faba is a minimal icon set used as a basis for other themes such as
@@ -170,7 +179,7 @@ Moka")
     (propagated-inputs
      ;; Moka is based on Faba by using it as a fallback icon set instead of
      ;; bundling it, so we need to add it as a propagated input.
-     `(("faba-icon-theme" ,faba-icon-theme)))
+     (list faba-icon-theme))
     (synopsis "Moka icon theme")
     (description "Moka is a stylized desktop icon set, designed to be clear,
 simple and consistent.")
@@ -237,26 +246,29 @@ GNOME Shell.")
 (define-public gnome-shell-extension-clipboard-indicator
   (package
     (name "gnome-shell-extension-clipboard-indicator")
-    (version "34")
+    (version "39")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url (string-append "https://github.com/Tudmotu/"
-                                        "gnome-shell-extension-clipboard-indicator.git"))
+                    (url
+                     (string-append
+                      "https://github.com/Tudmotu/"
+                      "gnome-shell-extension-clipboard-indicator"))
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i00psc1ky70zljd14jzr627y7nd8xwnwrh4xpajl1f6djabh12s"))
+                "1kq6bzxki7lwmw690f4qml8pvfwafpqpsfnq2kyjhrp8nh39axwi"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove pre-compiled settings schemas and translations from
                ;; source, as they are generated as part of build. Upstream
                ;; includes them for people who want to run the software
                ;; directly from source tree.
-               '(begin (delete-file "schemas/gschemas.compiled")
-                       (for-each delete-file (find-files "locale" "\\.mo$"))
-                       #t))))
+               '(begin
+                  (delete-file "schemas/gschemas.compiled")
+                  (for-each delete-file
+                            (find-files "locale" "\\.mo$"))))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -267,19 +279,47 @@ GNOME Shell.")
          (add-before 'install 'compile-schemas
            (lambda _
              (with-directory-excursion "schemas"
-               (invoke "glib-compile-schemas" "."))
-             #t))
-         (add-before 'install 'compile-locales
-           (lambda _ (invoke "./compile-locales.sh")
-                   #t)))))
+               (invoke "glib-compile-schemas" ".")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")))       ; for glib-compile-schemas
+     (list `(,glib "bin") gettext-minimal))
     (home-page "https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator")
     (synopsis "Clipboard manager extension for GNOME Shell")
     (description "Clipboard Indicator is a clipboard manager for GNOME Shell
 that caches clipboard history.")
     (license license:expat)))
+
+(define-public gnome-shell-extension-customize-ibus
+  (package
+    (name "gnome-shell-extension-customize-ibus")
+    (version "78")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openSUSE/Customize-IBus.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hnnsjriq7xaakk8biwz55mn077lnm9nsmi4wz5zk7clgxmasvq9"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags
+       (list (string-append "VERSION=" ,version)
+             (string-append "INSTALLBASE=" (assoc-ref %outputs "out")
+                            "/share/gnome-shell/extensions"))
+       #:tests? #f ; No test target
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'bootstrap)
+         (delete 'configure))))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("glib:bin" ,glib "bin")))
+    (home-page "https://github.com/openSUSE/Customize-IBus")
+    (synopsis "GNOME Shell Extension for IBus Customization")
+    (description "Customize IBus provides full customization of appearance,
+behavior, system tray and input source indicator for IBus.")
+    (license license:gpl3+)))
 
 (define-public gnome-shell-extension-topicons-redux
   (package
@@ -296,7 +336,7 @@ that caches clipboard history.")
         (base32 "1dli9xb545n3xlj6q4wl0y5gzkm903zs47p8fiq71pdvbr6v38rj"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("glib" ,glib "bin")))
+     (list `(,glib "bin")))
     (arguments
      `(#:tests? #f                      ;no test defined in the project
        #:phases
@@ -325,7 +365,7 @@ easier to keep track of applications running in the background.")
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "67")
+    (version "71")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -334,7 +374,7 @@ easier to keep track of applications running in the background.")
                                            version))))
               (sha256
                (base32
-                "1746xm0iyvyzj6m3pvjx11smh9w1s7naz426ki0dlr5l7jh3mpy5"))
+                "12b6ljzs5071zs0kcf5yj4jfhq10b1gnldv0hmbksnqzz5g719wf"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -349,9 +389,10 @@ easier to keep track of applications running in the background.")
     (native-inputs
      `(("glib:bin" ,glib "bin")
        ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ("sassc" ,sassc)))
     (propagated-inputs
-     `(("glib" ,glib)))
+     (list glib))
     (synopsis "Transforms GNOME's dash into a dock")
     (description "This extension moves the dash out of the
 overview, transforming it into a dock for easier application launching and
@@ -436,7 +477,6 @@ faster window switching.")
        ("nautilus" ,nautilus)
        ("openssh" ,openssh)
        ("openssl" ,openssl)
-       ("python-nautilus" ,python-nautilus)
        ("python-pygobject" ,python-pygobject)
        ("upower" ,upower)))
     (native-inputs
@@ -486,10 +526,9 @@ control.")
                  (copy-recursively dir (string-append out pre dir))
                  #t))))))
       (native-inputs
-       `(("glib" ,glib "bin")
-         ("intltool" ,intltool)))
+       (list `(,glib "bin") intltool))
       (propagated-inputs
-       `(("glib" ,glib)))
+       (list glib))
       (synopsis "Hide app icon from GNOME's panel")
       (description "This extension hides the icon and/or title of the
 currently focused application in the top panel of the GNOME shell.")
@@ -501,10 +540,61 @@ currently focused application in the top panel of the GNOME shell.")
         (list license:gpl2
               license:gpl3)))))
 
+(define-public gnome-shell-extension-just-perfection
+  (package
+    (name "gnome-shell-extension-just-perfection")
+    (version "16.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/jrahmatzadeh/just-perfection/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05zbzgs92zqlmjq4h2q2gggrf1qiz8l6739zzg1x5090gvk4iak3"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("src"
+          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection"
+          #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.ui$"))
+         ("locale"
+          "share/gnome-shell/extensions/just-perfection-desktop@just-perfection/"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'drop-executable-bits
+           (lambda _
+             (for-each
+              (lambda (file)
+                (let ((stat (lstat file)))
+                  (chmod file (logand (stat:mode stat) (lognot #o111)))))
+              (find-files "." #:directories? #f))))
+         (add-before 'install 'build
+           (lambda _
+             (invoke "glib-compile-schemas" "src/schemas")
+             (for-each
+              (lambda (file)
+                (let* ((base (basename file))
+                       (noext (substring base 0 (- (string-length base) 3)))
+                       (dest (string-append "locale/" noext "/LC_MESSAGES/"))
+                       (out (string-append dest "just-perfection.mo")))
+                  (mkdir-p dest)
+                  (invoke "msgfmt" "-c" file "-o" out)))
+              (find-files "po" "\\.po$")))))))
+    (native-inputs
+     (list `(,glib "bin") gettext-minimal))
+    (home-page "https://gitlab.gnome.org/jrahmatzadeh/just-perfection")
+    (synopsis "Customize GNOME Shell behaviour")
+    (description "Just Perfection allows you to change various settings, that
+GNOME Shell itself does not provide out of the box, such as the ability to hide
+certain elements or change animation speeds.")
+    (license license:gpl3)))
+
 (define-public gnome-shell-extension-dash-to-panel
   (package
     (name "gnome-shell-extension-dash-to-panel")
-    (version "38")
+    (version "45")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -512,7 +602,7 @@ currently focused application in the top panel of the GNOME shell.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1kvybb49l1vf0fvh8d0c6xkwnry8m330scamf5x40y63d4i213j1"))
+                "05bfd3b1g9zd86pl1rpgfqsmip271lasyfj8phpqf1gdds5yz6f6"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -528,11 +618,10 @@ currently focused application in the top panel of the GNOME shell.")
          (delete 'bootstrap)
          (delete 'configure))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (propagated-inputs
-     `(("glib" ,glib)
-       ("glib" ,glib "bin")))
+     (list glib
+           `(,glib "bin")))
     (synopsis "Icon taskbar for GNOME Shell")
     (description "This extension moves the dash into the gnome main
 panel so that the application launchers and system tray are combined
@@ -600,10 +689,222 @@ scrollable tiling of windows and per monitor workspaces.  It's inspired by paper
 notebooks and tiling window managers.")
     (license license:gpl3)))
 
+(define-public gpaste
+  (package
+    (name "gpaste")
+    (version "3.42.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Keruspe/GPaste")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k5qvgzwl357k72qfim5zfas2a0n6j24jnlm1v472l7h6gb6lssm"))
+              (patches
+               (search-patches "gpaste-fix-paths.patch"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list autoconf automake gettext-minimal gobject-introspection
+           (list glib "bin")            ; for glib-compile-resources
+           libtool pkg-config vala))
+    (inputs
+     (list appstream-glib libarchive gjs mutter graphene))
+    (arguments
+     (list #:meson meson-0.59      ;positional arguments error with meson 0.60
+           #:glib-or-gtk? #true
+           #:configure-flags
+           #~(list
+              (string-append "-Dcontrol-center-keybindings-dir="
+                             #$output "/share/gnome-control-center/keybindings")
+              (string-append "-Ddbus-services-dir="
+                             #$output "/share/dbus-1/services")
+              (string-append "-Dsystemd-user-unit-dir="
+                             #$output "/etc/systemd/user"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-introspection-install-dir
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (substitute* '("src/gnome-shell/extension.js"
+                                    "src/gnome-shell/prefs.js")
+                       (("@typelibPath@")
+                        (string-append out "/lib/girepository-1.0/")))))))))
+    (home-page "https://github.com/Keruspe/GPaste")
+    (synopsis "Clipboard management system for GNOME Shell")
+    (description "GPaste is a clipboard manager, a tool which allows you to
+keep a trace of what you’re copying and pasting.  Is is really useful when
+you go through tons of documentation and you want to keep around a bunch of
+functions you might want to use, for example.  The clipboard manager will
+store an history of everything you do, so that you can get back to older
+copies you now want to paste.")
+    (license license:bsd-2)))
+
+(define-public gnome-shell-extension-vertical-overview
+  (package
+    (name "gnome-shell-extension-vertical-overview")
+    (version "8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/RensAlthuis/vertical-overview")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "01vz48p3bh7p3ybdyw0s0ahs18lk2kzk9x4ad46s0dnwmmsyhww9"))
+       (file-name (git-file-name name version))
+       (snippet
+        '(begin (delete-file "schemas/gschemas.compiled")))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "vertical-overview@RensAlthuis.github.com")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list `(,glib "bin")))  ; for glib-compile-resources
+    (home-page "https://github.com/RensAlthuis/vertical-overview")
+    (synopsis "Provides a vertical overview in Gnome 40 and upper")
+    (description "This Gnome extension replaces the new horizontally oriented
+Gnome overview with something that resembles the old vertically oriented
+style.")
+    (license license:gpl3)))
+
+(define-public gnome-shell-extension-jiggle
+  (package
+    (name "gnome-shell-extension-jiggle")
+    (version "8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jeffchannell/jiggle/")
+             (commit version)))
+       (sha256
+        (base32
+         "1wbdx2bp22bdwj51ckgivwglkmckr7z8kfwvc8nv4y376hjz5jxz"))
+       (file-name (git-file-name name version))
+       (snippet
+        '(begin (delete-file "schemas/gschemas.compiled")))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "jiggle@jeffchannell.com")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-version
+           (lambda _
+             (substitute* "metadata.json"
+               (("\"40.0\"") "\"40\", \"41\""))))
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list `(,glib "bin")))  ; for glib-compile-resources
+    (home-page "https://github.com/jeffchannell/jiggle")
+    (synopsis "Mouse cursor enlargement for small and fast movements")
+    (description "Jiggle is a Gnome Shell extension that highlights the cursor
+position when the mouse is moved rapidly.")
+    (license license:gpl2)))
+
+(define-public gnome-shell-extension-burn-my-windows
+  (package
+    (name "gnome-shell-extension-burn-my-windows")
+    (version "7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Schneegans/Burn-My-Windows/")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "1513kh6dfvnaj5jq2mm7rv1k54v91hjckgim1dpqlxwnv4gi9krd"))
+       (file-name (git-file-name name version))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "burn-my-windows@schneegans.github.com")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$" "\\.gresource$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'compile-resources
+           (lambda _
+             (invoke "make" "resources/burn-my-windows.gresource")))
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list `(,glib "bin")))  ; for glib-compile-resources
+    (home-page "https://github.com/Schneegans/Burn-My-Windows")
+    (synopsis "Application closing effects extension")
+    (description "Burn My Windows is a shell extension that stylizes the
+animation of closing windowed applications.")
+    (license license:gpl3)))
+
+(define-public gnome-shell-extension-blur-my-shell
+  (package
+    (name "gnome-shell-extension-blur-my-shell")
+    (version "27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aunetx/blur-my-shell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0l318lgc2zrp8fskabiv28knwp3b5i2y8bd3164da4pkf1jsl468"))
+       (snippet
+        '(begin (delete-file "src/schemas/gschemas.compiled")))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("." ,(string-append
+                "share/gnome-shell/extensions/"
+                "blur-my-shell@aunetx")
+          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                            "\\.xml$" "\\.compiled$")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'cd-src
+           (lambda _ (chdir "src")))
+         (add-before 'install 'compile-schemas
+           (lambda _
+             (with-directory-excursion "schemas"
+               (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs
+     (list (list glib "bin"))) ; for glib-compile-schemas
+    (home-page "https://github.com/aunetx/blur-my-shell")
+    (synopsis "Blurs different parts of the GNOME Shell")
+    (description "Blur My Shell adds a blur look to different parts of the
+GNOME Shell, including the top panel, dash and overview.")
+    (license license:gpl3)))
+
 (define-public arc-theme
   (package
     (name "arc-theme")
-    (version "20201013")
+    (version "20210412")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -612,31 +913,26 @@ notebooks and tiling window managers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x2l1mwjx68dwf3jb1i90c1q8nqsl1wf2zggcn8im6590k5yv39s"))))
-    (build-system gnu-build-system)
+                "0zs44dagp6baiyszlr1kj5ncap43fg32dv07rl46nxbds2p65lh4"))))
+    (build-system meson-build-system)
     (arguments
      '(#:configure-flags
-       (list "--disable-cinnamon")
+       '("-Dthemes=gnome-shell,gtk2,gtk3,metacity,plank,unity,xfwm")
        #:phases
        (modify-phases %standard-phases
-         ;; autogen.sh calls configure at the end of the script.
-         (replace 'bootstrap
-           (lambda _ (invoke "autoreconf" "-vfi")))
          (add-before 'build 'set-home   ;placate Inkscape
            (lambda _
              (setenv "HOME" (getcwd))
              #t)))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("glib" ,glib "bin")             ; for glib-compile-resources
-       ("gnome-shell" ,gnome-shell)
-       ("gtk+" ,gtk+)
-       ("inkscape" ,inkscape)
-       ("optipng" ,optipng)
-       ("pkg-config" ,pkg-config)
-       ("sassc" ,sassc/libsass-3.5)))
-    (synopsis "A flat GTK+ theme with transparent elements")
+     (list `(,glib "bin") ; for glib-compile-resources
+           gnome-shell
+           gtk+
+           inkscape
+           optipng
+           pkg-config
+           sassc/libsass-3.5))
+    (synopsis "Flat GTK+ theme with transparent elements")
     (description "Arc is a flat theme with transparent elements for GTK 3, GTK
 2, and GNOME Shell which supports GTK 3 and GTK 2 based desktop environments
 like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
@@ -660,12 +956,12 @@ like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
                 "154qawiga792iimkpk3a6q8f4gm4r158wmsagkbqqbhj33kxgxhg"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gtk+" ,gtk+)
-       ("glib:bin" ,glib "bin")         ; for "glib-compile-resources"
-       ("librsvg" ,librsvg)
-       ("pkg-config" ,pkg-config)
-       ("ruby-sass" ,ruby-sass)
-       ("sassc" ,sassc)))
+     (list gtk+
+           `(,glib "bin") ; for "glib-compile-resources"
+           librsvg
+           pkg-config
+           ruby-sass
+           sassc))
     (home-page "https://shimmerproject.org/")
     (synopsis "Grey GTK+ theme based on Bluebird")
     (description "Greybird is a grey derivative of the Bluebird theme by the
@@ -707,10 +1003,9 @@ Shimmer Project.  It supports GNOME, Unity, and Xfce.")
            (invoke "./install.sh" "-d" themesdir)
            #t))))
     (inputs
-     `(("gtk-engines" ,gtk-engines)))
+     (list gtk-engines))
     (native-inputs
-     `(("bash" ,bash)
-       ("coreutils" ,coreutils)))
+     (list bash coreutils))
     (synopsis "Flat design theme for GTK 3, GTK 2 and GNOME-Shell")
     (description "Matcha is a flat Design theme for GTK 3, GTK 2 and
 Gnome-Shell which supports GTK 3 and GTK 2 based desktop environments
@@ -735,8 +1030,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
             "0qaxxafsn5zd2ysgr0jyv5j73360mfdmxyd55askswlsfphssn74"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gtk+" ,gtk+)
-       ("sassc" ,sassc)))
+     (list gtk+ sassc))
     (home-page "https://github.com/nana-4/materia-theme")
     (synopsis "Material Design theme for a wide range of environments")
     (description "Materia is a Material Design theme for GNOME/GTK based
@@ -778,9 +1072,6 @@ Cinnamon, MATE, Unity, Xfce, LightDM, GDM, Chrome theme, etc.")
 dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
     (home-page "https://numixproject.github.io")
     (license license:gpl3+)))
-
-(define-public numix-theme
-  (deprecated-package "numix-theme" numix-gtk-theme))
 
 (define-public orchis-theme
   (package
@@ -832,11 +1123,10 @@ dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
              (apply invoke "./install.sh" configure-flags)
              #t)))))
     (inputs
-     `(("gtk-engines" ,gtk-engines)))
+     (list gtk-engines))
     (native-inputs
-     `(;("coreutils" ,coreutils)
-       ("gtk+" ,gtk+)
-       ("sassc" ,sassc)))
+     (list ;("coreutils" ,coreutils)
+           gtk+ sassc))
     (home-page "https://github.com/vinceliuice/Orchis-theme")
     (synopsis "Material Design theme for a wide range of environments")
     (description "Orchis is a Material Design them for GNOME/GTK based
@@ -846,10 +1136,41 @@ variants.")
                    license:lgpl2.1         ; Some style sheets.
                    license:cc-by-sa4.0)))) ; Some icons
 
+(define-public eiciel
+  (package
+    (name "eiciel")
+    (version "0.9.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rofirrim/eiciel")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rhhw0h1hyg5kvxhjxkdz03vylgax6912mg8j4lvcz6wlsa4wkvj"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:tests? #f ; no tests
+       #:configure-flags
+       (list (string-append "-Dnautilus-extension-dir="
+                            (assoc-ref %outputs "out")
+                            "/lib/nautilus/site-extensions"))))
+    (native-inputs
+     (list gettext-minimal pkg-config))
+    (inputs
+     (list acl attr glibmm-2.64 gtkmm-3 nautilus))
+    (home-page "https://rofi.roger-ferrer.org/eiciel")
+    (synopsis "Manage extended file attributes")
+    (description "Eiciel is a plugin for nautilus to graphically edit ACL and
+extended file attributes.  It also functions as a standalone command.")
+    (license license:gpl2+)))
+
 (define-public markets
   (package
     (name "markets")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
       (origin
         (method git-fetch)
@@ -859,7 +1180,7 @@ variants.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0nk1bs7i6b7r90g5qwd3s2m462vk3kvza0drq7rzb5sdaiz9ccnz"))))
+          "0sfdmz7cp8i2bymippp8jyxsidxjn69v9cqm40q77j81kfm84bfv"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -876,17 +1197,17 @@ variants.")
              (substitute* "build-aux/meson/postinstall.py"
                (("update-desktop-database") "true")))))))
     (inputs
-     `(("gtk3" ,gtk+)
-       ("gettext" ,gettext-minimal)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libsoup" ,libsoup)
-       ("json-glib" ,json-glib)
-       ("vala" ,vala)))
+     (list gtk+
+           gettext-minimal
+           gsettings-desktop-schemas
+           libgee
+           libhandy
+           libsoup-minimal-2
+           json-glib
+           vala))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("glib" ,glib "bin"))) ; for 'glib-compile-resources'
+     (list pkg-config
+           `(,glib "bin"))) ; for 'glib-compile-resources'
     (home-page "https://github.com/bitstower/markets")
     (synopsis "Stock, currency and cryptocurrency tracker")
     (description
@@ -900,7 +1221,7 @@ track stocks, currencies and cryptocurrencies.")
     ;; Note to maintainer: VLS must be built with a Vala toolchain the same
     ;; version or newer. Therefore when you update this package you may need
     ;; to update Vala too.
-    (version "0.48.1")
+    (version "0.48.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -908,17 +1229,13 @@ track stocks, currencies and cryptocurrencies.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "12k095052jkvbiyz8gzkj6w7r7p16d5m18fyikl48yvh5nln8fw0"))))
+               (base32 "1gnvc91gdp3wj9r3r3xxfr09f9lw39cfypn2q5f0443dhhmp059j"))))
     (build-system meson-build-system)
     (arguments '(#:glib-or-gtk? #t))
     (inputs
-     `(("glib" ,glib)
-       ("json-glib" ,json-glib)
-       ("jsonrpc-glib" ,jsonrpc-glib)
-       ("libgee" ,libgee)
-       ("vala" ,vala-0.50)))
+     (list glib json-glib jsonrpc-glib libgee vala))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://github.com/benwaffle/vala-language-server")
     (synopsis "Language server for Vala")
     (description "The Vala language server is an implementation of the Vala
@@ -956,40 +1273,38 @@ palette.")
    (license license:gpl3))))
 
 (define-public tiramisu
-  (let ((commit "8eb946dae0e2f98d3850d89e1bb535640e8c3266")
-        (revision "0"))
-    (package
-      (name "tiramisu")
-      (version (git-version "1.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Sweets/tiramisu")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0wz2r8369d40vnxswknx0zxzbs03gzv0nc8al4g0ffg972p15j25"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'check)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (install-file "tiramisu" (string-append out "/bin"))
-                 #t))))
-         #:make-flags
-         (list (string-append "CC=" ,(cc-for-target)))))
-      (inputs
-       `(("glib" ,glib)))
-      (native-inputs
-       `(("pkg-config" ,pkg-config)))
-      (home-page "https://github.com/Sweets/tiramisu")
-      (synopsis "Desktop notifications, the UNIX way")
-      (description "tiramisu is a notification daemon based on dunst that
-outputs notifications to STDOUT in order to allow the user to process
-notifications any way they prefer.")
-      (license license:expat))))
+  (package
+    (name "tiramisu")
+    (version "2.0.20211107")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Sweets/tiramisu")
+                    (commit version)))
+              (sha256
+               (base32
+                "1n1x1ybbwbanibw7b90k7v4cadagl41li17hz2l8s2sapacvq3mw"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'check)
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (install-file "tiramisu" (string-append out "/bin"))
+               #t))))
+       #:make-flags
+       (list (string-append "CC=" ,(cc-for-target)))))
+    (inputs
+     (list glib))
+    (native-inputs
+     (list pkg-config vala))
+    (home-page "https://github.com/Sweets/tiramisu")
+    (synopsis "Desktop notifications, the UNIX way")
+    (description "tiramisu is a notification daemon based on dunst that outputs
+notifications to STDOUT in order to allow the user to process notifications any
+way they prefer.")
+    (license license:expat)))

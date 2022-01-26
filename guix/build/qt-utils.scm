@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -109,7 +110,7 @@
 
 (define* (wrap-qt-program program-name #:key inputs output
                           (qt-wrap-excluded-inputs %qt-wrap-excluded-inputs))
-  "Wrap the specified programm (which must reside in the OUTPUT's \"/bin\"
+  "Wrap the specified program (which must reside in the OUTPUT's \"/bin\"
 directory) with suitably set environment variables.
 
 This is like qt-build-systems's phase \"qt-wrap\", but only the named program
@@ -133,7 +134,10 @@ add a dependency of that output on Qt."
   (define (find-files-to-wrap output-dir)
     (append-map
      (lambda (dir)
-       (if (directory-exists? dir) (find-files dir ".*") (list)))
+       (if (directory-exists? dir)
+           (find-files dir (lambda (file stat)
+                             (not (wrapped-program? file))))
+           (list)))
      (list (string-append output-dir "/bin")
            (string-append output-dir "/sbin")
            (string-append output-dir "/libexec")

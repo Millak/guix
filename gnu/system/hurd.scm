@@ -34,6 +34,7 @@
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages less)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu services hurd)
@@ -67,7 +68,8 @@
   (list hurd bash coreutils file findutils grep sed
         diffutils patch gawk tar gzip bzip2 xz lzip
         guile-3.0-latest guile-colorized guile-readline
-        net-base inetutils less shadow shepherd sudo which))
+        net-base inetutils less shadow shepherd sudo which
+        info-reader))
 
 (define %base-services/hurd
   (list (service hurd-console-service-type
@@ -77,11 +79,13 @@
         (service hurd-getty-service-type (hurd-getty-configuration
                                           (tty "tty2")))
         (service static-networking-service-type
-                 (list (static-networking (interface "lo")
-                                          (ip "127.0.0.1")
-                                          (requirement '())
-                                          (provision '(loopback networking))
-                                          (name-servers '("10.0.2.3")))))
+                 (list %loopback-static-networking
+
+                       ;; QEMU user-mode networking.  To get "eth0", you need
+                       ;; QEMU to emulate a device for which Mach has an
+                       ;; in-kernel driver, for instance with:
+                       ;; --device rtl8139,netdev=net0 --netdev user,id=net0
+                       %qemu-static-networking))
         (syslog-service)
         (service guix-service-type
                  (guix-configuration

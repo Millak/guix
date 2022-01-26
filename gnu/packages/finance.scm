@@ -24,6 +24,8 @@
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 ZmnSCPxj jxPCSnmZ <ZmnSCPxj@protonmail.com>
 ;;; Copyright © 2021 François J <francois-oss@avalenn.eu>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +57,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system qt)
   #:use-module (guix deprecation)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages aidc)
@@ -89,7 +92,9 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -97,11 +102,13 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
@@ -114,7 +121,7 @@
 (define-public bitcoin-core-0.21
   (package
     (name "bitcoin-core")
-    (version "0.21.1")
+    (version "0.21.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -122,23 +129,23 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "1q51nqv64lhng5wh1cqb01jar7iswpnyyb1i7xslbkr0j9227zya"))))
+                "17nvir1yc6mf4wr1fn4xsabw49cd5p9vig8wj77vv4anzi8zfij1"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)               ; for the tests
-       ("util-linux" ,util-linux)       ; provides the hexdump command for tests
-       ("qttools" ,qttools)))
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           python ; for the tests
+           util-linux ; provides the hexdump command for tests
+           qttools))
     (inputs
-     `(("bdb" ,bdb-4.8)                 ; 4.8 required for compatibility
-       ("boost" ,boost)
-       ("libevent" ,libevent)
-       ("miniupnpc" ,miniupnpc)
-       ("openssl" ,openssl)
-       ("qtbase" ,qtbase-5)))
+     (list bdb-4.8 ; 4.8 required for compatibility
+           boost
+           libevent
+           miniupnpc
+           openssl
+           qtbase-5))
     (arguments
      `(#:configure-flags
        (list
@@ -192,7 +199,7 @@ line client and a client based on Qt.")
 (define-public bitcoin-core-0.20
   (package
     (inherit bitcoin-core-0.21)
-    (version "0.20.1")
+    (version "0.20.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -200,7 +207,7 @@ line client and a client based on Qt.")
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "0y5rad68b398arh0abr2wgiwybdw0i5a4dxz9s3fk9fgdbyn5gab"))))))
+                "14smp5vmh7baabl856wlg7w7y5910jhx6c02mlkm4hkywf3yylky"))))))
 
 ;; The support lifetimes for bitcoin-core versions can be found in
 ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
@@ -210,7 +217,7 @@ line client and a client based on Qt.")
 (define-public hledger
   (package
     (name "hledger")
-    (version "1.14.2")
+    (version "1.21")
     (source
      (origin
        (method url-fetch)
@@ -220,37 +227,35 @@ line client and a client based on Qt.")
              ".tar.gz"))
        (sha256
         (base32
-         "1si9zqparkdq77yji87lhcsrf11fr3gisqwsv82cabhrhc36x6l4"))))
+         "07fcfkmv4cy92njnf2qc7jh0naz96q962hxldcd7hk4k7ddv0mss"))))
     (build-system haskell-build-system)
     (inputs
-     `(("ghc-ansi-terminal" ,ghc-ansi-terminal)
-       ("ghc-base-compat-batteries" ,ghc-base-compat-batteries)
-       ("ghc-cmdargs" ,ghc-cmdargs)
-       ("ghc-data-default" ,ghc-data-default)
-       ("ghc-decimal" ,ghc-decimal)
-       ("ghc-diff" ,ghc-diff)
-       ("ghc-easytest" ,ghc-easytest)
-       ("ghc-hashable" ,ghc-hashable)
-       ("ghc-hledger-lib" ,ghc-hledger-lib)
-       ("ghc-lucid" ,ghc-lucid)
-       ("ghc-math-functions" ,ghc-math-functions)
-       ("ghc-megaparsec" ,ghc-megaparsec)
-       ("ghc-mtl-compat" ,ghc-mtl-compat)
-       ("ghc-old-time" ,ghc-old-time)
-       ("ghc-pretty-show" ,ghc-pretty-show)
-       ("ghc-regex-tdfa" ,ghc-regex-tdfa)
-       ("ghc-safe" ,ghc-safe)
-       ("ghc-shakespeare" ,ghc-shakespeare)
-       ("ghc-split" ,ghc-split)
-       ("ghc-tabular" ,ghc-tabular)
-       ("ghc-temporary" ,ghc-temporary)
-       ("ghc-unordered-containers" ,ghc-unordered-containers)
-       ("ghc-utf8-string" ,ghc-utf8-string)
-       ("ghc-utility-ht" ,ghc-utility-ht)
-       ("ghc-wizards" ,ghc-wizards)))
-    (native-inputs
-     `(("ghc-test-framework" ,ghc-test-framework)
-       ("ghc-test-framework-hunit" ,ghc-test-framework-hunit)))
+     (list ghc-ansi-terminal
+           ghc-base-compat-batteries
+           ghc-cmdargs
+           ghc-data-default
+           ghc-decimal
+           ghc-diff
+           ghc-hashable
+           ghc-hledger-lib
+           ghc-lucid
+           ghc-math-functions
+           ghc-megaparsec
+           ghc-old-time
+           ghc-regex-tdfa
+           ghc-safe
+           ghc-aeson
+           ghc-extra
+           ghc-tasty
+           ghc-timeit
+           ghc-shakespeare
+           ghc-split
+           ghc-tabular
+           ghc-temporary
+           ghc-unordered-containers
+           ghc-utf8-string
+           ghc-utility-ht
+           ghc-wizards))
     (home-page "https://hledger.org")
     (synopsis "Command-line interface for the hledger accounting system")
     (description
@@ -268,22 +273,19 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.3")
+    (version "5.5.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "14qhv79a2waqzmf6l571wklgwq8j1pkmjvzkj5vhh44nia8hfdh7"))))
+                "0rapdqv2j61cj2jzfk0fiby3na4k5g5i7shkqbjhld4rl2y6j1hd"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
+     (list pkg-config intltool))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("libofx" ,libofx)
-       ("libsoup" ,libsoup)))
+     (list gtk+ libofx libsoup-minimal-2))
     (home-page "http://homebank.free.fr/")
     (synopsis "Graphical personal accounting application")
     (description "HomeBank allows you to manage your personal accounts at
@@ -304,7 +306,14 @@ and dynamically with report tools based on filtering and graphical charts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x6jxwss3wwzbzlwmnwb8yzjk8f9wfawif4f1b74z2qg6hc4r7f6"))))
+        (base32 "0x6jxwss3wwzbzlwmnwb8yzjk8f9wfawif4f1b74z2qg6hc4r7f6"))
+       (snippet '(begin
+                   ;; Remove test that fails due to difference in
+                   ;; reported error message (missing leading "./" in the
+                   ;; file name); started some time after Guix commit
+                   ;; 727f05e1e285aa52f5a19ec923fdc2259859b4b1
+                   (delete-file "test/regress/BF3C1F82-2.test")
+                   #true))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules (,@%cmake-build-system-modules
@@ -343,24 +352,22 @@ and dynamically with report tools based on filtering and graphical charts.")
            ;; One test fails if it can't set the timezone.
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "TZDIR"
-                     (string-append (assoc-ref inputs "tzdata")
-                                    "/share/zoneinfo"))
+                     (search-input-directory inputs
+                                             "share/zoneinfo"))
              ;; Skip failing test BaselineTest_cmd-org.
              ;; This is a known upstream issue. See
              ;; https://github.com/ledger/ledger/issues/550
              (setenv "ARGS" "-E BaselineTest_cmd-org")
              #t)))))
     (inputs
-     `(("boost" ,boost)
-       ("gmp" ,gmp)
-       ("libedit" ,libedit)
-       ("mpfr" ,mpfr)
-       ("python" ,python)
-       ("utfcpp" ,utfcpp)))
+     (list boost
+           gmp
+           libedit
+           mpfr
+           python
+           utfcpp))
     (native-inputs
-     `(("groff" ,groff)
-       ("texinfo" ,texinfo)
-       ("tzdata" ,tzdata-for-tests)))
+     (list groff texinfo tzdata-for-tests))
     (home-page "https://ledger-cli.org/")
     (synopsis "Command-line double-entry accounting program")
     (description
@@ -426,9 +433,9 @@ in ability, and easy to use.")
              (with-directory-excursion "../source/test"
                (invoke "make" "test-batch")))))))
     (inputs
-     `(("ledger" ,ledger)))
+     (list ledger))
     (native-inputs
-     `(("texinfo" ,texinfo)))
+     (list texinfo))
     (home-page "https://ledger-cli.org/")
     (synopsis "Command-line double-entry accounting program")
     (description
@@ -484,7 +491,7 @@ This package provides the Emacs mode.")
                                 "for search ")))
               #t)))))
     (inputs
-     `(("icecat" ,icecat)))
+     (list icecat))
     (home-page "https://stesie.github.io/geierlein/")
     (synopsis "Free Elster client, for sending Germany VAT declarations")
     (description
@@ -518,22 +525,22 @@ do so.")
            #t))))
     (build-system python-build-system)
     (inputs
-     `(("python-pyqt" ,python-pyqt)
-       ("python-qrcode" ,python-qrcode)
-       ("python-protobuf" ,python-protobuf)
-       ("python-aiohttp" ,python-aiohttp)
-       ("python-aiohttp-socks" ,python-aiohttp-socks)
-       ("python-aiorpcx" ,python-aiorpcx-0.18)
-       ("python-certifi" ,python-certifi)
-       ("python-bitstring" ,python-bitstring)
-       ("python-attrs" ,python-attrs)
-       ("python-cryptography" ,python-cryptography)
-       ("python-qdarkstyle" ,python-qdarkstyle)
-       ("python-dnspython" ,python-dnspython)
-       ("python-hidapi" ,python-hidapi)
-       ("python-ledgerblue" ,python-ledgerblue)
-       ("python-btchip-python" ,python-btchip-python)
-       ("libsecp256k1" ,libsecp256k1)))
+     (list python-pyqt
+           python-qrcode
+           python-protobuf
+           python-aiohttp
+           python-aiohttp-socks
+           python-aiorpcx-0.18
+           python-certifi
+           python-bitstring
+           python-attrs
+           python-cryptography
+           python-qdarkstyle
+           python-dnspython
+           python-hidapi
+           python-ledgerblue
+           python-btchip-python
+           libsecp256k1))
     (arguments
      `(#:tests? #f                      ; no tests
        #:phases
@@ -548,6 +555,14 @@ do so.")
                  (("sys\\.prefix")
                   (format #f "\"~a\"" out)))
                #t)))
+         (add-after 'unpack 'relax-dnspython-version-requirement
+           ;; The version requirement for dnspython>=2.0,<2.1 makes the
+           ;; sanity-check phase fail, but the application seems to be working
+           ;; fine with dnspython 2.1 (the version we have currently).
+           (lambda _
+             (substitute* "contrib/requirements/requirements.txt"
+               (("dnspython>=.*")
+                "dnspython"))))
          (add-after 'unpack 'use-libsecp256k1-input
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "electrum/ecc_fast.py"
@@ -567,7 +582,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.5")
+    (version "4.2.6")
     (source
      (origin
        (method git-fetch)
@@ -576,7 +591,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fj797hbinxsqjwhh4l1vjsx1vzmgzf2apq7fnqqwpv9g0v2pch0"))))
+        (base32 "193krlnski9wjyfjkxfp4gcs7dgmqkwxgsy2m8x1515vb5bzv5pz"))))
     (build-system python-build-system)
     (inputs
      `(("libevent" ,libevent)
@@ -594,6 +609,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
        ("python-pyaes" ,python-pyaes)
        ("python-pyqt" ,python-pyqt)
        ("python-pysocks" ,python-pysocks)
+       ("python-qdarkstyle" ,python-qdarkstyle)
        ("python-qrcode" ,python-qrcode)
        ("python-requests" ,python-requests)
        ("python-stem" ,python-stem)
@@ -620,6 +636,11 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
                 (string-append "library_paths = ('"
                                (assoc-ref inputs "libsecp256k1")
                                "/lib/libsecp256k1.so.0'")))))
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "contrib/requirements/requirements.txt"
+               (("qdarkstyle==2\\.6\\.8")
+                "qdarkstyle"))))
          (add-after 'install 'wrap-qt
            (lambda* (#:key outputs inputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -642,7 +663,7 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.17.2.3")
+    (version "0.17.3.0")
     (source
      (origin
        (method git-fetch)
@@ -660,33 +681,38 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"
               "external/unbound"))
+           ;; TODO: Remove the following when upgrading to a newer tagged
+           ;; version as it will already contain the fix for Boost 1.76.
+           (substitute* "contrib/epee/include/storages/portable_storage.h"
+             (("#include \"int-util.h\"" all)
+              (string-append all "\n#include <boost/mpl/contains.hpp>")))
            #t))
        (sha256
-        (base32 "0nax991fshfh51grhh2ryfrwwws35k16gzl1l3niva28zff2xmq6"))))
+        (base32 "1spsf7m3x4psp9s7mivr6x4886jnbq4i8ll2dl8bv5bsdhcd3pjm"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("graphviz" ,graphviz)
-       ("pkg-config" ,pkg-config)
-       ("protobuf" ,protobuf)
-       ("python" ,python)
-       ("qttools" ,qttools)))
+     (list doxygen
+           graphviz
+           pkg-config
+           protobuf
+           python
+           qttools))
     (inputs
-     `(("boost" ,boost)
-       ("cppzmq" ,cppzmq)
-       ("expat" ,expat)
-       ("hidapi" ,hidapi)
-       ("libsodium" ,libsodium)
-       ("libunwind" ,libunwind)
-       ("libusb" ,libusb)
-       ("miniupnpc" ,miniupnpc)
-       ("openssl" ,openssl)
-       ("protobuf" ,protobuf)
-       ("rapidjson" ,rapidjson)
-       ("readline" ,readline)
-       ("unbound" ,unbound)
-       ("xz" ,xz)
-       ("zeromq" ,zeromq)))
+     (list boost
+           cppzmq
+           expat
+           hidapi
+           libsodium
+           libunwind
+           libusb
+           miniupnpc
+           openssl
+           protobuf
+           rapidjson
+           readline
+           unbound
+           xz
+           zeromq))
     (arguments
      `(#:out-of-source? #t
        #:configure-flags
@@ -716,12 +742,13 @@ other machines/servers.  Electroncash does not download the Bitcoin Cash blockch
              #t))
          ;; Only try tests that don't need access to network or system
          (replace 'check
-           (lambda _
+           (lambda* (#:key tests? #:allow-other-keys)
              ;; Core tests sometimes fail, at least on i686-linux.
              ;; Let's disable them for now and just try hash tests
              ;; and unit tests.
              ;; (invoke "make" "ARGS=-R 'hash|core_tests' --verbose" "test")))
-             (invoke "make" "ARGS=-R 'hash' --verbose" "test")))
+             (when tests?
+               (invoke "make" "ARGS=-R 'hash' --verbose" "test"))))
          (add-after 'check 'unit-tests
            (lambda _
              (let ((excluded-unit-tests
@@ -752,7 +779,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.17.2.3")
+    (version "0.17.3.1")
     (source
      (origin
        (method git-fetch)
@@ -769,7 +796,7 @@ the Monero command line client and daemon.")
            (delete-file-recursively "monero")
            #t))
        (sha256
-        (base32 "0qb746z1sxqrja7q9lqhhbm64v83sn67az4k7gs5q90iaw584qfc"))))
+        (base32 "0mzxbi16zvpfgwykg0c7gm5dmjxr2a47kjwih36g53a7pnf04zl1"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -788,10 +815,10 @@ the Monero command line client and daemon.")
     (arguments
      `(#:tests? #f ; No tests
        #:configure-flags
-       (list "-DARCH=default"
-             "-DENABLE_PASS_STRENGTH_METER=ON"
-             (string-append "-DReadline_ROOT_DIR="
-                            (assoc-ref %build-inputs "readline")))
+       ,#~(list "-DARCH=default"
+                "-DENABLE_PASS_STRENGTH_METER=ON"
+                (string-append "-DReadline_ROOT_DIR="
+                               #$(this-package-input "readline")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'extract-monero-sources
@@ -799,9 +826,8 @@ the Monero command line client and daemon.")
            ;; to build the GUI.
            (lambda* (#:key inputs #:allow-other-keys)
              (mkdir-p "monero")
-             (invoke "tar" "-xv" "--strip-components=1"
-                     "-C" "monero"
-                     "-f" (assoc-ref inputs "monero-source"))))
+             (copy-recursively (assoc-ref inputs "monero-source")
+                               "monero")))
          (add-after 'extract-monero-sources 'fix-build
            (lambda _
              (substitute* "src/version.js.in"
@@ -821,8 +847,7 @@ the Monero command line client and daemon.")
            ;; The monerod program must be available so that monero-wallet-gui
            ;; can start a Monero daemon if necessary.
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (symlink (string-append (assoc-ref inputs "monero")
-                                     "/bin/monerod")
+             (symlink (search-input-file inputs "/bin/monerod")
                       (string-append (assoc-ref outputs "out")
                                      "/bin/monerod")))))))
     (home-page "https://web.getmonero.org/")
@@ -833,9 +858,11 @@ the Monero GUI client.")
     (license license:bsd-3)))
 
 (define-public python-trezor-agent
+  ;; It is called 'libagent' in pypi; i.e. this is the library as opposed to
+  ;; the toplevel app called trezor-agent.
   (package
     (name "python-trezor-agent")
-    (version "0.13.1")
+    (version "0.14.4")
     (source
      (origin
        (method git-fetch)
@@ -844,7 +871,7 @@ the Monero GUI client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q99vbfd3h85s8rnjipnmldixabqmmlk5w9karv6f0rhyi54f4zv"))))
+        (base32 "1ksv494xpga27ifrjyn1bkqaya5h769lqb9rx1ng0n4kvmnrqr3l"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -863,20 +890,19 @@ the Monero GUI client.")
              (add-installed-pythonpath inputs outputs)
              (invoke "py.test"))))))
     (propagated-inputs
-     `(("python-configargparse" ,python-configargparse)
-       ("python-daemon" ,python-daemon)
-       ("python-docutils" ,python-docutils)
-       ("python-ecdsa" ,python-ecdsa)
-       ("python-ed25519" ,python-ed25519)
-       ("python-mnemonic" ,python-mnemonic)
-       ("python-pymsgbox" ,python-pymsgbox)
-       ("python-semver" ,python-semver)
-       ("python-unidecode" ,python-unidecode)
-       ("python-wheel" ,python-wheel)))
+     (list python-configargparse
+           python-daemon
+           python-docutils
+           python-ecdsa
+           python-hidapi
+           python-mnemonic
+           python-pymsgbox
+           python-pynacl
+           python-semver
+           python-unidecode
+           python-wheel))
     (native-inputs
-     `(("gnupg" ,gnupg)
-       ("python-mock" ,python-mock)
-       ("python-pytest" ,python-pytest)))
+     (list gnupg python-mock python-pytest))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Use hardware wallets as SSH and GPG agent")
     (description
@@ -884,19 +910,46 @@ the Monero GUI client.")
 Ledger Nano as a hardware SSH/GPG agent.")
     (license license:lgpl3)))
 
+(define-public trezor-gpg-pinentry-tk
+  (package
+    (name "trezor-gpg-pinentry-tk")
+    (version "0.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rendaw/trezor-gpg-pinentry-tk/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mblx4favmw4nf7k9rfl00ivv77kgdiwghyz4xv5cp0v410kjaqc"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:tests? #f))        ; No test suite.
+    (inputs
+     `(("python-tkinter" ,python "tk")))
+    (home-page "https://github.com/rendaw/trezor-gpg-pinentry-tk")
+    (synopsis "GPG pinentry program for use with @code{trezor-agent}")
+    (description
+     "This package provides a GPG pinentry program for use with
+@code{trezor-agent}, or for people with number-only PINs.  It displays
+a grid of unlabeled buttons and supports configurable keyboard
+settings.")
+    (license license:bsd-2)))
+
 (define-public python-mnemonic
   (package
     (name "python-mnemonic")
-    (version "0.19")
+    (version "0.20")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "mnemonic" version))
         (sha256
-          (base32 "0cd9prmdj8wzdmc7lxbf9lz0xrlkvak5ignag406mmfbn81fndsf"))))
+          (base32 "1xi5qvj2rvi5almf9c89rl7hz1z4ms04d53pg818i4vpkmivavvw"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-pbkdf2" ,python-pbkdf2)))
+     (list python-pbkdf2))
     (home-page "https://github.com/trezor/python-mnemonic")
     (synopsis "Implementation of Bitcoin BIP-0039")
     (description "@code{mnemonic} is a library that provides an implementation
@@ -919,12 +972,12 @@ of Bitcoin BIP-0039.")
             "010mghaqh1cmz3a0ifc3f40mmyplilwlw7kpha2mzyrrff46p9gb"))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-ecpy" ,python-ecpy)
-       ("python-future" ,python-future)
-       ("python-hidapi" ,python-hidapi)
-       ("python-pillow" ,python-pillow)
-       ("python-protobuf" ,python-protobuf)
-       ("python-pycrypto" ,python-pycrypto)))
+     (list python-ecpy
+           python-future
+           python-hidapi
+           python-pillow
+           python-protobuf
+           python-pycrypto))
     (home-page "https://github.com/LedgerHQ/blue-loader-python")
     (synopsis "Python library to communicate with Ledger Blue/Nano S")
     (description "@code{ledgerblue} is a Python library to communicate with
@@ -949,8 +1002,7 @@ Ledger Blue/Nano S.")
     (arguments
      `(#:tests? #f)) ; those require PyQt4
     (propagated-inputs
-      `(("python-ecdsa" ,python-ecdsa)
-        ("python-hidapi" ,python-hidapi)))
+      (list python-ecdsa python-hidapi))
     (home-page "https://github.com/LedgerHQ/btchip-python")
     (synopsis "Python library to communicate with Ledger Nano dongle")
     (description
@@ -961,30 +1013,52 @@ Nano dongle.")
 (define-public python-trezor
   (package
     (name "python-trezor")
-    (version "0.12.1")
+    (version "0.12.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "trezor" version))
-        (sha256
-          (base32 "1w19m9lws55k9sjhras47hpfpqwq1jm5vy135nj65yhkblygqg19"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/trezor/trezor-firmware/")
+             (commit (string-append "python/v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k0zk94jnkhr4iyngjfhfvff5mibx265q81v8jhvhd3m4clzgc45"))
+       (modules
+        '((guix build utils)
+          (srfi srfi-26)
+          (srfi srfi-1)
+          (ice-9 ftw)))
+       (snippet
+        '(begin
+           ;; Delete everything except ./python/
+           (for-each delete-file-recursively
+                     (scandir "./" (negate (cut member <> '("python" "." "..")
+                                                string=))))
+           ;; Move ./python/* to the toplevel.
+           (for-each (lambda (file-name)
+                       (rename-file (string-append "./python/" file-name)
+                                    (string-append "./" file-name)))
+                     (scandir "./python/"
+                              (negate (cut member <> '("." "..") string=))))
+           (delete-file-recursively "./python")))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-click" ,python-click)
-       ("python-construct" ,python-construct)
-       ("python-ecdsa" ,python-ecdsa)
-       ("python-libusb1" ,python-libusb1)
-       ("python-mnemonic" ,python-mnemonic)
-       ("python-requests" ,python-requests)
-       ("python-typing-extensions" ,python-typing-extensions)))
+     (list python-attrs
+           python-click
+           python-construct
+           python-ecdsa
+           python-libusb1
+           python-mnemonic
+           python-requests
+           python-typing-extensions))
     (native-inputs
      ;; For tests.
-     `(("protobuf" ,protobuf)
-       ("python-black" ,python-black)
-       ("python-protobuf" ,python-protobuf)
-       ("python-isort" ,python-isort)
-       ("python-pyqt" ,python-pyqt)
-       ("python-pytest" ,python-pytest)))
+     (list protobuf
+           python-black
+           python-protobuf
+           python-isort
+           python-pyqt
+           python-pytest))
     (home-page "https://github.com/trezor/python-trezor")
     (synopsis "Python library for communicating with TREZOR Hardware Wallet")
     (description "@code{trezor} is a Python library for communicating with
@@ -1012,11 +1086,8 @@ TREZOR Hardware Wallet.")
              (add-installed-pythonpath inputs outputs)
              (apply invoke "python" (find-files "tests/unit" "\\.py$")))))))
     (propagated-inputs
-     `(("python-ecdsa" ,python-ecdsa)
-       ("python-hidapi" ,python-hidapi)
-       ("python-libusb1" ,python-libusb1)
-       ("python-mnemonic" ,python-mnemonic)
-       ("python-protobuf" ,python-protobuf)))
+     (list python-ecdsa python-hidapi python-libusb1 python-mnemonic
+           python-protobuf))
     (home-page "https://github.com/keepkey/python-keepkey")
     (synopsis "Python library for communicating with KeepKey Hardware Wallet")
     (description "@code{keepkey} is a Python library for communicating with
@@ -1039,8 +1110,7 @@ the KeepKey Hardware Wallet.")
          "03zj602m2rln9yvr08dswy56vzkbldp8b074ixwzz525dafblr92"))))
     (build-system python-build-system)
     (inputs
-     `(("python-ledgerblue" ,python-ledgerblue)
-       ("python-trezor-agent" ,python-trezor-agent)))
+     (list python-ledgerblue python-trezor-agent))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Ledger as hardware SSH/GPG agent")
     (description "This package allows using Ledger as hardware SSH/GPG agent.")
@@ -1049,31 +1119,62 @@ the KeepKey Hardware Wallet.")
 (define-public trezor-agent
   (package
     (name "trezor-agent")
-    (version "0.10.0")
+    (version "0.11.0-1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "trezor_agent" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/romanz/trezor-agent")
+             ;; The version mismatch is not a mistake.  Multiple Python
+             ;; apps/packages are in the same git repo, and they have
+             ;; different versions.  The git tag seems to track libagent,
+             ;; i.e. python-trezor-agent in the Guix namespace.  See
+             ;; e.g. ./agents/trezor/setup.py.
+             (commit "v0.14.4")))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "144657c7bn0a667dq5fv5r6j7iilxf3h9agj29v1m2qpq40g0az8"))))
+        (base32 "1ksv494xpga27ifrjyn1bkqaya5h769lqb9rx1ng0n4kvmnrqr3l"))
+       (modules
+        '((guix build utils)
+          (ice-9 ftw)
+          (srfi srfi-1)
+          (srfi srfi-26)))
+       (snippet
+        '(begin
+           ;; Delete everything except ./agents/trezor/
+           (for-each delete-file-recursively
+                     (filter (lambda (full-name)
+                               (not (string-prefix? "./agents/trezor/" full-name)))
+                             (find-files ".")))
+           ;; Move ./agents/trezor/* to the toplevel
+           (for-each (lambda (file-name)
+                       (rename-file (string-append "./agents/trezor/" file-name)
+                                    (string-append "./" file-name)))
+                     (scandir "./agents/trezor/"
+                              (negate (cut member <> '("." "..") string=))))
+           (delete-file-recursively "./agents")))))
     (arguments
-     ;; Tests fail with "AttributeError: module 'attr' has no attribute 's'".
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'wrap 'fixup-agent-py
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
-               ;; overwrite the wrapper with the real thing.
+               ;; The wrap phase also wraps trezor_agent.py (besides the
+               ;; public facing executable called trezor-agent). We need to
+               ;; undo that wrapping. The reason this is needed is that the
+               ;; python easy install generates a toplevel script (?) that
+               ;; messes with argv[0] and then re-opens the python
+               ;; module. This fails when the wrapped file is actually a shell
+               ;; script, not a python file.
+               (delete-file (string-append out "/bin/.trezor_agent.py-real"))
+               ;; Overwrite the wrapped one with the real thing.
                (install-file "./trezor_agent.py"
-                             (string-append out "/bin"))
-             #t))))))
+                             (string-append out "/bin"))))))))
     (build-system python-build-system)
     (inputs
-     `(("python-trezor" ,python-trezor)
-       ("python-trezor-agent" ,python-trezor-agent)))
+     (list python-trezor python-trezor-agent))
     (native-inputs
-     `(("python-hidapi" ,python-hidapi)))
+     (list python-attrs))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Using Trezor as hardware SSH/GPG agent")
     (description "This package allows using Trezor as a hardware SSH/GPG
@@ -1093,8 +1194,7 @@ agent.")
             "03779gvlx70i0nnry98i4pl1d92604ix5x6jgdfkrdgzqbh5vj27"))))
     (build-system python-build-system)
     (inputs
-     `(("python-keepkey" ,python-keepkey)
-       ("python-trezor-agent" ,python-trezor-agent)))
+     (list python-keepkey python-trezor-agent))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "KeepKey as hardware SSH/GPG agent")
     (description "This package allows using KeepKey as a hardware SSH/GPG
@@ -1104,13 +1204,13 @@ agent.")
 (define-public python-stdnum
   (package
     (name "python-stdnum")
-    (version "1.14")
+    (version "1.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-stdnum" version))
        (sha256
-        (base32 "070vd9zgvq0jchs4xc4j1h4r1l1lg4wwb8xs3p25k8c2xjw94fpx"))))
+        (base32 "0h4369b7gws5w5s2vhq590bk219y5k53zcmha2zwsb4i2dg2nkip"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -1118,7 +1218,7 @@ agent.")
                     (lambda _
                       (invoke "nosetests"))))))
     (native-inputs
-     `(("python-nose" ,python-nose)))
+     (list python-nose))
     (home-page "https://arthurdejong.org/python-stdnum/")
     (synopsis "Python module to handle standardized number and code formats")
     (description
@@ -1130,7 +1230,7 @@ personal identity and company identification codes,
 international standard numbers (ISBN, IBAN, EAN, etc.)
 and various other formats.
 The module also includes implementations of the Verhoeff,
-Luhn and family of ISO/IEC 7064 check digit algorithms. ")
+Luhn and family of ISO/IEC 7064 check digit algorithms.")
     (license license:lgpl2.1+)))
 
 (define-public python2-stdnum
@@ -1150,16 +1250,25 @@ Luhn and family of ISO/IEC 7064 check digit algorithms. ")
     (arguments
      ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required
      ;; positional argument: 'value'".
-     `(#:tests? #f))
+     `(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'loosen-requirements
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("mnemonic>=0\\.19,<0.20")
+                         "mnemonic>=0.19")))))))
     (propagated-inputs
-     `(("aiohttp" ,python-aiohttp)
-       ("attrs" ,python-attrs)
-       ("base58" ,python-base58)
-       ("jsonschema" ,python-jsonschema)
-       ("libnacl" ,python-libnacl)
-       ("pyaes" ,python-pyaes)
-       ("pylibscrypt" ,python-pylibscrypt)
-       ("pypeg2" ,python-pypeg2)))
+     (list python-aiohttp
+           python-attrs
+           python-base58
+           python-jsonschema
+           python-libnacl
+           python-pyaes
+           python-pylibscrypt
+           python-graphql-core
+           python-mnemonic
+           python-websocket-client
+           python-pypeg2))
     (home-page "https://git.duniter.org/clients/python/duniterpy")
     (synopsis "Python implementation of Duniter API")
     (description "@code{duniterpy} is an implementation of
@@ -1213,7 +1322,7 @@ Its features are:
 (define-public grisbi
   (package
     (name "grisbi")
-    (version "1.2.2")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
@@ -1223,19 +1332,17 @@ Its features are:
              "/grisbi-" version ".tar.bz2"))
        (sha256
         (base32
-         "1piiyyxjsjbw9gcqydvknzxmmfgh8kdqal12ywrxyxih2afwnvbw"))))
+         "0gvsqw1z5wkakyi3bkq71pqb094a8lv2nbgnxw2zqkabzjmxnfmx"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list "--without-ofx")))
     (propagated-inputs
-     `(("dconf" ,dconf)))
+     (list dconf))
     (native-inputs
-     `(("glib" ,glib "bin")             ; glib-compile-schemas
-       ("pkg-config" ,pkg-config)
-       ("intltool" ,intltool)))
+     (list `(,glib "bin") ; glib-compile-schemas
+           pkg-config intltool))
     (inputs
-     `(("gtk+" ,gtk+)
-       ("libgsf" ,libgsf)))
+     (list gtk+ libgsf))
     (synopsis "Personal accounting application")
     (description "Grisbi is a personal accounting application written by
 French developers that is designed to follow French accounting rules.
@@ -1276,7 +1383,7 @@ trezord as a regular user instead of needing to it run as root.")
 (define-public trezord
   (package
     (name "trezord")
-    (version "2.0.30")
+    (version "2.0.31")
     (source
      (origin
        (method git-fetch)
@@ -1284,8 +1391,7 @@ trezord as a regular user instead of needing to it run as root.")
              (url "https://github.com/trezor/trezord-go")
              (commit (string-append "v" version))))
        (sha256
-        (base32
-         "1hzvk0wfgg7b4wpqjk3738yqxlv3pj5i7zxwm0jady2h97hmrqrr"))
+        (base32 "130nhk1pnr3xx9qkcij81mm3jxrl5zvvdqhvrgvrikqg3zlb6v5b"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
@@ -1315,22 +1421,22 @@ Trezor wallet.")
                 "1amzwy3gpl8ai90dsy7g0z51qq8vxfzbf642wn4bfynb8jmw3kx5"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python)               ; for the tests
-       ("util-linux" ,util-linux)       ; provides the hexdump command for tests
-       ("qttools" ,qttools)))
+     (list pkg-config
+           python ; for the tests
+           util-linux ; provides the hexdump command for tests
+           qttools))
     (inputs
-     `(("bdb" ,bdb-5.3)
-       ("boost" ,boost)
-       ("jemalloc" ,jemalloc)
-       ("libevent" ,libevent)
-       ("miniupnpc" ,miniupnpc)
-       ("openssl" ,openssl)
-       ("protobuf" ,protobuf)
-       ("qrencode" ,qrencode)
-       ("qtbase" ,qtbase-5)
-       ("zeromq" ,zeromq)
-       ("zlib" ,zlib)))
+     (list bdb-5.3
+           boost
+           jemalloc
+           libevent
+           miniupnpc
+           openssl
+           protobuf
+           qrencode
+           qtbase-5
+           zeromq
+           zlib))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1388,12 +1494,12 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
                             (assoc-ref %build-inputs "opensp")
                             "/include/OpenSP"))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gengetopt" ,gengetopt)
-       ("help2man" ,help2man)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           gengetopt
+           help2man
+           libtool
+           pkg-config))
     (inputs
      `(("curl" ,curl)
        ("libxml++-2" ,libxml++-2)
@@ -1426,24 +1532,24 @@ following three utilities are included with the library:
         (base32 "1cmrvh7azz0g89rsx6i8apd1li6r1lb3jrmbbf8fic1918lwv62m"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python) ; for the tests
-       ("util-linux" ,util-linux) ; provides the hexdump command for tests
-       ("qttools" ,qttools)))
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           python ; for the tests
+           util-linux ; provides the hexdump command for tests
+           qttools))
     (inputs
-     `(("bdb" ,bdb-4.8)
-       ("boost" ,boost)
-       ("libevent" ,libevent)
-       ("miniupnpc" ,miniupnpc)
-       ("openssl" ,openssl)
-       ("protobuf" ,protobuf)
-       ("qrencode" ,qrencode)
-       ("qtbase" ,qtbase-5)
-       ("zeromq" ,zeromq)
-       ("zlib" ,zlib)))
+     (list bdb-4.8
+           boost
+           libevent
+           miniupnpc
+           openssl
+           protobuf
+           qrencode
+           qtbase-5
+           zeromq
+           zlib))
     (arguments
      `(#:configure-flags
        (list
@@ -1519,12 +1625,9 @@ a Qt GUI.")
               (string-append "PREFIX=" %output)
               "features="))))))
     (native-inputs
-     `(("qttools" ,qttools)))
+     (list qttools))
     (inputs
-     `(("python" ,python)
-       ("qtbase" ,qtbase-5)
-       ("rocksdb" ,rocksdb)
-       ("zlib" ,zlib)))
+     (list python qtbase-5 rocksdb zlib))
     (home-page "https://gitlab.com/FloweeTheHub/fulcrum/")
     (synopsis "Fast and nimble SPV server for Bitcoin Cash")
     (description
@@ -1582,16 +1685,14 @@ like Flowee the Hub, which Fulcrum connects to over RPC.")
             (lambda _
               (invoke "make" "check" "-C" "testing"))))))
     (inputs
-     `(("boost" ,boost)
-       ("gmp" ,gmp)
-       ("libevent" ,libevent)
-       ("miniupnpc" ,miniupnpc)
-       ("openssl" ,openssl)
-       ("qtbase" ,qtbase-5)))
+     (list boost
+           gmp
+           libevent
+           miniupnpc
+           openssl
+           qtbase-5))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)
-       ("util-linux" ,util-linux)))       ; provides the hexdump command for tests
+     (list pkg-config qttools util-linux))       ; provides the hexdump command for tests
     (home-page "https://flowee.org")
     (synopsis "Flowee infrastructure tools and services")
     (description
@@ -1625,16 +1726,16 @@ that allows you to run services and through them access the Bitcoin Cash network
                (("'google-api-python-client',") ""))
              #t)))))
     (inputs
-     `(("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-bottle" ,python-bottle)
-       ("python-chardet" ,python-chardet)
-       ("python-dateutil" ,python-dateutil)
-       ("python-lxml" ,python-lxml)
-       ("python-magic" ,python-magic)
-       ("python-ply" ,python-ply)
-       ("python-requests" ,python-requests)))
+     (list python-beautifulsoup4
+           python-bottle
+           python-chardet
+           python-dateutil
+           python-lxml
+           python-magic
+           python-ply
+           python-requests))
     (native-inputs
-     `(("python-pytest" ,python-pytest)))
+     (list python-pytest))
     (home-page "http://furius.ca/beancount")
     (synopsis "Command-line double-entry accounting tool")
     (description
@@ -1643,30 +1744,35 @@ define financial transaction records in a text file, read them in memory,
 generate a variety of reports from them, and provides a web interface.")
     (license license:gpl2)))
 
-;; The beancount source ships with elisp in a subdirectory
 (define-public emacs-beancount
-  (package
-    (inherit beancount)
-    (name "emacs-beancount")
-    (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #f ;no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'chdir-emacs
-           (lambda _
-             (chdir "editors/emacs")
-             #t)))))
-    (inputs '())
-    (native-inputs '())
-    (synopsis "Emacs mode for beancount")
-    (description
-      "Emacs-beancount is an Emacs mode for the Beancount accounting tool.")))
+  ;; Note that upstream has not made any release since this project moved
+  ;; into its own repository (it was originally part of beancount itself)
+  (let ((commit "dbafe6a73d90c1f64d457b356b9dbb43499f70d5")
+        (revision "0"))
+    (package
+      (name "emacs-beancount")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/beancount/beancount-mode")
+               (commit commit)))
+         (sha256
+          (base32
+           "0v9bws2gv5b00x829p7hrcxqgdp7iwxvv1vhfjka81qrw6w1fvjw"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/beancount/beancount-mode")
+      (synopsis "Emacs mode for Beancount")
+      (description
+       "Emacs-beancount is an Emacs mode for the Beancount accounting tool.")
+      (license license:gpl3+))))
 
 (define-public hledger-web
   (package
     (name "hledger-web")
-    (version "1.14.1")
+    (version "1.21")
     (source
      (origin
        (method url-fetch)
@@ -1674,38 +1780,48 @@ generate a variety of reports from them, and provides a web interface.")
                            "hledger-web/hledger-web-" version ".tar.gz"))
        (sha256
         (base32
-         "0w59nr7mj0nx8z44cvhy1rhlj5rmx0wq4p5nfl4dycfmp7jwvsm1"))))
+         "0ivszqcypw0j2wn4r7fv7dqm1pvr0b1y6rqpxagzyk8cxn3ic9g2"))))
     (build-system haskell-build-system)
+    (arguments
+     `(#:tests? #f ; TODO: fail.
+       #:cabal-revision
+       ("1" "1hnw10ibhbafbsfj5lzlxwjg4cjnqr5bb51n6mqbi30qqabgq78x")))
     (inputs
-     `(("ghc-decimal" ,ghc-decimal)
-       ("ghc-aeson" ,ghc-aeson)
-       ("ghc-blaze-html" ,ghc-blaze-html)
-       ("ghc-blaze-markup" ,ghc-blaze-markup)
-       ("ghc-case-insensitive" ,ghc-case-insensitive)
-       ("ghc-clientsession" ,ghc-clientsession)
-       ("ghc-cmdargs" ,ghc-cmdargs)
-       ("ghc-conduit" ,ghc-conduit)
-       ("ghc-conduit-extra" ,ghc-conduit-extra)
-       ("ghc-data-default" ,ghc-data-default)
-       ("ghc-hjsmin" ,ghc-hjsmin)
-       ("hledger" ,hledger)
-       ("ghc-hledger-lib" ,ghc-hledger-lib)
-       ("ghc-http-client" ,ghc-http-client)
-       ("ghc-http-conduit" ,ghc-http-conduit)
-       ("ghc-http-types" ,ghc-http-types)
-       ("ghc-json" ,ghc-json)
-       ("ghc-megaparsec" ,ghc-megaparsec)
-       ("ghc-semigroups" ,ghc-semigroups)
-       ("ghc-shakespeare" ,ghc-shakespeare)
-       ("ghc-wai" ,ghc-wai)
-       ("ghc-wai-extra" ,ghc-wai-extra)
-       ("ghc-wai-handler-launch" ,ghc-wai-handler-launch)
-       ("ghc-warp" ,ghc-warp)
-       ("ghc-yaml" ,ghc-yaml)
-       ("ghc-yesod" ,ghc-yesod)
-       ("ghc-yesod-core" ,ghc-yesod-core)
-       ("ghc-yesod-form" ,ghc-yesod-form)
-       ("ghc-yesod-static" ,ghc-yesod-static)))
+     (list ghc-aeson
+           ghc-blaze-html
+           ghc-blaze-markup
+           ghc-case-insensitive
+           ghc-clientsession
+           ghc-cmdargs
+           ghc-conduit-extra
+           ghc-conduit
+           ghc-data-default
+           ghc-decimal
+           ghc-extra
+           ghc-hjsmin
+           ghc-hledger-lib
+           ghc-hspec
+           ghc-http-client
+           ghc-http-conduit
+           ghc-http-types
+           ghc-megaparsec
+           ghc-network
+           ghc-shakespeare
+           ghc-unix-compat
+           ghc-unordered-containers
+           ghc-utf8-string
+           ghc-wai-cors
+           ghc-wai-extra
+           ghc-wai
+           ghc-wai-handler-launch
+           ghc-warp
+           ghc-yaml
+           ghc-yesod-core
+           ghc-yesod-form
+           ghc-yesod
+           ghc-yesod-static
+           ghc-yesod-test
+           hledger))
     (home-page "https://hledger.org")
     (synopsis "Web-based user interface for the hledger accounting system")
     (description "This package provides a simple Web-based User
@@ -1713,3 +1829,116 @@ Interface (UI) for the hledger accounting system.  It can be used as a
 local, single-user UI, or as a multi-user UI for viewing, adding, and
 editing on the Web.")
     (license license:gpl3)))
+
+(define-public quantlib
+  (package
+    (name "quantlib")
+    (version "1.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/lballabio/QuantLib/releases/download/QuantLib-v"
+             version "/QuantLib-" version ".tar.gz"))
+       (sha256
+        (base32 "1rxjhkc32a8z0g5gmh0iw5nx0fr31cjsrfgq7c8g6nib003kgnnx"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       ,#~(list "--disable-static"
+                (string-append "--prefix=" #$output))))
+    (inputs (list boost))
+    (home-page "https://www.quantlib.org")
+    (synopsis "Library for quantitative finance")
+    (description
+     "The QuantLib project is aimed at providing a comprehensive software
+framework for quantitative finance.  QuantLib is a library for modeling,
+trading, and risk management in real-life.")
+    (license license:bsd-2)))
+
+(define-public optionmatrix
+  (package
+    (name "optionmatrix")
+    (version "1.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://sourceforge/optionmatrix/optionmatrix-"
+             version ".tar.xz"))
+       (sha256
+        (base32 "1zd0pfiphnijh1l94swb3mjrpmjsn37z11mklamd7zw6h2d4zh4d"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list gsl gtk+ ncurses))
+    (native-inputs
+     (list pkg-config texinfo
+           (texlive-updmap.cfg (list texlive-epsf texlive-tex-texinfo))))
+    (home-page "https://anthonybradford.github.io/optionmatrix/")
+    (synopsis "Financial derivative calculator")
+    (description
+     "The OptionMatrix programs are financial derivative calculators.  These
+calculators are real-time multi-model option chain pricers with analytics and
+interactive controls.  This package provides a GTK+ graphical user interface
+(@code{optionmatrix}) and a curses interface (@code{optionmatrix_console}).")
+    (license license:gpl3+)))
+
+(define-public python-ta-lib
+  (package
+    (name "python-ta-lib")
+    (version "0.4.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "TA-Lib" version))
+       (sha256
+        (base32 "17sf222mq2vx924f15qlz5czkkq5vsnsjy9ibwkrk8lalr6g5lkl"))))
+    (build-system python-build-system)
+    (inputs
+     (list ta-lib))
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list python-cython python-nose python-pandas))
+    (home-page "https://github.com/mrjbq7/ta-lib")
+    (synopsis "Python wrapper for TA-Lib")
+    (description
+     "This is a Python wrapper for TA-Lib based on Cython.  TA-Lib is a library
+providing common functions for the technical analysis of financial market data.")
+    (license license:bsd-2)))
+
+(define-public ta-lib
+  (package
+    (name "ta-lib")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/ta-lib/ta-lib/"
+                           version "/ta-lib-" version "-src.tar.gz"))
+       (sha256
+        (base32 "0lf69nna0aahwpgd9m9yjzbv2fbfn081djfznssa84f0n7y1xx4z"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'link-math-library
+           (lambda _
+             (substitute* "src/Makefile.am"
+               (("ta_common/libta_common.la")
+                "ta_common/libta_common.la -lm"))
+             (substitute* "src/Makefile.in"
+               (("\\$\\(libta_lib_la_LDFLAGS\\) \\$\\(LDFLAGS\\) -o \\$@")
+                "$(libta_lib_la_LDFLAGS) $(LDFLAGS) -lm -o $@")))))
+       ;; Parallel build fails with:
+       ;; mv -f .deps/gen_code-gen_code.Tpo .deps/gen_code-gen_code.Po
+       ;; mv: cannot stat '.deps/gen_code-gen_code.Tpo': No such file or directory
+       ;; Makefile:254: recipe for target 'gen_code-gen_code.o' failed
+       #:parallel-build? #f
+       #:configure-flags '("--disable-static")))
+    (home-page "https://ta-lib.org")
+    (synopsis "Technical analysis library")
+    (description
+     "TA-Lib is a library providing common functions for the technical
+analysis of financial market data.")
+    (license license:bsd-3)))

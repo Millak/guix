@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018 David Thompson <davet@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mike Gerwitz <mtg@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -34,23 +34,33 @@
   #:use-module (guix scripts)
   #:use-module (guix scripts build)
   #:use-module (guix transformations)
-  #:use-module (gnu build linux-container)
-  #:use-module (gnu build accounts)
-  #:use-module ((guix build syscalls) #:select (set-network-interface-up))
-  #:use-module (gnu system linux-container)
+  #:autoload   (ice-9 ftw) (scandir)
+  #:autoload   (gnu build linux-container) (call-with-container %namespaces
+                                            user-namespace-supported?
+                                            unprivileged-user-namespace-supported?
+                                            setgroups-supported?)
+  #:autoload   (gnu build accounts) (password-entry group-entry
+                                     password-entry-name password-entry-directory
+                                     write-passwd write-group)
+  #:autoload   (guix build syscalls) (set-network-interface-up openpty login-tty)
   #:use-module (gnu system file-systems)
-  #:use-module (gnu packages)
-  #:use-module (gnu packages bash)
-  #:use-module ((gnu packages bootstrap)
-                #:select (bootstrap-executable %bootstrap-guile))
+  #:autoload   (gnu packages) (specification->package+output)
+  #:autoload   (gnu packages bash) (bash)
+  #:autoload   (gnu packages bootstrap) (bootstrap-executable %bootstrap-guile)
   #:use-module (ice-9 match)
+  #:autoload   (ice-9 rdelim) (read-line)
+  #:use-module (ice-9 vlist)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-98)
   #:export (assert-container-features
-            guix-environment))
+            guix-environment
+            guix-environment*
+            show-environment-options-help
+            (%options . %environment-options)
+            (%default-options . %environment-default-options)))
 
 (define %default-shell
   (or (getenv "SHELL") "/bin/sh"))
@@ -66,41 +76,18 @@ do not augment existing environment variables with additional search paths."
                (newline)))
             (profile-search-paths profile manifest)))
 
-(define (input->manifest-entry input)
-  "Return a manifest entry for INPUT, or #f if INPUT does not correspond to a
-package."
-  (match input
-    ((_ (? package? package))
-     (package->manifest-entry package))
-    ((_ (? package? package) output)
-     (package->manifest-entry package output))
-    (_
-     #f)))
-
-(define (package-environment-inputs package)
-  "Return a list of manifest entries corresponding to the transitive input
-packages for PACKAGE."
-  ;; Remove non-package inputs such as origin records.
-  (filter-map input->manifest-entry
-              (bag-transitive-inputs (package->bag package))))
-
-(define (show-help)
-  (display (G_ "Usage: guix environment [OPTION]... PACKAGE... [-- COMMAND...]
-Build an environment that includes the dependencies of PACKAGE and execute
-COMMAND or an interactive shell in that environment.\n"))
+(define (show-environment-options-help)
+  "Print help about options shared between 'guix environment' and 'guix
+shell'."
   (display (G_ "
   -e, --expression=EXPR  create environment for the package that EXPR
                          evaluates to"))
-  (display (G_ "
-  -l, --load=FILE        create environment for the package that the code within
-                         FILE evaluates to"))
   (display (G_ "
   -m, --manifest=FILE    create environment with the manifest from FILE"))
   (display (G_ "
   -p, --profile=PATH     create environment from profile at PATH"))
   (display (G_ "
-      --ad-hoc           include all specified packages in the environment instead
-                         of only their inputs"))
+      --check            check if the shell clobbers environment variables"))
   (display (G_ "
       --pure             unset existing environment variables"))
   (display (G_ "
@@ -136,7 +123,24 @@ COMMAND or an interactive shell in that environment.\n"))
   (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (display (G_ "
-      --bootstrap        use bootstrap binaries to build the environment"))
+      --bootstrap        use bootstrap binaries to build the environment")))
+
+(define (show-help)
+  (display (G_ "Usage: guix environment [OPTION]... PACKAGE... [-- COMMAND...]
+Build an environment that includes the dependencies of PACKAGE and execute
+COMMAND or an interactive shell in that environment.\n"))
+  (warning (G_ "This command is deprecated in favor of 'guix shell'.\n"))
+  (newline)
+
+  ;; These two options are left out in 'guix shell'.
+  (display (G_ "
+  -l, --load=FILE        create environment for the package that the code within
+                         FILE evaluates to"))
+  (display (G_ "
+      --ad-hoc           include all specified packages in the environment instead
+                         of only their inputs"))
+
+  (show-environment-options-help)
   (newline)
   (show-build-options-help)
   (newline)
@@ -179,6 +183,9 @@ COMMAND or an interactive shell in that environment.\n"))
          (option '(#\V "version") #f #f
                  (lambda args
                    (show-version-and-exit "guix environment")))
+         (option '("check") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'check? #t result)))
          (option '("pure") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'pure #t result)))
@@ -297,11 +304,11 @@ for the corresponding packages."
       ((? package? package)
        (if (eq? mode 'ad-hoc-package)
            (list (package->manifest-entry* package))
-           (package-environment-inputs package)))
+           (manifest-entries (package->development-manifest package))))
       (((? package? package) (? string? output))
        (if (eq? mode 'ad-hoc-package)
            (list (package->manifest-entry* package output))
-           (package-environment-inputs package)))
+           (manifest-entries (package->development-manifest package))))
       ((lst ...)
        (append-map (cut packages->outputs <> mode) lst))))
 
@@ -313,8 +320,9 @@ for the corresponding packages."
                                  (specification->package+output spec)))
                      (list (package->manifest-entry* package output))))
                   (('package 'package (? string? spec))
-                   (package-environment-inputs
-                    (transform (specification->package+output spec))))
+                   (manifest-entries
+                    (package->development-manifest
+                     (transform (specification->package+output spec)))))
                   (('expression mode str)
                    ;; Add all the outputs of the package STR evaluates to.
                    (packages->outputs (read/eval str) mode))
@@ -394,7 +402,193 @@ regexps in WHITE-LIST."
 
   (match command
     ((program . args)
-     (apply execlp program program args))))
+     (catch 'system-error
+       (lambda ()
+         (apply execlp program program args))
+       (lambda _
+         ;; Following established convention, exit with 127 upon ENOENT.
+         (primitive-_exit 127))))))
+
+(define (child-shell-environment shell profile manifest)
+  "Create a child process, load PROFILE and MANIFEST, and then run SHELL in
+interactive mode in it.  Return a name/value vhash for all the variables shown
+by running 'set' in the shell."
+  (define-values (controller inferior)
+    (openpty))
+
+  (define script
+    ;; Script to obtain the list of environment variable values.  On a POSIX
+    ;; shell we can rely on 'set', but on fish we have to use 'env' (fish's
+    ;; 'set' truncates values and prints them in a different format.)
+    "env || /usr/bin/env || set; echo GUIX-CHECK-DONE; read x; exit\n")
+
+  (define lines
+    (match (primitive-fork)
+      (0
+       (catch #t
+         (lambda ()
+           (load-profile profile manifest #:pure? #t)
+           (setenv "GUIX_ENVIRONMENT" profile)
+           (close-fdes controller)
+           (login-tty inferior)
+           (execl shell shell))
+         (lambda _
+           (primitive-exit 127))))
+      (pid
+       (close-fdes inferior)
+       (let* ((port   (fdopen controller "r+l"))
+              (result (begin
+                        (display script port)
+                        (let loop ((lines '()))
+                          (match (read-line port)
+                            ((? eof-object?) (reverse lines))
+                            ("GUIX-CHECK-DONE\r"
+                             (display "done\n" port)
+                             (reverse lines))
+                            (line
+                             ;; Drop the '\r' from LINE.
+                             (loop (cons (string-drop-right line 1)
+                                         lines))))))))
+         (close-port port)
+         (waitpid pid)
+         result))))
+
+  (fold (lambda (line table)
+          ;; Note: 'set' in fish outputs "NAME VALUE" instead of "NAME=VALUE"
+          ;; but it also truncates values anyway, so don't try to support it.
+          (let ((index (string-index line #\=)))
+            (if index
+                (vhash-cons (string-take line index)
+                            (string-drop line (+ 1 index))
+                            table)
+                table)))
+        vlist-null
+        lines))
+
+(define* (validate-child-shell-environment profile manifest
+                                           #:optional (shell %default-shell))
+  "Run SHELL in interactive mode in an environment for PROFILE and MANIFEST
+and report clobbered environment variables."
+  (define warned? #f)
+  (define-syntax-rule (warn exp ...)
+    (begin
+      (set! warned? #t)
+      (warning exp ...)))
+
+  (info (G_ "checking the environment variables visible from shell '~a'...~%")
+        shell)
+  (let ((actual (child-shell-environment shell profile manifest)))
+    (when (vlist-null? actual)
+      (leave (G_ "failed to determine environment of shell '~a'~%")
+             shell))
+    (for-each (match-lambda
+                ((spec . expected)
+                 (let ((name (search-path-specification-variable spec)))
+                   (match (vhash-assoc name actual)
+                     (#f
+                      (warn (G_ "variable '~a' is missing from shell \
+environment~%")
+                            name))
+                     ((_ . actual)
+                      (cond ((string=? expected actual)
+                             #t)
+                            ((string-prefix? expected actual)
+                             (warn (G_ "variable '~a' has unexpected \
+suffix '~a'~%")
+                                   name
+                                   (string-drop actual
+                                                (string-length expected))))
+                            (else
+                             (warn (G_ "variable '~a' is clobbered: '~a'~%")
+                                   name actual))))))))
+              (profile-search-paths profile manifest))
+
+    ;; Special case.
+    (match (vhash-assoc "GUIX_ENVIRONMENT" actual)
+      (#f
+       (warn (G_ "'GUIX_ENVIRONMENT' is missing from the shell \
+environment~%")))
+      ((_ . value)
+       (unless (string=? value profile)
+         (warn (G_ "'GUIX_ENVIRONMENT' is set to '~a' instead of '~a'~%")
+               value profile))))
+
+    ;; Check the prompt unless we have more important warnings.
+    (unless warned?
+      (match (vhash-assoc "PS1" actual)
+        (#f #f)
+        ((_ . str)
+         (when (and (getenv "PS1") (string=? str (getenv "PS1")))
+           (warning (G_ "'PS1' is the same in sub-shell~%"))
+           (display-hint (G_ "Consider setting a different prompt for
+environment shells to make them distinguishable.
+
+If you are using Bash, you can do that by adding these lines to
+@file{~/.bashrc}:
+
+@example
+if [ -n \"$GUIX_ENVIRONMENT\" ]
+then
+  export PS1=\"\\u@@\\h \\w [env]\\$ \"
+fi
+@end example
+"))))))
+
+    (if warned?
+        (begin
+          (display-hint (G_ "One or more environment variables have a
+different value in the shell than the one we set.  This means that you may
+find yourself running code in an environment different from the one you asked
+Guix to prepare.
+
+This usually indicates that your shell startup files are unexpectedly
+modifying those environment variables.  For example, if you are using Bash,
+make sure that environment variables are set or modified in
+@file{~/.bash_profile} and @emph{not} in @file{~/.bashrc}.  For more
+information on Bash startup files, run:
+
+@example
+info \"(bash) Bash Startup Files\"
+@end example
+
+Alternatively, you can avoid the problem by passing the @option{--container}
+or @option{-C} option.  That will give you a fully isolated environment
+running in a \"container\", immune to the issue described above."))
+          (exit 1))
+        (info (G_ "All is good!  The shell gets correct environment \
+variables.~%")))))
+
+(define (suggest-command-name profile command)
+  "COMMAND was not found in PROFILE so display a hint suggesting the closest
+command name."
+  (define not-dot?
+    (match-lambda
+      ((or "." "..") #f)
+      (_ #t)))
+
+  (match (scandir (string-append profile "/bin") not-dot?)
+    ((or #f ()) #f)
+    (available
+     (match command
+       ((executable _ ...)
+        ;; Look for a suggestion with a high threshold: a suggestion is
+        ;; usually better than no suggestion.
+        (let ((closest (string-closest executable available
+                                       #:threshold 12)))
+          (unless (or (not closest) (string=? closest executable))
+            (display-hint (format #f (G_ "Did you mean '~a'?~%")
+                                  closest)))))))))
+
+(define (validate-exit-status profile command status)
+  "When STATUS, an integer as returned by 'waitpid', is 127, raise a \"command
+not found\" error.  Otherwise return STATUS."
+  ;; Most likely, exit value 127 means ENOENT.
+  (when (eqv? (status:exit-val status) 127)
+    (report-error (G_ "~a: command not found~%")
+                  (first command))
+    (suggest-command-name profile command)
+    (exit 1))
+  status)
 
 (define* (launch-environment/fork command profile manifest
                                   #:key pure? (white-list '()))
@@ -407,7 +601,8 @@ regexps in WHITE-LIST."
                            #:pure? pure?
                            #:white-list white-list))
     (pid (match (waitpid pid)
-           ((_ . status) status)))))
+           ((_ . status)
+            (validate-exit-status profile command status))))))
 
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
@@ -427,6 +622,9 @@ WHILE-LIST."
   (define (optional-mapping->fs mapping)
     (and (file-exists? (file-system-mapping-source mapping))
          (file-system-mapping->bind-mount mapping)))
+
+  (define (exit/status* status)
+    (exit/status (validate-exit-status profile command status)))
 
   (mlet %store-monad ((reqs (inputs->requisites
                              (list (direct-store-path bash) profile))))
@@ -484,7 +682,7 @@ WHILE-LIST."
                                       '())
                                   (map file-system-mapping->bind-mount
                                        mappings))))
-       (exit/status
+       (exit/status*
         (call-with-container file-systems
           (lambda ()
             ;; Setup global shell.
@@ -666,11 +864,15 @@ message if any test fails."
 
 (define-command (guix-environment . args)
   (category development)
-  (synopsis "spawn one-off software environments")
+  (synopsis "spawn one-off software environments (deprecated)")
 
+  (guix-environment* (parse-args args)))
+
+(define (guix-environment* opts)
+  "Run the 'guix environment' command on OPTS, an alist resulting for
+command-line option processing with 'parse-command-line'."
   (with-error-handling
-    (let* ((opts       (parse-args args))
-           (pure?      (assoc-ref opts 'pure))
+    (let* ((pure?      (assoc-ref opts 'pure))
            (container? (assoc-ref opts 'container?))
            (link-prof? (assoc-ref opts 'link-profile?))
            (network?   (assoc-ref opts 'network?))
@@ -690,6 +892,26 @@ message if any test fails."
            (mappings   (pick-all opts 'file-system-mapping))
            (white-list (pick-all opts 'inherit-regexp)))
 
+      (define store-needed?
+        ;; Whether connecting to the daemon is needed.
+        (or container? (not profile)))
+
+      (define-syntax-rule (with-store/maybe store exp ...)
+        ;; Evaluate EXP... with STORE bound to a connection, unless
+        ;; STORE-NEEDED? is false, in which case STORE is bound to #f.
+        (let ((proc (lambda (store) exp ...)))
+          (if store-needed?
+              (with-store s
+                (set-build-options-from-command-line s opts)
+                (with-build-handler (build-notifier #:use-substitutes?
+                                                    (assoc-ref opts 'substitutes?)
+                                                    #:verbosity
+                                                    (assoc-ref opts 'verbosity)
+                                                    #:dry-run?
+                                                    (assoc-ref opts 'dry-run?))
+                  (proc s)))
+              (proc #f))))
+
       (when container? (assert-container-features))
 
       (when (and (not container?) link-prof?)
@@ -700,85 +922,92 @@ message if any test fails."
         (leave (G_ "--no-cwd cannot be used without --container~%")))
 
 
-      (with-store store
-        (with-build-handler (build-notifier #:use-substitutes?
-                                            (assoc-ref opts 'substitutes?)
-                                            #:verbosity
-                                            (assoc-ref opts 'verbosity)
-                                            #:dry-run?
-                                            (assoc-ref opts 'dry-run?))
-          (with-status-verbosity (assoc-ref opts 'verbosity)
-            (define manifest-from-opts
-              (options/resolve-packages store opts))
+      (with-store/maybe store
+        (with-status-verbosity (assoc-ref opts 'verbosity)
+          (define manifest-from-opts
+            (options/resolve-packages store opts))
 
-            (define manifest
-              (if profile
-                  (profile-manifest profile)
-                  manifest-from-opts))
+          (define manifest
+            (if profile
+                (profile-manifest profile)
+                manifest-from-opts))
 
-            (when (and profile
-                       (> (length (manifest-entries manifest-from-opts)) 0))
-              (leave (G_ "'--profile' cannot be used with package options~%")))
+          (when (and profile
+                     (> (length (manifest-entries manifest-from-opts)) 0))
+            (leave (G_ "'--profile' cannot be used with package options~%")))
 
-            (when (null? (manifest-entries manifest))
-              (warning (G_ "no packages specified; creating an empty environment~%")))
+          (when (null? (manifest-entries manifest))
+            (warning (G_ "no packages specified; creating an empty environment~%")))
 
-            (set-build-options-from-command-line store opts)
-
-            ;; Use the bootstrap Guile when requested.
-            (parameterize ((%graft? (assoc-ref opts 'graft?))
-                           (%guile-for-build
-                            (package-derivation
-                             store
-                             (if bootstrap?
-                                 %bootstrap-guile
-                                 (default-guile)))))
-              (run-with-store store
-                ;; Containers need a Bourne shell at /bin/sh.
-                (mlet* %store-monad ((bash       (environment-bash container?
-                                                                   bootstrap?
-                                                                   system))
-                                     (prof-drv   (manifest->derivation
-                                                  manifest system bootstrap?))
-                                     (profile -> (if profile
+          ;; Use the bootstrap Guile when requested.
+          (parameterize ((%graft? (assoc-ref opts 'graft?))
+                         (%guile-for-build
+                          (and store-needed?
+                               (package-derivation
+                                store
+                                (if bootstrap?
+                                    %bootstrap-guile
+                                    (default-guile))))))
+            (run-with-store store
+              ;; Containers need a Bourne shell at /bin/sh.
+              (mlet* %store-monad ((bash       (environment-bash container?
+                                                                 bootstrap?
+                                                                 system))
+                                   (prof-drv   (if profile
+                                                   (return #f)
+                                                   (manifest->derivation
+                                                    manifest system bootstrap?)))
+                                   (profile -> (if profile
                                                    (readlink* profile)
                                                    (derivation->output-path prof-drv)))
-                                     (gc-root -> (assoc-ref opts 'gc-root)))
+                                   (gc-root -> (assoc-ref opts 'gc-root)))
 
-                  ;; First build the inputs.  This is necessary even for
-                  ;; --search-paths.  Additionally, we might need to build bash for
-                  ;; a container.
-                  (mbegin %store-monad
-                    (built-derivations (if (derivation? bash)
-                                           (list prof-drv bash)
-                                           (list prof-drv)))
-                    (mwhen gc-root
-                      (register-gc-root profile gc-root))
+                ;; First build the inputs.  This is necessary even for
+                ;; --search-paths.  Additionally, we might need to build bash for
+                ;; a container.
+                (mbegin %store-monad
+                  (mwhen store-needed?
+                    (built-derivations (append
+                                           (if prof-drv (list prof-drv) '())
+                                           (if (derivation? bash) (list bash) '()))))
+                  (mwhen gc-root
+                    (register-gc-root profile gc-root))
 
-                    (cond
-                     ((assoc-ref opts 'search-paths)
-                      (show-search-paths profile manifest #:pure? pure?)
-                      (return #t))
-                     (container?
-                      (let ((bash-binary
-                             (if bootstrap?
-                                 (derivation->output-path bash)
-                                 (string-append (derivation->output-path bash)
-                                                "/bin/sh"))))
-                        (launch-environment/container #:command command
-                                                      #:bash bash-binary
-                                                      #:user user
-                                                      #:user-mappings mappings
-                                                      #:profile profile
-                                                      #:manifest manifest
-                                                      #:white-list white-list
-                                                      #:link-profile? link-prof?
-                                                      #:network? network?
-                                                      #:map-cwd? (not no-cwd?))))
+                  (mwhen (assoc-ref opts 'check?)
+                    (return
+                     (if container?
+                         (warning (G_ "'--check' is unnecessary \
+when using '--container'; doing nothing~%"))
+                         (validate-child-shell-environment profile manifest))))
 
-                     (else
-                      (return
-                       (exit/status
-                        (launch-environment/fork command profile manifest
-                                                 #:white-list white-list
-                                                 #:pure? pure?)))))))))))))))
+                  (cond
+                   ((assoc-ref opts 'search-paths)
+                    (show-search-paths profile manifest #:pure? pure?)
+                    (return #t))
+                   (container?
+                    (let ((bash-binary
+                           (if bootstrap?
+                               (derivation->output-path bash)
+                               (string-append (derivation->output-path bash)
+                                              "/bin/sh"))))
+                      (launch-environment/container #:command command
+                                                    #:bash bash-binary
+                                                    #:user user
+                                                    #:user-mappings mappings
+                                                    #:profile profile
+                                                    #:manifest manifest
+                                                    #:white-list white-list
+                                                    #:link-profile? link-prof?
+                                                    #:network? network?
+                                                    #:map-cwd? (not no-cwd?))))
+
+                   (else
+                    (return
+                     (exit/status
+                      (launch-environment/fork command profile manifest
+                                               #:white-list white-list
+                                               #:pure? pure?))))))))))))))
+
+;;; Local Variables:
+;;; eval: (put 'with-store/maybe 'scheme-indent-function 1)
+;;; End:

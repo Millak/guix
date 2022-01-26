@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -31,16 +31,19 @@
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu image)
+  #:use-module (gnu platform)
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
+  #:use-module (gnu system linux-container)
   #:use-module (gnu system uuid)
   #:use-module (gnu system vm)
   #:use-module (guix packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages genimage)
@@ -66,16 +69,16 @@
 
             efi-disk-image
             iso9660-image
-            arm32-disk-image
-            arm64-disk-image
+            docker-image
+            raw-with-offset-disk-image
 
             image-with-os
             efi-raw-image-type
             qcow2-image-type
             iso-image-type
             uncompressed-iso-image-type
-            arm32-image-type
-            arm64-image-type
+            docker-image-type
+            raw-with-offset-image-type
 
             image-with-label
             system-image
@@ -128,10 +131,13 @@
            (label "GUIX_IMAGE")
            (flags '(boot)))))))
 
-(define* (arm32-disk-image #:optional (offset root-offset))
+(define docker-image
+  (image
+   (format 'docker)))
+
+(define* (raw-with-offset-disk-image #:optional (offset root-offset))
   (image
    (format 'disk-image)
-   (target "arm-linux-gnueabihf")
    (partitions
     (list (partition
            (inherit root-partition)
@@ -139,11 +145,6 @@
    ;; FIXME: Deleting and creating "/var/run" and "/tmp" on the overlayfs
    ;; fails.
    (volatile-root? #f)))
-
-(define* (arm64-disk-image #:optional (offset root-offset))
-  (image
-   (inherit (arm32-disk-image offset))
-   (target "aarch64-linux-gnu")))
 
 
 ;;;
@@ -186,15 +187,15 @@ set to the given OS."
                   (compression? #f))
                  <>))))
 
-(define arm32-image-type
+(define docker-image-type
   (image-type
-   (name 'arm32-raw)
-   (constructor (cut image-with-os (arm32-disk-image) <>))))
+   (name 'docker)
+   (constructor (cut image-with-os docker-image <>))))
 
-(define arm64-image-type
+(define raw-with-offset-image-type
   (image-type
-   (name 'arm64-raw)
-   (constructor (cut image-with-os (arm64-disk-image) <>))))
+   (name 'raw-with-offset)
+   (constructor (cut image-with-os (raw-with-offset-disk-image) <>))))
 
 
 ;;
@@ -232,8 +233,7 @@ set to the given OS."
 (define-syntax-rule (with-imported-modules* gexp* ...)
   (with-extensions gcrypt-sqlite3&co
     (with-imported-modules `(,@(source-module-closure
-                                '((gnu build vm)
-                                  (gnu build image)
+                                '((gnu build image)
                                   (gnu build bootloader)
                                   (gnu build hurd-boot)
                                   (gnu build linux-boot)
@@ -241,8 +241,7 @@ set to the given OS."
                                 #:select? not-config?)
                              ((guix config) => ,(make-config.scm)))
       #~(begin
-          (use-modules (gnu build vm)
-                       (gnu build image)
+          (use-modules (gnu build image)
                        (gnu build bootloader)
                        (gnu build hurd-boot)
                        (gnu build linux-boot)
@@ -310,6 +309,14 @@ used in the image."
          ((member 'esp flags) "0xEF")
          (else "0x83"))))
 
+    (define (partition->gpt-type partition)
+      ;; Return the genimage GPT partition type code corresponding to PARTITION.
+      ;; See https://github.com/pengutronix/genimage/blob/master/README.rst
+      (let ((flags (partition-flags partition)))
+        (cond
+          ((member 'esp flags) "U")
+          (else "L"))))
+
     (define (partition-image partition)
       ;; Return as a file-like object, an image of the given PARTITION.  A
       ;; directory, filled by calling the PARTITION initializer procedure, is
@@ -341,6 +348,8 @@ used in the image."
                  (initializer image-root
                               #:references-graphs '#$graph
                               #:deduplicate? #f
+                              #:copy-closures? (not
+                                                #$(image-shared-store? image))
                               #:system-directory #$os
                               #:grub-efi #+grub-efi
                               #:bootloader-package
@@ -359,26 +368,44 @@ used in the image."
                        #:local-build? #f
                        #:options `(#:references-graphs ,inputs))))
 
-    (define (partition->config partition)
+    (define (gpt-image? image)
+      (eq? 'gpt (image-partition-table-type image)))
+
+    (define (partition-type-values image partition)
+      (if (gpt-image? image)
+          (values "partition-type-uuid" (partition->gpt-type partition))
+          (values "partition-type" (partition->dos-type partition))))
+
+    (define (partition->config image partition)
       ;; Return the genimage partition configuration for PARTITION.
-      (let ((label (partition-label partition))
-            (dos-type (partition->dos-type partition))
-            (image (partition-image partition))
-            (offset (partition-offset partition)))
-        #~(format #f "~/partition ~a {
-~/~/partition-type = ~a
-~/~/image = \"~a\"
-~/~/offset = \"~a\"
-~/}"
-                  #$label
-                  #$dos-type
-                  #$image
-                  #$offset)))
+      (let-values (((partition-type-attribute partition-type-value)
+                    (partition-type-values image partition)))
+        (let ((label (partition-label partition))
+              (image (partition-image partition))
+              (offset (partition-offset partition)))
+          #~(format #f "~/partition ~a {
+  ~/~/~a = ~a
+  ~/~/image = \"~a\"
+  ~/~/offset = \"~a\"
+  ~/}"
+                    #$label
+                    #$partition-type-attribute
+                    #$partition-type-value
+                    #$image
+                    #$offset))))
+
+    (define (genimage-type-options image-type image)
+      (cond
+        ((equal? image-type "hdimage")
+         (format #f "~%~/~/gpt = ~a~%~/"
+                 (if (gpt-image? image) "true" "false")))
+        (else "")))
 
     (let* ((format (image-format image))
            (image-type (format->image-type format))
+           (image-type-options (genimage-type-options image-type image))
            (partitions (image-partitions image))
-           (partitions-config (map partition->config partitions))
+           (partitions-config (map (cut partition->config image <>) partitions))
            (builder
             #~(begin
                 (let ((format (@ (ice-9 format) format)))
@@ -387,9 +414,10 @@ used in the image."
                       (format port
                               "\
 image ~a {
-~/~a {}
+~/~a {~a}
 ~{~a~^~%~}
-}~%" #$genimage-name #$image-type (list #$@partitions-config))))))))
+}~%" #$genimage-name #$image-type #$image-type-options
+ (list #$@partitions-config))))))))
       (computed-file "genimage.cfg" builder)))
 
   (let* ((image-name (image-name image))
@@ -514,15 +542,107 @@ returns an image record where the first partition's label is set to <label>."
 
 
 ;;
+;; Docker image.
+;;
+
+(define* (system-docker-image image
+                              #:key
+                              (name "docker-image"))
+  "Build a docker image for IMAGE.  NAME is the base name to use for the
+output file."
+  (define boot-program
+    ;; Program that runs the boot script of OS, which in turn starts shepherd.
+    (program-file "boot-program"
+                  #~(let ((system (cadr (command-line))))
+                      (setenv "GUIX_NEW_SYSTEM" system)
+                      (execl #$(file-append guile-3.0 "/bin/guile")
+                             "guile" "--no-auto-compile"
+                             (string-append system "/boot")))))
+
+  (define shared-network?
+    (image-shared-network? image))
+
+  (let* ((os (operating-system-with-gc-roots
+              (containerized-operating-system
+               (image-operating-system image) '()
+               #:shared-network?
+               shared-network?)
+              (list boot-program)))
+         (substitutable? (image-substitutable? image))
+         (register-closures? (has-guix-service-type? os))
+         (schema (and register-closures?
+                      (local-file (search-path %load-path
+                                               "guix/store/schema.sql"))))
+         (name (string-append name ".tar.gz"))
+         (graph "system-graph"))
+    (define builder
+      (with-extensions (cons guile-json-3         ;for (guix docker)
+                             gcrypt-sqlite3&co)   ;for (guix store database)
+        (with-imported-modules `(,@(source-module-closure
+                                    '((guix docker)
+                                      (guix store database)
+                                      (guix build utils)
+                                      (guix build store-copy)
+                                      (gnu build image))
+                                    #:select? not-config?)
+                                 ((guix config) => ,(make-config.scm)))
+          #~(begin
+              (use-modules (guix docker)
+                           (guix build utils)
+                           (gnu build image)
+                           (srfi srfi-19)
+                           (guix build store-copy)
+                           (guix store database))
+
+              ;; Set the SQL schema location.
+              (sql-schema #$schema)
+
+              ;; Allow non-ASCII file names--e.g., 'nss-certs'--to be decoded.
+              (setenv "GUIX_LOCPATH"
+                      #+(file-append glibc-utf8-locales "/lib/locale"))
+              (setlocale LC_ALL "en_US.utf8")
+
+              (set-path-environment-variable "PATH" '("bin" "sbin") '(#+tar))
+
+              (let ((image-root (string-append (getcwd) "/tmp-root")))
+                (mkdir-p image-root)
+                (initialize-root-partition image-root
+                                           #:references-graphs '(#$graph)
+                                           #:copy-closures? #f
+                                           #:register-closures? #$register-closures?
+                                           #:deduplicate? #f
+                                           #:system-directory #$os)
+                (build-docker-image
+                 #$output
+                 (cons* image-root
+                        (map store-info-item
+                             (call-with-input-file #$graph
+                               read-reference-graph)))
+                 #$os
+                 #:entry-point '(#$boot-program #$os)
+                 #:compressor '(#+(file-append gzip "/bin/gzip") "-9n")
+                 #:creation-time (make-time time-utc 0 1)
+                 #:transformations `((,image-root -> ""))))))))
+
+    (computed-file name builder
+                   ;; Allow offloading so that this I/O-intensive process
+                   ;; doesn't run on the build farm's head node.
+                   #:local-build? #f
+                   #:options `(#:references-graphs ((,graph ,os))
+                               #:substitutable? ,substitutable?))))
+
+
+;;
 ;; Image creation.
 ;;
 
 (define (image->root-file-system image)
   "Return the IMAGE root partition file-system type."
-  (let ((format (image-format image)))
-    (if (eq? format 'iso9660)
-        "iso9660"
-        (partition-file-system (find-root-partition image)))))
+  (case (image-format image)
+    ((iso9660) "iso9660")
+    ((docker) "dummy")
+    (else
+     (partition-file-system (find-root-partition image)))))
 
 (define (root-size image)
   "Return the root partition size of IMAGE."
@@ -615,7 +735,30 @@ it can be used for bootloading."
   "Return the derivation of IMAGE.  It can be a raw disk-image or an ISO9660
 image, depending on IMAGE format."
   (define substitutable? (image-substitutable? image))
-  (define target (image-target image))
+  (define platform (image-platform image))
+
+  ;; The image platform definition may provide the appropriate "system"
+  ;; architecture for the image.  If we are already running on this system,
+  ;; the image can be built natively.  If we are running on a different
+  ;; system, then we need to cross-compile, using the "target" provided by the
+  ;; image definition.
+  (define system (and=> platform platform-system))
+  (define target (cond
+                  ;; No defined platform, let's use the user defined
+                  ;; system/target parameters.
+                  ((not platform)
+                   (%current-target-system))
+                  ;; The current system is the same as the platform system, no
+                  ;; need to cross-compile.
+                  ((and system
+                        (string=? system (%current-system)))
+                   #f)
+                  ;; If there is a user defined target let's override the
+                  ;; platform target. Otherwise, we can cross-compile to the
+                  ;; platform target.
+                  (else
+                   (or (%current-target-system)
+                       (and=> platform platform-target)))))
 
   (with-parameters ((%current-target-system target))
     (let* ((os (operating-system-for-image image))
@@ -633,6 +776,8 @@ image, depending on IMAGE format."
                             #:register-closures? register-closures?
                             #:inputs `(("system" ,os)
                                        ("bootcfg" ,bootcfg))))
+       ((memq image-format '(docker))
+        (system-docker-image image*))
        ((memq image-format '(iso9660))
          (system-iso9660-image
           image*

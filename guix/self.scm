@@ -64,6 +64,7 @@
       ("guile-gcrypt"  (ref '(gnu packages gnupg) 'guile-gcrypt))
       ("gnutls"     (ref '(gnu packages tls) 'gnutls))
       ("disarchive" (ref '(gnu packages backup) 'disarchive))
+      ("guile-lzma" (ref '(gnu packages guile) 'guile-lzma))
       ("gzip"       (ref '(gnu packages compression) 'gzip))
       ("bzip2"      (ref '(gnu packages compression) 'bzip2))
       ("xz"         (ref '(gnu packages compression) 'xz))
@@ -316,81 +317,23 @@ the result to OUTPUT."
                               chr))
                         str))
 
-          (define xref-regexp
-            ;; Texinfo cross-reference regexp.
-            (make-regexp "@(px|x)?ref\\{([^,}]+)"))
-
-          (define (translate-cross-references texi translations)
-            ;; Translate the cross-references that appear in TEXI, a Texinfo
-            ;; file, using the msgid/msgstr pairs from TRANSLATIONS.
-            (define content
-              (call-with-input-file texi get-string-all))
-
-            (define matches
-              (list-matches xref-regexp content))
-
-            (define translation-map
-              (fold (match-lambda*
-                      (((msgid . str) result)
-                       (vhash-cons msgid str result)))
-                    vlist-null
-                    translations))
-
-            (define translated
-              ;; Iterate over MATCHES and replace cross-references with their
-              ;; translation found in TRANSLATION-MAP.  (We can't use
-              ;; 'substitute*' because matches can span multiple lines.)
-              (let loop ((matches matches)
-                         (offset 0)
-                         (result '()))
-                (match matches
-                  (()
-                   (string-concatenate-reverse
-                    (cons (string-drop content offset) result)))
-                  ((head . tail)
-                   (let ((prefix (match:substring head 1))
-                         (ref    (canonicalize-whitespace (match:substring head 2))))
-                     (define translated
-                       (string-append "@" (or prefix "")
-                                      "ref{"
-                                      (match (vhash-assoc ref translation-map)
-                                        (#f ref)
-                                        ((_ . str) str))))
-
-                     (loop tail
-                           (match:end head)
-                           (append (list translated
-                                         (string-take
-                                          (string-drop content offset)
-                                          (- (match:start head) offset)))
-                                   result)))))))
-
-            (format (current-error-port)
-                    "translated ~a cross-references in '~a'~%"
-                    (length matches) texi)
-            (call-with-output-file texi
-              (lambda (port)
-                (display translated port))))
-
           (define* (translate-texi prefix po lang
                                    #:key (extras '()))
             "Translate the manual for one language LANG using the PO file.
 PREFIX must be the prefix of the manual, 'guix' or 'guix-cookbook'.  EXTRAS is
 a list of extra files, such as '(\"contributing\")."
-            (let ((translations (call-with-input-file po read-po-file)))
-              (for-each (lambda (file)
-                          (translate-tmp-texi po (string-append file ".texi")
-                                              (string-append file "." lang
-                                                             ".texi.tmp")))
-                        (cons prefix extras))
+            (for-each (lambda (file)
+                        (translate-tmp-texi po (string-append file ".texi")
+                                            (string-append file "." lang
+                                                           ".texi.tmp")))
+                      (cons prefix extras))
 
-              (for-each (lambda (file)
-                          (let* ((texi (string-append file "." lang ".texi"))
-                                 (tmp  (string-append texi ".tmp")))
-                            (copy-file tmp texi)
-                            (translate-cross-references texi
-                                                        translations)))
-                        (cons prefix extras))))
+            (for-each (lambda (file)
+                        (let* ((texi (string-append file "." lang ".texi"))
+                               (tmp  (string-append texi ".tmp")))
+                          (copy-file tmp texi)
+                          (translate-cross-references texi po)))
+                      (cons prefix extras)))
 
           (define (available-translations directory domain)
             ;; Return the list of available translations under DIRECTORY for
@@ -847,6 +790,9 @@ itself."
   (define disarchive
     (specification->package "disarchive"))
 
+  (define guile-lzma
+    (specification->package "guile-lzma"))
+
   (define dependencies
     (append-map transitive-package-dependencies
                 (list guile-gcrypt gnutls guile-git guile-avahi
@@ -961,10 +907,29 @@ itself."
   (define *home-modules*
     (scheme-node "guix-home"
                  `((gnu home)
-                   (gnu home-services)
-                   ,@(scheme-modules* source "gnu/home-services"))
+                   (gnu home services)
+                   ,@(scheme-modules* source "gnu/home/services"))
                  (list *core-package-modules* *package-modules*
                        *extra-modules* *core-modules* *system-modules*)
+                 #:extensions dependencies
+                 #:guile-for-build guile-for-build))
+
+  (define *core-cli-modules*
+    ;; Core command-line interface modules that do not depend on (gnu system
+    ;; …) or (gnu home …), and not even on *PACKAGE-MODULES*.
+    (scheme-node "guix-cli-core"
+                 (remove (match-lambda
+                           (('guix 'scripts 'system . _) #t)
+                           (('guix 'scripts 'environment) #t)
+                           (('guix 'scripts 'container . _) #t)
+                           (('guix 'scripts 'deploy) #t)
+                           (('guix 'scripts 'home . _) #t)
+                           (('guix 'scripts 'import . _) #t)
+                           (('guix 'pack) #t)
+                           (_ #f))
+                         (scheme-modules* source "guix/scripts"))
+                 (list *core-modules* *extra-modules*
+                       *core-package-modules*)
                  #:extensions dependencies
                  #:guile-for-build guile-for-build))
 
@@ -974,7 +939,7 @@ itself."
                          `((gnu ci)))
                  (list *core-modules* *extra-modules*
                        *core-package-modules* *package-modules*
-                       *system-modules* *home-modules*)
+                       *core-cli-modules* *system-modules* *home-modules*)
                  #:extensions dependencies
                  #:guile-for-build guile-for-build))
 
@@ -1020,6 +985,7 @@ itself."
                                  ;; comes with *CORE-MODULES*.
                                  (list *config*
                                        *cli-modules*
+                                       *core-cli-modules*
                                        *system-test-modules*
                                        *system-modules*
                                        *home-modules*
@@ -1047,7 +1013,9 @@ itself."
                 (command  (guix-command modules
                                         #:source source
                                         #:dependencies
-                                        (cons disarchive dependencies)
+                                        (cons* disarchive
+                                               guile-lzma
+                                               dependencies)
                                         #:guile guile-for-build
                                         #:guile-version guile-version)))
            (whole-package name modules dependencies

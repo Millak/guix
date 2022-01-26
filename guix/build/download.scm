@@ -36,7 +36,7 @@
   #:use-module (srfi srfi-26)
   #:autoload   (ice-9 ftw) (scandir)
   #:autoload   (guix base16) (bytevector->base16-string)
-  #:autoload   (guix swh) (swh-download-directory)
+  #:autoload   (guix swh) (swh-download-directory %verify-swh-certificate?)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
   #:export (open-socket-for-uri
@@ -646,6 +646,8 @@ and write the output to FILE."
                                                   #:verify-certificate?
                                                   verify-certificate?
                                                   #:timeout timeout)))
+              (format #t "Retrieving Disarchive spec from ~a ...~%"
+                      (uri->string uri))
               (let ((specification (read port)))
                 (close-port port)
                 specification))))
@@ -674,7 +676,8 @@ and write the output to FILE."
      (match (fetch-specification uris)
        (#f (format #t "could not find its Disarchive specification~%")
            #f)
-       (spec (parameterize ((%disarchive-log-port (current-output-port)))
+       (spec (parameterize ((%disarchive-log-port (current-output-port))
+                            (%verify-swh-certificate? verify-certificate?))
                (false-if-exception*
                 (disarchive-assemble spec file #:resolver resolve))))))))
 

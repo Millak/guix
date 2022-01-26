@@ -28,11 +28,14 @@
 
             %ed25519-public-key-file
             %ed25519-secret-key-file
-            %ed25519bis-public-key-file
-            %ed25519bis-secret-key-file
+            %ed25519-2-public-key-file
+            %ed25519-2-secret-key-file
+            %ed25519-3-public-key-file
+            %ed25519-3-secret-key-file
 
             read-openpgp-packet
             key-fingerprint
+            key-fingerprint-vector
             key-id))
 
 (define gpg-command
@@ -63,20 +66,27 @@ process is terminated afterwards."
   (call-with-fresh-gnupg-setup imported (lambda () exp ...)))
 
 (define %ed25519-public-key-file
-  (search-path %load-path "tests/ed25519.key"))
+  (search-path %load-path "tests/keys/ed25519.pub"))
 (define %ed25519-secret-key-file
-  (search-path %load-path "tests/ed25519.sec"))
-(define %ed25519bis-public-key-file
-  (search-path %load-path "tests/ed25519bis.key"))
-(define %ed25519bis-secret-key-file
-  (search-path %load-path "tests/ed25519bis.sec"))
+  (search-path %load-path "tests/keys/ed25519.sec"))
+(define %ed25519-2-public-key-file
+  (search-path %load-path "tests/keys/ed25519-2.pub"))
+(define %ed25519-2-secret-key-file
+  (search-path %load-path "tests/keys/ed25519-2.sec"))
+(define %ed25519-3-public-key-file
+  (search-path %load-path "tests/keys/ed25519-3.pub"))
+(define %ed25519-3-secret-key-file
+  (search-path %load-path "tests/keys/ed25519-3.sec"))
 
 (define (read-openpgp-packet file)
   (get-openpgp-packet
    (open-bytevector-input-port
     (call-with-input-file file read-radix-64))))
 
+(define key-fingerprint-vector
+  (compose openpgp-public-key-fingerprint
+           read-openpgp-packet))
+
 (define key-fingerprint
   (compose openpgp-format-fingerprint
-           openpgp-public-key-fingerprint
-           read-openpgp-packet))
+           key-fingerprint-vector))

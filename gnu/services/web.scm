@@ -535,7 +535,7 @@
 (define-record-type* <nginx-configuration>
   nginx-configuration make-nginx-configuration
   nginx-configuration?
-  (nginx         nginx-configuration-nginx          ;<package>
+  (nginx         nginx-configuration-nginx          ;file-like
                  (default nginx))
   (log-directory nginx-configuration-log-directory  ;string
                  (default "/var/log/nginx"))
@@ -552,9 +552,9 @@
   (modules nginx-configuration-modules (default '()))
   (global-directives nginx-configuration-global-directives
                      (default '((events . ()))))
-  (lua-package-path nginx-lua-package-path ;list of <package>
+  (lua-package-path nginx-lua-package-path ;list of file-like
                     (default #f))
-  (lua-package-cpath nginx-lua-package-cpath ;list of <package>
+  (lua-package-cpath nginx-lua-package-cpath ;list of file-like
                      (default #f))
   (extra-content nginx-configuration-extra-content
                  (default ""))
@@ -803,7 +803,7 @@ of index files."
 (define-record-type* <fcgiwrap-configuration> fcgiwrap-configuration
   make-fcgiwrap-configuration
   fcgiwrap-configuration?
-  (package       fcgiwrap-configuration-package ;<package>
+  (package       fcgiwrap-configuration-package ;file-like
                  (default fcgiwrap))
   (socket        fcgiwrap-configuration-socket
                  (default "tcp:127.0.0.1:9000"))
@@ -872,7 +872,7 @@ of index files."
 (define-record-type* <php-fpm-configuration> php-fpm-configuration
   make-php-fpm-configuration
   php-fpm-configuration?
-  (php              php-fpm-configuration-php ;<package>
+  (php              php-fpm-configuration-php ;file-like
                     (default php))
   (socket           php-fpm-configuration-socket
                     (default (string-append "/var/run/php"
@@ -1107,10 +1107,12 @@ a webserver.")
   hpcguix-web-configuration make-hpcguix-web-configuration
   hpcguix-web-configuration?
 
-  (package  hpcguix-web-package (default hpcguix-web)) ;<package>
+  (package  hpcguix-web-package (default hpcguix-web)) ;file-like
 
   ;; Specs is gexp of hpcguix-web configuration file
-  (specs    hpcguix-web-configuration-specs))
+  (specs    hpcguix-web-configuration-specs)
+  (address  hpcguix-web-configuration-address (default "127.0.0.1"))
+  (port     hpcguix-web-configuration-port (default 5000)))
 
 (define %hpcguix-web-accounts
   (list (user-group
@@ -1163,6 +1165,12 @@ a webserver.")
        (requirement   '(networking))
        (start #~(make-forkexec-constructor
                  (list #$(file-append hpcguix-web "/bin/hpcguix-web")
+                       (string-append "--listen="
+                                      #$(hpcguix-web-configuration-address
+                                         config))
+                       "-p"
+                       #$(number->string
+                          (hpcguix-web-configuration-port config))
                        (string-append "--config="
                                       #$(scheme-file "hpcguix-web.scm" specs)))
                  #:user "hpcguix-web"
@@ -1340,7 +1348,7 @@ files.")
 (define-record-type* <varnish-configuration>
   varnish-configuration make-varnish-configuration
   varnish-configuration?
-  (package             varnish-configuration-package          ;<package>
+  (package             varnish-configuration-package          ;file-like
                        (default varnish))
   (name                varnish-configuration-name             ;string
                        (default "default"))

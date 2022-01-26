@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
+;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,7 +24,7 @@
   #:use-module ((gnu services) #:hide (delete))
   #:use-module (gnu packages)
   #:use-module (gnu home)
-  #:use-module (gnu home-services)
+  #:use-module (gnu home services)
   #:use-module (guix channels)
   #:use-module (guix derivations)
   #:use-module (guix ui)
@@ -38,6 +40,7 @@
   #:autoload   (guix scripts pull) (channel-commit-hyperlink)
   #:use-module (guix scripts home import)
   #:use-module ((guix status) #:select (with-status-verbosity))
+  #:use-module ((guix build utils) #:select (mkdir-p))
   #:use-module (guix gexp)
   #:use-module (guix monads)
   #:use-module (srfi srfi-1)
@@ -86,6 +89,9 @@ Some ACTIONS support additional ARGS.\n"))
 
   (show-build-options-help)
   (display (G_ "
+  -e, --expression=EXPR  consider the home-environment EXPR evaluates to
+                         instead of reading FILE, when applicable"))
+  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (newline)
   (display (G_ "
@@ -99,7 +105,7 @@ Some ACTIONS support additional ARGS.\n"))
   "Return the verbosity level based on OPTS, the alist of parsed options."
   (or (assoc-ref opts 'verbosity)
       (if (eq? (assoc-ref opts 'action) 'build)
-          2 1)))
+          3 1)))
 
 (define %options
   ;; Specification of the command-line options.
@@ -107,6 +113,9 @@ Some ACTIONS support additional ARGS.\n"))
                  (lambda args
                    (show-help)
                    (exit 0)))
+         (option '(#\n "dry-run") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'dry-run? #t result)))
          (option '(#\V "version") #f #f
                  (lambda args
                    (show-version-and-exit "guix show")))
@@ -115,6 +124,9 @@ Some ACTIONS support additional ARGS.\n"))
                    (let ((level (string->number* arg)))
                      (alist-cons 'verbosity level
                                  (alist-delete 'verbosity result)))))
+         (option '(#\e "expression") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'expression arg result)))
          %standard-build-options))
 
 (define %default-options
@@ -125,7 +137,7 @@ Some ACTIONS support additional ARGS.\n"))
     (print-build-trace? . #t)
     (print-extended-build-trace? . #t)
     (multiplexed-build-output? . #t)
-    (verbosity . 3)
+    (verbosity . #f)                              ;default
     (debug . 0)))
 
 
@@ -179,6 +191,7 @@ ACTION must be one of the sub-commands that takes a home environment
 declaration as an argument (a file name.)  OPTS is the raw alist of options
 resulting from command-line parsing."
   (define (ensure-home-environment file-or-exp obj)
+    (ensure-profile-directory)
     (unless (home-environment? obj)
       (leave (G_ "'~a' does not return a home environment ~%")
              file-or-exp))
@@ -248,19 +261,32 @@ argument list and OPTS is the option alist."
      (apply search args))
     ((import)
      (let* ((profiles (delete-duplicates
-                      (match (filter-map (match-lambda
-                                           (('profile . p) p)
-                                           (_              #f))
-                                         opts)
-                        (() (list %current-profile))
-                        (lst (reverse lst)))))
-           (manifest (concatenate-manifests
-                      (map profile-manifest profiles))))
-       (import-manifest manifest (current-output-port))))
+                       (match (filter-map (match-lambda
+                                            (('profile . p) p)
+                                            (_              #f))
+                                          opts)
+                         (() (list %current-profile))
+                         (lst (reverse lst)))))
+            (manifest (concatenate-manifests
+                       (map profile-manifest profiles)))
+            (destination (match args
+                           ((destination) destination)
+                           (_ (leave (G_ "wrong number of arguments~%"))))))
+       (unless (file-exists? destination)
+         (mkdir-p destination))
+       (call-with-output-file
+           (string-append destination "/home-configuration.scm")
+         (cut import-manifest manifest destination <>))
+       (info (G_ "'~a' populated with all the Home configuration files~%")
+             destination)
+       (display-hint (format #f (G_ "\
+Run @command{guix home reconfigure ~a/home-configuration.scm} to effectively
+deploy the home environment described by these files.\n")
+                             destination))))
     ((describe)
      (match (generation-number %guix-home)
        (0
-        (error (G_ "no home environment generation, nothing to describe~%")))
+        (leave (G_ "no home environment generation, nothing to describe~%")))
        (generation
         (display-home-environment-generation generation))))
     ((list-generations)

@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (gnu packages disk)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
@@ -45,9 +47,11 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
@@ -55,35 +59,35 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "14.2.16")
+    (version "16.2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.ceph.com/tarballs/ceph-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0lmdri415hqczc9565s5m5568pnj97ipqxgnw6085kps0flwq5zh"))
+                "0n7vpdcxji49bqaa5b7zxif1r80rrkbh0dfacbibvf20kzzbn2fz"))
               (patches
-               (search-patches "ceph-disable-cpu-optimizations.patch"))
+               (search-patches
+                "ceph-disable-cpu-optimizations.patch"
+                "ceph-boost-compat.patch"
+                "ceph-rocksdb-compat.patch"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (for-each delete-file-recursively
-                            '(;; TODO: Unbundle these:
-                              ;"src/isa-l"
-                              ;"src/lua"
-                              ;"src/xxHash"
-                              ;"src/zstd"
-                              ;"src/civetweb"
-                              ;"src/seastar/fmt"
-                              "src/test/downloads"
-                              "src/c-ares"
-                              "src/googletest"
-                              "src/rapidjson"
-                              "src/spdk"
-                              "src/rocksdb"
-                              "src/boost"))
-                  #t))))
+               '(for-each delete-file-recursively
+                          '(;; TODO: Unbundle these:
+                            ;;"src/isa-l"
+                            ;;"src/lua"
+                            ;;"src/xxHash"
+                            ;;"src/zstd"
+                            ;;"src/civetweb"
+                            "src/c-ares"
+                            "src/fmt"
+                            "src/googletest"
+                            "src/rapidjson"
+                            "src/spdk"
+                            "src/rocksdb"
+                            "src/boost")))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -110,7 +114,7 @@
                "-DBUILD_SHARED_LIBS=ON"
                "-DWITH_SYSTEM_ROCKSDB=ON"
                "-DWITH_SYSTEM_BOOST=ON"
-               "-DWITH_PYTHON3=ON"
+
                ;; TODO: Enable these when available in Guix.
                "-DWITH_MGR_DASHBOARD_FRONTEND=OFF"       ;requires node + nodeenv
                "-DWITH_BABELTRACE=OFF"
@@ -120,6 +124,9 @@
 
                ;; Use jemalloc instead of tcmalloc.
                "-DALLOCATOR=jemalloc"
+
+               ;; Don't install systemd unit files.
+               "-DWITH_SYSTEMD=OFF"
 
                ;; Do not bother building the tests; we are not currently running
                ;; them, and they do not build with system googletest as of 14.2.5.
@@ -138,15 +145,12 @@
                (substitute* "cmake/modules/Distutils.cmake"
                  ;; Prevent creation of Python eggs.
                  (("setup.py install")
-                  "setup.py install --single-version-externally-managed --root=/"))
-
-               (substitute* (find-files "src/pybind" "^setup\\.py$")
-                 ;; Here we inject an extra line to the `setup.py' of the
+                  "setup.py install --single-version-externally-managed --root=/")
+                 ;; Inject the -rpath linker argument when linking
                  ;; Python C libraries so RUNPATH gets set up correctly.
-                 (("^([[:blank:]]+)extra_compile_args=(.*)$" _ indent args)
-                  (string-append indent "extra_compile_args=" args
-                                 indent "extra_link_args=['-Wl,-rpath="
-                                 lib "/lib'],\n")))
+                 (("LDFLAGS=(.*)\n" _ flags)
+                  (string-append "LDFLAGS=\\\"" flags
+                                 " -Wl,-rpath=" lib "/lib\\\"\n")))
 
                ;; Statically link libcrc32 because it does not get installed,
                ;; yet several libraries end up referring to it.
@@ -156,8 +160,7 @@
 
                (substitute* "udev/50-rbd.rules"
                  (("/usr/bin/ceph-rbdnamer")
-                  (string-append out "/bin/ceph-rbdnamer")))
-               #t)))
+                  (string-append out "/bin/ceph-rbdnamer"))))))
          (add-before 'install 'set-install-environment
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -168,46 +171,39 @@
                                     "/site-packages")))
                ;; The Python install scripts refuses to function if
                ;; the install directory is not on PYTHONPATH.
-               (setenv "PYTHONPATH"
-                       (string-append py3sitedir ":"
-                                      (getenv "PYTHONPATH")))
-               #t)))
+               (setenv "PYTHONPATH" py3sitedir))))
          (add-after 'install 'wrap-python-scripts
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (scripts '("ceph" "ceph-mgr" "ceph-volume"))
-                    (prettytable (assoc-ref inputs "python-prettytable"))
-                    (six (assoc-ref inputs "python-six"))
+                    (scripts '("bin/ceph" "bin/cephfs-top" "sbin/ceph-volume"))
+                    (dependencies (map (lambda (input)
+                                         (assoc-ref inputs input))
+                                       '("python-prettytable" "python-pyyaml")))
                     (sitedir (lambda (package)
                                (string-append package
                                               "/lib/python"
                                               ,(version-major+minor
                                                 (package-version python))
                                               "/site-packages")))
-                    (PYTHONPATH (string-append
-                                 (sitedir out) ":"
-                                 (sitedir six) ":"
-                                 (sitedir prettytable))))
+                    (PYTHONPATH (string-join (map sitedir (cons out dependencies))
+                                             ":")))
                (for-each (lambda (executable)
-                           (wrap-program (string-append out "/bin/" executable)
-                             `("PYTHONPATH" ":" prefix (,PYTHONPATH))))
-                         scripts)
-               #t))))))
+                           (wrap-program (string-append out "/" executable)
+                             `("GUIX_PYTHONPATH" ":" prefix (,PYTHONPATH))))
+                         scripts)))))))
     (outputs
      '("out" "lib"))
     (native-inputs
-     `(("gperf" ,gperf)
-       ("pkg-config" ,pkg-config)
-       ("python-cython" ,python-cython)
-       ("python-sphinx" ,python-sphinx)
-       ("yasm" ,yasm)))
+     (list gperf pkg-config python-cython python-sphinx yasm))
     (inputs
      `(("boost" ,boost)
        ("curl" ,curl)
        ("cryptsetup" ,cryptsetup)
        ("expat" ,expat)
        ("fcgi" ,fcgi)
+       ("fmt" ,fmt)
        ("fuse" ,fuse)
+       ("icu4c" ,icu4c)
        ("jemalloc" ,jemalloc)
        ("keyutils" ,keyutils)
        ("leveldb" ,leveldb)
@@ -224,12 +220,13 @@
        ("ncurses" ,ncurses)
        ("nss" ,nss)
        ("python-prettytable" ,python-prettytable) ;used by ceph_daemon.py
-       ("python-six" ,python-six)                 ;for ceph-mgr + plugins
-       ("python" ,python-wrapper)
+       ("python-pyyaml" ,python-pyyaml)           ;from python-common/setup.py
+       ("python" ,python)
        ("rapidjson" ,rapidjson)
        ("rdma-core" ,rdma-core)
        ("rocksdb" ,rocksdb)
        ("snappy" ,snappy)
+       ("sqlite" ,sqlite)
        ("udev" ,eudev)
        ("util-linux" ,util-linux)
        ("util-linux:lib" ,util-linux "lib")

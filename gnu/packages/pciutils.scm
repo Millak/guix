@@ -87,8 +87,7 @@
 
                (("^IDSDIR=.*$")
                 ;; Installation directory of 'pci.ids.gz'.
-                "IDSDIR = $(SHAREDIR)/hwdata\n"))
-             #t))
+                "IDSDIR = $(SHAREDIR)/hwdata\n"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Install the commands, library, and .pc files.
@@ -109,12 +108,9 @@
        ;; No test suite.
        #:tests? #f))
     (native-inputs
-     `(("which" ,which)
-       ("pkg-config" ,pkg-config)))
+     (list which pkg-config))
     (inputs
-     `(,@(if (member (or (%current-target-system)
-                         (%current-system))
-                     (package-supported-systems kmod))
+     `(,@(if (not (hurd-target?))
              `(("kmod" ,kmod))
              '())
        ,@(if (hurd-target?)

@@ -20,6 +20,8 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Demis Balbach <db@minikn.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,12 +89,43 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages flex)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system qt))
+
+(define-public phonesim
+  (package
+    (name "phonesim")
+    (version "1.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.kernel.org/pub/scm/network/ofono/phonesim")
+             (commit "a7c844d45b047b2dae5b0877816c346fce4c47b9")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rc1c2vr03dmi1dr3skj57v77ga9c22g29xs1qiphqms4isby9cq"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "--enable-maintainer-mode"
+             "CC=" ,(cc-for-target))))
+    (native-inputs
+     (list automake autoconf pkg-config))
+    (inputs
+     (list qtbase-5 qtdeclarative))
+    (synopsis "Phone Simulator for modem testing")
+    (description
+     "Phonesim is a modem emulator that oFono uses for development and
+testing.  This allows oFono to be used by any host without requiring special
+GSM (or other) hardware.")
+    (home-page "https://git.kernel.org/pub/scm/network/ofono/phonesim")
+    (license license:gpl2+)))
 
 (define-public libilbc
   (package
@@ -115,7 +148,7 @@
     (arguments
      `(#:tests? #f))                    ; No target
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (synopsis "Libre iLBC codec")
     (description "LibiLBC is a packaging friendly copy of the iLBC codec from
 the WebRTC project.  It provides a base for distribution packages and can be
@@ -256,7 +289,7 @@ reimplementation.")
             (sha256 (base32
                      "1mv080rvrhyxyhgqiqr8r9jdqhg3xhfawjvfj5zgj47h59nggjba"))))
    (build-system gnu-build-system)
-   (inputs `(("gnutls" ,gnutls)))
+   (inputs (list gnutls))
    (synopsis "Common C++ framework for threaded applications")
    (description "GNU uCommon C++ is meant as a very light-weight C++ library
 to facilitate using C++ design patterns even for very deeply embedded
@@ -277,9 +310,8 @@ support.")
             (sha256 (base32
                      "17ili8l7zqbbkzr1rcy4hlnazkf50mds41wg6n7bfdsx3c7cldgh"))))
    (build-system gnu-build-system)
-   (inputs `(("ucommon" ,ucommon)
-             ("libgcrypt" ,libgcrypt)))
-   (native-inputs `(("pkg-config" ,pkg-config)))
+   (inputs (list ucommon libgcrypt))
+   (native-inputs (list pkg-config))
    (synopsis "Implementation of RTP (real-time transport protocol)")
    (description  "GNU ccRTP is an implementation of RTP, the real-time transport
 protocol from the IETF.  It is suitable both for high capacity servers and
@@ -310,10 +342,9 @@ packet-manipulation library.")
     (arguments
      `(#:tests? #f))                    ; No target
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (inputs
-     `(("ccrtp" ,ccrtp)
-       ("ucommon" ,ucommon)))
+     (list ccrtp ucommon))
     (synopsis "C++ Implementation of ZRTP protocol")
     (description  "GNU ZRTP C++ provides a library that adds ZRTP support to the
 GNU ccRTP stack and serves as library for other RTP stacks
@@ -355,7 +386,7 @@ to initiate and control SIP sessions.")
             (sha256 (base32
                      "17cna8kpc8nk1si419vgr6r42k2lda0rdk50vlxrw8rzg0xp2xrw"))))
    (build-system gnu-build-system)
-   (inputs `(("osip" ,osip)))
+   (inputs (list osip))
    (synopsis "Sip abstraction library")
    (description "EXosip is a library that hides the complexity of using the
 SIP protocol for multimedia session establishment.  This protocol is mainly to
@@ -397,9 +428,7 @@ multiplayer games.")
                   ,(string-append "EXOSIP2_CFLAGS=-I"
                                   (assoc-ref %build-inputs "exosip")
                                   "/include"))))
-   (inputs `(("ucommon" ,ucommon)
-             ("exosip" ,exosip)
-             ("osip" ,osip)))
+   (inputs (list ucommon exosip osip))
    (synopsis "Secure peer-to-peer VoIP server for the SIP protocol")
    (description "GNU SIP Witch is a peer-to-peer Voice-over-IP server that
 uses the SIP protocol.  Calls can be made from behind NAT firewalls and
@@ -413,7 +442,7 @@ internet.")
 (define-public libsrtp
   (package
     (name "libsrtp")
-    (version "2.3.0")
+    (version "2.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -422,10 +451,10 @@ internet.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f7i3jdh1wzdv7zjlz7gs3xw5jqig9zw8z9awsqqcp54f94xdpvd"))))
+                "1gswpjm4jacfxmgglbf8hxi3yzsag4drk4q943p0wkmv21zj8l78"))))
     (native-inputs
-     `(("psmisc" ,psmisc)               ;some tests require 'killall'
-       ("procps" ,procps)))
+     (list psmisc ;some tests require 'killall'
+           procps))
     (build-system gnu-build-system)
     (arguments
      '(#:test-target "runtest"
@@ -467,9 +496,7 @@ supporting cryptographic kernel.")
            "0d269474kk1933c55hx4azw3sak5ycfrxkw6ida0sb2cm00kfich"))))
       (build-system gnu-build-system)
       (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)))
+       (list autoconf automake libtool))
       (home-page "https://gitlab.savoirfairelinux.com/sflphone/libiax2")
       (synopsis "Inter-Asterisk-Protocol library")
       (description "LibIAX2 implements the Inter-Asterisk-Protocol for relaying
@@ -498,11 +525,7 @@ Voice-over-IP (VoIP) communications.")
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))  ; no "check" target
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("gmp" ,gmp)
-       ("libogg" ,libogg)
-       ("ncurses" ,ncurses)
-       ("opus" ,opus)))
+     (list alsa-lib gmp libogg ncurses opus))
     (synopsis "Simple VoIP program to create conferences from the terminal")
     (description
      "Seren is a simple VoIP program based on the Opus codec that allows you
@@ -556,8 +579,8 @@ address of one of the participants.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (invoke "qmake" "main.pro" "QMAKE_LRELEASE=lrelease"
                      (string-append "MUMBLE_PYTHON="
-                                    (string-append (assoc-ref inputs "python")
-                                                   "/bin/python3"))
+                                    (search-input-file inputs
+                                                       "/bin/python3"))
                      (string-append "CONFIG+="
                                     (string-join
                                      ;; Options used are listed in the same order
@@ -634,24 +657,22 @@ address of one of the participants.")
                          (find-files "release/plugins" "\\.so$"))
                #t))))))
     (inputs
-     `(("avahi" ,avahi)
-       ("boost" ,boost)
-       ("libsndfile" ,libsndfile/fixed)
-       ("libxi" ,libxi)
-       ("mesa" ,mesa) ; avoid bundled
-       ("openssl" ,openssl)
-       ("opus" ,opus) ; avoid bundled
-       ("protobuf" ,protobuf)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("speech-dispatcher" ,speech-dispatcher)
-       ("speex" ,speex) ; avoid bundled
-       ("speexdsp" ,speexdsp))) ; avoid bundled
+     (list avahi
+           boost
+           libsndfile
+           libxi
+           mesa ; avoid bundled
+           openssl
+           opus ; avoid bundled
+           protobuf
+           pulseaudio
+           qtbase-5
+           qtsvg
+           speech-dispatcher
+           speex ; avoid bundled
+           speexdsp)) ; avoid bundled
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("qttools" ,qttools)))
+     (list pkg-config python qttools))
     (synopsis "Low-latency, high quality voice chat software")
     (description
      "Mumble is an low-latency, high quality voice chat
@@ -693,25 +714,23 @@ Mumble consists of two applications for separate usage:
         "-DWITH_G729=On"                ; For G729 Codec Support
         "-DWITH_SPEEX=On")))            ; For Speex Codec Support
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("qttools" ,qttools)))
+     (list bison flex qttools))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("bcg729" ,bcg729)
-       ("zrtpcpp" ,zrtpcpp)
-       ("ccrtp" ,ccrtp)
-       ("file" ,file)
-       ("libilbc" ,libilbc)
-       ("libsndfile" ,libsndfile)
-       ("libxml2" ,libxml2)
-       ("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtquickcontrols" ,qtquickcontrols)
-       ("readline" ,readline)
-       ("speex" ,speex)
-       ("speexdsp" ,speexdsp)
-       ("ucommon" ,ucommon)))
+     (list alsa-lib
+           bcg729
+           zrtpcpp
+           ccrtp
+           file
+           libilbc
+           libsndfile
+           libxml2
+           qtbase-5
+           qtdeclarative
+           qtquickcontrols
+           readline
+           speex
+           speexdsp
+           ucommon))
     (synopsis "Softphone for voice over IP and instant messaging")
     (description "Twinkle is a softphone for your voice over IP and instant
 messaging communcations using the SIP protocol.  You can use it for direct
@@ -723,7 +742,7 @@ your calls and messages.")
 (define-public pjproject
   (package
     (name "pjproject")
-    (version "2.11")
+    (version "2.11.1")
     (source
      (origin
        (method git-fetch)
@@ -733,7 +752,7 @@ your calls and messages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kn9g1x1vmh4130ghph8mldz5m89gsjs4vpdzlzm98m3808gk5an"))
+         "04s4bgr2d22ym2ajjk6q507hyqss1p59yp8avyyyf5f8032nbaws"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -742,12 +761,12 @@ your calls and messages.")
            (substitute* "aconfigure.ac"
              (("third_party/build/os-auto.mak") ""))
            (substitute* "Makefile"
-             (("third_party/build") ""))))))
+             (("third_party/build") ""))))
+       (patches (search-patches "pjproject-install-libpjsua2.patch"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug" "static"))
     (arguments
-     `(#:tests? #t
-       #:test-target "selftest"
+     `(#:test-target "selftest"
        #:configure-flags
        (list "--enable-shared"
              "--with-external-speex"
@@ -776,11 +795,6 @@ your calls and messages.")
                             "/lib"))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'make-source-files-writable
-           ;; Make all the files writable to prevent the following error:
-           ;; "autom4te: cannot open aconfigure: Permission denied".
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
          (add-before 'build 'build-dep
            (lambda _ (invoke "make" "dep")))
          ;; The check phases is moved after the install phase so to
@@ -839,20 +853,17 @@ your calls and messages.")
                (("pjnath-test pjmedia-test pjsip-test pjsua-test")
                 "pjmedia-test pjsip-test")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("bcg729" ,bcg729)
-       ("gnutls" ,gnutls)
-       ("gsm" ,gsm)
-       ("libsamplerate" ,libsamplerate)
-       ("libsrtp" ,libsrtp)
-       ("opus" ,opus)
-       ("portaudio" ,portaudio)
-       ("speex" ,speex)
-       ("speexdsp" ,speexdsp)))
+     (list bcg729
+           gnutls
+           gsm
+           libsamplerate
+           libsrtp
+           opus
+           portaudio
+           speex
+           speexdsp))
     (home-page "https://www.pjsip.org")
     (synopsis "Session Initiation Protocol (SIP) stack")
     (description "PJProject provides an implementation of the Session
@@ -881,10 +892,7 @@ Initiation Protocol (SIP) and a multimedia framework.")
          "122kn3jx6v0kkldlzlpzvlwqxgp6pmzxsjhrhcxw12bx9c08sar5"))))
     (build-system gnu-build-system)
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("openssl" ,openssl)
-       ("opus" ,opus)
-       ("pulseaudio" ,pulseaudio)))
+     (list alsa-lib openssl opus pulseaudio))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -894,14 +902,11 @@ Initiation Protocol (SIP) and a multimedia framework.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "os/linux/AudioPulse.cpp"
                (("libpulse\\.so")
-                (string-append (assoc-ref inputs "pulseaudio")
-                              "/lib/libpulse.so")))
+                (search-input-file inputs "/lib/libpulse.so")))
              (substitute* '("os/linux/AudioInputALSA.cpp"
                             "os/linux/AudioOutputALSA.cpp")
                (("libasound\\.so")
-                (string-append (assoc-ref inputs "alsa-lib")
-                               "/lib/libasound.so")))
-             #t)))))
+                (search-input-file inputs "/lib/libasound.so"))))))))
     (synopsis "VoIP library for Telegram clients")
     (description "A collection of libraries and header files for implementing
 telephony functionality into custom Telegram clients.")

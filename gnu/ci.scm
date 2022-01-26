@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
@@ -28,6 +28,7 @@
   #:use-module (guix grafts)
   #:use-module (guix profiles)
   #:use-module (guix packages)
+  #:autoload   (guix transformations) (tunable-package? tuned-package)
   #:use-module (guix channels)
   #:use-module (guix config)
   #:use-module (guix derivations)
@@ -69,7 +70,6 @@
   #:export (derivation->job
             image->job
 
-            %bootstrap-packages
             %core-packages
             %cross-targets
             channel-source->package
@@ -86,7 +86,7 @@
 (define* (derivation->job name drv
                           #:key
                           (max-silent-time 3600)
-                          (timeout 3600))
+                          (timeout (* 5 3600)))
   "Return a Cuirass job called NAME and describing DRV.
 
 MAX-SILENT-TIME and TIMEOUT are build options passed to the daemon when
@@ -108,9 +108,9 @@ building the derivation."
     (#:timeout . ,timeout)))
 
 (define* (package-job store job-name package system
-                      #:key cross? target)
+                      #:key cross? target (suffix ""))
   "Return a job called JOB-NAME that builds PACKAGE on SYSTEM."
-  (let ((job-name (string-append job-name "." system)))
+  (let ((job-name (string-append job-name "." system suffix)))
     (parameterize ((%graft? #f))
       (let* ((drv (if cross?
                       (package-cross-derivation store package target system
@@ -130,7 +130,7 @@ building the derivation."
 (define (package-cross-job store job-name package target system)
   "Return a job called TARGET.JOB-NAME that cross-builds PACKAGE for TARGET on
 SYSTEM."
-  (let ((name (string-append target "." job-name "." system)))
+  (let ((name (string-append target "." job-name)))
     (package-job store name package system
                  #:cross? #t
                  #:target target)))
@@ -139,9 +139,9 @@ SYSTEM."
   ;; Note: Don't put the '-final' package variants because (1) that's
   ;; implicit, and (2) they cannot be cross-built (due to the explicit input
   ;; chain.)
-  (list gcc-7 gcc-8 gcc-9 gcc-10 glibc binutils
+  (list gcc-8 gcc-9 gcc-10 gcc-11 glibc binutils
         gmp mpfr mpc coreutils findutils diffutils patch sed grep
-        gawk gnu-gettext hello guile-2.0 guile-2.2 zlib gzip xz
+        gawk gnu-gettext hello guile-2.2 guile-3.0 zlib gzip xz guix
         %bootstrap-binaries-tarball
         %binutils-bootstrap-tarball
         (%glibc-bootstrap-tarball)
@@ -149,13 +149,18 @@ SYSTEM."
         %guile-bootstrap-tarball
         %bootstrap-tarballs))
 
-(define %bootstrap-packages
-  ;; Return the list of bootstrap packages from the commencement module.
-  (filter package?
-          (module-map
-           (lambda (sym var)
-             (variable-ref var))
-           (resolve-module '(gnu packages commencement)))))
+(define (commencement-packages system)
+  "Return the list of bootstrap packages from the commencement module for
+SYSTEM."
+  ;; Only include packages supported on SYSTEM.  For example, the Mes
+  ;; bootstrap graph is currently not supported on ARM so it should be
+  ;; excluded.
+  (filter (lambda (obj)
+            (and (package? obj)
+                 (supported-package? obj system)))
+          (module-map (lambda (sym var)
+                        (variable-ref var))
+                      (resolve-module '(gnu packages commencement)))))
 
 (define (packages-to-cross-build target)
   "Return the list of packages to cross-build for TARGET."
@@ -297,20 +302,16 @@ otherwise use the IMAGE name."
 
 (define channel-build-system
   ;; Build system used to "convert" a channel instance to a package.
-  (let* ((build (lambda* (store name inputs
-                                #:key source commit system
-                                #:allow-other-keys)
-                  (run-with-store store
-                    ;; SOURCE can be a lowerable object such as <local-file>
-                    ;; or a file name.  Adjust accordingly.
-                    (mlet* %store-monad ((source (if (string? source)
-                                                     (return source)
-                                                     (lower-object source)))
-                                         (instance
-                                          -> (checkout->channel-instance
-                                              source #:commit commit)))
-                      (channel-instances->derivation (list instance)))
-                    #:system system)))
+  (let* ((build (lambda* (name inputs
+                               #:key source commit system
+                               #:allow-other-keys)
+                  (mlet* %store-monad ((source (if (string? source)
+                                                   (return source)
+                                                   (lower-object source)))
+                                       (instance
+                                        -> (checkout->channel-instance
+                                            source #:commit commit)))
+                    (channel-instances->derivation (list instance)))))
          (lower (lambda* (name #:key system source commit
                                #:allow-other-keys)
                   (bag
@@ -395,20 +396,38 @@ otherwise use the IMAGE name."
                            (((_ inputs _ ...) ...)
                             inputs))))
                       (%final-inputs)))))
-    (lambda (store package system)
+    (lambda* (store package system #:key (suffix ""))
       "Return a job for PACKAGE on SYSTEM, or #f if this combination is not
-valid."
+valid.  Append SUFFIX to the job name."
       (cond ((member package base-packages)
              (package-job store (string-append "base." (job-name package))
-                          package system))
+                          package system #:suffix suffix))
             ((supported-package? package system)
              (let ((drv (package-derivation store package system
                                             #:graft? #f)))
                (and (substitutable-derivation? drv)
                     (package-job store (job-name package)
-                                 package system))))
+                                 package system #:suffix suffix))))
             (else
              #f)))))
+
+(define %x86-64-micro-architectures
+  ;; Micro-architectures for which we build tuned variants.
+  '("westmere" "ivybridge" "haswell" "skylake" "skylake-avx512"))
+
+(define (tuned-package-jobs store package system)
+  "Return a list of jobs for PACKAGE tuned for SYSTEM's micro-architectures."
+  (filter-map (lambda (micro-architecture)
+                (define suffix
+                  (string-append "." micro-architecture))
+
+                (package->job store
+                              (tuned-package package micro-architecture)
+                              system
+                              #:suffix suffix))
+              (match system
+                ("x86_64-linux" %x86-64-micro-architectures)
+                (_ '()))))
 
 (define (all-packages)
   "Return the list of packages to build."
@@ -443,19 +462,40 @@ valid."
               (map channel-url channels)))
        arguments))
 
-(define (manifests->packages store manifests)
-  "Return the list of packages found in MANIFESTS."
+(define (manifests->jobs store manifests)
+  "Return the list of jobs for the entries in MANIFESTS, a list of file
+names."
   (define (load-manifest manifest)
     (save-module-excursion
      (lambda ()
        (set-current-module (make-user-module '((guix profiles) (gnu))))
        (primitive-load manifest))))
 
-  (delete-duplicates!
-   (map manifest-entry-item
-        (append-map (compose manifest-entries
-                             load-manifest)
-                    manifests))))
+  (define (manifest-entry-job-name entry)
+    (string-append (manifest-entry-name entry) "-"
+                   (manifest-entry-version entry)))
+
+  (define (manifest-entry->job entry)
+    (let* ((obj (manifest-entry-item entry))
+           (drv (parameterize ((%graft? #f))
+                  (run-with-store store
+                    (lower-object obj))))
+           (max-silent-time (or (and (package? obj)
+                                     (assoc-ref (package-properties obj)
+                                                'max-silent-time))
+                                3600))
+           (timeout (or (and (package? obj)
+                             (assoc-ref (package-properties obj) 'timeout))
+                        (* 5 3600))))
+      (derivation->job (manifest-entry-job-name entry) drv
+                       #:max-silent-time max-silent-time
+                       #:timeout timeout)))
+
+  (map manifest-entry->job
+       (delete-duplicates
+        (append-map (compose manifest-entries load-manifest)
+                    manifests)
+        manifest-entry=?)))
 
 (define (arguments->systems arguments)
   "Return the systems list from ARGUMENTS."
@@ -506,10 +546,16 @@ valid."
          ('all
           ;; Build everything, including replacements.
           (let ((all (all-packages))
-                (job (lambda (package)
-                       (package->job store package system))))
+                (jobs (lambda (package)
+                        (match (package->job store package system)
+                          (#f '())
+                          (main-job
+                           (cons main-job
+                                 (if (tunable-package? package)
+                                     (tuned-package-jobs store package system)
+                                     '())))))))
             (append
-             (filter-map job all)
+             (append-map jobs all)
              (cross-jobs store system))))
          ('core
           ;; Build core packages only.
@@ -517,7 +563,7 @@ valid."
            (map (lambda (package)
                   (package-job store (job-name package)
                                package system))
-                (append %bootstrap-packages %core-packages))
+                (append (commencement-packages system) %core-packages))
            (cross-jobs store system)))
          ('guix
           ;; Build Guix modules only.
@@ -568,12 +614,8 @@ valid."
                  packages)))
          (('manifests . rest)
           ;; Build packages in the list of manifests.
-          (let* ((manifests (arguments->manifests rest channels))
-                 (packages (manifests->packages store manifests)))
-            (map (lambda (package)
-                   (package-job store (job-name package)
-                                package system))
-                 packages)))
+          (let ((manifests (arguments->manifests rest channels)))
+            (manifests->jobs store manifests)))
          (else
           (error "unknown subset" subset))))
      systems)))

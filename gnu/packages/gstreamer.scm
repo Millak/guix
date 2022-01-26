@@ -149,18 +149,15 @@ and for middleware components.")
                (base32 "1v8gq54n1pg8izn7s15yylwjf8r1l1dmzbm2yvf6pv2fmb4mz41b"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list doxygen perl pkg-config))
     (inputs
-     `(("glu" ,glu)
-       ("libraw1394" ,libraw1394)
-       ("libusb" ,libusb)
-       ("libxv" ,libxv)
-       ("linux-headers" ,linux-libre-headers)
-       ("mesa" ,mesa)
-       ("sdl" ,sdl)
-       ("v4l" ,v4l-utils)))
+     (list glu
+           libraw1394
+           libusb
+           libxv
+           mesa
+           sdl
+           v4l-utils))
     (synopsis "1394-Based Digital Camera Control Library")
     (description "LibDC1394 is a library that provides functionality to control
 any camera that conforms to the 1394-Based Digital Camera Specification written
@@ -252,7 +249,7 @@ and very fast.")
        ("libtool" ,libtool)
        ("pkg-config" ,pkg-config)))
     (inputs
-     `(("sdl" ,sdl)))
+     (list sdl))
     (native-search-paths
      (list
       (search-path-specification
@@ -311,13 +308,13 @@ applications that want audio visualisation and audio visualisation plugins.")
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("esound" ,esound)
-       ("gdk-pixbuf" ,gdk-pixbuf+svg)
+       ("librsvg" ,librsvg)
        ("gtk+" ,gtk+-2)
        ("jack" ,jack-2)
        ("libx11" ,libx11)
        ("libxext" ,libxext)))
     (propagated-inputs
-     `(("libvisual" ,libvisual)))
+     (list libvisual))
     (synopsis "Audio visualisation library")
     (description "Libvisual is a library that acts as a middle layer between
 applications that want audio visualisation and audio visualisation plugins.")
@@ -340,20 +337,18 @@ applications that want audio visualisation and audio visualisation plugins.")
         (base32 "141jg70fim276i8k2kyypm84gy89i1k9mm4yf68mfwnybvjw1d6n"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("gnome-common" ,gnome-common)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("tcsh" ,tcsh)                      ; for the tests
-       ("which" ,which)))
+     (list autoconf
+           automake
+           gettext-minimal
+           gnome-common
+           libtool
+           pkg-config
+           tcsh ; for the tests
+           which))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("pcaudiolib" ,pcaudiolib)
-       ("tcp-wrappers" ,tcp-wrappers)))
+     (list alsa-lib pcaudiolib tcp-wrappers))
     (propagated-inputs
-     `(("audiofile" ,audiofile)))
+     (list audiofile))
     (synopsis "Enlightened Sound Daemon")
     (description "The Enlightened Sound Daemon mixes several audio streams for
 playback by a single audio device.  You can also pre-load samples, and play them
@@ -395,7 +390,7 @@ http://www.tux.org/~ricdude/overview.html")
                 "if (error) return 77;"))
              #t)))))
     (native-inputs
-     `(("gtk-doc" ,gtk-doc/stable)))
+     (list gtk-doc/stable))
     (home-page "https://gstreamer.freedesktop.org/modules/orc.html")
     (synopsis "Oil runtime compiler")
     (description
@@ -437,8 +432,7 @@ arrays of data.")
                      (string-append ,name "-" ,version
                                     "/devhelp/books/GStreamer")))))))
     (native-inputs
-     `(("tar" ,tar)
-       ("xz" ,xz)))
+     (list tar xz))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "Developer documentation for GStreamer")
     (description
@@ -497,14 +491,21 @@ the GStreamer multimedia framework.")
                         "")
                        (("tcase_add_test \\(tc_chain, test_stress_reschedule.*")
                         "")))))
-               '()))))
+               '())
+         (add-after 'unpack 'disable-problematic-tests
+           (lambda _
+             ;; Disable the 'pipelines-seek' test, which appears to be load
+             ;; sensitive (see:
+             ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/854).
+             (substitute* "tests/check/meson.build"
+               ((".*'pipelines/seek.c'.*")
+                "")))))))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
      ;;   Requires.private: gmodule-no-export-2.0 libunwind libdw
-     `(("elfutils" ,elfutils)           ; libdw
-       ("glib" ,glib)
-       ("libunwind" ,libunwind)))
+     (list elfutils ; libdw
+           glib libunwind))
     (native-inputs
      `(("bash-completion" ,bash-completion)
        ("bison" ,bison)
@@ -516,10 +517,9 @@ the GStreamer multimedia framework.")
        ("pkg-config" ,pkg-config)
        ("python-wrapper" ,python-wrapper)))
     (inputs
-     `(("gmp" ,gmp)
-       ("libcap" ,libcap)
-       ;; For tests.
-       ("gsl" ,gsl)))
+     (list gmp libcap
+           ;; For tests.
+           gsl))
     (native-search-paths
      (list (search-path-specification
             (variable "GST_PLUGIN_SYSTEM_PATH")
@@ -597,11 +597,17 @@ This package provides the core library and elements.")
      `(#:phases
        (modify-phases %standard-phases
          ,@%common-gstreamer-phases
+         (add-after 'unpack 'disable-problematic-tests
+           (lambda _
+             (substitute* "tests/check/meson.build"
+               ;; This test causes nondeterministic failures (see:
+               ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/issues/950).
+               ((".*'elements/appsrc.c'.*")
+                ""))))
          (add-before 'configure 'patch
            (lambda _
              (substitute* "tests/check/libs/pbutils.c"
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a running X server.
@@ -612,8 +618,7 @@ This package provides the core library and elements.")
              ;; Tests look for $XDG_RUNTIME_DIR.
              (setenv "XDG_RUNTIME_DIR" (getcwd))
              ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t)))))
+             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis
      "Plugins for the GStreamer multimedia library")
@@ -668,7 +673,7 @@ for the GStreamer multimedia library.")
        ("bzip2" ,bzip2)
        ("cairo" ,cairo)
        ("flac" ,flac)
-       ("gdk-pixbuf" ,gdk-pixbuf+svg)
+       ("librsvg" ,(librsvg-for-system))
        ("glib" ,glib)
        ("glib-networking" ,glib-networking)
        ("glu" ,glu)
@@ -701,8 +706,7 @@ for the GStreamer multimedia library.")
        ("wavpack" ,wavpack)
        ("zlib" ,zlib)))
     (propagated-inputs
-     `(("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)))
+     (list gstreamer gst-plugins-base))
     (synopsis "GStreamer plugins and helper libraries")
     (description "GStreamer-Plugins-Good is a collection of plug-ins you'd want
 to have right next to you on the battlefield.  Shooting sharp and making no
@@ -722,10 +726,16 @@ model to base your own plug-in on, here it is.")
                                   name "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "13k7mm2wmsbhd04a20v9lj4afpf0w33ambpwlrw8bl7hjhxr4r51"))))
+                "13k7mm2wmsbhd04a20v9lj4afpf0w33ambpwlrw8bl7hjhxr4r51"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Delete bundled copy of usrsctp.
+                  (delete-file-recursively "ext/sctp/usrsctp")))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
+     `(#:configure-flags '("-Dsctp-internal-usrsctp=disabled")
+       #:glib-or-gtk? #t     ; To wrap binaries and/or compile schemas
        #:phases
        (modify-phases %standard-phases
          ,@%common-gstreamer-phases
@@ -754,6 +764,11 @@ model to base your own plug-in on, here it is.")
                  ((".*elements/msdkh264enc\\.c.*") "")
                  ((".*elements/svthevcenc\\.c.*") "")
 
+                 ;; The 'elements_shm.test_shm_live' test sometimes times out
+                 ;; (see:
+                 ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/790).
+                 ((".*'elements/shm\\.c'.*") "")
+
                  ;; FIXME: Why is this failing.
                  ((".*elements/dash_mpd\\.c.*") "")
 
@@ -761,7 +776,12 @@ model to base your own plug-in on, here it is.")
                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
                  ((".*elements/curlhttpsrc\\.c.*") "")
                  ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/1412
-                 ((".*elements/dtls\\.c.*") "")))))
+                 ((".*elements/dtls\\.c.*") ""))
+               (substitute* "tests/check/elements/zxing.c"
+                 ;; zxing 1.2.0 seemingly changed the type representation of
+                 ;; the EAN_13 structure; disable it.
+                 ((".*\"EAN_13\".*")
+                  "")))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a running X server.
@@ -774,8 +794,7 @@ model to base your own plug-in on, here it is.")
              ;; For missing '/etc/machine-id'.
              (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (propagated-inputs
-     `(("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)))
+     (list gstreamer gst-plugins-base))
     (native-inputs
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")         ; for glib-mkenums, etc.
@@ -871,6 +890,7 @@ model to base your own plug-in on, here it is.")
        ("svthevcenc" ,svt-hevc)
        ("tinyalsa" ,tinyalsa)
        ("transcode" ,transcode)
+       ("usrsctp" ,usrsctp)
        ("v4l" ,v4l-utils)
        ("voaacenc", vo-aacenc)
        ("voamrwbenc" ,vo-amrwbenc)
@@ -881,9 +901,8 @@ model to base your own plug-in on, here it is.")
        ("webrtcdsp" ,webrtc-audio-processing)
        ("wildmidi" ,wildmidi)
        ("wpebackend-fdo" ,wpebackend-fdo)
-       ;; ("wpewebkit" ,wpewebkit)
        ("zbar" ,zbar)
-       ("zxing" ,zxing-cpp)))
+       ("zxing" ,zxing-cpp-1.2)))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "Plugins for the GStreamer multimedia library")
     (description
@@ -930,18 +949,17 @@ par compared to the rest.")
        ("python-wrapper" ,python-wrapper)
        ("xorg-server" ,xorg-server-for-tests)))
     (inputs
-     `(("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("liba52" ,liba52)
-       ("libcdio" ,libcdio)
-       ("libdvdread" ,libdvdread)
-       ("libmpeg2" ,libmpeg2)
-       ("libx264" ,libx264)
-       ("opencore-amr" ,opencore-amr)
-       ("orc" ,orc)))
+     (list glib
+           glib-networking
+           liba52
+           libcdio
+           libdvdread
+           libmpeg2
+           libx264
+           opencore-amr
+           orc))
     (propagated-inputs
-     `(("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)))
+     (list gstreamer gst-plugins-base))
     (synopsis "GStreamer plugins and helper libraries")
     (description "Gst-Plugins-Ugly are the ones that might have a patent noose
 around their neck, or a lock-up license, or any other problem that makes you
@@ -964,15 +982,11 @@ think twice about shipping them.")
         (base32 "0j55jgk9sbhinfx2gsg21q609x6yzrixrn5xxlxd378fj6500bl2"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("ruby" ,ruby)))
+     (list perl pkg-config python-wrapper ruby))
     (inputs
-     `(("ffmpeg" ,ffmpeg)))
+     (list ffmpeg))
     (propagated-inputs
-     `(("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)))
+     (list gstreamer gst-plugins-base))
     (synopsis "GStreamer plugins and helper libraries")
     (description "Gst-Libav contains a GStreamer plugin for using the encoders,
 decoders, muxers, and demuxers provided by FFmpeg.")
@@ -999,13 +1013,9 @@ decoders, muxers, and demuxers provided by FFmpeg.")
        #:phases (modify-phases %standard-phases
                   ,@%common-gstreamer-phases)))
     (propagated-inputs
-     `(("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)))
+     (list gstreamer gst-plugins-base))
     (inputs
-     `(("glib" ,glib)
-       ("glib-networking" ,glib-networking)
-       ("gtk+" ,gtk+)
-       ("libxml2" ,libxml2)))
+     (list glib glib-networking gtk+ libxml2))
     (native-inputs
      `(("flex" ,flex)
        ("gobject-introspection" ,gobject-introspection)
@@ -1044,13 +1054,6 @@ given, also pass them to the build system instead of the ones used by PKG."
                     (("'auto'") "'disabled'"))
                   #t)))))))))
 
-(define-public gst-transcoder
-  (deprecated-package
-   "gst-transcoder"
-   (gst-plugins/selection gst-plugins-bad
-                          #:plugins '("transcoder")
-                          #:configure-flags '("-Dintrospection=enabled"))))
-
 (define-public python-gst
   (package
     (name "python-gst")
@@ -1075,11 +1078,9 @@ given, also pass them to the build system instead of the ones used by PKG."
               "-Dpygi-overrides-dir="
               (python:site-packages %build-inputs %outputs) "gi/overrides"))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list pkg-config python))
     (propagated-inputs
-     `(("gst-plugins-base" ,gst-plugins-base)
-       ("python-pygobject" ,python-pygobject)))
+     (list gst-plugins-base python-pygobject))
     (home-page "https://gstreamer.freedesktop.org/")
     (synopsis "GStreamer GObject Introspection overrides for Python")
     (description
@@ -1100,12 +1101,9 @@ be used by Python applications using GStreamer.")
                 "0zaa117n4wkya9p903vkj8hj58lmdb66pxsdx5wwcv7nffbp5d67"))))
     (build-system gnu-build-system)
     (inputs
-     `(("gtk+" ,gtk+-2)
-       ("ncurses" ,ncurses)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)))
+     (list gtk+-2 ncurses gstreamer gst-plugins-base))
     (native-inputs
-     `(("pkg-config" ,pkg-config)))
+     (list pkg-config))
     (home-page "https://space.twc.de/~stefan/gst123.php")
     (synopsis "Flexible command line media player based on gstreamer")
     (description "The program gst123 is designed to be a more flexible command

@@ -83,7 +83,8 @@ DEVICES list."
          devices))
 
   (let* ((result (run-listbox-selection-page
-                  #:info-text (G_ "Please select a disk.")
+                  #:info-text (G_ "Please select a \
+disk.  The installation device as well as the small devices are filtered.")
                   #:title (G_ "Disk")
                   #:listbox-items (device-items)
                   #:listbox-item->text cdr
@@ -131,7 +132,11 @@ Be careful, all data on the disk will be lost.")
   (run-listbox-selection-page
    #:info-text (G_ "Please select the file-system type for this partition.")
    #:title (G_ "File-system type")
-   #:listbox-items '(ext4 btrfs fat16 fat32 jfs ntfs xfs swap)
+   #:listbox-items '(btrfs ext4 jfs xfs
+                           swap
+                           ;; These lack basic Unix features.  Their only use
+                           ;; on GNU is for interoperation, e.g., with UEFI.
+                           fat32 fat16 ntfs)
    #:listbox-item->text user-fs-type-name
    #:sort-listbox-items? #f
    #:button-text (G_ "Exit")
@@ -788,13 +793,13 @@ by pressing the Exit button.~%~%")))
            result-user-partitions)))))
 
   (init-parted)
-  (let* ((non-install-devices (non-install-devices))
-         (user-partitions (run-page non-install-devices))
+  (let* ((eligible-devices (eligible-devices))
+         (user-partitions (run-page eligible-devices))
          (user-partitions-with-pass (prompt-luks-passwords
                                      user-partitions))
          (form (draw-formatting-page user-partitions)))
     ;; Make sure the disks are not in use before proceeding to formatting.
-    (free-parted non-install-devices)
+    (free-parted eligible-devices)
     (format-user-partitions user-partitions-with-pass)
     (syslog "formatted ~a user partitions~%"
             (length user-partitions-with-pass))

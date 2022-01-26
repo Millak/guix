@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
@@ -377,7 +377,8 @@ ARGS is the list of arguments received by the 'throw' handler."
                                       (+ 2 (string-contains message ": ")))))
            (format (current-error-port) (G_ "~amissing closing parenthesis~%")
                    location))
-         (apply throw args)))
+         (report-error (G_ "read error while loading '~a': ~a~%")
+                       file (apply format #f message args))))
     (('syntax-error proc message properties form subform . rest)
      (let ((loc (source-properties->location properties)))
        (report-error loc (G_ "~s: ~a~%")
@@ -520,7 +521,7 @@ See the \"Application Setup\" section in the manual, for more info.\n"))
   "Display version information for COMMAND and `(exit 0)'."
   (simple-format #t "~a (~a) ~a~%"
                  command %guix-package-name %guix-version)
-  (format #t "Copyright ~a 2021 ~a"
+  (format #t "Copyright ~a 2022 ~a"
           ;; TRANSLATORS: Translate "(C)" to the copyright symbol
           ;; (C-in-a-circle), if this symbol is available in the user's
           ;; locale.  Otherwise, do not translate "(C)"; leave it as-is.  */
@@ -939,7 +940,7 @@ warning."
 
 (define (colorize-store-file-name file)
   "Colorize FILE, a store file name, such that the hash part is less prominent
-that the rest."
+than the rest."
   (let ((len    (string-length file))
         (prefix (+ (string-length (%store-prefix)) 32 2)))
     (if (< len prefix)
@@ -1431,10 +1432,22 @@ converted to a space; sequences of more than one line break are preserved."
   (with-fluids ((%default-port-encoding "UTF-8"))
     (stexi->plain-text (texi-fragment->stexi str))))
 
+(define (texi->plain-text* package str)
+  "Same as 'texi->plain-text', but gracefully handle Texinfo errors."
+  (catch 'parser-error
+    (lambda ()
+      (texi->plain-text str))
+    (lambda args
+      (warning (package-location package)
+               (G_ "~a: invalid Texinfo markup~%")
+               (package-full-name package))
+      str)))
+
 (define (package-field-string package field-accessor)
   "Return a plain-text representation of PACKAGE field."
   (and=> (field-accessor package)
-         (compose texi->plain-text P_)))
+         (lambda (str)
+           (texi->plain-text* package (P_ str)))))
 
 (define (package-description-string package)
   "Return a plain-text representation of PACKAGE description field."
@@ -1501,13 +1514,15 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
     ;; the initial "+ " prefix.
     (if (> width 2) (- width 2) width))
 
+  (define (split-lines str indent)
+    (string->recutils
+     (fill-paragraph str width* indent)))
+
   (define (dependencies->recutils packages)
     (let ((list (string-join (delete-duplicates
                               (map package-full-name
                                    (sort packages package<?))) " ")))
-      (string->recutils
-       (fill-paragraph list width*
-                       (string-length "dependencies: ")))))
+      (split-lines list (string-length "dependencies: "))))
 
   (define (package<? p1 p2)
     (string<? (package-full-name p1) (package-full-name p2)))
@@ -1517,7 +1532,8 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
   (format port "version: ~a~%" (package-version p))
   (format port "outputs: ~a~%" (string-join (package-outputs p)))
   (format port "systems: ~a~%"
-          (string-join (package-transitive-supported-systems p)))
+          (split-lines (string-join (package-transitive-supported-systems p))
+                       (string-length "systems: ")))
   (format port "dependencies: ~a~%"
           (match (package-direct-inputs p)
             (((labels inputs . _) ...)
@@ -1555,7 +1571,8 @@ HYPERLINKS? is true, emit hyperlink escape sequences when appropriate."
             (parameterize ((%text-width width*))
               ;; Call 'texi->plain-text' on the concatenated string to account
               ;; for the width of "description:" in paragraph filling.
-              (texi->plain-text
+              (texi->plain-text*
+               p
                (string-append "description: "
                               (or (and=> (package-description p) P_)
                                   ""))))
@@ -2085,10 +2102,17 @@ contain a 'define-command' form."
     (lambda (command)
       (eq? category (command-category command))))
 
-  (format #t (G_ "Usage: guix COMMAND ARGS...
-Run COMMAND with ARGS.\n"))
+  (display (G_ "Usage: guix OPTION | COMMAND ARGS...
+Run COMMAND with ARGS, if given.\n"))
+
+  (display (G_ "
+  -h, --help             display this helpful text again and exit"))
+  (display (G_ "
+  -V, --version          display version and copyright information and exit"))
   (newline)
-  (format #t (G_ "COMMAND must be one of the sub-commands listed below:\n"))
+
+  (newline)
+  (display (G_ "COMMAND must be one of the sub-commands listed below:\n"))
 
   (let ((commands   (commands))
         (categories (module-ref (resolve-interface '(guix scripts))

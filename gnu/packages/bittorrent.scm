@@ -2,16 +2,19 @@
 ;;; Copyright © 2014 Taylan Ulrich Bayirli/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018 Nam Nguyen <namn@berkeley.edu>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
+;;; Copyright © 2022 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,16 +35,20 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module ((guix licenses) #:prefix l:)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
@@ -90,6 +97,10 @@
        (list (string-append "--localedir="
                             (assoc-ref %outputs "gui")
                             "/share/locale"))
+       ;; Some tests segfault when using libevent 2.12 without internet
+       ;; connection. This has been reported mainstream but not fixed yet:
+       ;; https://github.com/transmission/transmission/issues/1437.
+       #:tests? #f
        #:glib-or-gtk-wrap-excluded-outputs '("out")
        #:phases
        (modify-phases %standard-phases
@@ -115,14 +126,9 @@
                 (string-append gui "/share/man/man1/transmission-gtk.1"))
              #t))))))
     (inputs
-     `(("libevent" ,libevent)
-       ("curl" ,curl)
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)
-       ("gtk+" ,gtk+)))
+     (list libevent curl openssl zlib gtk+))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (home-page "https://transmissionbt.com/")
     (synopsis "Fast and easy BitTorrent client")
     (description
@@ -144,26 +150,21 @@ DHT, µTP, PEX and Magnet Links.")
 (define-public transmission-remote-gtk
   (package
     (name "transmission-remote-gtk")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/transmission-remote-gtk/"
                            "transmission-remote-gtk/releases/download/"
                            version "/transmission-remote-gtk-" version
-                           ".tar.xz"))
-       (patches (search-patches "transmission-remote-gtk-fix-appstream.patch"))
+                           ".tar.gz"))
        (sha256
-        (base32 "1aqjl5rgamgcgqvcldd1gzyfh2xci0m7070924d6vz2qln0q75sr"))))
+        (base32 "0qz9wi70qc6vgnaymivc3xz6y86c9hglk6wjv3snnqxpxmp9saay"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gnu-gettext)
-       ("pkg-config" ,pkg-config)))
+     (list gnu-gettext pkg-config))
     (inputs
-     `(("appstream-glib" ,appstream-glib)
-       ("curl" ,curl)
-       ("gtk+" ,gtk+)
-       ("json-glib" ,json-glib)))
+     (list appstream-glib curl gtk+ json-glib))
     (synopsis "Gtk frontend to the Transmission daemon")
     (description "transmission-remote-gtk is a GTK client for remote management
 of the Transmission BitTorrent client, using its HTTP RPC protocol.")
@@ -183,10 +184,8 @@ of the Transmission BitTorrent client, using its HTTP RPC protocol.")
                (base32
                 "10z9i1rc41cmmi7nx8k7k1agsx6afv09g9cl7g9zr35fyhl5l4gd"))))
     (build-system gnu-build-system)
-    (inputs `(("openssl" ,openssl)
-              ("zlib" ,zlib)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("cppunit" ,cppunit)))
+    (inputs (list openssl zlib))
+    (native-inputs (list pkg-config cppunit))
     (synopsis "BitTorrent library of rtorrent")
     (description
      "LibTorrent is a BitTorrent library used by and developed in parallel
@@ -208,14 +207,13 @@ speed and efficiency.")
                (base32
                 "1bs2fnf4q7mlhkhzp3i1v052v9xn8qa7g845pk9ia8hlpw207pwy"))))
     (build-system gnu-build-system)
-    (inputs `(("libtorrent" ,libtorrent)
-              ("ncurses" ,ncurses)
-              ("curl" ,curl)
-              ("cyrus-sasl" ,cyrus-sasl)
-              ("openssl" ,openssl)
-              ("zlib" ,zlib)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("cppunit" ,cppunit)))
+    (inputs (list libtorrent
+                  ncurses
+                  curl
+                  cyrus-sasl
+                  openssl
+                  zlib))
+    (native-inputs (list pkg-config cppunit))
     (synopsis "BitTorrent client with ncurses interface")
     (description
      "rTorrent is a BitTorrent client with an ncurses interface.  It supports
@@ -237,7 +235,8 @@ XML-RPC over SCGI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fqspp2ckafplahgba54xmx0sjidx1pdzyjaqjhz0ivh98dkx2n5"))))
+         "1fqspp2ckafplahgba54xmx0sjidx1pdzyjaqjhz0ivh98dkx2n5"))
+       (patches (search-patches "tremc-fix-decodestring.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
@@ -249,7 +248,7 @@ XML-RPC over SCGI.")
          (delete 'configure)
          (delete 'build))))
     (inputs
-     `(("python" ,python)))
+     (list python))
     (synopsis "Console client for the Transmission BitTorrent daemon")
     (description "Tremc is a console client, with a curses interface, for the
 Transmission BitTorrent daemon.")
@@ -302,7 +301,7 @@ maintained upstream.")
 (define-public aria2
   (package
     (name "aria2")
-    (version "1.35.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/aria2/aria2/releases/"
@@ -310,41 +309,44 @@ maintained upstream.")
                                   "/aria2-" version ".tar.xz"))
               (sha256
                (base32
-                "1zbxc517d97lb96f15xcy4l7b66grxrp3h2ids2jiwkaip87yaqy"))))
+                "1987x4ywnnrhhfs9hi2h820c200d7nas9nd35414yh0jiihfglaq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-libaria2"
-                               (string-append "--with-bashcompletiondir="
-                                              %output "/etc/bash_completion.d/"))
+     (list
+       #:configure-flags
+       #~(list "--enable-libaria2"
+               (string-append "--with-bashcompletiondir="
+                              #$output "/etc/bash_completion.d/"))
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-socket-tests
-           (lambda _
-             (substitute* "test/LpdMessageDispatcherTest.cc"
-               (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageDispatcherTest\\);" text)
-                (string-append "// " text)))
-             (substitute* "test/LpdMessageReceiverTest.cc"
-               (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageReceiverTest\\);" text)
-                (string-append "// " text)))
-             #t)))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'delete-socket-tests
+             (lambda _
+               (substitute* "test/LpdMessageDispatcherTest.cc"
+                 (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageDispatcherTest\\);" text)
+                  (string-append "// " text)))
+               (substitute* "test/LpdMessageReceiverTest.cc"
+                 (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageReceiverTest\\);" text)
+                  (string-append "// " text))))))))
     (native-inputs
-     `(("cppunit" ,cppunit) ; for the tests
-       ("pkg-config" ,pkg-config)))
+     (list cppunit ; for the tests
+           pkg-config))
     (inputs
-     `(("c-ares" ,c-ares)
-       ("gnutls" ,gnutls)
-       ("gmp" ,gmp)
-       ("libssh2" ,libssh2)
-       ("libxml2" ,libxml2)
-       ("nettle" ,nettle)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list c-ares
+           gnutls
+           gmp
+           libssh2
+           libxml2
+           nettle
+           sqlite
+           zlib))
     (home-page "https://aria2.github.io/")
     (synopsis "Utility for parallel downloading files")
     (description
       "Aria2 is a lightweight, multi-protocol & multi-source command-line
 download utility.  It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
 Aria2 can be manipulated via built-in JSON-RPC and XML-RPC interfaces.")
+    (properties
+     '((release-monitoring-url . "https://github.com/aria2/aria2/releases")))
     (license l:gpl2+)))
 
 (define-public uget
@@ -360,18 +362,19 @@ Aria2 can be manipulated via built-in JSON-RPC and XML-RPC interfaces.")
        (sha256
         (base32 "0dlrjhnm1pg2vwmp7nl2xv1aia5hyirb3021rl46x859k63zap24"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags '("CFLAGS=-fcommon")))
     (inputs
-     `(("curl" ,curl)
-       ("gtk+" ,gtk+)
-       ("glib" ,glib)
-       ("gnutls" ,gnutls)
-       ("gstreamer" ,gstreamer)
-       ("libgcrypt" ,libgcrypt)
-       ("libnotify" ,libnotify)
-       ("openssl" ,openssl)))
+     (list curl
+           gtk+
+           glib
+           gnutls
+           gstreamer
+           libgcrypt
+           libnotify
+           openssl))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)))
+     (list intltool pkg-config))
     (home-page "https://ugetdm.com/")
     (synopsis "Universal download manager with GTK+ interface")
     (description
@@ -419,31 +422,50 @@ and will take advantage of multiple processor cores where possible.")
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "1.2.8")
+    (version "1.2.15")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "https://github.com/arvidn/libtorrent/"
-                       "releases/download/libtorrent-" version "/"
+                       "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "1phn4klzvfzvidv5g566pnrrxj8l0givpy6s4r17d45wznqxc006"))))
-    (build-system gnu-build-system)
+        (base32 "0jr1c876mvwbbbnav8ldcdm1l6z3g404jc5wp8z902jcd0w8dbf8"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost-libdir="
-                            (assoc-ref %build-inputs "boost")
-                            "/lib")
-             "--enable-python-binding"
-             "--enable-tests")
-       #:make-flags (list
-                     (string-append "LDFLAGS=-Wl,-rpath="
-                                    (assoc-ref %outputs "out") "/lib"))))
-    (inputs `(("boost" ,boost)
-              ("openssl" ,openssl)))
-    (native-inputs `(("python" ,python-wrapper)
-                     ("pkg-config" ,pkg-config)))
+     `(#:configure-flags '("-Dpython-bindings=ON"
+                           "-Dbuild_tests=ON")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'extend-test-timeout
+           (lambda _
+             (substitute* "test/test_remove_torrent.cpp"
+               ;; Extend the test timeout from 3 seconds to 10.
+               (("i > 30") "i > 100"))))
+         (replace 'check
+           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+             (let ((disabled-tests
+                    ;; test_upnp requires a non-localhost IPv4 interface.
+                    '("test_upnp")))
+               (when tests?
+                 ;; test_ssl relies on bundled TLS certificates with a fixed
+                 ;; expiry date.  To ensure succesful builds in the future,
+                 ;; fake the time to be roughly that of the release.
+                 (setenv "FAKETIME_ONLY_CMDS" "test_ssl")
+                 (invoke "faketime" "2021-12-12"
+                         "ctest"
+                         "--exclude-regex" (string-join disabled-tests "|")
+                         "-j" (if parallel-tests?
+                                  (number->string (parallel-job-count))
+                                  "1")
+                         "--rerun-failed"
+                         "--output-on-failure"))))))))
+    (inputs (list boost openssl))
+    (native-inputs
+     (list libfaketime
+           python-wrapper
+           pkg-config))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
     (description
@@ -455,7 +477,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.2.5")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -464,7 +486,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n613ylg6i9gisgk0dbr2kpfasyizrkdjff1r8smd4vri2qrdksn"))))
+        (base32 "0aqrcwxi3s2alila3fa7fjs4hifkq7055wa4xvz17hajchs3l567"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -486,8 +508,7 @@ desktops.")
                (wrap-qt-program "qbittorrent" #:output out #:inputs inputs))
              #t)))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("qttools" ,qttools)))
+     (list pkg-config qttools))
     (inputs
      `(("boost" ,boost)
        ("libtorrent-rasterbar" ,libtorrent-rasterbar)
@@ -510,7 +531,7 @@ features.")
 (define-public deluge
   (package
     (name "deluge")
-    (version "2.0.3")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
@@ -519,29 +540,31 @@ features.")
              (version-major+minor version) "/deluge-" version ".tar.xz"))
        (sha256
         (base32
-         "14d8kn2pvr1qv8mwqrxmj85jycr73vwfqz12hzag0ararbkfhyky"))))
+         "1n15dzfnz1gvb4cf046yhi404i3gs933qgz0ichna6r1znmh9gf4"))))
     (build-system python-build-system)
+    (inputs (list bash-minimal))
     (propagated-inputs
-     `(("gtk+" ,gtk+)
-       ("librsvg" ,librsvg)
-       ("libtorrent" ,libtorrent-rasterbar)
-       ("python-pycairo" ,python-pycairo)
-       ("python-chardet" ,python-chardet)
-       ("python-dbus" ,python-dbus)
-       ("python-mako" ,python-mako)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pillow" ,python-pillow)
-       ("python-pyopenssl" ,python-pyopenssl)
-       ("python-pyxdg" ,python-pyxdg)
-       ("python-rencode" ,python-rencode)
-       ("python-service-identity" ,python-service-identity)
-       ("python-setproctitle" ,python-setproctitle)
-       ("python-six" ,python-six)
-       ("python-twisted" ,python-twisted)
-       ("python-zope-interface" ,python-zope-interface)))
+     (list gtk+
+           libtorrent-rasterbar
+           python-pycairo
+           python-chardet
+           python-dbus
+           python-mako
+           python-pygobject
+           python-pillow
+           python-pyopenssl
+           python-pyxdg
+           python-rencode
+           python-service-identity
+           python-setproctitle
+           python-six
+           python-twisted
+           python-zope-interface))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("python-wheel" ,python-wheel)))
+     (list intltool python-wheel
+           (if (string-prefix? "x86_64-" (%current-system))
+               librsvg-bootstrap
+               librsvg-2.40)))
     ;; TODO: Enable tests.
     ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
     ;; started, some of the tests still fail.  There are likely some tests
@@ -550,17 +573,23 @@ features.")
      `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
-         ;; Remove this phase when upgrading to version 2.0.4 or beyond, as
-         ;; the issue is fixed upstream.
-         (add-after 'unpack 'fix-gettext-warning
-           (lambda _
-             (substitute* "deluge/i18n/util.py"
-               (("names='ngettext'") "names=['ngettext']"))
-             #t))
          (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
+                   ;; "librsvg" input is only needed at build time and it
+                   ;; conflit with the "librsvg" propageted by "gtk+", so we
+                   ;; make sure there is no reference to it in the wrapper.
+                   (gi-typelib-path
+                    (string-join (filter
+                                  (lambda (x) (not (string-prefix?
+                                                    (assoc-ref
+                                                     (or native-inputs inputs)
+                                                     "librsvg")
+                                                    x)))
+                                  (string-split
+                                   (getenv "GI_TYPELIB_PATH")
+                                   #\:))
+                                 ":")))
                (for-each
                 (lambda (program)
                   (wrap-program program

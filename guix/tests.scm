@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,12 +20,13 @@
   #:use-module ((guix config) #:select (%storedir %localstatedir))
   #:use-module (guix store)
   #:use-module (guix derivations)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix base32)
   #:use-module (guix serialization)
   #:use-module (guix monads)
   #:use-module ((guix utils) #:select (substitute-keyword-arguments))
-  #:use-module ((guix build utils) #:select (mkdir-p))
+  #:use-module ((guix build utils) #:select (mkdir-p compressor))
   #:use-module ((gcrypt hash) #:hide (sha256))
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages base)
@@ -60,7 +61,9 @@
             dummy-package
             dummy-origin
 
-            gnu-make-for-tests))
+            gnu-make-for-tests
+
+            test-file))
 
 ;;; Commentary:
 ;;;
@@ -135,17 +138,21 @@ no external store to talk to."
           (open-connection))
         (const #f)))
 
-    (dynamic-wind
-      (const #t)
-      (lambda ()
-        ;; Since we're using a different store we must clear the
-        ;; package-derivation cache.
-        (hash-clear! (@@ (guix packages) %derivation-cache))
-
-        (proc store))
-      (lambda ()
-        (when store
-          (close-connection store))))))
+    (let ((store-variable (getenv "NIX_STORE_DIR")))
+      (dynamic-wind
+        (lambda ()
+          ;; This environment variable is set by 'pre-inst-env' but it
+          ;; influences '%store-directory' in (guix build utils), which is
+          ;; itself used in (guix packages).  Thus, unset it before going any
+          ;; further.
+          (unsetenv "NIX_STORE_DIR"))
+        (lambda ()
+          (proc store))
+        (lambda ()
+          (when store-variable
+            (setenv "NIX_STORE_DIR" store-variable))
+          (when store
+            (close-connection store)))))))
 
 (define-syntax-rule (with-external-store store exp ...)
   "Evaluate EXP with STORE bound to the external store rather than the
@@ -182,18 +189,22 @@ too expensive to build entirely in the test store."
             (loop (1+ i)))
           bv))))
 
-(define (file=? a b)
-  "Return true if files A and B have the same type and same content."
-  (and (eq? (stat:type (lstat a)) (stat:type (lstat b)))
-       (case (stat:type (lstat a))
-         ((regular)
-          (equal?
-           (call-with-input-file a get-bytevector-all)
-           (call-with-input-file b get-bytevector-all)))
-         ((symlink)
-          (string=? (readlink a) (readlink b)))
-         (else
-          (error "what?" (lstat a))))))
+(define* (file=? a b #:optional (stat lstat))
+  "Return true if files A and B have the same type and same content.  Call
+STAT to obtain file metadata."
+  (let ((sta (stat a)) (stb (stat b)))
+    (and (eq? (stat:type sta) (stat:type stb))
+         (case (stat:type sta)
+           ((regular)
+            (or (and (= (stat:ino sta) (stat:ino stb))
+                     (= (stat:dev sta) (stat:dev stb)))
+                (equal?
+                 (call-with-input-file a get-bytevector-all)
+                 (call-with-input-file b get-bytevector-all))))
+           ((symlink)
+            (string=? (readlink a) (readlink b)))
+           (else
+            (error "what?" (stat a)))))))
 
 (define (canonical-file? file)
   "Return #t if FILE is in the store, is read-only, and its mtime is 1."
@@ -435,6 +446,42 @@ default values, and with EXTRA-FIELDS set as specified."
      (native-inputs '())                          ;no need for 'pkg-config'
      (inputs %bootstrap-inputs-for-tests))))
 
+
+;;;
+;;; Test utility procedures.
+
+(define (test-file store name content)
+  "Create a simple file in STORE with CONTENT (a string), compressed according
+to its file name extension.  Return both its file name and its hash."
+  (let* ((ext (string-index-right name #\.))
+         (name-sans-ext (if ext
+                            (string-take name (string-index-right name #\.))
+                            name))
+         (comp (compressor name))
+         (command #~(if #+comp
+                        (string-append #+%bootstrap-coreutils&co
+                                       "/bin/" #+comp)
+                        #f))
+         (f (with-imported-modules '((guix build utils))
+              (computed-file name
+                             #~(begin
+                                 (use-modules (guix build utils)
+                                              (rnrs io simple))
+                                 (with-output-to-file #+name-sans-ext
+                                   (lambda _
+                                     (format #t #+content)))
+                                 (when #+command
+                                   (invoke #+command #+name-sans-ext))
+                                 (copy-file #+name #$output)))))
+         (file-drv (run-with-store store (lower-object f)))
+         (file (derivation->output-path file-drv))
+         (file-drv-outputs (derivation-outputs file-drv))
+         (_ (build-derivations store (list file-drv)))
+         (file-hash (derivation-output-hash
+                     (assoc-ref file-drv-outputs "out"))))
+    (values file file-hash)))
+
+;;;
 ;; Local Variables:
 ;; eval: (put 'call-with-derivation-narinfo 'scheme-indent-function 1)
 ;; eval: (put 'call-with-derivation-substitute 'scheme-indent-function 2)

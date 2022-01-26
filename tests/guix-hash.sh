@@ -34,6 +34,15 @@ test `guix hash -f base32 /dev/null` = 4oymiquy7qobjgx36tejs35zeqt24qpemsnzgtfes
 test `guix hash -H sha512 -f hex /dev/null` = cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e
 test `guix hash -H sha1 -f base64 /dev/null` = "2jmj7l5rSw0yVb/vlWAYkK/YBwk="
 
+# Several files.
+test "`guix hash /dev/null "$abs_top_srcdir/README"`" = "`guix hash /dev/null ; guix hash "$abs_top_srcdir/README"`"
+
+# Zero files.
+! guix hash
+
+# idem as `cat /dev/null | git hash-object --stdin`
+test `guix hash -S git -H sha1 -f hex  /dev/null` = e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+
 ! guix hash -H abcd1234 /dev/null
 
 mkdir "$tmpdir"
@@ -42,25 +51,33 @@ chmod +x "$tmpdir/exe"
 ( cd "$tmpdir" ; ln -s exe symlink )
 mkdir "$tmpdir/subdir"
 
-test `guix hash -r "$tmpdir"` = 10k1lw41wyrjf9mxydi0is5nkpynlsvgslinics4ppir13g7d74p
-test `guix hash -r "$tmpdir" -H sha512` = 301ra58c2vahczzxiyfin41mpyb0ljh4dh9zn3ijvwviaw1j40sfzw5skh9x945da88n3785ggifzig7acd6k72h0mpsc20m1f66m9n
+test `guix hash -S nar "$tmpdir"` = 10k1lw41wyrjf9mxydi0is5nkpynlsvgslinics4ppir13g7d74p
+test `guix hash -S nar "$tmpdir" -H sha512` = 301ra58c2vahczzxiyfin41mpyb0ljh4dh9zn3ijvwviaw1j40sfzw5skh9x945da88n3785ggifzig7acd6k72h0mpsc20m1f66m9n
+test `guix hash -S git "$tmpdir"` = 1m9yxz99g7askm88h6hzyv4g2bfv57rp5wvwp3iq5ypsplq1xkkk
+test `guix hash -S git "$tmpdir" -H sha512` = 158b10d1bsdk4pm8ym9cg9ckfak1b0cgpw7365cl6s341ir380mh2f4ylicyh8khyrfnwq5cn9766d7m8fbfwwl94ndkv456v6a8knr
+
+# Deprecated --recursive option
+test `guix hash -r "$tmpdir" 2>/dev/null` = 10k1lw41wyrjf9mxydi0is5nkpynlsvgslinics4ppir13g7d74p
+test `guix hash -r "$tmpdir" -H sha512 2>/dev/null` = 301ra58c2vahczzxiyfin41mpyb0ljh4dh9zn3ijvwviaw1j40sfzw5skh9x945da88n3785ggifzig7acd6k72h0mpsc20m1f66m9n
 
 # Without '-r', this should fail.
 ! guix hash "$tmpdir"
 
 # This should fail because /dev/null is a character device, which
 # the archive format doesn't support.
-! guix hash -r /dev/null
+! guix hash -S nar /dev/null
 
 # Adding a .git directory
 mkdir "$tmpdir/.git"
 touch "$tmpdir/.git/foo"
 
 # ...changes the hash
-test `guix hash -r $tmpdir` = 0a50z04zyzf7pidwxv0nwbj82pgzbrhdy9562kncnvkcfvb48m59
+test `guix hash -S nar $tmpdir` = 0a50z04zyzf7pidwxv0nwbj82pgzbrhdy9562kncnvkcfvb48m59
+test `guix hash -S git $tmpdir` = 0ghlpca9xaswa1ay1g55dknwd9q899mi3ahfr43pq083v8wisjc7
 
 # ...but remains the same when using `-x'
-test `guix hash -r $tmpdir -x` = 10k1lw41wyrjf9mxydi0is5nkpynlsvgslinics4ppir13g7d74p
+test `guix hash -S nar $tmpdir -x` = 10k1lw41wyrjf9mxydi0is5nkpynlsvgslinics4ppir13g7d74p
+test `guix hash -S git $tmpdir -x` = 1m9yxz99g7askm88h6hzyv4g2bfv57rp5wvwp3iq5ypsplq1xkkk
 
 # Without '-r', this should fail.
 ! guix hash "$tmpdir"

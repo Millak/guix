@@ -48,7 +48,7 @@
       (native-inputs `(("xgcc" ,xgcc)
                        ("xbinutils" ,xbinutils)
                        ("mingw-w64" ,xlibc)))
-      (inputs `(("zlib" ,zlib)))
+      (inputs (list zlib))
       (arguments
        `(#:scons ,scons-python2
          #:modules ((srfi srfi-1)
@@ -128,7 +128,7 @@
                         (substitute* "Source/build.cpp" (("m_target_type=TARGET_X86ANSI")
                                                          (string-append "m_target_type=" ,nsis-target-type))))))))
       (home-page "http://nsis.sourceforge.net/")
-      (synopsis "A professional open source system to create Windows installers")
+      (synopsis "Professional open source system to create Windows installers")
       (description
        "NSIS (Nullsoft Scriptable Install System) is a professional open source
 system to create Windows installers. It is designed to be as small and flexible

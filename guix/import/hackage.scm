@@ -5,6 +5,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,7 @@
   #:use-module ((guix utils) #:select (package-name->name+version
                                        canonical-newline-port))
   #:use-module (guix http-client)
-  #:use-module ((guix import utils) #:select (factorize-uri recursive-import))
+  #:use-module (guix import utils)
   #:use-module (guix import cabal)
   #:use-module (guix store)
   #:use-module (gcrypt hash)
@@ -40,6 +41,7 @@
   #:use-module (guix memoization)
   #:use-module (guix upstream)
   #:use-module (guix packages)
+  #:autoload   (guix build-system haskell) (hackage-uri)
   #:use-module ((guix utils) #:select (call-with-temporary-output-file))
   #:export (%hackage-url
             hackage->guix-package
@@ -54,8 +56,8 @@
             hackage-package?))
 
 (define ghc-standard-libraries
-  ;; List of libraries distributed with ghc (8.6.5).
-  ;; Contents of ...-ghc-8.6.5/lib/ghc-8.6.5.
+  ;; List of libraries distributed with ghc (as of 8.10.7).
+  ;; Contents of …-ghc-8.10.7/lib/ghc-8.10.7
   '("ghc"
     "cabal" ;; in the output of `ghc-pkg list` Cabal is uppercased, but
             ;; hackage-name->package-name takes this into account.
@@ -67,6 +69,7 @@
     "containers"
     "deepseq"
     "directory"
+    "exceptions"
     "filepath"
     "ghc"
     "ghc-boot"
@@ -120,12 +123,12 @@ version is returned."
       (string-append package-name-prefix (string-downcase name))))
 
 (define guix-package->hackage-name
-  (let ((uri-rx (make-regexp "https?://hackage.haskell.org/package/([^/]+)/.*"))
+  (let ((uri-rx (make-regexp "(https?://hackage.haskell.org|mirror://hackage)/package/([^/]+)/.*"))
         (name-rx (make-regexp "(.*)-[0-9\\.]+")))
     (lambda (package)
       "Given a Guix package name, return the corresponding Hackage name."
       (let* ((source-url (and=> (package-source package) origin-uri))
-             (name (match:substring (regexp-exec uri-rx source-url) 1)))
+             (name (match:substring (regexp-exec uri-rx source-url) 2)))
         (match (regexp-exec name-rx name)
           (#f name)
           (m (match:substring m 1)))))))
@@ -265,14 +268,12 @@ the hash of the Cabal file."
      hackage-dependencies))
 
   (define dependencies
-    (map (lambda (name)
-           (list name (list 'unquote (string->symbol name))))
+    (map string->symbol
          (map hackage-name->package-name
               hackage-dependencies)))
 
   (define native-dependencies
-    (map (lambda (name)
-           (list name (list 'unquote (string->symbol name))))
+    (map string->symbol
          (map hackage-name->package-name
               hackage-native-dependencies)))
   
@@ -282,8 +283,8 @@ the hash of the Cabal file."
        '())
       ((inputs ...)
        (list (list input-type
-                   (list 'quasiquote inputs))))))
-  
+                   `(list ,@inputs))))))
+
   (define (maybe-arguments)
     (match (append (if (not include-test-dependencies?)
                        '(#:tests? #f)
@@ -302,7 +303,7 @@ the hash of the Cabal file."
         (version ,version)
         (source (origin
                   (method url-fetch)
-                  (uri (string-append ,@(factorize-uri source-url version)))
+                  (uri (hackage-uri ,name version))
                   (sha256
                    (base32
                     ,(if tarball
@@ -314,7 +315,7 @@ the hash of the Cabal file."
         ,@(maybe-arguments)
         (home-page ,(cabal-package-home-page cabal))
         (synopsis ,(cabal-package-synopsis cabal))
-        (description ,(cabal-package-description cabal))
+        (description ,(beautify-description (cabal-package-description cabal)))
         (license ,(string->license (cabal-package-license cabal))))
      (append hackage-dependencies hackage-native-dependencies))))
 
@@ -352,7 +353,7 @@ respectively."
                     #:guix-name hackage-name->package-name))
 
 (define hackage-package?
-  (let ((hackage-rx (make-regexp "https?://hackage.haskell.org")))
+  (let ((hackage-rx (make-regexp "(https?://hackage.haskell.org|mirror://hackage/)")))
     (url-predicate (cut regexp-exec hackage-rx <>))))
 
 (define (latest-release package)
@@ -366,7 +367,7 @@ respectively."
                (hackage-cabal-url hackage-name))
        #f)
       ((_ *** ("version" (version)))
-       (let ((url (hackage-source-url hackage-name version)))
+       (let ((url (hackage-uri hackage-name version)))
          (upstream-source
           (package (package-name package))
           (version version)

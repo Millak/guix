@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -785,6 +785,9 @@ determines whether CHANNELS are authenticated."
   (define add-indirect-root*
     (store-lift add-indirect-root))
 
+  (define add-temp-root*
+    (store-lift add-temp-root))
+
   (mkdir-p cache-directory)
   (maybe-remove-expired-cache-entries cache-directory
                                       cache-entries
@@ -805,11 +808,15 @@ determines whether CHANNELS are authenticated."
             ;; what's going to be built.
             (built-derivations (list profile))
 
-            ;; Note: Caching is fine even when AUTHENTICATE? is false because
-            ;; we always call 'latest-channel-instances?'.
-            (symlink* (derivation->output-path profile) cached)
-            (add-indirect-root* cached)
-            (return cached))))))
+            ;; Cache if and only if AUTHENTICATE? is true.
+            (if authenticate?
+                (mbegin %store-monad
+                  (symlink* (derivation->output-path profile) cached)
+                  (add-indirect-root* cached)
+                  (return cached))
+                (mbegin %store-monad
+                  (add-temp-root* (derivation->output-path profile))
+                  (return (derivation->output-path profile)))))))))
 
 (define* (inferior-for-channels channels
                                 #:key

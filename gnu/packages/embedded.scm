@@ -8,7 +8,9 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2020, 2021 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +45,7 @@
   #:use-module ((gnu packages base) #:prefix base:)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages dejagnu)
@@ -57,9 +60,11 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
 
@@ -294,9 +299,9 @@ usable on embedded products.")
            (origin-patches (package-source gcc-7))
            (search-patches "gcc-7-cross-environment-variables.patch")))))
       (native-inputs
-       `(("flex" ,flex)
-         ("isl" ,isl-0.18)
-         ,@(alist-delete "isl" (package-native-inputs xgcc))))
+       (modify-inputs (package-native-inputs xgcc)
+         (delete "isl")
+         (prepend flex isl-0.18)))
       (arguments
        (substitute-keyword-arguments (package-arguments xgcc)
          ((#:phases phases)
@@ -516,12 +521,9 @@ languages are C and C++.")
                 "0ndyfh51hiqyv2yscpj6qd091w7myxxjid3a6rx8f6k233vy826q"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("libusb" ,libusb)))
+     (list libusb))
     (home-page "https://repo.or.cz/w/libjaylink.git")
     (synopsis "Library to interface Segger J-Link devices")
     (description "libjaylink is a shared library written in C to access
@@ -559,7 +561,7 @@ SEGGER J-Link and compatible devices.")
          )))
     (native-inputs
      ;; For tests.
-     `(("inetutils" ,inetutils)))       ; for hostname
+     (list inetutils))       ; for hostname
     (home-page "http://jim.tcl.tk/index.html")
     (synopsis "Small footprint Tcl implementation")
     (description "Jim is a small footprint implementation of the Tcl programming
@@ -567,73 +569,70 @@ language.")
     (license license:bsd-2)))
 
 (define-public openocd
-  (let ((commit "9a877a83a1c8b1f105cdc0de46c5cbc4d9e8799e")
-        (revision "0"))
-    (package
-      (name "openocd")
-      (version (string-append "0.10.0-" revision "."
-                              (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.code.sf.net/p/openocd/code")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "1q536cp80v2bcy6xwk08f1r2ljyw13jchx3a1z7d3ni3vqql7rc6"))))
-      (build-system gnu-build-system)
-      (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("libtool" ,libtool)
-         ("which" ,base:which)
-         ("pkg-config" ,pkg-config)
-         ("texinfo" ,texinfo)))
-      (inputs
-       `(("hidapi" ,hidapi)
-         ("jimtcl" ,jimtcl)
-         ("libftdi" ,libftdi)
-         ("libjaylink" ,libjaylink)
-         ("libusb-compat" ,libusb-compat)))
-      (arguments
-       '(#:configure-flags
-         (append (list "LIBS=-lutil"
-                       "--disable-werror"
-                       "--enable-sysfsgpio"
-                       "--disable-internal-jimtcl"
-                       "--disable-internal-libjaylink")
-                 (map (lambda (programmer)
-                        (string-append "--enable-" programmer))
-                      '("amtjtagaccel" "armjtagew" "buspirate" "ftdi"
-                        "gw16012" "jlink" "opendous" "osbdm"
-                        "parport" "aice" "cmsis-dap" "dummy" "jtag_vpi"
-                        "remote-bitbang" "rlink" "stlink" "ti-icdi" "ulink"
-                        "usbprog" "vsllink" "usb-blaster-2" "usb_blaster"
-                        "presto" "openjtag")))
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'bootstrap
-             (lambda _
-               (patch-shebang "bootstrap")
-               (invoke "./bootstrap" "nosubmodule")))
-           (add-after 'autoreconf 'change-udev-group
-             (lambda _
-               (substitute* "contrib/60-openocd.rules"
-                 (("plugdev") "dialout"))
-               #t))
-           (add-after 'install 'install-udev-rules
-             (lambda* (#:key outputs #:allow-other-keys)
-               (install-file "contrib/60-openocd.rules"
-                             (string-append
-                              (assoc-ref outputs "out")
-                              "/lib/udev/rules.d/"))
-               #t)))))
-      (home-page "http://openocd.org")
-      (synopsis "On-Chip Debugger")
-      (description "OpenOCD provides on-chip programming and debugging support
+  (package
+    (name "openocd")
+    (version "0.11.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.code.sf.net/p/openocd/code")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0qi4sixwvw1i7c64sy221fsjs82qf3asmdk86g74ds2jjm3f8pzp"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           base:which
+           pkg-config
+           texinfo))
+    (inputs
+     (list hidapi jimtcl libftdi libjaylink libusb-compat))
+    (arguments
+     '(#:configure-flags
+       (append (list "LIBS=-lutil"
+                     "--disable-werror"
+                     "--enable-sysfsgpio"
+                     "--disable-internal-jimtcl"
+                     "--disable-internal-libjaylink")
+               (map (lambda (programmer)
+                      (string-append "--enable-" programmer))
+                    '("amtjtagaccel" "armjtagew" "buspirate" "ftdi"
+                      "gw16012" "jlink" "opendous" "osbdm"
+                      "parport" "aice" "cmsis-dap" "dummy" "jtag_vpi"
+                      "remote-bitbang" "rlink" "stlink" "ti-icdi" "ulink"
+                      "usbprog" "vsllink" "usb-blaster-2" "usb_blaster"
+                      "presto" "openjtag" "rshim" "ft232r" "xds110"
+                      "cmsis-dap-v2" "nulink" "kitprog" "jtag_dpi"
+                      "bcm2835gpio" "imx_gpio" "ep93xx" "at91rm9200"
+                      "sysfsgpio" "xlnx-pcie-xvc")))
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             ;; Make build reproducible.
+             (substitute* "src/Makefile.am"
+               (("-DPKGBLDDATE=") "-DDISABLED_PKGBLDDATE="))
+             (patch-shebang "bootstrap")
+             (invoke "./bootstrap" "nosubmodule")))
+         (add-after 'unpack 'change-udev-group
+           (lambda _
+             (substitute* "contrib/60-openocd.rules"
+               (("plugdev") "dialout"))))
+         (add-after 'install 'install-udev-rules
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "contrib/60-openocd.rules"
+                           (string-append
+                            (assoc-ref outputs "out")
+                            "/lib/udev/rules.d/")))))))
+    (home-page "https://openocd.org/")
+    (synopsis "On-Chip Debugger")
+    (description "OpenOCD provides on-chip programming and debugging support
 with a layered architecture of JTAG interface and TAP support.")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 ;; The commits for all propeller tools are the stable versions published at
 ;; https://github.com/propellerinc/propgcc in the release_1_0.  According to
@@ -698,8 +697,8 @@ with a layered architecture of JTAG interface and TAP support.")
                   (origin-patches (package-source gcc-6))
                   (search-patches "gcc-cross-environment-variables.patch")))))
       (native-inputs
-       `(("flex" ,flex)
-         ,@(package-native-inputs xgcc)))
+       (modify-inputs (package-native-inputs xgcc)
+         (prepend flex)))
       ;; All headers and cross libraries of the propeller toolchain are
       ;; installed under the "propeller-elf" prefix.
       (native-search-paths
@@ -807,9 +806,7 @@ with a layered architecture of JTAG interface and TAP support.")
              (lambda* (#:key make-flags #:allow-other-keys)
                (apply invoke "make" "install-includes" make-flags))))))
       (native-inputs
-       `(("propeller-gcc" ,propeller-gcc)
-         ("propeller-binutils" ,propeller-binutils)
-         ("perl" ,perl)))
+       (list propeller-gcc propeller-binutils perl))
       (home-page "https://github.com/parallaxinc/propgcc")
       (synopsis "C library for the Parallax Propeller")
       (description "This is a C library for the Parallax Propeller
@@ -901,8 +898,7 @@ code.")
              (lambda _ (chdir "loader") #t))
            (delete 'configure))))
       (native-inputs
-       `(("openspin" ,openspin)
-         ("propeller-toolchain" ,propeller-toolchain)))
+       (list openspin propeller-toolchain))
       (home-page "https://github.com/parallaxinc/propgcc")
       (synopsis "Loader for Parallax Propeller micro-controllers")
       (description "This package provides the tool @code{propeller-load} to
@@ -947,9 +943,7 @@ upload binaries to a Parallax Propeller micro-controller.")
                          '("testlex" "spin2cpp" "fastspin")))
              #t)))))
     (native-inputs
-     `(("bison" ,bison)
-       ("propeller-load" ,propeller-load)
-       ("propeller-toolchain" ,propeller-toolchain)))
+     (list bison propeller-load propeller-toolchain))
     (home-page "https://github.com/totalspectrum/spin2cpp")
     (synopsis "Convert Spin code to C, C++, or PASM code")
     (description "This is a set of tools for converting the Spin language for
@@ -1089,8 +1083,8 @@ the Raspberry Pi chip.")
                  (search-patches "gcc-6-fix-buffer-size.patch"
                                  "gcc-6-fix-isl-includes.patch"))))
       (native-inputs
-        `(("flex" ,flex)
-          ,@(package-native-inputs xgcc)))
+        (modify-inputs (package-native-inputs xgcc)
+          (prepend flex)))
       (synopsis "GCC for VC4")
       (description "This package provides @code{gcc} for VideoCore IV,
 the Raspberry Pi chip."))))
@@ -1111,12 +1105,9 @@ the Raspberry Pi chip."))))
             "1rypfb96k2szqgygp3jnwg2zq9kwmfz0460dsahn3r2vkzml8wn7"))))
     (build-system gnu-build-system)
     (inputs
-     `(("libftdi" ,libftdi)
-       ("python" ,python)))
+     (list libftdi python))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("swig" ,swig)
-       ("which" ,base:which)))
+     (list pkg-config swig base:which))
     (arguments
      `(#:tests? #f ; No tests exist.
        #:parallel-build? #f  ; Would be buggy.
@@ -1256,7 +1247,7 @@ SPI, I2C, JTAG.")
              #t))
          (delete 'configure))))
     (inputs
-     `(("libx11" ,libx11)))
+     (list libx11))
     (synopsis "Freecalypso host tools")
     (description "This package provides some tools for debugging FreeCalypso phones and the FreeCalypso FCDEV3B dev board.
 
@@ -1350,20 +1341,50 @@ these identified regions.
     (home-page "https://www.freecalypso.org/")
     (license license:public-domain)))
 
+(define-public stcgal
+  (package
+    (name "stcgal")
+    (version "1.6")
+    (source (origin
+              ;; Neither the unit tests nor the "doc" subdirectory referred to
+              ;; by stcgal's setup.py is present in the source distribution on
+              ;; PyPI, so we fetch directly from the project's git repository
+              ;; instead.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/grigorig/stcgal")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d10qxyghz66zp7iqpm8q8rfv9jz9n609gxmfcav1lssmf1dlyk3"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pyserial python-pyusb python-tqdm))
+    (native-inputs
+     ;; For tests.
+     (list python-pyyaml))
+    (home-page "https://github.com/grigorig/stcgal")
+    (synopsis "Programmer for STC 8051-compatible microcontrollers")
+    (description "stcgal is a command-line flash-programming tool for STC
+MCU's line of Intel 8051-compatible microcontrollers, including those in the
+STC89, STC90, STC10, STC11, STC12, STC15 and STC8 series.")
+    (license license:expat)))
+
 (define-public stlink
   (package
     (name "stlink")
-    (version "1.5.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/texane/stlink")
+              (url "https://github.com/stlink-org/stlink")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1d5gxiqpsm8fc105cxlp27af9fk339fap5h6nay21x5a7n61jgyc"))))
+         "03xypffpbp4imrczbxmq69vgkr7mbp0ps9dk815br5wwlz6vgygl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -1375,7 +1396,7 @@ these identified regions.
          (list (string-append "-DSTLINK_UDEV_RULES_DIR=" udev-rules)
                (string-append "-DSTLINK_MODPROBED_DIR=" modprobe)))))
     (inputs
-     `(("libusb" ,libusb)))
+     (list libusb))
     (synopsis "Programmer for STM32 Discovery boards")
     (description "This package provides a firmware programmer for the STM32
 Discovery boards.  It supports two versions of the chip: ST-LINK/V1 (on
@@ -1383,7 +1404,7 @@ STM32VL discovery kits) and ST-LINK/V2 (on STM32L discovery and later kits).
 Two different transport layers are used: ST-LINK/V1 uses SCSI passthru
 commands over USB, and ST-LINK/V2 and ST-LINK/V2-1 (seen on Nucleo boards) use
 raw USB commands.")
-    (home-page "https://github.com/texane/stlink")
+    (home-page "https://github.com/stlink-org/stlink")
     ;; The flashloaders/stm32l0x.s and flashloaders/stm32lx.s source files are
     ;; licensed under the GPLv2+.
     (license (list license:bsd-3 license:gpl2+))))
@@ -1400,10 +1421,8 @@ raw USB commands.")
         (base32
          "0ql6ij1hrj2ir5wkxm96zgig5qwvfwa75w77wh2y13w6b9cqcr4b"))))
     (propagated-inputs
-     `(("python-colorama" ,python-colorama)
-       ("python-configobj" ,python-configobj)
-       ("python-pykwalify" ,python-pykwalify)
-       ("python-pyyaml" ,python-pyyaml)))
+     (list python-colorama python-configobj python-pykwalify
+           python-pyyaml))
     (build-system python-build-system)
     (home-page "https://github.com/zephyrproject-rtos/west")
     (synopsis "Zephyr RTOS Project meta-tool")
@@ -1443,7 +1462,7 @@ debugging them, and more.")
                                  config-destination)
                #t))))))
     (inputs
-     `(("mosquitto" ,mosquitto)))
+     (list mosquitto))
     (native-inputs
      `(("automake" ,automake)
        ("autoconf" ,autoconf)
@@ -1495,8 +1514,7 @@ handling communication with eBUS devices connected to a 2-wire bus system
               (string-append (assoc-ref outputs "out") "/share/man"))
              #t)))))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)))
+     (list bison flex))
     (home-page "http://mazsola.iit.uni-miskolc.hu/ucsim/")
     (synopsis "Simulators for various microcontroller families")
     (description "μCsim is a collection of software simulators for
@@ -1586,8 +1604,7 @@ families, plus many of their variants.")
                     (("from IPython.*") ""))))))
     (build-system python-build-system)
     (propagated-inputs
-     `(("python-cryptography" ,python-cryptography)
-       ("python-prettytable" ,python-prettytable)))
+     (list python-cryptography python-prettytable))
     (home-page "https://github.com/PSPReverse/psptool")
     (synopsis "Tool for dealing with AMD binary blobs")
     (description "PSPTool is a tool for dealing with AMD binary blobs")
@@ -1629,3 +1646,51 @@ families, plus many of their variants.")
 and console on a single serial port.  agent-proxy creates network sockets,
 whereas kdmx creates pseudo-ttys.")
       (license license:gpl2))))
+
+(define-public mbed-tools
+  (package
+    (name "mbed-tools")
+    (version "7.49.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mbed-tools" version))
+       (sha256
+        (base32
+         "07w1h1093xzpg8agw9hjhki5856mam2c6f3q7jb2866n82cihkg9"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               ;; Remove this failing test.
+               (delete-file "tests/ci_scripts/test_sync_board_db.py")
+               (invoke "pytest" "-vv")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-factory-boy
+           python-requests-mock
+           python-semver))
+    (propagated-inputs
+     (list python-dotenv
+           python-click
+           python-pdoc3
+           python-gitpython
+           python-tqdm
+           python-tabulate
+           python-requests
+           python-psutil
+           python-pyudev
+           python-typing-extensions
+           python-jinja2
+           python-pyserial))
+    (build-system python-build-system)
+    (home-page "https://github.com/ARMmbed/mbed-tools")
+    (synopsis "ARM Mbed command line tools")
+    (description "This package is the successor of @code{mbed-cli}.  It
+provides command line tools for Mbed OS to detect Mbed enabled devices
+connected by USB, checkout Mbed projects and perform builds amongst other
+operations.")
+    (license license:asl2.0)))
