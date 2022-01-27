@@ -224,14 +224,14 @@ please install the @code{flyer-composer-gui} package.")))
 (define-public poppler
   (package
    (name "poppler")
-   (version "21.07.0")
+   (version "22.01.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://poppler.freedesktop.org/poppler-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1m54hsi8z6c13jdbjwz55flkra1mahmkw2igavbf8p86d2gv4sp2"))))
+              "0giin9klpj7264n4rl8qwvc6rh650ap2qg39bhz431jvdc2r6d3x"))))
    (build-system cmake-build-system)
    ;; FIXME:
    ;;  use libcurl:        no
