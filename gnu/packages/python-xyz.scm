@@ -17543,9 +17543,6 @@ multitouch applications.")
      ;; number of files with other licenses.
      (list license:gpl2+ license:asl2.0 license:lgpl2.1+ license:cc-by-sa3.0))))
 
-(define-public python2-odfpy
-  (package-with-python2 python-odfpy))
-
 (define-public python-natsort
   (package
     (name "python-natsort")
