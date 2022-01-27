@@ -2491,7 +2491,7 @@ shows a notification for the user on the screen.")
 (define-public cagebreak
   (package
     (name "cagebreak")
-    (version "1.8.0")
+    (version "1.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2500,13 +2500,18 @@ shows a notification for the user on the screen.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0296mnzk7qd0zvnhw716jvpp7madjsar373ixx4qcff0m0jwfrxm"))))
+                "0vm97ak0589v39m3fljf1qhy92dqgiqcrrfp757gg7q58qwa6dkf"))))
     (build-system meson-build-system)
-    (arguments '(#:configure-flags '("-Dxwayland=true")))
-    (native-inputs
-     (list pandoc pkg-config))
-    (inputs
-     (list libevdev pango wlroots))
+    (arguments
+     `(#:configure-flags '("-Dxwayland=true")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-data-dir
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "meson.build"
+               (("/etc/") (string-append (assoc-ref outputs "out") "/etc"))))))))
+    (native-inputs (list pandoc pkg-config))
+    (inputs (list libevdev pango wlroots))
     (home-page "https://github.com/project-repo/cagebreak")
     (synopsis "Tiling wayland compositor inspired by ratpoison")
     (description
