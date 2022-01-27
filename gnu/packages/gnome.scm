@@ -7478,7 +7478,12 @@ to display dialog boxes from the commandline and shell scripts.")
              ;; expression paragraph.  For an explanation, see: info '(sed)
              ;; Multiline techniques'.
              (invoke "sed" "/./{H;$!d} ; x ; s/^.*native-headless.*$//"
-                     "-i" "src/tests/meson.build")))
+                     "-i" "src/tests/meson.build")
+             ;; Timeline tests may unexpectedly fail on missed frames, so
+             ;; let's disable them as well.
+             ;; See <https://gitlab.gnome.org/GNOME/mutter/-/issues/2125>
+             (substitute* "src/tests/clutter/conform/meson.build"
+               (("'timeline.*',") ""))))
          (replace 'check
            (lambda* (#:key tests? test-options parallel-tests?
                      #:allow-other-keys)
