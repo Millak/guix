@@ -2543,6 +2543,7 @@ exec " gcc "/bin/" program
        #:implicit-inputs? #f
        #:guile ,%bootstrap-guile
        #:configure-flags '("--disable-bzlib")
+       #:make-flags '("CFLAGS+=-std=c11")
        #:strip-binaries? #f
        #:validate-runpath? #f
        ,@(package-arguments file)))))

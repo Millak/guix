@@ -15304,9 +15304,7 @@ syntax highlighting, markdown and more to the terminal.")
      (list which))
     (inputs
      ;; python-magic needs to be able to find libmagic.so.
-     ;; Use a newer version because 5.39 returns bogus for some archives
-     ;; (notably Chromium .crx extensions), which breaks e.g. 'diffoscope'.
-     (list file-next))
+     (list file))
     (synopsis "File type identification using libmagic")
     (description
      "This module uses ctypes to access the libmagic file type
