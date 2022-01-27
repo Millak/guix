@@ -2548,14 +2548,14 @@ read and write, and compatible with JSON.")
 (define-public hikari
   (package
     (name "hikari")
-    (version "2.3.2")
+    (version "2.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://hikari.acmelabs.space/releases/"
                            "hikari-" version ".tar.gz"))
        (sha256
-        (base32 "1jvy21irh6s7czff2hk63spswqibjcjhrpsgmrki5bii9ddi73wy"))))
+        (base32 "1qjd9dhpmv75idf6jjzwff8wgliad4d0af8pih9526p14vrnyws0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bmake pkg-config wayland-protocols))
