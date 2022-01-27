@@ -73,6 +73,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
@@ -1943,6 +1944,42 @@ functions.  The source code to MAME serves as this documentation.")
      "Gnome Arcade is a minimal GTK+ frontend for MAME, the multi-purpose
 arcade and console emulator.")
     (license license:gpl3+)))
+
+(define-public gnusim8085
+  (package
+    (name "gnusim8085")
+    (version "1.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/srid/GNUSim8085/releases/download/"
+                    version "/gnusim8085-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05x0is0ckagb3r74p6lw9b8nqrrh7q2v4jvc4cnhljchz9x7kw2a"))))
+    (native-inputs (list pkg-config))
+    (inputs (list gtksourceview-3 adwaita-icon-theme))
+    (build-system glib-or-gtk-build-system)
+    (home-page "https://gnusim8085.srid.ca")
+    (synopsis "Graphical simulator for the Intel 8085 microprocessor")
+    (description
+     "GNUSim8085 is a graphical simulator,
+assembler, and debugger for the Intel 8085 microprocessor.
+
+@itemize
+@item A simple editor component with syntax highlighting.
+@item A keypad to input assembly language instructions with appropriate arguments.
+@item Easy view of register contents.
+@item Easy view of flag contents.
+@item Hexadecimal/decimal converter.
+@item View of stack, memory and I/O contents.
+@item Support for breakpoints for program debugging.
+@item Stepwise program execution.
+@item One click conversion of assembly program to opcode listing.
+@item Printing support.
+@item UI translated in various languages.
+@end itemize")
+    (license license:gpl2+)))
 
 (define-public pcsxr
   ;; No release since 2017.
