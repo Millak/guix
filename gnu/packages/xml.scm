@@ -1468,9 +1468,6 @@ files.  It is designed to be fast and to handle large input files.")
      "Defusedxml provides XML bomb protection for Python stdlib modules.")
     (license license:psfl)))
 
-(define-public python2-defusedxml
-  (package-with-python2 python-defusedxml))
-
 (define-public freexl
   (package
     (name "freexl")
