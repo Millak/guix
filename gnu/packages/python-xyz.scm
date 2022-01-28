@@ -14948,7 +14948,7 @@ ISO 8859, etc.).")
      (list qtbase-5))
     (propagated-inputs
      (list python-h5py python-numpy python-pyopengl python-scipy
-           python-pyqt))
+           python-pyqt-without-qtwebkit))
     (home-page "http://www.pyqtgraph.org")
     (synopsis "Scientific graphics and GUI library for Python")
     (description
