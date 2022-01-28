@@ -5448,7 +5448,9 @@ commit of a channel that should be authenticated.  The first time a
 channel is fetched with @command{guix pull} or @command{guix
 time-machine}, the command looks up the introductory commit and verifies
 that it is signed by the specified OpenPGP key.  From then on, it
-authenticates commits according to the rule above.
+authenticates commits according to the rule above.  Authentication fails
+if the target commit is neither a descendant nor an ancestor of the
+introductory commit.
 
 Additionally, your channel must provide all the OpenPGP keys that were
 ever mentioned in @file{.guix-authorizations}, stored as @file{.key}

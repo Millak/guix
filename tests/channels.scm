@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -520,6 +520,64 @@
                                    (key-fingerprint %ed25519-public-key-file)
                                    (key-fingerprint
                                     %ed25519-2-public-key-file))))))
+            (authenticate-channel channel directory
+                                  (commit-id-string commit2)
+                                  #:keyring-reference-prefix "")
+            'failed))))))
+
+(unless (gpg+git-available?) (test-skip 1))
+(test-equal "authenticate-channel, not a descendant of introductory commit"
+  #t
+  (with-fresh-gnupg-setup (list %ed25519-public-key-file
+                                %ed25519-secret-key-file
+                                %ed25519-2-public-key-file
+                                %ed25519-2-secret-key-file)
+    (with-temporary-git-repository directory
+        `((add ".guix-channel"
+               ,(object->string
+                 '(channel (version 0)
+                           (keyring-reference "master"))))
+          (add ".guix-authorizations"
+               ,(object->string
+                 `(authorizations (version 0)
+                                  ((,(key-fingerprint
+                                      %ed25519-public-key-file)
+                                    (name "Charlie"))))))
+          (add "signer.key" ,(call-with-input-file %ed25519-public-key-file
+                               get-string-all))
+          (commit "first commit"
+                  (signer ,(key-fingerprint %ed25519-public-key-file)))
+          (branch "alternate-branch")
+          (checkout "alternate-branch")
+          (add "something.txt" ,(random-text))
+          (commit "intro commit"
+                  (signer ,(key-fingerprint %ed25519-public-key-file)))
+          (checkout "master")
+          (add "random" ,(random-text))
+          (commit "second commit"
+                  (signer ,(key-fingerprint %ed25519-public-key-file))))
+      (with-repository directory repository
+        (let* ((commit1 (find-commit repository "first"))
+               (commit2 (find-commit repository "second"))
+               (commit0 (commit-lookup
+                         repository
+                         (reference-target
+                          (branch-lookup repository "alternate-branch"))))
+               (intro   (make-channel-introduction
+                         (commit-id-string commit0)
+                         (openpgp-public-key-fingerprint
+                          (read-openpgp-packet
+                           %ed25519-public-key-file))))
+               (channel (channel (name 'example)
+                                 (url (string-append "file://" directory))
+                                 (introduction intro))))
+          (guard (c ((formatted-message? c)
+                     (and (string-contains (formatted-message-string c)
+                                           "not a descendant")
+                          (equal? (formatted-message-arguments c)
+                                  (list
+                                   (oid->string (commit-id commit2))
+                                   (oid->string (commit-id commit0)))))))
             (authenticate-channel channel directory
                                   (commit-id-string commit2)
                                   #:keyring-reference-prefix "")
