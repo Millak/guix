@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -46,6 +46,7 @@
   #:use-module (ice-9 ftw)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:export (%repository-cache-directory
@@ -60,6 +61,7 @@
             latest-repository-commit
             commit-difference
             commit-relation
+            commit-descendant?
 
             remote-refs
 
@@ -623,6 +625,26 @@ objects: 'ancestor (meaning that OLD is an ancestor of NEW), 'descendant, or
               (if (set-contains? oldest new)
                   'descendant
                   'unrelated))))))
+
+(define (commit-descendant? new old)
+  "Return true if NEW is the descendant of one of OLD, a list of commits.
+
+When the expected result is likely #t, this is faster than using
+'commit-relation' since fewer commits need to be traversed."
+  (let ((old (list->setq old)))
+    (let loop ((commits (list new))
+               (visited (setq)))
+      (match commits
+        (()
+         #f)
+        (_
+         ;; Perform a breadth-first search as this is likely going to
+         ;; terminate more quickly than a depth-first search.
+         (let ((commits (remove (cut set-contains? visited <>) commits)))
+           (or (any (cut set-contains? old <>) commits)
+               (loop (append-map commit-parents commits)
+                     (fold set-insert visited commits)))))))))
+
 
 ;;
 ;;; Remote operations.
