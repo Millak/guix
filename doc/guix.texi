@@ -39562,11 +39562,94 @@ users @emph{should not} use this service, in most cases it's better to extend
 the required command using the appropriate service type.
 @end defvr
 
+@defvr {Scheme Variable} home-files-service-type
+The service of this type allows to specify a list of files, which will
+go to @file{~/.guix-home/files}, usually this directory contains
+configuration files (to be more precise it contains symlinks to files in
+@file{/gnu/store}), which should be placed in @file{$XDG_CONFIG_DIR} or
+in rare cases in @file{$HOME}.  It accepts extension values in the
+following format:
+
+@lisp
+`((".sway/config" ,sway-file-like-object)
+  (".tmux.conf" ,(local-file "./tmux.conf")))
+@end lisp
+
+Each nested list contains two values: a subdirectory and file-like
+object.  After building a home environment @file{~/.guix-home/files}
+will be populated with apropiate content and all nested directories will
+be created accordingly, however, those files won't go any further until
+some other service will do it.  By default a
+@code{home-symlink-manager-service-type}, which creates necessary
+symlinks in home folder to files from @file{~/.guix-home/files} and
+backs up already existing, but clashing configs and other things, is a
+part of essential home services (enabled by default), but it's possible
+to use alternative services to implement more advanced use cases like
+read-only home.  Feel free to experiment and share your results.
+@end defvr
+
+@defvr {Scheme Variable} home-xdg-configuration-files-service-type
+The service is very similiar to @code{home-files-service-type} (and
+actually extends it), but used for defining files, which will go to
+@file{~/.guix-home/files/.config}, which will be symlinked to
+@file{$XDG_CONFIG_DIR} by @code{home-symlink-manager-service-type} (for
+example) during activation.  It accepts extension values in the
+following format:
+
+@lisp
+`(("sway/config" ,sway-file-like-object)
+  ;; -> ~/.guix-home/files/.config/sway/config
+  ;; -> $XDG_CONFIG_DIR/sway/config (by symlink-manager)
+  ("tmux/tmux.conf" ,(local-file "./tmux.conf")))
+@end lisp
+@end defvr
+
 @defvr {Scheme Variable} home-activation-service-type
 The service of this type generates a guile script, which runs on every
 @command{guix home reconfigure} invocation or any other action, which
 leads to the activation of the home environment.
 @end defvr
+
+@defvr {Scheme Variable} home-symlink-manager-service-type
+The service of this type generates a guile script, which will be
+executed during activation of home environment, and do a few following
+steps:
+
+@enumerate
+@item
+Reads the content of @file{files/} directory of current and pending home
+environments.
+
+@item
+Cleans up all symlinks created by symlink-manager on previous
+activation.  Also, sub-directories, which become empty also will be
+cleaned up.
+
+@item
+Creates new symlinks the following way: It looks @file{files/} directory
+(usually defined with @code{home-files-service-type},
+@code{home-xdg-configuration-files-service-type} and maybe some others),
+takes the files from @file{files/.config/} subdirectory and put
+respective links in @env{XDG_CONFIG_DIR}.  For example symlink for
+@file{files/.config/sway/config} will end up in
+@file{$XDG_CONFIG_DIR/sway/config}.  The rest files in @file{files/}
+outside of @file{files/.config/} subdirectory will be treated slightly
+different: symlink will just go to @file{$HOME}.
+@file{files/.some-program/config} will end up in
+@file{$HOME/.some-program/config}.
+
+@item
+If some sub-directories are missing, they will be created.
+
+@item
+If there is a clashing files on the way, they will be backed up.
+
+@end enumerate
+
+symlink-manager is a part of essential home services and is enabled and
+used by default.
+@end defvr
+
 
 @node Shells Home Services
 @subsection Shells
