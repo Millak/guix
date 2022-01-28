@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,12 +30,16 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages geo)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
@@ -49,6 +54,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix download)
@@ -60,6 +66,7 @@
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 regex)
@@ -940,3 +947,65 @@ provides the necessary tools and data structures for cases where the
 forward model is implemented in @code{fenics} or
 @url{https://firedrakeproject.org,firedrake}.")
     (license license:lgpl3)))
+
+(define-public sumo
+  (package
+    (name "sumo")
+    (version "1.14.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/eclipse/sumo")
+                    (commit (string-append "v"
+                                           (string-replace-substring version
+                                                                     "." "_")))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1965vrsff0k14z3y3b1c460zdwp9nx6q6plrdyxn496vg6846k1y"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; docs/example appears to be missing
+                (("add_test\\(exampletest .*") ""))
+              (substitute* "src/traci_testclient/CMakeLists.txt"
+                ;; requires network connection (at least to localhost)
+                (("add_test\\(NAME libtracitest .*") "")))))))
+    (inputs (list eigen
+                  freetype
+                  fontconfig
+                  ffmpeg
+                  fox
+                  gdal
+                  glu
+                  gperftools ; tcmalloc
+                  libjpeg-turbo
+                  libtiff
+                  libx11
+                  libxcursor
+                  libxft
+                  libxi
+                  libxrandr
+                  libxrender
+                  openscenegraph
+                  proj
+                  python
+                  xerces-c
+                  zlib))
+    (native-inputs (list googletest python))
+    (home-page "https://eclipse.org/sumo")
+    (synopsis "Traffic simulator")
+    (description "@acronym{SUMO, Simulation of Urban MObility} is a traffic
+simulation package designed to handle large road networks and different modes
+of transportation -- including road vehicles, public transport and pedestrians.
+Included with SUMO is a wealth of supporting tools which automate core tasks
+for the creation, the execution and evaluation of traffic simulations,
+such as network import, route calculations, visualization and emission
+calculation.  SUMO can be enhanced with custom models and provides various
+APIs to remotely control the simulation.")
+    (license (list license:epl2.0 license:gpl2+))))
