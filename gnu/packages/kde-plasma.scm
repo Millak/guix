@@ -62,6 +62,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
@@ -1839,6 +1840,55 @@ PulseAudio.")
     (description
      "This package provides a Plasma applet for the Pass password manager.")
     (license license:lgpl2.1+)))
+
+(define-public plasma-phone-components
+  (package
+    (name "plasma-phone-components")
+    (version "5.23.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/plasma-phone-components-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0ml5pyi90nlmx5550sf3x9263f8mypj4jmdskzabzhnz44ck8vy9"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config qttools))
+    (inputs (list qtbase-5
+                  qtdeclarative
+                  kactivities
+                  kauth
+                  kbookmarks
+                  kwin
+                  kcodecs
+                  kcompletion
+                  kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  kdbusaddons
+                  kdeclarative
+                  ki18n
+                  kio
+                  kitemviews
+                  kjobwidgets
+                  knotifications
+                  kpackage
+                  kpeople
+                  kservice
+                  kwayland
+                  kwidgetsaddons
+                  kwindowsystem
+                  kxmlgui
+                  libphonenumber
+                  modemmanager-qt
+                  plasma-framework
+                  solid))
+    (home-page "https://plasma-mobile.org/")
+    (synopsis "Modules providing phone functionality for Plasma")
+    (description "This package provides user-friendly, privacy-enabling
+and customizable platform for mobile devices.")
+    (license (list license:gpl3+ license:lgpl2.1+))))
 
 (define-public plasma-vault
   (package
