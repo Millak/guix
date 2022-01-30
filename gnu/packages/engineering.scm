@@ -1744,7 +1744,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "35")
+    (version "36")
     (source
      (origin
        (method url-fetch)
@@ -1755,7 +1755,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "1v3ra9p2sc6ash1bbjm6i4i3dd6ymxjgnyha7z5rlmyvfv1gbdy1"))))
+        (base32 "133za6m9grpnnlb46sijkda7ky41mrbvfdb60i0m695sxy3q50ag"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -1788,8 +1788,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
     (native-inputs
      (list bison flex))
     (inputs
-     `(("libxaw" ,libxaw)
-       ("mpi" ,openmpi)))
+     (list libxaw openmpi))
     (home-page "http://ngspice.sourceforge.net/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
