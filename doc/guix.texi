@@ -21511,11 +21511,44 @@ List of settings to set in @file{daemon.conf}, formatted just like
 @var{client-conf}.
 
 @item @code{script-file} (default: @code{(file-append pulseaudio "/etc/pulse/default.pa")})
-Script file to use as @file{default.pa}.
+Script file to use as @file{default.pa}.  In case the
+@code{extra-script-files} field below is used, an @code{.include}
+directive pointing to @file{/etc/pulse/default.pa.d} is appended to the
+provided script.
+
+@item @code{extra-script-files} (default: @code{'())})
+A list of file-like objects defining extra PulseAudio scripts to run at
+the initialization of the @command{pulseaudio} daemon, after the main
+@code{script-file}.  The scripts are deployed to the
+@file{/etc/pulse/default.pa.d} directory; they should have the
+@samp{.pa} file name extension.  For a reference of the available
+commands, refer to @command{man pulse-cli-syntax}.
 
 @item @code{system-script-file} (default: @code{(file-append pulseaudio "/etc/pulse/system.pa")})
 Script file to use as @file{system.pa}.
 @end table
+
+The example below sets the default PulseAudio card profile, the default
+sink and the default source to use for a old SoundBlaster Audigy sound
+card:
+@lisp
+(pulseaudio-configuration
+ (extra-script-files
+  (list (plain-file "audigy.pa"
+                    (string-append "\
+set-card-profile alsa_card.pci-0000_01_01.0 \
+  output:analog-surround-40+input:analog-mono
+set-default-source alsa_input.pci-0000_01_01.0.analog-mono
+set-default-sink alsa_output.pci-0000_01_01.0.analog-surround-40\n")))))
+@end lisp
+
+Note that @code{pulseaudio-service-type} is part of
+@code{%desktop-services}; if your operating system declaration was
+derived from one of the desktop templates, you'll want to adjust the
+above example to modify the existing @code{pulseaudio-service-type} via
+@code{modify-services} (@pxref{Service Reference,
+@code{modify-services}}), instead of defining a new one.
+
 @end deftp
 
 @deffn {Scheme Variable} ladspa-service-type

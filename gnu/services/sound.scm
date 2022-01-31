@@ -26,14 +26,17 @@
   #:use-module (gnu services)
   #:use-module (gnu system pam)
   #:use-module (gnu system shadow)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix store)
+  #:use-module (guix ui)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pulseaudio)
   #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1)
   #:export (alsa-configuration
             alsa-service-type
 
@@ -125,6 +128,8 @@ ctl.!default {
                (default '((flat-volumes . no))))
   (script-file pulseaudio-configuration-script-file
                (default (file-append pulseaudio "/etc/pulse/default.pa")))
+  (extra-script-files pulseaudio-configuration-extra-script-files
+                      (default '()))
   (system-script-file pulseaudio-configuration-system-script-file
                       (default
                         (file-append pulseaudio "/etc/pulse/system.pa"))))
@@ -145,14 +150,60 @@ ctl.!default {
        ("PULSE_CLIENTCONFIG" . ,(apply mixed-text-file "client.conf"
                                        (map pulseaudio-conf-entry client-conf)))))))
 
+(define (extra-script-files->file-union extra-script-files)
+  "Return a G-exp obtained by processing EXTRA-SCRIPT-FILES with FILE-UNION."
+
+  (define (file-like->name file)
+    (match file
+      ((? local-file?)
+       (local-file-name file))
+      ((? plain-file?)
+       (plain-file-name file))
+      ((? computed-file?)
+       (computed-file-name file))
+      (_ (leave (G_ "~a is not a local-file, plain-file or \
+computed-file object~%") file))))
+
+  (define (assert-pulseaudio-script-file-name name)
+    (unless (string-suffix? ".pa" name)
+      (leave (G_ "`~a' lacks the required `.pa' file name extension~%") name))
+    name)
+
+  (let ((labels (map (compose assert-pulseaudio-script-file-name
+                              file-like->name)
+                     extra-script-files)))
+    (file-union "default.pa.d" (zip labels extra-script-files))))
+
+(define (append-include-directive script-file)
+  "Append an include directive to source scripts under /etc/pulse/default.pa.d."
+  (computed-file "default.pa"
+                 #~(begin
+                     (use-modules (ice-9 textual-ports))
+                     (define script-text
+                       (call-with-input-file #$script-file get-string-all))
+                     (call-with-output-file #$output
+                       (lambda (port)
+                         (format port (string-append script-text "
+### Added by Guix to include scripts specified in extra-script-files.
+.nofail
+.include /etc/pulse/default.pa.d~%")))))))
+
 (define pulseaudio-etc
   (match-lambda
-    (($ <pulseaudio-configuration> _ _ default-script-file system-script-file)
+    (($ <pulseaudio-configuration> _ _ default-script-file extra-script-files
+                                   system-script-file)
      `(("pulse"
         ,(file-union
           "pulse"
-          `(("default.pa" ,default-script-file)
-            ("system.pa" ,system-script-file))))))))
+          `(("default.pa"
+             ,(if (null? extra-script-files)
+                  default-script-file
+                  (append-include-directive default-script-file)))
+            ("system.pa" ,system-script-file)
+            ,@(if (null? extra-script-files)
+                  '()
+                  `(("default.pa.d" ,(extra-script-files->file-union
+                                      extra-script-files)))))))))))
 
 (define pulseaudio-service-type
   (service-type
