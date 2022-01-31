@@ -2,6 +2,7 @@
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -115,16 +116,16 @@ ctl.!default {
 (define-record-type* <pulseaudio-configuration>
   pulseaudio-configuration make-pulseaudio-configuration
   pulseaudio-configuration?
-  (client-conf pulseaudio-client-conf
+  (client-conf pulseaudio-configuration-client-conf
                (default '()))
-  (daemon-conf pulseaudio-daemon-conf
+  (daemon-conf pulseaudio-configuration-daemon-conf
                ;; Flat volumes may cause unpleasant experiences to users
                ;; when applications inadvertently max out the system volume
                ;; (see e.g. <https://bugs.gnu.org/38172>).
                (default '((flat-volumes . no))))
-  (script-file pulseaudio-script-file
+  (script-file pulseaudio-configuration-script-file
                (default (file-append pulseaudio "/etc/pulse/default.pa")))
-  (system-script-file pulseaudio-system-script-file
+  (system-script-file pulseaudio-configuration-system-script-file
                       (default
                         (file-append pulseaudio "/etc/pulse/system.pa"))))
 
