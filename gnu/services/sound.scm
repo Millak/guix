@@ -144,11 +144,11 @@ ctl.!default {
 (define pulseaudio-environment
   (match-lambda
     (($ <pulseaudio-configuration> client-conf daemon-conf default-script-file)
-     `(("PULSE_CONFIG" . ,(apply mixed-text-file "daemon.conf"
-                                 "default-script-file = " default-script-file "\n"
-                                 (map pulseaudio-conf-entry daemon-conf)))
-       ("PULSE_CLIENTCONFIG" . ,(apply mixed-text-file "client.conf"
-                                       (map pulseaudio-conf-entry client-conf)))))))
+     ;; These config files kept at a fixed location, so that the following
+     ;; environment values are stable and do not require the user to reboot to
+     ;; effect their PulseAudio configuration changes.
+     '(("PULSE_CONFIG" . "/etc/pulse/daemon.conf")
+       ("PULSE_CLIENTCONFIG" . "/etc/pulse/client.conf")))))
 
 (define (extra-script-files->file-union extra-script-files)
   "Return a G-exp obtained by processing EXTRA-SCRIPT-FILES with FILE-UNION."
@@ -190,8 +190,8 @@ computed-file object~%") file))))
 
 (define pulseaudio-etc
   (match-lambda
-    (($ <pulseaudio-configuration> _ _ default-script-file extra-script-files
-                                   system-script-file)
+    (($ <pulseaudio-configuration> client-conf daemon-conf default-script-file
+                                   extra-script-files system-script-file)
      `(("pulse"
         ,(file-union
           "pulse"
@@ -203,7 +203,18 @@ computed-file object~%") file))))
             ,@(if (null? extra-script-files)
                   '()
                   `(("default.pa.d" ,(extra-script-files->file-union
-                                      extra-script-files)))))))))))
+                                      extra-script-files))))
+            ,@(if (null? daemon-conf)
+                  '()
+                  `(("daemon.conf"
+                     ,(apply mixed-text-file "daemon.conf"
+                             "default-script-file = " default-script-file "\n"
+                             (map pulseaudio-conf-entry daemon-conf)))))
+            ,@(if (null? client-conf)
+                  '()
+                  `(("client.conf"
+                     ,(apply mixed-text-file "client.conf"
+                             (map pulseaudio-conf-entry client-conf))))))))))))
 
 (define pulseaudio-service-type
   (service-type
