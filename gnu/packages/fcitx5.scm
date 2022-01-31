@@ -201,19 +201,23 @@ editors.")
        (list (string-append "-DGOBJECT_INTROSPECTION_GIRDIR="
                             %output "/share/gir-1.0")
              (string-append "-DGOBJECT_INTROSPECTION_TYPELIBDIR="
-                            %output "/lib/girepository-1.0")
-             ;; TODO: Enable it when Guix has GTK4.
-             "-DENABLE_GTK4_IM_MODULE=Off")
+                            %output "/lib/girepository-1.0"))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'patch-install-prefix
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
-                   (gtk2 (assoc-ref outputs "gtk2")))
+                   (gtk2 (assoc-ref outputs "gtk2"))
+                   (gtk4 (assoc-ref outputs "gtk4")))
                ;; Install GTK+ 2 input method module to its own output.
                (substitute* "gtk2/CMakeLists.txt"
                  (("\\$\\{CMAKE_INSTALL_LIBDIR\\}")
-                  (string-append gtk2 "/lib")))))))))
+                  (string-append gtk2 "/lib")))
+
+               ;; Install for GTK 4.
+               (substitute* "gtk4/CMakeLists.txt"
+                 (("\\$\\{CMAKE_INSTALL_LIBDIR\\}")
+                  (string-append gtk4 "/lib")))))))))
     (inputs
      `(("fcitx5" ,fcitx5)
        ("fmt" ,fmt)
@@ -221,6 +225,7 @@ editors.")
        ("gobject-introspection" ,gobject-introspection)
        ("gtk2" ,gtk+-2)
        ("gtk3" ,gtk+)
+       ("gtk4" ,gtk)
        ("glib" ,glib)
        ("libx11" ,libx11)
        ("gettext" ,gettext-minimal)))
@@ -228,7 +233,7 @@ editors.")
      (list extra-cmake-modules pkg-config
            `(,glib "bin")))           ;for glib-genmarshal
     ;; TODO: Add "lib" output to reduce the closure size of "gtk2".
-    (outputs '("out" "gtk2"))
+    (outputs '("out" "gtk2" "gtk4"))
     (home-page "https://github.com/fcitx/fcitx5-gtk")
     (synopsis "Glib based D-Bus client and GTK IM module for Fcitx 5")
     (description "Fcitx5-gtk provides a Glib based D-Bus client and IM module
