@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -4061,3 +4061,33 @@ data.")
 also compatible with SGI and TGS Open Inventor, and the API is based on the API
 of the InventorXt GUI component toolkit.")
     (license license:bsd-3))))
+
+(define-public libdbusmenu-qt
+  (package
+    (name "libdbusmenu-qt")
+    (version "0.9.3+16.04.20160218-0ubuntu1")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Download from github rather than launchpad because launchpad trunk
+       ;; tarball hash is not deterministic.
+       (uri (git-reference
+             (url "https://github.com/unity8-team/libdbusmenu-qt")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b7ii1cvmpcyl79gqal9c3va9m55h055s4hx7fpxkhhqs9463ggg"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; XXX: Tests require a dbus session and some icons.
+     '(#:tests? #f))
+    (native-inputs
+     (list doxygen))
+    (inputs
+     (list qtbase-5))
+    (home-page "https://launchpad.net/libdbusmenu-qt")
+    (synopsis "Qt implementation of the DBusMenu spec")
+    (description "This library provides a Qt implementation of the DBusMenu
+protocol.  The DBusMenu protocol makes it possible for applications to export
+and import their menus over DBus.")
+    (license license:lgpl2.1+)))
