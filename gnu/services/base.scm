@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hui Lu <luhuins@163.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1995,8 +1995,7 @@ item of @var{packages}."
             (find directory-exists?
                   (map (cut string-append directory <>) %standard-locations)))
 
-          (mkdir-p (string-append #$output "/lib/udev"))
-          (union-build (string-append #$output "/lib/udev/rules.d")
+          (union-build #$output
                        (filter-map rules-sub-directory '#$packages)))))
 
   (computed-file "udev-rules" build))
@@ -2046,115 +2045,114 @@ item of @var{packages}."
 (define udev-shepherd-service
   ;; Return a <shepherd-service> for UDEV with RULES.
   (match-lambda
+    (($ <udev-configuration> udev)
+     (list
+      (shepherd-service
+       (provision '(udev))
+
+       ;; Udev needs /dev to be a 'devtmpfs' mount so that new device nodes can
+       ;; be added: see
+       ;; <http://www.linuxfromscratch.org/lfs/view/development/chapter07/udev.html>.
+       (requirement '(root-file-system))
+
+       (documentation "Populate the /dev directory, dynamically.")
+       (start
+        (with-imported-modules (source-module-closure
+                                '((gnu build linux-boot)))
+          #~(lambda ()
+              (define udevd
+                ;; 'udevd' from eudev.
+                #$(file-append udev "/sbin/udevd"))
+
+              (define (wait-for-udevd)
+                ;; Wait until someone's listening on udevd's control
+                ;; socket.
+                (let ((sock (socket AF_UNIX SOCK_SEQPACKET 0)))
+                  (let try ()
+                    (catch 'system-error
+                      (lambda ()
+                        (connect sock PF_UNIX "/run/udev/control")
+                        (close-port sock))
+                      (lambda args
+                        (format #t "waiting for udevd...~%")
+                        (usleep 500000)
+                        (try))))))
+
+              ;; Allow udev to find the modules.
+              (setenv "LINUX_MODULE_DIRECTORY"
+                      "/run/booted-system/kernel/lib/modules")
+
+              (let* ((kernel-release
+                      (utsname:release (uname)))
+                     (linux-module-directory
+                      (getenv "LINUX_MODULE_DIRECTORY"))
+                     (directory
+                      (string-append linux-module-directory "/"
+                                     kernel-release))
+                     (old-umask (umask #o022)))
+                ;; If we're in a container, DIRECTORY might not exist,
+                ;; for instance because the host runs a different
+                ;; kernel.  In that case, skip it; we'll just miss a few
+                ;; nodes like /dev/fuse.
+                (when (file-exists? directory)
+                  (make-static-device-nodes directory))
+                (umask old-umask))
+
+              (let ((pid (fork+exec-command
+                          (list udevd)
+                          #:environment-variables
+                          (cons*
+                           ;; The first one is for udev, the second one for
+                           ;; eudev.
+                           "UDEV_CONFIG_FILE=/etc/udev/udev.conf"
+                           "EUDEV_RULES_DIRECTORY=/etc/udev/rules.d"
+                           (string-append "LINUX_MODULE_DIRECTORY="
+                                          (getenv "LINUX_MODULE_DIRECTORY"))
+                           (default-environment-variables)))))
+                ;; Wait until udevd is up and running.  This appears to
+                ;; be needed so that the events triggered below are
+                ;; actually handled.
+                (wait-for-udevd)
+
+                ;; Trigger device node creation.
+                (system* #$(file-append udev "/bin/udevadm")
+                         "trigger" "--action=add")
+
+                ;; Wait for things to settle down.
+                (system* #$(file-append udev "/bin/udevadm")
+                         "settle")
+                pid))))
+       (stop #~(make-kill-destructor))
+
+       ;; When halting the system, 'udev' is actually killed by
+       ;; 'user-processes', i.e., before its own 'stop' method was called.
+       ;; Thus, make sure it is not respawned.
+       (respawn? #f)
+       ;; We need additional modules.
+       (modules `((gnu build linux-boot)        ;'make-static-device-nodes'
+                  ,@%default-modules)))))))
+
+(define udev.conf
+  (computed-file "udev.conf"
+                 #~(call-with-output-file #$output
+                     (lambda (port)
+                       (format port "udev_rules=\"/etc/udev/rules.d\"~%")))))
+
+(define udev-etc
+  (match-lambda
     (($ <udev-configuration> udev rules)
-     (let* ((rules     (udev-rules-union (cons* udev kvm-udev-rule rules)))
-            (udev.conf (computed-file "udev.conf"
-                                      #~(call-with-output-file #$output
-                                          (lambda (port)
-                                            (format port
-                                                    "udev_rules=\"~a/lib/udev/rules.d\"\n"
-                                                    #$rules))))))
-       (list
-        (shepherd-service
-         (provision '(udev))
-
-         ;; Udev needs /dev to be a 'devtmpfs' mount so that new device nodes can
-         ;; be added: see
-         ;; <http://www.linuxfromscratch.org/lfs/view/development/chapter07/udev.html>.
-         (requirement '(root-file-system))
-
-         (documentation "Populate the /dev directory, dynamically.")
-         (start
-          (with-imported-modules (source-module-closure
-                                  '((gnu build linux-boot)))
-            #~(lambda ()
-                (define udevd
-                  ;; 'udevd' from eudev.
-                  #$(file-append udev "/sbin/udevd"))
-
-                (define (wait-for-udevd)
-                  ;; Wait until someone's listening on udevd's control
-                  ;; socket.
-                  (let ((sock (socket AF_UNIX SOCK_SEQPACKET 0)))
-                    (let try ()
-                      (catch 'system-error
-                        (lambda ()
-                          (connect sock PF_UNIX "/run/udev/control")
-                          (close-port sock))
-                        (lambda args
-                          (format #t "waiting for udevd...~%")
-                          (usleep 500000)
-                          (try))))))
-
-                ;; Allow udev to find the modules.
-                (setenv "LINUX_MODULE_DIRECTORY"
-                        "/run/booted-system/kernel/lib/modules")
-
-                (let* ((kernel-release
-                        (utsname:release (uname)))
-                       (linux-module-directory
-                        (getenv "LINUX_MODULE_DIRECTORY"))
-                       (directory
-                        (string-append linux-module-directory "/"
-                                       kernel-release))
-                       (old-umask (umask #o022)))
-                  ;; If we're in a container, DIRECTORY might not exist,
-                  ;; for instance because the host runs a different
-                  ;; kernel.  In that case, skip it; we'll just miss a few
-                  ;; nodes like /dev/fuse.
-                  (when (file-exists? directory)
-                    (make-static-device-nodes directory))
-                  (umask old-umask))
-
-                (let ((pid (fork+exec-command (list udevd)
-                            #:environment-variables
-                            (cons*
-                             ;; The first one is for udev, the second one for
-                             ;; eudev.
-                             (string-append "UDEV_CONFIG_FILE=" #$udev.conf)
-                             (string-append "EUDEV_RULES_DIRECTORY="
-                                            #$(file-append
-                                               rules "/lib/udev/rules.d"))
-                             (string-append "LINUX_MODULE_DIRECTORY="
-                                            (getenv "LINUX_MODULE_DIRECTORY"))
-                             (default-environment-variables)))))
-                  ;; Wait until udevd is up and running.  This appears to
-                  ;; be needed so that the events triggered below are
-                  ;; actually handled.
-                  (wait-for-udevd)
-
-                  ;; Trigger device node creation.
-                  (system* #$(file-append udev "/bin/udevadm")
-                           "trigger" "--action=add")
-
-                  ;; Wait for things to settle down.
-                  (system* #$(file-append udev "/bin/udevadm")
-                           "settle")
-                  pid))))
-         (stop #~(make-kill-destructor))
-
-         ;; When halting the system, 'udev' is actually killed by
-         ;; 'user-processes', i.e., before its own 'stop' method was called.
-         ;; Thus, make sure it is not respawned.
-         (respawn? #f)
-         ;; We need additional modules.
-         (modules `((gnu build linux-boot)        ;'make-static-device-nodes'
-                    ,@%default-modules))
-
-         (actions (list (shepherd-action
-                         (name 'rules)
-                         (documentation "Display the directory containing
-the udev rules in use.")
-                         (procedure #~(lambda (_)
-                                        (display #$rules)
-                                        (newline))))))))))))
+     `(("udev"
+        ,(file-union
+          "udev" `(("udev.conf" ,udev.conf)
+                   ("rules.d" ,(udev-rules-union (cons* udev kvm-udev-rule
+                                                        rules))))))))))
 
 (define udev-service-type
   (service-type (name 'udev)
                 (extensions
                  (list (service-extension shepherd-root-service-type
-                                          udev-shepherd-service)))
-
+                                          udev-shepherd-service)
+                       (service-extension etc-service-type udev-etc)))
                 (compose concatenate)           ;concatenate the list of rules
                 (extend (lambda (config rules)
                           (match config
