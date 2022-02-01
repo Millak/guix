@@ -606,30 +606,6 @@ data")
 functions for accessing calendar data using the kcalcore API.")
     (license  license:lgpl2.0+)))
 
-(define-public kdav
-  (package
-    (name "kdav")
-    (version "20.04.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/kdav-" version ".tar.xz"))
-       (sha256
-        (base32 "0445gl4xm0h39igkxgb6vmq5iaa04wkgrgbs7nfd0zwngk8xaidn"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list kcoreaddons ki18n kio qtbase-5 qtxmlpatterns))
-    (home-page "https://invent.kde.org/frameworks/kdav")
-    (synopsis "DAV protocol implementation with KJobs")
-    (description "This is a DAV protocol implementation with KJobs.  Calendars
-and todos are supported, using either GroupDAV or CalDAV, and contacts are
-supported using GroupDAV or CardDAV.")
-    (license ;; GPL for programs, LGPL for libraries
-     (list license:gpl2+ license:lgpl2.0+))))
-
 (define-public kdepim-apps-libs
   (package
     (name "kdepim-apps-libs")
