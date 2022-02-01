@@ -1354,7 +1354,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/julia-SOURCE_DATE_EPOCH-mtime.patch	\
   %D%/packages/patches/julia-tracker-16-compat.patch		\
   %D%/packages/patches/julia-allow-parallel-build.patch		\
-  %D%/packages/patches/kdbusaddons-kinit-file-name.patch	\
   %D%/packages/patches/libffi-3.3-powerpc-fixes.patch		\
   %D%/packages/patches/libffi-float128-powerpc64le.patch	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
@@ -1371,14 +1370,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/kiki-missing-includes.patch		\
   %D%/packages/patches/kiki-portability-64bit.patch		\
   %D%/packages/patches/kinit-kdeinit-extra_libs.patch		\
-  %D%/packages/patches/kinit-kdeinit-libpath.patch		\
   %D%/packages/patches/kio-search-smbd-on-PATH.patch		\
   %D%/packages/patches/kismet-unbundle-boost.patch		\
   %D%/packages/patches/kmail-Fix-missing-link-libraries.patch \
   %D%/packages/patches/kmod-module-directory.patch		\
   %D%/packages/patches/kmscon-runtime-keymap-switch.patch	\
-  %D%/packages/patches/kpackage-allow-external-paths.patch	\
-  %D%/packages/patches/kpackage-fix-KF5PackageMacros.cmake.patch \
   %D%/packages/patches/kmplayer-aarch64.patch			\
   %D%/packages/patches/kmplayer-upstream_Fix-build-with-Qt-5.9.patch	\
   %D%/packages/patches/kobodeluxe-paths.patch			\
@@ -1609,7 +1605,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/pciutils-hurd-configure.patch		\
   %D%/packages/patches/pciutils-hurd-fix.patch			\
   %D%/packages/patches/pjproject-install-libpjsua2.patch	\
-  %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
   %D%/packages/patches/pokerth-boost.patch			\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
