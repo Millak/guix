@@ -70,7 +70,7 @@
                 (("#!/bin/sh")
                  (string-append "#!" (search-input-file inputs "/bin/sh"))))
               (substitute* "bin/elixir"
-                (("^ERTS_BIN=$")
+                (("ERTS_BIN=\n")
                  (string-append
                   "ERTS_BIN="
                   ;; Elixir Releases will prepend to ERTS_BIN the path of
