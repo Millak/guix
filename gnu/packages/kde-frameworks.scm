@@ -716,7 +716,7 @@ infrastructure.")
            qtsvg-5))
     (native-inputs
      (list pkg-config extra-cmake-modules kdoctools))
-    (home-page "https://apps.kde.org/en/kgraphviewer")
+    (home-page "https://apps.kde.org/kgraphviewer/")
     (synopsis "Graphviz dot graph viewer for KDE")
     (description "KGraphViewer is a Graphviz DOT graph file viewer, aimed to
 replace the other outdated Graphviz tools.")
