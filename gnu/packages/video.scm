@@ -3221,18 +3221,34 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
         (base32 "17d4gs46ca3n0qg6z69hl6mmllnqj2id8ccrv8fyz8c5zm55ghqm"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ;requires "Kwalify"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'override-LDFLAGS
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append
-                      "-Wl,-rpath="
-                      (assoc-ref outputs "out") "/lib")))))))
+     (list
+      #:tests? #f                       ;requires "Kwalify"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'override-LDFLAGS
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib"))))
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (let* ((frei0r #$(this-package-input "frei0r-plugins"))
+                     (ladspa #$(this-package-input "ladspa"))
+                     ;; In MLT 7, 'melt' symlinks to 'melt-7'.  Try to keep
+                     ;; compatibility with MLT 6 where it's only 'melt'.
+                     (major #$(version-major version))
+                     (exec (if (file-exists?
+                                (string-append #$output "/bin/melt-" major))
+                               (string-append "melt-" major)
+                               "melt")))
+                (wrap-program (string-append #$output "/bin/" exec)
+                  `("FREI0R_PATH" ":" =
+                    (,(string-append frei0r "/lib/frei0r-1")))
+                  `("LADSPA_PATH" ":" =
+                    (,(string-append ladspa "/lib/ladspa"))))))))))
     (inputs
      (list alsa-lib
            `(,alsa-plugins "pulseaudio")
+           bash-minimal
            ffmpeg
            fftw
            frei0r-plugins
