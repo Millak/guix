@@ -235,7 +235,7 @@ common build settings used in software produced by the KDE community.")
     (arguments
      `(#:configure-flags
        '( "-DPHONON_BUILD_PHONON4QT5=ON")))
-    (home-page "https://phonon.kde.org")
+    (home-page "https://community.kde.org/Phonon")
     (synopsis "Phonon backend which uses GStreamer")
     (description "Phonon makes use of backend libraries to provide sound.
 Phonon-GStreamer is a backend based on the GStreamer multimedia library.")
