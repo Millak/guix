@@ -206,7 +206,7 @@ common build settings used in software produced by the KDE community.")
                (substitute* "cmake_install.cmake"
                  ((regex all dest)
                   (string-append dest (assoc-ref outputs "out"))))))))))
-    (home-page "https://phonon.kde.org")
+    (home-page "https://community.kde.org/Phonon")
     (synopsis "KDE's multimedia library")
     (description "KDE's multimedia library.")
     (license license:lgpl2.1+)))
