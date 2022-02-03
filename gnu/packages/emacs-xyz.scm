@@ -23835,6 +23835,29 @@ display a terminal in an Emacs buffer.")
 a vterm buffer and back again.")
       (license license:gpl3+))))
 
+(define-public emacs-multi-vterm
+  (let ((commit "a3df7218c1ecadef779e2c47815201052283f9ea")
+        (revision "1"))
+    (package
+      (name "emacs-multi-vterm")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/suonlight/multi-vterm")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0z6321994c4c8f5iya240pzvhirci9idlc110wjjwsm4pzdrrppj"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-vterm))
+      (home-page "https://github.com/suonlight/multi-vterm/")
+      (synopsis "Manage multiple vterm buffers in Emacs")
+      (description
+       "This package provides an Emacs library to manage vterm buffers.")
+      (license license:gpl3+))))
+
 (define-public emacs-simple-mpc
   ;; There have been no releases.
   (let ((commit "bee8520e81292b4c7353e45b193f9a13b482f5b2")
