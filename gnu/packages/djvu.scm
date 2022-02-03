@@ -159,7 +159,6 @@ a continuous layout.")
        ("exiv2" ,exiv2)
        ("graphicsmagick" ,graphicsmagick)
        ("poppler" ,poppler)
-       ("poppler-data" ,poppler-data)
        ("util-linux-lib" ,util-linux "lib"))) ; for libuuid
     (arguments
      `(#:test-target "test"
