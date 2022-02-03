@@ -242,6 +242,7 @@ please install the @code{flyer-composer-gui} package.")))
              ("libtiff" ,libtiff)
              ("lcms" ,lcms)
              ("openjpeg" ,openjpeg)
+             ("poppler-data", poppler-data)
              ("zlib" ,zlib)
 
              ;; To build poppler-glib (as needed by Evince), we need Cairo and
