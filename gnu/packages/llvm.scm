@@ -100,8 +100,10 @@ as \"x86_64-linux\"."
              ("i586"        => "X86"))))
 
 (define (llvm-uri component version)
+  ;; LLVM release candidate file names are formatted 'tool-A.B.C-rcN/tool-A.B.CrcN.src.tar.xz'
+  ;; so we specify the version as A.B.C-rcN and delete the hyphen when referencing the file name.
   (string-append "https://github.com/llvm/llvm-project/releases/download"
-                 "/llvmorg-" version "/" component "-" version ".src.tar.xz"))
+                 "/llvmorg-" version "/" component "-" (string-delete #\- version) ".src.tar.xz"))
 
 (define %llvm-release-monitoring-url
   "https://github.com/llvm/llvm-project/releases")
@@ -224,7 +226,7 @@ given PATCHES.  When TOOLS-EXTRA is given, it must point to the
                                 (invoke "tar" "xf" extra)
                                 (rename-file ,(string-append
                                                "clang-tools-extra-"
-                                               (package-version llvm)
+                                               (string-delete #\- (package-version llvm))
                                                ".src")
                                              "tools/extra")
                                 #t)))
