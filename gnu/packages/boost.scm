@@ -15,9 +15,8 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
-;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -68,15 +67,21 @@
 (define-public boost
   (package
     (name "boost")
-    (version "1.77.0")
+    (version "1.78.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://boostorg.jfrog.io/artifactory/main/release/"
                                   version "/source/boost_"
                                   (version-with-underscores version) ".tar.bz2"))
+              (patches
+               (list (boost-patch
+                      ;; 1.78.0 was released with a faulty installation routine:
+                      ;; <https://github.com/bfgroup/b2/pull/113>.
+                      "0001-b2-fix-install.patch" version
+                      "02ljm22a4gcaj10xng8ww8aifrrlzm1pgyp08c06fd75f9pbkrbi")))
               (sha256
                (base32
-                "0m08hhk3l7zvzajyk39qlw566q3fhixayhc2j11328qf0gy8b7zw"))))
+                "1k5w6l3xsa9vipwk14sjb1vhsj88xwz7jr964996rcmxsisz30c6"))))
     (build-system gnu-build-system)
     (inputs (list icu4c zlib))
     (native-inputs
