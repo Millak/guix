@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Sandeep Subramanian <sandeepsubramanian94@gmail.com>
 ;;; Copyright © 2018 Charlie Ritter <chewzeirta@posteo.net>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2018, 2020, 2021 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Laura Lazzati <laura.lazzati.15@gmail.com>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
@@ -796,6 +796,32 @@ axis} (SMA), and @dfn{ranged major axis} (RMA).")
     (description "This package provides extensions to @code{ggplot2},
 respecting the grammar of its graphics paradigm.")
     (license license:gpl2+)))
+
+(define-public r-ggside
+  (package
+    (name "r-ggside")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ggside" version))
+              (sha256
+               (base32
+                "1x505zizv7hf65pxp9j5v92c3bchhxh9dsrkk1m55kwqqnsl5nza"))))
+    (properties `((upstream-name . "ggside")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-glue r-gtable r-rlang r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=ggside")
+    (synopsis "Side grammar graphics that extends @code{ggplot2}")
+    (description
+     "The grammar of graphics as shown in @code{ggplot2} has provided an
+expressive API for users to build plots.  This package @{ggside} extends
+@code{ggplot2} by allowing users to add graphical information about one of the
+main panel's axis using a familiar @code{ggplot2} style API with tidy data.
+This package is particularly useful for visualizing metadata on a discrete
+axis, or summary graphics on a continuous axis such as a boxplot or a density
+distribution.")
+    (license license:expat)))
 
 (define-public r-gprofiler
   (package
