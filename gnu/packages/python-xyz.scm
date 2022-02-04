@@ -7427,26 +7427,22 @@ data, and scientific formats.")
 (define-public python-pycparser
   (package
     (name "python-pycparser")
-    (version "2.20")
+    (version "2.21")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "pycparser" version))
       (sha256
        (base32
-        "1w0m3xvlrzq4lkbvd1ngfm8mdw64r1yxy6n7djlw6qj5d0km6ird"))))
+        "01kjlyn5w2nn2saj8w1rhq7v26328pd91xwgqn32z1zp2bngsi76"))))
     (outputs '("out" "doc"))
     (build-system python-build-system)
-    (native-inputs
-     (list pkg-config))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
-             (with-directory-excursion "tests"
-               (invoke "python" "all_tests.py"))
-             #t))
+             (invoke "python" "-m" "unittest" "discover")))
          (add-after 'install 'install-doc
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((data (string-append (assoc-ref outputs "doc") "/share"))
@@ -7457,8 +7453,7 @@ data, and scientific formats.")
                            (copy-file (string-append "." file)
                                       (string-append doc file)))
                          '("/README.rst" "/CHANGES" "/LICENSE"))
-               (copy-recursively "examples" examples)
-               #t))))))
+               (copy-recursively "examples" examples)))))))
     (home-page "https://github.com/eliben/pycparser")
     (synopsis "C parser in Python")
     (description
