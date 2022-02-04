@@ -22,6 +22,7 @@
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1202,21 +1203,21 @@ misuse of libraries outside of the store.")
 (define-public lldb
   (package
     (name "lldb")
-    (version "12.0.1")
+    (version "13.0.1")
     (source (origin
               (method url-fetch)
               (uri (llvm-uri "lldb" version))
               (sha256
                (base32
-                "0g3pj1m3chafavpr35r9fynm85y2hdyla6klj0h28khxs2613i78"))))
+                "05nvcbgb4rx860r3jzsbpvcbzpd0i7nsm5qrpkyfhg5vrh5mj32a"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCMAKE_CXX_COMPILER=clang++")))
     (native-inputs
      (list pkg-config swig))
     (inputs
-     (list clang-12
-           llvm-12
+     (list clang-13
+           llvm-13
            ;; Optional (but recommended) inputs.
            ncurses
            libedit
