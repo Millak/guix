@@ -2,6 +2,7 @@
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,14 +41,14 @@
 (define-public ark
   (package
     (name "ark")
-    (version "20.04.1")
+    (version "21.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ark-" version ".tar.xz"))
               (sha256
                (base32
-                "0g5bfa1lc7mhrc2ngd4ldf33dpwr7gqrj95kp897pf632wwj23iw"))
+                "1p30bgnb3aw0f2jnaksz7jfqqcz45b2x3bjrri0w5w580204a5s8"))
               ;; The libarchive package in Guix does not support
               ;; xar; disable related tests.
               (patches (search-patches "ark-skip-xar-test.patch"))))
@@ -113,14 +114,14 @@ well as CD-ROM images.")
 (define-public kate
   (package
     (name "kate")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "0nrby307syrqlxrf9lwdzc9c15ifw47418qwszqwg345ma2pww7i"))))
+        (base32 "1pp0k00kvih0xkkv1q1gha4na2bwqc7dhyyrla7c2vvln8gi99dg"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -139,6 +140,7 @@ well as CD-ROM images.")
            kjobwidgets
            kparts
            ktexteditor
+           ksyntaxhighlighting
            kwallet
            plasma-framework
            kwindowsystem
@@ -178,14 +180,14 @@ Kate's features include:
 (define-public kmag
   (package
     (name "kmag")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kmag-" version ".tar.xz"))
       (sha256
-       (base32 "18lk8i2r90gvw8q5j179xgpniih92mwk06krk7w4jv98yinqf6m5"))))
+       (base32 "067x65gmip89rdgii2nwnxn7zi96cf7vfbhqzg0499pd2d69p3sl"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -208,14 +210,14 @@ artists to web-designers to people with low vision.")
 (define-public kmousetool
   (package
     (name "kmousetool")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmousetool-" version ".tar.xz"))
        (sha256
-        (base32 "01j6bx8zihns4ip8maj0gb3w3bhx1ha2ljhfmsm6lcyay531ay98"))))
+        (base32 "013qr1md3gbin7hcahnv14y9i2cg35r433s2w81fvgcakd38qvkj"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -246,14 +248,14 @@ whom pressing buttons hurts.")
 (define-public kmouth
   (package
     (name "kmouth")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmouth-" version ".tar.xz"))
        (sha256
-        (base32 "1afgxlys9mvmc3rd33g7gchfb0ylx83x3x0a0qf3dra6cpgsgcg7"))))
+        (base32 "0xvkp2pm2szbgzdsfmwrykma8npmlwmx2pb1iakbx3x1wyyjsbim"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -395,15 +397,14 @@ either be created or generated from a image.")
 (define-public okteta
   (package
     (name "okteta")
-    (version "17.12.3")
+    (version "0.26.7")
     (source
      (origin
        (method url-fetch)
-       ;; TODO: Why is this not in "stable" anymore
-       (uri (string-append "mirror://kde/Attic/applications/" version
+       (uri (string-append "mirror://kde/stable/okteta/" version
                            "/src/okteta-" version ".tar.xz"))
        (sha256
-        (base32 "03wsv83l1cay2dpcsksad124wzan7kh8zxdw1h0yicn398kdbck4"))))
+        (base32 "1qrhsnglvkiq480c0b6hgcpahab7l8wbfpcsgra5zkynj1bba8zi"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools-5 shared-mime-info))
@@ -426,6 +427,7 @@ either be created or generated from a image.")
            oxygen-icons ;; default icon set
            qca
            qtbase-5
+           qtdeclarative-5
            qtscript))
     (arguments
      `(#:phases
@@ -566,14 +568,14 @@ Features:
 (define-public sweeper
   (package
     (name "sweeper")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/sweeper-" version ".tar.xz"))
        (sha256
-        (base32 "1az3c2khnh51bbmqpamj4p26d3a0ff4l5rd3vcrylg94mk7wgh59"))))
+        (base32 "1l4ag2nhy0da9z4nlf7fmjrim7pmwpm3m4v4y50jlpdv73f63246"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
