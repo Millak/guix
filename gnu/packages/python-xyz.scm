@@ -13124,6 +13124,26 @@ automatically detect a wide range of file encodings.")
        (sha256
         (base32 "071pi2kd222rjjrjdllffqv3iz4bfaj93a9bfs65907fd6fqlfcq"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; This package provides a 'normalizer' executable that only
+               ;; depends on Python, so customize the wrap phase to avoid
+               ;; adding pytest and friends in order to save size.
+               ;; (See also <https://bugs.gnu.org/25235>.)
+               (replace 'wrap
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((sitedir (site-packages inputs outputs))
+                          (python (dirname (dirname
+                                            (search-input-file
+                                             inputs "bin/python"))))
+                          (python-sitedir
+                           (string-append python "/lib/python"
+                                          (python-version python)
+                                          "/site-packages")))
+                     (wrap-program (string-append #$output "/bin/normalizer")
+                       `("GUIX_PYTHONPATH" ":" suffix
+                         ,(list sitedir python-sitedir)))))))))
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/ousret/charset_normalizer")
