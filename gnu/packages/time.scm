@@ -353,14 +353,14 @@ ISO 8601 dates, time and duration.")
 (define-public python-iso8601
   (package
     (name "python-iso8601")
-    (version "0.1.13")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "iso8601" version))
        (sha256
         (base32
-         "1cgfj91khil4ii5gb8s6nxwm73vx7hqc2k79dd9d8990ylmc5ppp"))))
+         "1ccl6plks706hxm35cn1wsvxhqh3bfwi5cjgjpdxjib81qi07x97"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -368,16 +368,27 @@ ISO 8601 dates, time and duration.")
                     (lambda _
                       (invoke "pytest" "-vv" "iso8601"))))))
     (native-inputs
-     (list python-pytest))
-    (home-page "https://bitbucket.org/micktwomey/pyiso8601")
+     (list python-pytest python-pytz))
+    (home-page "https://github.com/micktwomey/pyiso8601")
     (synopsis "Module to parse ISO 8601 dates")
     (description
      "This module parses the most common forms of ISO 8601 date strings (e.g.
 @code{2007-01-14T20:34:22+00:00}) into @code{datetime} objects.")
+    (properties `((python2-variant . ,(delay python2-iso8601))))
     (license expat)))
 
 (define-public python2-iso8601
-  (package-with-python2 python-iso8601))
+  (let ((base (package-with-python2 (strip-python2-variant python-iso8601))))
+    (package
+      (inherit base)
+      (version "0.1.16")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (pypi-uri "iso8601" version))
+         (sha256
+          (base32
+           "0ny8dlycapxr8n2m13jxy0r7kbqvgypfshb6y7l981c0rivjylrn")))))))
 
 (define-public python-monotonic
   (package
