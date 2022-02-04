@@ -13082,7 +13082,27 @@ simulation, statistical modeling, machine learning and much more.")
      (list python-hypothesis python-pytest python-pytest-runner))
     (build-system python-build-system)
     ;; XXX: Incompatible with Pytest 4: <https://github.com/chardet/chardet/issues/173>.
-    (arguments `(#:tests? #f))
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This package provides a 'chardetect' executable that only
+               ;; depends on Python, so customize the wrap phase to avoid
+               ;; adding pytest and friends in order to save size.
+               ;; (See also <https://bugs.gnu.org/25235>.)
+               (replace 'wrap
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((sitedir (site-packages inputs outputs))
+                          (python (dirname (dirname
+                                            (search-input-file
+                                             inputs "bin/python"))))
+                          (python-sitedir
+                           (string-append python "/lib/python"
+                                          (python-version python)
+                                          "/site-packages")))
+                     (wrap-program (string-append #$output "/bin/chardetect")
+                       `("GUIX_PYTHONPATH" ":" suffix
+                         ,(list sitedir python-sitedir)))))))))
     (home-page "https://github.com/chardet/chardet")
     (synopsis "Universal encoding detector for Python 2 and 3")
     (description
