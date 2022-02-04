@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
@@ -39,14 +41,14 @@
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "0xr5s0s40i2bsfjfapvpa7dxh9s4604cxirg97xcaacd6fdvhpds"))))
+        (base32 "0m5nqa8j0mcsrx9wxfcf8z39kxas51k03lschr721vm4x65j64jq"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
@@ -69,6 +71,7 @@
            knotifications
            kparts
            ktextwidgets
+           kuserfeedback
            kwindowsystem
            oxygen-icons ;; default icon set
            phonon
@@ -95,14 +98,14 @@ The main features of Dolphin are:
 (define-public dolphin-plugins
   (package
     (name "dolphin-plugins")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-plugins-" version ".tar.xz"))
        (sha256
-        (base32 "12g44s6g7ma6avp15l45l42qyzbglswvahm2wji79zdls5vjnz7r"))))
+        (base32 "0rbz6fw98c71h10ry1xjc0pgzvphajmj18lnjm4hf7bbrizsmdb5"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -111,6 +114,7 @@ The main features of Dolphin are:
            ki18n
            kio
            ktexteditor
+           ksyntaxhighlighting
            kxmlgui
            oxygen-icons ;; default icon set
            qtbase-5))
@@ -123,14 +127,14 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
 (define-public khelpcenter
   (package
     (name "khelpcenter")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/khelpcenter-" version ".tar.xz"))
        (sha256
-        (base32 "0wxzjragvjcfc7c4qja8wzpshhaywficj7f7wkmppzybcsxwn9qb"))))
+        (base32 "1fj1c57bqs009rx9db4ifvfmhhl4b35r5sfly3wvbfr4dapjqfqr"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -172,14 +176,14 @@ document meta data file.")
 (define-public konsole
   (package
     (name "konsole")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konsole-" version ".tar.xz"))
        (sha256
-        (base32 "0ckr7bjkyaw0gr5kx569jfnhkhwmlk4lqk41ng61qwxlb4bsdbdm"))))
+        (base32 "06sqm2xmairicrdcxnf7imvyvw0wyknrrym334scx2w7mfhjg5qs"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -226,14 +230,14 @@ This package is part of the KDE base applications module.")
 (define-public krfb
   (package
     (name "krfb")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krfb-" version ".tar.xz"))
        (sha256
-        (base32 "092ijn88jpmgk2zwz37vzf35jisl234mc3krc9jl7bd955akx51k"))))
+        (base32 "1r8lvvh2z8xi0l3pizlpl12nm4fnbpgiwqmx18w8i51x4j27dv0n"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
@@ -247,6 +251,7 @@ This package is part of the KDE base applications module.")
            ki18n
            knotifications
            kwallet
+           kwayland
            kwidgetsaddons
            kwindowsystem
            kxmlgui
@@ -255,8 +260,11 @@ This package is part of the KDE base applications module.")
            libxtst
            oxygen-icons ;; default icon set
            pipewire-0.3
+           plasma-wayland-protocols
            qtbase-5
+           qtwayland
            qtx11extras
+           wayland
            xcb-util-image
            zlib))
     (home-page "https://kde.org/applications/internet/org.kde.krfb")
@@ -276,14 +284,14 @@ This package is part of the KDE networking module.")
 (define-public ksystemlog
   (package
     (name "ksystemlog")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksystemlog-" version ".tar.xz"))
        (sha256
-        (base32 "1826h89ynvlxdwzyqil2d79cvynglww6fax7qp41wxasgarxhsni"))))
+        (base32 "0jkd0rx0xlzwsxa3s40sp5x4r19a9rg1x9klpnjfw0b326vgf2m9"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -315,14 +323,14 @@ This package is part of the KDE administration module.")
 (define-public yakuake
   (package
     (name "yakuake")
-    (version "20.12.1")
+    (version "21.12.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/yakuake-" version ".tar.xz"))
               (sha256
                (base32
-                "02pal9xx1wbpw7dimvs2aw1xnyjqlvbjlybkkfhf8x7c6m1r63aa"))))
+                "10mkr8svkjf2s023mf21cil2c5v986s5b2yp1hm0fzdgmawpwrh9"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
