@@ -13070,22 +13070,23 @@ simulation, statistical modeling, machine learning and much more.")
 (define-public python-chardet
   (package
     (name "python-chardet")
-    (version "3.0.4")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "chardet" version))
        (sha256
         (base32
-         "1bpalpia6r5x1kknbk11p1fzph56fmmnp405ds8icksd3knr5aw4"))))
+         "1ykr04qyhgpc0h5b7dhqw4g92b1xv7ki2ky910mhy4mlbnhm6vqd"))))
     (native-inputs
-     (list python-hypothesis python-pytest python-pytest-runner))
+     (list python-pytest))
     (build-system python-build-system)
-    ;; XXX: Incompatible with Pytest 4: <https://github.com/chardet/chardet/issues/173>.
     (arguments
-     (list #:tests? #f
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda _
+                   (invoke "pytest" "-vv")))
                ;; This package provides a 'chardetect' executable that only
                ;; depends on Python, so customize the wrap phase to avoid
                ;; adding pytest and friends in order to save size.
