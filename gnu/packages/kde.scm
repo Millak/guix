@@ -1202,14 +1202,14 @@ or Bonjour by other projects).")
   ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
   (package
     (name "kuserfeedback")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/kuserfeedback/"
                            "/kuserfeedback-" version ".tar.xz"))
        (sha256
-        (base32 "1dwx9fscnfp3zsxdir774skn8xvad2dvscnaaw3ji6mrnkmm6bss"))))
+        (base32 "0r7jcc88n5b4rc0asjzh7m7g33i35k3z99l08qkrn92kn4ickakn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules

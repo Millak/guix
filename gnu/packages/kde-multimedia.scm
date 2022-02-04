@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,14 +56,14 @@
 (define-public audiocd-kio
   (package
     (name "audiocd-kio")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/audiocd-kio-" version ".tar.xz"))
        (sha256
-        (base32 "0qlnxxbayqhz25jbvzis27jw2zbw1pmacp8rv7v5wa7zfqn3kmyk"))))
+        (base32 "1alyn7w0v1by3fkb6xfnwj0hayjrrnmwnajnrnpvn8skbqsbzlgc"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -94,14 +95,14 @@ This package is part of the KDE multimedia module.")
 (define-public dragon
   (package
     (name "dragon")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dragon-" version ".tar.xz"))
        (sha256
-        (base32 "1sssg20a1vpwk816lp5jgwahilaswb9f3hgfqvc73il4g11ky1xj"))))
+        (base32 "09iwwlbv4jmxs92dz20z9fqg1sfnqih54izz8459ibl8vydfgfp1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -123,8 +124,20 @@ This package is part of the KDE multimedia module.")
            oxygen-icons ; default icon set
            phonon
            phonon-backend-gstreamer
+           gst-plugins-base
+           gst-plugins-good
            qtbase-5
            solid))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'qt-wrap 'gst-wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out             (assoc-ref outputs "out"))
+                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               (wrap-program (string-append out "/bin/dragon")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))
+               #t))))))
     (home-page "https://kde.org/applications/multimedia/org.kde.dragonplayer")
     (synopsis "Simple video player")
     (description "Dragon Player is a multimedia player where the focus is on
@@ -140,14 +153,14 @@ This package is part of the KDE multimedia module.")
 (define-public elisa
   (package
     (name "elisa")
-    (version "20.12.0")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/elisa-" version ".tar.xz"))
        (sha256
-        (base32 "02450lsnbd37fms1i2bb9qc9wir4vym6qqd9p5hr6a6s6qwfs6qf"))))
+        (base32 "0cg9v438fclqnv1rgx2k86mzfp5ggfcp7d5kr8xh4kjbmy17rzca"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config dbus kdoctools
@@ -163,6 +176,7 @@ This package is part of the KDE multimedia module.")
            kdeclarative
            kfilemetadata
            ki18n
+           kiconthemes
            kio
            kirigami
            kmediaplayer
@@ -183,7 +197,8 @@ This package is part of the KDE multimedia module.")
            ;; TODO: upnpqt https://gitlab.com/homeautomationqt/upnp-player-qt
            vlc))
     (arguments
-     `(#:phases
+     `(#:tests? #f ;; many tests fail
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'start-xorg-server
            (lambda* (#:key inputs #:allow-other-keys)
@@ -211,19 +226,19 @@ its own database.  You can build and play your own playlist.")
 (define-public ffmpegthumbs
   (package
     (name "ffmpegthumbs")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ffmpegthumbs-" version ".tar.xz"))
        (sha256
-        (base32 "17l50z33a1h5zkrrfkb261yi2hms66qj36l1mndq7mvs97y2ggmc"))))
+        (base32 "0x2gpx30azkz61p3xj1nm7hckyrmyh0qhs29ah30z6a5xw7336ws"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
-     (list ffmpeg kconfig ki18n kio qtbase-5))
+     (list ffmpeg kconfig ki18n kio taglib qtbase-5))
     (home-page "https://kde.org/applications/multimedia/org.kde.ffmpegthumbs")
     (synopsis "Video thumbnail generator for KDE using ffmpeg")
     (description "
@@ -237,14 +252,14 @@ This package is part of the KDE multimedia module.")
 (define-public juk
   (package
     (name "juk")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/juk-" version ".tar.xz"))
        (sha256
-        (base32 "06vsh7knyhcbcbf632jhldbqpzfkdyils2l8dbcdw5nj5hhgzzmr"))))
+        (base32 "1ipzx031996h83f9w3fzbx5vf5nnskq9kf71a6aypqckk65vcqcs"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -291,7 +306,7 @@ This package is part of the KDE multimedia module.")
 (define-public kid3
   (package
     (name "kid3")
-    (version "3.9.0")
+    (version "3.9.1")
     (source
      (origin
        (method git-fetch)
@@ -300,7 +315,7 @@ This package is part of the KDE multimedia module.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02r3cnwr05mcxjawzip3jl1lfijvzfbbafq3saipjjjp4kiq9bk4"))))
+        (base32 "1rq0742rm3y5ps7878qd7xhhiizy6d6ls6hdjqa6z5sq077s5lz9"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -349,14 +364,14 @@ variety of formats.")
 (define-public k3b
   (package
     (name "k3b")
-    (version "20.04.2")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/k3b-" version ".tar.xz"))
        (sha256
-        (base32 "15wm987hz6rfs9ds9l1gbs6gdsardj1ywvk6zmpvj2i2190y4b3q"))))
+        (base32 "0igqb6zw76j2hl9xclcwfny2831phdg9s2msa1y87zyc3c7g9nxc"))))
     (build-system qt-build-system)
     (arguments
      `(#:phases
@@ -503,14 +518,14 @@ autoloading of subtitle files for use while playing video.")
 (define-public kamoso
   (package
     (name "kamoso")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kamoso-" version ".tar.xz"))
        (sha256
-        (base32 "0c47j315kjfikd3b6x18786k3gqymicjjslpm0a58zdxl3wpqfay"))))
+        (base32 "1q98f6ni4p19pk0svbfw4mbfwnc9i5p9csms2aj76mp2dn78xpib"))))
     (build-system qt-build-system)
     (native-inputs
      `(("extra-cmake-modules" ,extra-cmake-modules)
@@ -535,11 +550,7 @@ autoloading of subtitle files for use while playing video.")
            qtquickcontrols2-5 ; not listed as dependency
            qtx11extras))
     (arguments
-     (list #:tests? #f ; test program gets built, but is not found
-           #:configure-flags
-           #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
-                                  #$(this-package-input "gst-plugins-base")
-                                  "/include/gstreamer-1.0"))))
+     (list #:tests? #f)) ; test program gets built, but is not found
     (home-page "https://kde.org/applications/multimedia/org.kde.kamoso")
     (synopsis "Take pictures and videos out of your webcam")
     (description "Kamoso is a simple and friendly program to use your
@@ -550,14 +561,14 @@ camera.  Use it to take pictures and make videos to share.")
 (define-public kmix
   (package
     (name "kmix")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kmix-" version ".tar.xz"))
       (sha256
-       (base32 "1na52ypp57wqrc6pl1khinx9i6fidv1k97nnxcy8zb4l7d5sh1nd"))))
+       (base32 "1zk2xljis1pv3m4vs5zr6wza6iv5y6wmh1csx3rn8ylfkrpk7h8k"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
@@ -610,7 +621,8 @@ This package is part of the KDE multimedia module.")
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
     (inputs
-     (list kconfig
+     (list kbookmarks
+           kconfig
            kcoreaddons
            kdelibs4support
            ki18n
@@ -660,14 +672,14 @@ Some features:
 (define-public kwave
   (package
     (name "kwave")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                           "/src/kwave-" version ".tar.xz"))
        (sha256
-        (base32 "0ysa873pc2gip95cxr8yv7ifd9qql5zg6h67i9n9q3iqa6v58iyw"))))
+        (base32 "07xbbii5gpllbpmkxfv5kwxawd390zp0angh94xjk0yq71lvdav2"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules (librsvg-for-system) pkg-config kdoctools))
@@ -734,14 +746,14 @@ Its features include:
 (define-public libkcddb
   (package
     (name "libkcddb")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcddb-" version ".tar.xz"))
        (sha256
-        (base32 "1fwryaj8ldmsqhl5qxjda8by9i7xlb97r8p9rqzckw697hkfhs0h"))))
+        (base32 "14f1mzsfm0vyqzsyja0p8ln1105sw5dr6fssj25j0qw4rnf9yw32"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -764,14 +776,14 @@ Its features include:
 (define-public libkcompactdisc
   (package
     (name "libkcompactdisc")
-    (version "20.04.1")
+    (version "21.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcompactdisc-" version ".tar.xz"))
        (sha256
-        (base32 "0iy4i0hxqsrnndd4iqkww7v1rqry7kvi5paxdw5qjfffwn8kcsbx"))))
+        (base32 "1vmaf3b41sj0sm4k9zdliy5ba4ps5z0cwabggfish152wzw34kgn"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
