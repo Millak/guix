@@ -141,6 +141,50 @@ cubic beziers.")
 library in Rust.")
     (license license:expat)))
 
+(define-public rust-abscissa-core-0.5
+  (package
+    (name "rust-abscissa-core")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "abscissa_core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0fmvaqzdz6qg7z42dlhvs3lf338xz0gdvdhp6xc042hjjdq6f1va"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-abscissa-derive" ,rust-abscissa-derive-0.5)
+        ("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-canonical-path" ,rust-canonical-path-2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-color-backtrace" ,rust-color-backtrace-0.3)
+        ("rust-generational-arena" ,rust-generational-arena-0.2)
+        ("rust-gumdrop" ,rust-gumdrop-0.7)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-secrecy" ,rust-secrecy-0.6)
+        ("rust-semver" ,rust-semver-0.9)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-signal-hook" ,rust-signal-hook-0.1)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-log" ,rust-tracing-log-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.1)
+        ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
+    (home-page "https://github.com/iqlusioninc/abscissa/")
+    (synopsis "Application microframework")
+    (description
+     "This package provides application microframework with support
+for command-line option parsing, configuration, error handling, logging,
+and terminal interactions.  This crate contains the framework's core
+functionality.")
+    (license license:asl2.0)))
+
 (define-public rust-abscissa-derive-0.5
   (package
     (name "rust-abscissa-derive")
