@@ -22454,6 +22454,27 @@ values to other threads.")
 duplication.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fs-err-2
+  (package
+    (name "rust-fs-err")
+    (version "2.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fs-err" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1q5z8d6q8310fgzg78bpmhyfigz7fkgp1bbmhcxq85k1ml23bgay"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/andrewhickman/fs-err")
+    (synopsis "Better error messages for @code{std::fs} crate")
+    (description
+     "This package provides a drop-in replacement for @code{std::fs} with more
+helpful error messages.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fs-extra-1
   (package
     (name "rust-fs-extra")
