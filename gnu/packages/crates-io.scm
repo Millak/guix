@@ -56431,6 +56431,30 @@ stack.")
 control on the fields.")
     (license license:expat)))
 
+(define-public rust-smartstring-0.2
+  (package
+    (name "rust-smartstring")
+    (version "0.2.9")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "smartstring" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16rc6n0p4r4aw6k6jxf2s37wyaijaa4pwpw7rqki7cn2q0qnmaii"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-0.4)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/bodil/smartstring")
+    (synopsis "Compact inlined strings")
+    (description "This package provides compact inlined strings.")
+    (license license:mpl2.0)))
+
 (define-public rust-smol-1
   (package
     (name "rust-smol")
