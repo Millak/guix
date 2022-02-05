@@ -9931,6 +9931,34 @@ metadata}.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-cargo-lock-7
+  (package
+    (name "rust-cargo-lock")
+    (version "7.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cargo-lock" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "122wirj0d44xi2i7sc6anjimqfvgw5p5ry840zikc82vpn44pc3z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-gumdrop" ,rust-gumdrop-0.8)
+        ("rust-petgraph" ,rust-petgraph-0.6)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://rustsec.org")
+    (synopsis "@file{Cargo.lock} parser with optional dependency graph analysis")
+    (description
+     "This package provides self-contained @file{Cargo.lock} parser with
+optional dependency graph analysis.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-cargo-platform-0.1
   (package
     (name "rust-cargo-platform")
