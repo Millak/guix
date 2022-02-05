@@ -748,6 +748,30 @@ an unprivileged user.")
     (description "This packate provides communication library for Nitrokey.")
     (license license:lgpl3+)))
 
+(define-public cppcodec
+  (package
+    (name "cppcodec")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tplgy/cppcodec")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z39f8w0zvra874az0f67ck1al9kbpaidpilggbl8jnfs05010ck"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags (list "-DBUILD_TESTING=on")))
+    (native-inputs (list pkg-config qttools))
+    (inputs (list catch-framework2))
+    (home-page "https://github.com/tplgy/cppcodec")
+    (synopsis "Header library to encode/decode base64, base64url, etc.")
+    (description "This package provides library to encode/decode base64,
+base64url, base32, base32hex and hex.")
+    (license license:expat)))
+
 (define-public nitrocli
   (package
     (name "nitrocli")
