@@ -71754,6 +71754,28 @@ a trait for tuples.")
       "This package provides a library to unify commandline arguments with config files and environment variables.  And make it easier for users to tell your program how to behave across the three main input sources")
     (license license:expat)))
 
+(define-public rust-cvss-1
+  (package
+    (name "rust-cvss")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cvss" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gxxzimyxwf6ka011n6cd296ax6qiwnx8n6mxzh2l55bpvd65642"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/RustSec/rustsec/tree/main/cvss")
+    (synopsis "Common Vulnerability Scoring System parser/serializer")
+    (description "This package provides Common Vulnerability
+Scoring System parser/serializer.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public svd2rust
   (package
     (name "svd2rust")
