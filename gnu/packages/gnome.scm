@@ -3508,18 +3508,9 @@ for dealing with different structured file formats.")
            `(,glib "bin")
            gobject-introspection
            pkg-config
-           python-wrapper
-           ruby
            vala))
     (inputs
-     (list bzip2
-           fontconfig
-           freetype
-           harfbuzz
-           libcroco
-           libgsf
-           libxml2
-           pango))
+     (list freetype harfbuzz libxml2 pango))
     (propagated-inputs
      (list cairo gdk-pixbuf glib))
     (synopsis "SVG rendering library")
@@ -3610,7 +3601,7 @@ diagrams.")
            `(,glib "bin") ; glib-mkenums, etc.
            gobject-introspection)) ; g-ir-compiler, etc.
     (inputs
-     (list pango libcroco bzip2 libgsf libxml2))
+     (list pango libcroco libxml2))
     (propagated-inputs
      ;; librsvg-2.0.pc refers to all of that.
      (list cairo gdk-pixbuf glib))
