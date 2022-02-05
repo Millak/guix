@@ -772,6 +772,36 @@ an unprivileged user.")
 base64url, base32, base32hex and hex.")
     (license license:expat)))
 
+(define-public nitrokey-app
+  (package
+    (name "nitrokey-app")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Nitrokey/nitrokey-app")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1imbvaf0yncz36ckjr99x94jwg2hnid49hsiqlxsv7ccxgk058bk"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ;no test suite
+    (native-inputs (list pkg-config qttools))
+    (inputs (list cppcodec
+                  hidapi
+                  libnitrokey
+                  libusb
+                  qtbase-5
+                  qtsvg))
+    (home-page "https://github.com/Nitrokey/nitrokey-app")
+    (synopsis "GUI tool for Nitrokey devices")
+    (description
+     "This package provides GUI tool that interfaces with Nitrokey Pro
+v0.7/v0.8 and Nitrokey Storage devices.")
+    (license license:gpl3+)))
+
 (define-public nitrocli
   (package
     (name "nitrocli")
