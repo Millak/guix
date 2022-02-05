@@ -23834,6 +23834,30 @@ archive to be linked into Rustcode.")
 API library @code{gdi32}.")
     (license license:expat)))
 
+(define-public rust-generational-arena-0.2
+  (package
+    (name "rust-generational-arena")
+    (version "0.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "generational-arena" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "00gn1g6nlky883qkacvsbp19yzl5ay8avq6f902jvxkl2mvkn7cf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/fitzgen/generational-arena")
+    (synopsis "Safe arena allocator that supports deletion")
+    (description
+     "This package provides a safe arena allocator that supports deletion without
+suffering from the ABA problem by using generational indices.")
+    (license license:mpl2.0)))
+
 (define-public rust-generator-0.6
   (package
     (name "rust-generator")
