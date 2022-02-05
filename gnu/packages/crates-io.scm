@@ -45174,6 +45174,27 @@ creating native Python extension modules.  Running and interacting with
 Python code from a Rust binary is also supported.")
     (license license:asl2.0)))
 
+(define-public rust-qstring-0.7
+  (package
+    (name "rust-qstring")
+    (version "0.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "qstring" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0khhcpwifis87r5chr4jiv3w1bkswcf226c0yjx809pzbzkglr6l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-percent-encoding" ,rust-percent-encoding-2))))
+    (home-page "https://github.com/algesten/qstring")
+    (synopsis "Query string parser")
+    (description "This package provides query string parser.")
+    (license license:expat)))
+
 (define-public rust-quantiles-0.7
   (package
     (name "rust-quantiles")
