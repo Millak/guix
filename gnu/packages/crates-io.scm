@@ -25640,6 +25640,25 @@ support.")
     (description "This package provides custom derive support for gumdrop.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gumdrop-derive-0.7
+  (package
+    (inherit rust-gumdrop-derive-0.8)
+    (name "rust-gumdrop-derive")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "gumdrop_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1mrm1h4n13b3n79d1215jq9q9d6sgcvfzdb8i5mcmds0vvj4qich"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-gzip-header-0.3
   (package
     (name "rust-gzip-header")
