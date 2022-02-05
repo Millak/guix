@@ -25617,6 +25617,26 @@ provides standard printing of search results, similar to grep itself.")
 support.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gumdrop-0.7
+  (package
+    (inherit rust-gumdrop-0.8)
+    (name "rust-gumdrop")
+    (version "0.7.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "gumdrop" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1pmw21ggwqqizh66zp7bylbffi6qs064w2rfj3rc3smyq65r0l7f"))))
+    (arguments
+      `(#:skip-build?
+        #t
+        #:cargo-inputs
+        (("rust-gumdrop-derive" ,rust-gumdrop-derive-0.7))
+        #:cargo-development-inputs
+        (("rust-assert-matches" ,rust-assert-matches-1))))))
+
 (define-public rust-gumdrop-derive-0.8
   (package
     (name "rust-gumdrop-derive")
