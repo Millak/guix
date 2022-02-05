@@ -27219,6 +27219,29 @@ HTTP request or response body.")
         (base32 "0izbd3sf0625wm4rrfv85xa4xa8j4n1ldxhwlkgff4cm6rh4sjs9"))))
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-humantime-serde-1
+  (package
+    (name "rust-humantime-serde")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "humantime-serde" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0n208zzy69f7pgwcm1d0id4nzhssxn3z3zy7ki3dpkaazmnaad5c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-humantime" ,rust-humantime-2)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/jean-airoldie/humantime-serde")
+    (synopsis "Humantime serialization timestamp format")
+    (description
+     "This package provides a Humantime serialization timestamp format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-humansize-1
   (package
     (name "rust-humansize")
