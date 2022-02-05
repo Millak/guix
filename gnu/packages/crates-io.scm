@@ -25518,6 +25518,30 @@ provides standard printing of search results, similar to grep itself.")
      "This package aggregates groups of values from key-value iterators.")
     (license license:expat)))
 
+(define-public rust-gumdrop-0.8
+  (package
+    (name "rust-gumdrop")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "gumdrop" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02waas37nr8y669lnm1ifp6bkx79v3bd0bd4s9qcyy04aifiyms6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-gumdrop-derive" ,rust-gumdrop-derive-0.8))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1))))
+    (home-page "https://github.com/murarth/gumdrop")
+    (synopsis "Option parser with custom derive support")
+    (description "This package provides option parser with custom derive
+support.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gumdrop-derive-0.8
   (package
     (name "rust-gumdrop-derive")
