@@ -9446,6 +9446,27 @@ spreadsheet file.")
     (description "This package provides a UTF-8 paths.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-canonical-path-2
+  (package
+    (name "rust-canonical-path")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "canonical-path" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vvsjda6ka5nz8zvx6r08zqi0j59sjccgcbjxj96xj764w9y1sg6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/iqlusioninc/crates/")
+    (synopsis "Path and PathBuf-like types for canonical filesystem paths")
+    (description
+     "This package provides Path and PathBuf-like types for representing
+canonical filesystem paths.")
+    (license license:asl2.0)))
+
 (define-public rust-capnp-0.13
   (package
     (name "rust-capnp")
