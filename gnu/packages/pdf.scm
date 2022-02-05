@@ -235,19 +235,18 @@ please install the @code{flyer-composer-gui} package.")))
    (build-system cmake-build-system)
    ;; FIXME:
    ;;  use libcurl:        no
-   (inputs `(("fontconfig" ,fontconfig)
-             ("freetype" ,freetype)
-             ("libjpeg" ,libjpeg-turbo)
-             ("libpng" ,libpng)
-             ("libtiff" ,libtiff)
-             ("lcms" ,lcms)
-             ("openjpeg" ,openjpeg)
-             ("poppler-data", poppler-data)
-             ("zlib" ,zlib)
-
-             ;; To build poppler-glib (as needed by Evince), we need Cairo and
-             ;; GLib.  But of course, that Cairo must not depend on Poppler.
-             ("cairo" ,cairo-sans-poppler)))
+   (inputs (list fontconfig
+                 freetype
+                 libjpeg-turbo
+                 libpng
+                 libtiff
+                 lcms
+                 openjpeg
+                 poppler-data
+                 zlib
+                 ;; To build poppler-glib (as needed by Evince), we need Cairo and
+                 ;; GLib.  But of course, that Cairo must not depend on Poppler.
+                 cairo-sans-poppler))
    (propagated-inputs
     ;; As per poppler-cairo and poppler-glib.pc.
     ;; XXX: Ideally we'd propagate Cairo too, but that would require a
