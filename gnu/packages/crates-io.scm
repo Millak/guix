@@ -67232,18 +67232,16 @@ type-safe zero-cost dimensional analysis.")
   (package
     (name "rust-ureq")
     (version "2.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ureq" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1m8nzx683iph4zfpfg2xmkkbwmgf1i403lnbhxqk4gbsj8pzm6ck"))))
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ureq" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m8nzx683iph4zfpfg2xmkkbwmgf1i403lnbhxqk4gbsj8pzm6ck"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f                      ;tests fail
+     `(#:tests? #f ;tests fail
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.13)
         ("rust-brotli-decompressor" ,rust-brotli-decompressor-2)
@@ -67272,6 +67270,39 @@ type-safe zero-cost dimensional analysis.")
     (synopsis "Simple, safe HTTP client")
     (description "This package provides minimal request library in Rust.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-ureq-1
+  (package
+    (inherit rust-ureq-2)
+    (name "rust-ureq")
+    (version "1.5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ureq" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0wdakplwjjya6m95z42pci8m63ddx913rd92kzh8l8ar5ly0d2rb"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-chunked-transfer" ,rust-chunked-transfer-1)
+        ("rust-cookie" ,rust-cookie-0.14)
+        ("rust-cookie-store" ,rust-cookie-store-0.12)
+        ("rust-encoding" ,rust-encoding-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-qstring" ,rust-qstring-0.7)
+        ("rust-rustls" ,rust-rustls-0.19)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.5)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-socks" ,rust-socks-0.3)
+        ("rust-url" ,rust-url-2)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.21))))))
 
 (define-public rust-url-2
   (package
