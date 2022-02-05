@@ -67843,6 +67843,30 @@ write operations.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-vec1-1
+  (package
+    (name "rust-vec1")
+    (version "1.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "vec1" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cv1b88k9fac0wlg3yzbkrwdxvyb8w9f14big5q9a3sgfwf67haz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1))))
+    (home-page "https://github.com/rustonaut/vec1/")
+    (synopsis "Vec wrapper assuring that it has at least 1 element")
+    (description
+     "This package provides wrapper for a std::Vec assuring that it
+has at least 1 element.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-vecmath-1
   (package
     (name "rust-vecmath")
