@@ -141,6 +141,35 @@ cubic beziers.")
 library in Rust.")
     (license license:expat)))
 
+(define-public rust-abscissa-derive-0.5
+  (package
+    (name "rust-abscissa-derive")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "abscissa_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1k7cxjxgkvi91968xkrjcqpq98kabfh7qhnqh6fwnqw7qhmp5xbl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-darling" ,rust-darling-0.10)
+        ("rust-ident-case" ,rust-ident-case-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-synstructure" ,rust-synstructure-0.12))))
+    (home-page "https://github.com/iqlusioninc/abscissa")
+    (synopsis
+     "Custom derive support for the abscissa application microframework")
+    (description
+     "This package provides custom derive support for the abscissa application
+microframework.")
+    (license license:asl2.0)))
+
 (define-public rust-actix-0.10
   (package
     (name "rust-actix")
