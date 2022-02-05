@@ -221,6 +221,21 @@ times.  If you have a second page, Flyer Composer can arrange it the same way
 This package contains only the command line tool.  If you like to use the gui,
 please install the @code{flyer-composer-gui} package.")))
 
+(define poppler-tests
+  (let ((poppler-version "22.01.0") ; bump when bumping poppler version
+        (revision "0")
+        (commit "0762e0144143e680e24ec8d4c34c46c3716b8713"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://gitlab.freedesktop.org/poppler/test.git")
+            (commit commit)))
+      (file-name (git-file-name "poppler-tests"
+                                (git-version poppler-version revision commit)))
+      (sha256
+       (base32
+        "1nwgwcddj5fiq200p4f07fl0i5f885c1nfzmvpc6q9p55qxp6brv")))))
+
 (define-public poppler
   (package
    (name "poppler")
@@ -258,13 +273,13 @@ please install the @code{flyer-composer-gui} package.")))
             gobject-introspection))
    (arguments
     (list
-     #:tests? #f                      ;no test data provided with the tarball
      #:configure-flags
      #~(list "-DENABLE_UNSTABLE_API_ABI_HEADERS=ON" ;to install header files
              "-DENABLE_ZLIB=ON"
              "-DENABLE_BOOST=OFF"      ;disable Boost to save size
              (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
-             (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib"))
+             (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib")
+             (string-append "-DTESTDATADIR=" #+poppler-tests))
      #:phases
      (if (%current-target-system) #~%standard-phases
          #~(modify-phases %standard-phases
