@@ -58625,6 +58625,33 @@ easier in Rust.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-subprocess-0.2
+  (package
+    (name "rust-subprocess")
+    (version "0.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "subprocess" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01x41adcnyy55axdrzbr3y1qfbb55xjzczm1lpqdh6lqqbmz6p05"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-tempdir" ,rust-tempdir-0.3))))
+    (home-page "https://github.com/hniksic/rust-subprocess")
+    (synopsis "Execution of child processes and pipelines")
+    (description
+     "This package provides execution of child processes and pipelines,
+inspired by Python's subprocess module, with Rust-specific extensions.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-subtle-2
   (package
     (name "rust-subtle")
