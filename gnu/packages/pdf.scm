@@ -257,22 +257,20 @@ please install the @code{flyer-composer-gui} package.")))
             `(,glib "bin") ; glib-mkenums, etc.
             gobject-introspection))
    (arguments
-    `(#:tests? #f                      ;no test data provided with the tarball
-      #:configure-flags
-      (let* ((out (assoc-ref %outputs "out"))
-             (lib (string-append out "/lib")))
-        (list "-DENABLE_UNSTABLE_API_ABI_HEADERS=ON" ;to install header files
-              "-DENABLE_ZLIB=ON"
-              "-DENABLE_BOOST=OFF"      ;disable Boost to save size
-              (string-append "-DCMAKE_INSTALL_LIBDIR=" lib)
-              (string-append "-DCMAKE_INSTALL_RPATH=" lib)))
-      ,@(if (%current-target-system)
-            `(#:phases
-              (modify-phases %standard-phases
-                (add-after 'unpack 'set-PKG_CONFIG
-                  (lambda _
-                    (setenv "PKG_CONFIG" ,(pkg-config-for-target))))))
-            '())))
+    (list
+     #:tests? #f                      ;no test data provided with the tarball
+     #:configure-flags
+     #~(list "-DENABLE_UNSTABLE_API_ABI_HEADERS=ON" ;to install header files
+             "-DENABLE_ZLIB=ON"
+             "-DENABLE_BOOST=OFF"      ;disable Boost to save size
+             (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
+             (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib"))
+     #:phases
+     (if (%current-target-system) #~%standard-phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'set-PKG_CONFIG
+               (lambda _
+                 (setenv "PKG_CONFIG" #$(pkg-config-for-target))))))))
    (synopsis "PDF rendering library")
    (description
     "Poppler is a PDF rendering library based on the xpdf-3.0 code base.")
