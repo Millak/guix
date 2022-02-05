@@ -49474,6 +49474,43 @@ please consider using @code{async-std} or @code{tokio}.")
     (inputs
      (list sqlite))))
 
+(define-public rust-rustsec-0.25
+  (package
+    (name "rust-rustsec")
+    (version "0.25.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustsec" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11q89r3a8snqmfywml8n96lxgs086k68xbhjgaikrkdbzdv6j4yn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cargo-edit" ,rust-cargo-edit-0.8)
+        ("rust-cargo-lock" ,rust-cargo-lock-7)
+        ("rust-crates-index" ,rust-crates-index-0.17)
+        ("rust-cvss" ,rust-cvss-1)
+        ("rust-fs-err" ,rust-fs-err-2)
+        ("rust-git2" ,rust-git2-0.13)
+        ("rust-home" ,rust-home-0.5)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-humantime-serde" ,rust-humantime-serde-1)
+        ("rust-platforms" ,rust-platforms-2)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://rustsec.org")
+    (synopsis "Client library for the RustSec security advisory database")
+    (description
+     "This package provides client library for the RustSec security
+advisory database.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rust-argon2-0.8
   (package
     (name "rust-rust-argon2")
