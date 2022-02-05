@@ -20064,6 +20064,29 @@ is configured via an environment variable.")
        (("rust-regex" ,rust-regex-0.1)
         ("rust-log" ,rust-log-0.3))))))
 
+(define-public rust-env-proxy-0.4
+  (package
+    (name "rust-env-proxy")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "env_proxy" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qabqhgybx1jzh6dmpx7kssciw312i8aa6al7fj0d12k32z1jl1s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-log" ,rust-log-0.4) ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/inejge/env_proxy")
+    (synopsis "Proxy URL from the environment variables")
+    (description
+     "This package provides a way to determinate proxy parameters for a URL
+from the environment.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-environment-0.1
   (package
     (name "rust-environment")
