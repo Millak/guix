@@ -20168,7 +20168,7 @@ deserialized from environment variables.")
 (define-public rust-error-chain-0.12
   (package
     (name "rust-error-chain")
-    (version "0.12.2")
+    (version "0.12.4")
     (source
      (origin
        (method url-fetch)
@@ -20177,7 +20177,7 @@ deserialized from environment variables.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1ka5y0fmymxzx3gz2yrd7rpz2i555m1iw4fpmcggpzcgr1n10wfk"))))
+         "1z6y5isg0il93jp287sv7pn10i4wrkik2cpyk376wl61rawhcbrd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
