@@ -3991,14 +3991,14 @@ assertions on the result of your program's run.")
 (define-public rust-assert-fs-1
   (package
     (name "rust-assert-fs")
-    (version "1.0.3")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert-fs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rcllf1d1l121fnsxy84bbqkg1sym5gs4mp0aw1nyv3f0sinmjmh"))))
+        (base32 "01qhcr9faq13p10kmi6j6k520dk20c8vxly8cqwkisdxx6fk8yvx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
