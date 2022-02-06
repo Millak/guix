@@ -343,6 +343,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kawa.scm				\
   %D%/packages/kde.scm				\
   %D%/packages/kde-frameworks.scm		\
+  %D%/packages/kde-games.scm			\
   %D%/packages/kde-internet.scm			\
   %D%/packages/kde-multimedia.scm		\
   %D%/packages/kde-pim.scm			\
