@@ -15742,22 +15742,39 @@ Linux swap partition by running @command{swaplabel @var{device}}, where
 @lisp
 (swap-space
   (target (file-system-label "swap"))
-  (dependencies (list lvm-device)))
+  (dependencies mapped-devices))
 @end lisp
 
-Use the partition with label @code{swap}, which can be found after the
-@var{lvm-device} mapped device has been opened.  Again, the
+Use the partition with label @code{swap}, which can be found after all
+the @var{mapped-devices} mapped devices have been opened.  Again, the
 @command{swaplabel} command allows you to view and change the label of a
 Linux swap partition.
 
+Here's a more involved example with the corresponding @code{file-systems} part
+of an @code{operating-system} declaration.
+
 @lisp
-(swap-space
-  (target "/btrfs/swapfile")
-  (dependencies (list btrfs-fs)))
+(file-systems
+  (list (file-system
+          (device (file-system-label "root"))
+          (mount-point "/")
+          (type "ext4"))
+        (file-system
+          (device (file-system-label "btrfs"))
+          (mount-point "/btrfs")
+          (type "btrfs"))))
+
+(swap-devices
+  (list
+    (swap-space
+      (target "/btrfs/swapfile")
+      (dependencies (filter (file-system-mount-point-predicate "/btrfs")
+                            file-systems)))))
 @end lisp
 
-Use the file @file{/btrfs/swapfile} as swap space, which is present on the
-@var{btrfs-fs} filesystem.
+Use the file @file{/btrfs/swapfile} as swap space, which depends on the
+file system mounted at @file{/btrfs}.  Note how we use Guile's filter to
+select the file system in an elegant fashion!
 
 @node User Accounts
 @section User Accounts
