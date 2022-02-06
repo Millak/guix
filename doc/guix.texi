@@ -41474,6 +41474,8 @@ one or multiple partitions.
 
 @item @code{iso9660}, an ISO-9660 image.
 
+@item @code{tarball}, a tar.gz image archive.
+
 @end itemize
 
 @item @code{platform} (default: @code{#false})
