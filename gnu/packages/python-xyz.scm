@@ -29274,3 +29274,24 @@ writing STL files.  It supports both the text and binary forms of STL.")
     (description
      "This package provides a streaming multipart parser for Python.")
     (license license:asl2.0)))
+
+(define-public python-aiopg
+  (package
+    (name "python-aiopg")
+    (version "1.3.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "aiopg" version))
+              (sha256
+               (base32
+                "1mwmypsfzh8adjbyvf7kqv9h3k1kf5ykhi1g3ahw4wqdxaj6nz2l"))))
+    (build-system python-build-system)
+    (native-inputs (list python-sqlalchemy))
+    (propagated-inputs (list python-async-timeout python-psycopg2-binary))
+    (home-page "https://aiopg.readthedocs.io")
+    (synopsis "Postgres integration with asyncio")
+    (description
+     "aiopg is a library for accessing a PostgreSQL
+database from the asyncio (PEP-3156/tulip) framework.  It wraps
+asynchronous features of the Psycopg database driver.")
+    (license license:bsd-3)))
