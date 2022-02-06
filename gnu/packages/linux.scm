@@ -1596,7 +1596,8 @@ which need to be installed separately.")
        (sha256
         (base32
          "1z4jayf69qyyxln1gl6ch4qxfd66ib1g42garnrv2d8i1drl0790"))
-       (patches (search-patches "linux-pam-no-setfsuid.patch"))))
+       (patches (search-patches "linux-pam-unix_chkpwd.patch"
+                                "linux-pam-no-setfsuid.patch"))))
 
     (build-system gnu-build-system)
     (native-inputs

@@ -21,6 +21,7 @@
   #:use-module (guix derivations)
   #:use-module (guix gexp)
   #:use-module (gnu services)
+  #:use-module (gnu system setuid)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -375,8 +376,13 @@ strings or string-valued gexps."
 
 (define pam-root-service-type
   (service-type (name 'pam)
-                (extensions (list (service-extension etc-service-type
-                                                     /etc-entry)))
+                (extensions
+                 (list (service-extension
+                        setuid-program-service-type
+                        (lambda (_)
+                          (list (file-like->setuid-program
+                                 (file-append linux-pam "/sbin/unix_chkpwd")))))
+                       (service-extension etc-service-type /etc-entry)))
 
                 ;; Arguments include <pam-service> as well as procedures.
                 (compose concatenate)
