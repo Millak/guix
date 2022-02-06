@@ -29106,6 +29106,42 @@ multipurpose analysis in Python.")
 static types.")
     (license license:asl2.0)))
 
+(define-public python-psycopg2-binary
+  (package
+    (name "python-psycopg2-binary")
+    (version "2.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "psycopg2-binary" version))
+              (sha256
+               (base32
+                "0kpaxg3lg5wg5ww5kxmzi2z2d7arsx13ci915d8a2pf17lqza7bn"))))
+    (build-system python-build-system)
+    (inputs (list postgresql))
+    (arguments
+     ;; Tests are disable because they need a live instance of PostgreSQL.
+     '(#:tests? #f))
+    (home-page "https://psycopg.org/")
+    (synopsis "PostgreSQL database adapter for Python")
+    (description
+     "Psycopg is a PostgreSQL database adapter for the Python programming
+language.  Its main features are the complete implementation of the Python DB
+API 2.0 specification and the thread safety (several threads can share the
+same connection).  It was designed for heavily multi-threaded applications
+that create and destroy lots of cursors and make a large number of concurrent
+@code{INSERT}s or @code{UPDATE}s.
+
+Psycopg 2 is mostly implemented in C as a libpq wrapper, resulting in
+being both efficient and secure.  It features client-side and
+server-side cursors, asynchronous communication and notifications,
+@code{COPY TO}/@code{COPY FROM} support.  Many Python types are supported
+out-of-the-box and adapted to matching PostgreSQL data types;
+adaptation can be extended and customized thanks to a flexible objects
+adaptation system.
+
+Psycopg 2 is both Unicode and Python 3 friendly.")
+    (license license:lgpl3+)))
+
 (define-public python-pyfuse3
   (package
     (name "python-pyfuse3")
