@@ -29015,3 +29015,22 @@ static types.")
     (description "This package provides Python 3 bindings for libfuse 3 with
 async I/O support.")
     (license license:gpl2+)))
+
+(define-public python-types-ujson
+  (package
+    (name "python-types-ujson")
+    (version "4.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-ujson" version))
+              (sha256
+               (base32
+                "0k9n9hsq4k2zaakdwbkcsvi7m8d3mv2y9yl6f171y58ld4qpcxcy"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for ujson")
+    (description
+     "This is a PEP 561 type stub package for the ujson package.  It can be
+used by type-checking tools like mypy, PyCharm, pytype etc. to check code that
+uses ujson.")
+    (license license:asl2.0)))
