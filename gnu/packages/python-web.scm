@@ -1273,13 +1273,13 @@ and written in Python.")
 (define-public python-html5-parser
   (package
     (name "python-html5-parser")
-    (version "0.4.9")
+    (version "0.4.10")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "html5-parser" version))
               (sha256
                (base32
-                "13yl3vnf3sxl05m0nhpngnrz3g1jvyahd33lys3m3hfb91l8zzi5"))))
+                "195wgxls3df7djry9cz3p2k9644l6bfd66fczbaw55fsq0c48agr"))))
     (build-system python-build-system)
     (native-inputs
      (list pkg-config))
