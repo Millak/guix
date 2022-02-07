@@ -1925,8 +1925,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/vte-CVE-2012-2738-pt2.patch			\
   %D%/packages/patches/vtk-fix-freetypetools-build-failure.patch	\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
-  %D%/packages/patches/webkitgtk-share-store.patch		\
   %D%/packages/patches/webkitgtk-bind-all-fonts.patch		\
+  %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
+  %D%/packages/patches/webkitgtk-canonicalize-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\
   %D%/packages/patches/websocketpp-fix-for-cmake-3.15.patch	\
   %D%/packages/patches/wicd-bitrate-none-fix.patch		\

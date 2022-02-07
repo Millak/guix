@@ -1,0 +1,38 @@
+Share /gnu/store in the BubbleWrap container and remove FHS mounts.
+
+This is a Guix-specific patch not meant to be upstreamed.
+diff --git a/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp b/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp
+index f0a5e4b05dff..88b11f806968 100644
+--- a/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp
++++ b/Source/WebKit/UIProcess/Launcher/glib/BubblewrapLauncher.cpp
+@@ -854,27 +854,12 @@ GRefPtr<GSubprocess> bubblewrapSpawn(GSubprocessLauncher* launcher, const Proces
+         "--ro-bind", "/sys/dev", "/sys/dev",
+         "--ro-bind", "/sys/devices", "/sys/devices",
+ 
+-        "--ro-bind-try", "/usr/share", "/usr/share",
+-        "--ro-bind-try", "/usr/local/share", "/usr/local/share",
+         "--ro-bind-try", DATADIR, DATADIR,
+-
+-        // We only grant access to the libdirs webkit is built with and
+-        // guess system libdirs. This will always have some edge cases.
+-        "--ro-bind-try", "/lib", "/lib",
+-        "--ro-bind-try", "/usr/lib", "/usr/lib",
+-        "--ro-bind-try", "/usr/local/lib", "/usr/local/lib",
+         "--ro-bind-try", LIBDIR, LIBDIR,
+-#if CPU(ADDRESS64)
+-        "--ro-bind-try", "/lib64", "/lib64",
+-        "--ro-bind-try", "/usr/lib64", "/usr/lib64",
+-        "--ro-bind-try", "/usr/local/lib64", "/usr/local/lib64",
+-#else
+-        "--ro-bind-try", "/lib32", "/lib32",
+-        "--ro-bind-try", "/usr/lib32", "/usr/lib32",
+-        "--ro-bind-try", "/usr/local/lib32", "/usr/local/lib32",
+-#endif
+-
+         "--ro-bind-try", PKGLIBEXECDIR, PKGLIBEXECDIR,
++
++        // Bind mount the store inside the WebKitGTK sandbox.
++        "--ro-bind", "@storedir@", "@storedir@",
+     };
+ 
+     if (launchOptions.processType == ProcessLauncher::ProcessType::DBusProxy) {
