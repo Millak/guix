@@ -3554,7 +3554,8 @@ PickleShare.")
        (modify-phases %standard-phases
          (replace 'build
            (lambda _
-             (invoke "python" "setup.py" "build" "--enable-all-extensions")
+             (invoke "python" "setup.py" "build" "--enable-all-extensions"
+                     "--enable=load_extension")
              #t))
          (add-after 'build 'build-test-helper
            (lambda _
