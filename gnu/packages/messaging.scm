@@ -713,44 +713,55 @@ identi.ca and status.net).")
         #f)))))
 
 (define-public bitlbee-discord
-  (package
-    (name "bitlbee-discord")
-    (version "0.4.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sm00th/bitlbee-discord")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00qgdvrp7hv02n0ns685igp810zxmv3adsama8601122al6x041n"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "--with-bdatadir=" out "/share/bitlbee/")
-               (string-append "--with-plugindir=" out "/lib/bitlbee/")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-autogen
-           (lambda _
-             (let ((sh (which "sh")))
-               (substitute* "autogen.sh" (("/bin/sh") sh))
-               (setenv "CONFIG_SHELL" sh)))))))
-    (inputs (list glib))
-    (native-inputs (list pkg-config
-                         autoconf
-                         automake
-                         texinfo
-                         libtool
-                         bitlbee ; needs bitlbee headers
-                         bash))
-    (synopsis "Discord plugin for Bitlbee")
-    (description "Bitlbee-discord is a plugin for Bitlbee which provides
+  ;; Version 0.4.3 of bitlbee-discord was prepared to work for
+  ;; glib@2.68. However, version 2.69 of glib introduced a breaking change
+  ;; causing bitlbee-discord to throw:
+  ;; 
+  ;; discord - Login error: Failed to switch to websocket mode
+  ;;
+  ;; This makes the plugin unable to connect and therefore unusable:
+  ;; https://github.com/sm00th/bitlbee-discord/issues/226
+  ;; The specified commit fixes incompatibility with glib@2.69 and newer.
+  (let ((commit "607f9887ca85f246e970778e3d40aa5c346365a7")
+        (revision "1"))
+    (package
+      (name "bitlbee-discord")
+      (version (git-version "0.4.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sm00th/bitlbee-discord")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jkwhx2walx2ay0vc9x13q0j1qq4r5x30ss03a3j7ks28xvsnxc7"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         (let ((out (assoc-ref %outputs "out")))
+           (list (string-append "--with-bdatadir=" out "/share/bitlbee/")
+                 (string-append "--with-plugindir=" out "/lib/bitlbee/")))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-autogen
+             (lambda _
+               (let ((sh (which "sh")))
+                 (substitute* "autogen.sh" (("/bin/sh") sh))
+                 (setenv "CONFIG_SHELL" sh)))))))
+      (inputs (list glib))
+      (native-inputs (list pkg-config
+                           autoconf
+                           automake
+                           texinfo
+                           libtool
+                           bitlbee ; needs bitlbee headers
+                           bash))
+      (synopsis "Discord plugin for Bitlbee")
+      (description "Bitlbee-discord is a plugin for Bitlbee which provides
 access to servers running the Discord protocol.")
-    (home-page "https://github.com/sm00th/bitlbee-discord/")
-    (license license:gpl2+)))
+      (home-page "https://github.com/sm00th/bitlbee-discord/")
+      (license license:gpl2+))))
 
 (define-public purple-mattermost
   ;; The latest release (1.2) only supports Mattermost's /api/v3.  Choose a
