@@ -51,7 +51,7 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -1856,7 +1856,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.12.3.1")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
@@ -1864,10 +1864,11 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "0fhmfxh6kbchggvpbin7d4g4fq5vc49y0w48wdkyxln5dswidss2"))))
+        (base32 "1zdz82j7vpxiqa188zmsxliqk60g331ycaxfbhx5bzyqfjgrh7gd"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list desktop-file-utils
+           flex
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
@@ -1877,7 +1878,7 @@ either on a local, or remote machine via a number of methods.")
            libtool
            pkg-config))
     (inputs
-     (list gconf gnome-vfs gtk+-2 libxml2))
+     (list gconf glib gtk+-2 libxml2))
     (home-page "https://gcmd.github.io/")
     (synopsis "Two-pane graphical file manager for the GNOME desktop")
     (description
