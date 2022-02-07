@@ -20126,13 +20126,13 @@ class ShellOutSSHClientTests"))))
 (define-public python-regex
   (package
     (name "python-regex")
-    (version "2020.6.8")
+    (version "2022.1.18")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "regex" version))
               (sha256
                (base32
-                "1b3k0zi1pd99q5mk7ri7vcx2y1mq5inm9hk8dryqyhrpkmh4xdp9"))))
+                "05ir92d0cmv8wkafn3r05j5q47l6shg7cpdblp2a8m407b02vwwp"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
