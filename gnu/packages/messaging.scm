@@ -3133,6 +3133,41 @@ API.  Mattermost is not required.")
     (home-page "https://github.com/42wim/matterbridge")
     (license license:asl2.0)))
 
+(define-public jj
+  (package
+    (name "jj")
+    (version "2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://23.fi/jj/jj-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02xz2ci93bccvil5iff804mh3zr5iqkf6zx5mxgraz17xg0azlgh"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                            ;There are no tests.
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin")))
+                     (install-file "jj" bin)))))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib loudmouth))
+    (home-page "https://23.fi/jj/")
+    (synopsis "FIFO based Jabber client")
+    (description
+     "jj is a simple file-system-based Jabber client, inspired by ii IRC
+client.  Interaction with jj is done by writing and reading files from the
+server directory which jj creates.  It is perfect for bots and
+notifications.")
+    (license license:expat)))
+
 (define-public pounce
   (package
     (name "pounce")
