@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
@@ -39,6 +39,7 @@
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -515,7 +516,7 @@ following formats:
 (define-public cozy
   (package
     (name "cozy")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -524,7 +525,7 @@ following formats:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hifzzhhf0ww6iar9gswjfndy3i54s6jc41zaazlx4scc7r6fhs0"))))
+        (base32 "0igqf9b77i13sxlk4ziw549h379hmz1slrb3vvf8irk94gxabsaw"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -559,15 +560,16 @@ following formats:
                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
                  `("GUIX_PYTHONPATH" ":" prefix (,python-path ,pylib)))))))))
     (native-inputs
-     `(("desktop-file-utils" ,desktop-file-utils)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           `(,gtk+ "bin")
+           pkg-config
+           python-wrapper))
     (inputs
-     (list file
+     (list bash-minimal
+           file
            granite
            gsettings-desktop-schemas
            gst-libav
@@ -608,7 +610,7 @@ Some of the current features:
 @item Mpris integration (Media keys & playback info for desktop environment)
 @end itemize")
     ;; TODO: Unbundle python-inject.
-    (license (list license:gpl3+ ;cozy
+    (license (list license:gpl3+        ;cozy
                    license:asl2.0)))) ;python-inject (bundled dependency)
 
 (define-public xchm
