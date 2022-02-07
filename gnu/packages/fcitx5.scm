@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2020, 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,6 +20,7 @@
 (define-module (gnu packages fcitx5)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
@@ -196,48 +197,60 @@ editors.")
         (base32 "07ip4sxf3q895pp7mivv2bdwcmqjnwrmv9pg99jk73cw9bgyq00n"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;No test
-       #:configure-flags
-       (list (string-append "-DGOBJECT_INTROSPECTION_GIRDIR="
-                            %output "/share/gir-1.0")
-             (string-append "-DGOBJECT_INTROSPECTION_TYPELIBDIR="
-                            %output "/lib/girepository-1.0"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-install-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gtk2 (assoc-ref outputs "gtk2"))
-                   (gtk4 (assoc-ref outputs "gtk4")))
-               ;; Install GTK+ 2 input method module to its own output.
-               (substitute* "gtk2/CMakeLists.txt"
-                 (("\\$\\{CMAKE_INSTALL_LIBDIR\\}")
-                  (string-append gtk2 "/lib")))
+     (list
+      #:tests? #f                       ;No test
+      #:configure-flags
+      #~(list (string-append "-DGOBJECT_INTROSPECTION_GIRDIR="
+                             #$output "/share/gir-1.0")
+              (string-append "-DGOBJECT_INTROSPECTION_TYPELIBDIR="
+                             #$output "/lib/girepository-1.0"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-install-prefix
+            (lambda _
+              ;; Take care of different versions of GTK because this package
+              ;; provides IM module for GTK application to use input method.
+              (define (split-immodule gtk-version output)
+                (substitute* (string-append gtk-version "/CMakeLists.txt")
+                  (("\\$\\{CMAKE_INSTALL_LIBDIR\\}")
+                   (string-append output "/lib"))))
 
-               ;; Install for GTK 4.
-               (substitute* "gtk4/CMakeLists.txt"
-                 (("\\$\\{CMAKE_INSTALL_LIBDIR\\}")
-                  (string-append gtk4 "/lib")))))))))
+              (let ((gtk2 #$output:gtk2)
+                    (gtk3 #$output:gtk3)
+                    (gtk4 #$output:gtk4))
+                (for-each split-immodule
+                          '("gtk2" "gtk3" "gtk4")
+                          (list gtk2 gtk3 gtk4))))))))
     (inputs
-     `(("fcitx5" ,fcitx5)
-       ("fmt" ,fmt)
-       ("libxkbcommon" ,libxkbcommon)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk2" ,gtk+-2)
-       ("gtk3" ,gtk+)
-       ("gtk4" ,gtk)
-       ("glib" ,glib)
-       ("libx11" ,libx11)
-       ("gettext" ,gettext-minimal)))
+     (list fcitx5
+           fmt
+           libx11
+           libxkbcommon
+           gettext-minimal
+           gobject-introspection
+           gtk+-2
+           gtk+
+           gtk
+           glib))
     (native-inputs
      (list extra-cmake-modules pkg-config
            `(,glib "bin")))           ;for glib-genmarshal
-    ;; TODO: Add "lib" output to reduce the closure size of "gtk2".
-    (outputs '("out" "gtk2" "gtk4"))
+    (outputs '("out" "gtk2" "gtk3" "gtk4"))
     (home-page "https://github.com/fcitx/fcitx5-gtk")
-    (synopsis "Glib based D-Bus client and GTK IM module for Fcitx 5")
-    (description "Fcitx5-gtk provides a Glib based D-Bus client and IM module
-for GTK+2/GTK+3 application.")
+    (synopsis "GLib-based D-Bus client and GTK IM module for Fcitx 5")
+    (description "Fcitx5-gtk provides the following functionality in the
+corresponding output:
+
+@table @code
+@item out
+GLib-based D-Bus client of Fcitx5.
+@item gtk2
+IM module for GTK+2 applications.
+@item gtk3
+IM module for GTK+3 applications.
+@item gtk4
+IM module for GTK4 applications.
+@end table")
     (license license:lgpl2.1+)))
 
 (define-public fcitx5-qt
