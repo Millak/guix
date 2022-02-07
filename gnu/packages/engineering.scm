@@ -19,7 +19,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -1270,24 +1270,24 @@ use on a given system.")
 (define-public libredwg
   (package
     (name "libredwg")
-    (version "0.12.4")
+    (version "0.12.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnu/libredwg/libredwg-"
-             version ".tar.xz"))
+                           version ".tar.xz"))
        (sha256
-        (base32 "05v5k8fkx4z1p81x9kna7nlzmyx09dn686rj2zprnkf337qmg24i"))))
+        (base32 "1gginbl76vmpccjwx93cmg8ibap8l40swly3bjv7rhmdwv6ikpnk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--disable-bindings")))
     (native-inputs
-     `(("libxml2" ,libxml2)
-       ("parallel" ,parallel)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("python-libxml2" ,python-libxml2)))
+     (list libxml2
+           parallel
+           perl
+           pkg-config
+           python-wrapper
+           python-libxml2))
     (inputs
      (list pcre2))
     (home-page "https://www.gnu.org/software/libredwg/")
