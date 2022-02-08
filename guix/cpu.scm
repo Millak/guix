@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,28 +88,39 @@ corresponds to CPU, a record as returned by 'current-cpu'."
     ("x86_64"
      ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.c.
      (or (and (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
-              (letrec-syntax ((model (syntax-rules (=>)
-                                       ((_) #f)
-                                       ((_ (candidate => integers ...) rest
-                                           ...)
-                                        (or (and (= (cpu-model cpu) integers)
-                                                 candidate)
-                                            ...
-                                            (model rest ...))))))
-                (model ("bonnel" => #x1c #x26)
-                       ("silvermont" => #x37 #x4a #x4d #x5a #x5d)
-                       ("core2" => #x0f #x17 #x1d)
-                       ("nehalem" => #x1a #x1e #x1f #x2e)
-                       ("westmere" => #x25 #x2c #x2f)
-                       ("sandybridge" => #x2a #x2d)
-                       ("ivybridge" => #x3a #x3e)
-                       ("haswell" => #x3c #x3f #x45 #x46)
-                       ("broadwell" => #x3d #x47 #x4f #x56)
-                       ("skylake" => #x4e #x5e #x8e #x9e)
-                       ("skylake-avx512" => #x55) ;TODO: cascadelake
-                       ("knl" => #x57)
-                       ("cannonlake" => #x66)
-                       ("knm" => #x85))))
+              (letrec-syntax ((if-flags (syntax-rules (=>)
+                                          ((_)
+                                           #f)
+                                          ((_ (flags ... => name) rest ...)
+                                           (if (every (lambda (flag)
+                                                        (set-contains? (cpu-flags cpu)
+                                                                       flag))
+                                                      '(flags ...))
+                                             name
+                                             (if-flags rest ...))))))
+
+                (if-flags ("avx" "avx512vp2intersect" "tsxldtrk" => "sapphirerapids")
+                          ("avx" "avx512vp2intersect" => "tigerlake")
+                          ("avx" "avx512bf16" => "cooperlake")
+                          ("avx" "wbnoinvd" => "icelake-server")
+                          ("avx" "avx512bitalg" => "icelake-client")
+                          ("avx" "avx512vbmi" => "cannonlake")
+                          ("avx" "avx5124vnniw" => "knm")
+                          ("avx" "avx512er" => "knl")
+                          ("avx" "avx512f" => "skylake-avx512")
+                          ("avx" "serialize" => "alderlake")
+                          ("avx" "clflushopt" => "skylake")
+                          ("avx" "adx" => "broadwell")
+                          ("avx" "avx2" => "haswell")
+                          ("avx" => "sandybridge")
+                          ("sse4_2" "gfni" => "tremont")
+                          ("sse4_2" "sgx" => "goldmont-plus")
+                          ("sse4_2" "xsave" => "goldmont")
+                          ("sse4_2" "movbe" => "silvermont")
+                          ("sse4_2" => "nehalem")
+                          ("ssse3" "movbe" => "bonnell")
+                          ("ssse3" => "core2")
+                          ("longmode" => "x86-64"))))
 
          ;; Fallback case for non-Intel processors or for Intel processors not
          ;; recognized above.
