@@ -82,6 +82,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages icu4c)
@@ -1208,6 +1209,35 @@ to create databases that are optimized for rendering/tile/map-services.")
     (description "Libosmium is a fast and flexible C++ library for working with
 OpenStreetMap data.")
     (license license:boost1.0)))
+
+(define-public osmium-tool
+  (package
+    (name "osmium-tool")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/osmcode/osmium-tool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zgyqyrs89vch0qnkh9m5xq079sr2wmydy5zz4l8xbysbjf6xry5"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled libraries.
+        '(delete-file-recursively "include/rapidjson"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list libosmium
+           rapidjson))
+    (native-inputs
+     (list pandoc))
+    (home-page "https://osmcode.org/osmium-tool/")
+    (synopsis "Osmium command-line tool")
+    (description "Command line tool for working with OpenStreetMap data
+based on the Osmium library.")
+    (license license:gpl3+)))
 
 (define-public osm2pgsql
   (package
