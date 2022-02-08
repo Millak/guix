@@ -769,7 +769,11 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
                                           "openvpn"
                                           "procps"
                                           "which")))))
-             #t)))))
+             #t))
+         ;; The `protonvpn' script wants to write to `~user' to initialize its
+         ;; logger, so simply setting HOME=/tmp won't cut it.  Remove
+         ;; sanity-check.
+         (delete 'sanity-check))))
     (native-inputs
      (list python-docopt))
     (inputs
