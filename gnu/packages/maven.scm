@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2018-2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -1791,6 +1791,10 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
              (invoke "./sisu.sh" "maven-embedder/src/main/java"
                      "build/classes/META-INF/sisu/javax.inject.Named")
              #t))
+         (add-before 'build 'copy-resources
+           (lambda _
+             (mkdir-p "build/classes/")
+             (copy-recursively "maven-embedder/src/main/resources" "build/classes")))
          (add-before 'build 'generate-models
            (lambda* (#:key inputs #:allow-other-keys)
              (define (modello-single-mode file version mode)
