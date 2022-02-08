@@ -39,12 +39,14 @@
   #:use-module (gnu services)
   #:use-module (gnu services base)
   #:use-module (gnu system)
+  #:use-module (gnu system accounts)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system linux-container)
   #:use-module (gnu system uuid)
   #:use-module (gnu system vm)
   #:use-module (guix packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages compression)
@@ -77,6 +79,7 @@
             iso9660-image
             docker-image
             tarball-image
+            wsl2-image
             raw-with-offset-disk-image
 
             image-with-os
@@ -87,6 +90,7 @@
             uncompressed-iso-image-type
             docker-image-type
             tarball-image-type
+            wsl2-image-type
             raw-with-offset-image-type
 
             image-with-label
@@ -164,6 +168,10 @@ parent image record."
   (image-without-os
    (format 'tarball)))
 
+(define wsl2-image
+  (image-without-os
+   (format 'wsl2)))
+
 (define* (raw-with-offset-disk-image #:optional (offset root-offset))
   (image-without-os
    (format 'disk-image)
@@ -230,6 +238,11 @@ set to the given OS."
   (image-type
    (name 'tarball)
    (constructor (cut image-with-os tarball-image <>))))
+
+(define wsl2-image-type
+  (image-type
+   (name 'wsl2)
+   (constructor (cut image-with-os wsl2-image <>))))
 
 (define raw-with-offset-image-type
   (image-type
@@ -709,7 +722,8 @@ output file."
 (define* (system-tarball-image image
                                #:key
                                (name "image")
-                               (compressor (srfi-1:first %compressors)))
+                               (compressor (srfi-1:first %compressors))
+                               (wsl? #f))
   "Build a tarball of IMAGE.  NAME is the base name to use for the
 output file."
   (let* ((os (image-operating-system image))
@@ -717,7 +731,12 @@ output file."
          (schema (local-file (search-path %load-path
                                           "guix/store/schema.sql")))
          (name (string-append name ".tar" (compressor-extension compressor)))
-         (graph "system-graph"))
+         (graph "system-graph")
+         (root (srfi-1:find (lambda (user)
+                              (and=> (user-account-uid user) zero?))
+                            (operating-system-users os)))
+         (root-shell (or (and=> root user-account-shell)
+                         (file-append bash "/bin/bash"))))
     (define builder
       (with-extensions gcrypt-sqlite3&co          ;for (guix store database)
         (with-imported-modules `(,@(source-module-closure
@@ -753,6 +772,16 @@ output file."
                                            #:system-directory #$os)
 
                 (with-directory-excursion image-root
+                  #$@(if wsl?
+                         #~(;; WSL requires /bin/sh.  Will be overwritten by
+                            ;; system activation.
+                            (symlink #$root-shell "./bin/sh")
+
+                            ;; WSL requires /bin/mount to access the host fs.
+                            (symlink #$(file-append util-linux "/bin/mount")
+                                     "./bin/mount"))
+                         #~())
+
                   (apply invoke tar "-cvf" #$output "."
                          (tar-base-options
                           #:tar tar
@@ -775,7 +804,7 @@ output file."
   "Return the IMAGE root partition file-system type."
   (case (image-format image)
     ((iso9660) "iso9660")
-    ((docker tarball) "dummy")
+    ((docker tarball wsl2) "dummy")
     (else
      (partition-file-system (find-root-partition image)))))
 
@@ -914,6 +943,8 @@ image, depending on IMAGE format."
         (system-docker-image image*))
        ((memq image-format '(tarball))
         (system-tarball-image image*))
+       ((memq image-format '(wsl2))
+        (system-tarball-image image* #:wsl? #t))
        ((memq image-format '(iso9660))
          (system-iso9660-image
           image*
