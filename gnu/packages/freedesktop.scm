@@ -188,6 +188,20 @@ application-centers for distributions.")
     (home-page "https://www.freedesktop.org/wiki/Distributions/AppStream/")
     (license license:lgpl2.1+)))
 
+(define-public appstream-qt
+  (package/inherit appstream
+    (name "appstream-qt")
+    (native-inputs
+     (modify-inputs (package-native-inputs appstream)
+       (prepend qttools-5)))
+    (inputs
+     (modify-inputs (package-inputs appstream)
+       (prepend qtbase-5)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments appstream)
+       ((#:configure-flags flags #~'())
+        #~(append '("-Dqt=true") #$flags))))))
+
 (define-public farstream
   (package
     (name "farstream")
