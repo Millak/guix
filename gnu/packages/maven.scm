@@ -1088,6 +1088,7 @@ wagon providers supporting HTTP.")))
        ("java-plexus-cli" ,java-plexus-cli)
        ("maven-plugin-api" ,maven-plugin-api)
        ("maven-plugin-annotations" ,maven-plugin-annotations)
+       ("maven-slf4j-provider" ,maven-slf4j-provider)
        ("maven-core" ,maven-core)
        ("maven-model" ,maven-model)
        ("java-commons-cli" ,java-commons-cli)
@@ -1106,7 +1107,6 @@ wagon providers supporting HTTP.")))
        ("java-commons-codec" ,java-commons-codec)
        ("java-commons-io" ,java-commons-io)
        ("java-jsoup" ,java-jsoup)
-       ("java-slf4j-simple" ,java-slf4j-simple)
        ,@(package-native-inputs maven-wagon-provider-api)))
     (synopsis "Wagon provider that gets and puts artifacts through HTTP(S)")
     (description "Maven Wagon is a transport abstraction that is used in Maven's
@@ -1874,6 +1874,7 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        ("maven-settings" ,maven-settings)
        ("maven-settings-builder" ,maven-settings-builder)
        ("maven-shared-utils" ,maven-shared-utils)
+       ("maven-slf4j-provider" ,maven-slf4j-provider)
        ("java-plexus-classworlds" ,java-plexus-classworlds)
        ("java-plexus-util" ,java-plexus-utils)
        ("java-eclipse-sisu-plexus" ,java-eclipse-sisu-plexus)
@@ -1891,7 +1892,6 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        ("java-guice" ,java-guice)
        ("java-javax-inject" ,java-javax-inject)
        ("java-slf4j-api" ,java-slf4j-api)
-       ("java-slf4j-simple" ,java-slf4j-simple)
        ("java-jsr250" ,java-jsr250)))
     (native-inputs
      `(("java-asm-8" ,java-asm-8)
@@ -2122,8 +2122,8 @@ logging support.")))
        ("java-commons-lang3" ,java-commons-lang3)
        ("java-aop" ,java-aopalliance)
        ("maven-resolver-provider" ,maven-resolver-provider)
+       ("maven-slf4j-provider" ,maven-slf4j-provider)
        ("java-slf4j-api" ,java-slf4j-api)
-       ("java-slf4j-simple" ,java-slf4j-simple)
        ,@(package-inputs java-slf4j-api)))
     (description "Apache Maven is a software project management and comprehension
 tool.  This package contains Maven2 classes maintained as compatibility
@@ -2161,7 +2161,8 @@ layer for plugins that need to keep Maven2 compatibility.")))
                      "maven-repository-metadata" "maven-shared-utils" "maven-resolver-api"
                      "maven-resolver-spi" "maven-resolver-util" "maven-resolver-impl"
                      "maven-resolver-connector-basic" "maven-resolver-provider"
-                     "maven-resolver-transport-wagon" "maven-wagon-provider-api"
+                     "maven-resolver-transport-wagon" "maven-slf4j-provider"
+                     "maven-wagon-provider-api"
                      "maven-wagon-file" "maven-wagon-http" "java-commons-logging-minimal"
                      "java-httpcomponents-httpclient" "java-httpcomponents-httpcore"
                      "maven-wagon-http-shared" "maven-wagon-tck-http"
@@ -2171,8 +2172,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
                      "java-plexus-utils" "java-plexus-interpolation"
                      "java-plexus-sec-dispatcher" "java-plexus-cipher" "java-guava"
                      "java-jansi" "java-jsr250" "java-cdi-api" "java-commons-cli"
-                     "java-commons-io" "java-commons-lang3" "java-slf4j-api"
-                     "java-slf4j-simple"))))
+                     "java-commons-io" "java-commons-lang3" "java-slf4j-api"))))
              (substitute* "apache-maven/src/bin/mvn"
                (("cygwin=false;")
                 (string-append
@@ -2218,6 +2218,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
            maven-resolver-connector-basic
            maven-resolver-provider
            maven-resolver-transport-wagon
+           maven-slf4j-provider
            maven-wagon-provider-api
            maven-wagon-file
            maven-wagon-http
@@ -2245,9 +2246,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
            java-commons-cli
            java-commons-io
            java-commons-lang3
-           java-slf4j-api
-           ;; TODO: replace with maven-slf4j-provider
-           java-slf4j-simple))
+           java-slf4j-api))
     (propagated-inputs
      (list coreutils which))
     (description "Apache Maven is a software project management and comprehension
