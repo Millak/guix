@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
@@ -525,6 +525,11 @@ Go.  It also includes runtime support libraries for these languages.")
 
        ,@(package-inputs gcc-4.7)))))
 
+(define %gcc-7.5-aarch64-micro-architectures
+  ;; Suitable '-march' values for GCC 7.5.
+  ;; TODO: Allow dynamically adding feature flags.
+  '("armv8-a" "armv8.1-a" "armv8.2-a" "armv8.3-a"))
+
 (define %gcc-7.5-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 7.5 (info "(gcc) x86 Options").
   '("core2" "nehalem" "westmere" "sandybridge" "ivybridge"
@@ -536,6 +541,12 @@ Go.  It also includes runtime support libraries for these languages.")
     "znver1"
     "btver1" "btver2" "geode"))
 
+(define %gcc-10-aarch64-micro-architectures
+  ;; Suitable '-march' values for GCC 10.
+  ;; TODO: Allow dynamically adding feature flags.
+  (append %gcc-7.5-aarch64-micro-architectures
+          '("armv8.4-a" "armv8.5-a" "armv8.6-a")))
+
 (define %gcc-10-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 10.
   (append %gcc-7.5-x86_64-micro-architectures
@@ -544,7 +555,6 @@ Go.  It also includes runtime support libraries for these languages.")
         "cascadelake" "cooperlake" "tigerlake"
 
         "znver2" "znver3")))
-
 
 (define-public gcc-7
   (package
@@ -566,6 +576,7 @@ for several languages, including C, C++, Objective-C, Fortran, Ada, and Go.
 It also includes runtime support libraries for these languages.")
     (properties
      `((compiler-cpu-architectures
+        ("aarch64" ,@%gcc-7.5-aarch64-micro-architectures)
         ("x86_64" ,@%gcc-7.5-x86_64-micro-architectures))))))
 
 (define-public gcc-8
@@ -619,6 +630,7 @@ It also includes runtime support libraries for these languages.")
             (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
     `((compiler-cpu-architectures
+       ("aarch64" ,@%gcc-10-aarch64-micro-architectures)
        ("x86_64" ,@%gcc-10-x86_64-micro-architectures))))))
 
 (define-public gcc-11
