@@ -41,6 +41,7 @@
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -51,6 +52,7 @@
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
@@ -896,6 +898,150 @@ wayland-server API.")
 KDE Frameworks components.")
     (home-page "https://invent.kde.org/plasma/kwayland-integration")
     (license (list license:lgpl2.1 license:lgpl3))))
+
+(define-public kwin
+  (package
+    (name "kwin")
+    (version "5.25.5")
+    (source (origin
+               (method url-fetch)
+               (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                   name "-" version ".tar.xz"))
+               (sha256
+                (base32
+                 "1dh7ydwxbb9r53p353d53gq7w9vmp7idvsr4s5ldxmah35436v2s"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("src/plugins/kdecorations/aurorae/src/aurorae.cpp")
+                (("(^\\s*QDirIterator it.path, QDirIterator::Subdirectories)(\\);)"
+                  _ a b)
+                 (string-append a
+                                " | QDirIterator::FollowSymlinks" b)))
+              (substitute*
+                  '("autotests/integration/dont_crash_glxgears.cpp"
+                    "autotests/integration/debug_console_test.cpp"
+                    "autotests/integration/x11_window_test.cpp")
+                (("setProgram\\(QStringLiteral\\(\"glxgears\"\\)")
+                 (string-append
+                  "setProgram(QByteArrayLiteral(\"" (which "glxgears") "\")")))
+              (substitute*
+                  '("src/wayland/tests/renderingservertest.cpp"
+                    "src/wayland/tests/waylandservertest.cpp")
+                (("QByteArrayLiteral\\(\"Xwayland\"\\)")
+                 (string-append
+                  "QByteArrayLiteral(\"" (which "Xwayland") "\")")))
+              (substitute* '("src/xwayland/xwaylandlauncher.cpp")
+                (("(m_xwaylandProcess->setProgram.QStringLiteral..)(Xwayland)(...;)"
+                  _ a Xwayland b)
+                 (string-append a
+                                (which "Xwayland") b)))
+              (substitute* '("cmake/modules/Findhwdata.cmake")
+                (("/usr/share")
+                 (string-append #$hwdata:pnp "/share")))))
+          (add-after 'install 'add-symlinks
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((kst5 (string-append #$output
+                                         "/share/kservicetypes5/")))
+                (symlink (string-append kst5 "kwineffect.desktop")
+                         (string-append kst5 "kwin-effect.desktop"))
+                (symlink (string-append kst5 "kwinscript.desktop")
+                         (string-append kst5 "kwin-script.desktop")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "XDG_RUNTIME_DIR" (getcwd))
+                (setenv "HOME" (getcwd))
+                (setenv "XDG_DATA_DIRS"
+                        (string-append #$output "/share:"
+                                       (getenv "XDG_DATA_DIRS")))
+                (setenv "QT_PLUGIN_PATH"
+                        (string-append #$output
+                                       "/lib/qt5/plugins:"
+                                       (getenv "QT_PLUGIN_PATH")))
+                (setenv "DISPLAY" ":1")
+                (system "Xvfb :1 &")
+                (sleep 5)
+                (invoke "ctest" "-E"
+                        "(kwayland-testXdgDecoration|kwin-testLockScreen|kwin-testPointerInput|kwin-testXdgShellWindow|kwin-testXdgShellWindow-waylandonly|kwin-testSceneOpenGLES|kwin-testSceneOpenGLES-waylandonly|kwin-testInputMethod|kwin-testInputMethod-waylandonly|kwin-testNightColor|kwin-testNightColor-waylandonly|kwin-testPlasmaWindow|kwin-testSceneQPainter|kwin-testLibinputDevice)")))))))
+    (native-inputs (list extra-cmake-modules
+                         dbus
+                         kdoctools
+                         mesa-utils
+                         pkg-config
+                         qttools-5
+                         wayland-protocols-next
+                         xorg-server-for-tests))
+    (inputs (list breeze
+                  eudev
+                  fontconfig
+                  freetype
+                  `(,hwdata "pnp")
+                  kactivities
+                  kcmutils
+                  kcompletion
+                  kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  kcrash
+                  kdbusaddons
+                  kdeclarative
+                  kdecoration
+                  kglobalaccel
+                  ki18n
+                  kiconthemes
+                  kidletime
+                  kio
+                  kirigami
+                  knewstuff
+                  knotifications
+                  kpackage
+                  krunner
+                  kscreenlocker
+                  ktextwidgets
+                  kwayland
+                  kwayland-server
+                  kwindowsystem
+                  kxmlgui
+                  libqaccessibilityclient
+                  lcms
+                  libcap
+                  libepoxy
+                  libglvnd ; For OpenGLES
+                  libinput
+                  libxkbcommon
+                  pipewire-0.3
+                  plasma-framework
+                  plasma-wayland-protocols
+                  qtbase-5
+                  qtdeclarative-5
+                  qtmultimedia-5
+                  qtwayland-5
+                  qtx11extras
+                  wayland
+                  xcb-util ;fails at build time without this
+                  xcb-util-cursor
+                  xcb-util-keysyms
+                  xcb-util-wm
+                  xcmsdb
+                  xinput ;XXX: Says disabled in configure phase
+                  xorg-server-xwayland
+                  zlib))
+    ;; Runtime-only dependency needed for mapping monitor hardware vendor IDs to full names
+    ;; * QtQuick.Controls-QMLModule, QML module 'QtQuick.Controls' is a runtime dependency.
+    ;; * org.kde.plasma.core-QMLModule, QML module 'org.kde.plasma.core' is a runtime dependency.
+    ;; * org.kde.plasma.components-QMLModule, QML module 'org.kde.plasma.components' is a runtime dependency.
+    (home-page "https://userbase.kde.org/KWin")
+    (synopsis "KDE Plasma Window Manager")
+    (description
+     "KWin is an easy to use, but flexible, composited Window Manager for
+Xorg windowing systems (Wayland, X11) on Linux.  Its primary usage is in
+conjunction with the KDE Plasma Desktop.")
+    (license license:gpl2+)))
 
 (define-public kwrited
   (package
