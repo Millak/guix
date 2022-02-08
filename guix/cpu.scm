@@ -27,6 +27,7 @@
   #:export (current-cpu
             cpu?
             cpu-architecture
+            cpu-vendor
             cpu-family
             cpu-model
             cpu-flags
@@ -42,9 +43,10 @@
 
 ;; CPU description.
 (define-record-type <cpu>
-  (cpu architecture family model flags)
+  (cpu architecture vendor family model flags)
   cpu?
   (architecture cpu-architecture)                 ;string, from 'uname'
+  (vendor       cpu-vendor)                       ;string
   (family       cpu-family)                       ;integer
   (model        cpu-model)                        ;integer
   (flags        cpu-flags))                       ;set of strings
@@ -58,28 +60,33 @@
 
     (call-with-input-file "/proc/cpuinfo"
       (lambda (port)
-        (let loop ((family #f)
+        (let loop ((vendor #f)
+                   (family #f)
                    (model #f))
           (match (read-line port)
             ((? eof-object?)
              #f)
+            ((? (prefix? "vendor_id") str)
+             (match (string-tokenize str)
+               (("vendor_id" ":" vendor)
+                (loop vendor family model))))
             ((? (prefix? "cpu family") str)
              (match (string-tokenize str)
                (("cpu" "family" ":" family)
-                (loop (string->number family) model))))
+                (loop vendor (string->number family) model))))
             ((? (prefix? "model") str)
              (match (string-tokenize str)
                (("model" ":" model)
-                (loop family (string->number model)))
+                (loop vendor family (string->number model)))
                (_
-                (loop family model))))
+                (loop vendor family model))))
             ((? (prefix? "flags") str)
              (match (string-tokenize str)
                (("flags" ":" flags ...)
                 (cpu (utsname:machine (uname))
-                     family model (list->set flags)))))
+                     vendor family model (list->set flags)))))
             (_
-             (loop family model))))))))
+             (loop vendor family model))))))))
 
 (define (cpu->gcc-architecture cpu)
   "Return the architecture name, suitable for GCC's '-march' flag, that
@@ -87,7 +94,8 @@ corresponds to CPU, a record as returned by 'current-cpu'."
   (match (cpu-architecture cpu)
     ("x86_64"
      ;; Transcribed from GCC's 'host_detect_local_cpu' in driver-i386.c.
-     (or (and (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
+     (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
+              (= 6 (cpu-family cpu))              ;the "Pentium Pro" family
               (letrec-syntax ((if-flags (syntax-rules (=>)
                                           ((_)
                                            #f)
@@ -122,6 +130,39 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                           ("ssse3" => "core2")
                           ("longmode" => "x86-64"))))
 
+         (and (equal? "AuthenticAMD" (cpu-vendor cpu))
+              (letrec-syntax ((if-flags (syntax-rules (=>)
+                                          ((_)
+                                           #f)
+                                          ((_ (flags ... => name) rest ...)
+                                           (if (every (lambda (flag)
+                                                        (set-contains? (cpu-flags cpu)
+                                                                       flag))
+                                                      '(flags ...))
+                                             name
+                                             (if-flags rest ...))))))
+
+                (or (and (= 22 (cpu-family cpu))
+                         (if-flags ("movbe" => "btver2")))
+                    (and (= 6 (cpu-family cpu))
+                         (if-flags ("3dnowp" => "athalon")))
+                    (if-flags ("vaes" => "znver3")
+                              ("clwb" => "znver2")
+                              ("clzero" => "znver1")
+                              ("avx2" => "bdver4")
+                              ("xsaveopt" => "bdver3")
+                              ("bmi" => "bdver2")
+                              ("xop" => "bdver1")
+                              ("sse4a" "has_ssse3" => "btver1")
+                              ("sse4a" => "amdfam10")
+                              ("sse2" "sse3" => "k8-sse3")
+                              ("longmode" "sse3" => "k8-sse3")
+                              ("sse2" => "k8")
+                              ("longmode" => "k8")
+                              ("mmx" "3dnow" => "k6-3")
+                              ("mmx" => "k6")
+                              (_ => "pentium")))))
+
          ;; Fallback case for non-Intel processors or for Intel processors not
          ;; recognized above.
          (letrec-syntax ((if-flags (syntax-rules (=>)
@@ -147,7 +188,7 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                      ("ssse3" "movbe" => "bonnell")
                      ("ssse3" => "core2")))
 
-         ;; TODO: Recognize AMD models (bdver*, znver*, etc.)?
+         ;; TODO: Recognize CENTAUR/CYRIX/NSC?
 
          "x86_64"))
     (architecture
