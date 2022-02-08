@@ -530,6 +530,14 @@ Go.  It also includes runtime support libraries for these languages.")
   ;; TODO: Allow dynamically adding feature flags.
   '("armv8-a" "armv8.1-a" "armv8.2-a" "armv8.3-a"))
 
+(define %gcc-7.5-armhf-micro-architectures
+  ;; Suitable '-march' values for GCC 7.5.
+  ;; TODO: Allow dynamically adding feature flags.
+  '("armv7" "armv7-a" "armv7-m" "armv7-r" "armv7e-m" "armv7ve"
+    "armv8-a" "armv8-a+crc" "armv8.1-a" "armv8.1-a+crc"
+    "armv8-m.base" "armv8-m.main" "armv8-m.main+dsp"
+    "iwmmxt" "iwmmxt2"))
+
 (define %gcc-7.5-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 7.5 (info "(gcc) x86 Options").
   '("core2" "nehalem" "westmere" "sandybridge" "ivybridge"
@@ -546,6 +554,13 @@ Go.  It also includes runtime support libraries for these languages.")
   ;; TODO: Allow dynamically adding feature flags.
   (append %gcc-7.5-aarch64-micro-architectures
           '("armv8.4-a" "armv8.5-a" "armv8.6-a")))
+
+(define %gcc-10-armhf-micro-architectures
+  ;; Suitable '-march' values for GCC 10.
+  ;; TODO: Allow dynamically adding feature flags.
+  (append %gcc-7.5-armhf-micro-architectures
+          '("armv8.2-a" "armv8.3-a" "armv8.4-a" "armv8.5-a" "armv8.6-a"
+            "armv8-r" "armv8.1-m.main")))
 
 (define %gcc-10-x86_64-micro-architectures
   ;; Suitable '-march' values for GCC 10.
@@ -577,6 +592,7 @@ It also includes runtime support libraries for these languages.")
     (properties
      `((compiler-cpu-architectures
         ("aarch64" ,@%gcc-7.5-aarch64-micro-architectures)
+        ("armhf" ,@%gcc-7.5-armhf-micro-architectures)
         ("x86_64" ,@%gcc-7.5-x86_64-micro-architectures))))))
 
 (define-public gcc-8
@@ -631,6 +647,7 @@ It also includes runtime support libraries for these languages.")
    (properties
     `((compiler-cpu-architectures
        ("aarch64" ,@%gcc-10-aarch64-micro-architectures)
+       ("armhf" ,@%gcc-10-armhf-micro-architectures)
        ("x86_64" ,@%gcc-10-x86_64-micro-architectures))))))
 
 (define-public gcc-11
