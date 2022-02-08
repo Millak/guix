@@ -1772,6 +1772,40 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        ("maven-core-boot" ,maven-core-bootstrap)
        ,@(package-native-inputs maven-core-bootstrap)))))
 
+(define-public maven-slf4j-provider
+  (package
+    (inherit maven-artifact)
+    (name "maven-slf4j-provider")
+    (arguments
+     `(#:jar-name "maven-slf4j-provider.jar"
+       #:source-dir "maven-slf4j-provider/src/main/java"
+       #:tests? #f; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-slf4j
+           (lambda* (#:key inputs #:allow-other-keys)
+             (mkdir-p "generated-sources")
+             (with-directory-excursion "generated-sources"
+               (invoke "tar" "xf" (assoc-ref inputs "java-slf4j-simple-source"))
+               (for-each delete-file (find-files "." "StaticLoggerBinder.java")))
+             (for-each
+               (lambda (simple)
+                 (for-each
+                   (lambda (java)
+                     (copy-file java
+                                (string-append
+                                  "maven-slf4j-provider/src/main/java/org/slf4j/impl/"
+                                  (basename java))))
+                   (find-files (string-append simple "/src/main/java/") "\\.java$")))
+               (find-files "generated-sources" "slf4j-simple" #:directories? #t))))
+         (replace 'install
+           (install-from-pom "maven-slf4j-provider/pom.xml")))))
+    (inputs
+     `(("java-slf4j-api" ,java-slf4j-api)
+       ("java-slf4j-simple-source" ,(package-source java-slf4j-simple))
+       ("maven-shared-utils" ,maven-shared-utils)))
+    (native-inputs (list unzip))))
+
 (define-public maven-embedder
   (package
     (inherit maven-artifact)
