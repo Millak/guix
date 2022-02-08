@@ -2000,6 +2000,10 @@ logging support.")))
                (modello-single-mode file "1.0.0" "xpp3-reader")
                (modello-single-mode file "1.0.0" "xpp3-writer"))
              #t))
+         (add-before 'build 'copy-resources
+           (lambda _
+             (mkdir-p "build/classes/")
+             (copy-recursively "src/main/resources" "build/classes")))
          (add-after 'build 'generate-metadata
            (lambda _
              (invoke "java" "-cp" (string-append (getenv "CLASSPATH") ":build/classes")
