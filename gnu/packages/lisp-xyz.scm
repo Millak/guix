@@ -20315,6 +20315,42 @@ rendering of the XML Infoset.")
 (define-public ecl-lorem-ipsum
   (sbcl-package->ecl-package sbcl-lorem-ipsum))
 
+(define-public sbcl-asd-generator
+  (let ((commit "27f94971a7c68c4dcb51e3f6be4142743d0c44e8")
+        (revision "0"))
+    (package
+      (name "sbcl-asd-generator")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/phoe/asd-generator")
+                (commit commit)))
+          (sha256
+           (base32 "0yiybl7b9x1f85v0drj0yw9821y3yfhya4n6gycnv5vvx6jp9by4"))
+          (file-name (git-file-name "cl-asd-generator" commit))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("asd-generator")
+         #:asd-files '("asd-generator.asd")))
+      (inputs
+       (list sbcl-cl-fad
+             sbcl-iterate
+             sbcl-alexandria
+             sbcl-trivia))
+      (home-page "https://github.com/phoe/asd-generator")
+      (synopsis "Automatic generator for .asd files")
+      (description
+       "This package provides an automatic generator for ASDF's .asd files.")
+      (license license:gpl3+))))
+
+(define-public cl-asd-generator
+  (sbcl-package->cl-source-package sbcl-asd-generator))
+
+(define-public ecl-asd-generator
+  (sbcl-package->ecl-package sbcl-asd-generator))
+
 (define-public sbcl-cl-gopher
   (let ((commit "62cfd180378f56e7e8b57e4302b183810c86e337")
         (revision "2"))
