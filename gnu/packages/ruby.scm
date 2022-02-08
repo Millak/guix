@@ -5195,14 +5195,14 @@ across multiple CPU cores.")
 (define-public ruby-parser
   (package
     (name "ruby-parser")
-    (version "3.0.0.0")
+    (version "3.1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "parser" version))
        (sha256
         (base32
-         "1jixakyzmy0j5c1rb0fjrrdhgnyryvrr6vgcybs14jfw09akv5ml"))))
+         "08q20ckhn58m49lccf93p0yv7pkc7hymmcz3di762kb658d5fd38"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; tests not included in gem
