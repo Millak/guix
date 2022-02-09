@@ -199,6 +199,11 @@ tools that process C/C++ code.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-linkage
+           (lambda _
+            (substitute* "clang_delta/CMakeLists.txt"
+              (("\\$\\{LLVM_LINK_LLVM_DYLIB\\}") "True")
+              (("  LLVM") "  LLVMSupport"))))
          (add-before 'build 'hardcode-paths
            (lambda _
             (substitute* "cvise.py"
