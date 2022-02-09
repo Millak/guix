@@ -8358,6 +8358,10 @@ tools for managing PipeWire.")
                (base32
                 "0lxjizby3zdyhzad5a0gbz4m2pp44jf1j4l1pn18d04rw9mr2gqy"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; Tests launch dbus-daemon instances that all try to bind to
+     ;; "/tmp/ell-test-bus".  Thus, we need to run them sequentially.
+     '(#:parallel-tests? #f))
     (inputs
      (list dbus))
     (native-inputs
