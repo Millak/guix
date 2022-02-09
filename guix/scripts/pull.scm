@@ -287,7 +287,8 @@ purposes."
                   (texi->plain-text title))
 
                 ;; When Texinfo markup is invalid, display it as-is.
-                (const title)))))))
+                (const title)))
+             (or (pager-wrapped-port port) port)))))
 
 (define (display-news-entry entry channel language port)
   "Display ENTRY, a <channel-news-entry> from CHANNEL, in LANGUAGE, a language
@@ -299,7 +300,8 @@ code, to PORT."
     (channel-news-entry-commit entry))
 
   (display-news-entry-title entry language port)
-  (format port (dim (G_ "    commit ~a~%"))
+  (format port (dim (G_ "    commit ~a~%")
+                    (or (pager-wrapped-port port) port))
           (if (supports-hyperlinks?)
               (channel-commit-hyperlink channel commit)
               commit))
@@ -681,14 +683,20 @@ Return true when there is more package info to display."
              (raise (condition (&profile-not-found-error
                                 (profile profile)))))
             ((not pattern)
-             (list-generations profile (profile-generations profile)))
+             (with-paginated-output-port port
+               (with-output-to-port port
+                 (lambda ()
+                   (list-generations profile (profile-generations profile))))))
             ((matching-generations pattern profile)
              =>
              (match-lambda
                (()
                 (exit 1))
                ((numbers ...)
-                (list-generations profile numbers)))))))
+                (with-paginated-output-port port
+                  (with-output-to-port port
+                    (lambda ()
+                      (list-generations profile numbers))))))))))
     (('display-news)
      (display-news profile))))
 
