@@ -1900,7 +1900,9 @@ DURATION-RELATION with the current time."
            (link   (if (supports-hyperlinks?)
                        (cut file-hyperlink file <>)
                        identity))
-           (header (format #f (link (highlight (G_ "Generation ~a\t~a")))
+           (header (format #f (link (highlight (G_ "Generation ~a\t~a")
+                                               (or (pager-wrapped-port)
+                                                   (current-output-port))))
                            number
                            (date->string
                             (time-utc->date
