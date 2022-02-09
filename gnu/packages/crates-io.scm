@@ -11813,6 +11813,24 @@ diagnostics easy and relatively painless for everyone!")
     (description "This package provides colorful panic backtraces.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-color-backtrace-0.3
+  (package
+    (inherit rust-color-backtrace-0.5)
+    (name "rust-color-backtrace")
+    (version "0.3.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "color-backtrace" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0mx9ycb70mqbs6z107ri5g09wz5k7pa0vfnys28wfqycg083zlb5"))))
+    (arguments
+      `(#:cargo-inputs
+        (("rust-atty" ,rust-atty-0.2)
+         ("rust-backtrace" ,rust-backtrace-0.3)
+         ("rust-termcolor" ,rust-termcolor-1))))))
+
 (define-public rust-concolor-query
   (package
     (name "rust-concolor-query")
