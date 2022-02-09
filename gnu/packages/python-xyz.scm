@@ -229,6 +229,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module (guix gexp)
@@ -3155,6 +3156,41 @@ server.")
     (description
      "@code{pafy} is a python library to retrieve YouTube content and metadata.")
     (license license:lgpl3+)))
+
+(define-public python-miniupnpc
+  (package
+    (name "python-miniupnpc")
+    (version "2.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/miniupnp/miniupnp")
+         (commit
+          (string-append
+           "miniupnpc_" (string-replace-substring version "." "_")))))
+       (file-name
+        (git-file-name name version))
+       (sha256
+        (base32 "03q1rlzvfzm15g1bfw2zqzavlsyaypnaf2k3cz6ha7k5rirkdy0l"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'subdir
+            (lambda* (#:key inputs #:allow-other-keys)
+              (chdir "miniupnpc")
+              (setenv "CC" #$(cc-for-target))
+              (substitute* "Makefile"
+                (("/bin/sh") (search-input-file inputs "/bin/sh"))))))))
+    (inputs (list python))              ;we are building a Python extension
+    (synopsis "UPnP client for Python")
+    (description "Miniupnpc is a client library for Python programs to set up
+port forwards using @acronym{UPnP, Universal Plug and Play}.")
+    (home-page "http://miniupnp.free.fr")
+    (license license:bsd-3)))
 
 (define-public python2-funcsigs
   (package
