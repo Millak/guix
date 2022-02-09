@@ -124,6 +124,7 @@
             file-hyperlink
             location->hyperlink
 
+            pager-wrapped-port
             with-paginated-output-port
             relevance
             package-relevance
@@ -1665,6 +1666,20 @@ score, the more relevant OBJ is to REGEXPS."
 zero means that PACKAGE does not match any of REGEXPS."
   (relevance package regexps %package-metrics))
 
+(define pager-port-mapping
+  ;; If a pager is being used, via 'with-paginated-output-port', this maps the
+  ;; pager port (pipe) to the underlying output port.
+  (make-parameter #f))
+
+(define* (pager-wrapped-port #:optional (port (current-output-port)))
+  "If PORT is a pipe to a pager created by 'with-paginated-output-port',
+return the underlying port.  Otherwise return #f."
+  (match (pager-port-mapping)
+    ((pager . wrapped)
+     (and (eq? pager port) wrapped))
+    (_
+     #f)))
+
 (define* (call-with-paginated-output-port proc
                                           #:key (less-options "FrX"))
   (let ((pager-command-line (or (getenv "GUIX_PAGER")
@@ -1691,7 +1706,10 @@ zero means that PACKAGE does not match any of REGEXPS."
                                                      char-set:whitespace))))))
           (dynamic-wind
             (const #t)
-            (lambda () (proc pager))
+            (lambda ()
+              (parameterize ((pager-port-mapping
+                              (cons pager (current-output-port))))
+                (proc pager)))
             (lambda () (close-pipe pager))))
         (proc (current-output-port)))))
 
