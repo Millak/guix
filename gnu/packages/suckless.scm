@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -991,6 +992,39 @@ chat output in the background.")
 "@command{snooze} is a tool for waiting until a particular time and then
 running a command.")
     (license license:cc0)))
+
+(define-public sbase
+  ;; There are no tagged releases.
+  (let ((commit "2c2a7f54ab55a022a617e510b6e00c3e2736fabd")
+        (revision "0"))
+    (package
+      (name "sbase")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://git.suckless.org/sbase/")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "119v1lpgsx8bx9h57wg454ddhzz2awqavl3wrn35a704vifg28g0"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                             (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))
+      (home-page "https://core.suckless.org/sbase/")
+      (synopsis "Collection of UNIX tools")
+      (description "@command{sbase} is a collection of UNIX tools similar to those of GNU
+Coreutils, containing utilities commands such as @command{grep}, @command{cp},
+@command{rm}, etc.")
+      (license license:expat))))
 
 (define-public scron
   (package
