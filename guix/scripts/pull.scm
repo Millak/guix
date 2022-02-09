@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
@@ -105,6 +105,8 @@ Download and deploy the latest version of Guix.\n"))
   -l, --list-generations[=PATTERN]
                          list generations matching PATTERN"))
   (display (G_ "
+      --details          show details when listing generations"))
+  (display (G_ "
       --roll-back        roll back to the previous generation"))
   (display (G_ "
   -d, --delete-generations[=PATTERN]
@@ -138,6 +140,17 @@ Download and deploy the latest version of Guix.\n"))
                  (lambda (opt name arg result)
                    (cons `(query list-generations ,arg)
                          result)))
+         (option '("details") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'details? #t
+                               (match (find (match-lambda
+                                              (('query 'list-generations _)
+                                               #t)
+                                              (_ #f))
+                                            result)
+                                 (#t result)
+                                 (#f (cons `(query list-generations #f)
+                                           result))))))
          (option '("roll-back") #f #f
                  (lambda (opt name arg result)
                    (cons '(generation roll-back)
@@ -640,17 +653,23 @@ Return true when there is more package info to display."
 
 (define (process-query opts profile)
   "Process any query on PROFILE specified by OPTS."
+  (define details?
+    (assoc-ref opts 'details?))
+
   (match (assoc-ref opts 'query)
     (('list-generations pattern)
      (define (list-generations profile numbers)
        (match numbers
          ((first rest ...)
           (display-profile-content profile first)
+
           (let loop ((numbers numbers))
             (match numbers
               ((first second rest ...)
-               (display-profile-content-diff profile
-                                             first second)
+               (if details?
+                   (display-profile-content-diff profile
+                                                 first second)
+                   (display-profile-content profile second))
                (display-channel-news (generation-file-name profile second)
                                      (generation-file-name profile first))
                (loop (cons second rest)))
@@ -754,7 +773,7 @@ Use '~/.config/guix/channels.scm' instead."))
 (define-command (guix-pull . args)
   (synopsis "pull the latest revision of Guix")
 
-  (define (no-arguments arg _‌)
+  (define (no-arguments arg _)
     (leave (G_ "~A: extraneous argument~%") arg))
 
   (with-error-handling
