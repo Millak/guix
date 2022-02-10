@@ -5329,8 +5329,7 @@ result in several formats:
              (delete-file (string-append (assoc-ref outputs "out")
                                          "/lib/librav1e.a")))))))
     (native-inputs
-     `(("cargo-c" ,rust-cargo-c)
-       ("nasm" ,nasm)))
+     (list rust-cargo-c nasm))
     (home-page "https://github.com/xiph/rav1e/")
     (synopsis "Fast and safe AV1 encoder")
     (description "@code{rav1e} is an AV1 video encoder.  It is designed to
