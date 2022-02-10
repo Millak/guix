@@ -8908,7 +8908,7 @@ fight each other on an arena-like map.")
 (define-public flare-engine
   (package
     (name "flare-engine")
-    (version "1.13")
+    (version "1.13.04")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8917,7 +8917,7 @@ fight each other on an arena-like map.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1daqx12w1gk9cf393zw89fy42lx4arjycm417380gqi775vbmamc"))))
+                "042n2r9whnd3kncf3k89dcl1srn7p2jk6kdc0lb2hbwff55iylnw"))))
     (build-system cmake-build-system)
     (arguments
      (list
