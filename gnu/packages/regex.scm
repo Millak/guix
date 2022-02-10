@@ -31,7 +31,7 @@
 (define-public re2
    (package
      (name "re2")
-     (version "2020-11-01")
+     (version "2022-02-01")
      (home-page "https://github.com/google/re2")
      (source (origin
                (method git-fetch)
@@ -39,7 +39,7 @@
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0ii51fpp6fn51x4qyd99sy4r122s8ayh4x1srwhhijxlh8mzla5k"))))
+                 "1gzdqy5a0ln9rwd8kmwbgis6qin63hapicwb35xkbnj3y84jj6yx"))))
      (build-system gnu-build-system)
      (arguments
       `(#:modules ((guix build gnu-build-system)
@@ -64,8 +64,7 @@
             (lambda* (#:key outputs #:allow-other-keys)
               ;; No make target for shared-only; delete the static version.
               (delete-file (string-append (assoc-ref outputs "out")
-                                          "/lib/libre2.a"))
-              #t)))))
+                                          "/lib/libre2.a")))))))
      (synopsis "Fast, safe, thread-friendly regular expression engine")
      (description "RE2 is a fast, safe, thread-friendly alternative to
 backtracking regular expression engines like those used in PCRE, Perl and
