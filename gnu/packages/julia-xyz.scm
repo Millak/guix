@@ -2216,6 +2216,32 @@ finite elements analysis, Geo applications, and general geometry manipulations
 - while offering a Julian API, that still allows performant C-interop.")
     (license license:expat)))
 
+(define-public julia-gpuarrays
+  (package
+    (name "julia-gpuarrays")
+    (version "8.1.3")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaGPU/GPUArrays.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "129q8m94b2xq3vij28pkb7dry3r7qbiqrz72a26ma9kilcr35gk4"))))
+    (build-system julia-build-system)
+    (inputs
+     (list julia-adapt))
+    (home-page "https://github.com/JuliaGPU/GPUArrays.jl")
+    (synopsis "Reusable GPU array functionality for various GPU backends")
+    (description "This package is the counterpart of AbstractArray interface,
+but for GPU array types.  It provides functionality and tooling to speed-up
+development of new GPU array types.  This package is not intended for end
+users; instead, you should use one of the packages that builds on
+@code{GPUArrays.jl}, such as @code{CUDA.jl}, @code{oneAPI.jl} or
+@code{AMDGPU.jl}.")
+    (license license:expat)))
+
 (define-public julia-gr
   (package
     (name "julia-gr")
