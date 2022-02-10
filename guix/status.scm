@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -483,7 +483,9 @@ substitutes being downloaded."
              (format port (info (N_ "applying ~a graft for ~a ..."
                                     "applying ~a grafts for ~a ..."
                                     count))
-                     count drv)))
+                     count
+                     (string-drop-right (store-path-package-name drv)
+                                        (string-length ".drv")))))
          ('profile
           (let ((count (match (assq-ref properties 'profile)
                          (#f  0)
