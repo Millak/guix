@@ -693,6 +693,25 @@ variables, both with unordered (nominal variables) and ordered categories
 (ordinal variables), optionally with missing values.")
     (license license:expat)))
 
+(define-public julia-cenum
+  (package
+    (name "julia-cenum")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaInterop/CEnum.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h079mggvv420bw87j8s3hsgk7vavjgm4j1cvk0pnzrrh8ib1381"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaInterop/CEnum.jl")
+    (synopsis "C-compatible enum for Julia")
+    (description "This package provides a C-compatible enum for Julia.")
+    (license license:expat)))
+
 (define-public julia-chainrules
   (package
     (name "julia-chainrules")
