@@ -503,7 +503,7 @@ substitutes being downloaded."
           (let ((hook-type (assq-ref properties 'hook)))
             (or (and=> (hook-message hook-type)
                        (lambda (msg)
-                         (format port (info msg))))
+                         (display (info msg) port)))
                 (format port (info (G_ "running profile hook of type '~a'..."))
                         hook-type))))
          (_
