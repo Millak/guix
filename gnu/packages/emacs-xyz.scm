@@ -5592,6 +5592,40 @@ which integrates into existing mode-line without requiring a minor mode or
 configuration.")
       (license license:gpl3+))))
 
+(define-public emacs-nyan-mode
+  (package
+    (name "emacs-nyan-mode")
+    (version "1.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TeMPOraL/nyan-mode/")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0d0hdjliad8afz4br38gwidph9zhmm5s09y45n95kqlazq62jfsx"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons* "img/" "mus/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "nyan-mode.el"
+                (("mplayer ")
+                 (string-append (search-input-file inputs "bin/mplayer")
+                                " "))))))))
+    (inputs (list mplayer))
+    (home-page "https://github.com/TeMPOraL/nyan-mode/")
+    (synopsis "Nyan Cat as buffer position indicator")
+    (description
+     "Nyan mode is an analog indicator of your position in the buffer.  The cat
+should go from left to right in your mode-line, as you move your point from 0%
+to 100%.  You can click on the rainbow or the empty space to scroll backwards
+and forwards and also animate it.")
+    (license license:gpl3+)))
+
 (define-public emacs-smart-mode-line
   (package
     (name "emacs-smart-mode-line")
