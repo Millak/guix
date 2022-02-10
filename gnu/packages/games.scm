@@ -8937,7 +8937,7 @@ action RPGs.")
 (define-public flare-game
   (package
     (name "flare-game")
-    (version "1.13")
+    (version "1.13.04")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8946,7 +8946,7 @@ action RPGs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l0d4j2l1szdwrk8casaiskdk16wkbmms7cid4y751d42czg4ffw"))))
+                "18rdrwv7p5rvmlah5pl9vbc09xlb8id75a7c73yn2sxkm6cf5c2l"))))
     (build-system cmake-build-system)
     (arguments
      (list
