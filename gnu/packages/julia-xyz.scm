@@ -3045,6 +3045,34 @@ and printing JSON documents.")
 focus on speed and slick struct mapping.")
     (license license:expat)))
 
+(define-public julia-juno
+  (package
+    (name "julia-juno")
+    (version "0.8.4")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JunoLab/Juno.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "02ryj5blnrmck3jisrpwn1x563i7rsg65d7zms52njsvv499gygk"))))
+    (build-system julia-build-system)
+    (inputs
+     (list julia-media))
+    (home-page "https://github.com/JunoLab/Juno.jl")
+    (synopsis "Integrated Development Environment (IDE) for Julia")
+    (description "This package provides tools to help you develop code.  Juno
+is built on the Atom text editor.  Juno consists of both Julia and Atom
+packages in order to add Julia-specific enhancements, such as syntax
+highlighting, a plot pane, integration with Julia's debugger, a console for
+running code, and much more.
+
+Consider that the package is “maintenance-only mode” and only receives bug
+fixes.  The Julia IDE effort is pointed to extension for VSCode.")
+    (license license:expat)))
+
 (define-public julia-latexstrings
   (package
     (name "julia-latexstrings")
