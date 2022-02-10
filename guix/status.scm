@@ -414,6 +414,11 @@ produce colorful output.  When PRINT-LOG? is true, display the build log in
 addition to build events.  When PRINT-URLS? is true, display the URL of
 substitutes being downloaded."
   (define info
+    (if (and colorize? (or print-urls? print-log?))
+        (cute colorize-string <> (color BOLD))
+        identity))
+
+  (define emph
     (if colorize?
         (cute colorize-string <> (color BOLD))
         identity))
@@ -526,7 +531,7 @@ substitutes being downloaded."
         (format port (failure (G_ "Could not find build log for '~a'."))
                 drv))
        (log
-        (format port (info (G_ "View build log at '~a'.")) log)))
+        (format port (emph (G_ "View build log at '~a'.")) log)))
      (newline port))
     (('substituter-started item _ ...)
      (erase-current-line*)
@@ -577,12 +582,12 @@ substitutes being downloaded."
      ;; /gnu/store/…-sth:", where "sha256" is the hash algorithm.
      (format port (failure (G_ "~a hash mismatch for ~a:")) algo item)
      (newline port)
-     (format port (info (G_ "\
+     (format port (emph (G_ "\
   expected hash: ~a
   actual hash:   ~a~%"))
              expected actual))
     (('build-remote drv host _ ...)
-     (format port (info (G_ "offloading build of ~a to '~a'")) drv host)
+     (format port (emph (G_ "offloading build of ~a to '~a'")) drv host)
      (newline port))
     (('build-log pid line)
      (if (multiplexed-output-supported?)
