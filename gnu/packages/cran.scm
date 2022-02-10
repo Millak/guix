@@ -5014,6 +5014,31 @@ avoid overlapping text labels.  Labels repel away from each other and away
 from the data points.")
     (license license:gpl3)))
 
+(define-public r-coro
+  (package
+    (name "r-coro")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "coro" version))
+       (sha256
+        (base32 "14irld29dipgfd34y0k351daqg9vqpnpdx8m3pxmqr1aiyj5f5cv"))))
+    (properties `((upstream-name . "coro")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rlang))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/r-lib/coro")
+    (synopsis "Coroutines for R")
+    (description
+     "This package provides coroutines for R, a family of functions that can
+be suspended and resumed later on.  This includes async functions (which
+await) and generators (which yield).  Async functions are based on the
+concurrency framework of the @code{promises} package.  Generators are based on
+a dependency free iteration protocol defined in @code{coro} and are compatible
+with iterators from the @code{reticulate} package.")
+    (license license:expat)))
+
 (define-public r-corrplot
   (package
     (name "r-corrplot")
