@@ -3,6 +3,7 @@
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,10 +21,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages less)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-compression)
   #:use-module (gnu packages file)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -59,38 +62,57 @@ text editors.")
 (define-public lesspipe
   (package
     (name "lesspipe")
-    (version "1.91")
+    (version "2.04")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/wofr06/lesspipe")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04dqvq6j4h451xqbvxzv6pv679hzzfm39pdm5vg7h3r45gzg0kps"))))
+                "1mwmwkmiyrpib18mli4wrh9n0i12cnf08ssrj6a0s6bgjcfxcjr2"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (delete-file "Makefile") ; force generating
-                        (invoke "./configure"
-                                (string-append "--prefix=" out)
-                                "--yes"))))
-                  (add-before 'install 'patch-tput-and-file
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "lesspipe.sh"
-                        (("tput colors")
-                         (string-append (search-input-file inputs "/bin/tput")
-                                        " colors"))
-                        (("file -")
-                         (string-append (search-input-file inputs "/bin/file")
-                                        " -"))))))))
+     (list
+      #:tests? #f                      ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; configure is a perl script which the standard configure phase
+              ;; fails to execute
+              (invoke "./configure"
+                      (string-append "--prefix=" (assoc-ref outputs "out")))))
+          (add-before 'install 'fix-makefile
+            (lambda _
+              (substitute* "Makefile"
+                (("\\$\\(DESTDIR\\)/etc") "$(DESTDIR)$(PREFIX)/etc"))))
+          (add-before 'install 'patch-command-paths
+            ;; Depending on the content of the file to be displayed and some
+            ;; settings, lesspipe trees to use a large variety of external
+            ;; commands, e.g. rpm, dpkg, vimcolor.  We only link the
+            ;; essential ones to avoid this package to pull in all these
+            ;; dependencies which might never ever we used.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((file (search-input-file inputs "/bin/file"))
+                    (tput (search-input-file inputs "/bin/tput")))
+                (substitute* "sxw2txt"
+                  (("^use warnings;" line)
+                   (string-append
+                    line "\nuse lib '" #$(this-package-input "perl-archive-zip")
+                    "/lib/perl5/site_perl';")))
+                (substitute* "lesscomplete"
+                  (("file -") (string-append file " -")))
+                (substitute* "lesspipe.sh"
+                  (("tput colors")
+                   (string-append tput " colors"))
+                  (("file -")
+                   (string-append file " -")))))))))
     (inputs
-     (list file ncurses))  ; for tput
+     (list file
+           ncurses  ;; for tput
+           perl-archive-zip))
     (native-inputs (list perl))
     (home-page "https://github.com/wofr06/lesspipe")
     (synopsis "Input filter for less")
