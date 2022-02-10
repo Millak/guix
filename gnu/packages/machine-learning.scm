@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -2907,7 +2907,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.10.0")
+    (version "1.10.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2917,7 +2917,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ihsjw48qqbikmhxxn17bcdvk2zsjabvkq61q6pvj7dzvrdpkb60"))
+                "15fi3nr7fx2zc9j2xf0jq627zfmnvs8hijyifg9769arm8kfijs1"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
