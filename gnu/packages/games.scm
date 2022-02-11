@@ -6481,18 +6481,11 @@ monsters in a quest to find the mystifyingly fabulous Orb of Zot.")
            "GAME=crawl-tiles"
            #$flags))))
     (inputs
-     `(,@(package-inputs crawl)
-       ("font-dejavu" ,font-dejavu)
-       ("freetype6" ,freetype)
-       ("glu" ,glu)
-       ("libpng" ,libpng)
-       ("sdl2" ,sdl2)
-       ("sdl2-image" ,sdl2-image)
-       ("sdl2-mixer" ,sdl2-mixer)))
+     (modify-inputs (package-inputs crawl)
+       (prepend font-dejavu freetype glu libpng sdl2 sdl2-image sdl2-mixer)))
     (native-inputs
-     `(,@(package-native-inputs crawl)
-       ("pngcrush" ,pngcrush)
-       ("which" ,which)))
+     (modify-inputs (package-native-inputs crawl)
+       (prepend pngcrush which)))
     (synopsis "Graphical roguelike dungeon crawler game")))
 
 (define-public lugaru
