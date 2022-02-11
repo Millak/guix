@@ -38,12 +38,14 @@
             home-profile-service-type
             home-environment-variables-service-type
             home-files-service-type
+            home-xdg-configuration-files-service-type
             home-run-on-first-login-service-type
             home-activation-service-type
             home-run-on-change-service-type
             home-provenance-service-type
 
             home-files-directory
+            xdg-configuration-files-directory
 
             fold-home-service-types
             home-provenance
@@ -282,6 +284,27 @@ directory containing FILES."
                 (default-value '())
                 (description "Files that will be put in
 @file{~~/.guix-home/files}, and further processed during activation.")))
+
+(define xdg-configuration-files-directory "config")
+
+(define (xdg-configuration-files files)
+  "Add config/ prefix to each file-path in FILES."
+  (map (match-lambda
+         ((file-path . rest)
+          (cons (string-append xdg-configuration-files-directory "/" file-path)
+                rest)))
+         files))
+
+(define home-xdg-configuration-files-service-type
+  (service-type (name 'home-files)
+                (extensions
+                 (list (service-extension home-files-service-type
+                                          xdg-configuration-files)))
+                (compose concatenate)
+                (extend append)
+                (default-value '())
+                (description "Files that will be put in
+@file{~~/.guix-home/files/config}, and further processed during activation.")))
 
 (define %initialize-gettext
   #~(begin
