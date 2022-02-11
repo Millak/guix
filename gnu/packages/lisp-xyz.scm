@@ -75,6 +75,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -20507,3 +20508,77 @@ identified uniquely.
 
 (define-public ecl-nhooks
   (sbcl-package->ecl-package sbcl-nhooks))
+
+(define-public sbcl-nfiles
+  (package
+   (name "sbcl-nfiles")
+   (version "0.2.1")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/atlas-engineer/nfiles")
+           (commit version)))
+     (file-name (git-file-name "nfiles" version))
+     (sha256
+      (base32
+       "1jdrqvxp4dxlkggx951rxp29lg7hm8zxq35pqq8hr9m9ydy088s7"))))
+   (build-system asdf-build-system/sbcl)
+   (inputs
+    (list gnupg
+          sbcl-alexandria
+          sbcl-hu.dwim.defclass-star
+          sbcl-serapeum
+          sbcl-trivial-garbage
+          sbcl-trivial-package-local-nicknames
+          sbcl-trivial-types))
+   (native-inputs
+    (list sbcl-prove))
+   (arguments
+    `(#:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'fix-paths
+          (lambda* (#:key inputs #:allow-other-keys)
+            (substitute* "gpg.lisp"
+              (("\"gpg\"")
+               (string-append "\"" (assoc-ref inputs "gnupg") "/bin/gpg\""))))))))
+   (home-page "https://github.com/atlas-engineer/nfiles")
+   (synopsis "Manage file persistence and loading in Common Lisp")
+   (description
+    "NFiles is a Common Lisp library to help manage file persistence and
+loading, in particular user-centric files like configuration files.  It boasts
+the following features:
+
+@itemize
+@item Dynamic and customizable path expansion.
+
+@item Extensible serialization and deserialization.
+
+@item Cached reads and writes.  When a file object expands to the same path as
+another one, a read or write on it won’t do anything in case there was no
+change since last write.
+
+@item (Experimental!) On-the-fly PGP encryption.
+
+@item Profile support.
+
+@item On read error, existing files are backed up.
+
+@item On write error, no file is written to disk, the existing file is preserved.
+@end itemize\n")
+   (license license:bsd-3)))
+
+(define-public ecl-nfiles
+  (let ((pkg (sbcl-package->ecl-package sbcl-nfiles)))
+    (package
+      (inherit pkg)
+      (inputs
+       (cons (list "iolib" ecl-iolib)
+             (package-inputs pkg))))))
+
+(define-public cl-nfiles
+  (package
+    (inherit (sbcl-package->cl-source-package sbcl-nfiles))
+    (inputs
+     (cons (list "iolib" cl-iolib)
+           (package-inputs sbcl-nfiles)))))
