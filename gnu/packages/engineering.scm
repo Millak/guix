@@ -2398,127 +2398,110 @@ OpenSCAD code.  It supports syntax highlighting, indenting and refilling of
 comments.")))
 
 (define-public freecad
-  (package
-    (name "freecad")
-    (version "0.19.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/FreeCAD/FreeCAD")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1dkiwnqr6bhi2d90hz7ijqd872144c9n9xxpd1vbrmxr2x8cfl88"))
-       (patches (search-patches "freecad-vtk9.patch"
-                                "freecad-boost-serialization.patch"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list doxygen
-           graphviz
-           qttools
-           pkg-config
-           python-pyside-2-tools
-           swig))
-    (inputs
-     (list boost
-           coin3D
-           double-conversion
-           eigen
-           freetype
-           gl2ps
-           glew
-           hdf5-1.10
-           jsoncpp
-           libarea
-           libjpeg-turbo
-           libmedfile
-           libspnav
-           libtheora
-           libtiff
-           libxi
-           libxml++
-           libxmu
-           lz4
-           netcdf
-           opencascade-occt
-           openmpi
-           proj
-           python-gitpython
-           python-matplotlib
-           python-pivy
-           python-ply
-           python-pyside-2
-           python-pyyaml
-           python-shiboken-2
-           python-wrapper
-           qtbase-5
-           qtdeclarative
-           qtsvg
-           qtwebchannel
-           qtwebengine
-           qtx11extras
-           qtxmlpatterns
-           sqlite
-           tbb
-           vtk
-           xerces-c
-           zlib))
-    (arguments
-     `(#:tests? #f          ; Project has no tests
-       #:configure-flags
-       ,#~(list
-           "-DBUILD_QT5=ON"
-           "-DBUILD_FLAT_MESH:BOOL=ON"
-           "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
-           (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
-           (string-append "-DPYSIDE2UICBINARY="
-                          #$(this-package-native-input
-                             "python-pyside-2-tools")
-                          "/bin/uic")
-           (string-append "-DPYSIDE2RCCBINARY="
-                          #$(this-package-native-input
-                             "python-pyside-2-tools")
-                          "/bin/rcc")
-           "-DPYSIDE_LIBRARY=PySide2::pyside2"
-           (string-append
-            "-DPYSIDE_INCLUDE_DIR="
-            #$(this-package-input "python-pyside-2") "/include;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2/QtCore;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2/QtWidgets;"
-            #$(this-package-input "python-pyside-2") "/include/PySide2/QtGui;")
-           "-DSHIBOKEN_LIBRARY=Shiboken2::libshiboken"
-           (string-append "-DSHIBOKEN_INCLUDE_DIR="
-                          #$(this-package-input "python-shiboken-2")
-                          "/include/shiboken2"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'restore-pythonpath
-           (lambda _
-             (substitute* "src/Main/MainGui.cpp"
-               (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
-         (add-after 'install 'wrap-pythonpath
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/FreeCAD")
-                 (list "GUIX_PYTHONPATH"
-                       'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
-    (home-page "https://www.freecadweb.org/")
-    (synopsis "Your Own 3D Parametric Modeler")
-    (description
-     "FreeCAD is a general purpose feature-based, parametric 3D modeler for
+  ;; FIXME: We use a commit directly because upstream has compatibility fixes
+  ;; that are not in a release yet for boost, opencascade-occt-7.6 and vtk-9.
+  ;; Switch back to a regular version (probably 0.20) when it is released.
+  (let ((commit "09a05a9cd0c4692a57a3e038268b4389b4657fc6")
+        (revision "0"))
+    (package
+      (name "freecad")
+      (version (git-version "0.19.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/FreeCAD/FreeCAD")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0818basym0n44dsgix0yv1l00xgv9igrr7wkszd8x74lh1rr591r"))))
+      (build-system qt-build-system)
+      (native-inputs
+       (list doxygen
+             graphviz
+             qttools
+             pkg-config
+             python-pyside-2-tools
+             swig))
+      (inputs
+       (list boost
+             coin3D
+             double-conversion
+             eigen
+             freetype
+             gl2ps
+             glew
+             hdf5-1.10
+             jsoncpp
+             libarea
+             libjpeg-turbo
+             libmedfile
+             libspnav
+             libtheora
+             libtiff
+             libxi
+             libxml++
+             libxmu
+             lz4
+             netcdf
+             opencascade-occt
+             openmpi
+             proj
+             python-gitpython
+             python-matplotlib
+             python-pivy
+             python-ply
+             python-pyside-2
+             python-pyyaml
+             python-shiboken-2
+             python-wrapper
+             qtbase-5
+             qtdeclarative
+             qtsvg
+             qtwebchannel
+             qtwebengine
+             qtx11extras
+             qtxmlpatterns
+             sqlite
+             tbb
+             vtk
+             xerces-c
+             zlib))
+      (arguments
+       `(#:tests? #f          ; Project has no tests
+         #:configure-flags
+         ,#~(list
+             "-DBUILD_QT5=ON"
+             "-DBUILD_FLAT_MESH:BOOL=ON"
+             "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
+             (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'configure 'restore-pythonpath
+             (lambda _
+               (substitute* "src/Main/MainGui.cpp"
+                 (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
+           (add-after 'install 'wrap-pythonpath
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/FreeCAD")
+                   (list "GUIX_PYTHONPATH"
+                         'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
+      (home-page "https://www.freecadweb.org/")
+      (synopsis "Your Own 3D Parametric Modeler")
+      (description
+       "FreeCAD is a general purpose feature-based, parametric 3D modeler for
 CAD, MCAD, CAx, CAE and PLM, aimed directly at mechanical engineering and
 product design but also fits a wider range of uses in engineering, such as
 architecture or other engineering specialties.  It is 100% Open Source (LGPL2+
 license) and extremely modular, allowing for very advanced extension and
 customization.")
-    (license
-     (list
-      license:lgpl2.1+
-      license:lgpl2.0+
-      license:gpl3+
-      license:bsd-3))))
+      (license
+       (list
+        license:lgpl2.1+
+        license:lgpl2.0+
+        license:gpl3+
+        license:bsd-3)))))
 
 (define-public libmedfile
   (package
