@@ -757,7 +757,9 @@
                      (resources      (string-append lib "/resources"))
                      (preferences
                       ;; This file contains defaults for new user profiles.
-                      #$(local-file "aux-files/chromium/master-preferences.json"))
+                      #$(local-file
+                         (search-auxiliary-file
+                          "chromium/master-preferences.json")))
                      (gtk+           (assoc-ref inputs "gtk+"))
                      (xdg-utils      (assoc-ref inputs "xdg-utils")))
 
