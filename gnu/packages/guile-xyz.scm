@@ -5011,7 +5011,10 @@ HTTP handler to implement a HTTP GraphQL endpoint.")
              libtool
              gnu-gettext
              pkg-config
-             guile-3.0-for-lokke))
+
+             ;; Use Guile >= 3.0.8 to work around
+             ;; <https://bugs.gnu.org/49305>.
+             guile-3.0-latest))
       (inputs
        (list pcre2))
       (synopsis "Clojure implementation in Guile")
