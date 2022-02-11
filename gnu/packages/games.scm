@@ -6401,18 +6401,15 @@ fish.  The whole game is accompanied by quiet, comforting music.")
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("lua51" ,lua-5.1)
-       ("ncurses" ,ncurses)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list lua-5.1 ncurses sqlite zlib))
     (native-inputs
-     `(("bash" ,bash-minimal)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ("python-pyyaml" ,python-pyyaml)
-       ("pkg-config" ,pkg-config)))
+     (list bash-minimal
+           bison
+           flex
+           perl
+           pkg-config
+           python-wrapper
+           python-pyyaml))
     (arguments
      `(#:make-flags
        (let* ((sqlite (assoc-ref %build-inputs "sqlite"))
