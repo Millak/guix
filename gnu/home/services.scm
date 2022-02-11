@@ -43,6 +43,8 @@
             home-run-on-change-service-type
             home-provenance-service-type
 
+            home-files-directory
+
             fold-home-service-types
             home-provenance
 
@@ -74,12 +76,11 @@
 ;;; file (details described in the manual).
 ;;;
 ;;; home-files-service-type is similar to etc-service-type, but doesn't extend
-;;; home-activation, because deploy mechanism for config files is pluggable and
-;;; can be different for different home environments: The default one is called
-;;; symlink-manager (will be introudced in a separate patch series), which creates
-;;; links for various dotfiles (like $XDG_CONFIG_HOME/$APP/...) to store, but is
-;;; possible to implement alternative approaches like read-only home from Julien's
-;;; guix-home-manager.
+;;; home-activation, because deploy mechanism for config files is pluggable
+;;; and can be different for different home environments: The default one is
+;;; called symlink-manager, which creates links for various dotfiles and xdg
+;;; configuration files to store, but is possible to implement alternative
+;;; approaches like read-only home from Julien's guix-home-manager.
 ;;;
 ;;; home-run-on-first-login-service-type provides an @file{on-first-login} guile
 ;;; script, which runs provided gexps once, when user makes first login.  It can
@@ -262,11 +263,14 @@ esac
 
   (file-union "files" files))
 
+;; Used by symlink-manager
+(define home-files-directory "files")
+
 (define (files-entry files)
   "Return an entry for the @file{~/.guix-home/files}
 directory containing FILES."
   (with-monad %store-monad
-    (return `(("files" ,(files->files-directory files))))))
+    (return `((,home-files-directory ,(files->files-directory files))))))
 
 (define home-files-service-type
   (service-type (name 'home-files)
@@ -276,8 +280,8 @@ directory containing FILES."
                 (compose concatenate)
                 (extend append)
                 (default-value '())
-                (description "Configuration files for programs that
-will be put in @file{~/.guix-home/files}.")))
+                (description "Files that will be put in
+@file{~~/.guix-home/files}, and further processed during activation.")))
 
 (define %initialize-gettext
   #~(begin

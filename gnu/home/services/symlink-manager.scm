@@ -26,12 +26,11 @@
 
 ;;; Comment:
 ;;;
-;;; symlink-manager cares about configuration files: it backs up files
-;;; created by user, removes symlinks and directories created by a
-;;; previous generation, and creates new directories and symlinks to
-;;; configuration files according to the content of files/ directory
-;;; (created by home-files-service) of the current home environment
-;;; generation.
+;;; symlink-manager cares about xdg configurations and other files: it backs
+;;; up files created by user, removes symlinks and directories created by a
+;;; previous generation, and creates new directories and symlinks to files
+;;; according to the content of directories (created by home-files-service) of
+;;; the current home environment generation.
 ;;;
 ;;; Code:
 
@@ -84,7 +83,7 @@
            ;; store item containing a home generation.
            (define config-file-directory
              ;; Note: Trailing slash is needed because "files" is a symlink.
-             (string-append home-generation "/files/"))
+             (string-append home-generation "/" #$home-files-directory "/"))
 
            (define (strip file)
              (string-drop file
@@ -143,7 +142,7 @@
            ;; Create in $HOME symlinks for the files in HOME-GENERATION.
            (define config-file-directory
              ;; Note: Trailing slash is needed because "files" is a symlink.
-             (string-append home-generation "/files/"))
+             (string-append home-generation "/" #$home-files-directory "/"))
 
            (define (strip file)
              (string-drop file
