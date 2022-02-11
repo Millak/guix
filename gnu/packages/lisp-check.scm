@@ -8,6 +8,7 @@
 ;;; Copyright © 2019, 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -357,6 +358,44 @@ interactive development model in mind.")
 
 (define-public ecl-fiveam
   (sbcl-package->ecl-package sbcl-fiveam))
+
+(define-public sbcl-hamcrest
+  (let ((commit "a54553e59a70dc5a539b683e79bfcdb0e8bae5c8")
+        (revision "0"))
+    (package
+      (name "sbcl-hamcrest")
+      (version "0.4.4")
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/40ants/cl-hamcrest")
+                (commit commit)))
+          (sha256
+           (base32 "181nnb2fjbsdqjqdvwg2x9n1jjalkfzszwdgqcap4py2q63q1kxj"))
+          (file-name (git-file-name "cl-hamcrest" commit))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+        (list sbcl-iterate
+              sbcl-split-sequence
+              sbcl-cl-ppcre
+              sbcl-alexandria
+              sbcl-rove
+              sbcl-prove))
+      (home-page "https://40ants.com/cl-hamcrest/")
+      (synopsis "Make CL unit tests more readable")
+      (description
+       "@code{cl-hamcrest} is an implementation of the Hamcrest idea in
+Common Lisp.  It simplifes unit tests and makes them more readable.
+Hamcrest uses the idea of pattern-matching, to construct matchers from
+different pieces and to apply them to the data.")
+      (license license:bsd-3))))
+
+(define-public cl-hamcrest
+  (sbcl-package->cl-source-package sbcl-hamcrest))
+
+(define-public ecl-cl-hamcrest
+  (sbcl-package->ecl-package sbcl-hamcrest))
 
 (define-public sbcl-hu.dwim.stefil
   (let ((commit "414902c6f575818c39a8a156b8b61b1adfa73dad"))
