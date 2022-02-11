@@ -32,6 +32,8 @@
   #:use-module ((guix diagnostics) #:select (guix-warning-port))
   #:use-module (json)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-64)
   #:use-module (ice-9 match)
   #:use-module (ice-9 optargs))
@@ -265,10 +267,8 @@ Requires-Dist: pytest (>=3.1.0); extra == 'testing'
                                   hash)
                         (equal? (pypi->guix-package "foo" #:version "1.0.0")
                                 (pypi->guix-package "foo"))
-                        (catch 'quit
-                          (lambda ()
-                            (pypi->guix-package "foo" #:version "42"))
-                          (const #t))))
+                        (guard (c ((error? c) #t))
+                          (pypi->guix-package "foo" #:version "42"))))
                   (x
                    (pk 'fail x #f))))))
 
