@@ -21028,17 +21028,17 @@ autosuggestions with:
 (define-public emacs-desktop-environment
   (package
     (name "emacs-desktop-environment")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.petton.fr/DamienCassou/desktop-environment")
+             (url "https://github.com/DamienCassou/desktop-environment")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0s33jncjg8c2xlr90qjk1ishwmwxm9yg0z6n3kzilawcilpxidsh"))))
+         "03rl1z860jmirjrrg0xsjx0bqk73k043c8bz6049zhndh7pidri7"))))
     (build-system emacs-build-system)
     (home-page "https://gitlab.petton.fr/DamienCassou/desktop-environment")
     (synopsis "Control your GNU/Linux desktop environment from Emacs")
