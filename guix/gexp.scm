@@ -2068,7 +2068,7 @@ resulting store file holds references to all these."
                     #:local-build? #t
                     #:substitutable? #f))
 
-(define* (mixed-text-file name #:rest text)
+(define* (mixed-text-file name #:key guile #:rest text)
   "Return an object representing store file NAME containing TEXT.  TEXT is a
 sequence of strings and file-like objects, as in:
 
@@ -2077,12 +2077,13 @@ sequence of strings and file-like objects, as in:
 
 This is the declarative counterpart of 'text-file*'."
   (define build
-    (gexp (call-with-output-file (ungexp output "out")
-            (lambda (port)
-              (set-port-encoding! port "UTF-8")
-              (display (string-append (ungexp-splicing text)) port)))))
+    (let ((text (if guile (drop text 2) text)))
+      (gexp (call-with-output-file (ungexp output "out")
+              (lambda (port)
+                (set-port-encoding! port "UTF-8")
+                (display (string-append (ungexp-splicing text)) port))))))
 
-  (computed-file name build))
+  (computed-file name build #:guile guile))
 
 (define* (file-union name files #:key guile)
   "Return a <computed-file> that builds a directory containing all of FILES.

@@ -472,7 +472,8 @@ to its file name extension.  Return both its file name and its hash."
                                      (format #t #+content)))
                                  (when #+command
                                    (invoke #+command #+name-sans-ext))
-                                 (copy-file #+name #$output)))))
+                                 (copy-file #+name #$output))
+                             #:guile %bootstrap-guile)))
          (file-drv (run-with-store store (lower-object f)))
          (file (derivation->output-path file-drv))
          (file-drv-outputs (derivation-outputs file-drv))

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -716,7 +716,8 @@
                                   (use-modules (guix build utils))
                                   (setenv "PATH" #+bin)
                                   (invoke "tar" "xvf" #+out)
-                                  (copy-file #+name #$output)))))
+                                  (copy-file #+name #$output)))
+                            #:guile %bootstrap-guile))
                         (drv (run-with-store %store (lower-object f)))
                         (_ (build-derivations %store (list drv))))
                    (call-with-input-file (derivation->output-path drv)
