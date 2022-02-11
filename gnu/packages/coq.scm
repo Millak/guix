@@ -276,7 +276,7 @@ inside Coq.")
 (define-public coq-gappa
   (package
     (name "coq-gappa")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -286,7 +286,7 @@ inside Coq.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ivh8xm1c8191rm4riamjzya2x6ls96qax5byir1fywf9hbxr1vg"))))
+         "18y4mv44mcgyam77rf4xs7l06mg7pxx1qli3yvs0kklmnnvwa463"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
