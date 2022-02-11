@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -7154,7 +7154,7 @@ elements to achieve a simple goal in the most complex way possible.")
 (define-public pioneer
   (package
     (name "pioneer")
-    (version "20210723")
+    (version "20220203")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7163,7 +7163,7 @@ elements to achieve a simple goal in the most complex way possible.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hj99jxb9n3r0bkq87p1c24862xa1xyzjyfdyyx88ckszxb05qf3"))))
+                "0qjq6lsr1rmcnvq9b7r745cpp7n0q6cpc3k81q8ai4xspbq61m8w"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -7182,6 +7182,7 @@ elements to achieve a simple goal in the most complex way possible.")
     (arguments
      `(#:tests? #f                      ;tests are broken
        #:configure-flags (list "-DUSE_SYSTEM_LIBLUA:BOOL=YES"
+                               "-DUSE_SYSTEM_LIBGLEW:BOOL=YES"
                                (string-append "-DPIONEER_DATA_DIR="
                                               %output "/share/games/pioneer"))
        #:make-flags (list "all" "build-data")))
