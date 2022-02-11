@@ -7,7 +7,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
+;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -1971,10 +1971,21 @@ ac_cv_c_float_format='IEEE (little-endian)'
          "CPPFLAGS=-D__GNUC__=1")))))
 
 (define hello-mesboot
-  ;; Check for Scheme-only bootstrap.
+  ;; Check for Scheme-only bootstrap.  Note that newer versions of Hello
+  ;; break due to the way that newer versions of Gnulib handle
+  ;; "limits.h".  Hence, we stick to 2.10.
   (package
     (inherit hello)
     (name "hello-mesboot")
+    (version "2.10")
+    (source
+     (origin
+       (inherit (package-source hello))
+       (uri (string-append "mirror://gnu/hello/hello-" version
+                           ".tar.gz"))
+       (sha256
+        (base32
+         "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
     (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
