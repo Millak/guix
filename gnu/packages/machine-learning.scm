@@ -3113,3 +3113,65 @@ Note: currently this package does not provide GPU support.")
      "Hmmlearn is a set of algorithms for unsupervised learning and inference
 of Hidden Markov Models.")
     (license license:bsd-3)))
+
+;; Keep this in sync with the r-torch package.
+(define-public liblantern
+  (package
+    (name "liblantern")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mlverse/torch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gabwic46m4m7qld1yi4brw05n9jx58ri3y0pi6jf9jndfi1qnfp"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "lantern")))
+          (add-after 'chdir 'do-not-download-binaries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
+                (("retrieve_lib\\(.*") ""))
+              (setenv "LIBRARY_PATH"
+                      (string-append
+                       (search-input-directory
+                        inputs "/lib/python3.9/site-packages/torch/lib")
+                       ":" (or (getenv "LIBRARY_PATH") "")))
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       (search-input-directory
+                        inputs "lib/python3.9/site-packages/torch/include/torch/csrc/api/include/")
+                       ":"
+                       (search-input-directory
+                        inputs "lib/python3.9/site-packages/torch/include/")
+                       ":"
+                       (or (getenv "CPLUS_INCLUDE_PATH") "")))
+              (setenv "C_INCLUDE_PATH"
+                      (string-append
+                       (search-input-directory
+                        inputs "lib/python3.9/site-packages/torch/include/")
+                       ":"
+                       (or (getenv "C_INCLUDE_PATH") "")))))
+          (replace 'install
+            (lambda _
+              (install-file
+               "../build/liblantern.so"
+               (string-append #$output "/lib"))
+              (copy-recursively
+               "../lantern/include"
+               (string-append #$output "/include")))))))
+    (inputs (list python-pytorch-for-r-torch))
+    (home-page "https://github.com/mlverse/torch/")
+    (synopsis "C API to libtorch")
+    (description
+     "Lantern provides a C API to the libtorch machine learning library.")
+    (license license:expat)))
