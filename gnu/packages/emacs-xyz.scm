@@ -6200,34 +6200,31 @@ user.")
     (license license:gpl3+)))
 
 (define-public emacs-subed
-  ;; XXX: Upstream does not tag releases.  Commit below matches version bump.
-  (let ((commit "9a660ed88600e9aff741051c28a9e638cd5df5f5"))
-    (package
-      (name "emacs-subed")
-      (version "1.0.2")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sachac/subed")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1biczfg8cl9sy02yx7nmf5ma7mdjsmi27v93x1gaw4zjwj8fmlkg"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'chdir-subed
-                      (lambda _
-                        (chdir "subed"))))))
-      (home-page "https://elpa.nongnu.org/nongnu/subed.html")
-      (synopsis "Major mode for editing subtitles")
-      (description
-       "@code{subed} is an Emacs major mode for editing subtitles while
-playing the corresponding video with mpv.  At the moment, the only supported
+  (package
+    (name "emacs-subed")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
+                                  version ".tar"))
+              (sha256
+               (base32
+                "0wibakmp1lhfyr6sifb7f3jcqp2s5sy0z37ad9n1n9rhj5q8yhzg"))))
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "make" "test-only")))
+    (native-inputs
+     (list emacs-buttercup))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.nongnu.org/nongnu/subed.html")
+    (synopsis "Major mode for editing subtitles")
+    (description
+     "@code{subed} is an Emacs major mode for editing subtitles while playing
+the corresponding video with @code{mpv}.  At the moment, the only supported
 formats are SubRip (@file{.srt}), WebVTT (@file{.vtt}), and Advanced
 SubStation Alpha (@file{.ass}).")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-miniedit
   (package
