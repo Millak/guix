@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -597,13 +597,10 @@ This is the declarative counterpart of 'gexp->derivation'."
   ;; gexp.
   (match file
     (($ <computed-file> name gexp guile options)
-     (if guile
-         (mlet %store-monad ((guile (lower-object guile system
-                                                  #:target target)))
-           (apply gexp->derivation name gexp #:guile-for-build guile
-                  #:system system #:target target options))
-         (apply gexp->derivation name gexp
-                #:system system #:target target options)))))
+     (mlet %store-monad ((guile (lower-object (or guile (default-guile))
+                                              system #:target target)))
+       (apply gexp->derivation name gexp #:guile-for-build guile
+              #:system system #:target target options)))))
 
 (define-record-type <program-file>
   (%program-file name gexp guile path)
@@ -2087,7 +2084,7 @@ This is the declarative counterpart of 'text-file*'."
 
   (computed-file name build))
 
-(define (file-union name files)
+(define* (file-union name files #:key guile)
   "Return a <computed-file> that builds a directory containing all of FILES.
 Each item in FILES must be a two-element list where the first element is the
 file name to use in the new directory, and the second element is a gexp
@@ -2121,7 +2118,8 @@ This yields an 'etc' directory containing these two files."
                                   (mkdir-p (dirname (ungexp target)))
                                   (symlink (ungexp source)
                                            (ungexp target))))))
-                            files)))))))
+                            files)))))
+                 #:guile guile))
 
 (define* (directory-union name things
                           #:key (copy? #f) (quiet? #f)

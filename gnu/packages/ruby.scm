@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015 Pjotr Prins <pjotr.guix@thebird.nl>
-;;; Copyright © 2014, 2015, 2016, 2017, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -5717,7 +5717,14 @@ aware transformations between times in different time zones.")
                  (uri "https://data.iana.org/time-zones/releases/tzcode2021a.tar.gz.asc")
                  (sha256
                   (base32
-                   "1qhlj4lr810s47s1lwcvv1sgvg2sflf98w4sbg1lc8wzv5qxxv7g")))))))))
+                   "1qhlj4lr810s47s1lwcvv1sgvg2sflf98w4sbg1lc8wzv5qxxv7g")))))
+
+           ;; XXX: Explicitly depend on 'guile-final', which was previously
+           ;; implied via the '%guile-for-build' fluid but not explicit.
+           ;; TODO: Remove this argument on the next rebuild cycle.
+           #:guile (module-ref (resolve-interface
+                                '(gnu packages commencement))
+                               'guile-final)))))
     (synopsis "Data from the IANA Time Zone database")
     (description
      "This library provides @code{TZInfo::Data}, which contains data from the
