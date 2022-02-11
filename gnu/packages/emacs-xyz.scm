@@ -10318,7 +10318,7 @@ provides the following features:
 (define-public emacs-markdown-mode
   (package
     (name "emacs-markdown-mode")
-    (version "2.4")
+    (version "2.5")
     (source
      (origin
        (method git-fetch)
@@ -10327,7 +10327,7 @@ provides the following features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g0ja4h651yfabm3k6gbw4y8w7wibc9283fyfzb33kjj38ivl5d7"))))
+        (base32 "02vw1zsbwa2hc3sxvbpvbldi5cf1xgd5b9l6fwg24d24j6b2af0j"))))
     (build-system emacs-build-system)
     (home-page "https://jblevins.org/projects/markdown-mode/")
     (synopsis "Emacs Major mode for Markdown files")
