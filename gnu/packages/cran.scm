@@ -55,6 +55,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
@@ -22745,6 +22746,58 @@ settings (linear regression, nonlinear regression, nonparametric regression,
 and multivariate regression), and analysis of variance tolerance intervals.
 Visualizations are also available for most of these settings.")
     (license license:gpl2+)))
+
+;; Keep this in sync with the liblantern package.
+(define-public r-torch
+  (package
+    (name "r-torch")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "torch" version))
+       (sha256
+        (base32 "05vxb84qxna1rpzqhjw6gwyc569zyz7rfbdkahglvihqjjwabc4x"))))
+    (properties `((upstream-name . "torch")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'link-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((deps (string-append #$output "/site-library/torch/deps")))
+                (mkdir-p deps)
+                (symlink
+                 (search-input-file
+                  inputs "/lib/python3.9/site-packages/torch/lib/libtorch.so")
+                 (string-append deps "/libtorch.so"))
+                (symlink
+                 (search-input-file
+                  inputs "/lib/liblantern.so")
+                 (string-append deps "/liblantern.so"))))))))
+    (inputs
+     (list python-pytorch-for-r-torch
+           liblantern))
+    (propagated-inputs
+     (list r-bit64
+           r-callr
+           r-cli
+           r-coro
+           r-ellipsis
+           r-magrittr
+           r-r6
+           r-rcpp
+           r-rlang
+           r-withr))
+    (native-inputs (list r-knitr))
+    (home-page "https://torch.mlverse.org/docs")
+    (synopsis "Tensors and neural networks with GPU acceleration")
+    (description
+     "This package provides functionality to define and train neural networks
+similar to PyTorch but written entirely in R using the libtorch library.  It
+also supports low-level tensor operations and GPU acceleration.")
+    (license license:expat)))
 
 (define-public r-additivitytests
   (package
