@@ -229,7 +229,7 @@ provers.")
 (define-public coq-flocq
   (package
     (name "coq-flocq")
-    (version "3.4.2")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -239,7 +239,7 @@ provers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j7vq7ifqcdaj2x881aha2rl51l2p72y1cn7r2xya0fjgsssfigy"))))
+         "159ykkhxz7zms28r4v8jjccapl5vv00csdz29mfy83lwrv5b6rwk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
