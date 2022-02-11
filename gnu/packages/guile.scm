@@ -389,7 +389,21 @@ without requiring the source code to be rewritten.")
                      "share/guile/site/3.0")))))))
 
 (define-public guile-3.0-latest
-  guile-3.0)
+  (package
+    (inherit guile-3.0)
+    (version "3.0.8")
+    (source (origin
+              (inherit (package-source guile-3.0))
+              (uri (string-append "mirror://gnu/guile/guile-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "04wagg0zr0sib0w9ly5jm91jplgfigzfgmy8fjdlx07jaq50d9ys"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-3.0)
+       ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
+       ;; its multi-stage build process for cross-module inlining.
+       ((#:parallel-build? _ #f) #t)))))
 
 (define-public guile-3.0-for-lokke
   ;; Work around a bug in 3.0.7 regarding #nil handling by psyntax:
