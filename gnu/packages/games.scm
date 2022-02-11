@@ -6411,40 +6411,40 @@ fish.  The whole game is accompanied by quiet, comforting music.")
            python-wrapper
            python-pyyaml))
     (arguments
-     `(#:make-flags
-       (let* ((sqlite (assoc-ref %build-inputs "sqlite"))
-              (out (assoc-ref %outputs "out")))
-         (list (string-append "SQLITE_INCLUDE_DIR=" sqlite "/include")
-               (string-append "prefix=" out)
-               "SAVEDIR=~/.crawl"
-               ;; Don't compile with SSE on systems which don't have it.
-               ,@(match (%current-system)
+     (list
+      #:make-flags
+      #~(list (string-append "SQLITE_INCLUDE_DIR="
+                             #$(this-package-input "sqlite")
+                             "/include")
+              (string-append "prefix=" #$output)
+              "SAVEDIR=~/.crawl"
+              ;; Don't compile with SSE on systems which don't have it.
+              #$@(match (%current-system)
                    ((or "i686-linux" "x86_64-linux")
                     '())
                    (_ '("NOSSE=TRUE")))
-               ;; don't build any bundled dependencies
-               "BUILD_LUA="
-               "BUILD_SQLITE="
-               "BUILD_ZLIB="
-               "-Csource"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'find-SDL-image
-           (lambda _
-             (substitute* "source/windowmanager-sdl.cc"
-               (("SDL_image.h") "SDL2/SDL_image.h"))
-             #t))
-         (delete 'configure)
-         (replace 'check
-           (lambda* (#:key inputs outputs make-flags #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             ;; Fake a terminal for the test cases.
-             (setenv "TERM" "xterm-256color")
-             ;; Run the tests that don't require a debug build.
-             (apply invoke "make" "nondebugtest"
-                    (format #f "-j~d" (parallel-job-count))
-                    ;; Force command line build for test cases.
-                    (append make-flags '("GAME=crawl" "TILES="))))))))
+              ;; don't build any bundled dependencies
+              "BUILD_LUA="
+              "BUILD_SQLITE="
+              "BUILD_ZLIB="
+              "-Csource")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-SDL-image
+            (lambda _
+              (substitute* "source/windowmanager-sdl.cc"
+                (("SDL_image.h") "SDL2/SDL_image.h"))))
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (setenv "HOME" (getcwd))
+              ;; Fake a terminal for the test cases.
+              (setenv "TERM" "xterm-256color")
+              ;; Run the tests that don't require a debug build.
+              (apply invoke "make" "nondebugtest"
+                     (format #f "-j~d" (parallel-job-count))
+                     ;; Force command line build for test cases.
+                     (append make-flags '("GAME=crawl" "TILES="))))))))
     (synopsis "Roguelike dungeon crawler game")
     (description "Dungeon Crawl Stone Soup (also known as \"Crawl\" or DCSS
 for short) is a roguelike adventure through dungeons filled with dangerous
@@ -6469,16 +6469,17 @@ monsters in a quest to find the mystifyingly fabulous Orb of Zot.")
      (substitute-keyword-arguments
          (package-arguments crawl)
        ((#:make-flags flags)
-        `(let ((dejavu (assoc-ref %build-inputs "font-dejavu")))
-           (cons*
-            (string-append "PROPORTIONAL_FONT=" dejavu
-                           "/share/fonts/truetype/DejaVuSans.ttf")
-            (string-append "MONOSPACED_FONT=" dejavu
-                           "/share/fonts/truetype/DejaVuSansMono.ttf")
-            "TILES=y"
-            ;; Rename the executable to allow parallel installation with crawl.
-            "GAME=crawl-tiles"
-            ,flags)))))
+        #~(cons*
+           (string-append "PROPORTIONAL_FONT="
+                          #$(this-package-input "font-dejavu")
+                          "/share/fonts/truetype/DejaVuSans.ttf")
+           (string-append "MONOSPACED_FONT="
+                          #$(this-package-input "font-dejavu")
+                          "/share/fonts/truetype/DejaVuSansMono.ttf")
+           "TILES=y"
+           ;; Rename the executable to allow parallel installation with crawl.
+           "GAME=crawl-tiles"
+           #$flags))))
     (inputs
      `(,@(package-inputs crawl)
        ("font-dejavu" ,font-dejavu)
