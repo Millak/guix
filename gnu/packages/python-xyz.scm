@@ -116,6 +116,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29034,3 +29035,49 @@ async I/O support.")
 used by type-checking tools like mypy, PyCharm, pytype etc. to check code that
 uses ujson.")
     (license license:asl2.0)))
+
+(define-public python-stltools
+  (package
+    (name "python-stltools")
+    (version "2022.01.20")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rsmith-nl/stltools")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1k6dhszza4lpy46qffaqx5zr70ikfqqysbacy7zabnrvz09fd4rs"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:use-setuptools? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'build)
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((moddir (string-append (site-packages inputs outputs) "/stltools"))
+                   (bindir (string-append (assoc-ref outputs "out") "/bin")))
+               (copy-recursively "stltools" moddir)
+               (mkdir-p bindir)
+               (for-each
+                (lambda (script)
+                  (let ((source (string-append script ".py"))
+                        (target (string-append bindir "/" script)))
+                    (copy-file source target)
+                    (chmod target #o555)))
+                '("stl2pov" "stl2ps" "stl2pdf" "stlinfo")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "py.test" "-v")))))))
+    (propagated-inputs (list python-pycairo))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/rsmith-nl/stltools")
+    (synopsis "Python modules and scripts for handling STL files")
+    (description "This package consists of Python modules and scripts for
+manipulating stereolithography (STL) files.  It can convert STL files into
+POV-ray meshes, PDF and PostScript.  The Python modules allow for reading and
+writing STL files.  It supports both the text and binary forms of STL.")
+    (license license:expat)))
