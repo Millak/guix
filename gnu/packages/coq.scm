@@ -452,7 +452,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
 (define-public coq-interval
   (package
     (name "coq-interval")
-    (version "4.3.1")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -462,7 +462,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sr9psildc0sda07r2r47rfgyry49yklk38bg04yyvry5j5pryb6"))))
+         "1rlcbv1nqm7zv60n63lca6nnxcq3c18akgzl72s1n3h89gvhs87z"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
