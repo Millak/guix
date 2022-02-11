@@ -52,7 +52,7 @@
 (define-public coq-core
   (package
     (name "coq-core")
-    (version "8.14.1")
+    (version "8.15.0")
     (source
      (origin
        (method git-fetch)
@@ -62,7 +62,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q634fmrh5ivpxy7ammdiqdh9xp72ji2726vcz1bd55ln0d08z40"))
+         "0473mmc4wv8zbbcbvqqn0z9gz9y8gf4w2q6j6h50lx0jphpg2n8z"))
        (patches (search-patches "coq-fix-envvars.patch"))))
     (native-search-paths
      (list (search-path-specification
@@ -546,11 +546,11 @@ uses Ltac to synthesize the substitution operation.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/mattam82/Coq-Equations")
-                    (commit (string-append "v" version "-8.14"))))
+                    (commit (string-append "v" version "-8.15"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19bj9nncd1r9g4273h5qx35gs3i4bw5z9bhjni24b413hyj55hkv"))))
+                "1vfcfpsp9zyj0sw0cwibk76nj6n0r6gwh8m1aa3lbvc0b1kbm32k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq camlp5))
