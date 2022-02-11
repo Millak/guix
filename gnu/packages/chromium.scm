@@ -310,13 +310,19 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define* (arch-patch name hash #:optional (revision %arch-revision))
+(define %chromium-version "98.0.4758.80")
+(define %ungoogled-revision (string-append %chromium-version "-1"))
+(define %debian-revision "debian/90.0.4430.85-1")
+
+(define %ungoogled-origin
   (origin
-    (method url-fetch)
-    (uri (string-append "https://raw.githubusercontent.com/archlinux"
-                        "/svntogit-packages/" revision "/trunk/" name))
-    (file-name (string-append "ungoogled-chromium-" name))
-    (sha256 (base32 hash))))
+    (method git-fetch)
+    (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
+                        (commit %ungoogled-revision)))
+    (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
+    (sha256
+     (base32
+      "0a8y9yz6xyh025gk3dr0ndrdwmrslhd1ph2f8nivmqk61j7c2g8h"))))
 
 (define* (debian-patch name hash #:optional (revision %debian-revision))
   (origin
@@ -328,15 +334,6 @@
                   (string-append "ungoogled-chromium-" category "-" name))))
     (sha256 (base32 hash))))
 
-(define %chromium-version "97.0.4692.99")
-(define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %arch-revision "db2157b84924ce84201a8245e68a02f7d55f6491")
-(define %debian-revision "debian/90.0.4430.85-1")
-
-(define %arch-patches
-  (list (arch-patch "chromium-94-ffmpeg-roll.patch"
-                    "1kiskdjr9v3d491sq0wdjxliflh2vq5700gbygcixayj8gkvdb2n")))
-
 (define %debian-patches
   (list (debian-patch "fixes/nomerge.patch"
                       "0lybs2b5gk08j8cr6vjrs9d3drd7qfw013z2r0y00by8dnpm74i3")
@@ -347,16 +344,6 @@
         (debian-patch "system/openjpeg.patch"
                       "048405xh84pys0kky81vlqhaxjyxvcql4py217z01qxiv991zxaj")))
 
-(define %ungoogled-origin
-  (origin
-    (method git-fetch)
-    (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
-                        (commit %ungoogled-revision)))
-    (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
-    (sha256
-     (base32
-      "1jgxpp3wl24hq39291mgmdwcxbarxg4rpa6il53k8z3rf6gd2s4i"))))
-
 (define %guix-patches
   (list (local-file
          (assume-valid-file-name
@@ -364,9 +351,6 @@
         (local-file
          (assume-valid-file-name
           (search-patch "ungoogled-chromium-RUNPATH.patch")))
-        (local-file
-         (assume-valid-file-name
-          (search-patch "ungoogled-chromium-accelerated-video-decode.patch")))
         (local-file
          (assume-valid-file-name
           (search-patch "ungoogled-chromium-ffmpeg-compat.patch")))
@@ -399,13 +383,6 @@
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
                     (append '#+%debian-patches '#+%guix-patches))
-
-          ;; These patches are "reversed"; i.e. they represent changes
-          ;; already present in the source, but which should be reverted.
-          (for-each (lambda (patch)
-                      (invoke "patch" "-Rp1" "--force" "--input"
-                              patch "--no-backup-if-mismatch"))
-                    '#$%arch-patches)
 
           (with-directory-excursion #+%ungoogled-origin
             (format #t "Ungooglifying...~%")
@@ -474,7 +451,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "1fpc07zvashaqqalwn7wxnswxclrxvhjrxy1rzr6gcq5awhaw6y9"))
+                "0wa1jhsw7qrym4x8wxmdvdvbilb8jdv0mizzib2342l61zi6cwn8"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -495,14 +472,11 @@
               ;; a developer build.
               "is_official_build=true"
               "clang_use_chrome_plugins=false"
-              "is_cfi=false"            ;requires ThinLTO
-              "use_thin_lto=false"      ;XXX lld segfaults
               "use_custom_libcxx=false"
               "chrome_pgo_phase=0"
               "use_sysroot=false"
               "goma_dir=\"\""
               "enable_nacl=false"
-              "enable_nacl_nonsfi=false"
               "use_unofficial_version_number=false"
               "treat_warnings_as_errors=false"
               "use_official_google_api_keys=false"
@@ -626,6 +600,11 @@
                   (("#include \"third_party/jsoncpp/")
                    "#include \"json/"))
 
+                ;; This can be removed for M99.
+                (substitute* "media/gpu/chromeos/video_decoder_pipeline.cc"
+                  (("third_party/libdrm/src/include/drm/drm_fourcc\\.h")
+                   "libdrm/drm_fourcc.h"))
+
                 ;; Many files try to include ICU headers from "third_party/icu/...".
                 ;; Remove the "third_party/" prefix to use system headers instead.
                 (substitute* (find-files "chrome" "\\.cc$")
@@ -671,7 +650,6 @@
                 (substitute*
                     '("ui/ozone/platform/x11/gl_ozone_glx.cc"
                       "ui/ozone/common/egl_util.cc"
-                      "ui/gl/init/gl_initializer_linux_x11.cc"
                       "third_party/angle/src/libANGLE/renderer/gl/glx\
 /FunctionsGLX.cpp")
                   (("libGL\\.so\\.1")

@@ -1907,7 +1907,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/u-boot-riscv64-fix-extlinux.patch	\
   %D%/packages/patches/u-boot-rk3399-enable-emmc-phy.patch	\
   %D%/packages/patches/ucx-tcp-iface-ioctl.patch		\
-  %D%/packages/patches/ungoogled-chromium-accelerated-video-decode.patch	\
   %D%/packages/patches/ungoogled-chromium-extension-search-path.patch	\
   %D%/packages/patches/ungoogled-chromium-ffmpeg-compat.patch	\
   %D%/packages/patches/ungoogled-chromium-RUNPATH.patch		\
