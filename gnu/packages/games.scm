@@ -6390,14 +6390,14 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.27.1")
+    (version "0.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/crawl/crawl/releases/download/"
                            version "/stone_soup-" version "-nodeps.tar.xz"))
        (sha256
-        (base32 "0nkhyhrrma8gmwxp15j84cn1k2yvyq7ar9rd0j2qjjlv2kdis5z2"))
+        (base32 "0irg5w4m127fxcj037kyp9vnyqyq1fi4q64rn6yq92w8z1lf2sss"))
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -6406,7 +6406,8 @@ fish.  The whole game is accompanied by quiet, comforting music.")
        ("sqlite" ,sqlite)
        ("zlib" ,zlib)))
     (native-inputs
-     `(("bison" ,bison)
+     `(("bash" ,bash-minimal)
+       ("bison" ,bison)
        ("flex" ,flex)
        ("perl" ,perl)
        ("python" ,python-wrapper)
