@@ -146,14 +146,14 @@
 (define-public qt5ct
   (package
     (name "qt5ct")
-    (version "1.2")
+    (version "1.5")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://sourceforge/qt5ct/qt5ct-" version ".tar.bz2"))
        (sha256
-        (base32 "0bl7dc03b7vm435khkr932ybslsbq1nfajd936zlc1sxdmpg1qqx"))))
+        (base32 "14742vs32m98nbfb5mad0i8ciff5f45gfcb5v03p4hh2dvhhqgfn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; No target
@@ -178,8 +178,7 @@
                        (string-append "PREFIX=" out)
                        (string-append "BINDIR=" out "/bin")
                        (string-append "DATADIR=" out "/share")
-                       (string-append "PLUGINDIR=" out "/lib/qt5/plugins")))
-             #t))
+                       (string-append "PLUGINDIR=" out "/lib/qt5/plugins")))))
          (add-after 'install 'qt-wrap
            (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
