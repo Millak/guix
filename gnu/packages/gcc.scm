@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -670,6 +670,75 @@ It also includes runtime support libraries for these languages.")
 ;;       the gcc-toolchain-* definitions.
 (define-public gcc gcc-10)
 
+
+;;;
+;;; Historical version.
+;;;
+
+(define-public gcc-2.95
+  ;; Note: 'gcc-core-mesboot0' in commencement.scm provides 2.95 as well, but
+  ;; with additional tricks to support compilation with TinyCC and Mes-libc.
+  (package
+    (inherit gcc)
+    (version "2.95.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-2.95.3/gcc-core-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1xvfy4pqhrd5v2cv8lzf63iqg92k09g6z9n2ah6ndd4h17k1x0an"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Do not build the bundled Texinfo.
+                  (delete-file-recursively "texinfo")
+                  (substitute* "configure"
+                    (("host_tools=(.*)texinfo" _ before)
+                     (string-append "host_tools=" before)))))))
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (native-inputs (list texinfo dejagnu))
+    (inputs '())
+    (propagated-inputs '())
+    (outputs '("out"))
+    (arguments
+     (list #:system "i686-linux"                ;x86_64 didn't exist back then
+           #:configure-flags #~'("--disable-werror")
+
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-dynamic-linker-file-name
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Tell GCC what the real loader file name is.
+                   (substitute* "gcc/config/i386/linux.h"
+                     (("/lib/ld-linux\\.so\\.[12]")
+                      (search-input-file inputs "/lib/ld-linux.so.2")))))
+               (replace 'configure
+                 (lambda* (#:key outputs build configure-flags
+                           #:allow-other-keys)
+                   ;; It's an old 'configure' script so it needs some help.
+                   (setenv "CONFIG_SHELL" (which "sh"))
+                   (apply invoke "./configure"
+                          (string-append "--prefix=" #$output)
+                          (string-append "--build=" build)
+                          (string-append "--host=" build)
+                          configure-flags)))
+               (add-before 'configure 'remove-bundled-texinfo
+                 (lambda _
+                   ;; Go ahead despite the many warnings.
+                   (substitute* '("Makefile.in" "gcc/Makefile.in")
+                     (("^MAKEINFOFLAGS =.*")
+                      "MAKEINFOFLAGS = --force\n")))))))
+    (native-search-paths
+     ;; This package supports nothing but the C language.
+     (list (search-path-specification
+            (variable "C_INCLUDE_PATH")
+            (files '("include")))
+           (search-path-specification
+            (variable "LIBRARY_PATH")
+            (files '("lib")))))))
+
+
 (define-public (make-libstdc++ gcc)
   "Return a libstdc++ package based on GCC.  The primary use case is when
 using compilers other than GCC."
