@@ -198,7 +198,6 @@ is itself quite fast.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (arguments
      `(#:system "i686-linux"
-       #:implicit-inputs? #f
        #:strip-binaries? #f
        #:phases
        (modify-phases %standard-phases
@@ -223,8 +222,8 @@ GhcLibWays=u
 #HsLibsFor=hugs
 # Setting this leads to building the interpreter.
 GhcHcOpts=-DDEBUG
-GhcRtsHcOpts=-optc-DDEBUG -optc-D__HUGS__ -unreg -optc-g
-GhcRtsCcOpts=-optc-DDEBUG -optc-g -optc-D__HUGS__
+GhcRtsHcOpts=-optc-DDEBUG -optc-D__HUGS__ -unreg -optc-g -optc-D_GNU_SOURCE=1
+GhcRtsCcOpts=-optc-DDEBUG -optc-g -optc-D__HUGS__ -optc-D_GNU_SOURCE=1
 SplitObjs=NO
 ")))
 
@@ -247,8 +246,8 @@ SplitObjs=NO
              ;; this old linker understands.
              (substitute* "ghc/interpreter/Makefile"
                (("-lbfd -liberty")
-                (string-append (assoc-ref inputs "binutils") "/lib/libbfd.a "
-                               (assoc-ref inputs "binutils") "/lib/libiberty.a")))
+                (string-append (search-input-file inputs "/lib/libbfd.a") " "
+                               (search-input-file inputs "/lib/libiberty.a"))))
 
              (let ((bash (which "bash")))
                (substitute* '("configure.in"
@@ -271,7 +270,13 @@ SplitObjs=NO
                (setenv "CONFIG_SHELL" bash)
                (setenv "SHELL" bash))
 
-             (setenv "CPP" (string-append (assoc-ref inputs "gcc") "/bin/cpp"))
+             ;; The 'hscpp' script invokes GCC 2.95's 'cpp' (RAWCPP), which
+             ;; segfaults unless passed '-x c'.
+             (substitute* "mk/config.mk.in"
+               (("-traditional")
+                "-traditional -x c"))
+
+             (setenv "CPP" (which "cpp"))
              (invoke "autoreconf" "--verbose" "--force")))
          (add-before 'configure 'configure-gmp
            (lambda* (#:key build inputs outputs #:allow-other-keys)
@@ -283,6 +288,12 @@ SplitObjs=NO
            (lambda* (#:key build inputs outputs #:allow-other-keys)
              (let ((bash (which "bash"))
                    (out  (assoc-ref outputs "out")))
+               (call-with-output-file "config.cache"
+                 (lambda (port)
+                   ;; GCC 2.95 fails to deal with anonymous unions in glibc's
+                   ;; 'struct_rusage.h', so skip that.
+                   (display "ac_cv_func_getrusage=no\n" port)))
+
                (invoke bash "./configure"
                        "--enable-hc-boot"
                        (string-append "--prefix=" out)
@@ -290,14 +301,15 @@ SplitObjs=NO
                        (string-append "--host=" build)))))
          (add-before 'build 'make-boot
            (lambda _
+             ;; CLK_TCK has been removed from recent libc.
+             (substitute* "ghc/interpreter/nHandle.c"
+               (("CLK_TCK") "sysconf (_SC_CLK_TCK)"))
+
              ;; Only when building with more recent GCC
              (when #false
                ;; GCC 2.95 is fine with these comments, but GCC 4.6 is not.
                (substitute* "ghc/rts/universal_call_c.S"
-                 (("^# .*") ""))
-               ;; CLK_TCK has been removed
-               (substitute* "ghc/interpreter/nHandle.c"
-                 (("CLK_TCK") "sysconf(_SC_CLK_TCK)")))
+                 (("^# .*") "")))
 
              ;; Only when using more recent Perl
              (when #false
@@ -334,45 +346,21 @@ SplitObjs=NO
                (copy-recursively "ghc/interpreter/lib" lib)
                (install-file "ghc/interpreter/nHandle.so" lib)))))))
     (native-inputs
-     `(("findutils" ,findutils)
-       ("tar" ,tar)
-       ("bzip2" ,bzip2)
-       ("xz" ,xz)
-       ("diffutils" ,diffutils)
-       ("file" ,file)
-       ("gawk" ,gawk)
-       ("autoconf" ,autoconf-2.13)
-       ("automake" ,automake)
-       ("bison" ,bison) ;for parser.y
+     (list autoconf-2.13
+           automake
+           bison                                  ;for parser.y
 
-       ("make" ,gnu-make)
-       ("sed" ,sed)
-       ("grep" ,grep)
-       ("coreutils" ,coreutils)
-       ("bash" ,bash-minimal)
+           ;; Needed to support lvalue casts.
+           gcc-2.95
 
-       ("libc" ,glibc-2.2.5)
-       ;; Lazily resolve binutils-mesboot in (gnu packages commencement) to
-       ;; avoid a cycle.
-       ("gcc-wrapper"
-        ,(module-ref (resolve-interface
-                      '(gnu packages commencement))
-                     'gcc-2.95-wrapper))
-       ("gcc"
-        ,(module-ref (resolve-interface
-                      '(gnu packages commencement))
-                     'gcc-mesboot0))
-       ("binutils"
-        ,(module-ref (resolve-interface
-                      '(gnu packages commencement))
-                     'binutils-mesboot))
-       ("kernel-headers" ,linux-libre-headers)
+           ;; Use an older assembler to work around this error in GMP:
+           ;;   Error: `%edx' not allowed with `testb'
+           binutils-2.33
 
-       ;; TODO: Perl used to allow setting $* to enable multi-line
-       ;; matching.  If we want to use a more recent Perl we need to
-       ;; patch all expressions that require multi-line matching.  Hard
-       ;; to tell.
-       ("perl" ,perl-5.14)))
+           ;; TODO: Perl used to allow setting $* to enable multi-line
+           ;; matching.  If we want to use a more recent Perl we need to patch
+           ;; all expressions that require multi-line matching.  Hard to tell.
+           perl-5.14))
     (home-page "https://www.haskell.org/ghc")
     (synopsis "The Glasgow Haskell Compiler")
     (description
