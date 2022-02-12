@@ -3866,7 +3866,7 @@ kmonad's configuration files (@file{.kbd}).")
 (define-public emacs-keycast
   (package
     (name "emacs-keycast")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -3875,7 +3875,7 @@ kmonad's configuration files (@file{.kbd}).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s31b3kal4j08waa2fwz5d6269wsdywb60a7h4r5vzsrr238lks3"))))
+        (base32 "01z20lsnjk8pwdsl4vx5dqdc4603bmb7fxan7n8j1fgvkvi63yzl"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/tarsius/keycast")
     (synopsis "Show current command and its key in the mode line")
