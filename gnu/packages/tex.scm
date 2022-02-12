@@ -4157,6 +4157,29 @@ what has to be done for each language.  Users of XeTeX are advised to use the
 polyglossia package rather than Babel.")
       (license license:lppl1.3+))))
 
+(define-public texlive-babel/fixed
+  (package
+    (inherit texlive-babel)
+    (name "texlive-babel-fixed")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-babel)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'copy-files 'unchdir
+             (lambda _
+               (chdir "../../..")))
+           (add-after 'copy-files 'delete-extra-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/source/latex/babel/build"))
+               (delete-file
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/tex/generic/babel/bbind.ist"))
+               (delete-file
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/tex/generic/babel/bbglo.ist"))))))))))
+
 (define-deprecated-package texlive-latex-babel texlive-babel)
 
 (define-public texlive-generic-babel-english
