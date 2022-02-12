@@ -6534,6 +6534,25 @@ use under LaTeX; the package supports the @code{only} option (provided by the
 the whole font.")
       (license license:lppl))))
 
+(define-public texlive-stmaryrd/fixed
+  (package
+    (inherit texlive-stmaryrd)
+    (name "texlive-stmaryrd-fixed")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-stmaryrd)
+       ((#:tex-directory _ #t)
+        "latex/stmaryrd")
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'copy-files 'unchdir
+             (lambda _
+               (chdir "../../..")))
+           (add-after 'copy-files 'delete-extra-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/source/fonts/stmaryrd/build"))))))))))
+
 (define-deprecated-package texlive-fonts-stmaryrd texlive-stmaryrd)
 
 (define-public texlive-latex-subfigure
