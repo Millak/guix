@@ -127,6 +127,12 @@ low-end hardware and serving many concurrent requests.")
          (add-after 'configure 'relax-requirements
            (lambda _
              (substitute*
+                 "guix-vendor/rust-chacha20-0.8.1.tar.gz/Cargo.toml"
+               (("version = \">=1, <1.5\"") "version = \"^1\""))
+             (substitute*
+                 "guix-vendor/rust-chacha20poly1305-0.9.0.tar.gz/Cargo.toml"
+               (("version = \">=1, <1.5\"") "version = \"^1\""))
+             (substitute*
                  "guix-vendor/rust-x25519-dalek-1.2.0.tar.gz/Cargo.toml"
                (("version = \"=1.3\"") "version = \"^1.3\"")))))
        #:cargo-inputs
