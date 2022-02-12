@@ -4441,6 +4441,23 @@ means to select single glyphs from symbol fonts.  The bundle as a whole is
 part of the LaTeX required set of packages.")
       (license license:lppl1.2+))))
 
+(define-public texlive-psnfss/fixed
+  (package
+    (inherit texlive-psnfss)
+    (name "texlive-psnfss-fixed")
+    (arguments
+     (substitute-keyword-arguments (package-arguments texlive-psnfss)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'copy-files 'unchdir
+             (lambda _
+               (chdir "../../..")))
+           (add-after 'copy-files 'delete-extra-files
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively
+                (string-append (assoc-ref outputs "out")
+                               "/share/texmf-dist/source/latex/psnfss/build"))))))))))
+
 (define-deprecated-package texlive-latex-psnfss texlive-psnfss)
 
 ;; For user profiles
