@@ -1077,7 +1077,7 @@ displayed at the bottom or at the top.")
 (define-public emacs-moody
   (package
     (name "emacs-moody")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -1086,7 +1086,7 @@ displayed at the bottom or at the top.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xzi93hp4jrxqi3x31cpx4ff1yh2gq9y7qvv65gj19cfk9a0da88"))))
+        (base32 "09yyihx6cpa724z6cj2rqspajwj325ipgpmckklpgq6l4h5xnwy4"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/tarsius/moody")
     (synopsis "Tabs and ribbons for Emacs mode-line")
