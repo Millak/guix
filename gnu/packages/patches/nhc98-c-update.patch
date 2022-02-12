@@ -1,0 +1,42 @@
+This patch provides an update so that nhc98 can be built and works with
+a modern C compiler (GCC 11) and libc (glibc 2.33).
+
+diff --git a/Makefile.inc b/Makefile.inc
+index 4fbd47a..5bce5c9 100644
+--- a/Makefile.inc
++++ b/Makefile.inc
+@@ -1,6 +1,10 @@
+ ### Configurable variables:
+ 
+-OPT = -O3
++# We want C89 semantics plus C++-style comments and things like the
++# 'setjmp_buf' and 'u_short' types.  More importantly, build with '-O1'
++# only to avoid modern optimizations that break the code.
++OPT = -O1 -std=gnu89 -D_GNU_SOURCE=1
++
+ #ARCH = -m32
+ ARCH = 
+ 
+diff --git a/script/nhc98heap.c b/script/nhc98heap.c
+index 534010e..a30d5cd 100644
+--- a/script/nhc98heap.c
++++ b/script/nhc98heap.c
+@@ -1,5 +1,6 @@
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <ctype.h>
+ main(int argc, char **argv)
+ {
+   int prefix = 1;
+diff --git a/src/runtime/Kernel/collector.c b/src/runtime/Kernel/collector.c
+index b95a273..1f879c5 100644
+--- a/src/runtime/Kernel/collector.c
++++ b/src/runtime/Kernel/collector.c
+@@ -2,6 +2,7 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
++#include <unistd.h>
+ #include "node.h"
+ /*#include "newmacros.h"  -- already included in node.h */
+ /*#include "runtime.h"    -- already included in node.h */
