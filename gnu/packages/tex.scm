@@ -4035,6 +4035,51 @@ mathematics, and @code{ntheoremntheorem}, for specifying theorem (and similar)
 definitions.")
     (license license:lppl1.3c+)))
 
+(define-public texlive-amsmath
+  (let ((template (simple-texlive-package
+                   "texlive-amsmath"
+                   (list "/doc/latex/amsmath/"
+                         "/source/latex/amsmath/"
+                         ;; These two files are not generated from any of the
+                         ;; dtx/ins files.
+                         "/tex/latex/amsmath/amsmath-2018-12-01.sty"
+                         "/tex/latex/amsmath/amstex.sty")
+                   (base32
+                    "0gmdzhgr0h57xhsl61c5jsp4fj4pbmdr8p6k96am5jbyrbbx121q"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/amsmath")
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'chdir
+               (lambda _ (chdir "source/latex/amsmath/")))
+             (add-before 'copy-files 'unchdir
+               (lambda _
+                 (chdir "../../..")))
+             (add-after 'copy-files 'delete-extra-files
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (delete-file-recursively
+                  (string-append (assoc-ref outputs "out")
+                                 "/share/texmf-dist/source/latex/amsmath/build"))))))))
+      (home-page "https://www.ctan.org/pkg/amsmath")
+      (synopsis "AMS mathematical facilities for LaTeX")
+      (description
+       "This is the principal package in the AMS-LaTeX distribution.  It adapts
+for use in LaTeX most of the mathematical features found in AMS-TeX; it is
+highly recommended as an adjunct to serious mathematical typesetting in LaTeX.
+When amsmath is loaded, AMS-LaTeX packages @code{amsbsyamsbsy} (for bold
+symbols), @code{amsopnamsopn} (for operator names) and
+@code{amstextamstext} (for text embedded in mathematics) are also loaded.
+This package is part of the LaTeX required distribution; however, several
+contributed packages add still further to its appeal; examples are
+@code{empheqempheq}, which provides functions for decorating and highlighting
+mathematics, and @code{ntheoremntheorem}, for specifying theorem (and similar)
+definitions.")
+      (license license:lppl1.3c+))))
+
 (define-public texlive-amscls
   (let ((template (simple-texlive-package
                    "texlive-amscls"
