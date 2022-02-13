@@ -20509,6 +20509,39 @@ identified uniquely.
 (define-public ecl-nhooks
   (sbcl-package->ecl-package sbcl-nhooks))
 
+(define-public sbcl-wordnet
+  (let ((commit "8cd0db8f5e84e7a930fa74e590ecddf75cd8e5d6")
+        (revision "0"))
+    (package
+      (name "sbcl-wordnet")
+      (version (git-version "0.0.1" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/phoe/wordnet")
+                (commit commit)))
+          (sha256
+           (base32 "07p60k295fsfcp0gmkqhrxd68hb38aqva8f4k8xk8bqqxxf42vkq"))
+          (file-name (git-file-name "cl-wordnet" commit))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:tests? #f)) ; There are no tests.
+      (inputs
+        (list sbcl-split-sequence))
+      (home-page "https://github.com/phoe/wordnet")
+      (synopsis "Common Lisp interface to WordNet")
+      (description
+       "This software provides an interface by which Common Lisp programs can
+access lexicographic data from WordNet.")
+      (license license:expat))))
+
+(define-public cl-wordnet
+  (sbcl-package->cl-source-package sbcl-wordnet))
+
+(define-public ecl-wordnet
+  (sbcl-package->ecl-package sbcl-wordnet))
+
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
