@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -121,6 +122,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages telephony)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -1362,7 +1364,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
@@ -1370,7 +1372,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "0r5qn9k88d5rh8zzj9gs3bk3dsm795r0pgxs3kawyrsrqr8ny1ry"))))
+        (base32 "07nw275xfamczzvzps8hsnpbhzvr4qc726fx92w8ncmdag7wlw1r"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1384,14 +1386,14 @@ Encryption to Gajim.")
                            (guix build glib-or-gtk-build-system))
        #:phases
        (modify-phases %standard-phases
-         ;; To be enabled in v0.3.0, for A/V support.
-         ;;(add-after 'install 'wrap
-           ;;(lambda* (#:key outputs #:allow-other-keys)
-             ;;(let* ((out (assoc-ref outputs "out"))
-                    ;;(dino (string-append out "/bin/dino"))
-                    ;;(gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               ;;(wrap-program dino
-                 ;;`("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+         ;; For A/V support.
+         (add-after 'install 'wrap
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (dino (string-append out "/bin/dino"))
+                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               (wrap-program dino
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
@@ -1402,7 +1404,6 @@ Encryption to Gajim.")
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
     (inputs
-     ;; NOTE: Commented-out lines are to be enabled in v0.3.0.
      `(("atk" ,atk)
        ("cairo" ,cairo)
        ("librsvg" ,librsvg)
@@ -1411,22 +1412,22 @@ Encryption to Gajim.")
        ("gpgme" ,gpgme)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gspell" ,gspell)               ;for spell-check support
-       ;;("gstreamer" ,gstreamer)         ;for A/V support
-       ;;("gst-plugins-base" ,gst-plugins-base)
-       ;;("gst-plugins-good" ,gst-plugins-good)
+       ("gstreamer" ,gstreamer)         ;for A/V support
+       ("gst-plugins-base" ,gst-plugins-base)
+       ("gst-plugins-good" ,gst-plugins-good)
        ("gtk+" ,gtk+)
        ("icu4c" ,icu4c)                 ;for emoji support
-       ;;("libcanberra" ,libcanberra)    ;for sound-notification support
+       ("libcanberra" ,libcanberra)    ;for sound-notification support
        ("libgcrypt" ,libgcrypt)
        ("libgee" ,libgee)
        ("libnice" ,libnice)
        ("libsignal-protocol-c" ,libsignal-protocol-c)
        ("libsoup" ,libsoup-minimal-2)
-       ;;("libsrtp" ,libsrtp)             ;for calls support
+       ("libsrtp" ,libsrtp)             ;for calls support
        ("pango" ,pango)
        ("qrencode" ,qrencode)
-       ("sqlite" ,sqlite)))
-       ;;("webrtc-audio-processing" ,webrtc-audio-processing))) ;for A/V support
+       ("sqlite" ,sqlite)
+       ("webrtc-audio-processing" ,webrtc-audio-processing))) ;for A/V support
     (synopsis "Graphical Jabber/XMPP Client using GTK+/Vala")
     (description "Dino is a chat client for the desktop.  It focuses on providing
 a minimal yet reliable Jabber/XMPP experience and having encryption enabled by
