@@ -1585,6 +1585,28 @@ library and a dynamic library, and a C header to be used by any C (and
 C-compatible) software.")
     (license license:expat)))
 
+(define-public rtss
+  (package
+    (name "rtss")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rtss" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r1b6fynkjnpj5p3k209sa13mjvh4k0ghzwnribm48dh9v7lfnnv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-memchr" ,rust-memchr-2))))
+    (home-page "https://github.com/Freaky/rtss")
+    (synopsis "Annotate stdout/stderr with elapsed times")
+    (description "@code{rtss} annotates its output with relative durations between
+consecutive lines and since program start.")
+    (license license:expat)))
+
 (define-public swayhide
   (package
     (name "swayhide")
