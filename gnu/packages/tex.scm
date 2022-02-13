@@ -3260,28 +3260,40 @@ used by @code{hyperref} and @code{bookmark}.")
 (define-public texlive-xcolor
   (let ((template (simple-texlive-package
                    "texlive-xcolor"
-                   (list "/doc/latex/xcolor/"
-                         "/source/latex/xcolor/")
+                   (list "doc/latex/xcolor/"
+                         "dvips/xcolor/"
+                         "source/latex/xcolor/"
+                         "tex/latex/xcolor/")
                    (base32
-                    "12q6spmpxg30alhvarjmxzigmz7lazapbrb0mc4vhbn6n1sdz7pp"))))
+                    "1d7108b67fcaf1sgyk43ph18l0z5m35iqg3aahqs1ymzwdfnd3f7"))))
     (package
       (inherit template)
+      (outputs '("out" "doc"))
       (arguments
        (substitute-keyword-arguments (package-arguments template)
-         ((#:tex-directory _ #t)
+         ((#:tex-directory _ '())
           "latex/xcolor")
+         ((#:build-targets _ '())
+          #~(list "xcolor.ins"))
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'chdir
-               (lambda _ (chdir "source/latex/xcolor") #t))
-             (add-after 'install 'move-files
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let ((share (string-append (assoc-ref outputs "out")
-                                             "/share/texmf-dist")))
-                   (mkdir-p (string-append share "/dvips/xcolor"))
-                   (rename-file (string-append share "/tex/latex/xcolor/xcolor.pro")
-                                (string-append share "/dvips/xcolor/xcolor.pro"))
-                   #t)))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/latex/xcolor")))
+              (replace 'copy-files
+                (lambda* (#:key inputs outputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    (let ((share (string-append #$output
+                                                "/share/texmf-dist")))
+                      (mkdir-p (string-append share "/dvips/xcolor"))
+                      (rename-file
+                       (string-append share "/tex/latex/xcolor/xcolor.pro")
+                       (string-append share "/dvips/xcolor/xcolor.pro"))))))))))
       (home-page "https://www.ctan.org/pkg/xcolor")
       (synopsis "Driver-independent color extensions for LaTeX and pdfLaTeX")
       (description
