@@ -689,23 +689,20 @@ of writing test cases for asynchronous interactions.")
                (substitute* "dee-1.0-docs.sgml"
                  (("http://www.oasis-open.org/docbook/xml/4.3/")
                   (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t))
+                                 "/xml/dtd/docbook/"))))))
          (add-after 'patch-docbook-xml 'disable-failing-tests
            (lambda _
              (substitute* "tests/test-icu.c"
                (("g_test_add \\(DOMAIN\"/Default/AsciiFolder\", Fixture, 0,")
                 "")
                (("setup, test_ascii_folder, teardown\\);")
-                ""))
-             #t))
+                ""))))
          (add-before 'check 'pre-check
            (lambda _
              ;; Tests require a running dbus-daemon.
              (system "dbus-daemon &")
              ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t)))))
+             (setenv "DBUS_FATAL_WARNINGS" "0"))))))
     (native-inputs
      `(("dbus" ,dbus)
        ("dbus-test-runner" ,dbus-test-runner)
