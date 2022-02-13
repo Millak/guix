@@ -7903,64 +7903,57 @@ from a typewriter.  The package also offers double and wavy underlining, and
 striking out (line through words) and crossing out (/// over words).")
     (license license:lppl1.3c+)))
 
-(define-public texlive-latex-pgf
+(define-public texlive-pgf
   (package
-    (name "texlive-latex-pgf")
-    (version (number->string %texlive-revision))
-    (source
-     (origin
-       (method svn-fetch)
-       (uri (svn-reference
-             (url (string-append "svn://www.tug.org/texlive/tags/"
-                                 %texlive-tag "/Master/texmf-dist/"
-                                 "/tex/latex/pgf"))
-             (revision %texlive-revision)))
-       (file-name (string-append name "-" version "-checkout"))
-       (sha256
-        (base32
-         "1jk10rxz5f8vh46am11b40hxhhikk67h9jr3z877q5qc8kwppgza"))))
-    (build-system trivial-build-system)
-    (native-inputs
-     `(("texlive-latex-pgf-generic"
-        ,(origin
-           (method svn-fetch)
-           (uri (svn-reference
-             (url (string-append "svn://www.tug.org/texlive/tags/"
-                                 %texlive-tag "/Master/texmf-dist/"
-                                 "/tex/generic/pgf"))
-             (revision %texlive-revision)))
-           (file-name (string-append "texlive-latex-pgf-generic" version "-checkout"))
-           (sha256
-            (base32
-             "05zdq7y3am109m5534ahqqp9x5iar3ha68v1r4zkrdly2mijxz2j"))))))
+    (inherit (simple-texlive-package
+              "texlive-pgf"
+              (list "doc/generic/pgf/"
+                    "scripts/pgf/"
+                    "source/generic/pgf/c/"
+                    "source/generic/pgf/testsuite/external/"
+                    "source/generic/pgf/testsuite/mathtest/"
+                    "tex/context/third/pgf/basiclayer/"
+                    "tex/context/third/pgf/frontendlayer/"
+                    "tex/context/third/pgf/math/"
+                    "tex/context/third/pgf/systemlayer/"
+                    "tex/context/third/pgf/utilities/"
+                    "tex/generic/pgf/"
+                    "tex/latex/pgf/basiclayer/"
+                    "tex/latex/pgf/compatibility/"
+                    "tex/latex/pgf/doc/"
+                    "tex/latex/pgf/frontendlayer/"
+                    "tex/latex/pgf/math/"
+                    "tex/latex/pgf/systemlayer/"
+                    "tex/latex/pgf/utilities/"
+                    "tex/plain/pgf/basiclayer/"
+                    "tex/plain/pgf/frontendlayer/"
+                    "tex/plain/pgf/math/"
+                    "tex/plain/pgf/systemlayer/"
+                    "tex/plain/pgf/utilities/")
+              (base32
+               "02qfx9k0ggqfrbrjpfz74w8rkvvzk07rmgr37r7y64gggwpn4cw5")
+              #:trivial? #t))
     (propagated-inputs
-     (list texlive-xcolor))
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let ((target-generic (string-append (assoc-ref %outputs "out")
-                                              "/share/texmf-dist/tex/generic/pgf"))
-               (target-latex (string-append (assoc-ref %outputs "out")
-                                            "/share/texmf-dist/tex/latex/pgf")))
-           (mkdir-p target-generic)
-           (mkdir-p target-latex)
-           (copy-recursively (assoc-ref %build-inputs "texlive-latex-pgf-generic") target-generic)
-           (copy-recursively (assoc-ref %build-inputs "source") target-latex)
-           #t))))
-    (home-page "https://www.ctan.org/pkg/tikz")
+     (list texlive-atveryend
+           texlive-fp
+           texlive-graphics
+           texlive-ms
+           texlive-pdftexcmds
+           texlive-xcolor))
+    (home-page "https://ctan.org/graphics/pgf/base")
     (synopsis "Create PostScript and PDF graphics in TeX")
     (description
      "PGF is a macro package for creating graphics.  It is platform- and
 format-independent and works together with the most important TeX backend
 drivers, including pdfTeX and dvips.  It comes with a user-friendly syntax layer
-called TikZ.
+called TikZ.  Its usage is similar to pstricks and the standard picture
+environment.  PGF works with plain (pdf-)TeX, (pdf-)LaTeX, and ConTeXt.  Unlike
+pstricks, it can produce either PostScript or PDF output.")
+    ;; The code of the package is dual-license: GPL-2 or LPPL-1.3c+.  The
+    ;; documentation is also dual-license: LPPL-1.3c+ or GFDL-1.2.
+    (license (list license:gpl2 license:lppl1.3c+ license:fdl1.2+))))
 
-Its usage is similar to pstricks and the standard picture environment.  PGF
-works with plain (pdf-)TeX, (pdf-)LaTeX, and ConTeXt.  Unlike pstricks, it can
-produce either PostScript or PDF output.")
-    (license license:lppl1.3c+)))
+(define-deprecated-package texlive-latex-pgf texlive-pgf)
 
 (define-public texlive-latex-koma-script
   (package
@@ -8586,7 +8579,7 @@ for a wealth of support information.")
               #:trivial? #t))
     (propagated-inputs
      (list texlive-hyperref texlive-oberdiek texlive-etoolbox
-           texlive-latex-pgf))
+           texlive-pgf))
     (home-page "https://www.ctan.org/pkg/beamer")
     (synopsis "LaTeX class for producing presentations and slides")
     (description "The beamer LaTeX class can be used for producing slides.
@@ -8901,7 +8894,7 @@ are part of the LaTeX required tools distribution, comprising the packages:
            texlive-pstricks
            texlive-pst-text
            texlive-tools
-           texlive-latex-pgf))
+           texlive-pgf))
     (home-page "http://www.ctan.org/pkg/xkeyval")
     (synopsis "Extension of the keyval package")
     (description
@@ -9110,7 +9103,7 @@ section.
     (package
       (inherit template)
       (propagated-inputs
-       (list texlive-latex-pgf texlive-latex-xkeyval))
+       (list texlive-pgf texlive-latex-xkeyval))
       (home-page "http://www.ctan.org/pkg/todonotes")
       (synopsis "Marking things to do in a LaTeX document")
       (description "The @code{todonotes} package lets the user mark
@@ -9852,12 +9845,12 @@ the list of graphics file extensions recognised by package graphics.")
       (native-inputs
        (list texlive-ydoc))
       (propagated-inputs
-       (list texlive-latex-pgf
-             texlive-latex-varwidth
+       (list texlive-latex-varwidth
              texlive-latex-xkeyval
              texlive-collectbox
              texlive-ifoddpage
-             texlive-storebox))
+             texlive-storebox
+             texlive-pgf))
       (home-page "https://www.ctan.org/pkg/adjustbox")
       (synopsis "Graphics package-alike macros for “general” boxes")
       (description "The package provides several macros to adjust boxed
@@ -9882,7 +9875,7 @@ provided box macros are @code{\\lapbox}, @code{\\marginbox},
     (package
       (inherit template)
       (propagated-inputs
-       (list texlive-etoolbox texlive-latex-environ texlive-latex-pgf
+       (list texlive-etoolbox texlive-latex-environ texlive-pgf
              texlive-latex-tools))
       (home-page "https://www.ctan.org/pkg/tcolorbox")
       (synopsis "Colored boxes, for LaTeX examples and theorems, etc")

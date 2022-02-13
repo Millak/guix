@@ -3341,7 +3341,7 @@ data and settings.")
                                              texlive-ms
                                              texlive-latex-natbib
                                              texlive-bibtex ; style files used by natbib
-                                             texlive-latex-pgf ; tikz
+                                             texlive-pgf ; tikz
                                              texlive-latex-verbatimbox)))
        ("imagemagick" ,imagemagick)))
     (home-page "https://dorina.mdc-berlin.de/public/rajewsky/discrover/")
