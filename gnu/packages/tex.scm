@@ -3060,25 +3060,53 @@ with the required packages, constitutes what every LaTeX distribution should
 contain.")
       (license license:lppl1.3c+))))
 
-(define-public texlive-latex-atveryend
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-atveryend"
-              '("/doc/latex/atveryend/README.md"
-                "/tex/latex/atveryend/")
-              (base32
-               "1gz5ssxjlqa53a8blsmdk2qjahzc910ldh26xjxfxgqnqb03rqx7")
-              #:trivial? #t))
-    (home-page "https://www.ctan.org/pkg/atveryend")
-    (synopsis "Hooks at the very end of a document")
-    (description
-     "This LaTeX packages provides two hooks for @code{\\end@{document@}}
-that are executed after the hook of @code{\\AtEndDocument}:
+(define-public texlive-atveryend
+  (let ((template (simple-texlive-package
+                   "texlive-atveryend"
+                   (list "doc/latex/atveryend/"
+                         "source/latex/atveryend/"
+                         "tex/latex/atveryend/")
+                   (base32 "1rp805h0m99rxs107a798l951lyahlnp7irfklfadn2a2ljzhafn"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/atveryend")
+         ((#:build-targets _ #t)
+          #~(list "atveryend.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/atveryend/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))
+              (add-after 'copy-files 'remove-generated-file
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (with-directory-excursion #$output
+                    (for-each delete-file
+                              (find-files "." "\\.(drv|ins)$")))))))))
+      (home-page "https://ctan.org/macros/latex/contrib/atveryend")
+      (synopsis "Hooks at the very end of a document")
+      (description
+       "This LaTeX packages provides two hooks for @code{\\end{document}} that
+are executed after the hook of @code{\\AtEndDocument}:
 @code{\\AfterLastShipout} can be used for code that is to be executed right
 after the last @code{\\clearpage} before the @file{.aux} file is closed.
-@code{\\AtVeryEndDocument} is used for code after closing and final reading
-of the @file{.aux} file.")
-    (license license:lppl1.3c+)))
+@code{\\AtVeryEndDocument} is used for code after closing and final reading of
+the @file{.aux} file.")
+      (license license:lppl1.3+))))
+
+(define-deprecated-package texlive-latex-atveryend texlive-atveryend)
 
 (define-public texlive-latex-auxhook
   (package
@@ -3398,7 +3426,8 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              (add-after 'unpack 'chdir
                (lambda _ (chdir "source/latex/hyperref") #t))))))
       (propagated-inputs
-       (list texlive-generic-atbegshi
+       (list texlive-atveryend
+             texlive-generic-atbegshi
              texlive-generic-bitset
              texlive-generic-etexcmds
              texlive-generic-gettitlestring
@@ -3410,7 +3439,6 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-generic-ltxcmds
              texlive-generic-pdfescape
              texlive-latex-auxhook
-             texlive-latex-atveryend
              texlive-latex-hycolor
              texlive-latex-kvoptions
              texlive-latex-letltxmacro
@@ -3478,8 +3506,8 @@ arrows; record information about document class(es) used; and many more.")
                "1myz0d5bxhxvl4220ikywh921qld8n324kk9kscqbc5iw4063g56")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-generic-infwarerr texlive-generic-uniquecounter
-           texlive-latex-atveryend texlive-latex-kvoptions
+     (list texlive-atveryend texlive-generic-infwarerr
+           texlive-generic-uniquecounter texlive-latex-kvoptions
            texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/rerunfilecheck")
     (synopsis "Checksum based rerun checks on auxiliary files")
