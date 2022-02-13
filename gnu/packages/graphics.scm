@@ -1962,16 +1962,16 @@ and build scripts for the OpenXR loader.")
             "0n04k7a8b0i8ga0kbzh7qxmvni1ijawgk98s83519vxg4d0yyjbq"))))
     (build-system meson-build-system)
     (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("glslang" ,glslang)
-       ("libudev" ,eudev)
-       ("libusb" ,libusb)
-       ("libxcb" ,libxcb)
-       ("libxrandr" ,libxrandr)
-       ("opengl" ,mesa)
-       ("python" ,python)
-       ("v4l" ,v4l-utils)
-       ("vulkan-loader" ,vulkan-loader)))
+     (list ffmpeg
+           glslang
+           eudev
+           libusb
+           libxcb
+           libxrandr
+           mesa
+           python
+           v4l-utils
+           vulkan-loader))
     (native-inputs
      (list eigen pkg-config vulkan-headers))
     (arguments
