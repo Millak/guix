@@ -583,8 +583,9 @@ fastcgi_param PHP_VALUE \"post_max_size = 16M
     "The Zabbix server package to use.")
   (nginx
     (list '())
-   "List of @pxref{NGINX, @code{nginx-server-configuration}} blocks for the
-Zabbix front-end.  When empty, a default that listens on port 80 is used.")
+   "List of @ref{nginx-server-configuration,@code{nginx-server-configuration}}
+blocks for the Zabbix front-end.  When empty, a default that listens on port 80
+is used.")
   (db-host
    (string "localhost")
    "Database host name.")

@@ -25507,9 +25507,10 @@ Specify the path of the base URL@.  This can be useful if
 @end table
 @end deftp
 
+@anchor{prometheus-node-exporter}
 @subsubheading Prometheus Node Exporter Service
-
 @cindex prometheus-node-exporter
+
 The Prometheus ``node exporter'' makes hardware and operating system statistics
 provided by the Linux kernel available for the Prometheus monitoring system.
 This service should be deployed on all physical nodes and virtual machines,
@@ -25548,19 +25549,22 @@ Extra options to pass to the Prometheus node exporter.
 
 @subsubheading Zabbix server
 @cindex zabbix zabbix-server
-Zabbix provides monitoring metrics, among others network utilization, CPU load
-and disk space consumption:
+Zabbix is a high performance monitoring system that can collect data from a
+variety of sources and provide the results in a web-based interface.  Alerting
+and reporting is built-in, as well as @dfn{templates} for common operating
+system metrics such as network utilization, CPU load, and disk space consumption.
 
-@itemize
-@item High performance, high capacity (able to monitor hundreds of thousands of devices).
-@item Auto-discovery of servers and network devices and interfaces.
-@item Low-level discovery, allows to automatically start monitoring new items, file systems or network interfaces among others.
-@item Distributed monitoring with centralized web administration.
-@item Native high performance agents.
-@item SLA, and ITIL KPI metrics on reporting.
-@item High-level (business) view of monitored resources through user-defined visual console screens and dashboards.
-@item Remote command execution through Zabbix proxies.
-@end itemize
+This service provides the central Zabbix monitoring service; you also need
+@ref{zabbix-front-end,@code{zabbix-front-end-service-type}} to configure Zabbix
+and display results, and optionally @ref{zabbix-agent,
+@code{zabbix-agent-service-type}} on machines that should be monitored (other
+data sources are supported, such as @ref{prometheus-node-exporter,
+Prometheus Node Exporter}).
+
+@defvar {Scheme variable} zabbix-server-service-type
+This is the service type for the Zabbix server service.  Its value must be a
+@code{zabbix-server-configuration} record, shown below.
+@end defvar
 
 @c %start of fragment
 
@@ -25633,10 +25637,20 @@ configuration file.
 
 @c %end of fragment
 
+@anchor{zabbix-agent}
 @subsubheading Zabbix agent
 @cindex zabbix zabbix-agent
 
-Zabbix agent gathers information for Zabbix server.
+The Zabbix agent gathers information about the running system for the Zabbix
+monitoring server.  It has a variety of built-in checks, and can be extended
+with custom
+@uref{https://www.zabbix.com/documentation/current/en/manual/config/items/userparameters,
+@dfn{user parameters}}.
+
+@defvar {Scheme variable} zabbix-agent-service-type
+This is the service type for the Zabbix agent service.  Its value must be a
+@code{zabbix-agent-configuration} record, shown below.
+@end defvar
 
 @c %start of fragment
 
@@ -25701,10 +25715,19 @@ configuration file.
 
 @c %end of fragment
 
+@anchor{zabbix-front-end}
 @subsubheading Zabbix front-end
 @cindex zabbix zabbix-front-end
 
-This service provides a WEB interface to Zabbix server.
+The Zabbix front-end provides a web interface to Zabbix.  It does not need
+to run on the same machine as the Zabbix server.  This service works by
+extending the @ref{PHP-FPM} and @ref{NGINX} services with the configuration
+necessary for loading the Zabbix user interface.
+
+@defvar {Scheme variable} zabbix-front-end-service-type
+This is the service type for the Zabbix web frontend.  Its value must be a
+@code{zabbix-front-end-configuration} record, shown below.
+@end defvar
 
 @c %start of fragment
 
@@ -25716,9 +25739,9 @@ Available @code{zabbix-front-end-configuration} fields are:
 The Zabbix server package to use.
 
 @item @code{nginx} (default: @code{()}) (type: list)
-List of @pxref{NGINX,@code{nginx-server-configuration}} blocks for the
-Zabbix front-end.  When empty, a default that listens on port 80 is
-used.
+List of @ref{nginx-server-configuration,@code{nginx-server-configuration}}
+blocks for the Zabbix front-end.  When empty, a default that listens on
+port 80 is used.
 
 @item @code{db-host} (default: @code{"localhost"}) (type: string)
 Database host name.
@@ -26722,6 +26745,7 @@ valued G-expression.
 @end table
 @end deffn
 
+@anchor{nginx-server-configuration}
 @deftp {Data Type} nginx-server-configuration
 Data type representing the configuration of an nginx server block.
 This type has the following parameters:
@@ -27172,6 +27196,8 @@ capability also has to be configured on the front-end as well.
 @end table
 @end deftp
 
+@anchor{PHP-FPM}
+@subsubheading PHP-FPM
 @cindex php-fpm
 PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation
 with some additional features useful for sites of any size.
