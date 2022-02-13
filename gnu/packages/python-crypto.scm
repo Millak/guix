@@ -663,37 +663,37 @@ message digests and key derivation functions.")
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "20.0.1")
+    (version "22.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "0labcbh2g0jhgisd79wx9kixmi6fip28096d1xb05fj3jmsiq8sc"))))
+         "1gzihw09sqi71lwx97c69hab7w4rbnl6hhfrl6za3i5a4la1n2v6"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             ;; PyOpenSSL runs tests against a certificate with a fixed
-             ;; expiry time.  To ensure successful builds in the future,
-             ;; set the time to roughly the release date.
-             (invoke "faketime" "2021-05-01" "py.test" "-v" "-k"
-                     (string-append
-                      ;; This test tries to look up certificates from
-                      ;; the compiled-in default path in OpenSSL, which
-                      ;; does not exist in the build environment.
-                      "not test_fallback_default_verify_paths "
-                      ;; This test attempts to make a connection to
-                      ;; an external web service.
-                      "and not test_set_default_verify_paths "
-                      ;; Fails on i686-linux and possibly other 32-bit platforms
-                      ;; https://github.com/pyca/pyopenssl/issues/974
-                      "and not test_verify_with_time")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; PyOpenSSL runs tests against a certificate with a fixed
+                ;; expiry time.  To ensure successful builds in the future,
+                ;; set the time to roughly the release date.
+                (invoke "faketime" "2022-02-01" "py.test" "-v" "-k"
+                        (string-append
+                         ;; This test tries to look up certificates from
+                         ;; the compiled-in default path in OpenSSL, which
+                         ;; does not exist in the build environment.
+                         "not test_fallback_default_verify_paths "
+                         ;; This test attempts to make a connection to
+                         ;; an external web service.
+                         "and not test_set_default_verify_paths "
+                         ;; Fails on i686-linux and possibly other 32-bit platforms
+                         ;; https://github.com/pyca/pyopenssl/issues/974
+                         "and not test_verify_with_time"))))))))
     (propagated-inputs
      (list python-cryptography python-six))
     (inputs
@@ -705,10 +705,22 @@ message digests and key derivation functions.")
     (description
       "PyOpenSSL is a high-level wrapper around a subset of the OpenSSL
 library.")
+    (properties `((python2-variant . ,(delay python2-pyopenssl))))
     (license license:asl2.0)))
 
 (define-public python2-pyopenssl
-  (package-with-python2 python-pyopenssl))
+  (let ((base (package-with-python2 (strip-python2-variant python-pyopenssl))))
+    (package
+      (inherit base)
+      (version "21.0.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (pypi-uri "pyOpenSSL" version))
+         (patches (search-patches "python2-pyopenssl-openssl-compat.patch"))
+         (sha256
+          (base32
+           "1cqcc20fwl521z3fxsc1c98gbnhb14q55vrvjfp6bn6h8rg8qbay")))))))
 
 (define-public python-ed25519
   (package
