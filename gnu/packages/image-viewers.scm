@@ -9,7 +9,7 @@
 ;;; Copyright © 2017 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019, 2020, 2022 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020 Peng Mei Yu <pengmeiyu@riseup.net>
@@ -42,6 +42,7 @@
 (define-module (gnu packages image-viewers)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -49,6 +50,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages backup)
@@ -745,7 +747,7 @@ For PDF support, install the @emph{mupdf} package.")
 (define-public qview
   (package
     (name "qview")
-    (version "4.0")
+    (version "5.0")
     (source
      (origin
        (method git-fetch)
@@ -754,25 +756,32 @@ For PDF support, install the @emph{mupdf} package.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15n9cq7w3ckinnx38hvncxrbkv4qm4k51sal41q4y0pkvhmafhnr"))))
-    (build-system gnu-build-system)
+        (base32 "1ck4mvhzc4m72n010n43d8ipjczzk6ya637rgfyi7bzb4gv0f3am"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "qmake" (string-append "PREFIX=" out)))))
-         ;; Don't phone home or show "Checking for updates..." in the About
-         ;; menu.
-         (add-before 'build 'disable-auto-update
-           (lambda _
-             (substitute* "src/qvaboutdialog.cpp"
-               (("qvApp->checkUpdates\\(\\);") "")
-               (("updateText\\(\\);") ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "qmake" (string-append "PREFIX=" #$output))))
+          ;; Don't phone home or show "Checking for updates..." in the About
+          ;; menu.
+          (add-before 'build 'disable-auto-update
+            (lambda _
+              (substitute* "src/qvaboutdialog.cpp"
+                (("qvApp->checkUpdates\\(\\);") "")
+                (("updateText\\(\\);") ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (invoke "qmake" "tests.pro")
+                  (invoke "make" "tests"))))))))
+    (native-inputs
+     (list qttools))
     (inputs
-     (list qtbase-5 qtsvg qtimageformats))
+     (list qtbase-5 qtimageformats qtsvg))
     (home-page "https://interversehq.com/qview/")
     (synopsis "Convenient and minimal image viewer")
     (description "qView is a Qt image viewer designed with visually
