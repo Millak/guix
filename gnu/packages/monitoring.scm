@@ -164,7 +164,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "5.4.9")
+    (version "5.4.10")
     (source
      (origin
        (method url-fetch)
@@ -172,13 +172,13 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "0hf9qygjy4vyknsin6qmgpna6z4c4mdrglifgkpxbs3nvwl6cs0r"))
+        (base32 "0xwqwmq811fgxl6j9a9527i55jcpq98gqvwcda8la9gj0rsiqas6"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
                         "src/zabbix_server/server.c")
            ;; 'fping' must be setuid, so look for it in the usual location.
-           (("/usr/sbin/fping[[:digit:]]?")
+           (("/usr/sbin/fping6?")
             "/run/setuid-programs/fping")))))
     (build-system gnu-build-system)
     (arguments
