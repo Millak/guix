@@ -594,8 +594,7 @@ basis for almost any application.")
                     (("localhost") "127.0.0.1"))
 
                   (substitute* "src/testsuite/login-auth-test"
-                    (("/bin/cat") "cat"))
-                  #t))
+                    (("/bin/cat") "cat"))))
               (patches (search-patches "lsh-fix-x11-forwarding.patch"))))
     (build-system gnu-build-system)
     (native-inputs
@@ -629,7 +628,10 @@ basis for almost any application.")
 
                            ;; 'lsh_argp.h' checks HAVE_ARGP_PARSE but nothing
                            ;; defines it.
-                           "CPPFLAGS=-DHAVE_ARGP_PARSE")
+                           "CPPFLAGS=-DHAVE_ARGP_PARSE"
+
+                           ;; Fix the build of lsh@2.1 with GCC 10.
+                           "CFLAGS=-fcommon")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-tests
@@ -642,8 +644,7 @@ basis for almost any application.")
                (("seed-test \\\\")        ;prevent trailing slash
                 "seed-test")
                (("^\t(lsh|daemon|tcpip|socks|lshg|lcp|rapid7|lshd).*test.*")
-                ""))
-             #t))
+                ""))))
          (add-before 'configure 'pre-configure
            (lambda* (#:key inputs #:allow-other-keys)
              (let* ((nettle    (assoc-ref inputs "nettle"))
