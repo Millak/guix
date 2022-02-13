@@ -714,7 +714,7 @@ of writing test cases for asynchronous interactions.")
        ("pkg-config" ,pkg-config)
        ("pygobject" ,python-pygobject)
        ("python" ,python-wrapper)
-       ("vala" ,vala)))
+       ("vala" ,vala-0.52)))
     (inputs
      `(("icu" ,icu4c)))
     (propagated-inputs
