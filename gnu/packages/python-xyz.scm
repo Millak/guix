@@ -5846,7 +5846,7 @@ readable format.")
                                         texlive-latex-float
                                         texlive-latex-framed
                                         texlive-latex-geometry
-                                        texlive-latex-graphics
+                                        texlive-graphics
                                         texlive-hyperref
                                         texlive-latex-mdwtools
                                         texlive-latex-multirow
@@ -8931,7 +8931,7 @@ computing.")
                                         texlive-latex-float
                                         texlive-latex-framed
                                         texlive-latex-geometry
-                                        texlive-latex-graphics
+                                        texlive-graphics
                                         texlive-hyperref
                                         texlive-latex-mdwtools
                                         texlive-latex-multirow

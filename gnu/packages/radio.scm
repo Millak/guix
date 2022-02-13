@@ -497,7 +497,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                              texlive-latex-amsmath
                                              ;; TODO: Add newunicodechar.
-                                             texlive-latex-graphics)))
+                                             texlive-graphics)))
        ("xorg-server" ,xorg-server-for-tests)))
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -705,7 +705,7 @@ to access different radio hardware.")
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
                                         texlive-latex-amsmath
                                         ;; TODO: Add newunicodechar.
-                                        texlive-latex-graphics)))))
+                                        texlive-graphics)))))
     (inputs
      (list fftwf))
     (arguments

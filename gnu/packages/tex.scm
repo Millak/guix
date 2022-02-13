@@ -3245,29 +3245,56 @@ packages.")
 set default \"driver\" options for the color and graphics packages.")
     (license license:public-domain)))
 
-(define-public texlive-latex-graphics
-  (package
-    (name "texlive-latex-graphics")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "graphics"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0fgjl58f25zvagssz4dwmmsclzw8cr7mx00kdrbx2kcnamcb7h8d"))))
-    (build-system texlive-build-system)
-    (arguments '(#:tex-directory "latex/graphics"))
-    (propagated-inputs
-     (list texlive-graphics-cfg texlive-graphics-def))
-    (home-page "https://www.ctan.org/pkg/latex-graphics")
-    (synopsis "LaTeX standard graphics bundle")
-    (description
-     "This is a collection of LaTeX packages for producing color, including
-graphics (e.g. PostScript) files, and rotation and scaling of text in LaTeX
+(define-public texlive-graphics
+  (let ((template (simple-texlive-package
+                   "texlive-graphics"
+                   (list "doc/latex/graphics/"
+                         "source/latex/graphics/"
+                         "tex/latex/graphics/")
+                   (base32
+                    "0prw1zcv4fcj3zg0kyhj0k7ax0530adl60bajzvbv3fi16d7rqlq"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/graphics")
+         ((#:build-targets _ '())
+          #~(list "graphics-drivers.ins" "graphics.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/graphics")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc)
+                    ;; This file is not generated from the sources.
+                    (install-file
+                     (string-append
+                      origin
+                      "/tex/latex/graphics/graphics-2017-06-25.sty")
+                     (string-append
+                      #$output
+                      "/share/texmf-dist/tex/latex/graphics")))))))))
+      (propagated-inputs (list texlive-graphics-def texlive-graphics-cfg))
+      (home-page "https://ctan.org/macros/latex/required/graphics")
+      (synopsis "The LaTeX standard graphics bundle")
+      (description
+       "This is a collection of LaTeX packages for: producing colour including
+graphics (e.g., PostScript) files rotation and scaling of text in LaTeX
 documents.  It comprises the packages color, graphics, graphicx, trig, epsfig,
 keyval, and lscape.")
-    (license license:lppl1.3c+)))
+      (license license:lppl1.3c))))
+
+(define-deprecated-package texlive-latex-graphics texlive-graphics)
 
 (define-public texlive-latex-hycolor
   (package
@@ -4316,6 +4343,7 @@ part of the LaTeX required set of packages.")
                 texlive-cm
                 texlive-cm-super ; to avoid bitmap fonts
                 texlive-fonts-latex
+                texlive-graphics
                 texlive-metafont
                 texlive-latex-base
                 texlive-kpathsea       ;for mktex.opt
@@ -4325,7 +4353,6 @@ part of the LaTeX required set of packages.")
                 texlive-babel
                 texlive-generic-babel-english
                 texlive-latex-cyrillic
-                texlive-latex-graphics
                 texlive-psnfss
                 texlive-latex-tools
                 texlive-tetex)))
@@ -4930,7 +4957,7 @@ rotated.")
     (propagated-inputs
      (list texlive-latex-bigfoot ; for suffix
            texlive-filemod
-           texlive-latex-graphics
+           texlive-graphics
            texlive-latex-ifplatform
            texlive-latex-l3kernel ; for expl3
            texlive-oberdiek
@@ -6626,7 +6653,7 @@ Simple Young tableaux.
              texlive-hyperref
              texlive-latex-colortbl
              texlive-latex-fancyhdr
-             texlive-latex-graphics ;for color.sty
+             texlive-graphics ;for color.sty
              texlive-latex-tools ;for array.sty
              texlive-marvosym
              texlive-tex-ini-files)) ;for pdftexconfig

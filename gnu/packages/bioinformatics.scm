@@ -13375,7 +13375,7 @@ to an artifact/contaminant file.")
     (inputs
      (list openmpi zlib))
     (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-latex-graphics
+     `(("texlive" ,(texlive-updmap.cfg (list texlive-graphics
                                              texlive-fonts-ec
                                              texlive-hyperref)))))
     (home-page "https://www.ebi.ac.uk/~zerbino/velvet/")

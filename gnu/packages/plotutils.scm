@@ -301,7 +301,7 @@ colors, styles, options and details.")
                   texlive-hyperref
                   texlive-latex-base
                   texlive-latex-geometry
-                  texlive-latex-graphics
+                  texlive-graphics
                   texlive-latex-kvoptions
                   texlive-latex-media9
                   texlive-oberdiek      ;for ifluatex
