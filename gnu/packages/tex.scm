@@ -9206,6 +9206,21 @@ uppercase letters commonly used to represent various number sets.
 LaTeX macro support is provided in package @code{psnfss}.")
     (license license:gpl3+)))
 
+(define-public texlive-fp
+  (package
+    (inherit
+     (simple-texlive-package
+      "texlive-fp"
+      (list "doc/latex/fp/" "tex/latex/fp/" "tex/plain/fp/")
+      (base32 "1q555fx71cf88sn3npzb0j2i10ak920k0qc9ccdygz99vqg10dad")
+      #:trivial? #t))
+    (home-page "https://ctan.org/macros/latex/contrib/fp")
+    (synopsis "Fixed point arithmetic")
+    (description
+     "This package provides an extensive collection of arithmetic operations
+for fixed point real numbers of high precision.")
+    (license license:lppl)))
+
 (define-public texlive-fpl
   (package
     (inherit (simple-texlive-package
