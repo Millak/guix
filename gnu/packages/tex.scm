@@ -7676,35 +7676,45 @@ including:
 It also ensures compatibility with the @code{media9} and @code{animate} packages.")
     (license license:lppl)))
 
-(define-public texlive-latex-ms
-  (package
-    (name "texlive-latex-ms")
-    (version (number->string %texlive-revision))
-    (source (origin
-              (method svn-fetch)
-              (uri (texlive-ref "latex" "ms"))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "04ww5abfm7dx81d21yr2gwy9jswaalnfm2384xp4cyx7srd9spfv"))))
-    (build-system texlive-build-system)
-    (arguments
-     '(#:tex-directory "latex/ms"
-       #:tex-format "latex"))
-    (home-page "https://ctan.org/pkg/ms")
-    (synopsis "Various LATEX packages by Martin Schröder")
-    (description
-     "A bundle of LATEX packages by Martin Schröder; the collection comprises:
+(define-public texlive-ms
+  (let ((template
+         (simple-texlive-package
+          "texlive-ms"
+          (list "doc/latex/ms/" "source/latex/ms/" "tex/latex/ms/")
+          (base32 "1cgrpx5mybiirjjdmni8kvqdg37dwfkixq3h9ami0mgxqqqfl2x3"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "latex/ms")
+         ((#:tex-format _ "latex") "latex")
+         ((#:build-targets _ '())
+          #~(list "count1to.ins" "multitoc.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/latex/ms")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (home-page "https://ctan.org/macros/latex/contrib/ms")
+      (synopsis "Various LaTeX packages by Martin Schroder")
+      (description
+       "The remains of a bundle of LaTeX packages by Martin Schroder; the
+collection comprises: count1to, make use of TeX counters; and multitoc,
+typeset the table of contents in multiple columns.")
+      (license license:lppl))))
 
-@itemize
-@item @command{count1to}, make use of fixed TEX counters;
-@item @command{everysel}, set commands to execute every time a font is selected;
-@item @command{everyshi}, set commands to execute whenever a page is shipped out;
-@item @command{multitoc}, typeset the table of contents in multiple columns;
-@item @command{prelim2e}, mark typeset pages as preliminary; and
-@item @command{ragged2e}, typeset ragged text and allow hyphenation.
-@end itemize\n")
-    (license license:lppl1.3c+)))
+(define-deprecated-package texlive-latex-ms texlive-ms)
 
 (define-public texlive-latex-numprint
   (package

@@ -12625,7 +12625,7 @@ time.")
                                         texlive-grffile
                                         texlive-hyperref
                                         texlive-latex-jknapltx
-                                        texlive-latex-ms
+                                        texlive-ms
                                         texlive-oberdiek
                                         texlive-latex-parskip
                                         texlive-latex-trimspaces

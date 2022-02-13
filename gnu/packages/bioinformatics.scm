@@ -3338,7 +3338,7 @@ data and settings.")
                                              texlive-fonts-ec
                                              texlive-latex-examplep
                                              texlive-hyperref
-                                             texlive-latex-ms
+                                             texlive-ms
                                              texlive-latex-natbib
                                              texlive-bibtex ; style files used by natbib
                                              texlive-latex-pgf ; tikz
