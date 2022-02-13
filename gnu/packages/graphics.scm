@@ -26,7 +26,7 @@
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1919,7 +1919,7 @@ Some feature highlights:
 (define-public openxr
   (package
     (name "openxr")
-    (version "1.0.20")
+    (version "1.0.22")
     (source
      (origin
        (method git-fetch)
@@ -1933,7 +1933,7 @@ Some feature highlights:
            ;; Delete bundled jsoncpp.
            (delete-file-recursively "src/external/jsoncpp")))
        (sha256
-        (base32 "1jd7jjxlrdi8kjnmn3sad7dgb4h48dbxryfb9snf0kifn47bi20m"))))
+        (base32 "1l6wygazgvd8lbhqk60iim2l2h35gxpsn0y9a9f8q72sqpfianky"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
