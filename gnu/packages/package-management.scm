@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
@@ -1221,13 +1221,13 @@ allow for great power and flexibility.
 (define-public gwl
   (package
     (name "gwl")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gwl/gwl-" version ".tar.gz"))
               (sha256
                (base32
-                "1lqif00mq7fsaknbc2gvvcv1j89k311sm44jp9jklbrv0v2lc83n"))))
+                "0sgaaq430l3dqmqqiikfb0ilxnd2cq28626y18kxx5c781qwpys9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #false ; for reproducibility
@@ -1239,14 +1239,15 @@ allow for great power and flexibility.
      (let ((p (package-input-rewriting
                `((,guile-3.0 . ,guile-3.0-latest))
                #:deep? #false)))
-       `(("guix" ,guix)
-         ("guile" ,guile-3.0-latest)
-         ("guile-commonmark" ,(p guile-commonmark))
-         ("guile-config" ,(p guile-config))
-         ("guile-gcrypt" ,(p guile-gcrypt))
-         ("guile-pfds" ,(p guile-pfds))
-         ("guile-syntax-highlight" ,(p guile-syntax-highlight))
-         ("guile-wisp" ,(p guile-wisp)))))
+       (list guix
+             guile-3.0-latest
+             (p guile-commonmark)
+             (p guile-config)
+             (p guile-drmaa)
+             (p guile-gcrypt)
+             (p guile-pfds)
+             (p guile-syntax-highlight)
+             (p guile-wisp))))
     (home-page "https://workflows.guix.info")
     (synopsis "Workflow management extension for GNU Guix")
     (description "The @dfn{Guix Workflow Language} (GWL) provides an
@@ -1260,8 +1261,8 @@ environments.")
     (license (list license:gpl3+ license:agpl3+ license:silofl1.1))))
 
 (define-public guix-build-coordinator
-  (let ((commit "048c609667f1690fe0a8d8c9b772f9bc6dd412e0")
-        (revision "47"))
+  (let ((commit "f1223225144b866951f13ece7f0583fd826a5705")
+        (revision "50"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1272,7 +1273,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "13sf3gv1jdaq6ncyw4s58zw0l2xjnksqjynlbqzx08i45xpj5yv8"))
+                  "1yw5hzmkhgb2s29wv7bsi3w50ps9zi0zd1n0faxbcfyglsryvgbs"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1359,7 +1360,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers
+             guile-fibers-1.1
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1383,7 +1384,7 @@ environments.")
               gnutls)
         (if (hurd-target?)
             '()
-            (list guile-fibers))))
+            (list guile-fibers-1.1))))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1568,8 +1569,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "049dfec287fa948cac6682d0a047bc0ed356f0bf")
-        (revision "1"))
+  (let ((commit "b0263314f56cc6558e4941f64c89d9fd85aaa260")
+        (revision "3"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1580,7 +1581,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1bkn6avcyp2rcrqaync65b8yn9dvxlkjpk3mdk5nsy527dzhs5ws"))
+                  "05rpjs8c6m23knh0wx9sjf3417nrbi489vbisr5d9ijfhg78l7i3"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1646,7 +1647,7 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-1.1
              guile-lib
              guile-sqlite3))
       (inputs
@@ -1656,7 +1657,7 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers
+             guile-fibers-1.1
              guile-lib
              guile-sqlite3
              gnutls))

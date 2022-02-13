@@ -27,7 +27,7 @@
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020, 2021 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
@@ -1335,40 +1335,36 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.34.3")
+    (version "0.35")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1278r8x8l2hsxg8plbfk7w2md0fagdm243lm7df5m0gx7d411s9z"))))
+        (base32 "0fdc81m24xrbhfrhw00g12ak4b8hap4961sq7ap6q2pjqhac8cd8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list "V=1"                      ; verbose test output
-             "NOTMUCH_TEST_TIMEOUT=1h") ; don't fail on slow machines
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (setenv "CC" ,(cc-for-target))
-                      (setenv "CONFIG_SHELL" (which "sh"))
-                      (let* ((out (assoc-ref outputs "out")))
-                        (invoke "./configure"
-                                (string-append "--prefix=" out)
-                                "--without-emacs"))))
-                  (add-before 'check 'disable-failing-tests
-                    ;; FIXME: Investigate why these tests are failing,
-                    ;; and try removing this for notmuch versions > 0.31.
-                    (lambda _
-                      (substitute* "test/T356-protected-headers.sh"
-                        (("\\$NOTMUCH_GMIME_X509_CERT_VALIDITY") "0"))))
-                  (add-before 'check 'prepare-test-environment
-                    (lambda _
-                      (setenv "TEST_CC" ,(cc-for-target))
-                      ;; Patch various inline shell invocations.
-                      (substitute* (find-files "test" "\\.sh$")
-                        (("/bin/sh") (which "sh"))))))))
+     (list
+      #:make-flags
+      #~(list "V=1"                      ; verbose test output
+              "NOTMUCH_TEST_TIMEOUT=1h") ; don't fail on slow machines
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CC" #$(cc-for-target))
+              (setenv "CONFIG_SHELL" (search-input-file inputs "/bin/sh"))
+              (invoke "./configure"
+                      (string-append "--prefix=" #$output)
+                      "--without-emacs")))
+          (add-before 'check 'prepare-test-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TEST_CC" #$(cc-for-target))
+              ;; Patch various inline shell invocations.
+              (let ((sh (search-input-file inputs "/bin/sh")))
+                (substitute* (find-files "test" "\\.sh$")
+                  (("/bin/sh") sh))))))))
     (native-inputs
      (list bash-completion
            pkg-config
@@ -1377,7 +1373,7 @@ invoking @command{notifymuch} from the post-new hook.")
            python-sphinx
            texinfo
            ;; The following are required for tests only.
-           emacs-no-x ; -minimal lacks libxml, needed for some tests
+           emacs-no-x           ; -minimal lacks libxml, needed for some tests
            which
            dtach
            gnupg
@@ -1401,18 +1397,19 @@ ing, and tagging large collections of email messages.")
     (inputs
      (list notmuch))
     (arguments
-     `(#:exclude (cons* "make-deps.el" "rstdoc.el" %default-exclude)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "emacs")))
-         (add-after 'chdir 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((notmuch (assoc-ref inputs "notmuch")))
-               (substitute* "notmuch-lib.el"
-                 (("\"notmuch\"")
-                  (string-append "\"" notmuch "/bin/notmuch\"")))))))))
+     (list
+      #:exclude #~(cons* "make-deps.el" "rstdoc.el" %default-exclude)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "emacs")))
+          (add-after 'chdir 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((notmuch (search-input-file inputs "/bin/notmuch")))
+                (substitute* "notmuch-lib.el"
+                  (("\"notmuch\"")
+                   (string-append "\"" notmuch "\"")))))))))
     (synopsis "Run Notmuch within Emacs")
     (description
      "This package provides an Emacs-based interface to the Notmuch mail
@@ -3856,13 +3853,13 @@ servers.  The 4rev1 and 4 versions of IMAP are supported.")
 (define-public urlscan
   (package
     (name "urlscan")
-    (version "0.9.8")
+    (version "0.9.9")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "urlscan" version))
         (sha256
-         (base32 "1imrg2r9cshfvdwkdkm9y4i58qzkgnnwkswmh3kgy38m334mlcyf"))))
+         (base32 "1lc06i4r29s7qsfds4w3ip85n5fxjn65n47wxh8pvyb46fdvjrns"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-urwid))
@@ -3903,8 +3900,8 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "8a45281801ade7524dbdee423c28b326051719de")
-        (revision "6"))
+  (let ((commit "f5232c49fe8a3b127c96f7b502775f16aebf3033")
+        (revision "7"))
     (package
       (name "mumi")
       (version (git-version "0.0.1" revision commit))
@@ -3916,7 +3913,7 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0p1i66j721y5hwbdy97kv4gw892nx7xrdfjrs12fn90cwkl611mp"))))
+                  "1dc4m7l9mmi7lm0cfmyf5yg6bkpirsvmfq347sf1ch1svg5r7y9n"))))
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -3944,16 +3941,17 @@ It is a replacement for the @command{urlview} program.")
                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix
                      (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
       (inputs
-       `(("guile-email" ,guile-email-latest)
-         ("guile-fibers" ,guile-fibers)
-         ("guile-gcrypt" ,guile-gcrypt)
-         ("guile-json" ,guile-json-3)
-         ("guile-redis" ,guile-redis)
-         ("guile-syntax-highlight" ,guile-syntax-highlight)
-         ("guile-webutils" ,guile-webutils)
-         ("guile-xapian" ,guile-xapian)
-         ("guile" ,guile-3.0)
-         ("mailutils" ,mailutils)))
+       (list guile-email-latest
+             guile-fibers
+             guile-gcrypt
+             guile-json-3
+             guile-kolam
+             guile-redis
+             guile-syntax-highlight
+             guile-webutils
+             guile-xapian
+             guile-3.0
+             mailutils))
       (native-inputs
        (list autoconf automake pkg-config))
       (home-page "https://git.elephly.net/software/mumi.git")

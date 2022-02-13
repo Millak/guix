@@ -3,7 +3,7 @@
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1264,7 +1265,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
                (install-file "gawk" bin)
                (symlink "gawk" (string-append bin "/awk"))))))))))
 
-(define glibc-mesboot0
+(define-public glibc-mesboot0
   ;; GNU C Library 2.2.5 is the most recent glibc that we managed to build
   ;; using gcc-2.95.3.  Newer versions (2.3.x, 2.6, 2.1x) seem to need a newer
   ;; gcc.
@@ -1358,7 +1359,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
                                      "SHELL = " shell "
          BASH = ")))))))))))
 
-(define gcc-mesboot0
+(define-public gcc-mesboot0
   (package
     (inherit gcc-core-mesboot0)
     (name "gcc-mesboot0")
@@ -1401,6 +1402,63 @@ ac_cv_c_float_format='IEEE (little-endian)'
             `("RANLIB=true"
               ,(string-append "LIBGCC2_INCLUDES=-I " gcc "/include")
               "LANGUAGES=c")))))))
+
+(define-public gcc-2.95-wrapper
+  ;; We need this so gcc-mesboot0 can be used to create shared binaries that
+  ;; have the correct interpreter, otherwise configuring gcc-mesboot using
+  ;; --enable-shared will fail.
+  (package
+    (inherit gcc-mesboot0)
+    (name "gcc-wrapper")
+    (source #f)
+    (inputs '())
+    (native-inputs
+     `(("bash" ,bash-minimal)
+       ("coreutils" ,coreutils)
+       ("libc" ,glibc-2.2.5)
+       ("gcc" ,gcc-mesboot0)))
+    (arguments
+     `(#:implicit-inputs? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'unpack)
+         (delete 'configure)
+         (delete 'install)
+         (replace 'build
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bash (assoc-ref inputs "bash"))
+                    (libc (assoc-ref inputs "libc"))
+                    (gcc (assoc-ref inputs "gcc"))
+                    (bin (string-append out "/bin")))
+               (mkdir-p bin)
+               (for-each
+                (lambda (program)
+                  (let ((wrapper (string-append bin "/" program)))
+                    (with-output-to-file wrapper
+                      (lambda _
+                        (display (string-append "#! " bash "/bin/bash
+exec " gcc "/bin/" program
+" -Wl,--dynamic-linker"
+;; also for x86_64-linux, we are still on i686-linux
+" -Wl," libc ,(glibc-dynamic-linker "i686-linux")
+" -Wl,--rpath"
+" -Wl," libc "/lib"
+" \"$@\"
+"))
+                        (chmod wrapper #o555)))))
+                '("cpp"
+                  "gcc"
+                  "g++"
+                  "i686-unknown-linux-gnu-cpp"
+                  "i686-unknown-linux-gnu-gcc"
+                  "i686-unknown-linux-gnu-g++")))))
+         (replace 'check
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (program (string-append bin "/gcc")))
+               (invoke program "--help")))))))))
 
 (define (%boot-mesboot0-inputs)
   `(("gcc" ,gcc-mesboot0)
@@ -1992,7 +2050,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
            (lambda _
              (invoke "./hello"))))))))
 
-(define binutils-mesboot
+(define-public binutils-mesboot
   (package
     (inherit binutils)
     (name "binutils-mesboot")
@@ -3735,6 +3793,19 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
       ("libc" ,glibc-final)
       ("libc:static" ,glibc-final "static")
       ("locales" ,glibc-utf8-locales-final))))
+
+(define-public %final-inputs-riscv64
+  ;; This is similar to the added (list gcc "lib") elsewhere in this file, but
+  ;; due to how (%current-system) is re-defined when performing builds with the
+  ;; '--system' flag, %final-inputs is too early in the evaulation pipeline to
+  ;; correctly identify the system for which a derivation will be built. Thus,
+  ;; since (%current-system) is re-determined by (guix build-system gnu) after
+  ;; loading %final-inputs but before taking into account the '--system' flag,
+  ;; the test for (target-riscv64?) needs to be in (guix build-system gnu),
+  ;; with %final-inputs-riscv64 already available at the same time that
+  ;; %final-inputs is available.
+  `(("gcc:lib" ,gcc-final "lib")
+    ,@%final-inputs))
 
 (define-public canonical-package
   (let ((name->package (fold (lambda (input result)

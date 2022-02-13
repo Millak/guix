@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016, 2017 John Darrington <jmd@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2014 Mathieu Lirzin <mathieu.lirzin@openmailbox.org>
 ;;; Copyright © 2015–2021 Ricardo Wurmus <rekado@elephly.net>
@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
 ;;; Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2019, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -2708,7 +2708,7 @@ Open CASCADE library.")
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")
-    (version "7.3.0p3")
+    (version "7.6.0")
     (source
       (origin
         (method git-fetch)
@@ -2720,7 +2720,7 @@ Open CASCADE library.")
                                           version)))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0bdywwxb6mk0ykbiajlvsb37295akqjp0a60y672qjfa67k0ljv4"))
+         (base32 "1rcwm9fkx0j4wrsyikb6g7qd611kpry7dand5dzdjvs5vzd13zvd"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -2757,6 +2757,7 @@ Open CASCADE library.")
               "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON"
               "-DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON"
               "-UCMAKE_INSTALL_LIBDIR")))
+    (native-inputs (list fontconfig))
     (inputs
      (list doxygen
            ;("freeimage" ,freeimage)
@@ -3710,14 +3711,14 @@ easy-to-write markup language for mathematics.")
 (define-public superlu
   (package
     (name "superlu")
-    (version "5.2.2")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://portal.nersc.gov/project/sparse/superlu/"
-                           "superlu_" version ".tar.gz"))
+                           "superlu-" version ".tar.gz"))
        (sha256
-        (base32 "13520vk6fqspyl22cq4ak2jh3rlmhja4czq56j75fdx65fkk80s7"))
+        (base32 "0xvib7nk2rlbsiv1iwkwl9kxppkalkciv628bsyiiv0pv754n48q"))
        (modules '((guix build utils)))
        (snippet
         ;; Replace the non-free implementation of MC64 with a stub adapted
@@ -4554,6 +4555,8 @@ parts of it.")
                   ;; Failed to detect CPU.
                   ((string-prefix? "armhf" system)
                    '("TARGET=ARMV7"))
+                  ((string-prefix? "riscv64" system)
+                   '("TARGET=RISCV64_GENERIC"))
                   (else '()))))
        ;; no configure script
        #:phases
@@ -5540,6 +5543,7 @@ set.")
        ("texlive" ,(texlive-updmap.cfg (list texlive-adjustbox
                                              texlive-amsfonts
                                              texlive-bibtex
+                                             texlive-capt-of
                                              texlive-caption
                                              texlive-cm
                                              texlive-etoolbox
@@ -5550,8 +5554,6 @@ set.")
                                              texlive-xcolor
                                              texlive-xypic
                                              texlive-generic-listofitems
-                                             texlive-generic-ulem
-                                             texlive-latex-capt-of
                                              texlive-latex-cmap
                                              texlive-latex-colortbl
                                              texlive-latex-etoc
@@ -5574,6 +5576,7 @@ set.")
                                              texlive-latex-tocloft
                                              texlive-latex-upquote
                                              texlive-latex-varwidth
+                                             texlive-ulem
                                              texlive-wasysym
                                              texlive-latex-wrapfig)))))
     (inputs

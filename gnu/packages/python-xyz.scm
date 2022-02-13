@@ -27,7 +27,7 @@
 ;;; Copyright © 2016 Dylan Jeffers <sapientech@sapientech@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2016, 2017, 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
@@ -2014,14 +2014,14 @@ class.")
 (define-public python-can
   (package
     (name "python-can")
-    (version "3.3.3")
+    (version "3.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-can" version))
        (sha256
         (base32
-         "123lz1bl6xf3d0fvxzr4bg4884yg4m9s21z6xd2m68zhnbv9rmpc"))))
+         "0jclrvyxasaaxr0albq0kqrnrfqdgqxs7m2qw9nd8kfwg8xj4g1d"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2030,7 +2030,8 @@ class.")
                       (substitute* "setup.py"
                         (("mock~=2\\.0") "mock")
                         (("coverage<5") "coverage")
-                        (("pytest~=4\\.3") "pytest")
+                        (("pytest~=4\\.6") "pytest")
+                        (("pytest-timeout~=1\\.3") "pytest-timeout")
                         (("hypothesis~=4\\.56") "hypothesis"))
                       #t))
                   (add-after 'unpack 'fix-broken-tests
@@ -5075,7 +5076,7 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 (define-public python-pydantic
   (package
     (name "python-pydantic")
-    (version "1.8.2")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -5084,7 +5085,7 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06162dss6mvi7wiy2lzxwvzajwxgy8b2fyym7qipaj7zibcqalq2"))))
+        (base32 "14wj3k9007fpbxk7593w6gdqrr68yzrsw4a41sj5ji4cv3r8z18b"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -5238,6 +5239,8 @@ matching of file paths.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         ;; XXX Remove this when updating this package:
+         ;; https://github.com/psf/black/issues/2703#issuecomment-1004752142
          (add-after 'unpack 'relax-version-requirements
            (lambda _
              (substitute* "setup.py"
@@ -5829,12 +5832,13 @@ readable format.")
        ("pkg-config" ,pkg-config)
        ("python-sphinx" ,python-sphinx)
        ("python-numpydoc" ,python-numpydoc)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-cm-super
+       ("texlive" ,(texlive-updmap.cfg (list
+                                        texlive-capt-of
+                                        texlive-cm-super
                                         texlive-fonts-ec
                                         texlive-generic-iftex
                                         texlive-pdftex
                                         texlive-amsfonts
-                                        texlive-latex-capt-of
                                         texlive-latex-cmap
                                         texlive-latex-environ
                                         texlive-latex-eqparbox
@@ -6543,19 +6547,19 @@ toolkits.")
        ("python-mock" ,python-mock)
        ("graphviz" ,graphviz)
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-latex-amsmath
-                                        texlive-latex-enumitem
-                                        texlive-latex-expdlist
-                                        texlive-latex-geometry
-                                        texlive-latex-preview
-                                        texlive-latex-type1cm
-                                        texlive-latex-ucs
+                                             texlive-enumitem
+                                             texlive-latex-amsmath
+                                             texlive-latex-expdlist
+                                             texlive-latex-geometry
+                                             texlive-latex-preview
+                                             texlive-latex-type1cm
+                                             texlive-latex-ucs
 
-                                        texlive-pdftex
+                                             texlive-pdftex
 
-                                        texlive-fonts-ec
-                                        texlive-times
-                                        texlive-txfonts)))
+                                             texlive-fonts-ec
+                                             texlive-times
+                                             texlive-txfonts)))
        ("texinfo" ,texinfo)
        ,@(package-native-inputs python-matplotlib)))
     (arguments
@@ -7910,7 +7914,7 @@ cluster without needing to write any wrapper code yourself.")
 (define-public python-honcho
   (package
     (name "python-honcho")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -7919,7 +7923,7 @@ cluster without needing to write any wrapper code yourself.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11bd87474qpif20xdcn0ra1idj5k16ka51i658wfpxwc6nzsn92b"))))
+        (base32 "1y0r8dw4pqcq7r4n58ixjdg1iy60lp0gxsd7d2jmhals16ij71rj"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest python-mock python-tox which)) ;for tests
@@ -7938,7 +7942,8 @@ cluster without needing to write any wrapper code yourself.")
              ;; It's easier to run tests after install.
              ;; Make installed package available for running the tests
              (add-installed-pythonpath inputs outputs)
-             (invoke "py.test" "-v"))))))
+             ;; Skip failing test_export
+             (invoke "py.test" "-v" "-k" "not test_export"))))))
     (home-page "https://github.com/nickstenning/honcho")
     (synopsis "Manage Procfile-based applications")
     (description
@@ -8238,6 +8243,15 @@ need to use the older and less efficient @code{pkg_resources} package.")
         (base32
          "1n7qxa1snj06aw45mcfz7bxc46zp7fxj687140g2k6jcnyjmfxrz"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-v")))))))
+    (native-inputs
+     (list python-pytest))
     (home-page "https://github.com/alecthomas/importmagic")
     (synopsis "Library for adding, removing and managing Python imports")
     (description
@@ -8869,6 +8883,7 @@ callback signature using a prototype function.")
 Powerful interactive shells, a browser-based notebook, support for interactive
 data visualization, embeddable interpreters and tools for parallel
 computing.")
+    (properties '((cpe-name . "ipython")))
     (license license:bsd-3)))
 
 (define-public python-ipython-documentation
@@ -8916,10 +8931,10 @@ computing.")
        ("python-sphinx-rtd-theme" ,python-sphinx-rtd-theme)
        ;; FIXME: It's possible that a smaller union would work just as well.
        ("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
+                                        texlive-capt-of
                                         texlive-fonts-ec
                                         texlive-generic-iftex
                                         texlive-pdftex
-                                        texlive-latex-capt-of
                                         texlive-latex-cmap
                                         texlive-latex-environ
                                         texlive-latex-eqparbox
@@ -9612,11 +9627,28 @@ SVG, EPS, PNG and terminal output.")
        (uri (pypi-uri "seaborn" version))
        (sha256
         (base32 "1xpl3zb945sihsiwm9q1yyx84sakk1phcg0fprj6i0j0dllfjifg"))
-       (patches (search-patches "python-seaborn-kde-test.patch"))))
+       (patches (search-patches "python-seaborn-kde-test.patch"
+                                "python-seaborn-2690.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-more-tests
+           (lambda _
+             (substitute* "seaborn/tests/test_distributions.py"
+               (("get_contour_color\\(ax\\.collections\\[0\\]\\)")
+                "get_contour_color(ax.collections[0])")
+               (("c\\.get_color\\(\\)") "get_contour_color(c)")
+
+               ;; These three are borked and have been fixed upstream, but
+               ;; there's no simple patch we could apply here, so we just
+               ;; disable them.
+               (("def test_hue_ignores_cmap")
+                "def skip_test_hue_ignores_cmap")
+               (("def test_fill_artists")
+                "def skip_test_fill_artists")
+               (("def test_with_rug")
+                "def skip_test_with_rug"))))
          (add-before 'check 'start-xserver
            (lambda _
              ;; There must be a running X server and make check doesn't
@@ -11085,30 +11117,23 @@ third-party code.")
 (define-public python-llfuse
   (package
     (name "python-llfuse")
-    (version "1.3.8")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "llfuse" version))
               (sha256
                (base32
-                "1g2cdhdqrb6m7655qp61pn61pwj1ql61cdzhr2jvl3w4i8877ddr"))))
+                "1jaf790rsxvz3hs9fbr3hrnmg0xzl6a2bqfa10bbbsjsdbcpk762"))))
     (build-system python-build-system)
     (inputs
      (list fuse attr))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python-pytest))
     (synopsis "Python bindings for FUSE")
     (description
      "Python-LLFUSE is a set of Python bindings for the low level FUSE API.")
     (home-page "https://bitbucket.org/nikratio/python-llfuse/")
-    (license license:lgpl2.0+)
-    (properties `((python2-variant . ,(delay python2-llfuse))))))
-
-(define-public python2-llfuse
-  (let ((base (package-with-python2
-               (strip-python2-variant python-llfuse))))
-    (package/inherit base
-      (propagated-inputs `(("python2-contextlib2" ,python2-contextlib2))))))
+    (license license:lgpl2.0+)))
 
 (define-public python-msgpack
   (package
@@ -11416,6 +11441,32 @@ Unicode-aware.  It is not intended as an end-user tool.")
 (define-public python2-xlrd
   (package-with-python2 python-xlrd))
 
+;; We need this for python-anndata
+(define-public python-xlrd-1
+  (package
+    (inherit python-xlrd)
+    (name "python-xlrd")
+    (version "1.2.0")
+    (source (origin
+              ;; The tests are not included in the PyPI archive.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/python-excel/xlrd")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sm5p0ii5ayh52ak1jpw0n1kgsv72vdwwp8c3z13l8yf4irsb587"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Some tests depend on writing a temporary file to the user's home
+         ;; directory.
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (setenv "HOME" "/tmp"))))))))
+
 ;;; Note: this package is unmaintained since 2018 (archived on GitHub).
 (define-public python-xlwt
   (package
@@ -11640,6 +11691,73 @@ asyncio.")
      "This package provides a pytest plugin to enable format checking with the
 Python code formatter \"black\".")
     (license license:expat)))
+
+(define-public python-geojson
+  (package
+    (name "python-geojson")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "geojson" version))
+       (sha256
+        (base32 "12k5bzqskvq3gqzkryarhdjl0df47y5k9cf8r3clasi2wjnbfjvf"))))
+    (build-system python-build-system)
+    (arguments
+     ;; https://github.com/jazzband/geojson/issues/175
+     `(#:tests? #f))
+    (home-page "https://github.com/jazzband/geojson")
+    (synopsis "Python bindings and utilities for GeoJSON")
+    (description
+     "This package provides Python bindings and utilities for
+@uref{http://geojson.org/, GeoJSON}, a format for encoding geographic data
+structures.")
+    (license license:bsd-3)))
+
+(define-public wfetch
+  (let ((commit "e1cfa37814aebc9eb56ce994ebe877b6a6f9a715")
+        (revision "1"))
+    (package
+      (name "wfetch")
+      (version (git-version "0.1-pre" revision commit))
+      (home-page "https://github.com/Gcat101/Wfetch")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page)
+                             (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dmr85plx8zr6s14ym3r32g6crwxghkval5a24ah90ijx4dbn5q5"))))
+      (build-system python-build-system)
+      (arguments
+       `(#:use-setuptools? #f           ; no setup.py
+         #:tests? #f                    ; no test suite
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'build)
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bin (string-append out "/bin"))
+                      (share (string-append out "/share")))
+                 (mkdir-p share)
+                 (substitute* "wfetch/wfetch.py"
+                   (("os.sep, 'opt', 'wfetch'") (string-append "'" share "'")))
+                 (install-file "wfetch/wfetch.py" bin)
+                 (copy-recursively "wfetch/icons" share)))))))
+      (inputs (list python-pyowm python-fire python-termcolor python-requests))
+      (synopsis "Command-line tool to display weather info")
+      (description
+       "This package provides a tool similar to Neofetch/pfetch, but for
+weather: it can display the weather condition, temperature, humidity, etc.
+
+To use it, you must first run:
+
+@example
+export WEATHER_CLI_API=@var{your OpenWeatherMap API key}
+@end example\n")
+      (license license:gpl3+))))
 
 (define-public python-get-version
   (package
@@ -11941,17 +12059,6 @@ the Python standard library but currently only supports the older 2003
 specification.")
     (license license:bsd-4)))
 
-(define-public python-idna-2.7
-  (package (inherit python-idna)
-           (version "2.7")
-           (source (origin
-                     (method url-fetch)
-                     (uri (pypi-uri "idna" version))
-                     (sha256
-                      (base32
-                       "05jam7d31767dr12x0rbvvs8lxnpb1mhdb2zdlfxgh83z6k3hjk8"))))))
-
-
 (define-public python2-idna
   (package-with-python2 python-idna))
 
@@ -11971,17 +12078,27 @@ specification.")
         (base32 "1r0kgl7i6nnhgjl44sjw57k08gh2qr7l8slqih550dyxbf1akbxh"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          ;; Use Guix package of libsass instead of compiling from a checkout.
          (add-before 'build 'set-libsass
-           (lambda _
-             (setenv "SYSTEM_SASS" (assoc-ref %build-inputs "libsass"))
-             #t))
+           (lambda _ (setenv "SYSTEM_SASS" "indeed")))
          (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "sasstests.py"))))
+         (add-after 'install 'delete-test
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "sasstests.py"))))))
+             ;; Delete sasstests.py because it attempts to open a file
+             ;; that is not installed when loaded, which breaks the sanity
+             ;; check.
+             (delete-file (string-append
+                           (assoc-ref outputs "out")
+                           "/lib/python"
+                           (python-version
+                            (dirname (dirname
+                                      (search-input-file inputs "bin/python"))))
+                           "/site-packages/sasstests.py")))))))
     (native-inputs
      (list python-pytest python-werkzeug))
     (inputs
@@ -12611,13 +12728,12 @@ time.")
                                         texlive-amsfonts
                                         texlive-booktabs
                                         texlive-caption
+                                        texlive-enumitem
                                         texlive-eurosym
                                         texlive-fonts-rsfs
-                                        texlive-generic-ulem
                                         texlive-generic-iftex
                                         texlive-jknappen
                                         texlive-latex-amsmath
-                                        texlive-latex-enumitem
                                         texlive-latex-fancyvrb
                                         texlive-latex-float
                                         texlive-fontspec
@@ -12637,6 +12753,7 @@ time.")
                                         texlive-tcolorbox
                                         texlive-titling
                                         texlive-tools
+                                        texlive-ulem
                                         texlive-xcolor
                                         texlive-zapfding)))))
     (propagated-inputs
@@ -15380,9 +15497,8 @@ CloudFront content delivery network.")
             ;; Hard-code the path to pkg-config.
             (lambda _
               (substitute* "pkgconfig/pkgconfig.py"
-                (("cmd = 'pkg-config")
-                 (string-append "cmd = '" (which "pkg-config"))))
-              #t))
+                (("'pkg-config'")
+                 (string-append "'" (which "pkg-config") "'")))))
           (replace 'check
             (lambda _
               (invoke "nosetests" "test.py"))))))
@@ -19137,7 +19253,12 @@ multitouch applications.")
      ;; TypeError: parse() missing 2 required positional arguments: 'tree' and
      ;; 'parse_funcs'
      ;; during test setup.
-     `(#:tests? #f))
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; translate-toolkit has many optional dependencies (see
+               ;; optional.txt), which the sanity check does not understand.
+               (delete 'sanity-check))))
     (home-page "https://toolkit.translatehouse.org")
     (synopsis "Tools and API for translation and localization engineering")
     (description
@@ -21697,7 +21818,12 @@ working with iterables.")
     (inputs
      (list python-latexcodec python-pyyaml python-six))
     (arguments
-     `(#:test-target "nosetests"))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "nosetests")))))))
     (home-page "https://pybtex.org/")
     (synopsis "BibTeX-compatible bibliography processor")
     (description "Pybtex is a BibTeX-compatible bibliography processor written
@@ -22632,7 +22758,7 @@ N-dimensional arrays for Python.")
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.7.6")
+    (version "0.7.8")
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
@@ -22643,7 +22769,7 @@ N-dimensional arrays for Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1q30bsfsq9xfqm8nmabg3bjh9gix3yng0170xiiyw1lin4xncf0q"))))
+         "1rrr9xfdaf00ixj5gyym75bl78gkaj55yfw3wjhvx0pdwqpwp9py"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -22658,6 +22784,9 @@ N-dimensional arrays for Python.")
          (replace 'build
            (lambda _
              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
+             (substitute* "anndata/_metadata.py"
+               (("__version__ =.*")
+                (string-append "__version__ = \"" ,version "\"\n")))
              ;; ZIP does not support timestamps before 1980.
              (setenv "SOURCE_DATE_EPOCH" "315532800")
              (invoke "flit" "build")))
@@ -22669,8 +22798,7 @@ N-dimensional arrays for Python.")
                            (format #true wheel)
                            (invoke "python" "-m" "pip" "install"
                                    wheel (string-append "--prefix=" out)))
-                         (find-files "dist" "\\.whl$")))
-             #t)))))
+                         (find-files "dist" "\\.whl$"))))))))
     (propagated-inputs
      (list python-h5py
            python-importlib-metadata
@@ -22679,6 +22807,7 @@ N-dimensional arrays for Python.")
            python-packaging
            python-pandas
            python-scipy
+           python-xlrd-1
            python-zarr))
     (native-inputs
      (list python-joblib python-pytest python-toml python-flit
@@ -28088,13 +28217,13 @@ spreadsheet), CSV, TSV, XLS, XLSX (Microsoft Excel spreadsheet), and YAML.")
 (define-public python-febelfin-coda
   (package
     (name "python-febelfin-coda")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "febelfin-coda" version))
        (sha256
-        (base32 "10nf4hdwldqgdmh4g613vx55sbsw1x1yzpvs3crwlggbp75fjjfi"))))
+        (base32 "1isnf87gxlvfbmackv7b2c978vmnj7ij0v4svhyjl8pbb9hwjsvm"))))
     (build-system python-build-system)
     (home-page "https://coda.b2ck.com/")
     (synopsis "Module to parse Belgian CODA files")
@@ -28786,3 +28915,21 @@ but not binary streams.")
       "This package provides ECMAScript parsing infrastructure for
 multipurpose analysis in Python.")
     (license license:bsd-3)))
+
+(define-public python-types-dataclasses
+  (package
+    (name "python-types-dataclasses")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-dataclasses" version))
+              (sha256
+               (base32
+                "1mq6qd365m8ml889zl5dxj9kncjv71iq1d1fvgj59y0ixlpm6s35"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for dataclasses")
+    (description
+     "This packages provides a collection of library stubs for Python, with
+static types.")
+    (license license:asl2.0)))

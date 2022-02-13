@@ -364,7 +364,8 @@ in C/C++.")
               (file-name (git-file-name "mozjs" version))
               (sha256
                (base32
-                "1xl6avsj9gkgma71p56jzs7nasc767k3n1frnmri5pad4rj94bij"))))
+                "1xl6avsj9gkgma71p56jzs7nasc767k3n1frnmri5pad4rj94bij"))
+              (patches (search-patches "mozjs60-riscv64-support.patch"))))
     (arguments
      `(#:tests? #f ; FIXME: all tests pass, but then the check phase fails anyway.
        #:test-target "check-jstests"
@@ -419,6 +420,14 @@ in C/C++.")
                       (cons (string-append "--prefix=" out)
                             configure-flags))
                #t)))
+         (add-after 'unpack 'update-config-scripts
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (for-each (lambda (file)
+                             (install-file
+                               (search-input-file
+                                 (or native-inputs inputs)
+                                 (string-append "/bin/" file)) "build/autoconf"))
+                           '("config.guess" "config.sub"))))
          (add-after 'unpack 'disable-broken-tests
            (lambda _
              ;; This test assumes that /bin exists and contains certain
@@ -428,6 +437,7 @@ in C/C++.")
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
+       ("config" ,config)
        ("which" ,which)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
@@ -567,7 +577,8 @@ in C/C++.")
     (native-inputs
      `(("autoconf" ,autoconf-2.13)
        ("automake" ,automake)
-       ("llvm" ,llvm)                   ;for llvm-objdump
+       ;; TODO(staging): Use the default LLVM in the next rebuild cycle.
+       ("llvm" ,llvm-9)                 ;for llvm-objdump
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("python" ,python-3)
@@ -705,8 +716,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "91.5.0-guix0-preview1")
-(define %icecat-build-id "20220111000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "91.6.0-guix0-preview1")
+(define %icecat-build-id "20220208000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -728,11 +739,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "04y8nj1f065b3dn354f1ns3cm9xp4kljr5ippvmfdqr7cb4xjp7l"))))
+              "1889p8si83dglyblmyj8z5mh600v1klr50swka5mhf9c2lr2i03y"))))
 
-         (upstream-icecat-base-version "91.5.0") ; maybe older than base-version
+         (upstream-icecat-base-version "91.6.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "c0a504578cb694522c65bb6c36396df8142d4a2a")
+         (gnuzilla-commit "6c4accb674d2df8be0aabfa03f7679f66bbf70f5")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -744,7 +755,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "016g8vdr6w6six4f705cmbdrfknmy4bk1qjjrvsdpah4bf6c2s2c"))))
+              "14yivx4zwap2z02gj9waaccigji8ibyq40dxw5smk9w2cmcsdvic"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1327,11 +1338,11 @@ standards of the IceCat project.")
        (cpe-version . ,(first (string-split version #\-)))))))
 
 ;; Update this together with icecat!
-(define %icedove-build-id "20220111000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20220208000000") ;must be of the form YYYYMMDDhhmmss
 (define-public icedove
   (package
     (name "icedove")
-    (version "91.5")
+    (version "91.6")
     (source icecat-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
@@ -1617,7 +1628,7 @@ standards of the IceCat project.")
         ;; in the Thunderbird release tarball.  We don't use the release
         ;; tarball because it duplicates the Icecat sources and only adds the
         ;; "comm" directory, which is provided by this repository.
-        ,(let ((changeset "bcd2aab51cd0889d506d29455210d65602b97430"))
+        ,(let ((changeset "676bfbddd4b3ed77f818b6b07d9d8a79c61be4da"))
            (origin
              (method hg-fetch)
              (uri (hg-reference
@@ -1626,7 +1637,7 @@ standards of the IceCat project.")
              (file-name (string-append "thunderbird-" version "-checkout"))
              (sha256
               (base32
-               "0aj8a8qbm71n34yi58y04bn4h9zz2rciz0cm3hh58rsmcqs1s9ym")))))
+               "1laif9h51s7v8vlqjsd6y2y9267kr7l208xjs00z6462r6kzjvab")))))
        ("cargo" ,rust "cargo")
        ("clang" ,clang-11)
        ("llvm" ,llvm-11)

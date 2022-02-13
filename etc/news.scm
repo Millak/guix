@@ -9,7 +9,7 @@
 ;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -24,6 +24,64 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "96d7535b030c65b2d8cb0bea52c4bd96cbdefaf0")
+        (title
+         (en "ci.guix.gnu.org to stop offering Gzip substitutes")
+         (de "ci.guix.gnu.org wird keine Substitute mit Gzip mehr anbieten"))
+        (body
+         (en "This is a notice to let you know that starting next
+month (2022/03/01), Gzip-compressed substitutes will no longer be available,
+which means that Guix daemons from a revision older than commit
+@samp{3092f1b835d79655eecb2f8a79dda20ad9ba6bd6} (2019/06/02) will loose the
+ability to download binary substitutes.  Starting next month, only lzip and
+zstd substitutes will be offered.  Dropping Gzip substitutes will free about
+6.5 TiB of storage space from the build farm.")
+         (de "Hiermit weisen wir Sie darauf hin, dass ab nächstem
+Monat (2022/03/01) keine Gzip-komprimierten Substitute mehr zur Verfügung
+stehen.  Dadurch können Guix-Daemons, deren Version älter ist als Commit
+@samp{3092f1b835d79655eecb2f8a79dda20ad9ba6bd6} (2019/06/02), keine binären
+Substitute mehr beziehen.  Ab kommendem Monat werden nur Substitute mit lzip
+und zstd angeboten.  Indem wir auf Gzip-Substitute verzichten, sparen wir 6.5
+TiB Speicherplatz auf der Erstellungsfarm.")))
+
+ (entry (commit "5c13484646069064c834bbd3cd02c3bc80d94cb6")
+        (title
+         (en "New @option{--execute} option to @command{guix deploy}")
+         (de "Neue Option @option{--execute} für @command{guix deploy}")
+         (fr "Nouvelle option @option{--execute} pour @command{guix deploy}"))
+        (body
+         (en "The @command{guix deploy} command has a new @option{--execute}
+or @option{-x} option, which allows you to execute a command on all the
+machines that your configuration file specifies, as in this example:
+
+@example
+guix deploy deploy.scm -x -- herd restart guix-daemon
+@end example
+
+This is no substitute for full-featured tools such as pdsh but it is a useful
+helper.")
+         (de "Der Befehl @command{guix deploy} verfügt über eine neue Option
+@option{--execute} oder @option{-x}, mit der Sie einen Befehl auf allen in der
+Konfigurationsdatei angegebenen Maschinen ausführen können.  Zum Beispiel:
+
+@example
+guix deploy deploy.scm -x -- herd restart guix-daemon
+@end example
+
+Dies ist kein Ersatz für vollumfängliche Werkzeuge wie pdsh, aber es kann doch
+von Nutzen sein.")
+         (fr "La commande @command{guix deploy} a une nouvelle option
+@option{--execute} ou @option{-x} qui permet d'exécuter une commande sur
+toutes les machines spécifiées dans son fichier de configuration, comme dans
+cet exemple :
+
+@example
+guix deploy deploy.scm -x -- herd restart guix-daemon
+@end example
+
+Ça ne remplace pas les outils sophistiqués comme pdsh mais c'est bien
+pratique.")))
 
  (entry (commit "c4fe13c294cc1e31dd8a49ce3981f603fb169e0a")
         (title
@@ -229,14 +287,14 @@ d'informations.")))
 
  (entry (commit "52cb5cf5b852117b5151a67af187d80764849ad3")
         (title
-          (en "Icedove 91: profile folder moved to @file{~/.thunderbird}")
-          (de "Icedove 91: Profilordner jetzt unter @file{~/.thunderbird}"))
+         (en "Icedove 91: profile folder moved to @file{~/.thunderbird}")
+         (de "Icedove 91: Profilordner jetzt unter @file{~/.thunderbird}"))
         (body
-          (en "Icedove 91 expects your profile folder under @file{~/.thunderbird}.
+         (en "Icedove 91 expects your profile folder under @file{~/.thunderbird}.
 You need to manually copy your Icedove profiles from @file{~/.icedove} to
 @file{~./thunderbird}.  It may be required to start Icedove with
 @option{--ProfileManager} for the first time after the migration.")
-          (de "Icedove 91 erwartet Ihren Profilordner unter @file{~/.thunderbird}.
+         (de "Icedove 91 erwartet Ihren Profilordner unter @file{~/.thunderbird}.
 Dafür müssen sie Ihre Icedove-Profile von @file{~/.icedove} nach
 @file{~/.thunderbird} kopieren.  Eventuell muss Icedove das erste Mal nach der
 Migration mit @option{--ProfileManager} gestartet werden.")))
@@ -831,7 +889,7 @@ Nous conseillons de mettre à jour @command{guix-daemon}.  Lancer @command{info
 \"(guix.fr) Mettre à niveau Guix\"} pour voir comment faire.  Voir
 @uref{https://issues.guix.gnu.org/47229} pour plus d'informations sur cette
 faille.")
-                  (nl "In @command{guix-daemon} werd een beveiligingsprobleem
+         (nl "In @command{guix-daemon} werd een beveiligingsprobleem
 gevonden dat kan leiden tot de escalatie van lokale bevoegdheden.  Het
 probleem doet zich voor bij installaties met meerdere gebruikers waarop een
 lokale @command{guix-daemon} draait.
@@ -921,7 +979,7 @@ guix import go golang.org/x/sys
 @end example
 
 Lancez @command{info \"(guix.fr) Invoquer guix import\"} pour en savoir plus.")
-                  (nl "Met de nieuwe @command{guix import go}-opdracht kunnen
+         (nl "Met de nieuwe @command{guix import go}-opdracht kunnen
 pakketschrijvers een pakketdefinitie of -sjabloon aanmaken, op basis van de
 naam van een Go-pakket te vinden op @url{https://proxy.golang.org}:
 
@@ -934,28 +992,28 @@ informatie.")))
 
  (entry (commit "1b5b882120daf7d111aa351a919a90e818324347")
         (title
-          (en "The @code{linux-libre} kernel is updated to 5.11.2")
-          (de "Der Kernel @code{linux-libre} wird auf 5.11.2 aktualisiert")
-          (fr "Le noyau @code{linux-libre} est mis à jour vers la 5.11.2")
-          (nl "De @code{linux-libre}-kernel werd bijgewertk naar 5.11.2"))
+         (en "The @code{linux-libre} kernel is updated to 5.11.2")
+         (de "Der Kernel @code{linux-libre} wird auf 5.11.2 aktualisiert")
+         (fr "Le noyau @code{linux-libre} est mis à jour vers la 5.11.2")
+         (nl "De @code{linux-libre}-kernel werd bijgewertk naar 5.11.2"))
         (body
-          (en "The default @code{linux-libre} kernel is now based on the 5.11
+         (en "The default @code{linux-libre} kernel is now based on the 5.11
 stable kernel series, beginning with version 5.11.2.  Promiment features include
 improved Wine performance, unprivileged Overlayfs mounts, support for Intel SGX,
 support for new graphics hardware, and improved performance of the Btrfs
 file system.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
 jetzt auf der 5.11-„stable“-Versionsreihe, angefangen mit Version 5.11.2.  Zu
 den markanten Neuerungen gehören bessere Wine-Unterstützung, Einbinden per
 Overlayfs für Nutzer ohne erweiterte Rechte, Unterstützung für Intel SGX, für
 neue Grafikhardware und bessere Leistung beim Btrfs-Dateisystem.")
-          (fr "Le noyau @code{linux-libre} par défaut est maintenant basé sur la
+         (fr "Le noyau @code{linux-libre} par défaut est maintenant basé sur la
 lignée stable 5.11 du noyau, à commencer par la version 5.11.2.  Parmi les
 fonctionnalités notables on trouve des performances améliorées pour Wine, le
 montage Overlayfs non privilégié, la prise en charge d'Intel SGX, celle des
 nouveaux périphériques graphiques et de meilleures performances du système de
 fichiers Btrfs.")
-          (nl "De standaard @code{linux-libre}-kernel is nu geëent op de
+         (nl "De standaard @code{linux-libre}-kernel is nu geëent op de
 stabiele 5.11-reeks, te beginnen met versie 5.11.2.  Deze update biedt onder
 andere verbeterde prestaties voor Wine en het Btfrs-bestandssysteem, laat
 gewone gebruikers toe om met Overlayfs bestandssystemen te combineren, en

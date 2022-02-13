@@ -52,7 +52,7 @@
 (define-public coq-core
   (package
     (name "coq-core")
-    (version "8.14.1")
+    (version "8.15.0")
     (source
      (origin
        (method git-fetch)
@@ -62,7 +62,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q634fmrh5ivpxy7ammdiqdh9xp72ji2726vcz1bd55ln0d08z40"))
+         "0473mmc4wv8zbbcbvqqn0z9gz9y8gf4w2q6j6h50lx0jphpg2n8z"))
        (patches (search-patches "coq-fix-envvars.patch"))))
     (native-search-paths
      (list (search-path-specification
@@ -229,7 +229,7 @@ provers.")
 (define-public coq-flocq
   (package
     (name "coq-flocq")
-    (version "3.4.2")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -239,7 +239,7 @@ provers.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0j7vq7ifqcdaj2x881aha2rl51l2p72y1cn7r2xya0fjgsssfigy"))))
+         "159ykkhxz7zms28r4v8jjccapl5vv00csdz29mfy83lwrv5b6rwk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
@@ -276,7 +276,7 @@ inside Coq.")
 (define-public coq-gappa
   (package
     (name "coq-gappa")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -286,7 +286,7 @@ inside Coq.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ivh8xm1c8191rm4riamjzya2x6ls96qax5byir1fywf9hbxr1vg"))))
+         "18y4mv44mcgyam77rf4xs7l06mg7pxx1qli3yvs0kklmnnvwa463"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -334,7 +334,7 @@ assistant.")
 (define-public coq-mathcomp
   (package
     (name "coq-mathcomp")
-    (version "1.13.0")
+    (version "1.14.0")
     (source
      (origin
        (method git-fetch)
@@ -343,7 +343,7 @@ assistant.")
              (commit (string-append "mathcomp-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aj8hsdzzds5w0p1858s2b6k9zssjcxa6kgpi0q1nvaml4zfpkcc"))))
+        (base32 "1rqg47dg84wr6d9v2pzna54dm62awcm8xdwx4dqwdwhf58fjxa9i"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml which coq))
@@ -420,7 +420,7 @@ theorems between the two libraries.")
 (define-public coq-bignums
   (package
     (name "coq-bignums")
-    (version "8.14.0")
+    (version "8.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -429,7 +429,7 @@ theorems between the two libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jsgdvj0ddhkls32krprp34r64y1rb5mwxl34fgaxk2k4664yq06"))))
+                "093klwlhclgyrba1iv18dyz1qp5f0lwiaa7y0qwvgmai8rll5fns"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq))
@@ -452,7 +452,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
 (define-public coq-interval
   (package
     (name "coq-interval")
-    (version "4.3.1")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -462,7 +462,7 @@ provides BigN, BigZ, BigQ that used to be part of Coq standard library.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0sr9psildc0sda07r2r47rfgyry49yklk38bg04yyvry5j5pryb6"))))
+         "1rlcbv1nqm7zv60n63lca6nnxcq3c18akgzl72s1n3h89gvhs87z"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake ocaml which coq))
@@ -546,11 +546,11 @@ uses Ltac to synthesize the substitution operation.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/mattam82/Coq-Equations")
-                    (commit (string-append "v" version "-8.14"))))
+                    (commit (string-append "v" version "-8.15"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19bj9nncd1r9g4273h5qx35gs3i4bw5z9bhjni24b413hyj55hkv"))))
+                "1vfcfpsp9zyj0sw0cwibk76nj6n0r6gwh8m1aa3lbvc0b1kbm32k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ocaml coq camlp5))
@@ -625,7 +625,7 @@ also provided in Coq, without associated proofs.")
 (define-public coq-stdpp
   (package
     (name "coq-stdpp")
-    (version "1.6.0")
+    (version "1.7.0")
     (synopsis "Alternative Coq standard library std++")
     (source (origin
               (method git-fetch)
@@ -635,7 +635,7 @@ also provided in Coq, without associated proofs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l1w6srzydjg0h3f4krrfgvz455h56shyy2lbcnwdbzjkahibl7v"))))
+                "0447wbzm23f9rl8byqf6vglasfn6c1wy6cxrrwagqjwsh3i5lx8y"))))
     (build-system gnu-build-system)
     (inputs
      (list coq))

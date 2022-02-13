@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Erik Edrosa <erik.edrosa@gmail.com>
 ;;; Copyright © 2016, 2019, 2020, 2021 Eraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2021 Alex Kost <alezost@gmail.com>
@@ -39,6 +39,8 @@
 ;;; Copyright © 2021 Zelphir Kaltstahl <zelphirkaltstahl@posteo.de>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2021, 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,6 +99,7 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages password-utils)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -116,6 +119,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module (guix build-system cmake)
@@ -545,7 +549,7 @@ you send to a FIFO file.")
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -554,7 +558,7 @@ you send to a FIFO file.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0s9zan08ala7432pn44z3vmb3sc19rf18zfr9mskydnam5xn6qlw"))))
+                "10wssilin4qphdmmqmms20bp3cy007kh22l1g45wfka0minmhkgs"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo))
@@ -600,9 +604,64 @@ Unix-style DSV format and RFC 4180 format.")
     (inputs (list guile-2.2))
     (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
 
-(define-public guile-fibers
+(define-public guile-fibers-1.1
   (package
     (name "guile-fibers")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/wingo/fibers/releases/download/v"
+                    version "/fibers-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1lqz39shlhif5fhpyv2wili0yzb0nhf5ciiv7mdqsq0vljirhrm0"))
+              (patches
+               (search-patches "guile-fibers-wait-for-io-readiness.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  ;; This is required to make
+                  ;; "guile-fibers-wait-for-io-readiness.patch" work.
+                  (add-after 'unpack 'regenerate-autotools
+                    (lambda _
+                      (delete-file "configure")))
+                  (add-after 'install 'mode-guile-objects
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      ;; .go files are installed to "lib/guile/X.Y/cache".
+                      ;; This phase moves them to "…/site-ccache".
+                      (let* ((out (assoc-ref outputs "out"))
+                             (lib (string-append out "/lib/guile"))
+                             (old (car (find-files lib "^ccache$"
+                                                   #:directories? #t)))
+                             (new (string-append (dirname old)
+                                                 "/site-ccache")))
+                        (rename-file old new)
+                        #t))))))
+    (native-inputs
+     (list texinfo pkg-config autoconf automake libtool
+           ;; Gettext brings 'AC_LIB_LINKFLAGS_FROM_LIBS'
+           gettext-minimal))
+    (inputs
+     (list guile-3.0))
+    (synopsis "Lightweight concurrency facility for Guile")
+    (description
+     "Fibers is a Guile library that implements a a lightweight concurrency
+facility, inspired by systems like Concurrent ML, Go, and Erlang.  A fiber is
+like a \"goroutine\" from the Go language: a lightweight thread-like
+abstraction.  Systems built with Fibers can scale up to millions of concurrent
+fibers, tens of thousands of concurrent socket connections, and many parallel
+cores.  The Fibers library also provides Concurrent ML-like channels for
+communication between fibers.
+
+Note that Fibers makes use of some Guile 2.1/2.2-specific features and
+is not available for Guile 2.0.")
+    (home-page "https://github.com/wingo/fibers")
+    (license license:lgpl3+)))
+
+(define-public guile-fibers
+  (package
+    (inherit guile-fibers-1.1)
     (version "1.0.0")
     (source (origin
               (method url-fetch)
@@ -636,7 +695,6 @@ Unix-style DSV format and RFC 4180 format.")
               (patches
                ;; fixes a resource leak that causes crashes in the tests
                (search-patches "guile-fibers-destroy-peer-schedulers.patch"))))
-    (build-system gnu-build-system)
     (arguments
      '(;; The code uses 'scm_t_uint64' et al., which are deprecated in 3.0.
        #:configure-flags '("CFLAGS=-Wno-error=deprecated-declarations")
@@ -652,29 +710,11 @@ Unix-style DSV format and RFC 4180 format.")
                              (new (string-append (dirname old)
                                                  "/site-ccache")))
                         (rename-file old new)
-                        #t))))))
-    (native-inputs
-     (list texinfo pkg-config))
-    (inputs
-     (list guile-3.0))
-    (synopsis "Lightweight concurrency facility for Guile")
-    (description
-     "Fibers is a Guile library that implements a a lightweight concurrency
-facility, inspired by systems like Concurrent ML, Go, and Erlang.  A fiber is
-like a \"goroutine\" from the Go language: a lightweight thread-like
-abstraction.  Systems built with Fibers can scale up to millions of concurrent
-fibers, tens of thousands of concurrent socket connections, and many parallel
-cores.  The Fibers library also provides Concurrent ML-like channels for
-communication between fibers.
+                        #t))))))))
 
-Note that Fibers makes use of some Guile 2.1/2.2-specific features and
-is not available for Guile 2.0.")
-    (home-page "https://github.com/wingo/fibers")
-    (license license:lgpl3+)))
-
-(define-public guile2.0-fibers
+(define-public guile2.2-fibers
   (package
-    (inherit guile-fibers)
+    (inherit guile-fibers-1.1)
     (name "guile2.2-fibers")
     (inputs (list guile-2.2))))
 
@@ -1940,11 +1980,11 @@ capabilities.")
     (home-page "https://dthompson.us/projects/sly.html")
     (license license:gpl3+)))
 
-(define-public g-golf
-  (let ((commit   "ef830107b9765bd6a2da848d0cbe45e11374c0b5")
-        (revision "839"))
+(define-public guile-g-golf
+  (let ((commit   "1824633d37da3794f349d6829e9dac2cf89adaa8")
+        (revision "1010"))
     (package
-      (name "g-golf")
+      (name "guile-g-golf")
       (version (git-version "0.1.0" revision commit))
       (source
        (origin
@@ -1954,69 +1994,69 @@ capabilities.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0r472hvmf447kqvkahp1wy4irb5gy8y793hm8r9rc511smdx66cw"))))
+          (base32 "0ncpqv6pbsx9fjmdzvzbjljnhqgw9pynqy9vr9aq35nb7rzrhfdf"))))
       (build-system gnu-build-system)
-      (native-inputs
-       `(("autoconf" ,autoconf)
-         ("automake" ,automake)
-         ("texinfo" ,texinfo)
-         ("gettext" ,gettext-minimal)
-         ("libtool" ,libtool)
-         ("pkg-config" ,pkg-config)
-         ("xorg-server" ,xorg-server)))
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "--with-guile-site=no")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-guile-site-directory
+              (lambda _
+                (substitute* "configure.ac"
+                  (("SITEDIR=.*$")
+                   "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\";\n")
+                  (("SITECCACHEDIR=\"\\$libdir/g-golf/")
+                   "SITECCACHEDIR=\"$libdir/"))))
+            (add-before 'configure 'tests-work-arounds
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; In build environment, There is no /dev/tty
+                (substitute* "test-suite/tests/gobject.scm"
+                  (("/dev/tty") "/dev/null"))))
+            (add-before 'configure 'substitute-libs
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (define (get lib)
+                  (search-input-file inputs (string-append "lib/" lib ".so")))
+
+                (let* ((libgi      (get "libgirepository-1.0"))
+                       (libglib    (get "libglib-2.0"))
+                       (libgobject (get "libgobject-2.0"))
+                       (libg-golf (string-append #$output "/lib/libg-golf")))
+                  (substitute* "g-golf/init.scm"
+                    (("libgirepository-1.0") libgi)
+                    (("libglib-2.0") libglib)
+                    (("libgobject-2.0") libgobject)
+                    (("\\(dynamic-link \"libg-golf\"\\)")
+                     (format #f "~s"
+                             `(catch #t
+                                (lambda ()
+                                  (dynamic-link "libg-golf"))
+                                (lambda _
+                                  (dynamic-link ,libg-golf))))))
+                  (setenv "GUILE_AUTO_COMPILE" "0")
+                  #t)))
+            (add-before 'check 'start-xorg-server
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; The test suite requires a running X server.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                #t)))))
       (inputs
-       `(("guile" ,guile-2.2)
-         ("guile-lib" ,guile2.2-lib)
-         ("clutter" ,clutter)
-         ("gtk" ,gtk+)
-         ("glib" ,glib)))
+       (list guile-3.0 guile-lib glib))
+      (native-inputs
+       (list autoconf
+             automake
+             texinfo
+             gettext-minimal
+             libtool
+             pkg-config
+             ;; required for tests
+             gtk+
+             clutter
+             xorg-server-for-tests))
       (propagated-inputs
        (list gobject-introspection))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'configure 'tests-work-arounds
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; In build environment, There is no /dev/tty
-               (substitute*
-                   "test-suite/tests/gobject.scm"
-                 (("/dev/tty") "/dev/null"))))
-           (add-before 'configure 'substitute-libs
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((get (lambda (key lib)
-                             (string-append (assoc-ref inputs key) "/lib/" lib)))
-                      (libgi      (get "gobject-introspection" "libgirepository-1.0"))
-                      (libglib    (get "glib" "libglib-2.0"))
-                      (libgobject (get "glib" "libgobject-2.0"))
-                      (libgdk     (get "gtk" "libgdk-3")))
-                 (substitute* "configure"
-                   (("SITEDIR=\"\\$datadir/g-golf\"")
-                    "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\"")
-                   (("SITECCACHEDIR=\"\\$libdir/g-golf/")
-                    "SITECCACHEDIR=\"$libdir/"))
-                 (substitute* "g-golf/init.scm"
-                   (("libgirepository-1.0") libgi)
-                   (("libglib-2.0") libglib)
-                   (("libgdk-3") libgdk)
-                   (("libgobject-2.0") libgobject)
-                   (("\\(dynamic-link \"libg-golf\"\\)")
-                    (format #f "~s"
-                            `(dynamic-link
-                              (format #f "~alibg-golf"
-                                      (if (getenv "GUILE_GGOLF_UNINSTALLED")
-                                          ""
-                                          ,(format #f "~a/lib/"
-                                                   (assoc-ref outputs "out"))))))))
-                 (setenv "GUILE_AUTO_COMPILE" "0")
-                 (setenv "GUILE_GGOLF_UNINSTALLED" "1")
-                 #t)))
-           (add-before 'check 'start-xorg-server
-             (lambda* (#:key inputs #:allow-other-keys)
-               ;; The test suite requires a running X server.
-               (system (format #f "~a/bin/Xvfb :1 &"
-                               (assoc-ref inputs "xorg-server")))
-               (setenv "DISPLAY" ":1")
-               #t)))))
       (home-page "https://www.gnu.org/software/g-golf/")
       (synopsis "Guile bindings for GObject Introspection")
       (description
@@ -2026,6 +2066,18 @@ GObject Introspection API and higher-level functionality for importing Gnome
 libraries and making GObject classes (and methods) available in Guile's
 object-oriented programming system, GOOPS.")
       (license license:lgpl3+))))
+
+(define-public g-golf
+  (deprecated-package "g-golf" guile-g-golf))
+
+(define-public guile2.2-g-golf
+  (package
+    (inherit guile-g-golf)
+    (name "guile2.2-g-golf")
+    (inputs
+     (modify-inputs (package-inputs guile-g-golf)
+       (replace "guile" guile-2.2)
+       (replace "guile-lib" guile2.2-lib)))))
 
 (define-public g-wrap
   (package
@@ -2414,14 +2466,14 @@ inspired by the SCSH regular expression system.")
 (define-public haunt
   (package
     (name "haunt")
-    (version "0.2.5")
+    (version "0.2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/haunt/haunt-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1gy45l6m91b3wpdbpd9bpisp00zl8610zs0a2nwmbjlpd2cbf90k"))))
+                "1nwhwngx0gl2892vrvrzrxy5w6a5l08j1w0522kdh9a3v11qpwmw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match) (ice-9 ftw)
@@ -3415,7 +3467,7 @@ perform geometrical transforms on JPEG images.")
        ("guile-readline" ,guile2.2-readline)
        ("guile-gcrypt" ,guile2.2-gcrypt)
        ("gnutls" ,gnutls)
-       ("g-golf" ,g-golf)
+       ("g-golf" ,guile2.2-g-golf)
        ("shroud" ,shroud)
        ("emacsy" ,emacsy-minimal)
        ;; Gtk
@@ -4474,7 +4526,7 @@ including parsing and code generation.")
 (define-public guile-drmaa
   (package
     (name "guile-drmaa")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -4484,7 +4536,7 @@ including parsing and code generation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1m2x62n3x5hi5vnsvv2zgqhgpzrfq7r5095fzzjd1aaybi9i9igg"))))
+         "1pail39f3iwllcdma4pk4sxsaypplgb5zjyvjwqf5hdv8s3y211x"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo sed))
@@ -4924,3 +4976,51 @@ features a parser to parse and serialize GraphQL documents, a type system to
 create GraphQL schemas, an execution engine to execute GraphQL queries, and a
 HTTP handler to implement a HTTP GraphQL endpoint.")
     (license license:agpl3+)))
+
+(define-public lokke
+  (let ((commit "92d36370dc6d218ff3bf315e56ebef93808c1b79")
+        (revision "1"))
+    (package
+      (name "lokke")
+      (version (git-version "0.0.0" revision commit))
+      (home-page "https://github.com/lokke-org/lokke")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1c913md4dcfb0x4n26wbx9wdw453wxg3c5rn49k3f6j8zjqv63yv"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-before 'bootstrap 'pre-bootstrap
+             (lambda _
+               (for-each patch-shebang
+                         '("setup" "gen-makefile"
+                           "dev/gen-module-paths"
+                           "dev/refresh"))
+               (invoke "./setup")))
+           (add-before 'build 'set-home
+             (lambda _
+               (setenv "HOME" (getcwd)))))))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             gnu-gettext
+             pkg-config
+
+             ;; Use Guile >= 3.0.8 to work around
+             ;; <https://bugs.gnu.org/49305>.
+             guile-3.0-latest))
+      (inputs
+       (list pcre2))
+      (synopsis "Clojure implementation in Guile")
+      (description
+       "Lokke intends to provide a full dialect of Clojure for Guile.  It also
+consists of a set of Guile modules providing some of Clojure's functionality
+in two different guises.")
+      ;; Dual license: LGPLv2.1+ or EPLv1.0+ at the user's option.
+      (license (list license:lgpl2.1+ license:epl1.0)))))

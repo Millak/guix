@@ -157,6 +157,18 @@ You are advised to run @command{make authenticate} after every
 changes to the repository.
 @end quotation
 
+After updating the repository, @command{make} might fail with an error
+similar to the following example:
+
+@example
+error: failed to load 'gnu/packages/dunst.scm':
+ice-9/eval.scm:293:34: In procedure abi-check: #<record-type <origin>>: record ABI mismatch; recompilation needed
+@end example
+
+This means that one of the record types that Guix defines (in this
+example, the @code{origin} record) has changed, and all of guix needs
+to be recompiled to take that change into account.  To do so, run
+@command{make clean-go} followed by @command{make}.
 
 @node Running Guix Before It Is Installed
 @section Running Guix Before It Is Installed
@@ -231,6 +243,24 @@ local source tree; it simply updates the @file{~/.config/guix/current}
 symlink (@pxref{Invoking guix pull}).  Run @command{git pull} instead if
 you want to upgrade your local source tree.
 
+Sometimes, especially if you have recently updated your repository,
+running @command{./pre-inst-env} will print a message similar to the
+following example:
+
+@example
+;;; note: source file /home/user/projects/guix/guix/progress.scm
+;;;       newer than compiled /home/user/projects/guix/guix/progress.go
+@end example
+
+This is only a note and you can safely ignore it.  You can get rid of
+the message by running @command{make -j4}.  Until you do, Guile will run
+slightly slower because it will interpret the code instead of using
+prepared Guile object (@file{.go}) files.
+
+You can run @command{make} automatically as you work using
+@command{watchexec} from the @code{watchexec} package.  For example,
+to build again each time you update a package file, you can run
+@samp{watchexec -w gnu/packages make -j4}.
 
 @node The Perfect Setup
 @section The Perfect Setup
@@ -1386,9 +1416,14 @@ what your usertag means.
 @cindex commit access, for developers
 Everyone can contribute to Guix without having commit access
 (@pxref{Submitting Patches}).  However, for frequent contributors,
-having write access to the repository can be convenient.  Commit access
-should not be thought of as a ``badge of honor'' but rather as a
-responsibility a contributor is willing to take to help the project.
+having write access to the repository can be convenient.  As a rule of
+thumb, a contributor should have accumulated fifty (50) reviewed commits
+to be considered as a committer and have sustained their activity in the
+project for at least 6 months.  This ensures enough interactions with
+the contributor, which is essential for mentoring and assessing whether
+they are ready to become a committer.  Commit access should not be
+thought of as a ``badge of honor'' but rather as a responsibility a
+contributor is willing to take to help the project.
 
 The following sections explain how to get commit access, how to be ready
 to push commits, and the policies and community expectations for commits

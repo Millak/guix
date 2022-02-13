@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -2907,7 +2907,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
 (define-public python-pytorch
   (package
     (name "python-pytorch")
-    (version "1.10.0")
+    (version "1.10.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2917,7 +2917,7 @@ TensorFlow.js, PyTorch, and MediaPipe.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ihsjw48qqbikmhxxn17bcdvk2zsjabvkq61q6pvj7dzvrdpkb60"))
+                "15fi3nr7fx2zc9j2xf0jq627zfmnvs8hijyifg9769arm8kfijs1"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -3034,6 +3034,53 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
+(define-public python-pytorch-for-r-torch
+  (package
+    (inherit python-pytorch)
+    (name "python-pytorch")
+    (version "1.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cznsh68hwk5761gv7iijb4g6jgjpvs3bbixwpzzmkbkbn2q96c1"))
+              (patches (search-patches "python-pytorch-1.9.0-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-enum" "python-peachpy"
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+
+                  ;; Adjust references to the onnx-optimizer headers.
+                  (substitute* "caffe2/onnx/backend.cc"
+                    (("onnx/optimizer/")
+                     "onnxoptimizer/"))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pytorch)
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           ;; No module named 'onnx.optimizer'
+           (delete 'sanity-check)))))))
+
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
@@ -3066,3 +3113,65 @@ Note: currently this package does not provide GPU support.")
      "Hmmlearn is a set of algorithms for unsupervised learning and inference
 of Hidden Markov Models.")
     (license license:bsd-3)))
+
+;; Keep this in sync with the r-torch package.
+(define-public liblantern
+  (package
+    (name "liblantern")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mlverse/torch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gabwic46m4m7qld1yi4brw05n9jx58ri3y0pi6jf9jndfi1qnfp"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no test target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "lantern")))
+          (add-after 'chdir 'do-not-download-binaries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
+                (("retrieve_lib\\(.*") ""))
+              (setenv "LIBRARY_PATH"
+                      (string-append
+                       (search-input-directory
+                        inputs "/lib/python3.9/site-packages/torch/lib")
+                       ":" (or (getenv "LIBRARY_PATH") "")))
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       (search-input-directory
+                        inputs "lib/python3.9/site-packages/torch/include/torch/csrc/api/include/")
+                       ":"
+                       (search-input-directory
+                        inputs "lib/python3.9/site-packages/torch/include/")
+                       ":"
+                       (or (getenv "CPLUS_INCLUDE_PATH") "")))
+              (setenv "C_INCLUDE_PATH"
+                      (string-append
+                       (search-input-directory
+                        inputs "lib/python3.9/site-packages/torch/include/")
+                       ":"
+                       (or (getenv "C_INCLUDE_PATH") "")))))
+          (replace 'install
+            (lambda _
+              (install-file
+               "../build/liblantern.so"
+               (string-append #$output "/lib"))
+              (copy-recursively
+               "../lantern/include"
+               (string-append #$output "/include")))))))
+    (inputs (list python-pytorch-for-r-torch))
+    (home-page "https://github.com/mlverse/torch/")
+    (synopsis "C API to libtorch")
+    (description
+     "Lantern provides a C API to the libtorch machine learning library.")
+    (license license:expat)))

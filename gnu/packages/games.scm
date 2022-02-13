@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015 David Thompson <dthompson2@worcester.edu>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Cyrill Schenkel <cyrill.schenkel@gmail.com>
 ;;; Copyright © 2014 Sylvain Beucler <beuc@beuc.net>
 ;;; Copyright © 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -68,6 +68,7 @@
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2360,100 +2361,98 @@ can be explored and changed freely.")
 (define-public seahorse-adventures
   (package
     (name "seahorse-adventures")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dulsi/seahorse-adventures")
-             (commit (string-append "release-" version))))
+             (commit (string-append "Release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m53jh2gchzr7rs35hml6lbvc5kb5hp229wlfqa09098b7hhl15a"))
+        (base32 "1dxysa79cz5mflr2953fyk838h1jwvi1ngn8wlpms0ag35yv21s8"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
        ;; Remove non-free (non-commercial) font.
        (snippet
-        `(begin
-           (for-each delete-file (find-files "data/fonts" "."))
-           #t))))
+        #~(begin
+            (for-each delete-file (find-files "data/fonts" "."))))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)                ;pure Python
-         (replace 'install              ;no install script
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (share (string-append out "/share"))
-                    (applications (string-append share "/applications"))
-                    (data (string-append share "/seahorse-adventures")))
-               ;; Install data.
-               (for-each (lambda (f)
-                           (chmod f #o555)
-                           (install-file f data))
-                         '("leveledit.py" "run_game.py" "tileedit.py"))
-               (for-each (lambda (dir)
-                           (let ((target (string-append data "/" dir)))
-                             (mkdir-p target)
-                             (copy-recursively dir target)))
-                         '("data" "lib"))
-               ;; Create executable.
-               (mkdir-p bin)
-               (let ((executable (string-append bin "/seahorse-adventures")))
-                 (call-with-output-file executable
-                   (lambda (p)
-                     (format p
-                             "#!~a~@
+     (list
+      #:tests? #f                       ;no test
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)               ;pure Python
+          (replace 'install             ;no install script
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin"))
+                     (share (string-append #$output "/share"))
+                     (applications (string-append share "/applications"))
+                     (data (string-append share "/seahorse-adventures")))
+                ;; Install data.
+                (for-each (lambda (f)
+                            (chmod f #o555)
+                            (install-file f data))
+                          '("leveledit.py" "run_game.py" "tileedit.py"))
+                (for-each (lambda (dir)
+                            (let ((target (string-append data "/" dir)))
+                              (mkdir-p target)
+                              (copy-recursively dir target)))
+                          '("data" "lib"))
+                ;; Create executable.
+                (mkdir-p bin)
+                (let ((executable (string-append bin "/seahorse-adventures")))
+                  (call-with-output-file executable
+                    (lambda (p)
+                      (format p
+                              "#!~a~@
                               export GUIX_PYTHONPATH=~a:~a~@
                               exec -a \"~a\" ~a \"$@\"~%"
-                             (which "bash") data (getenv "GUIX_PYTHONPATH")
-                             (which "python3")
-                             (string-append data "/run_game.py"))))
-                 (chmod executable #o555))
-               ;; Add desktop file.
-               (mkdir-p applications)
-               (make-desktop-entry-file
-                (string-append applications "/seahorse-adventures.desktop")
-                #:name "Seahorse Adventures"
-                #:comment
-                '((#f "Help Barbie the seahorse float on bubbles to the moon"))
-                #:exec ,name
-                #:icon ,name
-                #:categories '("Game" "ActionGame")
-                #:keywords '("game" "retro" "platform"))
-               ;; Add icons.
-               (for-each
-                (lambda (size)
-                  (let ((dir (string-append share "/icons/hicolor/"
-                                            size "x" size "/apps")))
-                    (mkdir-p dir)
-                    (copy-file
-                     (string-append "icon" size ".png")
-                     (string-append dir "/searhorse-adventures.png"))))
-                '("32" "64" "128")))
-             #t))
-         (add-after 'install 'unbundle-fonts
-           ;; Unbundle Bitstream Vera font and replace deleted one.
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (data (string-append out "/share/seahorse-adventures"))
+                              (search-input-file inputs "/bin/bash")
+                              data
+                              (getenv "GUIX_PYTHONPATH")
+                              (search-input-file inputs "/bin/python3")
+                              (string-append data "/run_game.py"))))
+                  (chmod executable #o555))
+                ;; Add desktop file.
+                (mkdir-p applications)
+                (make-desktop-entry-file
+                 (string-append applications "/seahorse-adventures.desktop")
+                 #:name "Seahorse Adventures"
+                 #:comment
+                 '((#f "Help Barbie the seahorse float on bubbles to the moon"))
+                 #:exec #$name
+                 #:icon #$name
+                 #:categories '("Game" "ActionGame")
+                 #:keywords '("game" "retro" "platform"))
+                ;; Add icons.
+                (for-each
+                 (lambda (size)
+                   (let ((dir (string-append share "/icons/hicolor/"
+                                             size "x" size "/apps")))
+                     (mkdir-p dir)
+                     (copy-file
+                      (string-append "icon" size ".png")
+                      (string-append dir "/searhorse-adventures.png"))))
+                 '("32" "64" "128")))))
+          (add-after 'install 'unbundle-fonts
+            ;; Unbundle Bitstream Vera font and replace deleted one.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((data (string-append #$output "/share/seahorse-adventures"))
                     (vera (search-input-file
                            inputs "/share/fonts/truetype/Vera.ttf")))
-               (let ((themes-dir (string-append data "/data/themes/")))
-                 (for-each
-                  (lambda (theme)
-                    (let ((target (string-append themes-dir theme "/Vera.ttf")))
-                      (delete-file target)
-                      (symlink vera target)))
-                  '("default" "gray")))
-               (symlink vera (string-append data "/data/fonts/04B_20__.TTF"))
-               (substitute* (string-append data "/lib/main.py")
-                 (("f_scale = 0.35") "f_scale = 0.47")))
-             #t)))))
+                (let ((themes-dir (string-append data "/data/themes/")))
+                  (for-each
+                   (lambda (theme)
+                     (let ((target (string-append themes-dir theme "/Vera.ttf")))
+                       (delete-file target)
+                       (symlink vera target)))
+                   '("default" "gray")))
+                (symlink vera (string-append data "/data/fonts/04B_20__.TTF"))
+                (substitute* (string-append data "/lib/main.py")
+                  (("f_scale = 0.35") "f_scale = 0.47"))))))))
     (inputs
      (list font-bitstream-vera python-pygame))
     (home-page "http://www.imitationpickles.org/barbie/")
@@ -4220,14 +4219,14 @@ world}, @uref{http://evolonline.org, Evol Online} and
 (define openttd-engine
   (package
     (name "openttd-engine")
-    (version "12.0")
+    (version "12.1")
     (source
      (origin (method url-fetch)
              (uri (string-append "https://cdn.openttd.org/openttd-releases/"
                                  version "/openttd-" version "-source.tar.xz"))
              (sha256
               (base32
-               "1p1j5cf4ry57dcgm7qx2g2s00z1c6qgjabb4kqjp00yz00wgv85v"))))
+               "1qz7ld55m9cvgr4mkv6c11y0zf2aph3ba605l45qj41hk2wzb2r5"))))
     (build-system cmake-build-system)
     (inputs
      `(("allegro" ,allegro)
@@ -6391,63 +6390,61 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.27.1")
+    (version "0.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/crawl/crawl/releases/download/"
                            version "/stone_soup-" version "-nodeps.tar.xz"))
        (sha256
-        (base32 "0nkhyhrrma8gmwxp15j84cn1k2yvyq7ar9rd0j2qjjlv2kdis5z2"))
+        (base32 "0irg5w4m127fxcj037kyp9vnyqyq1fi4q64rn6yq92w8z1lf2sss"))
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("lua51" ,lua-5.1)
-       ("ncurses" ,ncurses)
-       ("sqlite" ,sqlite)
-       ("zlib" ,zlib)))
+     (list lua-5.1 ncurses sqlite zlib))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ("python-pyyaml" ,python-pyyaml)
-       ("pkg-config" ,pkg-config)))
+     (list bash-minimal
+           bison
+           flex
+           perl
+           pkg-config
+           python-wrapper
+           python-pyyaml))
     (arguments
-     `(#:make-flags
-       (let* ((sqlite (assoc-ref %build-inputs "sqlite"))
-              (out (assoc-ref %outputs "out")))
-         (list (string-append "SQLITE_INCLUDE_DIR=" sqlite "/include")
-               (string-append "prefix=" out)
-               "SAVEDIR=~/.crawl"
-               ;; Don't compile with SSE on systems which don't have it.
-               ,@(match (%current-system)
+     (list
+      #:make-flags
+      #~(list (string-append "SQLITE_INCLUDE_DIR="
+                             #$(this-package-input "sqlite")
+                             "/include")
+              (string-append "prefix=" #$output)
+              "SAVEDIR=~/.crawl"
+              ;; Don't compile with SSE on systems which don't have it.
+              #$@(match (%current-system)
                    ((or "i686-linux" "x86_64-linux")
                     '())
                    (_ '("NOSSE=TRUE")))
-               ;; don't build any bundled dependencies
-               "BUILD_LUA="
-               "BUILD_SQLITE="
-               "BUILD_ZLIB="
-               "-Csource"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'find-SDL-image
-           (lambda _
-             (substitute* "source/windowmanager-sdl.cc"
-               (("SDL_image.h") "SDL2/SDL_image.h"))
-             #t))
-         (delete 'configure)
-         (replace 'check
-           (lambda* (#:key inputs outputs make-flags #:allow-other-keys)
-             (setenv "HOME" (getcwd))
-             ;; Fake a terminal for the test cases.
-             (setenv "TERM" "xterm-256color")
-             ;; Run the tests that don't require a debug build.
-             (apply invoke "make" "nondebugtest"
-                    (format #f "-j~d" (parallel-job-count))
-                    ;; Force command line build for test cases.
-                    (append make-flags '("GAME=crawl" "TILES="))))))))
+              ;; don't build any bundled dependencies
+              "BUILD_LUA="
+              "BUILD_SQLITE="
+              "BUILD_ZLIB="
+              "-Csource")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-SDL-image
+            (lambda _
+              (substitute* "source/windowmanager-sdl.cc"
+                (("SDL_image.h") "SDL2/SDL_image.h"))))
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (setenv "HOME" (getcwd))
+              ;; Fake a terminal for the test cases.
+              (setenv "TERM" "xterm-256color")
+              ;; Run the tests that don't require a debug build.
+              (apply invoke "make" "nondebugtest"
+                     (format #f "-j~d" (parallel-job-count))
+                     ;; Force command line build for test cases.
+                     (append make-flags '("GAME=crawl" "TILES="))))))))
     (synopsis "Roguelike dungeon crawler game")
     (description "Dungeon Crawl Stone Soup (also known as \"Crawl\" or DCSS
 for short) is a roguelike adventure through dungeons filled with dangerous
@@ -6472,29 +6469,23 @@ monsters in a quest to find the mystifyingly fabulous Orb of Zot.")
      (substitute-keyword-arguments
          (package-arguments crawl)
        ((#:make-flags flags)
-        `(let ((dejavu (assoc-ref %build-inputs "font-dejavu")))
-           (cons*
-            (string-append "PROPORTIONAL_FONT=" dejavu
-                           "/share/fonts/truetype/DejaVuSans.ttf")
-            (string-append "MONOSPACED_FONT=" dejavu
-                           "/share/fonts/truetype/DejaVuSansMono.ttf")
-            "TILES=y"
-            ;; Rename the executable to allow parallel installation with crawl.
-            "GAME=crawl-tiles"
-            ,flags)))))
+        #~(cons*
+           (string-append "PROPORTIONAL_FONT="
+                          #$(this-package-input "font-dejavu")
+                          "/share/fonts/truetype/DejaVuSans.ttf")
+           (string-append "MONOSPACED_FONT="
+                          #$(this-package-input "font-dejavu")
+                          "/share/fonts/truetype/DejaVuSansMono.ttf")
+           "TILES=y"
+           ;; Rename the executable to allow parallel installation with crawl.
+           "GAME=crawl-tiles"
+           #$flags))))
     (inputs
-     `(,@(package-inputs crawl)
-       ("font-dejavu" ,font-dejavu)
-       ("freetype6" ,freetype)
-       ("glu" ,glu)
-       ("libpng" ,libpng)
-       ("sdl2" ,sdl2)
-       ("sdl2-image" ,sdl2-image)
-       ("sdl2-mixer" ,sdl2-mixer)))
+     (modify-inputs (package-inputs crawl)
+       (prepend font-dejavu freetype glu libpng sdl2 sdl2-image sdl2-mixer)))
     (native-inputs
-     `(,@(package-native-inputs crawl)
-       ("pngcrush" ,pngcrush)
-       ("which" ,which)))
+     (modify-inputs (package-native-inputs crawl)
+       (prepend pngcrush which)))
     (synopsis "Graphical roguelike dungeon crawler game")))
 
 (define-public lugaru
@@ -7155,7 +7146,7 @@ elements to achieve a simple goal in the most complex way possible.")
 (define-public pioneer
   (package
     (name "pioneer")
-    (version "20210723")
+    (version "20220203")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7164,7 +7155,7 @@ elements to achieve a simple goal in the most complex way possible.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hj99jxb9n3r0bkq87p1c24862xa1xyzjyfdyyx88ckszxb05qf3"))))
+                "0qjq6lsr1rmcnvq9b7r745cpp7n0q6cpc3k81q8ai4xspbq61m8w"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -7183,6 +7174,7 @@ elements to achieve a simple goal in the most complex way possible.")
     (arguments
      `(#:tests? #f                      ;tests are broken
        #:configure-flags (list "-DUSE_SYSTEM_LIBLUA:BOOL=YES"
+                               "-DUSE_SYSTEM_LIBGLEW:BOOL=YES"
                                (string-append "-DPIONEER_DATA_DIR="
                                               %output "/share/games/pioneer"))
        #:make-flags (list "all" "build-data")))
@@ -8909,7 +8901,7 @@ fight each other on an arena-like map.")
 (define-public flare-engine
   (package
     (name "flare-engine")
-    (version "1.12")
+    (version "1.13.04")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8918,15 +8910,16 @@ fight each other on an arena-like map.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h4xxj6r194pw68m3ngrnzkh6xgiblyrsc54z8abwba8m0mqbvmk"))))
+                "042n2r9whnd3kncf3k89dcl1srn7p2jk6kdc0lb2hbwff55iylnw"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags '("-DBINDIR=bin" "-DDATADIR=share/flare")))
+     (list
+      #:tests? #f                       ;no test
+      #:configure-flags #~(list "-DBINDIR=bin" "-DDATADIR=share/flare")))
     (inputs
-     `(("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("python" ,python-wrapper)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))))
+     (list hicolor-icon-theme
+           python-wrapper
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
     (home-page "http://www.flarerpg.org/")
     (synopsis "Action Roleplaying Engine")
     (description "Flare (Free Libre Action Roleplaying Engine) is a simple
@@ -8937,7 +8930,7 @@ action RPGs.")
 (define-public flare-game
   (package
     (name "flare-game")
-    (version "1.12")
+    (version "1.13.04")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8946,51 +8939,51 @@ action RPGs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h9i128kq6disppbrplkf13zdmsg4cq23nim53mgwpawc4mqz7ga"))))
+                "18rdrwv7p5rvmlah5pl9vbc09xlb8id75a7c73yn2sxkm6cf5c2l"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags '("-DDATADIR=share/flare")
-       #:phases
-       (modify-phases %standard-phases
-         ;; Flare expects the mods to be located in the same folder.
-         ;; Yet, "default" mod is in the engine, whereas the others
-         ;; are in the current package.  Merge everything here with
-         ;; a symlink.
-         (add-after 'install 'add-default-mod
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (mods (string-append out "/share/flare/mods")))
-               (with-directory-excursion mods
-                 (symlink (string-append (assoc-ref inputs "flare-engine")
-                                         "/share/flare/mods/default")
-                          "default")))
-             #t))
-         (add-after 'install 'install-executable
-           ;; The package only provides assets for the game, the
-           ;; executable coming from "flare-engine".  Since more than
-           ;; one game may use the engine, we create a new executable,
-           ;; "flare-game", which launches the engine with appropriate
-           ;; parameters.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bash (search-input-file inputs "/bin/bash"))
+     (list
+      #:tests? #f                       ;no test
+      #:configure-flags #~(list "-DDATADIR=share/flare")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Flare expects the mods to be located in the same folder.
+          ;; Yet, "default" mod is in the engine, whereas the others
+          ;; are in the current package.  Merge everything here with
+          ;; a symlink.
+          (add-after 'install 'add-default-mod
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((mods (string-append #$output "/share/flare/mods")))
+                (with-directory-excursion mods
+                  (symlink (search-input-directory inputs
+                                                   "/share/flare/mods/default")
+                           "default")
+                  (symlink (search-input-file inputs
+                                              "/share/flare/mods/mods.txt")
+                           "mods.txt")))))
+          (add-after 'install 'install-executable
+            ;; The package only provides assets for the game, the
+            ;; executable coming from "flare-engine".  Since more than
+            ;; one game may use the engine, we create a new executable,
+            ;; "flare-game", which launches the engine with appropriate
+            ;; parameters.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash (search-input-file inputs "/bin/bash"))
                     (flare (search-input-file inputs "/bin/flare"))
-                    (script (string-append out "/bin/flare-game")))
-               (mkdir-p (dirname script))
-               (call-with-output-file script
-                 (lambda (port)
-                   (format port
-                           "#!~a
+                    (script (string-append #$output "/bin/flare-game")))
+                (mkdir-p (dirname script))
+                (call-with-output-file script
+                  (lambda (port)
+                    (format port
+                            "#!~a
 exec ~a --data-path=~a/share/flare --mods=empyrean_campaign~%"
-                           bash
-                           flare
-                           out)))
-               (chmod script #o755))
-             #t)))))
+                            bash
+                            flare
+                            #$output)))
+                (chmod script #o755)))))))
     (inputs
      (list flare-engine))
-    (home-page "http://www.flarerpg.org/")
+    (home-page "https://flarerpg.org/")
     (synopsis "Fantasy action RPG using the FLARE engine")
     (description "Flare is a single-player 2D action RPG with
 fast-paced action and a dark fantasy style.")
@@ -9367,7 +9360,7 @@ play with up to four players simultaneously.  It has network support.")
        ("sdl" ,(sdl-union
                 (list sdl2 sdl2-mixer sdl2-net sdl2-ttf sdl2-image)))))
     (native-inputs
-     (list clang ghc pkg-config qttools))
+     (list clang-9 ghc pkg-config qttools))
     (home-page "https://hedgewars.org/")
     (synopsis "Turn-based artillery game featuring fighting hedgehogs")
     (description

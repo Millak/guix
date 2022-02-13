@@ -12,7 +12,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
@@ -63,6 +63,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system waf)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -181,6 +182,38 @@ rendering modes are: Bitmaps, Anti-aliased pixmaps, Texture maps, Outlines,
 Polygon meshes, and Extruded polygon meshes.")
     (license license:x11)))
 
+(define-public glad
+  (package
+    (name "glad")
+    (version "0.1.36")
+    (source
+     (origin
+       ;; We fetch the sources from the repository since the PyPI archive
+       ;; doesn't contain the CMakeLists.txt file which is useful for
+       ;; integration with other software, such as the openboardview package.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Dav1dde/glad")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0m55ya1zrmg6n2cljkajy80ilmi5sblln8742fm0k1sw9k7hzn8n"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-cmakelists.txt
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share/" ,name)))
+               (install-file "CMakeLists.txt" share)))))))
+    (home-page "https://github.com/Dav1dde/glad")
+    (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
+    (description "Glad uses the official Khronos XML specifications to
+generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
+    (license license:expat)))
+
 (define-public s2tc
   (package
     (name "s2tc")
@@ -261,7 +294,8 @@ also known as DXTn or DXTC) for Mesa.")
         ("libxrandr" ,libxrandr)
         ("libxvmc" ,libxvmc)
         ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux" "powerpc-linux")
+            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
+                 "powerpc-linux" "riscv64-linux")
              ;; Note: update the 'clang' input of mesa-opencl when bumping this.
              `(("llvm" ,llvm-11)))
             (_
@@ -273,7 +307,8 @@ also known as DXTn or DXTC) for Mesa.")
         ("flex" ,flex)
         ("gettext" ,gettext-minimal)
         ,@(match (%current-system)
-            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux" "powerpc-linux")
+            ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
+                 "powerpc-linux" "riscv64-linux")
              `(("glslang" ,glslang)))
             (_
              `()))
@@ -289,7 +324,7 @@ also known as DXTn or DXTC) for Mesa.")
              ((or "armhf-linux" "aarch64-linux")
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
-             ((or "powerpc64le-linux" "powerpc-linux")
+             ((or "powerpc64le-linux" "powerpc-linux" "riscv64-linux")
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
              (_
               '("-Dgallium-drivers=iris,nouveau,r300,r600,radeonsi,svga,swrast,virgl")))
@@ -315,12 +350,15 @@ also known as DXTn or DXTC) for Mesa.")
               '("-Dvulkan-drivers=amd,swrast"))
              ("aarch64-linux"
               '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast"))
+             ("riscv64-linux"
+              '("-Dvulkan-drivers=amd,swrast"))
              (_
               '("-Dvulkan-drivers=auto")))
 
          ;; Enable the Vulkan overlay layer on architectures using llvm.
          ,@(match (%current-system)
-             ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux" "powerpc-linux")
+             ((or "x86_64-linux" "i686-linux" "powerpc64le-linux" "aarch64-linux"
+                  "powerpc-linux" "riscv64-linux")
               '("-Dvulkan-layers=device-select,overlay"))
              (_
               '()))
@@ -334,7 +372,7 @@ also known as DXTn or DXTC) for Mesa.")
              ((or "x86_64-linux" "i686-linux")
               '("-Ddri-drivers=i915,i965,nouveau,r200,r100"
                 "-Dllvm=enabled"))      ; default is x86/x86_64 only
-             ((or "powerpc64le-linux" "aarch64-linux" "powerpc-linux")
+             ((or "powerpc64le-linux" "aarch64-linux" "powerpc-linux" "riscv64-linux")
               '("-Ddri-drivers=nouveau,r200,r100"
                 "-Dllvm=enabled"))
              (_
@@ -359,6 +397,13 @@ also known as DXTn or DXTC) for Mesa.")
                (("if with_tests")
                 "if false"))
              ,@(match (%current-system)
+                 ("riscv64-linux"
+                  ;; According to the test logs the llvm JIT is not designed
+                  ;; for this architecture and the llvmpipe tests all segfault.
+                  ;; The same is true for mesa:gallium / osmesa-render.
+                  `((substitute* '("src/gallium/drivers/llvmpipe/meson.build"
+                                   "src/gallium/targets/osmesa/meson.build")
+                      (("if with_tests") "if false"))))
                  ("powerpc64le-linux"
                   ;; Disable some of the llvmpipe tests.
                   `((substitute* "src/gallium/drivers/llvmpipe/lp_test_arit.c"

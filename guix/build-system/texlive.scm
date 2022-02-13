@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -177,10 +177,13 @@ level package ID."
                                                   (map search-path-specification->sexp
                                                        search-paths)))))))
 
-  (gexp->derivation name builder
-                    #:system system
-                    #:target #f
-                    #:substitutable? substitutable?))
+  (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
+                                                  system #:graft? #f)))
+    (gexp->derivation name builder
+                      #:system system
+                      #:target #f
+                      #:substitutable? substitutable?
+                      #:guile-for-build guile)))
 
 (define texlive-build-system
   (build-system

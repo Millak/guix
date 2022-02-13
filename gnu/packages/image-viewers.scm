@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2017-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -604,23 +604,25 @@ It supports JPEG, PNG and GIF formats.")
     (native-inputs
      (list pkg-config qttools))
     (inputs
-     `(("qtbase" ,qtbase-5)
-       ("qtdeclarative" ,qtdeclarative)
-       ("qtsvg" ,qtsvg)
-       ("qtwebkit" ,qtwebkit)
-       ("boost" ,boost)
-       ("eigen" ,eigen)
-       ;; ("gtest" ,gtest)
-       ("libraw" ,libraw)
-       ("zlib" ,zlib)
-       ("exiv2" ,exiv2)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("lcms" ,lcms)
-       ("openexr" ,openexr-2)
-       ("fftw" ,fftwf)
-       ("gsl" ,gsl)
-       ("libtiff" ,libtiff)))
+     (list qtbase-5
+           qtdeclarative
+           qtsvg
+           boost
+           eigen
+           ;; gtest
+           libraw
+           zlib
+           exiv2
+           libpng
+           libjpeg-turbo
+           lcms
+           openexr-2
+           qtwebengine
+           qtdeclarative
+           qtwebchannel
+           fftwf
+           gsl
+           libtiff))
     (arguments
      '(#:tests? #f  ;XXX: some tests fail to compile
        #:phases
@@ -629,11 +631,12 @@ It supports JPEG, PNG and GIF formats.")
            (lambda* (#:key inputs #:allow-other-keys)
              ;; 'OpenEXR.pc' has a -I for IlmBase but 'FindOpenEXR.cmake' does
              ;; not use 'OpenEXR.pc'.  Thus, we need to add
-             ;; "$ilmbase/include/OpenEXR/" to the CPATH.
-             (setenv "CPATH"
+             ;; "$ilmbase/include/OpenEXR/" to the CPLUS_INCLUDE_PATH.
+             (setenv "CPLUS_INCLUDE_PATH"
                      (string-append
-                      (search-input-directory inputs "include/OpenEXR")
-                      ":" (or (getenv "CPATH") ""))))))))
+                      (dirname
+                       (search-input-file inputs "include/OpenEXR/ImathInt64.h"))
+                      ":" (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
     (home-page "http://qtpfsgui.sourceforge.net")
     (synopsis "High dynamic range (HDR) imaging application")
     (description

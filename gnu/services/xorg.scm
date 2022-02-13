@@ -975,7 +975,7 @@ the GNOME desktop environment.")
   (list (shepherd-service
          (documentation "Xorg display server (GDM)")
          (provision '(xorg-server))
-         (requirement '(dbus-system user-processes host-name udev))
+         (requirement '(dbus-system user-processes host-name udev elogind))
          (start #~(lambda ()
                     (fork+exec-command
                      (list #$(file-append (gdm-configuration-gdm config)

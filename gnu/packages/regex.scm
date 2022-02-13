@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;;
@@ -25,13 +25,14 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix utils))
 
 (define-public re2
    (package
      (name "re2")
-     (version "2020-11-01")
+     (version "2022-02-01")
      (home-page "https://github.com/google/re2")
      (source (origin
                (method git-fetch)
@@ -39,33 +40,20 @@
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0ii51fpp6fn51x4qyd99sy4r122s8ayh4x1srwhhijxlh8mzla5k"))))
+                 "1gzdqy5a0ln9rwd8kmwbgis6qin63hapicwb35xkbnj3y84jj6yx"))))
      (build-system gnu-build-system)
      (arguments
-      `(#:modules ((guix build gnu-build-system)
-                   (guix build utils)
-                   (srfi srfi-1))
-        #:test-target "test"
-        ;; There is no configure step, but the Makefile respects a prefix.
-        ;; As ./configure does not know anything about the target CXX
-        ;; we need to specify TARGET-g++ explicitly.
-        #:make-flags (list (string-append "prefix=" %output)
-                           (string-append
-                             "CXX=" ,(string-append
-                                       (if (%current-target-system)
-                                           (string-append
-                                             (%current-target-system) "-")
-                                           "")
-                                       "g++")))
-        #:phases
-        (modify-phases %standard-phases
-          (delete 'configure)
-          (add-after 'install 'delete-static-library
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; No make target for shared-only; delete the static version.
-              (delete-file (string-append (assoc-ref outputs "out")
-                                          "/lib/libre2.a"))
-              #t)))))
+      (list #:test-target "test"
+            ;; There is no configure step, but the Makefile respects a prefix.
+            #:make-flags #~(list (string-append "prefix=" #$output)
+                                 (string-append "CXX=" #$(cxx-for-target)))
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'configure)
+                (add-after 'install 'delete-static-library
+                  (lambda _
+                    ;; No make target for shared-only; delete the static version.
+                    (delete-file (string-append #$output "/lib/libre2.a")))))))
      (synopsis "Fast, safe, thread-friendly regular expression engine")
      (description "RE2 is a fast, safe, thread-friendly alternative to
 backtracking regular expression engines like those used in PCRE, Perl and

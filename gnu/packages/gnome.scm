@@ -54,7 +54,7 @@
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2020, 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2020, 2021 Sébastien Lerique <sl@eauchat.org>
@@ -158,6 +158,7 @@
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages music)
@@ -1914,8 +1915,8 @@ and system administrators.")
   ;; recent versions of the build tools.  The latest activity on the
   ;; pre-GNOME version has been in 2014, while GNOME has continued applying
   ;; fixes since.
-  (let ((commit "3cf7ec4c2e5bca139a7f3e17f9fc9009c237fcc5")
-        (revision "2"))
+  (let ((commit "0997887d97f01be28bf3886dfd3e2002de437930")
+        (revision "3"))
     (package
       (name "dia")
       (version (git-version "0.97.3" revision commit))
@@ -1927,9 +1928,11 @@ and system administrators.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "04r8dspa6nmicrifhi3sh46hqvyy88hzq37xx99q3q1mwsrpmwy8"))))
+                  "199b4n1jydg1g9lnz0r8xx67h7s2ac2lfj89zp015lbs0qqfkmsh"))))
       (build-system meson-build-system)
-      (arguments `(#:meson ,meson-0.59))
+      ;; XXX: Parallel builds may cause: [74/566] [...]
+      ;; fatal error: dia-lib-enums.h: No such file or directory
+      (arguments '(#:parallel-build? #f))
       (inputs
        (list graphene
              gtk+-2
@@ -1939,12 +1942,10 @@ and system administrators.")
              ;; XXX: PDF plugin fails to build with poppler 21.07.0.
              ;; poppler
 
-             ;; Without Python 2, build fails: plug-ins/python/meson.build:4:0:
-             ;; ERROR: Unknown method "dependency" in object.
-             python-2))
+             python))
       (native-inputs
        (list appstream-glib docbook-xsl
-             `(,glib "bin") intltool pkg-config))
+             `(,glib "bin") gettext-minimal pkg-config))
       (home-page "https://wiki.gnome.org/Apps/Dia")
       (synopsis "Diagram creation for GNOME")
       (description "Dia can be used to draw different types of diagrams, and
@@ -5106,6 +5107,7 @@ and other secrets.  It communicates with the \"Secret Service\" using DBus.")
        ("desktop-file-utils" ,desktop-file-utils)
        ("intltool" ,intltool)
        ("itstool" ,itstool)
+       ("python" ,python-wrapper)       ; for meson_post_install.py
        ("vala" ,vala)
        ("yelp" ,yelp)
        ("appstream-glib" ,appstream-glib)))
@@ -7476,7 +7478,12 @@ to display dialog boxes from the commandline and shell scripts.")
              ;; expression paragraph.  For an explanation, see: info '(sed)
              ;; Multiline techniques'.
              (invoke "sed" "/./{H;$!d} ; x ; s/^.*native-headless.*$//"
-                     "-i" "src/tests/meson.build")))
+                     "-i" "src/tests/meson.build")
+             ;; Timeline tests may unexpectedly fail on missed frames, so
+             ;; let's disable them as well.
+             ;; See <https://gitlab.gnome.org/GNOME/mutter/-/issues/2125>
+             (substitute* "src/tests/clutter/conform/meson.build"
+               (("'timeline.*',") ""))))
          (replace 'check
            (lambda* (#:key tests? test-options parallel-tests?
                      #:allow-other-keys)
@@ -7679,14 +7686,13 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                              '("addressbook-backends" "calendar-backends"
                                "camel-providers" "credential-modules"
                                "registry-modules"))))
-         (list "-DENABLE_UOA=OFF"             ;disable Ubuntu Online Accounts support
-               "-DENABLE_GOOGLE=OFF"          ;disable Google Contacts support
-               "-DENABLE_GOOGLE_AUTH=OFF"     ;disable Google authentication
+         (list "-DENABLE_GOOGLE=OFF"          ;disable Google Contacts support
                "-DENABLE_VALA_BINDINGS=ON"
                (string-append "-DCMAKE_INSTALL_RPATH=" lib ";"
                               (string-append lib "/evolution-data-server;")
                               (string-join runpaths ";"))
-               "-DENABLE_INTROSPECTION=ON"))  ;required for Vala bindings
+               "-DENABLE_INTROSPECTION=ON" ;required for Vala bindings
+               "-DWITH_PHONENUMBER=ON"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-tests
@@ -7716,6 +7722,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("intltool" ,intltool)
        ("pkg-config" ,pkg-config)
+       ("protobuf" ,protobuf)
        ("vala" ,vala)
        ("python" ,python-wrapper)))
     (propagated-inputs
@@ -7728,11 +7735,13 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
        ("sqlite" ,sqlite)))
     (inputs
      `(("bdb" ,bdb)
+       ("boost" ,boost)
        ("gcr" ,gcr)
        ("gnome-online-accounts:lib" ,gnome-online-accounts "lib")
        ("json-glib" ,json-glib)
        ("libcanberra" ,libcanberra)
        ("libgweather" ,libgweather)
+       ("libphonenumber" ,libphonenumber)
        ("mit-krb5" ,mit-krb5)
        ("openldap" ,openldap)
        ("webkitgtk" ,webkitgtk-with-libsoup2)))

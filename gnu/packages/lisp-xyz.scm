@@ -28,7 +28,7 @@
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;;
@@ -75,6 +75,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -9642,8 +9643,8 @@ type correctness in Common Lisp.  It is based on CLtL2 extensions.")
          ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-numcl
-  (let ((commit "3dcdb0e24a33943d6c3a188ecbb0c78003bf975c")
-        (revision "2"))
+  (let ((commit "a28f612d072e5f93137584de5155a42243b3bd6b")
+        (revision "3"))
     (package
       (name "sbcl-numcl")
       (version (git-version "0.2.0" revision commit))
@@ -9655,7 +9656,7 @@ type correctness in Common Lisp.  It is based on CLtL2 extensions.")
                (commit commit)))
          (file-name (git-file-name "numcl" version))
          (sha256
-          (base32 "17m1rx1gfjbbmgjsf33b8s4bygfsj1hb6kvmypkql21qzjvx60nl"))))
+          (base32 "15m4spbgayawnw5jjz04zfp0jnk9g6hgq5fmr648hzjzj50j1d78"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:test-asd-file "numcl.test.asd"
@@ -20069,6 +20070,42 @@ parsers.")
 (define-public ecl-maxpc
   (sbcl-package->ecl-package sbcl-maxpc))
 
+(define-public sbcl-snakes
+  (let ((commit "8c7eae579bb24539dbd584a81a1049f3d3ff8bf8")
+        (revision "0"))
+    (package
+      (name "sbcl-snakes")
+      (version (git-version "0.0.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/BnMcGn/snakes")
+                (commit commit)))
+          (sha256
+           (base32 "1ibp919qcpm6kg67b507kpjzdlhpdjr7vkh9vabln3a75k8lnlsg"))
+          (file-name (git-file-name "cl-snakes" commit))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+        (list sbcl-alexandria
+              sbcl-cl-cont
+              sbcl-cl-utilities
+              sbcl-closer-mop
+              sbcl-fiveam
+              sbcl-iterate))
+      (home-page "https://github.com/BnMcGn/snakes")
+      (synopsis "Python-like generators for Common Lisp")
+      (description
+       "This package provides Python style generators for Common Lisp.
+It also includes a port of itertools.")
+      (license license:asl2.0))))
+
+(define-public cl-snakes
+  (sbcl-package->cl-source-package sbcl-snakes))
+
+(define-public ecl-snakes
+  (sbcl-package->ecl-package sbcl-snakes))
+
 (define-public sbcl-random-state
   (let ((commit "c270d4f15e0b66ba9680ca8734a5de56959cb118")
         (revision "1"))
@@ -20251,6 +20288,70 @@ rendering of the XML Infoset.")
 (define-public ecl-cl-sxml
   (sbcl-package->ecl-package sbcl-cl-sxml))
 
+(define-public sbcl-lorem-ipsum
+  (let ((commit "04a1839a03b53c954e799b9cf570ac915b032ce8")
+        (revision "0"))
+    (package
+      (name "sbcl-lorem-ipsum")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/phoe/lorem-ipsum")
+                (commit commit)))
+          (sha256
+           (base32 "1530qq0bk3xr25m77q96pbi1idnxdkax8cwmvq4ch03rfjy34j7n"))
+          (file-name (git-file-name "cl-lorem-ipsum" commit))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/phoe/lorem-ipsum")
+      (synopsis "Lorem ipsum generator in portable Common Lisp")
+      (description
+       "This package provides functions for generating lorem ipsum text.")
+      (license license:expat))))
+
+(define-public cl-lorem-ipsum
+  (sbcl-package->cl-source-package sbcl-lorem-ipsum))
+
+(define-public ecl-lorem-ipsum
+  (sbcl-package->ecl-package sbcl-lorem-ipsum))
+
+(define-public sbcl-asd-generator
+  (let ((commit "27f94971a7c68c4dcb51e3f6be4142743d0c44e8")
+        (revision "0"))
+    (package
+      (name "sbcl-asd-generator")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/phoe/asd-generator")
+                (commit commit)))
+          (sha256
+           (base32 "0yiybl7b9x1f85v0drj0yw9821y3yfhya4n6gycnv5vvx6jp9by4"))
+          (file-name (git-file-name "cl-asd-generator" commit))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("asd-generator")
+         #:asd-files '("asd-generator.asd")))
+      (inputs
+       (list sbcl-cl-fad
+             sbcl-iterate
+             sbcl-alexandria
+             sbcl-trivia))
+      (home-page "https://github.com/phoe/asd-generator")
+      (synopsis "Automatic generator for .asd files")
+      (description
+       "This package provides an automatic generator for ASDF's .asd files.")
+      (license license:gpl3+))))
+
+(define-public cl-asd-generator
+  (sbcl-package->cl-source-package sbcl-asd-generator))
+
+(define-public ecl-asd-generator
+  (sbcl-package->ecl-package sbcl-asd-generator))
+
 (define-public sbcl-cl-gopher
   (let ((commit "62cfd180378f56e7e8b57e4302b183810c86e337")
         (revision "2"))
@@ -20324,6 +20425,37 @@ Lisp.  A subsystem offers an experimental GUI Gemini client.")
 (define-public ecl-phos
   (sbcl-package->ecl-package sbcl-phos))
 
+(define-public sbcl-css-lite
+  (let ((commit "6ee4e6212ed56943d665df163d2a834b122e6273")
+        (revision "0"))
+    (package
+      (name "sbcl-css-lite")
+      (version "0.01")
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/paddymul/css-lite")
+                (commit commit)))
+          (sha256
+           (base32 "1lyvw7hcy09k5qs6icky23s13psqxncyc73hdyiimb66p0jx6k0d"))
+          (file-name (git-file-name "cl-css-lite" commit))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/paddymul/css-lite")
+      (synopsis "CSS grammar for Lisp")
+      (description
+       "@code{cl-css-lite} is a library for generating CSS from an s-exp based
+syntax.  When compiled with Parenscript loaded in the Lisp image, it
+also provides the same CSS generation facilities in Parenscript-generated
+JavaScript code.")
+      (license license:bsd-3))))
+
+(define-public cl-css-lite
+  (sbcl-package->cl-source-package sbcl-css-lite))
+
+(define-public ecl-css-lite
+  (sbcl-package->ecl-package sbcl-css-lite))
+
 (define-public sbcl-nhooks
   (package
     (name "sbcl-nhooks")
@@ -20376,3 +20508,77 @@ identified uniquely.
 
 (define-public ecl-nhooks
   (sbcl-package->ecl-package sbcl-nhooks))
+
+(define-public sbcl-nfiles
+  (package
+   (name "sbcl-nfiles")
+   (version "0.2.1")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/atlas-engineer/nfiles")
+           (commit version)))
+     (file-name (git-file-name "nfiles" version))
+     (sha256
+      (base32
+       "1jdrqvxp4dxlkggx951rxp29lg7hm8zxq35pqq8hr9m9ydy088s7"))))
+   (build-system asdf-build-system/sbcl)
+   (inputs
+    (list gnupg
+          sbcl-alexandria
+          sbcl-hu.dwim.defclass-star
+          sbcl-serapeum
+          sbcl-trivial-garbage
+          sbcl-trivial-package-local-nicknames
+          sbcl-trivial-types))
+   (native-inputs
+    (list sbcl-prove))
+   (arguments
+    `(#:phases
+      (modify-phases %standard-phases
+        (add-after 'unpack 'fix-paths
+          (lambda* (#:key inputs #:allow-other-keys)
+            (substitute* "gpg.lisp"
+              (("\"gpg\"")
+               (string-append "\"" (assoc-ref inputs "gnupg") "/bin/gpg\""))))))))
+   (home-page "https://github.com/atlas-engineer/nfiles")
+   (synopsis "Manage file persistence and loading in Common Lisp")
+   (description
+    "NFiles is a Common Lisp library to help manage file persistence and
+loading, in particular user-centric files like configuration files.  It boasts
+the following features:
+
+@itemize
+@item Dynamic and customizable path expansion.
+
+@item Extensible serialization and deserialization.
+
+@item Cached reads and writes.  When a file object expands to the same path as
+another one, a read or write on it won’t do anything in case there was no
+change since last write.
+
+@item (Experimental!) On-the-fly PGP encryption.
+
+@item Profile support.
+
+@item On read error, existing files are backed up.
+
+@item On write error, no file is written to disk, the existing file is preserved.
+@end itemize\n")
+   (license license:bsd-3)))
+
+(define-public ecl-nfiles
+  (let ((pkg (sbcl-package->ecl-package sbcl-nfiles)))
+    (package
+      (inherit pkg)
+      (inputs
+       (cons (list "iolib" ecl-iolib)
+             (package-inputs pkg))))))
+
+(define-public cl-nfiles
+  (package
+    (inherit (sbcl-package->cl-source-package sbcl-nfiles))
+    (inputs
+     (cons (list "iolib" cl-iolib)
+           (package-inputs sbcl-nfiles)))))

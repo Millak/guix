@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -55,6 +55,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,6 +133,7 @@
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
@@ -164,6 +166,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system scons)
@@ -628,6 +631,59 @@ the API, and provides features such as:
 around TangentOrg’s libmemcached library, and can be used as a drop-in
 replacement for the code@{python-memcached} library.")
     (license license:bsd-3)))
+
+(define-public go-github-com-bradfitz-gomemcache
+  (package
+    (name "go-github-com-bradfitz-gomemcache")
+    (version "0.0.0-20190913173617-a41fca850d0b")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/bradfitz/gomemcache")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "18qpds6xr73jy80pj7l3pc1l1ndcy3va2dl8fzk17bgwg49sxwfz"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            ;; Fixes the 'untyped-int -> string of one rune' issue.
+            ;; https://github.com/golang/go/issues/32479
+            (substitute* "memcache/memcache_test.go"
+              (("string\\(0x7f") "string(rune(0x7f)"))))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "github.com/bradfitz/gomemcache"
+       #:import-path "github.com/bradfitz/gomemcache/memcache"))
+    (home-page "https://github.com/bradfitz/gomemcache")
+    (synopsis "Memcache client library in Go")
+    (description
+     "This is a memcache client library for the Go programming language.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-couchbase-gomemcached
+  (package
+    (name "go-github-com-couchbase-gomemcached")
+    (version "0.1.4")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/couchbase/gomemcached")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "10w74gc05x5naspls39sv2r92krrg31mk266w3lyqqwc0s3fxysl"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/couchbase/gomemcached"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/couchbase/gomemcached")
+    (synopsis "Memcached binary protocol toolkit for go")
+    (description
+     "This package provides memcache client and server functionality.")
+    (license license:expat)))
 
 (define-public litecli
  (package
@@ -1262,6 +1318,85 @@ pictures, sounds, or video.")
                 "1fa735lrmv2vrfiixg73nh024gxlagcbrssklvgwdf0s82cgfjd8"))))))
 
 (define-public postgresql postgresql-13)
+
+(define-public timescaledb
+  (package
+    (name "timescaledb")
+    (version "2.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/timescale/timescaledb")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "174dm3higa0i7al9r2hdv5hk36pd0d5fnqj57w5a350kxshxyvyw"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Remove files carrying the proprietary TIMESCALE license.
+               '(begin
+                  (delete-file-recursively "tsl")
+                  (for-each delete-file
+                            '("test/perl/AccessNode.pm"
+                              "test/perl/DataNode.pm"
+                              "test/perl/TimescaleNode.pm"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:imported-modules `((guix build union)
+                                ,@%cmake-build-system-modules)
+           #:modules `(,@%cmake-build-system-modules
+                       (guix build union)
+                       (ice-9 match))
+           #:configure-flags #~(list "-DAPACHE_ONLY=ON"
+                                     "-DSEND_TELEMETRY_DEFAULT=OFF")
+           #:test-target "regresschecklocal"
+           #:phases
+           #~(modify-phases (@ (guix build cmake-build-system) %standard-phases)
+               (add-after 'unpack 'patch-install-location
+                 (lambda _
+                   ;; Install extension to the output instead of the
+                   ;; PostgreSQL store directory.
+                   (substitute* '("CMakeLists.txt"
+                                  "cmake/GenerateScripts.cmake"
+                                  "sql/CMakeLists.txt")
+                     (("\\$\\{PG_SHAREDIR\\}/extension")
+                      (string-append #$output "/share/extension")))
+                   ;; Likewise for the library.
+                   (substitute* '("src/CMakeLists.txt"
+                                  "src/loader/CMakeLists.txt")
+                     (("\\$\\{PG_PKGLIBDIR\\}")
+                      (string-append #$output "/lib")))))
+               ;; Run the tests after install to make it easier to create the
+               ;; required PostgreSQL+TimescaleDB filesystem union.
+               (delete 'check)
+               (add-after 'install 'prepare-tests
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((pg-data (string-append (getcwd) "/../pg-data"))
+                         (pg-union (string-append (getcwd) "/../pg-union")))
+                     (match inputs
+                       (((names . directories) ...)
+                        (union-build pg-union (cons #$output directories))))
+                     (setenv "PATH" (string-append pg-union "/bin:"
+                                                   (getenv "PATH")))
+                     (invoke "initdb" "-D" pg-data)
+                     (copy-file "test/postgresql.conf"
+                                (string-append pg-data "/postgresql.conf"))
+                     (invoke "pg_ctl" "-D" pg-data
+                             "-o" (string-append "-k " pg-data)
+                             "-l" (string-append pg-data "/db.log")
+                             "start"))))
+               (add-after 'prepare-tests 'check
+                 (assoc-ref %standard-phases 'check)))))
+    (inputs (list openssl postgresql))
+    (home-page "https://www.timescale.com/")
+    (synopsis "Time-series extension for PostgreSQL")
+    (description
+     "TimescaleDB is an database designed to make SQL scalable for
+time-series data.  It is engineered up from PostgreSQL and packaged as a
+PostgreSQL extension, providing automatic partitioning across time and space
+(partitioning key), as well as full SQL support.")
+    (license license:asl2.0)))
 
 (define-public pgloader
   (package
@@ -2321,6 +2456,55 @@ one-to-one, while still providing an idiomatic interface.")
     (home-page "https://github.com/redis/redis-rb")
     (license license:expat)))
 
+(define-public go-github-com-cupcake-rdb
+  (package
+    (name "go-github-com-cupcake-rdb")
+    (version "0.0.0-20161107195141-43ba34106c76")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/tent/rdb")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1l4bsn5yj8r875crz1rsk6dlvhv0bd8mgazsch5vl4c19v0fs2ib"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/cupcake/rdb"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/tent/rdb")
+    (synopsis "Redis RDB parser for Go")
+    (description
+     "Package rdb implements parsing and encoding of the Redis RDB file format.")
+    (license license:expat)))
+
+(define-public go-github-com-gomodule-redigo
+  (package
+    (name "go-github-com-gomodule-redigo")
+    (version "1.8.8")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/gomodule/redigo")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0wplaaxg7f6c6c08gdp33l48hygn8gq1rhlnjzr1c9qcggsm07k1"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "github.com/gomodule/redigo"
+       #:import-path "github.com/gomodule/redigo/redis"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           redis))
+    (home-page "https://github.com/gomodule/redigo")
+    (synopsis "Go client for Redis")
+    (description
+     "Redigo is a Go client for the Redis database.")
+    (license license:asl2.0)))
+
 (define-public kyotocabinet
   (package
     (name "kyotocabinet")
@@ -2609,6 +2793,34 @@ PostgreSQL database back-end.  The database back-end can be local or it may be
 on another machine, accessed via TCP/IP.")
     (home-page "http://pqxx.org/")
     (license license:bsd-3)))
+
+(define-public go-go-etcd-io-bbolt
+  (package
+    (name "go-go-etcd-io-bbolt")
+    (version "1.3.6")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/etcd-io/bbolt")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0pj5245d417za41j6p09fmkbv05797vykr1bi9a6rnwddh1dbs8d"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "go.etcd.io/bbolt"
+       ;; Extending the test timeout to 30 minutes still times out on aarch64.
+       #:tests? ,(not target-arm?)))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://go.etcd.io/bbolt")
+    (synopsis "Embedded key/value database for Go")
+    (description "Bolt is a pure Go key/value store inspired by Howard Chu's
+LMDB project.  The goal of the project is to provide a simple, fast, and
+reliable database for projects that don't require a full database server such as
+Postgres or MySQL.")
+    (license license:expat)))
 
 (define-public python-peewee
   (package
@@ -2916,6 +3128,30 @@ file format to other databases such as MySQL, Oracle, Sybase, PostgreSQL,
 etc., and an SQL engine for performing simple SQL queries.")
     (license (list license:lgpl2.0
                    license:gpl2+))))
+
+(define-public go-gopkg-in-mgo-v2
+  (package
+    (name "go-gopkg-in-mgo-v2")
+    (version "2.0.0-20190816093944-a6b53ec6cb22")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://gopkg.in/mgo.v2")
+               (commit (go-version->git-ref version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1lgvwxsbmdrf4938qkxl56wbwgbphk2qqnmpf73qdmlv4qsg14na"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:tests? #f      ; Tests try to use a running mongodb server.
+       #:import-path "gopkg.in/mgo.v2"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://gopkg.in/mgo.v2")
+    (synopsis "MongoDB driver for Go")
+    (description "This package provides a MongoDB driver for Go.")
+    (license license:bsd-2)))
 
 (define-public python-lmdb
   (package
@@ -4319,3 +4555,45 @@ a handy text editor with language recognition, and visualize SELECT results in
 a Gtk.Grid Widget.")
     (home-page "https://github.com/Alecaddd/sequeler")
     (license license:gpl2+)))
+
+(define-public sqlitebrowser
+  (package
+    (name "sqlitebrowser")
+    (version "3.12.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sqlitebrowser/sqlitebrowser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ljqzcx388mmni8lv9jz5r58alhsjrrqi4nzjnbfki94rn4ray6z"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "libs/qcustomplot-source/")
+           (delete-file-recursively "libs/qscintilla")))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:configure-flags
+           ;; TODO: Unbundle QHexEdit.
+           #~(list (string-append "-DQSCINTILLA_INCLUDE_DIR="
+                                  #$(this-package-input "qscintilla")
+                                  "/include/Qsci")
+                   "-DFORCE_INTERNAL_QCUSTOMPLOT=OFF"
+                   "-DENABLE_TESTING=ON")))
+    (inputs
+     (list qcustomplot
+           qscintilla
+           qtbase-5
+           sqlite))
+    (native-inputs (list qttools))
+    (home-page "https://sqlitebrowser.org/")
+    (synopsis "Database browser for SQLite")
+    (description "Sqlitebrowser is a high quaility, visual, open source tool to
+create design, and edit database file compatible with SQLite.")
+    (license
+     ;; dual license
+     (list license:gpl3+
+           license:mpl2.0))))

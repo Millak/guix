@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1413,6 +1413,7 @@ importing.* \\(guix config\\) from the host"
 
 (test-assertm "mixed-text-file"
   (mlet* %store-monad ((file ->   (mixed-text-file "mixed"
+                                                   #:guile %bootstrap-guile
                                                    "export PATH="
                                                    %bootstrap-guile "/bin"))
                        (drv       (lower-object file))
@@ -1430,7 +1431,8 @@ importing.* \\(guix config\\) from the host"
   (mlet* %store-monad ((union -> (file-union "union"
                                              `(("a" ,(plain-file "a" "1"))
                                                ("b/c/d" ,(plain-file "d" "2"))
-                                               ("e" ,(plain-file "e" "3")))))
+                                               ("e" ,(plain-file "e" "3")))
+                                             #:guile %bootstrap-guile))
                        (drv      (lower-object union))
                        (out ->   (derivation->output-path drv)))
     (define (contents=? file str)
@@ -1469,7 +1471,8 @@ importing.* \\(guix config\\) from the host"
                        (symlink #$%bootstrap-guile
                                 (string-append #$output "/guile"))
                        (symlink #$text (string-append #$output "/text"))))
-         (computed (computed-file "computed" exp)))
+         (computed (computed-file "computed" exp
+                                  #:guile %bootstrap-guile)))
     (mlet* %store-monad ((text      (lower-object text))
                          (guile-drv (lower-object %bootstrap-guile))
                          (comp-drv  (lower-object computed))
@@ -1504,7 +1507,8 @@ importing.* \\(guix config\\) from the host"
                              (display item port))))))
          (computed (computed-file "computed" exp
                                   #:options
-                                  `(#:references-graphs (("graph" ,pkg)))))
+                                  `(#:references-graphs (("graph" ,pkg)))
+                                  #:guile %bootstrap-guile))
          (drv0     (package-derivation %store pkg #:graft? #t))
          (drv1     (parameterize ((%graft? #t))
                      (run-with-store %store

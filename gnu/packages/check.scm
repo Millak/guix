@@ -35,7 +35,7 @@
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -89,6 +89,45 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1))
+
+(define-public pict
+  (package
+    (name "pict")
+    (version "3.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Microsoft/pict")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1hpff8x49ixlh71sbyhj1rircf0mg95v5q9y0ys52rhiph99wy3n"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "pict" (string-append #$output "/bin"))
+              (install-file "doc/pict.md"
+                            (string-append #$output
+                                           "/share/doc/pict-" #$version)))))))
+    (native-inputs (list perl))
+    (home-page "https://www.pairwise.org/")
+    (synopsis "Pairwise Independent Combinatorial Tool")
+    (description "PICT is a pairwise testing tool that generates test cases
+and test configurations.  With PICT, you can generate tests that are more
+effective than manually generated tests and in a fraction of the time required
+by hands-on test case design.  PICT runs as a command line tool.  It takes a
+model file detailing the parameters of the interface as an input and generates
+a compact set of parameter value choices that represent the test cases you
+should use to get comprehensive combinatorial coverage of your parameters.")
+    (license license:expat)))
 
 (define-public pedansee
   (package
@@ -209,45 +248,46 @@ source code editors and IDEs.")
 (define-public clitest
   (package
     (name "clitest")
-    (version "0.3.0")
+    (version "0.4.0")
     (home-page "https://github.com/aureliojargas/clitest")
     (source (origin
               (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
+              (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zw5wra9hc717srmcar1wm4i34kyj8c49ny4bb7y3nrvkjp2pdb5"))))
+                "1p745mxiq3hgi3ywfljs5sa1psi06awwjxzw0j9c2xx1b09yqv4a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This package is distributed as a single shell script and comes
-         ;; without a proper build system.
-         (delete 'configure)
-         (delete 'build)
-         (replace 'check
-           (lambda _
-             (substitute* "test.md"
-               ;; One test looks for an error from grep in the form "grep: foo",
-               ;; but our grep returns the absolute file name on errors.  Adjust
-               ;; the test to cope with that.
-               (("sed 's/\\^e\\*grep: \\.\\*/")
-                "sed 's/.*e*grep: .*/"))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This package is distributed as a single shell script and comes
+          ;; without a proper build system.
+          (delete 'configure)
+          (delete 'build)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "test.md"
+                  ;; One test looks for an error from grep in the form "grep: foo",
+                  ;; but our grep returns the absolute file name on errors.  Adjust
+                  ;; the test to cope with that.
+                  (("sed 's/\\^e\\*grep: \\.\\*/")
+                   "sed 's/.*e*grep: .*/"))
 
-             (setenv "HOME" "/tmp")
-             (invoke "./clitest" "test.md")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "clitest" (string-append out "/bin"))
-               (install-file "README.md"
-                             (string-append out "/share/doc/clitest-" ,version))
-               #t))))))
+                (setenv "HOME" "/tmp")
+                (invoke "./clitest" "test.md"))))
+          (replace 'install
+            (lambda _
+              (install-file "clitest" (string-append #$output "/bin"))
+              (install-file "README.md"
+                            (string-append #$output "/share/doc/clitest-"
+                                           #$(package-version this-package))))))))
     (native-inputs
      (list perl))                 ;for tests
+    (inputs
+     (list bash-minimal))
     (synopsis "Command line test tool")
     (description
      "@command{clitest} is a portable shell script that performs automatic
@@ -421,7 +461,7 @@ a multi-paradigm automated test framework for C++ and Objective-C.")
 (define-public catch-framework2
   (package
     (name "catch2")
-    (version "2.13.2")
+    (version "2.13.8")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -431,7 +471,7 @@ a multi-paradigm automated test framework for C++ and Objective-C.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "100r0kmra8jmra2hv92lzvwcmphpaiccwvq3lpdsa5b7hailhach"))))
+                "18a6d7rcb6ilhxd5dff32jkfdf2ik58pbywrv04ras70217kdq4c"))))
     (build-system cmake-build-system)
     (inputs
      (list python-wrapper))
@@ -565,15 +605,16 @@ and it supports a very flexible form of test discovery.")
 (define-public doctest
   (package
     (name "doctest")
-    (version "2.4.6")
+    (version "2.4.8")
     (home-page "https://github.com/onqtam/doctest")
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14m3q6d96zg6d99x1152jkly50gdjrn5ylrbhax53pfgfzzc5yqx"))))
+                "057wdkv3gcz42mh1j284sgvm16i5fk1f9b1plgvavca70q4p52gz"))))
     (build-system cmake-build-system)
     (synopsis "C++ test framework")
     (description
@@ -2807,7 +2848,8 @@ portable to just about any platform.")
                         ;; indefinitely.  See README.packagers for more information.
                         ;; There are specific instructions to not enable more flags
                         ;; than absolutely needed.
-                        ,(if (target-ppc64le?)
+                        ,(if (or (target-ppc64le?)
+                                 (target-riscv64?))
                            `(setenv "FAKETIME_COMPILE_CFLAGS"
                                     "-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER")
                            `(setenv "FAKETIME_COMPILE_CFLAGS"

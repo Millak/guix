@@ -389,18 +389,21 @@ without requiring the source code to be rewritten.")
                      "share/guile/site/3.0")))))))
 
 (define-public guile-3.0-latest
-  guile-3.0)
-
-(define-public guile-3.0/libgc-7
-  ;; Using libgc-7 avoid crashes that can occur, particularly when loading
-  ;; data in to the Guix Data Service:
-  ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=40525
-  (hidden-package
-   (package
-     (inherit guile-3.0-latest)
-     (propagated-inputs
-      (modify-inputs (package-propagated-inputs guile-3.0)
-        (replace "bdw-gc" libgc-7))))))
+  (package
+    (inherit guile-3.0)
+    (version "3.0.8")
+    (source (origin
+              (inherit (package-source guile-3.0))
+              (uri (string-append "mirror://gnu/guile/guile-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "04wagg0zr0sib0w9ly5jm91jplgfigzfgmy8fjdlx07jaq50d9ys"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-3.0)
+       ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
+       ;; its multi-stage build process for cross-module inlining.
+       ((#:parallel-build? _ #f) #t)))))
 
 (define-public guile-3.0/fixed
   ;; A package of Guile that's rarely changed.  It is the one used in the

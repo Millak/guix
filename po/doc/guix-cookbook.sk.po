@@ -1,13 +1,13 @@
 # SOME DESCRIPTIVE TITLE
 # Copyright (C) 2021 the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the guix manual package.
-# Marek Felšöci <marek@felsoci.sk>, 2021.
+# Marek Felšöci <marek@felsoci.sk>, 2021, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2021-12-31 15:18+0000\n"
-"PO-Revision-Date: 2021-12-15 00:16+0000\n"
+"PO-Revision-Date: 2022-01-25 15:16+0000\n"
 "Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -172,7 +172,7 @@ msgstr "Ďakujeme!"
 #: guix-git/doc/guix-cookbook.texi:2984
 #, no-wrap
 msgid "GNU Free Documentation License"
-msgstr "GNU Free Documentation License"
+msgstr "Licencia GNU Free Documentation"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:77
@@ -949,13 +949,13 @@ msgstr ""
 "/gnu/store/rzs8wba9ka7grrmgcpfyxvs58mly0sx6-hello-2.10.tar.gz.sig\n"
 "0q0v86n3y38z17rl146gdakw9xc4mcscpk8dscs412j22glrv9jf\n"
 "$ gpg --verify /gnu/store/rzs8wba9ka7grrmgcpfyxvs58mly0sx6-hello-2.10.tar.gz.sig /gnu/store/hbdalsf5lpf01x4dcknwx6xbn6n5km6k-hello-2.10.tar.gz\n"
-"gpg: Signature made Sun 16 Nov 2014 01:08:37 PM CET\n"
-"gpg:                using RSA key A9553245FDE9B739\n"
-"gpg: Good signature from \"Sami Kerola <kerolasa@@iki.fi>\" [unknown]\n"
-"gpg:                 aka \"Sami Kerola (http://www.iki.fi/kerolasa/) <kerolasa@@iki.fi>\" [unknown]\n"
-"gpg: WARNING: This key is not certified with a trusted signature!\n"
-"gpg:          There is no indication that the signature belongs to the owner.\n"
-"Primary key fingerprint: 8ED3 96E3 7E38 D471 A005  30D3 A955 3245 FDE9 B739\n"
+"gpg: Podpis vytvorený Ne 16. november 2014, 13:08:37 CET\n"
+"gpg:                pomocou RSA kľúča A9553245FDE9B739\n"
+"gpg: Dobrý podpis od \"Sami Kerola <kerolasa@@iki.fi>\" neznáme\n"
+"gpg:                 alias \"Sami Kerola (http://www.iki.fi/kerolasa/) <kerolasa@@iki.fi>\" neznáme\n"
+"gpg: VAROVANIE: Tento kľúč nie certifikovaný dôveryhodným podpisom!\n"
+"gpg:          Nič nenaznačuje tomu, že tento podpis patrí vlastníkovi kľúča.\n"
+"Primárny fingerprint kľúča: 8ED3 96E3 7E38 D471 A005  30D3 A955 3245 FDE9 B739\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:530
@@ -1407,67 +1407,7 @@ msgstr ""
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:834
-#, fuzzy, no-wrap
-#| msgid ""
-#| "(define-public my-libgit2\n"
-#| "  (let ((commit \"e98d0a37c93574d2c6107bf7f31140b548c6a7bf\")\n"
-#| "        (revision \"1\"))\n"
-#| "    (package\n"
-#| "      (name \"my-libgit2\")\n"
-#| "      (version (git-version \"0.26.6\" revision commit))\n"
-#| "      (source (origin\n"
-#| "                (method git-fetch)\n"
-#| "                (uri (git-reference\n"
-#| "                      (url \"https://github.com/libgit2/libgit2/\")\n"
-#| "                      (commit commit)))\n"
-#| "                (file-name (git-file-name name version))\n"
-#| "                (sha256\n"
-#| "                 (base32\n"
-#| "                  \"17pjvprmdrx4h6bb1hhc98w9qi6ki7yl57f090n9kbhswxqfs7s3\"))\n"
-#| "                (patches (search-patches \"libgit2-mtime-0.patch\"))\n"
-#| "                (modules '((guix build utils)))\n"
-#| "                (snippet '(begin\n"
-#| "                            ;; Remove bundled software.\n"
-#| "                            (delete-file-recursively \"deps\")\n"
-#| "                            #true))))\n"
-#| "      (build-system cmake-build-system)\n"
-#| "      (outputs '(\"out\" \"debug\"))\n"
-#| "      (arguments\n"
-#| "       `(#:tests? #true                         ; Run the test suite (this is the default)\n"
-#| "         #:configure-flags '(\"-DUSE_SHA1DC=ON\") ; SHA-1 collision detection\n"
-#| "         #:phases\n"
-#| "         (modify-phases %standard-phases\n"
-#| "           (add-after 'unpack 'fix-hardcoded-paths\n"
-#| "             (lambda _\n"
-#| "               (substitute* \"tests/repo/init.c\"\n"
-#| "                 ((\"#!/bin/sh\") (string-append \"#!\" (which \"sh\"))))\n"
-#| "               (substitute* \"tests/clar/fs.h\"\n"
-#| "                 ((\"/bin/cp\") (which \"cp\"))\n"
-#| "                 ((\"/bin/rm\") (which \"rm\")))\n"
-#| "               #true))\n"
-#| "           ;; Run checks more verbosely.\n"
-#| "           (replace 'check\n"
-#| "             (lambda _ (invoke \"./libgit2_clar\" \"-v\" \"-Q\")))\n"
-#| "           (add-after 'unpack 'make-files-writable-for-tests\n"
-#| "             (lambda _ (for-each make-file-writable (find-files \".\" \".*\")))))))\n"
-#| "      (inputs\n"
-#| "       `((\"libssh2\" ,libssh2)\n"
-#| "         (\"http-parser\" ,http-parser)\n"
-#| "         (\"python\" ,python-wrapper)))\n"
-#| "      (native-inputs\n"
-#| "       `((\"pkg-config\" ,pkg-config)))\n"
-#| "      (propagated-inputs\n"
-#| "       ;; These two libraries are in 'Requires.private' in libgit2.pc.\n"
-#| "       `((\"openssl\" ,openssl)\n"
-#| "         (\"zlib\" ,zlib)))\n"
-#| "      (home-page \"https://libgit2.github.com/\")\n"
-#| "      (synopsis \"Library providing Git core methods\")\n"
-#| "      (description\n"
-#| "       \"Libgit2 is a portable, pure C implementation of the Git core methods\n"
-#| "provided as a re-entrant linkable library with a solid API, allowing you to\n"
-#| "write native speed custom Git applications in any language with bindings.\")\n"
-#| "      ;; GPLv2 with linking exception\n"
-#| "      (license license:gpl2))))\n"
+#, no-wrap
 msgid ""
 "(define-public my-libgit2\n"
 "  (let ((commit \"e98d0a37c93574d2c6107bf7f31140b548c6a7bf\")\n"
@@ -1540,15 +1480,13 @@ msgstr ""
 "                  \"17pjvprmdrx4h6bb1hhc98w9qi6ki7yl57f090n9kbhswxqfs7s3\"))\n"
 "                (patches (search-patches \"libgit2-mtime-0.patch\"))\n"
 "                (modules '((guix build utils)))\n"
-"                (snippet '(begin\n"
-"                            ;; Remove bundled software.\n"
-"                            (delete-file-recursively \"deps\")\n"
-"                            #true))))\n"
+"                ;; Odstrániť pribalený softvér.\n"
+"                (snippet '(delete-file-recursively \"deps\"))))\n"
 "      (build-system cmake-build-system)\n"
 "      (outputs '(\"out\" \"debug\"))\n"
 "      (arguments\n"
-"       `(#:tests? #true                         ; Run the test suite (this is the default)\n"
-"         #:configure-flags '(\"-DUSE_SHA1DC=ON\") ; SHA-1 collision detection\n"
+"       `(#:tests? #true                         ; Preveriť výsledok zostavenia (predvolené).\n"
+"         #:configure-flags '(\"-DUSE_SHA1DC=ON\") ; Zisťovanie rozporov v odtlačkoch SHA-1\n"
 "         #:phases\n"
 "         (modify-phases %standard-phases\n"
 "           (add-after 'unpack 'fix-hardcoded-paths\n"
@@ -1557,30 +1495,26 @@ msgstr ""
 "                 ((\"#!/bin/sh\") (string-append \"#!\" (which \"sh\"))))\n"
 "               (substitute* \"tests/clar/fs.h\"\n"
 "                 ((\"/bin/cp\") (which \"cp\"))\n"
-"                 ((\"/bin/rm\") (which \"rm\")))\n"
-"               #true))\n"
-"           ;; Run checks more verbosely.\n"
+"                 ((\"/bin/rm\") (which \"rm\")))))\n"
+"           ;; Bohatší výstup pri preverovaní zostavenia\n"
 "           (replace 'check\n"
 "             (lambda _ (invoke \"./libgit2_clar\" \"-v\" \"-Q\")))\n"
 "           (add-after 'unpack 'make-files-writable-for-tests\n"
 "             (lambda _ (for-each make-file-writable (find-files \".\" \".*\")))))))\n"
 "      (inputs\n"
-"       `((\"libssh2\" ,libssh2)\n"
-"         (\"http-parser\" ,http-parser)\n"
-"         (\"python\" ,python-wrapper)))\n"
+"       (list libssh2 http-parser python-wrapper))\n"
 "      (native-inputs\n"
-"       `((\"pkg-config\" ,pkg-config)))\n"
+"       (list pkg-config))\n"
 "      (propagated-inputs\n"
-"       ;; These two libraries are in 'Requires.private' in libgit2.pc.\n"
-"       `((\"openssl\" ,openssl)\n"
-"         (\"zlib\" ,zlib)))\n"
+"       ;; Tieto dve knižnice sa nachádzajú v „Requires.private“ v libgit2.pc.\n"
+"       (list openssl zlib))\n"
 "      (home-page \"https://libgit2.github.com/\")\n"
 "      (synopsis \"Library providing Git core methods\")\n"
 "      (description\n"
 "       \"Libgit2 is a portable, pure C implementation of the Git core methods\n"
 "provided as a re-entrant linkable library with a solid API, allowing you to\n"
 "write native speed custom Git applications in any language with bindings.\")\n"
-"      ;; GPLv2 with linking exception\n"
+"      ;; GPLv2 s odkazovou výnimkou\n"
 "      (license license:gpl2))))\n"
 
 #. type: Plain text
@@ -1685,7 +1619,7 @@ msgstr "Vyžadované pri zostavovaní ale nie pri spúšťaní. V prípade inšt
 #: guix-git/doc/guix-cookbook.texi:895
 #, no-wrap
 msgid "inputs"
-msgstr "inputs"
+msgstr "vstupy"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:898
@@ -1727,12 +1661,12 @@ msgstr "Rovnako to platí aj pre @emph{native-inputs}: po inštalácii programu 
 #: guix-git/doc/guix-cookbook.texi:922 guix-git/doc/guix-cookbook.texi:1892
 #, no-wrap
 msgid "Note"
-msgstr ""
+msgstr "Poznámka"
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:925
 msgid "You may see here and there snippets where package inputs are written quite differently, like so:"
-msgstr ""
+msgstr "Tu a tam nájdete úryvky, v ktorých sú vstupy zapísané pomerne odlišne, teda asi takto:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:932
@@ -1744,11 +1678,16 @@ msgid ""
 "   (\"http-parser\" ,http-parser)\n"
 "   (\"python\" ,python-wrapper)))\n"
 msgstr ""
+";; „Pôvodný tvar“ zápisu vstupov\n"
+"(inputs\n"
+" `((\"libssh2\" ,libssh2)\n"
+"   (\"http-parser\" ,http-parser)\n"
+"   (\"python\" ,python-wrapper)))\n"
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:938
 msgid "This is the ``old style'', where each input in the list is explicitly given a label (a string).  It is still supported but we recommend using the style above instead.  @xref{package Reference,,, guix, GNU Guix Reference Manual}, for more info."
-msgstr ""
+msgstr "Toto je „pôvodný tvar“, v ktorom má každá položka zoznamu vstupov pridelenú menovku (reťazec).  Tento tvar je stále podporovaný ale odporúčame vám používať už len vyššie uvedený tvar.  Viď @xref{package Reference,,, guix, GNU Guix Reference Manual} pre viac podrobností."
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:940
@@ -2006,7 +1945,7 @@ msgstr "@code{(delete @var{krok})}."
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1086
 msgid "The @var{procedure} supports the keyword arguments @code{inputs} and @code{outputs}.  Each input (whether @emph{native}, @emph{propagated} or not) and output directory is referenced by their name in those variables.  Thus @code{(assoc-ref outputs \"out\")} is the store directory of the main output of the package.  A phase procedure may look like this:"
-msgstr ""
+msgstr "@var{Funkcia} podporuje parametre @code{inputs} a @code{outputs} v tvare kľúčových slov.  Každý vstup (či už @emph{pôvodný}, @emph{rozšírený} alebo nie) a výstupný priečinok je označený svojim názvom v týchto premenných.  Takže @code{(assoc-ref outputs \"out\")} predstavuje priečinok úložiska hlavného výstupu balíka.  Funkcia kroku vyzerá nasledovne:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1094
@@ -2019,211 +1958,217 @@ msgid ""
 "    ;; ...\n"
 "    #true))\n"
 msgstr ""
+"(lambda* (#:key inputs outputs #:allow-other-keys)\n"
+"  (let ((bash-directory (assoc-ref inputs \"bash\"))\n"
+"        (output-directory (assoc-ref outputs \"out\"))\n"
+"        (doc-directory (assoc-ref outputs \"doc\")))\n"
+"    ;; ...\n"
+"    #true))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1100
 msgid "The procedure must return @code{#true} on success.  It's brittle to rely on the return value of the last expression used to tweak the phase because there is no guarantee it would be a @code{#true}.  Hence the trailing @code{#true} to ensure the right value is returned on success."
-msgstr ""
+msgstr "Funkcia musí po úspešnom vykonaní vrátiť @code{#true}.  Nie je veľmi spoľahlivé opierať sa o návratovú hodnotu posledného výrazu keďže nie je isté, že to bude práve @code{#true}.  Koncové @code{#true} zaisťuje, že bude po úspešnom vykonaní vrátená správna hodnota."
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:1101
 #, no-wrap
 msgid "Code staging"
-msgstr ""
+msgstr "Oddialené vykonanie"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1107
 msgid "The astute reader may have noticed the quasi-quote and comma syntax in the argument field.  Indeed, the build code in the package declaration should not be evaluated on the client side, but only when passed to the Guix daemon.  This mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}."
-msgstr ""
+msgstr "Ak ste boli pozorní, mohli ste si všimnúť obrátenú úvodzovku a čiarku v poli parametrov.  Vskutku, zdrojový kód zostavenia v zadaní balíka by sa nemal vykonávať na strane klienta, ale až vtedy, keď sa odovzdá démonovi Guixu.  Toto odovzdávanie zdrojového kódu medzi dvoma procesmi nazývame @uref{https://arxiv.org/abs/1709.00833, oddialené vykonanie}."
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:1108
 #, no-wrap
 msgid "Utility functions"
-msgstr ""
+msgstr "Pomocné funkcie"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1113
 msgid "When customizing @code{phases}, we often need to write code that mimics the equivalent system invocations (@code{make}, @code{mkdir}, @code{cp}, etc.)@: commonly used during regular ``Unix-style'' installations."
-msgstr ""
+msgstr "Pri prispôsobovaní @code{phases} budete často potrebovať funkcie zodpovedajúce systémovým volaniam (@code{make}, @code{mkdir}, @code{cp}, atď.), ktoré sú zvyčajne dostupné na Unixových systémoch."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1116
 msgid "Some like @code{chmod} are native to Guile.  @xref{,,, guile, Guile reference manual} for a complete list."
-msgstr ""
+msgstr "Niektoré z nich, ako napríklad @code{chmod}, sú priamo dostupné v jazyku Guile.  Viď úplný zoznam v @xref{,,, guile, Guile reference manual}."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1119
 msgid "Guix provides additional helper functions which prove especially handy in the context of package management."
-msgstr ""
+msgstr "Guix poskytuje ďalšie pomocné funkcie, užitočné najmä v súvislosti so správou balíkov."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1123
 msgid "Some of those functions can be found in @samp{$GUIX_CHECKOUT/guix/guix/build/utils.scm}.  Most of them mirror the behaviour of the traditional Unix system commands:"
-msgstr ""
+msgstr "Niektoré z týchto funkcií sa nachádzajú v @samp{$GUIX_CHECKOUT/guix/guix/build/utils.scm}.  Väčšinou napodobňujú správanie pôvodných Unixových systémových príkazov:"
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1125
 #, no-wrap
 msgid "which"
-msgstr ""
+msgstr "which"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1127
 msgid "Like the @samp{which} system command."
-msgstr ""
+msgstr "Rovnaká ako systémový príkaz @samp{which}."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1127
 #, no-wrap
 msgid "find-files"
-msgstr ""
+msgstr "find-files"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1129
 msgid "Akin to the @samp{find} system command."
-msgstr ""
+msgstr "Podobná príkazu @samp{find}."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1129
 #, no-wrap
 msgid "mkdir-p"
-msgstr ""
+msgstr "mkdir-p"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1131
 msgid "Like @samp{mkdir -p}, which creates all parents as needed."
-msgstr ""
+msgstr "Rovnaká ako príkaz @samp{mkdir -p}, ktorý v prípade potreby vytvorí aj všetky nadradené priečinky."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1131
 #, no-wrap
 msgid "install-file"
-msgstr ""
+msgstr "install-file"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1135
 msgid "Similar to @samp{install} when installing a file to a (possibly non-existing) directory.  Guile has @code{copy-file} which works like @samp{cp}."
-msgstr ""
+msgstr "Podobná ako príkaz @samp{install} na inštaláciu súboru do priečinka (aj nejestvujúceho). Guile má funkciu @code{copy-file}, ktorá funguje ako príkaz @samp{cp}."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1135
 #, no-wrap
 msgid "copy-recursively"
-msgstr ""
+msgstr "copy-recursively"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1137
 msgid "Like @samp{cp -r}."
-msgstr ""
+msgstr "Ako @samp{cp -r}."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1137
 #, no-wrap
 msgid "delete-file-recursively"
-msgstr ""
+msgstr "delete-file-recursively"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1139
 msgid "Like @samp{rm -rf}."
-msgstr ""
+msgstr "Ako @samp{rm -rf}."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1139
 #, no-wrap
 msgid "invoke"
-msgstr ""
+msgstr "invoke"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1141
 msgid "Run an executable.  This should be used instead of @code{system*}."
-msgstr ""
+msgstr "Vyvolať spustiteľný súbor.  Toto by ste mali používať namiesto @code{system*}."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1141
 #, no-wrap
 msgid "with-directory-excursion"
-msgstr ""
+msgstr "with-directory-excursion"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1144
 msgid "Run the body in a different working directory, then restore the previous working directory."
-msgstr ""
+msgstr "Vykoná telo funkcie v odlišnom pracovnom priečinku a následne obnoví pôvodný pracovný priečinok."
 
 #. type: item
 #: guix-git/doc/guix-cookbook.texi:1144
 #, no-wrap
 msgid "substitute*"
-msgstr ""
+msgstr "substitute*"
 
 #. type: table
 #: guix-git/doc/guix-cookbook.texi:1146
 msgid "A ``@command{sed}-like'' function."
-msgstr ""
+msgstr "Funkcia podobná príkazu @command{sed}."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1150
 msgid "@xref{Build Utilities,,, guix, GNU Guix Reference Manual}, for more information on these utilities."
-msgstr ""
+msgstr "Viď @xref{Build Utilities,,, guix, GNU Guix Reference Manual} pre viac podrobností o pomocných funkciách."
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:1151
 #, no-wrap
 msgid "Module prefix"
-msgstr ""
+msgstr "Predpony modulov"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1161
 msgid "The license in our last example needs a prefix: this is because of how the @code{license} module was imported in the package, as @code{#:use-module ((guix licenses)  #:prefix license:)}.  The Guile module import mechanism (@pxref{Using Guile Modules,,, guile, Guile reference manual})  gives the user full control over namespacing: this is needed to avoid clashes between, say, the @samp{zlib} variable from @samp{licenses.scm} (a @emph{license} value) and the @samp{zlib} variable from @samp{compression.scm} (a @emph{package} value)."
-msgstr ""
+msgstr "Licencia v našom predošlom príklade je uvedená s predponou vzhľadom na spôsob akým bol načítaný modul @code{licenses} v tomto balíku: @code{#:use-module ((guix licenses) #:prefix license:)}.  Spôsob načítavania modulov v Guile (@pxref{Using Guile Modules,,, guile, Guile reference manual}) používateľovi dáva úplnú kontrolu nad menným priestorom.  Môže sa tak predísť rozporom, povedzme, medzi premennou @samp{zlib} zo súboru @samp{licenses.scm} (názov @emph{licencie}) a premennou @samp{zlib} zo súboru @samp{compression.scm} (názov @emph{balíka})."
 
 #. type: subsection
 #: guix-git/doc/guix-cookbook.texi:1162 guix-git/doc/guix-cookbook.texi:1163
 #, no-wrap
 msgid "Other build systems"
-msgstr ""
+msgstr "Ďalšie zostavovacie systémy"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1170
 msgid "What we've seen so far covers the majority of packages using a build system other than the @code{trivial-build-system}.  The latter does not automate anything and leaves you to build everything manually.  This can be more demanding and we won't cover it here for now, but thankfully it is rarely necessary to fall back on this system."
-msgstr ""
+msgstr "To čo sme doteraz videli pokrýva väčšinu balíkov využívajúcich iný zostavovací systém ako je @code{trivial-build-system}, ktorý nič neautomatizuje a nechá vás všetko zostaviť ručne.  Tento postup môže byť náročnejší a zatiaľ sa tu ním nebudeme zaoberať.  Našťastie je nutné uchýliť sa k nemu len zriedkavo."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1174
 msgid "For the other build systems, such as ASDF, Emacs, Perl, Ruby and many more, the process is very similar to the GNU build system except for a few specialized arguments."
-msgstr ""
+msgstr "Pri ostatných zostavovacích systémoch, ako sú ASDF, Emacs, Perl, Ruby a mnoho ďalších, je postup, okrem niekoľkých zvláštnych parametrov, veľmi podobný zostavovaciemu systému GNU."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1179
 msgid "@xref{Build Systems,,, guix, GNU Guix Reference Manual}, for more information on build systems, or check the source code in the @samp{$GUIX_CHECKOUT/guix/build} and @samp{$GUIX_CHECKOUT/guix/build-system} directories."
-msgstr ""
+msgstr "Viď @xref{Build Systems,,, guix, GNU Guix Reference Manual} alebo zdrojový kód v priečinkoch @samp{$GUIX_CHECKOUT/guix/build} a @samp{$GUIX_CHECKOUT/guix/build-system} pre viac podrobností o zostavovacích systémoch."
 
 #. type: subsection
 #: guix-git/doc/guix-cookbook.texi:1180 guix-git/doc/guix-cookbook.texi:1181
 #, no-wrap
 msgid "Programmable and automated package definition"
-msgstr ""
+msgstr "Programovateľné a automatické zadávanie balíkov"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1185
 msgid "We can't repeat it enough: having a full-fledged programming language at hand empowers us in ways that reach far beyond traditional package management."
-msgstr ""
+msgstr "Nemôžme to nezdôrazniť: mať po ruke plnohodnotný programovací jazyk nám umožňuje oveľa viac než len bežnú správu balíkov."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1187
 msgid "Let's illustrate this with some awesome features of Guix!"
-msgstr ""
+msgstr "Ukážme si to na príklade niekoľkých úžasných súčastí Guixu!"
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:1188 guix-git/doc/guix-cookbook.texi:1189
 #, no-wrap
 msgid "Recursive importers"
-msgstr ""
+msgstr "Rekurzívne nahrávače"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1196
 msgid "You might find some build systems good enough that there is little to do at all to write a package, to the point that it becomes repetitive and tedious after a while.  A @emph{raison d'être} of computers is to replace human beings at those boring tasks.  So let's tell Guix to do this for us and create the package definition of an R package from CRAN (the output is trimmed for conciseness):"
-msgstr ""
+msgstr "Niektoré zostavovacie systémy sú natoľko dobré, že toho na zadanie balíka ani veľa netreba, a to až do takej miery, že sa vám zadávanie balíkov rýchlo zunuje.  Jedným z dôvodov bytia počítačov je nahradiť ľudí pri vykonávaní týchto nudných činností.  Nechajme teda Guix urobiť to za nás a vytvoriť zadanie nejakého balíka R pochádzajúceho z CRANu (výstup bol skrátený pre ušetrenie miesta):"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1199
@@ -2232,6 +2177,8 @@ msgid ""
 "$ guix import cran --recursive walrus\n"
 "\n"
 msgstr ""
+"$ guix import cran --recursive walrus\n"
+"\n"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1203
@@ -2242,6 +2189,10 @@ msgid ""
 "    (license gpl2+)))\n"
 "\n"
 msgstr ""
+"(define-public r-mc2d\n"
+"    ; ...\n"
+"    (license gpl2+)))\n"
+"\n"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1207
@@ -2252,6 +2203,10 @@ msgid ""
 "    (license gpl2+)))\n"
 "\n"
 msgstr ""
+"(define-public r-jmvcore\n"
+"    ; ...\n"
+"    (license gpl2+)))\n"
+"\n"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1211
@@ -2262,6 +2217,10 @@ msgid ""
 "    (license gpl3)))\n"
 "\n"
 msgstr ""
+"(define-public r-wrs2\n"
+"    ; ...\n"
+"    (license gpl3)))\n"
+"\n"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1237
@@ -2293,55 +2252,80 @@ msgid ""
 "'Introduction to Robust Estimation & Hypothesis Testing'.\")\n"
 "    (license gpl3)))\n"
 msgstr ""
+"(define-public r-walrus\n"
+"  (package\n"
+"    (name \"r-walrus\")\n"
+"    (version \"1.0.3\")\n"
+"    (source\n"
+"      (origin\n"
+"        (method url-fetch)\n"
+"        (uri (cran-uri \"walrus\" version))\n"
+"        (sha256\n"
+"          (base32\n"
+"            \"1nk2glcvy4hyksl5ipq2mz8jy4fss90hx6cq98m3w96kzjni6jjj\"))))\n"
+"    (build-system r-build-system)\n"
+"    (propagated-inputs\n"
+"      (list r-ggplot2 r-jmvcore r-r6 r-wrs2))\n"
+"    (home-page \"https://github.com/jamovi/walrus\")\n"
+"    (synopsis \"Robust Statistical Methods\")\n"
+"    (description\n"
+"      \"This package provides a toolbox of common robust statistical\n"
+"tests, including robust descriptives, robust t-tests, and robust ANOVA.\n"
+"It is also available as a module for 'jamovi' (see\n"
+"<https://www.jamovi.org> for more information).  Walrus is based on the\n"
+"WRS2 package by Patrick Mair, which is in turn based on the scripts and\n"
+"work of Rand Wilcox.  These analyses are described in depth in the book\n"
+"'Introduction to Robust Estimation & Hypothesis Testing'.\")\n"
+"    (license gpl3)))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1241
 msgid "The recursive importer won't import packages for which Guix already has package definitions, except for the very first."
-msgstr ""
+msgstr "Rekurzívny nahrávač nahrá len balíky, pre ktoré Guix ešte nemá zadanie, okrem úplne prvého."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1246
 msgid "Not all applications can be packaged this way, only those relying on a select number of supported systems.  Read about the full list of importers in the guix import section of the manual (@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual})."
-msgstr ""
+msgstr "Takto vytvoriť zadania balíkov nie je možné pre všetky aplikácie, iba pre tie, ktoré sa opierajú o vybraný počet podporovaných systémov.  Viď úplný zoznam nahrávačov v príslušnom oddiele príručky (@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual})."
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:1247 guix-git/doc/guix-cookbook.texi:1248
 #, no-wrap
 msgid "Automatic update"
-msgstr ""
+msgstr "Automatické aktualizácie"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1252
 msgid "Guix can be smart enough to check for updates on systems it knows.  It can report outdated package definitions with"
-msgstr ""
+msgstr "Guix môže byť dostatočne múdry na to, aby vyhľadal aktualizácie v systémoch, ktoré pozná.  To, ktoré balíky sú zastarané možno zistiť pomocou"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1255
 #, no-wrap
 msgid "$ guix refresh hello\n"
-msgstr ""
+msgstr "$ guix refresh hello\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1260
 msgid "In most cases, updating a package to a newer version requires little more than changing the version number and the checksum.  Guix can do that automatically as well:"
-msgstr ""
+msgstr "Vo väčšine prípadov vyžaduje aktualizácia balíka na novšiu verziu len o niečo viac ako zmeniť číslo verzie a kontrolný súčet.  Aj toto môže Guix vykonať automaticky:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1263
 #, no-wrap
 msgid "$ guix refresh hello --update\n"
-msgstr ""
+msgstr "$ guix refresh hello --update\n"
 
 #. type: subsubsection
 #: guix-git/doc/guix-cookbook.texi:1265 guix-git/doc/guix-cookbook.texi:1266
 #, no-wrap
 msgid "Inheritance"
-msgstr ""
+msgstr "Dedičnosť"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1270
 msgid "If you've started browsing the existing package definitions, you might have noticed that a significant number of them have a @code{inherit} field:"
-msgstr ""
+msgstr "Ak ste si už začali prezerať zadania jestvujúcich balíkov, možno ste si všimli, že niektoré z nich obsahujú pole @code{inherit}:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1285
@@ -2361,178 +2345,191 @@ msgid ""
 "                \"17fpahgh5dyckgz7rwqvzgnhx53cx9kr2xw0szprc6bnqy977fi8\"))))\n"
 "    (native-inputs (list `(,gtk+ \"bin\")))))\n"
 msgstr ""
+"(define-public adwaita-icon-theme\n"
+"  (package (inherit gnome-icon-theme)\n"
+"    (name \"adwaita-icon-theme\")\n"
+"    (version \"3.26.1\")\n"
+"    (source (origin\n"
+"              (method url-fetch)\n"
+"              (uri (string-append \"mirror://gnome/sources/\" name \"/\"\n"
+"                                  (version-major+minor version) \"/\"\n"
+"                                  name \"-\" version \".tar.xz\"))\n"
+"              (sha256\n"
+"               (base32\n"
+"                \"17fpahgh5dyckgz7rwqvzgnhx53cx9kr2xw0szprc6bnqy977fi8\"))))\n"
+"    (native-inputs (list `(,gtk+ \"bin\")))))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1290
 msgid "All unspecified fields are inherited from the parent package.  This is very convenient to create alternative packages, for instance with different source, version or compilation options."
-msgstr ""
+msgstr "Všetky neupresnené polia sú zdedené z nadradeného balíka.  Je to veľmi užitočné na vytváranie obmien balíkov, napr. s odlišným zdrojom, verziou alebo voľbami zostavenia."
 
 #. type: subsection
 #: guix-git/doc/guix-cookbook.texi:1291 guix-git/doc/guix-cookbook.texi:1292
 #, no-wrap
 msgid "Getting help"
-msgstr ""
+msgstr "Získavanie pomoci"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1298
 msgid "Sadly, some applications can be tough to package.  Sometimes they need a patch to work with the non-standard file system hierarchy enforced by the store.  Sometimes the tests won't run properly.  (They can be skipped but this is not recommended.)  Other times the resulting package won't be reproducible."
-msgstr ""
+msgstr "Nanešťastie, zadanie balíka môže byť pre niektoré aplikácie veľmi zložité.  Niekedy je potrebná záplata, aby mohla aplikácia fungovať v neobyčajnom systéme súborov úložiska. Niekedy sa zase sústava testov nespúšťa správne (môžete ich preskočiť ale neodporúča sa to).  Inokedy nie je výsledný balík opakovateľný."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1301
 msgid "Should you be stuck, unable to figure out how to fix any sort of packaging issue, don't hesitate to ask the community for help."
-msgstr ""
+msgstr "Keď už neviete ako ďalej a nie ste schopní prísť na to, ako vyriešiť nejakú ťažkosť so zadávaním balíka, neváhajte požiadať o pomoc spoločenstvo."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1303
 msgid "See the @uref{https://www.gnu.org/software/guix/contact/, Guix homepage} for information on the mailing lists, IRC, etc."
-msgstr ""
+msgstr "Viď @uref{https://www.gnu.org/software/guix/contact/, Guix homepage} pre podrobnosti o elektronických konferenciách, IRC, atď."
 
 #. type: subsection
 #: guix-git/doc/guix-cookbook.texi:1304 guix-git/doc/guix-cookbook.texi:1305
 #, no-wrap
 msgid "Conclusion"
-msgstr ""
+msgstr "Záver"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1311
 msgid "This tutorial was a showcase of the sophisticated package management that Guix boasts.  At this point we have mostly restricted this introduction to the @code{gnu-build-system} which is a core abstraction layer on which more advanced abstractions are based."
-msgstr ""
+msgstr "Tento návod vám predviedol vyumelkovanú správu balíkov, ktorou sa Guix chváli.  V tejto chvíli sme tento úvod zúžili na @code{gnu-build-system} predstavujúci ústrednú abstrakčnú vrstvu, na ktorej sú založené pokročilejšie abstrakčné vrstvy."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1316
 msgid "Where do we go from here? Next we ought to dissect the innards of the build system by removing all abstractions, using the @code{trivial-build-system}: this should give us a thorough understanding of the process before investigating some more advanced packaging techniques and edge cases."
-msgstr ""
+msgstr "Kam teraz? Ďalej by sme si mali posvietiť na vnútorné fungovanie zostavovacích systémov vynechajúc všetky abstrakčné vrstvy prostredníctvom @code{trivial-build-system}. Malo by nám to umožniť lepšie porozumieť postupu zostavenia, skôr ako sa dostaneme k pokročilejším postupom a výnimkám."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1319
 msgid "Other features worth exploring are the interactive editing and debugging capabilities of Guix provided by the Guile REPL@."
-msgstr ""
+msgstr "Ďalšie funkcie, ktoré sa oplatí preskúmať, sú interaktívna úprava a možnosti ladenia Guixu poskytované cez Guile REPL@."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1324
 msgid "Those fancy features are completely optional and can wait; now is a good time to take a well-deserved break.  With what we've introduced here you should be well armed to package lots of programs.  You can get started right away and hopefully we will see your contributions soon!"
-msgstr ""
+msgstr "Tieto pokročilé funkcie sú len doplnkové a môžu počkať. Teraz je ten správny čas na zaslúženú prestávku.  S tým, čo sme si ukázali, by ste si mali vystačiť pri zadávaní balíkov pre mnoho programov.  Môžete sa do toho hneď pustiť a dúfame, že nás vašim príspevkom potešíte už čoskoro!"
 
 #. type: subsection
 #: guix-git/doc/guix-cookbook.texi:1325 guix-git/doc/guix-cookbook.texi:1326
 #, no-wrap
 msgid "References"
-msgstr ""
+msgstr "Odkazy"
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:1331
 msgid "The @uref{https://www.gnu.org/software/guix/manual/en/html_node/Defining-Packages.html, package reference in the manual}"
-msgstr ""
+msgstr "@uref{https://www.gnu.org/software/guix/manual/en/html_node/Defining-Packages.html, odvolávka na „package“ v príručke}"
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:1334
 msgid "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotr’s hacking guide to GNU Guix}"
-msgstr ""
+msgstr "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotrova príručka na prispôsobenie GNU Guix}"
 
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:1337
 msgid "@uref{https://www.gnu.org/software/guix/guix-ghm-andreas-20130823.pdf, ``GNU Guix: Package without a scheme!''}, by Andreas Enge"
-msgstr ""
+msgstr "@uref{https://www.gnu.org/software/guix/guix-ghm-andreas-20130823.pdf, „GNU Guix: Package without a scheme!“}, od Andreasa Engeho"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1346
 msgid "Guix offers a flexible language for declaratively configuring your Guix System.  This flexibility can at times be overwhelming.  The purpose of this chapter is to demonstrate some advanced configuration concepts."
-msgstr ""
+msgstr "Guix ponúka všestranný jazyk na deklaratívne nastavenie vášho systému Guix.  Táto všestrannosť sa môže niekedy zdať nadmerná.  Účelom tohto oddielu je predstaviť niektoré pokročilé spôsoby nastavenia."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1349
 msgid "@pxref{System Configuration,,, guix, GNU Guix Reference Manual} for a complete reference."
-msgstr ""
+msgstr "Viď úplnú odvolávku v @pxref{System Configuration,,, guix, GNU Guix Reference Manual}."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:1360 guix-git/doc/guix-cookbook.texi:1645
 #: guix-git/doc/guix-cookbook.texi:1646
 #, no-wrap
 msgid "Guix System Image API"
-msgstr ""
+msgstr "API pre vytváranie obrazov systému Guix"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:1360
 msgid "Customizing images to target specific platforms."
-msgstr ""
+msgstr "Prispôsobenie obrazov nezvyčajným platformám."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:1360 guix-git/doc/guix-cookbook.texi:1856
 #: guix-git/doc/guix-cookbook.texi:1857
 #, no-wrap
 msgid "Connecting to Wireguard VPN"
-msgstr ""
+msgstr "Pripojenie k Wireguard VPN"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:1360
 msgid "Connecting to a Wireguard VPN."
-msgstr ""
+msgstr "Pripojenie k Wireguard VPN sieti."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:1360 guix-git/doc/guix-cookbook.texi:1933
 #: guix-git/doc/guix-cookbook.texi:1934
 #, no-wrap
 msgid "Customizing a Window Manager"
-msgstr ""
+msgstr "Prispôsobenie správcu okien"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:1360
 msgid "Handle customization of a Window manager on Guix System."
-msgstr ""
+msgstr "Spravovať prispôsobenie správcu okien v systéme Guix."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:1360 guix-git/doc/guix-cookbook.texi:2024
 #: guix-git/doc/guix-cookbook.texi:2025
 #, no-wrap
 msgid "Running Guix on a Linode Server"
-msgstr ""
+msgstr "Spúšťanie Guixu na serveri Linode"
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:1360 guix-git/doc/guix-cookbook.texi:2267
 #: guix-git/doc/guix-cookbook.texi:2268
 #, no-wrap
 msgid "Setting up a bind mount"
-msgstr ""
+msgstr "Nastavenie podvojného pripojenia"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:1360
 msgid "Setting up a bind mount in the file-systems definition."
-msgstr ""
+msgstr "Nastavenie podvojného pripojenia v zadaní systému súborov."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:1360 guix-git/doc/guix-cookbook.texi:2316
 #: guix-git/doc/guix-cookbook.texi:2317
 #, no-wrap
 msgid "Getting substitutes from Tor"
-msgstr ""
+msgstr "Získavanie náhrad prostredníctvom Tor"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:1360
 msgid "Configuring Guix daemon to get substitutes through Tor."
-msgstr ""
+msgstr "Nastavenie démona Guix na získavanie náhrad cez Tor."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:1360 guix-git/doc/guix-cookbook.texi:2378
 #: guix-git/doc/guix-cookbook.texi:2379
 #, no-wrap
 msgid "Setting up NGINX with Lua"
-msgstr ""
+msgstr "Nastavenia NGINX a Lua"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:1360
 msgid "Configuring NGINX web-server to load Lua modules."
-msgstr ""
+msgstr "Nastavenie web-servera NGINX na načítavanie Lua modulov."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1372
 msgid "While the Guix manual explains auto-login one user to @emph{all} TTYs ( @pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), some might prefer a situation, in which one user is logged into one TTY with the other TTYs either configured to login different users or no one at all.  Note that one can auto-login one user to any TTY, but it is usually advisable to avoid @code{tty1}, which, by default, is used to log warnings and errors."
-msgstr ""
+msgstr "Zatiaľ čo príručka pre Guix popisuje automatické prihlásenie jedného používateľa ku @emph{všetkým} TTY (@pxref{auto-login to TTY,,, guix, GNU Guix Reference Manual}), mohli by ste uprednostňovať stav, keď je jeden používateľ pripojený k jednému TTY a ostatné TTY sú nastavené na prihlasovanie ďalších používateľov alebo nikoho.  Všimnite si, že jedného používateľa je možné automaticky prihlásiť k akémukoľvek TTY. Avšak, je lepšie vynechať @code{tty1}, ktorý je predvolene využívaný na zobrazovanie varovaných a chybových hlásení."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1374
 msgid "Here is how one might set up auto login for one user to one tty:"
-msgstr ""
+msgstr "Takto je možné nastaviť automatické prihlásenie jedného používateľa k jednému TTY:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1382
@@ -2546,6 +2543,13 @@ msgid ""
 "        config))\n"
 "\n"
 msgstr ""
+"(define (auto-login-to-tty config tty user)\n"
+"  (if (string=? tty (mingetty-configuration-tty config))\n"
+"        (mingetty-configuration\n"
+"         (inherit config)\n"
+"         (auto-login user))\n"
+"        config))\n"
+"\n"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1389
@@ -2559,6 +2563,13 @@ msgid ""
 "                            config \"tty3\" \"alice\"))))\n"
 "\n"
 msgstr ""
+"(define %my-services\n"
+"  (modify-services %base-services\n"
+"    ;; @dots{}\n"
+"    (mingetty-service-type config =>\n"
+"                           (auto-login-to-tty\n"
+"                            config \"tty3\" \"alice\"))))\n"
+"\n"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1393
@@ -2568,36 +2579,39 @@ msgid ""
 "  ;; @dots{}\n"
 "  (services %my-services))\n"
 msgstr ""
+"(operating-system\n"
+"  ;; @dots{}\n"
+"  (services %my-services))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1398
 msgid "One could also @code{compose} (@pxref{Higher-Order Functions,,, guile, The Guile Reference Manual}) @code{auto-login-to-tty} to login multiple users to multiple ttys."
-msgstr ""
+msgstr "Tiež je možné použiť @code{compose} (@pxref{Higher-Order Functions,,, guile, The Guile Reference Manual}) s @code{auto-login-to-tty} pre prihlásenie viacerých používateľov k viacerým TTY."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1405
 msgid "Finally, here is a note of caution.  Setting up auto login to a TTY, means that anyone can turn on your computer and run commands as your regular user.  However, if you have an encrypted root partition, and thus already need to enter a passphrase when the system boots, auto-login might be a convenient option."
-msgstr ""
+msgstr "Varovanie na koniec.  Nastavenie automatického prihlásenia k TTY znamená, že ktokoľvek môže zapnúť váš počítač a spúšťať príkazy ako zvyčajný používateľ.  Hoci, ak používate zašifrovaný koreňový systém a pri spustení systému je nutné zadať heslo, automatické prihlásenie predstavuje praktickú možnosť."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1417
 msgid "Guix is, at its core, a source based distribution with substitutes (@pxref{Substitutes,,, guix, GNU Guix Reference Manual}), and as such building packages from their source code is an expected part of regular package installations and upgrades.  Given this starting point, it makes sense that efforts are made to reduce the amount of time spent compiling packages, and recent changes and upgrades to the building and distribution of substitutes continues to be a topic of discussion within Guix."
-msgstr ""
+msgstr "Guix je, vo svojom jadre, distribúcia založená na zdrojových súboroch a náhradách (@pxref{Substitutes,,, guix, GNU Guix Reference Manual}).  Zostavovanie balíkov z ich zdrojových súborov je teda prirodzenou súčasťou inštalácie a aktualizácie balíkov.  Vzhľadom na túto skutočnosť dáva zmysel snaha o zníženie množstva času potrebného na zostavenie balíkov a nedávne zmeny v zostavovaní a šírení náhrad sú aj naďalej súčasťou rozhovorov vrámci projektu Guix."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1423
 msgid "The kernel, while not requiring an overabundance of RAM to build, does take a rather long time on an average machine.  The official kernel configuration, as is the case with many GNU/Linux distributions, errs on the side of inclusiveness, and this is really what causes the build to take such a long time when the kernel is built from source."
-msgstr ""
+msgstr "Aj keď nevyžaduje veľké množstvo pamäte RAM, zostavenie jadra na priemerných počítačoch môže trvať veľmi dlho.  Oficiálne nastavenie jadra, tak ako je to v prípade mnohých iných distribúcií GNU/Linuxu, sa prikláňa k širšej ponuke súčastí a to je to, čo spôsobuje, že zostavenie jadra zo zdrojových súborov trvá tak dlho."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1428
 msgid "The Linux kernel, however, can also just be described as a regular old package, and as such can be customized just like any other package.  The procedure is a little bit different, although this is primarily due to the nature of how the package definition is written."
-msgstr ""
+msgstr "Avšak, aj samotné jadro Linuxu možno opísať ako balík a teda prispôsobiť ho rovnako ako hociktorý iný balík.  Postup je mierne odlišný, aj keď hlavne kvôli tomu ako je zadanie balíka napísané."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1431
 msgid "The @code{linux-libre} kernel package definition is actually a procedure which creates a package."
-msgstr ""
+msgstr "Balík jadra @code{linux-libre} je vlastne funkcia tvoriaca balík."
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1442
@@ -2613,11 +2627,20 @@ msgid ""
 "                            (extra-options %default-extra-linux-options))\n"
 "  ...)\n"
 msgstr ""
+"(define* (make-linux-libre* version gnu-revision source supported-systems\n"
+"                            #:key\n"
+"                            (extra-version #f)\n"
+"                            ;; Funkcia vyžadujúca označenie a druh architektúry.\n"
+"                            ;; Viď príklad v kernel-config.\n"
+"                            (configuration-file #f)\n"
+"                            (defconfig \"defconfig\")\n"
+"                            (extra-options %default-extra-linux-options))\n"
+"  ...)\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1446
 msgid "The current @code{linux-libre} package is for the 5.15.x series, and is declared like this:"
-msgstr ""
+msgstr "Terajší balík @code{linux-libre} pre vydania 5.15.x je zadaný nasledovne:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1454
@@ -2630,16 +2653,22 @@ msgid ""
 "                     '(\"x86_64-linux\" \"i686-linux\" \"armhf-linux\" \"aarch64-linux\" \"riscv64-linux\")\n"
 "                     #:configuration-file kernel-config))\n"
 msgstr ""
+"(define-public linux-libre-5.15\n"
+"  (make-linux-libre* linux-libre-5.15-version\n"
+"                     linux-libre-5.15-gnu-revision\n"
+"                     linux-libre-5.15-source\n"
+"                     '(\"x86_64-linux\" \"i686-linux\" \"armhf-linux\" \"aarch64-linux\" \"riscv64-linux\")\n"
+"                     #:configuration-file kernel-config))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1461
 msgid "Any keys which are not assigned values inherit their default value from the @code{make-linux-libre} definition.  When comparing the two snippets above, notice the code comment that refers to @code{#:configuration-file}.  Because of this, it is not actually easy to include a custom kernel configuration from the definition, but don't worry, there are other ways to work with what we do have."
-msgstr ""
+msgstr "Kľúče, ktoré nemajú pridelenú hodnotu dedia ich predvolenú hodnotu zo zadania @code{make-linux-libre}.  Pri porovnávaní vyššie uvedených úryvkov zdrojového kódu si všimnite komentár odvolávajúci sa na @code{#:configuration-file}.  Kvôli tomu vlastne nie je jednoduché zahrnúť do zadania svoje vlastné nastavenie jadra, ale nezúfajte, pretože jestvujú ďalšie spôsoby ako pracovať s tým čo máme."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1467
 msgid "There are two ways to create a kernel with a custom kernel configuration.  The first is to provide a standard @file{.config} file during the build process by including an actual @file{.config} file as a native input to our custom kernel.  The following is a snippet from the custom @code{'configure} phase of the @code{make-linux-libre} package definition:"
-msgstr ""
+msgstr "Jestvujú dva spôsoby ako vytvoriť jadro s vlastným nastavením.  Prvý je poskytnúť zvyčajný súbor @file{.config} počas zostavenia zahrnutím tohto súboru do pôvodných vstupov nášho vlastného jadra.  Nižšie je uvedený úryvok kódu vlastného @code{'configure} kroku zo zadania balíka @code{make-linux-libre}:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1471
@@ -2649,6 +2678,9 @@ msgid ""
 "      (config (assoc-ref (or native-inputs inputs) \"kconfig\")))\n"
 "\n"
 msgstr ""
+"(let ((build  (assoc-ref %standard-phases 'build))\n"
+"      (config (assoc-ref (or native-inputs inputs) \"kconfig\")))\n"
+"\n"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1479
@@ -2662,11 +2694,18 @@ msgid ""
 "        (chmod \".config\" #o666))\n"
 "      (invoke \"make\" ,defconfig)))\n"
 msgstr ""
+"  ;; Použiť vlastný alebo predvolený súbor\n"
+"  ;; nastavenia jadra.\n"
+"  (if config\n"
+"      (begin\n"
+"        (copy-file config \".config\")\n"
+"        (chmod \".config\" #o666))\n"
+"      (invoke \"make\" ,defconfig)))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1484
 msgid "Below is a sample kernel package.  The @code{linux-libre} package is nothing special and can be inherited from and have its fields overridden like any other package:"
-msgstr ""
+msgstr "Tu je príklad balíka jadra. Balík @code{linux-libre} nie je ničím výnimočný, môžeme ho zdediť a nahradiť jeho pôvodné polia ako pri hociktorom inom balíku:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1493
@@ -2680,16 +2719,23 @@ msgid ""
 "      ,@@(alist-delete \"kconfig\"\n"
 "                      (package-native-inputs linux-libre))))))\n"
 msgstr ""
+"(define-public linux-libre/E2140\n"
+"  (package\n"
+"    (inherit linux-libre)\n"
+"    (native-inputs\n"
+"     `((\"kconfig\" ,(local-file \"E2140.config\"))\n"
+"      ,@@(alist-delete \"kconfig\"\n"
+"                      (package-native-inputs linux-libre))))))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1500
 msgid "In the same directory as the file defining @code{linux-libre-E2140} is a file named @file{E2140.config}, which is an actual kernel configuration file.  The @code{defconfig} keyword of @code{make-linux-libre} is left blank here, so the only kernel configuration in the package is the one which was included in the @code{native-inputs} field."
-msgstr ""
+msgstr "V rovnakom priečinku, kde je súbor zadávajúci @code{linux-libre-E2140} je aj súbor s názvom @file{E2140.config}, ktorý predstavuje súbor nastavenia jadra.  Kľúčové slovo @code{defconfig} funkcie @code{make-linux-libre} je tu ponechané prázdne, takže jediné nastavenie jadra v balíku je to, ktoré bolo zahrnuté do poľa @code{native-inputs}."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1505
 msgid "The second way to create a custom kernel is to pass a new value to the @code{extra-options} keyword of the @code{make-linux-libre} procedure.  The @code{extra-options} keyword works with another function defined right below it:"
-msgstr ""
+msgstr "Druhý spôsob ako vytvoriť vlastné jadro je dať novú hodnotu kľúčovému slovu @code{extra-options} funkcie @code{make-linux-libre}.  Kľúčové slovo @code{extra-options} funguje s inou funkciou zadanou nižšie:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1521
@@ -2711,6 +2757,21 @@ msgid ""
 "   (\"CONFIG_9P_FS\" . m)))\n"
 "\n"
 msgstr ""
+"(define %default-extra-linux-options\n"
+"  `(;; https://lists.gnu.org/archive/html/guix-devel/2014-04/msg00039.html\n"
+"   (\"CONFIG_DEVPTS_MULTIPLE_INSTANCES\" . #true)\n"
+"   ;; Moduly potrebné pre initrd:\n"
+"   (\"CONFIG_NET_9P\" . m)\n"
+"   (\"CONFIG_NET_9P_VIRTIO\" . m)\n"
+"   (\"CONFIG_VIRTIO_BLK\" . m)\n"
+"   (\"CONFIG_VIRTIO_NET\" . m)\n"
+"   (\"CONFIG_VIRTIO_PCI\" . m)\n"
+"   (\"CONFIG_VIRTIO_BALLOON\" . m)\n"
+"   (\"CONFIG_VIRTIO_MMIO\" . m)\n"
+"   (\"CONFIG_FUSE_FS\" . m)\n"
+"   (\"CONFIG_CIFS\" . m)\n"
+"   (\"CONFIG_9P_FS\" . m)))\n"
+"\n"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1532
@@ -2727,11 +2788,21 @@ msgid ""
 "                    options)\n"
 "               \"\\n\"))\n"
 msgstr ""
+"(define (config->string options)\n"
+"  (string-join (map (match-lambda\n"
+"                      ((option . 'm)\n"
+"                       (string-append option \"=m\"))\n"
+"                      ((option . #true)\n"
+"                       (string-append option \"=y\"))\n"
+"                      ((option . #false)\n"
+"                       (string-append option \"=n\")))\n"
+"                    options)\n"
+"               \"\\n\"))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1535
 msgid "And in the custom configure script from the `make-linux-libre` package:"
-msgstr ""
+msgstr "A vo vlastnom „configure“ skripte balíka „make-linux-libre“:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1543
@@ -2745,17 +2816,24 @@ msgid ""
 "  (close-port port))\n"
 "\n"
 msgstr ""
+";; Vkladanie na koniec funguje aj keď voľba v súbore nebola.\n"
+";; Pri viacnásobnom uvedení prevažuje to posledné.\n"
+"(let ((port (open-file \".config\" \"a\"))\n"
+"      (extra-configuration ,(config->string extra-options)))\n"
+"  (display extra-configuration port)\n"
+"  (close-port port))\n"
+"\n"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1545
 #, no-wrap
 msgid "(invoke \"make\" \"oldconfig\")\n"
-msgstr ""
+msgstr "(invoke \"make\" \"oldconfig\")\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1550
 msgid "So by not providing a configuration-file the @file{.config} starts blank, and then we write into it the collection of flags that we want.  Here's another custom kernel:"
-msgstr ""
+msgstr "Takže, neposkytnutie súboru nastavenia spôsobí, že je súbor @file{.config} spočiatku prázdny. Potom doň zapíšeme voľby, ktoré chceme.  Viď ďalšie vlastné zadanie jadra:"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1558
@@ -2769,6 +2847,13 @@ msgid ""
 "          (@@@@ (gnu packages linux) %default-extra-linux-options)))\n"
 "\n"
 msgstr ""
+"(define %macbook41-full-config\n"
+"  (append %macbook41-config-options\n"
+"          %file-systems\n"
+"          %efi-support\n"
+"          %emulation\n"
+"          (@@@@ (gnu packages linux) %default-extra-linux-options)))\n"
+"\n"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:1569
@@ -2785,54 +2870,64 @@ msgid ""
 "   #:extra-version \"macbook41\"\n"
 "   #:extra-options %macbook41-config-options))\n"
 msgstr ""
+"(define-public linux-libre-macbook41\n"
+"  ;; XXX: Prístup k funkcii „make-linux-libre*“, ktorá je súkromná,\n"
+"  ;; neexportuje sa a v budúcnosti by sa mohla zmeniť.\n"
+"  ((@@@@ (gnu packages linux) make-linux-libre*)\n"
+"   (@@@@ (gnu packages linux) linux-libre-version)\n"
+"   (@@@@ (gnu packages linux) linux-libre-gnu-revision)\n"
+"   (@@@@ (gnu packages linux) linux-libre-source)\n"
+"   '(\"x86_64-linux\")\n"
+"   #:extra-version \"macbook41\"\n"
+"   #:extra-options %macbook41-config-options))\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1576
 msgid "In the above example @code{%file-systems} is a collection of flags enabling different file system support, @code{%efi-support} enables EFI support and @code{%emulation} enables a x86_64-linux machine to act in 32-bit mode also.  @code{%default-extra-linux-options} are the ones quoted above, which had to be added in since they were replaced in the @code{extra-options} keyword."
-msgstr ""
+msgstr "V hore uvedenom príklade je @code{%file-systems} zbierkou volieb povoľujúcich podporu rôznych systémov súborov, @code{%efi-support} povoľuje podporu EFI a @code{%emulation} povoľuje strojom x86_64-linux pracovať v 32-bitovom režime.  Voľby @code{%default-extra-linux-options} sú tie citované vyššie, ktoré bolo treba pridať, keďže boli prepísané v kľúčovom slove @code{extra-options}."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1585
 msgid "This all sounds like it should be doable, but how does one even know which modules are required for a particular system? Two places that can be helpful in trying to answer this question is the @uref{https://wiki.gentoo.org/wiki/Handbook:AMD64/Installation/Kernel, Gentoo Handbook} and the @uref{https://www.kernel.org/doc/html/latest/admin-guide/README.html?highlight=localmodconfig, documentation from the kernel itself}.  From the kernel documentation, it seems that @code{make localmodconfig} is the command we want."
-msgstr ""
+msgstr "Všetko toto znie veľmi dobre, ale ako zistiť, ktoré moduly vyžaduje určitý systém? Na túto otázku nám môžu pomôcť odpovedať dva zdroje: @uref{https://wiki.gentoo.org/wiki/Handbook:AMD64/Installation/Kernel, Príručka Gentoo} a @uref{https://www.kernel.org/doc/html/latest/admin-guide/README.html?highlight=localmodconfig, dokumentácia samotného jadra}.  Podľa dokumentácie jadra sa zdá, že @code{make localmodconfig} je príkaz, ktorý hľadáme."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1588
 msgid "In order to actually run @code{make localmodconfig} we first need to get and unpack the kernel source code:"
-msgstr ""
+msgstr "Skôr ako budeme môcť spustiť @code{make localmodconfig}, musíme stiahnuť a rozbaliť zdrojové súbory jadra:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1591
 #, no-wrap
 msgid "tar xf $(guix build linux-libre --source)\n"
-msgstr ""
+msgstr "tar xf $(guix build linux-libre --source)\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1598
 msgid "Once inside the directory containing the source code run @code{touch .config} to create an initial, empty @file{.config} to start with.  @code{make localmodconfig} works by seeing what you already have in @file{.config} and letting you know what you're missing.  If the file is blank then you're missing everything.  The next step is to run:"
-msgstr ""
+msgstr "V priečinku obsahujúcom zdrojové súbory spustite @code{touch .config} pre vytvorenie počiatočného prázdneho @file{.config} súboru.  @code{make localmodconfig} funguje tak, že zistí, čo ste už zadali do @file{.config} a povie vám, čo vám ešte chýba.  Ak je súbor prázdny, tak vám chýba všetko.  Ďalším krokom je spustiť:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1601
 #, no-wrap
 msgid "guix environment linux-libre -- make localmodconfig\n"
-msgstr ""
+msgstr "guix environment linux-libre -- make localmodconfig\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1606
 msgid "and note the output.  Do note that the @file{.config} file is still empty.  The output generally contains two types of warnings.  The first start with \"WARNING\" and can actually be ignored in our case.  The second read:"
-msgstr ""
+msgstr "a pozrite si výstup.  Všimnite si, že súbor @file{.config} je stále prázdny.  Výstup obvykle obsahuje dva druhy varovných správ.  Prvá začína slovom „WARNING“ a v našom prípade si ju nemusíme všímať.  Druhá správa nám hovorí, že:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1609
 #, no-wrap
 msgid "module pcspkr did not have configs CONFIG_INPUT_PCSPKR\n"
-msgstr ""
+msgstr "module pcspkr did not have configs CONFIG_INPUT_PCSPKR\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1614
 msgid "For each of these lines, copy the @code{CONFIG_XXXX_XXXX} portion into the @file{.config} in the directory, and append @code{=m}, so in the end it looks like this:"
-msgstr ""
+msgstr "Pre každý z týchto riadkov skopírujte časť @code{CONFIG_XXXX_XXXX} do @file{.config} súboru priečinka a pridajte @code{=m} tak, aby nakoniec vyzeral takto:"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:1618
@@ -2841,31 +2936,33 @@ msgid ""
 "CONFIG_INPUT_PCSPKR=m\n"
 "CONFIG_VIRTIO=m\n"
 msgstr ""
+"CONFIG_INPUT_PCSPKR=m\n"
+"CONFIG_VIRTIO=m\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1627
 msgid "After copying all the configuration options, run @code{make localmodconfig} again to make sure that you don't have any output starting with ``module''.  After all of these machine specific modules there are a couple more left that are also needed.  @code{CONFIG_MODULES} is necessary so that you can build and load modules separately and not have everything built into the kernel.  @code{CONFIG_BLK_DEV_SD} is required for reading from hard drives.  It is possible that there are other modules which you will need."
-msgstr ""
+msgstr "Po skopírovaní všetkých volieb nastavenia znova spustite @code{make localmodconfig}, aby ste sa uistili, že výstup už neobsahuje žiadne správy začínajúce slovom „module“.  Okrem všetkých týchto modulov vzťahujúcich sa k stroju nám ostáva ešte niekoľko ďalších dôležitých modulov.  @code{CONFIG_MODULES} umožňuje zostavovať a načítavať moduly oddelene, aby nemuseli byť zabudované do jadra.  @code{CONFIG_BLK_DEV_SD} umožňuje čítať pevné disky.  Je tiež možné, že budete potrebovať aj iné moduly."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1631
 msgid "This post does not aim to be a guide to configuring your own kernel however, so if you do decide to build a custom kernel you'll have to seek out other guides to create a kernel which is just right for your needs."
-msgstr ""
+msgstr "Tento príspevok nemá za úlohu vás previesť nastavením vášho vlastného jadra. Ak sa rozhodnete zostaviť si vlastné jadro, budete si musieť nájsť iné návody na vytvorenie jadra, ktoré vám bude vyhovovať."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1639
 msgid "The second way to setup the kernel configuration makes more use of Guix's features and allows you to share configuration segments between different kernels.  For example, all machines using EFI to boot have a number of EFI configuration flags that they need.  It is likely that all the kernels will share a list of file systems to support.  By using variables it is easier to see at a glance what features are enabled and to make sure you don't have features in one kernel but missing in another."
-msgstr ""
+msgstr "Druhý spôsob nastavenia jadra využíva funkcie Guixu vo väčšej miere a umožňuje vám zdieľať časti nastavenia medzi rôznymi jadrami.  Napríklad, všetky stroje používajúce na zavádzanie EFI vyžadujú určitý počet volieb nastavenia EFI.  Je tiež pravdepodobné, že viaceré jadrá budú zdieľať podporu niekoľkých súborových systémov.  Použitím premenných je jednoduchšie spozorovať, ktoré súčasti sú povolené a uistiť sa, či nie sú niektoré z nich prítomné v jednom jadre ale v druhom chýbajú."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1644
 msgid "Left undiscussed however, is Guix's initrd and its customization.  It is likely that you'll need to modify the initrd on a machine using a custom kernel, since certain modules which are expected to be built may not be available for inclusion into the initrd."
-msgstr ""
+msgstr "Nepozreli sme sa však na initrd a jeho prispôsobenie.  Je pravdepodobné, že budete potrebovať prispôsobiť initrd na stroji s vlastným jadrom, keďže niektoré moduly nemusia byť dostupné pre zahrnutie do initrd."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1651
 msgid "Historically, Guix System is centered around an @code{operating-system} structure.  This structure contains various fields ranging from the bootloader and kernel declaration to the services to install."
-msgstr ""
+msgstr "Z dejinného pohľadu je systém Guix sústredený okolo štruktúry @code{operating-system}.  Táto štruktúra obsahuje rôzne polia počínajúc zadaním zavádzača a jadra až k službám, ktoré sa majú nainštalovať."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:1657
@@ -3882,7 +3979,7 @@ msgstr ""
 #: guix-git/doc/guix-cookbook.texi:2322
 #, no-wrap
 msgid "Warning"
-msgstr ""
+msgstr "Upozornenie"
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:2328
@@ -4140,7 +4237,7 @@ msgstr ""
 #. type: itemize
 #: guix-git/doc/guix-cookbook.texi:2524
 msgid "Games."
-msgstr ""
+msgstr "Hry."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:2527
@@ -4351,7 +4448,7 @@ msgstr ""
 #: guix-git/doc/guix-cookbook.texi:2660 guix-git/doc/guix-cookbook.texi:2661
 #, no-wrap
 msgid "Required packages"
-msgstr ""
+msgstr "Požadované balíky"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:2666

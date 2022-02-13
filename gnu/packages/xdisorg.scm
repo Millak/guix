@@ -53,6 +53,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1691,7 +1692,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
 (define-public rofi
   (package
     (name "rofi")
-    (version "1.7.2")
+    (version "1.7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/davatorium/rofi/"
@@ -1699,7 +1700,7 @@ connectivity of the X server running on a particular @code{DISPLAY}.")
                                   version "/rofi-" version ".tar.xz"))
               (sha256
                (base32
-                "1kfp9ylynz8xgw11aa5k7b4iyq9z8zkqas1mpvs8wpzvnfr09ymd"))))
+                "0yxn9pmn9zp0k5ygnjqbj1pmp73g53wa47r145a8qcwqzxl8p1i5"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -1745,7 +1746,7 @@ by name.")
 (define-public rofi-calc
   (package
     (name "rofi-calc")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1755,7 +1756,7 @@ by name.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1j23xwa6s27wyx6r0yb85cby6dggrcb103nqcfxr5li1mcqrgd9m"))))
+         "021z7hwvdcs3g7icyp6xhry0xlq29gg1288hg2kzyzqq4l2irxdi"))))
     (build-system gnu-build-system)
     (arguments
      (list

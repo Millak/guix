@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Domagoj Stolfa <ds815@gmx.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -382,7 +383,7 @@ endpoints.")
            gmp
            libcap
            libgcrypt
-           libsoup
+           libsoup-minimal-2
            linux-pam
            openssl))
     (native-inputs
@@ -659,7 +660,7 @@ and probably others.")
            python-lxml
            python-prompt-toolkit
            python-requests
-           python-pyqt
+           python-pyqt-without-qtwebkit
            python-pyqtwebengine
            python-pysocks
            python-pyxdg
@@ -753,7 +754,7 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
            ;; Wrap entrypoint with paths to its hard dependencies.
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((entrypoint (string-append (assoc-ref outputs "out")
-                                              "/bin/.protonvpn-real")))
+                                              "/bin/protonvpn")))
                (wrap-program entrypoint
                             #:sh (search-input-file inputs "bin/bash")
                             `("PATH" ":" prefix
@@ -768,7 +769,11 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
                                           "openvpn"
                                           "procps"
                                           "which")))))
-             #t)))))
+             #t))
+         ;; The `protonvpn' script wants to write to `~user' to initialize its
+         ;; logger, so simply setting HOME=/tmp won't cut it.  Remove
+         ;; sanity-check.
+         (delete 'sanity-check))))
     (native-inputs
      (list python-docopt))
     (inputs

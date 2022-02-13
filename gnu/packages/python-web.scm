@@ -741,21 +741,27 @@ other HTTP libraries.")
 (define-public httpie
   (package
     (name "httpie")
-    (version "2.3.0")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "httpie" version))
        (sha256
         (base32
-         "15ngl3yc186gkgqdx8iav9bpj8gxjpzz26y32z92jwyhj4cmfh6m"))))
+         "16ay8mx2v1z3rywsszy055l5k50qjiwyc3pds5wxxzd1n9a79w97"))))
     (build-system python-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run them.
      '(#:tests? #f))
     (propagated-inputs
-     (list python-colorama python-pygments python-requests
-           python-requests-toolbelt))
+     (list python-colorama
+           python-pygments
+           python-requests
+           python-requests-toolbelt
+           python-pysocks
+           python-charset-normalizer
+           python-defusedxml
+           python-multidict))
     (home-page "https://httpie.io")
     (synopsis "cURL-like tool for humans")
     (description
@@ -1106,21 +1112,15 @@ support for merging, minifying and compiling CSS and Javascript files.")
 (define-public python-flask-babel
   (package
     (name "python-flask-babel")
-    (version "1.0.0")
+    (version "2.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Flask-Babel" version))
         (sha256
           (base32
-            "0gmb165vkwv5v7dxsxa2i3zhafns0fh938m2zdcrv4d8z5l099yn"))))
+            "0z95v77vib5il8hphyh16n7i15a2gmc06i615vm346ifvdfg9ypr"))))
     (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (with-directory-excursion "tests"
-                        (invoke "python" "tests.py")))))))
     (propagated-inputs
      (list python-flask python-babel python-jinja2 python-pytz))
     (home-page "https://github.com/python-babel/flask-babel")
@@ -5506,6 +5506,24 @@ according to the standard set by PasteDeploy")
      "Hupper is an integrated process monitor that will track changes to any
 imported Python files in sys.modules as well as custom paths.  When files are
 changed the process is restarted.")
+    (license license:expat)))
+
+(define-public python-pyowm
+  (package
+    (name "python-pyowm")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyowm" version))
+       (sha256
+        (base32 "1pm8w6phr4m3xayndfndid366vhf1fpvdgjsp2zicxarmgc0pm53"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-geojson python-pysocks python-requests))
+    (home-page "https://github.com/csparpa/pyowm")
+    (synopsis "Python wrapper around OpenWeatherMap web APIs")
+    (description
+     "This package provides a Python wrapper around OpenWeatherMap web APIs.")
     (license license:expat)))
 
 (define-public python-pyramid

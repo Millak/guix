@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -1460,34 +1460,221 @@ of stand-alone functions and classes.")
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "2.7.4")
+    (version "2.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "1mj52l2m8pbhiqacgjakjpvqi8kyx470yw151lcsswbq5wp0rsc6"))))
+        (base32 "0i4vq1hsympjgb1yvn4ql0gm8j1mki9ggmj03533kmg0nbzp03yy"))))
     (build-system python-build-system)
     (arguments
-     ;; TODO: (Sharlatan-20210207T165820+0000): Tests depend on astropy, astropy
-     ;; depends on asdf. Disable circular dependence.
+     ;; NOTE: (Sharlatan-20211229T201059+0000): Tests depend on astropy and
+     ;; gwcs, astropy gwcs depend on asdf.  Disable circular dependence.
      `(#:tests? #f))
     (native-inputs
-     `(("packaging" ,python-packaging)
-       ("semantic-version" ,python-semantic-version)
-       ("setuptools-scm" ,python-setuptools-scm)))
-     (inputs
-      `(("importlib-resources" ,python-importlib-resources)
-        ("jsonschema" ,python-jsonschema)
-        ("numpy" ,python-numpy)
-        ("pyyaml" ,python-pyyaml)))
-     (home-page "https://github.com/asdf-format/asdf")
-     (synopsis "Python tools to handle ASDF files")
-     (description
-      "The Advanced Scientific Data Format (ASDF) is a next-generation
+     (list python-setuptools-scm
+           python-semantic-version
+           python-packaging))
+    (propagated-inputs
+     (list python-importlib-resources
+           python-jsonschema
+           python-jmespath
+           python-numpy
+           python-pyyaml))
+    (home-page "https://github.com/asdf-format/asdf")
+    (synopsis "Python tools to handle ASDF files")
+    (description
+     "The Advanced Scientific Data Format (ASDF) is a next-generation
 interchange format for scientific data.  This package contains the Python
 implementation of the ASDF Standard.")
-     (license license:bsd-3)))
+    (license license:bsd-3)))
+
+(define python-asdf-transform-schemas
+  (package
+    (name "python-asdf-transform-schemas")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_transform_schemas" version))
+       (sha256
+        (base32 "1gmzd81hw4ppsvzrc91wcbjpcw9hhv9gavllv7nyi7qjb54c837g"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-pytest
+           python-semantic-version
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf))
+    (home-page "https://github.com/asdf-format/asdf-transform-schemas")
+    (synopsis "ASDF schemas for transforms")
+    (description
+     "This package provides ASDF schemas for validating transform tags.  Users
+should not need to install this directly; instead, install an implementation
+package such as asdf-astropy.")
+    (license license:bsd-3)))
+
+(define python-asdf-coordinates-schemas
+  (package
+    (name "python-asdf-coordinates-schemas")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_coordinates_schemas" version))
+       (sha256
+        (base32 "0ahwhsz5jzljnpkfd2kvspirg823lnj5ip9sfkd9cx09z1nlz8jg"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-pytest
+           python-semantic-version
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf))
+    (home-page "https://github.com/asdf-format/asdf-coordinates-schemas")
+    (synopsis "ASDF coordinates schemas")
+    (description "This package provides ASDF schemas for validating
+coordinates tags.  Users should not need to install this directly; instead,
+install an implementation package such as asdf-astropy.")
+    (license license:bsd-3)))
+
+(define-public python-asdf-astropy
+  (package
+    (name "python-asdf-astropy")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_astropy" version))
+       (sha256
+        (base32 "0bzgah7gskvnz6jcrzipvzixv8k2jzjkskqwxngzwp4nxgjbcvi4"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-coverage
+           python-h5py
+           python-matplotlib
+           python-pandas
+           python-pytest-astropy
+           python-scipy
+           python-semantic-version
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-coordinates-schemas
+           python-asdf-transform-schemas
+           python-astropy
+           python-numpy
+           python-packaging))
+    (home-page "https://github.com/astropy/asdf-astropy")
+    (synopsis "ASDF serialization support for astropy")
+    (description
+     "This package includes plugins that provide ASDF serialization support for
+Astropy objects.")
+    (license license:bsd-3)))
+
+(define python-asdf-wcs-schemas
+  (package
+    (name "python-asdf-wcs-schemas")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_wcs_schemas" version))
+       (sha256
+        (base32 "0khyab9mnf2lv755as8kwhk3lqqpd3f4291ny3b9yp3ik86fzhz1"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm
+           python-semantic-version))
+    (propagated-inputs
+     (list python-asdf))
+    (home-page "https://github.com/asdf-format/asdf-wcs-schemas")
+    (synopsis "ASDF WCS Schemas")
+    (description
+     "This package provides ASDF schemas for validating World Coordinate
+System (WCS) tags.  Users should not need to install this directly; instead,
+install an implementation package such as gwcs.")
+    (license license:bsd-3)))
+
+(define-public python-gwcs
+  (package
+    (name "python-gwcs")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gwcs" version))
+       (sha256
+        (base32 "194j49m8xjjzv9pp8cnj06igz8sdxb0nphyybcc7mhigw0f0kr30"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (list python-jsonschema
+           python-jmespath
+           python-pytest
+           python-pytest-doctestplus
+           python-pyyaml
+           python-semantic-version
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-astropy
+           python-asdf-wcs-schemas
+           python-astropy
+           python-numpy
+           python-scipy))
+    (home-page "https://gwcs.readthedocs.io/en/latest/")
+    (synopsis "Generalized World Coordinate System")
+    (description "Generalized World Coordinate System (GWCS) is an Astropy
+affiliated package providing tools for managing the World Coordinate System of
+astronomical data.
+
+GWCS takes a general approach to the problem of expressing transformations
+between pixel and world coordinates.  It supports a data model which includes
+the entire transformation pipeline from input coordinates (detector by
+default) to world coordinates.")
+    (license license:bsd-3)))
 
 (define-public python-astroalign
   (package

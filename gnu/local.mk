@@ -7,7 +7,7 @@
 # Copyright © 2016, 2017, 2018 Kei Kebreau <kkebreau@posteo.net>
 # Copyright © 2016, 2017 Rene Saavedra <rennes@openmailbox.org>
 # Copyright © 2016 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 # Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -79,6 +79,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/ci.scm					\
   %D%/home.scm					\
   %D%/home/services.scm			\
+  %D%/home/services/desktop.scm			\
   %D%/home/services/symlink-manager.scm		\
   %D%/home/services/fontutils.scm		\
   %D%/home/services/shells.scm			\
@@ -581,6 +582,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/time.scm				\
   %D%/packages/tls.scm				\
   %D%/packages/tmux.scm				\
+  %D%/packages/toolkits.scm			\
   %D%/packages/tor.scm				\
   %D%/packages/tv.scm				\
   %D%/packages/uglifyjs.scm			\
@@ -758,6 +760,7 @@ GNU_SYSTEM_MODULES =				\
 INSTALLER_MODULES =                             \
   %D%/installer.scm      			\
   %D%/installer/connman.scm			\
+  %D%/installer/dump.scm			\
   %D%/installer/final.scm			\
   %D%/installer/hostname.scm			\
   %D%/installer/keymap.scm			\
@@ -859,6 +862,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ath9k-htc-firmware-gcc-compat.patch	\
   %D%/packages/patches/ath9k-htc-firmware-objcopy.patch		\
   %D%/packages/patches/atlas-gfortran-compat.patch		\
+  %D%/packages/patches/audacity-ffmpeg-fallback.patch	\
   %D%/packages/patches/audiofile-fix-datatypes-in-tests.patch	\
   %D%/packages/patches/audiofile-fix-sign-conversion.patch	\
   %D%/packages/patches/audiofile-CVE-2015-7747.patch		\
@@ -909,6 +913,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/binutils-mingw-w64-timestamp.patch	\
   %D%/packages/patches/binutils-mingw-w64-deterministic.patch	\
   %D%/packages/patches/binutils-CVE-2021-45078.patch		\
+  %D%/packages/patches/bloomberg-bde-cmake-module-path.patch	\
+  %D%/packages/patches/bloomberg-bde-tools-fix-install-path.patch	\
   %D%/packages/patches/bpftrace-disable-bfd-disasm.patch	\
   %D%/packages/patches/byobu-writable-status.patch		\
   %D%/packages/patches/bubblewrap-fix-locale-in-tests.patch	\
@@ -965,6 +971,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/coq-fix-envvars.patch			\
   %D%/packages/patches/coreutils-ls.patch			\
   %D%/packages/patches/cpuinfo-system-libraries.patch		\
+  %D%/packages/patches/cpulimit-with-glib-2.32.patch		\
   %D%/packages/patches/crawl-upgrade-saves.patch		\
   %D%/packages/patches/crda-optional-gcrypt.patch		\
   %D%/packages/patches/clucene-contribs-lib.patch               \
@@ -1002,6 +1009,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dovecot-trees-support-dovecot-2.3.patch	\
   %D%/packages/patches/dstat-fix-crash-when-specifying-delay.patch	\
   %D%/packages/patches/dstat-skip-devices-without-io.patch	\
+  %D%/packages/patches/dunst-1.7.3-fix-crash.patch		\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dynaconf-unvendor-deps.patch		\
   %D%/packages/patches/ecl-16-format-directive-limit.patch	\
@@ -1049,6 +1057,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/fasthenry-spSolve.patch			\
   %D%/packages/patches/fasthenry-spFactor.patch			\
   %D%/packages/patches/fbreader-curl-7.62.patch		\
+  %D%/packages/patches/fenics-dolfin-algorithm.patch		\
+  %D%/packages/patches/fenics-dolfin-demo-init.patch		\
+  %D%/packages/patches/fenics-dolfin-boost.patch		\
+  %D%/packages/patches/fenics-dolfin-config-slepc.patch		\
   %D%/packages/patches/fifengine-boost-compat.patch		\
   %D%/packages/patches/fifengine-swig-compat.patch		\
   %D%/packages/patches/fifo-map-fix-flags-for-gcc.patch		\
@@ -1131,6 +1143,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/geeqie-clutter.patch			\
   %D%/packages/patches/genimage-mke2fs-test.patch		\
   %D%/packages/patches/geoclue-config.patch			\
+  %D%/packages/patches/ghc-4.patch				\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
   %D%/packages/patches/ghc-testsuite-dlopen-pie.patch		\
   %D%/packages/patches/ghc-language-haskell-extract-ghc-8.10.patch	\
@@ -1227,6 +1240,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-linux-syscalls.patch		\
   %D%/packages/patches/guile-3.0-linux-syscalls.patch		\
   %D%/packages/patches/guile-fibers-destroy-peer-schedulers.patch \
+  %D%/packages/patches/guile-fibers-wait-for-io-readiness.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-git-adjust-for-libgit2-1.2.0.patch \
   %D%/packages/patches/guile-present-coding.patch		\
@@ -1299,6 +1313,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/json-c-0.12-CVE-2020-12762.patch	\
   %D%/packages/patches/jsoncpp-pkg-config-version.patch		\
   %D%/packages/patches/jami-fix-crash-on-quit.patch		\
+  %D%/packages/patches/jami-images-loading.patch		\
+  %D%/packages/patches/jami-memory-usage.patch			\
+  %D%/packages/patches/jami-libclient-audio-managers.patch	\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
@@ -1402,6 +1419,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libmygpo-qt-missing-qt5-modules.patch	\
   %D%/packages/patches/libqalculate-3.8.0-libcurl-ssl-fix.patch	\
   %D%/packages/patches/libquicktime-ffmpeg.patch 		\
+  %D%/packages/patches/librecad-support-for-boost-1.76.patch	\
   %D%/packages/patches/libssh2-CVE-2019-17498.patch 		\
   %D%/packages/patches/libtar-CVE-2013-4420.patch 		\
   %D%/packages/patches/libtgvoip-disable-sse2.patch 		\
@@ -1504,6 +1522,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mozjs38-shell-version.patch		\
   %D%/packages/patches/mozjs38-tracelogger.patch		\
   %D%/packages/patches/mozjs38-version-detection.patch		\
+  %D%/packages/patches/mozjs60-riscv64-support.patch		\
   %D%/packages/patches/mrrescue-support-love-11.patch		\
   %D%/packages/patches/mtools-mformat-uninitialized.patch	\
   %D%/packages/patches/mumps-build-parallelism.patch		\
@@ -1555,7 +1574,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ocaml-dose3-Install-mli-cmx-etc.patch	\
   %D%/packages/patches/ocaml-multiple-definitions.patch		\
   %D%/packages/patches/ocaml-4.09-multiple-definitions.patch	\
-  %D%/packages/patches/ocaml-qcheck-fix-test-whitespace.patch	\
   %D%/packages/patches/omake-fix-non-determinism.patch	\
   %D%/packages/patches/oneko-remove-nonfree-characters.patch	\
   %D%/packages/patches/onnx-optimizer-system-library.patch	\
@@ -1563,6 +1581,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/onnx-shared-libraries.patch	\
   %D%/packages/patches/onnx-skip-model-downloads.patch		\
   %D%/packages/patches/openbabel-fix-crash-on-nwchem-output.patch	\
+  %D%/packages/patches/openboardview-use-system-utf8.patch	\
   %D%/packages/patches/opencascade-oce-glibc-2.26.patch		\
   %D%/packages/patches/openfoam-4.1-cleanup.patch			\
   %D%/packages/patches/openjdk-10-idlj-reproducibility.patch	\
@@ -1574,8 +1593,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/opensles-add-license-file.patch			\
   %D%/packages/patches/openssl-runpath.patch			\
   %D%/packages/patches/openssl-1.1-c-rehash-in.patch		\
+  %D%/packages/patches/openssl-3.0-c-rehash-in.patch		\
   %D%/packages/patches/openssl-c-rehash-in.patch		\
-  %D%/packages/patches/openssl-CVE-2019-1559.patch		\
   %D%/packages/patches/open-zwave-hidapi.patch			\
   %D%/packages/patches/orpheus-cast-errors-and-includes.patch	\
   %D%/packages/patches/osip-CVE-2017-7853.patch			\
@@ -1614,6 +1633,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/p11-kit-hurd.patch			\
   %D%/packages/patches/patchutils-test-perms.patch		\
   %D%/packages/patches/patch-hurd-path-max.patch		\
+  %D%/packages/patches/perl-5.14-autosplit-default-time.patch	\
+  %D%/packages/patches/perl-5.14-module-pluggable-search.patch	\
+  %D%/packages/patches/perl-5.14-no-sys-dirs.patch		\
   %D%/packages/patches/perl-autosplit-default-time.patch	\
   %D%/packages/patches/perl-finance-quote-unuse-mozilla-ca.patch \
   %D%/packages/patches/perl-image-exiftool-CVE-2021-22204.patch	\
@@ -1645,6 +1667,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/plib-CVE-2011-4620.patch		\
   %D%/packages/patches/plib-CVE-2012-4552.patch		\
   %D%/packages/patches/plotutils-spline-test.patch		\
+  %D%/packages/patches/polkit-CVE-2021-4034.patch		\
   %D%/packages/patches/polkit-configure-elogind.patch		\
   %D%/packages/patches/polkit-use-duktape.patch			\
   %D%/packages/patches/portaudio-audacity-compat.patch		\
@@ -1717,8 +1740,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pytest-asyncio-python-3.8.patch	\
   %D%/packages/patches/python-pytorch-runpath.patch		\
   %D%/packages/patches/python-pytorch-system-libraries.patch	\
+  %D%/packages/patches/python-pytorch-1.9.0-system-libraries.patch \
   %D%/packages/patches/python-robotframework-source-date-epoch.patch \
   %D%/packages/patches/python-seaborn-kde-test.patch		\
+  %D%/packages/patches/python-seaborn-2690.patch		\
   %D%/packages/patches/python2-subprocess32-disable-input-test.patch	\
   %D%/packages/patches/python-unittest2-python3-compat.patch	\
   %D%/packages/patches/python-unittest2-remove-argparse.patch	\
@@ -1751,7 +1776,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/raptor2-heap-overflow.patch		\
   %D%/packages/patches/ratpoints-sturm_and_rp_private.patch	\
   %D%/packages/patches/ratpoison-shell.patch			\
-  %D%/packages/patches/rcs-5.10.0-no-stdin.patch		\
   %D%/packages/patches/rct-add-missing-headers.patch		\
   %D%/packages/patches/readline-link-ncurses.patch		\
   %D%/packages/patches/readline-6.2-CVE-2014-2524.patch		\
@@ -1774,6 +1798,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-nocltrace.patch \
   %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch \
+  %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-sanitize-system-libxml.patch	\
   %D%/packages/patches/rustc-1.39.0-src.patch			\
   %D%/packages/patches/rust-adblock-ignore-live-tests.patch		\
@@ -1843,6 +1868,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tao-fix-parser-types.patch		\
   %D%/packages/patches/tar-remove-wholesparse-check.patch	\
   %D%/packages/patches/tar-skip-unreliable-tests.patch		\
+  %D%/packages/patches/tbb-fix-test-on-aarch64.patch		\
   %D%/packages/patches/tcc-boot-0.9.27.patch			\
   %D%/packages/patches/tclxml-3.2-install.patch			\
   %D%/packages/patches/tcsh-fix-autotest.patch			\
@@ -1881,7 +1907,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/u-boot-riscv64-fix-extlinux.patch	\
   %D%/packages/patches/u-boot-rk3399-enable-emmc-phy.patch	\
   %D%/packages/patches/ucx-tcp-iface-ioctl.patch		\
-  %D%/packages/patches/ungoogled-chromium-accelerated-video-decode.patch	\
   %D%/packages/patches/ungoogled-chromium-extension-search-path.patch	\
   %D%/packages/patches/ungoogled-chromium-ffmpeg-compat.patch	\
   %D%/packages/patches/ungoogled-chromium-RUNPATH.patch		\
@@ -1925,6 +1950,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/upx-CVE-2021-20285.patch		\
   %D%/packages/patches/ustr-fix-build-with-gcc-5.patch		\
   %D%/packages/patches/util-linux-tests.patch			\
+  %D%/packages/patches/util-linux-CVE-2021-3995.patch		\
+  %D%/packages/patches/util-linux-CVE-2021-3996.patch		\
   %D%/packages/patches/upower-builddir.patch			\
   %D%/packages/patches/valgrind-enable-arm.patch		\
   %D%/packages/patches/vboot-utils-fix-format-load-address.patch	\
@@ -1941,6 +1968,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
   %D%/packages/patches/webkitgtk-share-store.patch		\
   %D%/packages/patches/webkitgtk-bind-all-fonts.patch		\
+  %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\
   %D%/packages/patches/websocketpp-fix-for-cmake-3.15.patch	\
   %D%/packages/patches/wicd-bitrate-none-fix.patch		\
   %D%/packages/patches/wicd-get-selected-profile-fix.patch	\

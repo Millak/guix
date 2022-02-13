@@ -1,10 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
@@ -254,6 +254,45 @@ softsynth library that can be use with other applications.")
        (sha256
         (base32 "1gsx7k77blfy171b6g3m0k0s0072v6jcawhmx1kjs9w5zlwdkzd0"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; TODO: Move this to a snippet/patch or remove with the upgrade to 1.0.
+     (if (or (target-riscv64?)
+             (target-powerpc?))
+       (list
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'patch-source
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let ((patch-file
+                        #$(local-file
+                           (search-patch
+                             "webrtc-audio-processing-big-endian.patch"))))
+                   (invoke "patch" "--force" "-p1" "-i" patch-file)
+                   (substitute* "webrtc/typedefs.h"
+                     (("defined\\(__aarch64__\\)" all)
+                      (string-append
+                        ;; powerpc-linux
+                        "(defined(__PPC__) && __SIZEOF_SIZE_T__ == 4)\n"
+                        "#define WEBRTC_ARCH_32_BITS\n"
+                        "#define WEBRTC_ARCH_BIG_ENDIAN\n"
+                        ;; powerpc64-linux
+                        "#elif (defined(__PPC64__) && defined(_BIG_ENDIAN))\n"
+                        "#define WEBRTC_ARCH_64_BITS\n"
+                        "#define WEBRTC_ARCH_BIG_ENDIAN\n"
+                        ;; aarch64-linux
+                        "#elif " all
+                        ;; riscv64-linux
+                        " || (defined(__riscv) && __riscv_xlen == 64)"
+                        ;; powerpc64le-linux
+                        " || (defined(__PPC64__) && defined(_LITTLE_ENDIAN))"))))))))
+       '()))
+    (native-inputs
+     (if (or (target-riscv64?)
+             (target-powerpc?))
+       (list
+         (local-file (search-patch "webrtc-audio-processing-big-endian.patch"))
+         patch)
+       '()))
     (synopsis "WebRTC's Audio Processing Library")
     (description "WebRTC-Audio-Processing library based on Google's
 implementation of WebRTC.")
@@ -728,14 +767,17 @@ engineers, musicians, soundtrack editors and composers.")
     (version "3.1.3")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/audacity/audacity")
-             (commit (string-append "Audacity-" version))))
-       (file-name (git-file-name name version))
+       ;; If built from the release tag, Audacity will describe itself
+       ;; as an "Alpha test version" and suggest to users that they use
+       ;; the "latest stable released version".
+       (method url-fetch)
+       (uri (string-append "https://github.com/audacity/audacity/releases/download/"
+                           "Audacity-" version "/audacity-" version
+                           "-source.tar.gz"))
        (sha256
         (base32
-         "1689q9apbjf9nnda62shb8j7hm4hxd47mhk4l5h3c728mjjkilmi"))
+         "189agx11361k9j958s6q5bngnnfx0rwaf0dwbjxy6fwvsb1wv3px"))
+       (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -763,10 +805,10 @@ engineers, musicians, soundtrack editors and composers.")
            alsa-lib
            jack-1
            expat
-           ffmpeg
            lame
            linux-libre-headers
            flac
+           ffmpeg
            libid3tag
            libjpeg-turbo
            libmad
@@ -4079,6 +4121,40 @@ use them split WAVE data into multiple files.")
 with support for HD extensions.")
     (home-page "https://github.com/foo86/dcadec")
     (license license:lgpl2.1+)))
+
+(define-public drc
+  (package
+    (name "drc")
+    (version "3.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/drc-fir/drc-fir/"
+                           version "/drc-" version ".tar.gz"))
+       (sha256
+        (base32
+         "08ljj4776pjx119zjmfqa8w56bf7x0m7spmi27yk1m455bmiglrj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:make-flags
+      #~(list (string-append "INSTALL_PREFIX=" #$output)
+              "-C" "source")
+      #:phases
+      '(modify-phases %standard-phases
+         (delete 'configure))))
+    (inputs (list fftw))
+    (home-page "http://drc-fir.sourceforge.net/")
+    (synopsis "Digital room correction")
+    (description
+     "DRC is a program used to generate correction filters for acoustic
+compensation of HiFi and audio systems in general, including listening room
+compensation.  DRC generates just the FIR correction filters, which can be
+used with a real time or offline convolver to provide real time or offline
+correction.  DRC doesn't provide convolution features, and provides only some
+simplified, although really accurate, measuring tools.")
+    (license license:gpl2+)))
 
 (define-public bs1770gain
   (package

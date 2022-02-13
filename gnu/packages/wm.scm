@@ -49,6 +49,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,9 +70,11 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
@@ -290,22 +293,17 @@ commands would.")
 (define-public i3-wm
   (package
     (name "i3-wm")
-    (version "4.18.3")
+    (version "4.20.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/downloads/i3-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "03dijnwv2n8ak9jq59fhq0rc80m5wjc9d54fslqaivnnz81pkbjk"))))
-    (build-system gnu-build-system)
+                "1rpwdgykcvmrmdz244f0wm7446ih1dcw8rlc1hm1c7cc42pyrq93"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       ;; The build system tries to build in a separate directory, but that
-       ;; seems to be unnecessary.
-       (list "--disable-builddir")
-
-       ;; The test suite requires the unpackaged Xephyr X server.
+     `(;; The test suite requires the unpackaged Xephyr X server.
        #:tests? #f
        #:phases
        (modify-phases %standard-phases
@@ -355,23 +353,28 @@ resized.
 
 i3 uses a plain-text configuration file, and can be extended and controlled from
 many programming languages.")
+    (properties
+     `((upstream-name . "i3")
+       (release-monitoring-url . "https://i3wm.org/downloads")))
     (license license:bsd-3)))
 
 (define-public i3-gaps
-  (package (inherit i3-wm)
-           (name "i3-gaps")
-           (version "4.18.3")
-           (source (origin
-                     (method url-fetch)
-                     (uri (string-append
-                           "https://github.com/Airblader/i3/releases/download/"
-                           version "/i3-" version ".tar.bz2"))
-                     (sha256
-                      (base32
-                       "1hcakwyz78lgp8mhqv7pw86jlb3m415pfql1q19rkijnhm3fn3ci"))))
-           (home-page "https://github.com/Airblader/i3")
-           (synopsis "Tiling window manager with gaps")
-           (description "i3-gaps is a fork of i3wm, a tiling window manager
+  (package
+    (inherit i3-wm)
+    (name "i3-gaps")
+    (version "4.20.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Airblader/i3")
+                    (commit version)))
+              (sha256
+               (base32
+                "0g0qmv2gpv9qbhj9h5f4c4vfs6ndzq2rblgx9md85iharwp5sbb9"))))
+    (home-page "https://github.com/Airblader/i3")
+    (synopsis "Tiling window manager with gaps")
+    (description
+     "i3-gaps is a fork of i3wm, a tiling window manager
 for X11.  It is kept up to date with upstream, adding a few additional
 features such as gaps between windows.
 
@@ -384,7 +387,7 @@ and optionally resized.
 
 i3 uses a plain-text configuration file, and can be extended and controlled
 from many programming languages.")
-           (license license:bsd-3)))
+    (license license:bsd-3)))
 
 (define-public i3lock
   (package
@@ -1722,7 +1725,7 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.8")
+    (version "0.9.9")
     (source
      (origin
        (method git-fetch)
@@ -1731,7 +1734,7 @@ display a clock or apply image manipulation techniques to the background image."
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "109a49f064ma5js2d7maribmfalswbmmhq2fraa7hfz5pf2jxs2w"))))
+        (base32 "0bp9ygqv3kawwxf53j1r98r0xxg81cx00jsmymmlrd8psgsd6yy9"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -2353,6 +2356,47 @@ support, for easier unicode usage.")))))
     (description "@code{xclickroot} runs a command every time a given mouse
 button is pressed on the root window.")
     (license license:public-domain)))
+
+(define-public xinitrc-xsession
+  (let ((commit "cbfc77a1ccaf07b7d8a35f4d8007c7102f365374")
+        (revision "0"))
+    (package
+      (name "xinitrc-xsession")
+      (version (git-version "1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://aur.archlinux.org/xinit-xsession.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12nv3qyjhy2l9mcb547f414d8bj79mhdhsra0g8x7x71b1xxl15b"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'patch-xsession-file
+              (lambda _
+                (let* ((xinitrc-desktop
+                        (string-append #$output "/share/xsessions/xinitrc.desktop"))
+                       (xinitrc-helper
+                        (string-append #$output "/bin/xinitrcsession-helper")))
+                  (substitute* xinitrc-desktop
+                    (("Exec=xinitrcsession-helper")
+                     (string-append "Exec=" xinitrc-helper)))))))
+        #:install-plan
+        #~(list '("xinitrcsession-helper" "bin/")
+                '("xinitrc.desktop" "share/xsessions/"))))
+      (home-page "https://aur.archlinux.org/packages/xinit-xsession/")
+      (synopsis "Use ~/.xinitrc as an xsession from your display manager")
+      (description
+       "Xinitrc-xsession allows @code{~/.xinitrc} to be run as a session from
+your display manager.  Make @code{~/.xinitrc} executable and use this package
+in your system configuration have this xsession available to your display
+manager.")
+      (license license:gpl3))))
 
 (define-public xmenu
   (package

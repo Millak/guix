@@ -1377,16 +1377,16 @@ around it also has a list of style guides implemented with Vale in
 (define-public utf-8-lineseparator
   (package
     (name "utf-8-lineseparator")
-    (version "cj3")
+    (version "8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/pflanze/utf-8-lineseparator")
-                    (commit version)))
+                    (commit (string-append "cj" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xnbcanqn5jr965gw9195ij6hz04clfm77m5776dysn9nykn20w1"))))
+                "0rw34r0aiab55mqks9sjzjyskfwgn7mfhy65px1lljyrs2xvvzp5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

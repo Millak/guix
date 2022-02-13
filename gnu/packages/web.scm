@@ -10,7 +10,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
@@ -43,7 +43,7 @@
 ;;; Copyright © 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -4667,8 +4667,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "f1d8d76c4d685bc5e938f495c762984fe2564371")
-        (revision "28"))
+  (let ((commit "4a1088c21687531de0b4e062e1bf9ec491e5d4da")
+        (revision "29"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4680,7 +4680,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "16ys402pvrzxm8kvhss4fhgfzbcxh70jndi50cpgz80qb510x3iq"))))
+                  "1k9hnpx47l91l0x3gvjrzx4772lnkb55lk66axgl3a8g1fhaji4l"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4740,7 +4740,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
            (delete 'strip))))           ; As the .go files aren't compatible
       (inputs
        (list guix
-             guile-fibers
+             guile-fibers-1.1
              guile-json-4
              guile-email
              guile-prometheus
@@ -7888,6 +7888,7 @@ solution for any project's interface needs:
      `(("icu4c" ,icu4c)
        ("liblzma" ,xz)
        ("libuuid" ,util-linux "lib")
+       ("python" ,python-wrapper)       ;for libzim-compile-resources
        ("xapian" ,xapian)
        ("zstd" ,zstd "lib")))
     (native-inputs
@@ -7948,7 +7949,9 @@ for ZIM files.")
                       (sha256
                        (base32
                         "0r9rbk6v1wpld2ismfsk2lkhbyv3dkf0p03hkjivbj05qkfhvlbb"))))
-       ("pkg-config" ,pkg-config)))
+       ("pkg-config" ,pkg-config)
+       ;; for kiwix-compile-resources
+       ("python" ,python-wrapper)))
     (synopsis "Common code base for all Kiwix ports")
     (description "The Kiwix library provides the Kiwix software suite core.
 It contains the code shared by all Kiwix ports.")
@@ -8058,28 +8061,25 @@ tools:
     (license license:gpl3+)))
 
 (define-public uriparser
-  (let ((commit "25dddb16cf044a7df27884e7ad3911baaaca3d7c")
-        (revision "1"))
-    (package
-      (name "uriparser")
-      (version (git-version "0.9.4" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/uriparser/uriparser")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1ffzia679axcsccx2fxjpxhb0i5xc42zxn446x6c1170w6v69qf6"))))
-      (build-system cmake-build-system)
-      (native-inputs (list googletest doxygen graphviz))
-      (synopsis "Strictly RFC 3986 compliant URI parsing and handling library")
-      (description "uriparser is a strictly RFC 3986 compliant URI parsing and
+  (package
+    (name "uriparser")
+    (version "0.9.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/uriparser/uriparser"
+                                  "/releases/download/uriparser-"
+                                  version "/uriparser-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0i7nxgy36i8v81r213sbvmpxxq9qb4rhii9qbvl1k32jd1ka1252"))))
+    (build-system cmake-build-system)
+    (native-inputs (list googletest doxygen graphviz))
+    (synopsis "Strictly RFC 3986 compliant URI parsing and handling library")
+    (description "uriparser is a strictly RFC 3986 compliant URI parsing and
 handling library written in C89 (\"ANSI C\").  uriparser is fast and supports
 Unicode.")
-      (home-page "https://uriparser.github.io/")
-      (license license:bsd-3))))
+    (home-page "https://uriparser.github.io/")
+    (license license:bsd-3)))
 
 (define-public quark
   ;; No releases yet

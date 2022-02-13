@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
@@ -98,23 +98,31 @@ extensive examples, including parsers for the Javascript and C99 languages.")
 (define-public nyacc
   (package
     (inherit nyacc-0.99)
-    (version "1.05.1")
+    (version "1.06.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/nyacc/nyacc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1ck3gyzln5dhamp317nv3waych12mczj05dm4wdblij6ab0l4863"))
+                "1fbzz9bm4mkz4j40l2z02zjlbqj82dmv2ayz83zl3j8gj6z3lpdg"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (substitute* "configure"
-                    (("GUILE_GLOBAL_SITE=\\$prefix.*")
-                     "GUILE_GLOBAL_SITE=\
-$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))
-                  #t))))
+               '(substitute* "configure"
+                  (("GUILE_GLOBAL_SITE=\\$prefix.*")
+                   "GUILE_GLOBAL_SITE=\
+$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         ;; See https://savannah.nongnu.org/bugs/index.php?60474
+         (add-after 'unpack 'fix-60474
+           (lambda _
+             (substitute* "module/nyacc/lang/c99/parser.scm"
+               (("\\(memq \\(car stmt\\) '\\(include include-next\\)\\)")
+                "(memq (car stmt) '(include include-next define))")))))))
     (inputs (list guile-3.0))
+    (propagated-inputs (list guile-bytestructures))
     (description
      "@acronym{NYACC, Not Yet Another Compiler Compiler} is set of Guile modules
 for generating parsers and lexical analyzers.  It provides sample parsers,

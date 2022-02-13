@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2020, 2021, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015, 2016 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Alex Sassmannshausen <alex.sassmannshausen@gmail.com>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
@@ -1220,6 +1220,21 @@ connection alive.")
                        ;; build system uses the built 'gen' executable.
                        (setenv "BUILD_CC" "gcc"))))
                  '())
+           (add-before 'build 'update-config-scripts
+             (lambda* (#:key native-inputs inputs #:allow-other-keys)
+               (for-each (lambda (file)
+                               (install-file
+                                 (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                         '("config.guess" "config.sub"))
+               (for-each (lambda (file)
+                               (install-file
+                                 (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file))
+                                 (string-append "bind/bind-" ,bind-version)))
+                         '("config.guess" "config.sub"))))
            (add-after 'configure 'post-configure
              (lambda* (#:key outputs #:allow-other-keys)
                ;; Point to the right client script, which will be
@@ -1302,6 +1317,7 @@ connection alive.")
                      (base32
                       "108nh7hha4r0lb5hf1fn7lqaascvhsrghpz6afm5lf9vf2vgqly9"))))
 
+                ("config" ,config)
                 ("coreutils*" ,coreutils)
                 ("sed*" ,sed)))
 
@@ -2858,7 +2874,8 @@ lookup to YAML Mode.  You could enable the mode with @code{(add-hook
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dz045yhcsw1rdamzpz4bk8mw888in7fyqk1q1b3m1yk4pd1ahkh"))))
+        (base32 "1dz045yhcsw1rdamzpz4bk8mw888in7fyqk1q1b3m1yk4pd1ahkh"))
+       (patches (search-patches "cpulimit-with-glib-2.32.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -4753,7 +4770,7 @@ disk utilization, priority, username, state, and exit code.")
                (install-file "novena-eeprom" out-bin)
                (install-file "novena-eeprom.8" out-share-man)))))))
     (inputs
-     (list i2c-tools))
+     (list i2c-tools-3))
     (synopsis "Novena EEPROM editor")
     (description "This package provides an editor for the Novena EEPROM.
 Novena boards contain a device-dependent descriptive EEPROM that defines

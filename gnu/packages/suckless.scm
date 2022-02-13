@@ -217,13 +217,13 @@ a custom raw video format with a simple container.")
 (define-public dwm
   (package
     (name "dwm")
-    (version "6.2")
+    (version "6.3")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dl.suckless.org/dwm/dwm-"
                                  version ".tar.gz"))
              (sha256
-              (base32 "03hirnj8saxnsfqiszwl2ds7p0avg20izv9vdqyambks00p2x44p"))))
+              (base32 "1387lg370yrg7ssi3045di3904gkchxlza7rswgvl7wva8la1nms"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -357,14 +357,14 @@ numbers of user-defined menu items efficiently.")
 (define-public st
   (package
     (name "st")
-    (version "0.8.4")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.suckless.org/st/st-"
                            version ".tar.gz"))
        (sha256
-        (base32 "19j66fhckihbg30ypngvqc9bcva47mp379ch5vinasjdxgn3qbfl"))))
+        (base32 "0dxb8ksy4rcnhp5k54p7i7wwhm64ksmavf5wh90zfbyh7qh34s7a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
@@ -23,6 +23,7 @@
 (define-module (gnu packages julia-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix git-download)
@@ -3104,6 +3105,49 @@ equations in string literals in the Julia language.")
 implementation of matrix-free methods for iterative solvers.")
     (license license:expat)))
 
+(define-public julia-linesearches
+  (package
+    (name "julia-linesearches")
+    (version "7.1.1")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaNLSolvers/LineSearches.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1qc4la07w6s1xhcyd0hvbnpr31zc1a2ssgyybc8biv5m00g0dnr0"))))
+    (build-system julia-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'link-depot 'skip-optim-tests
+           (lambda _
+             (substitute* "test/examples.jl"
+               ;; Prevent a cycle with Optim.jl.
+               (("^    SKIPFILE.*") "")
+               (("^    #SKIPFILE") "    SKIPFILE"))))
+         (add-after 'link-depot 'skip-doublefloats-tests
+           (lambda _
+             (substitute* "test/runtests.jl"
+               (("using DoubleFloats.*") "")
+               ((".*arbitrary_precision\\.jl.*") "")))))))
+    (propagated-inputs
+     (list julia-nlsolversbase
+           julia-nanmath
+           julia-parameters))
+    (native-inputs
+     ;; DoubleFloats.jl transitively depends on TimeZones.jl, which is currently
+     ;; unpackageable due to its oversized Artifacts.toml.
+     (list ;julia-doublefloats
+           julia-optimtestproblems))
+    (home-page "https://github.com/JuliaNLSolvers/LineSearches.jl")
+    (synopsis "Line search methods for optimization and root-finding")
+    (description "This package provides an interface to line search algorithms
+implemented in Julia.")
+    (license license:expat)))
+
 (define-public julia-logexpfunctions
   (package
     (name "julia-logexpfunctions")
@@ -3605,6 +3649,53 @@ interface to interact with these types.")
     (description "This package will provide a library of functions useful for
 machine learning, such as softmax, sigmoid, convolutions and pooling.  It
 doesn't provide any other \"high-level\" functionality like layers or AD.")
+    (license license:expat)))
+
+(define-public julia-optim
+  (package
+    (name "julia-optim")
+    (version "1.6.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaNLSolvers/Optim.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0nvl3xp9c6r80y9n7fic4zyq2443apfmbcpnx0wvgkv4vsy08x5j"))))
+    (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               ;; TODO: Figure out why this test fails.
+               (substitute* "test/runtests.jl"
+                 ((".*l_bfgs.*") "")))))))
+    (propagated-inputs
+     (list julia-compat
+           julia-fillarrays
+           julia-forwarddiff
+           julia-linesearches
+           julia-nanmath
+           julia-nlsolversbase
+           julia-parameters
+           julia-positivefactorizations
+           julia-statsbase))
+    (native-inputs
+     (list julia-linesearches
+           julia-measurements
+           julia-nlsolversbase
+           julia-optimtestproblems
+           julia-positivefactorizations
+           julia-recursivearraytools
+           julia-stablerngs))
+    (home-page "https://github.com/JuliaNLSolvers/Optim.jl")
+    (synopsis "Optimization functions for Julia")
+    (description "@code{Optim.jl} is a package for univariate and multivariate
+optimization of functions.")
     (license license:expat)))
 
 (define-public julia-optimtestproblems

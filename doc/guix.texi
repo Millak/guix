@@ -47,7 +47,7 @@ Copyright @copyright{} 2017, 2018 Carlo Zancanaro@*
 Copyright @copyright{} 2017 Thomas Danckaert@*
 Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
-Copyright @copyright{} 2017, 2018, 2019, 2020, 2021 Marius Bakke@*
+Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020 Hartmut Goebel@*
 Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
@@ -5824,6 +5824,12 @@ This is similar to the same-named option in @command{guix package}
 (@pxref{profile-manifest, @option{--manifest}}) and uses the same
 manifest files.
 
+@item --profile=@var{profile}
+@itemx -p @var{profile}
+Create an environment containing the packages installed in @var{profile}. 
+Use @command{guix package} (@pxref{Invoking guix package}) to create
+and manage profiles.
+
 @item --pure
 Unset existing environment variables when building the new environment, except
 those specified with @option{--preserve} (see below).  This has the effect of
@@ -6230,6 +6236,12 @@ environment}.  Packages appearing before @option{--ad-hoc} are
 interpreted as packages whose dependencies will be added to the
 environment, the default behavior.  Packages appearing after are
 interpreted as packages that will be added to the environment directly.
+
+@item --profile=@var{profile}
+@itemx -p @var{profile}
+Create an environment containing the packages installed in @var{profile}. 
+Use @command{guix package} (@pxref{Invoking guix package}) to create
+and manage profiles.
 
 @item --pure
 Unset existing environment variables when building the new environment, except
@@ -21382,7 +21394,7 @@ Data type representing the configuration for @code{pulseaudio-service}.
 @table @asis
 @item @code{client-conf} (default: @code{'()})
 List of settings to set in @file{client.conf}.
-Accepts a list of strings or a symbol-value pairs.  A string will be
+Accepts a list of strings or symbol-value pairs.  A string will be
 inserted as-is with a newline added.  A pair will be formatted as
 ``key = value'', again with a newline added.
 
@@ -25495,9 +25507,10 @@ Specify the path of the base URL@.  This can be useful if
 @end table
 @end deftp
 
+@anchor{prometheus-node-exporter}
 @subsubheading Prometheus Node Exporter Service
-
 @cindex prometheus-node-exporter
+
 The Prometheus ``node exporter'' makes hardware and operating system statistics
 provided by the Linux kernel available for the Prometheus monitoring system.
 This service should be deployed on all physical nodes and virtual machines,
@@ -25536,320 +25549,229 @@ Extra options to pass to the Prometheus node exporter.
 
 @subsubheading Zabbix server
 @cindex zabbix zabbix-server
-Zabbix provides monitoring metrics, among others network utilization, CPU load
-and disk space consumption:
+Zabbix is a high performance monitoring system that can collect data from a
+variety of sources and provide the results in a web-based interface.  Alerting
+and reporting is built-in, as well as @dfn{templates} for common operating
+system metrics such as network utilization, CPU load, and disk space consumption.
 
-@itemize
-@item High performance, high capacity (able to monitor hundreds of thousands of devices).
-@item Auto-discovery of servers and network devices and interfaces.
-@item Low-level discovery, allows to automatically start monitoring new items, file systems or network interfaces among others.
-@item Distributed monitoring with centralized web administration.
-@item Native high performance agents.
-@item SLA, and ITIL KPI metrics on reporting.
-@item High-level (business) view of monitored resources through user-defined visual console screens and dashboards.
-@item Remote command execution through Zabbix proxies.
-@end itemize
+This service provides the central Zabbix monitoring service; you also need
+@ref{zabbix-front-end,@code{zabbix-front-end-service-type}} to configure Zabbix
+and display results, and optionally @ref{zabbix-agent,
+@code{zabbix-agent-service-type}} on machines that should be monitored (other
+data sources are supported, such as @ref{prometheus-node-exporter,
+Prometheus Node Exporter}).
+
+@defvar {Scheme variable} zabbix-server-service-type
+This is the service type for the Zabbix server service.  Its value must be a
+@code{zabbix-server-configuration} record, shown below.
+@end defvar
 
 @c %start of fragment
 
+@deftp {Data Type} zabbix-server-configuration
 Available @code{zabbix-server-configuration} fields are:
 
-@deftypevr {@code{zabbix-server-configuration} parameter} package zabbix-server
+@table @asis
+@item @code{zabbix-server} (default: @code{zabbix-server}) (type: file-like)
 The zabbix-server package.
 
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string user
+@item @code{user} (default: @code{"zabbix"}) (type: string)
 User who will run the Zabbix server.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} group group
+@item @code{group} (default: @code{"zabbix"}) (type: group)
 Group who will run the Zabbix server.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string db-host
+@item @code{db-host} (default: @code{"127.0.0.1"}) (type: string)
 Database host name.
 
-Defaults to @samp{"127.0.0.1"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string db-name
+@item @code{db-name} (default: @code{"zabbix"}) (type: string)
 Database name.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string db-user
+@item @code{db-user} (default: @code{"zabbix"}) (type: string)
 Database user.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string db-password
+@item @code{db-password} (default: @code{""}) (type: string)
 Database password.  Please, use @code{include-files} with
 @code{DBPassword=SECRET} inside a specified file instead.
 
-Defaults to @samp{""}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} number db-port
+@item @code{db-port} (default: @code{5432}) (type: number)
 Database port.
 
-Defaults to @samp{5432}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string log-type
+@item @code{log-type} (default: @code{""}) (type: string)
 Specifies where log messages are written to:
 
 @itemize @bullet
-@item
-@code{system} - syslog.
 
-@item
-@code{file} - file specified with @code{log-file} parameter.
+@item @code{system} - syslog.
 
-@item
-@code{console} - standard output.
+@item @code{file} - file specified with @code{log-file} parameter.
+
+@item @code{console} - standard output.
 
 @end itemize
 
-Defaults to @samp{""}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string log-file
+@item @code{log-file} (default: @code{"/var/log/zabbix/server.log"}) (type: string)
 Log file name for @code{log-type} @code{file} parameter.
 
-Defaults to @samp{"/var/log/zabbix/server.log"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string pid-file
+@item @code{pid-file} (default: @code{"/var/run/zabbix/zabbix_server.pid"}) (type: string)
 Name of PID file.
 
-Defaults to @samp{"/var/run/zabbix/zabbix_server.pid"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string ssl-ca-location
+@item @code{ssl-ca-location} (default: @code{"/etc/ssl/certs/ca-certificates.crt"}) (type: string)
 The location of certificate authority (CA) files for SSL server
 certificate verification.
 
-Defaults to @samp{"/etc/ssl/certs/ca-certificates.crt"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string ssl-cert-location
+@item @code{ssl-cert-location} (default: @code{"/etc/ssl/certs"}) (type: string)
 Location of SSL client certificates.
 
-Defaults to @samp{"/etc/ssl/certs"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} string extra-options
+@item @code{extra-options} (default: @code{""}) (type: extra-options)
 Extra options will be appended to Zabbix server configuration file.
 
-Defaults to @samp{""}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-server-configuration} parameter} include-files include-files
+@item @code{include-files} (default: @code{()}) (type: include-files)
 You may include individual files or all files in a directory in the
 configuration file.
 
-Defaults to @samp{()}.
+@end table
 
-@end deftypevr
+@end deftp
+
 
 @c %end of fragment
 
+@anchor{zabbix-agent}
 @subsubheading Zabbix agent
 @cindex zabbix zabbix-agent
 
-Zabbix agent gathers information for Zabbix server.
+The Zabbix agent gathers information about the running system for the Zabbix
+monitoring server.  It has a variety of built-in checks, and can be extended
+with custom
+@uref{https://www.zabbix.com/documentation/current/en/manual/config/items/userparameters,
+@dfn{user parameters}}.
+
+@defvar {Scheme variable} zabbix-agent-service-type
+This is the service type for the Zabbix agent service.  Its value must be a
+@code{zabbix-agent-configuration} record, shown below.
+@end defvar
 
 @c %start of fragment
 
+@deftp {Data Type} zabbix-agent-configuration
 Available @code{zabbix-agent-configuration} fields are:
 
-@deftypevr {@code{zabbix-agent-configuration} parameter} package zabbix-agent
+@table @asis
+@item @code{zabbix-agent} (default: @code{zabbix-agentd}) (type: file-like)
 The zabbix-agent package.
 
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} string user
+@item @code{user} (default: @code{"zabbix"}) (type: string)
 User who will run the Zabbix agent.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} group group
+@item @code{group} (default: @code{"zabbix"}) (type: group)
 Group who will run the Zabbix agent.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} string hostname
+@item @code{hostname} (default: @code{""}) (type: string)
 Unique, case sensitive hostname which is required for active checks and
 must match hostname as configured on the server.
 
-Defaults to @samp{""}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} string log-type
+@item @code{log-type} (default: @code{""}) (type: string)
 Specifies where log messages are written to:
 
 @itemize @bullet
 @item
 @code{system} - syslog.
 
-@item
-@code{file} - file specified with @code{log-file} parameter.
+@item @code{file} - file specified with
+@code{log-file} parameter.
 
-@item
-@code{console} - standard output.
+@item @code{console} - standard output.
 
 @end itemize
 
-Defaults to @samp{""}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} string log-file
+@item @code{log-file} (default: @code{"/var/log/zabbix/agent.log"}) (type: string)
 Log file name for @code{log-type} @code{file} parameter.
 
-Defaults to @samp{"/var/log/zabbix/agent.log"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} string pid-file
+@item @code{pid-file} (default: @code{"/var/run/zabbix/zabbix_agent.pid"}) (type: string)
 Name of PID file.
 
-Defaults to @samp{"/var/run/zabbix/zabbix_agent.pid"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} list server
+@item @code{server} (default: @code{("127.0.0.1")}) (type: list)
 List of IP addresses, optionally in CIDR notation, or hostnames of
 Zabbix servers and Zabbix proxies.  Incoming connections will be
 accepted only from the hosts listed here.
 
-Defaults to @samp{("127.0.0.1")}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} list server-active
+@item @code{server-active} (default: @code{("127.0.0.1")}) (type: list)
 List of IP:port (or hostname:port) pairs of Zabbix servers and Zabbix
 proxies for active checks.  If port is not specified, default port is
 used.  If this parameter is not specified, active checks are disabled.
 
-Defaults to @samp{("127.0.0.1")}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} string extra-options
+@item @code{extra-options} (default: @code{""}) (type: extra-options)
 Extra options will be appended to Zabbix server configuration file.
 
-Defaults to @samp{""}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-agent-configuration} parameter} include-files include-files
+@item @code{include-files} (default: @code{()}) (type: include-files)
 You may include individual files or all files in a directory in the
 configuration file.
 
-Defaults to @samp{()}.
+@end table
 
-@end deftypevr
+@end deftp
+
 
 @c %end of fragment
 
+@anchor{zabbix-front-end}
 @subsubheading Zabbix front-end
 @cindex zabbix zabbix-front-end
 
-This service provides a WEB interface to Zabbix server.
+The Zabbix front-end provides a web interface to Zabbix.  It does not need
+to run on the same machine as the Zabbix server.  This service works by
+extending the @ref{PHP-FPM} and @ref{NGINX} services with the configuration
+necessary for loading the Zabbix user interface.
+
+@defvar {Scheme variable} zabbix-front-end-service-type
+This is the service type for the Zabbix web frontend.  Its value must be a
+@code{zabbix-front-end-configuration} record, shown below.
+@end defvar
 
 @c %start of fragment
 
+@deftp {Data Type} zabbix-front-end-configuration
 Available @code{zabbix-front-end-configuration} fields are:
 
-@deftypevr {@code{zabbix-front-end-configuration} parameter} nginx-server-configuration-list nginx
-NGINX configuration.
+@table @asis
+@item @code{zabbix-server} (default: @code{zabbix-server}) (type: file-like)
+The Zabbix server package to use.
 
-@end deftypevr
+@item @code{nginx} (default: @code{()}) (type: list)
+List of @ref{nginx-server-configuration,@code{nginx-server-configuration}}
+blocks for the Zabbix front-end.  When empty, a default that listens on
+port 80 is used.
 
-@deftypevr {@code{zabbix-front-end-configuration} parameter} string db-host
+@item @code{db-host} (default: @code{"localhost"}) (type: string)
 Database host name.
 
-Defaults to @samp{"localhost"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-front-end-configuration} parameter} number db-port
+@item @code{db-port} (default: @code{5432}) (type: number)
 Database port.
 
-Defaults to @samp{5432}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-front-end-configuration} parameter} string db-name
+@item @code{db-name} (default: @code{"zabbix"}) (type: string)
 Database name.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-front-end-configuration} parameter} string db-user
+@item @code{db-user} (default: @code{"zabbix"}) (type: string)
 Database user.
 
-Defaults to @samp{"zabbix"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-front-end-configuration} parameter} string db-password
+@item @code{db-password} (default: @code{""}) (type: string)
 Database password.  Please, use @code{db-secret-file} instead.
 
-Defaults to @samp{""}.
+@item @code{db-secret-file} (default: @code{""}) (type: string)
+Secret file which will be appended to @file{zabbix.conf.php} file.  This
+file contains credentials for use by Zabbix front-end.  You are expected
+to create it manually.
 
-@end deftypevr
-
-@deftypevr {@code{zabbix-front-end-configuration} parameter} string db-secret-file
-Secret file containing the credentials for the Zabbix front-end.  The value
-must be a local file name, not a G-expression.  You are expected to create
-this file manually.  Its contents will be copied into @file{zabbix.conf.php}
-as the value of @code{$DB['PASSWORD']}.
-
-Defaults to @samp{""}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-front-end-configuration} parameter} string zabbix-host
+@item @code{zabbix-host} (default: @code{"localhost"}) (type: string)
 Zabbix server hostname.
 
-Defaults to @samp{"localhost"}.
-
-@end deftypevr
-
-@deftypevr {@code{zabbix-front-end-configuration} parameter} number zabbix-port
+@item @code{zabbix-port} (default: @code{10051}) (type: number)
 Zabbix server port.
 
-Defaults to @samp{10051}.
+@end table
 
-@end deftypevr
+@end deftp
 
 
 @c %end of fragment
@@ -26823,6 +26745,7 @@ valued G-expression.
 @end table
 @end deffn
 
+@anchor{nginx-server-configuration}
 @deftp {Data Type} nginx-server-configuration
 Data type representing the configuration of an nginx server block.
 This type has the following parameters:
@@ -27273,6 +27196,8 @@ capability also has to be configured on the front-end as well.
 @end table
 @end deftp
 
+@anchor{PHP-FPM}
+@subsubheading PHP-FPM
 @cindex php-fpm
 PHP-FPM (FastCGI Process Manager) is an alternative PHP FastCGI implementation
 with some additional features useful for sites of any size.
@@ -29908,6 +29833,34 @@ Defaults to @samp{"performance"}.
 Same as @code{pcie-aspm-ac} but on BAT mode.
 
 Defaults to @samp{"powersave"}.
+
+@end deftypevr
+
+@deftypevr {@code{tlp-configuration} parameter} maybe-non-negative-integer start-charge-thresh-bat0
+Percentage when battery 0 should begin charging.  Only supported on some laptops.
+
+Defaults to @samp{disabled}.
+
+@end deftypevr
+
+@deftypevr {@code{tlp-configuration} parameter} maybe-non-negative-integer stop-charge-thresh-bat0
+Percentage when battery 0 should stop charging.  Only supported on some laptops.
+
+Defaults to @samp{disabled}.
+
+@end deftypevr
+
+@deftypevr {@code{tlp-configuration} parameter} maybe-non-negative-integer start-charge-thresh-bat1
+Percentage when battery 1 should begin charging.  Only supported on some laptops.
+
+Defaults to @samp{disabled}.
+
+@end deftypevr
+
+@deftypevr {@code{tlp-configuration} parameter} maybe-non-negative-integer stop-charge-thresh-bat1
+Percentage when battery 1 should stop charging.  Only supported on some laptops.
+
+Defaults to @samp{disabled}.
 
 @end deftypevr
 
@@ -33637,6 +33590,92 @@ Extra command line options for @code{guix-data-service-process-jobs}.
 @end table
 @end deftp
 
+@subsubheading Nar Herder
+The @uref{https://git.cbaines.net/guix/nar-herder/about/,Nar Herder} is
+a utility for managing a collection of nars.
+
+@defvar {Scheme Variable} nar-herder-type
+Service type for the Guix Data Service.  Its value must be a
+@code{nar-herder-configuration} object.  The service optionally
+extends the getmail service, as the guix-commits mailing list is used to
+find out about changes in the Guix git repository.
+@end defvar
+
+@deftp {Data Type} nar-herder-configuration
+Data type representing the configuration of the Guix Data Service.
+
+@table @asis
+@item @code{package} (default: @code{nar-herder})
+The Nar Herder package to use.
+
+@item @code{user} (default: @code{"nar-herder"})
+The system user to run the service as.
+
+@item @code{group} (default: @code{"nar-herder"})
+The system group to run the service as.
+
+@item @code{port} (default: @code{8734})
+The port to bind the server to.
+
+@item @code{host} (default: @code{"127.0.0.1"})
+The host to bind the server to.
+
+@item @code{mirror} (default: @code{#f})
+Optional URL of the other Nar Herder instance which should be mirrored.
+This means that this Nar Herder instance will download it's database,
+and keep it up to date.
+
+@item @code{database} (default: @code{"/var/lib/nar-herder/nar_herder.db"})
+Location for the database.  If this Nar Herder instance is mirroring
+another, the database will be downloaded if it doesn't exist.  If this
+Nar Herder instance isn't mirroring another, an empty database will be
+created.
+
+@item @code{database-dump} (default: @code{"/var/lib/nar-herder/nar_herder_dump.db"})
+Location of the database dump.  This is created and regularly updated by
+taking a copy of the database.  This is the version of the database that
+is available to download.
+
+@item @code{storage} (default: @code{#f})
+Optional location in which to store nars.
+
+@item @code{storage-limit} (default: @code{"none"})
+Limit in bytes for the nars stored in the storage location.  This can
+also be set to ``none'' so that there is no limit.
+
+When the storage location exceeds this size, nars are removed according
+to the nar removal criteria.
+
+@item @code{storage-nar-removal-criteria} (default: @code{'()})
+Criteria used to remove nars from the storage location.  These are used
+in conjunction with the storage limit.
+
+When the storage location exceeds the storage limit size, nars will be
+checked against the nar removal criteria and if any of the criteria
+match, they will be removed.  This will continue until the storage
+location is below the storage limit size.
+
+Each criteria is specified by a string, then an equals sign, then
+another string. Currently, only one criteria is supported, checking if a
+nar is stored on another Nar Herder instance.
+
+@item @code{ttl} (default: @code{#f})
+Produce @code{Cache-Control} HTTP headers that advertise a time-to-live
+(TTL) of @var{ttl}.  @var{ttl} must denote a duration: @code{5d} means 5
+days, @code{1m} means 1 month, and so on.
+
+This allows the user's Guix to keep substitute information in cache for
+@var{ttl}.
+
+@item @code{negative-ttl} (default: @code{#f})
+Similarly produce @code{Cache-Control} HTTP headers to advertise the
+time-to-live (TTL) of @emph{negative} lookups---missing store items, for
+which the HTTP 404 code is returned.  By default, no negative TTL is
+advertised.
+
+@end table
+@end deftp
+
 @node Linux Services
 @subsection Linux Services
 
@@ -35724,8 +35763,20 @@ bootloader boot menu:
 @table @code
 
 @item describe
-Describe the current system generation: its file name, the kernel and
+Describe the running system generation: its file name, the kernel and
 bootloader used, etc., as well as provenance information when available.
+
+@quotation Note
+The @emph{running} system generation---referred to by
+@file{/run/current-system}---is not necessarily the @emph{current}
+system generation---referred to by @file{/var/guix/profiles/system}: it
+differs when, for instance, you chose from the bootloader menu to boot
+an older generation.
+
+It can also differ from the @emph{booted} system generation---referred
+to by @file{/run/booted-system}---for instance because you reconfigured
+the system in the meantime.
+@end quotation
 
 @item list-generations
 List a summary of each generation of the operating system available on
@@ -35901,6 +35952,30 @@ be accomplished with the following operating system configuration snippet:
 
 For more information regarding the format of the @file{sudoers} file,
 consult @command{man sudoers}.
+
+Once you've deployed a system on a set of machines, you may find it
+useful to run a command on all of them.  The @option{--execute} or
+@option{-x} option lets you do that; the example below runs
+@command{uname -a} on all the machines listed in the deployment file:
+
+@example
+guix deploy @var{file} -x -- uname -a
+@end example
+
+One thing you may often need to do after deployment is restart specific
+services on all the machines, which you can do like so:
+
+@example
+guix deploy @var{file} -x -- herd restart @var{service}
+@end example
+
+The @command{guix deploy -x} command returns zero if and only if the
+command succeeded on all the machines.
+
+@c FIXME/TODO: Separate the API doc from the CLI doc.
+
+Below are the data types you need to know about when writing a
+deployment file.
 
 @deftp {Data Type} machine
 This is the data type representing a single machine in a heterogeneous Guix
@@ -37461,6 +37536,7 @@ services)}.
 * Shells: Shells Home Services.          POSIX shells, Bash, Zsh.
 * Mcron: Mcron Home Service.             Scheduled User's Job Execution.
 * Shepherd: Shepherd Home Service.       Managing User's Daemons.
+* Desktop: Desktop Home Services.        Services for graphical environments.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -37848,6 +37924,85 @@ mechanism instead (@pxref{Shepherd Services}).
 @end table
 @end deftp
 
+@node Desktop Home Services
+@subsection Desktop Home Services
+
+The @code{(gnu home services desktop)} module provides services that you
+may find useful on ``desktop'' systems running a graphical user
+environment such as Xorg.
+
+@defvr {Scheme Variable} home-redshift-service-type
+This is the service type for @uref{https://github.com/jonls/redshift,
+Redshift}, a program that adjusts the display color temperature
+according to the time of day.  Its associated value must be a
+@code{home-redshift-configuration} record, as shown below.
+
+A typical configuration, where we manually specify the latitude and
+longitude, might look like this:
+
+@lisp
+(service home-redshift-service-type
+         (home-redshift-configuration
+          (location-provider 'manual)
+          (latitude 35.81)    ;northern hemisphere
+          (longitude -0.80))) ;west of Greenwich
+@end lisp
+@end defvr
+
+@deftp {Data Type} home-redshift-configuration
+Available @code{home-redshift-configuration} fields are:
+
+@table @asis
+@item @code{redshift} (default: @code{redshift}) (type: file-like)
+Redshift package to use.
+
+@item @code{location-provider} (default: @code{geoclue2}) (type: symbol)
+Geolocation provider---@code{'manual} or @code{'geoclue2}.  In the
+former case, you must also specify the @code{latitude} and
+@code{longitude} fields so Redshift can determine daytime at your place.
+In the latter case, the Geoclue system service must be running; it will
+be queried for location information.
+
+@item @code{adjustment-method} (default: @code{randr}) (type: symbol)
+Color adjustment method.
+
+@item @code{daytime-temperature} (default: @code{6500}) (type: integer)
+Daytime color temperature (kelvins).
+
+@item @code{nighttime-temperature} (default: @code{4500}) (type: integer)
+Nighttime color temperature (kelvins).
+
+@item @code{daytime-brightness} (default: @code{disabled}) (type: maybe-inexact-number)
+Daytime screen brightness, between 0.1 and 1.0.
+
+@item @code{nighttime-brightness} (default: @code{disabled}) (type: maybe-inexact-number)
+Nighttime screen brightness, between 0.1 and 1.0.
+
+@item @code{latitude} (default: @code{disabled}) (type: maybe-inexact-number)
+Latitude, when @code{location-provider} is @code{'manual}.
+
+@item @code{longitude} (default: @code{disabled}) (type: maybe-inexact-number)
+Longitude, when @code{location-provider} is @code{'manual}.
+
+@item @code{dawn-time} (default: @code{disabled}) (type: maybe-string)
+Custom time for the transition from night to day in the
+morning---@code{"HH:MM"} format.  When specified, solar elevation is not
+used to determine the daytime/nighttime period.
+
+@item @code{dusk-time} (default: @code{disabled}) (type: maybe-string)
+Likewise, custom time for the transition from day to night in the
+evening.
+
+@item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
+Extra content appended as-is to the Redshift configuration file.  Run
+@command{man redshift} for more information about the configuration file
+format.
+
+@end table
+
+@end deftp
+
+
 @node Invoking guix home
 @section Invoking @code{guix home}
 
@@ -38071,6 +38226,16 @@ following:
 Consider the home-environment @var{expr} evaluates to.
 This is an alternative to specifying a file which evaluates to a home
 environment.
+
+@item --allow-downgrades
+Instruct @command{guix home reconfigure} to allow system downgrades.
+
+Just like @command{guix system}, @command{guix home reconfigure}, by
+default, prevents you from downgrading your home to older or unrelated
+revisions compared to the channel revisions that were used to deploy
+it---those shown by @command{guix home describe}.  Using
+@option{--allow-downgrades} allows you to bypass that check, at the risk
+of downgrading your home---be careful!
 
 @end table
 

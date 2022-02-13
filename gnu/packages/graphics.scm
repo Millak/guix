@@ -27,6 +27,7 @@
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -410,14 +411,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.0.0")
+    (version "3.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "1jzirg60c2lhln78a7phbsk2ssvcdqxqb3awp895m0pqrlmz7w2h"))))
+                "0hblgls5pclqamsxk0vb14f4fm30hdiq7fb2bm5mq2ly4sb0mfqr"))))
     (build-system cmake-build-system)
     (arguments
       (let ((python-version (version-major+minor (package-version python))))
@@ -618,9 +619,9 @@ more.")
                         "|"))))))))
     (native-inputs
      (list bison
-           clang
+           clang-9
            flex
-           llvm
+           llvm-9
            pybind11
            python-wrapper))
     (inputs
@@ -1961,15 +1962,16 @@ and build scripts for the OpenXR loader.")
             "0n04k7a8b0i8ga0kbzh7qxmvni1ijawgk98s83519vxg4d0yyjbq"))))
     (build-system meson-build-system)
     (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("glslang" ,glslang)
-       ("libudev" ,eudev)
-       ("libusb" ,libusb)
-       ("libxcb" ,libxcb)
-       ("libxrandr" ,libxrandr)
-       ("opengl" ,mesa)
-       ("v4l" ,v4l-utils)
-       ("vulkan-loader" ,vulkan-loader)))
+     (list ffmpeg
+           glslang
+           eudev
+           libusb
+           libxcb
+           libxrandr
+           mesa
+           python
+           v4l-utils
+           vulkan-loader))
     (native-inputs
      (list eigen pkg-config vulkan-headers))
     (arguments

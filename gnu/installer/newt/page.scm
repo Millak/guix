@@ -22,6 +22,7 @@
   #:use-module (gnu installer steps)
   #:use-module (gnu installer utils)
   #:use-module (gnu installer newt utils)
+  #:use-module (guix build utils)
   #:use-module (guix i18n)
   #:use-module (ice-9 i18n)
   #:use-module (ice-9 match)
@@ -43,6 +44,10 @@
             run-scale-page
             run-checkbox-tree-page
             run-file-textbox-page
+            %ok-button
+            %exit-button
+            run-textbox-page
+            run-dump-page
 
             run-form-with-clients))
 
@@ -93,9 +98,9 @@ disconnect.
 Like 'run-form', return two values: the exit reason, and an \"argument\"."
   (define* (discard-client! port #:optional errno)
     (if errno
-        (syslog "removing client ~d due to ~s~%"
+        (installer-log-line "removing client ~d due to ~s"
                 (fileno port) (strerror errno))
-        (syslog "removing client ~d due to EOF~%"
+        (installer-log-line "removing client ~d due to EOF"
                 (fileno port)))
 
     ;; XXX: Watch out!  There's no 'form-unwatch-fd' procedure in Newt so we
@@ -124,7 +129,7 @@ Like 'run-form', return two values: the exit reason, and an \"argument\"."
   (send-to-clients exp)
 
   (let loop ()
-    (syslog "running form ~s (~s) with ~d clients~%"
+    (installer-log-line "running form ~s (~s) with ~d clients"
             form title (length (current-clients)))
 
     ;; Call 'watch-clients!' within the loop because there might be new
@@ -146,7 +151,7 @@ Like 'run-form', return two values: the exit reason, and an \"argument\"."
                        (discard-client! port)
                        (loop))
                       (obj
-                       (syslog "form ~s (~s): client ~d replied ~s~%"
+                       (installer-log-line "form ~s (~s): client ~d replied ~s"
                                form title (fileno port) obj)
                        (values 'exit-fd-ready obj))))
                   (lambda args
@@ -156,8 +161,9 @@ Like 'run-form', return two values: the exit reason, and an \"argument\"."
                 ;; Accept a new client and send it EXP.
                 (match (accept port)
                   ((client . _)
-                   (syslog "accepting new client ~d while on form ~s~%"
-                           (fileno client) form)
+                   (installer-log-line
+                    "accepting new client ~d while on form ~s"
+                    (fileno client) form)
                    (catch 'system-error
                      (lambda ()
                        (write exp client)
@@ -486,7 +492,7 @@ the current listbox item has to be selected by key."
                         (string=? str (listbox-item->text item))))
                      keys)
           ((key . item) item)
-          (#f (raise (condition (&installer-step-abort))))))
+          (#f (abort-to-prompt 'installer-step 'abort))))
 
       ;; On every listbox element change, check if we need to skip it. If yes,
       ;; depending on the 'last-listbox-key', jump forward or backward. If no,
@@ -688,7 +694,7 @@ ITEMS when 'Ok' is pressed."
                         (string=? str (item->text item))))
                      keys)
           ((key . item) item)
-          (#f (raise (condition (&installer-step-abort))))))
+          (#f (abort-to-prompt 'installer-step 'abort))))
 
       (add-form-to-grid grid form #t)
       (make-wrapped-grid-window grid title)
@@ -726,8 +732,7 @@ ITEMS when 'Ok' is pressed."
   (newt-suspend)
   ;; Use Nano because it syntax-highlights Scheme by default.
   ;; TODO: Add a menu to choose an editor?
-  (run-command (list "/run/current-system/profile/bin/nano" file)
-               #:locale locale)
+  (invoke "nano" file)
   (newt-resume))
 
 (define* (run-file-textbox-page #:key
@@ -811,6 +816,151 @@ ITEMS when 'Ok' is pressed."
               (destroy-form-and-pop form))))
 
         (if (and (eq? exit-reason 'exit-component)
+                 edit-button
                  (components=? argument edit-button))
             (loop)                                ;recurse in tail position
             result)))))
+
+(define %ok-button
+  (cons (G_ "Ok")  (lambda () #t)))
+
+(define %exit-button
+  (cons (G_ "Exit") (lambda () (abort-to-prompt 'installer-step 'abort))))
+
+(define %default-buttons
+  (list %ok-button %exit-button))
+
+(define (make-newt-buttons buttons-spec)
+  (map
+   (match-lambda ((title . proc)
+                  (cons (make-button -1 -1 title) proc)))
+   buttons-spec))
+
+(define* (run-textbox-page #:key
+                           title
+                           info-text
+                           content
+                           (buttons-spec %default-buttons))
+  "Run a page to display INFO-TEXT followed by CONTENT to the user, who has to
+choose an action among the buttons specified by BUTTONS-SPEC.
+
+BUTTONS-SPEC is an association list with button labels as keys, and callback
+procedures as values.
+
+This procedure returns the result of the callback procedure of the button
+chosen by the user."
+  (define info-textbox
+    (make-reflowed-textbox -1 -1 info-text
+                           50
+                           #:flags FLAG-BORDER))
+  (define content-textbox
+    (make-textbox -1 -1
+                  50
+                  30
+                  (logior FLAG-SCROLL FLAG-BORDER)))
+  (define buttons
+    (make-newt-buttons buttons-spec))
+  (define grid
+    (vertically-stacked-grid
+     GRID-ELEMENT-COMPONENT info-textbox
+     GRID-ELEMENT-COMPONENT content-textbox
+     GRID-ELEMENT-SUBGRID
+     (apply
+      horizontal-stacked-grid
+      (append-map (match-lambda ((button . proc)
+                                 (list GRID-ELEMENT-COMPONENT button)))
+                  buttons))))
+  (define form (make-form #:flags FLAG-NOF12))
+  (add-form-to-grid grid form #t)
+  (make-wrapped-grid-window grid title)
+  (set-textbox-text content-textbox
+                    (receive (_w _h text)
+                        (reflow-text content
+                                     50
+                                     0 0)
+                      text))
+
+  (receive (exit-reason argument)
+      (run-form-with-clients form
+                             `(contents-dialog (title ,title)
+                                               (text ,info-text)
+                                               (content ,content)))
+    (destroy-form-and-pop form)
+    (match exit-reason
+      ('exit-component
+       (let ((proc (assq-ref buttons argument)))
+         (if proc
+             (proc)
+             (raise
+              (condition
+               (&serious)
+               (&message
+                (message (format #f "Unable to find corresponding PROC for \
+component ~a." argument))))))))
+      ;; TODO
+      ('exit-fd-ready
+       (raise (condition (&serious)))))))
+
+(define* (run-dump-page base-dir file-choices)
+  (define info-textbox
+    (make-reflowed-textbox -1 -1 "Please select files you wish to include in \
+the dump."
+                           50
+                           #:flags FLAG-BORDER))
+  (define components
+    (map (match-lambda ((file . enabled)
+                        (list
+                         (make-compact-button -1 -1 "Edit")
+                         (make-checkbox -1 -1 file (if enabled #\x #\ ) " x")
+                         file)))
+         file-choices))
+
+  (define sub-grid (make-grid 2 (length components)))
+
+  (for-each
+   (match-lambda* (((button checkbox _) index)
+                   (set-grid-field sub-grid 0 index
+                                   GRID-ELEMENT-COMPONENT checkbox
+                                   #:anchor ANCHOR-LEFT)
+                   (set-grid-field sub-grid 1 index
+                                   GRID-ELEMENT-COMPONENT button
+                                   #:anchor ANCHOR-LEFT)))
+   components (iota (length components)))
+
+  (define grid
+    (vertically-stacked-grid
+     GRID-ELEMENT-COMPONENT info-textbox
+     GRID-ELEMENT-SUBGRID sub-grid
+     GRID-ELEMENT-COMPONENT (make-button -1 -1 "Create")))
+
+  (define form (make-form #:flags FLAG-NOF12))
+
+  (add-form-to-grid grid form #t)
+  (make-wrapped-grid-window grid "Installer dump")
+
+  (define prompt-tag (make-prompt-tag))
+
+  (let loop ()
+    (call-with-prompt prompt-tag
+      (lambda ()
+        (receive (exit-reason argument)
+            (run-form-with-clients form
+                                   `(dump-page))
+          (match exit-reason
+            ('exit-component
+             (let ((result
+                    (map (match-lambda
+                           ((edit checkbox filename)
+                            (if (components=? edit argument)
+                                (abort-to-prompt prompt-tag filename)
+                                (cons filename (eq? #\x
+                                                    (checkbox-value checkbox))))))
+                         components)))
+               (destroy-form-and-pop form)
+               result))
+            ;; TODO
+            ('exit-fd-ready
+             (raise (condition (&serious)))))))
+      (lambda (k file)
+        (edit-file (string-append base-dir "/" file))
+        (loop)))))

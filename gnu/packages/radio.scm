@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2019, 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -270,7 +270,7 @@ with this package.  E.g.: @code{(udev-rules-service 'airspyhf airspyhf)}")
 (define-public soapysdr
   (package
     (name "soapysdr")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -279,7 +279,7 @@ with this package.  E.g.: @code{(udev-rules-service 'airspyhf airspyhf)}")
              (commit (string-append "soapy-sdr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dy25zxk7wmg7ik82dx7h3bbbynvalbz1dxsl7kgm3374yxhnixv"))))
+        (base32 "19f2x0pkxvf9figa0pl6xqlcz8fblvqb19mcnj632p0l8vk6qdv2"))))
     (build-system cmake-build-system)
     (native-inputs
      (list python swig))
@@ -320,32 +320,28 @@ SoapySDR library.")
     (license license:expat)))
 
 (define-public soapyhackrf
-  ;; Use commit because some fixes are not in a release yet
-  ;; (last release was in 2018).
-  (let ((commit "8d2e7beebb4c451609cb0cee236fa4d20a0e28b1")
-        (revision "2"))
-    (package
-      (name "soapyhackrf")
-      (version (git-version "0.3.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/pothosware/SoapyHackRF")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0l5890a240i1fan88jjdxaqswk3as410nlrv12a698fy9npqh4w4"))))
-      (build-system cmake-build-system)
-      (inputs
-       (list hackrf soapysdr))
-      (arguments
-       `(#:tests? #f))  ; No test suite
-      (home-page "https://github.com/pothosware/SoapyHackRF/wiki")
-      (synopsis "SoapySDR HackRF module")
-      (description
-       "This package provides HackRF devices support to the SoapySDR library.")
-      (license license:expat))))
+  (package
+    (name "soapyhackrf")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pothosware/SoapyHackRF")
+             (commit (string-append "soapy-hackrf-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wnnsm3c4ivwcbs1b68svbyds13aajws9mqk2xjc2pqgj0fdhcvz"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list hackrf soapysdr))
+    (arguments
+     `(#:tests? #f))  ; No test suite
+    (home-page "https://github.com/pothosware/SoapyHackRF/wiki")
+    (synopsis "SoapySDR HackRF module")
+    (description
+     "This package provides HackRF devices support to the SoapySDR library.")
+    (license license:expat)))
 
 (define-public soapyrtlsdr
   (package
@@ -374,14 +370,14 @@ SoapySDR library.")
 (define-public chirp
   (package
     (name "chirp")
-    (version "20211016")
+    (version "20220118")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://trac.chirp.danplanet.com/chirp_daily/daily-"
                            version "/chirp-daily-" version ".tar.gz"))
        (sha256
-        (base32 "13xzqnhvnw6yipv4izkq0s9ykyl9pc5ifpr1ii8xfp28ch706qyw"))))
+        (base32 "0q2ifmprxqqxnww8fx8fjmm2lv9vdv6xzsk1ysa27fb290vgyawn"))))
     (build-system python-build-system)
     (inputs
      (list python2-libxml2 python2-pygtk python2-pyserial))
@@ -397,8 +393,8 @@ memory contents between them.")
 
 (define-public aptdec
   ;; No release since 2013, use commit directly.
-  (let ((commit "5f91799637d93dfe7791caa7e9a6683050c4f8f3")
-        (revision "1"))
+  (let ((commit "51405971fd4e97714d1e987269e49c6edfe4e0da")
+        (revision "2"))
     (package
       (name "aptdec")
       (version (git-version "1.7" revision commit))
@@ -410,7 +406,7 @@ memory contents between them.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0i7vkjjrq392gs9qaibr7j3v4hijqqg8458dn21dwh16ncrvr9bp"))))
+          (base32 "0fzkhqnbkc2dd39jzb5m5mwcl31b0x3w0yykpx4s195llq4bdvis"))))
       (build-system cmake-build-system)
       (inputs
        (list libpng libsndfile))
@@ -428,7 +424,7 @@ and a dedicated receiver.")
 (define-public redsea
   (package
     (name "redsea")
-    (version "0.18")
+    (version "0.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -437,7 +433,7 @@ and a dedicated receiver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y96g0ra2krjb2kypm8s5gdfia45yci4f36klsvyzg8d53v5cwhn"))))
+                "1bx4l87vz935cj5hapdh1dkjlmlfg73cgsjaf27314n7p4xkv50v"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -822,7 +818,7 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.15.4")
+    (version "2.15.8")
     (source
      (origin
        (method git-fetch)
@@ -831,7 +827,7 @@ satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r5pdj2l6zs2zvkc1bd7kg9vzx25pcgiw025n5yc841m8yg6n2c9"))))
+        (base32 "1ph7fnjxfv7rfdlh17c8j4djvkfqjnalmcvnafhnq7agjy428727"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -901,7 +897,7 @@ hardware.")
 (define-public flrig
   (package
     (name "flrig")
-    (version "1.3.52")
+    (version "1.4.04")
     (source
      (origin
        (method git-fetch)
@@ -910,12 +906,12 @@ hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vxn1wy5b2zfq20k93rfgq34m1nd3mxd74h8l98f90d85fhcqggy"))))
+        (base32 "06alzln46x08110v1ghasphr2mmznzk0x5h59vl9g2w1z12i9zsm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
-     (list fltk libx11 libxext libxfixes libxft))
+     (list eudev fltk libx11 libxext libxfixes libxft))
     (synopsis "Radio transceiver control program")
     (description
      "Flrig is a transceiver control program for amateur radio use.
@@ -946,6 +942,32 @@ or USB connection.")
     (description
      "FLAMP is a program for transferring files by radio waves using AMP
 (Amateur Multicast Protocol).")
+    (home-page "http://www.w1hkj.com/")
+    (license license:gpl3+)))
+
+(define-public flmsg
+  (package
+    (name "flmsg")
+    (version "4.0.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.code.sf.net/p/fldigi/flmsg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "157s6mvky9h094hkncm47964qh0bnwg0m2rw3wx0qj1mh5isxv4j"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake pkg-config))
+    (inputs
+     (list fltk libx11 libxext libxfixes libxft))
+    (synopsis "NBEMS messaging system")
+    (description
+     "FLMSG is a Narrow Band Emergency Messaging Software (NBEMS).
+It can be used to manage, send and receive the forms that are used as basis
+for emergency communications data transfers (like ICS213 forms).")
     (home-page "http://www.w1hkj.com/")
     (license license:gpl3+)))
 
@@ -1029,7 +1051,7 @@ you must extend 'udev-service-type' with this package.  E.g.:
 (define-public hamlib
   (package
     (name "hamlib")
-    (version "4.3.1")
+    (version "4.4")
     (source
      (origin
        (method url-fetch)
@@ -1037,7 +1059,7 @@ you must extend 'udev-service-type' with this package.  E.g.:
              "https://github.com/Hamlib/Hamlib/releases/download/"
              version "/hamlib-" version ".tar.gz"))
        (sha256
-        (base32 "0c578m04zs8dllbd4cv6nxb44y0dn8kiapzkih84ycfjzmnkhdrl"))))
+        (base32 "11r4i8gmxnb6ixpk4ns38c9xwj3qibp2v3pkhy2z0lhz0xxi1w4b"))))
     (build-system gnu-build-system)
     (native-inputs
      (list doxygen
@@ -1150,7 +1172,7 @@ instances over the network, and general QSO and DXpedition logging.")
 (define-public wsjtx
   (package
     (name "wsjtx")
-    (version "2.5.2")
+    (version "2.5.4")
     (source
      (origin
        (method git-fetch)
@@ -1159,7 +1181,7 @@ instances over the network, and general QSO and DXpedition logging.")
              (commit (string-append "wsjtx-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01346f2x3jc0gbzdi7ihzr9rxibnbzn31ix0879qfavrv8l31k1s"))))
+        (base32 "0nciw9smrfcsirlwyny5r9h7sk2zvm40m56y1hxpgpmbnh6mqikh"))))
     (build-system qt-build-system)
     (native-inputs
      (list asciidoc gfortran pkg-config qttools ruby-asciidoctor))
@@ -1246,19 +1268,39 @@ operators.")
 (define-public xnec2c
   (package
     (name "xnec2c")
-    (version "4.2")
+    (version "4.4.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.5b4az.org/pkg/nec2/xnec2c/xnec2c-"
-                           version ".tar.bz2"))
+       (uri (string-append "https://www.xnec2c.org/releases/xnec2c-v"
+                           version ".tar.gz"))
        (sha256
-        (base32 "0jprahww6jvwq616lkq80sac166ffy0fp83gr5kvjc9k4pcls00n"))))
+        (base32 "0v3qr16d42jri2vwwgrhhknaypdcjyn6ccdjpqfzr8zzr33z5pca"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list autoconf
+           automake
+           gettext-minimal
+           `(,glib "bin")
+           libtool
+           pkg-config))
     (inputs
-     (list gtk+))
+     (list gtk+ openblas))
+    (arguments
+     `(#:configure-flags
+       ,#~(list (string-append "--with-openblas-incdir="
+                               #$(this-package-input "openblas")
+                               "/include"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/Makefile.am"
+               (("\\$\\(GLIB_COMPILE_RESOURCES\\)")
+                (search-input-file inputs "bin/glib-compile-resources")))
+             (substitute* "src/mathlib.c"
+               (("libopenblas\\.so")
+                (search-input-file inputs "lib/libopenblas.so"))))))))
     (synopsis "Antenna modeling software")
     (description
      "Xnec2c is a GTK3-based graphical version of nec2c, a translation to the
@@ -1266,13 +1308,13 @@ C language of NEC2, the FORTRAN Numerical Electromagnetics Code commonly used
 for antenna simulation and analysis.  It can be used to define the geometry of
 an antenna, and then plot the radiation pattern or frequency-related data like
 gain and standing wave ratio.")
-    (home-page "http://www.5b4az.org/")
+    (home-page "https://www.xnec2c.org/")
     (license license:gpl3+)))
 
 (define-public dump1090
   (package
     (name "dump1090")
-    (version "6.1")
+    (version "7.1")
     (source
      (origin
        (method git-fetch)
@@ -1281,7 +1323,7 @@ gain and standing wave ratio.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13ssp2c3s18rszpmm3rpvicqvgvfiirsjf294m6r1sf3ji7ygd9q"))))
+        (base32 "1702qv5g27sgpqf98sj2qbg36sqzc7r3kssslzzgljqkr5jgrw6m"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -1539,6 +1581,32 @@ methods:
      "@code{unixcw} is a project providing the libcw library and a set of
 programs using the library: cw, cwgen, cwcp and xcwcp.  The programs are
 intended for people who want to learn receiving and sending morse code.")
+    (license license:gpl2+)))
+
+(define-public kochmorse
+  (package
+    (name "kochmorse")
+    (version "3.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hmatuschek/kochmorse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s1aj223n57rpc95rih98z08xnyhq2zp02byzrc3f7s01fv3nj0l"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list qttools))
+    (inputs
+     (list qtbase-5 qtmultimedia))
+    (arguments
+     `(#:tests? #f)) ; No test suite
+    (home-page "https://dm3mat.darc.de/kochmorse/")
+    (synopsis "Morse code tutor")
+    (description
+     "KochMorse is a simple morse-code tutor using the Koch method.")
     (license license:gpl2+)))
 
 (define-public gnuais
@@ -1911,7 +1979,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "6.17.5")
+    (version "6.18.1")
     (source
      (origin
        (method git-fetch)
@@ -1920,7 +1988,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g9972q78nxl62hpyn029s85ny5jj9dxlmmfqyz3l9sd6kdv9kl6"))))
+        (base32 "17lakqy55p481fa5w6ylh79xbd4rdiqk9y21vmi4m2r4wx893zw1"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))

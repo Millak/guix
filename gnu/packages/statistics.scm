@@ -717,14 +717,14 @@ single hidden layer, and for multinomial log-linear models.")
 (define-public r-rpart
   (package
     (name "r-rpart")
-    (version "4.1-15")
+    (version "4.1.16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rpart" version))
        (sha256
         (base32
-         "0p5frya963ppn476p5dxs2mnarsalksr6gw9zzmjsn8ikq7bx3ib"))))
+         "0p22657j6ps6z1dn0ja2fhq4k5xd1rv3cpwzk6nmjd2si8jpbv17"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rpart")
     (synopsis "Recursive partitioning and regression trees")
@@ -986,13 +986,13 @@ algorithms.")
 (define-public r-magrittr
   (package
     (name "r-magrittr")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "magrittr" version))
        (sha256
-        (base32 "0pxd99fvg406whqsk9wh756rayrwh84xn3h44zmlpcy23kanbhkm"))))
+        (base32 "19k3q76qlri459iyyfgn9gl0w9lnv9v604yhpbc94nx71l6zvrkv"))))
     (build-system r-build-system)
     ;; knitr needs magrittr
     #;
@@ -1031,15 +1031,16 @@ Munsell colour system.")
 (define-public r-permute
   (package
    (name "r-permute")
-   (version "0.9-5")
+   (version "0.9-7")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "permute" version))
      (sha256
       (base32
-       "0ra8p5mf2590azrkas8z2ry7mif77xqxd29n4zgyi5vll225726j"))))
+       "1h4dyhcsv8p3h3qxsy98pib9v79dddvrnq7qx6abkblsazxqzy7g"))))
    (build-system r-build-system)
+   (native-inputs (list r-knitr))
    ;; Tests do not run correctly, but running them properly would entail a
    ;; circular dependency with vegan.
    (home-page "https://github.com/gavinsimpson/permute")
@@ -1509,13 +1510,13 @@ syntax that can be converted to XHTML or other formats.")
 (define-public r-yaml
   (package
     (name "r-yaml")
-    (version "2.2.1")
+    (version "2.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "yaml" version))
               (sha256
                (base32
-                "10r7g26x73am45niigm3k466030nymnr3v3fjljafzrr5aybf58i"))))
+                "0c7pk5fq79mkqpc398hg8zj01frv4araglyppli49sqr4yx6mp55"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/yaml/")
     (synopsis "Methods to convert R data to YAML and back")
@@ -1732,13 +1733,13 @@ defined in different packages.")
 (define-public r-rlang
   (package
     (name "r-rlang")
-    (version "0.4.12")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlang" version))
               (sha256
                (base32
-                "05cr08smr8dlk10m810rw4qi1yhgnny83rwkxib0l4my71br29ia"))))
+                "0skf75rhq9y6f09shcjlm1dlh7rlwpyr4mx1l8xn201igg4k8qdb"))))
     (build-system r-build-system)
     (home-page "http://rlang.tidyverse.org")
     (synopsis "Functions for base types, core R and Tidyverse features")
@@ -2622,13 +2623,13 @@ time-of-day values, based on the @code{difftime} class.")
 (define-public r-readr
   (package
     (name "r-readr")
-    (version "2.1.1")
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "readr" version))
               (sha256
                (base32
-                "115w3hgp1w6hr0h2nz840i6mm1pnqzwfbxcmf9ca3qs7llc7k4q3"))))
+                "06qcw57yz0fhh3ni41d5w68cbmwmb6zkp47chllwzax43wxd1bwl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -2712,13 +2713,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "0.10.7.5.0")
+    (version "0.10.8.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "0516j6n657kxm8sdbxf3jd9z40px9mv7zza4fz8nih63f5iiw1kw"))))
+                "1x7mk85rc4pmn17nm63k6rbkarsmghjapznias268545nfpib97g"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3112,15 +3113,16 @@ statements.")
 (define-public r-segmented
   (package
     (name "r-segmented")
-    (version "1.3-4")
+    (version "1.4-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "segmented" version))
        (sha256
         (base32
-         "0bchqcy308kbywavgyg9kb4543rbkfn753q9c6d7l7aw7sxvyxl2"))))
+         "0xn28gyqzmyz0kv352rkkznbj806arxj2am5a9gqsn1qzv9l0s9h"))))
     (build-system r-build-system)
+    (propagated-inputs (list r-mass))
     (home-page "https://cran.r-project.org/web/packages/segmented")
     (synopsis "Regression models with breakpoints estimation")
     (description
@@ -5233,14 +5235,14 @@ analysis} (PCA) by projection pursuit.")
 (define-public r-rrcov
   (package
     (name "r-rrcov")
-    (version "1.6-0")
+    (version "1.6-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rrcov" version))
        (sha256
         (base32
-         "0i69gv55c86gkclwhch0jzdfyb20l20mx1nx1xp9qz71nd4klpvr"))))
+         "142x60zcgz61iw0ps78hh4cmny3ch0hb3lac6z87bhys5c7m0fwz"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice r-mvtnorm r-pcapp r-robustbase))
@@ -5496,18 +5498,18 @@ using modular prediction and response module classes.")
 (define-public r-quantreg
   (package
     (name "r-quantreg")
-    (version "5.86")
+    (version "5.87")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quantreg" version))
        (sha256
-        (base32 "01fnp6ndh7npxj76xlynndacsgmcfr9kgh2waw0clx3mmwlwilbi"))))
+        (base32 "13m3znkrrkf19s3lz6984lzrznng4nma38yy17pqjfzmwl4yzmws"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
     (propagated-inputs
-     (list r-conquer r-matrix r-matrixmodels r-sparsem))
+     (list r-matrix r-matrixmodels r-sparsem))
     (home-page "https://www.r-project.org")
     (synopsis "Quantile regression")
     (description
@@ -5521,20 +5523,21 @@ expected shortfall risk are also included.")
 (define-public r-nloptr
   (package
     (name "r-nloptr")
-    (version "1.2.2.3")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nloptr" version))
        (sha256
         (base32
-         "1zznk9f2w2g02zqzay21k8xqzfvc6icxfzp6bx2wpd77sm7vf25g"))))
+         "16k124ll14p3ygny6i1zd7yza83bv2sk87x922n1bfn9rx4k3jk5"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr ; for building vignettes
            pkg-config gfortran))
     (inputs
      (list nlopt))
+    (propagated-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/nloptr")
     (synopsis "R interface to NLopt")
     (description
@@ -6071,6 +6074,91 @@ You can customize the colors according to your taste, guided by the color
 table made by the command @code{show256Colors()}.  You can also set the colors
 to any arbitrary string.  In this case, it is up to you to set valid values.")
     (license license:gpl3+)))
+
+(define-public r-nnlm
+  (let ((commit "4574bca9456fe2285b668b4c22a908cffbad10a0")
+        (revision "1"))
+    (package
+      (name "r-nnlm")
+      (version (git-version "0.4.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/linxihui/NNLM")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1qzvav4ch0j1k7jcqzk9cvl8dx79fapmvdzmzzyl8smscybhfgba"))))
+      (properties `((upstream-name . "NNLM")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppprogress))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/linxihui/NNLM")
+      (synopsis "Fast and versatile non-negative matrix factorization")
+      (description
+       "This is a package for @dfn{Non-Negative Linear Models} (NNLM).  It
+implements fast sequential coordinate descent algorithms for non-negative
+linear regression and @dfn{non-negative matrix factorization} (NMF).  It
+supports mean square error and Kullback-Leibler divergence loss.  Many other
+features are also implemented, including missing value imputation, domain
+knowledge integration, designable W and H matrices and multiple forms of
+regularizations.")
+      (license license:bsd-2))))
+
+(define-public r-swne
+  (let ((commit "05fc3ee4e09b2c34d99c69d3b97cece4c1c34143")
+        (revision "1"))
+    (package
+      (name "r-swne")
+      (version (git-version "0.6.20" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/yanwu2014/swne")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0crlpg9kclbv4v8250p3086a3lk6f2hcq79psqkdylc1qnrx3kfx"))))
+      (properties `((upstream-name . "swne")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-fnn
+             r-ggplot2
+             r-ggrepel
+             r-hash
+             r-ica
+             r-igraph
+             r-irlba
+             r-jsonlite
+             r-liger
+             r-mass
+             r-matrix
+             r-mgcv
+             r-nnlm ;not listed but required at install time
+             r-plyr
+             r-proxy
+             r-rcolorbrewer
+             r-rcpp
+             r-rcpparmadillo
+             r-rcppeigen
+             r-reshape
+             r-reshape2
+             r-snow
+             r-umap
+             r-usedist))
+      (home-page "https://github.com/yanwu2014/swne")
+      (synopsis "Visualize high dimensional datasets")
+      (description
+       "@dfn{Similarity Weighted Nonnegative Embedding} (SWNE) is a method for
+visualizing high dimensional datasets.  SWNE uses Nonnegative Matrix
+Factorization to decompose datasets into latent factors, projects those
+factors onto 2 dimensions, and embeds samples and key features in 2 dimensions
+relative to the factors.  SWNE can capture both the local and global dataset
+structure, and allows relevant features to be embedded directly onto the
+visualization, facilitating interpretation of the data.")
+      (license license:gpl2))))
 
 (define-public python-rpy2
   (package

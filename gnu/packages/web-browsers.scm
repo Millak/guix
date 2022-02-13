@@ -488,7 +488,7 @@ interface.")
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
            ;; that it's __init__.py is used first.
            python-pyqtwebengine
-           python-pyqt
+           python-pyqt-without-qtwebkit
            ;; While qtwebengine is provided by python-pyqtwebengine, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
            qtwebengine))
@@ -693,7 +693,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.10.2")
+    (version "1.10.5")
     (source
      (origin
        (method url-fetch)
@@ -701,7 +701,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "1zxvfl0fmkixralzj9jcshbbl2p3918js8qb4nra8pjkrrkaidbn"))
+        (base32 "1kimdy0k26l3b673sg12gd0d94mxx5lycyxlmla9hxxcsfn2rlqy"))
        (modules '((guix build utils)))
        (snippet
         '(begin

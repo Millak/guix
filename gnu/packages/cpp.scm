@@ -11,10 +11,10 @@
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Alexandros Theodotou <alex@zrythm.org>
-;;; Copyright © 2020, 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2020-2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Milkey Mouse <milkeymouse@meme.institute>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
@@ -48,6 +48,7 @@
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix modules)
@@ -73,13 +74,15 @@
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (ice-9 match))
 
 (define-public argagg
   (let ((commit "79e4adfa2c6e2bfbe63da05cc668eb9ad5596748") (revision "0"))
@@ -452,51 +455,48 @@ functions, class methods, and stl containers.
     (license license:bsd-3)))
 
 (define-public fifo-map
-  (let* ((commit "0dfbf5dacbb15a32c43f912a7e66a54aae39d0f9")
-         (revision "0")
-         (version (git-version "1.1.1" revision commit)))
-    (package
-      (name "fifo-map")
-      (version version)
-      (home-page "https://github.com/nlohmann/fifo_map")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0pi77b75kp0l7z454ihcd14nzpi3nc5m4nyjbsgy5f9bw3676196"))
-                (patches (search-patches "fifo-map-remove-catch.hpp.patch"
-                                         "fifo-map-fix-flags-for-gcc.patch"))
-                (file-name (git-file-name name version))
-                (modules '((guix build utils)))
-                (snippet '(delete-file-recursively "./test/thirdparty"))))
-      (native-inputs
-       (list catch-framework2-1))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda _
-               (invoke "./unit")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (inc (string-append out "/include/fifo_map")))
-                 (with-directory-excursion "../source"
-                   (install-file "src/fifo_map.hpp" inc))))))))
-      (synopsis "FIFO-ordered associative container for C++")
-      (description "Fifo_map is a C++ header only library for associative
+  (package
+    (name "fifo-map")
+    (version "1.0.0")
+    (home-page "https://github.com/nlohmann/fifo_map")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "0y59fk6ycrgjln9liwcja3l5j1vxpa5i671bynpbsjlyq5f2560q"))
+              (patches (search-patches "fifo-map-remove-catch.hpp.patch"
+                                       "fifo-map-fix-flags-for-gcc.patch"))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "./test/thirdparty"))))
+    (inputs
+     (list catch-framework2-1))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "./unit"))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (inc (string-append out "/include/fifo_map")))
+               (with-directory-excursion "../source"
+                 (install-file "src/fifo_map.hpp" inc))))))))
+    (synopsis "FIFO-ordered associative container for C++")
+    (description "Fifo_map is a C++ header only library for associative
 container which uses the order in which keys were inserted to the container
 as ordering relation.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public json-modern-cxx
   (package
     (name "json-modern-cxx")
-    (version "3.9.1")
+    (version "3.10.5")
     (home-page "https://github.com/nlohmann/json")
     (source
      (origin
@@ -504,7 +504,7 @@ as ordering relation.")
        (uri (git-reference (url home-page)
                            (commit (string-append "v" version))))
        (sha256
-        (base32 "0ar4mzp53lskxw3vdzw07f47njcshl3lwid9jfq6l7yx6ds2nyjc"))
+        (base32 "1f9mi45ilwjc2w92grjc53sw038840bjpn8yjf6wc6bxs2nijfqd"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
@@ -513,7 +513,7 @@ as ordering relation.")
            ;; is a wrapper library added by this package.
            (install-file "./test/thirdparty/doctest/doctest_compatibility.h" "/tmp")
            (for-each delete-file-recursively
-                     '("./third_party" "./test/thirdparty" "./benchmarks/thirdparty"))
+                     '("./third_party" "./test/thirdparty"))
            (install-file "/tmp/doctest_compatibility.h" "./test/thirdparty/doctest")
 
            ;; Adjust for the unbundled fifo_map and doctest.
@@ -525,43 +525,39 @@ as ordering relation.")
                (substitute* files
                  (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
                   (string-append
-                   "#include <fifo_map/" fifo-map-hpp ">")))))
-           #t))))
+                   "#include <fifo_map/" fifo-map-hpp ">")))))))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
        (list "-DJSON_MultipleHeaders=ON" ; For json_fwd.hpp.
              (string-append "-DJSON_TestDataDirectory="
-                            (assoc-ref %build-inputs "json_test_data")))
+                            (dirname
+                             (search-input-directory %build-inputs
+                                                     "json_nlohmann_tests"))))
        #:phases (modify-phases %standard-phases
-                  ;; XXX: When tests are enabled, the install phase will cause
-                  ;; a needless rebuild without the given configure flags,
-                  ;; ultimately creating both $out/lib and $out/lib64.  Move
-                  ;; the check phase after install to work around it.
-                  (delete 'check)
-                  (add-after 'install 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
+                  (replace 'check
+                    (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
                       (if tests?
                           ;; Some tests need git and a full checkout, skip those.
-                          (invoke "ctest" "-LE" "git_required")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+                          (invoke "ctest" "-LE" "git_required"
+                                  "-j" (if parallel-tests?
+                                           (number->string (parallel-job-count))
+                                           "1"))
+                          (format #t "test suite not run~%")))))))
     (native-inputs
-     `(("amalgamate" ,amalgamate)
-       ("doctest" ,doctest)
-       ("json_test_data"
-        ,(let ((version "3.0.0"))
-           (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/nlohmann/json_test_data")
-                   (commit (string-append "v" version))))
-             (file-name (git-file-name "json_test_data" version))
-             (sha256
-              (base32
-               "0nzsjzlvk14dazwh7k2jb1dinb0pv9jbx5jsyn264wvva0y7daiv")))))))
+     (list amalgamate
+           (let ((version "3.0.0"))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/nlohmann/json_test_data")
+                     (commit (string-append "v" version))))
+               (file-name (git-file-name "json_test_data" version))
+               (sha256
+                (base32
+                 "0nzsjzlvk14dazwh7k2jb1dinb0pv9jbx5jsyn264wvva0y7daiv"))))))
     (inputs
-     (list fifo-map))
+     (list doctest fifo-map))
     (synopsis "JSON parser and printer library for C++")
     (description "JSON for Modern C++ is a C++ JSON library that provides
 intuitive syntax and trivial integration.")
@@ -771,7 +767,7 @@ library.")
 (define-public cpplint
   (package
     (name "cpplint")
-    (version "1.4.5")
+    (version "1.5.5")
     (source
      (origin
        (method git-fetch)
@@ -781,19 +777,49 @@ library.")
              (url "https://github.com/cpplint/cpplint")
              (commit version)))
        (sha256
-        (base32 "1yzcxqx0186sh80p0ydl9z0ld51fn2cdpz9hmhrp15j53g9ira7c"))
+        (base32 "13l86aq0h1jga949k79k9x3hw2xqchjc162sclg2f99vz98zcz15"))
        (file-name (git-file-name name version))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'use-later-pytest
-           (lambda _
-             (substitute* "test-requirements"
-               (("pytest.*") "pytest\n"))
-             #t)))))
+     (list #:modules `((srfi srfi-1)
+                       (srfi srfi-26)
+                       ,@%python-build-system-modules)
+           #:phases
+           #~(modify-phases (@ (guix build python-build-system) %standard-phases)
+               (add-before 'wrap 'reduce-GUIX_PYTHONPATH
+                 (lambda _
+                   ;; Hide the transitive native inputs from GUIX_PYTHONPATH
+                   ;; to prevent them from ending up in the run-time closure.
+                   ;; See also <https://bugs.gnu.org/25235>.
+                   (let ((transitive-native-inputs
+                          '#$(match (package-transitive-native-inputs
+                                     this-package)
+                               (((labels packages) ...) packages))))
+                     ;; Save the original PYTHONPATH because we need it for
+                     ;; tests later.
+                     (setenv "TMP_PYTHONPATH" (getenv "GUIX_PYTHONPATH"))
+                     (setenv "GUIX_PYTHONPATH"
+                             (string-join
+                              (filter (lambda (path)
+                                        (not (any (cut string-prefix? <> path)
+                                                  transitive-native-inputs)))
+                                      (search-path-as-string->list
+                                       (getenv "GUIX_PYTHONPATH")))
+                              ":")))))
+               (add-after 'wrap 'reset-GUIX_PYTHONPATH
+                 (lambda _
+                   (setenv "GUIX_PYTHONPATH"
+                           (getenv "TMP_PYTHONPATH"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-vv")))))))
     (build-system python-build-system)
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-runner))
+     (list python-coverage
+           python-pytest
+           python-pytest-cov
+           python-pytest-runner
+           python-testfixtures))
     (home-page "https://github.com/cpplint/cpplint")
     (synopsis "Static code checker for C++")
     (description "@code{cpplint} is a command-line tool to check C/C++ files
@@ -962,7 +988,7 @@ Google's C++ code base.")
 (define-public pegtl
   (package
     (name "pegtl")
-    (version "2.8.3")
+    (version "3.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -971,7 +997,7 @@ Google's C++ code base.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17crgjfdx55imi2dqnz6xpvsxq07390yfgkz5nd2g77ydkvq9db3"))))
+                "1viwrlsw5nwvbv8d88mf5r77syapgxx3xm1kv5kmn6drw8jgsmzf"))))
     (build-system cmake-build-system)
     (home-page "https://github.com/taocpp/PEGTL")
     (synopsis "Parsing Expression Grammar template library")
@@ -1592,3 +1618,102 @@ microparallel algorithms to implement a strict JSON parser with UTF-8
 validation.")
     (home-page "https://github.com/simdjson/simdjson")
     (license license:asl2.0)))
+
+(define-public bloomberg-bde-tools
+  (let ((commit "094885bd177e0159232d4e6a060a04edb1edd786"))
+    (package
+      (name "bloomberg-bde-tools")
+      ;; Recent releases are not tagged so commit must be used for checkout.
+      (version "3.97.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bloomberg/bde-tools")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0mbbai73z8amh23ah3wy35kmy612380yr5wg89mic60qwqmpqb02"))
+                (patches
+                 (search-patches
+                  "bloomberg-bde-tools-fix-install-path.patch"))))
+      (build-system copy-build-system)
+      ;; Unable to be an inline dependency of bloomberg-bde due to patch.
+      (properties '((hidden? . #t)))
+      (synopsis "Tools for developing and building libraries modeled on BDE")
+      (description
+       "This package provides the cmake imports needed to build bloomberg-bde.")
+      (home-page "https://github.com/bloomberg/bde-tools")
+      (license license:asl2.0))))
+
+(define-public bloomberg-bde
+  (let ((commit "b6bcc0e24a5862bf77aea7edd831dedf50e21d64"))
+    (package
+      (name "bloomberg-bde")
+      ;; Recent releases are not tagged so commit must be used for checkout.
+      (version "3.98.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bloomberg/bde")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y3lipi1lj9qazgc935851r2qsx5aq3vvc4y52jq57riyz8wg3ma"))
+                (patches
+                 (search-patches
+                  "bloomberg-bde-cmake-module-path.patch"))
+                ;;(modules '((guix build utils)))
+                (snippet
+                 `(begin
+                    ;; FIXME: Delete bundled software. The third-party packages
+                    ;; may be patched or modified from upstream sources.
+                    ;;(for-each delete-file-recursively
+                    ;; (list "thirdparty"))
+                    ;; Delete failing tests.
+                    (for-each
+                     delete-file
+                     (list "groups/bal/ball/ball_asyncfileobserver.t.cpp"
+                           "groups/bal/ball/ball_fileobserver2.t.cpp"
+                           "groups/bal/ball/ball_recordstringformatter.t.cpp"
+                           "groups/bal/balst/balst_stacktraceutil.t.cpp"
+                           "groups/bdl/bdlmt/bdlmt_eventscheduler.t.cpp"
+                           "groups/bdl/bdlmt/bdlmt_timereventscheduler.t.cpp"
+                           "groups/bdl/bdls/bdls_filesystemutil.t.cpp"
+                           "groups/bsl/bslh/bslh_hashpair.t.cpp"
+                           "groups/bsl/bsls/bsls_platform.t.cpp"
+                           "groups/bsl/bsls/bsls_stackaddressutil.t.cpp"
+                           "groups/bsl/bsls/bsls_stopwatch.t.cpp"
+                           "groups/bsl/bslstl/bslstl_function_invokerutil.t.cpp"))
+                    #t))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:parallel-tests? #f           ; Test parallelism may fail inconsistently.
+         ;; Set UFID to build shared libraries. Flag descriptions can be found at
+         ;; https://bloomberg.github.io/bde-tools/reference/bde_repo.html#ufid
+         #:configure-flags ,(match %current-system
+            ((or "i686-linux" "armhf-linux")
+             ''("-DUFID=opt_dbg_exc_mt_32_shr_cpp17"))
+            (_
+             ''("-DUFID=opt_dbg_exc_mt_64_shr_cpp17")))
+         #:phases
+         (modify-phases %standard-phases
+           ;; Explicitly build tests separate from the main build.
+           (add-after 'build 'build-tests
+             (lambda* (#:key make-flags #:allow-other-keys)
+               (apply invoke "make" "all.t"
+                 `(,@(if #:parallel-build?
+                         `("-j" ,(number->string (parallel-job-count)))
+                         '())
+                 ,@make-flags)))))))
+      (native-inputs
+       (list bloomberg-bde-tools pkg-config python))
+      (synopsis "Foundational C++ libraries used at Bloomberg")
+      (description
+       "The BDE Development Environment libraries provide an enhanced
+implementation of STL containers, vocabulary types for representing common
+concepts (like dates and times), and building blocks for developing
+multi-threaded applications and network applications.")
+      (home-page "https://github.com/bloomberg/bde")
+      (license license:asl2.0))))

@@ -86,6 +86,10 @@
                                             "client-ios"
                                             "client-macosx"
                                             "client-uwp"))))
+    (patches (search-patches "jami-libclient-audio-managers.patch"
+                             "jami-fix-crash-on-quit.patch"
+                             "jami-images-loading.patch"
+                             "jami-memory-usage.patch"))
     (sha256
      (base32
       "12h4a0nj3gh05w64gkywrrb64agrhn6y3q4b9cqnhvr1vdkzlj0h"))))
@@ -406,7 +410,7 @@
       ;; FIXME: Fails to link when building libjami as a shared library:
       ;; bindings.cpp:(.text+0x24): undefined reference to `jami::Logger::log
       ;; [...].
-      #:configure-flags #~(list "--disable-agent")
+      #:configure-flags #~(list "--disable-agent" "--enable-debug")
       #:make-flags #~(list "V=1")       ;build verbosely
       #:phases
       #~(modify-phases %standard-phases
@@ -566,9 +570,7 @@ decentralized calling using P2P-DHT.")
   (package
     (name "jami")
     (version %jami-version)
-    (source (origin
-              (inherit %jami-sources)
-              (patches (search-patches "jami-fix-crash-on-quit.patch"))))
+    (source %jami-sources)
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments

@@ -22,7 +22,7 @@
 ;;; Copyright © 2017 Gregor Giesen <giesen@zaehlwerk.net>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2018-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018, 2019, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Brendan Tildesley <mail@brendan.scot>
@@ -60,6 +60,7 @@
 ;;; Copyright © 2021 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Bird <birdsite@airmail.cc>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -905,6 +906,8 @@ shared library and encoder and decoder command-line executables.")
       (build-system gnu-build-system)
       (native-inputs
        (list pkg-config nasm))
+      (inputs
+       (list config))
       ;; TODO: Add gpac input
       (arguments
        `(#:tests? #f                    ;no check target
@@ -915,6 +918,7 @@ shared library and encoder and decoder command-line executables.")
                              ;; program depends on ffmpeg and ffmpeg depends on
                              ;; libx264).
                              "--disable-cli"
+                             "--enable-pic"
 
                              ;; On MIPS, we must pass "--disable-asm" or else
                              ;; configure fails after printing: "You specified a
@@ -925,7 +929,17 @@ shared library and encoder and decoder command-line executables.")
                                                    (or (%current-target-system)
                                                        (%current-system)))
                                    '("--disable-asm")
-                                   '()))))
+                                   '()))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'update-config-scripts
+             (lambda* (#:key native-inputs inputs #:allow-other-keys)
+               (for-each (lambda (file)
+                               (install-file
+                                 (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                         '("config.guess" "config.sub")))))))
       (home-page "https://www.videolan.org/developers/x264.html")
       (synopsis "H.264 video coding library")
       (description "libx264 is an advanced encoding library for creating
@@ -2251,7 +2265,7 @@ the last played position, etc.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.20.1")
+    (version "1.20.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mikf/gallery-dl"
@@ -2259,7 +2273,7 @@ the last played position, etc.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0qkz8aznvybdqrjxsl6ir319ras05mi8l0sal4mgi18l70jndh51"))))
+                "0mh57fbq9xkkhqiy7cq5ahwjp464hgxmkrvq0pxxr85212yrf7bd"))))
     (build-system python-build-system)
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")
@@ -3346,7 +3360,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "27.0.1")
+    (version "27.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3356,26 +3370,25 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04fzsr9yizmxy0r7z2706crvnsnybpnv5kgfn77znknxxjacfhkn"))
+                "1ndiarr3d6qihymaigf34jjml0lrgbj640fnpnffz2ysj7276q0j"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DOBS_VERSION_OVERRIDE=" ,version)
-             "-DENABLE_UNIT_TESTS=TRUE"
-             ;; Browser plugin requires cef, but it is not packaged yet.
-             ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
-             "-DBUILD_BROWSER=FALSE")
+     (list
+      #:configure-flags
+      #~(list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
+              "-DENABLE_UNIT_TESTS=TRUE"
+              ;; Browser plugin requires cef, but it is not packaged yet.
+              ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
+              "-DBUILD_BROWSER=FALSE")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (plugin-path (getenv "QT_PLUGIN_PATH")))
-               (wrap-program (string-append out "/bin/obs")
-                 `("QT_PLUGIN_PATH" ":" prefix (,plugin-path))))
-             #t)))))
+       #~(modify-phases %standard-phases
+           (add-after 'install 'wrap-executable
+             (lambda* _
+               (let ((plugin-path (getenv "QT_PLUGIN_PATH")))
+                 (wrap-program (string-append #$output "/bin/obs")
+                   `("QT_PLUGIN_PATH" ":" prefix (,plugin-path)))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "OBS_PLUGINS_DIRECTORY")
@@ -3388,30 +3401,31 @@ be used for realtime video capture via Linux-specific APIs.")
     (native-inputs
      (list cmocka pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("curl" ,curl)
-       ("eudev" ,eudev)
-       ("ffmpeg" ,ffmpeg)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("glib" ,glib)
-       ("jack" ,jack-1)
-       ("jansson" ,jansson)
-       ("libx264" ,libx264)
-       ("libxcomposite" ,libxcomposite)
-       ("mbedtls" ,mbedtls-apache)
-       ("mesa" ,mesa)
-       ("pipewire" ,pipewire-0.3)
-       ("pulseaudio" ,pulseaudio)
-       ("qtbase" ,qtbase-5)
-       ("qtsvg" ,qtsvg)
-       ("qtx11extras" ,qtx11extras)
-       ("qtwayland" ,qtwayland)
-       ("speexdsp" ,speexdsp)
-       ("v4l-utils" ,v4l-utils)
-       ("wayland" ,wayland)
-       ("wayland-protocols" ,wayland-protocols)
-       ("zlib" ,zlib)))
+     (list
+      alsa-lib
+      curl
+      eudev
+      ffmpeg
+      fontconfig
+      freetype
+      glib
+      jack-1
+      jansson
+      libx264
+      libxcomposite
+      mbedtls-apache
+      mesa
+      pipewire-0.3
+      pulseaudio
+      qtbase-5
+      qtsvg
+      qtx11extras
+      qtwayland
+      speexdsp
+      v4l-utils
+      wayland
+      wayland-protocols
+      zlib))
     (synopsis "Live streaming software")
     (description "Open Broadcaster Software provides a graphical interface for
 video recording and live streaming.  OBS supports capturing audio and video
@@ -4832,7 +4846,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "21.12.24")
+    (version "22.01.30")
     (source
      (origin
        (method git-fetch)
@@ -4841,7 +4855,7 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l27dqiyi3af0v155w62ib9xcmqyjj2yzs83aqhcrz5pb3i3j18r"))))
+        (base32 "0azbzaml743vlpay5dz8i0k66hw4idnambi49wj2yprw7z3skdql"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests
@@ -5309,10 +5323,14 @@ result in several formats:
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (invoke "cargo" "cinstall" "--release"
-                       (string-append "--prefix=" out))))))))
+                       (string-append "--prefix=" out)))))
+         (add-after 'install 'delete-static-library
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; Delete 80 MiB (!) static library.
+             (delete-file (string-append (assoc-ref outputs "out")
+                                         "/lib/librav1e.a")))))))
     (native-inputs
-     `(("cargo-c" ,rust-cargo-c)
-       ("nasm" ,nasm)))
+     (list rust-cargo-c nasm))
     (home-page "https://github.com/xiph/rav1e/")
     (synopsis "Fast and safe AV1 encoder")
     (description "@code{rav1e} is an AV1 video encoder.  It is designed to

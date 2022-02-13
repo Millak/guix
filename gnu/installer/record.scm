@@ -41,7 +41,10 @@
             installer-services-page
             installer-welcome-page
             installer-parameters-menu
-            installer-parameters-page))
+            installer-parameters-page
+            installer-dump-page
+            installer-run-command
+            installer-report-page))
 
 
 ;;;
@@ -61,7 +64,7 @@
   (init installer-init)
   ;; procedure: void -> void
   (exit installer-exit)
-  ;; procedure (key arguments) -> void
+  ;; procedure (key arguments) -> (action)
   (exit-error installer-exit-error)
   ;; procedure void -> void
   (final-page installer-final-page)
@@ -91,4 +94,10 @@
   ;; procedure (menu-proc) -> void
   (parameters-menu installer-parameters-menu)
   ;; procedure (keyboard-layout-selection) -> void
-  (parameters-page installer-parameters-page))
+  (parameters-page installer-parameters-page)
+  ;; procedure (dump) -> void
+  (dump-page installer-dump-page)
+  ;; procedure command -> bool
+  (run-command installer-run-command)
+  ;; procedure (report) -> void
+  (report-page installer-report-page))

@@ -2218,7 +2218,7 @@ well as many of the command line options.")
 (define-public bwa-meth
   (package
     (name "bwa-meth")
-    (version "0.2.2")
+    (version "0.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2227,7 +2227,7 @@ well as many of the command line options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17j31i7zws5j7mhsq9x3qgkxly6mlmrgwhfq0qbflgxrmx04yaiz"))))
+                "0c695lkrr0996zwkibl7324wg2vxmn6522sz30xv4a9gaf0lnbh3"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2238,8 +2238,7 @@ well as many of the command line options.")
                (("bwa (mem|index)" _ command)
                 (string-append (which "bwa") " " command))
                ;; There's an ill-advised check for "samtools" on PATH.
-               (("^checkX.*") ""))
-             #t)))))
+               (("^checkX.*") "")))))))
     (inputs
      (list bwa))
     (native-inputs
@@ -10895,6 +10894,9 @@ once.  This package provides tools to perform Drop-seq analyses.")
          (add-before 'bootstrap 'autoreconf
            (lambda _
              (invoke "autoreconf" "-vif")))
+         (add-before 'configure 'set-PYTHONPATH
+           (lambda _
+             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
          (add-before 'check 'set-timezone
            ;; The readr package is picky about timezones.
            (lambda* (#:key inputs #:allow-other-keys)
@@ -10969,7 +10971,10 @@ expression report comparing samples in an easily configurable manner.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
-             (invoke "autoreconf" "-vif"))))))
+             (invoke "autoreconf" "-vif")))
+         (add-before 'configure 'set-PYTHONPATH
+           (lambda _
+             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
     (inputs
      (list grep
            coreutils
@@ -11055,6 +11060,9 @@ in an easily configurable manner.")
          (add-before 'bootstrap 'autoreconf
            (lambda _
              (invoke "autoreconf" "-vif")))
+         (add-before 'configure 'set-PYTHONPATH
+           (lambda _
+             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
          (add-before 'check 'set-timezone
            ;; The readr package is picky about timezones.
            (lambda* (#:key inputs #:allow-other-keys)
@@ -11123,7 +11131,10 @@ methylation and segmentation.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
-             (invoke "autoreconf" "-vif"))))))
+             (invoke "autoreconf" "-vif")))
+         (add-before 'configure 'set-PYTHONPATH
+           (lambda _
+             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
     (native-inputs
      (list automake autoconf))
     (inputs
@@ -11197,7 +11208,10 @@ based methods.")
        (modify-phases %standard-phases
          (add-before 'bootstrap 'autoreconf
            (lambda _
-             (invoke "autoreconf" "-vif"))))))
+             (invoke "autoreconf" "-vif")))
+         (add-before 'configure 'set-PYTHONPATH
+           (lambda _
+             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
     (native-inputs
      (list automake autoconf))
     (inputs
@@ -12013,7 +12027,7 @@ implementation differs in these ways:
            python-igraph
            python-joblib
            python-legacy-api-wrap
-           python-louvain-0.6
+           python-louvain-0.7
            python-matplotlib
            python-natsort
            python-networkx
@@ -15567,6 +15581,69 @@ aligner.")
     ;; These Python bindings are licensed under Mozilla Public License 2.0,
     ;; bwa itself is licenced under GNU General Public License v3.0.
     (license license:mpl2.0)))
+
+(define-public scvelo
+  (package
+    (name "scvelo")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "scvelo" version))
+       (sha256
+        (base32 "0h5ha1459ljs0qgpnlfsw592i8dxqn6p9bl08l1ikpwk36baxb7z"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
+         (replace 'check
+           (lambda* (#:key outputs tests? #:allow-other-keys)
+             (when tests?
+               ;; The discovered test file names must match the names of the
+               ;; compiled files, so we cannot run the tests from
+               ;; /tmp/guix-build-*.
+               (with-directory-excursion
+                   (string-append (assoc-ref outputs "out")
+                                  "/lib/python3.9/site-packages/scvelo/core/tests/")
+                 (invoke "pytest" "-v"))))))))
+    (propagated-inputs
+     (list python-anndata
+           python-hnswlib
+           python-isort
+           python-igraph
+           python-loompy
+           python-louvain
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pandas
+           python-scanpy
+           python-scikit-learn
+           python-scipy
+           python-umap-learn
+           pybind11))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-hypothesis
+           python-pre-commit
+           python-pytest
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://scvelo.org")
+    (synopsis "RNA velocity generalized through dynamical modeling")
+    (description "ScVelo is a scalable toolkit for RNA velocity analysis in
+single cells.  RNA velocity enables the recovery of directed dynamic
+information by leveraging splicing kinetics. scVelo generalizes the concept of
+RNA velocity by relaxing previously made assumptions with a stochastic and a
+dynamical model that solves the full transcriptional dynamics.  It thereby
+adapts RNA velocity to widely varying specifications such as non-stationary
+populations.")
+    (license license:bsd-3)))
 
 (define-public scregseg
   (package

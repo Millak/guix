@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -121,6 +122,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages telephony)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -713,44 +715,55 @@ identi.ca and status.net).")
         #f)))))
 
 (define-public bitlbee-discord
-  (package
-    (name "bitlbee-discord")
-    (version "0.4.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sm00th/bitlbee-discord")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "00qgdvrp7hv02n0ns685igp810zxmv3adsama8601122al6x041n"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "--with-bdatadir=" out "/share/bitlbee/")
-               (string-append "--with-plugindir=" out "/lib/bitlbee/")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-autogen
-           (lambda _
-             (let ((sh (which "sh")))
-               (substitute* "autogen.sh" (("/bin/sh") sh))
-               (setenv "CONFIG_SHELL" sh)))))))
-    (inputs (list glib))
-    (native-inputs (list pkg-config
-                         autoconf
-                         automake
-                         texinfo
-                         libtool
-                         bitlbee ; needs bitlbee headers
-                         bash))
-    (synopsis "Discord plugin for Bitlbee")
-    (description "Bitlbee-discord is a plugin for Bitlbee which provides
+  ;; Version 0.4.3 of bitlbee-discord was prepared to work for
+  ;; glib@2.68. However, version 2.69 of glib introduced a breaking change
+  ;; causing bitlbee-discord to throw:
+  ;; 
+  ;; discord - Login error: Failed to switch to websocket mode
+  ;;
+  ;; This makes the plugin unable to connect and therefore unusable:
+  ;; https://github.com/sm00th/bitlbee-discord/issues/226
+  ;; The specified commit fixes incompatibility with glib@2.69 and newer.
+  (let ((commit "607f9887ca85f246e970778e3d40aa5c346365a7")
+        (revision "1"))
+    (package
+      (name "bitlbee-discord")
+      (version (git-version "0.4.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sm00th/bitlbee-discord")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0jkwhx2walx2ay0vc9x13q0j1qq4r5x30ss03a3j7ks28xvsnxc7"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         (let ((out (assoc-ref %outputs "out")))
+           (list (string-append "--with-bdatadir=" out "/share/bitlbee/")
+                 (string-append "--with-plugindir=" out "/lib/bitlbee/")))
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-autogen
+             (lambda _
+               (let ((sh (which "sh")))
+                 (substitute* "autogen.sh" (("/bin/sh") sh))
+                 (setenv "CONFIG_SHELL" sh)))))))
+      (inputs (list glib))
+      (native-inputs (list pkg-config
+                           autoconf
+                           automake
+                           texinfo
+                           libtool
+                           bitlbee ; needs bitlbee headers
+                           bash))
+      (synopsis "Discord plugin for Bitlbee")
+      (description "Bitlbee-discord is a plugin for Bitlbee which provides
 access to servers running the Discord protocol.")
-    (home-page "https://github.com/sm00th/bitlbee-discord/")
-    (license license:gpl2+)))
+      (home-page "https://github.com/sm00th/bitlbee-discord/")
+      (license license:gpl2+))))
 
 (define-public purple-mattermost
   ;; The latest release (1.2) only supports Mattermost's /api/v3.  Choose a
@@ -1351,7 +1364,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
@@ -1359,7 +1372,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "0r5qn9k88d5rh8zzj9gs3bk3dsm795r0pgxs3kawyrsrqr8ny1ry"))))
+        (base32 "07nw275xfamczzvzps8hsnpbhzvr4qc726fx92w8ncmdag7wlw1r"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1373,14 +1386,14 @@ Encryption to Gajim.")
                            (guix build glib-or-gtk-build-system))
        #:phases
        (modify-phases %standard-phases
-         ;; To be enabled in v0.3.0, for A/V support.
-         ;;(add-after 'install 'wrap
-           ;;(lambda* (#:key outputs #:allow-other-keys)
-             ;;(let* ((out (assoc-ref outputs "out"))
-                    ;;(dino (string-append out "/bin/dino"))
-                    ;;(gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               ;;(wrap-program dino
-                 ;;`("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+         ;; For A/V support.
+         (add-after 'install 'wrap
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (dino (string-append out "/bin/dino"))
+                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               (wrap-program dino
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
@@ -1391,7 +1404,6 @@ Encryption to Gajim.")
        ("pkg-config" ,pkg-config)
        ("vala" ,vala)))
     (inputs
-     ;; NOTE: Commented-out lines are to be enabled in v0.3.0.
      `(("atk" ,atk)
        ("cairo" ,cairo)
        ("librsvg" ,librsvg)
@@ -1400,22 +1412,22 @@ Encryption to Gajim.")
        ("gpgme" ,gpgme)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gspell" ,gspell)               ;for spell-check support
-       ;;("gstreamer" ,gstreamer)         ;for A/V support
-       ;;("gst-plugins-base" ,gst-plugins-base)
-       ;;("gst-plugins-good" ,gst-plugins-good)
+       ("gstreamer" ,gstreamer)         ;for A/V support
+       ("gst-plugins-base" ,gst-plugins-base)
+       ("gst-plugins-good" ,gst-plugins-good)
        ("gtk+" ,gtk+)
        ("icu4c" ,icu4c)                 ;for emoji support
-       ;;("libcanberra" ,libcanberra)    ;for sound-notification support
+       ("libcanberra" ,libcanberra)    ;for sound-notification support
        ("libgcrypt" ,libgcrypt)
        ("libgee" ,libgee)
        ("libnice" ,libnice)
        ("libsignal-protocol-c" ,libsignal-protocol-c)
        ("libsoup" ,libsoup-minimal-2)
-       ;;("libsrtp" ,libsrtp)             ;for calls support
+       ("libsrtp" ,libsrtp)             ;for calls support
        ("pango" ,pango)
        ("qrencode" ,qrencode)
-       ("sqlite" ,sqlite)))
-       ;;("webrtc-audio-processing" ,webrtc-audio-processing))) ;for A/V support
+       ("sqlite" ,sqlite)
+       ("webrtc-audio-processing" ,webrtc-audio-processing))) ;for A/V support
     (synopsis "Graphical Jabber/XMPP Client using GTK+/Vala")
     (description "Dino is a chat client for the desktop.  It focuses on providing
 a minimal yet reliable Jabber/XMPP experience and having encryption enabled by
@@ -2757,7 +2769,7 @@ validating international phone numbers.")
 (define-public chatty
  (package
    (name "chatty")
-   (version "0.1.17")
+   (version "0.4.0")
    (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2766,7 +2778,7 @@ validating international phone numbers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ba1rw8a3vif9k3570hxjfm25vqys3vk3f6g8z5irklwq4bi6lmn"))))
+                "12k1a5xrwd6zk4x0m53hbzggk695z3bpbzy1wcikzy0jvch7h13d"))))
    (build-system meson-build-system)
    (arguments
     '(#:phases
@@ -2774,19 +2786,21 @@ validating international phone numbers.")
         (add-after 'unpack 'skip-updating-desktop-database
           (lambda _
             (substitute* "meson.build"
-              (("meson.add_install_script.*") ""))
-            #t)))))
+              (("meson.add_install_script.*") "")))))))
    (native-inputs
-    `(("gettext" ,gettext-minimal)
-      ("glib:bin" ,glib "bin")
-      ("pkg-config" ,pkg-config)))
+    (list gettext-minimal `(,glib "bin") pkg-config protobuf))
    (inputs
     (list feedbackd
           folks
           gsettings-desktop-schemas
+          gspell
+          json-glib
           libgcrypt
           libgee
-          libhandy-0.0
+          libhandy
+          libolm
+          libphonenumber
+          modem-manager
           pidgin
           purple-mm-sms
           sqlite))
