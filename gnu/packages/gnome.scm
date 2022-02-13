@@ -734,7 +734,7 @@ of known objects without needing a central registrar.")
 (define-public zeitgeist
   (package
     (name "zeitgeist")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -746,7 +746,7 @@ of known objects without needing a central registrar.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0y6fyzxl5np4yskcxibd0p03h619w9ir907nhf40h02y0pk1kgkp"))))
+        (base32 "07b1ahj3vd3m8srwkrh7dl3ymr7d55xiiszny44q13g06pq4svch"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -762,8 +762,7 @@ of known objects without needing a central registrar.")
                (substitute* "zeitgeist-gtkdoc-index.sgml"
                  (("http://www.oasis-open.org/docbook/xml/4.3/")
                   (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))
-             #t))
+                                 "/xml/dtd/docbook/"))))))
          (add-after 'patch-docbook-xml 'disable-failing-tests
            (lambda _
              (substitute* "test/direct/Makefile.am"
@@ -771,13 +770,11 @@ of known objects without needing a central registrar.")
                 ""))
              (substitute* "test/c/Makefile.am"
                (("	test-log ")
-                ""))
-             #t))
+                ""))))
          (add-before 'bootstrap 'remove-autogen-script
            (lambda _
              ;; To honor `autoreconf -vif` by build-system.
-             (delete-file "autogen.sh")
-             #t)))))
+             (delete-file "autogen.sh"))))))
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
