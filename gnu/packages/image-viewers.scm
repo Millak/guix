@@ -257,7 +257,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
 (define-public feh
   (package
     (name "feh")
-    (version "3.7.2")
+    (version "3.8")
     (home-page "https://feh.finalrewind.org/")
     (source (origin
               (method url-fetch)
@@ -265,7 +265,7 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0n42kj18ldlcmrmk5qir9gs9irdl1vz9913n8p941x8cfb98ywc4"))))
+                "1a9bsq5j9sl2drzkab0hdhnamalpaszw9mz2prz6scrr5dak8g3z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases (delete 'configure))
@@ -277,13 +277,13 @@ YouTube videos without requiring API and opens/downloads them using mpv/ytdl.")
              "inotify=1")))
     (native-inputs
      (list perl perl-test-command))
-    (inputs (list imlib2
-                  curl
+    (inputs (list curl
+                  imlib2
                   libexif
                   libpng
-                  libxt
                   libx11
-                  libxinerama))
+                  libxinerama
+                  libxt))
     (native-search-paths
      ;; Feh allows overriding the libcurl builtin CA path (unset in Guix)
      ;; with the same variable as the `curl` command line HTTP tool.
