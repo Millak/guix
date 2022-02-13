@@ -32,7 +32,7 @@
 ;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -4912,23 +4912,20 @@ exit code reports successful or failed execution to
 (define-public udpcast
   (package
     (name "udpcast")
-    (version "20200328")
+    (version "20211207")
     (source
      (origin
        (method url-fetch)
        ;; XXX: Original server is at https://www.udpcast.linux.lu is not
        ;; reliable.
        (uri (list (string-append
-                   "http://sources.buildroot.net/udpcast/udpcast-"
-                   version ".tar.gz")
-                  (string-append
                    "https://fossies.org/linux/privat/udpcast-"
                    version ".tar.gz")
                   (string-append
                    "https://www.udpcast.linux.lu/download/udpcast-"
                    version ".tar.gz")))
        (sha256
-        (base32 "06pj86nbi9hx7abbb0z2c5ynhfq0rv89b7nmy0kq3xz2lsxfw6cw"))))
+        (base32 "0l6hck694szrrvz85nm48rwb7mzvg2z2bwa50v51pkvym3kvxkm3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake m4 perl))
