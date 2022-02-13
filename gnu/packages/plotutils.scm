@@ -304,10 +304,10 @@ colors, styles, options and details.")
                   texlive-latex-graphics
                   texlive-latex-kvoptions
                   texlive-latex-media9
-                  texlive-latex-ocgx2
-                  texlive-latex-pdftexcmds
                   texlive-oberdiek      ;for ifluatex
+                  texlive-latex-ocgx2
                   texlive-latex-parskip
+                  texlive-pdftexcmds
                   texlive-tex-texinfo))))
     (inputs
      (list fftw

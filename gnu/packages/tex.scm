@@ -3402,7 +3402,7 @@ XML, using UTF-8 or a suitable 8-bit encoding.")
              texlive-latex-hycolor
              texlive-latex-kvoptions
              texlive-latex-letltxmacro
-             texlive-latex-pdftexcmds
+             texlive-pdftexcmds
              texlive-latex-refcount
              texlive-latex-rerunfilecheck
              texlive-url))
@@ -3468,7 +3468,7 @@ arrows; record information about document class(es) used; and many more.")
     (propagated-inputs
      (list texlive-generic-infwarerr texlive-generic-uniquecounter
            texlive-latex-atveryend texlive-latex-kvoptions
-           texlive-latex-pdftexcmds))
+           texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/rerunfilecheck")
     (synopsis "Checksum based rerun checks on auxiliary files")
     (description
@@ -4810,24 +4810,48 @@ Unicode characters.  The document should be processed by (pdf)LaTeX with the
 Unicode option of @code{inputenc} or @code{inputenx}, or by XeLaTeX/LuaLaTeX.")
     (license license:lppl1.3c+)))
 
-(define-public texlive-latex-pdftexcmds
-  (package
-    (inherit (simple-texlive-package
-              "texlive-latex-pdftexcmds"
-              '("/doc/generic/pdftexcmds/"
-                "/tex/generic/pdftexcmds/")
-              (base32
-               "1hph0djbfc8hlwfc41rzlf8l3ccyyvc0n7a0qdrr9881jwd6iv1b")
-              #:trivial? #t))
-    (propagated-inputs
-     (list texlive-generic-iftex texlive-generic-infwarerr
-           texlive-generic-ltxcmds))
-    (home-page "https://www.ctan.org/pkg/pdftexcmds")
-    (synopsis "LuaTeX support for pdfTeX utility functions")
-    (description
-     "This package makes a number of utility functions from pdfTeX
-available for luaTeX by reimplementing them using Lua.")
-    (license license:lppl1.3c+)))
+(define-public texlive-pdftexcmds
+  (let ((template (simple-texlive-package
+                   "texlive-pdftexcmds"
+                   (list "doc/generic/pdftexcmds/"
+                         "source/generic/pdftexcmds/"
+                         "tex/generic/pdftexcmds/")
+                   (base32
+                    "0gad1vi0r5xw7gyj1cb2cp58j4dqrw4awcfxmfrna9xbz91g4sn9"))))
+    (package
+      (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ '())
+          "generic/pdftexcmds")
+         ((#:build-targets _ '())
+          #~(list "pdftexcmds.dtx"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _
+                  (chdir "source/generic/pdftexcmds")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
+      (propagated-inputs
+       (list texlive-generic-iftex texlive-generic-infwarerr
+             texlive-generic-ltxcmds))
+      (home-page "https://www.ctan.org/pkg/pdftexcmds")
+      (synopsis "LuaTeX support for pdfTeX utility functions")
+      (description
+       "This package makes a number of utility functions from pdfTeX
+available for LuaTeX by reimplementing them using Lua.")
+      (license license:lppl1.3c+))))
+
+(define-deprecated-package texlive-latex-pdftexcmds texlive-pdftexcmds)
 
 (define-public texlive-latex-psfrag
   (package
@@ -7948,7 +7972,7 @@ be used either with LaTeX or with plain TeX.")
                "19grk4p1dh566hgpzhnjyjnrw57hpjijcpr7ci401n9jszcc1xkz")
               #:trivial? #t))
     (propagated-inputs
-     (list texlive-latex-pdftexcmds))
+     (list texlive-pdftexcmds))
     (home-page "https://www.ctan.org/pkg/bigintcalc")
     (synopsis "Integer calculations on very large numbers")
     (description
