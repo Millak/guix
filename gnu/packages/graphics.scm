@@ -1969,6 +1969,7 @@ and build scripts for the OpenXR loader.")
        ("libxcb" ,libxcb)
        ("libxrandr" ,libxrandr)
        ("opengl" ,mesa)
+       ("python" ,python)
        ("v4l" ,v4l-utils)
        ("vulkan-loader" ,vulkan-loader)))
     (native-inputs
