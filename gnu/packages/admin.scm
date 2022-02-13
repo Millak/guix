@@ -1802,7 +1802,7 @@ commands and their arguments.")
 (define-public opendoas
   (package
     (name "opendoas")
-    (version "6.8.1")
+    (version "6.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1811,7 +1811,7 @@ commands and their arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gfcssm21vdfg6kcrcc7hz1h4jmhy2zv29rfqyrrj3a6r9b5ah8p"))))
+                "1qrin7x9vcprk5pwjbr3w8z2qj8hk6xbvxicdhlk27xr6vcr1qzn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1820,7 +1820,7 @@ commands and their arguments.")
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "GNUmakefile"
                (("^\tchown.*$") ""))
-             ;; OpenDoas look for binaries in safepath when a rule specify a
+             ;; OpenDoas looks for binaries in safepath when a rule specifies a
              ;; relative command, such as “permit keepenv :wheel cmd guix”.
              (substitute* "doas.c"
                (("safepath =" match)
@@ -1828,8 +1828,7 @@ commands and their arguments.")
                                "/run/setuid-programs:"
                                "/run/current-system/profile/bin:"
                                "/run/current-system/profile/sbin:"
-                               "\" ")))
-             #t))
+                               "\" ")))))
          (replace 'configure
            ;; The configure script doesn't accept most of the default flags.
            (lambda* (#:key configure-flags #:allow-other-keys)
