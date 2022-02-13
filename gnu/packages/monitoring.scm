@@ -195,7 +195,10 @@ etc. via a Web interface.  Features include:
     (synopsis "Distributed monitoring solution (client-side agent)")
     (description "This package provides a distributed monitoring
 solution (client-side agent)")
-    (license license:gpl2)))
+    (license license:gpl2)
+    (properties
+     '((release-monitoring-url . "https://www.zabbix.com/download_sources")
+       (upstream-name . "zabbix")))))
 
 (define-public zabbix-server
   (package
