@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -814,14 +815,14 @@ used by Pidgin and Bitlbee, among others, to access
 (define-public hexchat
   (package
     (name "hexchat")
-    (version "2.16.0")
+    (version "2.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.hexchat.net/hexchat/hexchat-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0dnwhb2gi08i5v79vq0y2izs89wyk3by96jv99kgkidjic3k2bj1"))))
+        (base32 "1iy4ln6yfgy3xysrfpjxw8fn38i3qx8jsn2mk2prshfzf7d9gr57"))))
     (build-system meson-build-system)
     (native-inputs `(("gettext" ,gettext-minimal)
                      ("glib:bin" ,glib "bin")       ;need glib-genmarshal
