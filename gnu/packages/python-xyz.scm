@@ -7798,8 +7798,6 @@ etc.  The core of this module is a decorator factory.")
                   ;; Loading the library fails because DRMAA_LIBRARY_PATH
                   ;; is not configured.
                   (delete 'sanity-check))))
-    (native-inputs
-     (list python-nose))
     (home-page "https://pypi.org/project/drmaa/")
     (synopsis "Python bindings for the DRMAA library")
     (description
