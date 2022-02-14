@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2016, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017 Huang Ying <huang.ying.caritas@gmail.com>
 ;;; Copyright © 2017, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -1752,6 +1752,8 @@ MANIFEST."
     (module-ref (resolve-interface '(gnu packages tex)) 'texlive-bin))
   (define coreutils
     (module-ref (resolve-interface '(gnu packages base)) 'coreutils))
+  (define grep
+    (module-ref (resolve-interface '(gnu packages base)) 'grep))
   (define sed
     (module-ref (resolve-interface '(gnu packages base)) 'sed))
   (define updmap.cfg
@@ -1778,6 +1780,8 @@ MANIFEST."
           ;; does not provide wrapped executables.
           (setenv "PATH"
                   (string-append #$(file-append coreutils "/bin")
+                                 ":"
+                                 #$(file-append grep "/bin")
                                  ":"
                                  #$(file-append sed "/bin")))
           (setenv "PERL5LIB" #$(file-append texlive-bin "/share/tlpkg"))
@@ -1808,7 +1812,21 @@ MANIFEST."
                     (string-append "--dvipsoutputdir="
                                    maproot "dvips/updmap")
                     (string-append "--pdftexoutputdir="
-                                   maproot "pdftex/updmap"))))))
+                                   maproot "pdftex/updmap"))
+
+            ;; Create ls-R file.  I know, that's not *just* for font maps, but
+            ;; we've generated new files, so there's no point in running it
+            ;; any earlier.  The ls-R file must act on a full TeX Live tree,
+            ;; but we have two: the one in /tmp containing all packages and
+            ;; the one in #$output containing the generated font maps.  To
+            ;; avoid having to merge ls-R files, we copy the generated stuff
+            ;; to /tmp and run mktexlsr only once.
+            (let ((a (string-append #$output "/share/texmf-dist"))
+                  (b "/tmp/texlive/share/texmf-dist")
+                  (mktexlsr #$(file-append texlive-bin "/bin/mktexlsr")))
+              (copy-recursively a b)
+              (invoke mktexlsr b)
+              (install-file (string-append b "/ls-R") a))))))
 
   (mlet %store-monad ((texlive-base (manifest-lookup-package manifest "texlive-base")))
     (if texlive-base
