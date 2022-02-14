@@ -8,6 +8,7 @@
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 João Pedro Simas <jpsimas@gmail.com>
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1758,7 +1759,7 @@ receiver.")
 (define-public welle-io
   (package
     (name "welle-io")
-    (version "2.3")
+    (version "2.4")
     (source
      (origin
        (method git-fetch)
@@ -1767,7 +1768,7 @@ receiver.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xl1lanw0xgmgks67dbfb2h52jxnrd1i2zik56v0q8dwsr7f0daw"))))
+        (base32 "0vl98pciw6xzcxyprcb4613rxn0i202f104lmy900jrny0pq4y65"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
