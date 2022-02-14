@@ -4486,13 +4486,13 @@ information.
 @cindex channel news
 @item --news
 @itemx -N
-Display the list of packages added or upgraded since the previous
-generation, as well as, occasionally, news written by channel authors
-for their users (@pxref{Channels, Writing Channel News}).
+Display news written by channel authors for their users for changes made
+since the previous generation (@pxref{Channels, Writing Channel News}).
+When @option{--details} is passed, additionally display new and upgraded
+packages.
 
-The package information is the same as displayed upon @command{guix
-pull} completion, but without ellipses; it is also similar to the output
-of @command{guix pull -l} for the last generation (see below).
+You can view that information for previous generations with
+@command{guix pull -l}.
 
 @item --list-generations[=@var{pattern}]
 @itemx -l [@var{pattern}]
@@ -4507,8 +4507,9 @@ revision as well as the corresponding news entries.  If you pass
 upgraded in each generation compared to the previous one.
 
 @item --details
-Instruct @option{--list-generations} to display more information about
-the differences between subsequent generations---see above.
+Instruct @option{--list-generations} or @option{--news} to display more
+information about the differences between subsequent generations---see
+above.
 
 @item --roll-back
 @cindex rolling back
