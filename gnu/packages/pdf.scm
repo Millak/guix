@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -884,16 +884,16 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/xournalpp/xournalpp")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ldf58l5sqy52x5dqfpdjdh7ldjilj9mw42jzsl5paxg0md2k0hl"))))
+        (base32 "16pf50x1ps8dcynnvw5lz7ggl0jg7qvzv6gkd30xg3hkcxff8ch3"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DENABLE_CPPUNIT=ON") ;enable tests
@@ -904,11 +904,6 @@ using a stylus.")
                   (guix build utils))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-permissions-on-po-files
-           (lambda _
-             ;; Make sure 'msgmerge' can modify the PO files.
-             (for-each make-file-writable
-                       (find-files "." "\\.po$"))))
          ;; Fix path to addr2line utility, which the crash reporter uses.
          (add-after 'unpack 'fix-paths
            (lambda* (#:key inputs #:allow-other-keys)
