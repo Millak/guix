@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -259,7 +260,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
 (define-public srain
   (package
     (name "srain")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -268,7 +269,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xjk3fa3fkmsczif1bzcmi79k4z3jfdgcljfdiyn4iv5bh778swc"))))
+        (base32 "16nsxicixp7194bkiiyj7zrg05lhcp0xblqsbv6dq1lxd5wd3i96"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
