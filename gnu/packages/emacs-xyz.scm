@@ -2803,14 +2803,14 @@ a set of simplified face specifications and a user-supplied color palette")
 (define-public emacs-howm
   (package
     (name "emacs-howm")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://howm.sourceforge.jp/a/"
                            "howm-" version ".tar.gz"))
        (sha256
-        (base32 "11k0dzwyn7ly34g0zcd6i0i8qwyv9di8m6fx805axrxykxb0qan2"))))
+        (base32 "0i5pfnvy130fzk8w62301vgsqf1y22chwhjgnm5hjxr9y0kw5ii4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list emacs-minimal))
