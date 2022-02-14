@@ -7792,7 +7792,12 @@ etc.  The core of this module is a decorator factory.")
     ;; The test suite requires libdrmaa which is provided by the cluster
     ;; environment.  At runtime the environment variable DRMAA_LIBRARY_PATH
     ;; should be set to the path of the libdrmaa library.
-    (arguments '(#:tests? #f))
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  ;; Loading the library fails because DRMAA_LIBRARY_PATH
+                  ;; is not configured.
+                  (delete 'sanity-check))))
     (native-inputs
      (list python-nose))
     (home-page "https://pypi.org/project/drmaa/")
