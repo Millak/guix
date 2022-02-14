@@ -42,6 +42,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
@@ -896,23 +897,26 @@ using a stylus.")
         (base32 "16pf50x1ps8dcynnvw5lz7ggl0jg7qvzv6gkd30xg3hkcxff8ch3"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DENABLE_CPPUNIT=ON") ;enable tests
-       #:imported-modules ((guix build glib-or-gtk-build-system)
+     (list
+      #:configure-flags #~(list "-DENABLE_CPPUNIT=ON") ;enable tests
+      #:imported-modules `((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
-       #:modules (((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+      #:modules '(((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build cmake-build-system)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Fix path to addr2line utility, which the crash reporter uses.
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/util/Stacktrace.cpp"
-               ;; Match only the commandline.
-               (("\"addr2line ")
-                (string-append "\"" (which "addr2line") " ")))))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Fix path to addr2line utility, which the crash reporter uses.
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/util/Stacktrace.cpp"
+                ;; Match only the commandline.
+                (("\"addr2line ")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/addr2line")
+                                " ")))))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
      (list cppunit gettext-minimal help2man pkg-config))
     (inputs
