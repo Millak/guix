@@ -193,7 +193,7 @@ is itself quite fast.")
        (sha256
         (base32
          "0ar4nxy4cr5vwvfj71gmc174vx0n3lg9ka05sa1k60c8z0g3xp1q"))
-       (patches (list (search-patch "ghc-4.patch")))))
+       (patches (search-patches "ghc-4.patch"))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"))
     (arguments
