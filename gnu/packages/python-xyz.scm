@@ -17801,17 +17801,29 @@ multitouch applications.")
 (define-public python-pyelftools
   (package
     (name "python-pyelftools")
-    (version "0.25")
+    (version "0.28")
+    (home-page "https://github.com/eliben/pyelftools")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyelftools" version))
+       (method git-fetch)
+       (uri (git-reference (url home-page)
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "090vdksbz341f7ljvr0zswblw4lspa8qaiikzyjkf318arpxmil9"))))
+        (base32 "1z4fx39c9rds0bd4d2fjjq7n05b1nfxl36pmy523x8knm38l4gpr"))
+       (snippet
+        ;; Delete bundled readelf executable.
+        '(delete-file "test/external_tools/readelf"))))
     (build-system python-build-system)
-    (home-page
-     "https://github.com/eliben/pyelftools")
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        ;; Taken from tox.ini.
+                        (invoke "python" "test/run_all_unittests.py")
+                        (invoke "python" "test/run_examples_test.py")
+                        (invoke "python" "test/run_readelf_tests.py")))))))
     (synopsis
      "Analyze binary and library file information")
     (description "This Python library provides interfaces for parsing and
