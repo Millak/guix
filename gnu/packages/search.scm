@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -474,14 +475,14 @@ conflict with slocate compatibility.")
 (define-public plocate
   (package
     (name "plocate")
-    (version "1.1.13")
+    (version "1.1.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://plocate.sesse.net/download/"
                            "plocate-" version ".tar.gz"))
        (sha256
-        (base32 "16lpiirjmj4mrdj5kkjv7rikkgjx3i64ac0sl3lz1rshflhxgqww"))))
+        (base32 "0l7igd81acsha5l5mv2rv7n9j1bc4f6ys4hfvs3ii0cbv9a5k1fi"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
