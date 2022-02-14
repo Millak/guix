@@ -458,10 +458,9 @@ true, display what would be built without actually building it."
                       #:hooks %channel-profile-hooks)
 
       (return
-       (let ((more? (list (display-profile-news profile #:concise? #t)
-                          (display-channel-news-headlines profile))))
+       (let ((more? (display-channel-news-headlines profile)))
          (newline)
-         (when (any ->bool more?)
+         (when more?
            (display-hint
             (G_ "Run @command{guix pull --news} to read all the news.")))))
       (if guix-command
