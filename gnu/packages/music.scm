@@ -44,6 +44,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
+;;; Copyright © 2022 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1773,7 +1774,7 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
                      '()))
          #:python ,python-2))
       (inputs
-       (list jack-1 libsigc++ liblo ntk))
+       (list jack-1 libsigc++-2 liblo ntk))
       (native-inputs
        (list pkg-config))
       (home-page "https://non.tuxfamily.org/wiki/Non%20Sequencer")
