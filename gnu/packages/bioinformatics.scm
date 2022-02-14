@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Raoul Bonnal <ilpuccio.febo@gmail.com>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -14620,55 +14620,48 @@ alignments, trees and genomic annotations.")
     (license license:bsd-3)))
 
 (define-public python-gffutils
-  ;; The latest release is older more than a year than the latest commit
-  (let ((commit "4034c54600813b1402945e12faa91b3a53162cf1")
-        (revision "1"))
-    (package
-      (name "python-gffutils")
-      (version (git-version "0.9" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/daler/gffutils")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1rwafjdnbir5wnk0ap06ww4lra3p5frhy7mfs03rlldgfnwxymsn"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda _
+  (package
+    (name "python-gffutils")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/daler/gffutils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gkzk7ps6w3ai2r81js9s9bzpba0jmxychnd2da6n9ggdnf2xzqz"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
                ;; Tests need to access the HOME directory
                (setenv "HOME" "/tmp")
-               (invoke "nosetests" "-a" "!slow")))
-           (add-after 'unpack 'make-gz-files-writable
-             (lambda _
-               (for-each make-file-writable
-                         (find-files "." "\\.gz"))
-               #t)))))
-      (propagated-inputs
-       (list python-argcomplete
-             python-argh
-             python-biopython
-             python-pybedtools
-             python-pyfaidx
-             python-simplejson
-             python-six))
-      (native-inputs
-       (list python-nose))
-      (home-page "https://github.com/daler/gffutils")
-      (synopsis "Tool for manipulation of GFF and GTF files")
-      (description
-       "python-gffutils is a Python package for working with and manipulating
+               (invoke "nosetests" "-a" "!slow")))))))
+    (propagated-inputs
+     (list python-argcomplete
+           python-argh
+           python-biopython
+           python-pybedtools
+           python-pyfaidx
+           python-simplejson
+           python-six))
+    (native-inputs
+     (list python-nose))
+    (home-page "https://github.com/daler/gffutils")
+    (synopsis "Tool for manipulation of GFF and GTF files")
+    (description
+     "python-gffutils is a Python package for working with and manipulating
 the GFF and GTF format files typically used for genomic annotations.  The
 files are loaded into a SQLite database, allowing much more complex
 manipulation of hierarchical features (e.g., genes, transcripts, and exons)
 than is possible with plain-text methods alone.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public indelfixer
   (package
