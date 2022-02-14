@@ -914,10 +914,7 @@ using a stylus.")
          (add-after 'install 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     `(("cppunit" ,cppunit)
-       ("gettext" ,gettext-minimal)
-       ("help2man" ,help2man)
-       ("pkg-config" ,pkg-config)))
+     (list cppunit gettext-minimal help2man pkg-config))
     (inputs
      (list alsa-lib
            gtk+
