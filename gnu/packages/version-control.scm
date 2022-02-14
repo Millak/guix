@@ -43,6 +43,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1879,14 +1880,14 @@ can be used for signing.")
 (define-public neon
   (package
     (name "neon")
-    (version "0.31.2")
+    (version "0.32.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://notroj.github.io/neon/neon-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "0y46dbhiblcvg8k41bdydr3fivghwk73z040ki5825d24ynf67ng"))))
+               "11mj5zpp317dmds874wfwcpgij9i3scaahdi1xfzr5b2ii36crcq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl pkg-config))
