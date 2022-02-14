@@ -30,6 +30,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -836,7 +837,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.10.3")
+    (version "1.11.0")
     (home-page "https://codeberg.org/dnkl/foot")
     (source (origin
               (method git-fetch)
@@ -844,7 +845,7 @@ eye-candy, customizable, and reasonably lightweight.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13v6xqaw3xn1x84dn4gnkiimcsllb19mrbvcdj2fnm8klnrys3gs"))))
+                "1d9bk8lhmw5lc8k0mw80g0vbwgxyh3gw5c7ppy3sir07s9y0y0fn"))))
     (build-system meson-build-system)
     (arguments
      `(;; Using a "release" build is recommended both for performance, and
