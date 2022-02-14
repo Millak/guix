@@ -68,7 +68,7 @@
               (substitute* '("lib/mix/lib/mix/release.ex"
                              "lib/mix/lib/mix/tasks/release.init.ex")
                 (("#!/bin/sh")
-                 (string-append "#!" (search-input-file inputs "sh"))))
+                 (string-append "#!" (search-input-file inputs "/bin/sh"))))
               (substitute* "bin/elixir"
                 (("^ERTS_BIN=$")
                  (string-append
