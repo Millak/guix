@@ -5254,16 +5254,22 @@ them to a designated prefix.")
            "11afr6zy3r6rda81010iq496dazg4xid0izg3smg6ighpmvsnzf2"))))
       (build-system python-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'skip-problematic-tests
-             (lambda _
-               ;; These tests fail due to networking requirements.
-               (substitute* "setup.py"
-                 (("pytest.main\\(\\[" all)
-                  (string-append all "'-k', '"
-                                 (string-append "not test_post_chunked and "
-                                                "not test_remote") "'"))))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "pytest" "-vv"
+                          ;; These tests fail due to networking requirements.
+                          "-k" (format #f "not ~a"
+                                       (string-join
+                                        '("test_post_chunked"
+                                          "test_remote"
+                                          "test_capture_http_proxy"
+                                          "test_capture_https_proxy"
+                                          "test_capture_https_proxy_same_session")
+                                        " and not ")))))))))
       (native-inputs
        ;; These inputs are required for the test suite.
        (list python-httpbin python-pytest-cov python-requests
