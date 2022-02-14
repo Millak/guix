@@ -24567,6 +24567,22 @@ itself.")
           (base32
            "1p5h3dnpbsjmqrvil96s71asc6i3gpinmbrabqmwnrsxprz7r3ns"))))
       (build-system python-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-tests
+             (lambda _
+               ;; Fix test failures on Python 3.9.9+.
+               ;; Taken via <https://github.com/neithere/argh/issues/148>.
+               (substitute* "test/test_integration.py"
+                 (("assert run\\(p, '(bar|orig-name|nest bar)', exit=True\\)\
+\\.startswith\\('invalid choice'\\)" _ name)
+                  (string-append "assert 'invalid choice' in \
+run(p, '" name "', exit=True)")))))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "pytest" "-vv")))))))
       (propagated-inputs
        (list python-iocapture python-mock python-pytest python-pytest-cov
              python-pytest-xdist))
