@@ -10286,23 +10286,15 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
        (uri (crate-uri "chacha20poly1305" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0alawaaakczsll1b98qf4m6r6kfaw28506ljvsysjyjz3mnyv11v"))))
+        (base32 "0alawaaakczsll1b98qf4m6r6kfaw28506ljvsysjyjz3mnyv11v"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("version = \">=1, <1.5\"") "version = \"^1\""))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'relax-requirements
-           (lambda _
-             (substitute*
-                 "guix-vendor/rust-chacha20-0.8.1.tar.gz/Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\""))
-             (substitute*
-                 "guix-vendor/rust-chacha20poly1305-0.9.0.tar.gz/Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\""))
-             (substitute*
-                 "Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\"")))))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-aead" ,rust-aead-0.4)
         ("rust-chacha20" ,rust-chacha20-0.8)
         ("rust-cipher" ,rust-cipher-0.3)
