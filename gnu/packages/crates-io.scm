@@ -69909,7 +69909,12 @@ non-cryptographic hashing algorithm and random number generator.")
        (uri (crate-uri "x25519-dalek" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xz0m1pczss9r25d1r52420dl2picdypbcn5ycmlwssp9awvd4i3"))))
+        (base32 "0xz0m1pczss9r25d1r52420dl2picdypbcn5ycmlwssp9awvd4i3"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("version = \"=1.3\"") "version = \"^1.3\""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
