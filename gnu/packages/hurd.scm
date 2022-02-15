@@ -3,7 +3,7 @@
 ;;; Copyright © 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Rene Saavedra <pacoon@protonmail.com>
 ;;;
@@ -48,8 +48,7 @@
   #:use-module (gnu packages xorg) ; libpciaccess
   #:use-module (guix git-download)
   #:export (hurd-system?
-            hurd-target?
-            hurd-triplet?))
+            hurd-target?))
 
 (define (hurd-target?)
   "Return true if the cross-compilation target or the current system is
