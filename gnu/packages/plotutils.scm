@@ -32,6 +32,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages image)
@@ -268,14 +269,19 @@ colors, styles, options and details.")
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.77")
+    (version "2.78")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "0v5r8g3b7f2dxsiba4f3yrgfkigr5nsdhg6jrdsnqrmf6y7dqgdf"))))
+        (base32 "1kmx21nb7pn7z9prb684wrig5pn46w82hd31dj74nz4amqwz60mg"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled RapidJSON.
+        #~(begin
+            (delete-file-recursively "LspCpp/third_party/rapidjson")))))
     (build-system gnu-build-system)
     ;; Note: The 'asy' binary retains a reference to docdir for use with its
     ;; "help" command in interactive mode, so adding a "doc" output is not
@@ -284,6 +290,7 @@ colors, styles, options and details.")
      (list autoconf
            automake
            boost
+           cmake
            emacs-minimal
            ghostscript                  ;for tests
            perl
@@ -344,6 +351,11 @@ colors, styles, options and details.")
              (substitute* (list "configure.ac")
                (("/usr/include/tirpc")
                 (search-input-directory inputs "include/tirpc")))))
+         (add-after 'unpack 'unbundle-rapidjson
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* (list "Makefile.in")
+               (("\\$\\(CMAKE\\)" all)
+                (string-append all " -DUSE_SYSTEM_RAPIDJSON=ON")))))
          (add-after 'unpack 'fix-includes
            (lambda _
              (substitute* (find-files "." "\\.in$")
@@ -354,7 +366,7 @@ colors, styles, options and details.")
                (("#include \"xstream.h\"") "#include \"../xstream.h\""))
              (substitute* "v3dfile.h"
                (("#include <prc/oPRCFile.h>") "#include \"prc/oPRCFile.h\""))
-             (substitute* "LspCpp/LibLsp/lsp/ParentProcessWatcher.cpp"
+             (substitute* "LspCpp/src/lsp/ParentProcessWatcher.cpp"
                (("#include <boost/process.hpp>" all)
                 (string-append "#include <algorithm>\n" all)))))
          (replace 'bootstrap
