@@ -4676,20 +4676,17 @@ process automation (RPA).")
 (define-public python-robotframework-datadriver
   (package
     (name "python-robotframework-datadriver")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "robotframework-datadriver" version))
        (sha256
-        (base32 "1kv6h47850gdqr8azknkh81z7hw6yz5pjn53mkn71ly4szw4pqb7"))))
+        (base32 "0qa2vry8jr49k5rbrvmkgggzsmis1wv06dp5dvwmp7afm7vjc51k"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-readme-file-name
-           (lambda _
-             (rename-file "Readme.rst" "README.rst")))
          (add-before 'check 'skip-problematic-tests
            (lambda _
              ;; The test file 'tab-csv-file-name.tsv' contains special
