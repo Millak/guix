@@ -122,19 +122,6 @@ low-end hardware and serving many concurrent requests.")
        '("--release" "--"
          "--skip=dns::client::tests::test_tcp_client"
          "--skip=dns::client::tests::test_udp_client")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'relax-requirements
-           (lambda _
-             (substitute*
-                 "guix-vendor/rust-chacha20-0.8.1.tar.gz/Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\""))
-             (substitute*
-                 "guix-vendor/rust-chacha20poly1305-0.9.0.tar.gz/Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\""))
-             (substitute*
-                 "guix-vendor/rust-x25519-dalek-1.2.0.tar.gz/Cargo.toml"
-               (("version = \"=1.3\"") "version = \"^1.3\"")))))
        #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-log" ,rust-log-0.4)
