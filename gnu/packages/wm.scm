@@ -50,6 +50,7 @@
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1034,7 +1035,7 @@ experience.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.1.2")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1043,7 +1044,7 @@ experience.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vkwyci4z4jj2aczxkrmj0861j5jczjr8isasa7gml93nlvyw7gv"))))
+                "1770p5hfswbaa15zmjh10n7fskch00d3y03ij3gfb1v4q314nb9n"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"))
     (native-inputs
