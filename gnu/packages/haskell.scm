@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Danny Milosavljevic <dannym@scratchpost.org>
@@ -205,8 +205,8 @@ is itself quite fast.")
            (lambda* (#:key inputs #:allow-other-keys)
              (delete-file "configure")
              (delete-file "config.sub")
-             (install-file (string-append (assoc-ref inputs "automake")
-                                          "/share/automake-1.16/config.sub")
+             (install-file (search-input-file inputs
+                                              "/bin/config.sub")
                            ".")
 
              ;; Avoid dependency on "happy"
@@ -347,8 +347,8 @@ SplitObjs=NO
                (install-file "ghc/interpreter/nHandle.so" lib)))))))
     (native-inputs
      (list autoconf-2.13
-           automake
            bison                                  ;for parser.y
+           config
 
            ;; Needed to support lvalue casts.
            gcc-2.95
