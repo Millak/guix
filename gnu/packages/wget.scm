@@ -156,14 +156,14 @@ online pastebin services.")
             #t)))
       #:configure-flags '("--enable-static=no")))
    (inputs
-    `(("bzip2" ,bzip2)
-      ("gnutls" ,gnutls/dane)
-      ("gpgme" ,gpgme)
-      ("libidn2" ,libidn2)
-      ("libmicrohttpd" ,libmicrohttpd)
-      ("libpsl" ,libpsl)
-      ("pcre2" ,pcre2)
-      ("zlib" ,zlib)))
+    (list bzip2
+          gnutls/dane
+          gpgme
+          libidn2
+          libmicrohttpd
+          libpsl
+          pcre2
+          zlib))
    ;; TODO: Add libbrotlidec, libnghttp2.
    (native-inputs
     (list pkg-config))
