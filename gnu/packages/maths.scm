@@ -3532,12 +3532,12 @@ language understood by many solvers.")
                                 "mumps-shared-pord.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("fortran" ,gfortran)
-       ;; These are required for linking against mumps, but we let the user
-       ;; declare the dependency.
-       ("blas" ,openblas)
-       ("metis" ,metis)
-       ("scotch" ,scotch)))
+     (list gfortran
+           ;; These are required for linking against mumps, but we let the user
+           ;; declare the dependency.
+           openblas
+           metis
+           scotch))
     (arguments
      `(#:modules ((ice-9 match)
                   (ice-9 popen)
@@ -3594,8 +3594,9 @@ ORDERINGSC   = $(ORDERINGSF)
 LORDERINGS   = $(LPORD) $(LMETIS) $(LSCOTCH) $(LIBSEQ)
 IORDERINGSF  = $(ISCOTCH)
 IORDERINGSC  = $(IPORD) $(IMETIS) $(ISCOTCH)"
-                        (assoc-ref inputs "mpi")
-                        (assoc-ref inputs "blas")
+                        (->bool (which "mpicc"))  ;MPI support enabled?
+                        (dirname
+                         (dirname (search-input-file inputs "/include/cblas.h")))
                         (assoc-ref inputs "scalapack")
                         (assoc-ref inputs "metis")
                         (match (list (assoc-ref inputs "pt-scotch")
@@ -3656,19 +3657,20 @@ sparse system of linear equations A x = b using Gaussian elimination.")
     (license license:cecill-c)))
 
 (define-public mumps-metis
-  (package (inherit mumps)
+  (package
+    (inherit mumps)
     (name "mumps-metis")
-    (inputs
-     (alist-delete "scotch" (package-inputs mumps)))))
+    (inputs (modify-inputs (package-inputs mumps)
+              (delete "scotch")))))
 
 (define-public mumps-openmpi
-  (package (inherit mumps)
+  (package
+    (inherit mumps)
     (name "mumps-openmpi")
     (inputs
-     `(("mpi" ,openmpi)
-       ("scalapack" ,scalapack)
-       ("pt-scotch" ,pt-scotch)
-       ,@(alist-delete "scotch" (package-inputs mumps))))
+     (modify-inputs (package-inputs mumps)
+       (delete "scotch")
+       (prepend openmpi scalapack pt-scotch)))
     (arguments
      (substitute-keyword-arguments (package-arguments mumps)
        ((#:phases phases)
@@ -3682,10 +3684,11 @@ sparse system of linear equations A x = b using Gaussian elimination.")
     (synopsis "Multifrontal sparse direct solver (with MPI)")))
 
 (define-public mumps-metis-openmpi
-  (package (inherit mumps-openmpi)
+  (package
+    (inherit mumps-openmpi)
     (name "mumps-metis-openmpi")
-    (inputs
-     (alist-delete "pt-scotch" (package-inputs mumps-openmpi)))))
+    (inputs (modify-inputs (package-inputs mumps-openmpi)
+              (delete "pt-scotch")))))
 
 (define-public ruby-asciimath
   (package
