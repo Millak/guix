@@ -13994,13 +13994,15 @@ text.")
                (substitute* (find-files "tests" "\\.py$")
                  (("#!/bin/bash") (string-append "#!" bash-exec))))))
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
                (invoke "pytest" "-vv" "-m" "not network" "-k"
                        (string-append
+                        ;; XXX: This test is timing sensitive and may
+                        ;; fail non-deterministically.
+                        "not test_cancel_pending_job"
                         ;; These tests require Docker.
-                        "not test_terminate_job"
+                        " and not test_terminate_job"
                         " and not test_invoke_function_from_sqs_exception"
                         " and not test_rotate_secret_lambda_invocations"
                         ;; These tests also require the network.
@@ -14017,7 +14019,7 @@ text.")
            python-pytest
            python-sure))
     (inputs
-     `(("bash" ,bash-minimal)))
+     (list bash-minimal))
     (propagated-inputs
      (list python-aws-xray-sdk
            python-boto
