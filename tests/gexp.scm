@@ -1539,6 +1539,28 @@ importing.* \\(guix config\\) from the host"
                              (cons (derivation-file-name drv)
                                    refs))))))))
 
+(test-assertm "lower-object, computed-file, #:target"
+  (let* ((target   "i586-pc-gnu")
+         (computed (computed-file "computed-cross"
+                                  #~(symlink #$coreutils output)
+                                  #:guile (default-guile))))
+    ;; When lowered to TARGET, the derivation of COMPUTED should run natively,
+    ;; using a native Guile, but it should refer to the target COREUTILS.
+    (mlet* %store-monad ((drv    (lower-object computed (%current-system)
+                                               #:target target))
+                         (refs   (references* (derivation-file-name drv)))
+                         (guile  (lower-object (default-guile)
+                                               (%current-system)
+                                               #:target #f))
+                         (cross  (lower-object coreutils #:target target))
+                         (native (lower-object coreutils #:target #f)))
+      (return (and (string=? (derivation-system (pk 'drv drv)) (%current-system))
+                   (string=? (derivation-builder drv)
+                             (string-append (derivation->output-path guile)
+                                            "/bin/guile"))
+                   (not (member (derivation-file-name native) refs))
+                   (member (derivation-file-name cross) refs))))))
+
 (test-assert "lower-object & gexp-input-error?"
   (guard (c ((gexp-input-error? c)
              (gexp-error-invalid-input c)))

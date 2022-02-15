@@ -598,7 +598,7 @@ This is the declarative counterpart of 'gexp->derivation'."
   (match file
     (($ <computed-file> name gexp guile options)
      (mlet %store-monad ((guile (lower-object (or guile (default-guile))
-                                              system #:target target)))
+                                              system #:target #f)))
        (apply gexp->derivation name gexp #:guile-for-build guile
               #:system system #:target target options)))))
 
