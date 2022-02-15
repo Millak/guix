@@ -763,30 +763,30 @@ device.")
                (rename-file (string-append out "/share/" tester-name)
                             (string-append tester "/share/" tester-name))))))))
     (native-inputs
-     `(("dot" ,graphviz)
-       ("doxygen" ,doxygen)
-       ("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ("pystache" ,python-pystache)
-       ("six" ,python-six)
-       ("udev" ,eudev)))
+     (list graphviz
+           doxygen
+           gettext-minimal
+           perl
+           python-wrapper
+           python-pystache
+           python-six
+           eudev))
     (inputs
-     `(("bctoolbox" ,bctoolbox)
-       ("belcard" ,belcard)
-       ("bellesip" ,belle-sip)
-       ("belr" ,belr)
-       ("bzrtp" ,bzrtp)
-       ("ldap" ,openldap)
-       ("libxsd" ,xsd)
-       ("lime" ,lime)
-       ("mediastreamer2" ,mediastreamer2)
-       ("notify" ,libnotify)
-       ("ortp" ,ortp)
-       ("soci" ,soci)
-       ("sqlite" ,sqlite)
-       ("xml2" ,libxml2)
-       ("zlib" ,zlib)))
+     (list bctoolbox
+           belcard
+           belle-sip
+           belr
+           bzrtp
+           openldap
+           xsd
+           lime
+           mediastreamer2
+           libnotify
+           ortp
+           soci
+           sqlite
+           libxml2
+           zlib))
     (synopsis "Belledonne Communications Softphone Library")
     (description "Liblinphone is a high-level SIP library integrating
 all calling and instant messaging features into an unified
