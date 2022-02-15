@@ -50,6 +50,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
 
 (define %gcc-infrastructure
@@ -696,39 +697,63 @@ It also includes runtime support libraries for these languages.")
                   (substitute* "configure"
                     (("host_tools=(.*)texinfo" _ before)
                      (string-append "host_tools=" before)))))))
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems (fold delete %supported-systems
+                             '("powerpc64le-linux" "riscv64-linux")))
     (native-inputs (list texinfo dejagnu))
     (inputs '())
     (propagated-inputs '())
     (outputs '("out"))
     (arguments
-     (list #:system "i686-linux"                ;x86_64 didn't exist back then
-           #:configure-flags #~'("--disable-werror")
+     (let ((matching-system
+             (match (%current-system)
+               ;; This package predates our 64-bit architectures.
+               ;; Force a 32-bit build targeting a similar architecture.
+               ("aarch64-linux"
+                "armhf-linux")
+               ("x86_64-linux"
+                "i686-linux")
+               (_
+                (%current-system)))))
+       (list #:system matching-system
+             #:configure-flags #~'("--disable-werror")
 
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'configure 'set-dynamic-linker-file-name
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Tell GCC what the real loader file name is.
-                   (substitute* "gcc/config/i386/linux.h"
-                     (("/lib/ld-linux\\.so\\.[12]")
-                      (search-input-file inputs "/lib/ld-linux.so.2")))))
-               (replace 'configure
-                 (lambda* (#:key outputs build configure-flags
-                           #:allow-other-keys)
-                   ;; It's an old 'configure' script so it needs some help.
-                   (setenv "CONFIG_SHELL" (which "sh"))
-                   (apply invoke "./configure"
-                          (string-append "--prefix=" #$output)
-                          (string-append "--build=" build)
-                          (string-append "--host=" build)
-                          configure-flags)))
-               (add-before 'configure 'remove-bundled-texinfo
-                 (lambda _
-                   ;; Go ahead despite the many warnings.
-                   (substitute* '("Makefile.in" "gcc/Makefile.in")
-                     (("^MAKEINFOFLAGS =.*")
-                      "MAKEINFOFLAGS = --force\n")))))))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'configure 'set-dynamic-linker-file-name
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     ;; Tell GCC what the real loader file name is.
+                     (substitute* '("gcc/config/alpha/linux-elf.h"
+                                    "gcc/config/m68k/linux.h"
+                                    "gcc/config/mips/linux.h"
+                                    "gcc/config/rs6000/linux.h")
+                       (("/lib/ld\\.so\\.1")
+                        (search-input-file
+                          inputs #$(glibc-dynamic-linker matching-system))))
+                     (substitute* '("gcc/config/alpha/linux-elf.h"
+                                    "gcc/config/arm/linux-elf.h"
+                                    "gcc/config/i386/linux.h"
+                                    "gcc/config/m68k/linux.h"
+                                    "gcc/config/sparc/linux.h"
+                                    "gcc/config/sparc/linux64.h")
+                       (("/lib(64)?/ld-linux\\.so\\.[12]")
+                        (search-input-file
+                          inputs #$(glibc-dynamic-linker matching-system))))))
+                 (replace 'configure
+                   (lambda* (#:key outputs build configure-flags
+                             #:allow-other-keys)
+                     ;; It's an old 'configure' script so it needs some help.
+                     (setenv "CONFIG_SHELL" (which "sh"))
+                     (apply invoke "./configure"
+                            (string-append "--prefix=" #$output)
+                            (string-append "--build=" build)
+                            (string-append "--host=" build)
+                            configure-flags)))
+                 (add-before 'configure 'remove-bundled-texinfo
+                   (lambda _
+                     ;; Go ahead despite the many warnings.
+                     (substitute* '("Makefile.in" "gcc/Makefile.in")
+                       (("^MAKEINFOFLAGS =.*")
+                        "MAKEINFOFLAGS = --force\n"))))))))
     (native-search-paths
      ;; This package supports nothing but the C language.
      (list (search-path-specification
