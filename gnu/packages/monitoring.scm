@@ -164,7 +164,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "5.4.10")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
@@ -172,7 +172,7 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "0xwqwmq811fgxl6j9a9527i55jcpq98gqvwcda8la9gj0rsiqas6"))
+        (base32 "0dlb5c34lwd3j754pgaddsvpqad5c5yqbh25y4qxfpiy4fzqmw2y"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
@@ -182,15 +182,10 @@ etc. via a Web interface.  Features include:
             "/run/setuid-programs/fping")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-agent"
-             "--enable-ipv6"
-             (string-append "--with-iconv="
-                            (assoc-ref %build-inputs "libiconv"))
-             (string-append "--with-libpcre="
-                            (assoc-ref %build-inputs "pcre")))))
+     '(#:configure-flags
+       '("--enable-agent" "--enable-ipv6" "--with-libpcre2")))
     (inputs
-     (list libiconv pcre))
+     (list pcre2))
     (home-page "https://www.zabbix.com/")
     (synopsis "Distributed monitoring solution (client-side agent)")
     (description "This package provides a distributed monitoring
