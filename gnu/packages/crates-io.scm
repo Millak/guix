@@ -10249,7 +10249,12 @@ chain, the first matching branch is the item that gets emitted.")
        (uri (crate-uri "chacha20" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14cgpnnpqsn5hmqkgrj4yaqdsvy56hkgcw5s2gqsxwhc7m1jmdq1"))))
+        (base32 "14cgpnnpqsn5hmqkgrj4yaqdsvy56hkgcw5s2gqsxwhc7m1jmdq1"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("version = \">=1, <1.5\"") "version = \"^1\""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
