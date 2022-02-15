@@ -260,41 +260,41 @@
         ;"--enable-pv3"
         ;"--enable-nuv"
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("libxml2" ,libxml2)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)))
+     (list autoconf
+           automake
+           libtool
+           libxml2
+           perl
+           pkg-config
+           python-wrapper))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("faac" ,faac)
-       ("ffmpeg" ,ffmpeg)
-       ("freetype" ,freetype)
-       ("imagemagick" ,imagemagick)
-       ("lame" ,lame)
-       ("liba52" ,liba52)
-       ("libdv" ,libdv)
-       ("libdvdread" ,libdvdread)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmpeg2" ,libmpeg2)
-       ("libogg" ,libogg)
-       ("libquicktime" ,libquicktime)
-       ("libtheora" ,libtheora)
-       ("libvorbis" ,libvorbis)
-       ("lzo" ,lzo)
-       ("mjepgtools" ,mjpegtools)
-       ("sdl" ,sdl)
-       ;; ("v4l-utils" ,v4l-utils)
-       ("x11" ,libx11)
-       ("x264" ,libx264)
-       ("xaw" ,libxaw)
-       ("xext" ,libxext)
-       ("xpm" ,libxpm)
-       ("xv" ,libxv)
-       ("xvid" ,xvid)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           faac
+           ffmpeg
+           freetype
+           imagemagick
+           lame
+           liba52
+           libdv
+           libdvdread
+           libjpeg-turbo
+           libmpeg2
+           libogg
+           libquicktime
+           libtheora
+           libvorbis
+           lzo
+           mjpegtools
+           sdl
+           ;; ("v4l-utils" ,v4l-utils)
+           libx11
+           libx264
+           libxaw
+           libxext
+           libxpm
+           libxv
+           xvid
+           zlib))
     (synopsis "Audio/Video Transcoder")
     (description "Transcode is a fast, versatile and command-line based
 audio/video everything to everything converter primarily focused on producing
