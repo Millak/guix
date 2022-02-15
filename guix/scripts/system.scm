@@ -1328,9 +1328,17 @@ argument list and OPTS is the option alist."
                       (x (leave (G_ "wrong number of arguments~%"))))))
        (list-generations pattern)))
     ((describe)
+     ;; Describe the running system, which is not necessarily the current
+     ;; generation.  /run/current-system might point to
+     ;; /var/guix/profiles/system-N-link, or it might point directly to
+     ;; /gnu/store/…-system.  Try both.
      (match (generation-number "/run/current-system" %system-profile)
        (0
-        (leave (G_ "no system generation, nothing to describe~%")))
+        (match (generation-number %system-profile)
+          (0
+           (leave (G_ "no system generation, nothing to describe~%")))
+          (generation
+           (display-system-generation generation))))
        (generation
         (display-system-generation generation))))
     ((search)
