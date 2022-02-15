@@ -148,7 +148,7 @@ well as CD-ROM images.")
            plasma-framework
            kwindowsystem
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            qtscript))
     (arguments
@@ -198,7 +198,7 @@ Kate's features include:
      (list ki18n
            kio
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            ;; TODO: QAccessibilityClient - libqaccessibilityclien
            qtbase-5))
     (home-page "https://apps.kde.org/kmag/")
@@ -237,7 +237,7 @@ artists to web-designers to people with low vision.")
            libxtst
            libxt
            phonon
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/kmousetool/")
     (synopsis "Automatic mouse click and mouse manipulation tool for the
@@ -272,7 +272,7 @@ whom pressing buttons hurts.")
            kio
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            qtspeech))
     (home-page "https://apps.kde.org/kmouth/")
@@ -310,7 +310,7 @@ sentences to be re-spoken.")
            ki18n
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/kronometer/")
     (synopsis "Simple stopwatch application")
@@ -353,7 +353,7 @@ to save the times and resume them later.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5
            solid
            zlib))
@@ -427,7 +427,7 @@ either be created or generated from a image.")
            kservice
            kwidgetsaddons
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qca
            qtbase-5
            qtdeclarative-5
@@ -485,7 +485,7 @@ redone.")
            ktextwidgets
            kwindowsystem
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/rsibreak/")
     (synopsis "Assists in the Recovery and Prevention of Repetitive Strain
@@ -531,7 +531,7 @@ remind you to take a break now and then.")
            kwindowsystem
            kxmlgui
            samba
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            plasma-framework
            qtbase-5
            qtdeclarative-5
@@ -593,7 +593,7 @@ Features:
            kio
            ktextwidgets
            kxmlgui
-           oxygen-icons ;; default icon set
+           breeze-icons ;; default icon set
            qtbase-5))
     (home-page "https://apps.kde.org/sweeper/")
     (synopsis "Temporary file and history cleaner")

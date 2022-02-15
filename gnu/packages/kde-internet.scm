@@ -87,7 +87,7 @@
            kwidgetsaddons
            kxmlgui
            ;; TODO: telepathy
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            purpose
            qca
            qoauth
@@ -157,7 +157,7 @@ Other notable features include:
            libktorrent
            ;; TODO: libmms
            ;; TODO: LibKWorkspace - plasma-workspace?
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            qca
            qgpgme
            qtbase-5))
@@ -216,7 +216,7 @@ This package is part of the KDE networking module.")
            kwallet
            kwidgetsaddons
            kwindowsystem
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            phonon
            qtbase-5
            qca
@@ -359,7 +359,7 @@ This package is part of the KDE networking module.")
            kxmlgui
            libssh
            libvnc
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            qtbase-5))
     (arguments ;; FIXEME: libvnc can't be found for some reason.
      (list #:configure-flags #~(list "-DWITH_VNC=NO")))
@@ -412,7 +412,7 @@ This package is part of the KDE networking module.")
            libgcrypt
            libktorrent
            ;; TODO: LibKWorkspace -> plasma-workspace?
-           oxygen-icons ; default icon set
+           breeze-icons ; default icon set
            phonon
            qtbase-5
            qtscript
