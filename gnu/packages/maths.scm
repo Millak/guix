@@ -7035,8 +7035,7 @@ researchers and developers alike to get started on SAT.")
            curl
            icu4c
            gnuplot
-           readline
-           libiconv))
+           readline))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

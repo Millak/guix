@@ -131,7 +131,6 @@ OPENPGP=SEQUOIA
            pkg-config yml2))
     (inputs
      `(("libetpan" ,fdik-libetpan)
-       ("libiconv" ,libiconv)
        ("nettle" ,nettle)
        ("openssl" ,openssl)
        ("sequoia" ,sequoia)

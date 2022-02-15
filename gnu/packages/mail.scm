@@ -365,7 +365,6 @@ example, modify the message headers or body, or encrypt or sign the message.")
            libltdl
            gdbm
            ;; Required for SEARCH CHARSET.
-           libiconv
            libunistring))
     (home-page "https://mailutils.org")
     (synopsis "Utilities and library for reading and serving mail")

@@ -29,7 +29,6 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages docbook)
@@ -411,7 +410,6 @@ variety of formats.")
            libdvdcss
            libdvdread
            ;; TODO: LibFuzzer
-           libiconv
            libkcddb
            libmad
            libmpcdec

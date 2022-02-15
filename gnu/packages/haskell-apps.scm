@@ -41,7 +41,6 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system haskell)
   #:use-module (gnu packages)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages haskell)
@@ -252,7 +251,6 @@ unlit literate code files; and an option to turn off macro-expansion.")
            ghc
            ncurses
            perl
-           libiconv
            ghc-network
            ghc-network-uri))
     (native-inputs

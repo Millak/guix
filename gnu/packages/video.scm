@@ -262,7 +262,6 @@
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
-       ("iconv" ,libiconv)
        ("libtool" ,libtool)
        ("libxml2" ,libxml2)
        ("perl" ,perl)

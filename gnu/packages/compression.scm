@@ -2093,7 +2093,7 @@ single-member files which can't be decompressed in parallel.")
    (build-system cmake-build-system)
    (arguments
     `(#:tests? #f))
-   (inputs (list boost libiconv xz))
+   (inputs (list boost xz))
    (native-inputs (list pkg-config))
    (home-page "https://constexpr.org/innoextract/")
    (synopsis "Tool for extracting Inno Setup installers")
