@@ -130,12 +130,12 @@ OPENPGP=SEQUOIA
      (list asn1c ; >= 0.9.27
            pkg-config yml2))
     (inputs
-     `(("libetpan" ,fdik-libetpan)
-       ("nettle" ,nettle)
-       ("openssl" ,openssl)
-       ("sequoia" ,sequoia)
-       ("sqlite3" ,sqlite)
-       ("util-linux" ,util-linux "lib"))) ;; uuid.h
+     (list fdik-libetpan
+           nettle
+           openssl
+           sequoia
+           sqlite
+           `(,util-linux "lib"))) ;; uuid.h
     (home-page "https://pep.foundation/")
     (synopsis "Library for automatic key management and encryption of
 messages")
