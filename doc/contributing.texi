@@ -98,8 +98,14 @@ shell}:
 guix shell -D guix help2man git strace --pure
 @end example
 
-Run @command{./bootstrap} to generate the build system infrastructure
-using Autoconf and Automake.  If you get an error like this one:
+From there you can generate the build system infrastructure
+using Autoconf and Automake:
+
+@example
+./bootstrap
+@end example
+
+If you get an error like this one:
 
 @example
 configure.ac:46: error: possibly undefined macro: PKG_CHECK_MODULES
@@ -120,17 +126,30 @@ export ACLOCAL_PATH=/usr/share/aclocal
 @xref{Macro Search Path,,, automake, The GNU Automake Manual}, for
 more information.
 
-Then, run @command{./configure --localstatedir=@var{directory}}, where
-@var{directory} is the @code{localstatedir} value used by your current
-installation (@pxref{The Store}, for information about this), usually
-@file{/var}.  Note that you will probably not run @command{make install}
-at the end (you don't have to) but it's still important to pass the
-right @code{localstatedir}.
+Then, run:
 
-Finally, you have to invoke @code{make && make check} to build Guix and
-run the tests (@pxref{Running the Test Suite}).  If anything fails, take
-a look at installation instructions (@pxref{Installation}) or send a
-message to the @email{guix-devel@@gnu.org, mailing list}.
+@example
+./configure --localstatedir=/var
+@end example
+
+@noindent
+... where @file{/var} is the normal @code{localstatedir} value
+(@pxref{The Store}, for information about this).  Note that you will
+probably not run @command{make install} at the end (you don't have to)
+but it's still important to pass the right @code{localstatedir}.
+
+Finally, you can build Guix and, if you feel so inclined, run the tests
+(@pxref{Running the Test Suite}):
+
+@example
+make
+make check
+@end example
+
+@noindent
+If anything fails, take a look at installation instructions
+(@pxref{Installation}) or send a message to the
+@email{guix-devel@@gnu.org, mailing list}.
 
 From there on, you can authenticate all the commits included in your
 checkout by running:
