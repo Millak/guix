@@ -173,14 +173,14 @@ as required.")
 (define-public libfilezilla
   (package
     (name "libfilezilla")
-    (version "0.35.0")
+    (version "0.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.filezilla-project.org/"
                            "libfilezilla/libfilezilla-" version ".tar.bz2"))
        (sha256
-        (base32 "1s1a165kc1gkdmhzmvm91ddj3cbxmh7s27fwfgm921ixrq6m3qpf"))))
+        (base32 "0wm8acwbrsblilfwj5asxr26gy8grg175j91df1bryz7xlc1q9y0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
