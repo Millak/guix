@@ -6,6 +6,7 @@
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -213,14 +214,14 @@ output.
 (define-public filezilla
   (package
     (name "filezilla")
-    (version "3.57.0")
+    (version "3.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.filezilla-project.org/client/"
                            "FileZilla_" version "_src.tar.bz2"))
        (sha256
-        (base32 "1iwrr08rik0afaxf88bghw2fw97ia8wlcsrm94jh24yafxq6rgw2"))))
+        (base32 "122x72rvd178y2rffvidyvzr33kf325q2rk4l2x44xqzw1r7zznh"))))
     (build-system gnu-build-system)
     (arguments
       ;; Don't let filezilla phone home to check for updates.
