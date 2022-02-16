@@ -9480,8 +9480,7 @@ scripts so that they refer to @code{grep} by its absolute file name:
         (substitute* (list (string-append bin "/egrep")
                            (string-append bin "/fgrep"))
           (("^exec grep")
-           (string-append "exec " bin "/grep")))
-        #t))))
+           (string-append "exec " bin "/grep")))))))
 @end lisp
 
 In the example below, phases are modified in two ways: the standard
@@ -9500,8 +9499,7 @@ executable files to be installed:
       (let ((bin (string-append (assoc-ref outputs "out")
                                 "/bin")))
         (install-file "footswitch" bin)
-        (install-file "scythe" bin)
-        #t))))
+        (install-file "scythe" bin)))))
 @end lisp
 
 @c TODO: Add more examples.
@@ -9543,21 +9541,21 @@ couple of helpers to wrap commands.
   [#:sh @var{sh}] [#:rest @var{variables}]
 Make a wrapper for @var{program}.  @var{variables} should look like this:
 
-@example
+@lisp
 '(@var{variable} @var{delimiter} @var{position} @var{list-of-directories})
-@end example
+@end lisp
 
 where @var{delimiter} is optional.  @code{:} will be used if
 @var{delimiter} is not given.
 
 For example, this call:
 
-@example
+@lisp
 (wrap-program "foo"
               '("PATH" ":" = ("/gnu/.../bar/bin"))
               '("CERT_PATH" suffix ("/gnu/.../baz/certs"
                                     "/qux/certs")))
-@end example
+@end lisp
 
 will copy @file{foo} to @file{.foo-real} and create the file @file{foo}
 with the following contents:
