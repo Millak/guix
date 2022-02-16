@@ -34592,8 +34592,8 @@ previous example to your operating system declaration by appending it to
   ;; Some fields omitted...
   (setuid-programs
     (append (list (setuid-program
-                    (program (file-append nfs-utils "/sbin/mount.nfs")))
-                  %setuid-programs))))
+                    (program (file-append nfs-utils "/sbin/mount.nfs"))))
+            %setuid-programs)))
 @end lisp
 
 @deftp {Data Type} setuid-program
