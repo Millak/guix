@@ -3471,7 +3471,20 @@ resolving them into absolute units.")
     ;; Package without Project.toml
     (arguments
      '(#:julia-package-name "Media"
-       #:julia-package-uuid "e89f7d12-3494-54d1-8411-f7d8b9ae1f27"))
+       #:julia-package-uuid "e89f7d12-3494-54d1-8411-f7d8b9ae1f27"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'create-package-toml
+           (lambda* (#:key julia-package-name julia-package-uuid #:allow-other-keys)
+             (with-output-to-file "Project.toml"
+               (lambda _
+                 (format #t
+                         "name = \"~a\"~@
+                         uuid = \"~a\"~@
+                         [deps]~@
+                         MacroTools = \"1914dd2f-81c6-5fcd-8719-6d5c9610ff09\"~%"
+                         julia-package-name
+                         julia-package-uuid))))))))
     (propagated-inputs
      (list julia-macrotools))
     (home-page "https://github.com/JunoLab/Media.jl")
