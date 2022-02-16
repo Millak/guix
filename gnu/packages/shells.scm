@@ -469,7 +469,7 @@ history mechanism, job control and a C-like syntax.")
 (define-public zsh
   (package
     (name "zsh")
-    (version "5.8")
+    (version "5.8.1")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -480,7 +480,7 @@ history mechanism, job control and a C-like syntax.")
                            ".tar.xz")))
               (sha256
                (base32
-                "09yyaadq738zlrnlh1hd3ycj1mv3q5hh4xl1ank70mjnqm6bbi6w"))))
+                "06crvpqbpm8sq5c215f4b985z7npwnqnj0i0g53hnq6fp8h3b5xn"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  `("--with-tcsetpgrp"
