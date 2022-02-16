@@ -4005,6 +4005,8 @@ distribution.")
                     "0qr5vjp79g1c1l6k173qhfdfabgbky73wymzhm56pazx4a8r08wz"))))
     (package
       (inherit template)
+      ;; TODO: This package is missing files.
+      (replacement texlive-babel/fixed)
       (arguments
        (substitute-keyword-arguments (package-arguments template)
          ((#:tex-directory _ #t)
