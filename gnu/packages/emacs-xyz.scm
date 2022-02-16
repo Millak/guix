@@ -2928,7 +2928,7 @@ Lock key.")
 (define-public emacs-chronometrist
   (package
     (name "emacs-chronometrist")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -2937,7 +2937,7 @@ Lock key.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "156hj3sxjcfpwimnrykh4n3krkbzas9jg8m6xzy42rnzhx28ja6k"))))
+        (base32 "0qpkpkipmac24m3ng4ahsml3vi15qcvmid3g02pbpgbpc113zfpl"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -2959,7 +2959,7 @@ Lock key.")
                                   "../WTFPL"
                                   (find-files "." "\\.md$"))))))))))
     (propagated-inputs
-     (list emacs-dash emacs-s emacs-spark emacs-ts))
+     (list emacs-alert emacs-dash emacs-s emacs-spark emacs-ts))
     (home-page "https://github.com/contrapunctus-1/chronometrist")
     (synopsis "Time tracker for Emacs")
     (description "Chronometrist is a time tracker in Emacs, largely modelled
