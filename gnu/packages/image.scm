@@ -1361,7 +1361,10 @@ channels.")
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "tests"
-       #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON")
+       #:configure-flags (list "-DEXIV2_BUILD_UNIT_TESTS=ON"
+                               ;; darktable needs BMFF to support
+                               ;; CR3 files.
+                               "-DEXIV2_ENABLE_BMFF=ON")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'delete-static-libraries
