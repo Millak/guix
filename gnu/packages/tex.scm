@@ -6397,6 +6397,8 @@ use this package to insert PostScript files, in addition to PDF files.")
                     "0yn0yl6x1z9ab5gb56lhvkqabd2agz3ggxifwxkiysrj5780j29z"))))
     (package
       (inherit template)
+      ;; TODO: This package is missing files.
+      (replacement texlive-stmaryrd/fixed)
       (arguments (substitute-keyword-arguments (package-arguments template)
                    ((#:tex-directory _ #t)
                     "latex/stmaryrd")
