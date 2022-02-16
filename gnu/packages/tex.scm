@@ -3900,6 +3900,8 @@ loading fonts by their proper names instead of file names.")
               (sha256
                (base32
                 "172zybw7rp05jca8wl6x0mh6z6gncdyi1j9wdfyjnhbvqw0z4wi4"))))
+    ;; This package misses important files
+    (replacement texlive-amsmath)
     (build-system texlive-build-system)
     (arguments '(#:tex-directory "latex/amsmath"))
     (home-page "https://www.ctan.org/pkg/amsmath")
