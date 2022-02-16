@@ -269,6 +269,13 @@ implementation.
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   ;; Don't depend on bleeding-edge CFFI, as it is
+                   ;; apparently only needed for Python >= 3.10.
+                   (substitute* "setup.py"
+                     (("cffi>=1\\.15\\.0")
+                      "cffi>=1.0"))))
                (add-after 'unpack 'copy-cmark-gfm
                  (lambda _
                    ;; This package needs the cmark-gfm source files
@@ -291,7 +298,7 @@ implementation.
                    (when tests? (invoke "pytest" "-vv" "tests")))))))
     (native-inputs (list python-pytest))
     (inputs (list cmark-gfm))
-    (propagated-inputs (list python-cffi-1.15))
+    (propagated-inputs (list python-cffi))
     (home-page "https://github.com/theacodes/cmarkgfm")
     (synopsis "Python bindings for GitHub's fork of cmark")
     (description
