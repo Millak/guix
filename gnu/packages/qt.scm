@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -2878,15 +2878,18 @@ color-related widgets.")
            clang-toolchain
            qtbase-5
            qtdatavis3d
+           qtdeclarative
            qtlocation
            qtmultimedia
            qtquickcontrols
+           qtquickcontrols2
            qtscript
            qtscxml
            qtsensors
            qtspeech
            qtsvg
            qtwebchannel
+           qtwebengine
            qtwebsockets
            qtx11extras
            qtxmlpatterns))
@@ -2905,10 +2908,51 @@ color-related widgets.")
              (string-append "-DPYTHON_EXECUTABLE="
                             (assoc-ref %build-inputs "python")
                             "/bin/python"))
+       #:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'go-to-source-dir
            (lambda _ (chdir "sources/pyside2") #t))
+         (add-after 'go-to-source-dir 'fix-qt-module-detection
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Activate qt module support even if it not in the same
+             ;; directory as qtbase.
+             (substitute* "../cmake_helpers/helpers.cmake"
+               (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
+                "true"))
+             ;; Add include directories for qt modules.
+             (let ((dirs (map (lambda (name)
+                                (string-append (assoc-ref inputs name)
+                                               "/include/qt5"))
+                              '("qtdatavis3d"
+                                "qtdeclarative"
+                                "qtlocation"
+                                "qtmultimedia"
+                                "qtquickcontrols"
+                                "qtquickcontrols2"
+                                "qtscript"
+                                "qtscxml"
+                                "qtsensors"
+                                "qtspeech"
+                                "qtsvg"
+                                "qttools"
+                                "qtwebchannel"
+                                "qtwebengine"
+                                "qtwebsockets"
+                                "qtx11extras"
+                                "qtxmlpatterns"))))
+               (substitute* "cmake/Macros/PySideModules.cmake"
+                 (("\\$\\{PATH_SEP\\}\\$\\{core_includes\\}" all)
+                  (fold (lambda (dir paths)
+                          (string-append paths "${PATH_SEP}" dir))
+                        all
+                        dirs)))
+               (setenv "CXXFLAGS" (fold (lambda (dir paths)
+                                          (string-append paths " -I" dir))
+                                        ""
+                                        dirs)))))
          (add-before 'configure 'set-clang-dir
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((clang (assoc-ref inputs "clang-toolchain")))
