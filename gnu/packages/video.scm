@@ -2276,10 +2276,10 @@ the last played position, etc.")
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")
     (synopsis "Command-line program to download images from several sites")
-    (description "Command-line program to download image galleries
-and collections from several image hosting sites
-While this package can use youtube-dl or yt-dlp packages to download videos,
-the focus is more on images and image hosting sites.")
+    (description "Gallery-dl is a command-line program that downloads image
+galleries and collections from several image hosting sites.  While this package
+can use youtube-dl or yt-dlp packages to download videos, the focus is more on
+images and image hosting sites.")
     (license license:gpl2)))
 
 (define-public gnome-mpv
