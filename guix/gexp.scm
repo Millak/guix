@@ -2176,6 +2176,29 @@ is true, the derivation will not print anything."
 ;;;
 
 (eval-when (expand load eval)
+  (define-once read-syntax-redefined?
+    ;; Have we already redefined 'read-syntax'?  This needs to be done on
+    ;; 3.0.8 only to work around <https://issues.guix.gnu.org/54003>.
+    (or (not (module-variable the-scm-module 'read-syntax))
+        (not (guile-version>? "3.0.7"))))
+
+  (define read-procedure
+    ;; The current read procedure being called: either 'read' or
+    ;; 'read-syntax'.
+    (make-parameter read))
+
+  (define read-syntax*
+    ;; Replacement for 'read-syntax'.
+    (let ((read-syntax (and=> (module-variable the-scm-module 'read-syntax)
+                              variable-ref)))
+      (lambda (port . rest)
+        (parameterize ((read-procedure read-syntax))
+          (apply read-syntax port rest)))))
+
+  (unless read-syntax-redefined?
+    (set! (@ (guile) read-syntax) read-syntax*)
+    (set! read-syntax-redefined? #t))
+
   (define* (read-ungexp chr port #:optional native?)
     "Read an 'ungexp' or 'ungexp-splicing' form from PORT.  When NATIVE? is
 true, use 'ungexp-native' and 'ungexp-native-splicing' instead."
@@ -2191,22 +2214,39 @@ true, use 'ungexp-native' and 'ungexp-native-splicing' instead."
              'ungexp-native
              'ungexp))))
 
-    (match (read port)
-      ((? symbol? symbol)
-       (let ((str (symbol->string symbol)))
+    (define symbolic?
+      ;; Depending on whether (read-procedure) is 'read' or 'read-syntax', we
+      ;; might get either sexps or syntax objects.  Adjust accordingly.
+      (if (eq? (read-procedure) read)
+          symbol?
+          (compose symbol? syntax->datum)))
+
+    (define symbolic->string
+      (if (eq? (read-procedure) read)
+          symbol->string
+          (compose symbol->string syntax->datum)))
+
+    (define wrapped-symbol
+      (if (eq? (read-procedure) read)
+          (lambda (_ symbol) symbol)
+          datum->syntax))
+
+    (match ((read-procedure) port)
+      ((? symbolic? symbol)
+       (let ((str (symbolic->string symbol)))
          (match (string-index-right str #\:)
            (#f
             `(,unquote-symbol ,symbol))
            (colon
             (let ((name   (string->symbol (substring str 0 colon)))
                   (output (substring str (+ colon 1))))
-              `(,unquote-symbol ,name ,output))))))
+              `(,unquote-symbol ,(wrapped-symbol symbol name) ,output))))))
       (x
        `(,unquote-symbol ,x))))
 
   (define (read-gexp chr port)
     "Read a 'gexp' form from PORT."
-    `(gexp ,(read port)))
+    `(gexp ,((read-procedure) port)))
 
   ;; Extend the reader
   (read-hash-extend #\~ read-gexp)

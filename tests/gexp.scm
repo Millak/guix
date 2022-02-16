@@ -28,6 +28,7 @@
   #:use-module (guix tests)
   #:use-module ((guix build utils) #:select (with-directory-excursion))
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
+  #:use-module ((guix ui) #:select (load*))
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
@@ -221,6 +222,32 @@
     (with-directory-excursion directory
       (let ((file (local-file (string-copy "../base32.scm"))))
         (local-file-absolute-file-name file)))))
+
+(test-assert "local-file, relative file name, within gexp"
+  (let* ((file     (search-path %load-path "guix/base32.scm"))
+         (interned (add-to-store %store "base32.scm" #f "sha256" file)))
+    (equal? `(the file is ,interned)
+            (gexp->sexp*
+             #~(the file is #$(local-file "../guix/base32.scm"))))))
+
+(test-assert "local-file, relative file name, within gexp, compiled"
+  ;; In Guile 3.0.8, everything read by the #~ and #$ read hash extensions
+  ;; would lack source location info, which in turn would lead
+  ;; (current-source-directory), called by 'local-file', to return #f, thereby
+  ;; breaking 'local-file' resolution.  See
+  ;; <https://issues.guix.gnu.org/54003>.
+  (let ((file (tmpnam)))
+    (call-with-output-file file
+      (lambda (port)
+        (display (string-append "#~(this file is #$(local-file \""
+                                (basename file) "\" \"t.scm\"))")
+                 port)))
+
+    (let* ((interned (add-to-store %store "t.scm" #f "sha256" file))
+           (module   (make-fresh-user-module)))
+      (module-use! module (resolve-interface '(guix gexp)))
+      (equal? `(this file is ,interned)
+              (gexp->sexp* (load* file module))))))
 
 (test-assertm "local-file, #:select?"
   (mlet* %store-monad ((select? -> (lambda (file stat)
