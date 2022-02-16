@@ -9506,6 +9506,90 @@ executable files to be installed:
 
 @c TODO: Add more examples.
 
+@subsection Wrappers
+
+@cindex program wrappers
+@cindex wrapping programs
+It is not unusual for a command to require certain environment variables
+to be set for proper functioning, typically search paths (@pxref{Search
+Paths}).  Failing to do that, the command might fail to find files or
+other commands it relies on, or it might pick the ``wrong''
+ones---depending on the environment in which it runs.  Examples include:
+
+@itemize
+@item
+a shell script that assumes all the commands it uses are in @env{PATH};
+
+@item
+a Guile program that assumes all its modules are in @env{GUILE_LOAD_PATH}
+and @env{GUILE_LOAD_COMPILED_PATH};
+
+@item
+a Qt application that expects to find certain plugins in
+@env{QT_PLUGIN_PATH}.
+@end itemize
+
+For a package writer, the goal is to make sure commands always work the
+same rather than depend on some external settings.  One way to achieve
+that is to @dfn{wrap} commands in a thin script that sets those
+environment variables, thereby ensuring that those run-time dependencies
+are always found.  The wrapper would be used to set @env{PATH},
+@env{GUILE_LOAD_PATH}, or @env{QT_PLUGIN_PATH} in the examples above.
+
+To ease that task, the @code{(guix build utils)} module provides a
+couple of helpers to wrap commands.
+
+@deffn {Scheme Procedure} wrap-program @var{program} @
+  [#:sh @var{sh}] [#:rest @var{variables}]
+Make a wrapper for @var{program}.  @var{variables} should look like this:
+
+@example
+'(@var{variable} @var{delimiter} @var{position} @var{list-of-directories})
+@end example
+
+where @var{delimiter} is optional.  @code{:} will be used if
+@var{delimiter} is not given.
+
+For example, this call:
+
+@example
+(wrap-program "foo"
+              '("PATH" ":" = ("/gnu/.../bar/bin"))
+              '("CERT_PATH" suffix ("/gnu/.../baz/certs"
+                                    "/qux/certs")))
+@end example
+
+will copy @file{foo} to @file{.foo-real} and create the file @file{foo}
+with the following contents:
+
+@example
+#!location/of/bin/bash
+export PATH="/gnu/.../bar/bin"
+export CERT_PATH="$CERT_PATH$@{CERT_PATH:+:@}/gnu/.../baz/certs:/qux/certs"
+exec -a $0 location/of/.foo-real "$@@"
+@end example
+
+If @var{program} has previously been wrapped by @code{wrap-program}, the
+wrapper is extended with definitions for @var{variables}.  If it is not,
+@var{sh} will be used as the interpreter.
+@end deffn
+
+@deffn {Scheme Procedure} wrap-script @var{program} @
+  [#:guile @var{guile}] [#:rest @var{variables}]
+Wrap the script @var{program} such that @var{variables} are set first.
+The format of @var{variables} is the same as in the @code{wrap-program}
+procedure.  This procedure differs from @code{wrap-program} in that it
+does not create a separate shell script.  Instead, @var{program} is
+modified directly by prepending a Guile script, which is interpreted as
+a comment in the script's language.
+
+Special encoding comments as supported by Python are recreated on the
+second line.
+
+Note that this procedure can only be used once per file as Guile scripts are
+not supported.
+@end deffn
+
 @node Search Paths
 @section Search Paths
 
