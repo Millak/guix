@@ -2940,24 +2940,24 @@ Lock key.")
         (base32 "0qpkpkipmac24m3ng4ahsml3vi15qcvmid3g02pbpgbpc113zfpl"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir-elisp
-           ;; Elisp directory is not in root of the source.
-           (lambda _
-             (chdir "elisp")))
-         (add-after 'install 'install-doc
-           ;; Documentation consists of several Markdown files.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-elisp
+            ;; Elisp directory is not in root of the source.
+            (lambda _
+              (chdir "elisp")))
+          (add-after 'install 'install-doc
+            ;; Documentation consists of several Markdown files.
+            (lambda _
+              (let ((doc (string-append #$output
                                         "/share/doc/emacs-chronometrist-"
-                                        ,version)))
-               (with-directory-excursion "../doc"
-                 (for-each (lambda (f) (install-file f doc))
-                           (cons* "../UNLICENSE"
-                                  "../WTFPL"
-                                  (find-files "." "\\.md$"))))))))))
+                                        #$version)))
+                (with-directory-excursion "../doc"
+                  (for-each (lambda (f) (install-file f doc))
+                            (cons* "../UNLICENSE"
+                                   "../WTFPL"
+                                   (find-files "." "\\.md$"))))))))))
     (propagated-inputs
      (list emacs-alert emacs-dash emacs-s emacs-spark emacs-ts))
     (home-page "https://github.com/contrapunctus-1/chronometrist")
