@@ -499,7 +499,9 @@ LINUX-MODULE-DIRECTORY, then installing KEYMAP-FILE with 'loadkeys' (if
 KEYMAP-FILE is true), then setting up QEMU guest networking if
 QEMU-GUEST-NETWORKING? is true, calling PRE-MOUNT, mounting the file systems
 specified in MOUNTS, and finally booting into the new root if any.  The initrd
-supports kernel command-line options '--load', '--root', and '--repl'.
+supports kernel command-line options '--load', '--root', and '--repl'.  It
+also honors a subset of the documented Linux kernel command-line parameters
+such as 'fsck.mode', 'resume' and 'rootdelay'.
 
 Mount the root file system, specified by the '--root' command-line argument,
 if any.
@@ -596,9 +598,8 @@ upon error."
         (let ((root-delay (and=> (find-long-option "rootdelay" args)
                                  string->number)))
           (when root-delay
-            (format #t
-                    "Pausing for rootdelay=~a seconds before mounting the root file system...\n"
-                    root-delay)
+            (format #t "Pausing for rootdelay=~a seconds before mounting \
+the root file system...\n" root-delay)
             (sleep root-delay)))
 
         ;; Prepare the real root file system under /root.
