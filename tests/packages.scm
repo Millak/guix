@@ -508,6 +508,16 @@
     (and (supported-package? p "x86_64-linux")
          (supported-package? p "armhf-linux"))))
 
+(test-assert "supported-package? vs. %current-target-system"
+  ;; The %CURRENT-TARGET-SYSTEM value should have no influence.
+  (parameterize ((%current-target-system "arm-linux-gnueabihf"))
+    (let ((p (dummy-package "foo"
+               (build-system gnu-build-system)
+               (supported-systems '("x86_64-linux" "armhf-linux")))))
+      (and (supported-package? p "x86_64-linux")
+           (not (supported-package? p "i686-linux"))
+           (supported-package? p "armhf-linux")))))
+
 (test-skip (if (not %store) 8 0))
 
 (test-assert "package-source-derivation, file"
