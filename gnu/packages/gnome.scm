@@ -62,7 +62,7 @@
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
@@ -5437,55 +5437,54 @@ faster results and to avoid unnecessary server load.")
 (define-public upower
   (package
     (name "upower")
-    (version "0.99.13")
+    (version "0.99.15")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.freedesktop.org/upower/upower")
-             (commit (string-append "UPOWER_"
-                                    (string-map (match-lambda (#\. #\_)
-                                                              (chr chr))
-                                                version)))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0khwg6jpq81dcylkpi7cn75bjzif0q9qscwvirrk41krma23iddj"))
-       (patches (search-patches "upower-builddir.patch"))
+        (base32 "1zk7w7pw8dhlnxhxzcbk33gmxmg8f32mppd67556v9z2qgcg4lhs"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Upstream commit
-           ;; <https://cgit.freedesktop.org/upower/commit/?id=18457c99b68786cd729b315723d680e6860d9cfa>
-           ;; moved 'dbus-1/system.d' from etc/ to share/.  However,
-           ;; 'dbus-configuration-directory' in (gnu services dbus)
-           ;; expects it in etc/.  Thus, move it back to its previous
-           ;; location.
-           (substitute* "src/Makefile.am"
-             (("^dbusconfdir =.*$")
-              "dbusconfdir = $(sysconfdir)/dbus-1/system.d\n"))))))
-    (build-system glib-or-gtk-build-system)
+         ;; Upstream commit
+         ;; <https://cgit.freedesktop.org/upower/commit/?id=18457c99b68786cd729b315723d680e6860d9cfa>
+         ;; moved 'dbus-1/system.d' from etc/ to share/.  However,
+         ;; 'dbus-configuration-directory' in (gnu services dbus)
+         ;; expects it in etc/.  Thus, move it back to its previous
+         ;; location.
+         #~(substitute* "src/meson.build"
+            (("dbusdir / 'system.d'")
+              "get_option('sysconfdir') / 'dbus-1/system.d'")
+            ;; Avoid writing to /var during the build, this is
+            ;; not possible in Guix!
+            (("^install_subdir\\('does-not-exist'.*$") "")))))
+    (build-system meson-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((umockdev (string-append (assoc-ref inputs "umockdev")
-                                            "/lib")))
-               (setenv "LD_LIBRARY_PATH" umockdev)))))
-       #:configure-flags (list "--localstatedir=/var"
-                               (string-append "--with-udevrulesdir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/udev/rules.d"))))
+      (list
+       #:glib-or-gtk? #t
+       #:phases
+       #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((umockdev (string-append (assoc-ref inputs "umockdev")
+                                             "/lib")))
+                (setenv "LD_LIBRARY_PATH" umockdev)))))
+       #:configure-flags
+       #~(list "-Dsystemdsystemunitdir=no"
+               ;; If not specified, udev will try putting history information
+               ;; in /gnu/store.
+               "-Dhistorydir=/var/lib/upower"
+               (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d"))))
     (native-inputs
-     (list autoconf
-           automake
+     (list `(,glib "bin") ; for gdbus-codegen
            gobject-introspection
            gtk-doc
            intltool
-           libtool
            pkg-config
            python
-           which ; for ./autogen.sh
            ;; For tests.
            python-dbus
            python-dbusmock
