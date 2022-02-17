@@ -5508,7 +5508,11 @@ faster results and to avoid unnecessary server load.")
 listening to device events and querying history and statistics.  Any
 application or service on the system can access the org.freedesktop.UPower
 service via the system message bus.")
-    (license license:gpl2+)))
+    (license license:gpl2+)
+    ;; Old versions of upower are tagged as UPOWER_0_99_13, which confuses
+    ;; the 'generic-git' updater.  Give it a little help.
+    (properties '((release-tag-prefix . "v")
+                  (release-tag-version-delimiter . ".")))))
 
 (define-public libgweather
   (package
