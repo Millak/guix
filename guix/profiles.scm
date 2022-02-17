@@ -33,7 +33,7 @@
   #:use-module ((guix utils) #:hide (package-name->name+version))
   #:use-module ((guix build utils)
                 #:select (package-name->name+version mkdir-p))
-  #:use-module ((guix diagnostics) #:select (&fix-hint))
+  #:use-module ((guix diagnostics) #:select (&fix-hint formatted-message))
   #:use-module (guix i18n)
   #:use-module (guix records)
   #:use-module (guix packages)
@@ -1860,6 +1860,7 @@ MANIFEST."
                              (name "profile")
                              (hooks %default-profile-hooks)
                              (locales? #t)
+                             (allow-unsupported-packages? #f)
                              (allow-collisions? #f)
                              (relative-symlinks? #f)
                              system target)
@@ -1868,7 +1869,9 @@ the given MANIFEST.  The profile includes additional derivations returned by
 the monadic procedures listed in HOOKS--such as an Info 'dir' file, etc.
 Unless ALLOW-COLLISIONS? is true, a '&profile-collision-error' is raised if
 entries in MANIFEST collide (for instance if there are two same-name packages
-with a different version number.)
+with a different version number.)  Unless ALLOW-UNSUPPORTED-PACKAGES? is true
+or TARGET is set, raise an error if MANIFEST contains a package that does not
+support SYSTEM.
 
 When LOCALES? is true, the build is performed under a UTF-8 locale; this adds
 a dependency on the 'glibc-utf8-locales' package.
@@ -1878,12 +1881,27 @@ This is one of the things to do for the result to be relocatable.
 
 When TARGET is true, it must be a GNU triplet, and the packages in MANIFEST
 are cross-built for TARGET."
+  (define (check-supported-packages system)
+    ;; Raise an error if a package in MANIFEST does not support SYSTEM.
+    (map-manifest-entries
+     (lambda (entry)
+
+       (match (manifest-entry-item entry)
+         ((? package? package)
+          (unless (supported-package? package system)
+            (raise (formatted-message (G_ "package ~a does not support ~a")
+                                      (package-full-name package) system))))
+         (_ #t)))
+     manifest))
+
   (mlet* %store-monad ((system (if system
                                    (return system)
                                    (current-system)))
                        (target (if target
                                    (return target)
                                    (current-target-system)))
+                       (ok? -> (or allow-unsupported-packages? target
+                                   (check-supported-packages system)))
                        (ok?    (if allow-collisions?
                                    (return #t)
                                    (check-for-collisions manifest system

@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
-# Copyright © 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -35,6 +35,9 @@ export GUIX_BUILD_OPTIONS
 
 test_directory="`mktemp -d`"
 trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
+
+# Reject unsuppoted packages.
+! guix pack intelmetool -s armhf-linux -n
 
 # Compute the derivation of a pack.
 drv="`guix pack coreutils -d --no-grafts`"

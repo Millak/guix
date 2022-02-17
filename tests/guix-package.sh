@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 #
 # This file is part of GNU Guix.
@@ -58,6 +58,17 @@ guix package --bootstrap -p "$profile" -i guile-bootstrap
 test -L "$profile" && test -L "$profile-1-link"
 ! test -f "$profile-2-link"
 test -f "$profile/bin/guile"
+
+# Unsupported packages cannot be installed.
+! guix package -e '(begin (use-modules (guix) (gnu packages base)) (package (inherit sed) (supported-systems (list))))' -n
+case $(uname -m) in
+    x86_64|i[3456]86)
+	! guix package -i novena-eeprom -n
+	break;;
+    *)
+	! guix package -i intelmetool -n
+	break;;
+esac
 
 # Collisions are properly flagged (in this case, 'g-wrap' propagates
 # guile@2.2, which conflicts with guile@2.0.)
