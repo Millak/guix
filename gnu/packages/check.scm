@@ -2892,6 +2892,14 @@ provides a simple way to achieve this.")
                  (lambda _
                    (substitute* "tests/test-umockdev.c"
                      (("/run") "/tmp"))))
+               ;; Avoid having to set 'LD_LIBRARY_PATH' to use umockdev
+               ;; via introspection.
+               (add-after 'unpack 'absolute-introspection-library
+                 (lambda _
+                   (substitute* "Makefile.in"
+                     (("g-ir-compiler -l libumockdev")
+                      (string-append "g-ir-compiler -l " #$output
+                                     "/lib/libumockdev")))))
                (add-after 'install 'absolute-filenames
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; 'patch-shebangs' will take care of the shebang.
