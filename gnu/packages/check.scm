@@ -2885,13 +2885,12 @@ provides a simple way to achieve this.")
                 "0xmi24ckpps32k7hc139psgbsnsf4g106sv4l9m445m46amkxggd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-test
-           (lambda _
-             (substitute* "tests/test-umockdev.c"
-               (("/run") "/tmp"))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-test
+                 (lambda _
+                   (substitute* "tests/test-umockdev.c"
+                     (("/run") "/tmp")))))))
     (native-inputs
      (list vala
            gobject-introspection
