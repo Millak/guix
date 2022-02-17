@@ -37,6 +37,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
+;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2890,7 +2891,14 @@ provides a simple way to achieve this.")
                (add-after 'unpack 'fix-test
                  (lambda _
                    (substitute* "tests/test-umockdev.c"
-                     (("/run") "/tmp")))))))
+                     (("/run") "/tmp"))))
+               (add-after 'install 'absolute-filenames
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; 'patch-shebangs' will take care of the shebang.
+                   (substitute* (string-append #$output "/bin/umockdev-wrapper")
+                     (("env") (search-input-file inputs "bin/env"))
+                     (("libumockdev")
+                      (string-append #$output "/lib/libumockdev"))))))))
     (native-inputs
      (list vala
            gobject-introspection
@@ -2900,7 +2908,9 @@ provides a simple way to achieve this.")
            python
            which))
     (inputs
-     (list glib eudev libgudev))
+     (list bash-minimal ;for umockdev-wrapper
+           coreutils-minimal ;for bin/env
+           glib eudev libgudev))
     (home-page "https://github.com/martinpitt/umockdev/")
     (synopsis "Mock hardware devices for creating unit tests")
     (description "umockdev mocks hardware devices for creating integration
