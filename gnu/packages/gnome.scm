@@ -5465,13 +5465,6 @@ faster results and to avoid unnecessary server load.")
     (arguments
       (list
        #:glib-or-gtk? #t
-       #:phases
-       #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((umockdev (string-append (assoc-ref inputs "umockdev")
-                                             "/lib")))
-                (setenv "LD_LIBRARY_PATH" umockdev)))))
        #:configure-flags
        #~(list "-Dsystemdsystemunitdir=no"
                ;; If not specified, udev will try putting history information
