@@ -392,6 +392,7 @@ configuration file."))
         (config-file (zabbix-server-config-file config)))
     (list (shepherd-service
            (provision '(zabbix-server))
+           (requirement '(user-processes))
            (documentation "Run the Zabbix server daemon.")
            (actions (zabbix-server-actions zabbix-server config-file))
            (start #~(make-forkexec-constructor
@@ -516,6 +517,7 @@ configuration file."))
   "Return a <shepherd-service> for Zabbix agent with CONFIG."
   (list (shepherd-service
          (provision '(zabbix-agent))
+         (requirement '(user-processes))
          (documentation "Run Zabbix agent daemon.")
          (start #~(make-forkexec-constructor
                    (list #$(file-append (zabbix-agent-configuration-zabbix-agent config)
