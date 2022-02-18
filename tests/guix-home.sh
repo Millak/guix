@@ -108,6 +108,7 @@ EOF
     # Make sure preexisting files were backed up.
     grep "overridden" "$HOME"/*guix-home*backup/.bashrc
     grep "overridden" "$HOME"/*guix-home*backup/.config/test.conf
+    rm -r "$HOME"/*guix-home*backup
 
     #
     # Test 'guix home describe'.
@@ -130,6 +131,28 @@ EOF
             | xargs echo
     }
     test "$(canonical_file_name)" == "$(readlink "${HOME}/.guix-home")"
+
+    #
+    # Configure a new generation.
+    #
+
+    # Change the bashrc snippet content and comment out one service.
+    sed -i "home.scm" -e's/the content of/the NEW content of/g'
+    sed -i "home.scm" -e"s/(simple-service 'test-config/#;(simple-service 'test-config/g"
+
+    guix home reconfigure "${test_directory}/home.scm"
+    test "$(tail -n 2 "${HOME}/.bashrc")" == "\
+# dot-bashrc test file for guix home
+# the NEW content of bashrc-test-config.sh"
+
+    # This file must have been removed and not backed up.
+    ! test -e "$HOME/.config/test.conf"
+    ! test -e "$HOME"/*guix-home*backup/.config/test.conf
+
+    test "$(cat "$(configuration_file)")" == "$(cat home.scm)"
+    test "$(canonical_file_name)" == "$(readlink "${HOME}/.guix-home")"
+
+    test $(guix home list-generations | grep "^Generation" | wc -l) -eq 2
 
     #
     # Test 'guix home search'.
