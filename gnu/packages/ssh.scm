@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -631,7 +631,7 @@ basis for almost any application.")
                            "CPPFLAGS=-DHAVE_ARGP_PARSE"
 
                            ;; Fix the build of lsh@2.1 with GCC 10.
-                           "CFLAGS=-fcommon")
+                           "CFLAGS=-O2 -g -fcommon")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-tests
