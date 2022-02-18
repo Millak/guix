@@ -17601,23 +17601,7 @@ add any additional instance slots.")
     (description "This package provides access to a local copy of the
 Emacsmirror package database.  It provides low-level functions for querying
 the database and a @file{package.el} user interface for browsing the database.
-Epkg itself is not a package manager.
-
-Getting a local copy:
-
-@example
-git clone https://github.com/emacsmirror/epkgs.git ~/.emacs.d/epkgs
-cd ~/.emacs.d/epkgs
-git submodule init
-git config --global url.https://github.com/.insteadOf git@@github.com:
-git submodule update
-@end example
-
-Some submodule may be missing.  In this case Git will prompt for a GitHub user
-name and password.  To skip it press a @key{Return} key.
-
-You could get a Epkg package list by invoking @code{epkg-list-packages} in
-Emacs.")
+Epkg itself is not a package manager.")
     (license license:gpl3+)))
 
 (define-public emacs-elisp-slime-nav
