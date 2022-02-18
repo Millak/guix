@@ -6981,3 +6981,36 @@ the presence of variance components/nonparametric terms for models fit with
       "Constructs confidence intervals on the probability of success in a binomial
 experiment via several parameterizations")
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-simr
+  (package
+    (name "r-simr")
+    (version "1.0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "simr" version))
+        (sha256
+          (base32 "1j5w93iliykfnpxl9kzh1rp6d3iy26ksj3j7yjl348yvplh0iyjl"))))
+    (properties `((upstream-name . "simr")))
+    (build-system r-build-system)
+    (propagated-inputs
+      (list r-binom
+            r-car
+            r-iterators
+            r-lme4
+            r-pbkrtest
+            r-plotrix
+            r-plyr
+            r-rlrsim
+            r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/pitakakariki/simr")
+    (synopsis
+      "Power Analysis for Generalised Linear Mixed Models by Simulation")
+    (description
+      "Calculate power for generalised linear mixed models, using
+simulation.  Designed to work with models fit using the
+@code{lme4} package.  Described in @url{doi:10.1111/2041-210X.12504,
+Green and MacLeod (2016)}.")
+    (license license:gpl2+)))
