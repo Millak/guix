@@ -6708,25 +6708,15 @@ under OpenGL graphics workloads.")
 (define-public efivar
   (package
     (name "efivar")
-    (version "37")
+    (version "38")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/rhboot/" name
                                   "/releases/download/" version "/" name
                                   "-" version ".tar.bz2"))
-              (patches (search-patches "efivar-gcc-compat.patch"))
               (sha256
                (base32
-                "17vvfivhsrszh7q39b6npjsrhrhsjf1cmmcpp3xrh6wh7ywzwrrw"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Compile everything within a single LTO partition
-                  ;; to work around ordering issues in the code.  Try
-                  ;; removing this for versions > 37.
-                  (substitute* "Make.defaults"
-                    (("-flto")
-                     "-flto -flto-partition=one"))))))
+                "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Tests require a UEFI system and is not detected in the chroot.
@@ -6739,7 +6729,7 @@ under OpenGL graphics workloads.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     (list pkg-config))
+     (list mandoc pkg-config))
     (inputs
      (list popt))
     (home-page "https://github.com/rhboot/efivar")
@@ -6761,10 +6751,18 @@ interface to the variable facility of UEFI boot firmware.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1niicijxg59rsmiw3rsjwy4bvi1n42dynvm01lnp9haixdzdpq03"))
-       (patches (search-patches "efibootmgr-remove-extra-decl.patch"))))
+       (patches (search-patches "efibootmgr-remove-extra-decl.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Cast the first argument to the correct type.  Extracted
+           ;; from upstream commit e8ce9fecebd15adb4.
+           (substitute* '("src/efibootdump.c" "src/efibootmgr.c")
+             (("efidp_format_device_path\\(text_path,")
+              "efidp_format_device_path((unsigned char *)text_path,"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ;no tests
+     '(#:tests? #f                      ;no tests
        #:make-flags (list (string-append "prefix=" %output)
                           (string-append "libdir=" %output "/lib")
                           ;; EFIDIR denotes a subdirectory relative to the
