@@ -1499,13 +1499,13 @@ a constant work in progress as the language itself also progresses.")
       (propagated-inputs
        (list emacs-dash emacs-org emacs-s emacs-hydra emacs-use-package))
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'require-hydra
-             (lambda _
-               (substitute* "unpackaged.el"
-                 ((";;; Code:") ";;; Code:\n(require 'hydra)"))
-               #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'require-hydra
+              (lambda _
+                (substitute* "unpackaged.el"
+                  ((";;; Code:") ";;; Code:\n(require 'hydra)")))))))
       (home-page "https://github.com/alphapapa/unpackaged.el")
       (synopsis "Useful snippets of Emacs Lisp code")
       (description "This package provides Emacs Lisp utilities for a variety
