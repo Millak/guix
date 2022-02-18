@@ -5562,13 +5562,13 @@ keywords and smart indentation.")
     (propagated-inputs
      (list emacs-popup))
     (arguments
-     `(#:include (cons* "^roguel-ike/" "^roguel-ike-lib/" %default-include)
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-test-environment
-           (lambda _
-             (setenv "HOME" "/tmp")
-             #t)))))
+     (list
+      #:include #~(cons* "^roguel-ike/" "^roguel-ike-lib/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (home-page "https://github.com/stevenremot/roguel-ike.git")
     (synopsis "Coffee-break roguelike for Emacs")
     (description
