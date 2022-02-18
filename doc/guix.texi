@@ -34973,6 +34973,16 @@ name like @code{/dev/sda1}, a file system label, or a file system UUID.
 When unspecified, the device name from the root file system of the
 operating system declaration is used.
 
+@item rootfstype=@var{type}
+Set the type of the root file system.  It overrides the @code{type}
+field of the root file system specified via the @code{operating-system}
+declaration, if any.
+
+@item rootflags=@var{options}
+Set the mount @emph{options} of the root file system.  It overrides the
+@code{options} field of the root file system specified via the
+@code{operating-system} declaration, if any.
+
 @item fsck.mode=@var{mode}
 Whether to check the @var{root} file system for errors before mounting
 it.  @var{mode} is one of @code{skip} (never check), @code{force} (always
