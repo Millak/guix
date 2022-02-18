@@ -7241,8 +7241,7 @@ for @code{AUCTeX}.")
         '(begin
            (for-each delete-file '("dot-emacs.el" "Makefile"))
            (install-file "6.945-config/mit-scheme-doc.el" ".")
-           (delete-file-recursively "6.945-config")
-           #t))
+           (delete-file-recursively "6.945-config")))
        (file-name (string-append name "-" version ".tar.bz2"))
        (method url-fetch)
        (uri (string-append "http://groups.csail.mit.edu/mac/users/gjs/"
