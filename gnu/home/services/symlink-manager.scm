@@ -125,7 +125,7 @@ appear only after all nested items already listed."
              (display
               (G_
                "Cleaning up symlinks from previous home-environment.\n\n"))
-             (map
+             (for-each
               (match-lambda
                 (('dir . ".")
                  (display (G_ "Cleanup finished.\n\n")))
@@ -168,7 +168,7 @@ appear only after all nested items already listed."
              (readlink (string-append new-files-path "/" path)))
 
            (let ((to-create ((file-tree-traverse #t) new-tree)))
-             (map
+             (for-each
               (match-lambda
                 (('dir . ".")
                  (display
