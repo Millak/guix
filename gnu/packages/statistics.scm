@@ -7014,3 +7014,33 @@ simulation.  Designed to work with models fit using the
 @code{lme4} package.  Described in @url{doi:10.1111/2041-210X.12504,
 Green and MacLeod (2016)}.")
     (license license:gpl2+)))
+
+(define-public r-mixedpower
+  (package
+    (name "r-mixedpower")
+    (version "2.0")
+    (source
+      (origin
+        ;; Not available on CRAN.
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/DejanDraschkow/mixedpower")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "1dy1i8lijbq59xl7482j17a0r4rsdy61smzddk8jsr8nygp2gqy8"))))
+    (properties `((upstream-name . "mixedpower")))
+    (build-system r-build-system)
+    (propagated-inputs
+      (list r-doparallel r-foreach r-ggplot2 r-lme4 r-reshape2))
+    (home-page "https://github.com/DejanDraschkow/mixedpower")
+    (synopsis
+      "Pilotdata based simulations for estimating power in linear mixed models")
+    (description
+      "Implementation of a simulation based aproach to power analysis.  Mixedpower uses
+lotdata and a linear mixed model fitted with lme4 to simulate new data sets.
+wer is computed seperate for every effect in the model output as the relation
+significant simulations to all simulations.  More conservative simulations as
+protection against a bias in the pilotdata are available aswell as methods for
+otting the results.")
+    (license license:gpl3)))
