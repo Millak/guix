@@ -10161,7 +10161,7 @@ mode with the package emacs-julia-mode.")
 (define-public emacs-julia-snail
   (package
     (name "emacs-julia-snail")
-    (version "1.1.4")
+    (version "1.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10170,7 +10170,7 @@ mode with the package emacs-julia-mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11spibld7dyggr38hzkrd05lmdf847d57cc9qyk01mb3bli21vxd"))))
+                "04nh37izz04lxkvkxhsig8khbrrgdl4p6pkjsv5bxymnp84zwlw7"))))
     (build-system emacs-build-system)
     (arguments
      `(#:include (cons "^JuliaSnail\\.jl" %default-include)))
