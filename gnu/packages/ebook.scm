@@ -57,6 +57,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages language)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages music)
@@ -121,7 +122,7 @@ with Microsoft Compiled HTML (CHM) files")
 (define-public calibre
   (package
     (name "calibre")
-    (version "5.21.0")
+    (version "5.36.0")
     (source
       (origin
         (method url-fetch)
@@ -130,7 +131,7 @@ with Microsoft Compiled HTML (CHM) files")
                             version ".tar.xz"))
         (sha256
          (base32
-          "0mq2w8blq6ykaml812axakwkqcw85qcpfwijdikn7kvbrhnnp2s5"))
+          "1c036qmn7lxq0899c2xzzs6whz7z0557frnfqisbvfxa13b2sadk"))
         (modules '((guix build utils)))
         (snippet
           '(begin
@@ -146,8 +147,7 @@ with Microsoft Compiled HTML (CHM) files")
              (delete-file "resources/calibre-portable.bat")
              (delete-file "resources/calibre-portable.sh")
              #t))
-        (patches (search-patches "calibre-fix-zeroconf.patch"
-                                 "calibre-no-updates-dialog.patch"
+        (patches (search-patches "calibre-no-updates-dialog.patch"
                                  "calibre-remove-test-sqlite.patch" ; TODO: fix test.
                                  "calibre-remove-test-unrar.patch"))))
     (build-system python-build-system)
@@ -168,6 +168,7 @@ with Microsoft Compiled HTML (CHM) files")
        ("libpng" ,libpng)
        ("libjpeg" ,libjpeg-turbo)
        ("libjxr" ,libjxr)
+       ("libstemmer" ,libstemmer)
        ("libusb" ,libusb)
        ("openssl" ,openssl)
        ("optipng" ,optipng)
@@ -179,13 +180,12 @@ with Microsoft Compiled HTML (CHM) files")
        ("python-css-parser" ,python-css-parser)
        ("python-cssselect" ,python-cssselect)
        ("python-dateutil" ,python-dateutil)
-       ("python-dbus" ,python-dbus)
        ("python-dnspython" ,python-dnspython-1.16)
-       ("python-dukpy" ,python-dukpy)
        ("python-feedparser" ,python-feedparser)
        ("python-html2text" ,python-html2text)
        ("python-html5-parser" ,python-html5-parser)
        ("python-html5lib" ,python-html5lib)
+       ("python-jeepney" ,python-jeepney)
        ("python-lxml" ,python-lxml)
        ("python-markdown" ,python-markdown)
        ("python-mechanize" ,python-mechanize)
@@ -197,7 +197,6 @@ with Microsoft Compiled HTML (CHM) files")
        ("python-psutil" ,python-psutil)
        ("python-py7zr" ,python-py7zr)
        ("python-pychm" ,python-pychm)
-       ("python-pycryptodome" ,python-pycryptodome)
        ("python-pygments" ,python-pygments)
        ("python-pyqt-without-qtwebkit" ,python-pyqt-without-qtwebkit)
        ("python-pyqtwebengine" ,python-pyqtwebengine)
