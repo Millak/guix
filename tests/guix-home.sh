@@ -1,7 +1,7 @@
-
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
+# Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -54,7 +54,12 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
     # Test 'guix home reconfigure'.
     #
 
-    printf "# dot-bashrc test file for guix home" > "dot-bashrc"
+    echo "# This file will be overridden and backed up." > "$HOME/.bashrc"
+    mkdir "$HOME/.config"
+    echo "This file will be overridden too." > "$HOME/.config/test.conf"
+    echo "This file will stay around." > "$HOME/.config/random-file"
+
+    echo -n "# dot-bashrc test file for guix home" > "dot-bashrc"
 
     cat > "home.scm" <<'EOF'
 (use-modules (guix gexp)
@@ -99,6 +104,13 @@ EOF
 # dot-bashrc test file for guix home
 # the content of bashrc-test-config.sh"
     grep -q "the content of ~/.config/test.conf" "${HOME}/.config/test.conf"
+
+    # This one should still be here.
+    grep "stay around" "$HOME/.config/random-file"
+
+    # Make sure preexisting files were backed up.
+    grep "overridden" "$HOME"/*guix-home*backup/.bashrc
+    grep "overridden" "$HOME"/*guix-home*backup/.config/test.conf
 
     #
     # Test 'guix home describe'.
