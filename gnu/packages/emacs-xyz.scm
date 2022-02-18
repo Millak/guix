@@ -9630,31 +9630,30 @@ navigate code in a tree-like fashion.")
       (native-inputs
        (list which emacs-clojure-mode emacs-undercover))
       (arguments
-       `(#:include (cons* "^lispy-clojure\\.clj$"
-                          "^lispy-python\\.py$"
-                          %default-include)
-         #:phases
-         ;; XXX: Some failing tests
-         (modify-phases %standard-phases
-           (add-before 'check 'make-test-writable
-             (lambda _
-               (make-file-writable "lispy-test.el")
-               #t))
-           (add-before 'check 'remove-failing-test
-             (lambda _
-               (emacs-batch-edit-file "lispy-test.el"
-                 `(progn
-                   (dolist (test '("lispy-eval-python-str" "lispy--clojure-dot-object"))
-                    (goto-char (point-min))
-                    (re-search-forward
-                     (concat "ert-deftest " test))
-                    (beginning-of-line)
-                    (kill-sexp))
-                   (basic-save-buffer)))
-               #t)))
-         #:tests? #t
-         ;; Set BEMACS to prevent the test suite from loading straight.el.
-         #:test-command '("make" "test" "BEMACS=emacs -batch")))
+       (list
+        #:include #~(cons* "^lispy-clojure\\.clj$"
+                           "^lispy-python\\.py$"
+                           %default-include)
+        #:phases
+        ;; XXX: Some failing tests
+        #~(modify-phases %standard-phases
+            (add-before 'check 'make-test-writable
+              (lambda _
+                (make-file-writable "lispy-test.el")))
+            (add-before 'check 'remove-failing-test
+              (lambda _
+                (emacs-batch-edit-file "lispy-test.el"
+                  `(progn
+                    (dolist (test '("lispy-eval-python-str" "lispy--clojure-dot-object"))
+                            (goto-char (point-min))
+                            (re-search-forward
+                             (concat "ert-deftest " test))
+                            (beginning-of-line)
+                            (kill-sexp))
+                    (basic-save-buffer))))))
+        #:tests? #t
+        ;; Set BEMACS to prevent the test suite from loading straight.el.
+        #:test-command #~(list "make" "test" "BEMACS=emacs -batch")))
       (synopsis "Modal S-expression editing")
       (description
        "Due to the structure of Lisp syntax it's very rare for the programmer
