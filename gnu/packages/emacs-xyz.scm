@@ -2024,12 +2024,12 @@ optional minor mode which can apply this command automatically on save.")
          (snippet
           '(begin
              ;; Delete the Cask test runners.
-             (for-each delete-file '("Cask" "test/test-helper.el"))
-             #t))))
+             (for-each delete-file '("Cask" "test/test-helper.el"))))))
       (build-system emacs-build-system)
       (arguments
-       `(#:tests? #t
-         #:test-command '("ert-runner")))
+       (list
+        #:tests? #t
+        #:test-command '("ert-runner")))
       (native-inputs
        (list emacs-ert-runner))
       (propagated-inputs
