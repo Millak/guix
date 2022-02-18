@@ -134,7 +134,7 @@ useful in modems implemented with @dfn{digital signal processing} (DSP).")
 (define-public liquid-dsp
   (package
     (name "liquid-dsp")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -142,7 +142,7 @@ useful in modems implemented with @dfn{digital signal processing} (DSP).")
                    (commit (string-append "v" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "1n6dbg13q8ga5qhg1yiszwly4jj0rxqr6f1xwm9waaly5z493xsd"))))
+              (base32 "0mr86z37yycrqwbrmsiayi1vqrgpjq0pn1c3p1qrngipkw45jnn0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
