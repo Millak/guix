@@ -158,53 +158,53 @@ with Microsoft Compiled HTML (CHM) files")
            python-pyqt-builder
            xdg-utils))
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("font-liberation" ,font-liberation)
-       ("glib" ,glib)
-       ("hunspell" ,hunspell)
-       ("hyphen" ,hyphen)
-       ("icu4c" ,icu4c)
-       ("libmtp" ,libmtp)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libjxr" ,libjxr)
-       ("libstemmer" ,libstemmer)
-       ("libusb" ,libusb)
-       ("openssl" ,openssl)
-       ("optipng" ,optipng)
-       ("podofo" ,podofo)
-       ("poppler" ,poppler)
-       ("python-apsw" ,python-apsw)
-       ("python-beautifulsoup4" ,python-beautifulsoup4)
-       ("python-cchardet" ,python-cchardet)
-       ("python-css-parser" ,python-css-parser)
-       ("python-cssselect" ,python-cssselect)
-       ("python-dateutil" ,python-dateutil)
-       ("python-dnspython" ,python-dnspython-1.16)
-       ("python-feedparser" ,python-feedparser)
-       ("python-html2text" ,python-html2text)
-       ("python-html5-parser" ,python-html5-parser)
-       ("python-html5lib" ,python-html5lib)
-       ("python-jeepney" ,python-jeepney)
-       ("python-lxml" ,python-lxml)
-       ("python-markdown" ,python-markdown)
-       ("python-mechanize" ,python-mechanize)
-       ;; python-msgpack is needed for the network content server to work.
-       ("python-msgpack" ,python-msgpack)
-       ("python-netifaces" ,python-netifaces)
-       ("python-odfpy" ,python-odfpy)
-       ("python-pillow" ,python-pillow)
-       ("python-psutil" ,python-psutil)
-       ("python-py7zr" ,python-py7zr)
-       ("python-pychm" ,python-pychm)
-       ("python-pygments" ,python-pygments)
-       ("python-pyqt-without-qtwebkit" ,python-pyqt-without-qtwebkit)
-       ("python-pyqtwebengine" ,python-pyqtwebengine)
-       ("python-regex" ,python-regex)
-       ("python-speechd" ,speech-dispatcher)
-       ("python-zeroconf" ,python-zeroconf)
-       ("qtwebengine" ,qtwebengine)
-       ("sqlite" ,sqlite)))
+     (list fontconfig
+           font-liberation
+           glib
+           hunspell
+           hyphen
+           icu4c
+           libmtp
+           libpng
+           libjpeg-turbo
+           libjxr
+           libstemmer
+           libusb
+           openssl
+           optipng
+           podofo
+           poppler
+           python-apsw
+           python-beautifulsoup4
+           python-cchardet
+           python-css-parser
+           python-cssselect
+           python-dateutil
+           python-dnspython-1.16
+           python-feedparser
+           python-html2text
+           python-html5-parser
+           python-html5lib
+           python-jeepney
+           python-lxml
+           python-markdown
+           python-mechanize
+           ;; python-msgpack is needed for the network content server to work.
+           python-msgpack
+           python-netifaces
+           python-odfpy
+           python-pillow
+           python-psutil
+           python-py7zr
+           python-pychm
+           python-pygments
+           python-pyqt-without-qtwebkit
+           python-pyqtwebengine
+           python-regex
+           speech-dispatcher
+           python-zeroconf
+           qtwebengine
+           sqlite))
     (arguments
      `(;; Calibre is using setuptools by itself, but the setup.py is not
        ;; compatible with the shim wrapper (taken from pip) we are using.
