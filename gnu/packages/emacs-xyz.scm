@@ -3317,11 +3317,9 @@ directly inside Emacs.  It requires a Google Map Static API key to function.")
                                       (assoc-ref inputs "texinfo")
                                       "/bin")))))
          (add-after 'install 'install-info
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (info (string-append out "/share/info")))
-               (install-file "texinfo/graphviz-dot-mode.info.gz" info)
-               #t))))))
+           (lambda _
+             (let ((info (string-append #$output "/share/info")))
+               (install-file "texinfo/graphviz-dot-mode.info.gz" info)))))))
     (native-inputs
      (list gzip texinfo))
     (propagated-inputs
