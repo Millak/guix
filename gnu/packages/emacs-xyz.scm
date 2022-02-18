@@ -17560,7 +17560,7 @@ add any additional instance slots.")
 (define-public emacs-epkg
   (package
     (name "emacs-epkg")
-    (version "3.3.2")
+    (version "3.3.3")
     (source
      (origin
        (method git-fetch)
@@ -17569,7 +17569,7 @@ add any additional instance slots.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18kjp0f5ch4mpd6yrd83p73pw7ykp2lv5686is8vcvyyys53jrf1"))))
+        (base32 "0d09ddlhvgp8rpybqmzvzpzdp1hjaq97wp2br4g90lpx2vclkgn7"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
