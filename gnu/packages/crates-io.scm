@@ -19360,8 +19360,33 @@ Emacs' support for dynamic modules.")
     (description "This package provides proc macros for Emacs modules.")
     (license license:bsd-3)))
 
-(define-public rust-emacs-module-0.10
+(define-public rust-emacs-module-0.18
   (package
+    (name "rust-emacs-module")
+    (version "0.18.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "emacs_module" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1ypjyyv2ca3vza4sia91ckxamgfk63yd8frkvg3d4ph4fk4pn1mk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.59))))
+    (inputs
+     (list clang))
+    (home-page "https://github.com/ubolonton/emacs-module-rs")
+    (synopsis "Raw FFI for emacs-module")
+    (description "This module provides a high-level binding to emacs-module:
+Emacs' support for dynamic modules.")
+    (license license:bsd-3)))
+
+(define-public rust-emacs-module-0.10
+  (package (inherit rust-emacs-module-0.18)
     (name "rust-emacs-module")
     (version "0.10.0")
     (source
@@ -19373,17 +19398,9 @@ Emacs' support for dynamic modules.")
         (sha256
          (base32
           "1gf9lz735xbkyir53dyv362drfx3nin5an5cx39kd8q8kjjwix5g"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.48))))
-    (inputs
-     (list clang))
-    (home-page "https://github.com/ubolonton/emacs-module-rs")
-    (synopsis "Raw FFI for emacs-module")
-    (description "This module provides a high-level binding to emacs-module:
-Emacs' support for dynamic modules.")
-    (license license:bsd-3)))
+       (("rust-bindgen" ,rust-bindgen-0.48))))))
 
 (define-public rust-email-0.0.20
   (package
