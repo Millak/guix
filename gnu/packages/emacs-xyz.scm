@@ -2029,7 +2029,7 @@ optional minor mode which can apply this command automatically on save.")
       (arguments
        (list
         #:tests? #t
-        #:test-command '("ert-runner")))
+        #:test-command #~(list "ert-runner")))
       (native-inputs
        (list emacs-ert-runner))
       (propagated-inputs
