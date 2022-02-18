@@ -826,21 +826,20 @@ of astronomical sources.")
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.2")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "1lap703wxbyxqlbk85myirp4pkdnc6cg10xhfajfsvz5k0hm5ffw"))))
+        (base32 "1ri5yp6903386lkn79mdcmlax7zsfrrrjbcvb91wxydcc9yasc1n"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
                (invoke "python" "-m" "pytest" "--pyargs" "pyvo" "-k"
                        (string-append   ; these tests use the network
                         "not test_access_with_string"
