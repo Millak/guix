@@ -35,7 +35,9 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages image-processing)
@@ -58,6 +60,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -508,6 +511,63 @@ doing practical, real world data analysis in Python.")
     (description "This package is a Python module to manage tasks in the
 context of a task dependency graph.  It has some similarities to make.")
     (license license:bsd-2)))
+
+(define-public python-pythran
+  (package
+    (name "python-pythran")
+    (version "0.11.0")
+    (home-page "https://github.com/serge-sans-paille/pythran")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0cm7wfcyvkp1wmq7n1lyf2d3sj6158jf63bagjpjmfnjwij19n0p"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove bundled Boost and xsimd.
+                  (delete-file-recursively "third_party")))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'do-not-install-third-parties
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("third_parties = .*")
+                      "third_parties = []\n"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Remove compiler flag that trips newer GCC:
+                     ;; https://github.com/serge-sans-paille/pythran/issues/908
+                     (substitute* "pythran/tests/__init__.py"
+                       (("'-Wno-absolute-value',")
+                        ""))
+                     (setenv "HOME" (getcwd))
+                     ;; This setup is modelled after the upstream CI system.
+                     (call-with-output-file ".pythranrc"
+                       (lambda (port)
+                         (format port "[compiler]\nblas=openblas~%")))
+                     (invoke "pytest" "-vv"
+                             (string-append "--numprocesses="
+                                            (number->string
+                                             (parallel-job-count)))
+                             "pythran/tests/test_cases.py")))))))
+    (native-inputs
+     ;; For tests.
+     (list openblas python-pytest python-pytest-xdist))
+    (propagated-inputs
+     (list boost xsimd                  ;headers need to be available
+           python-beniget python-gast python-numpy python-ply))
+    (synopsis "Ahead of Time compiler for numeric kernels")
+    (description
+     "Pythran is an ahead of time compiler for a subset of the Python
+language, with a focus on scientific computing.  It takes a Python module
+annotated with a few interface descriptions and turns it into a native
+Python module with the same interface, but (hopefully) faster.")
+    (license license:bsd-3)))
 
 (define-public python-bottleneck
   (package
