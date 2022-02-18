@@ -27575,54 +27575,52 @@ other @code{helm-type-file} sources such as @code{helm-locate}.")
     (license license:gpl3+)))
 
 (define-public emacs-telega-server
-  (let ((commit "5739794d2d0c8a4e7b77c2e37a097e19f80ac9f0")
-        (revision "0"))
-    (package
-      (name "emacs-telega-server")
-      (version (git-version  "0.8.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/zevlg/telega.el")
-               (commit commit)))
-         (sha256
-          (base32 "1am0b2bjjkw7zd0yq39v015a08dcbk43j4d4h8y2q8hj53ryfk5a"))
-         (file-name (git-file-name "emacs-telega" version))
-         (patches
-          (search-patches "emacs-telega-path-placeholder.patch"
-                          "emacs-telega-test-env.patch"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:make-flags
-        #~(list (string-append "CC=" #$(cc-for-target))
-                (string-append "INSTALL_PREFIX=" #$output "/bin"))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'configure 'enter-subdirectory
-              (lambda _ (chdir "server")))
-            (replace 'configure
-              (lambda _
-                (substitute* "run_tests.py"
-                  (("^(TELEGA_SERVER = ).*$" _all prefix)
-                   (string-append prefix
-                                  "\"" #$output "/bin/telega-server\"\n")))))
-            (delete 'check)
-            (add-after 'install 'check
-              (assoc-ref %standard-phases 'check))
-            (add-before 'install-license-files 'leave-subdirectory
-              (lambda _ (chdir ".."))))
-        #:test-target "test"))
-      (inputs
-       (list tdlib libappindicator))
-      (native-inputs
-       (list python pkg-config))
-      (home-page "https://zevlg.github.io/telega.el/")
-      (synopsis "Server process of Telega")
-      (description "Telega-server is helper program to interact with Telegram
+  (package
+    (name "emacs-telega-server")
+    (version "0.8.03")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zevlg/telega.el")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1ffy17i5fi1bw5r5m6x372c52hc1k83wxdxvi4z0hixyklj48nsv"))
+       (file-name (git-file-name "emacs-telega" version))
+       (patches
+        (search-patches "emacs-telega-path-placeholder.patch"
+                        "emacs-telega-test-env.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "INSTALL_PREFIX=" #$output "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'enter-subdirectory
+            (lambda _ (chdir "server")))
+          (replace 'configure
+            (lambda _
+              (substitute* "run_tests.py"
+                (("^(TELEGA_SERVER = ).*$" _all prefix)
+                 (string-append prefix
+                                "\"" #$output "/bin/telega-server\"\n")))))
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'install-license-files 'leave-subdirectory
+            (lambda _ (chdir ".."))))
+      #:test-target "test"))
+    (inputs
+     (list tdlib libappindicator))
+    (native-inputs
+     (list python pkg-config))
+    (home-page "https://zevlg.github.io/telega.el/")
+    (synopsis "Server process of Telega")
+    (description "Telega-server is helper program to interact with Telegram
 service, and connect it with Emacs via inter-process communication.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-telega
   (package
