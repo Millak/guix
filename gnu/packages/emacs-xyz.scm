@@ -3302,24 +3302,25 @@ directly inside Emacs.  It requires a Google Map Static API key to function.")
         (base32 "1v1p85wk73nfsvv66qf90flgf9dqhmv15z1r7q4zmc4ifklqn08m"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'make-info
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "texinfo"
-               (substitute* "Makefile"
-                 (("\\/usr\\/bin\\/gzip")
-                  (search-input-file inputs "/bin/gzip")))
-               (invoke "make"
-                       "clean"
-                       "info"
-                       (string-append "TEXINFODIR="
-                                      (assoc-ref inputs "texinfo")
-                                      "/bin")))))
-         (add-after 'install 'install-info
-           (lambda _
-             (let ((info (string-append #$output "/share/info")))
-               (install-file "texinfo/graphviz-dot-mode.info.gz" info)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'make-info
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "texinfo"
+                (substitute* "Makefile"
+                  (("\\/usr\\/bin\\/gzip")
+                   (search-input-file inputs "/bin/gzip")))
+                (invoke "make"
+                        "clean"
+                        "info"
+                        (string-append "TEXINFODIR="
+                                       #$(this-package-native-input "texinfo")
+                                       "/bin")))))
+          (add-after 'install 'install-info
+            (lambda _
+              (let ((info (string-append #$output "/share/info")))
+                (install-file "texinfo/graphviz-dot-mode.info.gz" info)))))))
     (native-inputs
      (list gzip texinfo))
     (propagated-inputs
