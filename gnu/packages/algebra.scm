@@ -1139,7 +1139,7 @@ features, and more.")
 (define-public xtensor
   (package
     (name "xtensor")
-    (version "0.20.10")
+    (version "0.24.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1147,11 +1147,11 @@ features, and more.")
                     (commit version)))
               (sha256
                (base32
-                "1fmv2hpx610xwhxrndfsfvlbqfyk4l3gi5q5d7pa9m82kblxjj9l"))
+                "14fpzwdq26p2fqdrmc78hny9pp09k9c53jnwlh7f8x54ikzm23c2"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     (list googletest xtl))
+     (list doctest googletest xtl))
     (arguments
      `(#:configure-flags
        '("-DBUILD_TESTS=ON")
@@ -1181,7 +1181,7 @@ xtensor provides:
                   (add-after 'unpack 'remove-march=native
                     (lambda _
                       (substitute* "benchmark/CMakeLists.txt"
-                        (("-march=native") ""))))
+                        (("-march=native\"") "\""))))
                   (add-after 'unpack 'link-with-googlebenchmark
                     (lambda _
                       (substitute* "benchmark/CMakeLists.txt"
