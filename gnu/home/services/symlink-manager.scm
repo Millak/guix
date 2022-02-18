@@ -118,51 +118,63 @@ appear only after all nested items already listed."
            (rename-file (get-target-path path) (get-backup-path path))
            (display (G_ " done\n")))
 
-         (define (cleanup-symlinks old-tree)
-           ;; Delete from directory OLD-TREE symlinks that correspond to a
-           ;; previous generation.
-           (let ((to-delete ((file-tree-traverse #f) old-tree)))
-             (display
-              (G_
-               "Cleaning up symlinks from previous home-environment.\n\n"))
-             (for-each
-              (match-lambda
-                (('dir . ".")
-                 (display (G_ "Cleanup finished.\n\n")))
+         (define (cleanup-symlinks home-generation)
+           ;; Delete from $HOME files that originate in HOME-GENERATION, the
+           ;; store item containing a home generation.
+           (define config-file-directory
+             ;; Note: Trailing slash is needed because "files" is a symlink.
+             (string-append home-generation "/files/"))
 
-                (('dir . directory)
-                 (let ((directory (get-target-path directory)))
-                   (catch 'system-error
-                     (lambda ()
-                       (rmdir directory)
-                       (format #t (G_ "Removed ~a.\n") directory))
-                     (lambda args
-                       (let ((errno (system-error-errno args)))
-                         (cond ((= ENOTEMPTY errno)
-                                (format
-                                 #t
-                                 (G_ "Skipping ~a (not an empty directory)...\n")
-                                 directory))
-                               ((= ENOTDIR errno)
-                                #t)
-                               (else
-                                (apply throw args))))))))
+           (define (strip file)
+             (string-drop file
+                          (+ 1 (string-length config-file-directory))))
 
-                (('file . path)
-                 (when (file-exists? (get-target-path path))
-                   ;; DO NOT remove the file if it is no longer a symlink to
-                   ;; the store, it will be backed up later during
-                   ;; create-symlinks phase.
-                   (if (symlink-to-store? (get-target-path path))
-                       (begin
-                         (format #t (G_ "Removing ~a...") (get-target-path path))
-                         (delete-file (get-target-path path))
-                         (display (G_ " done\n")))
-                       (format
-                        #t
-                        (G_ "Skipping ~a (not a symlink to store)... done\n")
-                        (get-target-path path))))))
-              to-delete)))
+           (format #t (G_ "Cleaning up symlinks from previous home at ~a.~%")
+                   home-generation)
+           (newline)
+
+           (file-system-fold
+            (const #t)
+            (lambda (file stat _)                 ;leaf
+              (let ((file (get-target-path (strip file))))
+                (when (file-exists? file)
+                  ;; DO NOT remove the file if it is no longer a symlink to
+                  ;; the store, it will be backed up later during
+                  ;; create-symlinks phase.
+                  (if (symlink-to-store? file)
+                      (begin
+                        (format #t (G_ "Removing ~a...") file)
+                        (delete-file file)
+                        (display (G_ " done\n")))
+                      (format #t
+                              (G_ "Skipping ~a (not a symlink to store)... done\n")
+                              file)))))
+
+            (const #t)                            ;down
+            (lambda (directory stat _)            ;up
+              (unless (string=? directory config-file-directory)
+                (let ((directory (get-target-path (strip directory))))
+                  (catch 'system-error
+                    (lambda ()
+                      (rmdir directory)
+                      (format #t (G_ "Removed ~a.\n") directory))
+                    (lambda args
+                      (let ((errno (system-error-errno args)))
+                        (cond ((= ENOTEMPTY errno)
+                               (format
+                                #t
+                                (G_ "Skipping ~a (not an empty directory)...\n")
+                                directory))
+                              ((= ENOTDIR errno) #t)
+                              (else
+                               (apply throw args)))))))))
+            (const #t)                            ;skip
+            (const #t)                            ;error
+            #t                                    ;init
+            config-file-directory
+            lstat)
+
+           (display (G_ "Cleanup finished.\n\n")))
 
          (define (create-symlinks new-tree new-files-path)
            ;; Create in directory NEW-TREE symlinks to the files under
@@ -215,16 +227,11 @@ appear only after all nested items already listed."
                 ;; to make file-system-tree works it should be a directory.
                 (new-files-dir-path (string-append new-files-path "/."))
 
-                (old-tree (if old-home
-                              ((simplify-file-tree "")
-                               (file-system-tree
-                                (string-append old-home "/files/.")))
-                              #f))
                 (new-tree ((simplify-file-tree "")
                            (file-system-tree new-files-dir-path))))
 
-           (when old-tree
-             (cleanup-symlinks old-tree))
+           (when old-home
+             (cleanup-symlinks old-home))
 
            (create-symlinks new-tree new-files-path)
 
