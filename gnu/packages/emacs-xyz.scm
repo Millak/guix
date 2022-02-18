@@ -6035,17 +6035,17 @@ compile}.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1djrj3is0dzrl2703bw7bclf33dp4xqmy144q7xj5pvpb9v3kf50"))))
-    (inputs (list ledger))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((ledger (assoc-ref inputs "ledger")))
-               ;; Specify the absolute executable location of ledger.
-               (substitute* "flycheck-ledger.el"
-                 (("\"ledger\"") (string-append "\"" ledger "\""))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure
+            (lambda _
+              (let ((ledger #$(this-package-input "ledger")))
+                ;; Specify the absolute executable location of ledger.
+                (substitute* "flycheck-ledger.el"
+                  (("\"ledger\"") (string-append "\"" ledger "\"")))))))))
+    (inputs (list ledger))
     (propagated-inputs
      (list emacs-flycheck))
     (build-system emacs-build-system)
