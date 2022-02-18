@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <jannek@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -161,6 +161,8 @@
             boot-parameters-kernel-arguments
             boot-parameters-initrd
             boot-parameters-multiboot-modules
+            boot-parameters-version
+            %boot-parameters-version
             read-boot-parameters
             read-boot-parameters-file
             boot-parameters->menu-entry
@@ -295,6 +297,9 @@ directly by the user."
 ;;; Boot parameters
 ;;;
 
+;;; When bumping the boot-parameters version, increment it by one (1).
+(define %boot-parameters-version 0)
+
 (define-record-type* <boot-parameters>
   boot-parameters make-boot-parameters boot-parameters?
   (label            boot-parameters-label)
@@ -322,7 +327,9 @@ directly by the user."
   (kernel           boot-parameters-kernel)
   (kernel-arguments boot-parameters-kernel-arguments)
   (initrd           boot-parameters-initrd)
-  (multiboot-modules boot-parameters-multiboot-modules))
+  (multiboot-modules boot-parameters-multiboot-modules)
+  (version          boot-parameters-version  ;positive integer
+                    (default %boot-parameters-version)))
 
 (define (ensure-not-/dev device)
   "If DEVICE starts with a slash, return #f.  This is meant to filter out
@@ -359,12 +366,18 @@ file system labels."
        (warning (G_ "unrecognized uuid ~a at '~a'~%") x (port-filename port))
        #f)))
 
+  ;; New versions are not backward-compatible, so only accept past and current
+  ;; versions, not future ones.
+  (define (version? n)
+    (member n (iota (1+ %boot-parameters-version))))
+
   (match (read port)
-    (('boot-parameters ('version 0)
+    (('boot-parameters ('version (? version? version))
                        ('label label) ('root-device root)
                        ('kernel kernel)
                        rest ...)
      (boot-parameters
+      (version version)
       (label label)
       (root-device (device-sexp->device root))
 
@@ -1500,7 +1513,7 @@ being stored into the \"parameters\" file)."
                    system-kernel-arguments?)))
      (scheme-file "parameters"
                   #~(boot-parameters
-                     (version 0)
+                     (version #$(boot-parameters-version params))
                      (label #$(boot-parameters-label params))
                      (root-device
                       #$(device->sexp

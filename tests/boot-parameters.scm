@@ -101,7 +101,7 @@
 ;; Call read-boot-parameters with the desired string as input.
 (define* (test-read-boot-parameters
           #:key
-          (version 0)
+          (version %boot-parameters-version)
           (bootloader-name 'grub)
           (bootloader-menu-entries '())
           (label %default-label)
