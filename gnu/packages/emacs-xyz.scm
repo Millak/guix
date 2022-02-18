@@ -3894,10 +3894,11 @@ and limited version of the images provided by the KanjiVG project.")
           (base32 "0jv9yfsncgf96308c041hvps3jlc151xb0aipm0vasbma3x83ygm"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'enter-lisp-directory
-             (lambda _ (chdir "lisp") #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'enter-lisp-directory
+              (lambda _ (chdir "lisp"))))))
       (home-page "https://github.com/slotThe/kbd-mode")
       (synopsis "Minor mode for syntax highlighting kmonad's @file{.kbd} files")
       (description
