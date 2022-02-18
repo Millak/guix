@@ -2694,6 +2694,35 @@ expressions, editing the search results directly and searching file names
 rather than the contents of files.")
     (license license:gpl3+)))
 
+(define-public emacs-aio
+  (package
+    (name "emacs-aio")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/skeeto/emacs-aio")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y7j10j74r3fy0rcb8g3cm9nlls34qb0pz9xkia7psp77syrlz54"))))
+    (build-system emacs-build-system)
+    (arguments
+     `(#:tests? #t
+       #:test-command '("emacs" "--batch"
+                        "-l" "aio-test.el"
+                        "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs
+     (list emacs-elfeed emacs-skewer-mode))
+    (home-page "https://github.com/skeeto/emacs-aio")
+    (synopsis "Async/Await for Emacs Lisp")
+    (description "@code{aio} is to Emacs Lisp as @code{asyncio} is to
+Python. This package builds upon Emacs generators to provide functions that
+pause while they wait on asynchronous events.  They do not block any thread
+while paused.")
+    (license license:unlicense)))
+
 (define-public emacs-async
   (package
     (name "emacs-async")
