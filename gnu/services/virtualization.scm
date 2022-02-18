@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Ryan Moe <ryan.moe@gmail.com>
-;;; Copyright © 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;;
@@ -866,23 +866,23 @@ functionality of the kernel Linux.")))
    "Path to device or socket used to communicate with the host.  If not
 specified, the QEMU default path is used."))
 
-(define qemu-guest-agent-shepherd-service
-  (match-lambda
-    (($ <qemu-guest-agent-configuration> qemu device)
-     (list
-      (shepherd-service
-       (provision '(qemu-guest-agent))
-       (documentation "Run the QEMU guest agent.")
-       (start #~(make-forkexec-constructor
-                 `(,(string-append #$qemu "/bin/qemu-ga") "--daemon"
-                   "--pidfile=/var/run/qemu-ga.pid"
-                   "--statedir=/var/run"
-                   ,@(if #$device
-                         (list (string-append "--path=" #$device))
-                         '()))
-                 #:pid-file "/var/run/qemu-ga.pid"
-                 #:log-file "/var/log/qemu-ga.log"))
-       (stop #~(make-kill-destructor)))))))
+(define (qemu-guest-agent-shepherd-service config)
+  (let ((qemu   (qemu-guest-agent-configuration-qemu config))
+        (device (qemu-guest-agent-configuration-device config)))
+    (list
+     (shepherd-service
+      (provision '(qemu-guest-agent))
+      (documentation "Run the QEMU guest agent.")
+      (start #~(make-forkexec-constructor
+                `(,(string-append #$qemu "/bin/qemu-ga") "--daemon"
+                  "--pidfile=/var/run/qemu-ga.pid"
+                  "--statedir=/var/run"
+                  ,@(if #$device
+                        (list (string-append "--path=" #$device))
+                        '()))
+                #:pid-file "/var/run/qemu-ga.pid"
+                #:log-file "/var/log/qemu-ga.log"))
+      (stop #~(make-kill-destructor))))))
 
 (define qemu-guest-agent-service-type
   (service-type
