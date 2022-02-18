@@ -103,8 +103,13 @@ appear only after all nested items already listed."
            (string-append backup-dir "/." path))
 
          (define (symlink-to-store? path)
-           (and (equal? (stat:type (lstat path)) 'symlink)
-                (store-file-name? (readlink path))))
+           (catch 'system-error
+             (lambda ()
+               (store-file-name? (readlink path)))
+             (lambda args
+               (if (= EINVAL (system-error-errno args))
+                   #f
+                   (apply throw args)))))
 
          (define (backup-file path)
            (mkdir-p backup-dir)
