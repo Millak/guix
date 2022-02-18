@@ -566,7 +566,7 @@ intuitive syntax and trivial integration.")
 (define-public xtl
   (package
     (name "xtl")
-    (version "0.6.23")
+    (version "0.7.4")
     (source (origin
               (method git-fetch)
               (uri
@@ -575,20 +575,19 @@ intuitive syntax and trivial integration.")
                 (commit version)))
               (sha256
                (base32
-                "1kd9zl4h6nrsg29hq13vwp4zhfj8sa90vj40726lpw6vxz48k4di"))
+                "134pgvmf9cx5dxs0m0m3qhp3m3r1gl86ic3xax21zc4sdj8sdq46"))
               (file-name (git-file-name name version))))
     (native-inputs
-     (list googletest json-modern-cxx))
+     (list doctest googletest json-modern-cxx))
     (arguments
-     `(#:configure-flags
+     '(#:configure-flags
        '("-DBUILD_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
          (replace 'check
            (lambda* _
              (with-directory-excursion "test"
-               (invoke "./test_xtl")
-               #t))))))
+               (invoke "./test_xtl")))))))
     (home-page "https://github.com/QuantStack/xtl")
     (build-system cmake-build-system)
     (synopsis "C++ template library providing some basic tools")
