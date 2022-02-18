@@ -4036,15 +4036,15 @@ allowing you to visit all previous states of the document if you need.")
           (base32 "04wq1alrzzlidcb4mjb5j7pg68pks1vgv7kvvmi6dzb3l602mb2a"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:tests? #t
-         #:test-command '("emacs" "--batch" "-l" "undo-fu-session.el"
-                          "-l" "undo-fu-session-test.el")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'set-home
-             (lambda _
-               (setenv "HOME" "/tmp")
-               #t)))))
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch" "-l" "undo-fu-session.el"
+                               "-l" "undo-fu-session-test.el")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'set-home
+              (lambda _
+                (setenv "HOME" "/tmp"))))))
       (home-page "https://gitlab.com/ideasman42/emacs-undo-fu-session")
       (synopsis "Save & recover undo steps between Emacs sessions")
       (description "This package writes undo/redo information upon file save
