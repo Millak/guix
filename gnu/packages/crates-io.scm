@@ -56678,6 +56678,28 @@ I/O programming.")
         ("rust-futures-core-preview" ,rust-futures-core-preview-0.3)
         ("rust-futures-io-preview" ,rust-futures-io-preview-0.3))))))
 
+(define-public rust-smallbitvec-2
+  (package
+    (name "rust-smallbitvec")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "smallbitvec" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0plrbldsjpwip3afbzd8fgrnvdhizcg5z4ncfqs4q6x4qjflzkkm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-bit-vec" ,rust-bit-vec-0.4)
+        ("rust-rand" ,rust-rand-0.4))))
+    (home-page "https://github.com/servo/smallbitvec")
+    (synopsis "Bit vector optimized for size and inline storage")
+    (description "This package provides a bit vector optimized for size and
+inline storage.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-smallvec-1
   (package
     (name "rust-smallvec")
