@@ -3251,12 +3251,12 @@ current match, total matches and exit status.
                 "1nd2h50yb0493wvf1h7fzplq45rmqn2w7kxpgnlxzhkvq99v8vzf"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-writable
-           (lambda _
-             (for-each make-file-writable (find-files "." "\\.el$"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-writable
+            (lambda _
+              (for-each make-file-writable (find-files "." "\\.el$")))))))
     (home-page "https://github.com/dominikh/go-mode.el")
     (synopsis "Go mode for Emacs")
     (description
