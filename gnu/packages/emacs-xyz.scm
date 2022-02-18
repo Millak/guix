@@ -6225,16 +6225,16 @@ Gnus, e.g., for applying patches received by email.")
     (native-inputs
      (list emacs-undercover))
     (arguments
-     `(#:emacs ,emacs
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'fix-makefile
-           (lambda _
-             (substitute* "Makefile"
-               (("\\$\\(CASK\\) exec ") ""))
-             #t)))
-       #:tests? #t
-       #:test-command '("make" "test")))
+     (list
+      #:emacs emacs
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-makefile
+            (lambda _
+              (substitute* "Makefile"
+                (("\\$\\(CASK\\) exec ") "")))))
+      #:tests? #t
+      #:test-command #~(list "make" "test")))
     (home-page "https://github.com/nflath/sudo-edit/")
     (synopsis "Open files as another user")
     (description
