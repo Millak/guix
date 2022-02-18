@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -101,9 +102,6 @@ appear only after all nested items already listed."
          (define (get-backup-path path)
            (string-append backup-dir "/." path))
 
-         (define (empty-directory? dir)
-           (equal? (scandir dir) '("." "..")))
-
          (define (symlink-to-store? path)
            (and (equal? (stat:type (lstat path)) 'symlink)
                 (store-file-name? (readlink path))))
@@ -127,20 +125,23 @@ appear only after all nested items already listed."
                 (('dir . ".")
                  (display (G_ "Cleanup finished.\n\n")))
 
-                (('dir . path)
-                 (if (and
-                      (file-exists? (get-target-path path))
-                      (file-is-directory? (get-target-path path))
-                      (empty-directory? (get-target-path path)))
-                     (begin
-                       (format #t (G_ "Removing ~a...")
-                               (get-target-path path))
-                       (rmdir (get-target-path path))
-                       (display (G_ " done\n")))
-                     (format
-                      #t
-                      (G_ "Skipping ~a (not an empty directory)... done\n")
-                      (get-target-path path))))
+                (('dir . directory)
+                 (let ((directory (get-target-path directory)))
+                   (catch 'system-error
+                     (lambda ()
+                       (rmdir directory)
+                       (format #t (G_ "Removed ~a.\n") directory))
+                     (lambda args
+                       (let ((errno (system-error-errno args)))
+                         (cond ((= ENOTEMPTY errno)
+                                (format
+                                 #t
+                                 (G_ "Skipping ~a (not an empty directory)...\n")
+                                 directory))
+                               ((= ENOTDIR errno)
+                                #t)
+                               (else
+                                (apply throw args))))))))
 
                 (('file . path)
                  (when (file-exists? (get-target-path path))
