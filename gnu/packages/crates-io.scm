@@ -57319,6 +57319,19 @@ spinning.  They may contain data, are usable without @code{std},and static
 initializers are available.")
     (license license:expat)))
 
+(define-public rust-spin-0.7
+  (package
+    (inherit rust-spin-0.9)
+    (name "rust-spin")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "spin" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qjips9f6fsvkyd7wj3a4gzaqknn2q4kkb19957pl86im56pna0k"))))))
+
 (define-public rust-spin-0.5
   (package
     (inherit rust-spin-0.9)
