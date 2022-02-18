@@ -8013,10 +8013,9 @@ save, it exports back to the original non-Org file.")
         #:include #~(cons "^resources\\/" %default-include)
         #:tests? #t
         #:test-command
-        (list
-         "emacs" "--batch"
-         "-l" "org-pomodoro-tests.el"
-         "-f" "ert-run-tests-batch-and-exit")
+        #~(list "emacs" "--batch"
+                "-l" "org-pomodoro-tests.el"
+                "-f" "ert-run-tests-batch-and-exit")
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'check 'make-tests-writable
