@@ -257,13 +257,13 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.18.1")
+    (version "0.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit-image" version))
        (sha256
-        (base32 "0wgisa03smhrphcjnhq7waa5vyyd32b67hblapjbqrqqj751idpv"))))
+        (base32 "0f0147jwkhx0w4s5r7w3drb7znzl2pgp4b0mdap1ha7cx3hhxw28"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -293,17 +293,14 @@ logic, also known as grey logic.")
            python-networkx
            python-numpy
            python-pillow
+           python-pythran
            python-pywavelets
            python-scipy
            python-tifffile))
     (native-inputs
-     (list python-codecov
-           python-cython
-           python-flake8
+     (list python-cython
            python-pytest
-           python-pytest-cov
-           python-pytest-localserver
-           python-wheel))
+           python-pytest-localserver))
     (home-page "https://scikit-image.org/")
     (synopsis "Image processing in Python")
     (description
