@@ -10173,13 +10173,13 @@ mode with the package emacs-julia-mode.")
                 "04nh37izz04lxkvkxhsig8khbrrgdl4p6pkjsv5bxymnp84zwlw7"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include (cons "^JuliaSnail\\.jl" %default-include)))
+     (list #:include #~(cons "^JuliaSnail\\.jl" %default-include)))
     (inputs
      (list emacs-dash emacs-s emacs-spinner emacs-xref))
     (propagated-inputs
      (list libvterm
-           emacs-julia-mode ;required by parser
-           emacs-parsec ;required by parser
+           emacs-julia-mode             ;required by parser
+           emacs-parsec                 ;required by parser
            emacs-vterm))
     (home-page "https://github.com/gcv/julia-snail")
     (synopsis "Development environment and REPL interaction package for Julia")
