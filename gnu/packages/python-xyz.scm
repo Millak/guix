@@ -7936,7 +7936,10 @@ you to actually draw things with your favorite toolkit.")
         (base32 "0v0sgpg6pz8h61f9aqjf5xk0ipr512bbz8dxzjjylksj135qr19l"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f)) ; FIXME: Requires python-cherrypy.
+     '(#:tests? #f    ;FIXME: Requires python-cherrypy.
+       #:phases (modify-phases %standard-phases
+                  ;; Importing the web server module requires cherrypy, too.
+                  (delete 'sanity-check))))
     (propagated-inputs
      (list python-psutil python-drmaa python-pyzmq))
     (home-page "https://github.com/pygridtools/gridmap")
