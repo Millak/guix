@@ -101,9 +101,6 @@ appear only after all nested items already listed."
          (define (get-backup-path path)
            (string-append backup-dir "/." path))
 
-         (define (directory? path)
-           (equal? (stat:type (stat path)) 'directory))
-
          (define (empty-directory? dir)
            (equal? (scandir dir) '("." "..")))
 
@@ -133,7 +130,7 @@ appear only after all nested items already listed."
                 (('dir . path)
                  (if (and
                       (file-exists? (get-target-path path))
-                      (directory? (get-target-path path))
+                      (file-is-directory? (get-target-path path))
                       (empty-directory? (get-target-path path)))
                      (begin
                        (format #t (G_ "Removing ~a...")
@@ -179,7 +176,7 @@ appear only after all nested items already listed."
                 (('dir . path)
                  (let ((target-path (get-target-path path)))
                    (when (and (file-exists? target-path)
-                              (not (directory? target-path)))
+                              (not (file-is-directory? target-path)))
                      (backup-file path))
 
                    (if (file-exists? target-path)
