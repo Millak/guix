@@ -81,10 +81,7 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
    (service home-bash-service-type
             (home-bash-configuration
              (guix-defaults? #t)
-             (bashrc
-              (list
-               (local-file (string-append (dirname (current-filename))
-                                          "/dot-bashrc"))))))
+             (bashrc (list (local-file "dot-bashrc")))))
 
    (simple-service 'home-bash-service-extension-test
                    home-bash-service-type
