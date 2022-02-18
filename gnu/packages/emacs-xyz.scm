@@ -1243,8 +1243,7 @@ you will die.  The game builds the list of words from the active buffer.")
               ;; Remove examples file with references to external packages as
               ;; they do not exist at compilation time.
               (snippet
-               '(begin (delete-file "examples.el")
-                       #t))
+               '(begin (delete-file "examples.el")))
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/vermiculus/graphql.el")
