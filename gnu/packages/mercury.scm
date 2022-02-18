@@ -100,8 +100,7 @@
                        (invoke "mv" orig-name new-name)
                        (with-directory-excursion new-name
                          (apply patch-source-shebangs (list #:source src)))))
-                    `((,libatomic-ops "source" "boehm_gc/libatomic_ops")))
-               #t)))
+                    `((,libatomic-ops "source" "boehm_gc/libatomic_ops"))))))
          (add-after 'replace-boehm-gc 'patch-paths
            (lambda _
              (substitute*
@@ -133,8 +132,7 @@
                        "boehm_gc/Makefile.direct")
                (("/bin/sh") (which "sh"))
                (("/bin/pwd") (which "pwd"))
-               (("/bin/rm") (which "rm")))
-             #t)))))
+               (("/bin/rm") (which "rm"))))))))
     (native-inputs
      `(("texinfo" ,texinfo)
        ("flex" ,flex)
@@ -227,12 +225,10 @@ separate compilation, and numerous optimization/time trade-offs.")
                         (("/bin/sh") (which "sh"))
                         (("/bin/pwd") (which "pwd"))
                         (("/bin/rm") (which "rm"))
-                        (("boehm_gc/.git") "boehm_gc"))
-                      #t))
+                        (("boehm_gc/.git") "boehm_gc"))))
                   (replace 'bootstrap
                     (lambda _
-                      (invoke "./prepare.sh")
-                      #t))))))
+                      (invoke "./prepare.sh")))))))
            ;; TODO: Uncomment phase when tests are enabled.
            ;; (replace 'check
            ;;   (lambda _
