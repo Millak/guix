@@ -8434,16 +8434,15 @@ board and goal value can be customized.")
         (base32 "1a4iwjdh6k348df6qywjws9z9f862d62m0b2sz57z4xhywiyxpr7"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-pieces
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pieces
-                     (string-append out "/share/emacs/site-lisp/pieces")))
-               (mkdir-p pieces)
-               (copy-recursively "pieces" pieces)
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-pieces
+            (lambda _
+              (let ((pieces
+                     (string-append #$output "/share/emacs/site-lisp/pieces")))
+                (mkdir-p pieces)
+                (copy-recursively "pieces" pieces)))))))
     (home-page "https://elpa.gnu.org/packages/chess.html")
     (synopsis "Play chess in GNU Emacs")
     (description
