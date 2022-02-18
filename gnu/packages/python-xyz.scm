@@ -14708,6 +14708,27 @@ It is maintained by the Celery project, and used by kombu as a pure python
 alternative when librabbitmq is not available.")
     (license license:lgpl2.1+)))
 
+(define-public python-beniget
+  (package
+    (name "python-beniget")
+    (version "0.4.1")
+    (home-page "https://github.com/serge-sans-paille/beniget")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "beniget" version))
+       (sha256
+        (base32 "035c4f78yllpw2c5p1w92520rilm7nnpsqh7yvi3qmfhi8xlnmbm"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-gast))
+    (synopsis "Extract semantic information about static Python code")
+    (description
+     "Beniget is a collection of analyzers for Python @acronym{AST,
+Abstract Syntax Tree}.  It is a building block for writing a static analyzer
+or compiler for Python.")
+    (license license:bsd-3)))
+
 (define-public python-txamqp
   (package
     (name "python-txamqp")
