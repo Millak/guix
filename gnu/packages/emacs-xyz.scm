@@ -8008,28 +8008,28 @@ save, it exports back to the original non-Org file.")
       (propagated-inputs
        (list emacs-alert))
       (arguments
-       `(#:include (cons "^resources\\/" %default-include)
-         #:tests? #t
-         #:test-command '("emacs" "--batch"
-                          "-l" "org-pomodoro-tests.el"
-                          "-f" "ert-run-tests-batch-and-exit")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'make-tests-writable
-             (lambda _
-               (make-file-writable "org-pomodoro-tests.el")
-               #t))
-           (add-before 'check 'add-require
-             (lambda _
-               (emacs-batch-edit-file "org-pomodoro-tests.el"
-                 `(progn (progn (goto-char (point-min))
-                                (re-search-forward
-                                 "ert-deftest")
-                                (beginning-of-line)
-                                (forward-line -1)
-                                (insert "(require 'org-pomodoro)"))
-                         (basic-save-buffer)))
-               #t)))))
+       (list
+        #:include #~(cons "^resources\\/" %default-include)
+        #:tests? #t
+        #:test-command
+        (list
+         "emacs" "--batch"
+         "-l" "org-pomodoro-tests.el"
+         "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'make-tests-writable
+              (lambda _
+                (make-file-writable "org-pomodoro-tests.el")))
+            (add-before 'check 'add-require
+              (lambda _
+                (emacs-batch-edit-file "org-pomodoro-tests.el"
+                  `(progn (progn (goto-char (point-min))
+                                 (re-search-forward "ert-deftest")
+                                 (beginning-of-line)
+                                 (forward-line -1)
+                                 (insert "(require 'org-pomodoro)"))
+                          (basic-save-buffer))))))))
       (home-page "https://github.com/marcinkoziej/org-pomodoro")
       (synopsis "Pomodoro technique for org-mode")
       (description "@code{emacs-org-pomodoro} adds very basic support for
