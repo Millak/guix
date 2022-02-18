@@ -6962,3 +6962,22 @@ the presence of variance components/nonparametric terms for models fit with
 @code{nlme::lme()}, @code{lme4::lmer()}, @code{lmeTest::lmer()},
 @code{gamm4::gamm4()}, @code{mgcv::gamm()} and @code{SemiPar::spm()}.")
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-binom
+  (package
+    (name "r-binom")
+    (version "1.1-1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (cran-uri "binom" version))
+        (sha256
+          (base32 "0mjj92dqf5q69jxzqya4izb1mly3mkydbnmlm4wb3zqqg82a324c"))))
+    (properties `((upstream-name . "binom")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=binom")
+    (synopsis "Binomial Confidence Intervals For Several Parameterizations")
+    (description
+      "Constructs confidence intervals on the probability of success in a binomial
+experiment via several parameterizations")
+    (license (list license:gpl2+ license:gpl3+))))
