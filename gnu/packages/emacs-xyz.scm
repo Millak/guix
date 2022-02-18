@@ -22833,8 +22833,7 @@ files are easily readable and they work nicely with version control systems.")
     (build-system emacs-build-system)
     (arguments
      `(#:include '("\\.el$" "^data/")
-       ;; Compiling "test/" fails with "Symbol’s value as variable is void:
-       ;; all-the-icons--root-code".  Ignoring tests.
+       #:exclude '("^test/")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'install-fonts
@@ -22847,9 +22846,14 @@ files are easily readable and they work nicely with version control systems.")
                  ;; TODO: Unbundle.
                  (install-file "file-icons.ttf" fonts)
                  (install-file "octicons.ttf" fonts)
-                 (install-file "weathericons.ttf" fonts))))))
-       #:exclude '("^test/")
-       #:tests? #f))
+                 (install-file "weathericons.ttf" fonts)))))
+         (replace 'check
+           (lambda* (#:key outputs #:allow-other-keys)
+             (apply invoke "ert-runner" "-l"
+                    (append (find-files "data" "\\.el")
+                            '("all-the-icons-faces.el"))))))))
+    (native-inputs
+     (list emacs-f emacs-ert-runner))
     (propagated-inputs
      (list emacs-f emacs-memoize font-awesome font-google-material-design-icons))
     (home-page "https://github.com/domtronn/all-the-icons.el")
