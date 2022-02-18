@@ -3740,10 +3740,10 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define-public %final-inputs-riscv64
   ;; This is similar to the added (list gcc "lib") elsewhere in this file, but
   ;; due to how (%current-system) is re-defined when performing builds with the
-  ;; '--system' flag, %final-inputs is too early in the evaulation pipeline to
+  ;; 'gnu.system' flag, %final-inputs is too early in the evaulation pipeline to
   ;; correctly identify the system for which a derivation will be built. Thus,
   ;; since (%current-system) is re-determined by (guix build-system gnu) after
-  ;; loading %final-inputs but before taking into account the '--system' flag,
+  ;; loading %final-inputs but before taking into account the 'gnu.system' flag,
   ;; the test for (target-riscv64?) needs to be in (guix build-system gnu),
   ;; with %final-inputs-riscv64 already available at the same time that
   ;; %final-inputs is available.

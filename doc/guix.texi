@@ -34959,7 +34959,7 @@ honors several options passed on the Linux kernel command line
 @code{-append} option of QEMU), notably:
 
 @table @code
-@item --load=@var{boot}
+@item gnu.load=@var{boot}
 Tell the initial RAM disk to load @var{boot}, a file containing a Scheme
 program, once it has mounted the root file system.
 
@@ -34967,7 +34967,7 @@ Guix uses this option to yield control to a boot program that runs the
 service activation programs and then spawns the GNU@tie{}Shepherd, the
 initialization system.
 
-@item --root=@var{root}
+@item root=@var{root}
 Mount @var{root} as the root file system.  @var{root} can be a device
 name like @code{/dev/sda1}, a file system label, or a file system UUID.
 When unspecified, the device name from the root file system of the
@@ -34992,7 +34992,7 @@ or @code{preen} to repair problems considered safe to repair automatically.
 @code{preen} is the default if this option is not present or if @var{level}
 is not one of the above.
 
-@item --system=@var{system}
+@item gnu.system=@var{system}
 Have @file{/run/booted-system} and @file{/run/current-system} point to
 @var{system}.
 
@@ -35004,7 +35004,7 @@ Instruct the initial RAM disk as well as the @command{modprobe} command
 must be a comma-separated list of module names---e.g.,
 @code{usbkbd,9pnet}.
 
-@item --repl
+@item gnu.repl
 Start a read-eval-print loop (REPL) from the initial RAM disk before it
 tries to load kernel modules and to mount the root file system.  Our
 marketing team calls it @dfn{boot-to-Guile}.  The Schemer in you will
@@ -35025,7 +35025,7 @@ here is how to use it and customize it further.
        [#:helper-packages '()] [#:qemu-networking? #f] [#:volatile-root? #f]
 Return a derivation that builds a raw initrd.  @var{file-systems} is
 a list of file systems to be mounted by the initrd, possibly in addition to
-the root file system specified on the kernel command line via @option{--root}.
+the root file system specified on the kernel command line via @option{root}.
 @var{linux-modules} is a list of kernel modules to be loaded at boot time.
 @var{mapped-devices} is a list of device mappings to realize before
 @var{file-systems} are mounted (@pxref{Mapped Devices}).
@@ -35055,7 +35055,7 @@ to it are lost.
 Return as a file-like object a generic initrd, with kernel
 modules taken from @var{linux}.  @var{file-systems} is a list of file-systems to be
 mounted by the initrd, possibly in addition to the root file system specified
-on the kernel command line via @option{--root}.  @var{mapped-devices} is a list of device
+on the kernel command line via @option{root}.  @var{mapped-devices} is a list of device
 mappings to realize before @var{file-systems} are mounted.
 
 When true, @var{keyboard-layout} is a @code{<keyboard-layout>} record denoting

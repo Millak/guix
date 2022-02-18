@@ -187,16 +187,23 @@
 ;;;
 ;;; Code:
 
-(define (bootable-kernel-arguments system root-device)
-  "Return a list of kernel arguments (gexps) to boot SYSTEM from ROOT-DEVICE."
-  (list (string-append "--root="
+(define* (bootable-kernel-arguments system root-device version)
+  "Return a list of kernel arguments (gexps) to boot SYSTEM from ROOT-DEVICE.
+VERSION is the target version of the boot-parameters record."
+  ;; If the version is newer than 0, we use the new style initrd parameter
+  ;; names, otherwise we use the legacy ones.  This is to maintain backward
+  ;; compatibility when producing bootloader configurations for older
+  ;; generations.
+  (define version>0? (> version 0))
+  (list (string-append (if version>0? "root=" "--root=")
                        ;; Note: Always use the DCE format because that's what
-                       ;; (gnu build linux-boot) expects for the '--root'
+                       ;; (gnu build linux-boot) expects for the 'root'
                        ;; kernel command-line option.
                        (file-system-device->string root-device
                                                    #:uuid-type 'dce))
-        #~(string-append "--system=" #$system)
-        #~(string-append "--load=" #$system "/boot")))
+        #~(string-append (if #$version>0? "gnu.system=" "--system=") #$system)
+        #~(string-append (if #$version>0? "gnu.load=" "--load=")
+                         #$system "/boot")))
 
 ;; System-wide configuration.
 ;; TODO: Add per-field docstrings/stexi.
@@ -286,10 +293,12 @@
                             source-properties->location))
             (innate)))
 
-(define (operating-system-kernel-arguments os root-device)
-  "Return all the kernel arguments, including the ones not specified
-directly by the user."
-  (append (bootable-kernel-arguments os root-device)
+(define* (operating-system-kernel-arguments
+          os root-device #:key (version %boot-parameters-version))
+  "Return all the kernel arguments, including the ones not specified directly
+by the user.  VERSION should match that of the target <boot-parameter> record
+object that will contain the kernel parameters."
+  (append (bootable-kernel-arguments os root-device version)
           (operating-system-user-kernel-arguments os)))
 
 
@@ -297,8 +306,12 @@ directly by the user."
 ;;; Boot parameters
 ;;;
 
+;;; Version 1 was introduced early 2022 to mark the departure from long option
+;;; names such as '--load' to the more conventional initrd option names like
+;;; 'gnu.load'.
+;;;
 ;;; When bumping the boot-parameters version, increment it by one (1).
-(define %boot-parameters-version 0)
+(define %boot-parameters-version 1)
 
 (define-record-type* <boot-parameters>
   boot-parameters make-boot-parameters boot-parameters?
@@ -479,10 +492,11 @@ format is unrecognized.
 The object has its kernel-arguments extended in order to make it bootable."
   (let* ((file (string-append system "/parameters"))
          (params (call-with-input-file file read-boot-parameters))
-         (root (boot-parameters-root-device params)))
+         (root (boot-parameters-root-device params))
+         (version (boot-parameters-version params)))
     (boot-parameters
      (inherit params)
-     (kernel-arguments (append (bootable-kernel-arguments system root)
+     (kernel-arguments (append (bootable-kernel-arguments system root version)
                                (boot-parameters-kernel-arguments params))))))
 
 (define (boot-parameters->menu-entry conf)
@@ -1453,10 +1467,10 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
 (define* (operating-system-boot-parameters os root-device
                                            #:key system-kernel-arguments?)
   "Return a monadic <boot-parameters> record that describes the boot
-parameters of OS.  When SYSTEM-KERNEL-ARGUMENTS? is true, add kernel arguments
-such as '--root' and '--load' to <boot-parameters>.  The
-SYSTEM-KERNEL-ARGUMENTS? should only be used in necessity, as the '--load' and
-'--system' values are self-referential (they refer to the system), thus
+parameters of OS.  When SYSTEM-KERNEL-ARGUMENTS? is true, add the kernel
+arguments 'root', 'gnu.load' and 'gnu.system' to <boot-parameters>.  The
+SYSTEM-KERNEL-ARGUMENTS? should only be used in necessity, as the 'gnu.load'
+and 'gnu.system' values are self-referential (they refer to the system), thus
 susceptible to introduce a cyclic dependency."
   (let* ((initrd          (and (not (operating-system-hurd os))
                                (operating-system-initrd-file os)))

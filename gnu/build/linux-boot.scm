@@ -3,6 +3,7 @@
 ;;; Copyright © 2016, 2017, 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -93,7 +94,7 @@
      get-string-all)))
 
 (define (find-long-option option arguments)
-  "Find OPTION among ARGUMENTS, where OPTION is something like \"--load\".
+  "Find OPTION among ARGUMENTS, where OPTION is something like \"gnu.load\".
 Return the value associated with OPTION, or #f on failure."
   (let ((opt (string-append option "=")))
     (and=> (find (cut string-prefix? opt <>)
@@ -499,12 +500,12 @@ LINUX-MODULE-DIRECTORY, then installing KEYMAP-FILE with 'loadkeys' (if
 KEYMAP-FILE is true), then setting up QEMU guest networking if
 QEMU-GUEST-NETWORKING? is true, calling PRE-MOUNT, mounting the file systems
 specified in MOUNTS, and finally booting into the new root if any.  The initrd
-supports kernel command-line options '--load', '--root', and '--repl'.  It
-also honors a subset of the documented Linux kernel command-line parameters
-such as 'fsck.mode', 'resume' and 'rootdelay'.
+supports kernel command-line parameters 'gnu.load' and 'gnu.repl'.  It also
+honors a subset of the Linux kernel command-line parameters such as
+'fsck.mode', 'resume', 'root' and 'rootdelay'.
 
-Mount the root file system, specified by the '--root' command-line argument,
-if any.
+Mount the root file system, specified by the 'root' command-line argument, if
+any.
 
 MOUNTS must be a list of <file-system> objects.
 
@@ -517,25 +518,25 @@ upon error."
     (string=? (file-system-mount-point fs) "/"))
 
   (define (device-string->file-system-device device-string)
-    ;; The "--root=SPEC" kernel command-line option always provides a
-    ;; string, but the string can represent a device, an nfs-root, a UUID, or a
-    ;; label.  So check for all four.
+    ;; The "root=SPEC" kernel command-line option always provides a string,
+    ;; but the string can represent a device, an nfs-root, a UUID, or a label.
+    ;; So check for all four.
     (cond ((string-prefix? "/" device-string) device-string)
           ((string-contains device-string ":/") device-string) ; nfs-root
           ((uuid device-string) => identity)
           (else (file-system-label device-string))))
 
   (display "Welcome, this is GNU's early boot Guile.\n")
-  (display "Use '--repl' for an initrd REPL.\n\n")
+  (display "Use 'gnu.repl' for an initrd REPL.\n\n")
 
   (call-with-error-handling
     (lambda ()
       (mount-essential-file-systems)
       (let* ((args    (linux-command-line))
-             (to-load (find-long-option "--load" args))
-             ;; If present, ‘--root’ on the kernel command line takes precedence
+             (to-load (find-long-option "gnu.load" args))
+             ;; If present, ‘root’ on the kernel command line takes precedence
              ;; over the ‘device’ field of the root <file-system> record.
-             (root-device (and=> (find-long-option "--root" args)
+             (root-device (and=> (find-long-option "root" args)
                                  device-string->file-system-device))
              (root-fs (or (find root-mount-point? mounts)
                           ;; Fall back to fictitious defaults.
@@ -564,7 +565,7 @@ upon error."
                   (_ 'preen))
                 (file-system-repair fs))))
 
-        (when (member "--repl" args)
+        (when (member "gnu.repl" args)
           (start-repl))
 
         (display "loading kernel modules...\n")
@@ -652,7 +653,7 @@ the root file system...\n" root-delay)
               (sleep 2)
               (reboot))
             (begin
-              (display "no boot file passed via '--load'\n")
+              (display "no boot file passed via 'gnu.load'\n")
               (display "entering a warm and cozy REPL\n")
               (start-repl)))))
     #:on-error on-error))
