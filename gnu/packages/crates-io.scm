@@ -19305,8 +19305,41 @@ signing, and verification in pure Rust.")
      "This package provides a pure-Rust library for parsing ELF files.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-emacs-0.11
+(define-public rust-emacs-0.18
   (package
+    (name "rust-emacs")
+    (version "0.18.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "emacs" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0r860i73b2680i2fhdl2l1wwvvmf2zksncpckgkksdcx310ak5v7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-ctor" ,rust-ctor-0.1)
+        ("rust-emacs-macros" ,rust-emacs-macros-0.17)
+        ("rust-emacs-module" ,rust-emacs-module-0.18)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-failure-derive" ,rust-failure-derive-0.1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (inputs
+     (list clang))
+    (home-page "https://github.com/ubolonton/emacs-module-rs")
+    (synopsis "Library for creating Emacs's dynamic modules")
+    (description
+     "This crate provides a high level binding to emacs-module:
+Emacs' support for dynamic modules.")
+    (license license:bsd-3)))
+
+(define-public rust-emacs-0.11
+  (package (inherit rust-emacs-0.18)
     (name "rust-emacs")
     (version "0.11.0")
     (source
@@ -19318,7 +19351,6 @@ signing, and verification in pure Rust.")
         (sha256
          (base32
           "1xn6nr8m3p24irlmv3i7c9n95yb10qc6aikwqv99qlmhbky5x0z7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ctor" ,rust-ctor-0.1)
@@ -19326,15 +19358,7 @@ signing, and verification in pure Rust.")
         ("rust-emacs-module" ,rust-emacs-module-0.10)
         ("rust-failure" ,rust-failure-0.1)
         ("rust-failure-derive" ,rust-failure-derive-0.1)
-        ("rust-lazy-static" ,rust-lazy-static-1))))
-    (inputs
-     (list clang))
-    (home-page "https://github.com/ubolonton/emacs-module-rs")
-    (synopsis "Library for creating Emacs's dynamic modules")
-    (description
-     "This crate provides a high level binding to emacs-module:
-Emacs' support for dynamic modules.")
-    (license license:bsd-3)))
+        ("rust-lazy-static" ,rust-lazy-static-1))))))
 
 (define-public rust-emacs-macros-0.17
   (package
