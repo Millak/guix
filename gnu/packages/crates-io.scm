@@ -19336,8 +19336,31 @@ signing, and verification in pure Rust.")
 Emacs' support for dynamic modules.")
     (license license:bsd-3)))
 
-(define-public rust-emacs-macros-0.11
+(define-public rust-emacs-macros-0.17
   (package
+    (name "rust-emacs-macros")
+    (version "0.17.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "emacs-macros" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0qg1dcn5acbirq617qq2fgg9adswif2dnr292s3qnq62wzgnyrb9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-darling" ,rust-darling-0.10)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/ubolonton/emacs-module-rs")
+    (synopsis "Proc macros for Emacs modules")
+    (description "This package provides proc macros for Emacs modules.")
+    (license license:bsd-3)))
+
+(define-public rust-emacs-macros-0.11
+  (package (inherit rust-emacs-macros-0.17)
     (name "rust-emacs-macros")
     (version "0.11.0")
     (source
@@ -19349,16 +19372,11 @@ Emacs' support for dynamic modules.")
         (sha256
          (base32
           "0390y8vafxdi334hhgrzvcqjq3n5ckcmvilqcfp8vajjq8irrly6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-darling" ,rust-darling-0.9)
         ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))))
-    (home-page "https://github.com/ubolonton/emacs-module-rs")
-    (synopsis "Proc macros for Emacs modules")
-    (description "This package provides proc macros for Emacs modules.")
-    (license license:bsd-3)))
+        ("rust-syn" ,rust-syn-0.15))))))
 
 (define-public rust-emacs-module-0.18
   (package
