@@ -31,7 +31,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages pkg-config)
-  #:use-module (ice-9 match)) ; match-lambda
+  #:use-module ((ice-9 match) #:select (match-lambda)))
 
 ;; NOTE: Mercury uses a tightly coupled fork of BDWGC and
 ;; libatomic-ops. When updating the package, please check the GitHub
