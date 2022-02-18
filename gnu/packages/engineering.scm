@@ -2463,7 +2463,7 @@ comments.")))
              qtx11extras
              qtxmlpatterns
              sqlite
-             tbb
+             tbb-2020 ; Same version as opencascade-occt
              vtk
              xerces-c
              zlib))
