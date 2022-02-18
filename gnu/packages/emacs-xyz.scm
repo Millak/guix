@@ -1654,20 +1654,22 @@ supports type hints, definition-jumping, completion, and more.")
       (native-inputs
        (list emacs-shut-up))
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'change-flycheck-version
-             (lambda _
-               (substitute* "flycheck.el"
-                 (("\\(pkg-info-version-info 'flycheck\\)")
-                  (string-append "\"" ,version "\"")))
-               #t)))
-         ;; TODO: many failing tests
-         #:tests? #f
-         #:test-command '("emacs" "-Q" "--batch" "-L" "."
-                          "--load" "test/flycheck-test"
-                          "--load" "test/run.el"
-                          "-f" "flycheck-run-tests-main")))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'change-flycheck-version
+              (lambda _
+                (substitute* "flycheck.el"
+                  (("\\(pkg-info-version-info 'flycheck\\)")
+                   (string-append "\"" #$version "\""))))))
+        ;; TODO: many failing tests
+        #:tests? #f
+        #:test-command
+        #~(list "emacs" "-Q" "--batch"
+                "-L" "."
+                "--load" "test/flycheck-test"
+                "--load" "test/run.el"
+                "-f" "flycheck-run-tests-main")))
       (home-page "https://www.flycheck.org")
       (synopsis "On-the-fly syntax checking")
       (description
