@@ -50,6 +50,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
@@ -91,6 +92,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -536,34 +538,48 @@ address of one of the participants.")
     (home-page "http://holdenc.altervista.org/seren/")
     (license license:gpl3+)))
 
+(define find-python-interpreter-cmake-modules
+  (let ((commit "bb4d3ea8434eebef40df35434a9b6ef410fce0b2")
+        (revision "0"))
+   (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/Krzmbrzl/FindPythonInterpreter")
+          (commit commit)))
+    (file-name (git-file-name "find-python-interpreter"
+                              (git-version "0" revision commit)))
+    (sha256
+     (base32
+      "1ryhda2yqgrhnwndfg52mscdsclg1ivv746hvalcay5m1wy2h5bm")))))
+
 (define-public mumble
   (package
     (name "mumble")
-    (version "1.3.4")
+    (version "1.4.230")
     (source (origin
               (method url-fetch)
               (uri
                (string-append
-                "https://github.com/mumble-voip/mumble/releases/download/"
+                "https://github.com/mumble-voip/mumble/releases/download/v"
                 version "/" name "-" version ".tar.gz"))
               (sha256
                (base32
-                "14v0rgy1a5alxmz7ly95y38bdj0hx79yysgkcd8r8p9qqfzlwpv1"))
+                "1c1lwj0cpyawr74adpdrsnxk8ra5kqrjbg65cnwk8n6cwss84zdn"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
               (snippet
                `(begin
                   (let ((keep
-                         '("arc4random-src"
+                         '("arc4random"
                            "celt-0.7.0-build"
                            "celt-0.7.0-src"
                            "celt-0.11.0-build"
                            "celt-0.11.0-src"
-                           "qqbonjour-src"
+                           "qqbonjour"
                            "rnnoise-build"
                            "rnnoise-src"
-                           "smallft-src")))
+                           "smallft")))
 	            (with-directory-excursion "3rdparty"
 	              (for-each delete-file-recursively
 			        (lset-difference string=?
@@ -572,105 +588,71 @@ address of one of the participants.")
                     #t)))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f  ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (invoke "qmake" "main.pro" "QMAKE_LRELEASE=lrelease"
-                     (string-append "MUMBLE_PYTHON="
-                                    (search-input-file inputs
-                                                       "/bin/python3"))
-                     (string-append "CONFIG+="
-                                    (string-join
-                                     ;; Options used are listed in the same order
-                                     ;; as in the "INSTALL" file
-                                     ;; (plus the final "packaged" and "release").
-                                     (list "no-bundled-speex" ; in speex
-                                           "no-bundled-opus" ; in opus
-                                           "no-g15" ; not packaged
-                                           "no-jackaudio" ; use pulse
-                                           "no-oss" ; use pulse
-                                           "no-alsa" ; use pulse
-                                           "no-update"
-                                           "no-embed-qt-translations"
-                                           "no-ice" ; not packaged
-                                           "packaged"
-                                           "release")))
-                     (string-append "DEFINES+="
-                                    "PLUGIN_PATH="
-                                    (assoc-ref outputs "out")
-                                    "/lib/mumble"))))
-         (add-before 'configure 'fix-libspeechd-include
-           (lambda _
-             (substitute* "src/mumble/TextToSpeech_unix.cpp"
-               (("libspeechd.h") "speech-dispatcher/libspeechd.h"))
-             #t))
-         ;; disable statistic gathering by default. see <https://bugs.gnu.org/25201>
-         (add-before 'configure 'fix-statistic-gathering-default
-           (lambda _
-             (substitute* "src/mumble/Settings.cpp"
-               (("bUsage = true;") "bUsage = false;"))
-             #t))
-         (add-before 'configure 'fix-mumble-overlay
-           (lambda* (#:key outputs #:allow-other-keys)
+     (list
+      #:tests? #f  ; no "check" target
+      #:configure-flags
+      #~(list "-Dbundled-speex=off"
+              "-Dbundled-opus=off"
+              ;; "-Dbundled-rnnoise=off" ; XXX: not yet in release
+              "-Dalsa=off" ; use pulse
+              "-Dcoreaudio=off" ; use pulse
+              "-Dice=off" ; not packaged
+              "-Djackaudio=off" ; use pulse
+              "-Doss=off" ; use pulse
+              "-Dpulseaudio=on"
+              "-Dportaudio=off" ; use pulse
+              "-Dpipewire=off" ; use pulse
+              "-Doverlay-xcompile=off"
+              "-Dupdate=off" ; don't phone home
+              "-Dbundle-qt-translations=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-submodules
+            (lambda _
+              (copy-recursively #$find-python-interpreter-cmake-modules
+                                "3rdparty/FindPythonInterpreter")))
+          (add-after 'unpack 'disable-murmur-ice
+            (lambda _
+              (substitute* "scripts/murmur.ini"
+                (("^ice=") ";ice="))))
+          ;; disable statistic gathering by default. see <https://bugs.gnu.org/25201>
+          (add-after 'unpack 'fix-statistic-gathering-default
+            (lambda _
+              (substitute* "src/mumble/Settings.h"
+                (("bUsage *= true;") "bUsage = false;"))))
+          (add-after 'unpack 'fix-mumble-overlay
+            (lambda* (#:key inputs outputs #:allow-other-keys)
               (with-output-to-file "scripts/mumble-overlay"
                 (lambda ()
-                  (format #t "#!~a~%" (which "bash"))
+                  (format #t "#!~a~%" (search-input-file inputs "/bin/bash"))
                   (format #t "export LD_PRELOAD=\"~a $LD_PRELOAD\"~%"
                           (string-append (assoc-ref outputs "out")
                                          "/lib/mumble/libmumble.so.1"))
                   (format #t "exec \"${@}\"")))
               #t))
-         (add-before 'install 'disable-murmur-ice
-           (lambda _
-             (substitute* "scripts/murmur.ini.system"
-               (("^ice=") ";ice="))
-             #t))
-         (replace 'install ; install phase does not exist
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (etc (string-append out "/etc/murmur"))
-                    (dbus (string-append out "/etc/dbus-1/system.d/"))
-                    (bin (string-append out "/bin"))
-                    (services (string-append out "/share/services"))
-                    (applications (string-append out "/share/applications"))
-                    (icons (string-append out "/share/icons/hicolor/scalable/apps"))
-                    (man (string-append out "/share/man/man1"))
-                    (lib (string-append out "/lib/mumble")))
-               (install-file "release/mumble" bin)
-               (install-file "scripts/mumble-overlay" bin)
-               (install-file "scripts/mumble.protocol" services)
-               (install-file "scripts/mumble.desktop" applications)
-               (install-file "icons/mumble.svg" icons)
-               (install-file "man/mumble-overlay.1" man)
-               (install-file "man/mumble.1" man)
-               (install-file "release/murmurd" bin)
-               (install-file "scripts/murmur.ini.system" etc)
-               (rename-file (string-append etc "/murmur.ini.system")
-                            (string-append etc "/murmur.ini"))
-               (install-file "scripts/murmur.conf" dbus)
-               (install-file "man/murmurd.1" man)
-               (for-each (lambda (file) (install-file file lib))
-                         (find-files "." "\\.so\\."))
-               (for-each (lambda (file) (install-file file lib))
-                         (find-files "release/plugins" "\\.so$"))
-               #t))))))
+          (add-after 'unpack 'hardcode-pulseaudio
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/mumble/PulseAudio.cpp"
+                (("libpulse.so") (search-input-file inputs "/lib/libpulse.so"))))))))
     (inputs
      (list avahi
            boost
+           glib ; for speech-dispatcher
            libsndfile
            libxi
            mesa ; avoid bundled
            openssl
            opus ; avoid bundled
+           poco
            protobuf
            pulseaudio
            qtbase-5
            qtsvg
            speech-dispatcher
            speex ; avoid bundled
-           speexdsp)) ; avoid bundled
+           speexdsp ; avoid bundled
+           ;; xiph-rnnoise ; TODO: unbundle rnnoise
+           ))
     (native-inputs
      (list pkg-config python qttools))
     (synopsis "Low-latency, high quality voice chat software")
