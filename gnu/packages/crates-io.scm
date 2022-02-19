@@ -9849,6 +9849,44 @@ capabilities.")
 the library crate of Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-audit-0.16
+  (package
+    (name "rust-cargo-audit")
+    (version "0.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cargo-audit" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ixlfc8h7qgyr1ng37kx1f222g3pc97sm72pgj1mkl6q3daf5a7m"))))
+    (build-system cargo-build-system)
+    (arguments
+     ;; disable due to network connection
+     ;; https://github.com/rustsec/rustsec/issues/507
+     `(#:tests? #f
+       #:cargo-inputs
+       (("rust-abscissa-core" ,rust-abscissa-core-0.5)
+        ("rust-gumdrop" ,rust-gumdrop-0.7)
+        ("rust-home" ,rust-home-0.5)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rustsec" ,rust-rustsec-0.25)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-abscissa-core" ,rust-abscissa-core-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-toml" ,rust-toml-0.5))))
+    (native-inputs (list pkg-config))
+    (inputs (list libssh2 openssl zlib))
+    (home-page "https://rustsec.org")
+    (synopsis "Audit @file{Cargo.lock} for crates with security vulnerabilities")
+    (description "This package audits @file{Cargo.lock} for crates with
+security vulnerabilities.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-cargo-edit-0.8
   (package
     (name "rust-cargo-edit")
