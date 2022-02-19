@@ -31,6 +31,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -124,38 +125,36 @@ with Microsoft Compiled HTML (CHM) files")
     (name "calibre")
     (version "5.36.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "http://download.calibre-ebook.com/"
-                            version "/calibre-"
-                            version ".tar.xz"))
-        (sha256
-         (base32
-          "1c036qmn7lxq0899c2xzzs6whz7z0557frnfqisbvfxa13b2sadk"))
-        (modules '((guix build utils)))
-        (snippet
-          '(begin
-             ;; Unbundle python2-odfpy.
-             (delete-file-recursively "src/odf")
-             ;; Disable test that attempts to load it.
-             (substitute* "setup/test.py"
-               ((".*SRC, 'odf'.*")
-                ""))
-
-             ;; Remove unneeded resources.
-             (delete-file "resources/mozilla-ca-certs.pem")
-             (delete-file "resources/calibre-portable.bat")
-             (delete-file "resources/calibre-portable.sh")
-             #t))
-        (patches (search-patches "calibre-no-updates-dialog.patch"
-                                 "calibre-remove-test-sqlite.patch" ; TODO: fix test.
-                                 "calibre-remove-test-unrar.patch"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://download.calibre-ebook.com/"
+                           version "/calibre-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "1c036qmn7lxq0899c2xzzs6whz7z0557frnfqisbvfxa13b2sadk"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Unbundle python2-odfpy.
+           (delete-file-recursively "src/odf")
+           ;; Disable test that attempts to load it.
+           (substitute* "setup/test.py"
+             ((".*SRC, 'odf'.*") ""))
+           ;; Remove unneeded resources.
+           (delete-file "resources/mozilla-ca-certs.pem")
+           (delete-file "resources/calibre-portable.bat")
+           (delete-file "resources/calibre-portable.sh")))
+       (patches (search-patches "calibre-no-updates-dialog.patch"
+                                "calibre-remove-test-sqlite.patch" ; TODO: fix test.
+                                "calibre-remove-test-unrar.patch"))))
     (build-system python-build-system)
     (native-inputs
-     (list pkg-config
-           qtbase-5 ; for qmake
+     (list bash-minimal
+           pkg-config
            python-flake8
            python-pyqt-builder
+           qtbase-5                     ; for qmake
            xdg-utils))
     (inputs
      (list fontconfig
@@ -206,132 +205,136 @@ with Microsoft Compiled HTML (CHM) files")
            qtwebengine
            sqlite))
     (arguments
-     `(;; Calibre is using setuptools by itself, but the setup.py is not
-       ;; compatible with the shim wrapper (taken from pip) we are using.
-       #:use-setuptools? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             (substitute* "src/calibre/linux.py"
-               ;; We can't use the uninstaller in Guix. Don't build it.
-               (("self\\.create_uninstaller()") ""))
-             #t))
-         (add-after 'patch-source-shebangs 'patch-more-shebangs
-           (lambda _
-             ;; Patch various inline shebangs.
-             (substitute* '("src/calibre/gui2/preferences/tweaks.py"
-                            "src/calibre/gui2/dialogs/custom_recipes.py"
-                            "setup/install.py"
-                            "setup/linux-installer.sh")
-               (("#!/usr/bin/env python")
-                (string-append "#!" (which "python")))
-               (("#!/bin/sh")
-                (string-append "#!" (which "sh"))))
-             #t))
-         (add-after 'unpack 'dont-load-remote-icons
-           (lambda _
-             (substitute* "setup/plugins_mirror.py"
-               (("href=\"//calibre-ebook.com/favicon.ico\"")
-                "href=\"favicon.ico\""))
-             #t))
-         (add-before 'build 'configure
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (let ((podofo (assoc-ref inputs "podofo"))
-                  (pyqt (assoc-ref inputs "python-pyqt-without-qtwebkit"))
-                  (python-sip (assoc-ref inputs "python-sip"))
-                  (out (assoc-ref outputs "out")))
+     (list
+      ;; Calibre is using setuptools by itself, but the setup.py is not
+      ;; compatible with the shim wrapper (taken from pip) we are using.
+      #:use-setuptools? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda _
+              (substitute* "src/calibre/linux.py"
+                ;; We can't use the uninstaller in Guix. Don't build it.
+                (("self\\.create_uninstaller()") ""))))
+          (add-after 'patch-source-shebangs 'patch-more-shebangs
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              ;; Patch various inline shebangs.
+              (substitute* '("src/calibre/gui2/preferences/tweaks.py"
+                             "src/calibre/gui2/dialogs/custom_recipes.py"
+                             "setup/install.py"
+                             "setup/linux-installer.sh")
+                (("#!/usr/bin/env python")
+                 (string-append "#!" (search-input-file inputs "/bin/python")))
+                (("#!/bin/sh")
+                 (string-append "#!"
+                                (search-input-file native-inputs "/bin/sh"))))))
+          (add-after 'unpack 'dont-load-remote-icons
+            (lambda _
+              (substitute* "setup/plugins_mirror.py"
+                (("href=\"//calibre-ebook.com/favicon.ico\"")
+                 "href=\"favicon.ico\""))))
+          (add-before 'build 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "setup/build.py"
                 (("\\[tool.sip.bindings.pictureflow\\]")
                  "[tool.sip.bindings.pictureflow]
 tags = [\"WS_X11\"]")
                 (("\\[tool.sip.project\\]")
                  (string-append "[tool.sip.project]
-sip-include-dirs = [\"" pyqt "/share/sip" "\"]")))
+sip-include-dirs = [\""
+                                #$(this-package-input
+                                   "python-pyqt-without-qtwebkit")
+                                "/share/sip\"]")))
               (substitute* "src/calibre/ebooks/pdf/pdftohtml.py"
                 (("PDFTOHTML = 'pdftohtml'")
-                 (string-append "PDFTOHTML = \"" (assoc-ref inputs "poppler")
-                                "/bin/pdftohtml\"")))
-              ;; get_exe_path looks in poppler's output for these binaries. Make
-              ;; it not do that.
+                 (string-append "PDFTOHTML = \""
+                                (search-input-file inputs "/bin/pdftohtml")
+                                "\"")))
+              ;; get_exe_path looks in poppler's output for these
+              ;; binaries. Make it not do that.
               (substitute* "src/calibre/utils/img.py"
-                (("get_exe_path..jpegtran..") (string-append "'" (which "jpegtran") "'"))
-                (("get_exe_path..cjpeg..") (string-append "'" (which "cjpeg") "'"))
-                (("get_exe_path..optipng..") (string-append "'" (which "optipng") "'"))
-                (("get_exe_path..JxrDecApp..") (string-append "'" (which "JxrDecApp") "'")))
+                (("get_exe_path..jpegtran..")
+                 (string-append "'"
+                                (search-input-file inputs "/bin/jpegtran")
+                                "'"))
+                (("get_exe_path..cjpeg..")
+                 (string-append "'"
+                                (search-input-file inputs "/bin/cjpeg")
+                                "'"))
+                (("get_exe_path..optipng..")
+                 (string-append "'"
+                                (search-input-file inputs "/bin/optipng")
+                                "'"))
+                (("get_exe_path..JxrDecApp..")
+                 (string-append "'"
+                                (search-input-file inputs "/bin/JxrDecApp")
+                                "'")))
               ;; Calibre thinks we are installing desktop files into a home
               ;; directory, but here we butcher the script in to installing
               ;; to calibres /share directory.
-              (setenv "XDG_DATA_HOME" (string-append out "/share"))
+              (setenv "XDG_DATA_HOME" (string-append #$output "/share"))
               (substitute* "src/calibre/linux.py"
                 (("'~/.local/share'") "''"))
-
               ;; 'python setup.py rapydscript' uses QtWebEngine, which
               ;; needs to create temporary files in $HOME.
               (setenv "HOME" "/tmp")
-
               ;; XXX: QtWebEngine will fail if no fonts are available.  This
               ;; can likely be removed when fontconfig has been patched to
               ;; include TrueType fonts by default.
-              (symlink (string-append (assoc-ref inputs "font-liberation")
+              (symlink (string-append #$(this-package-input "font-liberation")
                                       "/share/fonts")
                        "/tmp/.fonts")
-
-              (setenv "PODOFO_INC_DIR" (string-append podofo "/include/podofo"))
-              (setenv "PODOFO_LIB_DIR" (string-append podofo "/lib"))
+              (let ((podofo #$(this-package-input "podofo")))
+                (setenv "PODOFO_INC_DIR"
+                        (string-append podofo "/include/podofo"))
+                (setenv "PODOFO_LIB_DIR" (string-append podofo "/lib")))
               ;; This informs the tests we are a continuous integration
               ;; environment and thus have no networking.
               (setenv "CI" "true")
-              ;; The Qt test complains about being unable to load all image plugins, and I
-              ;; notice the available plugins list it shows lacks 'svg'. Adding qtsvg doesn't
-              ;; fix it, so I'm not sure how to fix it.  TODO: Fix test and remove this.
-              (setenv "SKIP_QT_BUILD_TEST" "true")
-              #t)))
-         (add-after 'install 'install-rapydscript
-           (lambda* (#:key inputs #:allow-other-keys)
+              ;; The Qt test complains about being unable to load all image
+              ;; plugins, and I notice the available plugins list it shows
+              ;; lacks 'svg'. Adding qtsvg doesn't fix it, so I'm not sure how
+              ;; to fix it.  TODO: Fix test and remove this.
+              (setenv "SKIP_QT_BUILD_TEST" "true")))
+          (add-after 'install 'install-rapydscript
+            (lambda _
               ;; Unset so QtWebengine doesn't dump temporary files here.
-             (unsetenv "XDG_DATA_HOME")
-             (invoke "python" "setup.py" "rapydscript")
-             #t))
-         (add-after 'install 'install-man-pages
-           (lambda* (#:key outputs #:allow-other-keys)
-             (copy-recursively
-              "man-pages"
-              (string-append (assoc-ref outputs "out") "/share/man"))
-             #t))
-         ;; The font TTF files are used in some miscellaneous tests, so we
-         ;; unbundle them here to avoid patching the tests.
-         (add-after 'install 'unbundle-font-liberation
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((font-dest (string-append (assoc-ref outputs "out")
-                                             "/share/calibre/fonts/liberation"))
-                   (font-src (string-append (assoc-ref inputs "font-liberation")
-                                            "/share/fonts/truetype")))
-               (delete-file-recursively font-dest)
-               (symlink font-src font-dest))
-             #t))
-         ;; Make run-time dependencies available to the binaries.
-         (add-after 'wrap 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (qtwebengine (assoc-ref inputs "qtwebengine")))
-               (with-directory-excursion (string-append out "/bin")
-                 (for-each
-                  (lambda (binary)
-                    (wrap-program binary
-                      ;; Make QtWebEngineProcess available.
-                      `("QTWEBENGINEPROCESS_PATH" =
-                        ,(list (string-append
-                                qtwebengine
-                                "/lib/qt5/libexec/QtWebEngineProcess")))))
-                  ;; Wrap all the binaries shipping with the package, except
-                  ;; for the wrappings created during the 'wrap standard
-                  ;; phase.  This extends existing .calibre-real wrappers
-                  ;; rather than create ..calibre-real-real-s.  For more
-                  ;; information see: https://issues.guix.gnu.org/43249.
-                  (find-files "." (lambda (file stat)
-                                    (not (wrapped-program? file)))))))
-             #t)))))
+              (unsetenv "XDG_DATA_HOME")
+              (invoke "python" "setup.py" "rapydscript")))
+          (add-after 'install 'install-man-pages
+            (lambda _
+              (copy-recursively "man-pages"
+                                (string-append #$output "/share/man"))))
+          ;; The font TTF files are used in some miscellaneous tests, so we
+          ;; unbundle them here to avoid patching the tests.
+          (add-after 'install 'unbundle-font-liberation
+            (lambda _
+              (let ((font-dest
+                     (string-append #$output "/share/calibre/fonts/liberation"))
+                    (font-src
+                     (string-append #$(this-package-input "font-liberation")
+                                    "/share/fonts/truetype")))
+                (delete-file-recursively font-dest)
+                (symlink font-src font-dest))))
+          ;; Make run-time dependencies available to the binaries.
+          (add-after 'wrap 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion (string-append #$output "/bin")
+                (for-each
+                 (lambda (binary)
+                   (wrap-program binary
+                     ;; Make QtWebEngineProcess available.
+                     `("QTWEBENGINEPROCESS_PATH" =
+                       ,(list
+                         (search-input-file
+                          inputs "/lib/qt5/libexec/QtWebEngineProcess")))))
+                 ;; Wrap all the binaries shipping with the package, except
+                 ;; for the wrappings created during the 'wrap standard
+                 ;; phase.  This extends existing .calibre-real wrappers
+                 ;; rather than create ..calibre-real-real-s.  For more
+                 ;; information see: https://issues.guix.gnu.org/43249.
+                 (find-files "." (lambda (file stat)
+                                   (not (wrapped-program? file)))))))))))
     (home-page "https://calibre-ebook.com/")
     (synopsis "E-book library management software")
     (description "Calibre is an e-book library manager.  It can view, convert
