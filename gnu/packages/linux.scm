@@ -15,7 +15,7 @@
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -6727,6 +6727,12 @@ under OpenGL graphics workloads.")
                           (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'build-deterministically
+           (lambda _
+             (substitute* "src/include/defaults.mk"
+               ;; Don't use -march=native.
+               (("-march=native")
+                ""))))
          (delete 'configure))))
     (native-inputs
      (list mandoc pkg-config))
