@@ -6719,21 +6719,23 @@ under OpenGL graphics workloads.")
                 "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))))
     (build-system gnu-build-system)
     (arguments
-     `(;; Tests require a UEFI system and is not detected in the chroot.
+     (list
+      ;; Tests require a UEFI system and is not detected in the chroot.
        #:tests? #f
-       #:make-flags (list (string-append "prefix=" %output)
-                          (string-append "libdir=" %output "/lib")
-                          (string-append "CC_FOR_BUILD=" ,(cc-for-target))
-                          (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
+       #:make-flags
+       #~(list (string-append "prefix=" #$output)
+               (string-append "libdir=" #$output "/lib")
+               (string-append "CC_FOR_BUILD=" #$(cc-for-target))
+               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'build-deterministically
-           (lambda _
-             (substitute* "src/include/defaults.mk"
-               ;; Don't use -march=native.
-               (("-march=native")
-                ""))))
-         (delete 'configure))))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'build-deterministically
+             (lambda _
+               (substitute* "src/include/defaults.mk"
+                 ;; Don't use -march=native.
+                 (("-march=native")
+                  ""))))
+           (delete 'configure))))
     (native-inputs
      (list mandoc pkg-config))
     (inputs
