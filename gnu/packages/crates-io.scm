@@ -9755,6 +9755,55 @@ capabilities.")
 the library crate of Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-edit-0.8
+  (package
+    (name "rust-cargo-edit")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cargo-edit" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0yk5f4qjzflfqzgfws9zifij2fqchc9q551m7ljznmjrhlif2yh4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-error-chain" ,rust-error-chain-0.12)
+        ("rust-git2" ,rust-git2-0.13)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-toml-edit" ,rust-toml-edit-0.3)
+        ("rust-url" ,rust-url-2)
+        ("rust-crates-index" ,rust-crates-index-0.17)
+        ("rust-cargo-metadata" ,rust-cargo-metadata-0.14)
+        ("rust-dirs-next" ,rust-dirs-next-2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-env-proxy" ,rust-env-proxy-0.4)
+        ("rust-pathdiff" ,rust-pathdiff-0.2)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-subprocess" ,rust-subprocess-0.2)
+        ("rust-toml-edit" ,rust-toml-edit-0.3)
+        ("rust-ureq" ,rust-ureq-1))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-assert-fs" ,rust-assert-fs-1)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (home-page "https://github.com/killercup/cargo-edit")
+    (synopsis "Add and remove dependencies from the command line")
+    (description
+     "This package extends Cargo to allow you to add and remove dependencies
+by modifying your @file{Cargo.toml} file from the command line.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-cargo-metadata-0.14
   (package
     (name "rust-cargo-metadata")
