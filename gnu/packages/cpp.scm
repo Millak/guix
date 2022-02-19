@@ -1126,6 +1126,39 @@ of C++14 components that complements @code{std} and Boost.")
     (supported-systems '("aarch64-linux" "x86_64-linux"))
     (license license:asl2.0)))
 
+(define-public poco
+  (package
+    (name "poco")
+    (version "1.11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pocoproject/poco")
+                    (commit (string-append "poco-" version "-release"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qkf8vb4qwds6idk9fkw6wjvcdk5k8h77x3gv47l0i4jfl5hwn8b"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DENABLE_TESTS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-problematic-tests
+            (lambda _
+              (substitute* (list "Foundation/CMakeLists.txt" ; XXX: fails.
+                                 ;; Require network access
+                                 "Net/CMakeLists.txt"
+                                 "MongoDB/CMakeLists.txt"
+                                 "Redis/CMakeLists.txt")
+                (("ENABLE_TESTS") "FALSE")))))))
+    (home-page "https://pocoproject.org/")
+    (synopsis "Portable C++ components")
+    (description "A collection of libraries intended to be useful for building
+network-based applications.")
+    (license license:boost1.0)))
+
 (define-public aws-crt-cpp
   (let* ((commit "b6d311d76b504bf8ace5134d3fca0e672c36c9c3")
          (revision "1"))
