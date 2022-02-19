@@ -2373,14 +2373,14 @@ recover lost partitions and/or make non-booting disks bootable again.")
 (define-public tree
   (package
     (name "tree")
-    (version "2.0.1")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://mama.indstate.edu/users/ice/tree/src/tree-"
                     version ".tgz"))
               (sha256
-               (base32 "0f92vx6gpz7v29wi9clklzah57v7lgx5kv0m1w4b9xjc35d9qcz3"))))
+               (base32 "1bzfkr3kmn2v5x7ljir691fr9hhjvjxqsfz0fc5fgi6ki0fklsbx"))))
     (build-system gnu-build-system)
     (arguments
      (list
