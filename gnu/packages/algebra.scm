@@ -7,7 +7,7 @@
 ;;; Copyright © 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017, 2019, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2017, 2019, 2021, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -1348,14 +1348,14 @@ objects.")
 (define-public gappa
   (package
    (name "gappa")
-   (version "1.3.5")
+   (version "1.4.0")
    (source (origin
             (method url-fetch)
-            (uri (string-append "https://gforge.inria.fr/frs/download.php/latestfile/"
-                                "2699/gappa-" version ".tar.gz"))
+            (uri (string-append "https://gappa.gitlabpages.inria.fr/releases/"
+                                "gappa-" version ".tar.gz"))
             (sha256
              (base32
-              "0q1wdiwqj6fsbifaayb1zkp20bz8a1my81sqjsail577jmzwi07w"))))
+              "12x42z901pr05ldmparqdi8sq9s7fxbavhzk2dbq3l6hy247dwbb"))))
    (build-system gnu-build-system)
    (inputs
     (list boost gmp mpfr))
@@ -1382,7 +1382,7 @@ filters for CGAL and it is used to certify elementary functions in CRlibm.
 While Gappa is intended to be used directly, it can also act as a backend
 prover for the Why3 software verification platform or as an automatic tactic
 for the Coq proof assistant.")
-   (license (list license:gpl3+ license:cecill-c)))) ; either/or
+   (license (list license:gpl3+ license:cecill)))) ; either/or
 
 (define-public givaro
   (package
