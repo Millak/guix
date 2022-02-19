@@ -589,7 +589,6 @@ address of one of the participants.")
     (build-system qt-build-system)
     (arguments
      (list
-      #:tests? #f  ; no "check" target
       #:configure-flags
       #~(list "-Dbundled-speex=off"
               "-Dbundled-opus=off"
@@ -604,6 +603,7 @@ address of one of the participants.")
               "-Dpipewire=off" ; use pulse
               "-Doverlay-xcompile=off"
               "-Dupdate=off" ; don't phone home
+              "-Dtests=on"
               "-Dbundle-qt-translations=off")
       #:phases
       #~(modify-phases %standard-phases
