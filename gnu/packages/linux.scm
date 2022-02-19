@@ -6770,16 +6770,17 @@ interface to the variable facility of UEFI boot firmware.")
               "efidp_format_device_path((unsigned char *)text_path,"))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ;no tests
-       #:make-flags (list (string-append "prefix=" %output)
-                          (string-append "libdir=" %output "/lib")
-                          ;; EFIDIR denotes a subdirectory relative to the
-                          ;; EFI System Partition where the loader will be
-                          ;; installed (known as OS_VENDOR in the code).
-                          ;; GRUB overrides this, as such it's only used if
-                          ;; nothing else is specified on the command line.
-                          "EFIDIR=gnu")
-       #:phases (modify-phases %standard-phases (delete 'configure))))
+     (list
+      #:tests? #f                       ;no tests
+      #:make-flags #~(list (string-append "prefix=" #$output)
+                           (string-append "libdir=" #$output "/lib")
+                           ;; EFIDIR denotes a subdirectory relative to the
+                           ;; EFI System Partition where the loader will be
+                           ;; installed (known as OS_VENDOR in the code).
+                           ;; GRUB overrides this, as such it's only used if
+                           ;; nothing else is specified on the command line.
+                           "EFIDIR=gnu")
+      #:phases #~(modify-phases %standard-phases (delete 'configure))))
     (native-inputs
      (list pkg-config))
     (inputs
