@@ -8408,6 +8408,7 @@ platforms, it is not limited to resource-constrained systems.")
 utilities.  Using @code{kexec}, it is possible to boot directly into a new
 kernel from the context of an already-running kernel, bypassing the normal
 system boot process.")
+    (supported-systems (delete "riscv64-linux" %supported-systems))
     (license license:gpl2)))
 
 (define-public cachefilesd
