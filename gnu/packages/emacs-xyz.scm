@@ -24266,7 +24266,7 @@ constant expressions.")
 (define-public emacs-docker-tramp
   (package
     (name "emacs-docker-tramp")
-    (version "0.1")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -24276,7 +24276,7 @@ constant expressions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lxvzmfg52fhxrhbvp92zwp7cv4i1rlxnkyyzgngj3sjm7y60yvg"))))
+         "05966l3af9lg4nlsz6wrq282ipwxh19ggirfyabjrr1syw3v2crn"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emacs-pe/docker-tramp.el")
     (synopsis "TRAMP integration for docker containers")
