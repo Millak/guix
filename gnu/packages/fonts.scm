@@ -44,6 +44,7 @@
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2463,4 +2464,73 @@ converted from the Type 1 originals by Matthew Butterick.")
          "Bitstream contributed the Charter family "
          "to the X Consortium in 1992.  "
          "The license is also embedded in the font metadata."))))))
-/
+
+(define-public font-termsyn
+  (package
+    (name "font-termsyn")
+    (version "1.8.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/termsyn/termsyn-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "15vsmc3nmzl0pkgdpr2993da7p38fiw2rvcg01pwldzmpqrmkpn6"))))
+    (build-system font-build-system)
+    (outputs '("out" "psf" "otf"))
+    (native-inputs (list fontforge))
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'install 'build
+                    (lambda _
+                      (use-modules (ice-9 regex)
+                                   (ice-9 match))
+                      (define (pcf2 name ext)
+                        (invoke "fontforge" "-lang=ff" "-c"
+                                (string-append "Open('"
+                                               name
+                                               "');"
+                                               "Generate('"
+                                               (basename name "pcf")
+                                               ext
+                                               "','ttf')")))
+                      (for-each (lambda (pcf)
+                                  (pcf2 pcf "otf"))
+                                (find-files "." "\\.pcf$")) #t))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((pcf (assoc-ref outputs "out")) (psf (assoc-ref
+                                                                   outputs
+                                                                   "psf"))
+                             (otf (assoc-ref outputs "otf"))
+                             (pcf-font-dir (string-append pcf
+                                            "/share/fonts/termsyn"))
+                             (otf-font-dir (string-append otf
+                                            "/share/fonts/termsyn-otf"))
+                             (psf-font-dir (string-append psf
+                                            "/share/kbd/consolefonts")))
+                        (mkdir-p pcf-font-dir)
+                        (mkdir-p otf-font-dir)
+                        (mkdir-p psf-font-dir)
+                        (for-each (lambda (pcf)
+                                    (install-file pcf pcf-font-dir))
+                                  (find-files "." "\\.pcf$"))
+                        (for-each (lambda (psfu)
+                                    (install-file psfu psf-font-dir))
+                                  (find-files "." "\\.psfu$"))
+                        (for-each (lambda (otf)
+                                    (install-file otf otf-font-dir))
+                                  (find-files "." "\\.otf$"))) #t)))))
+    (home-page "https://sourceforge.net/projects/termsyn/")
+    (synopsis "Monospaced font based on terminus and tamsyn")
+    (description
+     "Termsyn is a clean monospaced bitmap font based on Terminus and Tamsyn.
+
+This package contains the following outputs:
+@enumerate
+@item out: pcf font
+@item otf: otf font
+@item psf: psfu font
+@end enumerate
+")
+    (license license:gpl2)))
