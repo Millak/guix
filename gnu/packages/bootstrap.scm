@@ -659,12 +659,23 @@ $out/bin/guile --version~%"
      (origin
        (method url-fetch)
        (uri (map (cute string-append <>
-                       "/i686-linux/20190815/"
-                       "linux-libre-headers-stripped-4.14.67-i686-linux.tar.xz")
+                       (match system
+                         ((or "armhf-linux" "aarch64-linux")
+                          (string-append
+                           "/armhf-linux/20201219/"
+                           "linux-libre-headers-stripped-5.4.20-armhf-linux.tar.xz"))
+                         ((or "i686-linux" "x86_64-linux")
+                          (string-append
+                           "/i686-linux/20190815/"
+                           "linux-libre-headers-stripped-4.14.67-i686-linux.tar.xz"))))
                  %bootstrap-base-urls))
        (sha256
         (base32
-         "0sm2z9x4wk45bh6qfs94p0w1d6hsy6dqx9sw38qsqbvxwa1qzk8s"))))
+         (match system
+           ((or "armhf-linux" "aarch64-linux")
+            "0d010sp3n2q6cc3ppcgrxrdlgkgr3vlv3x76wz14gc3xfhnnm2x5")
+           ((or "i686-linux" "x86_64-linux")
+            "0sm2z9x4wk45bh6qfs94p0w1d6hsy6dqx9sw38qsqbvxwa1qzk8s"))))))
    #f                                   ; no program to test
    "Bootstrap linux-libre-headers"))
 
