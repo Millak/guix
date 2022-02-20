@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
-;;; Copyright © 2016, 2017, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -3608,6 +3608,17 @@ formats, looking up tracks through metadata and audio fingerprints.")
                (base32
                 "1qdk6i8gyhbi1c4j5jmbfpac3q8sff2ysri1pnp7nb9wzcp615v3"))))
     (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'check 'remove-hypothesis-deadlines
+             ;; These tests can timeout on slower architectures.
+             (lambda _
+               (substitute* "tests/test___init__.py"
+                 (("import given") "import given, settings")
+                 (("( +)@given" all spaces)
+                  (string-append spaces "@settings(deadline=None)\n" all))))))))
     (native-inputs
      (list python-pytest python-hypothesis python-flake8))
     (home-page "https://mutagen.readthedocs.io/")
