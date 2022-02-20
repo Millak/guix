@@ -34,6 +34,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages statistics)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -109,6 +110,14 @@
        (base32
         "0lqrash677b09zxdlxp89z6k02y4i23mbqg83956dwl69wc53dan"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'prepare-tests
+                 ;; Prevent irrelevant errors that cause test output mismatches:
+                 ;; ‘Fontconfig error: No writable cache directories’
+                 (lambda _
+                   (setenv "XDG_CACHE_HOME" (getcwd)))))))
     (inputs
      (list cairo
            gettext-minimal
