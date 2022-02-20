@@ -1278,7 +1278,29 @@ pictures, sounds, or video.")
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kf0gcsrl5n25rjlvkh87aywmn28kbwvakm5c7j1qpr4j01y34za"))))))
+                "1kf0gcsrl5n25rjlvkh87aywmn28kbwvakm5c7j1qpr4j01y34za"))))
+    (arguments
+     (if (target-riscv64?)
+       `(,@(substitute-keyword-arguments (package-arguments postgresql-14)
+             ((#:phases phases)
+              #~(modify-phases #$phases
+                  (add-after 'unpack 'apply-riscv-spinlock-patch
+                    ;; The patch is applied in this custom phase and not via the
+                    ;; "origin" object above to avoid rebuilding a large number
+                    ;; of packages on other platforms.
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let ((patch-file
+                              #$(local-file
+                                  (search-patch
+                                    "postgresql-riscv-spinlocks.patch"))))
+                        (invoke "patch" "-p1" "-i" patch-file))))))))
+       `(,@(package-arguments postgresql-14))))
+    (native-inputs
+     (if (target-riscv64?)
+       (list
+         (local-file (search-patch "postgresql-riscv-spinlocks.patch"))
+         patch)
+       '()))))
 
 (define-public postgresql-11
   (package
