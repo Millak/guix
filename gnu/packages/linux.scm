@@ -6752,8 +6752,7 @@ developers.")
                           (string-append "PREFIX=" %output))
        #:tests? #f))                    ; no tests
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
      (list libdrm libpciaccess libxcb ncurses))
     (home-page "https://github.com/clbr/radeontop/")
