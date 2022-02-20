@@ -268,27 +268,34 @@ for adding, removing and dropping callbacks.")
                 (find-files "." "_.*\\.pyx$")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; This tests requires the 'proxy.py' module, not yet
-               ;; packaged.
-               (delete-file "tests/test_proxy_functional.py")
-               (invoke "pytest" "-vv"
-                       ;; Disable loading the aiohttp coverage plugin
-                       ;; to avoid a circular dependency (code coverage
-                       ;; is not very interesting to us anyway).
-                       "-o" "addopts=''" "--ignore=aiohttp"
-                       "-n" (number->string (parallel-job-count))
-                       "-k" (string-append
-                             ;; This test probably requires to be run with the
-                             ;; library loaded from the the build directory.
-                             "not test_c_parser_loaded and "
-                             ;; Disable the following tests as they require
-                             ;; networking.
-                             "not TestDeflateBuffer and "
-                             "not test_client_session_timeout_zero and "
-                             "not test_empty_body and "
-                             "not test_mark_formdata_as_processed[pyloop] and "
-                             "not test_receive_runtime_err[pyloop]"))))))))
+             (let ((skipped-tests
+                     (string-append
+                       ;; This test probably requires to be run with the
+                       ;; library loaded from the the build directory.
+                       "not test_c_parser_loaded and "
+                       ;; Disable the following tests as they require
+                       ;; networking.
+                       "not TestDeflateBuffer and "
+                       "not test_client_session_timeout_zero and "
+                       "not test_empty_body and "
+                       "not test_mark_formdata_as_processed[pyloop] and "
+                       "not test_receive_runtime_err[pyloop]")))
+               (when tests?
+                 ;; This tests requires the 'proxy.py' module, not yet
+                 ;; packaged.
+                 (delete-file "tests/test_proxy_functional.py")
+                 ;; Sometimes tests fail when run in parallel.
+                 (or
+                   (invoke "pytest" "-vv"
+                           ;; Disable loading the aiohttp coverage plugin
+                           ;; to avoid a circular dependency (code coverage
+                           ;; is not very interesting to us anyway).
+                           "-o" "addopts=''" "--ignore=aiohttp"
+                           "-n" (number->string (parallel-job-count))
+                           "-k" skipped-tests)
+                   (invoke "pytest" "-vv"
+                           "-o" "addopts=''" "--ignore=aiohttp"
+                           "-k" skipped-tests)))))))))
     (propagated-inputs
      (list python-aiodns
            python-aiosignal
