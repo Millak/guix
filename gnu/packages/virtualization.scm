@@ -345,7 +345,10 @@ exec smbd $@")))
            util-linux
            vde2
            virglrenderer
-           zlib))
+
+           ;; Formats to support for .qcow2 (and possibly other) compression.
+           zlib
+           `(,zstd "lib")))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ;gtester, etc.
