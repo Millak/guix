@@ -1210,6 +1210,29 @@ sent to a Wayland window, such as key presses.  It is analogous to the X11 tool
 XEv.")
     (license license:expat)))
 
+(define-public wtype
+  (package
+    (name "wtype")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atx/wtype.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bpix92vzip9vlhzihj3k8h9flrlna231x3y8ah7p4965l177yjd"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config wayland libxkbcommon))
+    (synopsis "Xdotool type for Wayland")
+    (description "Wtype lets you simulate keyboard input and mouse activity,
+move and resize windows, etc.")
+    (home-page "https://github.com/atx/wtype")
+    ;; MIT License
+    (license license:expat)))
+
 (define-public exempi
   (package
     (name "exempi")
