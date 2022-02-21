@@ -2764,14 +2764,14 @@ as a library for other Emacs packages.")
 (define-public emacs-auctex
   (package
     (name "emacs-auctex")
-    (version "13.0.16")
+    (version "13.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "auctex-" version ".tar"))
        (sha256
-        (base32 "1r9piq4js45knw8sf73kk8jjinmx4m2mdinc98xrklnwcffw7hjf"))))
+        (base32 "0x3f4g58czwbyxhr5zy60mlwr05aadd19k5gi6aq26h1p82hng63"))))
     (build-system emacs-build-system)
     ;; We use 'emacs' because AUCTeX requires dbus at compile time
     ;; ('emacs-minimal' does not provide dbus).
