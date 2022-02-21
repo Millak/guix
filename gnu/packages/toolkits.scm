@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -97,10 +98,18 @@
                             doc "/share/imgui/examples"))))))))
     (inputs (list glfw mesa sdl2))
     (home-page "https://github.com/ocornut/imgui")
-    (synopsis "Graphical user interface library for C++")
+    (synopsis "Immediate-mode C++ GUI library with minimal dependencies")
     (description "@code{dear imgui} (also know as ImGui) is a graphical user
-interface library for C++.  It outputs vertex buffers that can be rendered in
-a 3D application.  It is fast, renderer agnostic and self-contained.")
+interface library for C++.  It creates optimized vertex buffers that you can
+render anytime in your 3D-pipeline-enabled application.  It's fast, portable,
+renderer-agnostic, and self-contained, without external dependencies.
+
+ImGui is aimed at content creation, visualization, and debugging tools as
+opposed to average end-user interfaces.  Hence it favors simplicity and
+productivity but lacks certain features often found in higher-level libraries.
+It is particularly suited to integration in game engine tooling, real-time 3D
+applications, full-screen applications, and embedded platforms without
+standard operating system features.")
     (license license:expat)))
 
 (define-public imgui-1.86
