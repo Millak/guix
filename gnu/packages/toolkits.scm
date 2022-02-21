@@ -28,7 +28,7 @@
 (define-public imgui
   (package
     (name "imgui")
-    (version "1.86")
+    (version "1.87")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -37,7 +37,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02a7b05zrka20jhzag2jb4jl624i1m456bsv69jb9zgys2p9dv1n"))
+                "10qil22s5qak3as41787iz273sibpq1bq66bakgn7yvhj5fym6hz"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -102,3 +102,19 @@
 interface library for C++.  It outputs vertex buffers that can be rendered in
 a 3D application.  It is fast, renderer agnostic and self-contained.")
     (license license:expat)))
+
+(define-public imgui-1.86
+  (package
+    (inherit imgui)
+    (name "imgui")
+    (version "1.86")
+    (source (origin
+              (inherit (package-source imgui))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ocornut/imgui")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02a7b05zrka20jhzag2jb4jl624i1m456bsv69jb9zgys2p9dv1n"))))))
