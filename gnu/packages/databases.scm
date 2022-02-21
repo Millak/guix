@@ -36,7 +36,7 @@
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -4596,18 +4596,21 @@ a Gtk.Grid Widget.")
        (snippet
         '(begin
            (delete-file-recursively "libs/qcustomplot-source/")
+           (delete-file-recursively "libs/qhexedit/")
            (delete-file-recursively "libs/qscintilla")))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
-           ;; TODO: Unbundle QHexEdit.
+           ;; TODO: Unbundle json (json-modern-cxx).
            #~(list (string-append "-DQSCINTILLA_INCLUDE_DIR="
                                   #$(this-package-input "qscintilla")
                                   "/include/Qsci")
                    "-DFORCE_INTERNAL_QCUSTOMPLOT=OFF"
+                   "-DFORCE_INTERNAL_QHEXEDIT=OFF"
                    "-DENABLE_TESTING=ON")))
     (inputs
      (list qcustomplot
+           qhexedit
            qscintilla
            qtbase-5
            sqlite))
