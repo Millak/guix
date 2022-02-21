@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
+;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3049,6 +3050,50 @@ being fully customizable and easy to extend.")
     ;; be used.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public qhexedit
+  (package
+    (name "qhexedit")
+    (version "0.8.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Simsys/qhexedit2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j333kiwhbidphdx86yilkaivgl632spfh6fqx93bc80gk4is3xa"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-path
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "src/qhexedit.pro"
+               (("^unix:DESTDIR = /usr/lib")
+                (string-append "unix:DESTDIR = "
+                               (assoc-ref outputs "out") "/lib")))))
+         (replace 'configure
+           (lambda _
+             (chdir "src")
+             (invoke "qmake" "qhexedit.pro")))
+         (add-after 'install 'install-headers
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (include-dir (string-append out "/include")))
+               (mkdir-p include-dir)
+               (for-each (lambda (file)
+                           (install-file file include-dir))
+                         (find-files "." "\\.h$"))))))))
+    (inputs (list qtbase-5))
+    (native-inputs (list qttools))
+    (home-page "https://simsys.github.io")
+    (synopsis "Binary editor widget for Qt")
+    (description
+     "@code{QHexEdit} is a hex editor widget for the Qt framework.  It is a
+simple editor for binary data, just like @code{QPlainTextEdit} is for text
+data.")
+    (license license:lgpl2.1)))
 
 (define-public soqt
   (let ((commit-ref "fb8f655632bb9c9c60e0ff9fa69a5ba22d3ff99d")
