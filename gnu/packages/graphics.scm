@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
@@ -102,6 +102,7 @@
   #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tbb)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
@@ -935,7 +936,7 @@ distills complex, animated scenes into a set of baked geometric results.")
 (define-public ogre
   (package
     (name "ogre")
-    (version "1.12.9")
+    (version "13.3.1")
     (source
      (origin
        (method git-fetch)
@@ -944,24 +945,22 @@ distills complex, animated scenes into a set of baked geometric results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b0pwh31nykrfhka6jqwclfx1pxzhj11vkl91951d63kwr5bbzms"))))
+        (base32 "157vpfzivg2wf349glyd0cpbyaw1j3fm4nggban70pghql3x48kb"))))
     (build-system cmake-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'unpack-dear-imgui
+         (add-before 'configure 'unpack-imgui
            (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "dear-imgui-source")
-                               "../dear-imgui-source")
-             #t))
+             (copy-recursively (assoc-ref inputs "imgui-source")
+                               "../imgui-source")))
          (add-before 'configure 'pre-configure
            ;; CMakeLists.txt forces a CMAKE_INSTALL_RPATH value.  As
            ;; a consequence, we cannot suggest ours in configure flags.  Fix
            ;; it.
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (substitute* "CMakeLists.txt"
-               (("set\\(CMAKE_INSTALL_RPATH .*") ""))
-             #t)))
+               (("set\\(CMAKE_INSTALL_RPATH .*") "")))))
        #:configure-flags
        (let* ((out (assoc-ref %outputs "out"))
               (runpath
@@ -969,29 +968,26 @@ distills complex, animated scenes into a set of baked geometric results.")
                                   (string-append out "/lib/OGRE"))
                             ";")))
          (list (string-append "-DCMAKE_INSTALL_RPATH=" runpath)
-               "-DIMGUI_DIR=../dear-imgui-source"
+               "-DIMGUI_DIR=../imgui-source"
                "-DOGRE_BUILD_DEPENDENCIES=OFF"
                "-DOGRE_BUILD_TESTS=TRUE"
                "-DOGRE_INSTALL_DOCS=TRUE"
                "-DOGRE_INSTALL_SAMPLES=TRUE"
                "-DOGRE_INSTALL_SAMPLES_SOURCE=TRUE"))))
-    (native-inputs
-     `(("boost" ,boost)
-       ("dear-imgui-source" ,(package-source dear-imgui))
-       ("doxygen" ,doxygen)
-       ("googletest" ,googletest-1.8)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list font-dejavu
-           freeimage
-           freetype
-           glu
-           libxaw
-           libxrandr
-           pugixml
-           sdl2
-           tinyxml
-           zziplib))
+    (native-inputs `(("doxygen" ,doxygen)
+                     ("imgui-source" ,(package-source imgui-1.86))
+                     ("googletest" ,googletest)
+                     ("pkg-config" ,pkg-config)
+                     ("python" ,python)))
+    (inputs (list freeimage
+                  freetype
+                  libxaw
+                  libxrandr
+                  libxt
+                  mesa
+                  pugixml
+                  sdl2
+                  zlib))
     (synopsis "Scene-oriented, flexible 3D engine written in C++")
     (description
      "OGRE (Object-Oriented Graphics Rendering Engine) is a scene-oriented,
