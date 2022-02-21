@@ -47,11 +47,14 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages maths)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
@@ -1438,6 +1441,151 @@ monitor")
     (description "This package provides an interface for monitoring system
 sensors, process information and other system resources.")
     (home-page "https://invent.kde.org/plasma/plasma-systemmonitor")
+    (license (list license:gpl2 license:gpl3))))
+
+(define-public plasma-workspace
+  (package
+    (name "plasma-workspace")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version
+                                  "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0pxwg3i07sipfchn4qkmlr6kcgqbhj2s10xq69wi32x1fc13jx5x"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg-5
+                         qttools-5))
+    (inputs (list appmenu-gtk-module
+                  appstream-qt
+                  baloo
+                  breeze
+                  breeze-icons
+                  dbus
+                  fontconfig
+                  iso-codes
+                  kactivities
+                  kactivities-stats
+                  karchive
+                  kcmutils
+                  kcoreaddons
+                  kcrash
+                  kdbusaddons
+                  kdeclarative
+                  kded
+                  kdesu
+                  kglobalaccel
+                  kguiaddons
+                  kholidays
+                  ki18n
+                  kiconthemes
+                  kidletime
+                  kinit
+                  kio
+                  kio-extras
+                  kio-fuse
+                  kitemmodels
+                  kirigami
+                  knewstuff
+                  knotifications
+                  knotifyconfig
+                  kquickcharts
+                  kpackage
+                  kpeople
+                  krunner
+                  kscreenlocker
+                  ktexteditor
+                  ktextwidgets
+                  kunitconversion
+                  kuserfeedback
+                  kwallet
+                  kwayland
+                  kwin
+                  layer-shell-qt
+                  libkscreen
+                  libksysguard
+                  libqalculate
+                  gmp
+                  mpfr
+                  libsm
+                  libxft
+                  libxkbcommon
+                  libxrender
+                  libxtst
+                  networkmanager-qt
+                  phonon
+                  pipewire-0.3
+                  plasma-framework
+                  plasma-workspace-wallpapers
+                  plasma-wayland-protocols
+                  prison
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtwayland-5
+                  qtgraphicaleffects
+                  qtx11extras
+                  wayland
+                  wayland-protocols-next
+                  xcb-util
+                  xcb-util-image
+                  xcb-util-keysyms
+                  xrdb
+                  xmessage
+                  xsetroot
+                  zlib))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-wallpaper
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "sddm-theme/theme.conf.cmake"
+                     (("background=..KDE_INSTALL_FULL_WALLPAPERDIR.")
+                      (string-append "background="
+                                     #$(this-package-input "breeze")
+                                     "/share/wallpapers")))))
+               (add-after 'unpack 'patch-workspace-bins
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((xmessage (search-input-file inputs "/bin/xmessage"))
+                         (xsetroot (search-input-file inputs "/bin/xsetroot"))
+                         (xrdb (search-input-file inputs "/bin/xrdb"))
+                         (kinit #$(this-package-input "kinit")))
+                     (substitute* "startkde/startplasma.cpp"
+                       (("xmessage") xmessage)
+                       (("xsetroot") xsetroot))
+                     (substitute* (list "kcms/fonts/fontinit.cpp"
+                                        "kcms/fonts/fonts.cpp"
+                                        "kcms/krdb/krdb.cpp")
+                       (("xrdb") xrdb))
+                     (substitute* "startkde/plasma-session/startup.cpp"
+                       (("CMAKE_INSTALL_FULL_LIBEXECDIR_KF5..")
+                        (string-append "\"" kinit
+                                       "/lib/libexec/kf5")))
+                     (substitute* (list
+                                   "startkde/startplasma-wayland.cpp"
+                                   "startkde/startplasma-x11.cpp")
+                       (("kdeinit5_shutdown")
+                        (string-append kinit "/bin/kdeinit5_shutdown"))))))
+               (delete 'check)
+               (add-after 'install 'check-after-install
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (setenv "XDG_RUNTIME_DIR" (getcwd))
+                     (setenv "XDG_CACHE_HOME" (getcwd))
+                     (setenv "QT_QPA_PLATFORM" "offscreen")
+                     (setenv "QT_PLUGIN_PATH"
+                             (string-append #$output
+                                            "/lib/qt5/plugins:"
+                                            (getenv "QT_PLUGIN_PATH")))
+                     (invoke "ctest" "-E"
+                             "(appstreamtest|lookandfeel-kcmTest|tst_triangleFilter|systemtraymodeltest|testdesktop| screenpooltest)")))))))
+    (home-page "https://invent.kde.org/plasma/plasma-workspace")
+    (synopsis "Plasma workspace components")
+    (description
+     "Workspaces provide support for KDE Plasma Widgets, integrated search,
+hardware management, and a high degree of customizability.")
     (license (list license:gpl2 license:gpl3))))
 
 (define-public plasma-workspace-wallpapers
