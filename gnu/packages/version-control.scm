@@ -1562,7 +1562,7 @@ control to Git repositories.")
 (define-public gitile
   (package
     (name "gitile")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method git-fetch)
@@ -1571,7 +1571,7 @@ control to Git repositories.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fnmgrrsdc24mvicj2gkv3vasag7h5x27xc12w55i0id9vw7k9sw"))))
+        (base32 "1wb1rajcrzdqjncv40s7hjsnvlh1gq4z9pn9gf210g1iy35vimmz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules ((guix build guile-build-system)
