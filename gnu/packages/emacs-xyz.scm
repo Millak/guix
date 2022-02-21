@@ -27536,6 +27536,34 @@ Google guidelines.")
       (home-page "https://github.com/flycheck/flycheck-google-cpplint")
       (license license:gpl3+))))
 
+(define-public emacs-highlight-doxygen
+  ;; Upstream does not tag releases.  Commit below matches version bump.
+  (let ((commit "eec4874e2e89d4eb39091aad89a67dff8f8ec84c"))
+    (package
+      (name "emacs-highlight-doxygen")
+      (version "0.0.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lindydancer/highlight-doxygen")
+               (commit commit)))
+         (sha256
+          (base32
+           "0r3rv1px43r265716l3g20c1ss4381h1mc1kjxin22vdmrj6cmxy"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/Lindydancer/highlight-doxygen")
+      (synopsis "Highlight Doxygen comments in Emacs, including code blocks")
+      (description
+       "This package highlights Doxygen comments.
+
+In addition to highlighting Doxygen commands and their arguments, entire
+Doxygen comment are highlighted, making them stand out compared to other
+comments.  The code blocks are highlighted according to the
+language they are written in.")
+      (license license:gpl3+))))
+
 (define-public emacs-helm-fish-completion
   (package
     (name "emacs-helm-fish-completion")
