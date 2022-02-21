@@ -12762,39 +12762,7 @@ time.")
        ;;("python-pyppeteer" ,python-pyppeteer)
        ("python-pytest" ,python-pytest)
        ("python-pytest-cov" ,python-pytest-cov)
-       ("python-pytest-dependency" ,python-pytest-dependency)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-adjustbox
-                                        texlive-amsfonts
-                                        texlive-booktabs
-                                        texlive-caption
-                                        texlive-enumitem
-                                        texlive-eurosym
-                                        texlive-fonts-rsfs
-                                        texlive-generic-iftex
-                                        texlive-jknappen
-                                        texlive-latex-amsmath
-                                        texlive-latex-fancyvrb
-                                        texlive-latex-float
-                                        texlive-fontspec
-                                        texlive-latex-geometry
-                                        texlive-grffile
-                                        texlive-hyperref
-                                        texlive-latex-jknapltx
-                                        texlive-latex-ms
-                                        texlive-oberdiek
-                                        texlive-latex-parskip
-                                        texlive-latex-trimspaces
-                                        texlive-latex-upquote
-                                        texlive-latex-ucs
-                                        texlive-lm
-                                        texlive-mathpazo
-                                        texlive-stringenc
-                                        texlive-tcolorbox
-                                        texlive-titling
-                                        texlive-tools
-                                        texlive-ulem
-                                        texlive-xcolor
-                                        texlive-zapfding)))))
+       ("python-pytest-dependency" ,python-pytest-dependency)))
     (propagated-inputs
      (list python-bleach
            python-defusedxml
@@ -12810,7 +12778,40 @@ time.")
            python-testpath
            python-traitlets
            ;; Required, even if [serve] is not used.
-           python-tornado-6))
+           python-tornado-6
+           ;; Required at runtime for `jupyter nbconvert --to=pdf`.
+           (texlive-updmap.cfg (list texlive-adjustbox
+                                     texlive-amsfonts
+                                     texlive-booktabs
+                                     texlive-caption
+                                     texlive-enumitem
+                                     texlive-eurosym
+                                     texlive-fonts-rsfs
+                                     texlive-generic-iftex
+                                     texlive-jknappen
+                                     texlive-latex-amsmath
+                                     texlive-latex-fancyvrb
+                                     texlive-latex-float
+                                     texlive-fontspec
+                                     texlive-latex-geometry
+                                     texlive-grffile
+                                     texlive-hyperref
+                                     texlive-latex-jknapltx
+                                     texlive-latex-ms
+                                     texlive-oberdiek
+                                     texlive-latex-parskip
+                                     texlive-latex-trimspaces
+                                     texlive-latex-upquote
+                                     texlive-latex-ucs
+                                     texlive-lm
+                                     texlive-mathpazo
+                                     texlive-stringenc
+                                     texlive-tcolorbox
+                                     texlive-titling
+                                     texlive-tools
+                                     texlive-ulem
+                                     texlive-xcolor
+                                     texlive-zapfding))))
     (home-page "https://jupyter.org")
     (synopsis "Converting Jupyter Notebooks")
     (description "The @code{nbconvert} tool, @{jupyter nbconvert}, converts
