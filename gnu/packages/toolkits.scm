@@ -41,8 +41,8 @@
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  ;; Contains fonts and other unneeded files.
-                  (delete-file-recursively "misc")))))
+                  ;; Remove bundled fonts.
+                  (delete-file-recursively "misc/fonts")))))
     (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (arguments
