@@ -85,22 +85,9 @@
              '(begin
                 ;; Wait for nix-daemon to be up and running.
                 (start-service 'nix-daemon)
-                (with-output-to-file "guix-test.nix"
-                  (lambda ()
-                    (display "\
-with import <nix/config.nix>;
-
-derivation {
-  system = builtins.currentSystem;
-  name = \"guix-test\";
-  builder = shell;
-  args = [\"-c\" \"mkdir $out\\necho FOO > $out/foo\"];
-  PATH = coreutils;
-}
-")))
-                (zero? (system* (string-append #$nix "/bin/nix-build")
-                                "--substituters" "" "--debug" "--no-out-link"
-                                "guix-test.nix")))
+                (zero? (system* (string-append #$nix "/bin/nix")
+                                "--experimental-features" "nix-command"
+                                "store" "ping" "--store" "daemon")))
              marionette))
 
 	  (test-end))))
