@@ -7943,6 +7943,29 @@ including errata.  It also provides a profile for SASLprep as defined in
 RFC-4013.")
     (license license:asl2.0)))
 
+(define-public go-github-com-xdg-go-pbkdf2
+  (package
+    (name "go-github-com-xdg-go-pbkdf2")
+    (version "1.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/pbkdf2")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1nipijy5xkdnfyhkp5ryrjzm14si1i2v2xyfmblf84binwkbr8jh"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/pbkdf2"))
+    (home-page "https://github.com/xdg-go/pbkdf2")
+    (synopsis "Go implementation of PBKDF2")
+    (description
+     "Package pbkdf2 implements password-based key derivation using the PBKDF2
+algorithm described in @url{https://rfc-editor.org/rfc/rfc2898.html,RFC 2898}
+and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-godbus-dbus
   (package
     (name "go-github-com-godbus-dbus")
