@@ -32343,6 +32343,29 @@ of a small set of carefully designed functions, most of which
 ")
     (license license:gpl3)))
 
+(define-public r-maxlik
+  (package
+    (name "r-maxlik")
+    (version "1.5-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "maxLik" version))
+       (sha256
+        (base32 "0pdigfpyiqacj2ydhpn5w1h89dz1ydk0syzs25lsgdi40sz0bvkw"))))
+    (properties `((upstream-name . "maxLik")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-generics r-misctools r-sandwich))
+    (home-page "https://cran.r-project.org/package=maxLik")
+    (synopsis "Maximum Likelihood Estimation and related tools")
+    (description
+     "This package provides functions for @dfn{Maximum Likelihood} (ML) estimation,
+non-linear optimization, and related tools.  It includes a unified way to call
+different optimizers, and classes and methods to handle the results from the
+Maximum Likelihood viewpoint.  It also includes a number of convenience tools
+for testing and developing your own models.")
+    (license license:gpl2+)))
+
 (define-public r-misctools
   (package
     (name "r-misctools")
