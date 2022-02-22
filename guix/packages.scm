@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2017, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -149,6 +149,8 @@
 
             transitive-input-references
 
+            %32bit-supported-systems
+            %64bit-supported-systems
             %supported-systems
             %hurd-systems
             %cuirass-supported-systems
@@ -400,11 +402,19 @@ from forcing GEXP-PROMISE."
                       #:guile-for-build guile)))
 
 
+(define %32bit-supported-systems
+  ;; This is the list of 32-bit system types that are supported.
+  '("i686-linux" "armhf-linux" "i586-gnu" "powerpc-linux"))
+
+(define %64bit-supported-systems
+  ;; This is the list of 64-bit system types that are supported.
+  '("x86_64-linux" "mips64el-linux" "aarch64-linux" "powerpc64le-linux"
+    "riscv64-linux"))
+
 (define %supported-systems
   ;; This is the list of system types that are supported.  By default, we
   ;; expect all packages to build successfully here.
-  '("x86_64-linux" "i686-linux" "armhf-linux" "aarch64-linux" "mips64el-linux" "i586-gnu"
-    "powerpc64le-linux" "powerpc-linux" "riscv64-linux"))
+  (append %32bit-supported-systems %64bit-supported-systems))
 
 (define %hurd-systems
   ;; The GNU/Hurd systems for which support is being developed.
