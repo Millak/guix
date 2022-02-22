@@ -4053,7 +4053,7 @@ network.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.1")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -4064,7 +4064,7 @@ network.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ajhn0z58ap9jldip7mqj78drmgg4645zfsxsy004cfkm60fasnx"))
+        (base32 "0jp6998a45xi8pbi8p84chvpm1mhhcvcxm1avi1c1gjjp4jqm3vl"))
        (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
