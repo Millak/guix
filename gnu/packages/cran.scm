@@ -32082,6 +32082,26 @@ least four days in the calendar year.  This package provides functionality to
 convert dates to MMWR day, week, and year and the reverse.")
     (license license:gpl2+)))
 
+(define-public r-cccd
+  (package
+    (name "r-cccd")
+    (version "1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cccd" version))
+       (sha256
+        (base32 "0m364zsrgr7mh1yhl2lqxpaf71gzq3y3pp9qgnj4spiy4iadyy7i"))))
+    (properties `((upstream-name . "cccd")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-deldir r-fnn r-igraph r-proxy))
+    (home-page "https://cran.r-project.org/package=cccd")
+    (synopsis "Class cover catch digraphs")
+    (description
+     "This package provides tools to create Class Cover Catch Digraphs,
+neighborhood graphs, and relatives.")
+    (license license:gpl2+)))
+
 (define-public r-crul
   (package
     (name "r-crul")
