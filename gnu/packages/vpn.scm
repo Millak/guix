@@ -319,13 +319,14 @@ endpoints.")
       #~(modify-phases %standard-phases
           (add-before 'bootstrap 'move-configure
             ;; Don't execute configure script in bootstrap.
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (substitute* "autogen.sh"
                 (("./configure") ""))))
           (add-before 'configure 'fix-configure
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (substitute* "configure"
-                (("/bin/sh") (search-input-file inputs "/bin/sh"))))))
+                (("/bin/sh")
+                 (search-input-file (or native-inputs inputs) "/bin/sh"))))))
       #:tests? #f))                     ;there is no check target
     (native-inputs
      (list autoconf automake bash-minimal pkg-config))
