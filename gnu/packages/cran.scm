@@ -251,6 +251,25 @@ wrangling backend for the packages in the @code{easystats} ecosystem.")
 visualization of their differences.")
     (license license:gpl2+)))
 
+(define-public r-dirichletreg
+  (package
+    (name "r-dirichletreg")
+    (version "0.7-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "DirichletReg" version))
+       (sha256
+        (base32 "1ql5mwb7zb06y9j6inrlngq7c15as4j17wd8kc71fxs0a2jdj7xi"))))
+    (properties `((upstream-name . "DirichletReg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-formula r-maxlik))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=DirichletReg")
+    (synopsis "Dirichlet regression")
+    (description "This package implements Dirichlet regression models.")
+    (license license:gpl2+)))
+
 (define-public r-emdist
   (package
     (name "r-emdist")
