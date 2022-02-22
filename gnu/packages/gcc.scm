@@ -885,42 +885,6 @@ as the 'native-search-paths' field."
                 (find-files (string-append (assoc-ref outputs "out") "/bin")
                             ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))))
 
-(define* (custom-gcc-gccgo gcc name languages
-                           #:optional
-                           (search-paths (package-native-search-paths gcc))
-                           #:key (separate-lib-output? #t))
-  ;; TODO: remove CUSTOM-GCC-GCCGO when regex changes for CUSTOM-GCC are
-  ;; merged into master <https://issues.guix.gnu.org/49010>
-  "Return a custom version of GCC that supports LANGUAGES.  Use SEARCH-PATHS
-as the 'native-search-paths' field."
-  (package (inherit gcc)
-    (name name)
-    (outputs (if separate-lib-output?
-                 (package-outputs gcc)
-                 (delete "lib" (package-outputs gcc))))
-    (native-search-paths search-paths)
-    (properties (alist-delete 'hidden? (package-properties gcc)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments gcc)
-       ((#:modules modules %gnu-build-system-modules)
-        `(,@modules
-          (srfi srfi-1)
-          (srfi srfi-26)
-          (ice-9 regex)))
-       ((#:configure-flags flags)
-        `(cons (string-append "--enable-languages="
-                              ,(string-join languages ","))
-               (remove (cut string-match "--enable-languages.*" <>)
-                       ,flags)))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'remove-broken-or-conflicting-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (for-each
-                delete-file
-                (find-files (string-append (assoc-ref outputs "out") "/bin")
-                            ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))))
-
 (define %generic-search-paths
   ;; This is the language-neutral search path for GCC.  Entries in $CPATH are
   ;; not considered "system headers", which means GCC can raise warnings for
@@ -992,7 +956,7 @@ misnomer.")))
 
 (define (make-gccgo gcc)
   "Return a gccgo package based on GCC."
-  (let ((gccgo (custom-gcc-gccgo gcc "gccgo" '("go") %generic-search-paths)))
+  (let ((gccgo (custom-gcc gcc "gccgo" '("go") %generic-search-paths)))
     (package
       (inherit gccgo)
       (synopsis "Go frontend to GCC")
