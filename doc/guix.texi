@@ -30888,6 +30888,10 @@ Its value must be a @code{virtlog-configuration}.
 @end lisp
 @end deffn
 
+@deftypevar {@code{libvirt} parameter} package libvirt
+Libvirt package.
+@end deftypevar
+
 @deftypevr {@code{virtlog-configuration} parameter} integer log-level
 Logging level.  4 errors, 3 warnings, 2 information, 1 debug.
 
