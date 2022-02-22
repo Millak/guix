@@ -32294,6 +32294,35 @@ parsing.")
     ;; GPL 2 or GPL 3.
     (license license:gpl3)))
 
+(define-public r-wordspace
+  (package
+    (name "r-wordspace")
+    (version "0.2-7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "wordspace" version))
+       (sha256
+        (base32 "0hrjv5mag7gwl4wj7np248sdyns5i623wl37b11hlgalhbmlypyf"))))
+    (properties `((upstream-name . "wordspace")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cluster r-iotools r-mass r-matrix r-rcpp r-sparsesvd))
+    (native-inputs (list r-knitr))
+    (home-page "https://wordspace.r-forge.r-project.org/")
+    (synopsis "Distributional semantic models in R")
+    (description
+     "The wordspace package turns R into an interactive laboratory for
+empirical research on @dfn{distributional semantic models} (DSM).  It consists
+of a small set of carefully designed functions, most of which
+
+@itemize
+@item encapsulate non-trivial R operations in a user-friendly manner or
+@item provide efficient and memory-lean C implementations of key operations.
+@end itemize
+")
+    (license license:gpl3)))
+
 (define-public r-mockery
   (package
     (name "r-mockery")
