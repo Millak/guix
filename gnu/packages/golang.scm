@@ -460,7 +460,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
             `(("gold" ,binutils-gold)))
            (_ `()))
        ,@(package-native-inputs go-1.4)))
-    (supported-systems %supported-systems)))
+    (supported-systems (delete "powerpc-linux" %supported-systems))))
 
 (define-public go-1.16
   (package
