@@ -11695,6 +11695,49 @@ including:
     ;; the GPL, but the license headers include the "or later" clause.
     (license license:gpl3+)))
 
+(define-public r-dyngen
+  (let ((commit "37fd1798fcbd41093fb3d7775bb2d268e2fc82b6")
+        (revision "1"))
+    (package
+      (name "r-dyngen")
+      (version (git-version "1.0.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dynverse/dyngen")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05pr6v1b8yji1jnj3fwx0crmg8ay6yy6lp9qjmcyvhkwbmf3kvc7"))))
+      (properties `((upstream-name . "dyngen")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-assertthat
+             r-dplyr
+             r-dynutils
+             r-ggplot2
+             r-ggraph
+             r-ggrepel
+             r-gillespiessa2
+             r-igraph
+             r-lmds
+             r-matrix
+             r-patchwork
+             r-pbapply
+             r-purrr
+             r-rlang
+             r-tibble
+             r-tidygraph
+             r-tidyr
+             r-viridis))
+      (home-page "https://github.com/dynverse/dyngen")
+      (synopsis "Multi-Modal simulator for single-cell omics analyses")
+      (description
+       "This package provides a multi-modal simulation engine for studying
+dynamic cellular processes at single-cell resolution.")
+      (license license:expat))))
+
 (define-public r-circus
   (package
     (name "r-circus")
