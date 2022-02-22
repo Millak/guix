@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -592,7 +592,10 @@ Worker, but it can be used in other JavaScript environments.")
                (base32
                 "15gichl8wi6yxag2ps723nxrgyan15976dzsnvw9h9py8sbyyzjn"))))
     (build-system minify-build-system)
-    (arguments `(#:javascript-files '("src/selectize.js")))
+    ;; We use the standalone file instead of src/selectize.js because the
+    ;; former includes the source code for MicroEvent and other modules that
+    ;; Selectize refers to.
+    (arguments `(#:javascript-files '("dist/js/standalone/selectize.js")))
     (home-page "https://selectize.github.io/selectize.js/")
     (synopsis "Hybrid widget between a textbox and <select> box")
     (description "Selectize is the hybrid of a textbox and @code{<select>}
