@@ -743,6 +743,30 @@ variables.")
 ")
     (license license:gpl2+)))
 
+(define-public r-lmds
+  (package
+    (name "r-lmds")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lmds" version))
+       (sha256
+        (base32 "130azb0nc2wwxv0qi8v5s4rd02p9lc92zwn634pv7b8awbw81i65"))))
+    (properties `((upstream-name . "lmds")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat r-dynutils r-irlba r-matrix))
+    (home-page "https://github.com/dynverse/lmds")
+    (synopsis "Landmark multi-dimensional scaling")
+    (description
+     "This package provides a fast dimensionality reduction method scaleable
+to large numbers of samples.  @dfn{Landmark Multi-Dimensional Scaling} (LMDS)
+is an extension of classical Torgerson MDS, but rather than calculating a
+complete distance matrix between all pairs of samples, only the distances
+between a set of landmarks and the samples are calculated.")
+    (license license:gpl3)))
+
 (define-public r-lmodel2
   (package
     (name "r-lmodel2")
