@@ -32275,6 +32275,25 @@ query parameters, request body, headers and more.  It can be used for unit
 tests or outside of a testing context.")
     (license license:expat)))
 
+(define-public r-iotools
+  (package
+    (name "r-iotools")
+    (version "0.3-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "iotools" version))
+       (sha256
+        (base32 "07q0z0kszm1xx5hfhisfliyrcsxd8dc5mx0a2bwwnv5l1xzmix17"))))
+    (properties `((upstream-name . "iotools")))
+    (build-system r-build-system)
+    (home-page "https://www.rforge.net/iotools")
+    (synopsis "I/O tools for streaming")
+    (description "This package provides basic I/O tools for streaming and data
+parsing.")
+    ;; GPL 2 or GPL 3.
+    (license license:gpl3)))
+
 (define-public r-mockery
   (package
     (name "r-mockery")
