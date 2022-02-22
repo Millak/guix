@@ -8948,6 +8948,36 @@ patterned after functions in the Python @code{itertools} module, and others
 patterned after functions in the snow package.")
     (license license:gpl2)))
 
+(define-public r-itsadug
+  (package
+    (name "r-itsadug")
+    (version "2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "itsadug" version))
+       (sha256
+        (base32 "0759l7hhvj05dp92pz59xwrxjm9s1iwkwrdhs68l0fq57550j70l"))))
+    (properties `((upstream-name . "itsadug")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mgcv r-plotfunctions))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=itsadug")
+    (synopsis "Interpreting time series and autocorrelated data using GAMMs")
+    (description
+     "@dfn{Generalized Additive Mixed Modeling} (GAMM; Lin & Zhang, 1999) as
+implemented in the R package @code{mgcv} is a nonlinear regression analysis
+which is particularly useful for time course data such as EEG, pupil dilation,
+gaze data (eye tracking), and articulography recordings, but also for
+behavioral data such as reaction times and response data.  As time course
+measures are sensitive to autocorrelation problems, GAMMs implements methods
+to reduce the autocorrelation problems.  This package includes functions for
+the evaluation of GAMM models (e.g., model comparisons, determining regions of
+significance, inspection of autocorrelational structure in residuals) and
+interpreting of GAMMs (e.g., visualization of complex interactions, and
+contrasts).")
+    (license license:gpl2+)))
+
 (define-public r-polynom
   (package
     (name "r-polynom")
