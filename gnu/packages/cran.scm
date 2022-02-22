@@ -32343,6 +32343,30 @@ of a small set of carefully designed functions, most of which
 ")
     (license license:gpl3)))
 
+(define-public r-misctools
+  (package
+    (name "r-misctools")
+    (version "0.6-26")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "miscTools" version))
+       (sha256
+        (base32 "16pwfxpyl0zv3hjxx2kjchkg7p6kbj0s2rrpskj7rkhjr9imlg5y"))))
+    (properties `((upstream-name . "miscTools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-digest))
+    (home-page "http://www.micEcon.org")
+    (synopsis "Miscellaneous tools and utilities")
+    (description
+     "This package provides miscellaneous small tools and utilities.  Many of
+them facilitate the work with matrices, e.g. inserting rows or columns,
+creating symmetric matrices, or checking for semidefiniteness.  Other tools
+facilitate the work with regression models, e.g. extracting the standard
+errors, obtaining the number of (estimated) parameters, or calculating
+R-squared values.")
+    (license license:gpl2+)))
+
 (define-public r-mockery
   (package
     (name "r-mockery")
