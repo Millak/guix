@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages anthy)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
@@ -287,6 +289,30 @@ for Qt based application.")
                    ;; Files under qt4(Fcitx5Qt4DBusAddons), qt5/dbusaddons
                    ;; and qt5/platforminputcontext.
                    license:bsd-3))))
+
+(define-public fcitx5-anthy
+  (package
+    (name "fcitx5-anthy")
+    (version "5.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.fcitx-im.org/fcitx5"
+                           "/fcitx5-anthy/fcitx5-anthy-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "0i2ahfp1vh0cs3brcsfblzqwszal2qj1ncgb1hbc9v03s1j6bybk"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ;; no tests
+    (inputs (list fcitx5 anthy gettext-minimal fmt))
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (home-page "https://github.com/fcitx/fcitx5-anthy")
+    (synopsis "Anthy Japanese language input for Fcitx 5")
+    (description "Fcitx5-Anthy provides Japanese input support to Fcitx5 using
+the Anthy input method.")
+    (license license:gpl2+)))
 
 (define-public fcitx5-chinese-addons
   (package
