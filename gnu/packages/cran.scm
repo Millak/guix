@@ -3400,6 +3400,27 @@ computing (numerical integration, optimization, etc.) and their integration
 with @code{Rcpp}.")
     (license license:gpl2+)))
 
+(define-public r-rcppxptrutils
+  (package
+    (name "r-rcppxptrutils")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppXPtrUtils" version))
+       (sha256
+        (base32 "0jh64c46gp99d2nsih14vx34pamc8i7gkmiy2nj94rx3sxq62yh5"))))
+    (properties `((upstream-name . "RcppXPtrUtils")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/Enchufa2/RcppXPtrUtils")
+    (synopsis "XPtr add-ons for Rcpp")
+    (description
+     "This package provides the means to compile user-supplied C++ functions
+with Rcpp and retrieve an @code{XPtr} that can be passed to other C++
+components.")
+    (license license:expat)))
+
 (define-public r-bindr
   (package
     (name "r-bindr")
