@@ -11903,6 +11903,42 @@ files to an structured list.  Users can manipulate this resulting list with
 back to file after modifications.")
     (license license:gpl3)))
 
+(define-public r-gillespiessa2
+  (package
+    (name "r-gillespiessa2")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "GillespieSSA2" version))
+       (sha256
+        (base32 "03ym8qx5yc1a6j9l973lc0rjzs8hiax8fq13j7m1fcb1pvnbvar5"))))
+    (properties `((upstream-name . "GillespieSSA2")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-dplyr
+           r-dynutils
+           r-matrix
+           r-purrr
+           r-rcpp
+           r-rcppxptrutils
+           r-readr
+           r-rlang
+           r-stringr
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/rcannood/GillespieSSA2")
+    (synopsis "Gillespie's stochastic simulation algorithm")
+    (description
+     "This package provides a fast, scalable, and versatile framework for
+simulating large systems with Gillespie's @dfn{Stochastic Simulation
+Algorithm} (SSA).  This package is the spiritual successor to the GillespieSSA
+package.  Benefits of this package include major speed improvements (>100x),
+easier to understand documentation, and many unit tests that try to ensure the
+package works as intended.")
+    (license license:gpl3+)))
+
 (define-public r-gitcreds
   (package
     (name "r-gitcreds")
