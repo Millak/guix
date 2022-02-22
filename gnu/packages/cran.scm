@@ -156,6 +156,25 @@ can limit either their total size or the age of the oldest object (or both),
 automatically pruning objects to maintain the constraints.")
     (license license:expat)))
 
+(define-public r-collections
+  (package
+    (name "r-collections")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "collections" version))
+       (sha256
+        (base32 "053ig88pva78wxxwya3v7cz853k563dkpgxrf2xvd0l0d9fanxmz"))))
+    (properties `((upstream-name . "collections")))
+    (build-system r-build-system)
+    (home-page "https://github.com/randy3k/collections")
+    (synopsis "High performance container data types")
+    (description
+     "This package provides high performance container data types such as
+queues, stacks, deques, dicts and ordered dicts.")
+    (license license:expat)))
+
 (define-public r-curry
   (package
     (name "r-curry")
