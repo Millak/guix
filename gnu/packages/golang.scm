@@ -7867,6 +7867,31 @@ and @code{ioutil} packages that is easy to test.")
 @uref{freedesktop.org}.")
     (license license:expat)))
 
+(define-public go-github-com-xdg-go-stringprep
+  (package
+    (name "go-github-com-xdg-go-stringprep")
+    (version "1.0.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/xdg-go/stringprep")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1df0l5n3c520y9filzz83j42wa5c056jcygmfwhjyf1pq8f6jkv9"))))
+    (build-system go-build-system)
+    (arguments '(#:import-path "github.com/xdg-go/stringprep"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/xdg-go/stringprep")
+    (synopsis "Go implementation of RFC-3454 stringprep and RFC-4013 SASLprep")
+    (description
+     "Package stringprep provides data tables and algorithms for RFC-3454,
+including errata.  It also provides a profile for SASLprep as defined in
+RFC-4013.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-godbus-dbus
   (package
     (name "go-github-com-godbus-dbus")
