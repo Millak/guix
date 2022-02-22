@@ -7643,6 +7643,41 @@ contain lags, diffs and missing values.")
     ;; Any GPL version.
     (license license:gpl2+)))
 
+(define-public r-dynutils
+  (package
+    (name "r-dynutils")
+    (version "1.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dynutils" version))
+       (sha256
+        (base32 "1pcj4igaw1g898xb42kcpzfmqy80xai5ki5bpnkf8hg738wm00qz"))))
+    (properties `((upstream-name . "dynutils")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-crayon
+           r-desc
+           r-dplyr
+           r-magrittr
+           r-matrix
+           r-proxyc
+           r-purrr
+           r-rcpp
+           r-remotes
+           r-stringr
+           r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/dynverse/dynutils")
+    (synopsis "Common functionality for the dynverse packages")
+    (description
+     "This package provides common functionality for the
+@url{https://dynverse.org,dynverse} packages.  dynverse is created to support
+the development, execution, and benchmarking of trajectory inference
+methods.")
+    (license license:expat)))
+
 (define-public r-catdap
   (package
     (name "r-catdap")
