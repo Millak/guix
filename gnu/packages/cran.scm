@@ -1070,6 +1070,33 @@ accessibility from hue, saturation, and lightness value scaling using the
 Chroma.js Color Palette Helper.  See @url{https://gka.github.io/palettes}.")
     (license license:cc0)))
 
+(define-public r-plotfunctions
+  (package
+    (name "r-plotfunctions")
+    (version "1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "plotfunctions" version))
+       (sha256
+        (base32 "0asmxw8283fpvl83h478j5nyg59xqifqaa8f2f6l199gvvswhhg2"))))
+    (properties `((upstream-name . "plotfunctions")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://jacolienvanrij.com/tutorials.html")
+    (synopsis "Various functions to facilitate visualization of data and analysis")
+    (description
+     "When analyzing data, plots are a helpful tool for visualizing data and
+interpreting statistical models.  This package provides a set of simple tools
+for building plots incrementally, starting with an empty plot region, and
+adding bars, data points, regression lines, error bars, gradient legends,
+density distributions in the margins, and even pictures.  The package builds
+further on R graphics by simply combining functions and settings in order to
+reduce the amount of code to produce for the user.  As a result, the package
+does not use formula input or special syntax, but can be used in combination
+with default R plot functions.")
+    (license license:gpl2+)))
+
 (define-public r-ecp
   (package
     (name "r-ecp")
