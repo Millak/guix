@@ -6160,6 +6160,45 @@ structure, and allows relevant features to be embedded directly onto the
 visualization, facilitating interpretation of the data.")
       (license license:gpl2))))
 
+(define-public r-languageserver
+  (let ((commit "004da9388f9b19990f031c8dc9b527fb406378ba")
+        (revision "1"))
+    (package
+      (name "r-languageserver")
+      (version (git-version "0.3.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/REditorSupport/languageserver")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05f22bjpc87fngzq4jsk2q2yb2i3ha03b377r0wx15d0b8xaa1ix"))))
+      (properties `((upstream-name . "languageserver")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-callr
+             r-collections
+             r-fs
+             r-jsonlite
+             r-lintr
+             r-r6
+             r-roxygen2
+             r-stringi
+             r-styler
+             r-xml2
+             r-xmlparsedata))
+      (home-page "https://github.com/REditorSupport/languageserver")
+      (synopsis "Language Server for R")
+      (description
+       "This package provides an implementation of the Language Server
+Protocol for R.  The
+@url{https://microsoft.github.io/language-server-protocol/,Language Server
+protocol} is used by an editor client to integrate features like auto
+completion.")
+      (license license:expat))))
+
 (define-public python-rpy2
   (package
     (name "python-rpy2")
