@@ -1045,6 +1045,9 @@ provides the GNU compiler for the Go programming language."))
 (define-public gccgo-10
   (make-gccgo gcc-10))
 
+(define-public gccgo-11
+  (make-gccgo gcc-11))
+
 (define %objc-search-paths
   (list (search-path-specification
          (variable "OBJC_INCLUDE_PATH")
