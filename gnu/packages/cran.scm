@@ -8997,6 +8997,38 @@ contrasts).")
 univariate polynomial manipulations.")
     (license license:gpl2)))
 
+(define-public r-pupillometryr
+  (package
+    (name "r-pupillometryr")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "PupillometryR" version))
+       (sha256
+        (base32 "0yk30sgl2qqa6pva649swq523vh446ifmydildycfvfmlm1h4qza"))))
+    (properties `((upstream-name . "PupillometryR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-data-table
+           r-dplyr
+           r-fda
+           r-ggplot2
+           r-itsadug
+           r-lazyeval
+           r-mgcv
+           r-rlang
+           r-signal
+           r-tidyr
+           r-zoo))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=PupillometryR")
+    (synopsis "Unified pipeline for pupillometry data")
+    (description
+     "This package provides a unified pipeline to clean, prepare, plot, and
+run basic analyses on pupillometry experiments.")
+    (license license:expat)))
+
 (define-public r-gbrd
   (package
     (name "r-gbrd")
