@@ -17971,7 +17971,7 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "0.10.3")
+    (version "0.11")
     (source
      (origin
        (method git-fetch)
@@ -17980,7 +17980,7 @@ according to a parsing expression grammar.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y8vz5grmlhln37lf93a3gxwh46ar0v3jj2dcvzkb36lqf1snq73"))))
+        (base32 "10l9gdxk6l2zp14zaf6k5aq36c0nbjq8jya727xs4yra0rdg05hl"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
@@ -17992,12 +17992,9 @@ according to a parsing expression grammar.")
              (setenv "ELDEV_LOCAL" (getcwd))
              (make-file-writable "test/project-i/project-i-autoloads.el")))
          (add-after 'unpack 'skip-failing-tests
-           ;; FIXME: 10 tests are failing.  Skip them for now.
+           ;; FIXME: 2 tests are failing.  Skip them for now.
            (lambda _
-             (delete-file "test/upgrade-self.el")
-             (substitute* "test/init.el"
-               (("init-[1-8].*" line)
-                (string-append line "(skip-unless nil)\n")))))
+             (delete-file "test/upgrade-self.el")))
          (add-after 'install 'install-eldev-executable
            ;; This constructs the eldev executable from templates and
            ;; installs it in the specified directory.
@@ -18015,7 +18012,7 @@ according to a parsing expression grammar.")
                  (("export ELDEV_EMACS.*" all)
                   (string-append "export ELDEV_LOCAL=" site-lisp "\n" all)))))))))
     (native-inputs
-     (list texinfo))           ;for tests
+     (list texinfo))                    ;for tests
     (home-page "https://github.com/doublep/eldev/")
     (synopsis "Emacs-based build tool for Elisp")
     (description "Eldev (Elisp Development Tool) is an Emacs-based build tool,
