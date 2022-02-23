@@ -2589,8 +2589,7 @@ be downscaled to fit into the size of your active terminal session.")
               ;; Tests with the color gray are hard.
               (substitute* "test/constructed_images.jl"
                 (("test (b == aa)" _ test) (string-append "test_nowarn " test))
-                (("test (B == map)" _ test) (string-append "test_nowarn " test)))
-              #t)))))
+                (("test (B == map)" _ test) (string-append "test_nowarn " test))))))))
     (propagated-inputs
      (list julia-fileio
            julia-imagecore
