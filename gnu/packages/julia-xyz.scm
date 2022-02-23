@@ -4293,8 +4293,7 @@ arbitrary normed vector spaces (e.g. matrix-valued integrands).")
               (let ((gcclib (assoc-ref inputs "gcc:lib")))
                 (substitute* "src/Quadmath.jl"
                   (("libgcc_s.so.1" lib) (string-append gcclib "/lib/" lib))
-                  (("libquadmath.so.0" lib) (string-append gcclib "/lib/" lib)))
-                #t))))))
+                  (("libquadmath.so.0" lib) (string-append gcclib "/lib/" lib)))))))))
     (propagated-inputs
      (list julia-requires))
     (inputs
