@@ -1952,8 +1952,7 @@ using finite difference.")
             (lambda* (#:key outputs #:allow-other-keys)
               (substitute* "test/fixed.jl"
                 ;; A deprecation warning is not thrown
-                (("@test_logs.*:warn" all) (string-append "# " all)))
-              #t)))))
+                (("@test_logs.*:warn" all) (string-append "# " all))))))))
     (propagated-inputs
      (list julia-compat))
     (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
