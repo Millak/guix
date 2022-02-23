@@ -4175,8 +4175,7 @@ human-readable format.")
                                "test/runtests.jl")
               (("import Conda") ""))
             (substitute* "deps/depsutils.jl"
-              (("Conda.PYTHONDIR") "\"/\""))
-            #t))
+              (("Conda.PYTHONDIR") "\"/\""))))
         (add-after 'link-depot 'set-python
           (lambda* (#:key inputs outputs #:allow-other-keys)
             (let ((python (assoc-ref inputs "python")))
@@ -4196,13 +4195,11 @@ human-readable format.")
                           python
                           (python:python-version python)
                           python
-                          #$(package-version python))))
-              #t)))
+                          #$(package-version python)))))))
         (add-before 'check 'pre-check
           (lambda _
             (setenv "CI" "true")
-            (setenv "JULIA_PKGEVAL" "true")
-            #t)))))
+            (setenv "JULIA_PKGEVAL" "true"))))))
     (propagated-inputs
      (list julia-macrotools
            julia-versionparsing))
