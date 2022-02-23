@@ -184,7 +184,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "8.8p1")
+   (version "8.9p1")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
@@ -192,7 +192,7 @@ a server that supports the SSH-2 protocol.")
              (patches (search-patches "openssh-hurd.patch"))
              (sha256
               (base32
-               "1s8z6f7mi1pwsl79cqai8cr350m5lf2ifcxff57wx6mvm478k425"))))
+               "1ry5prcax0134v6srkgznpl9ch5snkgq7yvjqvd8c5mbnxa7cjgx"))))
    (build-system gnu-build-system)
    (native-inputs (list groff pkg-config))
    (inputs `(("libedit" ,libedit)
