@@ -4131,8 +4131,7 @@ everything from run time algorithm choice to code generation at compile time.")
           (add-after 'link-depot 'skip-color-tests
             (lambda _
               (substitute* "test/text_backend.jl"
-                ((".*colors\\.jl.*") ""))
-              #t)))))
+                ((".*colors\\.jl.*") "")))))))
     (propagated-inputs
      (list julia-crayons
            julia-formatting
