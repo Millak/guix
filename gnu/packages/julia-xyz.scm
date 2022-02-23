@@ -4990,8 +4990,7 @@ some performance improvements).")
           (add-after 'link-depot 'skip-doctest
             (lambda _
               (substitute* "test/runtests.jl"
-                ((".*doctest.*") ""))
-              #t)))))
+                ((".*doctest.*") "")))))))
     (propagated-inputs
      (list julia-offsetarrays))
     (native-inputs
