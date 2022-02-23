@@ -28,6 +28,7 @@
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,11 +81,13 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -117,6 +120,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -862,6 +866,86 @@ other vector formats such as:
     (description "Alembic is a computer graphics interchange framework.  It
 distills complex, animated scenes into a set of baked geometric results.")
     (license license:bsd-3)))
+
+(define-public mangohud
+  (package
+    (name "mangohud")
+    (version "0.6.6-1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/flightlessmango/MangoHud/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ka004wxkajmvs5vy60r4ckm7f169c61rrd46w6gywkaqf5yp1ab"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:build-type "release"
+      #:configure-flags
+      #~(list "-Duse_system_vulkan=enabled"
+              "-Duse_system_spdlog=enabled"
+              "-Dwith_xnvctrl=disabled"
+              "-Dappend_libdir_mangohud=false"
+              (string-append "-Dvulkan_datadir="
+                             #$(this-package-input "vulkan-headers") "/share"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Mangohud tries to build the imgui library as a meson submodule,
+          ;; so we change the dependency to the imgui input instead.
+          (add-after 'unpack 'unbundle-imgui
+            (lambda _
+              (substitute* "meson.build"
+                (("dearimgui_sp = .*")
+                 "")
+                (("dearimgui_sp.get_variable\\('imgui_dep'\\)")
+                 (string-append
+                  "declare_dependency(dependencies: "
+                  "cpp.find_library('imgui'), include_directories: '"
+                  #$(this-package-input "imgui") "/include/imgui')")))))
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/meson.build"
+                (("\\\\\\$LIB")
+                 "lib"))
+              (substitute* "src/loaders/loader_libdrm.cpp"
+                (("libdrm.so.2")
+                 (search-input-file inputs "lib/libdrm.so.2"))
+                (("libdrm_amdgpu.so.1")
+                 (search-input-file inputs "lib/libdrm_amdgpu.so.1")))
+              (substitute* "src/overlay.cpp"
+                (("glxinfo")
+                 (search-input-file inputs "bin/glxinfo")))
+              (substitute* "src/loaders/loader_x11.cpp"
+                (("libX11.so.6")
+                 (search-input-file inputs "lib/libX11.so.6")))
+              (substitute* "src/pci_ids.cpp"
+                (("/usr/share/hwdata/pci.ids")
+                 (search-input-file inputs "share/hwdata/pci.ids")))
+              (substitute* "src/dbus.cpp"
+                (("libdbus-1.so.3")
+                 (search-input-file inputs "lib/libdbus-1.so.3"))))))))
+    (inputs
+     (list dbus
+           glslang
+           `(,hwdata "pci")
+           imgui-1.86
+           libdrm
+           libx11
+           mesa
+           mesa-utils
+           python-mako
+           spdlog
+           vulkan-headers
+           vulkan-loader))
+    (native-inputs (list pkg-config python))
+    (home-page "https://github.com/flightlessmango/MangoHud/")
+    (synopsis "Vulkan and OpenGL overlay for monitoring performance and hardware")
+    (description "MangoHud is a Vulkan and OpenGL overlay for monitoring
+frames per second (FPS), temperatures, CPU/GPU load and more.")
+    (license license:expat)))
 
 (define-public ogre
   (package
