@@ -1171,8 +1171,7 @@ dependency on it.")
                  (string-append all "return\n")))
               (substitute* "test/join.jl"
                 (("test (levels\\(outerjoin\\(B)" _ test)
-                 (string-append "test_nowarn " test)))
-              #t)))))
+                 (string-append "test_nowarn " test))))))))
     (propagated-inputs
      (list julia-dataapi
            julia-invertedindices
