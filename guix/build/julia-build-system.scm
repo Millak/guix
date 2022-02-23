@@ -112,9 +112,9 @@ Project.toml)."
            (job-count (if parallel-tests?
                           (parallel-job-count)
                           1))
-           ;; The --proc argument of Julia *adds* extra processors rather than
-           ;; specify the exact count to use, so zero must be specified to
-           ;; disable parallel processing...
+           ;; The --procs argument of Julia *adds* extra processors rather
+           ;; than specify the exact count to use, so zero must be specified
+           ;; to disable parallel processing...
            (additional-procs (max 0 (1- job-count))))
       ;; With a patch, SOURCE_DATE_EPOCH is honored
       (setenv "SOURCE_DATE_EPOCH" "1")
@@ -127,7 +127,7 @@ Project.toml)."
       (setenv "HOME" "/tmp")
       (apply invoke "julia"
              `("--depwarn=yes"
-               ,@(if parallel-tests?
+               ,@(if (and parallel-tests? (< 0 additional-procs))
                      ;; XXX: ... but '--procs' doesn't accept 0 as a valid
                      ;; value, so just omit the argument entirely.
                      (list (string-append  "--procs="
