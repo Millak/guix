@@ -680,3 +680,37 @@ easily implement VNC server or client functionality in your program.")
 authentication, SSH tunneling, and ZRLE or Tight encoding.")
     (license license:isc)))
 
+(define-public wayvnc
+  (package
+    (name "wayvnc")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/any1/wayvnc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cws9jfnmxqycmlyllvvqzw4jsbrwwk10v9gy8wifv3c61rwgdkk"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config scdoc))
+    (inputs (list aml
+                  neatvnc
+                  zlib
+                  libjpeg-turbo
+                  gnutls
+                  libdrm
+                  pixman
+                  libglvnd
+                  libxkbcommon
+                  wayland))
+    (home-page "https://github.com/any1/wayvnc")
+    (synopsis "VNC server for wlroots-based Wayland compositors")
+    (description
+     "This is a VNC server for wlroots-based Wayland compositors.
+It attaches to a running Wayland session, creates virtual input devices, and
+exposes a single display via the RFB protocol.  The Wayland session may be a
+headless one, so it is also possible to run wayvnc without a physical display
+attached.")
+    (license license:isc)))
