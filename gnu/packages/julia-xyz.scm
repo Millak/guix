@@ -2363,8 +2363,7 @@ library for parsing HTML.")
                 (("@testset.*Body - .*" all)
                  (string-append all "return\n"))
                 (("@testset.*Write to file.*" all)
-                 (string-append all "return\n")))
-              #t)))))
+                 (string-append all "return\n"))))))))
     (propagated-inputs
      (list julia-inifile
            julia-mbedtls
