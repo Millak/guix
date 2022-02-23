@@ -17193,31 +17193,29 @@ used with SGML-like languages: XML, HTML, XHTML, XSL, etc.")
       (license license:gpl3+))))
 
 (define-public emacs-ergoemacs-mode
-  (let ((commit "3ce23bba3cb50562693860f87f3528c471d603ba")
-        (revision "1"))
-    (package
-      (name "emacs-ergoemacs-mode")
-      (version (git-version "5.16.10.12" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ergoemacs/ergoemacs-mode")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1s3b9bridl78hh1mxmdk9nqlmqhibbaxk0a1cixmsf23s06w8w6l"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-undo-tree))
-      (home-page "https://ergoemacs.github.io/")
-      (synopsis "Emacs mode based on common modern interface and ergonomics")
-      (description
-       "This package provides an efficient Emacs keybinding set based on
+  (package
+    (name "emacs-ergoemacs-mode")
+    (version "5.22.2.23")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ergoemacs/ergoemacs-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ipwzl0l26g5qvc1sgmz2ra5vn1j3hl0mnkgzpa3j4p8gsmxdiqr"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-undo-tree))
+    (home-page "https://ergoemacs.github.io/")
+    (synopsis "Emacs mode based on common modern interface and ergonomics")
+    (description
+     "This package provides an efficient Emacs keybinding set based on
 statistics of command frequency, and supports common shortcuts for open,
 close, copy, cut, paste, undo, redo.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-password-store
   (let ((commit "918992c19231b33b3d4a3288a7288a620e608cb4")
