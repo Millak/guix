@@ -25,6 +25,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Disseminate Dissent <disseminatedissent@protonmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -171,6 +172,10 @@ development effort.")
        (sha256
         (base32 "18230bg4rq9pmm5f8f65j444jpq56rld4fhmpham8q3vr1c1bdjh"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       #~(list "-DRANGES_NATIVE=OFF")))
     (native-inputs
      (list doxygen gcc-9 perl))
     (inputs
