@@ -819,16 +819,6 @@ dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible
        (sha256
         (base32 "0xm603nylkwk4bzx66zv1g3syzrvn3jh9spdx7kvcvgszzyrrgh4"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'reset-gzip-timestamps 'make-files-writable
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (for-each make-file-writable
-                          (find-files out "\\.gz$"))
-                #t))))))
     (propagated-inputs
      (list julia-transcodingstreams
            julia-zlib-jll))
