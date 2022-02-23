@@ -2816,8 +2816,7 @@ indexed images, sometimes called \"colormap images\" or \"paletted images.\"")
             (lambda _
               (substitute* "test/runtests.jl"
                 (("using TimeZones.*") "")
-                ((".*infextendedtime.*") ""))
-              #t)))))
+                ((".*infextendedtime.*") "")))))))
     (propagated-inputs
      (list julia-requires))
     (native-inputs
