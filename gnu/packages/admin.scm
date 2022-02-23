@@ -2342,34 +2342,6 @@ characters (such as \"$\") get replaced with \"_\".  ISO 8859-1 (Latin-1)
 characters can be replaced as well, as can UTF-8 characters.")
     (license license:bsd-3)))
 
-(define-public testdisk
-  (package
-    (name "testdisk")
-    (version "7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.cgsecurity.org/testdisk-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "1zlh44w67py416hkvw6nrfmjickc2d43v51vcli5p374d5sw84ql"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list ntfs-3g
-           `(,util-linux "lib")
-           openssl
-           ;; FIXME: add reiserfs.
-           zlib
-           e2fsprogs
-           libjpeg-turbo
-           ncurses))
-    (home-page "https://www.cgsecurity.org/wiki/TestDisk")
-    (synopsis "Data recovery tool")
-    (description
-     "TestDisk is a program for data recovery, primarily designed to help
-recover lost partitions and/or make non-booting disks bootable again.")
-    (license license:gpl2+)))
-
 (define-public tree
   (package
     (name "tree")
