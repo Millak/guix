@@ -1283,8 +1283,7 @@ without having to take direct dependencies.")
               ;; https://github.com/queryverse/DataValues.jl/issues/83
               (substitute* "test/array/test_reduce.jl"
                 ((".*DataValue\\(mapreduce.*") "")
-                ((".*DataValue\\(method\\(f.*") ""))
-              #t)))))
+                ((".*DataValue\\(method\\(f.*") "")))))))
     (propagated-inputs
      (list julia-datavalueinterfaces))
     (home-page "https://github.com/queryverse/DataValues.jl")
