@@ -1875,8 +1875,7 @@ following types: @code{Eye}, @code{Fill}, @code{Ones}, @code{Zeros},
             (lambda _
               ;; We don't want to run all the tests; the Downstream tests
               ;; try to download the package registry.
-              (setenv "GROUP" "Core")
-              #t)))))
+              (setenv "GROUP" "Core"))))))
     (propagated-inputs
      (list julia-arrayinterface
            julia-requires
