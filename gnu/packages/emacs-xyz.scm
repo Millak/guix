@@ -24059,14 +24059,14 @@ buffer and launches Magit from the status buffer for the project at point.")
 (define-public emacs-repology
   (package
     (name "emacs-repology")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "repology-" version ".tar"))
        (sha256
-        (base32 "0la10xnd4ad0rgqmlb5yvhmbpiasjxj149axwcpw9wya2w5k510h"))))
+        (base32 "0ggb0zgz24hs5andhyrlpqm0gda0gf1wynzkarj4z7gpk5p9wrpr"))))
     (build-system emacs-build-system)
     (arguments
      (list
