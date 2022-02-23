@@ -3408,8 +3408,7 @@ may include other factorizations such as the LQ factorization.")
             ;; Tries to connect to httpbin.org
             (lambda _
               (substitute* "test/runtests.jl"
-                (("testhost =") "return #"))
-              #t)))))
+                (("testhost =") "return #")))))))
     (propagated-inputs
      (list julia-mbedtls-jll))
     (home-page "https://github.com/JuliaLang/MbedTLS.jl")
