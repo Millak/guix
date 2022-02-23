@@ -3375,8 +3375,7 @@ comes from the fact that @code{M == map(f, A)}.")
               (substitute* "test/test_ul.jl"
                 (("@test @inferred\\(logdet") "@test @test_nowarn(logdet")
                 ;; Also skip the REPL test.
-                (("test String") "test_nowarn String"))
-              #t)))))
+                (("test String") "test_nowarn String")))))))
     (propagated-inputs
      (list julia-arraylayouts))
     (home-page "https://github.com/JuliaMatrices/MatrixFactorizations.jl")
