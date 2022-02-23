@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,6 +70,8 @@
                      "-o" "libimgui.so"
                      "imgui.cpp"
                      "imgui_draw.cpp"
+                     "imgui_tables.cpp"
+                     "imgui_widgets.cpp"
                      ;; Include the supported backends.
                      "backends/imgui_impl_glfw.cpp"
                      "backends/imgui_impl_sdl.cpp"
