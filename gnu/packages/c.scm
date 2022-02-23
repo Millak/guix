@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023, 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
+;;; Copyright @ 2022, Kitzman <kitzman@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +48,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix store)
   #:use-module (gnu packages)
@@ -400,6 +402,36 @@ language as input.")
     (description "This package provides a C99 preprocessor written in pure
 Python.")
     (license license:bsd-3)))
+
+(define-public aml
+  (package
+    (name "aml")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/any1/aml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mxmzlhiv88hm4sf8kyawyrml8qy1xis019hdyb5skl9g95z9yyf"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/any1/aml")
+    (synopsis "Another/Andri's main loop")
+    (description "The @code{aml} library provides a portable event loop for C,
+with the following features:
+@enumerate
+@item file descriptor event handlers
+@item timers and tickers
+@item signal handlers
+@item idle dispatch callbacks
+@item thread pool support
+@end enumerate
+")
+    (license license:isc)))
 
 (define-public libbytesize
   (package
