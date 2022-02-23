@@ -2,6 +2,7 @@
 ;;; Copyright © 2019, 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -136,7 +137,8 @@ Project.toml)."
                                package "/test/runtests.jl"))))))
 
 (define* (link-depot #:key source inputs outputs
-                     julia-package-name julia-package-uuid  #:allow-other-keys)
+                     julia-package-name julia-package-uuid
+                     julia-package-dependencies #:allow-other-keys)
   (let* ((out (assoc-ref outputs "out"))
          (name+version (strip-store-file-name out))
          (version (last (string-split name+version #\-)))
@@ -156,6 +158,7 @@ println(Base.version_slug(Base.UUID(\"~a\"),
         (julia-create-package-toml (getcwd)
                                    julia-package-name julia-package-uuid
                                    version
+                                   julia-package-dependencies
                                    #:file "Project.toml"))
 
     ;; When installing a package, julia looks first at in the JULIA_DEPOT_PATH
@@ -186,9 +189,10 @@ version = \"" version "\"
 ") f)
     (when (not (null? deps))
       (display "[deps]\n" f)
-      (for-each (lambda dep
-                  (display (string-append (car (car dep)) " = \"" (cdr (car dep)) "\"\n")
-                           f))
+      (for-each (match-lambda
+                  ((name . uuid)
+                   (display (string-append name " = \"" uuid "\"\n")
+                            f)))
                 deps))
     (close-port f)))
 
@@ -207,6 +211,7 @@ version = \"" version "\"
     (delete 'build)))
 
 (define* (julia-build #:key inputs julia-package-name julia-package-uuid
+                      julia-package-dependencies
                       (phases %standard-phases)
                       #:allow-other-keys #:rest args)
   "Build the given Julia package, applying all of PHASES in order."
@@ -214,4 +219,5 @@ version = \"" version "\"
          #:inputs inputs #:phases phases
          #:julia-package-name julia-package-name
          #:julia-package-uuid julia-package-uuid
+         #:julia-package-dependencies julia-package-dependencies
          args))
