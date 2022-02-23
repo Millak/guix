@@ -145,8 +145,7 @@
 
         xf86-input-evdev
         xf86-input-keyboard
-        xf86-input-mouse
-        xf86-input-synaptics))
+        xf86-input-mouse))
 
 (define %default-xorg-fonts
   ;; Default list of fonts available to the X server.
