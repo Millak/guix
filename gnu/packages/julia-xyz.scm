@@ -5563,8 +5563,7 @@ types, modules, and dictionaries.")
             (lambda* (#:key source outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
                 (chdir
-                 (string-append out "/share/julia/loadpath/URIs/test")))
-              #t)))))
+                 (string-append out "/share/julia/loadpath/URIs/test"))))))))
     ;; required for tests
     (inputs (list julia-json))
     (home-page "https://github.com/JuliaWeb/URIs.jl")
