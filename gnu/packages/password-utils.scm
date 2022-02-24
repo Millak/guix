@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
@@ -103,6 +105,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages security-token)
@@ -1348,6 +1351,35 @@ binaries.  All of these utils are designed to execute only one specific
 function.  Since they all work with @code{STDIN} and @code{STDOUT} you can
 group them into chains.")
     (license license:expat)))
+
+(define-public hydra
+  (package
+    (name "hydra")
+    (version "9.4")
+    (home-page "https://github.com/vanhauser-thc/thc-hydra")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0dbx7yaqf4nl63pi8wmr19cxnp5v4w7fsd369krdy8hlc8k0qjgr"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ;no test suite
+       #:make-flags (list (string-append "CC="
+                                         ,(cc-for-target)))))
+    (native-inputs (list pkg-config))
+    (inputs (list freerdp gtk+ openssl zlib))
+    (synopsis "Gain access to a remote system by trying logins and passwords")
+    (description
+     "This package provides a tool to demonstrate how easy it is to gain
+unauthorized access to a system by automatically attempting logins and
+passwords.  It supports a wide range of protocols including SSH, SMTP and
+HTTP.")
+    (license license:agpl3+)))
 
 (define-public bruteforce-luks
   (package
