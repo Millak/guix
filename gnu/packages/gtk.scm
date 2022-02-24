@@ -2869,3 +2869,27 @@ excellent pavucontrol.")
     ;; XXX: 'setup.py' says "GPLv2" but nothing says "version 2 only".  Is
     ;; GPLv2+ intended?
     (license license:gpl2)))
+
+(define-public gromit-mpx
+  (package
+    (name "gromit-mpx")
+    (version "1.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bk138/gromit-mpx.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p3jivard85cvand9c5ksy1qwp8zcaczfd55b4xppg4xliqfcafs"))))
+    (build-system cmake-build-system)
+    (arguments `(#:tests? #f)) ; No tests.
+    (native-inputs (list pkg-config))
+    (inputs (list gtk+ libappindicator))
+    (home-page "https://github.com/bk138/gromit-mpx")
+    (synopsis "On-screen annotation tool")
+    (description
+     "Gromit-MPX is an on-screen annotation tool that works with any
+Unix desktop environment under X11 as well as Wayland.")
+    (license license:gpl2+)))
