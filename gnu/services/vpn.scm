@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nathan Dehnel <ncdehnel@gmail.com>
+;;; Copyright © 2022 Cameron V Chaparro <cameron@cameronchaparro.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -494,7 +495,8 @@ is truncated and rewritten every minute.")
                        (list (string-append #$openvpn "/sbin/openvpn")
                              "--writepid" #$pid-file "--config" #$config-file
                              "--daemon")
-                       #:pid-file #$pid-file))
+                       #:pid-file #$pid-file
+                       #:log-file #$log-file))
              (stop #~(make-kill-destructor)))))))
 
 (define %openvpn-accounts
