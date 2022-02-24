@@ -1895,6 +1895,10 @@ facilities for checking incoming mail.")
                            "--localstatedir=/var"
                            "--with-sqlite"  ; not auto-detected
                            "--with-lucene") ; not auto-detected
+       ;; The -rdynamic linker flag is needed for the backtrace() function to
+       ;; have symbol names rather than just addresses.  Dovecot's tests rely
+       ;; on this, see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=962630.
+       #:make-flags (list "LDFLAGS=-rdynamic")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-file-names
