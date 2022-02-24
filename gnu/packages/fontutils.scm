@@ -905,6 +905,7 @@ generated list of fallback fonts are checked.")
    (inputs
     `(("fonconfig" ,fontconfig)
       ("freetype" ,freetype)
+      ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
       ("gtk+" ,gtk+)
       ("json-glib" ,json-glib)
       ("libsoup" ,libsoup-minimal-2)
