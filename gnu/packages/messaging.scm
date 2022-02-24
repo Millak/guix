@@ -3108,23 +3108,52 @@ designed for experienced users.")
 (define-public matterbridge
   (package
     (name "matterbridge")
-    (version "1.22.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/42wim/matterbridge")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "07rgdc4v043fhzsalmlhickqizk6xjlpjkzn6l5v9ryp5gmv580z"))))
-    (build-system go-build-system)
+    (version "1.24.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/42wim/matterbridge")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cd70x9685162c0imdici1ipl9lziq700wzyb5bsg610wfak3ms7"))))
+    ;; Using the go-build-system results in the same error message
+    ;; than in the bug 1551[1]. So we fix it by running go build
+    ;; manually in the git repository as-is as this is the solution
+    ;; given to that bug by the matterbridge developers.
+    ;; [1]https://github.com/42wim/matterbridge/issues/1551
+    (build-system gnu-build-system)
     (arguments
-     `(#:import-path "github.com/42wim/matterbridge"
-       #:unpack-path "github.com/42wim/matterbridge"))
+     `(#:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (setenv "GOCACHE"
+                              (string-append (getcwd) "/go-build"))
+                      (setenv "GOBIN"
+                              (string-append (assoc-ref outputs "out") "/bin"))
+                      (invoke "go" "build" "-v" "-x")))
+                  (replace 'check
+                    (lambda* (#:key outputs tests? #:allow-other-keys)
+                      (when tests?
+                        (setenv "GOCACHE"
+                                (string-append (getcwd) "/go-build"))
+                        (setenv "GOBIN"
+                                (string-append (assoc-ref outputs "out")
+                                               "/bin"))
+                        (invoke "go" "test" "-v" "-x"))))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (setenv "GOCACHE"
+                              (string-append (getcwd) "/go-build"))
+                      (setenv "GOBIN"
+                              (string-append (assoc-ref outputs "out") "/bin"))
+                      (invoke "go" "install" "-v" "-x"))))))
+    (native-inputs (list go))
     (synopsis "Bridge together various messaging networks and protocols")
-    (description "Relays messages between different channels from various
+    (description
+     "Relays messages between different channels from various
 messaging networks and protocols.  So far it supports mattermost, IRC, gitter,
 xmpp, slack, discord, telegram, rocketchat, twitch, ssh-chat, zulip, whatsapp,
 keybase, matrix, microsoft teams, nextcloud, mumble, vk and more with REST
