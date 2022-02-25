@@ -931,7 +931,7 @@ to use as the tty.  This is primarily useful for headless systems."
      (list
        (shepherd-service
          (documentation "Run agetty on a tty.")
-         (provision (list (symbol-append 'term- (string->symbol (or tty "auto")))))
+         (provision (list (symbol-append 'term- (string->symbol (or tty "console")))))
 
          ;; Since the login prompt shows the host name, wait for the 'host-name'
          ;; service to be done.  Also wait for udev essentially so that the tty
