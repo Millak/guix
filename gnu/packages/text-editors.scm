@@ -910,23 +910,24 @@ Octave.  TeXmacs is completely extensible via Guile.")
         (base32 "0x8rw1mnhd3la9xznkag6rymskkd85m3c1wyw2qw0zm89yzqq0mr"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "GTK3=1"
-                          ,(string-append "CC=" (cc-for-target))
-                          "-Cgtk")
-       #:tests? #f                      ;require un-packaged Pyside
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configure script
-         (replace 'install
-           ;; Upstream provides no install script.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib"))
-                    (include (string-append out "/include")))
-               (for-each (lambda (f) (install-file f lib))
-                         (find-files "bin/" "\\.so$"))
-               (for-each (lambda (f) (install-file f include))
-                         (find-files "include/" "."))))))))
+     (list
+      #:make-flags
+      #~(list "GTK3=1"
+              (string-append "CC=" #$(cc-for-target))
+              "-Cgtk")
+      #:tests? #f                       ;require un-packaged Pyside
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure script
+          (replace 'install
+            ;; Upstream provides no install script.
+            (lambda _
+              (let ((lib (string-append #$output "/lib"))
+                    (inc (string-append #$output "/include")))
+                (for-each (lambda (f) (install-file f lib))
+                          (find-files "bin/" "\\.so$"))
+                (for-each (lambda (f) (install-file f inc))
+                          (find-files "include/" "."))))))))
     (native-inputs
      (list pkg-config python-wrapper))
     (inputs
