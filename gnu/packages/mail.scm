@@ -93,6 +93,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -2746,18 +2747,55 @@ converts them to maildir format directories.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0fa8s9dp5ilwmfcwkx72x2b5i0maa5sl97hv2cdknqmc27gv0b1c"))))
+    (outputs '("out" "contrib"))
     (build-system gnu-build-system)
-    (native-inputs
-     (list perl))
+    (inputs (list bash-minimal
+                  coreutils
+                  gawk
+                  glibc
+                  gnupg
+                  ncurses
+                  openssl
+                  ruby
+                  sed))
+    (native-inputs (list perl))
     (arguments
      (list
       #:make-flags
       #~(list #$(string-append "CC=" (cc-for-target))
               "PREFIX="
               (string-append "DESTDIR=" #$output))
+      #:modules '((ice-9 ftw)
+                  (guix build utils)
+                  (guix build gnu-build-system))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure))))
+          (delete 'configure)
+          (add-after 'install 'install-contrib
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (contrib (assoc-ref outputs "contrib"))
+                     (contrib-bin (string-append contrib "/bin"))
+                     (exe? (lambda (file)
+                             (let ((s (stat file)))
+                               (and (eq? 'regular (stat:type s))
+                                    (logtest #o100 (stat:perms s)))))))
+                (mkdir-p contrib-bin)
+                (with-directory-excursion "contrib"
+                  (for-each
+                    (lambda (prog)
+                      (install-file prog contrib-bin)
+                      (wrap-program (string-append contrib-bin "/" prog)
+                       `("PATH" =
+                         (,contrib-bin
+                          ,(string-append out "/bin")
+                          ,(string-append (assoc-ref inputs "coreutils") "/bin")
+                          ,(string-append (assoc-ref inputs "gawk") "/bin")
+                          ,(string-append (assoc-ref inputs "glibc") "/bin")
+                          ,(string-append (assoc-ref inputs "ncurses") "/bin")
+                          ,(string-append (assoc-ref inputs "openssl") "/bin")
+                          ,(string-append (assoc-ref inputs "sed") "/bin")))))
+                    (scandir "." exe?)))))))))
     (home-page "https://github.com/leahneukirchen/mblaze")
     (synopsis "Unix utilities to deal with Maildir")
     (description
