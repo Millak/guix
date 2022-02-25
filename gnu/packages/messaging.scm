@@ -3278,4 +3278,25 @@ more)!  It connects via the Slack API, and maintains a persistent websocket
 for notification of events.")
     (license license:expat)))
 
+(define-public python-librecaptcha
+  (package
+    (name "python-librecaptcha")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/taylordotfish/librecaptcha")
+                     (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0r35ws6vdf31j01kpacvpjplddm254r0cgy0npmhgnfxd5kpjf3s"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pillow python-requests python-esprima python-pygobject gobject-introspection gtk+))
+    (synopsis "Show CAPTCHA without running proprietary code.")
+    (description "This package shows CAPTCHA without running proprietary code.")
+    (home-page "https://github.com/taylordotfish/librecaptcha")
+    (license license:gpl3+)))
+
 ;;; messaging.scm ends here
