@@ -3299,4 +3299,28 @@ for notification of events.")
     (home-page "https://github.com/taylordotfish/librecaptcha")
     (license license:gpl3+)))
 
+(define-public python-harmony
+  (package
+    (name "python-harmony")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/taylordotfish/harmony.git")
+                     (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1bm9xcnzpnpj6rlhbrnl2abwclzl7ivgh1vb5644y9mnhcs489js"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-tox))
+    (inputs
+     (list python-librecaptcha python-keyring python-requests))
+    (synopsis "Discord account management")
+    (description "This package provides account management tools for
+Discord.")
+    (home-page "https://github.com/taylordotfish/harmony")
+    (license license:gpl3+)))
+
 ;;; messaging.scm ends here
