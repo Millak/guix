@@ -16738,6 +16738,10 @@ This option accepts, as an integer, the nice value with which to run the
 This option provides an ``escape hatch'' for the user to provide arbitrary
 command-line arguments to @command{agetty} as a list of strings.
 
+@item @code{shepherd-requirement} (default: @code{'()})
+The option can be used to provides extra shepherd requirements (for example
+@code{'syslogd}) to the respective @code{'term-}* shepherd service.
+
 @end table
 @end deftp
 

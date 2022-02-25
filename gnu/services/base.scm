@@ -876,6 +876,8 @@ the message of the day, among other things."
   ;; "Escape hatch" for passing arbitrary command-line arguments.
   (extra-options    agetty-extra-options          ;list of strings
                     (default '()))
+  (shepherd-requirement agetty-shepherd-requirement  ;list of SHEPHERD requirements
+                    (default '()))
 ;;; XXX Unimplemented for now!
 ;;; (issue-file     agetty-issue-file             ;file-like
 ;;;                 (default #f))
@@ -924,7 +926,8 @@ to use as the tty.  This is primarily useful for headless systems."
         host no-issue? init-string no-clear? local-line extract-baud?
         skip-login? no-newline? login-options chroot hangup? keep-baud? timeout
         detect-case? wait-cr? no-hints? no-hostname? long-hostname?
-        erase-characters kill-characters chdir delay nice extra-options)
+        erase-characters kill-characters chdir delay nice extra-options
+        shepherd-requirement)
      (list
        (shepherd-service
          (documentation "Run agetty on a tty.")
@@ -934,7 +937,8 @@ to use as the tty.  This is primarily useful for headless systems."
          ;; service to be done.  Also wait for udev essentially so that the tty
          ;; text is not lost in the middle of kernel messages (see also
          ;; mingetty-shepherd-service).
-         (requirement '(user-processes host-name udev))
+         (requirement (cons* 'user-processes 'host-name 'udev
+                             shepherd-requirement))
 
          (modules '((ice-9 match) (gnu build linux-boot)))
          (start
