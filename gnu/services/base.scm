@@ -2785,10 +2785,12 @@ to handle."
                         (cons tty %default-console-font))
                       '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
+        (syslog-service)
         (service agetty-service-type (agetty-configuration
                                        (extra-options '("-L")) ; no carrier detect
                                        (term "vt100")
-                                       (tty #f))) ; automatic
+                                       (tty #f) ; automatic
+                                       (shepherd-requirement '(syslogd))))
 
         (service mingetty-service-type (mingetty-configuration
                                          (tty "tty1")))
@@ -2805,7 +2807,6 @@ to handle."
 
         (service static-networking-service-type
                  (list %loopback-static-networking))
-        (syslog-service)
         (service urandom-seed-service-type)
         (service guix-service-type)
         (service nscd-service-type)
