@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
-;;; Copyright © 2015, 2016 Eric Bavier <bavier@member.fsf.org>
+;;; Copyright © 2015, 2016, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
@@ -937,16 +937,15 @@ tiling window manager for X.")
 (define-public evilwm
   (package
     (name "evilwm")
-    (version "1.1.1")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.6809.org.uk/evilwm/evilwm-"
+       (uri (string-append "http://www.6809.org.uk/evilwm/dl/evilwm-"
                            version ".tar.gz"))
        (sha256
         (base32
-         "0ak0yajzk3v4dg5wmaghv6acf7v02a4iw8qxmq5yw5ard8lrqn3r"))
-       (patches (search-patches "evilwm-lost-focus-bug.patch"))))
+         "1jry36qkg2l02v37zvzszxvxm2d8c62z25gks5gdqqjl9ifbpv1j"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 libxext libxrandr))
