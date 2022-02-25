@@ -9,7 +9,7 @@
 ;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -257,13 +257,13 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.19.1")
+    (version "0.19.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scikit-image" version))
        (sha256
-        (base32 "0f0147jwkhx0w4s5r7w3drb7znzl2pgp4b0mdap1ha7cx3hhxw28"))))
+        (base32 "0vc6c78780jivsg79ja0cncn1ma2wysy9fyz97kik0kg59jb8cyl"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
