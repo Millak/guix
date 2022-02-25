@@ -2661,7 +2661,7 @@ trees (LSM), for sustained throughput under random insert workloads.")
     (inputs
      (list wiredtiger-3 guile-2.2))
     (propagated-inputs
-     (list guile-bytestructures))
+     (list guile2.2-bytestructures))
     (synopsis "WiredTiger bindings for GNU Guile")
     (description
      "This package provides Guile bindings to the WiredTiger ``NoSQL''
