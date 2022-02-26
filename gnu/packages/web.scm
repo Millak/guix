@@ -55,6 +55,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7835,6 +7836,52 @@ solution for any project's interface needs:
 @item Easily integrated and extensible with Python or Lua scripting.
 @end itemize\n")
     (license license:expat)))
+
+(define-public gmid
+  (package
+    (name "gmid")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/omar-polo/gmid/releases/download/"
+                    version "/gmid-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0m4809mwy888bqsacmyck68grqfvynq74kswm109al6wjbvd61bn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "regress"
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (invoke "./configure"
+                           (string-append "PREFIX=" #$output)))))))
+    (native-inputs (list bison
+                         coreutils
+                         flex
+                         pkg-config
+                         procps
+                         which))
+    (inputs (list libevent libressl))
+    (home-page "https://git.omarpolo.com/gmid/about/")
+    (synopsis "Simple and secure Gemini server")
+    (description "@command{gmid} is a fast Gemini server written with security
+in mind.  It has features such as:
+@itemize
+@item reload the running configuration without interruption
+@item automatic redirect/error pages
+@item IRI support (RFC3987)
+@item reverse proxying
+@item CGI and FastCGI support
+@item virtual hosts
+@item location rules
+@item event-based asynchronous I/O model
+@item low memory footprint.
+@end itemize")
+    (license license:isc)))
 
 (define-public gmnisrv
   (package
