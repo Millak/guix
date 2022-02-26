@@ -48,33 +48,35 @@
                       (guix i18n)
                       (guix build utils))
 
-         (define home-path
+         (define home-directory
            (getenv "HOME"))
 
-         (define backup-dir
-           (string-append home-path "/" (number->string (current-time))
+         (define backup-directory
+           (string-append home-directory "/" (number->string (current-time))
                           "-guix-home-legacy-configs-backup"))
 
-         (define (get-target-path path)
-           (string-append home-path "/." path))
+         (define (target-file file)
+           ;; Return the target of FILE, a config file name sans leading dot
+           ;; such as "config/fontconfig/fonts.conf" or "bashrc".
+           (string-append home-directory "/." file))
 
-         (define (get-backup-path path)
-           (string-append backup-dir "/." path))
-
-         (define (symlink-to-store? path)
+         (define (symlink-to-store? file)
            (catch 'system-error
              (lambda ()
-               (store-file-name? (readlink path)))
+               (store-file-name? (readlink file)))
              (lambda args
                (if (= EINVAL (system-error-errno args))
                    #f
                    (apply throw args)))))
 
-         (define (backup-file path)
-           (mkdir-p backup-dir)
-           (format #t (G_ "Backing up ~a...") (get-target-path path))
-           (mkdir-p (dirname (get-backup-path path)))
-           (rename-file (get-target-path path) (get-backup-path path))
+         (define (backup-file file)
+           (define backup
+             (string-append backup-directory "/." file))
+
+           (mkdir-p backup-directory)
+           (format #t (G_ "Backing up ~a...") (target-file file))
+           (mkdir-p (dirname backup))
+           (rename-file (target-file file) backup)
            (display (G_ " done\n")))
 
          (define (cleanup-symlinks home-generation)
@@ -95,7 +97,7 @@
            (file-system-fold
             (const #t)
             (lambda (file stat _)                 ;leaf
-              (let ((file (get-target-path (strip file))))
+              (let ((file (target-file (strip file))))
                 (when (file-exists? file)
                   ;; DO NOT remove the file if it is no longer a symlink to
                   ;; the store, it will be backed up later during
@@ -112,7 +114,7 @@
             (const #t)                            ;down
             (lambda (directory stat _)            ;up
               (unless (string=? directory config-file-directory)
-                (let ((directory (get-target-path (strip directory))))
+                (let ((directory (target-file (strip directory))))
                   (catch 'system-error
                     (lambda ()
                       (rmdir directory)
@@ -145,14 +147,14 @@
              (string-drop file
                           (+ 1 (string-length config-file-directory))))
 
-           (define (get-source-path path)
-             (readlink (string-append config-file-directory path)))
+           (define (source-file file)
+             (readlink (string-append config-file-directory file)))
 
            (file-system-fold
             (const #t)                            ;enter?
             (lambda (file stat result)            ;leaf
-              (let ((source (get-source-path (strip file)))
-                    (target (get-target-path (strip file))))
+              (let ((source (source-file (strip file)))
+                    (target (target-file (strip file))))
                 (when (file-exists? target)
                   (backup-file (strip file)))
                 (format #t (G_ "Symlinking ~a -> ~a...")
@@ -161,7 +163,7 @@
                 (display (G_ " done\n"))))
             (lambda (directory stat result)       ;down
               (unless (string=? directory config-file-directory)
-                (let ((target (get-target-path (strip directory))))
+                (let ((target (target-file (strip directory))))
                   (when (and (file-exists? target)
                              (not (file-is-directory? target)))
                     (backup-file (strip directory)))
@@ -183,18 +185,17 @@
 
          #$%initialize-gettext
 
-         (let* ((he-path (string-append (getenv "HOME") "/.guix-home"))
-                (new-he-path (string-append he-path ".new"))
+         (let* ((home     (string-append (getenv "HOME") "/.guix-home"))
+                (pivot    (string-append home ".new"))
                 (new-home (getenv "GUIX_NEW_HOME"))
                 (old-home (getenv "GUIX_OLD_HOME")))
-
            (when old-home
              (cleanup-symlinks old-home))
 
            (create-symlinks new-home)
 
-           (symlink new-home new-he-path)
-           (rename-file new-he-path he-path)
+           (symlink new-home pivot)
+           (rename-file pivot home)
 
            (display (G_" done\nFinished updating symlinks.\n\n")))))))
 
