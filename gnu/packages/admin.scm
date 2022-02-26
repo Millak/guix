@@ -28,7 +28,7 @@
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019, 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -3869,7 +3869,8 @@ hard-coded.")
        (let ((out (assoc-ref %outputs "out")))
          (list (string-append "--with-dbus-sys-dir="
                               out "/etc/dbus-1/system.d")
-               "--localstatedir=/var"))
+               "--localstatedir=/var"
+               "--disable-werror"))
        #:make-flags
        (list "V=1")                     ; log build commands
        #:phases
