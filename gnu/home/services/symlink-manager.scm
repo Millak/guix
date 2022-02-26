@@ -43,51 +43,10 @@
                              (guix i18n)))
      #~(begin
          (use-modules (ice-9 ftw)
-                      (ice-9 curried-definitions)
                       (ice-9 match)
                       (srfi srfi-1)
                       (guix i18n)
                       (guix build utils))
-
-         (define ((simplify-file-tree parent) file)
-           "Convert the result produced by `file-system-tree' to less
-verbose and more suitable for further processing format.
-
-Extract dir/file info from stat and compose a relative path to the
-root of the file tree.
-
-Sample output:
-
-((dir . \".\")
- ((dir . \"config\")
-  ((dir . \"config/fontconfig\")
-   (file . \"config/fontconfig/fonts.conf\"))
-  ((dir . \"config/isync\")
-   (file . \"config/isync/mbsyncrc\"))))
-"
-           (match file
-             ((name stat) `(file . ,(string-append parent name)))
-             ((name stat children ...)
-              (cons `(dir . ,(string-append parent name))
-                    (map (simplify-file-tree
-                          (if (equal? name ".")
-                              ""
-                              (string-append parent name "/")))
-                         children)))))
-
-         (define ((file-tree-traverse preordering) node)
-           "Traverses the file tree in different orders, depending on PREORDERING.
-
-if PREORDERING is @code{#t} resulting list will contain directories
-before files located in those directories, otherwise directory will
-appear only after all nested items already listed."
-           (let ((prepend (lambda (a b) (append b a))))
-             (match node
-               (('file . path) (list node))
-               ((('dir . path) . rest)
-                ((if preordering append prepend)
-                 (list (cons 'dir path))
-                 (append-map (file-tree-traverse preordering) rest))))))
 
          (define home-path
            (getenv "HOME"))
@@ -176,64 +135,63 @@ appear only after all nested items already listed."
 
            (display (G_ "Cleanup finished.\n\n")))
 
-         (define (create-symlinks new-tree new-files-path)
-           ;; Create in directory NEW-TREE symlinks to the files under
-           ;; NEW-FILES-PATH, creating backups as needed.
+         (define (create-symlinks home-generation)
+           ;; Create in $HOME symlinks for the files in HOME-GENERATION.
+           (define config-file-directory
+             ;; Note: Trailing slash is needed because "files" is a symlink.
+             (string-append home-generation "/files/"))
+
+           (define (strip file)
+             (string-drop file
+                          (+ 1 (string-length config-file-directory))))
+
            (define (get-source-path path)
-             (readlink (string-append new-files-path "/" path)))
+             (readlink (string-append config-file-directory path)))
 
-           (let ((to-create ((file-tree-traverse #t) new-tree)))
-             (for-each
-              (match-lambda
-                (('dir . ".")
-                 (display
-                  (G_ "New symlinks to home-environment will be created soon.\n"))
-                 (format
-                  #t (G_ "All conflicting files will go to ~a.\n\n") backup-dir))
+           (file-system-fold
+            (const #t)                            ;enter?
+            (lambda (file stat result)            ;leaf
+              (let ((source (get-source-path (strip file)))
+                    (target (get-target-path (strip file))))
+                (when (file-exists? target)
+                  (backup-file (strip file)))
+                (format #t (G_ "Symlinking ~a -> ~a...")
+                        target source)
+                (symlink source target)
+                (display (G_ " done\n"))))
+            (lambda (directory stat result)       ;down
+              (unless (string=? directory config-file-directory)
+                (let ((target (get-target-path (strip directory))))
+                  (when (and (file-exists? target)
+                             (not (file-is-directory? target)))
+                    (backup-file (strip directory)))
 
-                (('dir . path)
-                 (let ((target-path (get-target-path path)))
-                   (when (and (file-exists? target-path)
-                              (not (file-is-directory? target-path)))
-                     (backup-file path))
-
-                   (if (file-exists? target-path)
-                       (format
-                        #t (G_ "Skipping   ~a (directory already exists)... done\n")
-                        target-path)
-                       (begin
-                         (format #t (G_ "Creating   ~a...") target-path)
-                         (mkdir target-path)
-                         (display (G_ " done\n"))))))
-
-                (('file . path)
-                 (when (file-exists? (get-target-path path))
-                   (backup-file path))
-                 (format #t (G_ "Symlinking ~a -> ~a...")
-                         (get-target-path path) (get-source-path path))
-                 (symlink (get-source-path path) (get-target-path path))
-                 (display (G_ " done\n"))))
-              to-create)))
+                  (catch 'system-error
+                    (lambda ()
+                      (mkdir target))
+                    (lambda args
+                      (let ((errno (system-error-errno args)))
+                        (unless (= EEXIST errno)
+                          (format #t (G_ "failed to create directory ~a: ~s~%")
+                                  target (strerror errno))
+                          (apply throw args))))))))
+            (const #t)                            ;up
+            (const #t)                            ;skip
+            (const #t)                            ;error
+            #t                                    ;init
+            config-file-directory))
 
          #$%initialize-gettext
 
          (let* ((he-path (string-append (getenv "HOME") "/.guix-home"))
                 (new-he-path (string-append he-path ".new"))
                 (new-home (getenv "GUIX_NEW_HOME"))
-                (old-home (getenv "GUIX_OLD_HOME"))
-
-                (new-files-path (string-append new-home "/files"))
-                ;; Trailing dot is required, because files itself is symlink and
-                ;; to make file-system-tree works it should be a directory.
-                (new-files-dir-path (string-append new-files-path "/."))
-
-                (new-tree ((simplify-file-tree "")
-                           (file-system-tree new-files-dir-path))))
+                (old-home (getenv "GUIX_OLD_HOME")))
 
            (when old-home
              (cleanup-symlinks old-home))
 
-           (create-symlinks new-tree new-files-path)
+           (create-symlinks new-home)
 
            (symlink new-home new-he-path)
            (rename-file new-he-path he-path)
