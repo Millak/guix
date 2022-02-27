@@ -260,10 +260,7 @@
   ;; TODO: Refactor enough to share this directly.
   #~(begin
       (copy-recursively
-       #$(match (assoc-ref (package-native-inputs chez-scheme)
-                           "nanopass")
-           ((src)
-            src))
+       #$nanopass
        "nanopass"
        #:keep-mtime? #t)
       (mkdir-p "stex")

@@ -158,7 +158,7 @@ If native threads are supported, the returned list will include
 ;; Chez Scheme:
 ;;
 
-(define nanopass
+(define-public nanopass
   (let ((version "1.9.2"))
     (origin
       (method git-fetch)
@@ -185,86 +185,80 @@ If native threads are supported, the returned list will include
 (define-public chez-scheme
   (package
     (name "chez-scheme")
+    ;; The version should match `(scheme-version-number)`.
+    ;; See s/cmacros.ss c. line 360.
     (version "9.5.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cisco/ChezScheme")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "07s433hn1z2slfc026sidrpzxv3a8narcd40qqr1xrpb9012xdky"))
-       (file-name (git-file-name name version))
-       (snippet
-        ;; Remove bundled libraries.
-        (with-imported-modules '((guix build utils))
-          #~(begin
-              (use-modules (guix build utils))
-              (for-each (lambda (dir)
-                          (when (directory-exists? dir)
-                            (delete-file-recursively dir)))
-                        '("stex"
-                          "nanopass"
-                          "lz4"
-                          "zlib")))))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cisco/ChezScheme")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "07s433hn1z2slfc026sidrpzxv3a8narcd40qqr1xrpb9012xdky"))
+              (file-name (git-file-name name version))
+              (snippet #~(begin
+                           (use-modules (guix build utils))
+                           (for-each (lambda (dir)
+                                       (when (directory-exists? dir)
+                                         (delete-file-recursively dir)))
+                                     '("stex"
+                                       "nanopass"
+                                       "lz4"
+                                       "zlib"))))))
     (build-system gnu-build-system)
     (inputs
-     `(("libuuid" ,util-linux "lib")
-       ("zlib" ,zlib)
-       ("lz4" ,lz4)
-       ;; for expeditor:
-       ("ncurses" ,ncurses)
-       ;; for X11 clipboard support in expeditor:
-       ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
-       ("libx11" ,libx11)))
+     (list
+      `(,util-linux "lib") ;<-- libuuid
+      zlib
+      lz4
+      ncurses ;<-- for expeditor
+      ;; for X11 clipboard support in expeditor:
+      ;; https://github.com/cisco/ChezScheme/issues/9#issuecomment-222057232
+      libx11))
     (native-inputs
-     `(("nanopass" ,nanopass) ; source only
-       ;; for docs
-       ("stex" ,stex)
-       ("xorg-rgb" ,xorg-rgb)
-       ("texlive" ,(texlive-updmap.cfg (list texlive-dvips-l3backend
-                                             texlive-epsf
-                                             texlive-fonts-ec
-                                             texlive-oberdiek)))
-       ("ghostscript" ,ghostscript)
-       ("netpbm" ,netpbm)))
+     (list nanopass ; source only
+           ;; for docs
+           stex
+           xorg-rgb
+           (texlive-updmap.cfg (list texlive-dvips-l3backend
+                                     texlive-epsf
+                                     texlive-fonts-ec
+                                     texlive-oberdiek))
+           ghostscript
+           netpbm))
     (native-search-paths
      (list (search-path-specification
             (variable "CHEZSCHEMELIBDIRS")
             (files '("lib/chez-scheme")))))
     (outputs '("out" "doc"))
     (arguments
-     `(#:modules
-       ((guix build gnu-build-system)
+     (list
+      #:modules
+      '((guix build gnu-build-system)
         (guix build utils)
         (ice-9 ftw)
         (ice-9 match))
-       #:test-target "test"
-       #:configure-flags
-       '("--threads") ;; TODO when we fix armhf, it doesn't support --threads
-       #:phases
-       (modify-phases %standard-phases
-         ;; put these where configure expects them to be
-         (add-after 'unpack 'unpack-nanopass+stex
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (for-each (lambda (dep)
-                         (define src
-                           (assoc-ref (or native-inputs inputs) dep))
-                         (copy-recursively src dep
-                                           #:keep-mtime? #t))
-                       '("nanopass" "stex"))))
-         ;; NOTE: the custom Chez 'configure' script doesn't allow
-         ;; unrecognized flags, such as those automatically added
-         ;; by `gnu-build-system`.
-         (replace 'configure
-           (lambda* (#:key inputs outputs
-                           (configure-flags '())
-                           #:allow-other-keys)
-             (let* ((zlib-static (assoc-ref inputs "zlib:static"))
-                    (lz4-static (assoc-ref inputs "lz4:static"))
-                    (out (assoc-ref outputs "out"))
-                    ;; add flags which are always required:
-                    (flags (cons* (string-append "--installprefix=" out)
+      #:test-target "test"
+      ;; TODO when we fix armhf, it may not support --threads
+      #:configure-flags #~'("--threads")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-nanopass+stex
+            (lambda args
+              (copy-recursively #$nanopass
+                                "nanopass"
+                                #:keep-mtime? #t)
+              (copy-recursively #$stex
+                                "stex"
+                                #:keep-mtime? #t)))
+          ;; NOTE: the custom Chez 'configure' script doesn't allow
+          ;; unrecognized flags, such as those automatically added
+          ;; by `gnu-build-system`.
+          (replace 'configure
+            (lambda* (#:key inputs (configure-flags '()) #:allow-other-keys)
+              ;; add flags which are always required:
+              (let ((flags (cons* (string-append "--installprefix=" #$output)
                                   "ZLIB=-lz"
                                   "LZ4=-llz4"
                                   "--libkernel"
@@ -272,90 +266,78 @@ If native threads are supported, the returned list will include
                                   ;; and letting Chez try causes an error
                                   "--nogzip-man-pages"
                                   configure-flags)))
-               (format #t "configure flags: ~s~%" flags)
-               ;; Some makefiles (for tests) don't seem to propagate CC
-               ;; properly, so we take it out of their hands:
-               (setenv "CC" ,(cc-for-target))
-               (setenv "HOME" "/tmp")
-               (apply invoke
-                      "./configure"
-                      flags))))
-         ;; The binary file name is called "scheme" as is the one from MIT/GNU
-         ;; Scheme.  We add a symlink to use in case both are installed.
-         (add-after 'install 'install-symlink
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (lib (string-append out "/lib"))
-                    (name "chez-scheme"))
-               (symlink (string-append bin "/scheme")
-                        (string-append bin "/" name))
-               (map (lambda (file)
-                      (symlink file (string-append (dirname file)
-                                                   "/" name ".boot")))
-                    (find-files lib "scheme.boot")))))
-         ;; Building explicitly lets us avoid using substitute*
-         ;; to re-write makefiles.
-         (add-after 'install-symlink 'prepare-stex
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let* ((stex+version
-                     (strip-store-file-name
-                      (assoc-ref (or native-inputs inputs) "stex")))
-                    ;; Eventually we want to install stex as a real
-                    ;; package so it's reusable. For now:
-                    (stex-output "/tmp")
-                    (doc-dir (string-append stex-output
-                                            "/share/doc/"
-                                            stex+version)))
-               (with-directory-excursion "stex"
-                 (invoke "make"
-                         "install"
-                         (string-append "LIB="
-                                        stex-output
-                                        "/lib/"
-                                        stex+version)
-                         (string-append "Scheme="
-                                        (assoc-ref outputs "out")
-                                        "/bin/scheme"))
-                 (for-each (lambda (pth)
-                             (install-file pth doc-dir))
-                           '("ReadMe" ; includes the license
-                             "doc/stex.html"
-                             "doc/stex.css"
-                             "doc/stex.pdf"))))))
-         ;; Building the documentation requires stex and a running scheme.
-         ;; FIXME: this is probably wrong for cross-compilation
-         (add-after 'prepare-stex 'install-doc
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let* ((chez+version (strip-store-file-name
-                                   (assoc-ref outputs "out")))
-                    (stex+version
-                     (strip-store-file-name
-                      (assoc-ref (or native-inputs inputs) "stex")))
-                    (scheme (string-append (assoc-ref outputs "out")
-                                           "/bin/scheme"))
-                    ;; see note on stex-output in phase build-stex, above:
-                    (stexlib (string-append "/tmp"
-                                            "/lib/"
-                                            stex+version))
-                    (doc-dir (string-append (assoc-ref outputs "doc")
-                                            "/share/doc/"
-                                            chez+version)))
-               (define* (stex-make #:optional (suffix ""))
-                 (invoke "make"
-                         "install"
-                         (string-append "Scheme=" scheme)
-                         (string-append "STEXLIB=" stexlib)
-                         (string-append "installdir=" doc-dir suffix)))
-               (with-directory-excursion "csug"
-                 (stex-make "/csug"))
-               (with-directory-excursion "release_notes"
-                 (stex-make "/release_notes"))
-               (with-directory-excursion doc-dir
-                 (symlink "release_notes/release_notes.pdf"
-                          "release_notes.pdf")
-                 (symlink "csug/csug9_5.pdf"
-                          "csug.pdf"))))))))
+                (format #t "configure flags: ~s~%" flags)
+                ;; Some makefiles (for tests) don't seem to propagate CC
+                ;; properly, so we take it out of their hands:
+                (setenv "CC" #$(cc-for-target))
+                (setenv "HOME" "/tmp")
+                (apply invoke "./configure" flags))))
+          ;; The binary file name is called "scheme" as is the one from
+          ;; MIT/GNU Scheme.  We add a symlink to use in case both are
+          ;; installed.
+          (add-after 'install 'install-symlink
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((scheme (search-input-file outputs "/bin/scheme"))
+                     (bin-dir (dirname scheme)))
+                (symlink scheme
+                         (string-append bin-dir "/chez-scheme"))
+                (match (find-files (string-append bin-dir "/../lib")
+                                   "scheme.boot")
+                  ((scheme.boot)
+                   (symlink scheme.boot
+                            (string-append (dirname scheme.boot)
+                                           "/chez-scheme.boot")))))))
+          ;; Building explicitly lets us avoid using substitute*
+          ;; to re-write makefiles.
+          (add-after 'install-symlink 'prepare-stex
+            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+              ;; Eventually we want to install stex as a real
+              ;; package so it's reusable. For now:
+              (let* ((stex-output "/tmp")
+                     (doc-dir (string-append stex-output "/share/doc/stex")))
+                (with-directory-excursion "stex"
+                  (invoke "make"
+                          "install"
+                          (string-append "LIB="
+                                         stex-output
+                                         "/lib/stex")
+                          (string-append "Scheme="
+                                         (search-input-file outputs
+                                                            "/bin/scheme")))
+                  (for-each (lambda (pth)
+                              (install-file pth doc-dir))
+                            '("ReadMe" ; includes the license
+                              "doc/stex.html"
+                              "doc/stex.css"
+                              "doc/stex.pdf"))))))
+          ;; Building the documentation requires stex and a running scheme.
+          ;; FIXME: this is probably wrong for cross-compilation
+          (add-after 'prepare-stex 'install-doc
+            (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
+              (match (assoc-ref outputs "doc")
+                (#f
+                 (format #t "not installing docs~%"))
+                (doc-prefix
+                 (let* ((chez+version (strip-store-file-name #$output))
+                        (scheme (search-input-file outputs "/bin/scheme"))
+                        (stexlib "/tmp/lib/stex")
+                        (doc-dir (string-append doc-prefix
+                                                "/share/doc/"
+                                                chez+version)))
+                   (define* (stex-make #:optional (suffix ""))
+                     (invoke "make" "install"
+                             (string-append "Scheme=" scheme)
+                             (string-append "STEXLIB=" stexlib)
+                             (string-append "installdir=" doc-dir suffix)))
+                   (with-directory-excursion "csug"
+                     (stex-make "/csug"))
+                   (with-directory-excursion "release_notes"
+                     (stex-make "/release_notes"))
+                   (with-directory-excursion doc-dir
+                     (symlink "release_notes/release_notes.pdf"
+                              "release_notes.pdf")
+                     (symlink "csug/csug9_5.pdf"
+                              "csug.pdf"))))))))))
     ;; Chez Scheme does not have a  MIPS backend.
     ;; FIXME: Debian backports patches to get armhf working.
     ;; We should too. It is the Chez machine type arm32le
