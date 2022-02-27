@@ -29069,6 +29069,27 @@ static types.")
 async I/O support.")
     (license license:gpl2+)))
 
+(define-public python-ansicolors
+  (package
+    (name "python-ansicolors")
+    (version "1.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ansicolors" version ".zip"))
+       (sha256
+        (base32 "1q3jqglkq4z0f6nkkn8bswcwqg012i2grrc27kabr8286dg4zycr"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-tox
+           python-pytest-cov
+           unzip))
+    (home-page "https://github.com/jonathaneunice/colors/")
+    (synopsis "ANSI colors for Python")
+    (description
+     "This package adds ANSI colors and decorations to your strings.")
+    (license license:isc)))
+
 (define-public python-types-ujson
   (package
     (name "python-types-ujson")
