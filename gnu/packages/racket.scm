@@ -927,84 +927,86 @@ languages such as Typed Racket, R5RS and R6RS Scheme, Algol 60, and Datalog.")
        ;; Guile's reader doesn't support #rx"racket"
        (regexp "racket"))
      (define extra-foreign-lib-search-dirs '())
-     (command-line
-      #:once-each
-      [("--extra-foreign-lib-search-dirs") dir-list
-       "foreign library directories, as a list of strings in `read` syntax"
-       (set! extra-foreign-lib-search-dirs
-             (call-with-input-string dir-list read))]
-      #:args (parent-layer prefix)
-      (let* ([config
-              (for/fold
-               ([config (file->value (build-path parent-layer
-                                                 config-file-pth))])
-               ([spec (in-list
-                       '((lib-dir lib-search-dirs "lib/racket")
-                         (share-dir share-search-dirs "share/racket")
-                         (links-file
-                          links-search-files
-                          "share/racket/links.rktd")
-                         (pkgs-dir pkgs-search-dirs "share/racket/pkgs")
-                         (bin-dir bin-search-dirs "bin")
-                         (man-dir man-search-dirs "share/man")
-                         (doc-dir doc-search-dirs "share/doc/racket")
-                         (include-dir
-                          include-search-dirs
-                          "include/racket")))])
-               (match-define (list main-key search-key pth) spec)
-               (hash-set*
-                config
-                main-key
-                (build-path-string prefix pth)
-                search-key
-                (list* #f
-                       (hash-ref config
-                                 main-key
-                                 (build-path-string parent-layer pth))
-                       (filter values (hash-ref config search-key null)))))]
-             [config
-              (hash-update config
-                           'lib-search-dirs
-                           (lambda (dirs)
-                             ;; add after other layers, but before older
-                             ;; foreign lib search directories
-                             (define-values [rkt old-foreign-dirs]
-                               (partition (lambda (pth)
-                                            (or (not pth)
-                                                (regexp-match? rx:racket pth)))
-                                          dirs))
-                             (append rkt
-                                     extra-foreign-lib-search-dirs
-                                     old-foreign-dirs)))]
-             [config
-              (hash-set* config
-                         'apps-dir
-                         (build-path-string prefix "share/applications")
-                         'absolute-installation? #t
-                         ;; Let Guix coexist with other installation
-                         ;; methods without clobbering user-specific packages.
-                         ;; This could be set in various places, but doing
-                         ;; it here is convienient, at least until we support
-                         ;; cross-compilation.
-                         'installation-name
-                         (string-append (version)
-                                        "-guix"
-                                        (match (system-type 'gc)
-                                          ['cgc "-cgc"]
-                                          ;; workaround Guile reader/printer:
-                                          ['|3m| "-bc"]
-                                          [_ ""])))]
-             [bin-dir
-              (hash-ref config 'bin-dir)]
-             [config
-              (hash-set* config
-                         'config-tethered-apps-dir (hash-ref config 'apps-dir)
-                         'config-tethered-console-bin-dir bin-dir
-                         'config-tethered-gui-bin-dir bin-dir)]
-             [new-config-pth
-              (build-path prefix config-file-pth)])
-        (make-parent-directory* new-config-pth)
-        (call-with-output-file*
-         new-config-pth
-         (lambda (out)
-           (pretty-write config out))))))))
+     (define-values [parent-layer prefix]
+       (command-line
+        #:once-each
+        [("--extra-foreign-lib-search-dirs") dir-list
+         "foreign library directories, as a list of strings in `read` syntax"
+         (set! extra-foreign-lib-search-dirs
+               (call-with-input-string dir-list read))]
+        #:args (parent-layer prefix)
+        (values parent-layer prefix)))
+     (let* ([config
+             (for/fold
+              ([config (file->value (build-path parent-layer
+                                                config-file-pth))])
+              ([spec (in-list
+                      '((lib-dir lib-search-dirs "lib/racket")
+                        (share-dir share-search-dirs "share/racket")
+                        (links-file
+                         links-search-files
+                         "share/racket/links.rktd")
+                        (pkgs-dir pkgs-search-dirs "share/racket/pkgs")
+                        (bin-dir bin-search-dirs "bin")
+                        (man-dir man-search-dirs "share/man")
+                        (doc-dir doc-search-dirs "share/doc/racket")
+                        (include-dir
+                         include-search-dirs
+                         "include/racket")))])
+              (match-define (list main-key search-key pth) spec)
+              (hash-set*
+               config
+               main-key
+               (build-path-string prefix pth)
+               search-key
+               (list* #f
+                      (hash-ref config
+                                main-key
+                                (build-path-string parent-layer pth))
+                      (filter values (hash-ref config search-key null)))))]
+            [config
+             (hash-update config
+                          'lib-search-dirs
+                          (lambda (dirs)
+                            ;; add after other layers, but before older
+                            ;; foreign lib search directories
+                            (define-values [rkt old-foreign-dirs]
+                              (partition (lambda (pth)
+                                           (or (not pth)
+                                               (regexp-match? rx:racket pth)))
+                                         dirs))
+                            (append rkt
+                                    extra-foreign-lib-search-dirs
+                                    old-foreign-dirs)))]
+            [config
+             (hash-set* config
+                        'apps-dir
+                        (build-path-string prefix "share/applications")
+                        'absolute-installation? #t
+                        ;; Let Guix coexist with other installation
+                        ;; methods without clobbering user-specific packages.
+                        ;; This could be set in various places, but doing
+                        ;; it here is convienient, at least until we support
+                        ;; cross-compilation.
+                        'installation-name
+                        (string-append (version)
+                                       "-guix"
+                                       (match (system-type 'gc)
+                                         ['cgc "-cgc"]
+                                         ;; workaround Guile reader/printer:
+                                         ['|3m| "-bc"]
+                                         [_ ""])))]
+            [bin-dir
+             (hash-ref config 'bin-dir)]
+            [config
+             (hash-set* config
+                        'config-tethered-apps-dir (hash-ref config 'apps-dir)
+                        'config-tethered-console-bin-dir bin-dir
+                        'config-tethered-gui-bin-dir bin-dir)]
+            [new-config-pth
+             (build-path prefix config-file-pth)])
+       (make-parent-directory* new-config-pth)
+       (call-with-output-file*
+        new-config-pth
+        (lambda (out)
+          (pretty-write config out)))))))
