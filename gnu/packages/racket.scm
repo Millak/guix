@@ -21,8 +21,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages racket)
-  #:use-module ((guix licenses)
-                #:select (asl2.0 expat lgpl3+))
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -47,7 +45,8 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module ((guix licenses) #:prefix license:))
 
 ;; Commentary:
 ;;
@@ -254,7 +253,7 @@ use @command{raco pkg} to install more.  Bundled packages, such as the
 DrRacket IDE, are not included.")
     ;; https://download.racket-lang.org/license.html
     ;; The LGPL components are only used by Racket BC.
-    (license (list asl2.0 expat))))
+    (license (list license:asl2.0 license:expat))))
 
 
 (define-public racket-minimal-bc-3m
@@ -295,7 +294,7 @@ This package is the normal implementation of Racket BC with a precise garbage
 collector, 3M (``Moving Memory Manager'').")
      ;; https://download.racket-lang.org/license.html
      ;; The LGPL components are only used by Racket BC.
-     (license (list lgpl3+ asl2.0 expat)))))
+     (license (list license:lgpl3+ license:asl2.0 license:expat)))))
 
 
 (define-public racket-minimal-bc-cgc
@@ -372,7 +371,7 @@ long as using an existing Chez Scheme, but @code{cs-bootstrap} supports Racket
 Note that the generated bootfiles are specific to Racket's fork of Chez
 Scheme, and @code{cs-bootstrap} does not currently support building upstream
 Chez Scheme.")
-     (license (list asl2.0)))))
+     (license (list license:asl2.0)))))
 
 
 (define %installer-mirrors
